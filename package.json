@@ -1,0 +1,16 @@
+{
+  "name": "sdfclinode",
+  "version": "1.0.0",
+  "description": "POC for SDF CLI",
+  "main": "index.js",
+  "author": "NetSuite",
+  "license": "MIT",
+  "preferGlobal": true,
+  "bin": {
+    "sdfclinode": "./index.js"
+  },
+  "dependencies": {
+    "commander": "^2.17.1",
+    "inquirer": "^6.2.0"
+  }
+}
