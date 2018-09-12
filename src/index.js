@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 "use strict";
 
-const CLI = require('./src/CLI');
-const NodeUtils = require('./src/NodeUtils');
-const ListBundlesCommandGenerator = require('./src/commands/ListBundlesCommandGenerator');
-const ListFilesCommandGenerator = require('./src/commands/ListFilesCommandGenerator');
-const SetupCommandGenerator = require('./src/commands/SetupCommandGenerator');
+const CLI = require('./CLI');
+const NodeUtils = require('./NodeUtils');
+const ListBundlesCommandGenerator = require('./commands/ListBundlesCommandGenerator');
+const ListFilesCommandGenerator = require('./commands/ListFilesCommandGenerator');
+const SetupCommandGenerator = require('./commands/SetupCommandGenerator');
 
 
 var commandGenerators = [
