@@ -1,6 +1,6 @@
 "use strict";
-const Context = require('./../Context');
-const NodeUtils = require('./../NodeUtils');
+const Context = require('../Context');
+const NodeUtils = require('../NodeUtils');
 
 module.exports = class Command {
     

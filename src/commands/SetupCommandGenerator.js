@@ -1,8 +1,8 @@
-const ApplicationConstants = require('./../ApplicationConstants');
-const SDKExecutor = require('./../SDKExecutor');
-const NodeUtils = require('./../NodeUtils');
-const FileUtils = require('./../FileUtils');
-const Context = require('./../Context');
+const ApplicationConstants = require('../ApplicationConstants');
+const SDKExecutor = require('../SDKExecutor');
+const NodeUtils = require('../NodeUtils');
+const FileUtils = require('../FileUtils');
+const Context = require('../Context');
 const Command = require('./Command');
 const inquirer = require('inquirer');
 

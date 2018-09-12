@@ -1,5 +1,5 @@
 const Command = require('./Command');
-const SDKExecutor = require('./../SDKExecutor');
+const SDKExecutor = require('../SDKExecutor');
 const inquirer = require('inquirer');
 
 const COMMAND_NAME = 'listfiles';

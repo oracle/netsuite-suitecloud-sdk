@@ -1,5 +1,5 @@
 const Command = require('./Command');
-const SDKExecutor = require('./../SDKExecutor');
+const SDKExecutor = require('../SDKExecutor');
 
 const COMMAND_NAME = 'listbundles';
 const COMMAND_ALIAS = 'lb';
