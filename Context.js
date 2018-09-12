@@ -57,6 +57,6 @@ var accountDetails = new AccountDetails();
 accountDetails.initializeFromFile(ApplicationConstants.ACCOUNT_DETAILS_FILENAME);
 
 module.exports = {
-    SDKFileName : ApplicationConstants.SDF_JAR_FILENAME,
+    SDKFileName : ApplicationConstants.SDF_JAR_PATHNAME,
     CurrentAccountDetails : accountDetails,
 } 
