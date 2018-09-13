@@ -9,8 +9,6 @@ const inquirer = require('inquirer');
 const COMMAND_NAME = 'setup';
 const COMMAND_ALIAS = 's';
 const COMMAND_DESCRIPTION = 'Setup CLI';
-const AUTHENTICATION_MODE_BASIC = 'BASIC';
-const AUTHENTICATION_MODE_TBA = 'TBA';
 
 module.exports = class SetupCommandGenerator {
 
@@ -31,8 +29,8 @@ module.exports = class SetupCommandGenerator {
                 type : 'list',
                 name : 'authenticationMode',
                 message : 'Choose the NS authentication',
-                default: AUTHENTICATION_MODE_TBA,
-                choices: [{ name: 'Basic', value: AUTHENTICATION_MODE_BASIC}, {name: 'Token-based Authentication', value: AUTHENTICATION_MODE_TBA}]
+                default: ApplicationConstants.AUTHENTICATION_MODE_TBA,
+                choices: [{ name: 'Basic', value: ApplicationConstants.AUTHENTICATION_MODE_BASIC}, {name: 'Token-based Authentication', value: ApplicationConstants.AUTHENTICATION_MODE_TBA}]
             },
             {
                 type : 'input',
@@ -71,13 +69,13 @@ module.exports = class SetupCommandGenerator {
             }
             Context.CurrentAccountDetails.initializeFromObj(contextValues);
 
-            if(contextValues.authenticationMode === AUTHENTICATION_MODE_TBA){
+            if(contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA){
                 self._sdkExecutor.execute("issuetoken");
                 delete contextValues.password;
             }
 
             FileUtils.create(ApplicationConstants.ACCOUNT_DETAILS_FILENAME, contextValues);
-            NodeUtils.println("Context setup correctly", NodeUtils.COLORS.GREEN)
+            NodeUtils.println("Context setup correctly", NodeUtils.COLORS.GREEN);
           });
     }
 

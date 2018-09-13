@@ -1,6 +1,8 @@
 "use strict";
 const Context = require('./Context');
 const NodeUtils = require('./NodeUtils');
+const CLIException = require('./CLIException');
+const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 
 module.exports = class SDKExecutor {
@@ -34,15 +36,30 @@ module.exports = class SDKExecutor {
         
         childProcess.stderr.on('data', data =>{
             var sdkOutput = data.toString('utf8');
-            NodeUtils.println(sdkOutput, NodeUtils.COLORS.RED);
+            Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT, 
+                new CLIException(1, sdkOutput));            
         });
 
         childProcess.stdout.on('data', (data) => {
             var sdkOutput = data.toString('utf8');
-            NodeUtils.println(sdkOutput, NodeUtils.COLORS.CYAN);
             if(sdkOutput.includes('Enter password')){
-                childProcess.stdin.write(Context.CurrentAccountDetails.getPassword());
-                childProcess.stdin.end();
+                if(Context.CurrentAccountDetails.getPassword()){
+                    childProcess.stdin.write(Context.CurrentAccountDetails.getPassword());
+                    childProcess.stdin.end();
+                } else {
+                    Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT, 
+                        new CLIException(3, 'Authentication error: please run "sdf setup"'));
+                        childProcess.kill('SIGINT');
+                }
+                return;
+            } 
+            NodeUtils.println(sdkOutput, NodeUtils.COLORS.CYAN);
+        });
+
+        childProcess.on('close', (code) => {
+            if(code != 0){
+                Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT, 
+                    new CLIException(2, `ERROR: SDK exited with code ${code}`));
             }
         });
       }

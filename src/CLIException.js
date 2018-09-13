@@ -4,4 +4,8 @@ module.exports = class CLIException {
         this._defaultMessage = defaultMessage;
         this._translationKey = translationKey;
     }
+
+    getErrorMessage(){
+        return this._defaultMessage;
+    }
 }
