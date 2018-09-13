@@ -4,3 +4,4 @@ node_modules
 # generated files
 account.json
 error.log
+/bin/.clicache
