@@ -1,12 +1,7 @@
 'use strict';
 
-const ApplicationConstants = require('../ApplicationConstants');
-const SDKExecutor = require('../SDKExecutor').SDKExecutor;
+const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
-const NodeUtils = require('../NodeUtils');
-const FileUtils = require('../FileUtils');
-const Context = require('../Context');
-const Command = require('./Command');
 const inquirer = require('inquirer');
 
 const COMMAND_NAME = 'createproject';
@@ -16,10 +11,10 @@ const COMMAND_DESCRIPTION = 'Create new Account Customization or SuiteApp projec
 const ACP_PROJECT_TYPE = 'ACCOUNTCUSTOMIZATION';
 const SUITEAPP_PROJECT_TYPE = 'SUITEAPP';
 
-module.exports = class CreateProjectCommandGenerator {
+module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
 
     constructor() {
-        this._sdkExecutor = new SDKExecutor();
+        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION);
     }
 
     _getCommandQuestions() {
@@ -89,11 +84,7 @@ module.exports = class CreateProjectCommandGenerator {
                 ...(answers.type === SUITEAPP_PROJECT_TYPE && {'-projectversion': answers.projectversion}),
             };
             let executionContext = new SDKExecutionContext(COMMAND_NAME, params, false);
-            this._sdkExecutor.execute(executionContext);
+            self._sdkExecutor.execute(executionContext);
         });
-    }
-
-    create(){
-        return new Command(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, true, this._executeAction.bind(this));
     }
 };

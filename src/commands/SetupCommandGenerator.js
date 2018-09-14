@@ -1,12 +1,11 @@
 'use strict';
 
+const BaseCommandGenerator = require('./BaseCommandGenerator');
 const ApplicationConstants = require('../ApplicationConstants');
-const SDKExecutor = require('../SDKExecutor').SDKExecutor;
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const NodeUtils = require('../NodeUtils');
 const FileUtils = require('../FileUtils');
 const Context = require('../Context');
-const Command = require('./Command');
 const inquirer = require('inquirer');
 
 const COMMAND_NAME = 'setup';
@@ -14,10 +13,10 @@ const COMMAND_ALIAS = 's';
 const COMMAND_DESCRIPTION = 'Setup CLI';
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
 
-module.exports = class SetupCommandGenerator {
+module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
     constructor(){
-        this._sdkExecutor = new SDKExecutor();
+        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION);
     }
 
     _getCommandQuestions(){
@@ -82,9 +81,5 @@ module.exports = class SetupCommandGenerator {
             FileUtils.create(ApplicationConstants.ACCOUNT_DETAILS_FILENAME, contextValues);
             NodeUtils.println("Context setup correctly", NodeUtils.COLORS.GREEN);
           });
-    }
-
-    create(){
-        return new Command(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, true, this._executeAction.bind(this));
     }
 };

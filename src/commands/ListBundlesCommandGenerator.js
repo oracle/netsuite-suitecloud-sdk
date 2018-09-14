@@ -1,25 +1,20 @@
 'use strict';
 
-const Command = require('./Command');
-const SDKExecutor = require('../SDKExecutor').SDKExecutor;
+const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 
 const COMMAND_NAME = 'listbundles';
 const COMMAND_ALIAS = 'lb';
 const COMMAND_DESCRIPTION = 'List bundles description';
 
-module.exports = class ListBundlesCommandGenerator {
+module.exports = class ListBundlesCommandGenerator extends BaseCommandGenerator {
     
     constructor(){
-        this._sdkExecutor = new SDKExecutor();
+        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION);
     }
 
     _executeAction(){
         let executionContext = new SDKExecutionContext(COMMAND_NAME);
         this._sdkExecutor.execute(executionContext);
-    }
-
-    create(){
-        return new Command(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, false, this._executeAction.bind(this))
     }
 };

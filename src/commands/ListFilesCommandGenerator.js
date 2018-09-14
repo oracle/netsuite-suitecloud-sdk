@@ -1,7 +1,6 @@
 'use strict';
 
-const Command = require('./Command');
-const SDKExecutor = require('../SDKExecutor').SDKExecutor;
+const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const inquirer = require('inquirer');
 
@@ -9,10 +8,10 @@ const COMMAND_NAME = 'listfiles';
 const COMMAND_ALIAS = 'lf';
 const COMMAND_DESCRIPTION = 'List files description';
 
-module.exports = class ListBundlesCommandGenerator {
+module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
     
     constructor(){
-        this._sdkExecutor = new SDKExecutor();
+        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION);
     }
 
     _getCommandQuestions(){
@@ -34,9 +33,5 @@ module.exports = class ListBundlesCommandGenerator {
 
             this._sdkExecutor.execute(executionContext);
         });
-    }
-
-    create(){
-        return new Command(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, false, this._executeAction.bind(this))
     }
 };
