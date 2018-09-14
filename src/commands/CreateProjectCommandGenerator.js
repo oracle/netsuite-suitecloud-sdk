@@ -46,8 +46,8 @@ module.exports = class CreateProjectCommandGenerator {
                 type : 'list',
                 name : 'overwrite',
                 message : 'Would you like to overwrite the project if found in the same location?',
-                default: 1,
-                choices: [{ name: 'Yes', value: true}, {name: 'No', value: false}]
+                default: 0,
+                choices: [{name: 'No', value: false}, { name: 'Yes', value: true}]
             },
             {
                 when: function (response) {
