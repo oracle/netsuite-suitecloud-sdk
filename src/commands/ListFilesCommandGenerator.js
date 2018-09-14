@@ -1,5 +1,8 @@
+'use strict';
+
 const Command = require('./Command');
-const SDKExecutor = require('../SDKExecutor');
+const SDKExecutor = require('../SDKExecutor').SDKExecutor;
+const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const inquirer = require('inquirer');
 
 const COMMAND_NAME = 'listfiles';
@@ -17,7 +20,7 @@ module.exports = class ListBundlesCommandGenerator {
             {
                 type : 'input',
                 name : 'folder',
-                message : 'Please specify the FileCabinet folder',
+                message : 'Please specify FileCabinet folder',
                 default: '/SuiteScripts'
             }
         ]
@@ -25,13 +28,15 @@ module.exports = class ListBundlesCommandGenerator {
 
     _executeAction(){
         inquirer.prompt(this._getCommandQuestions()).then(answers => {
-            this._sdkExecutor.execute(COMMAND_NAME, {
+            let executionContext = new SDKExecutionContext(COMMAND_NAME, {
                 '-folder' : answers.folder
             });
+
+            this._sdkExecutor.execute(executionContext);
         });
     }
 
     create(){
         return new Command(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, false, this._executeAction.bind(this))
     }
-}
+};

@@ -1,14 +1,15 @@
-"use strict";
+'use strict';
+
 const Context = require('./Context');
 const NodeUtils = require('./NodeUtils');
 const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 
-module.exports = class SDKExecutor {
+module.exports.SDKExecutor = class SDKExecutor {
 
     _convertParamsObjToString(cliParams) {
-        var cliParamsAsString = '';
+        let cliParamsAsString = '';
         for (var param in cliParams) {
             if (cliParams.hasOwnProperty(param)) {
                 cliParamsAsString += param + ' ' + cliParams[param] + ' ';
@@ -18,30 +19,36 @@ module.exports = class SDKExecutor {
         return cliParamsAsString;
     }
 
-    execute(command, params) {
-        var defaultParams = {
-            '-account': Context.CurrentAccountDetails.getCompId(),
-            '-role': Context.CurrentAccountDetails.getRoleId(),
-            '-email': Context.CurrentAccountDetails.getEmail(),
-            '-url': Context.CurrentAccountDetails.getNetSuiteUrl()
-        };
-        var cliParams = Object.assign({}, defaultParams, params);
-        var cliParamsAsString = this._convertParamsObjToString(cliParams);
+    execute(executionContext) {
+        let cliParams;
+        if (executionContext.applyDefaultParams()) {
+            let defaultParams = {
+                '-account': Context.CurrentAccountDetails.getCompId(),
+                '-role': Context.CurrentAccountDetails.getRoleId(),
+                '-email': Context.CurrentAccountDetails.getEmail(),
+                '-url': Context.CurrentAccountDetails.getNetSuiteUrl()
+            };
+            cliParams = Object.assign({}, defaultParams, executionContext.getParams());
+        } else {
+            cliParams = Object.assign({}, executionContext.getParams());
+        }
 
-        var childProcess = spawn(`java -jar "${Context.SDKFilePath}" ${command} ${cliParamsAsString}`,
+        let cliParamsAsString = this._convertParamsObjToString(cliParams);
+
+        let childProcess = spawn(`java -jar "${Context.SDKFilePath}" ${executionContext.getCommand()} ${cliParamsAsString}`,
             [],
             {
                 shell: true
             });
 
         childProcess.stderr.on('data', data => {
-            var sdkOutput = data.toString('utf8');
+            let sdkOutput = data.toString('utf8');
             Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT,
                 new CLIException(1, sdkOutput));
         });
 
         childProcess.stdout.on('data', (data) => {
-            var sdkOutput = data.toString('utf8');
+            let sdkOutput = data.toString('utf8');
             if (sdkOutput.includes('Enter password')) {
                 if (Context.CurrentAccountDetails.getPassword()) {
                     childProcess.stdin.write(Context.CurrentAccountDetails.getPassword());
@@ -63,4 +70,26 @@ module.exports = class SDKExecutor {
             }
         });
     }
+};
+
+module.exports.SDKExecutionContext = class SDKExecutionContext {
+
+    constructor(command, params, applyDefaultParams) {
+        this._command = command;
+        this._params = params;
+        this._applyDefaultParams = (typeof applyDefaultParams === 'undefined') ? true : applyDefaultParams;
+    }
+
+    getCommand() {
+        return this._command;
+    }
+
+    applyDefaultParams() {
+        return this._applyDefaultParams;
+    }
+
+    getParams() {
+        return this._params;
+    }
+
 };

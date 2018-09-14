@@ -1,5 +1,8 @@
+'use strict';
+
 const ApplicationConstants = require('../ApplicationConstants');
-const SDKExecutor = require('../SDKExecutor');
+const SDKExecutor = require('../SDKExecutor').SDKExecutor;
+const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const NodeUtils = require('../NodeUtils');
 const FileUtils = require('../FileUtils');
 const Context = require('../Context');
@@ -9,6 +12,7 @@ const inquirer = require('inquirer');
 const COMMAND_NAME = 'setup';
 const COMMAND_ALIAS = 's';
 const COMMAND_DESCRIPTION = 'Setup CLI';
+const ISSUE_TOKEN_COMMAND = 'issuetoken';
 
 module.exports = class SetupCommandGenerator {
 
@@ -66,11 +70,12 @@ module.exports = class SetupCommandGenerator {
                 password : answers.password,
                 roleId : answers.role,
                 authenticationMode: answers.authenticationMode
-            }
+            };
             Context.CurrentAccountDetails.initializeFromObj(contextValues);
 
             if(contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA){
-                self._sdkExecutor.execute("issuetoken");
+                let executionContext = new SDKExecutionContext(ISSUE_TOKEN_COMMAND);
+                self._sdkExecutor.execute(executionContext);
                 delete contextValues.password;
             }
 
@@ -82,4 +87,4 @@ module.exports = class SetupCommandGenerator {
     create(){
         return new Command(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, true, this._executeAction.bind(this));
     }
-}
+};
