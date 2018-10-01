@@ -11,75 +11,107 @@ const inquirer = require('inquirer');
 const COMMAND_NAME = 'setup';
 const COMMAND_ALIAS = 's';
 const COMMAND_DESCRIPTION = 'Setup CLI';
+const IS_SETUP_REQUIRED = false;
+
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
+const REVOKE_TOKEN_COMMAND = 'revoketoken';
 
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
-    constructor(){
-        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION);
+    constructor() {
+        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, IS_SETUP_REQUIRED);
     }
 
-    _getCommandQuestions(){
+    _getCommandQuestions() {
         return [
             {
-                type : 'list',
-                name : 'environmentUrl',
-                message : 'Choose the NS environment',
+                type: 'list',
+                name: 'environmentUrl',
+                message: 'Choose the NS environment',
                 default: 0,
-                choices: [{ name: 'Production', value: 'system.netsuite.com'}, {name: 'Sandbox', value:'system.sandbox.netsuite.com'}]
+                choices: [
+                    {
+                        name: 'Production',
+                        value: 'system.netsuite.com'
+                    },
+                    {
+                        name: 'Sandbox',
+                        value: 'system.sandbox.netsuite.com'
+                    }
+                ]
             },
             {
-                type : 'list',
-                name : 'authenticationMode',
-                message : 'Choose the NS authentication',
+                type: 'list',
+                name: 'authenticationMode',
+                message: 'Choose the NS authentication',
                 default: ApplicationConstants.AUTHENTICATION_MODE_TBA,
-                choices: [{ name: 'Basic', value: ApplicationConstants.AUTHENTICATION_MODE_BASIC}, {name: 'Token-based Authentication', value: ApplicationConstants.AUTHENTICATION_MODE_TBA}]
+                choices: [
+                    {
+                        name: 'Basic',
+                        value: ApplicationConstants.AUTHENTICATION_MODE_BASIC
+                    },
+                    {
+                        name: 'Token-based Authentication',
+                        value: ApplicationConstants.AUTHENTICATION_MODE_TBA
+                    }
+                ]
             },
             {
-                type : 'input',
-                name : 'email',
-                message : 'Please enter your email'
+                type: 'input',
+                name: 'email',
+                message: 'Please enter your email'
             },
             {
-                type : 'password',
-                name : 'password',
-                message : 'Please enter your account password'
+                type: 'password',
+                name: 'password',
+                message: 'Please enter your account password'
             },
             {
-                type : 'input',
-                name : 'role',
+                type: 'input',
+                name: 'role',
                 default: 3,
-                message : 'Please enter your role'
+                message: 'Please enter your role'
             },
             {
-                type : 'input',
-                name : 'company',
-                message : 'Please enter your company identifier'
+                type: 'input',
+                name: 'company',
+                message: 'Please enter your company identifier'
             }
         ];
     }
 
-    _executeAction(){
-        var self = this;
+    _executeAction() {
+        const self = this;
         inquirer.prompt(this._getCommandQuestions()).then(answers => {
-            var contextValues = {
-                netsuiteUrl : answers.environmentUrl,
-                compId : answers.company,
-                email : answers.email,
-                password : answers.password,
-                roleId : answers.role,
+            const contextValues = {
+                netsuiteUrl: answers.environmentUrl,
+                compId: answers.company,
+                email: answers.email,
+                password: answers.password,
+                roleId: answers.role,
                 authenticationMode: answers.authenticationMode
             };
             Context.CurrentAccountDetails.initializeFromObj(contextValues);
 
-            if(contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA){
+            if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA) {
                 let executionContext = new SDKExecutionContext(ISSUE_TOKEN_COMMAND);
                 self._sdkExecutor.execute(executionContext);
+                contextValues.tba = true;
                 delete contextValues.password;
+            }
+
+            if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_BASIC &&
+                FileUtils.exists(ApplicationConstants.ACCOUNT_DETAILS_FILENAME)) {
+                const accountContext = FileUtils.read(ApplicationConstants.ACCOUNT_DETAILS_FILENAME);
+                if (accountContext.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA) {
+                    let executionContext = new SDKExecutionContext(REVOKE_TOKEN_COMMAND);
+                    self._sdkExecutor.execute(executionContext);
+                }
             }
 
             FileUtils.create(ApplicationConstants.ACCOUNT_DETAILS_FILENAME, contextValues);
             NodeUtils.println("Context setup correctly", NodeUtils.COLORS.GREEN);
-          });
+        });
     }
+
 };

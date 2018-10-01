@@ -6,12 +6,14 @@ const ListBundlesCommandGenerator = require('./commands/ListBundlesCommandGenera
 const ListFilesCommandGenerator = require('./commands/ListFilesCommandGenerator');
 const SetupCommandGenerator = require('./commands/SetupCommandGenerator');
 const CreateProjectCommandGenerator = require('./commands/CreateProjectCommandGenerator');
+const ValidateCommandGenerator = require('./commands/ValidateCommandGenerator');
 
 const commandGenerators = [
     new SetupCommandGenerator(),
     new CreateProjectCommandGenerator(),
     new ListBundlesCommandGenerator(),
-    new ListFilesCommandGenerator()
+    new ListFilesCommandGenerator(),
+    new ValidateCommandGenerator()
 ];
 
 const cliInstance = new CLI(commandGenerators);
