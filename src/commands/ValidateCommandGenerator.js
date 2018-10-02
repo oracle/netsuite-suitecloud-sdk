@@ -42,7 +42,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
                 type: 'input',
                 name: 'log',
                 default: './',
-                message: 'Please set validation log file location as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.'
+                message: 'Please set validation log file location as either a directory or a file name.'
             },
             {
                 type: 'list',

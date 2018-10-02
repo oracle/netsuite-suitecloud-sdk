@@ -96,8 +96,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
             if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA) {
                 let executionContext = new SDKExecutionContext(ISSUE_TOKEN_COMMAND);
                 self._sdkExecutor.execute(executionContext);
-                contextValues.tba = true;
-                delete contextValues.password;
             }
 
             if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_BASIC &&
