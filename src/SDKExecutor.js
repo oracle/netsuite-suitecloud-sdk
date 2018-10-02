@@ -2,6 +2,7 @@
 
 const Context = require('./Context');
 const NodeUtils = require('./NodeUtils');
+const CryptoUtils = require('./CryptoUtils');
 const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
@@ -50,8 +51,10 @@ module.exports.SDKExecutor = class SDKExecutor {
         childProcess.stdout.on('data', (data) => {
             let sdkOutput = data.toString('utf8');
             if (sdkOutput.includes('Enter password')) {
-                if (Context.CurrentAccountDetails.getPassword()) {
-                    childProcess.stdin.write(Context.CurrentAccountDetails.getPassword());
+                if (Context.CurrentAccountDetails.getPassword() && Context.CurrentAccountDetails.getEncryptionKey()) {
+                    const password = Context.CurrentAccountDetails.getPassword();
+                    const encryptionKey = Context.CurrentAccountDetails.getEncryptionKey();
+                    childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
                     childProcess.stdin.end();
                 } else {
                     Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT,

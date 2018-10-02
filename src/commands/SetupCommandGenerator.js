@@ -5,6 +5,7 @@ const ApplicationConstants = require('../ApplicationConstants');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const NodeUtils = require('../NodeUtils');
 const FileUtils = require('../FileUtils');
+const CryptoUtils = require('../CryptoUtils');
 const Context = require('../Context');
 const inquirer = require('inquirer');
 
@@ -83,13 +84,15 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
     _executeAction() {
         const self = this;
         inquirer.prompt(this._getCommandQuestions()).then(answers => {
+            const encryptionKey = CryptoUtils.generateRandomKey();
             const contextValues = {
                 netsuiteUrl: answers.environmentUrl,
                 compId: answers.company,
                 email: answers.email,
-                password: answers.password,
+                password: CryptoUtils.encrypt(answers.password, encryptionKey),
                 roleId: answers.role,
-                authenticationMode: answers.authenticationMode
+                authenticationMode: answers.authenticationMode,
+                encryptionKey: encryptionKey
             };
             Context.CurrentAccountDetails.initializeFromObj(contextValues);
 
