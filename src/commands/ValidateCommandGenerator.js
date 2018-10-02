@@ -5,7 +5,7 @@ const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const inquirer = require('inquirer');
 
 const COMMAND_NAME = 'validate';
-const COMMAND_ALIAS = 'd';
+const COMMAND_ALIAS = 'v';
 const COMMAND_DESCRIPTION = 'Validate the folder or zip file containing the project.';
 const IS_SETUP_REQUIRED = true;
 
