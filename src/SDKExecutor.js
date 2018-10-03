@@ -3,9 +3,11 @@
 const Context = require('./Context');
 const NodeUtils = require('./NodeUtils');
 const CryptoUtils = require('./CryptoUtils');
+const FileUtils = require('./FileUtils');
 const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
+const path = require('path');
 
 module.exports.SDKExecutor = class SDKExecutor {
 
@@ -35,8 +37,9 @@ module.exports.SDKExecutor = class SDKExecutor {
         }
 
         let cliParamsAsString = this._convertParamsObjToString(cliParams);
+        const sdkDebugOptions = this._getSDKDebugOptions();
 
-        let childProcess = spawn(`java -jar "${Context.SDKFilePath}" ${executionContext.getCommand()} ${cliParamsAsString}`,
+        let childProcess = spawn(`java ${sdkDebugOptions} -jar "${Context.SDKFilePath}" ${executionContext.getCommand()} ${cliParamsAsString}`,
             [],
             {
                 shell: true
@@ -72,6 +75,11 @@ module.exports.SDKExecutor = class SDKExecutor {
                     new CLIException(2, `ERROR: SDK exited with code ${code}`));
             }
         });
+    }
+
+    _getSDKDebugOptions() {
+        const debugConfig = path.join(__dirname, ApplicationConstants.DEBUG_CONFIG);
+        return FileUtils.read(debugConfig).sdkDebugOptions;
     }
 };
 
