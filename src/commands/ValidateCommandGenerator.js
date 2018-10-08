@@ -41,7 +41,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
             {
                 type: 'input',
                 name: 'log',
-                default: './',
+                default: '',
                 message: 'Please set validation log file location as either a directory or a file name.'
             },
             {
@@ -81,9 +81,12 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
     _executeAction() {
         inquirer.prompt(this._getCommandQuestions()).then(answers => {
+            var currentProjectPath = process.cwd();
+            var logPath = answers.log ? answers.log : currentProjectPath;
+            
             let params = {
-                '-project': answers.project,
-                '-log': answers.log,
+                '-project': currentProjectPath,
+                '-log': logPath,
                 ...(answers.accountspecificvalues === 'WARNING' && {'-accountspecificvalues': answers.accountspecificvalues}),
                 ...(answers.applycontentprotection && {'-applycontentprotection': 'T'}),
                 ...(answers.server && {'-server': ''}),

@@ -19,12 +19,21 @@ module.exports = class CLI {
         });
     }
 
+    _unwrapExceptionMessage(exception){
+        if(exception.getErrorMessage){
+            return exception.getErrorMessage();
+        }else{
+            return exception;
+        }
+    }
+
     _initializeErrorHandlers(){
+        var self = this;
         Context.EventEmitter.on(ApplicationConstants.CLI_EXCEPTION_EVENT, (exception) => {
-            NodeUtils.println(exception.getErrorMessage(), NodeUtils.COLORS.RED);
+            NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
         });
         Context.EventEmitter.on('error', (exception) => {
-            NodeUtils.println(exception, NodeUtils.COLORS.RED);
+            NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
         });
     }
 
@@ -39,8 +48,8 @@ module.exports = class CLI {
                 NodeUtils.println('NetSuite Node CLI for NS 19.1', NodeUtils.COLORS.CYAN)
                 program.help();
             }
-        } catch(exception) {
-            NodeUtils.println(exception, NodeUtils.COLORS.RED);
+        }catch (exception) {
+            NodeUtils.println(this._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
         }
     }
 }

@@ -8,14 +8,17 @@ const FileUtils = require('../FileUtils');
 const CryptoUtils = require('../CryptoUtils');
 const Context = require('../Context');
 const inquirer = require('inquirer');
+const CLIException = require('../CLIException');
 
-const COMMAND_NAME = 'setup';
+const COMMAND_NAME = 'setupaccount';
 const COMMAND_ALIAS = 's';
 const COMMAND_DESCRIPTION = 'Setup CLI';
 const IS_SETUP_REQUIRED = false;
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const REVOKE_TOKEN_COMMAND = 'revoketoken';
+
+const MANIFEST_XML = 'manifest.xml'
 
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
@@ -42,6 +45,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
                 ]
             },
             {
+                type: 'input',
+                name: 'email',
+                message: 'Please enter your email'
+            },
+            {
+                type: 'password',
+                name: 'password',
+                message: 'Please enter your account password'
+            },
+            {
                 type: 'list',
                 name: 'authenticationMode',
                 message: 'Choose the NS authentication',
@@ -59,16 +72,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
             },
             {
                 type: 'input',
-                name: 'email',
-                message: 'Please enter your email'
-            },
-            {
-                type: 'password',
-                name: 'password',
-                message: 'Please enter your account password'
-            },
-            {
-                type: 'input',
                 name: 'role',
                 default: 3,
                 message: 'Please enter your role'
@@ -77,12 +80,28 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
                 type: 'input',
                 name: 'company',
                 message: 'Please enter your company identifier'
-            }
+            },
+            /*{ 
+                type: 'list',
+                name: 'account',
+                message: 'Choose the account and role',
+                default: ApplicationConstants.AUTHENTICATION_MODE_TBA,
+                choices: [
+                    {
+                        name: 'Commerce NCube8 - Administrator',
+                        value: { account : 'TSTDRV1853147', role: 3, reqiures2FA: true }
+                    },
+                ]
+            }*/
         ];
     }
 
     _executeAction() {
         const self = this;
+        if(!FileUtils.exists(MANIFEST_XML)){
+            throw new CLIException(0, "Please run setupaccount in a project folder");
+        }
+
         inquirer.prompt(this._getCommandQuestions()).then(answers => {
             const encryptionKey = CryptoUtils.generateRandomKey();
             const contextValues = {

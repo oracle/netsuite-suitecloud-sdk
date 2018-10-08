@@ -15,7 +15,7 @@ const SUITEAPP_PROJECT_TYPE = 'SUITEAPP';
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
 
     constructor() {
-        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, IS_SETUP_REQUIRED);
+        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, IS_SETUP_REQUIRED); 
     }
 
     _getCommandQuestions() {
