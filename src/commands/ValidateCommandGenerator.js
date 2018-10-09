@@ -18,11 +18,6 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
     _getCommandQuestions() {
         return [
             {
-                type: 'input',
-                name: 'project',
-                message: 'Please specify project folder',
-            },
-            {
                 type: 'list',
                 name: 'server',
                 message: 'Would you like to perform validation server side?',
@@ -37,12 +32,6 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
                         value: false
                     }
                 ]
-            },
-            {
-                type: 'input',
-                name: 'log',
-                default: '',
-                message: 'Please set validation log file location as either a directory or a file name.'
             },
             {
                 type: 'list',
@@ -81,12 +70,10 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
     _executeAction() {
         inquirer.prompt(this._getCommandQuestions()).then(answers => {
-            var currentProjectPath = process.cwd();
-            var logPath = answers.log ? answers.log : currentProjectPath;
-            
+            const currentProjectPath = process.cwd();
             let params = {
                 '-project': currentProjectPath,
-                '-log': logPath,
+                '-log': currentProjectPath,
                 ...(answers.accountspecificvalues === 'WARNING' && {'-accountspecificvalues': answers.accountspecificvalues}),
                 ...(answers.applycontentprotection && {'-applycontentprotection': 'T'}),
                 ...(answers.server && {'-server': ''}),

@@ -18,7 +18,7 @@ const IS_SETUP_REQUIRED = false;
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const REVOKE_TOKEN_COMMAND = 'revoketoken';
 
-const MANIFEST_XML = 'manifest.xml'
+const MANIFEST_XML = 'manifest.xml';
 
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 

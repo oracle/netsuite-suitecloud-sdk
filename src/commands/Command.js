@@ -1,6 +1,8 @@
 "use strict";
+
 const Context = require('../Context');
 const NodeUtils = require('../NodeUtils');
+const TranslationService = require('../services/TranslationService');
 
 module.exports = class Command {
 
@@ -20,7 +22,7 @@ module.exports = class Command {
             .description(this._description)
             .action(() => {
                 if (self._isSetupRequired && !Context.CurrentAccountDetails.isAccountSetup()) {
-                    NodeUtils.println('The SuiteCloud CLI requires setup first to connect to NetSuite. Please run "sdf setup"', NodeUtils.COLORS.RED);
+                    NodeUtils.println(TranslationService.getMessage('setup_required_error'), NodeUtils.COLORS.RED);
                     return;
                 }
                 self._action();

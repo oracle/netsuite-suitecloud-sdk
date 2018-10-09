@@ -5,3 +5,5 @@ node_modules
 account.json
 error.log
 /bin/.clicache
+
+src/configuration/LocalConfig.js

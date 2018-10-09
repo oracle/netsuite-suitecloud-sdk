@@ -3,11 +3,10 @@
 const Context = require('./Context');
 const NodeUtils = require('./NodeUtils');
 const CryptoUtils = require('./CryptoUtils');
-const FileUtils = require('./FileUtils');
 const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
-const path = require('path');
+const ConfigurationService = require('./services/ConfigurationService');
 
 module.exports.SDKExecutor = class SDKExecutor {
 
@@ -15,7 +14,8 @@ module.exports.SDKExecutor = class SDKExecutor {
         let cliParamsAsString = '';
         for (var param in cliParams) {
             if (cliParams.hasOwnProperty(param)) {
-                cliParamsAsString += param + ' ' + cliParams[param] + ' ';
+                const value = cliParams[param] ? ` "${cliParams[param]}" ` : ' ';
+                cliParamsAsString += param + value;
             }
         }
         console.log(cliParamsAsString);
@@ -25,7 +25,7 @@ module.exports.SDKExecutor = class SDKExecutor {
     execute(executionContext) {
         let cliParams;
         if (executionContext.applyDefaultParams()) {
-            let defaultParams = {
+            const defaultParams = {
                 '-account': Context.CurrentAccountDetails.getCompId(),
                 '-role': Context.CurrentAccountDetails.getRoleId(),
                 '-email': Context.CurrentAccountDetails.getEmail(),
@@ -36,23 +36,20 @@ module.exports.SDKExecutor = class SDKExecutor {
             cliParams = Object.assign({}, executionContext.getParams());
         }
 
-        let cliParamsAsString = this._convertParamsObjToString(cliParams);
-        const sdkDebugOptions = this._getSDKDebugOptions();
+        const cliParamsAsString = this._convertParamsObjToString(cliParams);
 
-        let childProcess = spawn(`java ${sdkDebugOptions} -jar "${Context.SDKFilePath}" ${executionContext.getCommand()} ${cliParamsAsString}`,
-            [],
-            {
-                shell: true
-            });
+        const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} "${Context.SDKFilePath}" ${executionContext.getCommand()} ${cliParamsAsString}`;
+
+        const childProcess = spawn(jvmCommand, [], {shell: true});
 
         childProcess.stderr.on('data', data => {
-            let sdkOutput = data.toString('utf8');
+            const sdkOutput = data.toString('utf8');
             Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT,
                 new CLIException(1, sdkOutput));
         });
 
         childProcess.stdout.on('data', (data) => {
-            let sdkOutput = data.toString('utf8');
+            const sdkOutput = data.toString('utf8');
             if (sdkOutput.includes('Enter password')) {
                 if (Context.CurrentAccountDetails.getPassword() && Context.CurrentAccountDetails.getEncryptionKey()) {
                     const password = Context.CurrentAccountDetails.getPassword();
@@ -77,10 +74,6 @@ module.exports.SDKExecutor = class SDKExecutor {
         });
     }
 
-    _getSDKDebugOptions() {
-        const debugConfig = path.join(__dirname, ApplicationConstants.DEBUG_CONFIG);
-        return FileUtils.read(debugConfig).sdkDebugOptions;
-    }
 };
 
 module.exports.SDKExecutionContext = class SDKExecutionContext {
