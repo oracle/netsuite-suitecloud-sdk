@@ -4,5 +4,5 @@ module.exports = {
     CLI_EXCEPTION_EVENT : 'CLIExceptionEvent',
     AUTHENTICATION_MODE_BASIC : 'BASIC',
     AUTHENTICATION_MODE_TBA : 'TBA',
-    DEBUG_CONFIG : '../debug.json'
+    DEFAULT_MESSAGES_FILE : '../../messages.json'
 };
