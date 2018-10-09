@@ -1,4 +1,5 @@
 "use strict";
+
 const program = require('commander');
 const NodeUtils = require('./NodeUtils');
 const Context = require('./Context');
@@ -7,21 +8,21 @@ const TranslationService = require('./services/TranslationService');
 
 module.exports = class CLI {
 
-    constructor(commandGenerators){
+    constructor(commandGenerators) {
         this._commandGenerators = commandGenerators;
         this._initializeCommandGenerators();
         this._initializeErrorHandlers();
     }
 
-    _initializeCommandGenerators(){
+    _initializeCommandGenerators() {
         this._commandGenerators.forEach(commandGenerator => {
-            var command = commandGenerator.create();
+            const command = commandGenerator.create();
             command.attachToProgram(program);
         });
     }
 
-    _initializeErrorHandlers(){
-        var self = this;
+    _initializeErrorHandlers() {
+        const self = this;
         Context.EventEmitter.on(ApplicationConstants.CLI_EXCEPTION_EVENT, (exception) => {
             NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
         });
@@ -30,26 +31,35 @@ module.exports = class CLI {
         });
     }
 
-    _unwrapExceptionMessage(exception){
-        if(exception.getErrorMessage){
+    _unwrapExceptionMessage(exception) {
+        if (exception.getErrorMessage) {
             return exception.getErrorMessage();
-        }else{
+        } else {
             return exception;
         }
     }
 
-    start(process){
+    _printHelp() {
+        NodeUtils.println(TranslationService.getMessage('cli_title'), NodeUtils.COLORS.CYAN);
+        program.help();
+    }
+
+    start(process) {
         try {
+            const self = this;
             program
                 .version('0.0.1', '-v, --version')
                 .usage(TranslationService.getMessage('general_usage_title'))
+                .on('command:*', function () {
+                    // unknown command handling
+                    self._printHelp();
+                })
                 .parse(process.argv);
 
             if (!program.args.length) {
-                NodeUtils.println(TranslationService.getMessage('cli_title'), NodeUtils.COLORS.CYAN);
-                program.help();
+                self._printHelp();
             }
-        }catch (exception) {
+        } catch (exception) {
             NodeUtils.println(this._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
         }
     }
