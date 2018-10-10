@@ -1,6 +1,6 @@
 'use strict';
 
-const CLIException = require('./CLIException');
+const CLIException = require('../CLIException');
 const fs = require('fs');
 
 module.exports = {

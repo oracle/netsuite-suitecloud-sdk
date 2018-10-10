@@ -1,7 +1,7 @@
 'use strict';
 
 const ApplicationConstants = require('../ApplicationConstants');
-const FileUtils = require('../FileUtils');
+const FileUtils = require('../utils/FileUtils');
 const path = require('path');
 let messages;
 

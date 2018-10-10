@@ -1,8 +1,9 @@
 "use strict";
 
 const Context = require('../Context');
-const NodeUtils = require('../NodeUtils');
+const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
+const TRANSLATION_KEYS = require('../services/TranslationKeys');
 
 module.exports = class Command {
 
@@ -22,7 +23,7 @@ module.exports = class Command {
             .description(this._description)
             .action(() => {
                 if (self._isSetupRequired && !Context.CurrentAccountDetails.isAccountSetup()) {
-                    NodeUtils.println(TranslationService.getMessage('setup_required_error'), NodeUtils.COLORS.RED);
+                    NodeUtils.println(TranslationService.getMessage(TRANSLATION_KEYS.SETUP_REQUIRED_ERROR), NodeUtils.COLORS.RED);
                     return;
                 }
                 self._action();

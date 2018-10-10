@@ -1,8 +1,8 @@
 'use strict';
 
 const Context = require('./Context');
-const NodeUtils = require('./NodeUtils');
-const CryptoUtils = require('./CryptoUtils');
+const NodeUtils = require('./utils/NodeUtils');
+const CryptoUtils = require('./utils/CryptoUtils');
 const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;

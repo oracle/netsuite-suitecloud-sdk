@@ -2,12 +2,12 @@
   "name": "@netsuite/sdf-cli",
   "version": "1.0.0",
   "description": "POC for SDF CLI",
-  "main": "src/index.js",
+  "main": "src/sdf.js",
   "author": "NetSuite",
   "license": "MIT",
   "preferGlobal": true,
   "bin": {
-    "sdf": "src/index.js"
+    "sdf": "src/sdf.js"
   },
   "dependencies": {
     "commander": "^2.17.1",
