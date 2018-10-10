@@ -6,7 +6,7 @@ const inquirer = require('inquirer');
 
 const COMMAND_NAME = 'createproject';
 const COMMAND_ALIAS = 'cp';
-const COMMAND_DESCRIPTION = 'Create a SuiteCloud Project.';
+const COMMAND_DESCRIPTION = 'Create a SuiteCloud project.';
 const IS_SETUP_REQUIRED = false;
 
 const ACP_PROJECT_TYPE = 'ACCOUNTCUSTOMIZATION';

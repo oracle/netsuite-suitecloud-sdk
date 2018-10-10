@@ -1,5 +1,5 @@
 const EventEmitter = require('events').EventEmitter;
-const FileUtils = require('./FileUtils');
+const FileUtils = require('./utils/FileUtils');
 const ApplicationConstants = require('./ApplicationConstants');
 const path = require('path');
 

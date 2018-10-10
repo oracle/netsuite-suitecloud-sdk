@@ -3,16 +3,16 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const ApplicationConstants = require('../ApplicationConstants');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
-const NodeUtils = require('../NodeUtils');
-const FileUtils = require('../FileUtils');
-const CryptoUtils = require('../CryptoUtils');
+const NodeUtils = require('../utils/NodeUtils');
+const FileUtils = require('../utils/FileUtils');
+const CryptoUtils = require('../utils/CryptoUtils');
 const Context = require('../Context');
 const inquirer = require('inquirer');
 const CLIException = require('../CLIException');
 
 const COMMAND_NAME = 'setupaccount';
-const COMMAND_ALIAS = 's';
-const COMMAND_DESCRIPTION = 'Setup CLI';
+const COMMAND_ALIAS = 'sa';
+const COMMAND_DESCRIPTION = 'Setup CLI in the project directory';
 const IS_SETUP_REQUIRED = false;
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';

@@ -1,10 +1,11 @@
 "use strict";
 
 const program = require('commander');
-const NodeUtils = require('./NodeUtils');
+const NodeUtils = require('./utils/NodeUtils');
 const Context = require('./Context');
 const ApplicationConstants = require('./ApplicationConstants');
 const TranslationService = require('./services/TranslationService');
+const TRANSLATION_KEYS = require('./services/TranslationKeys');
 
 module.exports = class CLI {
 
@@ -40,7 +41,7 @@ module.exports = class CLI {
     }
 
     _printHelp() {
-        NodeUtils.println(TranslationService.getMessage('cli_title'), NodeUtils.COLORS.CYAN);
+        NodeUtils.println(TranslationService.getMessage(TRANSLATION_KEYS.CLI_TITLE), NodeUtils.COLORS.CYAN);
         program.help();
     }
 
@@ -49,7 +50,6 @@ module.exports = class CLI {
             const self = this;
             program
                 .version('0.0.1', '-v, --version')
-                .usage(TranslationService.getMessage('general_usage_title'))
                 .on('command:*', function () {
                     // unknown command handling
                     self._printHelp();

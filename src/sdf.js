@@ -9,8 +9,8 @@ const CreateProjectCommandGenerator = require('./commands/CreateProjectCommandGe
 const ValidateCommandGenerator = require('./commands/ValidateCommandGenerator');
 
 const commandGenerators = [
-    new SetupCommandGenerator(),
     new CreateProjectCommandGenerator(),
+    new SetupCommandGenerator(),
     new ListBundlesCommandGenerator(),
     new ListFilesCommandGenerator(),
     new ValidateCommandGenerator()

@@ -1,5 +1,4 @@
 {
-  "cli_title": "NetSuite Node CLI for NS 19.1",
-  "general_usage_title": "General usage of the sdf command",
-  "setup_required_error": "The SuiteCloud CLI requires setup first to connect to NetSuite. Please run \"sdf setupaccount\""
+  "CLI_TITLE": "NetSuite Node CLI for NS 19.1",
+  "SETUP_REQUIRED_ERROR": "The SuiteCloud CLI requires setup first to connect to NetSuite. Please run \"sdf setupaccount\""
 }
