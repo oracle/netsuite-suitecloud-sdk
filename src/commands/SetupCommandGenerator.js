@@ -7,13 +7,7 @@ const NodeUtils = require('../utils/NodeUtils');
 const FileUtils = require('../utils/FileUtils');
 const CryptoUtils = require('../utils/CryptoUtils');
 const Context = require('../Context');
-const inquirer = require('inquirer');
 const CLIException = require('../CLIException');
-
-const COMMAND_NAME = 'setupaccount';
-const COMMAND_ALIAS = 'sa';
-const COMMAND_DESCRIPTION = 'Setup CLI in the project directory';
-const IS_SETUP_REQUIRED = false;
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const REVOKE_TOKEN_COMMAND = 'revoketoken';
@@ -22,15 +16,15 @@ const MANIFEST_XML = 'manifest.xml';
 
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
-    constructor() {
-        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, IS_SETUP_REQUIRED);
+    constructor(commandMetadata, customizedCommandOptions) {
+        super(commandMetadata, customizedCommandOptions);
     }
 
     _getCommandQuestions() {
         return [
             {
                 type: 'list',
-                name: 'environmentUrl',
+                name: 'environment',
                 message: 'Choose the NS environment',
                 default: 0,
                 choices: [
@@ -71,17 +65,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
                 ]
             },
             {
-                type: 'input',
-                name: 'role',
-                default: 3,
-                message: 'Please enter your role'
-            },
-            {
-                type: 'input',
-                name: 'company',
-                message: 'Please enter your company identifier'
-            },
-            /*{ 
                 type: 'list',
                 name: 'account',
                 message: 'Choose the account and role',
@@ -89,49 +72,95 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
                 choices: [
                     {
                         name: 'Commerce NCube8 - Administrator',
-                        value: { account : 'TSTDRV1853147', role: 3, reqiures2FA: true }
+                        value: { account: 'TSTDRV1853147', role: 3, reqiures2FA: true }
+                    },
+                    {
+                        name: 'NetSuite Inc. - Eng Role',
+                        value: { account: 'TSTDRV1853147', role: 3, reqiures2FA: true }
+                    },
+                    {
+                        name: 'Test Automation Account - Administrator',
+                        value: { account: 'TSTDRV1853147', role: 3, reqiures2FA: true }
                     },
                 ]
-            }*/
+            }
         ];
     }
 
-    _executeAction() {
-        const self = this;
-        if(!FileUtils.exists(MANIFEST_XML)){
+    _checkWorkingDirectoryContainsValidProject() {
+        if (!FileUtils.exists(MANIFEST_XML)) {
             throw new CLIException(0, "Please run setupaccount in a project folder");
         }
-
-        inquirer.prompt(this._getCommandQuestions()).then(answers => {
-            const encryptionKey = CryptoUtils.generateRandomKey();
-            const contextValues = {
-                netsuiteUrl: answers.environmentUrl,
-                compId: answers.company,
-                email: answers.email,
-                password: CryptoUtils.encrypt(answers.password, encryptionKey),
-                roleId: answers.role,
-                authenticationMode: answers.authenticationMode,
-                encryptionKey: encryptionKey
-            };
-            Context.CurrentAccountDetails.initializeFromObj(contextValues);
-
-            if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA) {
-                let executionContext = new SDKExecutionContext(ISSUE_TOKEN_COMMAND);
-                self._sdkExecutor.execute(executionContext);
-            }
-
-            if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_BASIC &&
-                FileUtils.exists(ApplicationConstants.ACCOUNT_DETAILS_FILENAME)) {
-                const accountContext = FileUtils.read(ApplicationConstants.ACCOUNT_DETAILS_FILENAME);
-                if (accountContext.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA) {
-                    let executionContext = new SDKExecutionContext(REVOKE_TOKEN_COMMAND);
-                    self._sdkExecutor.execute(executionContext);
-                }
-            }
-
-            FileUtils.create(ApplicationConstants.ACCOUNT_DETAILS_FILENAME, contextValues);
-            NodeUtils.println("Context setup correctly", NodeUtils.COLORS.GREEN);
-        });
     }
 
+    _setupAuthentication(contextValues) {
+        return new Promise((resolve, reject) => {
+            if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA) {
+                this._issueToken()
+                    .then(() => resolve())
+                    .catch((error) => {
+                        reject(`Error issuing token: ${error}`)
+                    });
+            } else if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_BASIC &&
+                FileUtils.exists(ApplicationConstants.ACCOUNT_DETAILS_FILENAME)) {
+                const accountContext = FileUtils.readAsJson(ApplicationConstants.ACCOUNT_DETAILS_FILENAME);
+                if (accountContext.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA) {
+                    this._revokeToken()
+                        .then(() => resolve())
+                        .catch((error) => {
+                            reject(`Error revoking old token: ${error}`)
+                        });
+                }
+            } else {
+                resolve();
+            }
+        })
+    }
+
+    _issueToken() {
+        let executionContext = new SDKExecutionContext(ISSUE_TOKEN_COMMAND);
+        this._applyDefaultContextParams(executionContext);
+        return this._sdkExecutor.execute(executionContext);
+    }
+
+    _revokeToken() {
+        let executionContext = new SDKExecutionContext(REVOKE_TOKEN_COMMAND);
+        this._applyDefaultContextParams(executionContext);
+        return this._sdkExecutor.execute(executionContext);
+    }
+
+    _createAccountDetailsFile(contextValues) {
+        FileUtils.create(ApplicationConstants.ACCOUNT_DETAILS_FILENAME, contextValues);
+    }
+
+    _executeAction(answers) {
+        return new Promise((resolve, reject) => {
+            try {
+                this._checkWorkingDirectoryContainsValidProject();
+                var encryptionKey = CryptoUtils.generateRandomKey();
+                var contextValues = {
+                    netsuiteUrl: answers.environment,
+                    compId: answers.account.account,
+                    email: answers.email,
+                    password: CryptoUtils.encrypt(answers.password, encryptionKey),
+                    roleId: answers.account.role,
+                    authenticationMode: answers.authenticationMode,
+                    encryptionKey: encryptionKey
+                };
+                Context.CurrentAccountDetails.initializeFromObj(contextValues);
+
+                this._setupAuthentication(contextValues).then(() => {
+                    try {
+                        this._createAccountDetailsFile(contextValues);
+                        NodeUtils.println("Context setup correctly", NodeUtils.COLORS.GREEN);
+                        resolve();
+                    } catch (error) {
+                        reject('Error while setting up context');
+                    }
+                }).catch(error => reject(error));
+            } catch (error) {
+                reject(error)
+            }
+        });
+    }
 };

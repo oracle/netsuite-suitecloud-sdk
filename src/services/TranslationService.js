@@ -3,23 +3,14 @@
 const ApplicationConstants = require('../ApplicationConstants');
 const FileUtils = require('../utils/FileUtils');
 const path = require('path');
-let messages;
+let MESSAGES;
 
-(function readMessagesFromFile() {
-    const filePath = path.join(__dirname, ApplicationConstants.DEFAULT_MESSAGES_FILE);
-    messages = FileUtils.read(filePath);
-})();
-
-module.exports = {
-
-    getMessage: function (key, params) {
-        let message = messages[key];
-        if (params && params.length > 0) {
-            return this._injectParameters(message, params);
-        }
-
-        return message;
-    },
+class TranslationService {
+    
+    constructor() {
+        const filePath = path.join(__dirname, ApplicationConstants.DEFAULT_MESSAGES_FILE);
+        MESSAGES = FileUtils.readAsJson(filePath);
+    }
 
     _injectParameters(message, params) {
         return message.replace(/{(\d+)}/g, function (match, number) {
@@ -27,4 +18,14 @@ module.exports = {
         });
     }
 
-};
+    getMessage(key, params) {
+        let message = MESSAGES[key];
+        if (params && params.length > 0) {
+            return this._injectParameters(message, params);
+        }
+
+        return message;
+    }
+}
+
+module.exports = new TranslationService();

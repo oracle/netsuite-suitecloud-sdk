@@ -1,0 +1,898 @@
+{
+    "adddependencies": {
+        "name": "adddependencies",
+        "alias": "adddependencies",
+        "description": "Add the missing dependencies to the manifest file.",
+        "options": [
+            {
+                "name": "all",
+                "alias": "all",
+                "description": "Adds all missing dependencies to the SuiteCloud project.  When specified, ensure that you do not use the -feature, -file, and -object options.",
+                "mandatory": false
+            },
+            {
+                "name": "feature",
+                "alias": "feature",
+                "description": "Specifies the feature dependency references to add to the SuiteCloud project.  Each reference is a name:value pair that is delimited by a space.  For example: CUSTOMRECORD:required ACCOUNTING:optional.  When specified, ensure that you do not use the -all option.",
+                "mandatory": false
+            },
+            {
+                "name": "file",
+                "alias": "file",
+                "description": "Specifies the files to add to the SuiteCloud project.  When specified, ensure that you do not use the -all option.",
+                "mandatory": false
+            },
+            {
+                "name": "object",
+                "alias": "object",
+                "description": "Specifies the object script IDs to add to the SuiteCloud project.  When specified, ensure that you do not use the -all option..",
+                "mandatory": false
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "createproject": {
+        "name": "createproject",
+        "alias": "createproject",
+        "description": "Create a SuiteCloud Project.",
+        "options": [
+            {
+                "name": "pd",
+                "alias": "pd",
+                "description": "Sets the parent directory where the project will be created.",
+                "mandatory": true
+            },
+            {
+                "name": "o",
+                "alias": "o",
+                "description": "Indicates that the existing project will be overwritten.",
+                "mandatory": false
+            },
+            {
+                "name": "t",
+                "alias": "t",
+                "description": "The project type. Can be ACCOUNTCUSTOMIZATION or SUITEAPP",
+                "mandatory": true
+            },
+            {
+                "name": "pn",
+                "alias": "pn",
+                "description": "The project name.",
+                "mandatory": true
+            },
+            {
+                "name": "pui",
+                "alias": "pui",
+                "description": "The publisher id. This is mandatory when type specified is SUITEAPP.",
+                "mandatory": false
+            },
+            {
+                "name": "pi",
+                "alias": "pi",
+                "description": "The project id. This is mandatory when type specified is SUITEAPP.",
+                "mandatory": false
+            },
+            {
+                "name": "pv",
+                "alias": "pv",
+                "description": "The project version. This is mandatory when type specified is SUITEAPP.",
+                "mandatory": false
+            }
+        ]
+    },
+    "project": {
+        "name": "project",
+        "alias": "project",
+        "description": "Set the folder or zip file containing the project. Once specified it is used as the default by later commands.",
+        "options": [
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            }
+        ]
+    },
+    "deploy": {
+        "name": "deploy",
+        "alias": "deploy",
+        "description": "Deploys the folder or zip file containing the project. Project folder is compressed to a zip file before deployment.",
+        "options": [
+            {
+                "name": "l",
+                "alias": "l",
+                "description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
+                "mandatory": false
+            },
+            {
+                "name": "v",
+                "alias": "v",
+                "description": "Indicates that local validation of project should occur before deployment, with any errors stopping the deployment.",
+                "mandatory": false
+            },
+            {
+                "name": "np",
+                "alias": "np",
+                "description": "Indicates that the preview step should be skipped.",
+                "mandatory": false
+            },
+            {
+                "name": "sw",
+                "alias": "sw",
+                "description": "Indicates that the warning before deployment to production account will be skipped.",
+                "mandatory": false
+            },
+            {
+                "name": "applycontentprotection",
+                "alias": "applycontentprotection",
+                "description": "Indicates that content protection will be applied.",
+                "mandatory": false
+            },
+            {
+                "name": "accountspecificvalues",
+                "alias": "accountspecificvalues",
+                "description": "Flag account-specific values as either a warning or an error.",
+                "mandatory": false
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "generatehelp": {
+        "name": "generatehelp",
+        "alias": "generatehelp",
+        "description": "",
+        "options": []
+    },
+    "importbundle": {
+        "name": "importbundle",
+        "alias": "importbundle",
+        "description": "Import a bundle and convert it to an Account Customization project.",
+        "options": [
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Folder to import the bundle into. Account details will be loaded from a .sdf file inside this folder if it exists. Overrides the previously set default project folder.",
+                "mandatory": true
+            },
+            {
+                "name": "bundleid",
+                "alias": "bundleid",
+                "description": "The bundle id. Used to specify which bundle to import.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "importconfiguration": {
+        "name": "importconfiguration",
+        "alias": "importconfiguration",
+        "description": "Import account configuration from a NetSuite account.",
+        "options": [
+            {
+                "name": "configurationid",
+                "alias": "configurationid",
+                "description": "Import account configuration with the specified configuration ids. Use a space separated list to indicate multiple configuration ids.",
+                "mandatory": true
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "importfiles": {
+        "name": "importfiles",
+        "alias": "importfiles",
+        "description": "Import files from a NetSuite account.",
+        "options": [
+            {
+                "name": "paths",
+                "alias": "paths",
+                "description": "Specify the file cabinet file paths of the files to import.",
+                "mandatory": true
+            },
+            {
+                "name": "excludeproperties",
+                "alias": "excludeproperties",
+                "description": "Exclude file and folder properties from the import.",
+                "mandatory": false
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "importobjects": {
+        "name": "importobjects",
+        "alias": "importobjects",
+        "description": "Import custom objects from a NetSuite account.",
+        "options": [
+            {
+                "name": "appid",
+                "alias": "appid",
+                "description": "The application id. If specified, only custom objects that are associated with the app id are imported.  Otherwise, only custom objects that are not associated with an app id are imported.",
+                "mandatory": false
+            },
+            {
+                "name": "scriptid",
+                "alias": "scriptid",
+                "description": "Import custom objects with the specified script ids. Use a space separated list to indicate multiple script ids. Use \"ALL\" to import all custom objects of the specified type.",
+                "mandatory": true
+            },
+            {
+                "name": "type",
+                "alias": "type",
+                "description": "Import custom objects that are of the specified type. Only a single type or \"ALL\" can be specified. Use \"ALL\" to import all custom objects.",
+                "mandatory": true
+            },
+            {
+                "name": "destinationfolder",
+                "alias": "destinationfolder",
+                "description": "Indicate where the custom objects will be saved. Specify the folder relative to the project (e.g. \/Objects\/testsubfolder). This must start with \"\/Objects\".",
+                "mandatory": true
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "issuetoken": {
+        "name": "issuetoken",
+        "alias": "issuetoken",
+        "description": "Issue a token.",
+        "options": [
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true
+            }
+        ]
+    },
+    "listbundles": {
+        "name": "listbundles",
+        "alias": "listbundles",
+        "description": "List bundles from a NetSuite account.",
+        "options": [
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true
+            }
+        ]
+    },
+    "listconfiguration": {
+        "name": "listconfiguration",
+        "alias": "listconfiguration",
+        "description": "List available account configuration.",
+        "options": [
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true
+            }
+        ]
+    },
+    "listfiles": {
+        "name": "listfiles",
+        "alias": "listfiles",
+        "description": "List files from a NetSuite account.",
+        "options": [
+            {
+                "name": "folder",
+                "alias": "folder",
+                "description": "Specify the file cabinet folder path. This is recursive, all files under subfolders will also be retrieved.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true
+            }
+        ]
+    },
+    "listmissingdependencies": {
+        "name": "listmissingdependencies",
+        "alias": "listmissingdependencies",
+        "description": "List the missing dependencies for a project.",
+        "options": [
+            {
+                "name": "l",
+                "alias": "l",
+                "description": "Sets the log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, log details are appended to that existing file.",
+                "mandatory": false
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "listobjects": {
+        "name": "listobjects",
+        "alias": "listobjects",
+        "description": "List custom objects from a NetSuite account.",
+        "options": [
+            {
+                "name": "appid",
+                "alias": "appid",
+                "description": "The application id. If specified, only custom objects that are associated with the app id are listed.  Otherwise, only custom objects that are not associated with an app id are listed.",
+                "mandatory": false
+            },
+            {
+                "name": "scriptid",
+                "alias": "scriptid",
+                "description": "List custom objects that contain the specified script id. If this parameter is not specified, list all custom objects regardless of script id.",
+                "mandatory": false
+            },
+            {
+                "name": "type",
+                "alias": "type",
+                "description": "List custom objects that are of the specified types. Use a space separated list to indicate multiple types. If this parameter is not specified, list all custom objects regardless of type.",
+                "mandatory": false
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true
+            }
+        ]
+    },
+    "preview": {
+        "name": "preview",
+        "alias": "preview",
+        "description": "Previews the deployment steps of a folder or zip file containing the project. Project folder is compressed to a zip file before previewing.",
+        "options": [
+            {
+                "name": "l",
+                "alias": "l",
+                "description": "Sets the preview log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, preview log details are appended to that existing file.",
+                "mandatory": false
+            },
+            {
+                "name": "applycontentprotection",
+                "alias": "applycontentprotection",
+                "description": "Indicates that content protection will be applied.",
+                "mandatory": false
+            },
+            {
+                "name": "accountspecificvalues",
+                "alias": "accountspecificvalues",
+                "description": "Flag account-specific values as either a warning or an error.",
+                "mandatory": false
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "revoketoken": {
+        "name": "revoketoken",
+        "alias": "revoketoken",
+        "description": "Revoke a token.",
+        "options": [
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true
+            }
+        ]
+    },
+    "savetoken": {
+        "name": "savetoken",
+        "alias": "savetoken",
+        "description": "Saves the latest TBA token created from your NetSuite account to use with SDF CLI.",
+        "options": [
+            {
+                "name": "tokenkey",
+                "alias": "tokenkey",
+                "description": "The Token ID.",
+                "mandatory": true
+            },
+            {
+                "name": "tokensecret",
+                "alias": "tokensecret",
+                "description": "The Token secret.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true
+            }
+        ]
+    },
+    "updatecustomrecordwithinstances": {
+        "name": "updatecustomrecordwithinstances",
+        "alias": "updatecustomrecordwithinstances",
+        "description": "Update the custom record object with instances.",
+        "options": [
+            {
+                "name": "scriptid",
+                "alias": "scriptid",
+                "description": "The script id of the custom record object.",
+                "mandatory": true
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "update": {
+        "name": "update",
+        "alias": "update",
+        "description": "Update existing custom objects in the project folder from a NetSuite account.",
+        "options": [
+            {
+                "name": "scriptid",
+                "alias": "scriptid",
+                "description": "Lists the script IDs of custom objects to be updated.",
+                "mandatory": true
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    },
+    "validate": {
+        "name": "validate",
+        "alias": "validate",
+        "description": "Validate the folder or zip file containing the project.",
+        "options": [
+            {
+                "name": "l",
+                "alias": "l",
+                "description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
+                "mandatory": false
+            },
+            {
+                "name": "server",
+                "alias": "server",
+                "description": "Indicates that validation will be performed server side.",
+                "mandatory": false
+            },
+            {
+                "name": "applycontentprotection",
+                "alias": "applycontentprotection",
+                "description": "Indicates that content protection will be applied.",
+                "mandatory": false
+            },
+            {
+                "name": "accountspecificvalues",
+                "alias": "accountspecificvalues",
+                "description": "Flag account-specific values as either a warning or an error.",
+                "mandatory": false
+            },
+            {
+                "name": "p",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true
+            },
+            {
+                "name": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false
+            },
+            {
+                "name": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false
+            }
+        ]
+    }
+}

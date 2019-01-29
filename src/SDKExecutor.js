@@ -10,6 +10,11 @@ const ConfigurationService = require('./services/ConfigurationService');
 
 module.exports.SDKExecutor = class SDKExecutor {
 
+    _getCLIParamsFrom(executionContext) {
+        var cliParams = Object.assign({}, executionContext.getParams());
+        return cliParams;
+    }
+
     _convertParamsObjToString(cliParams) {
         let cliParamsAsString = '';
         for (var param in cliParams) {
@@ -23,73 +28,65 @@ module.exports.SDKExecutor = class SDKExecutor {
     }
 
     execute(executionContext) {
-        let cliParams;
-        if (executionContext.applyDefaultParams()) {
-            const defaultParams = {
-                '-account': Context.CurrentAccountDetails.getCompId(),
-                '-role': Context.CurrentAccountDetails.getRoleId(),
-                '-email': Context.CurrentAccountDetails.getEmail(),
-                '-url': Context.CurrentAccountDetails.getNetSuiteUrl()
-            };
-            cliParams = Object.assign({}, defaultParams, executionContext.getParams());
-        } else {
-            cliParams = Object.assign({}, executionContext.getParams());
-        }
+        return new Promise((resolve, reject) => {
+            let cliParams = this._getCLIParamsFrom(executionContext);
+            const cliParamsAsString = this._convertParamsObjToString(cliParams);
+            
+            const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} "${Context.SDKFilePath}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
-        const cliParamsAsString = this._convertParamsObjToString(cliParams);
+            const childProcess = spawn(jvmCommand, [], { shell: true });
 
-        const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} "${Context.SDKFilePath}" ${executionContext.getCommand()} ${cliParamsAsString}`;
+            childProcess.stderr.on('data', data => {
+                const sdkOutput = data.toString('utf8');
+                Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT, new CLIException(1, sdkOutput));
+                reject(sdkOutput);
+            });
 
-        const childProcess = spawn(jvmCommand, [], {shell: true});
-
-        childProcess.stderr.on('data', data => {
-            const sdkOutput = data.toString('utf8');
-            Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT,
-                new CLIException(1, sdkOutput));
-        });
-
-        childProcess.stdout.on('data', (data) => {
-            const sdkOutput = data.toString('utf8');
-            if (sdkOutput.includes('Enter password')) {
-                if (Context.CurrentAccountDetails.getPassword() && Context.CurrentAccountDetails.getEncryptionKey()) {
-                    const password = Context.CurrentAccountDetails.getPassword();
-                    const encryptionKey = Context.CurrentAccountDetails.getEncryptionKey();
-                    childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
-                    childProcess.stdin.end();
-                } else {
-                    Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT,
-                        new CLIException(3, 'Authentication error: please run "sdf setup"'));
-                    childProcess.kill('SIGINT');
+            childProcess.stdout.on('data', (data) => {
+                const sdkOutput = data.toString('utf8');
+                if (sdkOutput.includes('Enter password')) {
+                    if (Context.CurrentAccountDetails.getPassword() && Context.CurrentAccountDetails.getEncryptionKey()) {
+                        const password = Context.CurrentAccountDetails.getPassword();
+                        const encryptionKey = Context.CurrentAccountDetails.getEncryptionKey();
+                        childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
+                        childProcess.stdin.end();
+                    } else {
+                        Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT,
+                            new CLIException(3, 'Authentication error: please run "sdf setup"'));
+                        childProcess.kill('SIGINT');
+                    }
+                    return;
                 }
-                return;
-            }
-            NodeUtils.println(sdkOutput, NodeUtils.COLORS.CYAN);
-        });
+                NodeUtils.println(sdkOutput, NodeUtils.COLORS.CYAN);
+            });
 
-        childProcess.on('close', (code) => {
-            if (code !== 0) {
-                Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT,
-                    new CLIException(2, `ERROR: SDK exited with code ${code}`));
-            }
-        });
+            childProcess.on('close', (code) => {
+                if(code === 0){
+                    resolve("HERE WE SHOULD ADD THE LAST SDKOUTPUT");
+                } else if (code !== 0) {
+                    var exceptionMessage = `ERROR: SDK exited with code ${code}`;
+                    Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT,
+                        new CLIException(2, exceptionMessage));
+                    reject(exceptionMessage);
+                }
+            });
+        })
     }
-
 };
 
 module.exports.SDKExecutionContext = class SDKExecutionContext {
 
-    constructor(command, params, applyDefaultParams) {
+    constructor(command, params) {
         this._command = command;
-        this._params = params;
-        this._applyDefaultParams = (typeof applyDefaultParams === 'undefined') ? true : applyDefaultParams;
+        this._params = params || {};
     }
 
     getCommand() {
         return this._command;
     }
 
-    applyDefaultParams() {
-        return this._applyDefaultParams;
+    addParam(name, value){
+        this._params[`-${name}`] = value;
     }
 
     getParams() {

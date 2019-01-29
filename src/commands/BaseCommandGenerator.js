@@ -2,22 +2,42 @@
 
 const SDKExecutor = require('../SDKExecutor').SDKExecutor;
 const Command = require('./Command');
+const Context = require('../Context');
 
 module.exports = class BaseCommandGenerator {
 
-    constructor(commandName, commandAlias, commandDescription, isSetupRequired) {
+    constructor(commandMetadata, commandUserExtension) {
         this._sdkExecutor = new SDKExecutor();
-        this._commandName = commandName;
-        this._commandAlias = commandAlias;
-        this._commandDescription = commandDescription;
-        this._isSetupRequired = isSetupRequired;
+        this._commandMetadata = commandMetadata;
+        this._commandUserExtension = commandUserExtension;
     }
 
-    _executeAction() {
+    _getCommandQuestions() {
+        return [];
+    }
+    _executeAction() { }
+
+    _supportsInteractiveMode() {  return true; }
+
+    _applyDefaultContextParams(sdkExecutionContext) {
+        sdkExecutionContext.addParam('account', Context.CurrentAccountDetails.getCompId());
+        sdkExecutionContext.addParam('role', Context.CurrentAccountDetails.getRoleId());
+        sdkExecutionContext.addParam('email', Context.CurrentAccountDetails.getEmail());
+        sdkExecutionContext.addParam('url', Context.CurrentAccountDetails.getNetSuiteUrl());
     }
 
-    create() {
-        return new Command(this._commandName, this._commandAlias, this._commandDescription, this._executeAction.bind(this), this._isSetupRequired);
+    create(runInInteractiveMode) {
+        return new Command({
+            name: this._commandMetadata.name,
+            alias: this._commandMetadata.alias,
+            description: this._commandMetadata.description,
+            actionFunc: this._executeAction.bind(this),
+            getCommandQuestionsFunc: this._getCommandQuestions.bind(this),
+            isSetupRequired: this._commandMetadata.isSetupRequired,
+            runInInteractiveMode: runInInteractiveMode,
+            options: this._commandMetadata.options,
+            commandUserExtension: this._commandUserExtension,
+            supportsInteractiveMode: this._supportsInteractiveMode()
+        });
     }
-
 };

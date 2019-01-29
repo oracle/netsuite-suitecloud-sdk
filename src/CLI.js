@@ -9,23 +9,29 @@ const TRANSLATION_KEYS = require('./services/TranslationKeys');
 
 module.exports = class CLI {
 
-    constructor(commandGenerators) {
-        this._commandGenerators = commandGenerators;
-        this._initializeCommandGenerators();
+    constructor(commandsMetadata, runInInteractiveMode) {
+        this._initializeCommands(commandsMetadata, runInInteractiveMode);
         this._initializeErrorHandlers();
     }
 
-    _initializeCommandGenerators() {
-        this._commandGenerators.forEach(commandGenerator => {
-            const command = commandGenerator.create();
+    _initializeCommands(commandsMetadata, runInInteractiveMode) {
+        for (const commandMetadataId in commandsMetadata) {
+            var commandMetadata = commandsMetadata[commandMetadataId];
+            var Generator = require(commandMetadata.commandGenerator);
+            var generatorInstance = new Generator(commandMetadata, Context.CLIConfigurationService.getCommandUserExtension(commandMetadata.name))
+            const command = generatorInstance.create(runInInteractiveMode);
             command.attachToProgram(program);
-        });
+        }
     }
 
     _initializeErrorHandlers() {
         const self = this;
         Context.EventEmitter.on(ApplicationConstants.CLI_EXCEPTION_EVENT, (exception) => {
             NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
+        });
+        Context.EventEmitter.on(ApplicationConstants.CLI_FATAL_EXCEPTION_EVENT, (exception) => {
+            NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
+            process.exit(1);
         });
         Context.EventEmitter.on('error', (exception) => {
             NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
@@ -50,7 +56,8 @@ module.exports = class CLI {
             const self = this;
             program
                 .version('0.0.1', '-v, --version')
-                .on('command:*', function () {
+                .option('-i, --interactive', 'Run in interactive mode')
+                .on('command:*', () => {
                     // unknown command handling
                     self._printHelp();
                 })

@@ -10,7 +10,9 @@
     "sdf": "src/sdf.js"
   },
   "dependencies": {
+    "cli-progress": "^2.1.0",
     "commander": "^2.17.1",
-    "inquirer": "^6.2.0"
+    "inquirer": "^6.2.0",
+    "vm2": "^3.6.4"
   }
 }

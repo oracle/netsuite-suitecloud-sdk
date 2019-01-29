@@ -1,22 +1,23 @@
 const EventEmitter = require('events').EventEmitter;
 const FileUtils = require('./utils/FileUtils');
 const ApplicationConstants = require('./ApplicationConstants');
+const CLIConfigurationService = require('./services/CLIConfigurationService');
 const path = require('path');
 
-class AccountDetails{
+class AccountDetails {
 
-    constructor(){
+    constructor() {
         this._isAccountSetup = false;
     }
 
-    initializeFromFile(file){
+    initializeFromFile(file) {
         if (FileUtils.exists(file)) {
-            var fileContentJson = FileUtils.read(file);
+            var fileContentJson = FileUtils.readAsJson(file);
             this.initializeFromObj(fileContentJson)
         }
     }
 
-    initializeFromObj(obj){
+    initializeFromObj(obj) {
         this._netsuiteUrl = obj.netsuiteUrl;
         this._compId = obj.compId;
         this._email = obj.email;
@@ -27,27 +28,27 @@ class AccountDetails{
         this._isAccountSetup = true;
     }
 
-    getEmail(){
+    getEmail() {
         return this._email;
     }
 
-    getPassword(){
+    getPassword() {
         return this._password;
     }
 
-    getRoleId(){
+    getRoleId() {
         return this._roleId;
     }
 
-    getCompId(){
+    getCompId() {
         return this._compId;
     }
 
-    getNetSuiteUrl(){
+    getNetSuiteUrl() {
         return this._netsuiteUrl;
     }
 
-    getAuthenticationMode(){
+    getAuthenticationMode() {
         return this._authenticationMode;
     }
 
@@ -55,7 +56,7 @@ class AccountDetails{
         return this._encyptionKey;
     }
 
-    isAccountSetup(){
+    isAccountSetup() {
         return this._isAccountSetup;
     }
 }
@@ -64,7 +65,8 @@ var accountDetails = new AccountDetails();
 accountDetails.initializeFromFile(ApplicationConstants.ACCOUNT_DETAILS_FILENAME);
 
 module.exports = {
-    EventEmitter : new EventEmitter(),
-    SDKFilePath : path.join(__dirname, ApplicationConstants.SDF_SDK_PATHNAME),
-    CurrentAccountDetails : accountDetails,
+    EventEmitter: new EventEmitter(),
+    SDKFilePath: path.join(__dirname, ApplicationConstants.SDF_SDK_PATHNAME),
+    CurrentAccountDetails: accountDetails,
+    CLIConfigurationService: CLIConfigurationService
 };

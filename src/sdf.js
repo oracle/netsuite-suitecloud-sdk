@@ -2,21 +2,9 @@
 'use strict';
 
 const CLI = require('./CLI');
-const ListBundlesCommandGenerator = require('./commands/ListBundlesCommandGenerator');
-const ListFilesCommandGenerator = require('./commands/ListFilesCommandGenerator');
-const SetupCommandGenerator = require('./commands/SetupCommandGenerator');
-const CreateProjectCommandGenerator = require('./commands/CreateProjectCommandGenerator');
-const ValidateCommandGenerator = require('./commands/ValidateCommandGenerator');
+const CommandsMetadataService = require('./metadata/CommandsMetadataService');
 
-const commandGenerators = [
-    new CreateProjectCommandGenerator(),
-    new SetupCommandGenerator(),
-    new ListBundlesCommandGenerator(),
-    new ListFilesCommandGenerator(),
-    new ValidateCommandGenerator()
-];
-
-const cliInstance = new CLI(commandGenerators);
+var commandsMetadata = CommandsMetadataService.getCommandsMetadata();
+var runInInteractiveMode = process.argv[3] == '-i' //TODO: CHECK IF ANY CONTAINS -i
+const cliInstance = new CLI(commandsMetadata, runInInteractiveMode);
 cliInstance.start(process);
-
-

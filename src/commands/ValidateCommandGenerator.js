@@ -68,19 +68,20 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
         ]
     }
 
-    _executeAction() {
-        inquirer.prompt(this._getCommandQuestions()).then(answers => {
-            const currentProjectPath = process.cwd();
-            let params = {
+    _executeAction(args) {
+        let params = {};
+        const currentProjectPath = process.cwd();
+
+        return inquirer.prompt(this._getCommandQuestions()).then(answers => {
+            params = {
                 '-project': currentProjectPath,
                 '-log': currentProjectPath,
-                ...(answers.accountspecificvalues === 'WARNING' && {'-accountspecificvalues': answers.accountspecificvalues}),
-                ...(answers.applycontentprotection && {'-applycontentprotection': 'T'}),
-                ...(answers.server && {'-server': ''}),
+                ...(answers.accountspecificvalues === 'WARNING' && { '-accountspecificvalues': answers.accountspecificvalues }),
+                ...(answers.applycontentprotection && { '-applycontentprotection': 'T' }),
+                ...(answers.server && { '-server': '' }),
             };
             let executionContext = new SDKExecutionContext(COMMAND_NAME, params, true);
-            this._sdkExecutor.execute(executionContext);
+            return this._sdkExecutor.execute(executionContext);
         });
     }
-
 };

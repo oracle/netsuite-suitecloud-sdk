@@ -30,12 +30,12 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
                     value: SUITEAPP_PROJECT_TYPE
                 }]
             },
-            {
+         /*   {
                 type: 'input',
                 name: 'parentdirectory',
                 default: './',
                 message: 'Please specify parent directory where the project will be created'
-            },
+            }, */
             {
                 type: 'input',
                 name: 'projectname',
@@ -47,7 +47,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
                 message: 'Would you like to overwrite the project if found in the same location?',
                 default: 0,
                 choices: [{name: 'No', value: false}, {name: 'Yes', value: true}]
-            },
+            }, 
             {
                 when: function (response) {
                     return response.type === SUITEAPP_PROJECT_TYPE;
@@ -77,10 +77,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
     _executeAction() {
         let self = this;
-        inquirer.prompt(this._getCommandQuestions()).then(answers => {
+        return inquirer.prompt(this._getCommandQuestions()).then(answers => {
             let params = {
                 '-type': answers.type,
-                '-parentdirectory': answers.parentdirectory,
+                '-parentdirectory': process.cwd() + '/',
                 '-projectname': answers.projectname,
                 ...(answers.overwrite && {'-overwrite': ''}),
                 ...(answers.type === SUITEAPP_PROJECT_TYPE && {'-publisherid': answers.publisherid}),

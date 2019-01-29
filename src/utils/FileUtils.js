@@ -15,9 +15,13 @@ module.exports = {
         });
     },
 
-    read: function (fileName) {
+    readAsJson: function (fileName) {
         var content = fs.readFileSync(fileName, 'utf8');
         return JSON.parse(content);
+    },
+    readAsString: function (fileName) {
+        var content = fs.readFileSync(fileName, 'utf8');
+        return content;
     },
 
     exists: function (fileName) {

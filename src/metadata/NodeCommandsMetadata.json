@@ -1,0 +1,40 @@
+{
+    "setupaccount": {
+        "name": "setupaccount",
+        "alias": "sa",
+        "description": "Setup CLI in the project directory",
+        "isSetupRequired" : false,
+        "options": [
+            {
+                "name": "environment",
+                "alias": "env",
+                "description": "TEST",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "e",
+                "description": "TEST",
+                "mandatory": true
+            },
+            {
+                "name": "password",
+                "alias": "p",
+                "description": "TEST",
+                "mandatory": true
+            },
+            {
+                "name": "authenticationMode",
+                "alias": "am",
+                "description": "TEST",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "a",
+                "description": "TEST",
+                "mandatory": true
+            }
+        ]
+    }
+}

@@ -1,0 +1,22 @@
+[
+    {
+        "commandName": "listfiles",
+        "generator": "./commands/ListFilesCommandGenerator"
+    },
+    {
+        "commandName": "setupaccount",
+        "generator": "./commands/SetupCommandGenerator"
+    },
+    {
+        "commandName": "listbundles",
+        "generator": "./commands/SDKWrapperCommandGenerator"
+    },
+    {
+        "commandName": "listconfiguration",
+        "generator": "./commands/SDKWrapperCommandGenerator"
+    },
+    {
+        "commandName": "listobjects",
+        "generator": "./commands/SDKWrapperCommandGenerator"
+    }
+]
