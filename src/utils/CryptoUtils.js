@@ -8,30 +8,30 @@ const HEX = 'hex';
 const DELIMITER = ':';
 
 function encrypt(text, key) {
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
+	const iv = crypto.randomBytes(IV_LENGTH);
+	const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(key), iv);
+	let encrypted = cipher.update(text);
+	encrypted = Buffer.concat([encrypted, cipher.final()]);
 
-    return iv.toString(HEX) + DELIMITER + encrypted.toString(HEX);
+	return iv.toString(HEX) + DELIMITER + encrypted.toString(HEX);
 }
 
 function decrypt(text, key) {
-    const textParts = text.split(DELIMITER);
-    const iv = Buffer.from(textParts.shift(), HEX);
-    const encryptedText = Buffer.from(textParts.join(DELIMITER), HEX);
-    const decipher = crypto.createDecipheriv(ALGORITHM, Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+	const textParts = text.split(DELIMITER);
+	const iv = Buffer.from(textParts.shift(), HEX);
+	const encryptedText = Buffer.from(textParts.join(DELIMITER), HEX);
+	const decipher = crypto.createDecipheriv(ALGORITHM, Buffer.from(key), iv);
+	let decrypted = decipher.update(encryptedText);
+	decrypted = Buffer.concat([decrypted, decipher.final()]);
 
-    return decrypted.toString();
+	return decrypted.toString();
 }
 
 function generateRandomKey() {
-    return crypto
-        .randomBytes(ENCRYPTION_KEY_BUFFER_LENGTH)
-        .toString(HEX)
-        .substr(0, 32);
+	return crypto
+		.randomBytes(ENCRYPTION_KEY_BUFFER_LENGTH)
+		.toString(HEX)
+		.substr(0, 32);
 }
 
-module.exports = {decrypt, encrypt, generateRandomKey};
+module.exports = { decrypt, encrypt, generateRandomKey };

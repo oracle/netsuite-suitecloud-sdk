@@ -1,11 +1,11 @@
 module.exports = class CLIException {
-    constructor(code, defaultMessage, translationKey){
-        this._code = code;
-        this._defaultMessage = defaultMessage;
-        this._translationKey = translationKey;
-    }
+	constructor(code, defaultMessage, translationKey) {
+		this._code = code;
+		this._defaultMessage = defaultMessage;
+		this._translationKey = translationKey;
+	}
 
-    getErrorMessage(){
-        return this._defaultMessage;
-    }
-}
+	getErrorMessage() {
+		return this._defaultMessage;
+	}
+};

@@ -1,22 +1,21 @@
 [
-    {
-        "commandName": "listfiles",
-        "generator": "./commands/ListFilesCommandGenerator"
-    },
-    {
-        "commandName": "setupaccount",
-        "generator": "./commands/SetupCommandGenerator"
-    },
-    {
-        "commandName": "listbundles",
-        "generator": "./commands/SDKWrapperCommandGenerator"
-    },
-    {
-        "commandName": "listconfiguration",
-        "generator": "./commands/SDKWrapperCommandGenerator"
-    },
-    {
-        "commandName": "listobjects",
-        "generator": "./commands/SDKWrapperCommandGenerator"
-    }
+	{
+		"commandName": "listfiles",
+		"interactiveGenerator": "./commands/ListFilesCommandGenerator",
+		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+	},
+	{
+		"commandName": "setupaccount",
+		"interactiveGenerator": "./commands/SetupCommandGenerator"
+	},
+	{
+		"commandName": "createproject",
+		"interactiveGenerator": "./commands/CreateProjectCommandGenerator",
+		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+	},
+	{
+		"commandName": "validate",
+		"interactiveGenerator": "./commands/ValidateCommandGenerator",
+		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+	}
 ]

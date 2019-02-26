@@ -2,86 +2,81 @@
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
-const inquirer = require('inquirer');
-
-const COMMAND_NAME = 'validate';
-const COMMAND_ALIAS = 'v';
-const COMMAND_DESCRIPTION = 'Validate the folder or zip file containing the project.';
-const IS_SETUP_REQUIRED = true;
 
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
+	constructor(commandMetadata, customizedCommandOptions) {
+		super(commandMetadata, customizedCommandOptions);
+	}
 
-    constructor() {
-        super(COMMAND_NAME, COMMAND_ALIAS, COMMAND_DESCRIPTION, IS_SETUP_REQUIRED);
-    }
+	_getCommandQuestions() {
+		return [
+			{
+				type: 'list',
+				name: 'server',
+				message: 'Would you like to perform validation server side?',
+				default: 0,
+				choices: [
+					{
+						name: 'Yes',
+						value: true,
+					},
+					{
+						name: 'No',
+						value: false,
+					},
+				],
+			},
+			{
+				type: 'list',
+				name: 'accountspecificvalues',
+				message: 'Would you like to flag account-specific values as an error or a warning?',
+				default: 0,
+				choices: [
+					{
+						name: 'Flag as an error',
+						value: 'ERROR',
+					},
+					{
+						name: 'Flag as a warning',
+						value: 'WARNING',
+					},
+				],
+			},
+			{
+				type: 'list',
+				name: 'applycontentprotection',
+				message: 'Would you like to apply content protection?',
+				default: 0,
+				choices: [
+					{
+						name: 'No',
+						value: false,
+					},
+					{
+						name: 'Yes',
+						value: true,
+					},
+				],
+			},
+		];
+	}
 
-    _getCommandQuestions() {
-        return [
-            {
-                type: 'list',
-                name: 'server',
-                message: 'Would you like to perform validation server side?',
-                default: 0,
-                choices: [
-                    {
-                        name: 'Yes',
-                        value: true
-                    },
-                    {
-                        name: 'No',
-                        value: false
-                    }
-                ]
-            },
-            {
-                type: 'list',
-                name: 'accountspecificvalues',
-                message: 'Would you like to flag account-specific values as an error or a warning?',
-                default: 0,
-                choices: [
-                    {
-                        name: 'Flag as an error',
-                        value: 'ERROR'
-                    },
-                    {
-                        name: 'Flag as a warning',
-                        value: 'WARNING'
-                    }
-                ]
-            },
-            {
-                type: 'list',
-                name: 'applycontentprotection',
-                message: 'Would you like to apply content protection?',
-                default: 0,
-                choices: [
-                    {
-                        name: 'No',
-                        value: false
-                    },
-                    {
-                        name: 'Yes',
-                        value: true
-                    }
-                ]
-            },
-        ]
-    }
+	_preExecuteAction(args) {
+		const currentProjectPath = process.cwd();
+		args.project = currentProjectPath;
+		args.log = currentProjectPath;
+		return args;
+	}
 
-    _executeAction(args) {
-        let params = {};
-        const currentProjectPath = process.cwd();
+	_executeAction(answers) {
+		if (!answers.applycontentprotection) {
+			delete answers.applycontentprotection;
+		}
+		if (!answers.server) {
+			delete answers.server;
+		}
 
-        return inquirer.prompt(this._getCommandQuestions()).then(answers => {
-            params = {
-                '-project': currentProjectPath,
-                '-log': currentProjectPath,
-                ...(answers.accountspecificvalues === 'WARNING' && { '-accountspecificvalues': answers.accountspecificvalues }),
-                ...(answers.applycontentprotection && { '-applycontentprotection': 'T' }),
-                ...(answers.server && { '-server': '' }),
-            };
-            let executionContext = new SDKExecutionContext(COMMAND_NAME, params, true);
-            return this._sdkExecutor.execute(executionContext);
-        });
-    }
+		let executionContext = new SDKExecutionContext(this._commandMetadata.name, answers);
+		return this._sdkExecutor.execute(executionContext);
+	}
 };
