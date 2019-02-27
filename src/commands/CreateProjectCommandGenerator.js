@@ -90,7 +90,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			}),
 		};
 
-		let executionContext = new SDKExecutionContext(this._commandMetadata.name, params);
+        let executionContext = new SDKExecutionContext({
+            command: this._commandMetadata.name,
+            params : params
+        });
 		return this._sdkExecutor.execute(executionContext);
 	}
 };

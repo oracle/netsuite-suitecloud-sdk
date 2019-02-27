@@ -125,13 +125,19 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_issueToken() {
-		let executionContext = new SDKExecutionContext(ISSUE_TOKEN_COMMAND);
+        let executionContext = new SDKExecutionContext({
+            command: ISSUE_TOKEN_COMMAND,
+            showOutput : false
+        });
 		this._applyDefaultContextParams(executionContext);
 		return this._sdkExecutor.execute(executionContext);
 	}
 
 	_revokeToken() {
-		let executionContext = new SDKExecutionContext(REVOKE_TOKEN_COMMAND);
+		let executionContext = new SDKExecutionContext({
+            command: REVOKE_TOKEN_COMMAND,
+            showOutput : false
+        });
 		this._applyDefaultContextParams(executionContext);
 		return this._sdkExecutor.execute(executionContext);
 	}

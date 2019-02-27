@@ -1,5 +1,6 @@
 'use strict';
 
+const NodeUtils = require('./../utils/NodeUtils');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 
@@ -9,28 +10,33 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_getCommandQuestions() {
-		return [
-			{
-				type: 'list',
-				name: this._commandMetadata.options.folder.name,
-				message: 'Choose the FileCabinet folder',
-				default: '/SuiteScripts',
-				choices: [
+		return new Promise(resolve => {
+
+			let executionContext = new SDKExecutionContext({
+				command: 'listfolders',
+				showOutput: false,
+            });
+            NodeUtils.println("Loading folders...", NodeUtils.COLORS.CYAN);
+            
+			return this._sdkExecutor.execute(executionContext).then(result => {
+				resolve([
 					{
-						name: 'SuiteScripts',
-						value: '/SuiteScripts',
+						type: 'list',
+						name: this._commandMetadata.options.folder.name,
+						message: 'Select the FileCabinet folder',
+						default: '/SuiteScripts',
+						choices: JSON.parse(result),
 					},
-					{
-						name: 'SuiteScripts/Deploy_Extensions',
-						value: '/SuiteScripts/Deploy_Extensions',
-					},
-				],
-			},
-		];
+				]);
+			});
+		});
 	}
 
 	_executeAction(answers) {
-		let executionContext = new SDKExecutionContext(this._commandMetadata.name, answers);
+		let executionContext = new SDKExecutionContext({
+			command: this._commandMetadata.name,
+			params: answers,
+        });
 		return this._sdkExecutor.execute(executionContext);
 	}
 };

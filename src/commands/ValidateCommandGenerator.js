@@ -76,7 +76,10 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			delete answers.server;
 		}
 
-		let executionContext = new SDKExecutionContext(this._commandMetadata.name, answers);
+        let executionContext = new SDKExecutionContext({
+            command: this._commandMetadata.name,
+            params : params
+        });
 		return this._sdkExecutor.execute(executionContext);
 	}
 };

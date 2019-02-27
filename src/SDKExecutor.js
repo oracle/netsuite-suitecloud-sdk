@@ -27,6 +27,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 	execute(executionContext) {
 		return new Promise((resolve, reject) => {
+            let lastSdkOutput;
 			let cliParams = this._getCLIParamsFrom(executionContext);
 			const cliParamsAsString = this._convertParamsObjToString(cliParams);
 
@@ -64,13 +65,17 @@ module.exports.SDKExecutor = class SDKExecutor {
 						childProcess.kill('SIGINT');
 					}
 					return;
+                }
+
+                lastSdkOutput = sdkOutput;
+				if (executionContext.showOutput) {
+					NodeUtils.println(sdkOutput, NodeUtils.COLORS.CYAN);
 				}
-				NodeUtils.println(sdkOutput, NodeUtils.COLORS.CYAN);
 			});
 
 			childProcess.on('close', code => {
 				if (code === 0) {
-					resolve('HERE WE SHOULD ADD THE LAST SDKOUTPUT');
+					resolve(lastSdkOutput);
 				} else if (code !== 0) {
 					var exceptionMessage = `ERROR: SDK exited with code ${code}`;
 					Context.EventEmitter.emit(
@@ -85,15 +90,20 @@ module.exports.SDKExecutor = class SDKExecutor {
 };
 
 module.exports.SDKExecutionContext = class SDKExecutionContext {
-	constructor(command, params) {
-		this._command = command;
+	constructor(options) {
+		this._command = options.command;
+		this._showOutput =  typeof options.showOutput === 'undefined' ?  true : options.showOutput;
 		this._params = {};
 
-		if (params) {
-			Object.keys(params).forEach(key => {
-				this.addParam(key, params[key]);
+		if (options.params) {
+			Object.keys(options.params).forEach(key => {
+				this.addParam(key, options.params[key]);
 			});
 		}
+	}
+
+	get showOutput() {
+		return this._showOutput;
 	}
 
 	getCommand() {
