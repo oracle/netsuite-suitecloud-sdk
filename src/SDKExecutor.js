@@ -9,27 +9,29 @@ const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
 
 module.exports.SDKExecutor = class SDKExecutor {
-	_getCLIParamsFrom(executionContext) {
-		var cliParams = Object.assign({}, executionContext.getParams());
-		return cliParams;
-	}
 
-	_convertParamsObjToString(cliParams) {
+	_convertParamsObjToString(cliParams, flags) {
 		let cliParamsAsString = '';
 		for (var param in cliParams) {
 			if (cliParams.hasOwnProperty(param)) {
 				const value = cliParams[param] ? ` ${cliParams[param]} ` : ' ';
 				cliParamsAsString += param + value;
 			}
-		}
+        }
+        
+        if(flags && Array.isArray(flags)){
+            flags.forEach(flag => {
+                cliParamsAsString += ` ${flag} `;
+            })
+        }
+        
 		return cliParamsAsString;
 	}
 
 	execute(executionContext) {
 		return new Promise((resolve, reject) => {
             let lastSdkOutput;
-			let cliParams = this._getCLIParamsFrom(executionContext);
-			const cliParamsAsString = this._convertParamsObjToString(cliParams);
+			const cliParamsAsString = this._convertParamsObjToString(executionContext.getParams(), executionContext.getFlags());
 
 			const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} "${
 				Context.SDKFilePath
@@ -93,12 +95,19 @@ module.exports.SDKExecutionContext = class SDKExecutionContext {
 	constructor(options) {
 		this._command = options.command;
 		this._showOutput =  typeof options.showOutput === 'undefined' ?  true : options.showOutput;
-		this._params = {};
+        this._params = {};
+        this._flags = [];
 
 		if (options.params) {
 			Object.keys(options.params).forEach(key => {
 				this.addParam(key, options.params[key]);
 			});
+        }
+        
+        if (options.flags) {
+            options.flags.forEach(flag => {
+                this.addFlag(flag);
+            });
 		}
 	}
 
@@ -116,5 +125,13 @@ module.exports.SDKExecutionContext = class SDKExecutionContext {
 
 	getParams() {
 		return this._params;
-	}
+    }
+    
+    addFlag(flag){
+        this._flags.push(`-${flag}`);
+    }
+
+    getFlags(){
+        return this._flags;
+    }
 };

@@ -4,8 +4,8 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
-	constructor(commandMetadata, customizedCommandOptions) {
-		super(commandMetadata, customizedCommandOptions);
+	constructor(options) {
+		super(options);
 	}
 
 	_getCommandQuestions() {
@@ -76,10 +76,10 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			delete answers.server;
 		}
 
-        let executionContext = new SDKExecutionContext({
-            command: this._commandMetadata.name,
-            params : params
-        });
+		let executionContext = new SDKExecutionContext({
+			command: this._commandMetadata.name,
+			params: params,
+		});
 		return this._sdkExecutor.execute(executionContext);
 	}
 };

@@ -21,11 +21,19 @@ module.exports = class CLI {
 				? commandMetadata.interactiveGenerator
 				: commandMetadata.nonInteractiveGenerator;
 
-			var Generator = require(commandGeneratorPath);
-			var generatorInstance = new Generator(
-				commandMetadata,
-				Context.CLIConfigurationService.getCommandUserExtension(commandMetadata.name)
+			var commandUserExtension = Context.CLIConfigurationService.getCommandUserExtension(
+				commandMetadata.name
 			);
+			var projectFolder = Context.CLIConfigurationService.getProjectFolder(
+				commandMetadata.name
+			);
+
+			var Generator = require(commandGeneratorPath);
+			var generatorInstance = new Generator({
+				commandMetadata: commandMetadata,
+				commandUserExtension: commandUserExtension,
+				projectFolder: projectFolder
+			});
 			const command = generatorInstance.create(runInInteractiveMode);
 			command.attachToProgram(program);
 		}

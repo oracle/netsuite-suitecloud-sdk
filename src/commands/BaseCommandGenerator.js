@@ -5,10 +5,11 @@ const Command = require('./Command');
 const Context = require('../Context');
 
 module.exports = class BaseCommandGenerator {
-	constructor(commandMetadata, commandUserExtension) {
-		this._sdkExecutor = new SDKExecutor();
-		this._commandMetadata = commandMetadata;
-		this._commandUserExtension = commandUserExtension;
+	constructor(options) {
+        this._sdkExecutor = new SDKExecutor();
+		this._commandMetadata = options.commandMetadata;
+        this._commandUserExtension = options.commandUserExtension;
+        this._projectFolder = options.projectFolder;
 	}
 
 	_getCommandQuestions() {

@@ -1,12 +1,11 @@
 'use strict';
-
 const NodeUtils = require('./../utils/NodeUtils');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 
 module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
-	constructor(commandMetadata, customizedCommandOptions) {
-		super(commandMetadata, customizedCommandOptions);
+	constructor(options) {
+		super(options);
 	}
 
 	_getCommandQuestions() {
@@ -19,14 +18,14 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
             NodeUtils.println("Loading folders...", NodeUtils.COLORS.CYAN);
             
 			return this._sdkExecutor.execute(executionContext).then(result => {
-				resolve([
-					{
+				resolve([                    
+                    {
 						type: 'list',
 						name: this._commandMetadata.options.folder.name,
 						message: 'Select the FileCabinet folder',
 						default: '/SuiteScripts',
 						choices: JSON.parse(result),
-					},
+					}
 				]);
 			});
 		});

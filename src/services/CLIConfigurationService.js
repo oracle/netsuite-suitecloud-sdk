@@ -2,19 +2,24 @@
 
 const { NodeVM } = require('vm2');
 const FileUtils = require('../utils/FileUtils');
+const path = require('path');
 
 const CLI_CONFIG_JS_FILE = 'cli-config.js';
 const DEFAULT_CONFIG = {
-	interactiveMode: true,
+	defaultProjectFolder: '',
+	commands: {},
 };
 const DEFAULT_COMMAND = {
-	allowUserDefaultConfig: true,
-	beforeExecuting: options => {},
+	beforeExecuting: options => {
+		return options;
+	},
 	onCompleted: completed => {},
 	onError: error => {},
 };
 
 var CLI_CONFIG;
+
+var isString = str => typeof str === 'string' || str instanceof String;
 
 class CLIConfigurationService {
 	constructor(executionPath) {
@@ -22,8 +27,8 @@ class CLIConfigurationService {
 			console: 'inherit',
 			sandbox: {},
 			require: {
-				context: 'sandbox',
 				external: true,
+				builtin: ['*'],
 				root: executionPath,
 			},
 		});
@@ -31,9 +36,12 @@ class CLIConfigurationService {
 		var cliConfigFile = executionPath + '/' + CLI_CONFIG_JS_FILE;
 		if (FileUtils.exists(cliConfigFile)) {
 			var cliConfigFileContent = FileUtils.readAsString(cliConfigFile);
-			CLI_CONFIG = NODEVM.run(cliConfigFileContent);
+			CLI_CONFIG = NODEVM.run(cliConfigFileContent, cliConfigFile);
+		} else {
+			CLI_CONFIG = DEFAULT_CONFIG;
 		}
 	}
+
 	getCommandUserExtension(command) {
 		return {
 			...DEFAULT_COMMAND,
@@ -41,11 +49,20 @@ class CLIConfigurationService {
 		};
 	}
 
-	getCLIGeneralOptions() {
-		return {
-			...DEFAULT_CONFIG,
-			...(CLICONFIG && CLI_CONFIG.general ? CLI_CONFIG.general : {}),
-		};
+	getProjectFolder(command) {
+		var executionPath = process.cwd();
+
+		var defaultProjectFolder = isString(CLI_CONFIG.defaultProjectFolder)
+			? path.join(executionPath, CLI_CONFIG.defaultProjectFolder)
+			: executionPath;
+
+		var commandConfig = CLI_CONFIG && CLI_CONFIG.commands[command];
+		var commandOverridenProjectFolder;
+		if (commandConfig && isString(commandConfig.projectFolder)) {
+			commandOverridenProjectFolder = commandConfig.projectFolder;
+		}
+
+		return commandOverridenProjectFolder ? commandOverridenProjectFolder : defaultProjectFolder;
 	}
 }
 

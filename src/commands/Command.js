@@ -118,27 +118,42 @@ module.exports = class Command {
 		return commandSetup;
 	}
 
-	_onExecuteCommand(args) {
-		if (this._commandUserExtension.beforeExecuting) {
-			this._commandUserExtension.beforeExecuting({
-				command: this._name,
-				arguments: {},
-				userArguments: {},
-			});
+	_extractOptionValuesFromArguments(options, args) {
+		var optionValues = {};
+		for (const optionId in options) {
+			if (options.hasOwnProperty(optionId) && args.hasOwnProperty(optionId)) {
+				optionValues[optionId] = args[optionId];
+			}
 		}
 
-		this._executeCommandAction(args)
-			.then(completed => {
-				if (this._commandUserExtension.onCompleted) {
-					this._commandUserExtension.onCompleted(completed);
-				}
-			})
-			.catch(error => {
-				Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT, error);
-				if (this._commandUserExtension.onError) {
-					this._commandUserExtension.onError(error);
-				}
-			});
+		return optionValues;
+	}
+
+	_onExecuteCommand(args) {
+		var optionValues = this._extractOptionValuesFromArguments(this._options, args);
+		var beforeExecutingContext = {
+			command: this._name,
+			projectPath: process.cwd(),
+			arguments: optionValues,
+			userArguments: {},
+		};
+
+		Promise.resolve(this._commandUserExtension.beforeExecuting(beforeExecutingContext)).then(
+			newOptions => {
+				this._executeCommandAction(newOptions.arguments)
+					.then(completed => {
+						if (this._commandUserExtension.onCompleted) {
+							this._commandUserExtension.onCompleted(completed);
+						}
+					})
+					.catch(error => {
+						Context.EventEmitter.emit(ApplicationConstants.CLI_EXCEPTION_EVENT, error);
+						if (this._commandUserExtension.onError) {
+							this._commandUserExtension.onError(error);
+						}
+					});
+			}
+		);
 	}
 
 	attachToProgram(program) {

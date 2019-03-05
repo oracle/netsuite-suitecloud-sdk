@@ -7,8 +7,8 @@ const ACP_PROJECT_TYPE = 'ACCOUNTCUSTOMIZATION';
 const SUITEAPP_PROJECT_TYPE = 'SUITEAPP';
 
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
-	constructor(commandMetadata, customizedCommandOptions) {
-		super(commandMetadata, customizedCommandOptions);
+	constructor(options) {
+		super(options);
 	}
 
 	_getCommandQuestions() {

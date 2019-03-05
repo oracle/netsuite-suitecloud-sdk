@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const ApplicationConstants = require('../ApplicationConstants');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
@@ -15,8 +16,8 @@ const REVOKE_TOKEN_COMMAND = 'revoketoken';
 const MANIFEST_XML = 'manifest.xml';
 
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
-	constructor(commandMetadata, customizedCommandOptions) {
-		super(commandMetadata, customizedCommandOptions);
+	constructor(options) {
+		super(options);
 	}
 
 	_getCommandQuestions() {
@@ -64,31 +65,25 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				],
 			},
 			{
-				type: 'list',
+				type: 'text',
 				name: 'account',
-				message: 'Choose the account and role',
-				default: ApplicationConstants.AUTHENTICATION_MODE_TBA,
-				choices: [
-					{
-						name: 'Commerce NCube8 - Administrator',
-						value: { account: 'TSTDRV1853147', role: 3, reqiures2FA: true },
-					},
-					{
-						name: 'NetSuite Inc. - Eng Role',
-						value: { account: 'TSTDRV1853147', role: 3, reqiures2FA: true },
-					},
-					{
-						name: 'Test Automation Account - Administrator',
-						value: { account: 'TSTDRV1853147', role: 3, reqiures2FA: true },
-					},
-				],
+                message: 'Enter the Company ID (compId)',
+            },
+            {
+                type: 'text',
+                name: 'role',
+                default: 3,
+                message: 'Enter the Role ID',
 			},
 		];
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {
-		if (!FileUtils.exists(MANIFEST_XML)) {
-			throw new CLIException(0, 'Please run setupaccount in a project folder');
+		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
+			throw new CLIException(
+				0,
+				`Please run setupaccount in a valid folder. Could not find a ${MANIFEST_XML} file in the project folder ${this._projectFolder}`
+			);
 		}
 	}
 
@@ -125,19 +120,19 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_issueToken() {
-        let executionContext = new SDKExecutionContext({
-            command: ISSUE_TOKEN_COMMAND,
-            showOutput : false
-        });
+		let executionContext = new SDKExecutionContext({
+			command: ISSUE_TOKEN_COMMAND,
+			showOutput: false,
+		});
 		this._applyDefaultContextParams(executionContext);
 		return this._sdkExecutor.execute(executionContext);
 	}
 
 	_revokeToken() {
 		let executionContext = new SDKExecutionContext({
-            command: REVOKE_TOKEN_COMMAND,
-            showOutput : false
-        });
+			command: REVOKE_TOKEN_COMMAND,
+			showOutput: false,
+		});
 		this._applyDefaultContextParams(executionContext);
 		return this._sdkExecutor.execute(executionContext);
 	}
@@ -153,10 +148,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				var encryptionKey = CryptoUtils.generateRandomKey();
 				var contextValues = {
 					netsuiteUrl: answers.environment,
-					compId: answers.account.account,
+					compId: answers.account,
 					email: answers.email,
 					password: CryptoUtils.encrypt(answers.password, encryptionKey),
-					roleId: answers.account.role,
+					roleId: answers.role,
 					authenticationMode: answers.authenticationMode,
 					encryptionKey: encryptionKey,
 				};
