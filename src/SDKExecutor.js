@@ -30,7 +30,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 	execute(executionContext) {
 		return new Promise((resolve, reject) => {
-            let lastSdkOutput;
+            let lastSdkOutput ='';
 			const cliParamsAsString = this._convertParamsObjToString(executionContext.getParams(), executionContext.getFlags());
 
 			const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} "${
@@ -69,14 +69,14 @@ module.exports.SDKExecutor = class SDKExecutor {
 					return;
                 }
 
-                lastSdkOutput = sdkOutput;
-				if (executionContext.showOutput) {
-					NodeUtils.println(sdkOutput, NodeUtils.COLORS.CYAN);
-				}
+                lastSdkOutput += sdkOutput;
 			});
 
 			childProcess.on('close', code => {
 				if (code === 0) {
+                    if (executionContext.showOutput) {
+                        NodeUtils.println(sdkOutput, NodeUtils.COLORS.CYAN);
+                    }
 					resolve(lastSdkOutput);
 				} else if (code !== 0) {
 					var exceptionMessage = `ERROR: SDK exited with code ${code}`;
