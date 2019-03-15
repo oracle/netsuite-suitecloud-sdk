@@ -25,9 +25,7 @@ module.exports = class Command {
 	}
 
 	_promptCommandQuestions() {
-		return Promise.resolve(this._getCommandQuestions()).then(questions => {
-			return inquirer.prompt(questions);
-		});
+		return Promise.resolve(this._getCommandQuestions(inquirer.prompt));
 	}
 
 	_applyDefaultContextParams(args) {

@@ -1,5 +1,6 @@
 'use strict';
 
+//TODO: Move to chalk
 module.exports = {
 	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
 	COLORS: {
