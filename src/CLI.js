@@ -3,52 +3,92 @@
 const program = require('commander');
 const NodeUtils = require('./utils/NodeUtils');
 const Context = require('./Context');
-const ApplicationConstants = require('./ApplicationConstants');
+const CLIConfigurationService = require('./services/CLIConfigurationService');
+const {
+	CLI_EXCEPTION_EVENT,
+	CLI_FATAL_EXCEPTION_EVENT,
+	CLI_DEFAULT_ERROR_EVENT,
+} = require('./ApplicationConstants');
 const TranslationService = require('./services/TranslationService');
-const TRANSLATION_KEYS = require('./services/TranslationKeys');
+const { INTERACTIVE_OPTION_DESCRIPTION, CLI_TITLE } = require('./services/TranslationKeys');
 
 module.exports = class CLI {
 	constructor(commandsMetadata, runInInteractiveMode) {
-		this._initializeCommands(commandsMetadata, runInInteractiveMode);
-		this._initializeErrorHandlers();
+		this._cliConfigurationService = new CLIConfigurationService(process.cwd());
+		this._commandsMetadata = commandsMetadata;
+		this._runInInteractiveMode = runInInteractiveMode;
 	}
 
-	_initializeCommands(commandsMetadata, runInInteractiveMode) {
-		for (const commandMetadataId in commandsMetadata) {
-			var commandMetadata = commandsMetadata[commandMetadataId];
+	start(process) {
+		try {
+			this._initializeConfigurationService();
+			this._initializeCommands();
+			this._initializeErrorHandlers();
 
-			var commandGeneratorPath = runInInteractiveMode
-				? commandMetadata.interactiveGenerator
-				: commandMetadata.nonInteractiveGenerator;
+			program
+				.version('0.0.1', '-v, --version')
+				.option(
+					'-i, --interactive',
+					TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION)
+				)
+				.on('command:*', () => {
+					this._printHelp();
+				})
+				.parse(process.argv);
 
-			var commandUserExtension = Context.CLIConfigurationService.getCommandUserExtension(
-				commandMetadata.name
-			);
-			var projectFolder = Context.CLIConfigurationService.getProjectFolder(
-				commandMetadata.name
-			);
-
-			var Generator = require(commandGeneratorPath);
-			var generatorInstance = new Generator({
-				commandMetadata: commandMetadata,
-				commandUserExtension: commandUserExtension,
-				projectFolder: projectFolder
-			});
-			const command = generatorInstance.create(runInInteractiveMode);
-			command.attachToProgram(program);
+			if (!program.args.length) {
+				this._printHelp();
+			}
+		} catch (exception) {
+			NodeUtils.println(this._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
 		}
+	}
+
+	_initializeConfigurationService() {
+		this._cliConfigurationService.initialize();
+	}
+
+	_initializeCommands() {
+		var commandsMetadataArraySortedByCommandName = Object.values(this._commandsMetadata).sort(
+			(command1, command2) => command1.name.localeCompare(command2.name)
+		);
+
+		commandsMetadataArraySortedByCommandName.forEach(commandMetadata => {
+			var command = this._createCommandFrom(commandMetadata);
+			command.attachToProgram(program);
+		});
+	}
+
+	_createCommandFrom(commandMetadata) {
+		var commandGeneratorPath = this._runInInteractiveMode
+			? commandMetadata.interactiveGenerator
+			: commandMetadata.nonInteractiveGenerator;
+
+		var commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
+			commandMetadata.name
+		);
+		var projectFolder = this._cliConfigurationService.getProjectFolder(commandMetadata.name);
+
+		var Generator = require(commandGeneratorPath);
+		var generatorInstance = new Generator({
+			commandMetadata: commandMetadata,
+			commandUserExtension: commandUserExtension,
+			projectFolder: projectFolder,
+		});
+		var command = generatorInstance.create(this._runInInteractiveMode);
+		return command;
 	}
 
 	_initializeErrorHandlers() {
 		const self = this;
-		Context.EventEmitter.on(ApplicationConstants.CLI_EXCEPTION_EVENT, exception => {
+		Context.EventEmitter.on(CLI_EXCEPTION_EVENT, exception => {
 			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
 		});
-		Context.EventEmitter.on(ApplicationConstants.CLI_FATAL_EXCEPTION_EVENT, exception => {
+		Context.EventEmitter.on(CLI_FATAL_EXCEPTION_EVENT, exception => {
 			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
 			process.exit(1);
 		});
-		Context.EventEmitter.on('error', exception => {
+		Context.EventEmitter.on(CLI_DEFAULT_ERROR_EVENT, exception => {
 			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
 		});
 	}
@@ -62,30 +102,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeUtils.println(
-			TranslationService.getMessage(TRANSLATION_KEYS.CLI_TITLE),
-			NodeUtils.COLORS.CYAN
-		);
+		NodeUtils.println(TranslationService.getMessage(CLI_TITLE), NodeUtils.COLORS.CYAN);
 		program.help();
-	}
-
-	start(process) {
-		try {
-			const self = this;
-			program
-				.version('0.0.1', '-v, --version')
-				.option('-i, --interactive', 'Run in interactive mode')
-				.on('command:*', () => {
-					// unknown command handling
-					self._printHelp();
-				})
-				.parse(process.argv);
-
-			if (!program.args.length) {
-				self._printHelp();
-			}
-		} catch (exception) {
-			NodeUtils.println(this._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
-		}
 	}
 };

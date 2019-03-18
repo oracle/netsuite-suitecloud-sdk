@@ -36,5 +36,14 @@
 				"mandatory": true
 			}
 		]
-	}
+    },
+    "createobject": {
+		"name": "createobject",
+		"alias": "ca",
+		"description": "Create objects",
+		"isSetupRequired": false,
+		"options": [
+			
+		]
+    }
 }

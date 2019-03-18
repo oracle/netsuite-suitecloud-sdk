@@ -1,8 +1,10 @@
 'use strict';
 
 const { NodeVM } = require('vm2');
+const NodeUtils = require('../utils/NodeUtils');
 const FileUtils = require('../utils/FileUtils');
 const path = require('path');
+const CLIException = require('../CLIException');
 
 const CLI_CONFIG_JS_FILE = 'cli-config.js';
 const DEFAULT_CONFIG = {
@@ -17,46 +19,55 @@ const DEFAULT_COMMAND = {
 	onError: error => {},
 };
 
-var CLI_CONFIG;
-
-var isString = str => typeof str === 'string' || str instanceof String;
+const isString = str => typeof str === 'string' || str instanceof String;
 
 class CLIConfigurationService {
 	constructor(executionPath) {
-		var NODEVM = new NodeVM({
-			console: 'inherit',
-			sandbox: {},
-			require: {
-				external: true,
-				builtin: ['*'],
-				root: executionPath,
-			},
-		});
+		this._cliConfig = DEFAULT_CONFIG;
+		this._executionPath = executionPath;
+	}
 
-		var cliConfigFile = executionPath + '/' + CLI_CONFIG_JS_FILE;
-		if (FileUtils.exists(cliConfigFile)) {
+	initialize() {
+		var cliConfigFile = path.join(this._executionPath, CLI_CONFIG_JS_FILE);
+		if (!FileUtils.exists(cliConfigFile)) return;
+
+		try {
+			var nodeVm = new NodeVM({
+				console: 'inherit',
+				sandbox: {},
+				require: {
+					external: true,
+					builtin: ['*'],
+					root: this._executionPath,
+				},
+			});
 			var cliConfigFileContent = FileUtils.readAsString(cliConfigFile);
-			CLI_CONFIG = NODEVM.run(cliConfigFileContent, cliConfigFile);
-		} else {
-			CLI_CONFIG = DEFAULT_CONFIG;
+			this._cliConfig = nodeVm.run(cliConfigFileContent, cliConfigFile);
+		} catch (error) {
+			throw new CLIException(
+				4,
+				`Error while loading configuration file ${cliConfigFile}. Please review the file and try again. Details:${NodeUtils.lineBreak}${error}`
+			);
 		}
 	}
 
 	getCommandUserExtension(command) {
+		var commandExtension =
+			this._cliConfig && this._cliConfig.commands[command]
+				? this._cliConfig.commands[command]
+				: {};
 		return {
 			...DEFAULT_COMMAND,
-			...(CLI_CONFIG && CLI_CONFIG.commands[command] ? CLI_CONFIG.commands[command] : {}),
+			...commandExtension,
 		};
 	}
 
 	getProjectFolder(command) {
-		var executionPath = process.cwd();
+		var defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder)
+			? path.join(this._executionPath, this._cliConfig.defaultProjectFolder)
+			: this._executionPath;
 
-		var defaultProjectFolder = isString(CLI_CONFIG.defaultProjectFolder)
-			? path.join(executionPath, CLI_CONFIG.defaultProjectFolder)
-			: executionPath;
-
-		var commandConfig = CLI_CONFIG && CLI_CONFIG.commands[command];
+		var commandConfig = this._cliConfig && this._cliConfig.commands[command];
 		var commandOverridenProjectFolder;
 		if (commandConfig && isString(commandConfig.projectFolder)) {
 			commandOverridenProjectFolder = commandConfig.projectFolder;
@@ -66,5 +77,4 @@ class CLIConfigurationService {
 	}
 }
 
-var executionPath = process.cwd();
-module.exports = new CLIConfigurationService(executionPath);
+module.exports = CLIConfigurationService;

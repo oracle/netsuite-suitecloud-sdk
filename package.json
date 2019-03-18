@@ -1,7 +1,7 @@
 {
 	"name": "@netsuite/sdf-cli",
 	"version": "1.0.0",
-	"description": "POC for SDF CLI",
+	"description": "SuiteCloud CLI for Node.js",
 	"main": "src/sdf.js",
 	"author": "NetSuite",
 	"license": "MIT",
@@ -10,9 +10,9 @@
 		"sdf": "src/sdf.js"
 	},
 	"dependencies": {
-		"cli-progress": "^2.1.0",
-		"commander": "^2.17.1",
-		"inquirer": "^6.2.0",
-		"vm2": "^3.6.4"
+		"chalk": "^2.4.2",
+		"commander": "^2.19.0",
+		"inquirer": "^6.2.2",
+		"vm2": "^3.6.10"
 	}
 }

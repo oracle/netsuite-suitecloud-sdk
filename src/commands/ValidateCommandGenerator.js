@@ -8,8 +8,8 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		super(options);
 	}
 
-	_getCommandQuestions() {
-		return [
+	_getCommandQuestions(prompt) {
+		return prompt([
 			{
 				type: 'list',
 				name: 'server',
@@ -58,12 +58,11 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 					},
 				],
 			},
-		];
+		]);
 	}
 
 	_preExecuteAction(args) {
-		const currentProjectPath = process.cwd();
-		args.project = currentProjectPath;
+		args.project = this._projectFolder;
 		args.log = currentProjectPath;
 		return args;
 	}
