@@ -17,7 +17,7 @@ class TranslationService {
 		});
 	}
 
-	getMessage(key, params) {
+	getMessage(key, ...params) {
 		let message = MESSAGES[key];
 		if (params && params.length > 0) {
 			return this._injectParameters(message, params);

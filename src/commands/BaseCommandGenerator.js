@@ -3,17 +3,23 @@
 const SDKExecutor = require('../SDKExecutor').SDKExecutor;
 const Command = require('./Command');
 const Context = require('../Context');
+const assert = require('assert');
 
 module.exports = class BaseCommandGenerator {
 	constructor(options) {
+        assert(options);
+        assert(options.commandMetadata);
+        assert(options.commandUserExtension);
+        assert(options.projectFolder);
+        
         this._sdkExecutor = new SDKExecutor();
 		this._commandMetadata = options.commandMetadata;
         this._commandUserExtension = options.commandUserExtension;
         this._projectFolder = options.projectFolder;
 	}
 
-	_getCommandQuestions() {
-		return [];
+	_getCommandQuestions(prompt) {
+		return prompt([]);
 	}
 	_executeAction() {}
 

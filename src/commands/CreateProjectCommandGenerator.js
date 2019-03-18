@@ -11,8 +11,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		super(options);
 	}
 
-	_getCommandQuestions() {
-		return [
+	_getCommandQuestions(prompt) {
+		return prompt([
 			{
 				type: 'list',
 				name: 'type',
@@ -65,7 +65,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				name: 'projectversion',
 				message: 'Please enter project version',
 			},
-		];
+        ])
+        
+        
+        ;
 	}
 
 	_preExecuteAction(args) {
@@ -90,10 +93,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			}),
 		};
 
-        let executionContext = new SDKExecutionContext({
-            command: this._commandMetadata.name,
-            params : params
-        });
+		let executionContext = new SDKExecutionContext({
+			command: this._commandMetadata.name,
+			params: params,
+		});
 		return this._sdkExecutor.execute(executionContext);
 	}
 };

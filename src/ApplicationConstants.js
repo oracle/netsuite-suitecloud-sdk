@@ -6,6 +6,7 @@ module.exports = {
 	SDF_SDK_PATHNAME: '../bin/cli-2019.1.0.jar',
 	CLI_EXCEPTION_EVENT: 'CLIExceptionEvent',
 	CLI_FATAL_EXCEPTION_EVENT: 'CLIFatalExceptionEvent',
+	CLI_DEFAULT_ERROR_EVENT: 'error',
 	AUTHENTICATION_MODE_BASIC: 'BASIC',
 	AUTHENTICATION_MODE_TBA: 'TBA',
 	DEFAULT_MESSAGES_FILE: '../../messages.json',

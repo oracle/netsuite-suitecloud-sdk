@@ -1,5 +1,8 @@
 {
-	"CLI_TITLE": "NetSuite Node CLI for NS 19.1",
+	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite 2019.2)",
 	"SETUP_REQUIRED_ERROR": "The SuiteCloud CLI requires setup first to connect to NetSuite. Please run \"sdf setupaccount\"",
-	"COMMAND_OPTIONS_VALIDATION_ERRORS": "Please review the mandatory options"
+    "COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
+    "COMMAND_OPTION_IS_MANDATORY": "'{0}' option is mandatory.",
+    "INTERACTIVE_OPTION_DESCRIPTION": "Run the command in interactive mode",
+    "COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode"
 }

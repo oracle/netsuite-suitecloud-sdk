@@ -8,7 +8,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		super(options);
 	}
 
-	_getCommandQuestions() {
+	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
 			let executionContext = new SDKExecutionContext({
 				command: 'listfolders',
@@ -17,7 +17,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			NodeUtils.println('Loading folders...', NodeUtils.COLORS.CYAN);
 
 			return this._sdkExecutor.execute(executionContext).then(result => {
-				resolve([
+				resolve(prompt([
 					{
 						type: 'list',
 						name: this._commandMetadata.options.folder.name,
@@ -25,7 +25,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 						default: '/SuiteScripts',
 						choices: JSON.parse(result),
 					},
-				]);
+				]));
 			});
 		});
 	}

@@ -20,8 +20,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		super(options);
 	}
 
-	_getCommandQuestions() {
-		return [
+	_getCommandQuestions(prompt) {
+		return prompt([
 			{
 				type: 'list',
 				name: 'environment',
@@ -75,7 +75,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
                 default: 3,
                 message: 'Enter the Role ID',
 			},
-		];
+		]);
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {

@@ -27,7 +27,6 @@ module.exports = {
 		var content = fs.readFileSync(fileName, 'utf8');
 		return content;
 	},
-
 	exists: function(fileName) {
 		return fs.existsSync(fileName);
 	},

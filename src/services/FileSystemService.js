@@ -1,4 +1,4 @@
-const { lstatSync, readdirSync, copyFile, readFile, writeFile } = require('fs');
+const { lstatSync, readdirSync, readFile, writeFile } = require('fs');
 const assert = require('assert');
 const { join } = require('path');
 
@@ -40,17 +40,6 @@ module.exports = class FileService {
 					}
 				);
 			});
-
-			/*copyFile(
-				options.template,
-				join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
-				error => {
-					if (error) {
-						reject(error);
-					}
-					resolve();
-				}
-			);*/
 		});
 	}
 

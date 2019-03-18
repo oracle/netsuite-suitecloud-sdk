@@ -1,7 +1,6 @@
 const EventEmitter = require('events').EventEmitter;
 const FileUtils = require('./utils/FileUtils');
 const ApplicationConstants = require('./ApplicationConstants');
-const CLIConfigurationService = require('./services/CLIConfigurationService');
 const path = require('path');
 
 class AccountDetails {
@@ -67,5 +66,4 @@ module.exports = {
 	EventEmitter: new EventEmitter(),
 	SDKFilePath: path.join(__dirname, ApplicationConstants.SDF_SDK_PATHNAME),
 	CurrentAccountDetails: accountDetails,
-	CLIConfigurationService: CLIConfigurationService,
 };
