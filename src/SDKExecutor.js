@@ -37,6 +37,11 @@ module.exports.SDKExecutor = class SDKExecutor {
 				Context.SDKFilePath
 			}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
+			NodeUtils.println("");
+			NodeUtils.println("REMOVE PRIOR TO DEMO!", NodeUtils.COLORS.PINK);
+			NodeUtils.println("EXECUTING: " + jvmCommand, NodeUtils.COLORS.PINK);
+			NodeUtils.println("");
+
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
 			childProcess.stderr.on('data', data => {

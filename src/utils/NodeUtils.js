@@ -6,6 +6,7 @@ module.exports = {
 	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
 	COLORS: {
 		CYAN: '\x1b[36m',
+		PINK: '\x1b[35m',
 		RED: '\x1b[31m',
 		GREEN: '\x1b[32m',
 	},
