@@ -6,7 +6,7 @@ const { CLI_EXCEPTION_EVENT } = require('../ApplicationConstants');
 const inquirer = require('inquirer');
 const CommandOptionsValidator = require('../services/CommandOptionValidator');
 const TranslationService = require('../services/TranslationService');
-const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
+const TRANSLATION_KEYS = require('../services/TranslationKeys');
 const assert = require('assert');
 
 module.exports = class Command {
@@ -43,7 +43,7 @@ module.exports = class Command {
 		if (!this._runInInteractiveMode) {
 			if (this._supportsInteractiveMode) {
 				var interactiveOptionHelp = TranslationService.getMessage(
-					COMMAND_OPTION_INTERACTIVE_HELP,
+					TRANSLATION_KEYS.COMMAND_OPTION_INTERACTIVE_HELP,
 					this._name
 				);
 				this._options.interactive = {
