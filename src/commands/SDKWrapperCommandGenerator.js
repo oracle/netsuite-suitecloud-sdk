@@ -49,7 +49,9 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 				args.hasOwnProperty(optionId)
 			) {
 				if (this._commandMetadata.options[optionId].type === FLAG_OPTION_TYPE) {
-					executionContext.addFlag(optionId);
+					if (args[optionId]) {
+						executionContext.addFlag(optionId);
+					}
 				} else {
 					executionContext.addParam(optionId, args[optionId]);
 				}
