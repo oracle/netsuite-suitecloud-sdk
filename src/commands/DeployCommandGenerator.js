@@ -1,0 +1,95 @@
+'use strict';
+
+const BaseCommandGenerator = require('./BaseCommandGenerator');
+const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
+
+module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
+	constructor(options) {
+		super(options);
+	}
+
+	_getCommandQuestions(prompt) {
+		return prompt([
+			{
+				type: 'list',
+				name: 'no_preview',
+				message: 'Would you like to see a preview before deploying?',
+				default: 0,
+				choices: [
+					{
+						name: 'No',
+						value: true,
+					},
+					{
+						name: 'Yes',
+						value: false,
+					},
+				],
+			},
+			{
+				type: 'list',
+				name: 'accountspecificvalues',
+				message: 'Would you like to flag account-specific values as an error or a warning?',
+				default: 0,
+				choices: [
+					{
+						name: 'Flag as an error',
+						value: 'ERROR',
+					},
+					{
+						name: 'Flag as a warning',
+						value: 'WARNING',
+					},
+				],
+			},
+			{
+				type: 'list',
+				name: 'applycontentprotection',
+				message: 'Would you like to apply content protection?',
+				default: 0,
+				choices: [
+					{
+						name: 'No',
+						value: false,
+					},
+					{
+						name: 'Yes',
+						value: true,
+					},
+				],
+			},
+		]);
+	}
+
+	_preExecuteAction(args) {
+		args.project = this._projectFolder;
+		args.log = this._projectFolder;
+		return args;
+	}
+
+	_executeAction(answers) {
+		if (!answers.applycontentprotection) {
+			delete answers.applycontentprotection;
+		} else {
+			answers.applycontentprotection = 'T';
+		}
+
+		let flags = [];
+
+		if (answers.no_preview) {
+			flags.push("no_preview");
+		}
+
+		delete answers.no_preview;
+
+		// Always skip warnings
+		flags.push("skip_warning");
+
+		let executionContext = new SDKExecutionContext({
+			command: this._commandMetadata.name,
+			params: answers,
+			flags: flags
+		});
+		return this._sdkExecutor.execute(executionContext);
+	}
+};

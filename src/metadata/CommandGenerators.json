@@ -22,5 +22,10 @@
 		"commandName": "createobject",
 		"interactiveGenerator": "./commands/CreateObjectCommandGenerator",
 		"nonInteractiveGenerator": "./commands/CreateObjectCommandGenerator"
+	},
+	{
+		"commandName": "deploy",
+		"interactiveGenerator": "./commands/DeployCommandGenerator",
+		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
 	}
 ]
