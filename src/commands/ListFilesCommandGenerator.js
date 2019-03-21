@@ -3,7 +3,7 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
-const CliSpinnerExecutionContext = require('../ux/CliSpinnerExecutionContext');
+const CliSpinnerExecutionContext = require('../ui/CliSpinnerExecutionContext');
 const {
 	LIST_FILES_COMMAND_LOADING_FOLDERS,
 	LIST_FILES_COMMAND_LOADING_FILES,

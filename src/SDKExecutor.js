@@ -7,7 +7,7 @@ const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
-const CliSpinner = require('./ux/CliSpinner');
+const CliSpinner = require('./ui/CliSpinner');
 
 module.exports.SDKExecutor = class SDKExecutor {
 
