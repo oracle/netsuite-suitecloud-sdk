@@ -3,7 +3,7 @@ module.exports = {
 	NODE_COMMANDS_METADATA_FILE: 'NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'CommandGenerators.json',
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
-	SDF_SDK_PATHNAME: '../bin/cli-2019.1.0.jar',
+	SDF_SDK_PATHNAME: '../bin/cli-2019.2.0.jar',
 	CLI_EXCEPTION_EVENT: 'CLIExceptionEvent',
 	CLI_FATAL_EXCEPTION_EVENT: 'CLIFatalExceptionEvent',
 	CLI_DEFAULT_ERROR_EVENT: 'error',

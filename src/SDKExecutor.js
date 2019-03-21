@@ -7,6 +7,7 @@ const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
+const CliSpinner = require('./ux/CliSpinner');
 
 module.exports.SDKExecutor = class SDKExecutor {
 
@@ -37,9 +38,21 @@ module.exports.SDKExecutor = class SDKExecutor {
 				Context.SDKFilePath
 			}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
+			// cli spinner
+			let cliSpinner;
+			const cliSpinnerExecutionContext = executionContext.getCliSpinnerExecutionContext();
+			if (cliSpinnerExecutionContext) {
+				cliSpinner = new CliSpinner(cliSpinnerExecutionContext.getMessage());
+				cliSpinner.start();
+			}
+
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
 			childProcess.stderr.on('data', data => {
+				if (cliSpinner) {
+					cliSpinner.stop();
+				}
+
 				const sdkOutput = data.toString('utf8');
 				Context.EventEmitter.emit(
 					ApplicationConstants.CLI_EXCEPTION_EVENT,
@@ -73,6 +86,10 @@ module.exports.SDKExecutor = class SDKExecutor {
 			});
 
 			childProcess.on('close', code => {
+				if (cliSpinner) {
+					cliSpinner.stop();
+				}
+
 				if (code === 0) {
                     if (executionContext.showOutput) {
                         NodeUtils.println(lastSdkOutput, NodeUtils.COLORS.CYAN);
@@ -91,47 +108,3 @@ module.exports.SDKExecutor = class SDKExecutor {
 	}
 };
 
-module.exports.SDKExecutionContext = class SDKExecutionContext {
-	constructor(options) {
-		this._command = options.command;
-		this._showOutput =  typeof options.showOutput === 'undefined' ?  true : options.showOutput;
-        this._params = {};
-        this._flags = [];
-
-		if (options.params) {
-			Object.keys(options.params).forEach(key => {
-				this.addParam(key, options.params[key]);
-			});
-        }
-        
-        if (options.flags) {
-            options.flags.forEach(flag => {
-                this.addFlag(flag);
-            });
-		}
-	}
-
-	get showOutput() {
-		return this._showOutput;
-	}
-
-	getCommand() {
-		return this._command;
-	}
-
-	addParam(name, value) {
-		this._params[`-${name}`] = value;
-	}
-
-	getParams() {
-		return this._params;
-    }
-    
-    addFlag(flag){
-        this._flags.push(`-${flag}`);
-    }
-
-    getFlags(){
-        return this._flags;
-    }
-};

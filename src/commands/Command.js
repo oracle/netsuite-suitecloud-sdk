@@ -66,7 +66,7 @@ module.exports = class Command {
 			option1.name.localeCompare(option2.name)
 		);
 		optionsSortedByName.forEach(option => {
-			var mandatoryOptionString = option.mandatory ? '<option>' : '[option]';
+			var mandatoryOptionString = option.mandatory ? '<argument>' : '[argument]';
 			var optionString = `-${option.alias}, --${option.name} ${mandatoryOptionString}`;
 			commandSetup.option(optionString, option.description);
 		});
