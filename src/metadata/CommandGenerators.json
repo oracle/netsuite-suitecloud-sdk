@@ -5,6 +5,11 @@
 		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
 	},
 	{
+		"commandName": "listobjects",
+		"interactiveGenerator": "./commands/ListObjectsCommandGenerator",
+		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+	},
+	{
 		"commandName": "setupaccount",
 		"interactiveGenerator": "./commands/SetupCommandGenerator"
 	},
