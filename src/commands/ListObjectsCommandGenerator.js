@@ -1,5 +1,5 @@
 'use strict';
-const NodeUtils = require('../utils/NodeUtils');
+
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const chalk = require('chalk');
 const CLIException = require('../CLIException');
@@ -86,7 +86,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questionSpecificScriptId = {	
 			type: 'list',
 			name: 'specifyscriptid',
-			message: `Would like to specify a partial or explicit ${chalk.green.bold("scriptId")} for custom objects?`,
+			message: `Would you like to specify a partial or explicit ${chalk.green.bold("scriptId")} for custom objects?`,
 			default : false,
 			choices: [
 				{
