@@ -4,46 +4,18 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const chalk = require('chalk');
 const CLIException = require('../CLIException');
 const inquirer = require('inquirer');
-const Joi = require('Joi');
 const ProjectContextService = require('../services/ProjectContextService');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const {MANIFEST_XML, PROJECT_SUITEAPP} = require("../ApplicationConstants");
 const _ = require('lodash');
 
-function onValidationName(err,val){
-	if(err){
-		let message = "You should provide a value"
-		console.log(message);
-		return message;         
-	}
-	else{
-		
-		return true;            
-	}
-		
-}
-
-function onValidationType(err,val){
-	if(err){
-		let message = "You should choose an option"
-		console.log(message);
-		return message;         
-	}
-	else{
-		return true;            
-	}
-		
-}
-
 function validateName(name) {
-	var schema = Joi.string().required();
-	return Joi.validate(name, schema, onValidationName);
+	return name !== '' ? true : `${chalk.red.bold("Error: You should provide a value")}`
 }
 
 function validateTypes(types){
-	var schema = Joi.array().min(1);
-	return Joi.validate(types, schema, onValidationType);
+	return types.length > 0 ? true : `${chalk.red.bold("Error: You should choose at least one option")}`
 }
 
 
@@ -73,6 +45,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 						value: false,
 					},
 				],
+				validate: validateTypes
 			}
 			questions.push(questionSpecificSuiteApp)
 
@@ -94,6 +67,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			name: 'type',
 			searchable: true,
 			message: `Which ${chalk.green.bold("custom objects")} would you like to include in your list?`,
+			pageSize: 15,
 			choices: [
 				{
 					name: 'All',
