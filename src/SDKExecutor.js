@@ -11,6 +11,10 @@ const CliSpinner = require('./ui/CliSpinner');
 
 module.exports.SDKExecutor = class SDKExecutor {
 
+	constructor() {
+		this._spinner = new CliSpinner();
+	}
+
 	_convertParamsObjToString(cliParams, flags) {
 		let cliParamsAsString = '';
 		for (var param in cliParams) {
@@ -19,13 +23,13 @@ module.exports.SDKExecutor = class SDKExecutor {
 				cliParamsAsString += param + value;
 			}
         }
-        
+
         if(flags && Array.isArray(flags)){
             flags.forEach(flag => {
                 cliParamsAsString += ` ${flag} `;
             })
         }
-        
+
 		return cliParamsAsString;
 	}
 
@@ -38,19 +42,16 @@ module.exports.SDKExecutor = class SDKExecutor {
 				Context.SDKFilePath
 			}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
-			// cli spinner
-			let cliSpinner;
-			const cliSpinnerExecutionContext = executionContext.getCliSpinnerExecutionContext();
-			if (cliSpinnerExecutionContext) {
-				cliSpinner = new CliSpinner(cliSpinnerExecutionContext.getMessage());
-				cliSpinner.start();
+			if (executionContext.displaySpinner()) {
+				this._spinner.setSpinnerTitle(executionContext.getSpinnerMessage());
+				this._spinner.start();
 			}
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
 			childProcess.stderr.on('data', data => {
-				if (cliSpinner) {
-					cliSpinner.stop();
+				if (executionContext.displaySpinner()) {
+					this._spinner.stop();
 				}
 
 				const sdkOutput = data.toString('utf8');
@@ -86,8 +87,8 @@ module.exports.SDKExecutor = class SDKExecutor {
 			});
 
 			childProcess.on('close', code => {
-				if (cliSpinner) {
-					cliSpinner.stop();
+				if (executionContext.displaySpinner()) {
+					this._spinner.stop();
 				}
 
 				if (code === 0) {

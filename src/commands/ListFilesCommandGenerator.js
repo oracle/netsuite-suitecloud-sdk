@@ -3,7 +3,6 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
-const CliSpinnerExecutionContext = require('../ui/CliSpinnerExecutionContext');
 const {
 	LIST_FILES_COMMAND_LOADING_FOLDERS,
 	LIST_FILES_COMMAND_LOADING_FILES,
@@ -19,13 +18,11 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
-			const cliSpinnerExecutionContext = new CliSpinnerExecutionContext({
-				message: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FOLDERS),
-			});
 			const executionContext = new SDKExecutionContext({
 				command: 'listfolders',
 				showOutput: false,
-				cliSpinnerExecutionContext: cliSpinnerExecutionContext,
+				displaySpinner: true,
+				spinnerMessage: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FOLDERS),
 			});
 			this._applyDefaultContextParams(executionContext);
 
@@ -44,29 +41,24 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
-		const choices = [];
-		for (const o of listFoldersResponse) {
-			const choice = {
-				name: o.path,
-				value: o.path,
-				disabled: o.restricted ?
+		return listFoldersResponse.map(folder => {
+			return {
+				name: folder.path,
+				value: folder.path,
+				disabled: folder.restricted ?
 					TranslationService.getMessage(LIST_FILES_COMMAND_RESTRICTED_FOLDER) : '',
 			};
-			choices.push(choice);
-		}
-		return choices;
+		});
 	}
 
 	_executeAction(answers) {
-		const cliSpinnerExecutionContext = new CliSpinnerExecutionContext({
-			message: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FILES),
-		});
 		// quote folder path to preserve spaces
 		answers.folder = `\"${answers.folder}\"`;
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
-			cliSpinnerExecutionContext: cliSpinnerExecutionContext,
+			displaySpinner: true,
+			spinnerMessage: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FILES),
 		});
 
 		return this._sdkExecutor.execute(executionContext);

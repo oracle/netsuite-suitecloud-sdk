@@ -1,24 +1,45 @@
 'use strict';
 
+const assert = require('assert');
+
 module.exports = class SDKExecutionContext {
 	constructor(options) {
+		assert(options.command, "Command is mandatory option");
 		this._command = options.command;
+
 		this._showOutput = typeof options.showOutput === 'undefined' ? true : options.showOutput;
 		this._params = {};
 		this._flags = [];
-		this._cliSpinnerExecutionContext = options.cliSpinnerExecutionContext;
+
+		this._setSpinner(options.displaySpinner, options.spinnerMessage);
 
 		if (options.params) {
-			Object.keys(options.params).forEach(key => {
-				this.addParam(key, options.params[key]);
-			});
+			this._addParams(options.params);
 		}
 
 		if (options.flags) {
-			options.flags.forEach(flag => {
-				this.addFlag(flag);
-			});
+			this._addFlags(options.flags);
 		}
+	}
+
+	_setSpinner(displaySpinner, spinnerMessage) {
+		this._displaySpinner = displaySpinner;
+		if (this._displaySpinner) {
+			assert(spinnerMessage, "Message is mandatory when spinner is enabled");
+			this._spinnerMessage = spinnerMessage;
+		}
+	}
+
+	_addParams(params) {
+		Object.keys(params).forEach(key => {
+			this.addParam(key, params[key]);
+		});
+	}
+
+	_addFlags(flags) {
+		flags.forEach(flag => {
+			this.addFlag(flag);
+		});
 	}
 
 	get showOutput() {
@@ -45,7 +66,11 @@ module.exports = class SDKExecutionContext {
 		return this._flags;
 	}
 
-	getCliSpinnerExecutionContext() {
-		return this._cliSpinnerExecutionContext;
+	displaySpinner() {
+		return this._displaySpinner;
+	}
+
+	getSpinnerMessage() {
+		return this._spinnerMessage;
 	}
 };
