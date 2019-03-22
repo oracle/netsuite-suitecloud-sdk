@@ -26,7 +26,6 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_getCommandQuestions(prompt) {
-
 		var questions = []
 		//create a class to see type based on manifest.
 		if(ProjectContextService.getProjectType() === PROJECT_SUITEAPP){
@@ -120,9 +119,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		// We will pass only the answers that are an option of the "listobject" command
 		let options = Object.keys(this._commandMetadata.options)
 		var params = _.pick(answers, options)
+		let nb_params = params.type.length		
 		params.type = params.type.join(" ")
-		console.log(params)
-		if(params.type == [] || params.type.includes('all')){
+		if(params.type == [] || (params.type.includes('all') && nb_params === 1)){
+			// If "all" option is the only one selected it will show all types of objects
 			delete params.type
 		}
 		let executionContext = new SDKExecutionContext({
