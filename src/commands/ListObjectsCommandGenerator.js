@@ -8,21 +8,29 @@ const ProjectContextService = require('../services/ProjectContextService');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const {MANIFEST_XML, PROJECT_SUITEAPP} = require("../ApplicationConstants");
-const _ = require('lodash');
-
-function validateName(name) {
-	return name !== '' ? true : `${chalk.red.bold("Error: This field cannot be empty.")}`
-}
-
-function validateTypes(types){
-	return types.length > 0 ? true : `${chalk.red.bold("Error: You should choose at least one option.")}`
-}
-
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	
 	constructor(options) {
 		super(options);
+	}
+
+	validateFieldIsNotEmpty(fieldName) {
+		return fieldName !== '' ? true : `${chalk.red.bold("Error: This field cannot be empty.")}`
+	}
+	
+	
+	validateArrayIsNotEmpty(array){
+		return array.length > 0 ? true : `${chalk.red.bold("Error: You should choose at least one option.")}`
+	}
+
+	pick(object, keys) {
+		return keys.reduce((obj, key) => {
+			if (object[key]) {
+				obj[key] = object[key];
+			}
+			return obj;
+		}, {});
 	}
 
 	_getCommandQuestions(prompt) {
@@ -44,7 +52,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 						value: false,
 					},
 				],
-				validate: validateTypes
+				validate: this.validateArrayIsNotEmpty
 			}
 			questions.push(questionSpecificSuiteApp)
 
@@ -55,7 +63,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				type: 'input',
 				name: 'appid',
 				message: `Introduce the ${chalk.green.bold("appId")}`,
-				validate: validateName
+				validate: this.validateFieldIsNotEmpty
 				
 			}
 			questions.push(questionAppId)
@@ -84,7 +92,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				new inquirer.Separator()
 			],
 			
-			validate: validateTypes
+			validate: this.validateArrayIsNotEmpty
 		}
 		
 		questions.push(questionCustomOjects)
@@ -114,7 +122,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			type: 'input',
 			name: 'scriptid',
 			message: 'Introduce the ScriptId filter',
-			validate: validateName
+			validate: this.validateFieldIsNotEmpty
 		}
 		questions.push(questionScriptId)
 
@@ -124,7 +132,8 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_executeAction(answers) {
 		// We will pass only the answers that are an option of the "listobject" command
 		let options = Object.keys(this._commandMetadata.options)
-		var params = _.pick(answers, options)
+		// var params = _.pick(answers, options)
+		var params = this.pick(answers,options)
 		if(params.type != null){
 			params.type = params.type.join(" ")
 		}
