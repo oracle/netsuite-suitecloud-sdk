@@ -11,11 +11,11 @@ const {MANIFEST_XML, PROJECT_SUITEAPP} = require("../ApplicationConstants");
 const _ = require('lodash');
 
 function validateName(name) {
-	return name !== '' ? true : `${chalk.red.bold("Error: You should provide a value")}`
+	return name !== '' ? true : `${chalk.red.bold("Error: This field cannot be empty.")}`
 }
 
 function validateTypes(types){
-	return types.length > 0 ? true : `${chalk.red.bold("Error: You should choose at least one option")}`
+	return types.length > 0 ? true : `${chalk.red.bold("Error: You should choose at least one option.")}`
 }
 
 
@@ -61,19 +61,25 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			questions.push(questionAppId)
 		}
 
+		const questionFilterByCustomObjects = {	
+			type: 'confirm',
+			name: 'typeall',
+			message: `Would you like to list ${chalk.yellow.bold("all")} types of ${chalk.green.bold("custom objects")}? (Yes/No)`,
+			
+		}
+		questions.push(questionFilterByCustomObjects)
+
+
 		const questionCustomOjects = {	
+			when: function(answers) {
+				return answers.typeall;
+			},
 			type: 'checkbox',
 			name: 'type',
 			searchable: true,
 			message: `Which ${chalk.green.bold("custom objects")} would you like to include in your list?`,
 			pageSize: 15,
 			choices: [
-				{
-					name: 'All',
-					value: 'all',
-					checked: true
-				},
-				new inquirer.Separator(),
 				...OBJECT_TYPES.map((a) =>  ({name: a.name, value: a.value.type })),
 				new inquirer.Separator()
 			],
@@ -119,11 +125,8 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		// We will pass only the answers that are an option of the "listobject" command
 		let options = Object.keys(this._commandMetadata.options)
 		var params = _.pick(answers, options)
-		let nb_params = params.type.length		
-		params.type = params.type.join(" ")
-		if(params.type == [] || (params.type.includes('all') && nb_params === 1)){
-			// If "all" option is the only one selected it will show all types of objects
-			delete params.type
+		if(params.type != null){
+			params.type = params.type.join(" ")
 		}
 		let executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
