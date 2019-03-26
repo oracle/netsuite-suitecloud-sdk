@@ -8,6 +8,16 @@ const ProjectContextService = require('../services/ProjectContextService');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const {MANIFEST_XML, PROJECT_SUITEAPP} = require("../ApplicationConstants");
+const TranslationService = require('../services/TranslationService');
+const { COMMAND_LISTOBJECTS: {QUESTIONS} } = require('../services/TranslationKeys');
+const WORDS = {
+	ALL: 'all',
+	APLICATION_ID: 'application ID',
+	OBJECT_TYPES: 'object types',
+	SCRIPT_ID: 'scritp ID',
+	SUITE_APP: 'SuiteApp'
+};
+
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	
@@ -16,12 +26,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_validateFieldIsNotEmpty(fieldName) {
-		return fieldName !== '' ? true : NodeUtils.formatString("Error: This field cannot be empty.", {color: NodeUtils.COLORS.RED, bold: true})
+		return fieldName !== '' ? true : NodeUtils.formatString(TranslationService.getMessage(TranslationKeys.ERROR_EMPTY_FIELD), {color: NodeUtils.COLORS.RED, bold: true})
 	}
 	
 	
 	_validateArrayIsNotEmpty(array){
-		return array.length > 0 ? true : NodeUtils.formatString("Error: You should choose at least one option.", {color: NodeUtils.COLORS.RED, bold: true})
+		return array.length > 0 ? true : NodeUtils.formatString(TranslationService.getMessageTranslationKeys(TranslationKeys.ERROR_CHOOSE_OPTION), {color: NodeUtils.COLORS.RED, bold: true})
 	}
 
 	pick(object, keys) {
@@ -37,10 +47,13 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		var questions = []
 		//create a class to see type based on manifest.
 		if(ProjectContextService.getProjectType() === PROJECT_SUITEAPP){
+			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID,
+				NodeUtils.formatString(WORDS.SUITE_APP, {color: NodeUtils.COLORS.GREEN, bold: true}));
+
 			const questionSpecificSuiteApp = {	
 				type: 'list',
 				name: 'specifysuiteapp',
-				message: `Would you like to list objects from a specific ${NodeUtils.formatString("SuiteApp", {color: NodeUtils.COLORS.GREEN, bold: true})}? `,
+				message,
 				default: 0,
 				choices: [
 					{
@@ -62,7 +75,8 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				},
 				type: 'input',
 				name: 'appid',
-				message: `Introduce the ${NodeUtils.formatString("appId", {color: NodeUtils.COLORS.GREEN, bold: true})}`,
+				message: TranslationService.getMessage(QUESTIONS.APPID,
+					NodeUtils.formatString(WORDS.APLICATION_ID, {color: NodeUtils.COLORS.GREEN, bold: true})),
 				validate: this._validateFieldIsNotEmpty
 				
 			}
@@ -70,9 +84,21 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		const questionFilterByCustomObjects = {	
-			type: 'confirm',
+			type: 'list',
 			name: 'typeall',
-			message: `Would you like to list ${NodeUtils.formatString("all", {color: NodeUtils.COLORS.YELLOW})} types of ${NodeUtils.formatString("custom objects", {color: NodeUtils.COLORS.GREEN, bold: true})}? (Yes/No)`,
+			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS,
+				NodeUtils.formatString(WORDS.ALL, {color: NodeUtils.COLORS.YELLOW})),
+			default: 0,
+			choices: [
+				{
+					name: 'YES',
+					value: true,
+				},
+				{
+					name: 'NO',
+					value: false,
+				},
+			]
 			
 		}
 		questions.push(questionFilterByCustomObjects)
@@ -80,12 +106,13 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		const questionCustomOjects = {	
 			when: function(answers) {
-				return answers.typeall;
+				return !answers.typeall;
 			},
 			type: 'checkbox',
 			name: 'type',
 			searchable: true,
-			message: `Which ${NodeUtils.formatString("custom objects", {color: NodeUtils.COLORS.GREEN, bold: true})} would you like to include in your list?`,
+			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS,
+				NodeUtils.formatString(WORDS.OBJECT_TYPES, {color: NodeUtils.COLORS.GREEN, bold: true})),
 			pageSize: 15,
 			choices: [
 				...OBJECT_TYPES.map((a) =>  ({name: a.name, value: a.value.type })),
@@ -100,7 +127,8 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questionSpecificScriptId = {	
 			type: 'list',
 			name: 'specifyscriptid',
-			message: `Would you like to specify a partial or explicit ${NodeUtils.formatString("scriptId", {color: NodeUtils.COLORS.GREEN, bold: true})} for custom objects?`,
+			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID,
+				NodeUtils.formatString(WORDS.SCRIPT_ID, {color: NodeUtils.COLORS.GREEN, bold: true})),
 			default : false,
 			choices: [
 				{
@@ -121,7 +149,8 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			},
 			type: 'input',
 			name: 'scriptid',
-			message: 'Introduce the ScriptId filter',
+			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID,
+				NodeUtils.formatString(WORDS.SCRIPT_ID, {color: NodeUtils.COLORS.GREEN, bold: true})),
 			validate: this._validateFieldIsNotEmpty
 		}
 		questions.push(questionScriptId)
