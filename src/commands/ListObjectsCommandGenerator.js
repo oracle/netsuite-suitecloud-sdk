@@ -15,12 +15,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		super(options);
 	}
 
-	validateFieldIsNotEmpty(fieldName) {
+	_validateFieldIsNotEmpty(fieldName) {
 		return fieldName !== '' ? true : NodeUtils.formatString("Error: This field cannot be empty.", {color: NodeUtils.COLORS.RED, bold: true})
 	}
 	
 	
-	validateArrayIsNotEmpty(array){
+	_validateArrayIsNotEmpty(array){
 		return array.length > 0 ? true : NodeUtils.formatString("Error: You should choose at least one option.", {color: NodeUtils.COLORS.RED, bold: true})
 	}
 
@@ -52,7 +52,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 						value: false,
 					},
 				],
-				validate: this.validateArrayIsNotEmpty
+				validate: this._validateArrayIsNotEmpty
 			}
 			questions.push(questionSpecificSuiteApp)
 
@@ -63,7 +63,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				type: 'input',
 				name: 'appid',
 				message: `Introduce the ${NodeUtils.formatString("appId", {color: NodeUtils.COLORS.GREEN, bold: true})}`,
-				validate: this.validateFieldIsNotEmpty
+				validate: this._validateFieldIsNotEmpty
 				
 			}
 			questions.push(questionAppId)
@@ -92,7 +92,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				new inquirer.Separator()
 			],
 			
-			validate: this.validateArrayIsNotEmpty
+			validate: this._validateArrayIsNotEmpty
 		}
 		
 		questions.push(questionCustomOjects)
@@ -122,7 +122,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			type: 'input',
 			name: 'scriptid',
 			message: 'Introduce the ScriptId filter',
-			validate: this.validateFieldIsNotEmpty
+			validate: this._validateFieldIsNotEmpty
 		}
 		questions.push(questionScriptId)
 
