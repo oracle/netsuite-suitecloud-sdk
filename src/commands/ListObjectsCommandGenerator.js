@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const chalk = require('chalk');
+const NodeUtils = require('../utils/NodeUtils');
 const CLIException = require('../CLIException');
 const inquirer = require('inquirer');
 const ProjectContextService = require('../services/ProjectContextService');
@@ -16,12 +16,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	validateFieldIsNotEmpty(fieldName) {
-		return fieldName !== '' ? true : `${chalk.red.bold("Error: This field cannot be empty.")}`
+		return fieldName !== '' ? true : NodeUtils.formatString("Error: This field cannot be empty.", {color: NodeUtils.COLORS.RED, bold: true})
 	}
 	
 	
 	validateArrayIsNotEmpty(array){
-		return array.length > 0 ? true : `${chalk.red.bold("Error: You should choose at least one option.")}`
+		return array.length > 0 ? true : NodeUtils.formatString("Error: You should choose at least one option.", {color: NodeUtils.COLORS.RED, bold: true})
 	}
 
 	pick(object, keys) {
@@ -40,7 +40,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			const questionSpecificSuiteApp = {	
 				type: 'list',
 				name: 'specifysuiteapp',
-				message: `Would you like to list objects from a specific ${chalk.green.bold("SuiteApp")}? `,
+				message: `Would you like to list objects from a specific ${NodeUtils.formatString("SuiteApp", {color: NodeUtils.COLORS.GREEN, bold: true})}? `,
 				default: 0,
 				choices: [
 					{
@@ -62,7 +62,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				},
 				type: 'input',
 				name: 'appid',
-				message: `Introduce the ${chalk.green.bold("appId")}`,
+				message: `Introduce the ${NodeUtils.formatString("appId", {color: NodeUtils.COLORS.GREEN, bold: true})}`,
 				validate: this.validateFieldIsNotEmpty
 				
 			}
@@ -72,7 +72,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questionFilterByCustomObjects = {	
 			type: 'confirm',
 			name: 'typeall',
-			message: `Would you like to list ${chalk.yellow.bold("all")} types of ${chalk.green.bold("custom objects")}? (Yes/No)`,
+			message: `Would you like to list ${NodeUtils.formatString("all", {color: NodeUtils.COLORS.YELLOW})} types of ${NodeUtils.formatString("custom objects", {color: NodeUtils.COLORS.GREEN, bold: true})}? (Yes/No)`,
 			
 		}
 		questions.push(questionFilterByCustomObjects)
@@ -85,7 +85,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			type: 'checkbox',
 			name: 'type',
 			searchable: true,
-			message: `Which ${chalk.green.bold("custom objects")} would you like to include in your list?`,
+			message: `Which ${NodeUtils.formatString("custom objects", {color: NodeUtils.COLORS.GREEN, bold: true})} would you like to include in your list?`,
 			pageSize: 15,
 			choices: [
 				...OBJECT_TYPES.map((a) =>  ({name: a.name, value: a.value.type })),
@@ -100,7 +100,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questionSpecificScriptId = {	
 			type: 'list',
 			name: 'specifyscriptid',
-			message: `Would you like to specify a partial or explicit ${chalk.green.bold("scriptId")} for custom objects?`,
+			message: `Would you like to specify a partial or explicit ${NodeUtils.formatString("scriptId", {color: NodeUtils.COLORS.GREEN, bold: true})} for custom objects?`,
 			default : false,
 			choices: [
 				{
