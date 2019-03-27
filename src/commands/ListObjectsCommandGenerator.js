@@ -10,7 +10,15 @@ const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const {MANIFEST_XML, PROJECT_SUITEAPP} = require("../ApplicationConstants");
 const TranslationService = require('../services/TranslationService');
-const { COMMAND_LISTOBJECTS: {QUESTIONS} } = require('../services/TranslationKeys');
+const { COMMAND_LISTOBJECTS: {QUESTIONS}, ERRORS,YES, NO} = require('../services/TranslationKeys');
+const COMMAND_OPTIONS_NAMES = {
+	APP_ID: 'appid',
+	SCRIPT_ID : 'scriptid',
+	SPECIFY_SCRIPT_ID : 'specifyscriptid',
+	SPECIFY_SUITEAPP: 'specifysuiteapp',
+	TYPE : 'type',
+	TYPE_ALL: 'typeall'
+};
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	
@@ -19,15 +27,13 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_validateFieldIsNotEmpty(fieldName) {
-		return fieldName !== '' ? true : NodeUtils.formatString(TranslationService.getMessage(TranslationKeys.ERROR_EMPTY_FIELD), {color: NodeUtils.COLORS.RED, bold: true})
+		return fieldName !== '' ? true : NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {color: NodeUtils.COLORS.RED, bold: true})
 	}
 	
 	
 	_validateArrayIsNotEmpty(array) {
-		return array.length > 0 ? true : NodeUtils.formatString(TranslationService.getMessageTranslationKeys(TranslationKeys.ERROR_CHOOSE_OPTION), {color: NodeUtils.COLORS.RED, bold: true})
+		return array.length > 0 ? true : NodeUtils.formatString(TranslationService.getMessage(ERRORS.CHOOSE_OPTION), {color: NodeUtils.COLORS.RED, bold: true})
 	}
-
-	
 
 	_getCommandQuestions(prompt) {
 		var questions = []
@@ -37,16 +43,16 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 			const questionSpecificSuiteApp = {	
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: 'specifysuiteapp',
+				name: COMMAND_OPTIONS_NAMES.SPECIFY_SUITEAPP,
 				message,
 				default: 0,
 				choices: [
 					{
-						name: 'YES',
+						name: TranslationService.getMessage(YES),
 						value: true,
 					},
 					{
-						name: 'NO',
+						name: TranslationService.getMessage(NO),
 						value: false,
 					},
 				],
@@ -59,7 +65,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					return response.specifysuiteapp;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: 'appid',
+				name: COMMAND_OPTIONS_NAMES.APP_ID,
 				message: TranslationService.getMessage(QUESTIONS.APPID),
 				validate: this._validateFieldIsNotEmpty
 				
@@ -68,17 +74,17 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		const questionFilterByCustomObjects = {	
-			type: 'list',
-			name: 'typeall',
+			type: CommandUtils.INQUIRER_TYPES.LIST,
+			name: COMMAND_OPTIONS_NAMES.TYPE_ALL,
 			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
 			default: 0,
 			choices: [
 				{
-					name: 'YES',
+					name: TranslationService.getMessage(YES),
 					value: true,
 				},
 				{
-					name: 'NO',
+					name: TranslationService.getMessage(NO),
 					value: false,
 				},
 			]
@@ -92,7 +98,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				return !answers.typeall;
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
-			name: 'type',
+			name: COMMAND_OPTIONS_NAMES.TYPE,
 			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
 			choices: [
@@ -107,16 +113,16 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		const questionSpecificScriptId = {	
 			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: 'specifyscriptid',
+			name: COMMAND_OPTIONS_NAMES.SPECIFY_SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 			default : false,
 			choices: [
 				{
-					name: 'YES',
+					name: TranslationService.getMessage(YES),
 					value: true,
 				},
 				{
-					name: 'NO',
+					name: TranslationService.getMessage(NO),
 					value: false,
 				},
 			],
@@ -128,7 +134,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				return response.specifyscriptid;
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
-			name: 'scriptid',
+			name: COMMAND_OPTIONS_NAMES.SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: this._validateFieldIsNotEmpty
 		}
@@ -154,7 +160,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
 			throw new CLIException(
 				0,
-				`Please run setupaccount in a valid folder. Could not find a ${MANIFEST_XML} file in the project folder ${this._projectFolder}`
+				TranslationService.getMessage(ERRORS.RUN_SETUP_ACCOUNT,MANIFEST_XML,this._projectFolder)
 			);
 		}
 	}
