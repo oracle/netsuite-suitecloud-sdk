@@ -168,17 +168,4 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		});
 		return this._sdkExecutor.execute(executionContext);
 	}
-
-	_checkWorkingDirectoryContainsValidProject() {
-		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			throw new CLIException(
-				0,
-				TranslationService.getMessage(
-					ERRORS.RUN_SETUP_ACCOUNT,
-					MANIFEST_XML,
-					this._projectFolder
-				)
-			);
-		}
-	}
 };

@@ -13,8 +13,8 @@
 	"ERROR_CHOOSE_OPTION": "Error: You should choose at least one option.",
 	"ERROR_EMPTY_FIELD": "Error: This field cannot be empty.",
 	"ERROR_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
-    "ERROR_RUN_SETUP_ACCOUNT": "Please run setupaccount in a valid folder. Could not find a {0} file in the project folder {1}",
     "ERROR_SETUP_REQUIRED": "The SuiteCloud CLI requires setup first to connect to NetSuite. Please run \"sdf setupaccount\"",
+    "ERROR_SETUP_VALID_FOLDER": "Please run setupaccount in a valid folder. Could not find a {0} file in the project folder {1}",
 	"INTERACTIVE_OPTION_DESCRIPTION": "Run the command in interactive mode",
 	"NO": "NO",
 	"YES": "YES"
