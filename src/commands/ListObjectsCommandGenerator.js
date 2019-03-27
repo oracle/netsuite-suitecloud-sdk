@@ -2,6 +2,7 @@
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const NodeUtils = require('../utils/NodeUtils');
+const CommandUtils = require('../utils/CommandUtils');
 const CLIException = require('../CLIException');
 const inquirer = require('inquirer');
 const ProjectContextService = require('../services/ProjectContextService');
@@ -20,25 +21,18 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 	
 	
-	_validateArrayIsNotEmpty(array){
+	_validateArrayIsNotEmpty(array) {
 		return array.length > 0 ? true : NodeUtils.formatString("Error: You should choose at least one option.", {color: NodeUtils.COLORS.RED, bold: true})
 	}
 
-	pick(object, keys) {
-		return keys.reduce((obj, key) => {
-			if (object[key]) {
-				obj[key] = object[key];
-			}
-			return obj;
-		}, {});
-	}
+	
 
 	_getCommandQuestions(prompt) {
 		var questions = []
 		//create a class to see type based on manifest.
-		if(ProjectContextService.getProjectType() === PROJECT_SUITEAPP){
+		if (ProjectContextService.getProjectType() === PROJECT_SUITEAPP) {
 			const questionSpecificSuiteApp = {	
-				type: 'list',
+				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: 'specifysuiteapp',
 				message: `Would you like to list objects from a specific ${NodeUtils.formatString("SuiteApp", {color: NodeUtils.COLORS.GREEN, bold: true})}? `,
 				default: 0,
@@ -60,7 +54,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				when: function(response) {
 					return response.specifysuiteapp;
 				},
-				type: 'input',
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: 'appid',
 				message: `Introduce the ${NodeUtils.formatString("appId", {color: NodeUtils.COLORS.GREEN, bold: true})}`,
 				validate: this._validateFieldIsNotEmpty
@@ -82,13 +76,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			when: function(answers) {
 				return answers.typeall;
 			},
-			type: 'checkbox',
+			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 			name: 'type',
-			searchable: true,
 			message: `Which ${NodeUtils.formatString("custom objects", {color: NodeUtils.COLORS.GREEN, bold: true})} would you like to include in your list?`,
 			pageSize: 15,
 			choices: [
-				...OBJECT_TYPES.map((a) =>  ({name: a.name, value: a.value.type })),
+				...OBJECT_TYPES.map((customObject) =>  ({name: customObject.name, value: customObject.value.type })),
 				new inquirer.Separator()
 			],
 			
@@ -98,7 +91,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		questions.push(questionCustomOjects)
 
 		const questionSpecificScriptId = {	
-			type: 'list',
+			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: 'specifyscriptid',
 			message: `Would you like to specify a partial or explicit ${NodeUtils.formatString("scriptId", {color: NodeUtils.COLORS.GREEN, bold: true})} for custom objects?`,
 			default : false,
@@ -119,7 +112,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			when: function(response) {
 				return response.specifyscriptid;
 			},
-			type: 'input',
+			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: 'scriptid',
 			message: 'Introduce the ScriptId filter',
 			validate: this._validateFieldIsNotEmpty
@@ -130,11 +123,9 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_executeAction(answers) {
-		// We will pass only the answers that are an option of the "listobject" command
 		let options = Object.keys(this._commandMetadata.options)
-		// var params = _.pick(answers, options)
-		var params = this.pick(answers,options)
-		if(params.type != null){
+		var params = CommandUtils.pick(answers,options)
+		if (params.type != null) {
 			params.type = params.type.join(" ")
 		}
 		let executionContext = new SDKExecutionContext({
