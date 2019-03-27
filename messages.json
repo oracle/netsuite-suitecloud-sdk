@@ -5,13 +5,15 @@
     "COMMAND_OPTION_IS_MANDATORY": "'{0}' option is mandatory.",
     "INTERACTIVE_OPTION_DESCRIPTION": "Run the command in interactive mode",
     "COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode",
-    "ERROR_EMPTY_FIELD": "Error: This field cannot be empty.",
+    "ERROR_APPID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as 'com.example.mysuiteapp'",
     "ERROR_CHOOSE_OPTION": "Error: You should choose at least one option.",
+    "ERROR_EMPTY_FIELD": "Error: This field cannot be empty.",
+    "ERROR_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
     "ERROR_SETUP_ACCOUNT": "Please run setupaccount in a valid folder. Could not find a {0} file in the project folder {1}",
-    "COMMAND_LISTOBJECTS_QUESTIONS_SPECIFIC_APPID": "Do you want to list objects from a specific {0}?",
-    "COMMAND_LISTOBJECTS_QUESTIONS_APPID": "Enter the {0}.",
-    "COMMAND_LISTOBJECTS_QUESTIONS_SHOW_ALL_CUSTOM_OBJECTS": "Do you want to list {0} object types?",
-    "COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_CUSTOM_OBJECTS": "Select the {0} you want to list.",
-    "COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a {0} to filter your list?",
-    "COMMAND_LISTOBJECTS_QUESTIONS_SCRIPT_ID": "Enter the full or partial {0}."
+    "COMMAND_LISTOBJECTS_QUESTIONS_SPECIFIC_APPID": "Do you want to list objects from a specific SuiteApp?",
+    "COMMAND_LISTOBJECTS_QUESTIONS_APPID": "Enter the application ID.",
+    "COMMAND_LISTOBJECTS_QUESTIONS_SHOW_ALL_CUSTOM_OBJECTS": "Do you want to list all object types?",
+    "COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_CUSTOM_OBJECTS": "Select the object types you want to list.",
+    "COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your list?",
+    "COMMAND_LISTOBJECTS_QUESTIONS_SCRIPT_ID": "Enter the full or partial script ID."    
 }

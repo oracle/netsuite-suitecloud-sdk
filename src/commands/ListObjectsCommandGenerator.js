@@ -11,14 +11,6 @@ const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const {MANIFEST_XML, PROJECT_SUITEAPP} = require("../ApplicationConstants");
 const TranslationService = require('../services/TranslationService');
 const { COMMAND_LISTOBJECTS: {QUESTIONS} } = require('../services/TranslationKeys');
-const WORDS = {
-	ALL: 'all',
-	APLICATION_ID: 'application ID',
-	OBJECT_TYPES: 'object types',
-	SCRIPT_ID: 'scritp ID',
-	SUITE_APP: 'SuiteApp'
-};
-
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	
@@ -41,8 +33,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		var questions = []
 		//create a class to see type based on manifest.
 		if (ProjectContextService.getProjectType() === PROJECT_SUITEAPP) {
-			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID,
-				NodeUtils.formatString(WORDS.SUITE_APP, {color: NodeUtils.COLORS.GREEN, bold: true}));
+			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
 
 			const questionSpecificSuiteApp = {	
 				type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -69,8 +60,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: 'appid',
-				message: TranslationService.getMessage(QUESTIONS.APPID,
-					NodeUtils.formatString(WORDS.APLICATION_ID, {color: NodeUtils.COLORS.GREEN, bold: true})),
+				message: TranslationService.getMessage(QUESTIONS.APPID),
 				validate: this._validateFieldIsNotEmpty
 				
 			}
@@ -80,8 +70,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questionFilterByCustomObjects = {	
 			type: 'list',
 			name: 'typeall',
-			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS,
-				NodeUtils.formatString(WORDS.ALL, {color: NodeUtils.COLORS.YELLOW})),
+			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
 			default: 0,
 			choices: [
 				{
@@ -104,8 +93,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 			name: 'type',
-			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS,
-				NodeUtils.formatString(WORDS.OBJECT_TYPES, {color: NodeUtils.COLORS.GREEN, bold: true})),
+			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
 			choices: [
 				...OBJECT_TYPES.map((customObject) =>  ({name: customObject.name, value: customObject.value.type })),
@@ -120,8 +108,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questionSpecificScriptId = {	
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: 'specifyscriptid',
-			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID,
-				NodeUtils.formatString(WORDS.SCRIPT_ID, {color: NodeUtils.COLORS.GREEN, bold: true})),
+			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 			default : false,
 			choices: [
 				{
@@ -142,8 +129,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: 'scriptid',
-			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID,
-				NodeUtils.formatString(WORDS.SCRIPT_ID, {color: NodeUtils.COLORS.GREEN, bold: true})),
+			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: this._validateFieldIsNotEmpty
 		}
 		questions.push(questionScriptId)
@@ -153,7 +139,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_executeAction(answers) {
 		let options = Object.keys(this._commandMetadata.options)
-		var params = CommandUtils.pick(answers,options)
+		var params = CommandUtils.extractOnlyOptionsFromObject(answers,options)
 		if (params.type != null) {
 			params.type = params.type.join(" ")
 		}
