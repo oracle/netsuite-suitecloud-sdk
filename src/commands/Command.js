@@ -137,7 +137,7 @@ module.exports = class Command {
 
 			if (this._isSetupRequired && !Context.CurrentAccountDetails.isAccountSetup()) {
 				var exceptionMessage = TranslationService.getMessage(
-					TRANSLATION_KEYS.SETUP_REQUIRED_ERROR
+					TRANSLATION_KEYS.ERRORS.SETUP_REQUIRED
 				);
 				reject(new CLIException(3, exceptionMessage));
 				return;

@@ -1,47 +1,60 @@
 'use strict';
 
-const BaseCommandGenerator = require('./BaseCommandGenerator');
-const NodeUtils = require('../utils/NodeUtils');
-const CommandUtils = require('../utils/CommandUtils');
-const CLIException = require('../CLIException');
 const inquirer = require('inquirer');
-const ProjectContextService = require('../services/ProjectContextService');
+const BaseCommandGenerator = require('./BaseCommandGenerator');
+const CLIException = require('../CLIException');
+const CommandUtils = require('../utils/CommandUtils');
+const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
+const ProjectContextService = require('../services/ProjectContextService');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
-const {MANIFEST_XML, PROJECT_SUITEAPP} = require("../ApplicationConstants");
 const TranslationService = require('../services/TranslationService');
-const { COMMAND_LISTOBJECTS: {QUESTIONS}, ERRORS,YES, NO} = require('../services/TranslationKeys');
 const COMMAND_OPTIONS_NAMES = {
 	APP_ID: 'appid',
-	SCRIPT_ID : 'scriptid',
-	SPECIFY_SCRIPT_ID : 'specifyscriptid',
+	SCRIPT_ID: 'scriptid',
+	SPECIFY_SCRIPT_ID: 'specifyscriptid',
 	SPECIFY_SUITEAPP: 'specifysuiteapp',
-	TYPE : 'type',
-	TYPE_ALL: 'typeall'
+	TYPE: 'type',
+	TYPE_ALL: 'typeall',
 };
+const { MANIFEST_XML, PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const {
+	COMMAND_LISTOBJECTS: { QUESTIONS },
+	ERRORS,
+	YES,
+	NO,
+} = require('../services/TranslationKeys');
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
-	
 	constructor(options) {
 		super(options);
 	}
 
 	_validateFieldIsNotEmpty(fieldName) {
-		return fieldName !== '' ? true : NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {color: NodeUtils.COLORS.RED, bold: true})
+		return fieldName !== ''
+			? true
+			: NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {
+					color: NodeUtils.COLORS.RED,
+					bold: true,
+			  });
 	}
-	
-	
+
 	_validateArrayIsNotEmpty(array) {
-		return array.length > 0 ? true : NodeUtils.formatString(TranslationService.getMessage(ERRORS.CHOOSE_OPTION), {color: NodeUtils.COLORS.RED, bold: true})
+		return array.length > 0
+			? true
+			: NodeUtils.formatString(TranslationService.getMessage(ERRORS.CHOOSE_OPTION), {
+					color: NodeUtils.COLORS.RED,
+					bold: true,
+			  });
 	}
 
 	_getCommandQuestions(prompt) {
-		var questions = []
+		var questions = [];
 		//create a class to see type based on manifest.
 		if (ProjectContextService.getProjectType() === PROJECT_SUITEAPP) {
 			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
 
-			const questionSpecificSuiteApp = {	
+			const questionSpecificSuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS_NAMES.SPECIFY_SUITEAPP,
 				message,
@@ -56,24 +69,23 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 						value: false,
 					},
 				],
-				validate: this._validateArrayIsNotEmpty
-			}
-			questions.push(questionSpecificSuiteApp)
+				validate: this._validateArrayIsNotEmpty,
+			};
+			questions.push(questionSpecificSuiteApp);
 
-			const questionAppId = {	
+			const questionAppId = {
 				when: function(response) {
 					return response.specifysuiteapp;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS_NAMES.APP_ID,
 				message: TranslationService.getMessage(QUESTIONS.APPID),
-				validate: this._validateFieldIsNotEmpty
-				
-			}
-			questions.push(questionAppId)
+				validate: this._validateFieldIsNotEmpty,
+			};
+			questions.push(questionAppId);
 		}
 
-		const questionFilterByCustomObjects = {	
+		const questionFilterByCustomObjects = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_OPTIONS_NAMES.TYPE_ALL,
 			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
@@ -87,13 +99,11 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					name: TranslationService.getMessage(NO),
 					value: false,
 				},
-			]
-			
-		}
-		questions.push(questionFilterByCustomObjects)
+			],
+		};
+		questions.push(questionFilterByCustomObjects);
 
-
-		const questionCustomOjects = {	
+		const questionCustomOjects = {
 			when: function(answers) {
 				return !answers.typeall;
 			},
@@ -102,20 +112,23 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
 			choices: [
-				...OBJECT_TYPES.map((customObject) =>  ({name: customObject.name, value: customObject.value.type })),
-				new inquirer.Separator()
+				...OBJECT_TYPES.map(customObject => ({
+					name: customObject.name,
+					value: customObject.value.type,
+				})),
+				new inquirer.Separator(),
 			],
-			
-			validate: this._validateArrayIsNotEmpty
-		}
-		
-		questions.push(questionCustomOjects)
 
-		const questionSpecificScriptId = {	
+			validate: this._validateArrayIsNotEmpty,
+		};
+
+		questions.push(questionCustomOjects);
+
+		const questionSpecificScriptId = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_OPTIONS_NAMES.SPECIFY_SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
-			default : false,
+			default: false,
 			choices: [
 				{
 					name: TranslationService.getMessage(YES),
@@ -126,28 +139,28 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					value: false,
 				},
 			],
-		}
-		questions.push(questionSpecificScriptId)
+		};
+		questions.push(questionSpecificScriptId);
 
-		const questionScriptId = {	
+		const questionScriptId = {
 			when: function(response) {
 				return response.specifyscriptid;
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: COMMAND_OPTIONS_NAMES.SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
-			validate: this._validateFieldIsNotEmpty
-		}
-		questions.push(questionScriptId)
+			validate: this._validateFieldIsNotEmpty,
+		};
+		questions.push(questionScriptId);
 
-		return prompt(questions)
+		return prompt(questions);
 	}
 
 	_executeAction(answers) {
-		let options = Object.keys(this._commandMetadata.options)
-		var params = CommandUtils.extractOnlyOptionsFromObject(answers,options)
+		let options = Object.keys(this._commandMetadata.options);
+		var params = CommandUtils.extractOnlyOptionsFromObject(answers, options);
 		if (params.type != null) {
-			params.type = params.type.join(" ")
+			params.type = params.type.join(' ');
 		}
 		let executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
@@ -160,7 +173,11 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
 			throw new CLIException(
 				0,
-				TranslationService.getMessage(ERRORS.RUN_SETUP_ACCOUNT,MANIFEST_XML,this._projectFolder)
+				TranslationService.getMessage(
+					ERRORS.RUN_SETUP_ACCOUNT,
+					MANIFEST_XML,
+					this._projectFolder
+				)
 			);
 		}
 	}
