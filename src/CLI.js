@@ -40,7 +40,7 @@ module.exports = class CLI {
 				this._printHelp();
 			}
 		} catch (exception) {
-			NodeUtils.println(this._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
+			NodeUtils.println(this._unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 		}
 	}
 
@@ -82,14 +82,14 @@ module.exports = class CLI {
 	_initializeErrorHandlers() {
 		const self = this;
 		Context.EventEmitter.on(CLI_EXCEPTION_EVENT, exception => {
-			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
+			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 		});
 		Context.EventEmitter.on(CLI_FATAL_EXCEPTION_EVENT, exception => {
-			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
+			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 			process.exit(1);
 		});
 		Context.EventEmitter.on(CLI_DEFAULT_ERROR_EVENT, exception => {
-			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
+			NodeUtils.println(self._unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 		});
 	}
 
@@ -102,7 +102,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeUtils.println(TranslationService.getMessage(CLI_TITLE), NodeUtils.COLORS.CYAN);
+		NodeUtils.println(TranslationService.getMessage(CLI_TITLE), NodeUtils.COLORS.RESULT);
 		program.help();
 	}
 };

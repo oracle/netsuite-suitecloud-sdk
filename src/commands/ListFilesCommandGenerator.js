@@ -14,7 +14,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				command: 'listfolders',
 				showOutput: false,
 			});
-			NodeUtils.println('Loading folders...', NodeUtils.COLORS.CYAN);
+			NodeUtils.println('Loading folders...', NodeUtils.COLORS.RESULT);
 
 			return this._sdkExecutor.execute(executionContext).then(result => {
 				resolve(prompt([

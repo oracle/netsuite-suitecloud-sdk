@@ -161,7 +161,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					.then(() => {
 						try {
 							this._createAccountDetailsFile(contextValues);
-							NodeUtils.println('Context setup correctly', NodeUtils.COLORS.GREEN);
+							NodeUtils.println('Context setup correctly', NodeUtils.COLORS.RESULT);
 							resolve();
 						} catch (error) {
 							reject('Error while setting up context');

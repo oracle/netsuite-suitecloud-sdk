@@ -75,7 +75,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 			childProcess.on('close', code => {
 				if (code === 0) {
                     if (executionContext.showOutput) {
-                        NodeUtils.println(lastSdkOutput, NodeUtils.COLORS.CYAN);
+                        NodeUtils.println(lastSdkOutput, NodeUtils.COLORS.RESULT);
                     }
 					resolve(lastSdkOutput);
 				} else if (code !== 0) {

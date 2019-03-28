@@ -19,11 +19,12 @@ const COMMAND_QUESTIONS_NAMES = {
 };
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTOBJECTS: { QUESTIONS },
+	COMMAND_LISTOBJECTS: { QUESTIONS, SUCCESS, SUCCESS_NO_OBJECTS },
 	ERRORS,
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
+const NO_OBJECTS_FOUND = "No custom objects found.";
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -35,7 +36,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return fieldValue !== ''
 			? true
 			: NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {
-					color: NodeUtils.COLORS.RED,
+					color: NodeUtils.COLORS.ERROR,
 					bold: true,
 			  });
 	}
@@ -44,7 +45,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return array.length > 0
 			? true
 			: NodeUtils.formatString(TranslationService.getMessage(ERRORS.CHOOSE_OPTION), {
-					color: NodeUtils.COLORS.RED,
+					color: NodeUtils.COLORS.ERROR,
 					bold: true,
 			  });
 	}
@@ -166,7 +167,19 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		let executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
+			showOutput: false
 		});
-		return this._sdkExecutor.execute(executionContext);
+		return this._sdkExecutor.execute(executionContext).then(result => {
+			if (result.includes(NO_OBJECTS_FOUND)) {
+				result = result.replace(NO_OBJECTS_FOUND,TranslationService.getMessage(SUCCESS_NO_OBJECTS))
+			}
+			else{
+				NodeUtils.println(TranslationService.getMessage(SUCCESS),NodeUtils.COLORS.RESULT);
+				
+			}
+			NodeUtils.println(result,NodeUtils.COLORS.RESULT);
+			
+			
+		});
 	}
 };
