@@ -13,4 +13,13 @@ module.exports = {
 	MANIFEST_XML: 'manifest.xml',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
+	XML: {
+		ATTRIBUTES: {
+			PROJECT_TYPE: 'projecttype',
+		},
+		TAGS: {
+			MANIFEST: 'manifest',
+			
+		}
+	},
 };

@@ -6,10 +6,10 @@ const CLIException = require('../CLIException');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
-const ProjectContextService = require('../services/ProjectContextService');
+const ProjectMetadataService = require('../services/ProjectMetadataService');
 const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
 const TranslationService = require('../services/TranslationService');
-const COMMAND_OPTIONS_NAMES = {
+const COMMAND_QUESTIONS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
 	SPECIFY_SCRIPT_ID: 'specifyscriptid',
@@ -17,7 +17,7 @@ const COMMAND_OPTIONS_NAMES = {
 	TYPE: 'type',
 	TYPE_ALL: 'typeall',
 };
-const { MANIFEST_XML, PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
 	COMMAND_LISTOBJECTS: { QUESTIONS },
 	ERRORS,
@@ -28,10 +28,11 @@ const {
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
+		this._projectMetadataService = new ProjectMetadataService();
 	}
 
-	_validateFieldIsNotEmpty(fieldName) {
-		return fieldName !== ''
+	_validateFieldIsNotEmpty (fieldValue) {
+		return fieldValue !== ''
 			? true
 			: NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {
 					color: NodeUtils.COLORS.RED,
@@ -51,12 +52,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_getCommandQuestions(prompt) {
 		var questions = [];
 		//create a class to see type based on manifest.
-		if (ProjectContextService.getProjectType() === PROJECT_SUITEAPP) {
+		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
 			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
 
 			const questionSpecificSuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_OPTIONS_NAMES.SPECIFY_SUITEAPP,
+				name: COMMAND_QUESTIONS_NAMES.SPECIFY_SUITEAPP,
 				message,
 				default: 0,
 				choices: [
@@ -78,7 +79,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					return response.specifysuiteapp;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_OPTIONS_NAMES.APP_ID,
+				name: COMMAND_QUESTIONS_NAMES.APP_ID,
 				message: TranslationService.getMessage(QUESTIONS.APPID),
 				validate: this._validateFieldIsNotEmpty,
 			};
@@ -87,7 +88,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		const questionFilterByCustomObjects = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: COMMAND_OPTIONS_NAMES.TYPE_ALL,
+			name: COMMAND_QUESTIONS_NAMES.TYPE_ALL,
 			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
 			default: 0,
 			choices: [
@@ -108,7 +109,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				return !answers.typeall;
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
-			name: COMMAND_OPTIONS_NAMES.TYPE,
+			name: COMMAND_QUESTIONS_NAMES.TYPE,
 			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
 			choices: [
@@ -126,7 +127,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		const questionSpecificScriptId = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: COMMAND_OPTIONS_NAMES.SPECIFY_SCRIPT_ID,
+			name: COMMAND_QUESTIONS_NAMES.SPECIFY_SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 			default: false,
 			choices: [
@@ -147,7 +148,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				return response.specifyscriptid;
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
-			name: COMMAND_OPTIONS_NAMES.SCRIPT_ID,
+			name: COMMAND_QUESTIONS_NAMES.SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: this._validateFieldIsNotEmpty,
 		};
