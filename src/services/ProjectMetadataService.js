@@ -13,12 +13,11 @@ module.exports = class ProjectMetadataService {
 	_validate_xml(key, currentValue, newValue) {
 		//TODO Add more cases
 		if (key === '/manifest') {
-			if (!newValue['$'] || ! newValue['$'][XML.ATTRIBUTES.PROJECT_TYPE]) {
+			if (!newValue['$'] || !newValue['$'][XML.ATTRIBUTES.PROJECT_TYPE]) {
 				throw new xml2js.ValidationError(
 					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
 				);
-					
-			} else if (				
+			} else if (
 				newValue['$'][XML.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_SUITEAPP &&
 				newValue['$'][XML.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_ACP
 			) {
@@ -27,7 +26,7 @@ module.exports = class ProjectMetadataService {
 				);
 			}
 		}
-		return newValue
+		return newValue;
 	}
 
 	getProjectType(projectFolder) {
@@ -35,14 +34,19 @@ module.exports = class ProjectMetadataService {
 		if (!FileUtils.exists(manifestPath))
 			throw new CLIException(
 				-10,
-				TranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath)
+				TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' +
+					TranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath)
 			);
 
 		const manifestString = FileUtils.readAsString(manifestPath);
 		const beginTag = '<' + XML.TAGS.MANIFEST;
 		if (!manifestString.substr(0, beginTag.length) === beginTag) {
 			if (!result.manifest) {
-				throw new CLIException(-10, TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING));
+				throw new CLIException(
+					-10,
+					TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' +
+						TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING)
+				);
 			}
 		}
 		let projectType = '';
@@ -52,7 +56,10 @@ module.exports = class ProjectMetadataService {
 
 		parser.parseString(manifestString, function(err, result) {
 			if (err) {
-				errorValidation = TranslationService.getMessage(ERRORS.FILE, manifestPath) + err;
+				errorValidation =
+					TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' +
+					TranslationService.getMessage(ERRORS.FILE, manifestPath) +
+					err;
 			}
 
 			if (result) {
