@@ -2,7 +2,6 @@
 
 const Context = require('../Context');
 const CLIException = require('../CLIException');
-const { CLI_EXCEPTION_EVENT } = require('../ApplicationConstants');
 const inquirer = require('inquirer');
 const CommandOptionsValidator = require('../services/CommandOptionValidator');
 const TranslationService = require('../services/TranslationService');
@@ -10,6 +9,7 @@ const TRANSLATION_KEYS = require('../services/TranslationKeys');
 const assert = require('assert');
 
 module.exports = class Command {
+
 	constructor(options) {
 		assert(options);
 		assert(options.name);
@@ -23,6 +23,7 @@ module.exports = class Command {
 		this._name = options.name;
 		this._alias = options.alias;
 		this._description = options.description;
+		this._projectFolder = options.projectFolder;
 		this._getCommandQuestions = options.getCommandQuestionsFunc;
 		this._preActionFunc = options.preActionFunc;
 		this._action = options.actionFunc;
@@ -35,16 +36,15 @@ module.exports = class Command {
 		this._commandOptionsValidator = new CommandOptionsValidator(this._options);
 	}
 
-	attachToProgram(program) {
-		var self = this;
-		var commandSetup = program.command(`${this._name} folder>`);
+	attachToProgram(program, commandOutputHandler) {
+		let commandSetup = program.command(`${this._name} folder>`);
 		//program.alias(this._alias)
 
 		if (!this._runInInteractiveMode) {
 			if (this._supportsInteractiveMode) {
-				var interactiveOptionHelp = TranslationService.getMessage(
+				const interactiveOptionHelp = TranslationService.getMessage(
 					TRANSLATION_KEYS.COMMAND_OPTION_INTERACTIVE_HELP,
-					this._name
+					this._name,
 				);
 				this._options.interactive = {
 					name: 'interactive',
@@ -57,51 +57,53 @@ module.exports = class Command {
 		}
 
 		commandSetup.description(this._description).action(options => {
-			self._onExecuteCommand(options);
+			commandOutputHandler.handle(this._onExecuteCommand(options));
 		});
 	}
 
 	_addNonInteractiveCommandOptions(commandSetup, options) {
-		var optionsSortedByName = Object.values(options).sort((option1, option2) =>
-			option1.name.localeCompare(option2.name)
+		const optionsSortedByName = Object.values(options).sort((option1, option2) =>
+			option1.name.localeCompare(option2.name),
 		);
 		optionsSortedByName.forEach(option => {
-			var mandatoryOptionString = option.mandatory ? '<argument>' : '[argument]';
-			var optionString = `-${option.alias}, --${option.name} ${mandatoryOptionString}`;
+			const mandatoryOptionString = option.mandatory ? '<argument>' : '[argument]';
+			const optionString = `-${option.alias}, --${option.name} ${mandatoryOptionString}`;
 			commandSetup.option(optionString, option.description);
 		});
 		return commandSetup;
 	}
 
 	_onExecuteCommand(args) {
-		var optionValues = this._extractOptionValuesFromArguments(this._options, args);
-		var beforeExecutingContext = {
+		const optionValues = this._extractOptionValuesFromArguments(this._options, args);
+		const beforeExecutingContext = {
 			command: this._name,
-			projectPath: process.cwd(),
+			projectPath: this._projectFolder,
 			arguments: optionValues,
-			userArguments: {},
 		};
 
-		Promise.resolve(this._commandUserExtension.beforeExecuting(beforeExecutingContext)).then(
-			newOptions => {
-				this._executeCommandAction(newOptions.arguments)
-					.then(completed => {
-						if (this._commandUserExtension.onCompleted) {
-							this._commandUserExtension.onCompleted(completed);
-						}
-					})
-					.catch(error => {
-						Context.EventEmitter.emit(CLI_EXCEPTION_EVENT, error);
-						if (this._commandUserExtension.onError) {
-							this._commandUserExtension.onError(error);
-						}
-					});
-			}
-		);
+		return new Promise((resolve, reject) => {
+			Promise.resolve(this._commandUserExtension.beforeExecuting(beforeExecutingContext)).then(
+				newOptions => {
+					return this._executeCommandAction(newOptions.arguments)
+						.then(completed => {
+							if (this._commandUserExtension.onCompleted) {
+								this._commandUserExtension.onCompleted(completed);
+							}
+							resolve(completed);
+						})
+						.catch(error => {
+							if (this._commandUserExtension.onError) {
+								this._commandUserExtension.onError(error);
+							}
+							reject(error);
+						});
+				},
+			);
+		});
 	}
 
 	_extractOptionValuesFromArguments(options, args) {
-		var optionValues = {};
+		const optionValues = {};
 		for (const optionId in options) {
 			if (options.hasOwnProperty(optionId) && args.hasOwnProperty(optionId)) {
 				optionValues[optionId] = args[optionId];
@@ -113,7 +115,7 @@ module.exports = class Command {
 
 	_executeCommandAction(args) {
 		return new Promise((resolve, reject) => {
-			var actionFunction = args => {
+			const actionFunction = args => {
 				const argsProcessingFunctions = [
 					this._applyDefaultContextParams.bind(this),
 					this._preActionFunc.bind(this),
@@ -123,21 +125,25 @@ module.exports = class Command {
 					return func(previousArgs);
 				}, args);
 
-				var validationErrors = this._commandOptionsValidator.validate(computedArgs);
+				const validationErrors = this._commandOptionsValidator.validate(computedArgs);
 
 				if (validationErrors.length === 0) {
-					return this._action(computedArgs)
-						.then(res => resolve(res))
-						.catch(error => reject(error));
+					this._action(computedArgs)
+						.then(response => {
+							resolve(response);
+						})
+						.catch(error => {
+							reject(error);
+						});
 				} else {
-					var errorMessage = this._commandOptionsValidator.formatErrors(validationErrors);
+					const errorMessage = this._commandOptionsValidator.formatErrors(validationErrors);
 					reject(new CLIException(4, errorMessage));
 				}
 			};
 
 			if (this._isSetupRequired && !Context.CurrentAccountDetails.isAccountSetup()) {
-				var exceptionMessage = TranslationService.getMessage(
-					TRANSLATION_KEYS.SETUP_REQUIRED_ERROR
+				const exceptionMessage = TranslationService.getMessage(
+					TRANSLATION_KEYS.SETUP_REQUIRED_ERROR,
 				);
 				reject(new CLIException(3, exceptionMessage));
 				return;

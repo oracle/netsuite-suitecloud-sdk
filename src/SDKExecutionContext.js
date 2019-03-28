@@ -4,14 +4,12 @@ const assert = require('assert');
 
 module.exports = class SDKExecutionContext {
 	constructor(options) {
-		assert(options.command, "Command is mandatory option");
+		assert(options.command, 'Command is mandatory option');
 		this._command = options.command;
 
 		this._showOutput = typeof options.showOutput === 'undefined' ? true : options.showOutput;
 		this._params = {};
 		this._flags = [];
-
-		this._setSpinner(options.displaySpinner, options.spinnerMessage);
 
 		if (options.params) {
 			this._addParams(options.params);
@@ -19,14 +17,6 @@ module.exports = class SDKExecutionContext {
 
 		if (options.flags) {
 			this._addFlags(options.flags);
-		}
-	}
-
-	_setSpinner(displaySpinner, spinnerMessage) {
-		this._displaySpinner = displaySpinner;
-		if (this._displaySpinner) {
-			assert(spinnerMessage, "Message is mandatory when spinner is enabled");
-			this._spinnerMessage = spinnerMessage;
 		}
 	}
 
@@ -66,11 +56,4 @@ module.exports = class SDKExecutionContext {
 		return this._flags;
 	}
 
-	displaySpinner() {
-		return this._displaySpinner;
-	}
-
-	getSpinnerMessage() {
-		return this._spinnerMessage;
-	}
 };

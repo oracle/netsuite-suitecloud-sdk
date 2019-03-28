@@ -3,6 +3,7 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
+const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const {
 	LIST_FILES_COMMAND_LOADING_FOLDERS,
 	LIST_FILES_COMMAND_LOADING_FILES,
@@ -21,12 +22,13 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			const executionContext = new SDKExecutionContext({
 				command: 'listfolders',
 				showOutput: false,
-				displaySpinner: true,
-				spinnerMessage: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FOLDERS),
 			});
 			this._applyDefaultContextParams(executionContext);
 
-			return this._sdkExecutor.execute(executionContext).then(result => {
+			return executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FOLDERS),
+			}).then(result => {
 				resolve(prompt([
 					{
 						type: 'list',
@@ -57,11 +59,12 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
-			displaySpinner: true,
-			spinnerMessage: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FILES),
 		});
 
-		return this._sdkExecutor.execute(executionContext);
+		return executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContext),
+			message: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FILES),
+		});
 	}
 
 };

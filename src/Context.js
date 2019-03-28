@@ -1,4 +1,3 @@
-const EventEmitter = require('events').EventEmitter;
 const FileUtils = require('./utils/FileUtils');
 const ApplicationConstants = require('./ApplicationConstants');
 const path = require('path');
@@ -63,7 +62,6 @@ var accountDetails = new AccountDetails();
 accountDetails.initializeFromFile(ApplicationConstants.ACCOUNT_DETAILS_FILENAME);
 
 module.exports = {
-	EventEmitter: new EventEmitter(),
 	SDKFilePath: path.join(__dirname, ApplicationConstants.SDF_SDK_PATHNAME),
 	CurrentAccountDetails: accountDetails,
 };
