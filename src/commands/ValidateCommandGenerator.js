@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
+const SDKExecutionContext = require('../SDKExecutionContext');
 
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
