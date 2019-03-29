@@ -2,7 +2,6 @@
 
 const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const CLIException = require('../CLIException');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
@@ -17,7 +16,7 @@ const COMMAND_QUESTIONS_NAMES = {
 	TYPE: 'type',
 	TYPE_ALL: 'typeall',
 };
-const { PROJECT_SUITEAPP, PACKAGE_REGEX } = require('../ApplicationConstants');
+const { PROJECT_SUITEAPP, SUITEAPP_ID_FORMAT_REGEX } = require('../ApplicationConstants');
 const {
 	COMMAND_LISTOBJECTS: { QUESTIONS, SUCCESS, SUCCESS_NO_OBJECTS },
 	ERRORS,
@@ -60,7 +59,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				  });
 		if (notEmpty != true) {
 			return notEmpty;
-		} else if (!fieldValue.match(PACKAGE_REGEX)) {
+		} else if (!fieldValue.match(SUITEAPP_ID_FORMAT_REGEX)) {
 			return NodeUtils.formatString(TranslationService.getMessage(ERRORS.APPID_FORMAT), {
 				color: NodeUtils.COLORS.ERROR,
 				bold: true,
