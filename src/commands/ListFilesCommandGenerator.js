@@ -11,6 +11,9 @@ const {
 	LIST_FILES_COMMAND_RESTRICTED_FOLDER,
 } = require('../services/TranslationKeys');
 
+const LIST_FOLDERS_COMMAND = 'listfolders';
+const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
+
 module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 	constructor(options) {
@@ -20,7 +23,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
 			const executionContext = new SDKExecutionContext({
-				command: 'listfolders',
+				command: LIST_FOLDERS_COMMAND,
 				showOutput: false,
 			});
 			this._applyDefaultContextParams(executionContext);
@@ -34,7 +37,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 						type: 'list',
 						name: this._commandMetadata.options.folder.name,
 						message: TranslationService.getMessage(LIST_FILES_COMMAND_SELECT_FOLDER),
-						default: '/SuiteScripts',
+						default: SUITE_SCRIPTS_FOLDER,
 						choices: this._getFileCabinetFolders(JSON.parse(result)),
 					},
 				]));
