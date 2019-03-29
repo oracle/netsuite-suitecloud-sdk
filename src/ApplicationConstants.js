@@ -1,3 +1,4 @@
+const PACKAGE_WORD = "[a-z0-9]+";
 module.exports = {
 	SDK_COMMANDS_METADATA_FILE: 'SDKCommandsMetadata.json',
 	NODE_COMMANDS_METADATA_FILE: 'NodeCommandsMetadata.json',
@@ -11,6 +12,7 @@ module.exports = {
 	AUTHENTICATION_MODE_TBA: 'TBA',
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	MANIFEST_XML: 'manifest.xml',
+	PACKAGE_REGEX: "^" + PACKAGE_WORD + "(\\." + PACKAGE_WORD + "){2}$",
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	XML: {

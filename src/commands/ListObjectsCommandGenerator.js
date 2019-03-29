@@ -17,14 +17,14 @@ const COMMAND_QUESTIONS_NAMES = {
 	TYPE: 'type',
 	TYPE_ALL: 'typeall',
 };
-const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const { PROJECT_SUITEAPP, PACKAGE_REGEX } = require('../ApplicationConstants');
 const {
 	COMMAND_LISTOBJECTS: { QUESTIONS, SUCCESS, SUCCESS_NO_OBJECTS },
 	ERRORS,
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
-const NO_OBJECTS_FOUND = "No custom objects found.";
+const NO_OBJECTS_FOUND = 'No custom objects found.';
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -32,7 +32,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		this._projectMetadataService = new ProjectMetadataService();
 	}
 
-	_validateFieldIsNotEmpty (fieldValue) {
+	_validateFieldIsNotEmpty(fieldValue) {
 		return fieldValue !== ''
 			? true
 			: NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {
@@ -48,6 +48,25 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					color: NodeUtils.COLORS.ERROR,
 					bold: true,
 			  });
+	}
+
+	_validateSuiteApp(fieldValue) {
+		let notEmpty =
+			fieldValue !== ''
+				? true
+				: NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {
+						color: NodeUtils.COLORS.ERROR,
+						bold: true,
+				  });
+		if (notEmpty != true) {
+			return notEmpty;
+		} else if (!fieldValue.match(PACKAGE_REGEX)) {
+			return NodeUtils.formatString(TranslationService.getMessage(ERRORS.APPID_FORMAT), {
+				color: NodeUtils.COLORS.ERROR,
+				bold: true,
+			});
+		}
+		return true;
 	}
 
 	_getCommandQuestions(prompt) {
@@ -82,7 +101,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.APP_ID,
 				message: TranslationService.getMessage(QUESTIONS.APPID),
-				validate: this._validateFieldIsNotEmpty,
+				validate: this._validateSuiteApp,
 			};
 			questions.push(questionAppId);
 		}
@@ -167,19 +186,18 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		let executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
-			showOutput: false
+			showOutput: false,
 		});
 		return this._sdkExecutor.execute(executionContext).then(result => {
 			if (result.includes(NO_OBJECTS_FOUND)) {
-				result = result.replace(NO_OBJECTS_FOUND,TranslationService.getMessage(SUCCESS_NO_OBJECTS))
+				result = result.replace(
+					NO_OBJECTS_FOUND,
+					TranslationService.getMessage(SUCCESS_NO_OBJECTS)
+				);
+			} else {
+				NodeUtils.println(TranslationService.getMessage(SUCCESS), NodeUtils.COLORS.RESULT);
 			}
-			else{
-				NodeUtils.println(TranslationService.getMessage(SUCCESS),NodeUtils.COLORS.RESULT);
-				
-			}
-			NodeUtils.println(result,NodeUtils.COLORS.RESULT);
-			
-			
+			NodeUtils.println(result, NodeUtils.COLORS.RESULT);
 		});
 	}
 };
