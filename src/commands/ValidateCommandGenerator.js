@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
+const SDKExecutionContext = require('../SDKExecutionContext');
 
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -63,21 +63,29 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 	_preExecuteAction(args) {
 		args.project = this._projectFolder;
-		args.log = currentProjectPath;
+		args.log = this._projectFolder;
 		return args;
 	}
 
 	_executeAction(answers) {
 		if (!answers.applycontentprotection) {
 			delete answers.applycontentprotection;
+		} else {
+			answers.applycontentprotection = 'T';
 		}
-		if (!answers.server) {
-			delete answers.server;
+
+		let flags = [];
+
+		if (answers.server) {
+			flags.push("server");
 		}
+
+		delete answers.server;
 
 		let executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
-			params: params,
+			params: answers,
+			flags : flags
 		});
 		return this._sdkExecutor.execute(executionContext);
 	}

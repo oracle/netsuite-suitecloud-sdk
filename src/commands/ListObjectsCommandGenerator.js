@@ -7,7 +7,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
-const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
+const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const COMMAND_QUESTIONS_NAMES = {
 	APP_ID: 'appid',

@@ -1,7 +1,9 @@
 # SuiteCloud Development Framework CLI for Node.js
 
 ### Prerequisites
-JRE v.8 or higher should be installed on the system in order to use this Node package
+The following software should be installed on your system
+- Latest version of Node.js
+- JRE v.8
 
 ### Installation
 To install the package locally from source run the following command and verify node_modules directory is generated

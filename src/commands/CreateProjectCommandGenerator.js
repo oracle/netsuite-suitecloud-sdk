@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
+const SDKExecutionContext = require('../SDKExecutionContext');
 
 const ACP_PROJECT_TYPE = 'ACCOUNTCUSTOMIZATION';
 const SUITEAPP_PROJECT_TYPE = 'SUITEAPP';

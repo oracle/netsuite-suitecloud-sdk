@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
+const SDKExecutionContext = require('../SDKExecutionContext');
 const CLIException = require('../CLIException');
 
 const FLAG_OPTION_TYPE = 'FLAG';
@@ -49,7 +49,9 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 				args.hasOwnProperty(optionId)
 			) {
 				if (this._commandMetadata.options[optionId].type === FLAG_OPTION_TYPE) {
-					executionContext.addFlag(optionId);
+					if (args[optionId]) {
+						executionContext.addFlag(optionId);
+					}
 				} else {
 					executionContext.addParam(optionId, args[optionId]);
 				}

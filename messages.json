@@ -1,5 +1,9 @@
 {
 	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite 2019.2)",
+	"LIST_FILES_COMMAND_LOADING_FOLDERS": "Loading File Cabinet folders...",
+	"LIST_FILES_COMMAND_LOADING_FILES": "Loading files...",
+	"LIST_FILES_COMMAND_SELECT_FOLDER": "Select the File Cabinet folder for which you want to get a file list.",
+	"LIST_FILES_COMMAND_RESTRICTED_FOLDER": "Restricted Folder",
 	"COMMAND_LISTOBJECTS_QUESTIONS_APPID": "Enter the application ID.",
 	"COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_CUSTOM_OBJECTS": "Select the object types you want to list.",
 	"COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your list?",
