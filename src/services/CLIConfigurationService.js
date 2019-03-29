@@ -46,7 +46,9 @@ class CLIConfigurationService {
 		} catch (error) {
 			throw new CLIException(
 				4,
-				`Error while loading configuration file ${cliConfigFile}. Please review the file and try again. Details:${NodeUtils.lineBreak}${error}`
+				`Error while loading configuration file ${cliConfigFile}. Please review the file and try again. Details:${
+					NodeUtils.lineBreak
+				}${error}`
 			);
 		}
 	}
@@ -64,16 +66,18 @@ class CLIConfigurationService {
 
 	getProjectFolder(command) {
 		var defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder)
-			? path.join(this._executionPath, this._cliConfig.defaultProjectFolder)
-			: this._executionPath;
+			? this._cliConfig.defaultProjectFolder
+			: '';
 
 		var commandConfig = this._cliConfig && this._cliConfig.commands[command];
 		var commandOverridenProjectFolder;
 		if (commandConfig && isString(commandConfig.projectFolder)) {
 			commandOverridenProjectFolder = commandConfig.projectFolder;
 		}
-
-		return commandOverridenProjectFolder ? commandOverridenProjectFolder : defaultProjectFolder;
+		return path.join(
+			this._executionPath,
+			commandOverridenProjectFolder ? commandOverridenProjectFolder : defaultProjectFolder
+		);
 	}
 }
 
