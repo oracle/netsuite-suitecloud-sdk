@@ -11,6 +11,7 @@ module.exports = {
 	AUTHENTICATION_MODE_TBA: 'TBA',
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	MANIFEST_XML: 'manifest.xml',
+	OBJECTS_FOLDER:  'Objects',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	XML: {

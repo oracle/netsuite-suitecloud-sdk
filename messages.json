@@ -1,5 +1,11 @@
 {
 	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite 2019.2)",
+	"COMMAND_IMPORTOBJECTS_QUESTIONS_APPID": "Enter the application ID.",
+	"COMMAND_IMPORTOBJECTS_QUESTIONS_FILTER_BY_CUSTOM_OBJECTS": "Select the object types you want to import.",
+	"COMMAND_IMPORTOBJECTS_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your list?",
+	"COMMAND_IMPORTOBJECTS_QUESTIONS_SCRIPT_ID": "Enter the full or partial script ID.",
+	"COMMAND_IMPORTOBJECTS_QUESTIONS_SHOW_ALL_CUSTOM_OBJECTS": "Do you want to import all object types?",
+	"COMMAND_IMPORTOBJECTS_QUESTIONS_SPECIFIC_APPID": "Do you want to import objects from a specific SuiteApp?",
 	"COMMAND_LISTOBJECTS_QUESTIONS_APPID": "Enter the application ID.",
 	"COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_CUSTOM_OBJECTS": "Select the object types you want to list.",
 	"COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your list?",
