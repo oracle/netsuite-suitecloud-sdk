@@ -1,13 +1,22 @@
 'use strict';
 
 const { ERRORS } = require('../services/TranslationKeys');
-const { MANIFEST_XML, MANIFEST_XML_DEFINITIONS } = require('../ApplicationConstants');
+const { MANIFEST_XML } = require('../ApplicationConstants');
 const { PROJECT_SUITEAPP, PROJECT_ACP } = require('../ApplicationConstants');
 const CLIException = require('../CLIException');
 const FileUtils = require('../utils/FileUtils');
 const path = require('path');
 const TranslationService = require('../services/TranslationService');
 const xml2js = require('xml2js');
+
+const MANIFEST_XML_DEFINITIONS = {
+	ATTRIBUTES: {
+		PROJECT_TYPE: 'projecttype',
+	},
+	TAGS: {
+		MANIFEST: 'manifest',
+	},
+};
 
 module.exports = class ProjectMetadataService {
 	_validate_xml(key, currentValue, newValue) {

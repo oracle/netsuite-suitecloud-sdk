@@ -9,14 +9,6 @@ module.exports = {
 	AUTHENTICATION_MODE_TBA: 'TBA',
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	MANIFEST_XML: 'manifest.xml',
-	MANIFEST_XML_DEFINITIONS: {
-		ATTRIBUTES: {
-			PROJECT_TYPE: 'projecttype',
-		},
-		TAGS: {
-			MANIFEST: 'manifest',
-		},
-	},
 	SUITEAPP_ID_FORMAT_REGEX:
 		'^' + IS_ALPHANUMERIC_LOWERCASE_REGEX + '(\\.' + IS_ALPHANUMERIC_LOWERCASE_REGEX + '){2}$',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
