@@ -3,7 +3,7 @@
 const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const ApplicationConstants = require('../ApplicationConstants');
-const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
+const SDKExecutionContext = require('../SDKExecutionContext');
 const NodeUtils = require('../utils/NodeUtils');
 const FileUtils = require('../utils/FileUtils');
 const CryptoUtils = require('../utils/CryptoUtils');
@@ -161,7 +161,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					.then(() => {
 						try {
 							this._createAccountDetailsFile(contextValues);
-							NodeUtils.println('Context setup correctly', NodeUtils.COLORS.GREEN);
+							NodeUtils.println('Context setup correctly', NodeUtils.COLORS.RESULT);
 							resolve();
 						} catch (error) {
 							reject('Error while setting up context');

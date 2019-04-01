@@ -1,40 +1,73 @@
 'use strict';
-const NodeUtils = require('./../utils/NodeUtils');
+
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutor').SDKExecutionContext;
+const SDKExecutionContext = require('../SDKExecutionContext');
+const TranslationService = require('../services/TranslationService');
+const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const {
+	LIST_FILES_COMMAND_LOADING_FOLDERS,
+	LIST_FILES_COMMAND_LOADING_FILES,
+	LIST_FILES_COMMAND_SELECT_FOLDER,
+	LIST_FILES_COMMAND_RESTRICTED_FOLDER,
+} = require('../services/TranslationKeys');
+
+const LIST_FOLDERS_COMMAND = 'listfolders';
+const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 
 module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
+
 	constructor(options) {
 		super(options);
 	}
 
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
-			let executionContext = new SDKExecutionContext({
-				command: 'listfolders',
+			const executionContext = new SDKExecutionContext({
+				command: LIST_FOLDERS_COMMAND,
 				showOutput: false,
 			});
-			NodeUtils.println('Loading folders...', NodeUtils.COLORS.CYAN);
+			this._applyDefaultContextParams(executionContext);
 
-			return this._sdkExecutor.execute(executionContext).then(result => {
+			return executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FOLDERS),
+			}).then(result => {
 				resolve(prompt([
 					{
 						type: 'list',
 						name: this._commandMetadata.options.folder.name,
-						message: 'Select the FileCabinet folder',
-						default: '/SuiteScripts',
-						choices: JSON.parse(result),
+						message: TranslationService.getMessage(LIST_FILES_COMMAND_SELECT_FOLDER),
+						default: SUITE_SCRIPTS_FOLDER,
+						choices: this._getFileCabinetFolders(JSON.parse(result)),
 					},
 				]));
 			});
 		});
 	}
 
+	_getFileCabinetFolders(listFoldersResponse) {
+		return listFoldersResponse.map(folder => {
+			return {
+				name: folder.path,
+				value: folder.path,
+				disabled: folder.restricted ?
+					TranslationService.getMessage(LIST_FILES_COMMAND_RESTRICTED_FOLDER) : '',
+			};
+		});
+	}
+
 	_executeAction(answers) {
-		let executionContext = new SDKExecutionContext({
+		// quote folder path to preserve spaces
+		answers.folder = `\"${answers.folder}\"`;
+		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
 		});
-		return this._sdkExecutor.execute(executionContext);
+
+		return executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContext),
+			message: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FILES),
+		});
 	}
+
 };

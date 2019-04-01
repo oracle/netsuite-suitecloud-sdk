@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"chalk": "^2.4.2",
+		"cli-spinner": "^0.2.10",
 		"commander": "^2.19.0",
 		"inquirer": "^6.2.2",
 		"vm2": "^3.6.10",
