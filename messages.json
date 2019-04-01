@@ -6,6 +6,8 @@
 	"COMMAND_IMPORTOBJECTS_QUESTIONS_SCRIPT_ID": "Enter the full or partial script ID.",
 	"COMMAND_IMPORTOBJECTS_QUESTIONS_SHOW_ALL_CUSTOM_OBJECTS": "Do you want to import all object types?",
 	"COMMAND_IMPORTOBJECTS_QUESTIONS_SPECIFIC_APPID": "Do you want to import objects from a specific SuiteApp?",
+	"COMMAND_IMPORTOBJECTS_QUESTIONS_DESTINATION_FOLDER": "Select the folder where you want to import the objects.",
+	"COMMAND_IMPORTOBJECTS_QUESTIONS_OVERRITE_OBJECTS": "All the objects in the project will be overwritten with the objects from the account. Do you want to continue?",
 	"LIST_FILES_COMMAND_LOADING_FOLDERS": "Loading File Cabinet folders...",
 	"LIST_FILES_COMMAND_LOADING_FILES": "Loading files...",
 	"LIST_FILES_COMMAND_SELECT_FOLDER": "Select the File Cabinet folder for which you want to get a file list.",
