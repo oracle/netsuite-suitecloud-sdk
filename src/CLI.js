@@ -37,7 +37,7 @@ module.exports = class CLI {
 				this._printHelp();
 			}
 		} catch (exception) {
-			NodeUtils.println(unwrapExceptionMessage(exception), NodeUtils.COLORS.RED);
+			NodeUtils.println(unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 		}
 	}
 
@@ -77,7 +77,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeUtils.println(TranslationService.getMessage(CLI_TITLE), NodeUtils.COLORS.CYAN);
+		NodeUtils.println(TranslationService.getMessage(CLI_TITLE), NodeUtils.COLORS.RESULT);
 		program.help();
 	}
 };
