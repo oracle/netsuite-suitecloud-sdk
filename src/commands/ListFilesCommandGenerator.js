@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
@@ -31,7 +32,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				resolve(
 					prompt([
 						{
-							type: 'list',
+							type: CommandUtils.INQUIRER_TYPES.LIST,
 							name: this._commandMetadata.options.folder.name,
 							message: TranslationService.getMessage(
 								SELECT_FOLDER
