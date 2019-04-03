@@ -9,7 +9,7 @@ const path = require('path');
 const TranslationService = require('../services/TranslationService');
 const xml2js = require('xml2js');
 const MANIFEST_TAG_XML_PATH = '/manifest';
-const MANIFEST_XML_DEFINITIONS = {
+const MANIFEST_XML_CONSTS = {
 	ATTRIBUTES: {
 		PROJECT_TYPE: 'projecttype',
 	},
@@ -18,30 +18,31 @@ const MANIFEST_XML_DEFINITIONS = {
 	},
 };
 
-
 module.exports = class ProjectMetadataService {
-
 	/**
 	 * This validation function has to be defined in xml2js.Parser in the "validator" option
 	 * When calling parserString this function will be executed for every tag of the xml we are
 	 * parsing.
-	 * @param {*} xmlPath Path of the tag that it's being evaluated at the current moment.
-	 * @param {*} previousValue Existing value at this path if there is already one (e.g. this 
+	 * @param {string} xmlPath Path of the tag that it's being evaluated at the current moment.
+	 * @param {Object} previousValue Existing value at this path if there is already one (e.g. this
 	 * 								  is the second or later item in an array).
-	 * @param {*} newValue Value of the tag that it's being evaluated at the current moment.
+	 * @param {Object} newValue Value of the tag that it's being evaluated at the current moment.
 	 * @throws ValidationError if the validation fails
 	 */
 	_validateXml(xmlPath, previousValue, newValue) {
 		//TODO Add more cases
 		if (xmlPath === MANIFEST_TAG_XML_PATH) {
 			let manifestTagAttributes = newValue['$'];
-			if (!manifestTagAttributes || !manifestTagAttributes[MANIFEST_XML_DEFINITIONS.ATTRIBUTES.PROJECT_TYPE]) {
+			if (
+				!manifestTagAttributes
+					|| !manifestTagAttributes[MANIFEST_XML_CONSTS.ATTRIBUTES.PROJECT_TYPE]
+			) {
 				throw new xml2js.ValidationError(
 					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
 				);
 			} else if (
-				manifestTagAttributes[MANIFEST_XML_DEFINITIONS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_SUITEAPP
-				&& manifestTagAttributes[MANIFEST_XML_DEFINITIONS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_ACP
+				manifestTagAttributes[MANIFEST_XML_CONSTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_SUITEAPP
+					&& manifestTagAttributes[MANIFEST_XML_CONSTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_ACP
 			) {
 				throw new xml2js.ValidationError(
 					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT)
@@ -56,17 +57,19 @@ module.exports = class ProjectMetadataService {
 		if (!FileUtils.exists(manifestPath))
 			throw new CLIException(
 				-10,
-				TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' +
-					TranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath)
+				TranslationService.getMessage(ERRORS.PROCESS_FAILED) 
+				+ ' ' 
+				+ TranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath)
 			);
 
 		const manifestString = FileUtils.readAsString(manifestPath);
-		const beginTag = '<' + MANIFEST_XML_DEFINITIONS.TAGS.MANIFEST;
+		const beginTag = '<' + MANIFEST_XML_CONSTS.TAGS.MANIFEST;
 		if (manifestString.substr(0, beginTag.length) != beginTag) {
 			throw new CLIException(
 				-10,
-				TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' +
-					TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING)
+				TranslationService.getMessage(ERRORS.PROCESS_FAILED)
+					+ ' '
+					+ TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING)
 			);
 		}
 		let projectType;
@@ -77,9 +80,10 @@ module.exports = class ProjectMetadataService {
 		parser.parseString(manifestString, function(err, result) {
 			if (err) {
 				errorValidation =
-					TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' +
-					TranslationService.getMessage(ERRORS.FILE, manifestPath) +
-					err;
+					TranslationService.getMessage(ERRORS.PROCESS_FAILED)
+					+ ' '
+					+ TranslationService.getMessage(ERRORS.FILE, manifestPath)
+					+ err;
 			}
 
 			if (result) {

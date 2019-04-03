@@ -1,4 +1,3 @@
-
 module.exports = {
 	SDK_COMMANDS_METADATA_FILE: 'SDKCommandsMetadata.json',
 	NODE_COMMANDS_METADATA_FILE: 'NodeCommandsMetadata.json',

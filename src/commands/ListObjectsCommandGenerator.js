@@ -8,7 +8,12 @@ const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
-const  {validateArrayIsNotEmpty, validateFieldIsNotEmpty, validateSuiteApp, showValidationResults} = require('../validation/InteractiveAnswersValidatior');
+const {
+	validateArrayIsNotEmpty,
+	validateFieldIsNotEmpty,
+	validateSuiteApp,
+	showValidationResults,
+} = require('../validation/InteractiveAnswersValidator');
 const COMMAND_QUESTIONS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -24,7 +29,6 @@ const {
 	NO,
 } = require('../services/TranslationKeys');
 const NO_OBJECTS_FOUND = 'No custom objects found.';
-
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -103,7 +107,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				new inquirer.Separator(),
 			],
 
-			validate: fieldValue => showValidationResults(fieldValue,validateArrayIsNotEmpty),
+			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
 
 		questions.push(questionCustomOjects);
