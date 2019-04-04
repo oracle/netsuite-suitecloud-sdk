@@ -36,11 +36,11 @@ module.exports = class ProjectMetadataService {
 			if (!manifestTagAttributes
 					|| !manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE]) {
 				throw new xml2js.ValidationError(
-					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
-				);
+					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING));
 			} else if (manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_SUITEAPP
 					&& manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_ACP) {
-				throw new xml2js.ValidationError(TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT));
+				throw new xml2js.ValidationError(
+					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT));
 			}
 		}
 		return newValue;
@@ -59,21 +59,19 @@ module.exports = class ProjectMetadataService {
 		const beginTag = '<' + MANIFEST_XML_CONSTANTS.TAGS.MANIFEST;
 		if (manifestString.substr(0, beginTag.length) != beginTag) {
 			const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' 
-				+ TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING)
+				+ TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
 				throw new CLIException(-10,errorMessage);
 		}
 		let projectType;
-		let errorValidation;
+		let validationError;
 
 		let parser = new xml2js.Parser({ validator: this._validateXml });
 
 		parser.parseString(manifestString, function(err, result) {
 			if (err) {
-				errorValidation =
-					TranslationService.getMessage(ERRORS.PROCESS_FAILED)
-					+ ' '
-					+ TranslationService.getMessage(ERRORS.FILE, manifestPath)
-					+ err;
+				const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) 
+					+ TranslationService.getMessage(ERRORS.FILE, manifestPath);
+				validationError = errorMessage + ' ' + err;
 			}
 
 			if (result) {
@@ -83,8 +81,8 @@ module.exports = class ProjectMetadataService {
 
 		//TODO CHECK XML IS VALID
 
-		if (errorValidation) {
-			throw new CLIException(-10, errorValidation);
+		if (validationError) {
+			throw new CLIException(-10, validationError);
 		}
 
 		return projectType;

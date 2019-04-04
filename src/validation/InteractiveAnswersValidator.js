@@ -3,11 +3,11 @@ const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const { ERRORS } = require('../services/TranslationKeys');
 
-const FAILED_VALIDATION_RESULT_FACTORY = validationError => ({
+const VALIDATION_RESULT_FAILURE = validationError => ({
 	result: false,
 	validationMessage: validationError,
 });
-const PASSED_VALIDATION_RESULT = { result: true };
+const VALIDATION_RESULT_SUCCESS = { result: true };
 
 NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {
 	color: NodeUtils.COLORS.ERROR,
@@ -33,32 +33,32 @@ class InteractiveAnswersValidator {
 
 	validateFieldIsNotEmpty(fieldValue) {
 		return fieldValue !== ''
-			? PASSED_VALIDATION_RESULT
-			: FAILED_VALIDATION_RESULT_FACTORY(TranslationService.getMessage(ERRORS.EMPTY_FIELD));
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.EMPTY_FIELD));
 	}
 
 	validateArrayIsNotEmpty(array) {
 		return array.length > 0
-			? PASSED_VALIDATION_RESULT
-			: FAILED_VALIDATION_RESULT_FACTORY(TranslationService.getMessage(ERRORS.CHOOSE_OPTION));
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.CHOOSE_OPTION));
 	}
 
 	validateSuiteApp(fieldValue) {
 		let notEmpty =
 			fieldValue !== ''
-				? PASSED_VALIDATION_RESULT
-				: FAILED_VALIDATION_RESULT_FACTORY(
+				? VALIDATION_RESULT_SUCCESS
+				: VALIDATION_RESULT_FAILURE(
 						TranslationService.getMessage(ERRORS.EMPTY_FIELD)
 				  );
 
 		if (notEmpty.result != true) {
 			return notEmpty;
 		} else if (!fieldValue.match(SUITEAPP_ID_FORMAT_REGEX)) {
-			return FAILED_VALIDATION_RESULT_FACTORY(
+			return VALIDATION_RESULT_FAILURE(
 				TranslationService.getMessage(ERRORS.APPID_FORMAT)
 			);
 		}
-		return PASSED_VALIDATION_RESULT;
+		return VALIDATION_RESULT_SUCCESS;
 	}
 }
 
