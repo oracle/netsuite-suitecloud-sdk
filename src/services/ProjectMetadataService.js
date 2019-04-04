@@ -8,9 +8,11 @@ const FileUtils = require('../utils/FileUtils');
 const path = require('path');
 const TranslationService = require('../services/TranslationService');
 const xml2js = require('xml2js');
+
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
-const MANIFEST_TAG_REGEX = '<manifest.*>[^]*<\/manifest>$'
+const MANIFEST_TAG_REGEX = '<manifest.*>[^]*<\/manifest>$';
+
 module.exports = class ProjectMetadataService {
 	/**
 	 * This validation function has to be defined in xml2js.Parser in the "validator" option
