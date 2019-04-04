@@ -9,15 +9,8 @@ const path = require('path');
 const TranslationService = require('../services/TranslationService');
 const xml2js = require('xml2js');
 const MANIFEST_TAG_XML_PATH = '/manifest';
-const MANIFEST_XML_CONSTANTS = {
-	ATTRIBUTES: {
-		PROJECT_TYPE: 'projecttype',
-	},
-	TAGS: {
-		MANIFEST_BEGINNING: '^<manifest projecttype=[A-Z]+>',
-	},
-};
-const regexBegin = '^<manifest projecttype=[A-Z]+>'
+const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
+const MANIFEST_TAG_REGEX = '^<manifest projecttype=[A-Z]+>.+</manifest>$';
 
 module.exports = class ProjectMetadataService {
 	/**
@@ -35,11 +28,11 @@ module.exports = class ProjectMetadataService {
 		if (xmlPath === MANIFEST_TAG_XML_PATH) {
 			let manifestTagAttributes = newValue['$'];
 			if (!manifestTagAttributes
-					|| !manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE]) {
+					|| !manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE]) {
 				throw new xml2js.ValidationError(
 					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING));
-			} else if (manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_SUITEAPP
-					&& manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_ACP) {
+			} else if (manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE] !== PROJECT_SUITEAPP
+					&& manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE] !== PROJECT_ACP) {
 				throw new xml2js.ValidationError(
 					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT));
 			}
@@ -58,7 +51,7 @@ module.exports = class ProjectMetadataService {
 
 		const manifestString = FileUtils.readAsString(manifestPath);
 		
-		if (manifestString.match(MANIFEST_XML_CONSTANTS.TAGS.MANIFEST_BEGINNING)) {
+		if (manifestString.match(MANIFEST_TAG_REGEX)) {
 			const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' 
 				+ TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
 				throw new CLIException(-10,errorMessage);
