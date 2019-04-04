@@ -10,8 +10,7 @@ const TranslationService = require('../services/TranslationService');
 const xml2js = require('xml2js');
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
-const MANIFEST_TAG_REGEX = '^<manifest projecttype=[A-Z]+>.+</manifest>$';
-
+const MANIFEST_TAG_REGEX = '<manifest.*>[^]*<\/manifest>$'
 module.exports = class ProjectMetadataService {
 	/**
 	 * This validation function has to be defined in xml2js.Parser in the "validator" option
@@ -51,7 +50,7 @@ module.exports = class ProjectMetadataService {
 
 		const manifestString = FileUtils.readAsString(manifestPath);
 		
-		if (manifestString.match(MANIFEST_TAG_REGEX)) {
+		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
 			const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' 
 				+ TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
 				throw new CLIException(-10,errorMessage);
