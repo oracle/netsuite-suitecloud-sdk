@@ -91,7 +91,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		};
 		questions.push(questionFilterByCustomObjects);
 
-		const questionCustomOjects = {
+		const questionCustomObjects = {
 			when: function(answers) {
 				return !answers.typeall;
 			},
@@ -110,7 +110,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
 
-		questions.push(questionCustomOjects);
+		questions.push(questionCustomObjects);
 
 		const questionSpecificScriptId = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,

@@ -9,7 +9,7 @@ const path = require('path');
 const TranslationService = require('../services/TranslationService');
 const xml2js = require('xml2js');
 const MANIFEST_TAG_XML_PATH = '/manifest';
-const MANIFEST_XML_CONSTS = {
+const MANIFEST_XML_CONSTANTS = {
 	ATTRIBUTES: {
 		PROJECT_TYPE: 'projecttype',
 	},
@@ -33,20 +33,14 @@ module.exports = class ProjectMetadataService {
 		//TODO Add more cases
 		if (xmlPath === MANIFEST_TAG_XML_PATH) {
 			let manifestTagAttributes = newValue['$'];
-			if (
-				!manifestTagAttributes
-					|| !manifestTagAttributes[MANIFEST_XML_CONSTS.ATTRIBUTES.PROJECT_TYPE]
-			) {
+			if (!manifestTagAttributes
+					|| !manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE]) {
 				throw new xml2js.ValidationError(
 					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
 				);
-			} else if (
-				manifestTagAttributes[MANIFEST_XML_CONSTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_SUITEAPP
-					&& manifestTagAttributes[MANIFEST_XML_CONSTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_ACP
-			) {
-				throw new xml2js.ValidationError(
-					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT)
-				);
+			} else if (manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_SUITEAPP
+					&& manifestTagAttributes[MANIFEST_XML_CONSTANTS.ATTRIBUTES.PROJECT_TYPE] !== PROJECT_ACP) {
+				throw new xml2js.ValidationError(TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT));
 			}
 		}
 		return newValue;
@@ -54,23 +48,19 @@ module.exports = class ProjectMetadataService {
 
 	getProjectType(projectFolder) {
 		const manifestPath = path.join(projectFolder, MANIFEST_XML);
-		if (!FileUtils.exists(manifestPath))
-			throw new CLIException(
-				-10,
-				TranslationService.getMessage(ERRORS.PROCESS_FAILED) 
-				+ ' ' 
-				+ TranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath)
-			);
+		
+		if (!FileUtils.exists(manifestPath)){
+			const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' '
+				+ TranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath);
+			throw new CLIException(-10,errorMessage);
+		}
 
 		const manifestString = FileUtils.readAsString(manifestPath);
-		const beginTag = '<' + MANIFEST_XML_CONSTS.TAGS.MANIFEST;
+		const beginTag = '<' + MANIFEST_XML_CONSTANTS.TAGS.MANIFEST;
 		if (manifestString.substr(0, beginTag.length) != beginTag) {
-			throw new CLIException(
-				-10,
-				TranslationService.getMessage(ERRORS.PROCESS_FAILED)
-					+ ' '
-					+ TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING)
-			);
+			const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' 
+				+ TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING)
+				throw new CLIException(-10,errorMessage);
 		}
 		let projectType;
 		let errorValidation;
