@@ -14,9 +14,10 @@ const MANIFEST_XML_CONSTANTS = {
 		PROJECT_TYPE: 'projecttype',
 	},
 	TAGS: {
-		MANIFEST: 'manifest',
+		MANIFEST_BEGINNING: '^<manifest projecttype=[A-Z]+>',
 	},
 };
+const regexBegin = '^<manifest projecttype=[A-Z]+>'
 
 module.exports = class ProjectMetadataService {
 	/**
@@ -56,8 +57,8 @@ module.exports = class ProjectMetadataService {
 		}
 
 		const manifestString = FileUtils.readAsString(manifestPath);
-		const beginTag = '<' + MANIFEST_XML_CONSTANTS.TAGS.MANIFEST;
-		if (manifestString.substr(0, beginTag.length) != beginTag) {
+		
+		if (manifestString.match(MANIFEST_XML_CONSTANTS.TAGS.MANIFEST_BEGINNING)) {
 			const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' 
 				+ TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
 				throw new CLIException(-10,errorMessage);
@@ -69,7 +70,7 @@ module.exports = class ProjectMetadataService {
 
 		parser.parseString(manifestString, function(err, result) {
 			if (err) {
-				const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) 
+				const errorMessage = TranslationService.getMessage(ERRORS.PROCESS_FAILED) + ' ' 
 					+ TranslationService.getMessage(ERRORS.FILE, manifestPath);
 				validationError = errorMessage + ' ' + err;
 			}
