@@ -7,7 +7,7 @@ const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const TranslationService = require('../services/TranslationService');
+const { getMessage } = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
 const commandsMetadata = require('../metadata/CommandsMetadataService');
@@ -45,7 +45,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_validateFieldIsNotEmpty(fieldValue) {
 		return fieldValue !== ''
 			? true
-			: NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {
+			: NodeUtils.formatString(getMessage(ERRORS.EMPTY_FIELD), {
 					color: NodeUtils.COLORS.RED,
 					bold: true,
 			  });
@@ -54,17 +54,16 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_validateArrayIsNotEmpty(array) {
 		return array.length > 0
 			? true
-			: NodeUtils.formatString(TranslationService.getMessage(ERRORS.CHOOSE_OPTION), {
+			: NodeUtils.formatString(getMessage(ERRORS.CHOOSE_OPTION), {
 					color: NodeUtils.COLORS.RED,
 					bold: true,
 			  });
 	}
 
 	_getCommandQuestions(prompt) {
-		var questions = [];
-		//create a class to see type based on manifest.
+		var questions1 = [];
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
+			let message = getMessage(QUESTIONS.SPECIFIC_APPID);
 
 			const questionSpecifySuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -72,12 +71,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				message,
 				default: 0,
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: true },
-					{ name: TranslationService.getMessage(NO), value: false	}
+					{ name: getMessage(YES), value: true },
+					{ name: getMessage(NO), value: false	}
 				],
 				validate: this._validateArrayIsNotEmpty,
 			};
-			questions.push(questionSpecifySuiteApp);
+			questions1.push(questionSpecifySuiteApp);
 
 			const questionAppId = {
 				when: function(response) {
@@ -85,23 +84,23 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: ANSWERS_NAMES.APP_ID,
-				message: TranslationService.getMessage(QUESTIONS.APPID),
+				message: getMessage(QUESTIONS.APPID),
 				validate: this._validateFieldIsNotEmpty,
 			};
-			questions.push(questionAppId);
+			questions1.push(questionAppId);
 		}
 
 		const questionShowAllObjects = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_OBJECT_TYPE,
-			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
+			message: getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
 			default: 0,
 			choices: [
-				{ name: TranslationService.getMessage(YES), value: false },
-				{ name: TranslationService.getMessage(NO), value: true },
+				{ name: getMessage(YES), value: false },
+				{ name: getMessage(NO), value: true },
 			]
 		};
-		questions.push(questionShowAllObjects);
+		questions1.push(questionShowAllObjects);
 
 		const questionCustomOjects = {
 			when: function(answers) {
@@ -109,7 +108,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 			name: ANSWERS_NAMES.TYPE_CHOICES_ARRAY,
-			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
+			message: getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
 			choices: [
 				...OBJECT_TYPES.map(customObject => ({
@@ -121,25 +120,19 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			validate: this._validateArrayIsNotEmpty,
 		};
 
-		questions.push(questionCustomOjects);
+		questions1.push(questionCustomOjects);
 
 		const questionSpecifyScriptId = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_SCRIPT_ID,
-			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
+			message: getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 			default: false,
 			choices: [
-				{
-					name: TranslationService.getMessage(YES),
-					value: true,
-				},
-				{
-					name: TranslationService.getMessage(NO),
-					value: false,
-				},
+				{ name: getMessage(YES), value: true },
+				{ name: getMessage(NO), value: false },
 			],
 		};
-		questions.push(questionSpecifyScriptId);
+		questions1.push(questionSpecifyScriptId);
 
 		const questionScriptId = {
 			when: function(response) {
@@ -147,12 +140,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.SCRIPT_ID,
-			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
+			message: getMessage(QUESTIONS.SCRIPT_ID),
 			validate: this._validateFieldIsNotEmpty,
 		};
-		questions.push(questionScriptId);
+		questions1.push(questionScriptId);
 
-		return prompt(questions).then(firstAnswers => {
+		return prompt(questions1).then(firstAnswers => {
 			const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
 
 			return new Promise(resolve => {
@@ -165,16 +158,22 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 				return executeWithSpinner({
 					action: this._sdkExecutor.execute(executionContextForListObjects),
-					message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
+					message: getMessage(MESSAGES.LOADING_OBJECTS),
 				}).then(result => {
+                    const operationResult = JSON.parse(result);
                     const questions2 = [];
-                    
-                    const choicesToShow = JSON.parse(result).data.map(el =>({name: el.type+':'+el.scriptid, value: el}));
+
+                    if (operationResult.status === 'ERROR' || operationResult.data.length == 0) {
+                        NodeUtils.println(getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.INFO);
+                        return;
+                    }
+
+                    const choicesToShow = operationResult.data.map(el =>({name: el.type+':'+el.scriptid, value: el}));
 
 					const questionListObjectsSelection = {
 						type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 						name: ANSWERS_NAMES.OBJECTS_SELECTED,
-						message: TranslationService.getMessage(QUESTIONS.SELECT_OBJECTS),
+						message: getMessage(QUESTIONS.SELECT_OBJECTS),
 						choices: choicesToShow,
 					};
 					questions2.push(questionListObjectsSelection);
@@ -192,7 +191,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					const questionDestinationFolder = {
 						type: CommandUtils.INQUIRER_TYPES.LIST,
 						name: ANSWERS_NAMES.DESTINATION_FOLDER,
-						message: TranslationService.getMessage(QUESTIONS.DESTINATION_FOLDER),
+						message: getMessage(QUESTIONS.DESTINATION_FOLDER),
 						choices: objectDirectoryChoices,
 					};
 					questions2.push(questionDestinationFolder);
@@ -200,11 +199,11 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					const questionOverwriteConfirmation = {
 						type: CommandUtils.INQUIRER_TYPES.LIST,
 						name: ANSWERS_NAMES.OVERRITE_OBJECTS,
-						message: TranslationService.getMessage(QUESTIONS.OVERRITE_OBJECTS),
+						message: getMessage(QUESTIONS.OVERRITE_OBJECTS),
 						default: 0,
 						choices: [
-							{ name: TranslationService.getMessage(YES), value: true},
-							{ name: TranslationService.getMessage(NO), value: false}
+							{ name: getMessage(YES), value: true },
+							{ name: getMessage(NO), value: false }
 						]
 					};
 					questions2.push(questionOverwriteConfirmation);
@@ -245,7 +244,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_executeAction(answers) {
 
 		if (!answers[ANSWERS_NAMES.OVERRITE_OBJECTS]) {
-			return new Promise(resolve => console.log(TranslationService.getMessage(MESSAGES.CANCEL_IMPORT)));
+			return new Promise(resolve => console.log(getMessage(MESSAGES.CANCEL_IMPORT)));
 		}
 
 		const options = Object.keys(this._commandMetadata.options);
@@ -257,7 +256,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
         
         return executeWithSpinner({
             action: this._sdkExecutor.execute(executionContextForImportObjects),
-            message: 'Importing objects...',
+            message: getMessage(MESSAGES.IMPORTING_OBJECTS),
         })
 	}
 };
