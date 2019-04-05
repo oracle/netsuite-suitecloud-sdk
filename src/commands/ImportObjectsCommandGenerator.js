@@ -28,7 +28,7 @@ const ANSWERS_NAMES = {
 };
 const { PROJECT_SUITEAPP, OBJECTS_FOLDER } = require('../ApplicationConstants');
 const {
-	COMMAND_IMPORTOBJECTS: { QUESTIONS },
+	COMMAND_IMPORTOBJECTS: { QUESTIONS, MESSAGES },
 	ERRORS,
 	YES,
 	NO,
@@ -157,7 +157,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 			return new Promise(resolve => {
 				const executionContextForListObjects = new SDKExecutionContext({
-					command: 'listobjects',
+					command: this._commandsMetadataInfo.listobjects.name,
 					showOutput: false,
 					params: paramsForListObjects,
 				});
@@ -165,7 +165,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 				return executeWithSpinner({
 					action: this._sdkExecutor.execute(executionContextForListObjects),
-					message: 'Loading objects to list...',
+					message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
 				}).then(result => {
                     const questions2 = [];
                     
@@ -174,7 +174,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					const questionListObjectsSelection = {
 						type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 						name: ANSWERS_NAMES.OBJECTS_SELECTED,
-						message: 'select your objects',
+						message: TranslationService.getMessage(QUESTIONS.SELECT_OBJECTS),
 						choices: choicesToShow,
 					};
 					questions2.push(questionListObjectsSelection);
@@ -245,15 +245,19 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_executeAction(answers) {
 
 		if (!answers[ANSWERS_NAMES.OVERRITE_OBJECTS]) {
-			return new Promise(resolve => console.log('Command canceled by the user'));
+			return new Promise(resolve => console.log(TranslationService.getMessage(MESSAGES.CANCEL_IMPORT)));
 		}
 
 		const options = Object.keys(this._commandMetadata.options);
 		var params = CommandUtils.extractOnlyOptionsFromObject(answers, options);
-		const executionContext = new SDKExecutionContext({
+		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params
-		});
-		return this._sdkExecutor.execute(executionContext);
+        });
+        
+        return executeWithSpinner({
+            action: this._sdkExecutor.execute(executionContextForImportObjects),
+            message: 'Importing objects...',
+        })
 	}
 };

@@ -6,6 +6,7 @@ const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
+const NodeUtils = require('./utils/NodeUtils');
 
 module.exports.SDKExecutor = class SDKExecutor {
 
@@ -40,7 +41,8 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			childProcess.stderr.on('data', data => {
 				const sdkOutput = data.toString('utf8');
-				reject(new CLIException(1, sdkOutput));
+                lastSdkOutput += NodeUtils.formatString(sdkOutput, {color: NodeUtils.COLORS.ERROR});
+				// reject(new CLIException(1, sdkOutput));
 			});
 
 			childProcess.stdout.on('data', data => {
