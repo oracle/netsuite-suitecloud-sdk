@@ -7,4 +7,4 @@ error.log
 /bin/.clicache
 
 src/configuration/LocalConfig.js
-.vscode/launch.json
+.vscode/*

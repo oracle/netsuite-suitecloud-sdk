@@ -1,21 +1,18 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const {
-	LIST_FILES_COMMAND_LOADING_FOLDERS,
-	LIST_FILES_COMMAND_LOADING_FILES,
-	LIST_FILES_COMMAND_SELECT_FOLDER,
-	LIST_FILES_COMMAND_RESTRICTED_FOLDER,
+	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER },
 } = require('../services/TranslationKeys');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 
 module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
-
 	constructor(options) {
 		super(options);
 	}
@@ -30,17 +27,21 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 			return executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
-				message: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FOLDERS),
+				message: TranslationService.getMessage(LOADING_FOLDERS),
 			}).then(result => {
-				resolve(prompt([
-					{
-						type: 'list',
-						name: this._commandMetadata.options.folder.name,
-						message: TranslationService.getMessage(LIST_FILES_COMMAND_SELECT_FOLDER),
-						default: SUITE_SCRIPTS_FOLDER,
-						choices: this._getFileCabinetFolders(JSON.parse(result)),
-					},
-				]));
+				resolve(
+					prompt([
+						{
+							type: CommandUtils.INQUIRER_TYPES.LIST,
+							name: this._commandMetadata.options.folder.name,
+							message: TranslationService.getMessage(
+								SELECT_FOLDER
+							),
+							default: SUITE_SCRIPTS_FOLDER,
+							choices: this._getFileCabinetFolders(JSON.parse(result)),
+						},
+					])
+				);
 			});
 		});
 	}
@@ -50,8 +51,9 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			return {
 				name: folder.path,
 				value: folder.path,
-				disabled: folder.restricted ?
-					TranslationService.getMessage(LIST_FILES_COMMAND_RESTRICTED_FOLDER) : '',
+				disabled: folder.restricted
+					? TranslationService.getMessage(RESTRICTED_FOLDER)
+					: '',
 			};
 		});
 	}
@@ -66,8 +68,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(LIST_FILES_COMMAND_LOADING_FILES),
+			message: TranslationService.getMessage(LOADING_FILES),
 		});
 	}
-
 };
