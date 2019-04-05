@@ -22,7 +22,8 @@ const ANSWERS_NAMES = {
 	SPECIFY_OBJECT_TYPE: 'specifyObjectType',
 	TYPE_CHOICES_ARRAY: 'typeChoicesArray',
 	DESTINATION_FOLDER: 'destinationfolder',
-	PROJECT_FOLDER: 'project',
+    PROJECT_FOLDER: 'project',
+    OBJECTS_SELECTED: 'objects_selected',
 	OVERRITE_OBJECTS: 'overwrite_objects',
 };
 const { PROJECT_SUITEAPP, OBJECTS_FOLDER } = require('../ApplicationConstants');
@@ -152,7 +153,6 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		questions.push(questionScriptId);
 
 		return prompt(questions).then(firstAnswers => {
-			console.log('Before calling again prompt, prevAnswers:', firstAnswers);
 			const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
 
 			return new Promise(resolve => {
@@ -167,14 +167,15 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					action: this._sdkExecutor.execute(executionContextForListObjects),
 					message: 'Loading objects to list...',
 				}).then(result => {
-					console.log('this is the result from listobjects java execution: ', result);
-					const questions2 = [];
+                    const questions2 = [];
+                    
+                    const choicesToShow = JSON.parse(result).data.map(el =>({name: el.type+':'+el.scriptid, value: el}));
 
 					const questionListObjectsSelection = {
-						type: 'input',
-						name: 'listobjects_result',
-						message: result,
-						value: result,
+						type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+						name: ANSWERS_NAMES.OBJECTS_SELECTED,
+						message: 'select your objects',
+						choices: choicesToShow,
 					};
 					questions2.push(questionListObjectsSelection);
 
@@ -211,18 +212,11 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					resolve(prompt(questions2));
 				});
 			}).then(secondAnswers => {
-                console.log('firstAnswers:', firstAnswers);
-                console.log('secondAnswer:', secondAnswers);
                 const combinedAnswers = { ...firstAnswers, ...secondAnswers };
                 const finalAnswers =  this._arrangeAnswersForImportObjects(combinedAnswers);
-                console.log('finalAnswers:', finalAnswers);
 				return finalAnswers;
 			});
 
-			return prompt([questionOverwriteConfirmation2]).then(newAnswers => ({
-				...prevAnswers,
-				...newAnswers,
-			}));
 		});
 	}
 
@@ -239,22 +233,14 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_arrangeAnswersForImportObjects(answers) {
 		if (!answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
-		} else {
-			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(
-				' '
-			);
-		}
-		if (!answers[ANSWERS_NAMES.SPECIFY_SCRIPT_ID]) {
-			answers[ANSWERS_NAMES.SCRIPT_ID] = 'ALL';
-		}
+		} else if (answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].length > 1) {
+			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
+        }
+		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map(el=>(el.scriptid)).join(' ');
 		answers[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
 
 		return answers;
 	}
-
-	// _preExecuteAction(answers) {
-	// 	console.log('_preExecution')
-	// }
 
 	_executeAction(answers) {
 
@@ -264,7 +250,6 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		const options = Object.keys(this._commandMetadata.options);
 		var params = CommandUtils.extractOnlyOptionsFromObject(answers, options);
-		console.log('params:', params);
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params
