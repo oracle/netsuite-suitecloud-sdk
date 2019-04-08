@@ -339,9 +339,9 @@ module.exports = [
 		},
 	},
 	{
-		name: 'Script -Suitelet',
+		name: 'Script - Suitelet',
 		value: {
-            name: 'Script -Suitelet',
+            name: 'Script - Suitelet',
 			type: 'suitelet',
 			prefix: 'customscript_',
             hasRelatedFiles: true,
@@ -363,9 +363,9 @@ module.exports = [
 		},
 	},
 	{
-		name: 'Script -Workflow Action',
+		name: 'Script - Workflow Action',
 		value: {
-            name: 'Script -Workflow Action',
+            name: 'Script - Workflow Action',
 			type: 'workflowactionscript',
 			prefix: 'customscript_',
             hasRelatedFiles: true,
