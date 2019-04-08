@@ -36,7 +36,7 @@
 				"mandatory": true
 			}
 		]
-    },
+	},
     "createobject": {
 		"name": "createobject",
 		"alias": "ca",
@@ -45,5 +45,24 @@
 		"options": [
 			
 		]
-    }
+    },
+	"local": {
+		"name": "local",
+		"description": "Test themes/extensions locally",
+		"isSetupRequired": false,
+		"options": [
+			{
+				"name": "theme",
+				"alias": "t",
+				"description": "TEST",
+				"mandatory": true
+			},
+			{
+				"name": "extensions",
+				"alias": "e",
+				"description": "TEST",
+				"mandatory": false
+			}
+		]
+	}
 }
