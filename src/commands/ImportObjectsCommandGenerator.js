@@ -168,7 +168,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
                         return;
                     }
 
-                    const choicesToShow = operationResult.data.map(el =>({name: el.type+':'+el.scriptid, value: el}));
+                    const choicesToShow = operationResult.data.map(el =>({name: el.type+':'+el.scriptId, value: el}));
 
 					const questionListObjectsSelection = {
 						type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
@@ -209,7 +209,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					questions2.push(questionOverwriteConfirmation);
 
 					resolve(prompt(questions2));
-				});
+				}).catch(error => console.log(error));
 			}).then(secondAnswers => {
                 const combinedAnswers = { ...firstAnswers, ...secondAnswers };
                 const finalAnswers =  this._arrangeAnswersForImportObjects(combinedAnswers);
@@ -235,7 +235,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		} else if (answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].length > 1) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
         }
-		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map(el=>(el.scriptid)).join(' ');
+		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map(el=>(el.scriptId)).join(' ');
 		answers[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
 
 		return answers;
@@ -244,7 +244,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_executeAction(answers) {
 
 		if (!answers[ANSWERS_NAMES.OVERRITE_OBJECTS]) {
-			return new Promise(resolve => console.log(getMessage(MESSAGES.CANCEL_IMPORT)));
+			return new Promise((resolve, reject) => reject(getMessage(MESSAGES.CANCEL_IMPORT)));
 		}
 
 		const options = Object.keys(this._commandMetadata.options);

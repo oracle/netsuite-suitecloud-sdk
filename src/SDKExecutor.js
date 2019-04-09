@@ -41,8 +41,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			childProcess.stderr.on('data', data => {
 				const sdkOutput = data.toString('utf8');
-                lastSdkOutput += NodeUtils.formatString(sdkOutput, {color: NodeUtils.COLORS.ERROR});
-				// reject(new CLIException(1, sdkOutput));
+				reject(new CLIException(1, sdkOutput));
 			});
 
 			childProcess.stdout.on('data', data => {

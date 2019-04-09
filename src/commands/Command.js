@@ -57,7 +57,7 @@ module.exports = class Command {
 		}
 
 		commandSetup.description(this._description).action(options => {
-			commandOutputHandler.handle(this._onExecuteCommand(options));
+			commandOutputHandler.handle(this._onExecuteCommand(options), this._name);
 		});
 	}
 

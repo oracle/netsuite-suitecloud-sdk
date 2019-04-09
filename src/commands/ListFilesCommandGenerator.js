@@ -5,6 +5,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const NodeUtils = require('../utils/NodeUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER },
 } = require('../services/TranslationKeys');
@@ -28,7 +29,8 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			return executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
 				message: TranslationService.getMessage(LOADING_FOLDERS),
-			}).then(result => {
+			})
+			.then(result => {
 				resolve(
 					prompt([
 						{
@@ -42,16 +44,20 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 						},
 					])
 				);
-			});
+			})
+			// TODO : find right mecanism to treat the error
+			.catch( error => {
+				NodeUtils.println(`Somthing went wrong with ${this._commandMetadata.name}, error: ${error}`, NodeUtils.COLORS.ERROR);
+			})
 		});
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
-		return listFoldersResponse.map(folder => {
+		return listFoldersResponse.data.map(folder => {
 			return {
 				name: folder.path,
 				value: folder.path,
-				disabled: folder.restricted
+				disabled: folder.isRestricted
 					? TranslationService.getMessage(RESTRICTED_FOLDER)
 					: '',
 			};
