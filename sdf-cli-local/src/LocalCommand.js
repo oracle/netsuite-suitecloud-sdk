@@ -10,8 +10,10 @@ const _ = require('underscore');
 module.exports = class LocalCommand {
 
 	constructor(options){
-		console.log(options);
 		this._projectFolder = options.projectFolder;
+	}
+
+	initialize(){	
 
 		const deploy_xml = new DeployXml({projectFolder: this._projectFolder});
 		const objects = deploy_xml.getObjects();
@@ -22,8 +24,8 @@ module.exports = class LocalCommand {
 		this.extensions = objects.extensions;
 	}
 
-	getCommandQuestions(){
-		return [
+	getCommandQuestions(prompt){
+		return prompt([
 			{
 				type: 'list',
 				name: 'theme',
@@ -36,7 +38,7 @@ module.exports = class LocalCommand {
 				message: 'Choose the Extensions',
 				choices: Object.keys(this.extensions),
 			}
-		];
+		]);
 	}
 
 	executeAction(answers){
@@ -54,7 +56,10 @@ module.exports = class LocalCommand {
 		const compiler = new Compiler({context: context});
 		const local_server = new LocalServer({context: context});
 
-		return compiler.compile().then(_.bind(local_server.startServer, local_server));
+		return compiler.compile().then(()=>{
+			_.bind(local_server.startServer, local_server)();
+			return "Finished";
+		});
 	}
 
 	_createCompilationContext(theme, extensions){

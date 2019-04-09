@@ -56,10 +56,10 @@ module.exports = class SassCompiler{
 					importer: _.bind(this._importer, this)
 				},
 				(error, result) => {
-					if (error) {
-						reject(error);
+					if (error) {						
+						return reject(error);
 					}
-
+					
 					const local_path = path.join(this.css_path, app + '.css');
 					fs.writeFileSync(local_path, result.css);
 
