@@ -3,6 +3,7 @@
 const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
+const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
@@ -24,7 +25,7 @@ const COMMAND_QUESTIONS_NAMES = {
 };
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTOBJECTS: { QUESTIONS, SUCCESS, SUCCESS_NO_OBJECTS },
+	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS, SUCCESS_NO_OBJECTS },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -155,16 +156,24 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			params,
 			showOutput: false,
 		});
-		return this._sdkExecutor.execute(executionContext).then(result => {
-			if (result.includes(NO_OBJECTS_FOUND)) {
-				result = result.replace(
-					NO_OBJECTS_FOUND,
-					TranslationService.getMessage(SUCCESS_NO_OBJECTS)
-				);
-			} else {
-				NodeUtils.println(TranslationService.getMessage(SUCCESS), NodeUtils.COLORS.RESULT);
-			}
-			NodeUtils.println(result, NodeUtils.COLORS.RESULT);
+
+		const actionListObjects = this._sdkExecutor.execute(executionContext).then(result => {
+			return new Promise(resolve => {
+				if (result.includes(NO_OBJECTS_FOUND)) {
+					result = result.replace(
+						NO_OBJECTS_FOUND,
+						TranslationService.getMessage(SUCCESS_NO_OBJECTS)
+					);
+				} else {
+					result = TranslationService.getMessage(SUCCESS) + NodeUtils.lineBreak + result;
+				}
+				resolve(result);
+			});
+		});
+
+		return executeWithSpinner({
+			action: actionListObjects,
+			message: TranslationService.getMessage(LISTING_OBJECTS),
 		});
 	}
 };
