@@ -38,6 +38,9 @@ module.exports = class LocalServer {
 		app.listen(server_config.port);
 
 		this._localMessage(server_config);
+
+		//server is listening so we return a new promise that will never be resolved
+		return new Promise(() => {});
 	}
 
 	_whoService(){

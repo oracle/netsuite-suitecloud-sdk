@@ -56,10 +56,7 @@ module.exports = class LocalCommand {
 		const compiler = new Compiler({context: context});
 		const local_server = new LocalServer({context: context});
 
-		return compiler.compile().then(()=>{
-			_.bind(local_server.startServer, local_server)();
-			return "Finished";
-		});
+		return compiler.compile().then(_.bind(local_server.startServer, local_server));
 	}
 
 	_createCompilationContext(theme, extensions){
