@@ -158,17 +158,15 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		});
 
 		const actionListObjects = this._sdkExecutor.execute(executionContext).then(result => {
-			return new Promise(resolve => {
-				if (result.includes(NO_OBJECTS_FOUND)) {
-					result = result.replace(
-						NO_OBJECTS_FOUND,
-						TranslationService.getMessage(SUCCESS_NO_OBJECTS)
-					);
-				} else {
-					result = TranslationService.getMessage(SUCCESS) + NodeUtils.lineBreak + result;
-				}
-				resolve(result);
-			});
+			if (result.includes(NO_OBJECTS_FOUND)) {
+				result = result.replace(
+					NO_OBJECTS_FOUND,
+					TranslationService.getMessage(SUCCESS_NO_OBJECTS)
+				);
+			} else {
+				result = TranslationService.getMessage(SUCCESS) + NodeUtils.lineBreak + result;
+			}
+			return result;
 		});
 
 		return executeWithSpinner({
