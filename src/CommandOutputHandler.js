@@ -20,17 +20,17 @@ module.exports = class CommandOutputHandler {
 
 	_showOperationResult({status, message, data}, commandName) {
 		if (status == 'ERROR') {
-			NodeUtils.println(operationResult.message, NodeUtils.COLORS.ERROR);
+			NodeUtils.println(message, NodeUtils.COLORS.ERROR);
 			return true;
 		}
 
 		if (commandName == 'listfiles') {
 			if (message) {
-				NodeUtils.println(operationResult.message, messagesColor);
+				NodeUtils.println(message, NodeUtils.COLORS.RESULT);
 			}
 			if (data) {
-				operationResult.data.forEach(element => {
-					NodeUtils.println(element, messagesColor)
+				data.forEach(el => {
+					NodeUtils.println(el, NodeUtils.COLORS.RESULT)
 				});
 			}
 			return true;
@@ -45,9 +45,8 @@ module.exports = class CommandOutputHandler {
 				importedObjects.forEach(el => NodeUtils.println(`${el.type}:${el.id}`, NodeUtils.COLORS.RESULT))
 			}
 			if (unImportedObjects.length) {
-				console.log(unImportedObjects);
 				NodeUtils.println('The following object(s) were not imported:', NodeUtils.COLORS.WARNING);
-				importedObjects.forEach((el, index, arr) => 
+				unImportedObjects.forEach((el, index, arr) => 
 					NodeUtils.println(`${el.type}:${el.id}:${el.result.message}`, NodeUtils.COLORS.WARNING)
 					);
 			}
