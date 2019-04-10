@@ -36,6 +36,18 @@ module.exports = [
 		},
 	},
 	{
+		name: 'Commerce Extension',
+		value: {
+			name: 'Commerce Extension',
+			type: 'commerceextension',
+			prefix: 'customextension_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
 		name: 'Commerce Theme',
 		value: {
 			name: 'Commerce Theme',
@@ -48,15 +60,12 @@ module.exports = [
 		},
 	},
 	{
-		name: 'Commerce Extension',
+		name: 'CMS Content Type',
 		value: {
-			name: 'Commerce Extension',
-			type: 'commerceextension',
-			prefix: 'customextension_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			name: 'CMS Content Type',
+			type: 'cmscontenttype',
+			prefix: 'custcontenttype_',
+			hasRelatedFiles: false,
 		},
 	},
 	{
@@ -101,6 +110,15 @@ module.exports = [
 			name: 'Entity Field',
 			type: 'entitycustomfield',
 			prefix: 'custentity_',
+			hasRelatedFiles: false,
+		},
+	},
+	{
+		name: 'Entry Form',
+		value: {
+			name: 'Entry Form',
+			type: 'entryForm',
+			prefix: 'custform_',
 			hasRelatedFiles: false,
 		},
 	},
@@ -159,6 +177,30 @@ module.exports = [
 		},
 	},
 	{
+		name: 'Plug-in - Advanced Revenue Recognition',
+		value: {
+			name: 'Plug-in - Advanced Revenue Recognition',
+			type: 'advancedrevrecplugin',
+			prefix: 'customscript_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
+		name: 'Plug-in - Consolidated Rate Adjustor',
+		value: {
+			name: 'Plug-in - Consolidated Rate Adjustor',
+			type: 'consolidatedrateadjustorplugin',
+			prefix: 'customscript_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
 		name: 'Plug-in - Custom GL Lines',
 		value: {
 			name: 'Plug-in - Custom GL Lines',
@@ -207,10 +249,58 @@ module.exports = [
 		},
 	},
 	{
+		name: 'Plug-in - Payment Gateway',
+		value: {
+			name: 'Plug-in - Payment Gateway',
+			type: 'paymentgatewayplugin',
+			prefix: 'customscript_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
+		name: 'Plug-in - Platform Extension',
+		value: {
+			name: 'Plug-in - Platform Extension',
+			type: 'platformextensionplugin',
+			prefix: 'customscript_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
 		name: 'Plug-in - Promotions',
 		value: {
 			name: 'Plug-in - Promotions',
 			type: 'promotionsplugin',
+			prefix: 'customscript_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
+		name: 'Plug-in - Shipping Partners',
+		value: {
+			name: 'Plug-in - Shipping Partners',
+			type: 'shippingpartnersplugin',
+			prefix: 'customscript_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
+		name: 'Plug-in - Tax Calculation',
+		value: {
+			name: 'Plug-in - Tax Calculation',
+			type: 'taxcalculationplugin',
 			prefix: 'customscript_',
             hasRelatedFiles: true,
             relatedFiles: [
@@ -254,6 +344,16 @@ module.exports = [
 			hasRelatedFiles: false,
 		},
 	},
+	{
+		name: 'Saved Search',
+		value: {
+			name: 'Saved Search',
+			type: 'savedsearch',
+			prefix: 'customsearch_',
+			hasRelatedFiles: false,
+		},
+	},
+	
 	{
 		name: 'Script - Bundle Installation',
 		value: {
@@ -339,9 +439,9 @@ module.exports = [
 		},
 	},
 	{
-		name: 'Script -Suitelet',
+		name: 'Script - Suitelet',
 		value: {
-            name: 'Script -Suitelet',
+            name: 'Script - Suitelet',
 			type: 'suitelet',
 			prefix: 'customscript_',
             hasRelatedFiles: true,
@@ -363,12 +463,24 @@ module.exports = [
 		},
 	},
 	{
-		name: 'Script -Workflow Action',
+		name: 'Script - Workflow Action',
 		value: {
-            name: 'Script -Workflow Action',
+            name: 'Script - Workflow Action',
 			type: 'workflowactionscript',
 			prefix: 'customscript_',
             hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
+		name: 'SDF Installation Script',
+		value: {
+			name: 'SDF Installation Script',
+			type: 'sdfinstallationscript',
+			prefix: 'customscript_',
+			hasRelatedFiles: true,
             relatedFiles: [
                 { type:'blankscript' }
             ]
@@ -419,6 +531,15 @@ module.exports = [
             name: 'Transaction Column Field',
 			type: 'transactioncolumncustomfield',
 			prefix: 'custcol_',
+			hasRelatedFiles: false,
+		},
+	},
+	{
+		name: 'Transaction Form',
+		value: {
+			name: 'Transaction Form',
+			type: 'transactionForm',
+			prefix: 'custform_',
 			hasRelatedFiles: false,
 		},
 	},
