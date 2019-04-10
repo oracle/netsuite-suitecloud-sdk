@@ -45,9 +45,10 @@ module.exports = class LocalCommand {
 		if(!answers.extensions || answers.extensions === true){
 			answers.extensions = [];
 		}
-		const theme = answers.theme;
-		const extensions = Array.isArray(answers.extensions) ? answers.extensions : answers.extensions.split(',');
-
+		const theme = answers.theme;		
+		let extensionsList = Array.isArray(answers.extensions) ? answers.extensions : answers.extensions.split(',');
+		const extensions = _.map(extensionsList, (extension)=>extension.trim())
+		
 		//Validate answers
 		this._validateTheme(theme);
 		this._validateExtensions(extensions);

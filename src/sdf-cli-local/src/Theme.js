@@ -33,12 +33,16 @@ module.exports = class Theme extends AbstractExtension {
 			return this.overrides[file_ext];
 		}
 
-		let overrides = this.raw_extension.overrides || {};
-		 
+		let overrides = this.raw_extension.overrides || {};		
+		
 		overrides = overrides.override || overrides;
 
-		overrides = (_.isArray(overrides) ? overrides : [overrides]);
-		
+		if (_.isEmpty(overrides)) {
+			return overrides;
+		}
+
+		overrides = _.isArray(overrides) ? overrides : [overrides];
+
 		overrides = _.map(overrides, (override) => {
 			let dst = path.normalize(override.dst).split(path.sep);
 			dst.shift();
