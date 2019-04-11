@@ -37,7 +37,7 @@
 			}
 		]
 	},
-    "createobject": {
+	"createobject": {
 		"name": "createobject",
 		"alias": "ca",
 		"description": "Create objects",
@@ -45,7 +45,7 @@
 		"options": [
 			
 		]
-    },
+  	},
 	"local": {
 		"name": "local",
 		"description": "Test themes/extensions locally",
