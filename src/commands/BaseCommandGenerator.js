@@ -38,6 +38,10 @@ module.exports = class BaseCommandGenerator {
 		return args;
 	}
 
+	_formatOutput(operationResult){
+		console.log(`You should overrite _formatOutput method in your specific commandgenerator`); 
+	}
+
 	create(runInInteractiveMode) {
 		return new Command({
 			name: this._commandMetadata.name,
@@ -51,7 +55,8 @@ module.exports = class BaseCommandGenerator {
 			options: this._commandMetadata.options,
 			commandUserExtension: this._commandUserExtension,
 			supportsInteractiveMode: this._supportsInteractiveMode(),
-			projectFolder: this._projectFolder
+			projectFolder: this._projectFolder,
+			commandOutputFormater :this._formatOutput
 		});
 	}
 };

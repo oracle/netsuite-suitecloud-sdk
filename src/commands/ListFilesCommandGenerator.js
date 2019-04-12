@@ -30,7 +30,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				action: this._sdkExecutor.execute(executionContext),
 				message: TranslationService.getMessage(LOADING_FOLDERS),
 			})
-			.then(result => {
+			.then(operationResult => {
 				resolve(
 					prompt([
 						{
@@ -40,7 +40,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 								SELECT_FOLDER
 							),
 							default: SUITE_SCRIPTS_FOLDER,
-							choices: this._getFileCabinetFolders(JSON.parse(result)),
+							choices: this._getFileCabinetFolders(operationResult),
 						},
 					])
 				);
@@ -76,5 +76,23 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			action: this._sdkExecutor.execute(executionContext),
 			message: TranslationService.getMessage(LOADING_FILES),
 		});
+	}
+
+	_formatOutput(operationResult) {
+		const {status, message, data} = operationResult;
+
+		if (status == 'ERROR') {
+			NodeUtils.println(message, NodeUtils.COLORS.ERROR);
+			return;
+		}
+
+		if (message) {
+			NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+		}
+		if (data) {
+			data.forEach(el => {
+				NodeUtils.println(el, NodeUtils.COLORS.RESULT)
+			});
+		}
 	}
 };

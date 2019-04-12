@@ -25,7 +25,7 @@ const COMMAND_QUESTIONS_NAMES = {
 };
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS, SUCCESS_NO_OBJECTS },
+	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -157,21 +157,31 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			showOutput: false,
 		});
 
-		const actionListObjects = this._sdkExecutor.execute(executionContext).then(result => {
-			if (result.includes(NO_OBJECTS_FOUND)) {
-				result = result.replace(
-					NO_OBJECTS_FOUND,
-					TranslationService.getMessage(SUCCESS_NO_OBJECTS)
-				);
-			} else {
-				result = TranslationService.getMessage(SUCCESS) + NodeUtils.lineBreak + result;
-			}
-			return result;
-		});
-
+		const actionListObjects = this._sdkExecutor.execute(executionContext)
+		
 		return executeWithSpinner({
 			action: actionListObjects,
 			message: TranslationService.getMessage(LISTING_OBJECTS),
 		});
+	}
+
+	_formatOutput(operationResult) {
+		const {status, message, data} = operationResult;
+
+		if (status == 'ERROR') {
+			NodeUtils.println(message, NodeUtils.COLORS.ERROR);
+			return;
+		}
+
+		if (message) {
+			NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+		}
+
+		if (data.length) {
+			NodeUtils.println('The following objects were found in your account:', NodeUtils.COLORS.RESULT);
+			data.forEach(el => NodeUtils.println(`${el.type}:${el.scriptId}`, NodeUtils.COLORS.RESULT));
+		} else {
+			NodeUtils.println('There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.', NodeUtils.COLORS.INFO);
+		}
 	}
 };

@@ -9,7 +9,6 @@ const ConfigurationService = require('./services/ConfigurationService');
 const NodeUtils = require('./utils/NodeUtils');
 
 module.exports.SDKExecutor = class SDKExecutor {
-
 	_convertParamsObjToString(cliParams, flags) {
 		let cliParamsAsString = '';
 		for (const param in cliParams) {
@@ -17,21 +16,24 @@ module.exports.SDKExecutor = class SDKExecutor {
 				const value = cliParams[param] ? ` ${cliParams[param]} ` : ' ';
 				cliParamsAsString += param + value;
 			}
-        }
+		}
 
-        if (flags && Array.isArray(flags)) {
-            flags.forEach(flag => {
-                cliParamsAsString += ` ${flag} `;
-            })
-        }
+		if (flags && Array.isArray(flags)) {
+			flags.forEach(flag => {
+				cliParamsAsString += ` ${flag} `;
+			});
+		}
 
 		return cliParamsAsString;
 	}
 
 	execute(executionContext) {
 		return new Promise((resolve, reject) => {
-            let lastSdkOutput ='';
-			const cliParamsAsString = this._convertParamsObjToString(executionContext.getParams(), executionContext.getFlags());
+			let lastSdkOutput = '';
+			const cliParamsAsString = this._convertParamsObjToString(
+				executionContext.getParams(),
+				executionContext.getFlags()
+			);
 
 			const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} "${
 				Context.SDKFilePath
@@ -60,14 +62,24 @@ module.exports.SDKExecutor = class SDKExecutor {
 						childProcess.kill('SIGINT');
 					}
 					return;
-                }
+				}
 
-                lastSdkOutput += sdkOutput;
+				lastSdkOutput += sdkOutput;
 			});
 
 			childProcess.on('close', code => {
 				if (code === 0) {
-					resolve(lastSdkOutput);
+					try {
+						const structuredOutput = JSON.parse(lastSdkOutput);
+						resolve(structuredOutput);
+					} catch (error) {
+						reject(
+							new CLIException(
+								2,
+								`There was an internal error while running the command. Details: ${error}`
+							)
+						);
+					}
 				} else if (code !== 0) {
 					const exceptionMessage = `ERROR: SDK exited with code ${code}`;
 					reject(new CLIException(2, exceptionMessage));
@@ -76,4 +88,3 @@ module.exports.SDKExecutor = class SDKExecutor {
 		});
 	}
 };
-

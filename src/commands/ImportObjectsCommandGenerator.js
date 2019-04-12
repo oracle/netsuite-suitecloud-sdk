@@ -12,6 +12,7 @@ const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
 const commandsMetadata = require('../metadata/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const CLIException = require('../CLIException');
 
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
@@ -34,30 +35,19 @@ const {
 	NO,
 } = require('../services/TranslationKeys');
 
+const {
+	validateArrayIsNotEmpty,
+	validateFieldIsNotEmpty,
+	validateSuiteApp,
+	showValidationResults,
+} = require('../validation/InteractiveAnswersValidator');
+
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._projectMetadataService = new ProjectMetadataService();
 		this._fileSystemService = new FileSystemService();
 		this._commandsMetadataInfo = commandsMetadata.getCommandsMetadata();
-	}
-
-	_validateFieldIsNotEmpty(fieldValue) {
-		return fieldValue !== ''
-			? true
-			: NodeUtils.formatString(getMessage(ERRORS.EMPTY_FIELD), {
-					color: NodeUtils.COLORS.RED,
-					bold: true,
-			  });
-	}
-
-	_validateArrayIsNotEmpty(array) {
-		return array.length > 0
-			? true
-			: NodeUtils.formatString(getMessage(ERRORS.CHOOSE_OPTION), {
-					color: NodeUtils.COLORS.RED,
-					bold: true,
-			  });
 	}
 
 	_getCommandQuestions(prompt) {
@@ -74,7 +64,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					{ name: getMessage(YES), value: true },
 					{ name: getMessage(NO), value: false	}
 				],
-				validate: this._validateArrayIsNotEmpty,
+				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			};
 			questions1.push(questionSpecifySuiteApp);
 
@@ -85,7 +75,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: ANSWERS_NAMES.APP_ID,
 				message: getMessage(QUESTIONS.APPID),
-				validate: this._validateFieldIsNotEmpty,
+				validate: fieldValue => showValidationResults(fieldValue, validateSuiteApp),
 			};
 			questions1.push(questionAppId);
 		}
@@ -117,7 +107,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				})),
 				new inquirer.Separator(),
 			],
-			validate: this._validateArrayIsNotEmpty,
+			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
 
 		questions1.push(questionCustomOjects);
@@ -141,7 +131,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.SCRIPT_ID,
 			message: getMessage(QUESTIONS.SCRIPT_ID),
-			validate: this._validateFieldIsNotEmpty,
+			validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 		};
 		questions1.push(questionScriptId);
 
@@ -159,11 +149,13 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				return executeWithSpinner({
 					action: this._sdkExecutor.execute(executionContextForListObjects),
 					message: getMessage(MESSAGES.LOADING_OBJECTS),
-				}).then(result => {
-                    const operationResult = JSON.parse(result);
+				}).then(operationResult => {
                     const questions2 = [];
-
-                    if (operationResult.status === 'ERROR' || operationResult.data.length == 0) {
+                    if (operationResult.status === 'ERROR') {
+                        NodeUtils.println(operationResult.message, NodeUtils.COLORS.ERROR);
+                        return;
+                    }
+                    if (operationResult.data.length == 0) {
                         NodeUtils.println(getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.INFO);
                         return;
                     }
@@ -174,7 +166,8 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 						type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 						name: ANSWERS_NAMES.OBJECTS_SELECTED,
 						message: getMessage(QUESTIONS.SELECT_OBJECTS),
-						choices: choicesToShow,
+                        choices: choicesToShow,
+                        validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty)
 					};
 					questions2.push(questionListObjectsSelection);
 
@@ -209,7 +202,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					questions2.push(questionOverwriteConfirmation);
 
 					resolve(prompt(questions2));
-				}).catch(error => console.log(error));
+				}).catch(error => {
+                    throw new CLIException(
+                        -10,
+                        `Error while loading calling listobjects. Details:${NodeUtils.lineBreak}${error}`
+                    );
+                });
 			}).then(secondAnswers => {
                 const combinedAnswers = { ...firstAnswers, ...secondAnswers };
                 const finalAnswers =  this._arrangeAnswersForImportObjects(combinedAnswers);
@@ -258,5 +256,28 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
             action: this._sdkExecutor.execute(executionContextForImportObjects),
             message: getMessage(MESSAGES.IMPORTING_OBJECTS),
         })
-	}
+    }
+    
+    _formatOutput(operationResult) {
+        const {status, message, data} = operationResult;
+
+		if (status == 'ERROR') {
+			NodeUtils.println(message, NodeUtils.COLORS.ERROR);
+			return;
+        }
+        
+        const importedObjects = data.customObjects.filter(el => el.result.code === 'SUCCESS');
+        const unImportedObjects = data.customObjects.filter(el => el.result.code === 'FAILED');
+        
+        if (importedObjects.length) {
+            NodeUtils.println('The following object(s) were imported successfully:', NodeUtils.COLORS.RESULT);
+            importedObjects.forEach(el => NodeUtils.println(`${el.type}:${el.id}`, NodeUtils.COLORS.RESULT));
+        }
+        if (unImportedObjects.length) {
+            NodeUtils.println('The following object(s) were not imported:', NodeUtils.COLORS.WARNING);
+            unImportedObjects.forEach((el, index, arr) => 
+                NodeUtils.println(`${el.type}:${el.id}:${el.result.message}`, NodeUtils.COLORS.WARNING)
+                );
+        }
+    }
 };
