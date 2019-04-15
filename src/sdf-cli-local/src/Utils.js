@@ -7,6 +7,8 @@ const glob = require('glob').sync;
 const _ = require('underscore');
 const async = require('async');
 
+const { COMMAND_LOCAL } = require('./../../services/TranslationKeys');
+const TranslationService = require('./../../services/TranslationService');
 const NodeUtils = require('./../../utils/NodeUtils');
 
 const Utils = {
@@ -28,6 +30,12 @@ const Utils = {
 		const parsed_xml = xml_parser.parse(xml_data, {});
 
 		return parsed_xml;
+	},
+
+	translate: (key, params = []) => {
+		return TranslationService.getMessage(
+			COMMAND_LOCAL[key], ...params
+		);
 	},
 
 	parseFiles: (files_xml) => {
@@ -84,12 +92,19 @@ const Utils = {
 
 	COLORS: NodeUtils.COLORS,
 
-	log: (message, color = NodeUtils.COLORS.DEFAULT) => {
+	separator: (color = NodeUtils.COLORS.DEFAULT) => {
+		NodeUtils.println('-------------------------------------------------', color);
+	},
+
+	log: (options) => {
+		
 		const date = new Date();
 		const timestamp = [date.getHours(), date.getMinutes(), date.getSeconds()].join(':');
-		message = `[${timestamp}.${date.getMilliseconds()}] ${message}`;
+		
+		const translation = Utils.translate(options.translation, options.params);
+		const message = `[${timestamp}.${date.getMilliseconds()}] ${translation}`;
 
-		NodeUtils.println(message, color);
+		NodeUtils.println(message, options.color || NodeUtils.COLORS.DEFAULT);
 	}
 
 };
