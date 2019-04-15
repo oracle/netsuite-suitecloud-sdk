@@ -4,6 +4,7 @@ const DeployXml = require('./DeployXml');
 const Compiler = require('./Compilers/Compiler');
 const CompilationContext = require('./CompilationContext');
 const LocalServer = require('./LocalServer');
+const Utils = require('./Utils');
 
 const _ = require('underscore');
 
@@ -29,13 +30,13 @@ module.exports = class LocalCommand {
 			{
 				type: 'list',
 				name: 'theme',
-				message: 'Choose the a Theme',
+				message: Utils.translate('CHOOSE_THEME'),
 				choices: Object.keys(this.themes),
 			},
 			{
 				type: 'checkbox',
 				name: 'extensions',
-				message: 'Choose the Extensions',
+				message: Utils.translate('CHOOSE_EXTENSION'),
 				choices: Object.keys(this.extensions),
 			}
 		]);
@@ -72,14 +73,14 @@ module.exports = class LocalCommand {
 
 	_validateTheme(theme){
 		if(!this.themes[theme]){
-			throw `Theme ${theme} not found in ${this.objects_path}`;
+			throw Utils.translate('RESOURCE_NOT_FOUND', ['Theme', theme, this.objects_path]);
 		}
 	}
 
 	_validateExtensions(extensions){
 		_.each(extensions, (extension) => {
 			if(!this.extensions[extension]){
-				throw `Theme ${extension} not found in ${this.objects_path}`;
+				throw Utils.translate('RESOURCE_NOT_FOUND', ['Extension', extension, this.objects_path]);
 			}
 		});
 	}

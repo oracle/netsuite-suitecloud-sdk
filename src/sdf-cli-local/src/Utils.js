@@ -19,12 +19,12 @@ const Utils = {
 		file_path = file_path.length ? file_path[0] : null;
 
 		if(!file_path){
-			throw `${xml_file} was not found in ${project_folder}`;
+			throw Utils.translate('RESOURCE_NOT_FOUND', ['Xml file', xml_file, project_folder]);
 		}
 
 		const xml_data = fs.readFileSync(file_path).toString();
 		if(!xml_parser.validate(xml_data)){
-			throw `Invalid xml ${file_path}`;
+			throw Utils.translate('INVALID_XML', [file_path]);
 		}
 
 		const parsed_xml = xml_parser.parse(xml_data, {});
