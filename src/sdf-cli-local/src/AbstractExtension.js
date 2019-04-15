@@ -33,7 +33,7 @@ module.exports = class AbstractExtension {
 					const override = overrides[template_path] && overrides[template_path].src;
 
 					if(override){
-						Utils.log(`Overriding:\n\t${template}\nWith:\n\t${override}`, Utils.COLORS.YELLOW);
+						Utils.log(`Overriding:\n\t${template}\nWith:\n\t${override}`);
 						templates[index] = override;
 					}
 				});

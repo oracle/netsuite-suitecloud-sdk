@@ -50,10 +50,10 @@ module.exports = class LocalServer {
 	}
 
 	_localMessage(server_config){
-		Utils.log(`-------------------------------------------------`, Utils.COLORS.CYAN);
+		Utils.log(`-------------------------------------------------`, Utils.COLORS.INFO);
 		Utils.log(`Local server available at http${server_config.run_https ? 's' : ''}://localhost:${server_config.port}`);
-		Utils.log(`Watching current folder: ${server_config.folders}`, Utils.COLORS.CYAN);
-		Utils.log('Please check your local.ssp applications to start working locally', Utils.COLORS.CYAN);
+		Utils.log(`Watching current folder: ${server_config.folders}`, Utils.COLORS.INFO);
+		Utils.log('Please check your local.ssp applications to start working locally', Utils.COLORS.INFO);
 		Utils.log('To cancel enter: control + c');
 	}
 

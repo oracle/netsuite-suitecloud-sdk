@@ -15,7 +15,7 @@ module.exports = class SassCompiler{
 	}
 
 	compile(resources){
-		Utils.log(`Starting ${this.resource_type} compilation`, Utils.COLORS.GREEN);
+		Utils.log(`Starting ${this.resource_type} compilation`, Utils.COLORS.RESULT);
 		this.createCssFolder();
 		this.overrides = this.context.getSassOverrides();
 		resources = this.context.getSass();
@@ -26,7 +26,7 @@ module.exports = class SassCompiler{
 			return () => this._compile(meta_entrypoint, app);
 		}))
 		.then(() => {
-			Utils.log(`Finished ${this.resource_type} compilation`, Utils.COLORS.GREEN);
+			Utils.log(`Finished ${this.resource_type} compilation`, Utils.COLORS.RESULT);
 		});
 	}
 
@@ -47,7 +47,7 @@ module.exports = class SassCompiler{
 
 	_compile(entrypoint, app){
 		return new Promise((resolve, reject) => {
-			Utils.log(`Starting ${this.resource_type} compilation for ${app}`, Utils.COLORS.GREEN);
+			Utils.log(`Starting ${this.resource_type} compilation for ${app}`, Utils.COLORS.RESULT);
 
 			sass_compiler.render(
 				{
@@ -63,7 +63,7 @@ module.exports = class SassCompiler{
 					const local_path = path.join(this.css_path, app + '.css');
 					fs.writeFileSync(local_path, result.css);
 
-					Utils.log(`Finished ${this.resource_type} compilation for ${app}`, Utils.COLORS.GREEN);
+					Utils.log(`Finished ${this.resource_type} compilation for ${app}`, Utils.COLORS.RESULT);
 					resolve(local_path);
 				}
 			);
@@ -80,7 +80,7 @@ module.exports = class SassCompiler{
 		const override = this.overrides[current_path];
 		let result;
 		if(override){
-			Utils.log(`Overriding: ${current_path}\nWith: ${override.src}`, Utils.COLORS.YELLOW);
+			Utils.log(`Overriding: ${current_path}\nWith: ${override.src}`);
 
 			const full_path = glob(path.join(this.context.project_folder, '**', override.src));
 			if(full_path.length){

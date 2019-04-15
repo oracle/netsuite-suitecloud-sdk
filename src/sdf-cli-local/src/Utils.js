@@ -7,6 +7,8 @@ const glob = require('glob').sync;
 const _ = require('underscore');
 const async = require('async');
 
+const NodeUtils = require('./../../utils/NodeUtils');
+
 const Utils = {
 
 	parseXml: (project_folder, xml_file) => {
@@ -80,23 +82,14 @@ const Utils = {
 		return folder_path;
 	},
 
-	COLORS: {
-		CYAN: '36',
-		RED: '31',
-		GREEN: '32',
-		YELLOW: '33',
-	},
+	COLORS: NodeUtils.COLORS,
 
-	log: (message, color) => {
+	log: (message, color = NodeUtils.COLORS.DEFAULT) => {
 		const date = new Date();
 		const timestamp = [date.getHours(), date.getMinutes(), date.getSeconds()].join(':');
 		message = `[${timestamp}.${date.getMilliseconds()}] ${message}`;
 
-		if(color){
-			return console.log(`\x1b[${color}m%s\x1b[0m`, message);
-		}
-
-		console.log(message);
+		NodeUtils.println(message, color);
 	}
 
 };
