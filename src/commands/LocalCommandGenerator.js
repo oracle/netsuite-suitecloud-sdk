@@ -10,16 +10,13 @@ module.exports = class LocalCommandGenerator extends BaseCommandGenerator {
 		this.local = new LocalCommand(options);
 	}
 
-	create(runInInteractiveMode){
-		this.local.initialize();
-		return super.create(runInInteractiveMode);
-	}
-
 	_getCommandQuestions(prompt) {
+		this.local.initialize();
 		return this.local.getCommandQuestions(prompt);
 	}
 
 	_executeAction(answers) {
+		this.local.initialize();
 		return this.local.executeAction(answers);
 	}
 
