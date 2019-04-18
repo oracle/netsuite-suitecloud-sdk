@@ -158,7 +158,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		});
 
 		const actionListObjects = this._sdkExecutor.execute(executionContext)
-		
+			
 		return executeWithSpinner({
 			action: actionListObjects,
 			message: TranslationService.getMessage(LISTING_OBJECTS),

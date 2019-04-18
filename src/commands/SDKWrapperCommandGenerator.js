@@ -3,6 +3,7 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const CLIException = require('../CLIException');
+const NodeUtils = require('../utils/NodeUtils');
 
 const FLAG_OPTION_TYPE = 'FLAG';
 const PROJECT_DIRECTORY_OPTION = 'projectdirectory';
@@ -41,6 +42,7 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 	_executeAction(args) {
 		let executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
+			integrationMode: false
 		});
 
 		for (const optionId in this._commandMetadata.options) {
@@ -60,4 +62,8 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 
 		return this._sdkExecutor.execute(executionContext);
 	}
+
+	// _formatOutput(result){
+	// 	NodeUtils.println(result, NodeUtils.COLORS.RESULT);
+	// }
 };

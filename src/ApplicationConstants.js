@@ -4,6 +4,7 @@ module.exports = {
 	COMMAND_GENERATORS_METADATA_FILE: 'CommandGenerators.json',
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
 	SDF_SDK_PATHNAME: '../bin/cli-2019.2.0-SNAPSHOT.jar',
+	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	AUTHENTICATION_MODE_BASIC: 'BASIC',
 	AUTHENTICATION_MODE_TBA: 'TBA',
 	DEFAULT_MESSAGES_FILE: '../../messages.json',

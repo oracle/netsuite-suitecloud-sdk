@@ -6,7 +6,6 @@ const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
-const NodeUtils = require('./utils/NodeUtils');
 
 module.exports.SDKExecutor = class SDKExecutor {
 	_convertParamsObjToString(cliParams, flags) {
@@ -35,7 +34,10 @@ module.exports.SDKExecutor = class SDKExecutor {
 				executionContext.getFlags()
 			);
 
-			const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} "${
+			const integrationModeOption = executionContext.isIntegrationMode() ? 
+				ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION : '';
+
+			const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} ${integrationModeOption} "${
 				Context.SDKFilePath
 			}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
@@ -70,8 +72,8 @@ module.exports.SDKExecutor = class SDKExecutor {
 			childProcess.on('close', code => {
 				if (code === 0) {
 					try {
-						const structuredOutput = JSON.parse(lastSdkOutput);
-						resolve(structuredOutput);
+						const output = executionContext.isIntegrationMode() ? JSON.parse(lastSdkOutput) : lastSdkOutput;
+						resolve(output);
 					} catch (error) {
 						reject(
 							new CLIException(

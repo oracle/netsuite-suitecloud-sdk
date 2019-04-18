@@ -38,8 +38,8 @@ module.exports = class BaseCommandGenerator {
 		return args;
 	}
 
-	_formatOutput(operationResult){
-		console.log(`You should overrite _formatOutput method in your specific commandgenerator`); 
+	_formatOutput(result){
+		console.log(result); 
 	}
 
 	create(runInInteractiveMode) {
