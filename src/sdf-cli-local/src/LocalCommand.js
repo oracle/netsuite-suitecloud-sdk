@@ -26,20 +26,27 @@ module.exports = class LocalCommand {
 	}
 
 	getCommandQuestions(prompt){
-		return prompt([
+
+		let extensions = Object.keys(this.extensions), themes = Object.keys(this.themes);
+		let options = [
 			{
 				type: 'list',
 				name: 'theme',
 				message: Utils.translate('CHOOSE_THEME'),
-				choices: Object.keys(this.themes),
-			},
-			{
+				choices: this._validateTheme(themes)
+			}
+		];
+
+		if (!_.isEmpty(extensions)) {
+			options.push({
 				type: 'checkbox',
 				name: 'extensions',
 				message: Utils.translate('CHOOSE_EXTENSION'),
-				choices: Object.keys(this.extensions),
-			}
-		]);
+				choices: extensions
+			});
+		}
+		
+		return prompt(options);
 	}
 
 	executeAction(answers){
@@ -71,18 +78,25 @@ module.exports = class LocalCommand {
 		});
 	}
 
-	_validateTheme(theme){
-		if(!this.themes[theme]){
-			throw Utils.translate('RESOURCE_NOT_FOUND', ['Theme', theme, this.objects_path]);
+	_validateTheme(theme){		
+		if (_.isEqual(theme, [])) {
+			throw Utils.translate('NO_THEMES', [this.objects_path]);
 		}
+		if(!this.themes[theme]){
+			throw Utils.translate('THEME_NOT_FOUND', [theme, this.objects_path]);
+		}
+
+		return theme;
 	}
 
 	_validateExtensions(extensions){
 		_.each(extensions, (extension) => {
 			if(!this.extensions[extension]){
-				throw Utils.translate('RESOURCE_NOT_FOUND', ['Extension', extension, this.objects_path]);
+				throw Utils.translate('EXTENSION_NOT_FOUND', [extension, this.objects_path]);
 			}
 		});
+
+		return extensions;
 	}
 
 };
