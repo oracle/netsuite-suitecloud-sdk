@@ -30,12 +30,6 @@ const Utils = {
 		return parsed_xml;
 	},
 
-	translate: (key, params = []) => {
-		return TranslationService.getMessage(
-			COMMAND_LOCAL[key], ...params
-		);
-	},
-
 	parseFiles: (files_xml) => {
 		let files = files_xml.files || {};
 		files = files.file || {};
