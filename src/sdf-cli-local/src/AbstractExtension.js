@@ -1,6 +1,7 @@
 'use strict';
 
 const Utils = require('./Utils');
+const Log = require('./services/Log');
 const _ = require('underscore');
 const path = require('path');
 
@@ -33,7 +34,7 @@ module.exports = class AbstractExtension {
 					const override = overrides[template_path] && overrides[template_path].src;
 
 					if(override){
-						Utils.log({ translation: 'OVERRIDE', params: [template, override] });
+						Log.default('OVERRIDE', [template, override]);
 						templates[index] = override;
 					}
 				});

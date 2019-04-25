@@ -7,9 +7,7 @@ const glob = require('glob').sync;
 const _ = require('underscore');
 const async = require('async');
 
-const { COMMAND_LOCAL } = require('./../../services/TranslationKeys');
-const TranslationService = require('./../../services/TranslationService');
-const NodeUtils = require('./../../utils/NodeUtils');
+const Translation = require('./services/Translation');
 
 const Utils = {
 
@@ -19,12 +17,12 @@ const Utils = {
 		file_path = file_path.length ? file_path[0] : null;
 
 		if(!file_path){
-			throw Utils.translate('RESOURCE_NOT_FOUND', [xml_file, project_folder]);
+			throw Translation.getMessage('RESOURCE_NOT_FOUND', [xml_file, project_folder]);
 		}
 
 		const xml_data = fs.readFileSync(file_path).toString();
 		if(!xml_parser.validate(xml_data)){
-			throw Utils.translate('INVALID_XML', [file_path]);
+			throw Translation.getMessage('INVALID_XML', [file_path]);
 		}
 
 		const parsed_xml = xml_parser.parse(xml_data, {});
@@ -88,23 +86,6 @@ const Utils = {
 		}
 
 		return folder_path;
-	},
-
-	COLORS: NodeUtils.COLORS,
-
-	separator: (color = NodeUtils.COLORS.DEFAULT) => {
-		NodeUtils.println('-------------------------------------------------', color);
-	},
-
-	log: (options) => {
-		
-		const date = new Date();
-		const timestamp = [date.getHours(), date.getMinutes(), date.getSeconds()].join(':');
-		
-		const translation = Utils.translate(options.translation, options.params);
-		const message = `[${timestamp}.${date.getMilliseconds()}] ${translation}`;
-
-		NodeUtils.println(message, options.color || NodeUtils.COLORS.DEFAULT);
 	}
 
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-const Utils = require('./Utils');
+const Log = require('./services/Log');
 
 const express = require('express');
 const cors = require('cors');
@@ -51,11 +51,11 @@ module.exports = class LocalServer {
 	}
 
 	_localMessage(server_config){
-		Utils.separator(Utils.COLORS.INFO);
-		Utils.log({ translation: 'SERVER', params: [server_config.run_https ? 's' : '', server_config.port] });
-		Utils.log({ translation: 'WATCH', params: [server_config.folders], color: Utils.COLORS.INFO });
-		Utils.log({ translation: 'SSP_LOCAL_FILES_INFO', color: Utils.COLORS.INFO });
-		Utils.log({ translation: 'CANCEL_ACTION' });
+		Log.info(Log.separator);
+		Log.default('SERVER', [server_config.run_https ? 's' : '', server_config.port]);
+		Log.info('WATCH', [server_config.folders]);
+		Log.info('SSP_LOCAL_FILES_INFO');
+		Log.default('CANCEL_ACTION');
 	}
 
 };

@@ -1,6 +1,7 @@
 'use strict';
 
 const Utils = require('../Utils');
+const Log = require('../services/Log');
 const _ = require('underscore');
 const sass_compiler = require('node-sass');
 const fs = require('fs');
@@ -15,7 +16,7 @@ module.exports = class SassCompiler{
 	}
 
 	compile(resources){
-		Utils.log({ translation: 'COMPILATION_START', params: [this.resource_type], color: Utils.COLORS.RESULT });
+		Log.result('COMPILATION_START', [this.resource_type]);
 		this.createCssFolder();
 		this.overrides = this.context.getSassOverrides();
 		resources = this.context.getSass();
@@ -26,7 +27,7 @@ module.exports = class SassCompiler{
 			return () => this._compile(this._prependFunctions(meta_entrypoint), app);
 		}))
 		.then(() => {
-			Utils.log({ translation: 'COMPILATION_FINISH', params: [this.resource_type], color: Utils.COLORS.RESULT });
+			Log.result('COMPILATION_FINISH', [this.resource_type]);
 		});
 	}
 
@@ -46,7 +47,8 @@ module.exports = class SassCompiler{
 
 	_compile(entrypoint, app){
 		return new Promise((resolve, reject) => {
-			Utils.log({ translation: 'COMPILATION_START_FOR', params: [this.resource_type, app], color: Utils.COLORS.RESULT });
+
+			Log.result('COMPILATION_START_FOR', [this.resource_type, app]);
 
 			sass_compiler.render(
 				{
@@ -62,7 +64,7 @@ module.exports = class SassCompiler{
 					const local_path = path.join(this.css_path, app + '.css');
 					fs.writeFileSync(local_path, result.css);
 
-					Utils.log({ translation: 'COMPILATION_FINISH_FOR', params: [this.resource_type, app], color: Utils.COLORS.RESULT });
+					Log.result('COMPILATION_FINISH_FOR', [this.resource_type, app]);
 					resolve(local_path);
 				}
 			);
@@ -94,7 +96,7 @@ module.exports = class SassCompiler{
 		const override = this.overrides[current_path];
 		let result;
 		if(override){
-			Utils.log({ translation: 'OVERRIDE', params: [current_path, override.src] });
+			Log.default('OVERRIDE', [current_path, override.src]);
 			const full_path = glob(path.join(this.context.project_folder, '**', override.src));
 			if(full_path.length){
 				result = {file: full_path[0]};

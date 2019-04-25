@@ -6,12 +6,17 @@ const CompilationContext = require('./CompilationContext');
 const LocalServer = require('./LocalServer');
 const Utils = require('./Utils');
 
+const Translation = require('./services/Translation');
+const Log = require('./services/Log');
+
 const _ = require('underscore');
 
 module.exports = class LocalCommand {
 
 	constructor(options){
 		this._projectFolder = options.projectFolder;
+		Translation.start(...options.translation);
+		Log.start(options.colors);
 	}
 
 	initialize(){	
@@ -37,7 +42,7 @@ module.exports = class LocalCommand {
 			{
 				type: 'list',
 				name: 'theme',
-				message: Utils.translate('CHOOSE_THEME'),
+				message: Translation.getMessage('CHOOSE_THEME'),
 				choices: this._validateTheme(themes)
 			}
 		];
@@ -46,7 +51,7 @@ module.exports = class LocalCommand {
 			options.push({
 				type: 'checkbox',
 				name: 'extensions',
-				message: Utils.translate('CHOOSE_EXTENSION'),
+				message: Translation.getMessage('CHOOSE_EXTENSION'),
 				choices: extensions
 			});
 		}
@@ -85,10 +90,10 @@ module.exports = class LocalCommand {
 
 	_validateTheme(theme){		
 		if (_.isEqual(theme, [])) {
-			throw Utils.translate('NO_THEMES', [this.objects_path]);
+			throw Translation.getMessage('NO_THEMES', [this.objects_path]);
 		}
 		if(!this.themes[theme]){
-			throw Utils.translate('THEME_NOT_FOUND', [theme, this.objects_path]);
+			throw Translation.getMessage('THEME_NOT_FOUND', [theme, this.objects_path]);
 		}
 
 		return theme;
@@ -97,7 +102,7 @@ module.exports = class LocalCommand {
 	_validateExtensions(extensions){
 		_.each(extensions, (extension) => {
 			if(!this.extensions[extension]){
-				throw Utils.translate('EXTENSION_NOT_FOUND', [extension, this.objects_path]);
+				throw Translation.getMessage('EXTENSION_NOT_FOUND', [extension, this.objects_path]);
 			}
 		});
 
