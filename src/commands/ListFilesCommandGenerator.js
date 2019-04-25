@@ -79,16 +79,17 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(operationResult) {
-		const {status, message, data} = operationResult;
+		const {status, messages, data} = operationResult;
 
 		if (status == 'ERROR') {
 			NodeUtils.println(message, NodeUtils.COLORS.ERROR);
 			return;
 		}
 
-		if (message) {
-			NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+		if (messages) {
+			messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
 		}
+		
 		if (data) {
 			data.forEach(el => {
 				NodeUtils.println(el, NodeUtils.COLORS.RESULT)

@@ -25,11 +25,11 @@ const COMMAND_QUESTIONS_NAMES = {
 };
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS },
+	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
 	YES,
 	NO,
+	ERRORS
 } = require('../services/TranslationKeys');
-const NO_OBJECTS_FOUND = 'No custom objects found.';
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -148,7 +148,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_executeAction(answers) {
 		let options = Object.keys(this._commandMetadata.options);
 		var params = CommandUtils.extractOnlyOptionsFromObject(answers, options);
-		if (params.type != null) {
+		if (params.type && params.type instanceof Array) {
 			params.type = params.type.join(' ');
 		}
 		let executionContext = new SDKExecutionContext({
@@ -166,22 +166,26 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_formatOutput(operationResult) {
-		const {status, message, data} = operationResult;
+		const {status, messages, data} = operationResult;
 
 		if (status == 'ERROR') {
-			NodeUtils.println(message, NodeUtils.COLORS.ERROR);
+			if (messages){
+				messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
+			} else {
+				NodeUtils.println(TranslationService.getMessage(ERRORS.PROCESS_FAILED), NodeUtils.COLORS.ERROR);
+			}
 			return;
 		}
 
-		if (message) {
-			NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+		if (messages) {
+			messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
 		}
 
 		if (data.length) {
-			NodeUtils.println('The following objects were found in your account:', NodeUtils.COLORS.RESULT);
+			NodeUtils.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), NodeUtils.COLORS.RESULT);
 			data.forEach(el => NodeUtils.println(`${el.type}:${el.scriptId}`, NodeUtils.COLORS.RESULT));
 		} else {
-			NodeUtils.println('There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.', NodeUtils.COLORS.INFO);
+			NodeUtils.println(TranslationService.getMessage(SUCCESS_NO_OBJECTS), NodeUtils.COLORS.RESULT);
 		}
 	}
 };

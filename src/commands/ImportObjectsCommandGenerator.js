@@ -156,7 +156,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
                         return;
                     }
                     if (operationResult.data.length == 0) {
-                        NodeUtils.println(getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.INFO);
+                        NodeUtils.println(getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.RESULT);
                         return;
                     }
 
@@ -234,14 +234,18 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
         }
 		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map(el=>(el.scriptId)).join(' ');
-		answers[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
 
 		return answers;
 	}
 
+	_preExecuteAction(args) {
+		args[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
+		return args;
+	}
+
 	_executeAction(answers) {
 
-		if (!answers[ANSWERS_NAMES.OVERRITE_OBJECTS]) {
+		if (answers[ANSWERS_NAMES.OVERRITE_OBJECTS] === false) {
 			return new Promise((resolve, reject) => reject(getMessage(MESSAGES.CANCEL_IMPORT)));
 		}
 
@@ -259,23 +263,27 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
     }
     
     _formatOutput(operationResult) {
-        const {status, message, data} = operationResult;
-
+		const {status, messages, data} = operationResult;
+		
 		if (status == 'ERROR') {
-			NodeUtils.println(message, NodeUtils.COLORS.ERROR);
+			if (messages){
+				messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
+			} else {
+				NodeUtils.println(TranslationService.getMessage(ERRORS.PROCESS_FAILED), NodeUtils.COLORS.ERROR);
+			}
 			return;
-        }
+		}
         
         const importedObjects = data.customObjects.filter(el => el.result.code === 'SUCCESS');
         const unImportedObjects = data.customObjects.filter(el => el.result.code === 'FAILED');
         
         if (importedObjects.length) {
-            NodeUtils.println('The following object(s) were imported successfully:', NodeUtils.COLORS.RESULT);
+            NodeUtils.println(getMessage(MESSAGES.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
             importedObjects.forEach(el => NodeUtils.println(`${el.type}:${el.id}`, NodeUtils.COLORS.RESULT));
         }
         if (unImportedObjects.length) {
-            NodeUtils.println('The following object(s) were not imported:', NodeUtils.COLORS.WARNING);
-            unImportedObjects.forEach((el, index, arr) => 
+            NodeUtils.println(getMessage(MESSAGES.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
+            unImportedObjects.forEach((el) => 
                 NodeUtils.println(`${el.type}:${el.id}:${el.result.message}`, NodeUtils.COLORS.WARNING)
                 );
         }

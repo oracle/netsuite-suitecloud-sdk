@@ -4,6 +4,7 @@ const SDKExecutor = require('../SDKExecutor').SDKExecutor;
 const Command = require('./Command');
 const Context = require('../Context');
 const assert = require('assert');
+const NodeUtils = require('../utils/NodeUtils');
 
 module.exports = class BaseCommandGenerator {
 	constructor(options) {
@@ -39,7 +40,7 @@ module.exports = class BaseCommandGenerator {
 	}
 
 	_formatOutput(result){
-		console.log(result); 
+		NodeUtils.println(result, NodeUtils.COLORS.RESULT);
 	}
 
 	create(runInInteractiveMode) {
