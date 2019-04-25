@@ -23,7 +23,7 @@ module.exports = class SassCompiler{
 		const meta_entrypoints = this.buildMetaEntrypoints(resources.entrypoints);
 
 		return Utils.runParallel(_.map(meta_entrypoints, (meta_entrypoint, app) => {
-			return () => this._compile(meta_entrypoint, app);
+			return () => this._compile(this._prependFunctions(meta_entrypoint), app);
 		}))
 		.then(() => {
 			Utils.log({ translation: 'COMPILATION_FINISH', params: [this.resource_type], color: Utils.COLORS.RESULT });
@@ -67,6 +67,21 @@ module.exports = class SassCompiler{
 				}
 			);
 		});
+	}
+
+	_localFunctions(){
+		return [
+			`@function getThemeAssetsPath($asset) {
+				@return $asset;
+			}\n`,
+			`@function getExtensionAssetsPath($asset) {
+				@return $asset;
+			}\n`
+		].join('');		
+	}
+
+	_prependFunctions(meta_entrypoint){
+		return this._localFunctions() + meta_entrypoint;
 	}
 
 	_importer(url, prev, done){

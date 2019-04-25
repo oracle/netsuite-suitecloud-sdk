@@ -16,6 +16,11 @@ module.exports = class LocalCommand {
 
 	initialize(){	
 
+		if (this.init) {
+			return;
+		}
+		this.init = true;
+		
 		const deploy_xml = new DeployXml({projectFolder: this._projectFolder});
 		const objects = deploy_xml.getObjects();
 

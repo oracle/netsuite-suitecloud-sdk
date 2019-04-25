@@ -33,9 +33,10 @@ module.exports = class LocalServer {
 		app.use('/who/:app', this._whoService);
 		//Serves the script patch to ignore tpl defines executed by core javascript file
 		app.use('/define_patch.js', this._definePatchService);
-		app.listen(server_config.port);
-
-		this._localMessage(server_config);
+		
+		app.listen(server_config.port, () => {
+			this._localMessage(server_config);
+		});
 
 		//server is listening so we return a new promise that will never be resolved
 		return new Promise(() => {});
