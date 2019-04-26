@@ -6,8 +6,10 @@ const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
+const OperationResultStatus = require('./OperationResultStatus');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER },
+	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR },
+	ERRORS
 } = require('../services/TranslationKeys');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
@@ -36,9 +38,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 						{
 							type: CommandUtils.INQUIRER_TYPES.LIST,
 							name: this._commandMetadata.options.folder.name,
-							message: TranslationService.getMessage(
-								SELECT_FOLDER
-							),
+							message: TranslationService.getMessage(SELECT_FOLDER),
 							default: SUITE_SCRIPTS_FOLDER,
 							choices: this._getFileCabinetFolders(operationResult),
 						},
@@ -47,7 +47,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			})
 			// TODO : find right mecanism to treat the error
 			.catch( error => {
-				NodeUtils.println(`Somthing went wrong with ${this._commandMetadata.name}, error: ${error}`, NodeUtils.COLORS.ERROR);
+				NodeUtils.println(TranslationService.getMessage(ERROR, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
 			})
 		});
 	}
@@ -81,8 +81,15 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	_formatOutput(operationResult) {
 		const {status, messages, data} = operationResult;
 
-		if (status == 'ERROR') {
-			NodeUtils.println(message, NodeUtils.COLORS.ERROR);
+		if (status == OperationResultStatus.ERROR) {
+			if (messages instanceof Array && messages.length > 0 ) {
+				messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
+			} else {
+				NodeUtils.println(
+					TranslationService.getMessage(ERRORS.PROCESS_FAILED),
+					NodeUtils.COLORS.ERROR
+				);
+			}
 			return;
 		}
 

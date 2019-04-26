@@ -9,6 +9,7 @@ const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
+const OperationResult = require('./OperationResultStatus');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -28,7 +29,7 @@ const {
 	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
 	YES,
 	NO,
-	ERRORS
+	ERRORS,
 } = require('../services/TranslationKeys');
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
@@ -157,8 +158,8 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			showOutput: false,
 		});
 
-		const actionListObjects = this._sdkExecutor.execute(executionContext)
-			
+		const actionListObjects = this._sdkExecutor.execute(executionContext);
+
 		return executeWithSpinner({
 			action: actionListObjects,
 			message: TranslationService.getMessage(LISTING_OBJECTS),
@@ -166,10 +167,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_formatOutput(operationResult) {
-		const {status, messages, data} = operationResult;
+		const { status, messages, data } = operationResult;
 
-		if (status == 'ERROR') {
-			if (messages){
+		if (status == OperationResult.ERROR) {
+			if (messages instanceof Array && messages.length > 0) {
 				messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
 			} else {
 				NodeUtils.println(TranslationService.getMessage(ERRORS.PROCESS_FAILED), NodeUtils.COLORS.ERROR);

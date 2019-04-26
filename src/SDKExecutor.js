@@ -6,6 +6,9 @@ const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
+const { getMessage } = require('./services/TranslationService');
+const { ERRORS } = require('./services/TranslationKeys')
+
 
 module.exports.SDKExecutor = class SDKExecutor {
 	_convertParamsObjToString(cliParams, flags) {
@@ -60,7 +63,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 						childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
 						childProcess.stdin.end();
 					} else {
-						reject(new CLIException(3, 'Authentication error: please run "sdf setup"'));
+						reject(new CLIException(3, getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)));
 						childProcess.kill('SIGINT');
 					}
 					return;
@@ -75,16 +78,10 @@ module.exports.SDKExecutor = class SDKExecutor {
 						const output = executionContext.isIntegrationMode() ? JSON.parse(lastSdkOutput) : lastSdkOutput;
 						resolve(output);
 					} catch (error) {
-						reject(
-							new CLIException(
-								2,
-								`There was an internal error while running the command. Details: ${error}`
-							)
-						);
+						reject(new CLIException(2, getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)));
 					}
 				} else if (code !== 0) {
-					const exceptionMessage = `ERROR: SDK exited with code ${code}`;
-					reject(new CLIException(2, exceptionMessage));
+					reject(new CLIException(2, getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)));
 				}
 			});
 		});
