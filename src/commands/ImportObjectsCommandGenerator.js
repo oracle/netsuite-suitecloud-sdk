@@ -55,7 +55,44 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_getCommandQuestions(prompt) {
-		var questions1 = [];
+		const questions = this._generateListObjectQuestions();
+
+		return prompt(questions).then(firstAnswers => {
+			const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
+
+			return new Promise(resolve => {
+				const executionContextForListObjects = new SDKExecutionContext({
+					command: this._commandsMetadataInfo.listobjects.name,
+					showOutput: false,
+					params: paramsForListObjects,
+				});
+				this._applyDefaultContextParams(executionContextForListObjects);
+
+				return executeWithSpinner({
+					action: this._sdkExecutor.execute(executionContextForListObjects),
+					message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
+				})
+					.then(operationResult => {
+						const questions = this._generateSelectionObjectQuestions(operationResult);
+
+						resolve(prompt(questions));
+					})
+					.catch(error => {
+						throw new CLIException(
+							-10,
+							TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak,	error)
+						);
+					});
+			}).then(secondAnswers => {
+				const combinedAnswers = { ...firstAnswers, ...secondAnswers };
+				const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
+				return finalAnswers;
+			});
+		});
+	}
+
+	_generateListObjectQuestions() {
+		const questions = [];
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
 			const questionSpecifySuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -68,7 +105,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				],
 				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			};
-			questions1.push(questionSpecifySuiteApp);
+			questions.push(questionSpecifySuiteApp);
 
 			const questionAppId = {
 				when: function(response) {
@@ -79,7 +116,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				message: TranslationService.getMessage(QUESTIONS.APPID),
 				validate: fieldValue => showValidationResults(fieldValue, validateSuiteApp),
 			};
-			questions1.push(questionAppId);
+			questions.push(questionAppId);
 		}
 
 		const questionShowAllObjects = {
@@ -92,7 +129,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				{ name: TranslationService.getMessage(NO), value: true },
 			],
 		};
-		questions1.push(questionShowAllObjects);
+		questions.push(questionShowAllObjects);
 
 		const questionCustomOjects = {
 			when: function(answers) {
@@ -112,7 +149,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
 
-		questions1.push(questionCustomOjects);
+		questions.push(questionCustomOjects);
 
 		const questionSpecifyScriptId = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -124,7 +161,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				{ name: TranslationService.getMessage(NO), value: false },
 			],
 		};
-		questions1.push(questionSpecifyScriptId);
+		questions.push(questionSpecifyScriptId);
 
 		const questionScriptId = {
 			when: function(response) {
@@ -135,90 +172,64 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 		};
-		questions1.push(questionScriptId);
+		questions.push(questionScriptId);
+		return questions;
+	}
 
-		return prompt(questions1).then(firstAnswers => {
-			const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
 
-			return new Promise(resolve => {
-				const executionContextForListObjects = new SDKExecutionContext({
-					command: this._commandsMetadataInfo.listobjects.name,
-					showOutput: false,
-					params: paramsForListObjects,
-				});
-				this._applyDefaultContextParams(executionContextForListObjects);
+	_generateSelectionObjectQuestions(operationResult) {
+		const questions = [];
+		if (operationResult.status === OperationResultStatus.ERROR) {
+			NodeUtils.println(operationResult.message, NodeUtils.COLORS.ERROR);
+			return;
+		}
+		if (operationResult.data.length == 0) {
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),NodeUtils.COLORS.RESULT);
+			return;
+		}
 
-				return executeWithSpinner({
-					action: this._sdkExecutor.execute(executionContextForListObjects),
-					message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
-				})
-					.then(operationResult => {
-						const questions2 = [];
-						if (operationResult.status === OperationResultStatus.ERROR) {
-							NodeUtils.println(operationResult.message, NodeUtils.COLORS.ERROR);
-							return;
-						}
-						if (operationResult.data.length == 0) {
-							NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),NodeUtils.COLORS.RESULT);
-							return;
-						}
+		const choicesToShow = operationResult.data.map(el => ({ name: el.type + ':' + el.scriptId, value: el }));
 
-						const choicesToShow = operationResult.data.map(el => ({ name: el.type + ':' + el.scriptId, value: el }));
+		const questionListObjectsSelection = {
+			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+			name: ANSWERS_NAMES.OBJECTS_SELECTED,
+			message: TranslationService.getMessage(QUESTIONS.SELECT_OBJECTS),
+			choices: choicesToShow,
+			validate: fieldValue =>
+				showValidationResults(fieldValue, validateArrayIsNotEmpty),
+		};
+		questions.push(questionListObjectsSelection);
 
-						const questionListObjectsSelection = {
-							type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
-							name: ANSWERS_NAMES.OBJECTS_SELECTED,
-							message: TranslationService.getMessage(QUESTIONS.SELECT_OBJECTS),
-							choices: choicesToShow,
-							validate: fieldValue =>
-								showValidationResults(fieldValue, validateArrayIsNotEmpty),
-						};
-						questions2.push(questionListObjectsSelection);
-
-						// extracting root prefix
-						// replacing '\' for '/', this is done because destinationfolder option in java-sdf works only with '/'
-						const transformFoldersToChoicesFunc = folder => ({
-							name: folder.replace(this._projectFolder, ''),
-							value: folder.replace(this._projectFolder, '').replace(/\\/g, '/'),
-						});
-						const objectDirectoryChoices = this._fileSystemService
-							.getFoldersFromDirectory(join(this._projectFolder, OBJECTS_FOLDER))
-							.map(transformFoldersToChoicesFunc);
-
-						const questionDestinationFolder = {
-							type: CommandUtils.INQUIRER_TYPES.LIST,
-							name: ANSWERS_NAMES.DESTINATION_FOLDER,
-							message: TranslationService.getMessage(QUESTIONS.DESTINATION_FOLDER),
-							choices: objectDirectoryChoices,
-						};
-						questions2.push(questionDestinationFolder);
-
-						const questionOverwriteConfirmation = {
-							type: CommandUtils.INQUIRER_TYPES.LIST,
-							name: ANSWERS_NAMES.OVERRITE_OBJECTS,
-							message: TranslationService.getMessage(QUESTIONS.OVERRITE_OBJECTS),
-							default: 0,
-							choices: [
-								{ name: TranslationService.getMessage(YES), value: true },
-								{ name: TranslationService.getMessage(NO), value: false },
-							],
-						};
-						questions2.push(questionOverwriteConfirmation);
-
-						resolve(prompt(questions2));
-					})
-					.catch(error => {
-						throw new CLIException(
-							-10,
-							TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak,	error)
-						);
-					});
-			}).then(secondAnswers => {
-				const combinedAnswers = { ...firstAnswers, ...secondAnswers };
-				const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
-				return finalAnswers;
-			});
+		// extracting root prefix
+		// replacing '\' for '/', this is done because destinationfolder option in java-sdf works only with '/'
+		const transformFoldersToChoicesFunc = folder => ({
+			name: folder.replace(this._projectFolder, ''),
+			value: folder.replace(this._projectFolder, '').replace(/\\/g, '/'),
 		});
+		const objectDirectoryChoices = this._fileSystemService
+			.getFoldersFromDirectory(join(this._projectFolder, OBJECTS_FOLDER))
+			.map(transformFoldersToChoicesFunc);
+
+		const questionDestinationFolder = {
+			type: CommandUtils.INQUIRER_TYPES.LIST,
+			name: ANSWERS_NAMES.DESTINATION_FOLDER,
+			message: TranslationService.getMessage(QUESTIONS.DESTINATION_FOLDER),
+			choices: objectDirectoryChoices,
+		};
+		questions.push(questionDestinationFolder);
+
+		const questionOverwriteConfirmation = {
+			type: CommandUtils.INQUIRER_TYPES.LIST,
+			name: ANSWERS_NAMES.OVERRITE_OBJECTS,
+			message: TranslationService.getMessage(QUESTIONS.OVERRITE_OBJECTS),
+			default: 0,
+			choices: [
+				{ name: TranslationService.getMessage(YES), value: true },
+				{ name: TranslationService.getMessage(NO), value: false },
+			],
+		};
+		questions.push(questionOverwriteConfirmation);
+		return questions;
 	}
 
 	_arrangeAnswersForListObjects(answers) {
