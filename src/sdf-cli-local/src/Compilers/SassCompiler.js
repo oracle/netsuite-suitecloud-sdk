@@ -24,7 +24,7 @@ module.exports = class SassCompiler{
 		const meta_entrypoints = this.buildMetaEntrypoints(resources.entrypoints);
 
 		return Utils.runParallel(_.map(meta_entrypoints, (meta_entrypoint, app) => {
-			return () => this._compile(this._prependFunctions(meta_entrypoint), app);
+			return () => this._compile(meta_entrypoint, app);
 		}))
 		.then(() => {
 			Log.result('COMPILATION_FINISH', [this.resource_type]);
@@ -35,12 +35,17 @@ module.exports = class SassCompiler{
 		this.css_path = Utils.createFolder('css', this.context.local_server_path);
 	}
 
+	sassCompatiblePath(path){
+		return path.replace(/\\/g, '/');
+	}
+
 	buildMetaEntrypoints(entrypoints){
 
-		return _.mapObject(entrypoints, (file_paths) => {
-			return _.map(file_paths, (file_path) => {
-				file_path = file_path.replace(/\\/g, '/');
-				return `@import "${file_path}";`
+		return _.mapObject(entrypoints, (files) => {
+			return _.map(files, (file) => {
+				const local_functions = this._localFunctions({ assets_folder: this.sassCompatiblePath(file.path) });
+				file.entry = this.sassCompatiblePath(file.entry);
+				return  local_functions + `@import "${file.entry}";`
 			}).join('');
 		});
 	}
@@ -71,19 +76,11 @@ module.exports = class SassCompiler{
 		});
 	}
 
-	_localFunctions(){
+	_localFunctions(options = {}){
 		return [
-			`@function getThemeAssetsPath($asset) {
-				@return $asset;
-			}\n`,
-			`@function getExtensionAssetsPath($asset) {
-				@return $asset;
-			}\n`
-		].join('');		
-	}
-
-	_prependFunctions(meta_entrypoint){
-		return this._localFunctions() + meta_entrypoint;
+			`@function getThemeAssetsPath($asset) { @return '../${options.assets_folder}/' + $asset; }`,
+			`@function getExtensionAssetsPath($asset) { @return '../${options.assets_folder}/' + $asset; }`
+		].join("\n");		
 	}
 
 	_importer(url, prev, done){

@@ -65,7 +65,7 @@ module.exports = class AbstractExtension {
 		return path.join(this.name, file.replace(new RegExp(`^${this.base_path}`), ''));
 	}
 
-	getExtensionFullName(separator = ' '){
+	getExtensionFullName(separator = ' - '){
 		return [this.vendor, this.name, this.version].join(separator);
 	}
 
