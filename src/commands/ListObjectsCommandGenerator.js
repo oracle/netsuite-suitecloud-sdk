@@ -9,6 +9,7 @@ const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -25,11 +26,10 @@ const COMMAND_QUESTIONS_NAMES = {
 };
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS, SUCCESS_NO_OBJECTS },
+	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
-const NO_OBJECTS_FOUND = 'No custom objects found.';
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -148,7 +148,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_executeAction(answers) {
 		let options = Object.keys(this._commandMetadata.options);
 		var params = CommandUtils.extractOnlyOptionsFromObject(answers, options);
-		if (params.type != null) {
+		if (Array.isArray(params.type)) {
 			params.type = params.type.join(' ');
 		}
 		let executionContext = new SDKExecutionContext({
@@ -157,21 +157,28 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			showOutput: false,
 		});
 
-		const actionListObjects = this._sdkExecutor.execute(executionContext).then(result => {
-			if (result.includes(NO_OBJECTS_FOUND)) {
-				result = result.replace(
-					NO_OBJECTS_FOUND,
-					TranslationService.getMessage(SUCCESS_NO_OBJECTS)
-				);
-			} else {
-				result = TranslationService.getMessage(SUCCESS) + NodeUtils.lineBreak + result;
-			}
-			return result;
-		});
+		const actionListObjects = this._sdkExecutor.execute(executionContext);
 
 		return executeWithSpinner({
 			action: actionListObjects,
 			message: TranslationService.getMessage(LISTING_OBJECTS),
 		});
+	}
+
+	_formatOutput(operationResult) {
+		const { data } = operationResult;
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logErrors(operationResult)
+			return;
+		}
+
+		SDKOperationResultUtils.logMessages(operationResult)
+
+		if (Array.isArray(data) && data.length) {
+			NodeUtils.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), NodeUtils.COLORS.RESULT);
+			data.forEach(object => NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT));
+		} else {
+			NodeUtils.println(TranslationService.getMessage(SUCCESS_NO_OBJECTS), NodeUtils.COLORS.RESULT);
+		}
 	}
 };
