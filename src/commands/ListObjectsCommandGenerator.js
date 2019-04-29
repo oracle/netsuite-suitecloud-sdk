@@ -9,7 +9,7 @@ const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
-const OperationResult = require('./OperationResultStatus');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -29,7 +29,6 @@ const {
 	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
 	YES,
 	NO,
-	ERRORS,
 } = require('../services/TranslationKeys');
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
@@ -149,7 +148,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_executeAction(answers) {
 		let options = Object.keys(this._commandMetadata.options);
 		var params = CommandUtils.extractOnlyOptionsFromObject(answers, options);
-		if (params.type && params.type instanceof Array) {
+		if (Array.isArray(params.type)) {
 			params.type = params.type.join(' ');
 		}
 		let executionContext = new SDKExecutionContext({
@@ -167,24 +166,17 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_formatOutput(operationResult) {
-		const { status, messages, data } = operationResult;
-
-		if (status == OperationResult.ERROR) {
-			if (messages instanceof Array && messages.length > 0) {
-				messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
-			} else {
-				NodeUtils.println(TranslationService.getMessage(ERRORS.PROCESS_FAILED), NodeUtils.COLORS.ERROR);
-			}
+		const { data } = operationResult;
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logErrors(operationResult)
 			return;
 		}
 
-		if (messages) {
-			messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
-		}
+		SDKOperationResultUtils.logMessages(operationResult)
 
-		if (data.length) {
+		if (Array.isArray(data) && data.length) {
 			NodeUtils.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), NodeUtils.COLORS.RESULT);
-			data.forEach(el => NodeUtils.println(`${el.type}:${el.scriptId}`, NodeUtils.COLORS.RESULT));
+			data.forEach(object => NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT));
 		} else {
 			NodeUtils.println(TranslationService.getMessage(SUCCESS_NO_OBJECTS), NodeUtils.COLORS.RESULT);
 		}

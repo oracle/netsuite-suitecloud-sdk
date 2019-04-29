@@ -6,10 +6,9 @@ const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
-const OperationResultStatus = require('./OperationResultStatus');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR },
-	ERRORS
+	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR }
 } = require('../services/TranslationKeys');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
@@ -79,27 +78,18 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(operationResult) {
-		const {status, messages, data} = operationResult;
+		const { data } = operationResult;
 
-		if (status == OperationResultStatus.ERROR) {
-			if (messages instanceof Array && messages.length > 0 ) {
-				messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
-			} else {
-				NodeUtils.println(
-					TranslationService.getMessage(ERRORS.PROCESS_FAILED),
-					NodeUtils.COLORS.ERROR
-				);
-			}
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logErrors(operationResult)
 			return;
 		}
 
-		if (messages) {
-			messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
-		}
+		SDKOperationResultUtils.logMessages(operationResult);
 		
-		if (data) {
-			data.forEach(el => {
-				NodeUtils.println(el, NodeUtils.COLORS.RESULT)
+		if (Array.isArray(data)) {
+			data.forEach(fileName => {
+				NodeUtils.println(fileName, NodeUtils.COLORS.RESULT)
 			});
 		}
 	}

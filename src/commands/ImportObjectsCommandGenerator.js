@@ -13,8 +13,7 @@ const { join } = require('path');
 const commandsMetadata = require('../metadata/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const CLIException = require('../CLIException');
-
-const OperationResultStatus = require('./OperationResultStatus');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -179,16 +178,17 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_generateSelectionObjectQuestions(operationResult) {
 		const questions = [];
-		if (operationResult.status === OperationResultStatus.ERROR) {
-			NodeUtils.println(operationResult.message, NodeUtils.COLORS.ERROR);
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logErrors(operationResult)
 			return;
 		}
-		if (operationResult.data.length == 0) {
+		SDKOperationResultUtils.logMessages(operationResult);
+		if (Array.isArray(data) && operationResult.data.length === 0) {
 			NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),NodeUtils.COLORS.RESULT);
 			return;
 		}
 
-		const choicesToShow = operationResult.data.map(el => ({ name: el.type + ':' + el.scriptId, value: el }));
+		const choicesToShow = operationResult.data.map(object => ({ name: object.type + ':' + object.scriptId, value: object }));
 
 		const questionListObjectsSelection = {
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
@@ -281,30 +281,27 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_formatOutput(operationResult) {
-		const { status, messages, data } = operationResult;
+		const { data } = operationResult;
 
-		if (status == OperationResultStatus.ERROR) {
-			if (messages instanceof Array && messages.length > 0 ) {
-				messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
-			} else {
-				NodeUtils.println(
-					TranslationService.TranslationService.getMessage(ERRORS.PROCESS_FAILED),
-					NodeUtils.COLORS.ERROR
-				);
-			}
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logErrors(operationResult)
 			return;
 		}
 
-		const importedObjects = data.customObjects.filter(el => el.result.code === IMPORT_0BJECT.SUCCESS);
-		const unImportedObjects = data.customObjects.filter(el => el.result.code === IMPORT_0BJECT.FAILED);
+		SDKOperationResultUtils.logMessages(operationResult)
+
+		const importedObjects = data.customObjects.filter(customObject => customObject.result.code === IMPORT_0BJECT.SUCCESS);
+		const unImportedObjects = data.customObjects.filter(customObject => customObject.result.code === IMPORT_0BJECT.FAILED);
 
 		if (importedObjects.length) {
 			NodeUtils.println(TranslationService.getMessage(MESSAGES.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
-			importedObjects.forEach(el => NodeUtils.println(`${el.type}:${el.id}`, NodeUtils.COLORS.RESULT));
+			importedObjects.forEach(customObject =>
+				NodeUtils.println(`${customObject.type}:${customObject.id}`, NodeUtils.COLORS.RESULT));
 		}
 		if (unImportedObjects.length) {
 			NodeUtils.println(TranslationService.getMessage(MESSAGES.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
-			unImportedObjects.forEach(el => NodeUtils.println(`${el.type}:${el.id}:${el.result.message}`,NodeUtils.COLORS.WARNING));
+			unImportedObjects.forEach(customObject =>
+				NodeUtils.println(`${customObject.type}:${customObject.id}:${customObject.result.message}`,NodeUtils.COLORS.WARNING));
 		}
 	}
 };
