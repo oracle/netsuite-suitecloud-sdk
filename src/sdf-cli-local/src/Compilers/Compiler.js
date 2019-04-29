@@ -18,10 +18,11 @@ module.exports = class Compiler {
 		this._createLocalServerFolder(this.context);
 
 		const compilers = [
-			new SassCompiler({ context: this.context })/*,
-			new TemplatesCompiler({context: this.context}),
-			new JavascriptCompiler({context: this.context}),
-			new AssetsCompiler({context: this.context})*/
+			new SassCompiler({ context: this.context })
+			,
+			// new TemplatesCompiler({context: this.context}),
+			// new JavascriptCompiler({context: this.context}),
+			new AssetsCompiler({context: this.context})
 		];
 
 		const binded_compilers =_.map(compilers, (compiler) => _.bind(compiler.compile, compiler));
@@ -29,7 +30,10 @@ module.exports = class Compiler {
 	}
 
 	_createLocalServerFolder(context){
-		const local_folder = Utils.createFolder('LocalServer', context.project_folder);
+		const serverFolder = 'LocalServer';
+		// remove local server folder:
+		Utils.removeFolder(serverFolder, context.project_folder);
+		const local_folder = Utils.createFolder(serverFolder, context.project_folder);
 		context.setLocalServerPath(local_folder);
 	}
 

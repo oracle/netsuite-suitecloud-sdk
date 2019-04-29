@@ -30,10 +30,13 @@ const Utils = {
 		return parsed_xml;
 	},
 
-	parseFiles: (files_xml) => {
+	parseFiles: (files_xml, callback) => {
 		let files = files_xml.files || {};
 		files = files.file || {};
-		files = _.map(files, Utils.parseFileName);
+		files = _.map(files, (file)=>{
+			file = Utils.parseFileName(file);
+			return callback ? callback(file) : file;
+		});
 		return files;
 	},
 
@@ -70,6 +73,53 @@ const Utils = {
 				resolve(results);
 			});
 		});
+	},
+
+	copyFiles: (files, options = {}) => {
+		const list = [];
+		_.each(files, (file) => {
+			list.push(
+				() => Utils.copyFile(
+					path.join(options.src || '', file.src),
+					path.join(options.dest || '', file.dest), 
+					options.callback
+				)
+			)
+		});
+		return Utils.runParallel(list);
+	},
+
+	copyFile: (src, dest, callback) => {
+		src = path.normalize(src), dest = path.normalize(dest);
+		const folder = path.dirname(dest);
+
+		if (!fs.existsSync(folder)) {
+			fs.mkdirSync(folder, { recursive: true });
+		}
+		
+		return new Promise((resolve, reject) => {
+			fs.copyFile(src, dest, (error)=>{
+				if (error) {
+					return reject(error);
+				}
+				resolve(callback);
+			});
+		});
+	},
+
+	removeFolder: (folder_name, parent_path) => {		
+		const folder_path = path.join(parent_path || '', folder_name);
+		if (fs.existsSync(folder_path)) {
+			fs.readdirSync(folder_path).forEach((entry) => {
+				let entry_path = path.join(folder_path, entry);
+				if (fs.lstatSync(entry_path).isDirectory()) {
+					Utils.removeFolder(entry_path);
+				} else {
+					fs.unlinkSync(entry_path);
+				}
+			});
+			fs.rmdirSync(folder_path);
+		}
 	},
 
 	createFolder: (folder_name, parent_path) => {

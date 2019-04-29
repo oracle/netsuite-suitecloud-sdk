@@ -55,23 +55,48 @@ module.exports = class AbstractExtension {
 		this.sass.files = Utils.parseFiles(sass);
 		this.sass.entrypoints = _.mapObject(sass.entrypoints, (entrypoint) => {
 			entrypoint = Utils.parseFileName(entrypoint);
-			entrypoint = entrypoint.replace(new RegExp(`^${this.base_path}`), '');
-			return path.join(this.name, entrypoint);
+			return this._excludeBasePath(entrypoint);
 		});
 
 		return this.sass;
 	}
 
+	_excludeBasePath(file){
+		return path.join(this.name, file.replace(new RegExp(`^${this.base_path}`), ''));
+	}
+
+	getExtensionFullName(separator = ' '){
+		return [this.vendor, this.name, this.version].join(separator);
+	}
+
+	getLocalAssetsPath(folder = ''){
+		return path.join(folder, this.getExtensionFullName('/'));
+	}
+	
 	getAssets(){
 		if(this.assets) {
 			return this.assets;
 		}
 		this.assets = {};
+		const folder = 'assets';
 
-		const ext_assets = this.raw_extension.assets || {};
+		const ext_assets = this.raw_extension.assets || {};		
+		const assets_local_path = this.getLocalAssetsPath(folder);
+		const ext_fullname = this.getExtensionFullName();
 
-		this.assets = _.map(ext_assets, Utils.parseFiles);
-		this.assets = _.flatten(this.assets);
+		_.each(ext_assets, (asset)=>{
+			return Utils.parseFiles(asset, (file) => {
+				const src = path.normalize(this._excludeBasePath(file));
+				// first match of assets folder name and first match of extension name are removed from the dest path:
+				const dest = path.join(assets_local_path, src.replace(folder,'').replace(this.name,''));
+				this.assets[ext_fullname] = this.assets[ext_fullname] || [];
+				this.assets[ext_fullname].push({
+					extension: this.name,
+					dest: dest,
+					src: src
+				});
+			});
+		});
 
 		return this.assets;
 	}
