@@ -12,7 +12,6 @@ const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
 const commandsMetadata = require('../metadata/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const CLIException = require('../CLIException');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
@@ -27,13 +26,14 @@ const ANSWERS_NAMES = {
 	OBJECTS_SELECTED: 'objects_selected',
 	OVERRITE_OBJECTS: 'overwrite_objects',
 };
-const IMPORT_0BJECT =  {
+const IMPORT_0BJECT = {
 	SUCCESS: 'SUCCESS',
-	FAILED: 'FAILED'
-}
+	FAILED: 'FAILED',
+};
 const { PROJECT_SUITEAPP, OBJECTS_FOLDER } = require('../ApplicationConstants');
 const {
 	COMMAND_IMPORTOBJECTS: { ERRORS, QUESTIONS, MESSAGES },
+	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -56,37 +56,52 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_getCommandQuestions(prompt) {
 		const questions = this._generateListObjectQuestions();
 
-		return prompt(questions).then(firstAnswers => {
-			const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
-
-			return new Promise(resolve => {
-				const executionContextForListObjects = new SDKExecutionContext({
-					command: this._commandsMetadataInfo.listobjects.name,
-					showOutput: false,
-					params: paramsForListObjects,
-				});
-				this._applyDefaultContextParams(executionContextForListObjects);
-
-				return executeWithSpinner({
-					action: this._sdkExecutor.execute(executionContextForListObjects),
-					message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
-				})
-					.then(operationResult => {
-						const questions = this._generateSelectionObjectQuestions(operationResult);
-
-						resolve(prompt(questions));
-					})
-					.catch(error => {
-						throw new CLIException(
-							-10,
-							TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak,	error)
-						);
+		return new Promise((resolve, reject) => {
+			prompt(questions)
+				.then(firstAnswers => {
+					const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
+					const executionContextForListObjects = new SDKExecutionContext({
+						command: this._commandsMetadataInfo.listobjects.name,
+						showOutput: false,
+						params: paramsForListObjects,
 					});
-			}).then(secondAnswers => {
-				const combinedAnswers = { ...firstAnswers, ...secondAnswers };
-				const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
-				return finalAnswers;
-			});
+					this._applyDefaultContextParams(executionContextForListObjects);
+
+					executeWithSpinner({
+						action: this._sdkExecutor.execute(executionContextForListObjects),
+						message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
+					})
+						.then(operationResult => {
+							const questions = this._generateSelectionObjectQuestions(
+								operationResult
+							);
+							prompt(questions).then(secondAnswers => {
+								const combinedAnswers = { ...firstAnswers, ...secondAnswers };
+								const finalAnswers = this._arrangeAnswersForImportObjects(
+									combinedAnswers
+								);
+								resolve(finalAnswers);
+							});
+						})
+						.catch(error => {
+							reject(
+								TranslationService.getMessage(
+									ERRORS.CALLING_LIST_OBJECTS,
+									NodeUtils.lineBreak,
+									error
+								)
+							);
+						});
+				})
+				.catch(error =>
+					reject(
+						TranslationService.getMessage(
+							PROMPTING_INTERACTIVE_QUESTIONS_FAILED,
+							NodeUtils.lineBreak,
+							error
+						)
+					)
+				);
 		});
 	}
 
@@ -175,28 +190,34 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return questions;
 	}
 
-
 	_generateSelectionObjectQuestions(operationResult) {
 		const questions = [];
+		const { data } = operationResult;
+
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult)
+			SDKOperationResultUtils.logErrors(operationResult);
 			return;
 		}
 		SDKOperationResultUtils.logMessages(operationResult);
 		if (Array.isArray(data) && operationResult.data.length === 0) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),NodeUtils.COLORS.RESULT);
+			NodeUtils.println(
+				TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),
+				NodeUtils.COLORS.RESULT
+			);
 			return;
 		}
 
-		const choicesToShow = operationResult.data.map(object => ({ name: object.type + ':' + object.scriptId, value: object }));
+		const choicesToShow = operationResult.data.map(object => ({
+			name: object.type + ':' + object.scriptId,
+			value: object,
+		}));
 
 		const questionListObjectsSelection = {
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 			name: ANSWERS_NAMES.OBJECTS_SELECTED,
 			message: TranslationService.getMessage(QUESTIONS.SELECT_OBJECTS),
 			choices: choicesToShow,
-			validate: fieldValue =>
-				showValidationResults(fieldValue, validateArrayIsNotEmpty),
+			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
 		questions.push(questionListObjectsSelection);
 
@@ -234,7 +255,9 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_arrangeAnswersForListObjects(answers) {
 		if (answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
-			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(' ');
+			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(
+				' '
+			);
 		}
 		const listObjectsOptions = Object.keys(this._commandsMetadataInfo.listobjects.options);
 		const params = CommandUtils.extractOnlyOptionsFromObject(answers, listObjectsOptions);
@@ -284,24 +307,42 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult)
+			SDKOperationResultUtils.logErrors(operationResult);
 			return;
 		}
 
-		SDKOperationResultUtils.logMessages(operationResult)
+		SDKOperationResultUtils.logMessages(operationResult);
 
-		const importedObjects = data.customObjects.filter(customObject => customObject.result.code === IMPORT_0BJECT.SUCCESS);
-		const unImportedObjects = data.customObjects.filter(customObject => customObject.result.code === IMPORT_0BJECT.FAILED);
+		const importedObjects = data.customObjects.filter(
+			customObject => customObject.result.code === IMPORT_0BJECT.SUCCESS
+		);
+		const unImportedObjects = data.customObjects.filter(
+			customObject => customObject.result.code === IMPORT_0BJECT.FAILED
+		);
 
 		if (importedObjects.length) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
+			NodeUtils.println(
+				TranslationService.getMessage(MESSAGES.IMPORTED_OBJECTS),
+				NodeUtils.COLORS.RESULT
+			);
 			importedObjects.forEach(customObject =>
-				NodeUtils.println(`${customObject.type}:${customObject.id}`, NodeUtils.COLORS.RESULT));
+				NodeUtils.println(
+					`${customObject.type}:${customObject.id}`,
+					NodeUtils.COLORS.RESULT
+				)
+			);
 		}
 		if (unImportedObjects.length) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
+			NodeUtils.println(
+				TranslationService.getMessage(MESSAGES.UNIMPORTED_OBJECTS),
+				NodeUtils.COLORS.WARNING
+			);
 			unImportedObjects.forEach(customObject =>
-				NodeUtils.println(`${customObject.type}:${customObject.id}:${customObject.result.message}`,NodeUtils.COLORS.WARNING));
+				NodeUtils.println(
+					`${customObject.type}:${customObject.id}:${customObject.result.message}`,
+					NodeUtils.COLORS.WARNING
+				)
+			);
 		}
 	}
 };

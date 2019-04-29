@@ -154,7 +154,9 @@ module.exports = class Command {
 			if (this._runInInteractiveMode) {
 				this._promptCommandQuestions().then(answers => {
 					actionFunction(answers);
-				});
+				}).catch(error => {
+                    reject(error);
+                });
 			} else {
 				actionFunction(args);
 			}

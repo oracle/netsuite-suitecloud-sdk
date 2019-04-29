@@ -7,8 +7,7 @@ const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
 const { getMessage } = require('./services/TranslationService');
-const { ERRORS } = require('./services/TranslationKeys')
-
+const { ERRORS } = require('./services/TranslationKeys');
 
 module.exports.SDKExecutor = class SDKExecutor {
 	_convertParamsObjToString(cliParams, flags) {
@@ -37,10 +36,13 @@ module.exports.SDKExecutor = class SDKExecutor {
 				executionContext.getFlags()
 			);
 
-			const integrationModeOption = executionContext.isIntegrationMode() ? 
-				ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION : '';
+			const integrationModeOption = executionContext.isIntegrationMode()
+				? ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION
+				: '';
 
-			const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} ${integrationModeOption} "${
+			const jvmCommand = `${
+				ConfigurationService.getConfig().jvmInvocationOptions
+			} ${integrationModeOption} "${
 				Context.SDKFilePath
 			}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
@@ -75,10 +77,17 @@ module.exports.SDKExecutor = class SDKExecutor {
 			childProcess.on('close', code => {
 				if (code === 0) {
 					try {
-						const output = executionContext.isIntegrationMode() ? JSON.parse(lastSdkOutput) : lastSdkOutput;
+						const output = executionContext.isIntegrationMode()
+							? JSON.parse(lastSdkOutput)
+							: lastSdkOutput;
 						resolve(output);
 					} catch (error) {
-						reject(new CLIException(2, getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)));
+						reject(
+							new CLIException(
+								2,
+								getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
+							)
+						);
 					}
 				} else if (code !== 0) {
 					reject(new CLIException(2, getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)));
