@@ -24,10 +24,8 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	_getCommandQuestions(prompt) {
 		return new Promise((resolve,reject) => {
-			if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-				reject('The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.', NodeUtils.COLORS.ERROR);
-				return;
-			}
+			this._checkProjectIsSuiteApp(reject);
+
 			const executionContextListFolders = new SDKExecutionContext({
 				command: LIST_FOLDERS_COMMAND,
 				showOutput: false,
@@ -77,6 +75,13 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 					);
 				});
 		});
+	}
+
+	_checkProjectIsSuiteApp() {
+		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+			reject('The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.');
+			return;
+		}
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
