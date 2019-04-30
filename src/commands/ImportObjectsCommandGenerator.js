@@ -72,9 +72,22 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 						message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
 					})
 						.then(operationResult => {
-							const questions = this._generateSelectionObjectQuestions(
-								operationResult
-							);
+							const { data } = operationResult;
+							if (SDKOperationResultUtils.hasErrors(operationResult)) {
+								SDKOperationResultUtils.logErrors(operationResult);
+								return;
+							}
+							SDKOperationResultUtils.logMessages(operationResult);
+							if (Array.isArray(data) && operationResult.data.length === 0) {
+								NodeUtils.println(
+									TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),
+									NodeUtils.COLORS.RESULT
+								);
+								return;
+							}
+
+							const questions = this._generateSelectionObjectQuestions(operationResult);
+							
 							prompt(questions).then(secondAnswers => {
 								const combinedAnswers = { ...firstAnswers, ...secondAnswers };
 								const finalAnswers = this._arrangeAnswersForImportObjects(
@@ -84,6 +97,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 							});
 						})
 						.catch(error => {
+							console.log(error);
 							reject(
 								TranslationService.getMessage(
 									ERRORS.CALLING_LIST_OBJECTS,
@@ -194,20 +208,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questions = [];
 		const { data } = operationResult;
 
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult);
-			return;
-		}
-		SDKOperationResultUtils.logMessages(operationResult);
-		if (Array.isArray(data) && operationResult.data.length === 0) {
-			NodeUtils.println(
-				TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),
-				NodeUtils.COLORS.RESULT
-			);
-			return;
-		}
-
-		const choicesToShow = operationResult.data.map(object => ({
+		const choicesToShow = data.map(object => ({
 			name: object.type + ':' + object.scriptId,
 			value: object,
 		}));

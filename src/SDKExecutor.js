@@ -6,7 +6,7 @@ const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
-const { getMessage } = require('./services/TranslationService');
+const TranslationService  = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 
 module.exports.SDKExecutor = class SDKExecutor {
@@ -65,7 +65,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 						childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
 						childProcess.stdin.end();
 					} else {
-						reject(new CLIException(3, getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)));
+						reject(new CLIException(3, TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)));
 						childProcess.kill('SIGINT');
 					}
 					return;
@@ -85,12 +85,12 @@ module.exports.SDKExecutor = class SDKExecutor {
 						reject(
 							new CLIException(
 								2,
-								getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
+								TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
 							)
 						);
 					}
 				} else if (code !== 0) {
-					reject(new CLIException(2, getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)));
+					reject(new CLIException(2, TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)));
 				}
 			});
 		});
