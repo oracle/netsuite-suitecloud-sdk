@@ -59,15 +59,14 @@ module.exports = class CompilationContext {
 
 		_.each(extensions, (extension) => {
 			const ext_sass = extension.getSass();
-			const ext_fullname = extension.getExtensionFullName();
-			const ext_assets_path = extension.getLocalAssetsPath();
+			const ext_assets_path = extension.getLocalAssetsPath('assets');
 
 			_.each(ext_sass.entrypoints, (app_sass, app) => {
-				sass.entrypoints[app] = sass.entrypoints[app] || {};
-				sass.entrypoints[app][ext_fullname] = {
+				sass.entrypoints[app] = sass.entrypoints[app] || [];
+				sass.entrypoints[app].push({
 					entry: app_sass,
-					path: ext_assets_path
-				};
+					assets_path: ext_assets_path
+				});
 			});
 
 			sass.files = _.union(sass.files, ext_sass.files);

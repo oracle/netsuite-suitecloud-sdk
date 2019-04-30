@@ -43,7 +43,7 @@ module.exports = class SassCompiler{
 
 		return _.mapObject(entrypoints, (files) => {
 			return _.map(files, (file) => {
-				const local_functions = this._localFunctions({ assets_folder: this.sassCompatiblePath(file.path) });
+				const local_functions = this._localFunctions({ assets_folder: this.sassCompatiblePath(file.assets_path) });
 				file.entry = this.sassCompatiblePath(file.entry);
 				return  local_functions + `@import "${file.entry}";`
 			}).join('');
