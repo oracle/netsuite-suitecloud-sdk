@@ -10,11 +10,21 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR },
+	COMMAND_IMPORTFILES: { IMPORTING_FILES, LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR },
+	
 } = require('../services/TranslationKeys');
 
-const LIST_FOLDERS_COMMAND = 'listfolders';
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
+
+const ANSWER_NAMES = {
+	FOLDER: 'folder',
+	PATHS: 'paths'
+}
+
+const COMMAND_NAMES = {
+	LISTFILES: 'listfiles',
+	LISTFOLDERS: 'listfolders'
+}
 
 module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -24,10 +34,13 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	_getCommandQuestions(prompt) {
 		return new Promise((resolve,reject) => {
-			this._checkProjectIsSuiteApp(reject);
+			if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+				reject('The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.');
+				return;
+			}
 
 			const executionContextListFolders = new SDKExecutionContext({
-				command: LIST_FOLDERS_COMMAND,
+				command: COMMAND_NAMES.LISTFOLDERS,
 				showOutput: false,
 			});
 			this._applyDefaultContextParams(executionContextListFolders);
@@ -40,7 +53,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 					prompt([
 						{
 							type: CommandUtils.INQUIRER_TYPES.LIST,
-							name: 'folder',
+							name: ANSWER_NAMES.FOLDER,
 							message: TranslationService.getMessage(SELECT_FOLDER),
 							default: SUITE_SCRIPTS_FOLDER,
 							choices: this._getFileCabinetFolders(resultListFolders),
@@ -49,7 +62,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 						// quote folder path to preserve spaces
 						firstAnswers.folder = `\"${firstAnswers.folder}\"`;
 						const executionContextListFiles = new SDKExecutionContext({
-							command: 'listfiles',
+							command: COMMAND_NAMES.LISTFILES,
 							params: firstAnswers,
 						});
 						this._applyDefaultContextParams(executionContextListFiles);
@@ -58,6 +71,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 							action: this._sdkExecutor.execute(executionContextListFiles),
 							message: TranslationService.getMessage(LOADING_FILES),
 						}).then(listFilesResult => {
+							// TODO : validate that there is files to show
 							const questions = this._generateImportFilesQuestions(listFilesResult);
 							prompt(questions).then(secondAnswers =>{
 								//prepare answers to be treated in _executeAction
@@ -77,7 +91,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		});
 	}
 
-	_checkProjectIsSuiteApp() {
+	_checkProjectIsSuiteApp(reject) {
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
 			reject('The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.');
 			return;
@@ -100,7 +114,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		return [{
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
-			name: 'paths',
+			name: ANSWER_NAMES.PATHS,
 			message: 'Select the files you want to import',
 			choices: listFilesResult.data.map(path => ({name: path, value: path})),
 		}]
@@ -115,6 +129,11 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_executeAction(answers) {
+		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+			reject('The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.');
+			return;
+		}
+
 		const executionContextImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
@@ -122,14 +141,12 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextImportObjects),
-			message: TranslationService.getMessage(LOADING_FILES),
+			message: TranslationService.getMessage(IMPORTING_FILES),
 		});
 	}
 
 	_formatOutput(operationResult) {
 		const { data } = operationResult;
-
-		console.log(data);
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logErrors(operationResult);
