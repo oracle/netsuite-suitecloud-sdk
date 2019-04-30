@@ -106,7 +106,7 @@ module.exports = class CompilationContext {
 
 		_.each(extensions, (extension) => {
 			const ext_assets = extension.getAssets();
-			assets =_.extend(assets, ext_assets);
+			assets =_.union(assets, ext_assets);
 		});
 
 		return assets;

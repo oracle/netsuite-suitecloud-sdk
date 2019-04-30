@@ -21,14 +21,10 @@ module.exports = class AssetsCompiler{
 	}
 
 	copyResources(resources) {
-		return _.map(resources, (resource, ext) => () => Utils.copyFiles( resource , {
-				callback: () => ext,
-				src: this.context.files_path,
-				dest: this.context.local_server_path
-			})
-			.then( callback => { 
-				Log.result('COMPILATION_FINISH_FOR', [this.resource_type, callback[0]()]); 
-			})
+		return _.map(resources, (resource) => () => Utils.copyFile( 
+			path.join(this.context.files_path, resource.src),
+			path.join(this.context.local_server_path, resource.dest)
+			)
 		);
 	}
 

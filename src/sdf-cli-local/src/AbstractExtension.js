@@ -77,24 +77,19 @@ module.exports = class AbstractExtension {
 		if(this.assets) {
 			return this.assets;
 		}
-		this.assets = {};
+		this.assets = [];
 		const folder = 'assets';
 
 		const ext_assets = this.raw_extension.assets || {};		
 		const assets_local_path = this.getLocalAssetsPath(folder);
-		const ext_fullname = this.getExtensionFullName();
 
 		_.each(ext_assets, (asset)=>{
 			return Utils.parseFiles(asset, (file) => {
 				const src = path.normalize(this._excludeBasePath(file));
 				// first match of assets folder name and first match of extension name are removed from the dest path:
 				const dest = path.join(assets_local_path, src.replace(folder,'').replace(this.name,''));
-				this.assets[ext_fullname] = this.assets[ext_fullname] || [];
-				this.assets[ext_fullname].push({
-					extension: this.name,
-					dest: dest,
-					src: src
-				});
+				
+				this.assets.push({ dest: dest, src: src });
 			});
 		});
 

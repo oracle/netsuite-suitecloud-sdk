@@ -31,9 +31,8 @@ module.exports = class Compiler {
 
 	_createLocalServerFolder(context){
 		const serverFolder = 'LocalServer';
-		// remove local server folder:
-		Utils.removeFolder(serverFolder, context.project_folder);
-		const local_folder = Utils.createFolder(serverFolder, context.project_folder);
+		// create/override local server:
+		const local_folder = Utils.createFolder(serverFolder, context.project_folder, true);
 		context.setLocalServerPath(local_folder);
 	}
 
