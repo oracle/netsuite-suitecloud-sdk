@@ -1,6 +1,7 @@
 'use strict';
 
 const Log = require('./services/Log');
+const Who = require('./services/Who');
 
 const express = require('express');
 const cors = require('cors');
@@ -42,8 +43,8 @@ module.exports = class LocalServer {
 		return new Promise(() => {});
 	}
 
-	_whoService(){
-
+	_whoService(req, res){
+		return new Who(req, res);
 	}
 
 	_definePatchService(){
