@@ -1,6 +1,7 @@
 'use strict';
 
 const Translation = require('./Translation');
+const _ = require('underscore');
 
 class Log {
 
@@ -19,7 +20,7 @@ class Log {
 		return `[${timestamp}.${date.getMilliseconds()}] `;
 	}
 
-	custom(message, params, color = this.colors.DEFAULT || ((c)=>c)) { // || chalk
+	custom(message, params, color = this.colors.DEFAULT || _.identity) {
 		message = Translation.getMessage(message, params) || message;
 		console.log(
 			color(this._time() + message)
