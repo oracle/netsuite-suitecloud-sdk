@@ -32,12 +32,12 @@ const Utils = {
 		return parsed_xml;
 	},
 
-	parseFiles: (files_xml, apply_each) => {
+	parseFiles: (files_xml, replacer) => {
 		let files = files_xml.files || {};
 		files = files.file || {};
 		files = _.map(files, (file)=>{
 			file = Utils.parseFileName(file);
-			return apply_each ? apply_each(file) : file;
+			return replacer ? replacer(file) : file;
 		});
 		return files;
 	},

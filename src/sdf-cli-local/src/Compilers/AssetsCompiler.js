@@ -21,11 +21,12 @@ module.exports = class AssetsCompiler{
 	}
 
 	copyResources(resources) {
-		return _.map(resources, (resource) => () => Utils.copyFile( 
-			path.join(this.context.files_path, resource.src),
-			path.join(this.context.local_server_path, resource.dest)
-			)
-		);
+		return _.map(resources, (resource) => {
+			return () => Utils.copyFile(
+				path.join(this.context.files_path, resource.src),
+				path.join(this.context.local_server_path, resource.dest)
+			);
+		});
 	}
 
 };
