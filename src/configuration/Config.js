@@ -1,3 +1,3 @@
 module.exports = {
-	jvmInvocationOptions: 'java -DintegrationMode -jar',
+	jvmInvocationOptions: 'java -jar',
 };

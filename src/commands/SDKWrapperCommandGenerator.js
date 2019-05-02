@@ -41,6 +41,7 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 	_executeAction(args) {
 		let executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
+			integrationMode: false
 		});
 
 		for (const optionId in this._commandMetadata.options) {

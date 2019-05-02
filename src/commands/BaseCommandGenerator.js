@@ -4,6 +4,7 @@ const SDKExecutor = require('../SDKExecutor').SDKExecutor;
 const Command = require('./Command');
 const Context = require('../Context');
 const assert = require('assert');
+const NodeUtils = require('../utils/NodeUtils');
 
 module.exports = class BaseCommandGenerator {
 	constructor(options) {
@@ -38,6 +39,10 @@ module.exports = class BaseCommandGenerator {
 		return args;
 	}
 
+	_formatOutput(result){
+		NodeUtils.println(result, NodeUtils.COLORS.RESULT);
+	}
+
 	create(runInInteractiveMode) {
 		return new Command({
 			name: this._commandMetadata.name,
@@ -51,7 +56,8 @@ module.exports = class BaseCommandGenerator {
 			options: this._commandMetadata.options,
 			commandUserExtension: this._commandUserExtension,
 			supportsInteractiveMode: this._supportsInteractiveMode(),
-			projectFolder: this._projectFolder
+			projectFolder: this._projectFolder,
+			commandOutputFormater :this._formatOutput
 		});
 	}
 };

@@ -2,12 +2,17 @@
 	{
 		"commandName": "listfiles",
 		"interactiveGenerator": "./commands/ListFilesCommandGenerator",
-		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+		"nonInteractiveGenerator": "./commands/ListFilesCommandGenerator"
 	},
 	{
 		"commandName": "listobjects",
 		"interactiveGenerator": "./commands/ListObjectsCommandGenerator",
-		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+		"nonInteractiveGenerator": "./commands/ListObjectsCommandGenerator"
+	},
+	{
+		"commandName": "importobjects",
+		"interactiveGenerator": "./commands/ImportObjectsCommandGenerator",
+		"nonInteractiveGenerator": "./commands/ImportObjectsCommandGenerator"
 	},
 	{
 		"commandName": "setupaccount",

@@ -19,6 +19,7 @@ module.exports = class Command {
 		assert(options.preActionFunc instanceof Function);
 		assert(options.actionFunc instanceof Function);
 		assert(options.commandUserExtension);
+		assert(options.commandOutputFormater);
 
 		this._name = options.name;
 		this._alias = options.alias;
@@ -34,6 +35,7 @@ module.exports = class Command {
 		this._commandUserExtension = options.commandUserExtension;
 		this._supportsInteractiveMode = options.supportsInteractiveMode;
 		this._commandOptionsValidator = new CommandOptionsValidator(this._options);
+		this._commandOutputFormatter = options.commandOutputFormater;
 	}
 
 	attachToProgram(program, commandOutputHandler) {
@@ -57,7 +59,7 @@ module.exports = class Command {
 		}
 
 		commandSetup.description(this._description).action(options => {
-			commandOutputHandler.handle(this._onExecuteCommand(options));
+			commandOutputHandler.handle(this._onExecuteCommand(options), this._commandOutputFormatter);
 		});
 	}
 
@@ -152,7 +154,9 @@ module.exports = class Command {
 			if (this._runInInteractiveMode) {
 				this._promptCommandQuestions().then(answers => {
 					actionFunction(answers);
-				});
+				}).catch(error => {
+                    reject(error);
+                });
 			} else {
 				actionFunction(args);
 			}
