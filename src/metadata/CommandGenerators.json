@@ -34,7 +34,7 @@
 		"nonInteractiveGenerator": "./commands/CreateObjectCommandGenerator"
 	},
 	{
-		"commandName": "local",
+		"commandName": "localserver",
 		"interactiveGenerator": "./commands/LocalCommandGenerator",
 		"nonInteractiveGenerator": "./commands/LocalCommandGenerator"
 	}
