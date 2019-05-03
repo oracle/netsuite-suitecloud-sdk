@@ -35,17 +35,17 @@ class Who {
 		this.javascript_libs = {
 			tag: 'script', 
 			resource: 'javascript_libs', 
-			url: `${protocol}://${host}/javascript-libs.js`
+			url: 'javascript-libs.js'
 		};
 		this.templates = {
 			tag: 'script', 
 			resource: 'templates', 
-			url: `${protocol}://${host}/${app}-templates.js`
+			url: `${protocol}://${host}/templates/${app}-templates.js`
 		};
 		this.js_core = {
 			tag: 'script', 
 			resource: 'js_core', 
-			url: `${protocol}://${host}/javascript/${app}.js`
+			url: null
 		};
 		this.js_extensions = {
 			tag: 'script', 
@@ -60,8 +60,8 @@ class Who {
 			this.css, 
 			this.requirejs, 
 			this.define_patch, 
-			this.templates, 
 			this.javascript_libs, 
+			this.templates, 
 			this.js_core, 
 			this.js_extensions
 		];
