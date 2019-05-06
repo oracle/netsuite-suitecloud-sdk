@@ -1,7 +1,7 @@
 'use strict';
 
 const Log = require('./services/Log');
-const Who = require('./services/Who');
+const whoService = require('./services/Who');
 
 const express = require('express');
 const cors = require('cors');
@@ -31,7 +31,7 @@ module.exports = class LocalServer {
 		});
 
 		//Service used by the index-local.ssp files to know what files load
-		app.use('/who/:app', this._whoService);
+		app.use('/who/:app', whoService);
 		//Serves the script patch to ignore tpl defines executed by core javascript file
 		app.use('/define_patch.js', this._definePatchService);
 		
@@ -41,10 +41,6 @@ module.exports = class LocalServer {
 
 		//server is listening so we return a new promise that will never be resolved
 		return new Promise(() => {});
-	}
-
-	_whoService(req, res){
-		return new Who(req, res);
 	}
 
 	_definePatchService(){
