@@ -1,6 +1,5 @@
 'use strict';
 
-const {	existsSync } = require('fs');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
@@ -10,6 +9,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
+const ApplicationConstants = require('../ApplicationConstants');
 const {	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES }, 
 	YES,
 	NO,
@@ -17,15 +17,11 @@ const {	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
 
 const { join } = require('path');
 
-const ACP_PROJECT_TYPE = 'ACCOUNTCUSTOMIZATION';
-const SUITEAPP_PROJECT_TYPE = 'SUITEAPP';
-
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
 const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
 
 const SOURCE_FOLDER = 'src';
-const MANIFEST_FILENAME = '/manifest.xml';
 const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const CLI_CONFIG_FILENAME = 'cli-config';
 const CLI_CONFIG_EXTENSION = 'js';
@@ -55,11 +51,11 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				choices: [
 					{
 						name: ACP_PROJECT_TYPE_DISPLAY,
-						value: ACP_PROJECT_TYPE,
+						value: ApplicationConstants.PROJECT_ACP,
 					},
 					{
 						name: SUITEAPP_PROJECT_TYPE_DISPLAY,
-						value: SUITEAPP_PROJECT_TYPE,
+						value: ApplicationConstants.PROJECT_SUITEAPP,
 					},
 				],
 			},
@@ -80,7 +76,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			},
 			{
 				when: function(response) {
-					return response.type === SUITEAPP_PROJECT_TYPE;
+					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.PUBLISHER_ID,
@@ -88,7 +84,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			},
 			{
 				when: function(response) {
-					return response.type === SUITEAPP_PROJECT_TYPE;
+					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.PROJECT_ID,
@@ -96,7 +92,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			},
 			{
 				when: function(response) {
-					return response.type === SUITEAPP_PROJECT_TYPE;
+					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.PROJECT_VERSION,
@@ -106,34 +102,36 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	}
 
 	_preExecuteAction(args) {
-		args.parentdirectory = process.cwd() + '\\';
+		args.parentdirectory = process.cwd();
 		return args;
 	}
 
 	_executeAction(args) {
 		let fullyQualifiedProjectId = args.publisherid + '.' + args.projectid;
-		let projectName = args.type === SUITEAPP_PROJECT_TYPE ? fullyQualifiedProjectId : args.projectname;
-		let projectDirectory = join(args.parentdirectory, projectName, '/');
-		let manifestFilePath = join(projectDirectory, SOURCE_FOLDER, MANIFEST_FILENAME);
+		let projectName = args.type === ApplicationConstants.PROJECT_SUITEAPP ? fullyQualifiedProjectId : args.projectname;
+		let projectDirectory = join(args.parentdirectory, projectName);
+		let manifestFilePath = join(projectDirectory, SOURCE_FOLDER, ApplicationConstants.MANIFEST_XML);
 
 		let params = {
 			parentdirectory: projectDirectory,
 			type: args.type,
 			projectname: SOURCE_FOLDER,
 			...(args.overwrite && { overwrite: '' }),
-			...(args.type === SUITEAPP_PROJECT_TYPE && {
+			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
 				publisherid: args.publisherid,
 			}),
-			...(args.type === SUITEAPP_PROJECT_TYPE && {
+			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
 				projectid: args.projectid,
 			}),
-			...(args.type === SUITEAPP_PROJECT_TYPE && {
+			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
 				projectversion: args.projectversion,
 			}),
 		};
 
 		//Since Node CLI renames project folders, check existence here instead of relying on Java CLI
-		if (this._fileSystemService.folderExistsAndNotEmpty(projectDirectory)) {
+		if (this._fileSystemService.folderExists(projectDirectory) 
+				&& !this._fileSystemService.isFolderEmpty(projectDirectory) 
+				&& !args.overwrite) {
 			return new Promise((resolve) => {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.PROJECT_EXISTS), NodeUtils.COLORS.ERROR);
 				resolve();
@@ -149,7 +147,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const renameProjectFolderPromise = () => {
 			return new Promise(resolve => {
-				if (args.type === SUITEAPP_PROJECT_TYPE) {
+				if (args.type === ApplicationConstants.PROJECT_SUITEAPP) {
 					let oldPath = join(projectDirectory, projectName);
 					let newPath = join(projectDirectory, SOURCE_FOLDER);
 					this._fileSystemService.deleteFolderRecursive(newPath);
@@ -200,19 +198,19 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	}
 
 	_formatOutput(result) {
-
 		if (!result) {
 			return;
 		}
 		if (SDKOperationResultUtils.hasErrors(result.operationResult)) {
-			SDKOperationResultUtils.logErrors(result.operationResult)
+			SDKOperationResultUtils.logErrors(result.operationResult);
 			return;
 		}
 
 		SDKOperationResultUtils.logMessages(result.operationResult);
-		let projectTypeText = result.projectType == SUITEAPP_PROJECT_TYPE 
+		let projectTypeText = result.projectType === ApplicationConstants.PROJECT_SUITEAPP 
 				? SUITEAPP_PROJECT_TYPE_DISPLAY 
 				: ACCOUNT_CUSTOMIZATION_DISPLAY;
-		NodeUtils.println(TranslationService.getMessage(MESSAGES.PROJECT_CREATED, projectTypeText, result.projectDirectory), NodeUtils.COLORS.RESULT);
+		let message = TranslationService.getMessage(MESSAGES.PROJECT_CREATED, projectTypeText, result.projectDirectory);
+		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
 	}
 };

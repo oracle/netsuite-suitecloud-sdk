@@ -12,7 +12,9 @@ const {
 const assert = require('assert');
 const { join } = require('path');
 
-module.exports = class FileService {
+const CHAR_ENCODING_UTF8 = 'utf-8';
+
+module.exports = class FileService {	
 	getFoldersFromDirectory(parentFolder) {
 		assert(parentFolder);
 		const getDirectories = source =>
@@ -32,7 +34,7 @@ module.exports = class FileService {
 		assert(options.fileExtension);
 
 		return new Promise((resolve, reject) => {
-			readFile(options.template, 'utf-8', (readingError, content) => {
+			readFile(options.template, CHAR_ENCODING_UTF8, (readingError, content) => {
 				if (readingError) {
 					reject(readingError);
 				}
@@ -58,7 +60,7 @@ module.exports = class FileService {
 		assert(parentFolderPath);
 		assert(folderName);
 
-		let targetFolder = join(parentFolderPath, '/', folderName);
+		let targetFolder = join(parentFolderPath, folderName);
 
 		if (!existsSync(targetFolder)) {
 			mkdirSync(join(targetFolder));
@@ -69,7 +71,7 @@ module.exports = class FileService {
 		assert(oldPath);
 		assert(newPath);
 
-		if (existsSync(oldPath) && oldPath != newPath) {
+		if (existsSync(oldPath) && oldPath !== newPath) {
 			renameSync(oldPath, newPath);
 		}
 		
@@ -100,7 +102,7 @@ module.exports = class FileService {
 		assert(toString);
 
 		return new Promise((resolve, reject) => {
-			readFile(filePath, 'utf-8', (readingError, content) => {
+			readFile(filePath, CHAR_ENCODING_UTF8, (readingError, content) => {
 				if (readingError) {
 					reject(readingError);
 				}
@@ -118,9 +120,14 @@ module.exports = class FileService {
 		});
 	}
 
-	folderExistsAndNotEmpty(path) {
+	folderExists(path) {
 		assert(path);
-		return existsSync(path) && readdirSync(path).length != 0
+		return existsSync(path)
+	}
+
+	isFolderEmpty(path) {
+		assert(path);
+		readdirSync(path).length != 0
 	}
 
 	_processTemplateBindings(content, bindings) {
