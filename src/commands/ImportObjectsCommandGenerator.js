@@ -97,7 +97,6 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 							});
 						})
 						.catch(error => {
-							console.log(error);
 							reject(
 								TranslationService.getMessage(
 									ERRORS.CALLING_LIST_OBJECTS,
