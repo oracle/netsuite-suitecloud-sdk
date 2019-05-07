@@ -72,9 +72,22 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 						message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
 					})
 						.then(operationResult => {
-							const questions = this._generateSelectionObjectQuestions(
-								operationResult
-							);
+							const { data } = operationResult;
+							if (SDKOperationResultUtils.hasErrors(operationResult)) {
+								SDKOperationResultUtils.logErrors(operationResult);
+								return;
+							}
+							SDKOperationResultUtils.logMessages(operationResult);
+							if (Array.isArray(data) && operationResult.data.length === 0) {
+								NodeUtils.println(
+									TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),
+									NodeUtils.COLORS.RESULT
+								);
+								return;
+							}
+
+							const questions = this._generateSelectionObjectQuestions(operationResult);
+							
 							prompt(questions).then(secondAnswers => {
 								const combinedAnswers = { ...firstAnswers, ...secondAnswers };
 								const finalAnswers = this._arrangeAnswersForImportObjects(
@@ -194,20 +207,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questions = [];
 		const { data } = operationResult;
 
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult);
-			return;
-		}
-		SDKOperationResultUtils.logMessages(operationResult);
-		if (Array.isArray(data) && operationResult.data.length === 0) {
-			NodeUtils.println(
-				TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),
-				NodeUtils.COLORS.RESULT
-			);
-			return;
-		}
-
-		const choicesToShow = operationResult.data.map(object => ({
+		const choicesToShow = data.map(object => ({
 			name: object.type + ':' + object.scriptId,
 			value: object,
 		}));
@@ -223,9 +223,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		// extracting root prefix
 		// replacing '\' for '/', this is done because destinationfolder option in java-sdf works only with '/'
+		// sourroundig "" to the folder string so it will handle blank spaces case
 		const transformFoldersToChoicesFunc = folder => ({
 			name: folder.replace(this._projectFolder, ''),
-			value: folder.replace(this._projectFolder, '').replace(/\\/g, '/'),
+			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
 		const objectDirectoryChoices = this._fileSystemService
 			.getFoldersFromDirectory(join(this._projectFolder, OBJECTS_FOLDER))
