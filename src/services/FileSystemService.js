@@ -10,7 +10,7 @@ const {
 	rmdirSync,
 } = require('fs');
 const assert = require('assert');
-const { join } = require('path');
+const path = require('path');
 
 const CHAR_ENCODING_UTF8 = 'utf-8';
 
@@ -19,7 +19,7 @@ module.exports = class FileService {
 		assert(parentFolder);
 		const getDirectories = source =>
 			readdirSync(source)
-				.map(name => join(source, name))
+				.map(name => path.join(source, name))
 				.filter(source => lstatSync(source).isDirectory());
 
 		var availableDirectories = getDirectories(parentFolder);
@@ -43,7 +43,7 @@ module.exports = class FileService {
 				}
 
 				writeFile(
-					join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
+					path.join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
 					content.toString(),
 					(writtingError, data) => {
 						if (writtingError) {
@@ -60,10 +60,10 @@ module.exports = class FileService {
 		assert(parentFolderPath);
 		assert(folderName);
 
-		let targetFolder = join(parentFolderPath, folderName);
+		let targetFolder = path.join(parentFolderPath, folderName);
 
 		if (!existsSync(targetFolder)) {
-			mkdirSync(join(targetFolder));
+			mkdirSync(path.join(targetFolder));
 		}
 	}
 
@@ -83,7 +83,7 @@ module.exports = class FileService {
 		let self = this;
 		if (existsSync(folderPath)) {
 			readdirSync(folderPath).forEach(file => {
-				let currentPath = join(folderPath, file);
+				let currentPath = path.join(folderPath, file);
 				if (lstatSync(currentPath).isDirectory()) {
 					// recurse
 					self.deleteFolderRecursive(currentPath);
