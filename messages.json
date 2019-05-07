@@ -8,6 +8,16 @@
 	"COMMAND_IMPORTFILES_RESTRICTED_FOLDER": "Restricted Folder",
 	"COMMAND_IMPORTFILES_SELECT_FOLDER": "Select the File Cabinet folder for which you want to get a file list.",
 
+	"COMMAND_CREATEPROJECT_ENTER_PROJECT_NAME": "Please enter the name of your project",
+	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Would you like to overwrite the project if found in the same location?",
+	"COMMAND_CREATEPROJECT_ENTER_PUBLISHER_ID": "Please enter your NetSuite publisher ID",
+	"COMMAND_CREATEPROJECT_ENTER_PROJECT_ID": "Please enter project ID",
+	"COMMAND_CREATEPROJECT_ENTER_PROJECT_VERSION": "Please enter project version",
+	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATED": "The {0} project was created successfully in {1}.",
+	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_EXISTS": "Folder exists and is not empty.",
+	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
+	"COMMAND_CREATEPROJECT_ERRORS_PROCESS_FAILED": "The createproject process failed.",
+	
 	"COMMAND_IMPORTOBJECTS_ERRORS_COMMAND_IMPORTOBJECTS": "Error while calling listobjects. Details:{0}{1}",
 	"COMMAND_IMPORTOBJECTS_ERRORS_PROCESS_FAILED": "The importobjects process failed.",
 	"COMMAND_IMPORTOBJECTS_QUESTIONS_APPID": "Enter the application ID.",
@@ -41,7 +51,7 @@
 	"COMMAND_LISTOBJECTS_QUESTIONS_SPECIFIC_APPID": "Do you want to list objects from a specific SuiteApp?",
 	"COMMAND_LISTOBJECTS_SUCCESS_OBJECTS_IMPORTED": "The following objects were found in your account:",
 	"COMMAND_LISTOBJECTS_SUCCESS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
-
+	
 	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode",
 	"COMMAND_OPTION_IS_MANDATORY": "'{0}' option is mandatory.",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
