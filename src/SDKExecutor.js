@@ -6,7 +6,7 @@ const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
-const TranslationService  = require('./services/TranslationService');
+const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 
 module.exports.SDKExecutor = class SDKExecutor {
