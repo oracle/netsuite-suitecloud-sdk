@@ -10,7 +10,8 @@ const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const ApplicationConstants = require('../ApplicationConstants');
-const {	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES }, 
+const {
+	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -108,83 +109,102 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 	_executeAction(args) {
 		const fullyQualifiedProjectId = args.publisherid + '.' + args.projectid;
-        const projectName = args.type === ApplicationConstants.PROJECT_SUITEAPP ? fullyQualifiedProjectId : args.projectname;
-        const projectDirectory = path.join(args.parentdirectory, projectName);
-        const manifestFilePath = path.join(projectDirectory, SOURCE_FOLDER, ApplicationConstants.MANIFEST_XML);
+		const projectName =
+			args.type === ApplicationConstants.PROJECT_SUITEAPP
+				? fullyQualifiedProjectId
+				: args.projectname;
+		const projectDirectory = path.join(args.parentdirectory, projectName);
+		const manifestFilePath = path.join(
+			projectDirectory,
+			SOURCE_FOLDER,
+			ApplicationConstants.MANIFEST_XML
+		);
 
-        const params = {
-            parentdirectory: projectDirectory,
-            type: args.type,
-            projectname: SOURCE_FOLDER,
-            ...(args.overwrite && { overwrite: '' }),
-            ...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-                publisherid: args.publisherid,
-            }),
-            ...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-                projectid: args.projectid,
-            }),
-            ...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-                projectversion: args.projectversion,
-            }),
-        };
+		const params = {
+			parentdirectory: projectDirectory,
+			type: args.type,
+			projectname: SOURCE_FOLDER,
+			...(args.overwrite && { overwrite: '' }),
+			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
+				publisherid: args.publisherid,
+			}),
+			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
+				projectid: args.projectid,
+			}),
+			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
+				projectversion: args.projectversion,
+			}),
+		};
 
-        //Since Node CLI renames project folders, check existence here instead of relying on Java CLI
-        if (this._fileSystemService.folderExists(projectDirectory) 
-                && !this._fileSystemService.isFolderEmpty(projectDirectory) 
-                && !args.overwrite) {
-            return new Promise((resolve, reject) => {
-                reject(TranslationService.getMessage(MESSAGES.PROJECT_EXISTS));
-            });
-        }
+		//Since Node CLI renames project folders, check existence here instead of relying on Java CLI
+		if (
+			this._fileSystemService.folderExists(projectDirectory) &&
+			!this._fileSystemService.isFolderEmpty(projectDirectory) &&
+			!args.overwrite
+		) {
+			return new Promise((resolve, reject) => {
+				reject(TranslationService.getMessage(MESSAGES.PROJECT_EXISTS));
+			});
+		}
 
-        this._fileSystemService.createFolder(args.parentdirectory, projectName);
+		this._fileSystemService.createFolder(args.parentdirectory, projectName);
 
-        const actionCreateProject = new Promise((resolve, reject) => {
-            const executionContext = new SDKExecutionContext({
-                command: this._commandMetadata.name,
-                params: params,
-            });
-            return this._sdkExecutor.execute(executionContext).then(operationResult => {
-                if (SDKOperationResultUtils.hasErrors(operationResult)) {
-                    resolve({
-                        operationResult: operationResult,
-                        projectType: args.type,
-                        projectDirectory: path.join(args.parentdirectory, projectName)
-                    });
-                    return;
-                }
+		const actionCreateProject = new Promise((resolve, reject) => {
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				params: params,
+			});
+			return this._sdkExecutor
+				.execute(executionContext)
+				.then(operationResult => {
+					if (SDKOperationResultUtils.hasErrors(operationResult)) {
+						resolve({
+							operationResult: operationResult,
+							projectType: args.type,
+							projectDirectory: path.join(args.parentdirectory, projectName),
+						});
+						return;
+					}
 
-                if (args.type === ApplicationConstants.PROJECT_SUITEAPP) {
-                    let oldPath = path.join(projectDirectory, projectName);
-                    let newPath = path.join(projectDirectory, SOURCE_FOLDER);
-                    this._fileSystemService.deleteFolderRecursive(newPath);
-                    this._fileSystemService.renameFolder(oldPath, newPath);
-                }
-                this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, args.projectname);
+					if (args.type === ApplicationConstants.PROJECT_SUITEAPP) {
+						let oldPath = path.join(projectDirectory, projectName);
+						let newPath = path.join(projectDirectory, SOURCE_FOLDER);
+						this._fileSystemService.deleteFolderRecursive(newPath);
+						this._fileSystemService.renameFolder(oldPath, newPath);
+					}
+					this._fileSystemService.replaceStringInFile(
+						manifestFilePath,
+						SOURCE_FOLDER,
+						args.projectname
+					);
 
-                this._fileSystemService.createFileFromTemplate({
-                    template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
-                    destinationFolder: projectDirectory,
-                    fileName: CLI_CONFIG_FILENAME,
-                    fileExtension: CLI_CONFIG_EXTENSION,
-                }).then(() => {
-                    resolve({
-                        operationResult: operationResult,
-                        projectType: args.type,
-                        projectDirectory: path.join(args.parentdirectory, projectName)
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            }).catch(error => {
-                reject(error);
-            });
-        });
+					this._fileSystemService
+						.createFileFromTemplate({
+							template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
+							destinationFolder: projectDirectory,
+							fileName: CLI_CONFIG_FILENAME,
+							fileExtension: CLI_CONFIG_EXTENSION,
+						})
+						.then(() => {
+							resolve({
+								operationResult: operationResult,
+								projectType: args.type,
+								projectDirectory: path.join(args.parentdirectory, projectName),
+							});
+						})
+						.catch(error => {
+							reject(error);
+						});
+				})
+				.catch(error => {
+					reject(error);
+				});
+		});
 
-        return executeWithSpinner({
-            action: actionCreateProject,
-            message: TranslationService.getMessage(MESSAGES.CREATING_PROJECT),
-        });
+		return executeWithSpinner({
+			action: actionCreateProject,
+			message: TranslationService.getMessage(MESSAGES.CREATING_PROJECT),
+		});
 	}
 
 	_formatOutput(result) {
@@ -192,16 +212,24 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			return;
 		}
 		if (SDKOperationResultUtils.hasErrors(result.operationResult)) {
-            NodeUtils.println(TranslationService.getMessage(MESSAGES.PROCESS_FAILED), NodeUtils.COLORS.ERROR);
-            SDKOperationResultUtils.logErrors(result.operationResult);
-            return;
-        }
+			NodeUtils.println(
+				TranslationService.getMessage(MESSAGES.PROCESS_FAILED),
+				NodeUtils.COLORS.ERROR
+			);
+			SDKOperationResultUtils.logErrors(result.operationResult);
+			return;
+		}
 
-        SDKOperationResultUtils.logMessages(result.operationResult);
-        const projectTypeText = result.projectType === ApplicationConstants.PROJECT_SUITEAPP 
-                ? SUITEAPP_PROJECT_TYPE_DISPLAY 
-                : ACCOUNT_CUSTOMIZATION_DISPLAY;
-        const message = TranslationService.getMessage(MESSAGES.PROJECT_CREATED, projectTypeText, result.projectDirectory);
-        NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+		SDKOperationResultUtils.logMessages(result.operationResult);
+		const projectTypeText =
+			result.projectType === ApplicationConstants.PROJECT_SUITEAPP
+				? SUITEAPP_PROJECT_TYPE_DISPLAY
+				: ACCOUNT_CUSTOMIZATION_DISPLAY;
+		const message = TranslationService.getMessage(
+			MESSAGES.PROJECT_CREATED,
+			projectTypeText,
+			result.projectDirectory
+		);
+		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
 	}
 };

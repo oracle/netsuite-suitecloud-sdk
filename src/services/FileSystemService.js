@@ -14,7 +14,7 @@ const path = require('path');
 
 const CHAR_ENCODING_UTF8 = 'utf-8';
 
-module.exports = class FileService {	
+module.exports = class FileService {
 	getFoldersFromDirectory(parentFolder) {
 		assert(parentFolder);
 		const getDirectories = source =>
@@ -43,7 +43,10 @@ module.exports = class FileService {
 				}
 
 				writeFile(
-					path.join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
+					path.join(
+						options.destinationFolder,
+						`${options.fileName}.${options.fileExtension}`
+					),
 					content.toString(),
 					(writtingError, data) => {
 						if (writtingError) {
@@ -74,7 +77,6 @@ module.exports = class FileService {
 		if (existsSync(oldPath) && oldPath !== newPath) {
 			renameSync(oldPath, newPath);
 		}
-		
 	}
 
 	deleteFolderRecursive(folderPath) {
@@ -122,12 +124,12 @@ module.exports = class FileService {
 
 	folderExists(path) {
 		assert(path);
-		return existsSync(path)
+		return existsSync(path);
 	}
 
 	isFolderEmpty(path) {
 		assert(path);
-		readdirSync(path).length != 0
+		readdirSync(path).length != 0;
 	}
 
 	_processTemplateBindings(content, bindings) {
