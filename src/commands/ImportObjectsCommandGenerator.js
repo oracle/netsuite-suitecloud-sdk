@@ -224,9 +224,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		// extracting root prefix
 		// replacing '\' for '/', this is done because destinationfolder option in java-sdf works only with '/'
+		// sourroundig "" to the folder string so it will handle blank spaces case
 		const transformFoldersToChoicesFunc = folder => ({
 			name: folder.replace(this._projectFolder, ''),
-			value: folder.replace(this._projectFolder, '').replace(/\\/g, '/'),
+			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
 		const objectDirectoryChoices = this._fileSystemService
 			.getFoldersFromDirectory(join(this._projectFolder, OBJECTS_FOLDER))
