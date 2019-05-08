@@ -8,15 +8,15 @@ const NodeUtils = require('../utils/NodeUtils');
 
 module.exports = class BaseCommandGenerator {
 	constructor(options) {
-        assert(options);
-        assert(options.commandMetadata);
-        assert(options.commandUserExtension);
-        assert(options.projectFolder);
-        
-        this._sdkExecutor = new SDKExecutor();
+		assert(options);
+		assert(options.commandMetadata);
+		assert(options.commandUserExtension);
+		assert(options.projectFolder);
+
+		this._sdkExecutor = new SDKExecutor();
 		this._commandMetadata = options.commandMetadata;
-        this._commandUserExtension = options.commandUserExtension;
-        this._projectFolder = options.projectFolder;
+		this._commandUserExtension = options.commandUserExtension;
+		this._projectFolder = options.projectFolder;
 	}
 
 	_getCommandQuestions(prompt) {
@@ -39,11 +39,11 @@ module.exports = class BaseCommandGenerator {
 		return args;
 	}
 
-	_formatOutput(result){
+	_formatOutput(result) {
 		NodeUtils.println(result, NodeUtils.COLORS.RESULT);
 	}
 
-	create(runInInteractiveMode) {
+	create() {
 		return new Command({
 			name: this._commandMetadata.name,
 			alias: this._commandMetadata.alias,
@@ -52,12 +52,11 @@ module.exports = class BaseCommandGenerator {
 			actionFunc: this._executeAction.bind(this),
 			getCommandQuestionsFunc: this._getCommandQuestions.bind(this),
 			isSetupRequired: this._commandMetadata.isSetupRequired,
-			runInInteractiveMode: runInInteractiveMode,
 			options: this._commandMetadata.options,
 			commandUserExtension: this._commandUserExtension,
 			supportsInteractiveMode: this._supportsInteractiveMode(),
 			projectFolder: this._projectFolder,
-			commandOutputFormater :this._formatOutput
+			commandOutputFormater: this._formatOutput,
 		});
 	}
 };
