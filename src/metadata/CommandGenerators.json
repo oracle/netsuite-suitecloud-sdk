@@ -12,7 +12,7 @@
 	{
 		"commandName": "importfiles",
 		"interactiveGenerator": "./commands/ImportFilesCommandGenerator",
-		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+		"nonInteractiveGenerator": "./commands/ImportFilesCommandGenerator"
 	},
 	{
 		"commandName": "importobjects",
