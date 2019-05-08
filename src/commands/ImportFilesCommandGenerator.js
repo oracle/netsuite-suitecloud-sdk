@@ -12,21 +12,16 @@ const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
 	COMMAND_IMPORTFILES: {
 		ERRORS,
-		IMPORTING_FILES,
 		QUESTIONS,
-		LOADING_FOLDERS,
-		LOADING_FILES,
-		RESTRICTED_FOLDER,
+		MESSAGES,
 	},
 } = require('../services/TranslationKeys');
 
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
-
 const ANSWER_NAMES = {
 	FOLDER: 'folder',
 	PATHS: 'paths',
 };
-
 const COMMAND_NAMES = {
 	LISTFILES: 'listfiles',
 	LISTFOLDERS: 'listfolders',
@@ -57,7 +52,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 			const resultListFolders = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextListFolders),
-				message: TranslationService.getMessage(LOADING_FOLDERS),
+				message: TranslationService.getMessage(MESSAGES.LOADING_FOLDERS),
 			});
 
 			const firstAnswers = await prompt([
@@ -80,7 +75,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 			const listFilesResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextListFiles),
-				message: TranslationService.getMessage(LOADING_FILES),
+				message: TranslationService.getMessage(MESSAGES.LOADING_FILES),
 			});
 
 			if (SDKOperationResultUtils.hasErrors(listFilesResult)) {
@@ -111,7 +106,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		return listFoldersResponse.data.map(folder => ({
 			name: folder.path,
 			value: folder.path,
-			disabled: folder.isRestricted ? TranslationService.getMessage(RESTRICTED_FOLDER) : '',
+			disabled: folder.isRestricted ? TranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',
 		}));
 	}
 
@@ -147,7 +142,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextImportObjects),
-			message: TranslationService.getMessage(IMPORTING_FILES),
+			message: TranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 		});
 	}
 
