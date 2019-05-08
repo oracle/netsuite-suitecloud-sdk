@@ -57,7 +57,7 @@ module.exports = class CLI {
 		commandsMetadataArraySortedByCommandName.forEach(commandMetadata => {
 			const command = this._createCommandFrom(commandMetadata);
 			command.attachToProgram({
-				program: program,
+				program,
 				runInInteractiveMode: this._runInInteractiveMode,
 				commandOutputHandler: this._commandOutputHandler,
 				commandActionExecutor: this._commandActionExecutor,
@@ -77,12 +77,12 @@ module.exports = class CLI {
 
 		const Generator = require(commandGeneratorPath);
 		const generatorInstance = new Generator({
-			commandMetadata: commandMetadata,
-			commandUserExtension: commandUserExtension,
-			projectFolder: projectFolder,
-		});
-		const command = generatorInstance.create();
-		return command;
+			commandMetadata,
+			commandUserExtension,
+			projectFolder,
+        });
+        
+		return generatorInstance.create();
 	}
 
 	_printHelp() {
