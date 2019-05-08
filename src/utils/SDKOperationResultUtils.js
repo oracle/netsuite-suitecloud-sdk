@@ -5,6 +5,13 @@ const TranslationService = require('../services/TranslationService');
 const { ERRORS } = require('../services/TranslationKeys');
 
 module.exports = {
+	getMessagesString: operationResult => {
+		const { messages } = operationResult;
+		if (Array.isArray(messages) && messages.length > 0 ) {
+			return messages.join(NodeUtils.lineBreak);
+		}
+		return '';
+	},
 	hasErrors: operationResult => {
 		return operationResult.status === OperationResultStatus.ERROR
 	},

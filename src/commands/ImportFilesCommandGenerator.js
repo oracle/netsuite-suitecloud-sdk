@@ -11,12 +11,12 @@ const ProjectMetadataService = require('../services/ProjectMetadataService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
 	COMMAND_IMPORTFILES: {
+		ERRORS,
 		IMPORTING_FILES,
+		QUESTIONS,
 		LOADING_FOLDERS,
 		LOADING_FILES,
-		SELECT_FOLDER,
 		RESTRICTED_FOLDER,
-		ERROR,
 	},
 } = require('../services/TranslationKeys');
 
@@ -32,108 +32,87 @@ const COMMAND_NAMES = {
 	LISTFOLDERS: 'listfolders',
 };
 
+const {
+	validateArrayIsNotEmpty,
+	showValidationResults,
+} = require('../validation/InteractiveAnswersValidator');
+
 module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._projectMetadataService = new ProjectMetadataService();
 	}
 
-	_getCommandQuestions(prompt) {
+	async _getCommandQuestions(prompt) {
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-			return Promise.reject(
-				'The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.'
-			);
+			return Promise.reject(TranslationService.getMessage(ERRORS.IS_SUITEAPP));
 		}
 
-		return new Promise((resolve, reject) => {
-			const promiseErrorHandling = error => {
-				reject(TranslationService.getMessage(ERROR, this._commandMetadata.name, error));
-			};
-
+		try {
 			const executionContextListFolders = new SDKExecutionContext({
 				command: COMMAND_NAMES.LISTFOLDERS,
 				showOutput: false,
 			});
 			this._applyDefaultContextParams(executionContextListFolders);
 
-			executeWithSpinner({
+			const resultListFolders = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextListFolders),
 				message: TranslationService.getMessage(LOADING_FOLDERS),
-			})
-				.then(resultListFolders => {
-					prompt([
-						{
-							type: CommandUtils.INQUIRER_TYPES.LIST,
-							name: ANSWER_NAMES.FOLDER,
-							message: TranslationService.getMessage(SELECT_FOLDER),
-							default: SUITE_SCRIPTS_FOLDER,
-							choices: this._getFileCabinetFolders(resultListFolders),
-						},
-					])
-						.then(firstAnswers => {
-							// quote folder path to preserve spaces
-							firstAnswers.folder = `\"${firstAnswers.folder}\"`;
-							const executionContextListFiles = new SDKExecutionContext({
-								command: COMMAND_NAMES.LISTFILES,
-								params: firstAnswers,
-							});
-							this._applyDefaultContextParams(executionContextListFiles);
+			});
 
-							executeWithSpinner({
-								action: this._sdkExecutor.execute(executionContextListFiles),
-								message: TranslationService.getMessage(LOADING_FILES),
-							})
-								.then(listFilesResult => {
-									// TODO : validate that there is files to show
-									if (SDKOperationResultUtils.hasErrors(listFilesResult)) {
-										SDKOperationResultUtils.logErrors(listFilesResult);
-										return;
-									}
-									SDKOperationResultUtils.logMessages(listFilesResult);
-									if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
-										NodeUtils.println(
-											TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),
-											NodeUtils.COLORS.RESULT
-										);
-										return;
-									}
-									const questions = this._generateImportFilesQuestions(
-										listFilesResult
-									);
-									prompt(questions)
-										.then(secondAnswers => {
-											//prepare answers to be treated in _executeAction
-											resolve(secondAnswers);
-										})
-										.catch(promiseErrorHandling);
-									//preapare next prompt with the answers
-								})
-								.catch(promiseErrorHandling);
-						})
-						.catch(promiseErrorHandling);
-				})
-				.catch(promiseErrorHandling);
-		});
-	}
+			const firstAnswers = await prompt([
+				{
+					type: CommandUtils.INQUIRER_TYPES.LIST,
+					name: ANSWER_NAMES.FOLDER,
+					message: TranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
+					default: SUITE_SCRIPTS_FOLDER,
+					choices: this._getFileCabinetFolders(resultListFolders),
+				},
+			]);
 
-	_checkProjectIsSuiteApp() {
-		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-			return Promise.reject(
-				'The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.'
+			// quote folder path to preserve spaces
+			firstAnswers.folder = `\"${firstAnswers.folder}\"`;
+			const executionContextListFiles = new SDKExecutionContext({
+				command: COMMAND_NAMES.LISTFILES,
+				params: firstAnswers,
+			});
+			this._applyDefaultContextParams(executionContextListFiles);
+
+			const listFilesResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextListFiles),
+				message: TranslationService.getMessage(LOADING_FILES),
+			});
+
+			if (SDKOperationResultUtils.hasErrors(listFilesResult)) {
+				return Promise.reject(SDKOperationResultUtils.getMessagesString(listFilesResult));
+			}
+			SDKOperationResultUtils.logMessages(listFilesResult);
+			if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
+				return {
+					abortExecution: true,
+					message: SDKOperationResultUtils.getMessagesString(listFilesResult),
+					skipCommandOptionsValidation: true,
+					paths: '',
+				};
+			}
+
+			const questions = this._generateImportFilesQuestions(listFilesResult);
+
+			const secondAnswers = await prompt(questions);
+			return secondAnswers;
+		} catch (error) {
+			Promise.reject(
+				TranslationService.getMessage(ERRORS.INTERNAL, this._commandMetadata.name, error)
 			);
 		}
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
-		return listFoldersResponse.data.map(folder => {
-			return {
-				name: folder.path,
-				value: folder.path,
-				disabled: folder.isRestricted
-					? TranslationService.getMessage(RESTRICTED_FOLDER)
-					: '',
-			};
-		});
+		return listFoldersResponse.data.map(folder => ({
+			name: folder.path,
+			value: folder.path,
+			disabled: folder.isRestricted ? TranslationService.getMessage(RESTRICTED_FOLDER) : '',
+		}));
 	}
 
 	_generateImportFilesQuestions(listFilesResult) {
@@ -141,8 +120,9 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			{
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 				name: ANSWER_NAMES.PATHS,
-				message: 'Select the files you want to import',
+				message: TranslationService.getMessage(QUESTIONS.SELECT_FILES),
 				choices: listFilesResult.data.map(path => ({ name: path, value: path })),
+				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 		];
 	}
@@ -157,9 +137,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	_executeAction(answers) {
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-			return Promise.reject(
-				'The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.'
-			);
+			return Promise.reject(TranslationService.getMessage(ERRORS.IS_SUITEAPP));
 		}
 
 		const executionContextImportObjects = new SDKExecutionContext({
