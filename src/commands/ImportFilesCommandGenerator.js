@@ -85,6 +85,18 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 							})
 								.then(listFilesResult => {
 									// TODO : validate that there is files to show
+									if (SDKOperationResultUtils.hasErrors(listFilesResult)) {
+										SDKOperationResultUtils.logErrors(listFilesResult);
+										return;
+									}
+									SDKOperationResultUtils.logMessages(listFilesResult);
+									if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
+										NodeUtils.println(
+											TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),
+											NodeUtils.COLORS.RESULT
+										);
+										return;
+									}
 									const questions = this._generateImportFilesQuestions(
 										listFilesResult
 									);
@@ -106,7 +118,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	_checkProjectIsSuiteApp() {
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-			Promise.reject(
+			return Promise.reject(
 				'The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.'
 			);
 		}
@@ -145,10 +157,9 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	_executeAction(answers) {
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-			reject(
+			return Promise.reject(
 				'The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.'
 			);
-			return;
 		}
 
 		const executionContextImportObjects = new SDKExecutionContext({
@@ -174,7 +185,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		if (Array.isArray(data.results)) {
 			const successful = data.results.filter(result => result.loaded === true);
-			const unsuccessful = data.results.filter(result => result.loaded != true);
+			const unsuccessful = data.results.filter(result => result.loaded !== true);
 			successful.forEach(result => {
 				NodeUtils.println(result.path, NodeUtils.COLORS.RESULT);
 			});
