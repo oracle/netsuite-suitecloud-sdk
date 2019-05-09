@@ -86,8 +86,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 								return;
 							}
 
-							const questions = this._generateSelectionObjectQuestions(operationResult);
-							
+							const questions = this._generateSelectionObjectQuestions(
+								operationResult
+							);
+
 							prompt(questions).then(secondAnswers => {
 								const combinedAnswers = { ...firstAnswers, ...secondAnswers };
 								const finalAnswers = this._arrangeAnswersForImportObjects(
@@ -313,6 +315,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		SDKOperationResultUtils.logMessages(operationResult);
+
+		if (!operationResult.data) {
+			return;
+		}
 
 		const importedObjects = data.customObjects.filter(
 			customObject => customObject.result.code === IMPORT_0BJECT.SUCCESS

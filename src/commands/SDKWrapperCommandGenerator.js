@@ -2,7 +2,11 @@
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const CLIException = require('../CLIException');
+const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const TranslationService = require('../services/TranslationService');
+const {
+	COMMAND_SDK_WRAPPER: { MESSAGES },
+} = require('../services/TranslationKeys');
 
 const FLAG_OPTION_TYPE = 'FLAG';
 const PROJECT_DIRECTORY_OPTION = 'projectdirectory';
@@ -13,19 +17,12 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 		super(options);
 	}
 
-	_getCommandQuestions() {
-		throw new CLIException(
-			5,
-			`Command ${this._commandMetadata.name} does not support interactive mode`
-		);
-	}
-
 	_supportsInteractiveMode() {
 		return false;
 	}
 
 	_setProjectFolderOptionsIfPresent(args) {
-		var projectOptions = [PROJECT_OPTION, PROJECT_DIRECTORY_OPTION];
+		const projectOptions = [PROJECT_OPTION, PROJECT_DIRECTORY_OPTION];
 		projectOptions.forEach(projectOption => {
 			if (this._commandMetadata.options[projectOption]) {
 				args[projectOption] = this._projectFolder;
@@ -39,9 +36,9 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_executeAction(args) {
-		let executionContext = new SDKExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
-			integrationMode: false
+			integrationMode: false,
 		});
 
 		for (const optionId in this._commandMetadata.options) {
@@ -58,7 +55,12 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 				}
 			}
 		}
-
-		return this._sdkExecutor.execute(executionContext);
+		return executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContext),
+			message: TranslationService.getMessage(
+				MESSAGES.EXECUTING_COMMAND,
+				this._commandMetadata.name
+			),
+		});
 	}
 };

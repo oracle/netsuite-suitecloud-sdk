@@ -1,15 +1,10 @@
 'use strict';
 
-const Context = require('../Context');
-const CLIException = require('../CLIException');
-const inquirer = require('inquirer');
-const CommandOptionsValidator = require('../services/CommandOptionValidator');
 const TranslationService = require('../services/TranslationService');
-const TRANSLATION_KEYS = require('../services/TranslationKeys');
+const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
 const assert = require('assert');
 
 module.exports = class Command {
-
 	constructor(options) {
 		assert(options);
 		assert(options.name);
@@ -30,23 +25,31 @@ module.exports = class Command {
 		this._action = options.actionFunc;
 		this._isSetupRequired =
 			typeof options.isSetupRequired === 'undefined' ? true : options.isSetupRequired;
-		this._runInInteractiveMode = options.runInInteractiveMode;
 		this._options = options.options;
 		this._commandUserExtension = options.commandUserExtension;
 		this._supportsInteractiveMode = options.supportsInteractiveMode;
-		this._commandOptionsValidator = new CommandOptionsValidator(this._options);
 		this._commandOutputFormatter = options.commandOutputFormater;
 	}
 
-	attachToProgram(program, commandOutputHandler) {
+	attachToProgram(options) {
+		assert(options);
+		assert(options.program);
+		assert(options.commandOutputHandler);
+		assert(options.commandActionExecutor);
+
+		const program = options.program;
+		const commandOutputHandler = options.commandOutputHandler;
+		const commandActionExecutor = options.commandActionExecutor;
+		const runInInteractiveMode = options.runInInteractiveMode;
+
 		let commandSetup = program.command(`${this._name} folder>`);
 		//program.alias(this._alias)
 
-		if (!this._runInInteractiveMode) {
+		if (!runInInteractiveMode) {
 			if (this._supportsInteractiveMode) {
 				const interactiveOptionHelp = TranslationService.getMessage(
-					TRANSLATION_KEYS.COMMAND_OPTION_INTERACTIVE_HELP,
-					this._name,
+					COMMAND_OPTION_INTERACTIVE_HELP,
+					this._name
 				);
 				this._options.interactive = {
 					name: 'interactive',
@@ -59,13 +62,55 @@ module.exports = class Command {
 		}
 
 		commandSetup.description(this._description).action(options => {
-			commandOutputHandler.handle(this._onExecuteCommand(options), this._commandOutputFormatter);
+			commandOutputHandler.handle(
+				commandActionExecutor.executeAction({
+					command: this,
+					arguments: options,
+				}),
+				this._commandOutputFormatter
+			);
 		});
+	}
+
+	get name() {
+		return this._name;
+	}
+
+	get projectFolder() {
+		return this._projectFolder;
+	}
+
+	get options() {
+		return this._options;
+	}
+
+	get commandUserExtension() {
+		return this._commandUserExtension;
+	}
+
+	get isSetupRequired() {
+		return this._isSetupRequired;
+	}
+
+	get supportsInteractiveMode() {
+		return this._supportsInteractiveMode;
+	}
+
+	get getCommandQuestions() {
+		return this._getCommandQuestions;
+	}
+
+	get preActionFunc() {
+		return this._preActionFunc;
+	}
+
+	get actionFunc() {
+		return this._action;
 	}
 
 	_addNonInteractiveCommandOptions(commandSetup, options) {
 		const optionsSortedByName = Object.values(options).sort((option1, option2) =>
-			option1.name.localeCompare(option2.name),
+			option1.name.localeCompare(option2.name)
 		);
 		optionsSortedByName.forEach(option => {
 			const mandatoryOptionString = option.mandatory ? '<argument>' : '[argument]';
@@ -73,108 +118,5 @@ module.exports = class Command {
 			commandSetup.option(optionString, option.description);
 		});
 		return commandSetup;
-	}
-
-	_onExecuteCommand(args) {
-		const optionValues = this._extractOptionValuesFromArguments(this._options, args);
-		const beforeExecutingContext = {
-			command: this._name,
-			projectPath: this._projectFolder,
-			arguments: optionValues,
-		};
-
-		return new Promise((resolve, reject) => {
-			Promise.resolve(this._commandUserExtension.beforeExecuting(beforeExecutingContext)).then(
-				newOptions => {
-					return this._executeCommandAction(newOptions.arguments)
-						.then(completed => {
-							if (this._commandUserExtension.onCompleted) {
-								this._commandUserExtension.onCompleted(completed);
-							}
-							resolve(completed);
-						})
-						.catch(error => {
-							if (this._commandUserExtension.onError) {
-								this._commandUserExtension.onError(error);
-							}
-							reject(error);
-						});
-				},
-			);
-		});
-	}
-
-	_extractOptionValuesFromArguments(options, args) {
-		const optionValues = {};
-		for (const optionId in options) {
-			if (options.hasOwnProperty(optionId) && args.hasOwnProperty(optionId)) {
-				optionValues[optionId] = args[optionId];
-			}
-		}
-
-		return optionValues;
-	}
-
-	_executeCommandAction(args) {
-		return new Promise((resolve, reject) => {
-			const actionFunction = args => {
-				const argsProcessingFunctions = [
-					this._applyDefaultContextParams.bind(this),
-					this._preActionFunc.bind(this),
-				];
-
-				const computedArgs = argsProcessingFunctions.reduce((previousArgs, func) => {
-					return func(previousArgs);
-				}, args);
-
-				const validationErrors = this._commandOptionsValidator.validate(computedArgs);
-
-				if (validationErrors.length === 0) {
-					this._action(computedArgs)
-						.then(response => {
-							resolve(response);
-						})
-						.catch(error => {
-							reject(error);
-						});
-				} else {
-					const errorMessage = this._commandOptionsValidator.formatErrors(validationErrors);
-					reject(new CLIException(4, errorMessage));
-				}
-			};
-
-			if (this._isSetupRequired && !Context.CurrentAccountDetails.isAccountSetup()) {
-				var exceptionMessage = TranslationService.getMessage(
-					TRANSLATION_KEYS.ERRORS.SETUP_REQUIRED
-				);
-				reject(new CLIException(3, exceptionMessage));
-				return;
-			}
-
-			if (this._runInInteractiveMode) {
-				this._promptCommandQuestions().then(answers => {
-					actionFunction(answers);
-				}).catch(error => {
-                    reject(error);
-                });
-			} else {
-				actionFunction(args);
-			}
-		});
-	}
-
-	_applyDefaultContextParams(args) {
-		if (this._isSetupRequired) {
-			args.account = Context.CurrentAccountDetails.getCompId();
-			args.role = Context.CurrentAccountDetails.getRoleId();
-			args.email = Context.CurrentAccountDetails.getEmail();
-			args.url = Context.CurrentAccountDetails.getNetSuiteUrl();
-		}
-
-		return args;
-	}
-
-	_promptCommandQuestions() {
-		return Promise.resolve(this._getCommandQuestions(inquirer.prompt));
 	}
 };
