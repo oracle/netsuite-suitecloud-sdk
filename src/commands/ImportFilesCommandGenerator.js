@@ -10,13 +10,17 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
+	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
+	NO,
+	YES,
 } = require('../services/TranslationKeys');
 
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 const ANSWER_NAMES = {
 	FOLDER: 'folder',
 	PATHS: 'paths',
+	EXCLUDE_PROPERTIES: 'excludeproperties',
+	PROJECT: 'project',
 };
 const COMMAND_NAMES = {
 	LISTFILES: 'listfiles',
@@ -36,7 +40,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	async _getCommandQuestions(prompt) {
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-			return Promise.reject(TranslationService.getMessage(ERRORS.IS_SUITEAPP));
+			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
 		const executionContextListFolders = new SDKExecutionContext({
@@ -51,7 +55,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		});
 
 		if (SDKOperationResultUtils.hasErrors(listFoldersResult)) {
-			return Promise.reject(SDKOperationResultUtils.getMessagesString(listFoldersResult));
+			throw SDKOperationResultUtils.getMessagesString(listFoldersResult);
 		}
 
 		const firstQuestion = this._generateSelectFolderQuestion(listFoldersResult);
@@ -71,14 +75,14 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		});
 
 		if (SDKOperationResultUtils.hasErrors(listFilesResult)) {
-			return Promise.reject(SDKOperationResultUtils.getMessagesString(listFilesResult));
+			throw SDKOperationResultUtils.getMessagesString(listFilesResult);
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
-			return Promise.reject(SDKOperationResultUtils.getMessagesString(listFilesResult));
+			throw SDKOperationResultUtils.getMessagesString(listFilesResult);
 		}
 
-		const secondQuestion = this._generateSelectFilesQuestion(listFilesResult);
-		return await prompt([secondQuestion]);
+		const secondQuestions = this._generateSelectFilesQuestions(listFilesResult);
+		return await prompt(secondQuestions);
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
@@ -101,27 +105,43 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		};
 	}
 
-	_generateSelectFilesQuestion(listFilesResult) {
-		return {
-			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
-			name: ANSWER_NAMES.PATHS,
-			message: TranslationService.getMessage(QUESTIONS.SELECT_FILES),
-			choices: listFilesResult.data.map(path => ({ name: path, value: path })),
-			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
-		};
+	_generateSelectFilesQuestions(listFilesResult) {
+		return [
+			{
+				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+				name: ANSWER_NAMES.PATHS,
+				message: TranslationService.getMessage(QUESTIONS.SELECT_FILES),
+				choices: listFilesResult.data.map(path => ({ name: path, value: path })),
+				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
+			},
+			{
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: ANSWER_NAMES.EXCLUDE_PROPERTIES,
+				message: TranslationService.getMessage(QUESTIONS.EXCLUDE_PROPERTIES),
+				choices: [
+					{ name: TranslationService.getMessage(YES), value: true },
+					{ name: TranslationService.getMessage(NO), value: false },
+				],
+			},
+		];
 	}
 
 	_preExecuteAction(answers) {
-		answers.project = this._projectFolder;
+		answers[ANSWER_NAMES.PROJECT] = this._projectFolder;
 		if (Array.isArray(answers.paths)) {
 			answers.paths = answers.paths.join(' ');
+		}
+		if (answers[ANSWER_NAMES.EXCLUDE_PROPERTIES]) {
+			answers[ANSWER_NAMES.EXCLUDE_PROPERTIES] = '';
+		} else {
+			delete answers[ANSWER_NAMES.EXCLUDE_PROPERTIES];
 		}
 		return answers;
 	}
 
 	_executeAction(answers) {
 		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
-			return Promise.reject(TranslationService.getMessage(ERRORS.IS_SUITEAPP));
+			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
 		const executionContextImportObjects = new SDKExecutionContext({
@@ -149,18 +169,24 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			const successful = data.results.filter(result => result.loaded === true);
 			const unsuccessful = data.results.filter(result => result.loaded !== true);
 			if (successful.length) {
-				NodeUtils.println('The following objects were imported:', NodeUtils.COLORS.RESULT);
+				NodeUtils.println(
+					TranslationService.getMessage(OUTPUT.FILES_IMPORTED),
+					NodeUtils.COLORS.RESULT
+				);
 				successful.forEach(result => {
 					NodeUtils.println(result.path, NodeUtils.COLORS.RESULT);
 				});
 			}
 			if (unsuccessful.length) {
 				NodeUtils.println(
-					'The following objects were NOT imported:',
+					TranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED),
 					NodeUtils.COLORS.WARNING
 				);
 				unsuccessful.forEach(result => {
-					NodeUtils.println(`${result.path} ${result.message}`, NodeUtils.COLORS.WARNING);
+					NodeUtils.println(
+						`${result.path}, ${result.message}`,
+						NodeUtils.COLORS.WARNING
+					);
 				});
 			}
 		}
