@@ -1,27 +1,21 @@
 'use strict';
 
 const { NodeVM } = require('vm2');
-const NodeUtils = require('../utils/NodeUtils');
-const FileUtils = require('../utils/FileUtils');
+const NodeUtils = require('../../utils/NodeUtils');
+const FileUtils = require('../../utils/FileUtils');
 const path = require('path');
-const CLIException = require('../CLIException');
-
+const TranslationService = require('./../TranslationService');
+const { ERRORS } = require('./../TranslationKeys');
+const CommandUserExtension = require('./CommandUserExtension');
 const CLI_CONFIG_JS_FILE = 'cli-config.js';
 const DEFAULT_CONFIG = {
 	defaultProjectFolder: '',
 	commands: {},
 };
-const DEFAULT_COMMAND = {
-	beforeExecuting: options => {
-		return options;
-	},
-	onCompleted: completed => {},
-	onError: error => {},
-};
 
 const isString = str => typeof str === 'string' || str instanceof String;
 
-class CLIConfigurationService {
+module.exports = class CLIConfigurationService {
 	constructor(executionPath) {
 		this._cliConfig = DEFAULT_CONFIG;
 		this._executionPath = executionPath;
@@ -44,24 +38,21 @@ class CLIConfigurationService {
 			var cliConfigFileContent = FileUtils.readAsString(cliConfigFile);
 			this._cliConfig = nodeVm.run(cliConfigFileContent, cliConfigFile);
 		} catch (error) {
-			throw new CLIException(
-				4,
-				`Error while loading configuration file ${cliConfigFile}. Please review the file and try again. Details:${
-					NodeUtils.lineBreak
-				}${error}`
+			throw TranslationService.getMessage(
+				ERRORS.CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE,
+				cliConfigFile,
+				NodeUtils.lineBreak,
+				error
 			);
 		}
 	}
 
-	getCommandUserExtension(command) {
+	getCommandUserExtension(commandName) {
 		var commandExtension =
-			this._cliConfig && this._cliConfig.commands[command]
-				? this._cliConfig.commands[command]
+			this._cliConfig && this._cliConfig.commands[commandName]
+				? this._cliConfig.commands[commandName]
 				: {};
-		return {
-			...DEFAULT_COMMAND,
-			...commandExtension,
-		};
+		return new CommandUserExtension(commandExtension);
 	}
 
 	getProjectFolder(command) {
@@ -79,6 +70,4 @@ class CLIConfigurationService {
 			commandOverridenProjectFolder ? commandOverridenProjectFolder : defaultProjectFolder
 		);
 	}
-}
-
-module.exports = CLIConfigurationService;
+};
