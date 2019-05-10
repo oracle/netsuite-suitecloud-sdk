@@ -40,7 +40,7 @@ const {
 
 const {
 	validateArrayIsNotEmpty,
-	validateFieldIsNotEmpty,
+	validateScriptId,
 	validateSuiteApp,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
@@ -199,7 +199,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
-			validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+			validate: fieldValue => showValidationResults(fieldValue, validateScriptId),
 		};
 		questions.push(questionScriptId);
 		return questions;
