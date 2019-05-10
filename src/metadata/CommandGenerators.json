@@ -32,10 +32,15 @@
 		"commandName": "validate",
 		"interactiveGenerator": "./commands/ValidateCommandGenerator",
 		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
-    },
-    {
+	},
+	{
 		"commandName": "createobject",
 		"interactiveGenerator": "./commands/CreateObjectCommandGenerator",
 		"nonInteractiveGenerator": "./commands/CreateObjectCommandGenerator"
+	},
+	{
+		"commandName": "localserver",
+		"interactiveGenerator": "./commands/LocalCommandGenerator",
+		"nonInteractiveGenerator": "./commands/LocalCommandGenerator"
 	}
 ]
