@@ -5,8 +5,7 @@ const Utils = require('./Utils');
 const _ = require('underscore');
 
 module.exports = class Extension extends AbstractExtension {
-
-	constructor(options){
+	constructor(options) {
 		super(options);
 
 		this.PREFIX = 'commerceextension';
@@ -17,11 +16,11 @@ module.exports = class Extension extends AbstractExtension {
 		this.name = this.raw_extension.name;
 	}
 
-	getJavascript(){
-		if(this.javascript) {
+	getJavascript() {
+		if (this.javascript) {
 			return this.javascript;
 		}
-		this.javascript = {applications: {}};
+		this.javascript = { applications: {} };
 
 		const javascript = this.raw_extension.javascript || {};
 		const javascript_app = javascript.application || {};
@@ -34,5 +33,4 @@ module.exports = class Extension extends AbstractExtension {
 
 		return this.javascript;
 	}
-
 };
