@@ -36,8 +36,8 @@
 				"mandatory": true
 			}
 		]
-    },
-    "createobject": {
+	},
+	"createobject": {
 		"name": "createobject",
 		"alias": "ca",
 		"description": "Create objects",
@@ -45,5 +45,24 @@
 		"options": [
 			
 		]
-    }
+  	},
+	"localserver": {
+		"name": "localserver",
+		"description": "Generate a local server of your extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777.",
+		"isSetupRequired": false,
+		"options": [
+			{
+				"name": "theme",
+				"alias": "theme",
+				"description": "Specify the theme you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file. You can only specify one theme.",
+				"mandatory": true
+			},
+			{
+				"name": "extensions",
+				"alias": "extensions",
+				"description": "Specify the extension you want to include in your local build. The XML object must be added in the objects    tag within the deploy.xml file. You can specify several extensions.",
+				"mandatory": false
+			}
+		]
+	}
 }
