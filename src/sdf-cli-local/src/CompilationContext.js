@@ -34,14 +34,19 @@ module.exports = class CompilationContext {
 	}
 
 	getTemplates() {
-		let templates = {};
+		let templates = {
+			files: {},
+			entrypoints: {},
+		};
 		const extensions = this.extensions.concat(this.theme);
-		const overrides = this.getTplOverrides();
 
 		_.each(extensions, extension => {
-			const ext_templates = extension.getTemplates(overrides);
+			const ext_templates = extension.getTemplates();
 
-			templates = _.mapObject(ext_templates, (app_templates, app) => {
+			templates.entrypoints = _.mapObject(ext_templates, (app_templates, app) => {
+				_.each(app_templates, file => {
+					templates.files[file] = extension.getLocalAssetsPath();
+				});
 				return _.union(templates[app], app_templates);
 			});
 		});

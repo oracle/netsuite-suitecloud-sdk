@@ -6,6 +6,7 @@ const path = require('path');
 const glob = require('glob').sync;
 const _ = require('underscore');
 const async = require('async');
+const { promisify } = require('util');
 
 const Translation = require('./services/Translation');
 
@@ -29,16 +30,32 @@ const Utils = {
 		return parsed_xml;
 	},
 
-	parseFiles: files_xml => {
+	getFileContent: dir => {
+		return promisify(fs.readFile)(dir, 'utf8');
+	},
+
+	writeFile: (dest, content) => {
+		return promisify(fs.writeFile)(dest, content);
+	},
+
+	parseFiles: (files_xml, replacer) => {
 		let files = files_xml.files || {};
 		files = files.file || {};
-		files = _.map(files, Utils.parseFileName);
+		files = _.map(files, file => {
+			file = Utils.parseFileName(file);
+			return replacer ? replacer(file) : file;
+		});
+
 		return files;
 	},
 
 	parseFileName: file => {
 		const file_name = file.filename || file;
 		return file_name.replace(/^\[(.*)\]$/, '$1');
+	},
+
+	forwardSlashes(path) {
+		return path.replace(/\\/g, '/');
 	},
 
 	runParallel: tasks => {

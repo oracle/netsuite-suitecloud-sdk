@@ -13,7 +13,7 @@ module.exports = class AbstractExtension {
 		this.raw_extension = Utils.parseXml(objects_path, extension_xml);
 	}
 
-	getTemplates(overrides = {}) {
+	getTemplates() {
 		if (this.templates) {
 			return this.templates;
 		}
@@ -23,24 +23,8 @@ module.exports = class AbstractExtension {
 		templates = templates.application || {};
 
 		_.each(templates, (tpl, app) => {
-			this.templates[app] = Utils.parseFiles(tpl);
+			this.templates[app] = Utils.parseFiles(tpl, _.bind(this._excludeBasePath, this));
 		});
-
-		if (!_.isEmpty(overrides)) {
-			_.each(this.templates, (templates, app) => {
-				_.each(templates, (template, index) => {
-					const template_path = path.normalize(
-						template.replace(this.base_path, this.name + '/')
-					);
-					const override = overrides[template_path] && overrides[template_path].src;
-
-					if (override) {
-						Log.default('OVERRIDE', [template, override]);
-						templates[index] = override;
-					}
-				});
-			});
-		}
 
 		return this.templates;
 	}
@@ -61,6 +45,18 @@ module.exports = class AbstractExtension {
 		});
 
 		return this.sass;
+	}
+
+	_excludeBasePath(file) {
+		return path.join(this.name, file.replace(new RegExp(`^${this.base_path}`), ''));
+	}
+
+	getExtensionFullName(separator = ' - ') {
+		return [this.vendor, this.name, this.version].join(separator);
+	}
+
+	getLocalAssetsPath(folder = '') {
+		return path.join(folder, this.getExtensionFullName('/'));
 	}
 
 	getAssets() {
