@@ -43,36 +43,15 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
-		const executionContextListFolders = new SDKExecutionContext({
-			command: COMMAND_NAMES.LISTFOLDERS,
-			showOutput: false,
-		});
-		this._applyDefaultContextParams(executionContextListFolders);
-
-		const listFoldersResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextListFolders),
-			message: TranslationService.getMessage(MESSAGES.LOADING_FOLDERS),
-		});
+		const listFoldersResult = await this._listFolders();
 
 		if (SDKOperationResultUtils.hasErrors(listFoldersResult)) {
 			throw SDKOperationResultUtils.getMessagesString(listFoldersResult);
 		}
 
-		const firstQuestion = this._generateSelectFolderQuestion(listFoldersResult);
-		const firstAnswer = await prompt([firstQuestion]);
-
-		// quote folder path to preserve spaces
-		firstAnswer.folder = `\"${firstAnswer.folder}\"`;
-		const executionContextListFiles = new SDKExecutionContext({
-			command: COMMAND_NAMES.LISTFILES,
-			params: firstAnswer,
-		});
-		this._applyDefaultContextParams(executionContextListFiles);
-
-		const listFilesResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextListFiles),
-			message: TranslationService.getMessage(MESSAGES.LOADING_FILES),
-		});
+		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
+		const selectFolderAnswer = await prompt([selectFolderQuestion]);
+		const listFilesResult = await this._listFiles(selectFolderAnswer)
 
 		if (SDKOperationResultUtils.hasErrors(listFilesResult)) {
 			throw SDKOperationResultUtils.getMessagesString(listFilesResult);
@@ -81,8 +60,31 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			throw SDKOperationResultUtils.getMessagesString(listFilesResult);
 		}
 
-		const secondQuestions = this._generateSelectFilesQuestions(listFilesResult);
-		return await prompt(secondQuestions);
+		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
+		return await prompt(selectFilesQuestions);
+	}
+
+	_listFolders() {
+		const executionContextListFolders = new SDKExecutionContext({
+			command: COMMAND_NAMES.LISTFOLDERS,
+			showOutput: false,
+		});
+		this._applyDefaultContextParams(executionContextListFolders);
+
+		return executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContextListFolders),
+			message: TranslationService.getMessage(MESSAGES.LOADING_FOLDERS),
+		});
+	}
+
+	_generateSelectFolderQuestion(listFoldersResult) {
+		return {
+			type: CommandUtils.INQUIRER_TYPES.LIST,
+			name: ANSWER_NAMES.FOLDER,
+			message: TranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
+			default: SUITE_SCRIPTS_FOLDER,
+			choices: this._getFileCabinetFolders(listFoldersResult),
+		};
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
@@ -95,14 +97,19 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		}));
 	}
 
-	_generateSelectFolderQuestion(listFoldersResult) {
-		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: ANSWER_NAMES.FOLDER,
-			message: TranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
-			default: SUITE_SCRIPTS_FOLDER,
-			choices: this._getFileCabinetFolders(listFoldersResult),
-		};
+	_listFiles(selectFolderAnswer) {
+		// quote folder path to preserve spaces
+		selectFolderAnswer.folder = `\"${selectFolderAnswer.folder}\"`;
+		const executionContextListFiles = new SDKExecutionContext({
+			command: COMMAND_NAMES.LISTFILES,
+			params: selectFolderAnswer,
+		});
+		this._applyDefaultContextParams(executionContextListFiles);
+
+		return executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContextListFiles),
+			message: TranslationService.getMessage(MESSAGES.LOADING_FILES),
+		});
 	}
 
 	_generateSelectFilesQuestions(listFilesResult) {

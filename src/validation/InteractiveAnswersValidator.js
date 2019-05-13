@@ -48,16 +48,12 @@ class InteractiveAnswersValidator {
 		let notEmpty =
 			fieldValue !== ''
 				? VALIDATION_RESULT_SUCCESS
-				: VALIDATION_RESULT_FAILURE(
-						TranslationService.getMessage(ERRORS.EMPTY_FIELD)
-				  );
+				: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.EMPTY_FIELD));
 
 		if (notEmpty.result != true) {
 			return notEmpty;
 		} else if (!fieldValue.match(SUITEAPP_ID_FORMAT_REGEX)) {
-			return VALIDATION_RESULT_FAILURE(
-				TranslationService.getMessage(ERRORS.APP_ID_FORMAT)
-			);
+			return VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.APP_ID_FORMAT));
 		}
 		return VALIDATION_RESULT_SUCCESS;
 	}
@@ -66,9 +62,7 @@ class InteractiveAnswersValidator {
 		let notEmpty =
 			fieldValue !== ''
 				? VALIDATION_RESULT_SUCCESS
-				: VALIDATION_RESULT_FAILURE(
-						TranslationService.getMessage(ERRORS.EMPTY_FIELD)
-				  );
+				: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.EMPTY_FIELD));
 
 		if (notEmpty.result != true) {
 			return notEmpty;

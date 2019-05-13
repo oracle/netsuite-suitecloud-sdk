@@ -1,7 +1,18 @@
 {
 	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite 2019.2)",
+	
+	"COMMAND_CREATEPROJECT_CHOOSE_PROJECT_TYPE": "Choose project type",
+	"COMMAND_CREATEPROJECT_ENTER_PROJECT_NAME": "Please enter the name of your project",
+	"COMMAND_CREATEPROJECT_ENTER_PUBLISHER_ID": "Please enter your NetSuite publisher ID",
+	"COMMAND_CREATEPROJECT_ENTER_PROJECT_ID": "Please enter project ID",
+	"COMMAND_CREATEPROJECT_ENTER_PROJECT_VERSION": "Please enter project version",
+	"COMMAND_CREATEPROJECT_ERRORS_PROCESS_FAILED": "The createproject process failed.",
+	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATED": "The {0} project was created successfully in {1}.",
+	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_EXISTS": "Folder exists and is not empty.",
+	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
+	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Would you like to overwrite the project if found in the same location?",
 
-	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somthing went wrong with {0}, error: {1}",
+	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.",
 	"COMMAND_IMPORTFILES_QUESTIONS_EXCLUDE_PROPERTIES": "Do you want to exclude all file properties within the .attributes folder?",
 	"COMMAND_IMPORTFILES_QUESTIONS_SELECT_FILES": "Select the files you want to import to your project.",
@@ -12,16 +23,6 @@
 	"COMMAND_IMPORTFILES_MESSAGES_RESTRICTED_FOLDER": "Restricted Folder",
 	"COMMAND_IMPORTFILES_OUTPUT_FILES_IMPORTED": "The following files were imported:",
 	"COMMAND_IMPORTFILES_OUTPUT_FILES_NOT_IMPORTED": "The following files were not imported:",
-
-	"COMMAND_CREATEPROJECT_ENTER_PROJECT_NAME": "Please enter the name of your project",
-	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Would you like to overwrite the project if found in the same location?",
-	"COMMAND_CREATEPROJECT_ENTER_PUBLISHER_ID": "Please enter your NetSuite publisher ID",
-	"COMMAND_CREATEPROJECT_ENTER_PROJECT_ID": "Please enter project ID",
-	"COMMAND_CREATEPROJECT_ENTER_PROJECT_VERSION": "Please enter project version",
-	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATED": "The {0} project was created successfully in {1}.",
-	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_EXISTS": "Folder exists and is not empty.",
-	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
-	"COMMAND_CREATEPROJECT_ERRORS_PROCESS_FAILED": "The createproject process failed.",
 	
 	"COMMAND_IMPORTOBJECTS_ERRORS_COMMAND_IMPORTOBJECTS": "Error while calling listobjects. Details:{0}{1}",
 	"COMMAND_IMPORTOBJECTS_ERRORS_PROCESS_FAILED": "The importobjects process failed.",
@@ -41,7 +42,7 @@
 	"COMMAND_IMPORTOBJECTS_MESSAGES_IMPORTED_OBJECTS": "The following object(s) were imported successfully:",
 	"COMMAND_IMPORTOBJECTS_MESSAGES_UNIMPORTED_OBJECTS": "The following object(s) were not imported:",
 
-	"COMMAND_LISTFILES_ERROR": "Somthing went wrong with {0}, error: {1}",
+	"COMMAND_LISTFILES_ERROR": "Something went wrong with {0}, error: {1}",
 	"COMMAND_LISTFILES_LOADING_FILES": "Loading files...",
 	"COMMAND_LISTFILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
 	"COMMAND_LISTFILES_RESTRICTED_FOLDER": "Restricted Folder",
@@ -56,9 +57,7 @@
 	"COMMAND_LISTOBJECTS_QUESTIONS_SPECIFIC_APPID": "Do you want to list objects from a specific SuiteApp?",
 	"COMMAND_LISTOBJECTS_SUCCESS_OBJECTS_IMPORTED": "The following objects were found in your account:",
 	"COMMAND_LISTOBJECTS_SUCCESS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
-	"COMMAND_CREATEPROJECT_CHOOSE_PROJECT_TYPE": "Choose project type",
-	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
-	"COMMAND_OPTION_IS_MANDATORY": "'{0}' option is mandatory.",
+	
 	"COMMAND_LOCAL_COMPILATION_START": "Starting {0} compilation",
 	"COMMAND_LOCAL_COMPILATION_START_FOR": "Starting {0} compilation for {1}",
 	"COMMAND_LOCAL_COMPILATION_FINISH": "Finished {0} compilation",
@@ -75,8 +74,13 @@
 	"COMMAND_LOCAL_THEME_NOT_FOUND": "Theme {0} not found in {1}",
 	"COMMAND_LOCAL_EXTENSION_NOT_FOUND": "Extension {0} not found in {1}",
 	"COMMAND_LOCAL_INVALID_XML": "Invalid xml {0}",
-    "COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
-    "COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
+
+	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
+	"COMMAND_OPTION_IS_MANDATORY": "'{0}' option is mandatory.",
+	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
+	
+	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
+	
 	"ERRORS_APP_ID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as 'com.example.mysuiteapp'.",
     "ERRORS_CHOOSE_OPTION": "Error: You should choose at least one option.",
     "ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the 'beforeExecuting' function of the 'cli-config.js' module defined in the project. Details:{0}{1}",
