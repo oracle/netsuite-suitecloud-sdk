@@ -10,6 +10,11 @@
 		"nonInteractiveGenerator": "./commands/ListObjectsCommandGenerator"
 	},
 	{
+		"commandName": "importfiles",
+		"interactiveGenerator": "./commands/ImportFilesCommandGenerator",
+		"nonInteractiveGenerator": "./commands/ImportFilesCommandGenerator"
+	},
+	{
 		"commandName": "importobjects",
 		"interactiveGenerator": "./commands/ImportObjectsCommandGenerator",
 		"nonInteractiveGenerator": "./commands/ImportObjectsCommandGenerator"

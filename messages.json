@@ -1,14 +1,29 @@
 {
 	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite 2019.2)",
+	
+	"COMMAND_CREATEPROJECT_CHOOSE_PROJECT_TYPE": "Choose project type",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_NAME": "Please enter the name of your project",
-	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Would you like to overwrite the project if found in the same location?",
 	"COMMAND_CREATEPROJECT_ENTER_PUBLISHER_ID": "Please enter your NetSuite publisher ID",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_ID": "Please enter project ID",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_VERSION": "Please enter project version",
+	"COMMAND_CREATEPROJECT_ERRORS_PROCESS_FAILED": "The createproject process failed.",
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATED": "The {0} project was created successfully in {1}.",
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_EXISTS": "Folder exists and is not empty.",
 	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
-	"COMMAND_CREATEPROJECT_ERRORS_PROCESS_FAILED": "The createproject process failed.",
+	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Would you like to overwrite the project if found in the same location?",
+
+	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
+	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.",
+	"COMMAND_IMPORTFILES_QUESTIONS_EXCLUDE_PROPERTIES": "Do you want to exclude all file properties within the .attributes folder?",
+	"COMMAND_IMPORTFILES_QUESTIONS_SELECT_FILES": "Select the files you want to import to your project.",
+	"COMMAND_IMPORTFILES_QUESTIONS_SELECT_FOLDER": "Select the path where you want to import the files",
+	"COMMAND_IMPORTFILES_MESSAGES_IMPORTING_FILES": "Importing files...",
+	"COMMAND_IMPORTFILES_MESSAGES_LOADING_FILES": "Loading files...",
+	"COMMAND_IMPORTFILES_MESSAGES_LOADING_FOLDERS": "Loading File Cabinet folders...",
+	"COMMAND_IMPORTFILES_MESSAGES_RESTRICTED_FOLDER": "Restricted Folder",
+	"COMMAND_IMPORTFILES_OUTPUT_FILES_IMPORTED": "The following files were imported:",
+	"COMMAND_IMPORTFILES_OUTPUT_FILES_NOT_IMPORTED": "The following files were not imported:",
+	
 	"COMMAND_IMPORTOBJECTS_ERRORS_COMMAND_IMPORTOBJECTS": "Error while calling listobjects. Details:{0}{1}",
 	"COMMAND_IMPORTOBJECTS_ERRORS_PROCESS_FAILED": "The importobjects process failed.",
 	"COMMAND_IMPORTOBJECTS_QUESTIONS_APPID": "Enter the application ID.",
@@ -26,11 +41,13 @@
 	"COMMAND_IMPORTOBJECTS_MESSAGES_IMPORTING_OBJECTS": "Importing objects...",
 	"COMMAND_IMPORTOBJECTS_MESSAGES_IMPORTED_OBJECTS": "The following object(s) were imported successfully:",
 	"COMMAND_IMPORTOBJECTS_MESSAGES_UNIMPORTED_OBJECTS": "The following object(s) were not imported:",
-	"COMMAND_LISTFILES_ERROR": "Somthing went wrong with {0}, error: {1}",
-	"COMMAND_LIST_FILES_LOADING_FILES": "Loading files...",
-	"COMMAND_LIST_FILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
-	"COMMAND_LIST_FILES_RESTRICTED_FOLDER": "Restricted Folder",
-	"COMMAND_LIST_FILES_SELECT_FOLDER": "Select the File Cabinet folder for which you want to get a file list.",
+
+	"COMMAND_LISTFILES_ERROR": "Something went wrong with {0}, error: {1}",
+	"COMMAND_LISTFILES_LOADING_FILES": "Loading files...",
+	"COMMAND_LISTFILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
+	"COMMAND_LISTFILES_RESTRICTED_FOLDER": "Restricted Folder",
+	"COMMAND_LISTFILES_SELECT_FOLDER": "Select the File Cabinet folder for which you want to get a file list.",
+	
 	"COMMAND_LISTOBJECTS_LISTING_OBJECTS": "Listing objects from account...",
 	"COMMAND_LISTOBJECTS_QUESTIONS_APPID": "Enter the application ID.",
 	"COMMAND_LISTOBJECTS_QUESTIONS_FILTER_BY_CUSTOM_OBJECTS": "Select the object types you want to list.",
@@ -40,9 +57,7 @@
 	"COMMAND_LISTOBJECTS_QUESTIONS_SPECIFIC_APPID": "Do you want to list objects from a specific SuiteApp?",
 	"COMMAND_LISTOBJECTS_SUCCESS_OBJECTS_IMPORTED": "The following objects were found in your account:",
 	"COMMAND_LISTOBJECTS_SUCCESS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
-	"COMMAND_CREATEPROJECT_CHOOSE_PROJECT_TYPE": "Choose project type",
-	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
-	"COMMAND_OPTION_IS_MANDATORY": "'{0}' option is mandatory.",
+	
 	"COMMAND_LOCAL_COMPILATION_START": "Starting {0} compilation",
 	"COMMAND_LOCAL_COMPILATION_START_FOR": "Starting {0} compilation for {1}",
 	"COMMAND_LOCAL_COMPILATION_FINISH": "Finished {0} compilation",
@@ -59,9 +74,14 @@
 	"COMMAND_LOCAL_THEME_NOT_FOUND": "Theme {0} not found in {1}",
 	"COMMAND_LOCAL_EXTENSION_NOT_FOUND": "Extension {0} not found in {1}",
 	"COMMAND_LOCAL_INVALID_XML": "Invalid xml {0}",
-    "COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
-    "COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
-	"ERRORS_APPID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as 'com.example.mysuiteapp'.",
+
+	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
+	"COMMAND_OPTION_IS_MANDATORY": "'{0}' option is mandatory.",
+	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
+	
+	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
+	
+	"ERRORS_APP_ID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as 'com.example.mysuiteapp'.",
     "ERRORS_CHOOSE_OPTION": "Error: You should choose at least one option.",
     "ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the 'beforeExecuting' function of the 'cli-config.js' module defined in the project. Details:{0}{1}",
     "ERRORS_CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE": "The return value of the function should be an object with the property 'arguments' of type 'object'.",
@@ -73,7 +93,8 @@
 	"ERRORS_FILE_NOT_EXIST": "The file {0} was not found in the project.",
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
     "ERRORS_PROCESS_FAILED": "The process has failed.",
-    "ERRORS_PROMPTING_INTERACTIVE_QUESTIONS_FAILED": "There was an internal error while prompting interactive questions. Details:{0}{1}",
+	"ERRORS_PROMPTING_INTERACTIVE_QUESTIONS_FAILED": "There was an internal error while prompting interactive questions. Details:{0}{1}",
+	"ERRORS_SCRIPT_ID_FORMAT": "The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.",
 	"ERRORS_SDKEXECUTOR_AUTHENTICATION": "Authentication error: please run \"sdf setup\"",
 	"ERRORS_SDKEXECUTOR_RUNNING_COMMAND": "There was an internal error while running the command. Details: {0}",
 	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}",
@@ -82,7 +103,9 @@
 	"ERRORS_XML_MANIFEST_TAG_MISSING": "The manifest.xml file does not contain the manifest tag.",
 	"ERRORS_XML_PROJECTTYPE_ATTRIBUTE_MISSING": "The manifest field does not contain the projecttype attribute in the manifest.xml file.",
 	"ERRORS_XML_PROJECTTYPE_INCORRECT": "The projecttype attribute within the manifest field in the manifest.xml file must be either SUITEAPP or ACCOUNTCUSTOMIZATION.",
+
 	"INTERACTIVE_OPTION_DESCRIPTION": "Run the command in interactive mode",
+
 	"NO": "No",
 	"YES": "Yes"
 }

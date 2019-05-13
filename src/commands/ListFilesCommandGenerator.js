@@ -8,7 +8,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR }
+	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL }
 } = require('../services/TranslationKeys');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
@@ -46,7 +46,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			})
 			// TODO : find right mecanism to treat the error
 			.catch( error => {
-				NodeUtils.println(TranslationService.getMessage(ERROR, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
+				NodeUtils.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
 			})
 		});
 	}
