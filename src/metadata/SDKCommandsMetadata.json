@@ -1,1548 +1,1488 @@
 {
-	"importfiles": {
-		"name": "importfiles",
-		"usage": "",
-		"description": "Import files from a NetSuite account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "paths",
-				"option": "paths",
-				"alias": "paths",
-				"description": "Specify the file cabinet file paths of the files to import.",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "\"/SuiteScripts/test.js\"",
-				"defaultOption": true
-			},
-			{
-				"name": "excludeproperties",
-				"option": "excludeproperties",
-				"alias": "excludeproperties",
-				"description": "Exclude file and folder properties from the import.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"project": {
-		"name": "project",
-		"usage": "",
-		"description": "Set the folder or zip file containing the project. Once specified it is used as the default by later commands.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": true
-			}
-		]
-	},
-	"listconfiguration": {
-		"name": "listconfiguration",
-		"usage": "",
-		"description": "List available account configuration.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"updatecustomrecordwithinstances": {
-		"name": "updatecustomrecordwithinstances",
-		"usage": "",
-		"description": "Update the custom record object with instances.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "scriptid",
-				"option": "scriptid",
-				"alias": "scriptid",
-				"description": "The script id of the custom record object.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "customrecord_test",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"revoketoken": {
-		"name": "revoketoken",
-		"usage": "",
-		"description": "Revoke a token.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"preview": {
-		"name": "preview",
-		"usage": "",
-		"description": "Previews the deployment steps of a folder or zip file containing the project. Project folder is compressed to a zip file before previewing.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"alias": "l",
-				"description": "Sets the preview log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, preview log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:/path/test.log",
-				"defaultOption": false
-			},
-			{
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"alias": "applycontentprotection",
-				"description": "Indicates that content protection will be applied.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "T",
-				"defaultOption": false
-			},
-			{
-				"name": "accountspecificvalues",
-				"option": "accountspecificvalues",
-				"alias": "accountspecificvalues",
-				"description": "Flag account-specific values as either a warning or an error.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "WARNING",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"issuetoken": {
-		"name": "issuetoken",
-		"usage": "",
-		"description": "Issue a token.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"importobjects": {
-		"name": "importobjects",
-		"usage": "",
-		"description": "Import custom objects from a NetSuite account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "appid",
-				"option": "appid",
-				"alias": "appid",
-				"description": "The application id. If specified, only custom objects that are associated with the app id are imported. Otherwise, only custom objects that are not associated with an app id are imported.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "org.mycompany.helloworldapp",
-				"defaultOption": false
-			},
-			{
-				"name": "scriptid",
-				"option": "scriptid",
-				"alias": "scriptid",
-				"description": "Import custom objects with the specified script ids. Use a space separated list to indicate multiple script ids. Use \"ALL\" to import all custom objects of the specified type.",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "customrecord_tes01 customrecord_test02 [...]",
-				"defaultOption": false
-			},
-			{
-				"name": "type",
-				"option": "type",
-				"alias": "type",
-				"description": "Import custom objects that are of the specified type. Only a single type or \"ALL\" can be specified. Use \"ALL\" to import all custom objects.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "customrecordtype",
-				"defaultOption": false
-			},
-			{
-				"name": "destinationfolder",
-				"option": "destinationfolder",
-				"alias": "destinationfolder",
-				"description": "Indicate where the custom objects will be saved. Specify the folder relative to the project (e.g. /Objects/testsubfolder). This must start with \"/Objects\".",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "/Objects",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"importbundle": {
-		"name": "importbundle",
-		"usage": "",
-		"description": "Import a bundle and convert it to an Account Customization project.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Folder to import the bundle into. Account details will be loaded from a .sdf file inside this folder if it exists. Overrides the previously set default project folder.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": true
-			},
-			{
-				"name": "bundleid",
-				"option": "bundleid",
-				"alias": "bundleid",
-				"description": "The bundle id. Used to specify which bundle to import.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "123",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"listfiles": {
-		"name": "listfiles",
-		"usage": "",
-		"description": "List files from a NetSuite account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "folder",
-				"option": "folder",
-				"alias": "folder",
-				"description": "Specify the file cabinet folder path. This is recursive, all files under subfolders will also be retrieved.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "\"/SuiteScripts\"",
-				"defaultOption": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"deploy": {
-		"name": "deploy",
-		"usage": "",
-		"description": "Deploys the folder or zip file containing the project. Project folder is compressed to a zip file before deployment.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"alias": "l",
-				"description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:/path/test.log",
-				"defaultOption": false
-			},
-			{
-				"name": "validate",
-				"option": "validate",
-				"alias": "v",
-				"description": "Indicates that local validation of project should occur before deployment, with any errors stopping the deployment.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false
-			},
-			{
-				"name": "no_preview",
-				"option": "no_preview",
-				"alias": "np",
-				"description": "Indicates that the preview step should be skipped.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false
-			},
-			{
-				"name": "skip_warning",
-				"option": "skip_warning",
-				"alias": "sw",
-				"description": "Indicates that the warning before deployment to production account will be skipped.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false
-			},
-			{
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"alias": "applycontentprotection",
-				"description": "Indicates that content protection will be applied.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "T",
-				"defaultOption": false
-			},
-			{
-				"name": "accountspecificvalues",
-				"option": "accountspecificvalues",
-				"alias": "accountspecificvalues",
-				"description": "Flag account-specific values as either a warning or an error.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "WARNING",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"adddependencies": {
-		"name": "adddependencies",
-		"usage": "",
-		"description": "Add the missing dependencies to the manifest file.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "all",
-				"option": "all",
-				"alias": "all",
-				"description": "Adds all missing dependencies to the SuiteCloud project. When specified, ensure that you do not use the -feature, -file, and -object options.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false
-			},
-			{
-				"name": "feature",
-				"option": "feature",
-				"alias": "feature",
-				"description": "Specifies the feature dependency references to add to the SuiteCloud project. Each reference is a name:value pair that is delimited by a space. For example: CUSTOMRECORD:required ACCOUNTING:optional. When specified, ensure that you do not use the -all option.",
-				"mandatory": false,
-				"type": "MULTIPLE",
-				"usage": "CUSTOMRECORD:required [...]",
-				"defaultOption": false
-			},
-			{
-				"name": "file",
-				"option": "file",
-				"alias": "file",
-				"description": "Specifies the files to add to the SuiteCloud project. When specified, ensure that you do not use the -all option.",
-				"mandatory": false,
-				"type": "MULTIPLE",
-				"usage": "/js/test.js [...]",
-				"defaultOption": false
-			},
-			{
-				"name": "object",
-				"option": "object",
-				"alias": "object",
-				"description": "Specifies the object script IDs to add to the SuiteCloud project. When specified, ensure that you do not use the -all option..",
-				"mandatory": false,
-				"type": "MULTIPLE",
-				"usage": "scriptid [...]",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"uploadfiles": {
-		"name": "uploadfiles",
-		"usage": "",
-		"description": "Upload file(s) to account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "paths",
-				"option": "paths",
-				"alias": "paths",
-				"description": "The file cabinet file paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"/SuiteScripts/File.js\" \"/SuiteScripts/NewFile.js\".",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "\"/SuiteScripts/test.js\"",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"validate": {
-		"name": "validate",
-		"usage": "",
-		"description": "Validate the folder or zip file containing the project.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"alias": "l",
-				"description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:/path/test.log",
-				"defaultOption": false
-			},
-			{
-				"name": "server",
-				"option": "server",
-				"alias": "server",
-				"description": "Indicates that validation will be performed server side.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false
-			},
-			{
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"alias": "applycontentprotection",
-				"description": "Indicates that content protection will be applied.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "T",
-				"defaultOption": false
-			},
-			{
-				"name": "accountspecificvalues",
-				"option": "accountspecificvalues",
-				"alias": "accountspecificvalues",
-				"description": "Flag account-specific values as either a warning or an error.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "WARNING",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"update": {
-		"name": "update",
-		"usage": "",
-		"description": "Update existing custom objects in the project folder from a NetSuite account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "scriptid",
-				"option": "scriptid",
-				"alias": "scriptid",
-				"description": "Lists the script IDs of custom objects to be updated.",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "scriptid [...]",
-				"defaultOption": true
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"listobjects": {
-		"name": "listobjects",
-		"usage": "",
-		"description": "List custom objects from a NetSuite account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "appid",
-				"option": "appid",
-				"alias": "appid",
-				"description": "The application id. If specified, only custom objects that are associated with the app id are listed. Otherwise, only custom objects that are not associated with an app id are listed.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "org.mycompany.helloworldapp",
-				"defaultOption": false
-			},
-			{
-				"name": "scriptid",
-				"option": "scriptid",
-				"alias": "scriptid",
-				"description": "List custom objects that contain the specified script id. If this parameter is not specified, list all custom objects regardless of script id.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "customrecord",
-				"defaultOption": false
-			},
-			{
-				"name": "type",
-				"option": "type",
-				"alias": "type",
-				"description": "List custom objects that are of the specified types. Use a space separated list to indicate multiple types. If this parameter is not specified, list all custom objects regardless of type.",
-				"mandatory": false,
-				"type": "MULTIPLE",
-				"usage": "customrecordtype workflow [...]",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"importconfiguration": {
-		"name": "importconfiguration",
-		"usage": "",
-		"description": "Import account configuration from a NetSuite account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "configurationid",
-				"option": "configurationid",
-				"alias": "configurationid",
-				"description": "Import account configuration with the specified configuration ids. Use a space separated list to indicate multiple configuration ids.",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "features:all_features [...]",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"listbundles": {
-		"name": "listbundles",
-		"usage": "",
-		"description": "List bundles from a NetSuite account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"createproject": {
-		"name": "createproject",
-		"usage": "",
-		"description": "Create a SuiteCloud Project.",
-		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "parentdirectory",
-				"option": "parentdirectory",
-				"alias": "pd",
-				"description": "Sets the parent directory where the project will be created.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "d:/foo/bar",
-				"defaultOption": false
-			},
-			{
-				"name": "overwrite",
-				"option": "overwrite",
-				"alias": "o",
-				"description": "Indicates that the existing project will be overwritten.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false
-			},
-			{
-				"name": "type",
-				"option": "type",
-				"alias": "t",
-				"description": "The project type. Can be ACCOUNTCUSTOMIZATION or SUITEAPP",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "ACCOUNTCUSTOMIZATION",
-				"defaultOption": false
-			},
-			{
-				"name": "projectname",
-				"option": "projectname",
-				"alias": "pn",
-				"description": "The project name.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "FooBar",
-				"defaultOption": false
-			},
-			{
-				"name": "publisherid",
-				"option": "publisherid",
-				"alias": "pui",
-				"description": "The publisher id. This is mandatory when type specified is SUITEAPP.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "com.netsuite",
-				"defaultOption": false
-			},
-			{
-				"name": "projectid",
-				"option": "projectid",
-				"alias": "pi",
-				"description": "The project id. This is mandatory when type specified is SUITEAPP.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "foobar",
-				"defaultOption": false
-			},
-			{
-				"name": "projectversion",
-				"option": "projectversion",
-				"alias": "pv",
-				"description": "The project version. This is mandatory when type specified is SUITEAPP.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "1.0.0",
-				"defaultOption": false
-			}
-		]
-	},
-	"savetoken": {
-		"name": "savetoken",
-		"usage": "",
-		"description": "Saves the latest TBA token created from your NetSuite account to use with SDF CLI.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "tokenid",
-				"option": "tokenid",
-				"alias": "tokenid",
-				"description": "The Token ID.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "tokenid",
-				"defaultOption": false
-			},
-			{
-				"name": "tokensecret",
-				"option": "tokensecret",
-				"alias": "tokensecret",
-				"description": "The Token secret.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "tokensecret",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"listmissingdependencies": {
-		"name": "listmissingdependencies",
-		"usage": "",
-		"description": "List the missing dependencies for a project.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"alias": "l",
-				"description": "Sets the log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:/path/test.log",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	},
-	"uploadfolders": {
-		"name": "uploadfolders",
-		"usage": "",
-		"description": "Upload file(s) contained in the folder(s) specified to the account.",
-		"needsAccount": true,
-		"options": [
-			{
-				"name": "paths",
-				"option": "paths",
-				"alias": "paths",
-				"description": "The file cabinet path or paths that contain the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"/SuiteScripts\" \"/SuiteScripts/Test\".",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "\"/SuiteScripts/foobar\"",
-				"defaultOption": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"alias": "p",
-				"description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"alias": "url",
-				"description": "The domain url. Overrides the url set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "system.netsuite.com",
-				"defaultOption": false
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"alias": "email",
-				"description": "The user's email. Overrides the email set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
-				"defaultOption": false
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"alias": "account",
-				"description": "The account id. Overrides the account set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "0000001",
-				"defaultOption": false
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"alias": "role",
-				"description": "The role id. Overrides the role id set in the .sdf file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "3",
-				"defaultOption": false
-			}
-		]
-	}
+    "uploadfolders": {
+        "name": "uploadfolders",
+        "usage": "",
+        "description": "Upload file(s) contained in the folder(s) specified to the account.",
+        "options": [
+            {
+                "name": "paths",
+                "option": "paths",
+                "alias": "paths",
+                "description": "The file cabinet path or paths that contain the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"\/SuiteScripts\" \"\/SuiteScripts\/Test\".",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "\"\/SuiteScripts\/foobar\"",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "importfiles": {
+        "name": "importfiles",
+        "usage": "",
+        "description": "Import files from a NetSuite account.",
+        "options": [
+            {
+                "name": "paths",
+                "option": "paths",
+                "alias": "paths",
+                "description": "Specify the file cabinet file paths of the files to import.",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "\"\/SuiteScripts\/test.js\"",
+                "defaultOption": true,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "excludeproperties",
+                "option": "excludeproperties",
+                "alias": "excludeproperties",
+                "description": "Exclude file and folder properties from the import.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "listbundles": {
+        "name": "listbundles",
+        "usage": "",
+        "description": "List bundles from a NetSuite account.",
+        "options": [
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "createproject": {
+        "name": "createproject",
+        "usage": "",
+        "description": "Create a SuiteCloud Project.",
+        "options": [
+            {
+                "name": "parentdirectory",
+                "option": "parentdirectory",
+                "alias": "pd",
+                "description": "Sets the parent directory where the project will be created.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "d:\/foo\/bar",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "overwrite",
+                "option": "overwrite",
+                "alias": "o",
+                "description": "Indicates that the existing project will be overwritten.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "type",
+                "option": "type",
+                "alias": "t",
+                "description": "The project type. Can be ACCOUNTCUSTOMIZATION or SUITEAPP",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "ACCOUNTCUSTOMIZATION",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "projectname",
+                "option": "projectname",
+                "alias": "pn",
+                "description": "The project name.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "FooBar",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "publisherid",
+                "option": "publisherid",
+                "alias": "pui",
+                "description": "The publisher id. This is mandatory when type specified is SUITEAPP.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "com.netsuite",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "projectid",
+                "option": "projectid",
+                "alias": "pi",
+                "description": "The project id. This is mandatory when type specified is SUITEAPP.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "foobar",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "projectversion",
+                "option": "projectversion",
+                "alias": "pv",
+                "description": "The project version. This is mandatory when type specified is SUITEAPP.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "1.0.0",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            }
+        ]
+    },
+    "validate": {
+        "name": "validate",
+        "usage": "",
+        "description": "Validate the folder or zip file containing the project.",
+        "options": [
+            {
+                "name": "log",
+                "option": "log",
+                "alias": "l",
+                "description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "d:\/path\/test.log",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "server",
+                "option": "server",
+                "alias": "server",
+                "description": "Indicates that validation will be performed server side.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "applycontentprotection",
+                "option": "applycontentprotection",
+                "alias": "applycontentprotection",
+                "description": "Indicates that content protection will be applied.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "T",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "accountspecificvalues",
+                "option": "accountspecificvalues",
+                "alias": "accountspecificvalues",
+                "description": "Flag account-specific values as either a warning or an error.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "WARNING",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "importobjects": {
+        "name": "importobjects",
+        "usage": "",
+        "description": "Import custom objects from a NetSuite account.",
+        "options": [
+            {
+                "name": "appid",
+                "option": "appid",
+                "alias": "appid",
+                "description": "The application id. If specified, only custom objects that are associated with the app id are imported. Otherwise, only custom objects that are not associated with an app id are imported.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "org.mycompany.helloworldapp",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "scriptid",
+                "option": "scriptid",
+                "alias": "scriptid",
+                "description": "Import custom objects with the specified script ids. Use a space separated list to indicate multiple script ids. Use \"ALL\" to import all custom objects of the specified type.",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "customrecord_tes01 customrecord_test02 [...]",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "type",
+                "option": "type",
+                "alias": "type",
+                "description": "Import custom objects that are of the specified type. Only a single type or \"ALL\" can be specified. Use \"ALL\" to import all custom objects.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "customrecordtype",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "destinationfolder",
+                "option": "destinationfolder",
+                "alias": "destinationfolder",
+                "description": "Indicate where the custom objects will be saved. Specify the folder relative to the project (e.g. \/Objects\/testsubfolder). This must start with \"\/Objects\".",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "\/Objects",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "uploadfiles": {
+        "name": "uploadfiles",
+        "usage": "",
+        "description": "Upload file(s) to account.",
+        "options": [
+            {
+                "name": "paths",
+                "option": "paths",
+                "alias": "paths",
+                "description": "The file cabinet file paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"\/SuiteScripts\/File.js\" \"\/SuiteScripts\/NewFile.js\".",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "\"\/SuiteScripts\/test.js\"",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "listfiles": {
+        "name": "listfiles",
+        "usage": "",
+        "description": "List files from a NetSuite account.",
+        "options": [
+            {
+                "name": "folder",
+                "option": "folder",
+                "alias": "folder",
+                "description": "Specify the file cabinet folder path. This is recursive, all files under subfolders will also be retrieved.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "\"\/SuiteScripts\"",
+                "defaultOption": true,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "deploy": {
+        "name": "deploy",
+        "usage": "",
+        "description": "Deploys the folder or zip file containing the project. Project folder is compressed to a zip file before deployment.",
+        "options": [
+            {
+                "name": "log",
+                "option": "log",
+                "alias": "l",
+                "description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "d:\/path\/test.log",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "validate",
+                "option": "validate",
+                "alias": "v",
+                "description": "Indicates that local validation of project should occur before deployment, with any errors stopping the deployment.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "no_preview",
+                "option": "no_preview",
+                "alias": "np",
+                "description": "Indicates that the preview step should be skipped.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "skip_warning",
+                "option": "skip_warning",
+                "alias": "sw",
+                "description": "Indicates that the warning before deployment to production account will be skipped.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "applycontentprotection",
+                "option": "applycontentprotection",
+                "alias": "applycontentprotection",
+                "description": "Indicates that content protection will be applied.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "T",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "accountspecificvalues",
+                "option": "accountspecificvalues",
+                "alias": "accountspecificvalues",
+                "description": "Flag account-specific values as either a warning or an error.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "WARNING",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "update": {
+        "name": "update",
+        "usage": "",
+        "description": "Update existing custom objects in the project folder from a NetSuite account.",
+        "options": [
+            {
+                "name": "scriptid",
+                "option": "scriptid",
+                "alias": "scriptid",
+                "description": "Lists the script IDs of custom objects to be updated.",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "scriptid [...]",
+                "defaultOption": true,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "listobjects": {
+        "name": "listobjects",
+        "usage": "",
+        "description": "List custom objects from a NetSuite account.",
+        "options": [
+            {
+                "name": "appid",
+                "option": "appid",
+                "alias": "appid",
+                "description": "The application id. If specified, only custom objects that are associated with the app id are listed.  Otherwise, only custom objects that are not associated with an app id are listed.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "org.mycompany.helloworldapp",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "scriptid",
+                "option": "scriptid",
+                "alias": "scriptid",
+                "description": "List custom objects that contain the specified script id. If this parameter is not specified, list all custom objects regardless of script id.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "customrecord",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "type",
+                "option": "type",
+                "alias": "type",
+                "description": "List custom objects that are of the specified types. Use a space separated list to indicate multiple types. If this parameter is not specified, list all custom objects regardless of type.",
+                "mandatory": false,
+                "type": "MULTIPLE",
+                "usage": "customrecordtype workflow [...]",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "listconfiguration": {
+        "name": "listconfiguration",
+        "usage": "",
+        "description": "List available account configuration.",
+        "options": [
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "project": {
+        "name": "project",
+        "usage": "",
+        "description": "Set the folder or zip file containing the project. Once specified it is used as the default by later commands.",
+        "options": [
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": true,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "preview": {
+        "name": "preview",
+        "usage": "",
+        "description": "Previews the deployment steps of a folder or zip file containing the project. Project folder is compressed to a zip file before previewing.",
+        "options": [
+            {
+                "name": "log",
+                "option": "log",
+                "alias": "l",
+                "description": "Sets the preview log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, preview log details are appended to that existing file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "d:\/path\/test.log",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "applycontentprotection",
+                "option": "applycontentprotection",
+                "alias": "applycontentprotection",
+                "description": "Indicates that content protection will be applied.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "T",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "accountspecificvalues",
+                "option": "accountspecificvalues",
+                "alias": "accountspecificvalues",
+                "description": "Flag account-specific values as either a warning or an error.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "WARNING",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "updatecustomrecordwithinstances": {
+        "name": "updatecustomrecordwithinstances",
+        "usage": "",
+        "description": "Update the custom record object with instances.",
+        "options": [
+            {
+                "name": "scriptid",
+                "option": "scriptid",
+                "alias": "scriptid",
+                "description": "The script id of the custom record object.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "customrecord_test",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "importconfiguration": {
+        "name": "importconfiguration",
+        "usage": "",
+        "description": "Import account configuration from a NetSuite account.",
+        "options": [
+            {
+                "name": "configurationid",
+                "option": "configurationid",
+                "alias": "configurationid",
+                "description": "Import account configuration with the specified configuration ids. Use a space separated list to indicate multiple configuration ids.",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "features:all_features [...]",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "importbundle": {
+        "name": "importbundle",
+        "usage": "",
+        "description": "Import a bundle and convert it to an Account Customization project.",
+        "options": [
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Folder to import the bundle into. Account details will be loaded from a .sdf file inside this folder if it exists. Overrides the previously set default project folder.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": true,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "bundleid",
+                "option": "bundleid",
+                "alias": "bundleid",
+                "description": "The bundle id. Used to specify which bundle to import.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "123",
+                "defaultOption": false,
+                "availableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "adddependencies": {
+        "name": "adddependencies",
+        "usage": "",
+        "description": "Add the missing dependencies to the manifest file.",
+        "options": [
+            {
+                "name": "all",
+                "option": "all",
+                "alias": "all",
+                "description": "Adds all missing dependencies to the SuiteCloud project.  When specified, ensure that you do not use the -feature, -file, and -object options.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "feature",
+                "option": "feature",
+                "alias": "feature",
+                "description": "Specifies the feature dependency references to add to the SuiteCloud project.  Each reference is a name:value pair that is delimited by a space.  For example: CUSTOMRECORD:required ACCOUNTING:optional.  When specified, ensure that you do not use the -all option.",
+                "mandatory": false,
+                "type": "MULTIPLE",
+                "usage": "CUSTOMRECORD:required [...]",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "file",
+                "option": "file",
+                "alias": "file",
+                "description": "Specifies the files to add to the SuiteCloud project.  When specified, ensure that you do not use the -all option.",
+                "mandatory": false,
+                "type": "MULTIPLE",
+                "usage": "\/js\/test.js [...]",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "object",
+                "option": "object",
+                "alias": "object",
+                "description": "Specifies the object script IDs to add to the SuiteCloud project.  When specified, ensure that you do not use the -all option..",
+                "mandatory": false,
+                "type": "MULTIPLE",
+                "usage": "scriptid [...]",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    },
+    "listmissingdependencies": {
+        "name": "listmissingdependencies",
+        "usage": "",
+        "description": "List the missing dependencies for a project.",
+        "options": [
+            {
+                "name": "log",
+                "option": "log",
+                "alias": "l",
+                "description": "Sets the log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, log details are appended to that existing file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "d:\/path\/test.log",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "alias": "p",
+                "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "alias": "url",
+                "description": "The domain url. Overrides the url set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "system.netsuite.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "alias": "email",
+                "description": "The user's email. Overrides the email set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "test@netsuiteide.com",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "alias": "account",
+                "description": "The account id. Overrides the account set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "0000001",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "alias": "role",
+                "description": "The role id. Overrides the role id set in the .sdf file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "3",
+                "defaultOption": false,
+                "availableInIntegrationMode": false
+            }
+        ]
+    }
 }
