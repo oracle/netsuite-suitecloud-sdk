@@ -36,6 +36,15 @@ const COMMAND_QUESTIONS_NAMES = {
 	TYPE: 'type',
 };
 
+const {
+	validateFieldIsNotEmpty,
+	showValidationResults,
+	validateFieldHasNoSpaces,
+	validateFieldIsLowerCase,
+	validatePublisherId,
+	validateProjectVersion,
+} = require('../validation/InteractiveAnswersValidator');
+
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
@@ -64,6 +73,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.PROJECT_NAME,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
+				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -82,6 +92,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.PUBLISHER_ID,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
+				validate: fieldValue => showValidationResults(fieldValue, validatePublisherId),
 			},
 			{
 				when: function(response) {
@@ -90,6 +101,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.PROJECT_ID,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_ID),
+				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateFieldIsLowerCase)
 			},
 			{
 				when: function(response) {
@@ -98,6 +110,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.PROJECT_VERSION,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
+				validate: fieldValue => showValidationResults(fieldValue, validateProjectVersion),
 			},
 		]);
 	}
@@ -121,7 +134,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		);
 
 		const params = {
-			parentdirectory: projectDirectory,
+			//Enclose in double quotes to also support project names with spaces
+			parentdirectory: '\"' + projectDirectory + '\"',
 			type: args.type,
 			projectname: SOURCE_FOLDER,
 			...(args.overwrite && { overwrite: '' }),
@@ -143,7 +157,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			!args.overwrite
 		) {
 			return new Promise((resolve, reject) => {
-				reject(TranslationService.getMessage(MESSAGES.PROJECT_EXISTS));
+				reject(TranslationService.getMessage(MESSAGES.PROJECT_EXISTS, path.join(args.parentdirectory, projectName)));
 			});
 		}
 

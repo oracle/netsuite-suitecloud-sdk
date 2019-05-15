@@ -15,19 +15,28 @@ NodeUtils.formatString(TranslationService.getMessage(ERRORS.EMPTY_FIELD), {
 });
 
 const ALPHANUMERIC_LOWERCASE_REGEX = '[a-z0-9]+';
+const ALPHANUMERIC_LOWERCASE_WHOLE_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
 const SCRIPT_ID_REGEX = /^[a-z0-9_]+$/;
+const STRING_WITH_SPACES_REGEX = /\s/;
 
+const PROJECT_VERSION_FORMAT_REGEX = '^\\d(\\.\\d){2}$';
 const SUITEAPP_ID_FORMAT_REGEX =
 	'^' + ALPHANUMERIC_LOWERCASE_REGEX + '(\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '){2}$';
+const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX = 
+	'^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
 
 class InteractiveAnswersValidator {
-	showValidationResults(value, func) {
-		const validationOutput = func(value);
-		if (!validationOutput.result) {
-			return NodeUtils.formatString(validationOutput.validationMessage, {
-				color: NodeUtils.COLORS.ERROR,
-				bold: true,
-			});
+	showValidationResults(value, ...funcs) {
+		var i;
+		for (i = 0; i < funcs.length; i++) {
+			var func = funcs[i];
+			const validationOutput = func(value);
+			if (!validationOutput.result) {
+				return NodeUtils.formatString(validationOutput.validationMessage, {
+					color: NodeUtils.COLORS.ERROR,
+					bold: true,
+				});
+			}
 		}
 		return true;
 	}
@@ -36,6 +45,30 @@ class InteractiveAnswersValidator {
 		return fieldValue !== ''
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.EMPTY_FIELD));
+	}
+
+	validateFieldHasNoSpaces(fieldValue) {
+		return !STRING_WITH_SPACES_REGEX.test(fieldValue)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.FIELD_HAS_SPACES));
+	}
+
+	validateFieldIsLowerCase(fieldValue) {
+		return fieldValue.match(ALPHANUMERIC_LOWERCASE_WHOLE_REGEX)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.FIELD_NOT_LOWER_CASE));
+	}
+
+	validatePublisherId(fieldValue) {
+		return fieldValue.match(SUITEAPP_PUBLISHER_ID_FORMAT_REGEX)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.PUBLISHER_ID_FORMAT));
+	}
+
+	validateProjectVersion(fieldValue) {
+		return fieldValue.match(PROJECT_VERSION_FORMAT_REGEX)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.PROJECT_VERSION_FORMAT));
 	}
 
 	validateArrayIsNotEmpty(array) {
@@ -48,7 +81,9 @@ class InteractiveAnswersValidator {
 		let notEmpty =
 			fieldValue !== ''
 				? VALIDATION_RESULT_SUCCESS
-				: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ERRORS.EMPTY_FIELD));
+				: VALIDATION_RESULT_FAILURE(
+						TranslationService.getMessage(ERRORS.EMPTY_FIELD)
+				  );
 
 		if (notEmpty.result != true) {
 			return notEmpty;
