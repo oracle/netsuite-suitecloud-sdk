@@ -2,6 +2,7 @@
 
 const Theme = require('./Theme');
 const Extension = require('./Extension');
+const path = require('path');
 
 const _ = require('underscore');
 
@@ -33,25 +34,8 @@ module.exports = class CompilationContext {
 		return this.theme.getSassOverrides();
 	}
 
-	getTemplates() {
-		let templates = {
-			files: {},
-			entrypoints: {},
-		};
-		const extensions = this.extensions.concat(this.theme);
-
-		_.each(extensions, extension => {
-			const ext_templates = extension.getTemplates();
-
-			templates.entrypoints = _.mapObject(ext_templates, (app_templates, app) => {
-				_.each(app_templates, file => {
-					templates.files[file] = extension.getLocalAssetsPath();
-				});
-				return _.union(templates[app], app_templates);
-			});
-		});
-
-		return templates;
+	getAllExtensions() {
+		return [this.theme].concat(this.extensions);
 	}
 
 	getSass() {
@@ -59,7 +43,7 @@ module.exports = class CompilationContext {
 			files: [],
 			entrypoints: {},
 		};
-		const extensions = [this.theme].concat(this.extensions);
+		const extensions = this.getAllExtensions();
 
 		_.each(extensions, extension => {
 			const ext_sass = extension.getSass();
@@ -112,5 +96,19 @@ module.exports = class CompilationContext {
 		});
 
 		return assets;
+	}
+
+	getExtensionByFile(file) {
+		let found = { base_path: '' };
+		this.getAllExtensions().forEach(extension => {
+			if (extension.have(file) && extension.base_path.length > found.base_path.length) {
+				found = extension;
+			}
+		});
+		return found;
+	}
+
+	excludeBaseFilesPath(dir) {
+		return path.normalize(dir).replace(this.files_path, '');
 	}
 };

@@ -11,6 +11,14 @@ module.exports = class AbstractExtension {
 		const extension_xml = options.extension_xml;
 
 		this.raw_extension = Utils.parseXml(objects_path, extension_xml);
+		this.base_url = 'http://localhost:7777'; // TODO remove and use cli-config
+	}
+
+	getTemplatesFlatted() {
+		if (this.templates_flatted) {
+			return this.templates_flatted;
+		}
+		return (this.templates_flatted = _.uniq(_.flatten(_.map(this.getTemplates()))));
 	}
 
 	getTemplates() {
@@ -59,6 +67,10 @@ module.exports = class AbstractExtension {
 		return path.join(folder, this.getExtensionFullName('/'));
 	}
 
+	getAssetsUrl() {
+		return Utils.forwardSlashes(path.join(this.base_url, this.getLocalAssetsPath()));
+	}
+
 	getAssets() {
 		if (this.assets) {
 			return this.assets;
@@ -71,5 +83,9 @@ module.exports = class AbstractExtension {
 		this.assets = _.flatten(this.assets);
 
 		return this.assets;
+	}
+
+	have(file) {
+		return path.normalize(file).indexOf(path.normalize(this.base_path)) > -1;
 	}
 };

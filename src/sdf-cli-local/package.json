@@ -1,7 +1,7 @@
 {
 	"name": "sdf-cli-local",
 	"version": "1.0.0",
-	"description": "POC for SDF CLI Local",
+	"description": "SDF CLI Local command",
 	"main": "index.js",
 	"author": "NetSuite",
 	"license": "MIT",
