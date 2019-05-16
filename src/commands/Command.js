@@ -113,6 +113,9 @@ module.exports = class Command {
 			option1.name.localeCompare(option2.name)
 		);
 		optionsSortedByName.forEach(option => {
+			if (!option.availableInIntegrationMode) {
+				return;
+			}
 			const mandatoryOptionString = option.mandatory ? '<argument>' : '[argument]';
 			const optionString = `-${option.alias}, --${option.name} ${mandatoryOptionString}`;
 			commandSetup.option(optionString, option.description);
