@@ -13,10 +13,10 @@
 	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Would you like to overwrite the project if found in the same location?",
 
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
-	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files from a SuiteApp project. You can only import files from Account Customization Projects.",
+	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
 	"COMMAND_IMPORTFILES_QUESTIONS_EXCLUDE_PROPERTIES": "Do you want to exclude all file properties within the .attributes folder?",
 	"COMMAND_IMPORTFILES_QUESTIONS_SELECT_FILES": "Select the files you want to import to your project.",
-	"COMMAND_IMPORTFILES_QUESTIONS_SELECT_FOLDER": "Select the path where you want to import the files",
+	"COMMAND_IMPORTFILES_QUESTIONS_SELECT_FOLDER": "Select the path from where you want to import the files",
 	"COMMAND_IMPORTFILES_MESSAGES_IMPORTING_FILES": "Importing files...",
 	"COMMAND_IMPORTFILES_MESSAGES_LOADING_FILES": "Loading files...",
 	"COMMAND_IMPORTFILES_MESSAGES_LOADING_FOLDERS": "Loading File Cabinet folders...",

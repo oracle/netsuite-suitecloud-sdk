@@ -13,7 +13,8 @@ module.exports = {
 			}
 			return obj;
 		}, {});
-	}
+	},
+	quoteString: string => `"${string}"`,
 };
 
 

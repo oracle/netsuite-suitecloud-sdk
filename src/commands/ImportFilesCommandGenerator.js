@@ -99,7 +99,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
-		selectFolderAnswer.folder = `\"${selectFolderAnswer.folder}\"`;
+		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
 		const executionContextListFiles = new SDKExecutionContext({
 			command: COMMAND_NAMES.LISTFILES,
 			params: selectFolderAnswer,
@@ -136,7 +136,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_preExecuteAction(answers) {
 		answers[ANSWER_NAMES.PROJECT] = this._projectFolder;
 		if (Array.isArray(answers.paths)) {
-			answers.paths = answers.paths.join(' ');
+			answers.paths = answers.paths.map(CommandUtils.quoteString).join(' ');
 		}
 		if (answers[ANSWER_NAMES.EXCLUDE_PROPERTIES]) {
 			answers[ANSWER_NAMES.EXCLUDE_PROPERTIES] = '';
