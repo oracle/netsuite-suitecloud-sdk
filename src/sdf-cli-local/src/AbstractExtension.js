@@ -4,6 +4,7 @@ const Utils = require('./Utils');
 const Log = require('./services/Log');
 const _ = require('underscore');
 const path = require('path');
+const url = require('url');
 
 module.exports = class AbstractExtension {
 	constructor(options) {
@@ -68,7 +69,7 @@ module.exports = class AbstractExtension {
 	}
 
 	getAssetsUrl() {
-		return Utils.forwardSlashes(path.join(this.base_url, this.getLocalAssetsPath()));
+		return Utils.forwardSlashes(url.resolve(this.base_url, this.getLocalAssetsPath()));
 	}
 
 	getAssets() {
