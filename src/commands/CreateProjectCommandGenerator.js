@@ -27,8 +27,9 @@ const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const CLI_CONFIG_FILENAME = 'cli-config';
 const CLI_CONFIG_EXTENSION = 'js';
 
-const COMMAND_QUESTIONS_NAMES = {
+const COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
+	PARENT_DIRECTORY: 'parentdirectory',
 	PROJECT_ID: 'projectid',
 	PROJECT_NAME: 'projectname',
 	PROJECT_VERSION: 'projectversion',
@@ -55,7 +56,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		return prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_QUESTIONS_NAMES.TYPE,
+				name: COMMAND_OPTIONS.TYPE,
 				message: TranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
 				default: 0,
 				choices: [
@@ -71,13 +72,13 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_QUESTIONS_NAMES.PROJECT_NAME,
+				name: COMMAND_OPTIONS.PROJECT_NAME,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
 				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_QUESTIONS_NAMES.OVERWRITE,
+				name: COMMAND_OPTIONS.OVERWRITE,
 				message: TranslationService.getMessage(QUESTIONS.OVERWRITE_PROJECT),
 				default: 0,
 				choices: [
@@ -87,10 +88,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			},
 			{
 				when: function(response) {
-					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
+					return response[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_QUESTIONS_NAMES.PUBLISHER_ID,
+				name: COMMAND_OPTIONS.PUBLISHER_ID,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
 				validate: fieldValue => showValidationResults(fieldValue, validatePublisherId),
 			},
@@ -99,16 +100,22 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_QUESTIONS_NAMES.PROJECT_ID,
+				name: COMMAND_OPTIONS.PROJECT_ID,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_ID),
-				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateFieldIsLowerCase)
+				validate: fieldValue =>
+					showValidationResults(
+						fieldValue,
+						validateFieldIsNotEmpty,
+						validateFieldHasNoSpaces,
+						validateFieldIsLowerCase
+					),
 			},
 			{
 				when: function(response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_QUESTIONS_NAMES.PROJECT_VERSION,
+				name: COMMAND_OPTIONS.PROJECT_VERSION,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
 				validate: fieldValue => showValidationResults(fieldValue, validateProjectVersion),
 			},
@@ -116,17 +123,18 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	}
 
 	_preExecuteAction(args) {
-		args.parentdirectory = process.cwd();
+		args[COMMAND_OPTIONS.PARENT_DIRECTORY] = process.cwd();
 		return args;
 	}
 
 	_executeAction(args) {
-		const fullyQualifiedProjectId = args.publisherid + '.' + args.projectid;
+		const fullyQualifiedProjectId =
+			args[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + args[COMMAND_OPTIONS.PROJECT_ID];
 		const projectName =
-			args.type === ApplicationConstants.PROJECT_SUITEAPP
+			args[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP
 				? fullyQualifiedProjectId
-				: args.projectname;
-		const projectDirectory = path.join(args.parentdirectory, projectName);
+				: args[COMMAND_OPTIONS.PROJECT_NAME];
+		const projectDirectory = path.join(args[COMMAND_OPTIONS.PARENT_DIRECTORY], projectName);
 		const manifestFilePath = path.join(
 			projectDirectory,
 			SOURCE_FOLDER,
@@ -135,18 +143,14 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const params = {
 			//Enclose in double quotes to also support project names with spaces
-			parentdirectory: '\"' + projectDirectory + '\"',
-			type: args.type,
+			parentdirectory: `\"${projectDirectory}\"`,
+			type: args[COMMAND_OPTIONS.TYPE],
 			projectname: SOURCE_FOLDER,
-			...(args.overwrite && { overwrite: '' }),
-			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-				publisherid: args.publisherid,
-			}),
-			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-				projectid: args.projectid,
-			}),
-			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-				projectversion: args.projectversion,
+			...(args[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
+			...(args[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP && {
+				publisherid: args[COMMAND_OPTIONS.PUBLISHER_ID],
+				projectid: args[COMMAND_OPTIONS.PROJECT_ID],
+				projectversion: args[COMMAND_OPTIONS.PROJECT_VERSION],
 			}),
 		};
 
@@ -154,14 +158,15 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		if (
 			this._fileSystemService.folderExists(projectDirectory) &&
 			!this._fileSystemService.isFolderEmpty(projectDirectory) &&
-			!args.overwrite
+			!args[COMMAND_OPTIONS.OVERWRITE]
 		) {
-			return new Promise((resolve, reject) => {
-				reject(TranslationService.getMessage(MESSAGES.PROJECT_EXISTS, path.join(args.parentdirectory, projectName)));
-			});
+			throw TranslationService.getMessage(
+				MESSAGES.PROJECT_EXISTS,
+				path.join(args[COMMAND_OPTIONS.PARENT_DIRECTORY], projectName)
+			);
 		}
 
-		this._fileSystemService.createFolder(args.parentdirectory, projectName);
+		this._fileSystemService.createFolder(args[COMMAND_OPTIONS.PARENT_DIRECTORY], projectName);
 
 		const actionCreateProject = new Promise((resolve, reject) => {
 			const executionContext = new SDKExecutionContext({
@@ -174,13 +179,16 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					if (SDKOperationResultUtils.hasErrors(operationResult)) {
 						resolve({
 							operationResult: operationResult,
-							projectType: args.type,
-							projectDirectory: path.join(args.parentdirectory, projectName),
+							projectType: args[COMMAND_OPTIONS.TYPE],
+							projectDirectory: path.join(
+								args[COMMAND_OPTIONS.PARENT_DIRECTORY],
+								projectName
+							),
 						});
 						return;
 					}
 
-					if (args.type === ApplicationConstants.PROJECT_SUITEAPP) {
+					if (args[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
 						let oldPath = path.join(projectDirectory, projectName);
 						let newPath = path.join(projectDirectory, SOURCE_FOLDER);
 						this._fileSystemService.deleteFolderRecursive(newPath);
@@ -189,7 +197,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					this._fileSystemService.replaceStringInFile(
 						manifestFilePath,
 						SOURCE_FOLDER,
-						args.projectname
+						args[COMMAND_OPTIONS.PROJECT_NAME]
 					);
 
 					this._fileSystemService
@@ -202,8 +210,11 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						.then(() => {
 							resolve({
 								operationResult: operationResult,
-								projectType: args.type,
-								projectDirectory: path.join(args.parentdirectory, projectName),
+								projectType: args[COMMAND_OPTIONS.TYPE],
+								projectDirectory: path.join(
+									args[COMMAND_OPTIONS.PARENT_DIRECTORY],
+									projectName
+								),
 							});
 						})
 						.catch(error => {
