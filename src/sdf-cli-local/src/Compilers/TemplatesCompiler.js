@@ -22,8 +22,6 @@ module.exports = class TemplatesCompiler {
 	compile(file) {
 		Log.result('COMPILATION_START', [this.resource_type]);
 
-		this.createTemplateFolders();
-
 		// Uncomment for watch task:
 		// if (file) {
 		// 	return Utils.runParallel([
@@ -86,7 +84,9 @@ module.exports = class TemplatesCompiler {
 
 	writeTemplates(extension) {
 		const resources = extension.getTemplatesFlatted();
-
+		if (resources.length) {
+			this.createTemplateFolders();
+		}
 		return _.map(resources, template => this.writeTemplate(template, extension));
 	}
 
