@@ -116,13 +116,14 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			},
 		]);
 
-		answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = this._projectFolder;
-		answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = this._getProjectFolderName(answers);
-		answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH] = path.join(this._projectFolder, answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME]);
+		const projectFolderName = this._getProjectFolderName(answers);
+		answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
+		const projectAbsolutePath = path.join(this._projectFolder, projectFolderName);
+		answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH] = projectAbsolutePath;
 
 		if (
-			this._fileSystemService.folderExists(answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH]) &&
-			!this._fileSystemService.isFolderEmpty(answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH])
+			this._fileSystemService.folderExists(projectAbsolutePath) &&
+			!this._fileSystemService.isFolderEmpty(projectAbsolutePath)
 		) {
 			const overwriteAnswer = await prompt([
 				{
@@ -130,7 +131,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					name: COMMAND_OPTIONS.OVERWRITE,
 					message: TranslationService.getMessage(
 						QUESTIONS.OVERWRITE_PROJECT,
-						answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH]
+						projectAbsolutePath
 					),
 					default: 0,
 					choices: [
@@ -153,27 +154,23 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			: answers[COMMAND_OPTIONS.PROJECT_NAME];
 	}
 
-	_getProjectAbsolutePath(answers) {
-		return path.join(
-			answers[COMMAND_OPTIONS.PARENT_DIRECTORY],
-			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME]
-		);
+	_preExecuteAction(answers) {
+		answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = this._projectFolder;
+		return answers;
 	}
 
 	_executeAction(answers) {
-		const projectName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
-		const projectDirectory = answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH];
+		const projectFolderName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
+		const projectAbsolutePath = answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH];
 		const manifestFilePath = path.join(
-			projectDirectory,
+			projectAbsolutePath,
 			SOURCE_FOLDER,
 			ApplicationConstants.MANIFEST_XML
 		);
 
 		const params = {
 			//Enclose in double quotes to also support project names with spaces
-			parentdirectory: CommandUtils.quoteString(
-				answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH]
-			),
+			parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
 			type: answers[COMMAND_OPTIONS.TYPE],
 			projectname: SOURCE_FOLDER,
 			...(answers[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
@@ -185,7 +182,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		};
 
 		this._fileSystemService.createFolder(
-			answers[COMMAND_OPTIONS.PARENT_DIRECTORY],
+			this._projectFolder,
 			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME]
 		);
 
@@ -201,17 +198,14 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				resolve({
 					operationResult: operationResult,
 					projectType: answers[COMMAND_OPTIONS.TYPE],
-					projectDirectory: path.join(
-						answers[COMMAND_OPTIONS.PARENT_DIRECTORY],
-						projectName
-					),
+					projectDirectory: projectAbsolutePath,
 				});
 				return;
 			}
 
 			if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
-				const oldPath = path.join(projectDirectory, projectName);
-				const newPath = path.join(projectDirectory, SOURCE_FOLDER);
+				const oldPath = path.join(projectAbsolutePath, projectFolderName);
+				const newPath = path.join(projectAbsolutePath, SOURCE_FOLDER);
 				this._fileSystemService.deleteFolderRecursive(newPath);
 				this._fileSystemService.renameFolder(oldPath, newPath);
 			}
@@ -223,7 +217,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 			await this._fileSystemService.createFileFromTemplate({
 				template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
-				destinationFolder: projectDirectory,
+				destinationFolder: projectAbsolutePath,
 				fileName: CLI_CONFIG_FILENAME,
 				fileExtension: CLI_CONFIG_EXTENSION,
 			});
@@ -231,7 +225,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			return resolve({
 				operationResult: operationResult,
 				projectType: answers[COMMAND_OPTIONS.TYPE],
-				projectDirectory: answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH]
+				projectDirectory: projectAbsolutePath,
 			});
 		});
 
