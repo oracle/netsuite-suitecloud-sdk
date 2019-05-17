@@ -9,7 +9,7 @@ const {
 	validateArrayIsNotEmpty,
 	validateSuiteApp,
 	validateScriptId,
-} = require('../src/validation/InteractiveAnswersValidator');
+} = require('../../src/validation/InteractiveAnswersValidator');
 
 describe('validateFieldIsNotEmpty', function() {
 	it('should return true when string is not empty', function() {
