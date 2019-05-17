@@ -39,7 +39,7 @@ const COMMAND_OPTIONS = {
 
 const COMMAND_ANSWERS = {
 	PROJECT_ABSOLUTE_PATH: 'projectabsolutepath',
-	PROJECT_RELATIVE_PATH: 'projectrelativepath',
+	PROJECT_FOLDER_NAME: 'projectfoldername',
 };
 
 const {
@@ -117,8 +117,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		]);
 
 		answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = this._projectFolder;
-		answers[COMMAND_ANSWERS.PROJECT_RELATIVE_PATH] = this._getProjectFolder(answers);
-		answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH] = this._getProjectDirectory(answers);
+		answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = this._getProjectFolderName(answers);
+		answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH] = path.join(this._projectFolder, answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME]);
 
 		if (
 			this._fileSystemService.folderExists(answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH]) &&
@@ -147,21 +147,21 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		return answers;
 	}
 
-	_getProjectFolder(answers) {
+	_getProjectFolderName(answers) {
 		return answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP
 			? answers[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + answers[COMMAND_OPTIONS.PROJECT_ID]
 			: answers[COMMAND_OPTIONS.PROJECT_NAME];
 	}
 
-	_getProjectDirectory(answers) {
+	_getProjectAbsolutePath(answers) {
 		return path.join(
 			answers[COMMAND_OPTIONS.PARENT_DIRECTORY],
-			answers[COMMAND_ANSWERS.PROJECT_RELATIVE_PATH]
+			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME]
 		);
 	}
 
 	_executeAction(answers) {
-		const projectName = answers[COMMAND_ANSWERS.PROJECT_RELATIVE_PATH];
+		const projectName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
 		const projectDirectory = answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH];
 		const manifestFilePath = path.join(
 			projectDirectory,
@@ -186,7 +186,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		this._fileSystemService.createFolder(
 			answers[COMMAND_OPTIONS.PARENT_DIRECTORY],
-			answers[COMMAND_ANSWERS.PROJECT_RELATIVE_PATH]
+			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME]
 		);
 
 		const actionCreateProject = new Promise(async (resolve, reject) => {
@@ -231,7 +231,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			return resolve({
 				operationResult: operationResult,
 				projectType: answers[COMMAND_OPTIONS.TYPE],
-				projectDirectory: path.join(answers[COMMAND_OPTIONS.PARENT_DIRECTORY], projectName),
+				projectDirectory: answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH]
 			});
 		});
 

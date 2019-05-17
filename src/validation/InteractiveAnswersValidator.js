@@ -27,9 +27,7 @@ const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX =
 
 class InteractiveAnswersValidator {
 	showValidationResults(value, ...funcs) {
-		var i;
-		for (i = 0; i < funcs.length; i++) {
-			var func = funcs[i];
+		for (const func of funcs) {
 			const validationOutput = func(value);
 			if (!validationOutput.result) {
 				return NodeUtils.formatString(validationOutput.validationMessage, {

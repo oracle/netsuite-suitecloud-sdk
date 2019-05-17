@@ -32,7 +32,7 @@ describe('validateFieldHasNoSpaces', function() {
 	it('should return false with validation message when string has spaces', function() {
 		const expected = {
 			result: false,
-			validationMessage: 'Error: This field cannot contain spaces.',
+			validationMessage: 'This field cannot contain spaces.',
 		};
 		expect(validateFieldHasNoSpaces('String with spaces')).toEqual(expected);
 	});
@@ -47,7 +47,7 @@ describe('validateFieldIsLowerCase', function() {
 	it('should return false with validation message when string is not all in lower case', function() {
 		const expected = {
 			result: false,
-			validationMessage: 'Error: This field must contain only lower case letters and numbers.',
+			validationMessage: 'This field contains forbidden characters. Use only lowercase letters and numbers.',
 		};
 		expect(validateFieldIsLowerCase('WithUpperCase')).toEqual(expected);
 	});
@@ -63,7 +63,7 @@ describe('validatePublisherId', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'Error: The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID may not begin or end with a period.',
+				'The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
 		};
 		expect(validatePublisherId('comnetsuite')).toEqual(expected);
 	});
@@ -72,7 +72,7 @@ describe('validatePublisherId', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'Error: The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID may not begin or end with a period.',
+				'The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
 		};
 		expect(validatePublisherId('Com.netsuite')).toEqual(expected);
 	});
@@ -81,7 +81,7 @@ describe('validatePublisherId', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'Error: The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID may not begin or end with a period.',
+				'The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
 		};
 		expect(validatePublisherId('Com.net.suite')).toEqual(expected);
 	});
@@ -97,7 +97,7 @@ describe('validateProjectVersion', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'The project version must only contain digits and dots in the format "0.0.0".',
+				'The project version must only contain digits and dots. Ensure it follows a pattern such as "0.0.0".',
 		};
 		expect(validateProjectVersion('1.a.b')).toEqual(expected);
 	});
@@ -106,7 +106,7 @@ describe('validateProjectVersion', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'The project version must only contain digits and dots in the format "0.0.0".',
+				'The project version must only contain digits and dots. Ensure it follows a pattern such as "0.0.0".',
 		};
 		expect(validateProjectVersion('1.0')).toEqual(expected);
 	});
@@ -115,7 +115,7 @@ describe('validateProjectVersion', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'The project version must only contain digits and dots in the format "0.0.0".',
+				'The project version must only contain digits and dots. Ensure it follows a pattern such as "0.0.0".',
 		};
 		expect(validateProjectVersion('1.0.0.0')).toEqual(expected);
 	});
