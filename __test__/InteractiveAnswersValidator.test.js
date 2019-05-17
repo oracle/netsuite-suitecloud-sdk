@@ -9,7 +9,7 @@ const {
 	validateArrayIsNotEmpty,
 	validateSuiteApp,
 	validateScriptId,
-} = require('../InteractiveAnswersValidator');
+} = require('../src/validation/InteractiveAnswersValidator');
 
 describe('validateFieldIsNotEmpty', function() {
 	it('should return true when string is not empty', function() {
@@ -47,7 +47,7 @@ describe('validateFieldIsLowerCase', function() {
 	it('should return false with validation message when string is not all in lower case', function() {
 		const expected = {
 			result: false,
-			validationMessage: 'Error: This field must be in lower case.',
+			validationMessage: 'Error: This field must contain only lower case letters and numbers.',
 		};
 		expect(validateFieldIsLowerCase('WithUpperCase')).toEqual(expected);
 	});
