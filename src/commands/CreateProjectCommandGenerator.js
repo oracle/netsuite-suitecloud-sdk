@@ -117,9 +117,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		]);
 
 		const projectFolderName = this._getProjectFolderName(answers);
-		answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
 		const projectAbsolutePath = path.join(this._projectFolder, projectFolderName);
-		answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH] = projectAbsolutePath;
 
 		if (
 			this._fileSystemService.folderExists(projectAbsolutePath) &&
@@ -155,13 +153,19 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	}
 
 	_preExecuteAction(answers) {
-		answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = this._projectFolder;
+		const projectFolderName = this._getProjectFolderName(answers);
+		answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
+		answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = path.join(
+			this._projectFolder,
+			projectFolderName
+		);
+
 		return answers;
 	}
 
 	_executeAction(answers) {
 		const projectFolderName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
-		const projectAbsolutePath = answers[COMMAND_ANSWERS.PROJECT_ABSOLUTE_PATH];
+		const projectAbsolutePath = answers[COMMAND_OPTIONS.PARENT_DIRECTORY];
 		const manifestFilePath = path.join(
 			projectAbsolutePath,
 			SOURCE_FOLDER,
@@ -181,52 +185,55 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			}),
 		};
 
-		this._fileSystemService.createFolder(
-			this._projectFolder,
-			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME]
-		);
+		this._fileSystemService.createFolder(this._projectFolder, projectFolderName);
 
 		const actionCreateProject = new Promise(async (resolve, reject) => {
-			const executionContextCreateProject = new SDKExecutionContext({
-				command: this._commandMetadata.name,
-				params: params,
-			});
+			try {
+				const executionContextCreateProject = new SDKExecutionContext({
+					command: this._commandMetadata.name,
+					params: params,
+				});
 
-			const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
+				const operationResult = await this._sdkExecutor.execute(
+					executionContextCreateProject
+				);
 
-			if (SDKOperationResultUtils.hasErrors(operationResult)) {
-				resolve({
+				if (SDKOperationResultUtils.hasErrors(operationResult)) {
+					resolve({
+						operationResult: operationResult,
+						projectType: answers[COMMAND_OPTIONS.TYPE],
+						projectDirectory: projectAbsolutePath,
+					});
+					return;
+				}
+
+				if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
+					const oldPath = path.join(projectAbsolutePath, projectFolderName);
+					const newPath = path.join(projectAbsolutePath, SOURCE_FOLDER);
+					this._fileSystemService.deleteFolderRecursive(newPath);
+					this._fileSystemService.renameFolder(oldPath, newPath);
+				}
+				this._fileSystemService.replaceStringInFile(
+					manifestFilePath,
+					SOURCE_FOLDER,
+					answers[COMMAND_OPTIONS.PROJECT_NAME]
+				);
+
+				await this._fileSystemService.createFileFromTemplate({
+					template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
+					destinationFolder: projectAbsolutePath,
+					fileName: CLI_CONFIG_FILENAME,
+					fileExtension: CLI_CONFIG_EXTENSION,
+				});
+
+				return resolve({
 					operationResult: operationResult,
 					projectType: answers[COMMAND_OPTIONS.TYPE],
 					projectDirectory: projectAbsolutePath,
 				});
-				return;
+			} catch (error) {
+				reject(error);
 			}
-
-			if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
-				const oldPath = path.join(projectAbsolutePath, projectFolderName);
-				const newPath = path.join(projectAbsolutePath, SOURCE_FOLDER);
-				this._fileSystemService.deleteFolderRecursive(newPath);
-				this._fileSystemService.renameFolder(oldPath, newPath);
-			}
-			this._fileSystemService.replaceStringInFile(
-				manifestFilePath,
-				SOURCE_FOLDER,
-				answers[COMMAND_OPTIONS.PROJECT_NAME]
-			);
-
-			await this._fileSystemService.createFileFromTemplate({
-				template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
-				destinationFolder: projectAbsolutePath,
-				fileName: CLI_CONFIG_FILENAME,
-				fileExtension: CLI_CONFIG_EXTENSION,
-			});
-
-			return resolve({
-				operationResult: operationResult,
-				projectType: answers[COMMAND_OPTIONS.TYPE],
-				projectDirectory: projectAbsolutePath,
-			});
 		});
 
 		return executeWithSpinner({
