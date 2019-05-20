@@ -211,6 +211,7 @@
         "name": "createproject",
         "usage": "",
         "description": "Create a SuiteCloud Project.",
+        "isSetupRequired": false,
         "options": [
             {
                 "name": "parentdirectory",
