@@ -140,7 +140,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			]);
 			answers[COMMAND_OPTIONS.OVERWRITE] = overwriteAnswer[COMMAND_OPTIONS.OVERWRITE];
 			if (!overwriteAnswer[COMMAND_OPTIONS.OVERWRITE]) {
-				throw TranslationService.getMessage(MESSAGES.PROJECT_CREATION_CANCELLED);
+				throw TranslationService.getMessage(MESSAGES.PROJECT_CREATION_CANCELED);
 			}
 		}
 		return answers;
