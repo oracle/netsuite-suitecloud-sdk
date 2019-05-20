@@ -22,9 +22,12 @@ const COMMAND_OPTIONS = {
 	EXCLUDE_PROPERTIES: 'excludeproperties',
 	PROJECT: 'project',
 };
-const COMMAND_NAMES = {
+const OTHER_INVOKED_COMMANDS = {
 	LISTFILES: 'listfiles',
 	LISTFOLDERS: 'listfolders',
+};
+const COMMAND_ANSWERS = {
+	OVERWRITE_FILES: 'overwrite',
 };
 
 const {
@@ -61,12 +64,19 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
-		return await prompt(selectFilesQuestions);
+		const selectFilesAnswer = await prompt(selectFilesQuestions);
+
+		const overwriteAnswer = await prompt([this._generateOverwriteQuestion()]);
+		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {
+			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
+		}
+
+		return selectFilesAnswer;
 	}
 
 	_listFolders() {
 		const executionContextListFolders = new SDKExecutionContext({
-			command: COMMAND_NAMES.LISTFOLDERS,
+			command: OTHER_INVOKED_COMMANDS.LISTFOLDERS,
 			showOutput: false,
 		});
 		this._applyDefaultContextParams(executionContextListFolders);
@@ -101,7 +111,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
 		const executionContextListFiles = new SDKExecutionContext({
-			command: COMMAND_NAMES.LISTFILES,
+			command: OTHER_INVOKED_COMMANDS.LISTFILES,
 			params: selectFolderAnswer,
 		});
 		this._applyDefaultContextParams(executionContextListFiles);
@@ -131,6 +141,19 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 				],
 			},
 		];
+	}
+
+	_generateOverwriteQuestion() {
+		return {
+			type: CommandUtils.INQUIRER_TYPES.LIST,
+			name: COMMAND_ANSWERS.OVERWRITE_FILES,
+			message: TranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
+			default: 0,
+			choices: [
+				{ name: TranslationService.getMessage(YES), value: true },
+				{ name: TranslationService.getMessage(NO), value: false },
+			],
+		};
 	}
 
 	_preExecuteAction(answers) {
