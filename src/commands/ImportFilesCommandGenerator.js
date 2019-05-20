@@ -22,7 +22,7 @@ const COMMAND_OPTIONS = {
 	EXCLUDE_PROPERTIES: 'excludeproperties',
 	PROJECT: 'project',
 };
-const OTHER_INVOKED_COMMANDS = {
+const INTERMEDIATE_COMMANDS = {
 	LISTFILES: 'listfiles',
 	LISTFOLDERS: 'listfolders',
 };
@@ -76,7 +76,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	_listFolders() {
 		const executionContextListFolders = new SDKExecutionContext({
-			command: OTHER_INVOKED_COMMANDS.LISTFOLDERS,
+			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
 			showOutput: false,
 		});
 		this._applyDefaultContextParams(executionContextListFolders);
@@ -111,7 +111,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
 		const executionContextListFiles = new SDKExecutionContext({
-			command: OTHER_INVOKED_COMMANDS.LISTFILES,
+			command: INTERMEDIATE_COMMANDS.LISTFILES,
 			params: selectFolderAnswer,
 		});
 		this._applyDefaultContextParams(executionContextListFiles);
