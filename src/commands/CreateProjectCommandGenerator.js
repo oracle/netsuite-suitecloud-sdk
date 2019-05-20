@@ -154,12 +154,17 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 	_preExecuteAction(answers) {
 		const projectFolderName = this._getProjectFolderName(answers);
-		answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
-		answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = path.join(
-			this._projectFolder,
-			projectFolderName
-		);
-
+		if (projectFolderName) {
+			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = path.join(
+				this._projectFolder,
+				projectFolderName
+			);
+			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
+		} else {
+			// parentdirectory is a mandatory option in javaCLI but it must be computed in the nodeCLI
+			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = 'not_specified';
+		}
+		
 		return answers;
 	}
 
