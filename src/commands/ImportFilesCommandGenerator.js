@@ -16,15 +16,18 @@ const {
 } = require('../services/TranslationKeys');
 
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
-const ANSWER_NAMES = {
+const COMMAND_OPTIONS = {
 	FOLDER: 'folder',
 	PATHS: 'paths',
 	EXCLUDE_PROPERTIES: 'excludeproperties',
 	PROJECT: 'project',
 };
-const COMMAND_NAMES = {
+const INTERMEDIATE_COMMANDS = {
 	LISTFILES: 'listfiles',
 	LISTFOLDERS: 'listfolders',
+};
+const COMMAND_ANSWERS = {
+	OVERWRITE_FILES: 'overwrite',
 };
 
 const {
@@ -51,7 +54,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
-		const listFilesResult = await this._listFiles(selectFolderAnswer)
+		const listFilesResult = await this._listFiles(selectFolderAnswer);
 
 		if (SDKOperationResultUtils.hasErrors(listFilesResult)) {
 			throw SDKOperationResultUtils.getMessagesString(listFilesResult);
@@ -61,12 +64,19 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
-		return await prompt(selectFilesQuestions);
+		const selectFilesAnswer = await prompt(selectFilesQuestions);
+
+		const overwriteAnswer = await prompt([this._generateOverwriteQuestion()]);
+		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {
+			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
+		}
+
+		return selectFilesAnswer;
 	}
 
 	_listFolders() {
 		const executionContextListFolders = new SDKExecutionContext({
-			command: COMMAND_NAMES.LISTFOLDERS,
+			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
 			showOutput: false,
 		});
 		this._applyDefaultContextParams(executionContextListFolders);
@@ -80,7 +90,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_generateSelectFolderQuestion(listFoldersResult) {
 		return {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: ANSWER_NAMES.FOLDER,
+			name: COMMAND_OPTIONS.FOLDER,
 			message: TranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
 			default: SUITE_SCRIPTS_FOLDER,
 			choices: this._getFileCabinetFolders(listFoldersResult),
@@ -101,7 +111,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
 		const executionContextListFiles = new SDKExecutionContext({
-			command: COMMAND_NAMES.LISTFILES,
+			command: INTERMEDIATE_COMMANDS.LISTFILES,
 			params: selectFolderAnswer,
 		});
 		this._applyDefaultContextParams(executionContextListFiles);
@@ -116,14 +126,14 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		return [
 			{
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
-				name: ANSWER_NAMES.PATHS,
+				name: COMMAND_OPTIONS.PATHS,
 				message: TranslationService.getMessage(QUESTIONS.SELECT_FILES),
 				choices: listFilesResult.data.map(path => ({ name: path, value: path })),
 				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: ANSWER_NAMES.EXCLUDE_PROPERTIES,
+				name: COMMAND_OPTIONS.EXCLUDE_PROPERTIES,
 				message: TranslationService.getMessage(QUESTIONS.EXCLUDE_PROPERTIES),
 				choices: [
 					{ name: TranslationService.getMessage(YES), value: true },
@@ -133,15 +143,31 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		];
 	}
 
+	_generateOverwriteQuestion() {
+		return {
+			type: CommandUtils.INQUIRER_TYPES.LIST,
+			name: COMMAND_ANSWERS.OVERWRITE_FILES,
+			message: TranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
+			default: 0,
+			choices: [
+				{ name: TranslationService.getMessage(YES), value: true },
+				{ name: TranslationService.getMessage(NO), value: false },
+			],
+		};
+	}
+
 	_preExecuteAction(answers) {
-		answers[ANSWER_NAMES.PROJECT] = this._projectFolder;
-		if (Array.isArray(answers.paths)) {
-			answers.paths = answers.paths.map(CommandUtils.quoteString).join(' ');
-		}
-		if (answers[ANSWER_NAMES.EXCLUDE_PROPERTIES]) {
-			answers[ANSWER_NAMES.EXCLUDE_PROPERTIES] = '';
+		const { PROJECT, PATHS, EXCLUDE_PROPERTIES } = COMMAND_OPTIONS;
+		answers[PROJECT] = this._projectFolder;
+		if (Array.isArray(answers[PATHS])) {
+			answers[PATHS] = answers[PATHS].map(CommandUtils.quoteString).join(' ');
 		} else {
-			delete answers[ANSWER_NAMES.EXCLUDE_PROPERTIES];
+			answers[PATHS] = CommandUtils.quoteString(answers[PATHS]);
+		}
+		if (answers[EXCLUDE_PROPERTIES]) {
+			answers[EXCLUDE_PROPERTIES] = '';
+		} else {
+			delete answers[EXCLUDE_PROPERTIES];
 		}
 		return answers;
 	}
