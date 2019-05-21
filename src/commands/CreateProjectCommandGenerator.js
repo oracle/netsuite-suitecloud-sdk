@@ -49,6 +49,7 @@ const {
 	validateFieldIsLowerCase,
 	validatePublisherId,
 	validateProjectVersion,
+	validateXMLCharacters
 } = require('../validation/InteractiveAnswersValidator');
 
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
@@ -79,7 +80,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_NAME,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
-				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+				filter: fieldValue => fieldValue.trim(),
+				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateXMLCharacters),
 			},
 			{
 				when: function(response) {

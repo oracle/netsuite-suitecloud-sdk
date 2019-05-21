@@ -91,6 +91,7 @@
     "ERRORS_COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE": "The '{0}' command does not support interactive mode. Run 'sdf {0} --help' to see how to run the command.",
 	"ERRORS_EMPTY_FIELD": "Error: This field cannot be empty.",
 	"ERRORS_FIELD_HAS_SPACES": "This field cannot contain spaces.",
+	"ERRORS_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
 	"ERRORS_FIELD_NOT_LOWER_CASE": "This field contains forbidden characters. Use only lowercase letters and numbers.",
 	"ERRORS_FILE": "There was an error in the file {0}: \n", 
 	"ERRORS_FILE_NOT_EXIST": "The file {0} was not found in the project.",

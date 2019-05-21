@@ -159,10 +159,12 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_preExecuteAction(answers) {
 		const { PROJECT, PATHS, EXCLUDE_PROPERTIES } = COMMAND_OPTIONS;
 		answers[PROJECT] = this._projectFolder;
-		if (Array.isArray(answers[PATHS])) {
-			answers[PATHS] = answers[PATHS].map(CommandUtils.quoteString).join(' ');
-		} else {
-			answers[PATHS] = CommandUtils.quoteString(answers[PATHS]);
+		if (answers.hasOwnProperty(PATHS)) {
+			if (Array.isArray(answers[PATHS])) {
+				answers[PATHS] = answers[PATHS].map(CommandUtils.quoteString).join(' ');
+			} else {
+				answers[PATHS] = CommandUtils.quoteString(answers[PATHS]);
+			}
 		}
 		if (answers[EXCLUDE_PROPERTIES]) {
 			answers[EXCLUDE_PROPERTIES] = '';
