@@ -3,7 +3,7 @@
         "name": "importbundle",
         "usage": "",
         "description": "Import a bundle and convert it to an Account Customization project.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "bundleid",
@@ -20,14 +20,14 @@
         "name": "project",
         "usage": "",
         "description": "Set the folder or zip file containing the project. Once specified it is used as the default by later commands.",
-        "isAccountRequired": false,
+        "isSetupRequired": false,
         "options": []
     },
     "importobjects": {
         "name": "importobjects",
         "usage": "",
         "description": "Import custom objects from a NetSuite account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "appid",
@@ -71,7 +71,7 @@
         "name": "validate",
         "usage": "",
         "description": "Validate the folder or zip file containing the project.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "server",
@@ -106,7 +106,7 @@
         "name": "preview",
         "usage": "",
         "description": "Previews the deployment steps of a folder or zip file containing the project. Project folder is compressed to a zip file before previewing.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "applycontentprotection",
@@ -132,7 +132,7 @@
         "name": "uploadfolders",
         "usage": "",
         "description": "Upload file(s) contained in the folder(s) specified to the account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "paths",
@@ -149,14 +149,14 @@
         "name": "adddependencies",
         "usage": "",
         "description": "Add the missing dependencies to the manifest file.",
-        "isAccountRequired": false,
+        "isSetupRequired": false,
         "options": []
     },
     "importconfiguration": {
         "name": "importconfiguration",
         "usage": "",
         "description": "Import account configuration from a NetSuite account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "configurationid",
@@ -173,14 +173,14 @@
         "name": "listbundles",
         "usage": "",
         "description": "List bundles from a NetSuite account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": []
     },
     "listfiles": {
         "name": "listfiles",
         "usage": "",
         "description": "List files from a NetSuite account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "folder",
@@ -197,7 +197,7 @@
         "name": "listobjects",
         "usage": "",
         "description": "List custom objects from a NetSuite account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "appid",
@@ -232,14 +232,14 @@
         "name": "listconfiguration",
         "usage": "",
         "description": "List available account configuration.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": []
     },
     "createproject": {
         "name": "createproject",
         "usage": "",
         "description": "Create a SuiteCloud Project.",
-        "isAccountRequired": false,
+        "isSetupRequired": false,
         "options": [
             {
                 "name": "overwrite",
@@ -301,7 +301,7 @@
         "name": "importfiles",
         "usage": "",
         "description": "Import files from a NetSuite account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "paths",
@@ -327,7 +327,7 @@
         "name": "updatecustomrecordwithinstances",
         "usage": "",
         "description": "Update the custom record object with instances.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "scriptid",
@@ -344,7 +344,7 @@
         "name": "uploadfiles",
         "usage": "",
         "description": "Upload file(s) to account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "paths",
@@ -361,14 +361,14 @@
         "name": "listmissingdependencies",
         "usage": "",
         "description": "List the missing dependencies for a project.",
-        "isAccountRequired": false,
+        "isSetupRequired": false,
         "options": []
     },
     "update": {
         "name": "update",
         "usage": "",
         "description": "Update existing custom objects in the project folder from a NetSuite account.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "scriptid",
@@ -385,7 +385,7 @@
         "name": "deploy",
         "usage": "",
         "description": "Deploys the folder or zip file containing the project. Project folder is compressed to a zip file before deployment.",
-        "isAccountRequired": true,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "validate",
