@@ -3,6 +3,9 @@
 const TranslationService = require('../services/TranslationService');
 const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
 const assert = require('assert');
+const OPTION_TYPE_FLAG = 'FLAG';
+const INTERACTIVE_OPTION_NAME = 'interactive';
+const INTERACTIVE_OPTION_ALIAS = 'i';
 
 module.exports = class Command {
 	constructor(options) {
@@ -52,9 +55,10 @@ module.exports = class Command {
 					this._name
 				);
 				this._options.interactive = {
-					name: 'interactive',
-					alias: 'i',
+					name: INTERACTIVE_OPTION_NAME,
+					alias: INTERACTIVE_OPTION_ALIAS,
 					description: interactiveOptionHelp,
+					type: OPTION_TYPE_FLAG,
 					mandatory: false,
 				};
 			}
@@ -113,11 +117,15 @@ module.exports = class Command {
 			option1.name.localeCompare(option2.name)
 		);
 		optionsSortedByName.forEach(option => {
-			if (!option.availableInIntegrationMode) {
-				return;
+			let mandatoryOptionString = '';
+			let optionString = '';
+			if (option.type !== OPTION_TYPE_FLAG) {
+				mandatoryOptionString = option.mandatory ? '<argument>' : '[argument]';
 			}
-			const mandatoryOptionString = option.mandatory ? '<argument>' : '[argument]';
-			const optionString = `-${option.alias}, --${option.name} ${mandatoryOptionString}`;
+			if (option.alias) {
+				optionString = `-${option.alias}, `;
+			}
+			optionString += `--${option.name} ${mandatoryOptionString}`;
 			commandSetup.option(optionString, option.description);
 		});
 		return commandSetup;
