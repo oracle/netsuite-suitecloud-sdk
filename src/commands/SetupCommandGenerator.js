@@ -9,44 +9,95 @@ const FileUtils = require('../utils/FileUtils');
 const CryptoUtils = require('../utils/CryptoUtils');
 const Context = require('../Context');
 const CLIException = require('../CLIException');
+const CommandUtils = require('../utils/CommandUtils');
+const TranslationService = require('../services/TranslationService');
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const REVOKE_TOKEN_COMMAND = 'revoketoken';
 
-const MANIFEST_XML = 'manifest.xml';
+const { ACCOUNT_DETAILS_FILENAME, MANIFEST_XML } = require('../ApplicationConstants');
+
+const {
+	COMMAND_SETUP: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
+	NO,
+	YES,
+} = require('../services/TranslationKeys');
+
+const ANSWERS = {
+	OVERWRITE: 'overwrite',
+	USE_PRODUCTION_ACCOUNT: 'useProductionAccount',
+	DOMAIN_URL: 'domainUrl',
+	EMAIL: 'email',
+	PASSWORD: 'password'
+};
+
+const {
+	validateArrayIsNotEmpty,
+	validateScriptId,
+	validateSuiteApp,
+	validateFieldIsNotEmpty,
+	showValidationResults,
+} = require('../validation/InteractiveAnswersValidator');
 
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 	}
 
-	_getCommandQuestions(prompt) {
+	async _getCommandQuestions(prompt) {
+		if (this._accountDetailsFileExists()) {
+			const overwriteAnswer = await prompt([
+				{
+					type: CommandUtils.INQUIRER_TYPES.LIST,
+					name: ANSWERS.OVERWRITE,
+					message: TranslationService.getMessage(
+						QUESTIONS.OVERWRITE_ACCOUNT_DETAILS_FILE,
+						ACCOUNT_DETAILS_FILENAME
+					),
+					default: 0,
+					choices: [
+						{ name: TranslationService.getMessage(YES), value: true },
+						{ name: TranslationService.getMessage(NO), value: false },
+					],
+				},
+			]);
+			if (!overwriteAnswer[ANSWERS.OVERWRITE]) {
+				throw TranslationService.getMessage(MESSAGES.CANCEL_SETUP);
+			}
+		}
+
 		return prompt([
 			{
-				type: 'list',
-				name: 'environment',
-				message: 'Choose the NS environment',
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: ANSWERS.USE_PRODUCTION_ACCOUNT,
+				message: TranslationService.getMessage(QUESTIONS.USE_PRODUCTION_DOMAIN),
 				default: 0,
 				choices: [
-					{
-						name: 'Production',
-						value: 'system.netsuite.com',
-					},
-					{
-						name: 'Sandbox',
-						value: 'system.sandbox.netsuite.com',
-					},
+					{ name: TranslationService.getMessage(YES), value: true },
+					{ name: TranslationService.getMessage(NO), value: false },
 				],
 			},
 			{
-				type: 'input',
-				name: 'email',
-				message: 'Please enter your email',
+				when: response => !response[ANSWERS.USE_PRODUCTION_ACCOUNT],
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: ANSWERS.DOMAIN_URL,
+				message: TranslationService.getMessage(QUESTIONS.DOMAIN_URL),
+				filter: ansewer => ansewer.trim(),
+				// TODO CREATE URL VALIDATION
+				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 			},
 			{
-				type: 'password',
-				name: 'password',
-				message: 'Please enter your account password',
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: ANSWERS.EMAIL,
+				message: TranslationService.getMessage(QUESTIONS.EMAIL),
+				filter: ansewer => ansewer.trim(),
+				// TODO CREATE EMAIL VALIDATION
+				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+			},
+			{
+				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
+				name: ANSWERS.PASSWORD,
+				message: TranslationService.getMessage(QUESTIONS.PASSWORD),
 			},
 			{
 				type: 'list',
@@ -67,22 +118,31 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			{
 				type: 'text',
 				name: 'account',
-                message: 'Enter the Company ID (compId)',
-            },
-            {
-                type: 'text',
-                name: 'role',
-                default: 3,
-                message: 'Enter the Role ID',
+				message: 'Enter the Company ID (compId)',
+			},
+			{
+				type: 'text',
+				name: 'role',
+				default: 3,
+				message: 'Enter the Role ID',
 			},
 		]);
+	}
+
+	_accountDetailsFileExists() {
+		if (FileUtils.exists(path.join(this._projectFolder, ACCOUNT_DETAILS_FILENAME))) {
+			return true;
+		}
+		return false;
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
 			throw new CLIException(
 				0,
-				`Please run setupaccount in a valid folder. Could not find a ${MANIFEST_XML} file in the project folder ${this._projectFolder}`
+				`Please run setupaccount in a valid folder. Could not find a ${MANIFEST_XML} file in the project folder ${
+					this._projectFolder
+				}`
 			);
 		}
 	}

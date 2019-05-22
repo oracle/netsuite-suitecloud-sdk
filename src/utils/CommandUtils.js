@@ -5,6 +5,7 @@ module.exports = {
 		CHECKBOX: 'checkbox',
 		INPUT: 'input',
 		LIST: 'list',
+		PASSWORD: 'password'
 	},
 	extractOnlyOptionsFromObject: function(object, keys) {
 		return keys.reduce((obj, key) => {
