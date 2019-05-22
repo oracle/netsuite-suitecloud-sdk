@@ -270,7 +270,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		const message = TranslationService.getMessage(
 			MESSAGES.PROJECT_CREATED,
 			projectTypeText,
-			result.projectDirectory
+			result.projectDirectory,
+			NodeUtils.lineBreak
 		);
 		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
 	}
