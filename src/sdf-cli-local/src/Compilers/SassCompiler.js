@@ -8,14 +8,13 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob').sync;
 
-module.exports = class SassCompiler{
-
-	constructor(options){
+module.exports = class SassCompiler {
+	constructor(options) {
 		this.context = options.context;
 		this.resource_type = 'Sass';
 	}
 
-	compile(resources){
+	compile(resources) {
 		Log.result('COMPILATION_START', [this.resource_type]);
 		this.createCssFolder();
 		this.overrides = this.context.getSassOverrides();
@@ -23,49 +22,50 @@ module.exports = class SassCompiler{
 
 		const meta_entrypoints = this.buildMetaEntrypoints(resources.entrypoints);
 
-		return Utils.runParallel(_.map(meta_entrypoints, (meta_entrypoint, app) => {
-			return () => this._compile(meta_entrypoint, app);
-		}))
-		.then(() => {
+		return Utils.runParallel(
+			_.map(meta_entrypoints, (meta_entrypoint, app) => {
+				return () => this._compile(meta_entrypoint, app);
+			})
+		).then(() => {
 			Log.result('COMPILATION_FINISH', [this.resource_type]);
 		});
 	}
 
-	createCssFolder(){
+	createCssFolder() {
 		this.css_path = Utils.createFolder('css', this.context.local_server_path);
 	}
 
-	sassCompatiblePath(path){
+	sassCompatiblePath(path) {
 		return path.replace(/\\/g, '/');
 	}
 
-	buildMetaEntrypoints(entrypoints){
-
-		return _.mapObject(entrypoints, (files) => {
-			return _.map(files, (file) => {
-				const local_functions = this._localFunctions({ assets_folder: this.sassCompatiblePath(file.assets_path) });
+	buildMetaEntrypoints(entrypoints) {
+		return _.mapObject(entrypoints, files => {
+			return _.map(files, file => {
+				const local_functions = this._localFunctions({
+					assets_folder: this.sassCompatiblePath(file.assets_path),
+				});
 				file.entry = this.sassCompatiblePath(file.entry);
-				return  local_functions + `@import "${file.entry}";`
+				return local_functions + `@import "${file.entry}";`;
 			}).join('');
 		});
 	}
 
-	_compile(entrypoint, app){
+	_compile(entrypoint, app) {
 		return new Promise((resolve, reject) => {
-
 			Log.result('COMPILATION_START_FOR', [this.resource_type, app]);
 
 			sass_compiler.render(
 				{
 					data: entrypoint,
 					includePaths: [this.context.files_path],
-					importer: _.bind(this._importer, this)
+					importer: _.bind(this._importer, this),
 				},
 				(error, result) => {
-					if (error) {						
+					if (error) {
 						return reject(error);
 					}
-					
+
 					const local_path = path.join(this.css_path, app + '.css');
 					fs.writeFileSync(local_path, result.css);
 
@@ -76,14 +76,18 @@ module.exports = class SassCompiler{
 		});
 	}
 
-	_localFunctions(options = {}){
+	_localFunctions(options = {}) {
 		return [
-			`@function getThemeAssetsPath($asset) { @return '../${options.assets_folder}/' + $asset; }`,
-			`@function getExtensionAssetsPath($asset) { @return '../${options.assets_folder}/' + $asset; }`
-		].join("\n");		
+			`@function getThemeAssetsPath($asset) { @return '../${
+				options.assets_folder
+			}/' + $asset; }`,
+			`@function getExtensionAssetsPath($asset) { @return '../${
+				options.assets_folder
+			}/' + $asset; }`,
+		].join('\n');
 	}
 
-	_importer(url, prev, done){
+	_importer(url, prev, done) {
 		prev = prev === 'stdin' ? this.context.files_path : path.dirname(prev);
 
 		let current_path = path.normalize(path.resolve(prev, url));
@@ -92,14 +96,13 @@ module.exports = class SassCompiler{
 
 		const override = this.overrides[current_path];
 		let result;
-		if(override){
+		if (override) {
 			Log.default('OVERRIDE', [current_path, override.src]);
 			const full_path = glob(path.join(this.context.project_folder, '**', override.src));
-			if(full_path.length){
-				result = {file: full_path[0]};
+			if (full_path.length) {
+				result = { file: full_path[0] };
 			}
 		}
 		done(result);
 	}
-
 };

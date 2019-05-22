@@ -1,13 +1,12 @@
 'use strict';
 
 module.exports = class DeployXml {
-
 	constructor(options) {
 		this._projectFolder = options.projectFolder;
 		this.initialize();
 	}
 
-	initialize(){
+	initialize() {
 		const path = require('path');
 		const Utils = require('./Utils');
 
@@ -22,8 +21,8 @@ module.exports = class DeployXml {
 		this.files_path = path.dirname(files_path);
 	}
 
-	getObjects(){
-		if(this.objects){
+	getObjects() {
+		if (this.objects) {
 			return this.objects;
 		}
 
@@ -34,18 +33,17 @@ module.exports = class DeployXml {
 
 		this.objects = {
 			extensions: {},
-			themes: {}
+			themes: {},
 		};
-		_.each(objects_path, (object_path) => {
+		_.each(objects_path, object_path => {
 			const name = path.basename(object_path);
 
-			if(/^custcommerceextension/.test(name)){
+			if (/^custcommerceextension/.test(name)) {
 				this.objects.extensions[name] = object_path;
-			}else if(/^custcommercetheme/.test(name)){
+			} else if (/^custcommercetheme/.test(name)) {
 				this.objects.themes[name] = object_path;
 			}
 		});
 		return this.objects;
 	}
-
 };

@@ -4,8 +4,7 @@ const Translation = require('./Translation');
 const _ = require('underscore');
 
 class Log {
-
-	constructor(){
+	constructor() {
 		this.separator = '-'.repeat(45);
 	}
 
@@ -22,16 +21,21 @@ class Log {
 
 	custom(message, params, color = this.colors.DEFAULT || _.identity) {
 		message = Translation.getMessage(message, params) || message;
-		console.log(
-			color(this._time() + message)
-		);
+		console.log(color(this._time() + message));
 	}
 
-	info(message, params) { this.custom(message, params, this.colors.INFO) }
-	result(message, params) { this.custom(message, params, this.colors.RESULT) }
-	default(message, params) { this.custom(message, params, this.colors.DEFAULT) }
-	error(message, params) { this.custom(message, params, this.colors.ERROR) }
-
-};
+	info(message, params) {
+		this.custom(message, params, this.colors.INFO);
+	}
+	result(message, params) {
+		this.custom(message, params, this.colors.RESULT);
+	}
+	default(message, params) {
+		this.custom(message, params, this.colors.DEFAULT);
+	}
+	error(message, params) {
+		this.custom(message, params, this.colors.ERROR);
+	}
+}
 
 module.exports = new Log();

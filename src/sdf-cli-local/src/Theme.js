@@ -6,8 +6,7 @@ const _ = require('underscore');
 const path = require('path');
 
 module.exports = class Theme extends AbstractExtension {
-
-	constructor(options){
+	constructor(options) {
 		super(options);
 
 		this.PREFIX = 'commercetheme';
@@ -21,21 +20,21 @@ module.exports = class Theme extends AbstractExtension {
 		this.overrides = {};
 	}
 
-	getTplOverrides(){
+	getTplOverrides() {
 		return this._getOverrides('tpl');
 	}
 
-	getSassOverrides(){
+	getSassOverrides() {
 		return this._getOverrides('scss');
 	}
 
-	_getOverrides(file_ext = 'all'){
-		if(this.overrides[file_ext]) {
+	_getOverrides(file_ext = 'all') {
+		if (this.overrides[file_ext]) {
 			return this.overrides[file_ext];
 		}
 
-		let overrides = this.raw_extension.overrides || {};		
-		
+		let overrides = this.raw_extension.overrides || {};
+
 		overrides = overrides.override || overrides;
 
 		if (_.isEmpty(overrides)) {
@@ -44,18 +43,18 @@ module.exports = class Theme extends AbstractExtension {
 
 		overrides = _.isArray(overrides) ? overrides : [overrides];
 
-		overrides = _.map(overrides, (override) => {
+		overrides = _.map(overrides, override => {
 			let dst = path.normalize(override.dst).split(path.sep);
 			dst.shift();
-			dst[dst.length-1] = dst[dst.length-1].replace(/^\_(.*)(\.scss)$/, '$1$2');
+			dst[dst.length - 1] = dst[dst.length - 1].replace(/^\_(.*)(\.scss)$/, '$1$2');
 
 			return {
 				src: Utils.parseFileName(override.src),
-				dst: dst.join(path.sep)
+				dst: dst.join(path.sep),
 			};
 		});
 
-		overrides = _.filter(overrides, (override) => {
+		overrides = _.filter(overrides, override => {
 			const regex = new RegExp(`\.${file_ext}$`);
 			return file_ext === 'all' || regex.test(override.src);
 		});
@@ -63,5 +62,4 @@ module.exports = class Theme extends AbstractExtension {
 		this.overrides[file_ext] = _.indexBy(overrides, 'dst');
 		return this.overrides[file_ext];
 	}
-
 };
