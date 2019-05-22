@@ -2,12 +2,22 @@
 	{
 		"commandName": "listfiles",
 		"interactiveGenerator": "./commands/ListFilesCommandGenerator",
-		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+		"nonInteractiveGenerator": "./commands/ListFilesCommandGenerator"
 	},
 	{
 		"commandName": "listobjects",
 		"interactiveGenerator": "./commands/ListObjectsCommandGenerator",
-		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+		"nonInteractiveGenerator": "./commands/ListObjectsCommandGenerator"
+	},
+	{
+		"commandName": "importfiles",
+		"interactiveGenerator": "./commands/ImportFilesCommandGenerator",
+		"nonInteractiveGenerator": "./commands/ImportFilesCommandGenerator"
+	},
+	{
+		"commandName": "importobjects",
+		"interactiveGenerator": "./commands/ImportObjectsCommandGenerator",
+		"nonInteractiveGenerator": "./commands/ImportObjectsCommandGenerator"
 	},
 	{
 		"commandName": "setupaccount",
@@ -16,7 +26,7 @@
 	{
 		"commandName": "createproject",
 		"interactiveGenerator": "./commands/CreateProjectCommandGenerator",
-		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
+		"nonInteractiveGenerator": "./commands/CreateProjectCommandGenerator"
 	},
 	{
 		"commandName": "validate",
@@ -29,7 +39,7 @@
 		"nonInteractiveGenerator": "./commands/CreateObjectCommandGenerator"
 	},
 	{
-		"commandName": "local",
+		"commandName": "localserver",
 		"interactiveGenerator": "./commands/LocalCommandGenerator",
 		"nonInteractiveGenerator": "./commands/LocalCommandGenerator"
 	}

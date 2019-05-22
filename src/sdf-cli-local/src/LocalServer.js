@@ -8,25 +8,24 @@ const cors = require('cors');
 const _ = require('underscore');
 
 module.exports = class LocalServer {
-
-	constructor(options){
+	constructor(options) {
 		this.context = options.context;
 	}
 
-	startServer(files){
+	startServer(files) {
 		files = _.flatten(files);
 
 		//TODO override with config values
 		let server_config = {
 			run_https: false,
 			port: 7777,
-			folders: [this.context.local_server_path]
+			folders: [this.context.local_server_path],
 		};
 
 		const app = express();
-		app.use(cors({origin: true}));
+		app.use(cors({ origin: true }));
 
-		_.each(server_config.folders, (folder) => {
+		_.each(server_config.folders, folder => {
 			app.use('/', express.static(folder));
 		});
 
@@ -34,7 +33,7 @@ module.exports = class LocalServer {
 		app.use('/who/:app', whoService);
 		//Serves the script patch to ignore tpl defines executed by core javascript file
 		app.use('/define_patch.js', this._definePatchService);
-		
+
 		app.listen(server_config.port, () => {
 			this._localMessage(server_config);
 		});
@@ -43,16 +42,13 @@ module.exports = class LocalServer {
 		return new Promise(() => {});
 	}
 
-	_definePatchService(){
+	_definePatchService() {}
 
-	}
-
-	_localMessage(server_config){
+	_localMessage(server_config) {
 		Log.info(Log.separator);
 		Log.default('SERVER', [server_config.run_https ? 's' : '', server_config.port]);
 		Log.info('WATCH', [server_config.folders]);
 		Log.info('SSP_LOCAL_FILES_INFO');
 		Log.default('CANCEL_ACTION');
 	}
-
 };

@@ -8,3 +8,5 @@ error.log
 
 src/configuration/LocalConfig.js
 .vscode/*
+
+.idea/*
