@@ -6,9 +6,10 @@ const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const ConfigurationService = require('./services/ConfigurationService');
+const TranslationService = require('./services/TranslationService');
+const { ERRORS } = require('./services/TranslationKeys');
 
 module.exports.SDKExecutor = class SDKExecutor {
-
 	_convertParamsObjToString(cliParams, flags) {
 		let cliParamsAsString = '';
 		for (const param in cliParams) {
@@ -16,23 +17,32 @@ module.exports.SDKExecutor = class SDKExecutor {
 				const value = cliParams[param] ? ` ${cliParams[param]} ` : ' ';
 				cliParamsAsString += param + value;
 			}
-        }
+		}
 
-        if (flags && Array.isArray(flags)) {
-            flags.forEach(flag => {
-                cliParamsAsString += ` ${flag} `;
-            })
-        }
+		if (flags && Array.isArray(flags)) {
+			flags.forEach(flag => {
+				cliParamsAsString += ` ${flag} `;
+			});
+		}
 
 		return cliParamsAsString;
 	}
 
 	execute(executionContext) {
 		return new Promise((resolve, reject) => {
-            let lastSdkOutput ='';
-			const cliParamsAsString = this._convertParamsObjToString(executionContext.getParams(), executionContext.getFlags());
+			let lastSdkOutput = '';
+			const cliParamsAsString = this._convertParamsObjToString(
+				executionContext.getParams(),
+				executionContext.getFlags()
+			);
 
-			const jvmCommand = `${ConfigurationService.getConfig().jvmInvocationOptions} "${
+			const integrationModeOption = executionContext.isIntegrationMode()
+				? ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION
+				: '';
+
+			const jvmCommand = `${
+				ConfigurationService.getConfig().jvmInvocationOptions
+			} ${integrationModeOption} "${
 				Context.SDKFilePath
 			}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
@@ -55,24 +65,34 @@ module.exports.SDKExecutor = class SDKExecutor {
 						childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
 						childProcess.stdin.end();
 					} else {
-						reject(new CLIException(3, 'Authentication error: please run "sdf setup"'));
+						reject(new CLIException(3, TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)));
 						childProcess.kill('SIGINT');
 					}
 					return;
-                }
+				}
 
-                lastSdkOutput += sdkOutput;
+				lastSdkOutput += sdkOutput;
 			});
 
 			childProcess.on('close', code => {
 				if (code === 0) {
-					resolve(lastSdkOutput);
+					try {
+						const output = executionContext.isIntegrationMode()
+							? JSON.parse(lastSdkOutput)
+							: lastSdkOutput;
+						resolve(output);
+					} catch (error) {
+						reject(
+							new CLIException(
+								2,
+								TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
+							)
+						);
+					}
 				} else if (code !== 0) {
-					const exceptionMessage = `ERROR: SDK exited with code ${code}`;
-					reject(new CLIException(2, exceptionMessage));
+					reject(new CLIException(2, TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)));
 				}
 			});
 		});
 	}
 };
-

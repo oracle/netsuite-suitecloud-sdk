@@ -1,6 +1,6 @@
 'use strict';
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const LocalCommand = require('../sdf-cli-local/src/LocalCommand.js');
+const LocalCommand = require('sdf-cli-local').LocalCommand;
 
 const { COLORS } = require('./../utils/NodeUtils');
 const { COMMAND_LOCAL } = require('./../services/TranslationKeys');

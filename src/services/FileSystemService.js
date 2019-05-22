@@ -1,13 +1,25 @@
-const { lstatSync, readdirSync, readFile, writeFile } = require('fs');
+const {
+	lstatSync,
+	readdirSync,
+	readFile,
+	writeFile,
+	mkdirSync,
+	renameSync,
+	existsSync,
+	unlinkSync,
+	rmdirSync,
+} = require('fs');
 const assert = require('assert');
-const { join } = require('path');
+const path = require('path');
+
+const CHAR_ENCODING_UTF8 = 'utf-8';
 
 module.exports = class FileService {
 	getFoldersFromDirectory(parentFolder) {
 		assert(parentFolder);
 		const getDirectories = source =>
 			readdirSync(source)
-				.map(name => join(source, name))
+				.map(name => path.join(source, name))
 				.filter(source => lstatSync(source).isDirectory());
 
 		var availableDirectories = getDirectories(parentFolder);
@@ -22,15 +34,19 @@ module.exports = class FileService {
 		assert(options.fileExtension);
 
 		return new Promise((resolve, reject) => {
-			readFile(options.template, 'utf-8', (readingError, content) => {
+			readFile(options.template, CHAR_ENCODING_UTF8, (readingError, content) => {
 				if (readingError) {
 					reject(readingError);
 				}
 				if (Array.isArray(options.bindings)) {
 					content = this._processTemplateBindings(content, options.bindings);
 				}
+
 				writeFile(
-					join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
+					path.join(
+						options.destinationFolder,
+						`${options.fileName}.${options.fileExtension}`
+					),
 					content.toString(),
 					(writtingError, data) => {
 						if (writtingError) {
@@ -41,6 +57,79 @@ module.exports = class FileService {
 				);
 			});
 		});
+	}
+
+	createFolder(parentFolderPath, folderName) {
+		assert(parentFolderPath);
+		assert(folderName);
+
+		let targetFolder = path.join(parentFolderPath, folderName);
+
+		if (!existsSync(targetFolder)) {
+			mkdirSync(path.join(targetFolder));
+		}
+	}
+
+	renameFolder(oldPath, newPath) {
+		assert(oldPath);
+		assert(newPath);
+
+		if (existsSync(oldPath) && oldPath !== newPath) {
+			renameSync(oldPath, newPath);
+		}
+	}
+
+	deleteFolderRecursive(folderPath) {
+		assert(folderPath);
+
+		let self = this;
+		if (existsSync(folderPath)) {
+			readdirSync(folderPath).forEach(file => {
+				let currentPath = path.join(folderPath, file);
+				if (lstatSync(currentPath).isDirectory()) {
+					// recurse
+					self.deleteFolderRecursive(currentPath);
+				} else {
+					// delete file
+					unlinkSync(currentPath);
+				}
+			});
+			rmdirSync(folderPath);
+		}
+	}
+
+	replaceStringInFile(filePath, fromString, toString) {
+		assert(filePath);
+		assert(fromString);
+		assert(toString);
+
+		return new Promise((resolve, reject) => {
+			readFile(filePath, CHAR_ENCODING_UTF8, (readingError, content) => {
+				if (readingError) {
+					reject(readingError);
+				}
+
+				let result = content.replace(new RegExp(fromString, 'g'), toString);
+
+				writeFile(filePath, result, function(writingError) {
+					if (writingError) {
+						reject(writingError);
+					}
+
+					resolve();
+				});
+			});
+		});
+	}
+
+	folderExists(path) {
+		assert(path);
+		return existsSync(path);
+	}
+
+	isFolderEmpty(path) {
+		assert(path);
+		readdirSync(path).length != 0;
 	}
 
 	_processTemplateBindings(content, bindings) {
