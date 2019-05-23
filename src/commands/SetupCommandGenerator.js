@@ -11,6 +11,7 @@ const Context = require('../Context');
 const CLIException = require('../CLIException');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
+const AccountService = require('../services/AccountService');
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const REVOKE_TOKEN_COMMAND = 'revoketoken';
@@ -45,6 +46,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _getCommandQuestions(prompt) {
+		AccountService.getAccountAndRoles({email: 'drebolleda@netsuite.com', password: 'wrongPassword'});
+
 		if (this._accountDetailsFileExists()) {
 			const overwriteAnswer = await prompt([
 				{
@@ -66,7 +69,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 		}
 
-		return prompt([
+		const credentialsAnswers = await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS.USE_PRODUCTION_ACCOUNT,
@@ -99,6 +102,13 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				name: ANSWERS.PASSWORD,
 				message: TranslationService.getMessage(QUESTIONS.PASSWORD),
 			},
+		]);
+
+		console.log(credentialsAnswers)
+		AccountService.getAccountAndRoles(credentialsAnswers);
+
+
+		return prompt([
 			{
 				type: 'list',
 				name: 'authenticationMode',
