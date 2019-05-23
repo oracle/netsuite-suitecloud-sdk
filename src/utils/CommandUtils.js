@@ -1,18 +1,16 @@
 'use strict';
 const assert = require('assert');
 
-const INQUIRER_TYPES = {
-	CHECKBOX: 'checkbox',
-	INPUT: 'input',
-	LIST: 'list',
-}
-
-const DefaultContextParamsArray = ['account', 'role', 'email', 'url'];
+const ACCOUNT_PARAMS = ['account', 'role', 'email', 'url'];
 
 class CommandUtils {
 
 	get INQUIRER_TYPES() {
-		return INQUIRER_TYPES;
+		return {
+			CHECKBOX: 'checkbox',
+			INPUT: 'input',
+			LIST: 'list',
+		};
 	}	
 
 	extractKeysFromObject(object, keys) {
@@ -24,16 +22,16 @@ class CommandUtils {
 		}, {});
 	}
 
-	extractCommandOptionsBasedOnMetadata(object, commandMetadata) {
-		assert(object);
+	extractCommandOptions(answers, commandMetadata) {
+		assert(answers);
 		assert(commandMetadata);
 		assert(commandMetadata.options);
 
-		const keys = Object.keys(commandMetadata.options)
+		const commandOptions = Object.keys(commandMetadata.options)
 		if (commandMetadata.isSetupRequired) {
-			DefaultContextParamsArray.forEach(param => keys.push(param))
+			ACCOUNT_PARAMS.forEach(param => commandOptions.push(param))
 		} 
-		return this.extractKeysFromObject(object, keys);
+		return this.extractKeysFromObject(answers, commandOptions);
 	}
 
 	quoteString(string) { 

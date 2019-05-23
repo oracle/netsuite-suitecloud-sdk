@@ -146,7 +146,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_executeAction(answers) {
-		const params = CommandUtils.extractCommandOptionsBasedOnMetadata(answers, this._commandMetadata);
+		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		if (Array.isArray(params.type)) {
 			params.type = params.type.join(' ');
 		}
