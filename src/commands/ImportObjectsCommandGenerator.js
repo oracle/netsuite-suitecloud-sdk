@@ -262,10 +262,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				' '
 			);
 		}
-		const listObjectsOptions = Object.keys(this._commandsMetadataInfo.listobjects.options);
-		const params = CommandUtils.extractOnlyOptionsFromObject(answers, listObjectsOptions);
-
-		return params;
+		return CommandUtils.extractCommandOptionsBasedOnMetadata(answers, this._commandsMetadataInfo.listobjects);
 	}
 
 	_arrangeAnswersForImportObjects(answers) {
@@ -281,11 +278,6 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return answers;
 	}
 
-	_preExecuteAction(args) {
-		args[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
-		return args;
-	}
-
 	_executeAction(answers) {
 		if (answers[ANSWERS_NAMES.OVERRITE_OBJECTS] === false) {
 			return new Promise((resolve, reject) =>
@@ -293,8 +285,9 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			);
 		}
 
-		const options = Object.keys(this._commandMetadata.options);
-		var params = CommandUtils.extractOnlyOptionsFromObject(answers, options);
+		const params = CommandUtils.extractCommandOptionsBasedOnMetadata(answers, this._commandMetadata);
+		params[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
+		
 		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
