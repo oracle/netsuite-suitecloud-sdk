@@ -46,7 +46,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _getCommandQuestions(prompt) {
-		AccountService.getAccountAndRoles({email: 'drebolleda@netsuite.com', password: 'wrongPassword'});
 
 		if (this._accountDetailsFileExists()) {
 			const overwriteAnswer = await prompt([
@@ -104,9 +103,34 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		console.log(credentialsAnswers)
-		AccountService.getAccountAndRoles(credentialsAnswers);
+		let response;
+		try {
+			response = await AccountService.getAccountAndRoles(credentialsAnswers);
+		} catch(StatusCodeError) {
+			const error = JSON.parse(StatusCodeError.error)
+			throw error.error.message
+		}
+		const accountAndRoles = JSON.parse(response);
+		console.log(accountAndRoles)
+		const companies = accountAndRoles.reduce((acc, curr) => {
+			acc.add(curr.account.internalId);
+			return acc;
+		}, new Set())
+		console.log(companies);
+		const info =  accountAndRoles.reduce((acc, curr) =>{
+			const comp = curr.account;
+			if(acc[comp.internalId]){
+				acc[comp.internalId].role.push(curr.role)
+			} else {
+				acc[comp.internalId] = {
+					name: comp.name,
+					role: [curr.role]
+				}
+			}
+			return acc;
+		},{})
 
+		console.log(info);
 
 		return prompt([
 			{
