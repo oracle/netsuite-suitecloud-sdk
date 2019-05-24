@@ -278,16 +278,17 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return answers;
 	}
 
+	_preExecuteAction(answers) {
+		answers[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
+		return answers;
+	}
+
 	_executeAction(answers) {
 		if (answers[ANSWERS_NAMES.OVERRITE_OBJECTS] === false) {
-			return new Promise((resolve, reject) =>
-				reject(TranslationService.getMessage(MESSAGES.CANCEL_IMPORT))
-			);
+			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
 
 		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-		params[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
-		
 		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,

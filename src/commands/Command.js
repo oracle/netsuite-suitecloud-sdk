@@ -117,6 +117,9 @@ module.exports = class Command {
 			option1.name.localeCompare(option2.name)
 		);
 		optionsSortedByName.forEach(option => {
+			if (option.disableInIntegrationMode) {
+				return;
+			}
 			let mandatoryOptionString = '';
 			let optionString = '';
 			if (option.type !== OPTION_TYPE_FLAG) {

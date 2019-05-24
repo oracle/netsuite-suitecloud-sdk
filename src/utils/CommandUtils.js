@@ -1,17 +1,14 @@
 'use strict';
 const assert = require('assert');
 
-const ACCOUNT_PARAMS = ['account', 'role', 'email', 'url'];
-
 class CommandUtils {
-
 	get INQUIRER_TYPES() {
 		return {
 			CHECKBOX: 'checkbox',
 			INPUT: 'input',
 			LIST: 'list',
 		};
-	}	
+	}
 
 	extractKeysFromObject(object, keys) {
 		return keys.reduce((obj, key) => {
@@ -27,16 +24,13 @@ class CommandUtils {
 		assert(commandMetadata);
 		assert(commandMetadata.options);
 
-		const commandOptions = Object.keys(commandMetadata.options)
-		if (commandMetadata.isSetupRequired) {
-			ACCOUNT_PARAMS.forEach(param => commandOptions.push(param))
-		} 
+		const commandOptions = Object.keys(commandMetadata.options);
 		return this.extractKeysFromObject(answers, commandOptions);
 	}
 
-	quoteString(string) { 
+	quoteString(string) {
 		return `"${string}"`;
 	}
-};
+}
 
-module.exports =  new CommandUtils();
+module.exports = new CommandUtils();
