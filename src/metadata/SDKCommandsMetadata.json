@@ -67,24 +67,6 @@
             }
         ]
     },
-    "project": {
-        "name": "project",
-        "usage": "",
-        "description": "Set the folder or zip file containing the project. Once specified it is used as the default by later commands.",
-        "isSetupRequired": false,
-        "options": [
-            {
-                "name": "project",
-                "option": "project",
-                "description": "Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-                "mandatory": true,
-                "type": "SINGLE",
-                "usage": "c:\/project\/",
-                "defaultOption": true,
-                "disableInIntegrationMode": true
-            }
-        ]
-    },
     "importobjects": {
         "name": "importobjects",
         "usage": "",
