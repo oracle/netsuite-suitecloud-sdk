@@ -1,7 +1,6 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const TranslationService = require('../services/TranslationService');
 const UserPreferencesService = require('../services/userpreferences/UserPreferencesService');
 const UserPreferences = require('../services/userpreferences/UserPreferences');
@@ -29,26 +28,32 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 		const shouldClearArgument = args[CLEAR_FLAG_OPTION];
 
 		this._validateArguments(proxyUrlArgument, shouldClearArgument);
-		this._validateProxyUrl(proxyUrlArgument);
+		const isSettingProxy = !!proxyUrlArgument;
 
-		const willExistingPreferencesBeOverrided = this._userPreferencesService.doesUserHavePreferencesSet();
-		if (willExistingPreferencesBeOverrided) {
-			console.log('Preferences will be overrided');
+		const actionResult = {
+			isSettingProxy: isSettingProxy,
+			proxyUrl: proxyUrlArgument,
+		};
+		if (isSettingProxy) {
+			this._validateProxyUrl(proxyUrlArgument);
+			const setProxyResult = this._setProxy(proxyUrlArgument);
+			actionResult.proxyOverrided = setProxyResult.proxyOverrided;
+		} else {
+			this._clearProxy();
 		}
 
-		this._userPreferencesService.setUserPreferences(
-			new UserPreferences({
-				proxyUrl: proxyUrlArgument,
-			})
-		);
+		return Promise.resolve(actionResult);
+	}
 
-		return executeWithSpinner({
-			action: Promise.resolve('Hello World'),
-			message: TranslationService.getMessage(
-				MESSAGES.EXECUTING_COMMAND,
-				this._commandMetadata.name
-			),
-		});
+	_formatOutput(actionResult) {
+		if (actionResult.proxyOverrided) {
+			console.log('WARNING: Preferences will be overrided');
+		}
+		if (actionResult.isSettingProxy) {
+			console.log('Proxy successfully setup');
+		} else {
+			console.log('Proxy successfully cleared');
+		}
 	}
 
 	_validateArguments(proxyUrlArgument, shouldClearArgument) {
@@ -65,5 +70,21 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
 			throw 'Proxy needs a protocol (http) a port and a hostname';
 		}
+	}
+
+	_setProxy(proxyUrl) {
+        const existingUserPreferences = this._userPreferencesService.getUserPreferences();
+        const alreadyHasProxySetup = existingUserPreferences.useProxy;
+		this._userPreferencesService.setUserPreferences(
+			new UserPreferences({
+				useProxy: true,
+				proxyUrl: proxyUrl,
+			})
+		);
+		return { proxyOverrided: alreadyHasProxySetup };
+	}
+
+	_clearProxy() {
+		this._userPreferencesService.clearUserPreferences();
 	}
 };

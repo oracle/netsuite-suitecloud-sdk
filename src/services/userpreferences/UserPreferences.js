@@ -4,13 +4,18 @@ module.exports = class UserPreferences {
 		this._proxyUrl = options.proxyUrl;
 	}
 
-	get proxyInfo() {
-		this._proxyUrl;
+	get proxyUrl() {
+		return this._proxyUrl;
+	}
+
+	get useProxy() {
+		return this._useProxy;
 	}
 
 	toJSON() {
 		return {
 			proxyUrl: this._proxyUrl,
+			useProxy: this._useProxy,
 		};
 	}
 

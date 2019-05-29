@@ -5,30 +5,18 @@ const CryptoUtils = require('./utils/CryptoUtils');
 const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
-const ConfigurationService = require('./services/ConfigurationService');
+const UserPreferencesService = require('./services/userpreferences/UserPreferencesService');
+const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 
 module.exports.SDKExecutor = class SDKExecutor {
-	_convertParamsObjToString(cliParams, flags) {
-		let cliParamsAsString = '';
-		for (const param in cliParams) {
-			if (cliParams.hasOwnProperty(param)) {
-				const value = cliParams[param] ? ` ${cliParams[param]} ` : ' ';
-				cliParamsAsString += param + value;
-			}
-		}
-
-		if (flags && Array.isArray(flags)) {
-			flags.forEach(flag => {
-				cliParamsAsString += ` ${flag} `;
-			});
-		}
-
-		return cliParamsAsString;
+	constructor() {
+		this._userPreferencesService = new UserPreferencesService();
 	}
 
 	execute(executionContext) {
+		const proxyJarSettings = this._getProxySettingsIfSet();
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
 			const cliParamsAsString = this._convertParamsObjToString(
@@ -40,9 +28,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const jvmCommand = `${
-				ConfigurationService.getConfig().jvmInvocationOptions
-			} ${integrationModeOption} "${
+			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} "${
 				Context.SDKFilePath
 			}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
@@ -65,7 +51,12 @@ module.exports.SDKExecutor = class SDKExecutor {
 						childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
 						childProcess.stdin.end();
 					} else {
-						reject(new CLIException(3, TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)));
+						reject(
+							new CLIException(
+								3,
+								TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)
+							)
+						);
 						childProcess.kill('SIGINT');
 					}
 					return;
@@ -85,14 +76,57 @@ module.exports.SDKExecutor = class SDKExecutor {
 						reject(
 							new CLIException(
 								2,
-								TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
+								TranslationService.getMessage(
+									ERRORS.SDKEXECUTOR.RUNNING_COMMAND,
+									error
+								)
 							)
 						);
 					}
 				} else if (code !== 0) {
-					reject(new CLIException(2, TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)));
+					reject(
+						new CLIException(
+							2,
+							TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)
+						)
+					);
 				}
 			});
 		});
+	}
+
+	_getProxySettingsIfSet() {
+		const userPreferences = this._userPreferencesService.getUserPreferences();
+		if (!userPreferences.useProxy) {
+			return '';
+		}
+		const proxyUrl = url.parse(userPreferences.proxyUrl);
+		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
+			throw `Invalid proxy URL ${
+				userPreferences.proxyUrl
+			}. It should be like (provide example with protocol, hostname and port)`; //TODO!!
+		}
+		const protocolWithoutColon = proxyUrl.protocol.slice(0, -1);
+		const hostName = proxyUrl.hostname;
+		const port = proxyUrl.port;
+		return `-DproxyProtocol=${protocolWithoutColon} -DproxyHost=${hostName} -DproxyPort=${port}`;
+	}
+
+	_convertParamsObjToString(cliParams, flags) {
+		let cliParamsAsString = '';
+		for (const param in cliParams) {
+			if (cliParams.hasOwnProperty(param)) {
+				const value = cliParams[param] ? ` ${cliParams[param]} ` : ' ';
+				cliParamsAsString += param + value;
+			}
+		}
+
+		if (flags && Array.isArray(flags)) {
+			flags.forEach(flag => {
+				cliParamsAsString += ` ${flag} `;
+			});
+		}
+
+		return cliParamsAsString;
 	}
 };

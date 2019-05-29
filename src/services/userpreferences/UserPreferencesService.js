@@ -19,6 +19,8 @@ const DEFAULT_USER_PREFERENCES = new UserPreferences({
 	proxyUrl: '',
 });
 
+let CACHED_USER_PREFERENCES;
+
 module.exports = class UserPreferencesService {
 	constructor() {
 		this._fileSystemService = new FileSystemService();
@@ -37,12 +39,23 @@ module.exports = class UserPreferencesService {
 		FileUtils.create(USER_PREFERENCES_FILEPATH, userPreferences);
 	}
 
-	clearUserPreferences() {}
+	clearUserPreferences() {
+		if (!this.doesUserHavePreferencesSet()) {
+			return;
+		}
+		this.setUserPreferences(DEFAULT_USER_PREFERENCES);
+		CACHED_USER_PREFERENCES = null;
+	}
 
 	getUserPreferences() {
 		if (this.doesUserHavePreferencesSet()) {
+			if (CACHED_USER_PREFERENCES) {
+				return CACHED_USER_PREFERENCES;
+			}
 			const userPreferencesJson = FileUtils.readAsJson(USER_PREFERENCES_FILEPATH);
-			return UserPreferences.fromJson(userPreferencesJson);
+			const userPreferences = UserPreferences.fromJson(userPreferencesJson);
+			CACHED_USER_PREFERENCES = userPreferences;
+			return userPreferences;
 		}
 		return DEFAULT_USER_PREFERENCES;
 	}
