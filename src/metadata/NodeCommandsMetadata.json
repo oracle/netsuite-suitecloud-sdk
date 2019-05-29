@@ -1,68 +1,87 @@
 {
-	"setupaccount": {
-		"name": "setupaccount",
-		"alias": "sa",
-		"description": "Setup CLI in the project directory",
-		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "environment",
-				"alias": "env",
-				"description": "TEST",
-				"mandatory": true
-			},
-			{
-				"name": "email",
-				"alias": "e",
-				"description": "TEST",
-				"mandatory": true
-			},
-			{
-				"name": "password",
-				"alias": "p",
-				"description": "TEST",
-				"mandatory": true
-			},
-			{
-				"name": "authenticationMode",
-				"alias": "am",
-				"description": "TEST",
-				"mandatory": true
-			},
-			{
-				"name": "account",
-				"alias": "a",
-				"description": "TEST",
-				"mandatory": true
-			}
-		]
-	},
-	"createobject": {
-		"name": "createobject",
-		"alias": "ca",
-		"description": "Create objects",
-		"isSetupRequired": false,
-		"options": [
-			
-		]
-  	},
-	"localserver": {
-		"name": "localserver",
-		"description": "Generate a local server of your extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777.",
-		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "theme",
-				"alias": "theme",
-				"description": "Specify the theme you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file. You can only specify one theme.",
-				"mandatory": true
-			},
-			{
-				"name": "extensions",
-				"alias": "extensions",
-				"description": "Specify the extension you want to include in your local build. The XML object must be added in the objects    tag within the deploy.xml file. You can specify several extensions.",
-				"mandatory": false
-			}
-		]
-	}
+    "setupaccount": {
+        "name": "setupaccount",
+        "alias": "sa",
+        "description": "Setup CLI in the project directory",
+        "isSetupRequired": false,
+        "options": [
+            {
+                "name": "environment",
+                "alias": "env",
+                "description": "TEST",
+                "mandatory": true
+            },
+            {
+                "name": "email",
+                "alias": "e",
+                "description": "TEST",
+                "mandatory": true
+            },
+            {
+                "name": "password",
+                "alias": "p",
+                "description": "TEST",
+                "mandatory": true
+            },
+            {
+                "name": "authenticationMode",
+                "alias": "am",
+                "description": "TEST",
+                "mandatory": true
+            },
+            {
+                "name": "account",
+                "alias": "a",
+                "description": "TEST",
+                "mandatory": true
+            }
+        ]
+    },
+    "createobject": {
+        "name": "createobject",
+        "alias": "ca",
+        "description": "Create objects",
+        "isSetupRequired": false,
+        "options": []
+    },
+    "localserver": {
+        "name": "localserver",
+        "description": "Generate a local server of your extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777.",
+        "isSetupRequired": false,
+        "options": [
+            {
+                "name": "theme",
+                "alias": "theme",
+                "description": "Specify the theme you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file. You can only specify one theme.",
+                "mandatory": true
+            },
+            {
+                "name": "extensions",
+                "alias": "extensions",
+                "description": "Specify the extension you want to include in your local build. The XML object must be added in the objects    tag within the deploy.xml file. You can specify several extensions.",
+                "mandatory": false
+            }
+        ]
+    },
+    "proxy": {
+        "name": "proxy",
+        "description": "Sets proxy for communication with NetSuite",
+        "isSetupRequired": false,
+        "options": [
+            {
+                "name": "set",
+                "alias": "s",
+                "description": "TODO",
+                "type": "SINGLE",
+                "mandatory": false
+            },
+            {
+                "name": "clear",
+                "alias": "c",
+                "description": "TODO",
+                "type": "FLAG",
+                "mandatory": false
+            }
+        ]
+    }
 }
