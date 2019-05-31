@@ -25,6 +25,7 @@ const SUITEAPP_ID_FORMAT_REGEX =
 	'^' + ALPHANUMERIC_LOWERCASE_REGEX + '(\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '){2}$';
 const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX =
 	'^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
+const EMAIL_REGEX = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
 class InteractiveAnswersValidator {
 	showValidationResults(value, ...funcs) {
@@ -132,6 +133,16 @@ class InteractiveAnswersValidator {
 			: VALIDATION_RESULT_FAILURE(
 					TranslationService.getMessage(
 						ANSWERS_VALIDATION_MESSAGES.FIELD_HAS_XML_FORBIDDEN_CHARACTERS
+					)
+			  );
+	}
+
+	validateEmail(fieldValue) {
+		return EMAIL_REGEX.test(fieldValue)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(
+					TranslationService.getMessage(
+						ANSWERS_VALIDATION_MESSAGES.INVALID_EMAIL
 					)
 			  );
 	}

@@ -7,6 +7,7 @@
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_SPACES": "This field cannot contain spaces.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "This field contains forbidden characters. Use only lowercase letters and numbers.",
+	"ANSWERS_VALIDATION_MESSAGES_INVALID_EMAIL": "Invalid email address.",
 	"ANSWERS_VALIDATION_MESSAGES_PROJECT_VERSION_FORMAT": "The project version must only contain digits and dots. Ensure it follows a pattern such as \"0.0.0\".",
 	"ANSWERS_VALIDATION_MESSAGES_PUBLISHER_ID_FORMAT": "The publisher ID must be a fully qualified name, such as \"com.netsuite\". It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.",
 	"ANSWERS_VALIDATION_MESSAGES_SCRIPT_ID_FORMAT": "The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.",
@@ -99,12 +100,13 @@
 	"COMMAND_SETUP_QUESTIONS_PASSWORD": "Enter your password.",
 	"COMMAND_SETUP_QUESTIONS_COMPANY_ID": "Select the account ID.",
 	"COMMAND_SETUP_QUESTIONS_ROLE": "Select the role.",
-	"COMMAND_SETUP_QUESTIONS_ISSUE_A_TOKEN": "Do you want to issue or save a TBA token?{0}--> If your role requires 2FA, you must save a TBA token. Issue the TBA token in NetSuite and enter it here.",
+	"COMMAND_SETUP_QUESTIONS_ISSUE_A_TOKEN": "Do you want to issue or save a TBA token?\n--> If your role requires 2FA, you must save a TBA token. Issue the TBA token in NetSuite and enter it here.",
 	"COMMAND_SETUP_QUESTIONS_ISSUE_TOKEN_OPTION": "Issue a TBA token.",
 	"COMMAND_SETUP_QUESTIONS_SAVE_TOKEN_OPTION": "Save a TBA token issued in NetSuite.",
 	"COMMAND_SETUP_QUESTIONS_SAVE_TOKEN_ID": "Enter the Token ID.",
 	"COMMAND_SETUP_QUESTIONS_SAVE_TOKEN_SECRET": "Enter the Token Secret.",
 	"COMMAND_SETUP_MESSAGES_CANCEL_SETUP": "The setupaccount process has been canceled.",
+	"COMMAND_SETUP_OUTPUT_SUCCESSFUL": "The account has been successfully set up.",
 	
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 	

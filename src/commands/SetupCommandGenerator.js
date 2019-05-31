@@ -41,10 +41,8 @@ const ANSWERS = {
 };
 
 const {
-	validateArrayIsNotEmpty,
-	validateScriptId,
-	validateSuiteApp,
 	validateFieldIsNotEmpty,
+	validateEmail,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 
@@ -83,8 +81,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				name: ANSWERS.EMAIL,
 				message: TranslationService.getMessage(QUESTIONS.EMAIL),
 				filter: ansewer => ansewer.trim(),
-				// TODO CREATE EMAIL VALIDATION
-				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+				validate: fieldValue =>
+					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateEmail),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
@@ -120,7 +118,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}, {});
 
 		const companiesChoices = Object.values(accountsInfo).map(company => ({
-			name: `${company.name}  - [roles: ${company.roles.map(role => role.name)}]`,
+			name: `${company.name} - [roles: ${company.roles.map(role => role.name).join(', ')}]`,
 			value: company.internalId,
 		}));
 
@@ -141,7 +139,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						name: role.name,
 						value: role.internalId,
 					})),
-					new inquirer.Separator(),
 				],
 			},
 		]);
@@ -155,7 +152,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS.ISSUE_A_TOKEN,
-				message: TranslationService.getMessage(QUESTIONS.ISSUE_A_TOKEN, NodeUtils.lineBreak),
+				message: TranslationService.getMessage(
+					QUESTIONS.ISSUE_A_TOKEN,
+					NodeUtils.lineBreak
+				),
 				choices: [
 					{
 						name: TranslationService.getMessage(QUESTIONS.ISSUE_TOKEN_OPTION),
@@ -185,25 +185,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		const answers = {
+		return  {
 			email: credentialsAnswers[ANSWERS.EMAIL],
 			password: credentialsAnswers[ANSWERS.PASSWORD],
-			environment: 'system.netsuite.com',
 			account: accountAndRoleAnswers[ANSWERS.COMPANY_ID],
+			environment: accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].dataCenterURLs.systemDomain.split('//')[1],
 			role: accountAndRoleAnswers[ANSWERS.ROLE_ID],
 			authenticationMode: ApplicationConstants.AUTHENTICATION_MODE_TBA,
-		};
-
-		await prompt([
-			{
-				type: 'confirmation',
-				name: 'just for debug',
-			},
-		]);
-
-		return {
-			...answers,
-			...issueOrSaveTokenAnswers
+			... issueOrSaveTokenAnswers
 		};
 	}
 
@@ -222,42 +211,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				this._projectFolder
 			);
 		}
-	}
-
-	_setupAuthentication(contextValues) {
-		return new Promise((resolve, reject) => {
-			if (contextValues.authenticationMode === ApplicationConstants.AUTHENTICATION_MODE_TBA) {
-				this._issueToken()
-					.then(response => {
-						console.log(response);
-						resolve();
-					})
-					.catch(error => {
-						console.log(error);
-						reject(`Error issuing token: ${error}`);
-					});
-			} else if (
-				contextValues.authenticationMode ===
-					ApplicationConstants.AUTHENTICATION_MODE_BASIC &&
-				FileUtils.exists(ApplicationConstants.ACCOUNT_DETAILS_FILENAME)
-			) {
-				const accountContext = FileUtils.readAsJson(
-					ApplicationConstants.ACCOUNT_DETAILS_FILENAME
-				);
-				if (
-					accountContext.authenticationMode ===
-					ApplicationConstants.AUTHENTICATION_MODE_TBA
-				) {
-					this._revokeToken()
-						.then(() => resolve())
-						.catch(error => {
-							reject(`Error revoking old token: ${error}`);
-						});
-				}
-			} else {
-				resolve();
-			}
-		});
 	}
 
 	_issueToken() {
@@ -279,14 +232,17 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			showOutput: false,
 		});
 		this._applyDefaultContextParams(executionContext);
-		return this._sdkExecutor.execute(executionContext);
+		return executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContext),
+			message: 'Revoking previous token',
+		});
 	}
 
 	_saveToken(params) {
 		let executionContext = new SDKExecutionContext({
 			command: SAVE_TOKEN_COMMAND,
 			showOutput: false,
-			params
+			params,
 		});
 		this._applyDefaultContextParams(executionContext);
 		return executeWithSpinner({
@@ -294,7 +250,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			message: 'Storing the save token',
 		});
 	}
- 
+
 	_createAccountDetailsFile(contextValues) {
 		// delete the password before saving
 		delete contextValues[ANSWERS.PASSWORD];
@@ -316,12 +272,13 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let operationResult;
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
+			// await this._revokeToken()
 			operationResult = await this._issueToken();
 		} else {
-			const saveTokenParams = { 
+			const saveTokenParams = {
 				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
-				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET]
-			}
+				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
+			};
 			operationResult = await this._saveToken(saveTokenParams);
 		}
 
@@ -331,46 +288,15 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		try {
 			this._createAccountDetailsFile(contextValues);
-			NodeUtils.println('Context setup correctly', NodeUtils.COLORS.RESULT);
 		} catch (error) {
 			throw 'Error while setting up context';
 		}
 
 		return operationResult;
-
-		this._setupAuthentication(contextValues);
-
-		return new Promise((resolve, reject) => {
-			try {
-				this._checkWorkingDirectoryContainsValidProject();
-				const contextValues = {
-					netsuiteUrl: answers.environment,
-					compId: answers.account,
-					email: answers.email,
-					password: answers.password,
-					roleId: answers.role,
-					authenticationMode: answers.authenticationMode,
-				};
-				Context.CurrentAccountDetails.initializeFromObj(contextValues);
-
-				this._setupAuthentication(contextValues)
-					.then(() => {
-						try {
-							this._createAccountDetailsFile(contextValues);
-							NodeUtils.println('Context setup correctly', NodeUtils.COLORS.RESULT);
-							resolve();
-						} catch (error) {
-							reject('Error while setting up context');
-						}
-					})
-					.catch(error => reject(error));
-			} catch (error) {
-				reject(error);
-			}
-		});
 	}
 
 	_formatOutput(operationResult) {
-		console.log(operationResult);
+		SDKOperationResultUtils.logMessages(operationResult)
+		NodeUtils.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), NodeUtils.COLORS.RESULT)
 	}
 };
