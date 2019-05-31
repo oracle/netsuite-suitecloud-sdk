@@ -21,7 +21,7 @@ class AccountDetails {
 		this._roleId = obj.roleId;
 		this._password = obj.password;
 		this._authenticationMode = obj.authenticationMode;
-		this._encyptionKey = obj.encryptionKey;
+		// this._encyptionKey = obj.encryptionKey;
 		this._isAccountSetup = true;
 	}
 

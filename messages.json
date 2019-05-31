@@ -81,11 +81,14 @@
 	"COMMAND_OPTION_IS_MANDATORY": "'{0}' option is mandatory.",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
 
+	"COMMAND_SETUP_ERRORS_NOT_PROJECT_FOLDER": "Please run setupaccount in a valid folder. Could not find a {0} file in the project folder {1}.",
 	"COMMAND_SETUP_QUESTIONS_OVERWRITE_ACCOUNT_DETAILS_FILE": "Do you want to overwrite your exsiting {0}?",
 	"COMMAND_SETUP_QUESTIONS_USE_PRODUCTION_DOMAIN": "Do you want to use a production domain?",
 	"COMMAND_SETUP_QUESTIONS_DOMAIN_URL": "Enter the domain URL.",
 	"COMMAND_SETUP_QUESTIONS_EMAIL": "Enter your email.",
 	"COMMAND_SETUP_QUESTIONS_PASSWORD": "Enter your password.",
+	"COMMAND_SETUP_QUESTIONS_COMPANY_ID": "Select the account ID.",
+	"COMMAND_SETUP_QUESTIONS_ROLE": "Select the role.",
 	"COMMAND_SETUP_MESSAGES_CANCEL_SETUP": "The setupaccount process has been canceled.",
 	
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",

@@ -56,16 +56,17 @@ module.exports.SDKExecutor = class SDKExecutor {
 			childProcess.stdout.on('data', data => {
 				const sdkOutput = data.toString('utf8');
 				if (sdkOutput.includes('Enter password')) {
-					if (
-						Context.CurrentAccountDetails.getPassword() &&
-						Context.CurrentAccountDetails.getEncryptionKey()
-					) {
+					if (Context.CurrentAccountDetails.getPassword()) {
 						const password = Context.CurrentAccountDetails.getPassword();
-						const encryptionKey = Context.CurrentAccountDetails.getEncryptionKey();
-						childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
+						childProcess.stdin.write(password);
 						childProcess.stdin.end();
 					} else {
-						reject(new CLIException(3, TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)));
+						reject(
+							new CLIException(
+								3,
+								TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)
+							)
+						);
 						childProcess.kill('SIGINT');
 					}
 					return;
@@ -77,20 +78,32 @@ module.exports.SDKExecutor = class SDKExecutor {
 			childProcess.on('close', code => {
 				if (code === 0) {
 					try {
+						console.log('HellooooOOO try')
+						console.log(lastSdkOutput)
 						const output = executionContext.isIntegrationMode()
 							? JSON.parse(lastSdkOutput)
 							: lastSdkOutput;
 						resolve(output);
 					} catch (error) {
+						console.log('HellooooOOO catch')
+						console.log(lastSdkOutput)
 						reject(
 							new CLIException(
 								2,
-								TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
+								TranslationService.getMessage(
+									ERRORS.SDKEXECUTOR.RUNNING_COMMAND,
+									error
+								)
 							)
 						);
 					}
 				} else if (code !== 0) {
-					reject(new CLIException(2, TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)));
+					reject(
+						new CLIException(
+							2,
+							TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)
+						)
+					);
 				}
 			});
 		});
