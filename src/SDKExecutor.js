@@ -78,15 +78,11 @@ module.exports.SDKExecutor = class SDKExecutor {
 			childProcess.on('close', code => {
 				if (code === 0) {
 					try {
-						console.log('HellooooOOO try')
-						console.log(lastSdkOutput)
 						const output = executionContext.isIntegrationMode()
 							? JSON.parse(lastSdkOutput)
 							: lastSdkOutput;
 						resolve(output);
 					} catch (error) {
-						console.log('HellooooOOO catch')
-						console.log(lastSdkOutput)
 						reject(
 							new CLIException(
 								2,

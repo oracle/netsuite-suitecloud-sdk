@@ -89,6 +89,11 @@
 	"COMMAND_SETUP_QUESTIONS_PASSWORD": "Enter your password.",
 	"COMMAND_SETUP_QUESTIONS_COMPANY_ID": "Select the account ID.",
 	"COMMAND_SETUP_QUESTIONS_ROLE": "Select the role.",
+	"COMMAND_SETUP_QUESTIONS_ISSUE_A_TOKEN": "Do you want to issue or save a TBA token?{0}--> If your role requires 2FA, you must save a TBA token. Issue the TBA token in NetSuite and enter it here.",
+	"COMMAND_SETUP_QUESTIONS_ISSUE_TOKEN_OPTION": "Issue a TBA token.",
+	"COMMAND_SETUP_QUESTIONS_SAVE_TOKEN_OPTION": "Save a TBA token issued in NetSuite.",
+	"COMMAND_SETUP_QUESTIONS_SAVE_TOKEN_ID": "Enter the Token ID.",
+	"COMMAND_SETUP_QUESTIONS_SAVE_TOKEN_SECRET": "Enter the Token Secret.",
 	"COMMAND_SETUP_MESSAGES_CANCEL_SETUP": "The setupaccount process has been canceled.",
 	
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",

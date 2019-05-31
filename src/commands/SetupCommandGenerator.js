@@ -16,6 +16,7 @@ const inquirer = require('inquirer');
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const REVOKE_TOKEN_COMMAND = 'revoketoken';
+const SAVE_TOKEN_COMMAND = 'savetoken';
 
 const { ACCOUNT_DETAILS_FILENAME, MANIFEST_XML } = require('../ApplicationConstants');
 
@@ -33,6 +34,9 @@ const ANSWERS = {
 	PASSWORD: 'password',
 	COMPANY_ID: 'companyId',
 	ROLE_ID: 'roleId',
+	ISSUE_A_TOKEN: 'issueAToken',
+	SAVE_TOKEN_ID: 'saveTokenId',
+	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 	TWO_FACTOR_AUTH: 'twoFactorAuth',
 };
 
@@ -74,30 +78,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		const credentialsAnswers = await prompt([
-			// {
-			// 	type: CommandUtils.INQUIRER_TYPES.LIST,
-			// 	name: ANSWERS.USE_PRODUCTION_ACCOUNT,
-			// 	message: TranslationService.getMessage(QUESTIONS.USE_PRODUCTION_DOMAIN),
-			// 	default: 0,
-			// 	choices: [
-			// 		{ name: TranslationService.getMessage(YES), value: true },
-			// 		{ name: TranslationService.getMessage(NO), value: false },
-			// 	],
-			// },
-			// {
-			// 	when: response => !response[ANSWERS.USE_PRODUCTION_ACCOUNT],
-			// 	type: CommandUtils.INQUIRER_TYPES.INPUT,
-			// 	name: ANSWERS.DOMAIN_URL,
-			// 	message: TranslationService.getMessage(QUESTIONS.DOMAIN_URL),
-			// 	filter: ansewer => ansewer.trim(),
-			// 	// TODO CREATE URL VALIDATION
-			// 	validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
-			// },
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: ANSWERS.EMAIL,
 				message: TranslationService.getMessage(QUESTIONS.EMAIL),
-				// default: 'drebolleda@netsuite.com',
 				filter: ansewer => ansewer.trim(),
 				// TODO CREATE EMAIL VALIDATION
 				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
@@ -119,8 +103,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			throw error.error.message;
 		}
 		const accountAndRoles = JSON.parse(response);
-		// console.log(accountAndRoles);
 
+		// compact all the previous info grouped by accountId's
 		const accountsInfo = accountAndRoles.reduce((accumulator, current) => {
 			const { account, role, dataCenterURLs } = current;
 			if (!accumulator[account.internalId]) {
@@ -134,8 +118,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 			return accumulator;
 		}, {});
-
-		console.log(accountsInfo)
 
 		const companiesChoices = Object.values(accountsInfo).map(company => ({
 			name: `${company.name}  - [roles: ${company.roles.map(role => role.name)}]`,
@@ -164,18 +146,42 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		console.log(accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]])
-		console.log(accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].roles.length)
-		if(!(accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].roles.length > 1)) {
-			accountAndRoleAnswers[ANSWERS.ROLE_ID] = accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].roles[0].internalId;
+		if (!(accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].roles.length > 1)) {
+			accountAndRoleAnswers[ANSWERS.ROLE_ID] =
+				accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].roles[0].internalId;
 		}
 
-		console.log(accountAndRoleAnswers);
-
-		await prompt([
+		const issueOrSaveTokenAnswers = await prompt([
 			{
-				type: 'confirm',
-				name: 'waiting',
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: ANSWERS.ISSUE_A_TOKEN,
+				message: TranslationService.getMessage(QUESTIONS.ISSUE_A_TOKEN, NodeUtils.lineBreak),
+				choices: [
+					{
+						name: TranslationService.getMessage(QUESTIONS.ISSUE_TOKEN_OPTION),
+						value: true,
+					},
+					{
+						name: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_OPTION),
+						value: false,
+					},
+				],
+			},
+			{
+				when: response => !response[ANSWERS.ISSUE_A_TOKEN],
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: ANSWERS.SAVE_TOKEN_ID,
+				message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
+				filter: fieldValue => fieldValue.trim(),
+				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+			},
+			{
+				when: response => !response[ANSWERS.ISSUE_A_TOKEN],
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: ANSWERS.SAVE_TOKEN_SECRET,
+				message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
+				filter: fieldValue => fieldValue.trim(),
+				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 			},
 		]);
 
@@ -188,11 +194,21 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			authenticationMode: ApplicationConstants.AUTHENTICATION_MODE_TBA,
 		};
 
-		return answers;
+		await prompt([
+			{
+				type: 'confirmation',
+				name: 'just for debug',
+			},
+		]);
+
+		return {
+			...answers,
+			...issueOrSaveTokenAnswers
+		};
 	}
 
 	_accountDetailsFileExists() {
-		if (FileUtils.exists(path.join(this._projectFolder, ACCOUNT_DETAILS_FILENAME))) {
+		if (FileUtils.exists(path.join(process.cwd(), ACCOUNT_DETAILS_FILENAME))) {
 			return true;
 		}
 		return false;
@@ -250,7 +266,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			showOutput: false,
 		});
 		this._applyDefaultContextParams(executionContext);
-		
+
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
 			message: 'Issuing a token',
@@ -266,6 +282,19 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		return this._sdkExecutor.execute(executionContext);
 	}
 
+	_saveToken(params) {
+		let executionContext = new SDKExecutionContext({
+			command: SAVE_TOKEN_COMMAND,
+			showOutput: false,
+			params
+		});
+		this._applyDefaultContextParams(executionContext);
+		return executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContext),
+			message: 'Storing the save token',
+		});
+	}
+ 
 	_createAccountDetailsFile(contextValues) {
 		// delete the password before saving
 		delete contextValues[ANSWERS.PASSWORD];
@@ -283,16 +312,31 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			authenticationMode: answers.authenticationMode,
 		};
 		Context.CurrentAccountDetails.initializeFromObj(contextValues);
-		
-		const issueTokenResult = await this._issueToken()
 
-		if(SDKOperationResultUtils.hasErrors(issueTokenResult)) {
-			throw SDKOperationResultUtils.getMessagesString(issueTokenResult);
+		let operationResult;
+
+		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
+			operationResult = await this._issueToken();
+		} else {
+			const saveTokenParams = { 
+				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
+				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET]
+			}
+			operationResult = await this._saveToken(saveTokenParams);
 		}
 
-		this._createAccountDetailsFile(contextValues);
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			throw SDKOperationResultUtils.getMessagesString(operationResult);
+		}
 
-		return issueTokenResult;
+		try {
+			this._createAccountDetailsFile(contextValues);
+			NodeUtils.println('Context setup correctly', NodeUtils.COLORS.RESULT);
+		} catch (error) {
+			throw 'Error while setting up context';
+		}
+
+		return operationResult;
 
 		this._setupAuthentication(contextValues);
 
