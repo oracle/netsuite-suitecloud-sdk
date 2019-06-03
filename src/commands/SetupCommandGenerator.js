@@ -222,7 +222,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
-			message: 'Issuing a token',
+			message: TranslationService.getMessage(MESSAGES.ISSUING_TBA_TOKEN),
 		});
 	}
 
@@ -247,7 +247,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		this._applyDefaultContextParams(executionContext);
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
-			message: 'Storing the save token',
+			message: TranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
 		});
 	}
 

@@ -24,12 +24,6 @@
 				"mandatory": true
 			},
 			{
-				"name": "authenticationMode",
-				"alias": "am",
-				"description": "TEST",
-				"mandatory": true
-			},
-			{
 				"name": "account",
 				"alias": "a",
 				"description": "TEST",
@@ -40,6 +34,18 @@
 				"alias": "r",
 				"description": "TEST",
 				"mandatory": true
+			},
+			{
+				"name": "tokenid",
+				"alias": "ti",
+				"description": "TEST",
+				"mandatory": false
+			},
+			{
+				"name": "tokensecret",
+				"alias": "ts",
+				"description": "TEST",
+				"mandatory": false
 			}
 		]
 	},
