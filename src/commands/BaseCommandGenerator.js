@@ -52,6 +52,7 @@ module.exports = class BaseCommandGenerator {
 			actionFunc: this._executeAction.bind(this),
 			getCommandQuestionsFunc: this._getCommandQuestions.bind(this),
 			isSetupRequired: this._commandMetadata.isSetupRequired,
+			forceInteractiveMode: this._commandMetadata.forceInteractiveMode,
 			options: this._commandMetadata.options,
 			commandUserExtension: this._commandUserExtension,
 			supportsInteractiveMode: this._supportsInteractiveMode(),

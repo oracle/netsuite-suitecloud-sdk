@@ -2,50 +2,58 @@
 	"setupaccount": {
 		"name": "setupaccount",
 		"alias": "sa",
-		"description": "Setup CLI in the project directory",
+		"description": "Set up an account to use with the SuiteCloud CLI for Node.js.",
 		"isSetupRequired": false,
+		"forceInteractiveMode": true,
 		"options": [
 			{
 				"name": "environment",
 				"alias": "env",
 				"description": "TEST",
-				"mandatory": true
+				"mandatory": true,
+				"disableInIntegrationMode": true
 			},
 			{
 				"name": "email",
 				"alias": "e",
 				"description": "TEST",
-				"mandatory": true
+				"mandatory": true,
+				"disableInIntegrationMode": true
 			},
 			{
 				"name": "password",
 				"alias": "p",
 				"description": "TEST",
-				"mandatory": true
+				"mandatory": true,
+				"disableInIntegrationMode": true
 			},
 			{
 				"name": "account",
 				"alias": "a",
 				"description": "TEST",
-				"mandatory": true
+				"mandatory": true,
+				"disableInIntegrationMode": true
 			},
 			{
 				"name": "role",
 				"alias": "r",
 				"description": "TEST",
-				"mandatory": true
+				"mandatory": true,
+				"disableInIntegrationMode": true
 			},
 			{
 				"name": "tokenid",
 				"alias": "ti",
 				"description": "TEST",
-				"mandatory": false
+				"mandatory": false,
+				"disableInIntegrationMode": true
 			},
 			{
 				"name": "tokensecret",
 				"alias": "ts",
 				"description": "TEST",
-				"mandatory": false
+				"mandatory": false,
+				"disableInIntegrationMode": true
 			}
 		]
 	},

@@ -265,7 +265,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			email: answers.email,
 			password: answers.password,
 			roleId: answers.role,
-			authenticationMode: answers.authenticationMode,
 		};
 		Context.CurrentAccountDetails.initializeFromObj(contextValues);
 
@@ -289,7 +288,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		try {
 			this._createAccountDetailsFile(contextValues);
 		} catch (error) {
-			throw 'Error while setting up context';
+			throw TranslationService.getMessage(ERRORS.WRITING_ACCOUNT_JSON);
 		}
 
 		return operationResult;
