@@ -14,8 +14,9 @@
 		"cli-spinner": "^0.2.10",
 		"commander": "^2.20.0",
 		"inquirer": "^6.3.1",
-		"vm2": "^3.8.0",
+		"request-promise-native": "^1.0.7",
 		"sdf-cli-local": "file:./src/sdf-cli-local",
+		"vm2": "^3.8.0",
 		"xml2js": "^0.4.19"
 	},
 	"devDependencies": {
