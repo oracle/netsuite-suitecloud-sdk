@@ -63,7 +63,7 @@ describe('validatePublisherId', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
+				'The publisher ID must be a fully qualified name, such as "com.netsuite". It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
 		};
 		expect(validatePublisherId('comnetsuite')).toEqual(expected);
 	});
@@ -72,7 +72,7 @@ describe('validatePublisherId', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
+				'The publisher ID must be a fully qualified name, such as "com.netsuite". It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
 		};
 		expect(validatePublisherId('Com.netsuite')).toEqual(expected);
 	});
@@ -81,7 +81,7 @@ describe('validatePublisherId', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				'The publisher ID must be a fully qualified name, such as com.netsuite. It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
+				'The publisher ID must be a fully qualified name, such as "com.netsuite". It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.',
 		};
 		expect(validatePublisherId('Com.net.suite')).toEqual(expected);
 	});
@@ -146,7 +146,7 @@ describe('validateSuiteApp', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				"The specified application ID is wrongly formatted. Ensure it follows a pattern such as 'com.example.mysuiteapp'.",
+				'The specified application ID is wrongly formatted. Ensure it follows a pattern such as "com.example.mysuiteapp".',
 		};
 		expect(validateSuiteApp('suiteapp1')).toEqual(expected);
 	});
@@ -155,7 +155,7 @@ describe('validateSuiteApp', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				"The specified application ID is wrongly formatted. Ensure it follows a pattern such as 'com.example.mysuiteapp'.",
+				'The specified application ID is wrongly formatted. Ensure it follows a pattern such as "com.example.mysuiteapp".',
 		};
 		expect(validateSuiteApp('netsuite.suiteapp1')).toEqual(expected);
 	});
@@ -164,7 +164,7 @@ describe('validateSuiteApp', function() {
 		const expected = {
 			result: false,
 			validationMessage:
-				"The specified application ID is wrongly formatted. Ensure it follows a pattern such as 'com.example.mysuiteapp'.",
+				'The specified application ID is wrongly formatted. Ensure it follows a pattern such as "com.example.mysuiteapp".',
 		};
 		expect(validateSuiteApp('com.netsuite.suiteapp1.extra')).toEqual(expected);
 	});
