@@ -96,10 +96,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let response;
 		try {
 			response = await AccountService.getAccountAndRoles(credentialsAnswers);
-		} catch (StatusCodeError) {
-			const error = JSON.parse(StatusCodeError.error);
-			throw error.error.message;
+		} catch (err) {
+			if (err.statusCode) {
+				throw JSON.parse(err.error).error.message;
+			} else {
+				throw err.message;
+			}
 		}
+		
 		const accountAndRoles = JSON.parse(response);
 
 		// compact all the previous info grouped by accountId's
@@ -185,14 +189,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		return  {
+		return {
 			email: credentialsAnswers[ANSWERS.EMAIL],
 			password: credentialsAnswers[ANSWERS.PASSWORD],
 			account: accountAndRoleAnswers[ANSWERS.COMPANY_ID],
-			environment: accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].dataCenterURLs.systemDomain.split('//')[1],
+			environment: accountsInfo[
+				accountAndRoleAnswers[ANSWERS.COMPANY_ID]
+			].dataCenterURLs.systemDomain.split('//')[1],
 			role: accountAndRoleAnswers[ANSWERS.ROLE_ID],
 			authenticationMode: ApplicationConstants.AUTHENTICATION_MODE_TBA,
-			... issueOrSaveTokenAnswers
+			...issueOrSaveTokenAnswers,
 		};
 	}
 
@@ -226,18 +232,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
-	_revokeToken() {
-		const executionContext = new SDKExecutionContext({
-			command: REVOKE_TOKEN_COMMAND,
-			showOutput: false,
-		});
-		this._applyDefaultContextParams(executionContext);
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: 'Revoking previous token',
-		});
-	}
-
 	_saveToken(params) {
 		let executionContext = new SDKExecutionContext({
 			command: SAVE_TOKEN_COMMAND,
@@ -245,6 +239,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			params,
 		});
 		this._applyDefaultContextParams(executionContext);
+
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
 			message: TranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
@@ -270,7 +265,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let operationResult;
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
-			// await this._revokeToken()
 			operationResult = await this._issueToken();
 		} else {
 			const saveTokenParams = {
@@ -294,7 +288,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(operationResult) {
-		SDKOperationResultUtils.logMessages(operationResult)
-		NodeUtils.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), NodeUtils.COLORS.RESULT)
+		SDKOperationResultUtils.logMessages(operationResult);
+		NodeUtils.println(
+			TranslationService.getMessage(OUTPUT.SUCCESSFUL),
+			NodeUtils.COLORS.RESULT
+		);
 	}
 };
