@@ -196,13 +196,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		};
 	}
 
-	_accountDetailsFileExists() {
-		if (FileUtils.exists(path.join(process.cwd(), ACCOUNT_DETAILS_FILENAME))) {
-			return true;
-		}
-		return false;
-	}
-
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
 			throw TranslationService.getMessage(
@@ -211,6 +204,13 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				this._projectFolder
 			);
 		}
+	}
+
+	_accountDetailsFileExists() {
+		if (FileUtils.exists(path.join(process.cwd(), ACCOUNT_DETAILS_FILENAME))) {
+			return true;
+		}
+		return false;
 	}
 
 	_issueToken() {
@@ -227,7 +227,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_revokeToken() {
-		let executionContext = new SDKExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: REVOKE_TOKEN_COMMAND,
 			showOutput: false,
 		});
@@ -258,7 +258,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(answers) {
-		this._checkWorkingDirectoryContainsValidProject();
 		const contextValues = {
 			netsuiteUrl: answers.environment,
 			compId: answers.account,
