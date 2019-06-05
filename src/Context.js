@@ -7,10 +7,10 @@ class AccountDetails {
 		this._isAccountSetup = false;
 	}
 
-	initializeFromFile(file) {
+	initializeFromFile(file, accountName = 'default') {
 		if (FileUtils.exists(file)) {
 			var fileContentJson = FileUtils.readAsJson(file);
-			this.initializeFromObj(fileContentJson);
+			this.initializeFromObj(fileContentJson[accountName]);
 		}
 	}
 
@@ -21,7 +21,6 @@ class AccountDetails {
 		this._roleId = obj.roleId;
 		this._password = obj.password;
 		this._authenticationMode = obj.authenticationMode;
-		// this._encyptionKey = obj.encryptionKey;
 		this._isAccountSetup = true;
 	}
 

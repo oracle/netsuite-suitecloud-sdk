@@ -249,16 +249,21 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	_createAccountDetailsFile(contextValues) {
 		// delete the password before saving
 		delete contextValues[ANSWERS.PASSWORD];
-		FileUtils.create(ApplicationConstants.ACCOUNT_DETAILS_FILENAME, contextValues);
+		// nest the values into a 'default' property 
+		const defaultAccountDetails = {
+			default: contextValues
+		}
+		FileUtils.create(ApplicationConstants.ACCOUNT_DETAILS_FILENAME, defaultAccountDetails);
 	}
 
 	async _executeAction(answers) {
 		const contextValues = {
 			netsuiteUrl: answers.environment,
 			compId: answers.account,
+			roleId: answers.role,
 			email: answers.email,
 			password: answers.password,
-			roleId: answers.role,
+			authenticationMode: answers.authenticationMode
 		};
 		Context.CurrentAccountDetails.initializeFromObj(contextValues);
 
