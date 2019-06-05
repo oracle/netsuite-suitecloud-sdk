@@ -20,7 +20,7 @@ const positiveResponse = {
 describe('validateFieldIsNotEmpty', function() {
 	const failureResponse = {
 		result: false,
-		validationMessage: 'Error: This field cannot be empty.',
+		validationMessage: 'This value cannot be empty.',
 	};
 
 	it('should return true when string is not empty', function() {
