@@ -2,12 +2,14 @@ const FileUtils = require('./utils/FileUtils');
 const ApplicationConstants = require('./ApplicationConstants');
 const path = require('path');
 
+const DEFAULT_ACCOUNT = 'default';
+
 class AccountDetails {
 	constructor() {
 		this._isAccountSetup = false;
 	}
 
-	initializeFromFile(file, accountName = 'default') {
+	initializeFromFile(file, accountName = DEFAULT_ACCOUNT) {
 		if (FileUtils.exists(file)) {
 			var fileContentJson = FileUtils.readAsJson(file);
 			this.initializeFromObj(fileContentJson[accountName]);
