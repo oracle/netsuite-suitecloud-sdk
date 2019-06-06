@@ -57,7 +57,7 @@ module.exports = class BaseCommandGenerator {
 			commandUserExtension: this._commandUserExtension,
 			supportsInteractiveMode: this._supportsInteractiveMode(),
 			projectFolder: this._projectFolder,
-			commandOutputFormater: this._formatOutput,
+			commandOutputFormater: this._formatOutput.bind(this),
 		});
 	}
 };
