@@ -88,9 +88,9 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 			dependency => dependency.type === DEPENDENCY_TYPES.FEATURE.name
 		);
 		features.forEach(feature => {
-			const required_or_optional = feature.required ? FEATURE_REQUIRED : FEATURE_OPTIONAL;
+			const requiredOrOptional = feature.required ? FEATURE_REQUIRED : FEATURE_OPTIONAL;
 			dependenciesString.push(
-				`${DEPENDENCY_TYPES.FEATURE.prefix} ${feature.value}:${required_or_optional}`
+				`${DEPENDENCY_TYPES.FEATURE.prefix} ${feature.value}:${requiredOrOptional}`
 			);
 		});
 
