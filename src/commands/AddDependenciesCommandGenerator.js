@@ -59,9 +59,12 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		super(options);
 	}
 
-	_executeAction(answers) {
+	_preExecuteAction(answers) {
 		answers[COMMAND_OPTIONS.PROJECT] = this._projectFolder;
+		return answers;
+	}
 
+	_executeAction(answers) {
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,

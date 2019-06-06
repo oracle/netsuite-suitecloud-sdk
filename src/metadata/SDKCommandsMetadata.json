@@ -469,7 +469,7 @@
                 "name": "project",
                 "option": "project",
                 "description": "Default option. Required if no default project has been set. Sets the folder or zip file containing the project. Overrides the previously set default project folder or zip file.",
-                "mandatory": false,
+                "mandatory": true,
                 "type": "SINGLE",
                 "usage": "c:\/project\/",
                 "defaultOption": false,
