@@ -423,7 +423,7 @@
         "name": "adddependencies",
         "usage": "",
         "description": "Add the missing dependencies to the manifest file.",
-        "isSetupRequired": false,
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "all",
