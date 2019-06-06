@@ -13,7 +13,7 @@
 
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_ADDING_DEPENDENCIES": "Adding dependencies...",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_DEPENDENCIES_ADDED_TO_MANIFEST": "The following dependencies were added to the manifest:",
-	"COMMAND_ADDDEPENDENCIES_MESSAGE_NO_UNRESOLVED_DEPENDENCIES": "No unresolved dependencies.",	
+	"COMMAND_ADDDEPENDENCIES_MESSAGE_NO_UNRESOLVED_DEPENDENCIES": "There are no dependencies to add to the manifest.xml file.",	
 	
 	"COMMAND_CREATEPROJECT_CHOOSE_PROJECT_TYPE": "Select the project type you want to create.",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_NAME": "Enter the project name.",
