@@ -5,16 +5,7 @@ const { ERRORS } = require('./services/TranslationKeys');
 const { ACCOUNT_DETAILS_FILENAME, SDF_SDK_PATHNAME } = require('./ApplicationConstants');
 
 const DEFAULT_ACCOUNT = 'default';
-
-const DEFAULT_ACCOUNT_FILE_STRUCUTRE = {
-	default: {
-		netsuiteUrl: 'system.netsuite.com',
-		compId: '12345678',
-		email: 'example@email.com',
-		roleId: 3,
-		authenticationMode: 'TBA',
-	},
-};
+const DEFAULT_ACCOUNT_PROPERTIES_KEYS = ['netsuiteUrl', 'compId', 'email', 'roleId'];
 
 class AccountDetails {
 	constructor() {
@@ -23,23 +14,29 @@ class AccountDetails {
 
 	initializeFromFile(file, accountName = DEFAULT_ACCOUNT) {
 		if (FileUtils.exists(file)) {
-			var fileContentJson = FileUtils.readAsJson(file);
-			if (!fileContentJson.hasOwnProperty(accountName)) {
+			const fileContentJson = FileUtils.readAsJson(file);
+			if(this._validateAccountDetailsFileStructure(fileContentJson, accountName)) {
+				this.initializeFromObj(fileContentJson[accountName]);
+			}
+		}
+	}
+
+	_validateAccountDetailsFileStructure(fileContent, accountName) {
+		if (!fileContent.hasOwnProperty(accountName)) {
+			throw TranslationService.getMessage(
+				ERRORS.ACCOUNT_DETAILS_FILE_CONTENT,
+				ACCOUNT_DETAILS_FILENAME
+			);
+		}
+		DEFAULT_ACCOUNT_PROPERTIES_KEYS.forEach(accountPropertyKey => {
+			if (!fileContent[accountName].hasOwnProperty(accountPropertyKey)) {
 				throw TranslationService.getMessage(
 					ERRORS.ACCOUNT_DETAILS_FILE_CONTENT,
 					ACCOUNT_DETAILS_FILENAME
 				);
 			}
-			Object.keys(DEFAULT_ACCOUNT_FILE_STRUCUTRE.default).forEach(accountPropertyKey => {
-				if (!fileContentJson[accountName].hasOwnProperty(accountPropertyKey)) {
-					throw TranslationService.getMessage(
-						ERRORS.ACCOUNT_DETAILS_FILE_CONTENT,
-						ACCOUNT_DETAILS_FILENAME
-					);
-				}
-			});
-			this.initializeFromObj(fileContentJson[accountName]);
-		}
+		});
+		return true;
 	}
 
 	initializeFromObj(obj) {
@@ -47,12 +44,16 @@ class AccountDetails {
 		this._compId = obj.compId;
 		this._email = obj.email;
 		this._roleId = obj.roleId;
-		this._authenticationMode = obj.authenticationMode;
+		this._password = obj.password;
 		this._isAccountSetup = true;
 	}
 
 	getEmail() {
 		return this._email;
+	}
+
+	getPassword() {
+		return this._password;
 	}
 
 	getRoleId() {
@@ -65,10 +66,6 @@ class AccountDetails {
 
 	getNetSuiteUrl() {
 		return this._netsuiteUrl;
-	}
-
-	getAuthenticationMode() {
-		return this._authenticationMode;
 	}
 
 	isAccountSetup() {

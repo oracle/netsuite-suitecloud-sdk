@@ -197,7 +197,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				accountAndRoleAnswers[ANSWERS.COMPANY_ID]
 			].dataCenterURLs.systemDomain.split('//')[1],
 			role: accountAndRoleAnswers[ANSWERS.ROLE_ID],
-			authenticationMode: ApplicationConstants.AUTHENTICATION_MODE_TBA,
 			...issueOrSaveTokenAnswers,
 		};
 	}
@@ -263,7 +262,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			roleId: answers.role,
 			email: answers.email,
 			password: answers.password,
-			authenticationMode: answers.authenticationMode
 		};
 		Context.CurrentAccountDetails.initializeFromObj(contextValues);
 
