@@ -42,5 +42,9 @@
 		"commandName": "localserver",
 		"interactiveGenerator": "./commands/LocalCommandGenerator",
 		"nonInteractiveGenerator": "./commands/LocalCommandGenerator"
+	},
+	{
+		"commandName": "adddependencies",
+		"nonInteractiveGenerator": "./commands/AddDependenciesCommandGenerator"
 	}
 ]
