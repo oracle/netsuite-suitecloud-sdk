@@ -68,7 +68,7 @@ module.exports = class CommandActionExecutor {
 		const command = options.command;
 		const args = options.arguments;
 
-		const commandArguments = this._runInInteractiveMode
+		const commandArguments = (this._runInInteractiveMode || command.forceInteractiveMode)
 			? await command.getCommandQuestions(inquirer.prompt)
 			: args;
 

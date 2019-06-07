@@ -12,4 +12,13 @@ module.exports = {
 	OBJECTS_FOLDER:  'Objects',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
+	REST_ROLES_URL: 'https://system.netsuite.com/rest/roles',
+	// PROXY_URL - SET IT WIHT YOUR PROXY SETTINGS AS 'http://www-proxy-lon.uk.oracle.com:80', OR LEAVE IT BLANK AS ''
+	// THIS CONSTANT WILL BE REMOVED WHEN PROXY_COMMAND IS DONE, 
+	PROXY_URL: 'http://www-proxy-lon.uk.oracle.com:80',
+	LINKS: {
+		HOW_TO: {
+			ISSUE_A_TOKEN: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html'
+		}
+	}
 };

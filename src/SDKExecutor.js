@@ -1,7 +1,6 @@
 'use strict';
 
 const Context = require('./Context');
-const CryptoUtils = require('./utils/CryptoUtils');
 const CLIException = require('./CLIException');
 const ApplicationConstants = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
@@ -42,21 +41,14 @@ module.exports.SDKExecutor = class SDKExecutor {
 			childProcess.stdout.on('data', data => {
 				const sdkOutput = data.toString('utf8');
 				if (sdkOutput.includes('Enter password')) {
-					if (
-						Context.CurrentAccountDetails.getPassword() &&
-						Context.CurrentAccountDetails.getEncryptionKey()
-					) {
+					if (Context.CurrentAccountDetails.getPassword()) {
 						const password = Context.CurrentAccountDetails.getPassword();
-						const encryptionKey = Context.CurrentAccountDetails.getEncryptionKey();
-						childProcess.stdin.write(CryptoUtils.decrypt(password, encryptionKey));
+						childProcess.stdin.write(password);
 						childProcess.stdin.end();
 					} else {
-						reject(
-							new CLIException(
-								3,
-								TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)
-							)
-						);
+						reject(() => {
+							throw TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION);
+						});
 						childProcess.kill('SIGINT');
 					}
 					return;

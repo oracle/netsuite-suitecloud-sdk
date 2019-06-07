@@ -28,6 +28,8 @@ module.exports = class Command {
 		this._action = options.actionFunc;
 		this._isSetupRequired =
 			typeof options.isSetupRequired === 'undefined' ? true : options.isSetupRequired;
+		this._forceInteractiveMode =
+			typeof options.forceInteractiveMode === 'undefined' ? false : options.forceInteractiveMode;
 		this._options = options.options;
 		this._commandUserExtension = options.commandUserExtension;
 		this._supportsInteractiveMode = options.supportsInteractiveMode;
@@ -96,6 +98,10 @@ module.exports = class Command {
 		return this._isSetupRequired;
 	}
 
+	get forceInteractiveMode() {
+		return this._forceInteractiveMode;
+	}
+	
 	get supportsInteractiveMode() {
 		return this._supportsInteractiveMode;
 	}
