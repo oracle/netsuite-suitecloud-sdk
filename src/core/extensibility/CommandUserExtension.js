@@ -1,7 +1,7 @@
 const assert = require('assert');
-const TranslationService = require('./../TranslationService');
+const TranslationService = require('../../services/TranslationService');
 const { lineBreak } = require('../../utils/NodeUtils');
-const { ERRORS } = require('./../TranslationKeys');
+const { ERRORS } = require('../../services/TranslationKeys');
 
 module.exports = class CommandUserExtension {
 	constructor(cliConfig) {

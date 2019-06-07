@@ -1,50 +1,50 @@
 [
-	{
-		"commandName": "listfiles",
-		"interactiveGenerator": "./commands/ListFilesCommandGenerator",
-		"nonInteractiveGenerator": "./commands/ListFilesCommandGenerator"
-	},
-	{
-		"commandName": "listobjects",
-		"interactiveGenerator": "./commands/ListObjectsCommandGenerator",
-		"nonInteractiveGenerator": "./commands/ListObjectsCommandGenerator"
-	},
-	{
-		"commandName": "importfiles",
-		"interactiveGenerator": "./commands/ImportFilesCommandGenerator",
-		"nonInteractiveGenerator": "./commands/ImportFilesCommandGenerator"
-	},
-	{
-		"commandName": "importobjects",
-		"interactiveGenerator": "./commands/ImportObjectsCommandGenerator",
-		"nonInteractiveGenerator": "./commands/ImportObjectsCommandGenerator"
-	},
-	{
-		"commandName": "setupaccount",
-		"interactiveGenerator": "./commands/SetupCommandGenerator"
-	},
-	{
-		"commandName": "createproject",
-		"interactiveGenerator": "./commands/CreateProjectCommandGenerator",
-		"nonInteractiveGenerator": "./commands/CreateProjectCommandGenerator"
-	},
-	{
-		"commandName": "validate",
-		"interactiveGenerator": "./commands/ValidateCommandGenerator",
-		"nonInteractiveGenerator": "./commands/SDKWrapperCommandGenerator"
-	},
-	{
-		"commandName": "createobject",
-		"interactiveGenerator": "./commands/CreateObjectCommandGenerator",
-		"nonInteractiveGenerator": "./commands/CreateObjectCommandGenerator"
-	},
-	{
-		"commandName": "localserver",
-		"interactiveGenerator": "./commands/LocalCommandGenerator",
-		"nonInteractiveGenerator": "./commands/LocalCommandGenerator"
-	},
-	{
-		"commandName": "adddependencies",
-		"nonInteractiveGenerator": "./commands/AddDependenciesCommandGenerator"
-	}
+    {
+        "commandName": "listfiles",
+        "interactiveGenerator": "commands/ListFilesCommandGenerator",
+        "nonInteractiveGenerator": "commands/ListFilesCommandGenerator"
+    },
+    {
+        "commandName": "listobjects",
+        "interactiveGenerator": "commands/ListObjectsCommandGenerator",
+        "nonInteractiveGenerator": "commands/ListObjectsCommandGenerator"
+    },
+    {
+        "commandName": "importfiles",
+        "interactiveGenerator": "commands/ImportFilesCommandGenerator",
+        "nonInteractiveGenerator": "commands/ImportFilesCommandGenerator"
+    },
+    {
+        "commandName": "importobjects",
+        "interactiveGenerator": "commands/ImportObjectsCommandGenerator",
+        "nonInteractiveGenerator": "commands/ImportObjectsCommandGenerator"
+    },
+    {
+        "commandName": "setupaccount",
+        "interactiveGenerator": "commands/SetupCommandGenerator"
+    },
+    {
+        "commandName": "createproject",
+        "interactiveGenerator": "commands/CreateProjectCommandGenerator",
+        "nonInteractiveGenerator": "commands/CreateProjectCommandGenerator"
+    },
+    {
+        "commandName": "validate",
+        "interactiveGenerator": "commands/ValidateCommandGenerator",
+        "nonInteractiveGenerator": "commands/SDKWrapperCommandGenerator"
+    },
+    {
+        "commandName": "createobject",
+        "interactiveGenerator": "commands/CreateObjectCommandGenerator",
+        "nonInteractiveGenerator": "commands/CreateObjectCommandGenerator"
+    },
+    {
+        "commandName": "localserver",
+        "interactiveGenerator": "commands/LocalCommandGenerator",
+        "nonInteractiveGenerator": "commands/LocalCommandGenerator"
+    },
+    {
+        "commandName": "proxy",
+        "nonInteractiveGenerator": "commands/ProxyCommandGenerator"
+    }
 ]

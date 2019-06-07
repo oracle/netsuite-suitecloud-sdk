@@ -4,18 +4,15 @@ const SDKExecutor = require('../SDKExecutor').SDKExecutor;
 const Command = require('./Command');
 const Context = require('../Context');
 const assert = require('assert');
-const NodeUtils = require('../utils/NodeUtils');
 
 module.exports = class BaseCommandGenerator {
 	constructor(options) {
 		assert(options);
 		assert(options.commandMetadata);
-		assert(options.commandUserExtension);
 		assert(options.projectFolder);
 
 		this._sdkExecutor = new SDKExecutor();
 		this._commandMetadata = options.commandMetadata;
-		this._commandUserExtension = options.commandUserExtension;
 		this._projectFolder = options.projectFolder;
 	}
 
@@ -23,10 +20,6 @@ module.exports = class BaseCommandGenerator {
 		return prompt([]);
 	}
 	_executeAction() {}
-
-	_supportsInteractiveMode() {
-		return true;
-	}
 
 	_applyDefaultContextParams(sdkExecutionContext) {
 		sdkExecutionContext.addParam('account', Context.CurrentAccountDetails.getCompId());
@@ -39,24 +32,14 @@ module.exports = class BaseCommandGenerator {
 		return args;
 	}
 
-	_formatOutput(result) {
-		NodeUtils.println(result, NodeUtils.COLORS.RESULT);
-	}
-
 	create() {
 		return new Command({
-			name: this._commandMetadata.name,
-			alias: this._commandMetadata.alias,
-			description: this._commandMetadata.description,
+			commandMetadata: this._commandMetadata,
+			projectFolder: this._projectFolder,
+			getCommandQuestionsFunc: this._getCommandQuestions.bind(this),
 			preActionFunc: this._preExecuteAction.bind(this),
 			actionFunc: this._executeAction.bind(this),
-			getCommandQuestionsFunc: this._getCommandQuestions.bind(this),
-			isSetupRequired: this._commandMetadata.isSetupRequired,
-			options: this._commandMetadata.options,
-			commandUserExtension: this._commandUserExtension,
-			supportsInteractiveMode: this._supportsInteractiveMode(),
-			projectFolder: this._projectFolder,
-			commandOutputFormater: this._formatOutput.bind(this),
+			formatOutputFunc: this._formatOutput ? this._formatOutput.bind(this) : null,
 		});
 	}
 };
