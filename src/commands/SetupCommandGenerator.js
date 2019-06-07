@@ -2,7 +2,6 @@
 
 const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const ApplicationConstants = require('../ApplicationConstants');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
@@ -15,10 +14,9 @@ const AccountService = require('../services/AccountService');
 const inquirer = require('inquirer');
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
-const REVOKE_TOKEN_COMMAND = 'revoketoken';
 const SAVE_TOKEN_COMMAND = 'savetoken';
 
-const { ACCOUNT_DETAILS_FILENAME, MANIFEST_XML } = require('../ApplicationConstants');
+const { ACCOUNT_DETAILS_FILENAME, LINKS, MANIFEST_XML } = require('../ApplicationConstants');
 
 const {
 	COMMAND_SETUP: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
@@ -103,7 +101,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				throw err.message;
 			}
 		}
-		
+
 		const accountAndRoles = JSON.parse(response);
 
 		// compact all the previous info grouped by accountId's
@@ -147,9 +145,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		if (!(accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].roles.length > 1)) {
+		const selectedCompId = accountAndRoleAnswers[ANSWERS.COMPANY_ID];
+		const selectedRoleId = accountAndRoleAnswers[ANSWERS.ROLE_ID];
+
+		if (!(accountsInfo[selectedCompId].roles.length > 1)) {
 			accountAndRoleAnswers[ANSWERS.ROLE_ID] =
-				accountsInfo[accountAndRoleAnswers[ANSWERS.COMPANY_ID]].roles[0].internalId;
+				accountsInfo[selectedCompId].roles[0].internalId;
 		}
 
 		const issueOrSaveTokenAnswers = await prompt([
@@ -158,7 +159,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				name: ANSWERS.ISSUE_A_TOKEN,
 				message: TranslationService.getMessage(
 					QUESTIONS.ISSUE_A_TOKEN,
-					NodeUtils.lineBreak
+					LINKS.HOW_TO.ISSUE_A_TOKEN
 				),
 				choices: [
 					{
@@ -192,11 +193,11 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		return {
 			email: credentialsAnswers[ANSWERS.EMAIL],
 			password: credentialsAnswers[ANSWERS.PASSWORD],
-			account: accountAndRoleAnswers[ANSWERS.COMPANY_ID],
-			environment: accountsInfo[
-				accountAndRoleAnswers[ANSWERS.COMPANY_ID]
-			].dataCenterURLs.systemDomain.split('//')[1],
-			role: accountAndRoleAnswers[ANSWERS.ROLE_ID],
+			account: selectedCompId,
+			accountName: accountsInfo[selectedCompId].name,
+			environment: accountsInfo[selectedCompId].dataCenterURLs.systemDomain.split('//')[1],
+			role: selectedRoleId,
+			roleName: accountsInfo[selectedCompId].roles.find(role => role.internalId === selectedRoleId).name,
 			...issueOrSaveTokenAnswers,
 		};
 	}
@@ -248,18 +249,20 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	_createAccountDetailsFile(contextValues) {
 		// delete the password before saving
 		delete contextValues[ANSWERS.PASSWORD];
-		// nest the values into a 'default' property 
+		// nest the values into a 'default' property
 		const defaultAccountDetails = {
-			default: contextValues
-		}
-		FileUtils.create(ApplicationConstants.ACCOUNT_DETAILS_FILENAME, defaultAccountDetails);
+			default: contextValues,
+		};
+		FileUtils.create(ACCOUNT_DETAILS_FILENAME, defaultAccountDetails);
 	}
 
 	async _executeAction(answers) {
 		const contextValues = {
 			netsuiteUrl: answers.environment,
 			compId: answers.account,
+			compName: answers.accountName,
 			roleId: answers.role,
+			roleName: answers.roleName,
 			email: answers.email,
 			password: answers.password,
 		};

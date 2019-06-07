@@ -61,12 +61,9 @@ module.exports.SDKExecutor = class SDKExecutor {
 						childProcess.stdin.write(password);
 						childProcess.stdin.end();
 					} else {
-						reject(
-							new CLIException(
-								3,
-								TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION)
-							)
-						);
+						reject(() => {
+							throw TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION);
+						});
 						childProcess.kill('SIGINT');
 					}
 					return;

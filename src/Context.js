@@ -5,7 +5,8 @@ const { ERRORS } = require('./services/TranslationKeys');
 const { ACCOUNT_DETAILS_FILENAME, SDF_SDK_PATHNAME } = require('./ApplicationConstants');
 
 const DEFAULT_ACCOUNT = 'default';
-const DEFAULT_ACCOUNT_PROPERTIES_KEYS = ['netsuiteUrl', 'compId', 'email', 'roleId'];
+const DEFAULT_ACCOUNT_PROPERTIES_KEYS = ['netsuiteUrl', 'compId', 'compName', 'roleId', 'roleName', 'email'];
+
 
 class AccountDetails {
 	constructor() {
@@ -15,9 +16,8 @@ class AccountDetails {
 	initializeFromFile(file, accountName = DEFAULT_ACCOUNT) {
 		if (FileUtils.exists(file)) {
 			const fileContentJson = FileUtils.readAsJson(file);
-			if(this._validateAccountDetailsFileStructure(fileContentJson, accountName)) {
-				this.initializeFromObj(fileContentJson[accountName]);
-			}
+			this._validateAccountDetailsFileStructure(fileContentJson, accountName);
+			this.initializeFromObj(fileContentJson[accountName]);
 		}
 	}
 
@@ -36,14 +36,15 @@ class AccountDetails {
 				);
 			}
 		});
-		return true;
 	}
 
 	initializeFromObj(obj) {
 		this._netsuiteUrl = obj.netsuiteUrl;
 		this._compId = obj.compId;
+		this._compName = obj.compName;
 		this._email = obj.email;
 		this._roleId = obj.roleId;
+		this._roleName = obj._roleName;
 		this._password = obj.password;
 		this._isAccountSetup = true;
 	}
@@ -60,8 +61,16 @@ class AccountDetails {
 		return this._roleId;
 	}
 
+	getRoleName() {
+		return this._roleName;
+	}
+
 	getCompId() {
 		return this._compId;
+	}
+
+	getCompName() {
+		return this._compName;
 	}
 
 	getNetSuiteUrl() {

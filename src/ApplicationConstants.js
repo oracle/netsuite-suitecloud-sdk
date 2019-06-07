@@ -16,4 +16,9 @@ module.exports = {
 	// PROXY_URL - SET IT WIHT YOUR PROXY SETTINGS AS 'http://www-proxy-lon.uk.oracle.com:80', OR LEAVE IT BLANK AS ''
 	// THIS CONSTANT WILL BE REMOVED WHEN PROXY_COMMAND IS DONE, 
 	PROXY_URL: 'http://www-proxy-lon.uk.oracle.com:80',
+	LINKS: {
+		HOW_TO: {
+			ISSUE_A_TOKEN: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html'
+		}
+	}
 };
