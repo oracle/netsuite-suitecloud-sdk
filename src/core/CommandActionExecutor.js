@@ -26,22 +26,21 @@ module.exports = class CommandActionExecutor {
 		assert(context.commandName);
 		assert(context.executionPath);
 		assert(typeof context.runInInteractiveMode === 'boolean');
-
-		const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(
-			context.commandName
-		);
-		const commandName = context.commandName;
-		const runInInteractiveMode = context.runInInteractiveMode;
-		const args = context.arguments;
-
-		this._checkCanExecute({ runInInteractiveMode, commandMetadata });
-		this._cliConfigurationService.initialize(context.executionPath);
-		const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
-		const commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
-			commandName
-		);
-
 		try {
+			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(
+				context.commandName
+			);
+			const commandName = context.commandName;
+			const runInInteractiveMode = context.runInInteractiveMode;
+			const args = context.arguments;
+
+			this._checkCanExecute({ runInInteractiveMode, commandMetadata });
+			this._cliConfigurationService.initialize(context.executionPath);
+			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
+			const commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
+				commandName
+			);
+
 			const command = this._commandInstanceFactory.create({
 				runInInteractiveMode: runInInteractiveMode,
 				commandMetadata: commandMetadata,
@@ -52,28 +51,18 @@ module.exports = class CommandActionExecutor {
 				command.commandMetadata.options,
 				args
 			);
-			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
-				command: this,
-				arguments: commandArguments,
-			});
-			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
 			const actionResult = await this._executeCommandAction({
 				command: command,
-				arguments: overridedCommandArguments,
+				arguments: commandArguments,
 				runInInteractiveMode: context.runInInteractiveMode,
 				isSetupRequired: commandMetadata.isSetupRequired,
+				commandUserExtension: commandUserExtension,
 			});
-			if (commandUserExtension.onCompleted) {
-				commandUserExtension.onCompleted(actionResult);
-			}
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
 			return actionResult;
 		} catch (error) {
-			if (commandUserExtension.onError) {
-				commandUserExtension.onError(error);
-			}
 			this._commandOutputHandler.showErrorResult(error);
 		}
 	}
@@ -108,32 +97,55 @@ module.exports = class CommandActionExecutor {
 		const command = options.command;
 		const isSetupRequired = options.isSetupRequired;
 		const runInInteractiveMode = options.runInInteractiveMode;
-		const args = options.arguments;
+		const commandUserExtension = options.commandUserExtension;
+		const commandArguments = options.arguments;
 
-		const commandArguments = runInInteractiveMode
-			? await command.getCommandQuestions(inquirer.prompt)
-			: args;
+		try {
+			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
+				command: this,
+				arguments: commandArguments,
+			});
+			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
-		const argsProcessingFunctions = [];
-		if (isSetupRequired) {
-			argsProcessingFunctions.push(this._applyDefaultContextParams);
+			const commandArgumentsAfterQuestions = runInInteractiveMode
+				? await command.getCommandQuestions(inquirer.prompt)
+				: overridedCommandArguments;
+
+			const argsProcessingFunctions = [];
+			if (isSetupRequired) {
+				argsProcessingFunctions.push(this._applyDefaultContextParams);
+			}
+			if (command.preActionFunc) {
+				argsProcessingFunctions.push(command.preActionFunc.bind(command));
+			}
+			const processedCommandArguments = argsProcessingFunctions.reduce(
+				(previousArgs, func) => {
+					return func(previousArgs);
+				},
+				commandArgumentsAfterQuestions
+			);
+
+			const validationErrors = this._commandOptionsValidator.validate({
+				commandOptions: command.commandMetadata.options,
+				arguments: processedCommandArguments,
+			});
+			if (validationErrors.length > 0) {
+				throw this._commandOptionsValidator.formatErrors(validationErrors);
+			}
+
+			const actionResult = await command.actionFunc(processedCommandArguments);
+
+			if (commandUserExtension.onCompleted) {
+				commandUserExtension.onCompleted(actionResult);
+			}
+
+			return actionResult;
+		} catch (error) {
+			if (commandUserExtension.onError) {
+				commandUserExtension.onError(error);
+			}
+			throw error;
 		}
-		if (command.preActionFunc) {
-			argsProcessingFunctions.push(command.preActionFunc.bind(command));
-		}
-		const processedCommandArguments = argsProcessingFunctions.reduce((previousArgs, func) => {
-			return func(previousArgs);
-		}, commandArguments);
-
-		const validationErrors = this._commandOptionsValidator.validate({
-			commandOptions: command.commandMetadata.options,
-			arguments: processedCommandArguments,
-		});
-		if (validationErrors.length > 0) {
-			throw this._commandOptionsValidator.formatErrors(validationErrors);
-		}
-
-		return await command.actionFunc(processedCommandArguments);
 	}
 
 	_applyDefaultContextParams(args) {
