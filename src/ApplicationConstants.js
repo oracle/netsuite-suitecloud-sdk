@@ -5,8 +5,6 @@ module.exports = {
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
 	SDF_SDK_PATHNAME: '../bin/cli-2019.2.0-SNAPSHOT.jar',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
-	AUTHENTICATION_MODE_BASIC: 'BASIC',
-	AUTHENTICATION_MODE_TBA: 'TBA',
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	MANIFEST_XML: 'manifest.xml',
 	OBJECTS_FOLDER: 'Objects',
@@ -21,5 +19,9 @@ module.exports = {
 		HOW_TO: {
 			ISSUE_A_TOKEN: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html'
 		}
-	}
+	},
+	CONSUMER_REQUEST_PARAM:{
+		KEY: 'consumerKey',
+		VALUE: 'NmRhNTdiZjA1YTYyNDdmYzg3NmM2ZDIyODE4NGZmNDg3NzYwYTM4MmE0M2FjN2U5M2VhZmY3NDM4MDNkMjJhYw==',
+	},
 };

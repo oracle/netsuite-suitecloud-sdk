@@ -13,7 +13,6 @@ const TranslationService = require('../services/TranslationService');
 const AccountService = require('../services/AccountService');
 const inquirer = require('inquirer');
 
-const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const SAVE_TOKEN_COMMAND = 'savetoken';
 
 const {
@@ -24,15 +23,13 @@ const {
 } = require('../ApplicationConstants');
 
 const {
-	COMMAND_SETUP: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
+	COMMAND_SETUPACCOUNT: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
 
 const ANSWERS = {
 	OVERWRITE: 'overwrite',
-	USE_PRODUCTION_ACCOUNT: 'useProductionAccount',
-	DOMAIN_URL: 'domainUrl',
 	EMAIL: 'email',
 	PASSWORD: 'password',
 	COMPANY_ID: 'companyId',
@@ -40,7 +37,6 @@ const ANSWERS = {
 	ISSUE_A_TOKEN: 'issueAToken',
 	SAVE_TOKEN_ID: 'saveTokenId',
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
-	TWO_FACTOR_AUTH: 'twoFactorAuth',
 };
 
 const {
@@ -84,7 +80,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: ANSWERS.EMAIL,
 				message: TranslationService.getMessage(QUESTIONS.EMAIL),
-				default: 'drebolleda@netsuite.com',
 				filter: ansewer => ansewer.trim(),
 				validate: fieldValue =>
 					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateEmail),
@@ -98,21 +93,21 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		let response;
+		let accountAndRolesJSON;
 		try {
-			response = await this._accountService.getAccountAndRoles({
+			const accountAndRolesRequest = this._accountService.getAccountAndRoles({
 				...credentialsAnswers,
 				restRolesUrl: REST_ROLES_URL,
 			});
+			accountAndRolesJSON = await executeWithSpinner({
+				action: accountAndRolesRequest.promise(),
+				message: TranslationService.getMessage(MESSAGES.RETRIEVING_ACCOUNT_INFO),
+			});
 		} catch (err) {
-			if (err.statusCode) {
-				throw JSON.parse(err.error).error.message;
-			} else {
-				throw err.message;
-			}
+			this._throwRequestError(err);
 		}
 
-		const accountAndRoles = JSON.parse(response);
+		const accountAndRoles = JSON.parse(accountAndRolesJSON);
 
 		// compact all the previous info grouped by accountId's
 		const accountsInfo = accountAndRoles.reduce((accumulator, current) => {
@@ -130,7 +125,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}, {});
 
 		const companiesChoices = Object.values(accountsInfo).map(company => ({
-			name: `${company.name} - [roles: ${company.roles.map(role => role.name).join(', ')}]`,
+			name: `${company.name} - [${company.roles.map(role => role.name).join(', ')}]`,
 			value: company.internalId,
 		}));
 
@@ -156,12 +151,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		]);
 
 		const selectedCompId = accountAndRoleAnswers[ANSWERS.COMPANY_ID];
-		const selectedRoleId = accountAndRoleAnswers[ANSWERS.ROLE_ID];
 
 		if (!(accountsInfo[selectedCompId].roles.length > 1)) {
 			accountAndRoleAnswers[ANSWERS.ROLE_ID] =
 				accountsInfo[selectedCompId].roles[0].internalId;
 		}
+		const selectedRoleId = accountAndRoleAnswers[ANSWERS.ROLE_ID];
 
 		const issueOrSaveTokenAnswers = await prompt([
 			{
@@ -231,29 +226,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		return false;
 	}
 
-	_issueToken() {
-		let executionContext = new SDKExecutionContext({
-			command: ISSUE_TOKEN_COMMAND,
-			showOutput: false,
-		});
-		this._applyDefaultContextParams(executionContext);
-
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(MESSAGES.ISSUING_TBA_TOKEN),
-		});
-	}
-
 	_saveToken(params) {
-		let executionContext = new SDKExecutionContext({
+		let executionContextForSaveToken = new SDKExecutionContext({
 			command: SAVE_TOKEN_COMMAND,
 			showOutput: false,
 			params,
 		});
-		this._applyDefaultContextParams(executionContext);
+		this._applyDefaultContextParams(executionContextForSaveToken);
 
 		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
+			action: this._sdkExecutor.execute(executionContextForSaveToken),
 			message: TranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
 		});
 	}
@@ -268,51 +250,51 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		FileUtils.create(ACCOUNT_DETAILS_FILENAME, defaultAccountDetails);
 	}
 
+	_throwRequestError(err) {
+		if (err.statusCode) {
+			throw JSON.parse(err.error).error.message;
+		} else {
+			throw err.message;
+		}
+	}
+
 	async _executeAction(answers) {
 		const contextValues = {
 			netsuiteUrl: answers.environment,
 			compId: answers.account,
+			accountId: answers.account,
 			compName: answers.accountName,
 			roleId: answers.role,
 			roleName: answers.roleName,
 			email: answers.email,
 			password: answers.password,
 		};
+
 		Context.CurrentAccountDetails.initializeFromObj(contextValues);
 
-		let operationResult;
-
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
-			// let response;
-			// try {
-			// 	response = await this._accountService.getIssueToken({
-			// 		accountId: answers.account,
-			// 		roleId: answers.role,
-			// 		email: answers.email,
-			// 		password: answers.password
-			// 	});
-			// } catch (err) {
-			// 	if (err.statusCode) {
-			// 		throw JSON.parse(err.error).error.message;
-			// 	} else {
-			// 		throw err.message;
-			// 	}
-			// }
+			try {
+				const JSONResponse = await executeWithSpinner({
+					action: this._accountService.getIssueToken(contextValues).promise(),
+					message: TranslationService.getMessage(MESSAGES.ISSUING_TBA_TOKEN),
+				});
 
-			// console.log(response);
-			// throw 'oh yeah'
-
-			operationResult = await this._issueToken();
-		} else {
-			const saveTokenParams = {
-				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
-				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
-			};
-			operationResult = await this._saveToken(saveTokenParams);
+				const issueTokenResponse = JSON.parse(JSONResponse);
+				answers[ANSWERS.SAVE_TOKEN_ID] = issueTokenResponse.tokenId;
+				answers[ANSWERS.SAVE_TOKEN_SECRET] = issueTokenResponse.tokenSecret;
+			} catch (err) {
+				this._throwRequestError(err);
+			}
 		}
 
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			throw SDKOperationResultUtils.getMessagesString(operationResult);
+		const saveTokenParams = {
+			tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
+			tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
+		};
+		const saveTokenResponse = await this._saveToken(saveTokenParams);
+
+		if (SDKOperationResultUtils.hasErrors(saveTokenResponse)) {
+			throw SDKOperationResultUtils.getMessagesString(saveTokenResponse);
 		}
 
 		try {
@@ -321,7 +303,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			throw TranslationService.getMessage(ERRORS.WRITING_ACCOUNT_JSON);
 		}
 
-		return operationResult;
+		return saveTokenResponse;
 	}
 
 	_formatOutput(operationResult) {

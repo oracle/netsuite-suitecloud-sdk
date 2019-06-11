@@ -1,7 +1,8 @@
 const request = require('request-promise-native');
 const assert = require('assert');
 const UserPreferencesService = require('./userpreferences/UserPreferencesService');
-const { REST_ISSUE_TOKEN_URL } = require('../ApplicationConstants');
+const Base64 = require('../utils/Base64');
+const { REST_ISSUE_TOKEN_URL, CONSUMER_REQUEST_PARAM } = require('../ApplicationConstants');
 
 module.exports = class AccountService {
 	constructor() {
@@ -25,9 +26,11 @@ module.exports = class AccountService {
 	}
 
 	getIssueToken({ accountId, roleId, email, password }) {
-		console.log(`accountId:${accountId}, roleId:${roleId}, email:${email}`)
 		const options = {
 			url: REST_ISSUE_TOKEN_URL,
+			qs: {
+				[CONSUMER_REQUEST_PARAM.KEY]: Base64.decode(CONSUMER_REQUEST_PARAM.VALUE)
+			},
 			proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
 			headers: {
 				Authorization: `NLAuth nlauth_account=${accountId}, nlauth_role=${roleId}, nlauth_email=${email}, nlauth_signature=${password}`,
