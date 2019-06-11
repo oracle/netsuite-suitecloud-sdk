@@ -3,6 +3,7 @@ const FileUtils = require('../utils/FileUtils');
 const ApplicationConstants = require('../ApplicationConstants');
 
 const SDK_WRAPPER_GENERATOR = 'commands/SDKWrapperCommandGenerator';
+let COMMANDS_METADATA_CACHE;
 
 function executeForEachCommandMetadata(commandsMetadata, func) {
 	for (const commandMetadataId in commandsMetadata) {
@@ -34,15 +35,15 @@ module.exports = class CommandsMetadataService {
 			combinedMetadata,
 			rootCLIPath
 		);
-		this._commandsMetadata = combinedMetadata;
+		COMMANDS_METADATA_CACHE = combinedMetadata;
 	}
 
 	getCommandsMetadata() {
-		return this._commandsMetadata;
+		return COMMANDS_METADATA_CACHE;
 	}
 
 	getCommandMetadataByName(commandName) {
-		const commandMetadata = this._commandsMetadata[commandName];
+		const commandMetadata = COMMANDS_METADATA_CACHE[commandName];
 		if (!commandMetadata) {
 			throw `No metadata found or initialized for Command ${commandName}`;
 		}
