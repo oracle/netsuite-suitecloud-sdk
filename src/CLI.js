@@ -1,32 +1,40 @@
 'use strict';
 
+const assert = require('assert');
+var path = require('path');
 const program = require('commander');
 const NodeUtils = require('./utils/NodeUtils');
-const CLIConfigurationService = require('./services/extensibility/CLIConfigurationService');
 const TranslationService = require('./services/TranslationService');
 const { INTERACTIVE_OPTION_DESCRIPTION, CLI_TITLE, ERRORS } = require('./services/TranslationKeys');
-const CommandActionExecutor = require('./services/CommandActionExecutor');
-const CommandOutputHandler = require('./CommandOutputHandler');
 const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapExceptionMessage;
+const INTERACTIVE_ALIAS = '-i';
+const INTERACTIVE_OPTION = '--interactive';
 
 module.exports = class CLI {
-	constructor(commandsMetadata, runInInteractiveMode) {
-		this._cliConfigurationService = new CLIConfigurationService(process.cwd());
-		this._commandsMetadata = commandsMetadata;
-		this._runInInteractiveMode = runInInteractiveMode;
-		this._commandOutputHandler = new CommandOutputHandler();
-		this._commandActionExecutor = new CommandActionExecutor(runInInteractiveMode);
+	constructor(dependencies) {
+		assert(dependencies);
+		assert(dependencies.commandsMetadataService);
+		assert(dependencies.commandActionExecutor);
+		assert(dependencies.commandRegistrationService);
+
+		this._commandsMetadataService = dependencies.commandsMetadataService;
+		this._commandActionExecutor = dependencies.commandActionExecutor;
+		this._commandRegistrationService = dependencies.commandRegistrationService;
 	}
 
 	start(process) {
 		try {
-			this._initializeConfigurationService();
-			this._initializeCommands();
+			const rootCLIPath = this._getCLIRootPath();
+			this._commandsMetadataService.initializeCommandsMetadata(rootCLIPath);
+			const runInInteractiveMode = this._isRunningInInteractiveMode();
+
+			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();
+			this._initializeCommands(commandMetadataList, runInInteractiveMode);
 
 			program
 				.version('0.0.1', '-v, --version')
 				.option(
-					'-i, --interactive',
+					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
 					TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION)
 				)
 				.on('command:*', args => {
@@ -45,44 +53,34 @@ module.exports = class CLI {
 		}
 	}
 
-	_initializeConfigurationService() {
-		this._cliConfigurationService.initialize();
+	_getCLIRootPath() {
+		return path.dirname(require.main.filename);
 	}
 
-	_initializeCommands() {
-		const commandsMetadataArraySortedByCommandName = Object.values(this._commandsMetadata).sort(
+	_initializeCommands(commandMetadataList, runInInteractiveMode) {
+		const commandsMetadataArraySortedByCommandName = Object.values(commandMetadataList).sort(
 			(command1, command2) => command1.name.localeCompare(command2.name)
 		);
 
 		commandsMetadataArraySortedByCommandName.forEach(commandMetadata => {
-			const command = this._createCommandFrom(commandMetadata);
-			command.attachToProgram({
-				program,
-				runInInteractiveMode: this._runInInteractiveMode,
-				commandOutputHandler: this._commandOutputHandler,
-				commandActionExecutor: this._commandActionExecutor,
+			this._commandRegistrationService.register({
+				commandMetadata: commandMetadata,
+				program: program,
+				runInInteractiveMode: runInInteractiveMode,
+				executeCommandFunction: async options => {
+					await this._commandActionExecutor.executeAction({
+						executionPath: process.cwd(),
+						commandName: commandMetadata.name,
+						runInInteractiveMode: runInInteractiveMode,
+						arguments: options,
+					});
+				},
 			});
 		});
 	}
 
-	_createCommandFrom(commandMetadata) {
-		const commandGeneratorPath = this._runInInteractiveMode
-			? commandMetadata.interactiveGenerator
-			: commandMetadata.nonInteractiveGenerator;
-
-		const commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
-			commandMetadata.name
-		);
-		const projectFolder = this._cliConfigurationService.getProjectFolder(commandMetadata.name);
-
-		const Generator = require(commandGeneratorPath);
-		const generatorInstance = new Generator({
-			commandMetadata,
-			commandUserExtension,
-			projectFolder,
-        });
-        
-		return generatorInstance.create();
+	_isRunningInInteractiveMode() {
+		return process.argv[3] == INTERACTIVE_ALIAS || process.argv[3] === INTERACTIVE_OPTION;
 	}
 
 	_printHelp() {
