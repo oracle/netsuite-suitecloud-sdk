@@ -13,6 +13,7 @@ module.exports = {
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	REST_ROLES_URL: 'https://system.netsuite.com/rest/roles',
+	REST_ISSUE_TOKEN_URL: 'https://system.netsuite.com/rest/issuetoken',
 	// PROXY_URL - SET IT WIHT YOUR PROXY SETTINGS AS 'http://www-proxy-lon.uk.oracle.com:80', OR LEAVE IT BLANK AS ''
 	// THIS CONSTANT WILL BE REMOVED WHEN PROXY_COMMAND IS DONE, 
 	PROXY_URL: 'http://www-proxy-lon.uk.oracle.com:80',

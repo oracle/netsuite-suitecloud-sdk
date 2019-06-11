@@ -1,15 +1,21 @@
 const request = require('request-promise-native');
+const assert = require('assert');
+const UserPreferencesService = require('./userpreferences/UserPreferencesService');
+const { REST_ISSUE_TOKEN_URL } = require('../ApplicationConstants');
 
-const {
-	PROXY_URL,
-	REST_ROLES_URL,
-} = require('../ApplicationConstants');
+module.exports = class AccountService {
+	constructor() {
+		this._userPreferencesService = new UserPreferencesService();
+	}
 
-class AccountService {
-	getAccountAndRoles({ email, password }) {
+	getAccountAndRoles({ email, password, restRolesUrl }) {
+		assert(email);
+		assert(password);
+		assert(restRolesUrl);
+
 		const options = {
-			url: REST_ROLES_URL,
-			proxy: PROXY_URL,
+			url: restRolesUrl,
+			proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
 			headers: {
 				Authorization: `NLAuth nlauth_email=${email}, nlauth_signature=${password}`,
 			},
@@ -17,6 +23,17 @@ class AccountService {
 
 		return request(options);
 	}
-}
 
-module.exports = new AccountService();
+	getIssueToken({ accountId, roleId, email, password }) {
+		console.log(`accountId:${accountId}, roleId:${roleId}, email:${email}`)
+		const options = {
+			url: REST_ISSUE_TOKEN_URL,
+			proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
+			headers: {
+				Authorization: `NLAuth nlauth_account=${accountId}, nlauth_role=${roleId}, nlauth_email=${email}, nlauth_signature=${password}`,
+			},
+		};
+
+		return request(options);
+	}
+};

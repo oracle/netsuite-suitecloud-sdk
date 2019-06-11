@@ -16,7 +16,12 @@ const inquirer = require('inquirer');
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const SAVE_TOKEN_COMMAND = 'savetoken';
 
-const { ACCOUNT_DETAILS_FILENAME, LINKS, MANIFEST_XML } = require('../ApplicationConstants');
+const {
+	ACCOUNT_DETAILS_FILENAME,
+	LINKS,
+	MANIFEST_XML,
+	REST_ROLES_URL,
+} = require('../ApplicationConstants');
 
 const {
 	COMMAND_SETUP: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
@@ -47,6 +52,7 @@ const {
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
+		this._accountService = new AccountService();
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -78,6 +84,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: ANSWERS.EMAIL,
 				message: TranslationService.getMessage(QUESTIONS.EMAIL),
+				default: 'drebolleda@netsuite.com',
 				filter: ansewer => ansewer.trim(),
 				validate: fieldValue =>
 					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateEmail),
@@ -93,7 +100,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		let response;
 		try {
-			response = await AccountService.getAccountAndRoles(credentialsAnswers);
+			response = await this._accountService.getAccountAndRoles({
+				...credentialsAnswers,
+				restRolesUrl: REST_ROLES_URL,
+			});
 		} catch (err) {
 			if (err.statusCode) {
 				throw JSON.parse(err.error).error.message;
@@ -197,7 +207,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			accountName: accountsInfo[selectedCompId].name,
 			environment: accountsInfo[selectedCompId].dataCenterURLs.systemDomain.split('//')[1],
 			role: selectedRoleId,
-			roleName: accountsInfo[selectedCompId].roles.find(role => role.internalId === selectedRoleId).name,
+			roleName: accountsInfo[selectedCompId].roles.find(
+				role => role.internalId === selectedRoleId
+			).name,
 			...issueOrSaveTokenAnswers,
 		};
 	}
@@ -271,6 +283,25 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let operationResult;
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
+			// let response;
+			// try {
+			// 	response = await this._accountService.getIssueToken({
+			// 		accountId: answers.account,
+			// 		roleId: answers.role,
+			// 		email: answers.email,
+			// 		password: answers.password
+			// 	});
+			// } catch (err) {
+			// 	if (err.statusCode) {
+			// 		throw JSON.parse(err.error).error.message;
+			// 	} else {
+			// 		throw err.message;
+			// 	}
+			// }
+
+			// console.log(response);
+			// throw 'oh yeah'
+
 			operationResult = await this._issueToken();
 		} else {
 			const saveTokenParams = {
