@@ -40,20 +40,6 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			childProcess.stdout.on('data', data => {
 				const sdkOutput = data.toString('utf8');
-				if (sdkOutput.includes('Enter password')) {
-					if (Context.CurrentAccountDetails.getPassword()) {
-						const password = Context.CurrentAccountDetails.getPassword();
-						childProcess.stdin.write(password);
-						childProcess.stdin.end();
-					} else {
-						reject(() => {
-							throw TranslationService.getMessage(ERRORS.SDKEXECUTOR.AUTHENTICATION);
-						});
-						childProcess.kill('SIGINT');
-					}
-					return;
-				}
-
 				lastSdkOutput += sdkOutput;
 			});
 
