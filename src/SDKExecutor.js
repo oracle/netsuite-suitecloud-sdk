@@ -1,8 +1,10 @@
 'use strict';
 
 const Context = require('./Context');
-const CLIException = require('./CLIException');
-const ApplicationConstants = require('./ApplicationConstants');
+const {
+	SDK_INTEGRATION_MODE_JVM_OPTION,
+	SDK_PROXY_JVM_OPTIONS,
+} = require('./ApplicationConstants');
 const spawn = require('child_process').spawn;
 const UserPreferencesService = require('./services/userpreferences/UserPreferencesService');
 const url = require('url');
@@ -24,7 +26,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 			);
 
 			const integrationModeOption = executionContext.isIntegrationMode()
-				? ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION
+				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
 			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} "${
@@ -35,7 +37,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			childProcess.stderr.on('data', data => {
 				const sdkOutput = data.toString('utf8');
-				reject(new CLIException(1, sdkOutput));
+				reject(sdkOutput);
 			});
 
 			childProcess.stdout.on('data', data => {
@@ -52,22 +54,11 @@ module.exports.SDKExecutor = class SDKExecutor {
 						resolve(output);
 					} catch (error) {
 						reject(
-							new CLIException(
-								2,
-								TranslationService.getMessage(
-									ERRORS.SDKEXECUTOR.RUNNING_COMMAND,
-									error
-								)
-							)
+							TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
 						);
 					}
 				} else if (code !== 0) {
-					reject(
-						new CLIException(
-							2,
-							TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code)
-						)
-					);
+					reject(TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code));
 				}
 			});
 		});
@@ -80,14 +71,16 @@ module.exports.SDKExecutor = class SDKExecutor {
 		}
 		const proxyUrl = url.parse(userPreferences.proxyUrl);
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
-			throw `Invalid proxy URL ${
+			throw TranslationService.getMessage(
+				ERRORS.WRONG_PROXY_SETTING,
 				userPreferences.proxyUrl
-			}. It should be like (provide example with protocol, hostname and port)`; //TODO!!
+			);
 		}
 		const protocolWithoutColon = proxyUrl.protocol.slice(0, -1);
 		const hostName = proxyUrl.hostname;
 		const port = proxyUrl.port;
-		return `-DproxyProtocol=${protocolWithoutColon} -DproxyHost=${hostName} -DproxyPort=${port}`;
+		const { PROTOCOL, HOST, PORT } = SDK_PROXY_JVM_OPTIONS;
+		return `${PROTOCOL}=${protocolWithoutColon} ${HOST}=${hostName} ${PORT}=${port}`;
 	}
 
 	_convertParamsObjToString(cliParams, flags) {

@@ -5,6 +5,11 @@ module.exports = {
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
 	SDF_SDK_PATHNAME: '../bin/cli-2019.2.0-SNAPSHOT.jar',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
+	SDK_PROXY_JVM_OPTIONS: {
+		PROTOCOL: '-DproxyProtocol',
+		HOST: '-DproxyHost',
+		PORT: '-DproxyPort',
+	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	MANIFEST_XML: 'manifest.xml',
 	OBJECTS_FOLDER: 'Objects',
@@ -12,9 +17,6 @@ module.exports = {
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	REST_ROLES_URL: 'https://system.netsuite.com/rest/roles',
 	REST_ISSUE_TOKEN_URL: 'https://system.netsuite.com/rest/issuetoken',
-	// PROXY_URL - SET IT WIHT YOUR PROXY SETTINGS AS 'http://www-proxy-lon.uk.oracle.com:80', OR LEAVE IT BLANK AS ''
-	// THIS CONSTANT WILL BE REMOVED WHEN PROXY_COMMAND IS DONE, 
-	PROXY_URL: 'http://www-proxy-lon.uk.oracle.com:80',
 	LINKS: {
 		HOW_TO: {
 			ISSUE_A_TOKEN: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html'

@@ -44,11 +44,12 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.proxyOverrided) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN), NodeUtils.COLORS.WARNING);
-		}
 		if (actionResult.isSettingProxy) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl), NodeUtils.COLORS.RESULT);
+			if (actionResult.proxyOverrided) {
+				NodeUtils.println(TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl), NodeUtils.COLORS.RESULT);
+			} else {
+				NodeUtils.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl), NodeUtils.COLORS.RESULT);
+			}
 		} else {
 			NodeUtils.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED), NodeUtils.COLORS.RESULT);
 		}
