@@ -60,20 +60,20 @@
     },
     "proxy": {
         "name": "proxy",
-        "description": "Sets proxy for communication with NetSuite",
+        "description": "Configure a proxy server.",
         "isSetupRequired": false,
         "options": [
             {
                 "name": "set",
                 "alias": "s",
-                "description": "TODO",
+                "description": "Enter the URL of the server you want to use as your proxy. For example, http://www-proxy-lon.uk.oracle.com:80.",
                 "type": "SINGLE",
                 "mandatory": false
             },
             {
                 "name": "clear",
                 "alias": "c",
-                "description": "TODO",
+                "description": "Remove the last proxy server you set.",
                 "type": "FLAG",
                 "mandatory": false
             }

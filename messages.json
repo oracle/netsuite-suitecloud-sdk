@@ -96,6 +96,13 @@
 	"COMMAND_OPTION_IS_MANDATORY": "\"{0}\" option is mandatory.",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
 
+	"COMMAND_PROXY_ARGS_VALIDATION_SET_CLEAR_BOTH_SPECIFIED": "Cannot clear and set at the same time.",
+	"COMMAND_PROXY_ARGS_VALIDATION_SET_CLEAR_NEITHER_SPECIFIED": "Please specify set or clear.",
+	"COMMAND_PROXY_ARGS_VALIDATION_PROXY_URL": "Proxy needs a protocol (http) a port and a hostname.",
+	"COMMAND_PROXY_MESSAGES_PROXY_OVERRIDDEN": "WARNING: Preferences will be overrided.",
+	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_CLEARED": "Proxy successfully cleared.",
+	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_SETUP": "The {0} proxy has been set.",
+
 	"COMMAND_SETUPACCOUNT_ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"sdf setupaccount\" in a valid project folder.",
 	"COMMAND_SETUPACCOUNT_ERRORS_WRITING_ACCOUNT_JSON": "There was an error when editing the account.json file. Run \"sdf setupaccount\" again.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_OVERWRITE_ACCOUNT_DETAILS_FILE": "Do you want to overwrite the existing project’s {0} file??",

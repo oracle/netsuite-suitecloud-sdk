@@ -2,13 +2,11 @@
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TranslationService = require('../services/TranslationService');
+const { COMMAND_PROXY: {ARGS_VALIDATION, MESSAGES} } = require('../services/TranslationKeys');
+const NodeUtils = require('../utils/NodeUtils');
 const UserPreferencesService = require('../services/userpreferences/UserPreferencesService');
 const UserPreferences = require('../services/userpreferences/UserPreferences');
 const url = require('url');
-
-const {
-	COMMAND_SDK_WRAPPER: { MESSAGES },
-} = require('../services/TranslationKeys');
 
 const SET_OPTION = 'set';
 const CLEAR_FLAG_OPTION = 'clear';
@@ -47,28 +45,28 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 
 	_formatOutput(actionResult) {
 		if (actionResult.proxyOverrided) {
-			console.log('WARNING: Preferences will be overrided');
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN), NodeUtils.COLORS.WARNING);
 		}
 		if (actionResult.isSettingProxy) {
-			console.log('Proxy successfully setup');
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl), NodeUtils.COLORS.RESULT);
 		} else {
-			console.log('Proxy successfully cleared');
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED), NodeUtils.COLORS.RESULT);
 		}
 	}
 
 	_validateArguments(proxyUrlArgument, shouldClearArgument) {
 		if (!proxyUrlArgument && !shouldClearArgument) {
-			throw 'Please specify set or clear';
+			throw TranslationService.getMessage(ARGS_VALIDATION.SET_CLEAR_NEITHER_SPECIFIED);
 		}
 		if (proxyUrlArgument && shouldClearArgument) {
-			throw 'Cannot clear and set at the same time.';
+			throw TranslationService.getMessage(ARGS_VALIDATION.SET_CLEAR_BOTH_SPECIFIED);
 		}
 	}
 
 	_validateProxyUrl(proxyUrlArgument) {
 		const proxyUrl = url.parse(proxyUrlArgument);
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
-			throw 'Proxy needs a protocol (http) a port and a hostname';
+			throw TranslationService.getMessage(ARGS_VALIDATION.PROXY_URL);
 		}
 	}
 
