@@ -2,7 +2,7 @@
     "importbundle": {
         "name": "importbundle",
         "usage": "",
-        "description": "Import a bundle and convert it to an Account Customization project.",
+        "description": "Import a bundle as an Account Customization project. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674233.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -70,7 +70,7 @@
     "importobjects": {
         "name": "importobjects",
         "usage": "",
-        "description": "Import custom objects from a NetSuite account.",
+        "description": "Import custom objects from an account to your project. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674268.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -168,7 +168,7 @@
     "validate": {
         "name": "validate",
         "usage": "",
-        "description": "Validate the folder or zip file containing the project.",
+        "description": "Validate the folder or ZIP file containing the project. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674371.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -266,7 +266,7 @@
     "preview": {
         "name": "preview",
         "usage": "",
-        "description": "Previews the deployment steps of a folder or zip file containing the project. Project folder is compressed to a zip file before previewing.",
+        "description": "Preview the deployment steps of a folder or zipped file containing the project. The project folder is zipped before previewing. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674313.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -354,7 +354,7 @@
     "uploadfolders": {
         "name": "uploadfolders",
         "usage": "",
-        "description": "Upload file(s) contained in the folder(s) specified to the account.",
+        "description": "Upload files within specific folders from your project to an account. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1534881413.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -422,8 +422,8 @@
     "adddependencies": {
         "name": "adddependencies",
         "usage": "",
-        "description": "Add the missing dependencies to the manifest file.",
-        "isSetupRequired": false,
+        "description": "Add the missing dependencies to the manifest file. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4702656306.html.",
+        "isSetupRequired": true,
         "options": [
             {
                 "name": "all",
@@ -520,7 +520,7 @@
     "importconfiguration": {
         "name": "importconfiguration",
         "usage": "",
-        "description": "Import account configuration from a NetSuite account.",
+        "description": "Import the features from an account. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1500042748.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -588,7 +588,7 @@
     "listbundles": {
         "name": "listbundles",
         "usage": "",
-        "description": "List bundles from a NetSuite account.",
+        "description": "List the bundles installed in an account. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674270.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -636,7 +636,7 @@
     "listfiles": {
         "name": "listfiles",
         "usage": "",
-        "description": "List files from a NetSuite account.",
+        "description": "List the files from the file cabinet. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674292.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -694,7 +694,7 @@
     "listobjects": {
         "name": "listobjects",
         "usage": "",
-        "description": "List custom objects from a NetSuite account.",
+        "description": "List the custom objects deployed in an account. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674302.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -772,7 +772,7 @@
     "listconfiguration": {
         "name": "listconfiguration",
         "usage": "",
-        "description": "List available account configuration.",
+        "description": "List the features that are available in an account. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1500042917.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -820,7 +820,7 @@
     "createproject": {
         "name": "createproject",
         "usage": "",
-        "description": "Create a SuiteCloud Project.",
+        "description": "Create a SuiteCloud Project. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1534268059.html.",
         "isSetupRequired": false,
         "options": [
             {
@@ -898,7 +898,7 @@
     "importfiles": {
         "name": "importfiles",
         "usage": "",
-        "description": "Import files from a NetSuite account.",
+        "description": "Import files from an account to your account customization project. You cannot import files from a SuiteApp. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674259.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -976,7 +976,7 @@
     "updatecustomrecordwithinstances": {
         "name": "updatecustomrecordwithinstances",
         "usage": "",
-        "description": "Update the custom record object with instances.",
+        "description": "Overwrite the custom record object and all its instances in the project with the ones in an account. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674369.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -1044,7 +1044,7 @@
     "uploadfiles": {
         "name": "uploadfiles",
         "usage": "",
-        "description": "Upload file(s) to account.",
+        "description": "Upload files from your project to an account. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1534880169.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -1112,7 +1112,7 @@
     "listmissingdependencies": {
         "name": "listmissingdependencies",
         "usage": "",
-        "description": "List the missing dependencies for a project.",
+        "description": "List the missing dependencies of the project. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674281.html.",
         "isSetupRequired": false,
         "options": [
             {
@@ -1180,7 +1180,7 @@
     "update": {
         "name": "update",
         "usage": "",
-        "description": "Update existing custom objects in the project folder from a NetSuite account.",
+        "description": "Overwrite the custom objects in the project with the custom objects in an account. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788674357.html.",
         "isSetupRequired": true,
         "options": [
             {
@@ -1248,7 +1248,7 @@
     "deploy": {
         "name": "deploy",
         "usage": "",
-        "description": "Deploys the folder or zip file containing the project. Project folder is compressed to a zip file before deployment.",
+        "description": "Deploy the folder or ZIP file containing the project. The project folder is zipped before deployment, only including the files and folders referenced in the deploy.xml file. For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4788673412.html.",
         "isSetupRequired": true,
         "options": [
             {
