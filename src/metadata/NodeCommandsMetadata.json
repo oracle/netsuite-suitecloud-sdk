@@ -5,32 +5,7 @@
         "description": "Set up an account to use with the SuiteCloud CLI for Node.js.",
 		"isSetupRequired": false,
 		"forceInteractiveMode": true,
-        "options": [
-            {
-                "name": "environment",
-                "alias": "env",
-                "description": "TEST",
-                "mandatory": true
-            },
-            {
-                "name": "email",
-                "alias": "e",
-                "description": "TEST",
-                "mandatory": true
-            },
-            {
-                "name": "password",
-                "alias": "p",
-                "description": "TEST",
-                "mandatory": true
-            },
-            {
-                "name": "account",
-                "alias": "a",
-                "description": "TEST",
-                "mandatory": true
-            }
-        ]
+        "options": []
     },
     "createobject": {
         "name": "createobject",
@@ -66,7 +41,7 @@
             {
                 "name": "set",
                 "alias": "s",
-                "description": "Enter the URL of the server you want to use as your proxy. For example, http://www-proxy-lon.uk.oracle.com:80.",
+                "description": "Enter the URL of the server you want to use as your proxy. For example, http://my-proxy-domain:80",
                 "type": "SINGLE",
                 "mandatory": false
             },

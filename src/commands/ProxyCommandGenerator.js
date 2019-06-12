@@ -17,10 +17,6 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 		this._userPreferencesService = new UserPreferencesService();
 	}
 
-	_supportsInteractiveMode() {
-		return false;
-	}
-
 	_executeAction(args) {
 		const proxyUrlArgument = args[SET_OPTION];
 		const shouldClearArgument = args[CLEAR_FLAG_OPTION];
