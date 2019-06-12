@@ -47,5 +47,9 @@
     {
         "commandName": "proxy",
         "nonInteractiveGenerator": "commands/ProxyCommandGenerator"
+    },
+    {
+        "commandName": "adddependencies",
+        "nonInteractiveGenerator": "commands/AddDependenciesCommandGenerator"
     }
 ]
