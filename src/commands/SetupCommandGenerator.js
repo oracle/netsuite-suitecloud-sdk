@@ -220,7 +220,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_accountDetailsFileExists() {
-		return FileUtils.exists(this._executionPath, ACCOUNT_DETAILS_FILENAME);
+		return FileUtils.exists(path.join(this._executionPath, ACCOUNT_DETAILS_FILENAME));
 	}
 
 	_saveToken(params) {
