@@ -14,6 +14,7 @@ module.exports = class BaseCommandGenerator {
 		this._sdkExecutor = new SDKExecutor();
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;
+		this._executionPath = options.executionPath;
 	}
 
 	_getCommandQuestions(prompt) {

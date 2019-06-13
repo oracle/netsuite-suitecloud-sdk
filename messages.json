@@ -110,7 +110,7 @@
 	"COMMAND_SETUPACCOUNT_QUESTIONS_PASSWORD": "Enter your password:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_COMPANY_ID": "Select the account ID.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_ROLE": "Select the role.",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_ISSUE_A_TOKEN": "Do you want to issue or save a TBA token?\n--> If your role requires 2FA, you must save a TBA token. Issue the TBA token in NetSuite and enter it here.\nTo learn how to issue a token in NetSuite, see {0}",
+	"COMMAND_SETUPACCOUNT_QUESTIONS_ISSUE_A_TOKEN": "Do you want to issue or save a TBA token?\n    If your role requires 2FA, you must save a TBA token issued in NetSuite. To learn how to issue a token in NetSuite, see {0}.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_ISSUE_TOKEN_OPTION": "Issue a TBA token.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_OPTION": "Save a TBA token issued in NetSuite.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ID": "Enter the Token ID:",
