@@ -2,7 +2,9 @@
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TranslationService = require('../services/TranslationService');
-const { COMMAND_PROXY: {ARGS_VALIDATION, MESSAGES} } = require('../services/TranslationKeys');
+const {
+	COMMAND_PROXY: { ARGS_VALIDATION, MESSAGES },
+} = require('../services/TranslationKeys');
 const NodeUtils = require('../utils/NodeUtils');
 const UserPreferencesService = require('../services/userpreferences/UserPreferencesService');
 const UserPreferences = require('../services/userpreferences/UserPreferences');
@@ -42,12 +44,24 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	_formatOutput(actionResult) {
 		if (actionResult.isSettingProxy) {
 			if (actionResult.proxyOverrided) {
-				NodeUtils.println(TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl), NodeUtils.COLORS.RESULT);
+				NodeUtils.println(
+					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl),
+					NodeUtils.COLORS.RESULT
+				);
 			} else {
-				NodeUtils.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl), NodeUtils.COLORS.RESULT);
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.SUCCESFULLY_SETUP,
+						actionResult.proxyUrl
+					),
+					NodeUtils.COLORS.RESULT
+				);
 			}
 		} else {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED), NodeUtils.COLORS.RESULT);
+			NodeUtils.println(
+				TranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED),
+				NodeUtils.COLORS.RESULT
+			);
 		}
 	}
 
@@ -68,8 +82,8 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_setProxy(proxyUrl) {
-        const existingUserPreferences = this._userPreferencesService.getUserPreferences();
-        const alreadyHasProxySetup = existingUserPreferences.useProxy;
+		const existingUserPreferences = this._userPreferencesService.getUserPreferences();
+		const alreadyHasProxySetup = existingUserPreferences.useProxy;
 		this._userPreferencesService.setUserPreferences(
 			new UserPreferences({
 				useProxy: true,

@@ -104,7 +104,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(MESSAGES.RETRIEVING_ACCOUNT_INFO),
 			});
 		} catch (err) {
-			this._throwRequestError(err);
+			this._accountService.throwRequestError(err)
 		}
 
 		const accountAndRoles = JSON.parse(accountAndRolesJSON);
@@ -220,10 +220,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_accountDetailsFileExists() {
-		if (FileUtils.exists(path.join(process.cwd(), ACCOUNT_DETAILS_FILENAME))) {
-			return true;
-		}
-		return false;
+		return FileUtils.exists(path.join(process.cwd(), ACCOUNT_DETAILS_FILENAME));
 	}
 
 	_saveToken(params) {
@@ -248,14 +245,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			default: contextValues,
 		};
 		FileUtils.create(ACCOUNT_DETAILS_FILENAME, defaultAccountDetails);
-	}
-
-	_throwRequestError(err) {
-		if (err.statusCode) {
-			throw JSON.parse(err.error).error.message;
-		} else {
-			throw err.message;
-		}
 	}
 
 	async _executeAction(answers) {
@@ -283,7 +272,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				answers[ANSWERS.SAVE_TOKEN_ID] = issueTokenResponse.tokenId;
 				answers[ANSWERS.SAVE_TOKEN_SECRET] = issueTokenResponse.tokenSecret;
 			} catch (err) {
-				this._throwRequestError(err);
+				this._accountService.throwRequestError(err)
 			}
 		}
 
