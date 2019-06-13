@@ -5,6 +5,7 @@ module.exports = class CommandInstanceFactory {
 		assert(options);
 		assert(options.commandMetadata);
 		assert(options.projectFolder);
+		assert(options.executionPath);
 		assert(typeof options.runInInteractiveMode === 'boolean');
 
 		const commandMetadata = options.commandMetadata;
@@ -16,6 +17,7 @@ module.exports = class CommandInstanceFactory {
 		const generatorInstance = new Generator({
 			commandMetadata,
 			projectFolder: options.projectFolder,
+			executionPath: options.executionPath,
 		});
 
 		return generatorInstance.create();

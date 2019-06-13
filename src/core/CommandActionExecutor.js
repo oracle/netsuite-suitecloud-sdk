@@ -45,6 +45,7 @@ module.exports = class CommandActionExecutor {
 				runInInteractiveMode: runInInteractiveMode,
 				commandMetadata: commandMetadata,
 				projectFolder: projectFolder,
+				executionPath: context.executionPath,
 			});
 
 			const commandArguments = this._extractOptionValuesFromArguments(
@@ -107,9 +108,10 @@ module.exports = class CommandActionExecutor {
 			});
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
-			const commandArgumentsAfterQuestions = (runInInteractiveMode || command._commandMetadata.forceInteractiveMode)
-				? await command.getCommandQuestions(inquirer.prompt)
-				: overridedCommandArguments;
+			const commandArgumentsAfterQuestions =
+				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
+					? await command.getCommandQuestions(inquirer.prompt)
+					: overridedCommandArguments;
 
 			const argsProcessingFunctions = [];
 			if (isSetupRequired) {
