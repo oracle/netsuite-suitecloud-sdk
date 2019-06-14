@@ -1,5 +1,14 @@
 module.exports = [
 	{
+		name: 'Address Form',
+		value: {
+			name: 'Address Form',
+			type: 'addressForm',
+			prefix: 'custform_',
+			hasRelatedFiles: false,
+		},
+	},
+	{
 		name: 'Advanced PDF Template',
 		value: {
 			name: 'Advanced PDF Template',
@@ -540,6 +549,15 @@ module.exports = [
 			name: 'Transaction Form',
 			type: 'transactionForm',
 			prefix: 'custform_',
+			hasRelatedFiles: false,
+		},
+	},
+	{
+		name: 'Translation Collection',
+		value: {
+			name: 'Translation Collection',
+			type: 'translationcollection',
+			prefix: 'custcollection_',
 			hasRelatedFiles: false,
 		},
 	},
