@@ -45,6 +45,7 @@ module.exports = class CommandActionExecutor {
 				runInInteractiveMode: runInInteractiveMode,
 				commandMetadata: commandMetadata,
 				projectFolder: projectFolder,
+				executionPath: context.executionPath,
 			});
 
 			const commandArguments = this._extractOptionValuesFromArguments(
@@ -107,9 +108,10 @@ module.exports = class CommandActionExecutor {
 			});
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
-			const commandArgumentsAfterQuestions = runInInteractiveMode
-				? await command.getCommandQuestions(inquirer.prompt)
-				: overridedCommandArguments;
+			const commandArgumentsAfterQuestions =
+				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
+					? await command.getCommandQuestions(inquirer.prompt)
+					: overridedCommandArguments;
 
 			const argsProcessingFunctions = [];
 			if (isSetupRequired) {
@@ -149,7 +151,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_applyDefaultContextParams(args) {
-		args.account = Context.CurrentAccountDetails.getCompId();
+		args.account = Context.CurrentAccountDetails.getAccountId();
 		args.role = Context.CurrentAccountDetails.getRoleId();
 		args.email = Context.CurrentAccountDetails.getEmail();
 		args.url = Context.CurrentAccountDetails.getNetSuiteUrl();

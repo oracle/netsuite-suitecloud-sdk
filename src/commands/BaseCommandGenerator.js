@@ -14,6 +14,7 @@ module.exports = class BaseCommandGenerator {
 		this._sdkExecutor = new SDKExecutor();
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;
+		this._executionPath = options.executionPath;
 	}
 
 	_getCommandQuestions(prompt) {
@@ -22,7 +23,7 @@ module.exports = class BaseCommandGenerator {
 	_executeAction() {}
 
 	_applyDefaultContextParams(sdkExecutionContext) {
-		sdkExecutionContext.addParam('account', Context.CurrentAccountDetails.getCompId());
+		sdkExecutionContext.addParam('account', Context.CurrentAccountDetails.getAccountId());
 		sdkExecutionContext.addParam('role', Context.CurrentAccountDetails.getRoleId());
 		sdkExecutionContext.addParam('email', Context.CurrentAccountDetails.getEmail());
 		sdkExecutionContext.addParam('url', Context.CurrentAccountDetails.getNetSuiteUrl());

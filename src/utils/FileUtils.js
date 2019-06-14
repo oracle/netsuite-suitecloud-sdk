@@ -1,6 +1,5 @@
 'use strict';
 
-const CLIException = require('../CLIException');
 const fs = require('fs');
 
 module.exports = {
@@ -9,12 +8,9 @@ module.exports = {
 
 		fs.writeFile(fileName, content, 'utf8', function(error) {
 			if (error) {
-				throw new CLIException(
-					1,
-					`There was a problem while creating the file ${fileName} \n Error: ${JSON.stringify(
-						error
-					)}`
-				);
+				throw `There was a problem while creating the file ${fileName} \n Error: ${JSON.stringify(
+					error
+				)}`;
 			}
 		});
 	},

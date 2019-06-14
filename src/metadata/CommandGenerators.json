@@ -21,7 +21,8 @@
     },
     {
         "commandName": "setupaccount",
-        "interactiveGenerator": "commands/SetupCommandGenerator"
+        "interactiveGenerator": "./commands/SetupCommandGenerator",
+        "nonInteractiveGenerator": "./commands/SetupCommandGenerator"
     },
     {
         "commandName": "createproject",
