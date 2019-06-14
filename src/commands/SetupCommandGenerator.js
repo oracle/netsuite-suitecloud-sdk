@@ -150,11 +150,11 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		const selectedCompId = accountAndRoleAnswers[ANSWERS.COMPANY_ID];
+		const selectedAccountId = accountAndRoleAnswers[ANSWERS.COMPANY_ID];
 
-		if (!(accountsInfo[selectedCompId].roles.length > 1)) {
+		if (!(accountsInfo[selectedAccountId].roles.length > 1)) {
 			accountAndRoleAnswers[ANSWERS.ROLE_ID] =
-				accountsInfo[selectedCompId].roles[0].internalId;
+				accountsInfo[selectedAccountId].roles[0].internalId;
 		}
 		const selectedRoleId = accountAndRoleAnswers[ANSWERS.ROLE_ID];
 
@@ -198,11 +198,11 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		return {
 			email: credentialsAnswers[ANSWERS.EMAIL],
 			password: credentialsAnswers[ANSWERS.PASSWORD],
-			account: selectedCompId,
-			accountName: accountsInfo[selectedCompId].name,
-			environment: accountsInfo[selectedCompId].dataCenterURLs.systemDomain.split('//')[1],
+			account: selectedAccountId,
+			accountName: accountsInfo[selectedAccountId].name,
+			environment: accountsInfo[selectedAccountId].dataCenterURLs.systemDomain.split('//')[1],
 			role: selectedRoleId,
-			roleName: accountsInfo[selectedCompId].roles.find(
+			roleName: accountsInfo[selectedAccountId].roles.find(
 				role => role.internalId === selectedRoleId
 			).name,
 			...issueOrSaveTokenAnswers,
@@ -250,9 +250,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	async _executeAction(answers) {
 		const contextValues = {
 			netsuiteUrl: answers.environment,
-			compId: answers.account,
 			accountId: answers.account,
-			compName: answers.accountName,
+			accountName: answers.accountName,
 			roleId: answers.role,
 			roleName: answers.roleName,
 			email: answers.email,

@@ -23,7 +23,7 @@ module.exports = class BaseCommandGenerator {
 	_executeAction() {}
 
 	_applyDefaultContextParams(sdkExecutionContext) {
-		sdkExecutionContext.addParam('account', Context.CurrentAccountDetails.getCompId());
+		sdkExecutionContext.addParam('account', Context.CurrentAccountDetails.getAccountId());
 		sdkExecutionContext.addParam('role', Context.CurrentAccountDetails.getRoleId());
 		sdkExecutionContext.addParam('email', Context.CurrentAccountDetails.getEmail());
 		sdkExecutionContext.addParam('url', Context.CurrentAccountDetails.getNetSuiteUrl());

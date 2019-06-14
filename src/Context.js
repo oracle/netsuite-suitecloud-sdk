@@ -5,7 +5,7 @@ const { ERRORS } = require('./services/TranslationKeys');
 const { ACCOUNT_DETAILS_FILENAME, SDF_SDK_PATHNAME } = require('./ApplicationConstants');
 
 const DEFAULT_ACCOUNT = 'default';
-const DEFAULT_ACCOUNT_PROPERTIES_KEYS = ['netsuiteUrl', 'compId', 'compName', 'roleId', 'roleName', 'email'];
+const DEFAULT_ACCOUNT_PROPERTIES_KEYS = ['netsuiteUrl', 'accountId', 'accountName', 'roleId', 'roleName', 'email'];
 
 
 class AccountDetails {
@@ -13,23 +13,23 @@ class AccountDetails {
 		this._isAccountSetup = false;
 	}
 
-	initializeFromFile(file, accountName = DEFAULT_ACCOUNT) {
+	initializeFromFile(file, accountToLoad = DEFAULT_ACCOUNT) {
 		if (FileUtils.exists(file)) {
 			const fileContentJson = FileUtils.readAsJson(file);
-			this._validateAccountDetailsFileStructure(fileContentJson, accountName);
-			this.initializeFromObj(fileContentJson[accountName]);
+			this._validateAccountDetailsFileStructure(fileContentJson, accountToLoad);
+			this.initializeFromObj(fileContentJson[accountToLoad]);
 		}
 	}
 
-	_validateAccountDetailsFileStructure(fileContent, accountName) {
-		if (!fileContent.hasOwnProperty(accountName)) {
+	_validateAccountDetailsFileStructure(fileContent, accountToLoad) {
+		if (!fileContent.hasOwnProperty(accountToLoad)) {
 			throw TranslationService.getMessage(
 				ERRORS.ACCOUNT_DETAILS_FILE_CONTENT,
 				ACCOUNT_DETAILS_FILENAME
 			);
 		}
 		DEFAULT_ACCOUNT_PROPERTIES_KEYS.forEach(accountPropertyKey => {
-			if (!fileContent[accountName].hasOwnProperty(accountPropertyKey)) {
+			if (!fileContent[accountToLoad].hasOwnProperty(accountPropertyKey)) {
 				throw TranslationService.getMessage(
 					ERRORS.ACCOUNT_DETAILS_FILE_CONTENT,
 					ACCOUNT_DETAILS_FILENAME
@@ -40,8 +40,8 @@ class AccountDetails {
 
 	initializeFromObj(obj) {
 		this._netsuiteUrl = obj.netsuiteUrl;
-		this._compId = obj.compId;
-		this._compName = obj.compName;
+		this._accountId = obj.accountId;
+		this._accountName = obj.accountName;
 		this._email = obj.email;
 		this._roleId = obj.roleId;
 		this._roleName = obj._roleName;
@@ -65,12 +65,12 @@ class AccountDetails {
 		return this._roleName;
 	}
 
-	getCompId() {
-		return this._compId;
+	getAccountId() {
+		return this._accountId;
 	}
 
-	getCompName() {
-		return this._compName;
+	getAccountName() {
+		return this._accountName;
 	}
 
 	getNetSuiteUrl() {

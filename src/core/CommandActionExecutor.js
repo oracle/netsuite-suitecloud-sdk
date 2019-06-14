@@ -151,7 +151,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_applyDefaultContextParams(args) {
-		args.account = Context.CurrentAccountDetails.getCompId();
+		args.account = Context.CurrentAccountDetails.getAccountId();
 		args.role = Context.CurrentAccountDetails.getRoleId();
 		args.email = Context.CurrentAccountDetails.getEmail();
 		args.url = Context.CurrentAccountDetails.getNetSuiteUrl();
