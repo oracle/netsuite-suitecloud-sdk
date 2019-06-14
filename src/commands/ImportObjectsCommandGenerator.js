@@ -283,7 +283,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_preExecuteAction(answers) {
-		answers[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
+		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
 		return answers;
 	}
 

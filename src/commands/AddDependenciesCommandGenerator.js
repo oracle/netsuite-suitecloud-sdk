@@ -6,6 +6,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const CommandUtils = require('../utils/CommandUtils');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -60,7 +61,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 	}
 
 	_preExecuteAction(answers) {
-		answers[COMMAND_OPTIONS.PROJECT] = this._projectFolder;
+		answers[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 		return answers;
 	}
 
