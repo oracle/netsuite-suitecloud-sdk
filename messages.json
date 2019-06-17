@@ -26,6 +26,12 @@
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATION_CANCELED": "The creation process has been canceled.",
 	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
 	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Do you want to overwrite the {0} project? All the files and folders from the former project will be deleted and replaced by the new project.",
+
+	"COMMAND_DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
+	"COMMAND_DEPLOY_QUESTIONS_APPLY_CONTENT_PROTECTION": "Do you want to apply content protection?",
+	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the process.",
+	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning.",
+	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_IGNORE": "Ignore the account-specific values.",
 	
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",

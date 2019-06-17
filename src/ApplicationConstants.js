@@ -10,6 +10,10 @@ module.exports = {
 		HOST: '-DproxyHost',
 		PORT: '-DproxyPort',
 	},
+	FILE_NAMES: {
+		HIDING_PREFERENCE: 'hiding.xml',
+		LOCKING_PREFERENCE: 'locking.xml',
+	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	MANIFEST_XML: 'manifest.xml',
 	OBJECTS_FOLDER: 'Objects',
