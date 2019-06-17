@@ -1,5 +1,4 @@
 const assert = require('assert');
-const Context = require('../Context');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
 const { ERRORS } = require('./../services/TranslationKeys');
@@ -12,12 +11,14 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.commandInstanceFactory);
 		assert(dependencies.commandsMetadataService);
 		assert(dependencies.commandOutputHandler);
+		assert(dependencies.accountDetailsService);
 
 		this._commandOptionsValidator = dependencies.commandOptionsValidator;
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandInstanceFactory = dependencies.commandInstanceFactory;
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._commandOutputHandler = dependencies.commandOutputHandler;
+		this._accountDetailsService = dependencies.accountDetailsService;
 	}
 
 	async executeAction(context) {
@@ -26,6 +27,7 @@ module.exports = class CommandActionExecutor {
 		assert(context.commandName);
 		assert(context.executionPath);
 		assert(typeof context.runInInteractiveMode === 'boolean');
+
 		try {
 			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(
 				context.commandName
@@ -34,7 +36,10 @@ module.exports = class CommandActionExecutor {
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
-			this._checkCanExecute({ runInInteractiveMode, commandMetadata });
+			const accountDetails = commandMetadata.isSetupRequired
+				? this._accountDetailsService.get()
+				: null;
+			this._checkCanExecute({ runInInteractiveMode, commandMetadata, accountDetails });
 			this._cliConfigurationService.initialize(context.executionPath);
 			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
 			const commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
@@ -59,6 +64,7 @@ module.exports = class CommandActionExecutor {
 				runInInteractiveMode: context.runInInteractiveMode,
 				isSetupRequired: commandMetadata.isSetupRequired,
 				commandUserExtension: commandUserExtension,
+				accountDetails: accountDetails,
 			});
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
@@ -69,10 +75,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_checkCanExecute(context) {
-		if (
-			context.commandMetadata.isSetupRequired &&
-			!Context.CurrentAccountDetails.isAccountSetup()
-		) {
+		if (context.commandMetadata.isSetupRequired && !context.accountDetails) {
 			throw TranslationService.getMessage(ERRORS.SETUP_REQUIRED);
 		}
 		if (context.runInInteractiveMode && !context.commandMetadata.supportsInteractiveMode) {
@@ -96,15 +99,18 @@ module.exports = class CommandActionExecutor {
 
 	async _executeCommandAction(options) {
 		const command = options.command;
+		const accountDetails = options.accountDetails;
 		const isSetupRequired = options.isSetupRequired;
 		const runInInteractiveMode = options.runInInteractiveMode;
 		const commandUserExtension = options.commandUserExtension;
-		const commandArguments = options.arguments;
+		let commandArguments = options.arguments;
 
 		try {
 			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
 				command: this,
-				arguments: commandArguments,
+				arguments: isSetupRequired
+					? this._applyDefaultContextParams(commandArguments, accountDetails)
+					: commandArguments,
 			});
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
@@ -113,29 +119,19 @@ module.exports = class CommandActionExecutor {
 					? await command.getCommandQuestions(inquirer.prompt)
 					: overridedCommandArguments;
 
-			const argsProcessingFunctions = [];
-			if (isSetupRequired) {
-				argsProcessingFunctions.push(this._applyDefaultContextParams);
-			}
-			if (command.preActionFunc) {
-				argsProcessingFunctions.push(command.preActionFunc.bind(command));
-			}
-			const processedCommandArguments = argsProcessingFunctions.reduce(
-				(previousArgs, func) => {
-					return func(previousArgs);
-				},
-				commandArgumentsAfterQuestions
-			);
+			let commandArgumentsAfterPreActionFunc = command.preActionFunc
+				? command.preActionFunc.bind(command)(commandArgumentsAfterQuestions)
+				: commandArgumentsAfterQuestions;
 
 			const validationErrors = this._commandOptionsValidator.validate({
 				commandOptions: command.commandMetadata.options,
-				arguments: processedCommandArguments,
+				arguments: commandArgumentsAfterPreActionFunc,
 			});
 			if (validationErrors.length > 0) {
 				throw this._commandOptionsValidator.formatErrors(validationErrors);
 			}
 
-			const actionResult = await command.actionFunc(processedCommandArguments);
+			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);
 
 			if (commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
@@ -150,11 +146,11 @@ module.exports = class CommandActionExecutor {
 		}
 	}
 
-	_applyDefaultContextParams(args) {
-		args.account = Context.CurrentAccountDetails.getAccountId();
-		args.role = Context.CurrentAccountDetails.getRoleId();
-		args.email = Context.CurrentAccountDetails.getEmail();
-		args.url = Context.CurrentAccountDetails.getNetSuiteUrl();
+	_applyDefaultContextParams(args, accountDetails) {
+		args.account = accountDetails.accountId;
+		args.role = accountDetails.roleId;
+		args.email = accountDetails.email;
+		args.url = accountDetails.netSuiteUrl;
 		return args;
 	}
 };

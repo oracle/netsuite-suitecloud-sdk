@@ -6,8 +6,7 @@ const Spinner = require('cli-spinner').Spinner;
 const SPINNER_STRING = '⠋⠙⠹⠸⠼⠴⠦⠧⠏';
 
 module.exports = {
-
-	executeWithSpinner(context) {
+	async executeWithSpinner(context) {
 		assert(context.action instanceof Promise, 'Promise is expected');
 		assert(context.message, 'Message is mandatory when spinner is enabled');
 
@@ -18,16 +17,14 @@ module.exports = {
 		// TODO: set spinner string conditionally based on the terminal cli is executed in
 		// spinner.setSpinnerString(SPINNER_STRING);
 
-		return new Promise((resolve, reject) => {
-			spinner.start();
-			promise.then((result) => {
-				spinner.stop(true);
-				resolve(result);
-			}).catch((error) => {
-				spinner.stop(true);
-				reject(error);
-			});
-		});
+        try {
+            spinner.start();
+            const result = await promise;
+            spinner.stop(true);
+            return result;
+        } catch (error) {
+            spinner.stop(true);
+            throw error;
+        }
 	}
-
 };

@@ -1,8 +1,8 @@
 'use strict';
 
 const SDKExecutor = require('../SDKExecutor').SDKExecutor;
+const AccountDetailsService = require('./../core/accountsetup/AccountDetailsService');
 const Command = require('./Command');
-const Context = require('../Context');
 const assert = require('assert');
 
 module.exports = class BaseCommandGenerator {
@@ -12,6 +12,8 @@ module.exports = class BaseCommandGenerator {
 		assert(options.projectFolder);
 
 		this._sdkExecutor = new SDKExecutor();
+		this._accountDetailsService = new AccountDetailsService();
+
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;
 		this._executionPath = options.executionPath;
@@ -23,10 +25,11 @@ module.exports = class BaseCommandGenerator {
 	_executeAction() {}
 
 	_applyDefaultContextParams(sdkExecutionContext) {
-		sdkExecutionContext.addParam('account', Context.CurrentAccountDetails.getAccountId());
-		sdkExecutionContext.addParam('role', Context.CurrentAccountDetails.getRoleId());
-		sdkExecutionContext.addParam('email', Context.CurrentAccountDetails.getEmail());
-		sdkExecutionContext.addParam('url', Context.CurrentAccountDetails.getNetSuiteUrl());
+		const accountDetails = this._accountDetailsService.get();
+		sdkExecutionContext.addParam('account', accountDetails.accountId);
+		sdkExecutionContext.addParam('role', accountDetails.roleId);
+		sdkExecutionContext.addParam('email', accountDetails.email);
+		sdkExecutionContext.addParam('url', accountDetails.netSuiteUrl);
 	}
 
 	_preExecuteAction(args) {
