@@ -114,14 +114,15 @@ module.exports = class CommandActionExecutor {
 			});
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
-			const commandArgumentsAfterQuestions =
+			const argumentsFromQuestions =
 				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
 					? await command.getCommandQuestions(inquirer.prompt)
-					: overridedCommandArguments;
+					: {};
 
+			const commandArgumentsWithQuestionArguments = { ...overridedCommandArguments, ...argumentsFromQuestions };
 			let commandArgumentsAfterPreActionFunc = command.preActionFunc
-				? command.preActionFunc.bind(command)(commandArgumentsAfterQuestions)
-				: commandArgumentsAfterQuestions;
+				? command.preActionFunc(commandArgumentsWithQuestionArguments)
+				: commandArgumentsWithQuestionArguments;
 
 			const validationErrors = this._commandOptionsValidator.validate({
 				commandOptions: command.commandMetadata.options,
