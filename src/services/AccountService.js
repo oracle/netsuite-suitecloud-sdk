@@ -3,6 +3,9 @@ const assert = require('assert');
 const UserPreferencesService = require('./userpreferences/UserPreferencesService');
 const Base64 = require('../utils/Base64');
 const { REST_ISSUE_TOKEN_URL, CONSUMER_REQUEST_PARAM } = require('../ApplicationConstants');
+const TranslationService = require('./TranslationService');
+const { ERRORS } = require('./TranslationKeys');
+const ERROR_TIMED_OUT = 'ETIMEDOUT';
 const NLAuthorizationHeader = {
 	name: 'NLAuth',
 	params: {
@@ -74,11 +77,27 @@ module.exports = class AccountService {
 		});
 	}
 
-	throwRequestError(err) {
-		if (err.statusCode) {
-			return JSON.parse(err.error).error.message;
-		} else {
-			return err.message;
+	throwRequestError(errorResponse) {
+		try {
+			// server response with status not OK
+			if (errorResponse.statusCode) {
+				const parsedResponseError = JSON.parse(errorResponse.error);
+				return parsedResponseError.error.message;
+			}
+			// timedout response
+			else if (errorResponse.cause && errorResponse.cause.code === ERROR_TIMED_OUT) {
+				return TranslationService.getMessage(ERRORS.TIMED_OUT_CONNECTION);
+			} 
+			// other responses - just forward the message
+			else if (errorResponse.message) {
+				return errorResponse.message;
+			} 
+			// this should not be reached
+			else {
+				TranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
+			}
+		} catch (error) {
+			return TranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
 		}
 	}
 
@@ -86,7 +105,7 @@ module.exports = class AccountService {
 		const nlParams = [];
 		for (let [key, nlParamName] of Object.entries(NLAuthorizationHeader.params)) {
 			if (paramsToAdd[key]) {
-				nlParams.push(`${nlParamName}=${paramsToAdd[key]}`);
+				nlParams.push(`${nlParamName}=${encodeURI(paramsToAdd[key])}`);
 			}
 		}
 
