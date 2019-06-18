@@ -7,7 +7,8 @@ const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const FileUtils = require('../utils/FileUtils');
-const Context = require('../Context');
+const AccountDetailsService = require('./../core/accountsetup/AccountDetailsService');
+const AccountDetails = require('./../core/accountsetup/AccountDetails');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const AccountService = require('../services/AccountService');
@@ -49,6 +50,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._accountService = new AccountService();
+		this._accountDetailsService = new AccountDetailsService();
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -93,19 +95,13 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		let accountAndRolesJSON;
-		try {
-			const accountAndRolesRequest = this._accountService.getAccountAndRoles({
+		const accountAndRolesJSON = await executeWithSpinner({
+			action: this._accountService.getAccountAndRoles({
 				...credentialsAnswers,
 				restRolesUrl: REST_ROLES_URL,
-			});
-			accountAndRolesJSON = await executeWithSpinner({
-				action: accountAndRolesRequest.promise(),
-				message: TranslationService.getMessage(MESSAGES.RETRIEVING_ACCOUNT_INFO),
-			});
-		} catch (err) {
-			this._accountService.throwRequestError(err)
-		}
+			}),
+			message: TranslationService.getMessage(MESSAGES.RETRIEVING_ACCOUNT_INFO),
+		});
 
 		const accountAndRoles = JSON.parse(accountAndRolesJSON);
 
@@ -237,16 +233,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
-	_createAccountDetailsFile(contextValues) {
-		// delete the password before saving
-		delete contextValues[ANSWERS.PASSWORD];
-		// nest the values into a 'default' property
-		const defaultAccountDetails = {
-			default: contextValues,
-		};
-		FileUtils.create(ACCOUNT_DETAILS_FILENAME, defaultAccountDetails);
-	}
-
 	async _executeAction(answers) {
 		const contextValues = {
 			netsuiteUrl: answers.environment,
@@ -257,39 +243,30 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			email: answers.email,
 			password: answers.password,
 		};
-
-		Context.CurrentAccountDetails.initializeFromObj(contextValues);
+		const newAccountDetails = AccountDetails.fromJson(contextValues);
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
-			try {
-				const JSONResponse = await executeWithSpinner({
-					action: this._accountService.getIssueToken(contextValues).promise(),
-					message: TranslationService.getMessage(MESSAGES.ISSUING_TBA_TOKEN),
-				});
+			const JSONResponse = await executeWithSpinner({
+				action: this._accountService.getIssueToken(newAccountDetails),
+				message: TranslationService.getMessage(MESSAGES.ISSUING_TBA_TOKEN),
+			});
 
-				const issueTokenResponse = JSON.parse(JSONResponse);
-				answers[ANSWERS.SAVE_TOKEN_ID] = issueTokenResponse.tokenId;
-				answers[ANSWERS.SAVE_TOKEN_SECRET] = issueTokenResponse.tokenSecret;
-			} catch (err) {
-				this._accountService.throwRequestError(err)
-			}
+			const issueTokenResponse = JSON.parse(JSONResponse);
+			answers[ANSWERS.SAVE_TOKEN_ID] = issueTokenResponse.tokenId;
+			answers[ANSWERS.SAVE_TOKEN_SECRET] = issueTokenResponse.tokenSecret;
 		}
 
-		const saveTokenParams = {
+		this._accountDetailsService.set(newAccountDetails);
+
+		const saveTokenResponse = await this._saveToken({
 			tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
 			tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
-		};
-		const saveTokenResponse = await this._saveToken(saveTokenParams);
+		});
 
 		if (SDKOperationResultUtils.hasErrors(saveTokenResponse)) {
 			throw SDKOperationResultUtils.getMessagesString(saveTokenResponse);
 		}
-
-		try {
-			this._createAccountDetailsFile(contextValues);
-		} catch (error) {
-			throw TranslationService.getMessage(ERRORS.WRITING_ACCOUNT_JSON);
-		}
+		this._accountDetailsService.save();
 
 		return saveTokenResponse;
 	}

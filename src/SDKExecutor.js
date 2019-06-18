@@ -1,10 +1,11 @@
 'use strict';
 
-const Context = require('./Context');
 const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
+	SDF_SDK_PATHNAME,
 } = require('./ApplicationConstants');
+const path = require('path');
 const spawn = require('child_process').spawn;
 const UserPreferencesService = require('./services/userpreferences/UserPreferencesService');
 const url = require('url');
@@ -29,9 +30,10 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} "${
-				Context.SDKFilePath
-			}" ${executionContext.getCommand()} ${cliParamsAsString}`;
+			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} "${path.join(
+				__dirname,
+				SDF_SDK_PATHNAME
+			)}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
