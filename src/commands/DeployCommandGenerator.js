@@ -36,6 +36,13 @@ const COMMAND = {
 		VALIDATE: 'validate',
 	},
 };
+
+const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
+	ERROR: 'ERROR',
+	IGNORE: 'IGNORE',
+	WARNING: 'WARNING'
+}
+
 const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',
 };
@@ -71,19 +78,19 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 						name: TranslationService.getMessage(
 							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.IGNORE
 						),
-						value: false,
+						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.IGNORE,
 					},
 					{
 						name: TranslationService.getMessage(
 							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.DISPLAY_WARNING
 						),
-						value: 'WARNING',
+						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING,
 					},
 					{
 						name: TranslationService.getMessage(
 							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL_PROCESS
 						),
-						value: 'ERROR',
+						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
 					},
 				],
 			},
@@ -107,14 +114,47 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_preExecuteAction(args) {
-		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		if(args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES) && args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] === false) {
-			delete args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES];
+		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);	
+
+		if(args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES)) {
+			const upperCaseValue = args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES].toUpperCase();
+
+			switch (upperCaseValue) {
+				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.IGNORE:
+					delete args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES];
+					break;
+				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING:
+					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] = ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING;
+					break;
+				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR:
+					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] = ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR;
+					break;
+				default:
+					throw TranslationService.getMessage(ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION)
+			}
 		}
+
+		if(!args.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
+			args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = 'F';
+		} else {
+			const upperCaseValue = args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION].toUpperCase();
+
+			switch(upperCaseValue) {
+				case 'T':
+					args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = 'T';
+				case 'F':
+					args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = 'F';
+				default:
+					throw TranslationService.getMessage(ERRORS.WRONG_APPLY_CONTENT_PROTECTION_OPTION);
+			}
+		}
+
 		return args;
 	}
 
+
 	_executeAction(answers) {
+		console.log(answers)
 		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING]
 		const executionContextForDeploy = new SDKExecutionContext({
 			command: this._commandMetadata.name,
@@ -128,7 +168,11 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
-	_formatOutput(actionResult) {
-		console.log(actionResult)
+	_formatOutput(operationResult) {
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logErrors(operationResult);
+		} else {
+			SDKOperationResultUtils.logMessages(operationResult);
+		}
 	}
 };
