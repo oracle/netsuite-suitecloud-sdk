@@ -85,17 +85,15 @@ module.exports = class AccountService {
 				return parsedResponseError.error.message;
 			}
 			// timedout response
-			else if (errorResponse.cause && errorResponse.cause.code === ERROR_TIMED_OUT) {
+			if (errorResponse.cause && errorResponse.cause.code === ERROR_TIMED_OUT) {
 				return TranslationService.getMessage(ERRORS.TIMED_OUT_CONNECTION);
-			} 
-			// other responses - just forward the message
-			else if (errorResponse.message) {
-				return errorResponse.message;
-			} 
-			// this should not be reached
-			else {
-				TranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
 			}
+			// other responses - just forward the message
+			if (errorResponse.message) {
+				return errorResponse.message;
+			}
+			// this should not be reached
+			TranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
 		} catch (error) {
 			return TranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
 		}
