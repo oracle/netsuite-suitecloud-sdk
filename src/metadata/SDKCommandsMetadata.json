@@ -1293,7 +1293,7 @@
             },
             {
                 "name": "applycontentprotection",
-                "alias": "cp",
+                "alias": "c",
                 "option": "applycontentprotection",
                 "description": "Indicates that content protection will be applied.",
                 "mandatory": false,
@@ -1304,6 +1304,7 @@
             },
             {
                 "name": "accountspecificvalues",
+                "alias": "s",
                 "option": "accountspecificvalues",
                 "description": "Flag account-specific values as either a warning or an error.",
                 "mandatory": false,

@@ -8,9 +8,11 @@ const ProjectMetadataService = require('../services/ProjectMetadataService');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const FileUtils = require('../utils/FileUtils');
+const NodeUtils = require('../utils/NodeUtils');
+
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 
-const { FILE_NAMES, PROJECT_ACP, PROJECT_SUITEAPP, } = require('../ApplicationConstants');
+const { FILE_NAMES, PROJECT_ACP, PROJECT_SUITEAPP } = require('../ApplicationConstants');
 
 const {
 	COMMAND_DEPLOY: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES, OUTPUT },
@@ -60,8 +62,8 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
 				default: 1,
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: 'T' },
-					{ name: TranslationService.getMessage(NO), value: 'F' },
+					{ name: TranslationService.getMessage(YES), value: true },
+					{ name: TranslationService.getMessage(NO), value: false },
 				],
 			},
 			{
@@ -92,7 +94,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		return answers;
+		return { ...answers, questionsPrompted: true };
 	}
 
 	_isSuiteAppProject() {
@@ -101,7 +103,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		);
 	}
 	_isACProject() {
-		return (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_ACP);
+		return this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_ACP;
 	}
 
 	_hasLockOrHideFiles() {
@@ -120,7 +122,6 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_preExecuteAction(args) {
-		console.log(args);
 		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 
 		if (args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES)) {
@@ -145,40 +146,84 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			}
 		}
 
-		args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = args[
-			COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION
-		]
-			? APPLY_CONTENT_PROTECTION_VALUES.TRUE
-			: APPLY_CONTENT_PROTECTION_VALUES.FALSE;
+		const projectType = this._projectMetadataService.getProjectType(this._projectFolder);
 
-		if (args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === APPLY_CONTENT_PROTECTION_VALUES.TRUE && this._isACProject()) {
+		if (args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] && projectType === PROJECT_ACP) {
 			throw TranslationService.getMessage(ERRORS.APPLY_CONTENT_PROTECTION_IN_ACP);
 		}
+
+		if (projectType === PROJECT_SUITEAPP) {
+			args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = args[
+				COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION
+			]
+				? APPLY_CONTENT_PROTECTION_VALUES.TRUE
+				: APPLY_CONTENT_PROTECTION_VALUES.FALSE;
+		}
+
+		args.projectType = projectType;
+
 		return args;
 	}
 
-	_executeAction(answers) {
-		console.log(answers);
+	async _executeAction(answers) {
+		const { questionsPrompted, projectType } = answers;
+		const SDKDeployParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
 		const executionContextForDeploy = new SDKExecutionContext({
 			command: this._commandMetadata.name,
-			params: answers,
+			params: SDKDeployParams,
 			flags,
 		});
 
-		return executeWithSpinner({
+		const deployResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForDeploy),
-			message: 'deploying',
+			message: TranslationService.getMessage(MESSAGES.DEPLOYING),
 		});
+
+		return {
+			deployResult,
+			SDKDeployParams,
+			projectType,
+			questionsPrompted: answers.questionsPrompted,
+		};
 	}
 
-	_formatOutput(operationResult) {
-		console.log('operationResult:');
-		console.log(operationResult);
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult);
-		} else {
-			SDKOperationResultUtils.logMessages(operationResult);
+	_formatOutput(actionResult) {
+		const { deployResult, questionsPrompted } = actionResult;
+		if (!questionsPrompted) {
+			this._showDeployOptions(actionResult);
 		}
+
+		if (SDKOperationResultUtils.hasErrors(deployResult)) {
+			SDKOperationResultUtils.logErrors(deployResult);
+		} else {
+			SDKOperationResultUtils.logMessages(deployResult);
+		}
+	}
+
+	_showDeployOptions(actionResult) {
+		const { projectType, SDKDeployParams } = actionResult;
+
+		const usedOptions = [];
+		if (projectType === PROJECT_SUITEAPP) {
+			if (
+				SDKDeployParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] ===
+				APPLY_CONTENT_PROTECTION_VALUES.FALSE
+			) {
+				usedOptions.push(TranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION));
+			} else {
+				usedOptions.push(TranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION));
+			}
+		}
+		if (!SDKDeployParams[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES]) {
+			usedOptions.push(TranslationService.getMessage(MESSAGES.IGNORING_ACCOUNT_SPECIFIC_VALUES));
+		}
+		NodeUtils.println(
+			TranslationService.getMessage(
+				OUTPUT.NON_INTERACTIVE_DEFAULT_DEPLOY,
+				usedOptions.join(TranslationService.getMessage(MESSAGES.AND))
+			),
+			NodeUtils.COLORS.INFO
+		);
 	}
 };
