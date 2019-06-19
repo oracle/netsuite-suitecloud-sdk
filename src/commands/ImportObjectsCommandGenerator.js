@@ -10,7 +10,7 @@ const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
-const commandsMetadata = require('../metadata/CommandsMetadataService');
+const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ANSWERS_NAMES = {
@@ -44,13 +44,17 @@ const {
 	validateSuiteApp,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
+const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._projectMetadataService = new ProjectMetadataService();
 		this._fileSystemService = new FileSystemService();
-		this._commandsMetadataInfo = commandsMetadata.getCommandsMetadata();
+		const commandsMetadataService = new CommandsMetadataService();
+		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(
+			LIST_OBJECTS_COMMAND_NAME
+		);
 	}
 
 	_getCommandQuestions(prompt) {
@@ -61,7 +65,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				.then(firstAnswers => {
 					const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
 					const executionContextForListObjects = new SDKExecutionContext({
-						command: this._commandsMetadataInfo.listobjects.name,
+						command: this._listObjectsMetadata.name,
 						showOutput: false,
 						params: paramsForListObjects,
 					});
@@ -262,7 +266,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				' '
 			);
 		}
-		return CommandUtils.extractCommandOptions(answers, this._commandsMetadataInfo.listobjects);
+		return CommandUtils.extractCommandOptions(answers, this._listObjectsMetadata);
 	}
 
 	_arrangeAnswersForImportObjects(answers) {
@@ -279,7 +283,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_preExecuteAction(answers) {
-		answers[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
+		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
 		return answers;
 	}
 

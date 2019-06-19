@@ -400,7 +400,11 @@
     "deploy": {
         "name": "deploy",
         "usage": "",
+<<<<<<< HEAD
         "description": "Deploy the folder or ZIP file containing the project. The project folder is zipped before deployment, only including the files and folders referenced in the deploy.xml file.",
+=======
+        "description": "Add the missing dependencies to the manifest file.",
+>>>>>>> origin/master
         "isSetupRequired": true,
         "options": [
             {
