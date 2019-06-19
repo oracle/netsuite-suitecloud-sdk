@@ -1269,7 +1269,7 @@
                 "type": "FLAG",
                 "usage": "",
                 "defaultOption": false,
-                "disableInIntegrationMode": false
+                "disableInIntegrationMode": true
             },
             {
                 "name": "no_preview",
@@ -1293,10 +1293,11 @@
             },
             {
                 "name": "applycontentprotection",
+                "alias": "cp",
                 "option": "applycontentprotection",
                 "description": "Indicates that content protection will be applied.",
                 "mandatory": false,
-                "type": "SINGLE",
+                "type": "FLAG",
                 "usage": "T",
                 "defaultOption": false,
                 "disableInIntegrationMode": false

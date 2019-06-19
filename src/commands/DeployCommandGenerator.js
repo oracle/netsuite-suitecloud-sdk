@@ -7,14 +7,10 @@ const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const NodeUtils = require('../utils/NodeUtils');
 const FileUtils = require('../utils/FileUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const {
-	validateArrayIsNotEmpty,
-	showValidationResults,
-} = require('../validation/InteractiveAnswersValidator');
-const { PROJECT_SUITEAPP, FILE_NAMES } = require('../ApplicationConstants');
+
+const { FILE_NAMES, PROJECT_ACP, PROJECT_SUITEAPP, } = require('../ApplicationConstants');
 
 const {
 	COMMAND_DEPLOY: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES, OUTPUT },
@@ -40,11 +36,11 @@ const COMMAND = {
 const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
 	ERROR: 'ERROR',
 	IGNORE: 'IGNORE',
-	WARNING: 'WARNING'
-}
-
-const COMMAND_ANSWERS = {
-	OVERWRITE_FILES: 'overwrite',
+	WARNING: 'WARNING',
+};
+const APPLY_CONTENT_PROTECTION_VALUES = {
+	FALSE: 'F',
+	TRUE: 'T',
 };
 
 const INSATALLATION_PREFERENCES_FOLDER = '/InstallationPreferences';
@@ -58,7 +54,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	async _getCommandQuestions(prompt) {
 		const answers = await prompt([
 			{
-				when: (this._isSuiteAppProject() && this._hasLockOrHideFiles()),
+				when: this._isSuiteAppProject() && this._hasLockOrHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION,
 				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
@@ -104,19 +100,30 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP
 		);
 	}
+	_isACProject() {
+		return (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_ACP);
+	}
 
 	_hasLockOrHideFiles() {
-		const pathToInstallationPreferences = path.join(this._projectFolder, INSATALLATION_PREFERENCES_FOLDER);
+		const pathToInstallationPreferences = path.join(
+			this._projectFolder,
+			INSATALLATION_PREFERENCES_FOLDER
+		);
 		return (
-			FileUtils.exists(path.join(pathToInstallationPreferences, FILE_NAMES.HIDING_PREFERENCE)) ||
-			FileUtils.exists(path.join(pathToInstallationPreferences, FILE_NAMES.LOCKING_PREFERENCE))
+			FileUtils.exists(
+				path.join(pathToInstallationPreferences, FILE_NAMES.HIDING_PREFERENCE)
+			) ||
+			FileUtils.exists(
+				path.join(pathToInstallationPreferences, FILE_NAMES.LOCKING_PREFERENCE)
+			)
 		);
 	}
 
 	_preExecuteAction(args) {
-		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);	
+		console.log(args);
+		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 
-		if(args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES)) {
+		if (args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES)) {
 			const upperCaseValue = args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES].toUpperCase();
 
 			switch (upperCaseValue) {
@@ -124,51 +131,50 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 					delete args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES];
 					break;
 				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING:
-					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] = ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING;
+					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] =
+						ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING;
 					break;
 				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR:
-					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] = ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR;
+					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] =
+						ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR;
 					break;
 				default:
-					throw TranslationService.getMessage(ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION)
+					throw TranslationService.getMessage(
+						ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION
+					);
 			}
 		}
 
-		if(!args.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
-			args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = 'F';
-		} else {
-			const upperCaseValue = args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION].toUpperCase();
+		args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = args[
+			COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION
+		]
+			? APPLY_CONTENT_PROTECTION_VALUES.TRUE
+			: APPLY_CONTENT_PROTECTION_VALUES.FALSE;
 
-			switch(upperCaseValue) {
-				case 'T':
-					args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = 'T';
-				case 'F':
-					args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = 'F';
-				default:
-					throw TranslationService.getMessage(ERRORS.WRONG_APPLY_CONTENT_PROTECTION_OPTION);
-			}
+		if (args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === APPLY_CONTENT_PROTECTION_VALUES.TRUE && this._isACProject()) {
+			throw TranslationService.getMessage(ERRORS.APPLY_CONTENT_PROTECTION_IN_ACP);
 		}
-
 		return args;
 	}
 
-
 	_executeAction(answers) {
-		console.log(answers)
-		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING]
+		console.log(answers);
+		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
 		const executionContextForDeploy = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
-			flags
+			flags,
 		});
-		
+
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForDeploy),
-			message: 'deploying' 
+			message: 'deploying',
 		});
 	}
 
 	_formatOutput(operationResult) {
+		console.log('operationResult:');
+		console.log(operationResult);
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logErrors(operationResult);
 		} else {
