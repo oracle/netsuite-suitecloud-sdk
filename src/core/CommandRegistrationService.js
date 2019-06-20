@@ -57,7 +57,7 @@ module.exports = class CommandRegistrationService {
 			let mandatoryOptionString = '';
 			let optionString = '';
 			if (option.type !== OPTION_TYPE_FLAG) {
-				mandatoryOptionString = option.mandatory ? '<argument>' : '[argument]';
+				mandatoryOptionString = '<argument>';
 			}
 			if (option.alias) {
 				optionString = `-${option.alias}, `;
