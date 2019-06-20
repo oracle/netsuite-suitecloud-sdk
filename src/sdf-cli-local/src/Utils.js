@@ -4,7 +4,6 @@ const xml_parser = require('fast-xml-parser');
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob').sync;
-const del = require('del');
 const _ = require('underscore');
 const async = require('async');
 const { promisify } = require('util');
@@ -64,31 +63,6 @@ const Utils = {
 		});
 
 		return promisify(parallel)(wrapped_tasks);
-	},
-
-	copyFile: (src, dest) => {
-		(src = path.normalize(src)), (dest = path.normalize(dest));
-		const folder = path.dirname(dest);
-
-		if (!fs.existsSync(folder)) {
-			fs.mkdirSync(folder, { recursive: true });
-		}
-
-		return promisify(fs.copyFile)(src, dest);
-	},
-
-	createFolder: (folder_name, parent_path, override) => {
-		const folder_path = path.join(parent_path, folder_name);
-
-		if (override) {
-			del.sync(folder_path);
-		}
-
-		if (!fs.existsSync(folder_path)) {
-			fs.mkdirSync(folder_path);
-		}
-
-		return folder_path;
 	},
 };
 

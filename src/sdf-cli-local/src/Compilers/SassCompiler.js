@@ -1,6 +1,7 @@
 'use strict';
 
 const Utils = require('../Utils');
+const FileSystem = require('../services/FileSystem');
 const Log = require('../services/Log');
 const _ = require('underscore');
 const sass_compiler = require('node-sass');
@@ -32,20 +33,16 @@ module.exports = class SassCompiler {
 	}
 
 	createCssFolder() {
-		this.css_path = Utils.createFolder('css', this.context.local_server_path);
-	}
-
-	sassCompatiblePath(path) {
-		return path.replace(/\\/g, '/');
+		this.css_path = FileSystem.createFolder('css', this.context.local_server_path);
 	}
 
 	buildMetaEntrypoints(entrypoints) {
 		return _.mapObject(entrypoints, files => {
 			return _.map(files, file => {
 				const local_functions = this._localFunctions({
-					assets_folder: this.sassCompatiblePath(file.assets_path),
+					assets_folder: FileSystem.forwardDashes(file.assets_path),
 				});
-				file.entry = this.sassCompatiblePath(file.entry);
+				file.entry = FileSystem.forwardDashes(file.entry);
 				return local_functions + `@import "${file.entry}";`;
 			}).join('');
 		});

@@ -4,6 +4,7 @@ const Utils = require('../Utils');
 const Log = require('../services/Log');
 const path = require('path');
 const _ = require('underscore');
+const FileSystem = require('../services/FileSystem');
 
 module.exports = class AssetsCompiler {
 	constructor(options) {
@@ -22,7 +23,7 @@ module.exports = class AssetsCompiler {
 	copyResources(resources) {
 		return _.map(resources, resource => {
 			return () =>
-				Utils.copyFile(
+				FileSystem.copyFile(
 					path.join(this.context.files_path, resource.src),
 					path.join(this.context.local_server_path, resource.dest)
 				);

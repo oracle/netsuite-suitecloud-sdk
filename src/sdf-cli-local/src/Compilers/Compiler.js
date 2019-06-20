@@ -6,6 +6,7 @@ const JavascriptCompiler = require('./JavascriptCompiler');
 const AssetsCompiler = require('./AssetsCompiler');
 
 const Utils = require('../Utils');
+const FileSystem = require('../services/FileSystem');
 const _ = require('underscore');
 
 module.exports = class Compiler {
@@ -30,7 +31,7 @@ module.exports = class Compiler {
 	_createLocalServerFolder(context) {
 		const serverFolder = 'LocalServer';
 		// create/override local server:
-		const local_folder = Utils.createFolder(serverFolder, context.project_folder, true);
+		const local_folder = FileSystem.createFolder(serverFolder, context.project_folder, true);
 		context.setLocalServerPath(local_folder);
 	}
 };
