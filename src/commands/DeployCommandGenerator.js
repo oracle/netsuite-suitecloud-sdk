@@ -9,8 +9,8 @@ const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const FileUtils = require('../utils/FileUtils');
 const NodeUtils = require('../utils/NodeUtils');
-
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const assert = require('assert');
 
 const { FILE_NAMES, PROJECT_ACP, PROJECT_SUITEAPP } = require('../ApplicationConstants');
 
@@ -24,7 +24,6 @@ const COMMAND = {
 	OPTIONS: {
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
-		EXCLUDE_PROPERTIES: 'excludeproperties',
 		LOG: 'log',
 		PROJECT: 'project',
 	},
@@ -37,7 +36,6 @@ const COMMAND = {
 
 const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
 	ERROR: 'ERROR',
-	IGNORE: 'IGNORE',
 	WARNING: 'WARNING',
 };
 const APPLY_CONTENT_PROTECTION_VALUES = {
@@ -70,14 +68,8 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
-				default: 0,
+				default: 1,
 				choices: [
-					{
-						name: TranslationService.getMessage(
-							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.IGNORE
-						),
-						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.IGNORE,
-					},
 					{
 						name: TranslationService.getMessage(
 							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.DISPLAY_WARNING
@@ -125,12 +117,13 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 
 		if (args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES)) {
+			assert(
+				typeof args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] === 'string',
+				TranslationService.getMessage(ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION)
+			);
 			const upperCaseValue = args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES].toUpperCase();
 
 			switch (upperCaseValue) {
-				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.IGNORE:
-					delete args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES];
-					break;
 				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING:
 					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] =
 						ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING;
@@ -160,9 +153,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				: APPLY_CONTENT_PROTECTION_VALUES.FALSE;
 		}
 
-		args.projectType = projectType;
-
-		return args;
+		return { ...args, projectType };
 	}
 
 	async _executeAction(answers) {
@@ -184,14 +175,18 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			deployResult,
 			SDKDeployParams,
 			projectType,
-			questionsPrompted: answers.questionsPrompted,
+			questionsPrompted,
 		};
 	}
 
 	_formatOutput(actionResult) {
+		assert(actionResult.deployResult);
+		assert(actionResult.SDKDeployParams);
+		assert(actionResult.projectType);
+
 		const { deployResult, questionsPrompted } = actionResult;
 		if (!questionsPrompted) {
-			this._showDeployOptions(actionResult);
+			this._showNonInteraciveDeployContentProtectionOption(actionResult);
 		}
 
 		if (SDKOperationResultUtils.hasErrors(deployResult)) {
@@ -201,29 +196,31 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 
-	_showDeployOptions(actionResult) {
+	_showNonInteraciveDeployContentProtectionOption(actionResult) {
 		const { projectType, SDKDeployParams } = actionResult;
 
-		const usedOptions = [];
 		if (projectType === PROJECT_SUITEAPP) {
 			if (
 				SDKDeployParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] ===
-				APPLY_CONTENT_PROTECTION_VALUES.FALSE
+				APPLY_CONTENT_PROTECTION_VALUES.TRUE
 			) {
-				usedOptions.push(TranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION));
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.APPLYING_CONTENT_PROTECTION,
+						this._executionPath
+					),
+					NodeUtils.COLORS.INFO
+				);
 			} else {
-				usedOptions.push(TranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION));
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
+						this._executionPath
+					),
+					NodeUtils.COLORS.INFO
+				);
 			}
 		}
-		if (!SDKDeployParams[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES]) {
-			usedOptions.push(TranslationService.getMessage(MESSAGES.IGNORING_ACCOUNT_SPECIFIC_VALUES));
-		}
-		NodeUtils.println(
-			TranslationService.getMessage(
-				OUTPUT.NON_INTERACTIVE_DEFAULT_DEPLOY,
-				usedOptions.join(TranslationService.getMessage(MESSAGES.AND))
-			),
-			NodeUtils.COLORS.INFO
-		);
+
 	}
 };

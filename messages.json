@@ -1,6 +1,4 @@
 {
-	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite 2019.2)",
-	
 	"ANSWERS_VALIDATION_MESSAGES_APP_ID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as \"com.example.mysuiteapp\".",
 	"ANSWERS_VALIDATION_MESSAGES_CHOOSE_OPTION": "Error: You should choose at least one option.",
 	"ANSWERS_VALIDATION_MESSAGES_EMPTY_FIELD": "This value cannot be empty.",
@@ -11,6 +9,10 @@
 	"ANSWERS_VALIDATION_MESSAGES_PROJECT_VERSION_FORMAT": "The project version must only contain digits and dots. Ensure it follows a pattern such as \"0.0.0\".",
 	"ANSWERS_VALIDATION_MESSAGES_PUBLISHER_ID_FORMAT": "The publisher ID must be a fully qualified name, such as \"com.netsuite\". It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.",
 	"ANSWERS_VALIDATION_MESSAGES_SCRIPT_ID_FORMAT": "The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.",
+	
+	"CLI_INTERACTIVE_OPTION_DESCRIPTION": "run the command in interactive mode",
+	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite 2019.2)",
+	"CLI_USAGE": "command [option]",
 	
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_ADDING_DEPENDENCIES": "Adding dependencies...",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_DEPENDENCIES_ADDED_TO_MANIFEST": "The following dependencies were added to the manifest:",
@@ -31,15 +33,11 @@
 	"COMMAND_DEPLOY_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified a invalid value for --accountspecficvalue, it can only be warning or error",
 	"COMMAND_DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
 	"COMMAND_DEPLOY_QUESTIONS_APPLY_CONTENT_PROTECTION": "Do you want to apply content protection?",
-	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the process.",
-	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning.",
-	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_IGNORE": "Ignore the account-specific values.",
-	"COMMAND_DEPLOY_MESSAGES_AND": " and ",
-	"COMMAND_DEPLOY_MESSAGES_APPLYING_CONTENT_PROTECTION": "applying content protection",
+	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the process",
+	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning",
+	"COMMAND_DEPLOY_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed applying content protection",
 	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying...",
-	"COMMAND_DEPLOY_MESSAGES_IGNORING_ACCOUNT_SPECIFIC_VALUES": "ignoring account-specific values",
-	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "without applying content protection",
-	"COMMAND_DEPLOY_OUTPUT_NON_INTERACTIVE_DEFAULT_DEPLOY": "The project has been deployed {0}.",
+	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed without applying content protection",
 	
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
@@ -159,9 +157,7 @@
 	"ERRORS_XML_PROJECTTYPE_INCORRECT": "The projecttype attribute within the manifest field in the manifest.xml file must be either SUITEAPP or ACCOUNTCUSTOMIZATION.",
 	"ERRORS_WRITING_ACCOUNT_JSON": "There was an error when editing the account.json file. Run \"sdf setupaccount\" again.",
 	"ERRORS_WRONG_PROXY_SETTING": "The {0} proxy URL server is invalid. It must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80.",
-	
-	"INTERACTIVE_OPTION_DESCRIPTION": "Run the command in interactive mode",
-	
+		
 	"NO": "No",
 	"YES": "Yes"
 }
