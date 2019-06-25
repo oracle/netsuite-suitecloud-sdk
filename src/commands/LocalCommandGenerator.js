@@ -5,12 +5,13 @@ const LocalCommand = require('sdf-cli-local').LocalCommand;
 const { COLORS } = require('./../utils/NodeUtils');
 const { COMMAND_LOCAL } = require('./../services/TranslationKeys');
 const TranslationService = require('./../services/TranslationService');
-
+const FileSystemService = require('./../services/FileSystemService');
 module.exports = class LocalCommandGenerator extends BaseCommandGenerator {
 
 	constructor(options) {
 		super(options);
 
+		options.filesystem = FileSystemService;
 		options.colors = COLORS;
 		options.translation = [TranslationService, COMMAND_LOCAL];
 		

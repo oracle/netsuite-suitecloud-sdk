@@ -31,6 +31,7 @@ const Utils = {
 	},
 
 	getFileContent: dir => {
+		// TODO move to FyleSystem class
 		return promisify(fs.readFile)(dir, 'utf8');
 	},
 
@@ -75,24 +76,7 @@ const Utils = {
 			};
 		});
 
-		return new Promise((resolve, reject) => {
-			parallel(wrapped_tasks, (error, results) => {
-				if (error) {
-					return reject(error);
-				}
-				resolve(results);
-			});
-		});
-	},
-
-	createFolder: (folder_name, parent_path) => {
-		const folder_path = path.join(parent_path, folder_name);
-
-		if (!fs.existsSync(folder_path)) {
-			fs.mkdirSync(folder_path);
-		}
-
-		return folder_path;
+		return promisify(parallel)(wrapped_tasks);
 	},
 };
 

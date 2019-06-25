@@ -27,8 +27,9 @@ const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const CLI_CONFIG_FILENAME = 'cli-config';
 const CLI_CONFIG_EXTENSION = 'js';
 
-const COMMAND_QUESTIONS_NAMES = {
+const COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
+	PARENT_DIRECTORY: 'parentdirectory',
 	PROJECT_ID: 'projectid',
 	PROJECT_NAME: 'projectname',
 	PROJECT_VERSION: 'projectversion',
@@ -36,17 +37,32 @@ const COMMAND_QUESTIONS_NAMES = {
 	TYPE: 'type',
 };
 
+const COMMAND_ANSWERS = {
+	PROJECT_ABSOLUTE_PATH: 'projectabsolutepath',
+	PROJECT_FOLDER_NAME: 'projectfoldername',
+};
+
+const {
+	validateFieldIsNotEmpty,
+	showValidationResults,
+	validateFieldHasNoSpaces,
+	validateFieldIsLowerCase,
+	validatePublisherId,
+	validateProjectVersion,
+	validateXMLCharacters
+} = require('../validation/InteractiveAnswersValidator');
+
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
 	}
 
-	_getCommandQuestions(prompt) {
-		return prompt([
+	async _getCommandQuestions(prompt) {
+		const answers = await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_QUESTIONS_NAMES.TYPE,
+				name: COMMAND_OPTIONS.TYPE,
 				message: TranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
 				default: 0,
 				choices: [
@@ -62,143 +78,169 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_QUESTIONS_NAMES.PROJECT_NAME,
+				name: COMMAND_OPTIONS.PROJECT_NAME,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
-			},
-			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_QUESTIONS_NAMES.OVERWRITE,
-				message: TranslationService.getMessage(QUESTIONS.OVERWRITE_PROJECT),
-				default: 0,
-				choices: [
-					{ name: TranslationService.getMessage(NO), value: false },
-					{ name: TranslationService.getMessage(YES), value: true },
-				],
+				filter: fieldValue => fieldValue.trim(),
+				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateXMLCharacters),
 			},
 			{
 				when: function(response) {
-					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
+					return response[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_QUESTIONS_NAMES.PUBLISHER_ID,
+				name: COMMAND_OPTIONS.PUBLISHER_ID,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
+				validate: fieldValue => showValidationResults(fieldValue, validatePublisherId),
 			},
 			{
 				when: function(response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_QUESTIONS_NAMES.PROJECT_ID,
+				name: COMMAND_OPTIONS.PROJECT_ID,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_ID),
+				validate: fieldValue =>
+					showValidationResults(
+						fieldValue,
+						validateFieldIsNotEmpty,
+						validateFieldHasNoSpaces,
+						validateFieldIsLowerCase
+					),
 			},
 			{
 				when: function(response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND_QUESTIONS_NAMES.PROJECT_VERSION,
+				name: COMMAND_OPTIONS.PROJECT_VERSION,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
+				validate: fieldValue => showValidationResults(fieldValue, validateProjectVersion),
 			},
 		]);
+
+		const projectFolderName = this._getProjectFolderName(answers);
+		const projectAbsolutePath = path.join(this._projectFolder, projectFolderName);
+
+		if (
+			this._fileSystemService.folderExists(projectAbsolutePath) &&
+			!this._fileSystemService.isFolderEmpty(projectAbsolutePath)
+		) {
+			const overwriteAnswer = await prompt([
+				{
+					type: CommandUtils.INQUIRER_TYPES.LIST,
+					name: COMMAND_OPTIONS.OVERWRITE,
+					message: TranslationService.getMessage(
+						QUESTIONS.OVERWRITE_PROJECT,
+						projectAbsolutePath
+					),
+					default: 0,
+					choices: [
+						{ name: TranslationService.getMessage(NO), value: false },
+						{ name: TranslationService.getMessage(YES), value: true },
+					],
+				},
+			]);
+			answers[COMMAND_OPTIONS.OVERWRITE] = overwriteAnswer[COMMAND_OPTIONS.OVERWRITE];
+			if (!overwriteAnswer[COMMAND_OPTIONS.OVERWRITE]) {
+				throw TranslationService.getMessage(MESSAGES.PROJECT_CREATION_CANCELED);
+			}
+		}
+		return answers;
 	}
 
-	_preExecuteAction(args) {
-		args.parentdirectory = process.cwd();
-		return args;
+	_getProjectFolderName(answers) {
+		return answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP
+			? answers[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + answers[COMMAND_OPTIONS.PROJECT_ID]
+			: answers[COMMAND_OPTIONS.PROJECT_NAME];
 	}
 
-	_executeAction(args) {
-		const fullyQualifiedProjectId = args.publisherid + '.' + args.projectid;
-		const projectName =
-			args.type === ApplicationConstants.PROJECT_SUITEAPP
-				? fullyQualifiedProjectId
-				: args.projectname;
-		const projectDirectory = path.join(args.parentdirectory, projectName);
+	_preExecuteAction(answers) {
+		const projectFolderName = this._getProjectFolderName(answers);
+		if (projectFolderName) {
+			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = path.join(
+				this._projectFolder,
+				projectFolderName
+			);
+			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
+		} else {
+			// parentdirectory is a mandatory option in javaCLI but it must be computed in the nodeCLI
+			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = 'not_specified';
+		}
+		
+		return answers;
+	}
+
+	_executeAction(answers) {
+		const projectFolderName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
+		const projectAbsolutePath = answers[COMMAND_OPTIONS.PARENT_DIRECTORY];
 		const manifestFilePath = path.join(
-			projectDirectory,
+			projectAbsolutePath,
 			SOURCE_FOLDER,
 			ApplicationConstants.MANIFEST_XML
 		);
 
 		const params = {
-			parentdirectory: projectDirectory,
-			type: args.type,
+			//Enclose in double quotes to also support project names with spaces
+			parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
+			type: answers[COMMAND_OPTIONS.TYPE],
 			projectname: SOURCE_FOLDER,
-			...(args.overwrite && { overwrite: '' }),
-			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-				publisherid: args.publisherid,
-			}),
-			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-				projectid: args.projectid,
-			}),
-			...(args.type === ApplicationConstants.PROJECT_SUITEAPP && {
-				projectversion: args.projectversion,
+			...(answers[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
+			...(answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP && {
+				publisherid: answers[COMMAND_OPTIONS.PUBLISHER_ID],
+				projectid: answers[COMMAND_OPTIONS.PROJECT_ID],
+				projectversion: answers[COMMAND_OPTIONS.PROJECT_VERSION],
 			}),
 		};
 
-		//Since Node CLI renames project folders, check existence here instead of relying on Java CLI
-		if (
-			this._fileSystemService.folderExists(projectDirectory) &&
-			!this._fileSystemService.isFolderEmpty(projectDirectory) &&
-			!args.overwrite
-		) {
-			return new Promise((resolve, reject) => {
-				reject(TranslationService.getMessage(MESSAGES.PROJECT_EXISTS));
-			});
-		}
+		this._fileSystemService.createFolder(this._projectFolder, projectFolderName);
 
-		this._fileSystemService.createFolder(args.parentdirectory, projectName);
-
-		const actionCreateProject = new Promise((resolve, reject) => {
-			const executionContext = new SDKExecutionContext({
-				command: this._commandMetadata.name,
-				params: params,
-			});
-			return this._sdkExecutor
-				.execute(executionContext)
-				.then(operationResult => {
-					if (SDKOperationResultUtils.hasErrors(operationResult)) {
-						resolve({
-							operationResult: operationResult,
-							projectType: args.type,
-							projectDirectory: path.join(args.parentdirectory, projectName),
-						});
-						return;
-					}
-
-					if (args.type === ApplicationConstants.PROJECT_SUITEAPP) {
-						let oldPath = path.join(projectDirectory, projectName);
-						let newPath = path.join(projectDirectory, SOURCE_FOLDER);
-						this._fileSystemService.deleteFolderRecursive(newPath);
-						this._fileSystemService.renameFolder(oldPath, newPath);
-					}
-					this._fileSystemService.replaceStringInFile(
-						manifestFilePath,
-						SOURCE_FOLDER,
-						args.projectname
-					);
-
-					this._fileSystemService
-						.createFileFromTemplate({
-							template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
-							destinationFolder: projectDirectory,
-							fileName: CLI_CONFIG_FILENAME,
-							fileExtension: CLI_CONFIG_EXTENSION,
-						})
-						.then(() => {
-							resolve({
-								operationResult: operationResult,
-								projectType: args.type,
-								projectDirectory: path.join(args.parentdirectory, projectName),
-							});
-						})
-						.catch(error => {
-							reject(error);
-						});
-				})
-				.catch(error => {
-					reject(error);
+		const actionCreateProject = new Promise(async (resolve, reject) => {
+			try {
+				const executionContextCreateProject = new SDKExecutionContext({
+					command: this._commandMetadata.name,
+					params: params,
 				});
+
+				const operationResult = await this._sdkExecutor.execute(
+					executionContextCreateProject
+				);
+
+				if (SDKOperationResultUtils.hasErrors(operationResult)) {
+					resolve({
+						operationResult: operationResult,
+						projectType: answers[COMMAND_OPTIONS.TYPE],
+						projectDirectory: projectAbsolutePath,
+					});
+					return;
+				}
+
+				if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
+					const oldPath = path.join(projectAbsolutePath, projectFolderName);
+					const newPath = path.join(projectAbsolutePath, SOURCE_FOLDER);
+					this._fileSystemService.deleteFolderRecursive(newPath);
+					this._fileSystemService.renameFolder(oldPath, newPath);
+				}
+				this._fileSystemService.replaceStringInFile(
+					manifestFilePath,
+					SOURCE_FOLDER,
+					answers[COMMAND_OPTIONS.PROJECT_NAME]
+				);
+
+				await this._fileSystemService.createFileFromTemplate({
+					template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
+					destinationFolder: projectAbsolutePath,
+					fileName: CLI_CONFIG_FILENAME,
+					fileExtension: CLI_CONFIG_EXTENSION,
+				});
+
+				return resolve({
+					operationResult: operationResult,
+					projectType: answers[COMMAND_OPTIONS.TYPE],
+					projectDirectory: projectAbsolutePath,
+				});
+			} catch (error) {
+				reject(error);
+			}
 		});
 
 		return executeWithSpinner({
@@ -228,7 +270,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		const message = TranslationService.getMessage(
 			MESSAGES.PROJECT_CREATED,
 			projectTypeText,
-			result.projectDirectory
+			result.projectDirectory,
+			NodeUtils.lineBreak
 		);
 		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
 	}

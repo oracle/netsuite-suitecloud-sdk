@@ -4,8 +4,8 @@ const { NodeVM } = require('vm2');
 const NodeUtils = require('../../utils/NodeUtils');
 const FileUtils = require('../../utils/FileUtils');
 const path = require('path');
-const TranslationService = require('./../TranslationService');
-const { ERRORS } = require('./../TranslationKeys');
+const TranslationService = require('./../../services/TranslationService');
+const { ERRORS } = require('./../../services/TranslationKeys');
 const CommandUserExtension = require('./CommandUserExtension');
 const CLI_CONFIG_JS_FILE = 'cli-config.js';
 const DEFAULT_CONFIG = {
@@ -16,14 +16,16 @@ const DEFAULT_CONFIG = {
 const isString = str => typeof str === 'string' || str instanceof String;
 
 module.exports = class CLIConfigurationService {
-	constructor(executionPath) {
+	constructor() {
 		this._cliConfig = DEFAULT_CONFIG;
-		this._executionPath = executionPath;
 	}
 
-	initialize() {
+	initialize(executionPath) {
+		this._executionPath = executionPath;
 		var cliConfigFile = path.join(this._executionPath, CLI_CONFIG_JS_FILE);
-		if (!FileUtils.exists(cliConfigFile)) return;
+		if (!FileUtils.exists(cliConfigFile)) {
+			return;
+		}
 
 		try {
 			var nodeVm = new NodeVM({
@@ -35,7 +37,7 @@ module.exports = class CLIConfigurationService {
 					root: this._executionPath,
 				},
 			});
-			var cliConfigFileContent = FileUtils.readAsString(cliConfigFile);
+			const cliConfigFileContent = FileUtils.readAsString(cliConfigFile);
 			this._cliConfig = nodeVm.run(cliConfigFileContent, cliConfigFile);
 		} catch (error) {
 			throw TranslationService.getMessage(

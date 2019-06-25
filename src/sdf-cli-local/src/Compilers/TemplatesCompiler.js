@@ -6,6 +6,7 @@ const Utils = require('../Utils');
 const path = require('path');
 const glob = require('glob').sync;
 const Log = require('../services/Log');
+const FileSystem = require('../services/FileSystem');
 
 module.exports = class TemplatesCompiler {
 	constructor(options) {
@@ -159,11 +160,11 @@ module.exports = class TemplatesCompiler {
 	}
 
 	createTemplateFolders() {
-		this.templates_path = Utils.createFolder(
+		this.templates_path = FileSystem.createFolder(
 			this.templates_folder,
 			this.context.local_server_path
 		);
-		this.processed_templates_path = Utils.createFolder(
+		this.processed_templates_path = FileSystem.createFolder(
 			this.processed_templates_folder,
 			this.templates_path
 		);

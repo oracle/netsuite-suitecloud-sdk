@@ -3,6 +3,7 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const {
 	COMMAND_SDK_WRAPPER: { MESSAGES },
@@ -25,7 +26,7 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 		const projectOptions = [PROJECT_OPTION, PROJECT_DIRECTORY_OPTION];
 		projectOptions.forEach(projectOption => {
 			if (this._commandMetadata.options[projectOption]) {
-				args[projectOption] = this._projectFolder;
+				args[projectOption] = CommandUtils.quoteString(this._projectFolder);
 			}
 		});
 	}

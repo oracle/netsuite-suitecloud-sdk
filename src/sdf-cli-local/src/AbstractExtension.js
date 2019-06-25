@@ -49,8 +49,7 @@ module.exports = class AbstractExtension {
 		this.sass.files = Utils.parseFiles(sass);
 		this.sass.entrypoints = _.mapObject(sass.entrypoints, entrypoint => {
 			entrypoint = Utils.parseFileName(entrypoint);
-			entrypoint = entrypoint.replace(new RegExp(`^${this.base_path}`), '');
-			return path.join(this.name, entrypoint);
+			return this._excludeBasePath(entrypoint);
 		});
 
 		return this.sass;
@@ -76,12 +75,24 @@ module.exports = class AbstractExtension {
 		if (this.assets) {
 			return this.assets;
 		}
-		this.assets = {};
+		this.assets = [];
+		const folder = 'assets';
 
 		const ext_assets = this.raw_extension.assets || {};
+		const assets_local_path = this.getLocalAssetsPath(folder);
 
-		this.assets = _.map(ext_assets, Utils.parseFiles);
-		this.assets = _.flatten(this.assets);
+		_.each(ext_assets, asset => {
+			return Utils.parseFiles(asset, file => {
+				const src = path.normalize(this._excludeBasePath(file));
+				// first match of assets folder name and first match of extension name are removed from the dest path:
+				const dest = path.join(
+					assets_local_path,
+					src.replace(folder, '').replace(this.name, '')
+				);
+
+				this.assets.push({ dest: dest, src: src });
+			});
+		});
 
 		return this.assets;
 	}

@@ -10,7 +10,7 @@ const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
-const commandsMetadata = require('../metadata/CommandsMetadataService');
+const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ANSWERS_NAMES = {
@@ -44,13 +44,17 @@ const {
 	validateSuiteApp,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
+const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._projectMetadataService = new ProjectMetadataService();
 		this._fileSystemService = new FileSystemService();
-		this._commandsMetadataInfo = commandsMetadata.getCommandsMetadata();
+		const commandsMetadataService = new CommandsMetadataService();
+		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(
+			LIST_OBJECTS_COMMAND_NAME
+		);
 	}
 
 	_getCommandQuestions(prompt) {
@@ -61,7 +65,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				.then(firstAnswers => {
 					const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
 					const executionContextForListObjects = new SDKExecutionContext({
-						command: this._commandsMetadataInfo.listobjects.name,
+						command: this._listObjectsMetadata.name,
 						showOutput: false,
 						params: paramsForListObjects,
 					});
@@ -262,10 +266,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				' '
 			);
 		}
-		const listObjectsOptions = Object.keys(this._commandsMetadataInfo.listobjects.options);
-		const params = CommandUtils.extractOnlyOptionsFromObject(answers, listObjectsOptions);
-
-		return params;
+		return CommandUtils.extractCommandOptions(answers, this._listObjectsMetadata);
 	}
 
 	_arrangeAnswersForImportObjects(answers) {
@@ -281,20 +282,17 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return answers;
 	}
 
-	_preExecuteAction(args) {
-		args[ANSWERS_NAMES.PROJECT_FOLDER] = this._projectFolder;
-		return args;
+	_preExecuteAction(answers) {
+		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
+		return answers;
 	}
 
 	_executeAction(answers) {
 		if (answers[ANSWERS_NAMES.OVERRITE_OBJECTS] === false) {
-			return new Promise((resolve, reject) =>
-				reject(TranslationService.getMessage(MESSAGES.CANCEL_IMPORT))
-			);
+			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
 
-		const options = Object.keys(this._commandMetadata.options);
-		var params = CommandUtils.extractOnlyOptionsFromObject(answers, options);
+		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
