@@ -680,7 +680,7 @@
             {
                 "name": "type",
                 "option": "type",
-                "description": "Specify the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https://system.netsuite.com/app/help/helpcenter.nl?fid=sdf xml.html.",
+                "description": "Specify the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https://system.netsuite.com/app/help/helpcenter.nl?fid=sdfxml.html.",
                 "mandatory": true,
                 "type": "SINGLE",
                 "usage": "customrecordtype",
@@ -982,7 +982,7 @@
             {
                 "name": "type",
                 "option": "type",
-                "description": "Specify the type of custom objects to list. To specify multiple types, enter the types separated by spaces. Otherwise, all types are listed. To see what custom objects are supported by SDF, see https://system.netsuite.com/app/help/helpcenter.nl?fid=sdf xml.html.",
+                "description": "Specify the type of custom objects to list. To specify multiple types, enter the types separated by spaces. Otherwise, all types are listed. To see what custom objects are supported by SDF, see https://system.netsuite.com/app/help/helpcenter.nl?fid=sdfxml.html.",
                 "mandatory": false,
                 "type": "MULTIPLE",
                 "usage": "customrecordtype workflow [...]",
