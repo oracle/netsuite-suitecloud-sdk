@@ -14,6 +14,7 @@ module.exports = class Extension extends AbstractExtension {
 		this.base_path = this.raw_extension.basepath;
 		this.vendor = this.raw_extension.vendor;
 		this.name = this.raw_extension.name;
+		this.version = this.raw_extension.version;
 	}
 
 	getJavascript() {

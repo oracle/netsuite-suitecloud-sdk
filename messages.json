@@ -24,7 +24,7 @@
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_ID": "Enter the project ID.",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_VERSION": "Enter the project version.",
 	"COMMAND_CREATEPROJECT_ERRORS_PROCESS_FAILED": "The createproject process failed.",
-	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATED": "The {0} project was created successfully in {1}.{2}Navigate to {1} and run \"sdf setupaccount -i\" to link your project with your account.",
+	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATED": "The {0} project was created successfully in {1}.{2}Navigate to {1} and run \"sdf setupaccount\" to link your project with your account.",
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATION_CANCELED": "The creation process has been canceled.",
 	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
 	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Do you want to overwrite the {0} project? All the files and folders from the former project will be deleted and replaced by the new project.",

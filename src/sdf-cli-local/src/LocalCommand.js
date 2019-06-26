@@ -4,10 +4,10 @@ const DeployXml = require('./DeployXml');
 const Compiler = require('./Compilers/Compiler');
 const CompilationContext = require('./CompilationContext');
 const LocalServer = require('./LocalServer');
-const Utils = require('./Utils');
 
 const Translation = require('./services/Translation');
 const Log = require('./services/Log');
+const FileSystem = require('./services/FileSystem');
 
 const _ = require('underscore');
 
@@ -16,6 +16,7 @@ module.exports = class LocalCommand {
 		this._projectFolder = options.projectFolder;
 		Translation.start(...options.translation);
 		Log.start(options.colors);
+		FileSystem.start(options.filesystem);
 	}
 
 	initialize() {
