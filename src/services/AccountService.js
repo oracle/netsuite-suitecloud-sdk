@@ -81,7 +81,8 @@ module.exports = class AccountService {
 		try {
 			// server response with status not OK
 			if (errorResponse.statusCode) {
-				const parsedResponseError = JSON.parse(errorResponse.error);
+				const errorWithoutBackSlashes = errorResponse.error.replace(/\\/g, '');
+				const parsedResponseError = JSON.parse(errorWithoutBackSlashes);
 				return parsedResponseError.error.message;
 			}
 			// timedout response
