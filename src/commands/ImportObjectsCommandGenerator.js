@@ -30,7 +30,7 @@ const IMPORT_0BJECT = {
 	SUCCESS: 'SUCCESS',
 	FAILED: 'FAILED',
 };
-const { PROJECT_SUITEAPP, OBJECTS_FOLDER } = require('../ApplicationConstants');
+const { PROJECT_SUITEAPP, FOLDER_NAMES } = require('../ApplicationConstants');
 const {
 	COMMAND_IMPORTOBJECTS: { ERRORS, QUESTIONS, MESSAGES },
 	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED },
@@ -235,7 +235,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
 		const objectDirectoryChoices = this._fileSystemService
-			.getFoldersFromDirectory(join(this._projectFolder, OBJECTS_FOLDER))
+			.getFoldersFromDirectory(join(this._projectFolder, FOLDER_NAMES.OBJECTS))
 			.map(transformFoldersToChoicesFunc);
 
 		const questionDestinationFolder = {

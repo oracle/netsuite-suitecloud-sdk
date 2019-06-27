@@ -12,7 +12,7 @@ const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const assert = require('assert');
 
-const { FILE_NAMES, PROJECT_ACP, PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const { FILE_NAMES, FOLDER_NAMES, PROJECT_ACP, PROJECT_SUITEAPP } = require('../ApplicationConstants');
 
 const {
 	COMMAND_DEPLOY: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES, OUTPUT },
@@ -42,8 +42,6 @@ const APPLY_CONTENT_PROTECTION_VALUES = {
 	FALSE: 'F',
 	TRUE: 'T',
 };
-
-const INSATALLATION_PREFERENCES_FOLDER = '/InstallationPreferences';
 
 module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -101,7 +99,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	_hasLockOrHideFiles() {
 		const pathToInstallationPreferences = path.join(
 			this._projectFolder,
-			INSATALLATION_PREFERENCES_FOLDER
+			FOLDER_NAMES.INSTALLATION_PREFERENCES
 		);
 		return (
 			FileUtils.exists(
