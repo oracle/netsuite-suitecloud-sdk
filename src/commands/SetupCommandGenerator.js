@@ -175,7 +175,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 			{
 				when: response => !response[ANSWERS.ISSUE_A_TOKEN],
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
+				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 				name: ANSWERS.SAVE_TOKEN_ID,
 				message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
 				filter: fieldValue => fieldValue.trim(),
@@ -183,7 +184,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 			{
 				when: response => !response[ANSWERS.ISSUE_A_TOKEN],
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
+				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 				name: ANSWERS.SAVE_TOKEN_SECRET,
 				message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
 				filter: fieldValue => fieldValue.trim(),

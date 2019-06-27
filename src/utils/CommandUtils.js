@@ -7,7 +7,8 @@ class CommandUtils {
 			CHECKBOX: 'checkbox',
 			INPUT: 'input',
 			LIST: 'list',
-			PASSWORD: 'password'
+			PASSWORD: 'password',
+			PASSWORD_MASK: '*'
 		};
 	}
 

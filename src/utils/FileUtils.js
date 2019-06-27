@@ -6,7 +6,7 @@ module.exports = {
 	create: function(fileName, object) {
 		var content = JSON.stringify(object);
 
-		fs.writeFile(fileName, content, 'utf8', function(error) {
+		fs.writeFileSync(fileName, content, 'utf8', function(error) {
 			if (error) {
 				throw `There was a problem while creating the file ${fileName} \n Error: ${JSON.stringify(
 					error
