@@ -3,6 +3,7 @@ const TranslationService = require('../../services/TranslationService');
 const AccountDetails = require('./AccountDetails');
 const { ERRORS } = require('../../services/TranslationKeys');
 const { ACCOUNT_DETAILS_FILENAME } = require('../../ApplicationConstants');
+const assert = require('assert');
 
 const DEFAULT_ACCOUNT = 'default';
 const DEFAULT_ACCOUNT_PROPERTIES_KEYS = [
@@ -30,7 +31,14 @@ module.exports = class AccountDetailsService {
 		CACHED_ACCOUNT_DETAILS = accountDetails;
 	}
 
-	save() {
+	save(accountDetails) {
+		assert(accountDetails);
+		this.set(accountDetails);
+		this.saveCached();
+	}
+
+	saveCached() {
+		assert(CACHED_ACCOUNT_DETAILS);
 		try {
 			// nest the values into a 'default' property
 			const defaultAccountDetails = {
