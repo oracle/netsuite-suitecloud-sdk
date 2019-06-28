@@ -12,7 +12,12 @@ const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const assert = require('assert');
 
-const { FILE_NAMES, FOLDER_NAMES, PROJECT_ACP, PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const {
+	FILE_NAMES,
+	FOLDER_NAMES,
+	PROJECT_ACP,
+	PROJECT_SUITEAPP,
+} = require('../ApplicationConstants');
 
 const {
 	COMMAND_DEPLOY: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES, OUTPUT },
@@ -84,7 +89,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		return { ...answers, questionsPrompted: true };
+		return answers;
 	}
 
 	_isSuiteAppProject() {
@@ -155,7 +160,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(answers) {
-		const { questionsPrompted, projectType } = answers;
+		const { projectType } = answers;
 		const SDKDeployParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
 		const executionContextForDeploy = new SDKExecutionContext({
@@ -173,7 +178,6 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			deployResult,
 			SDKDeployParams,
 			projectType,
-			questionsPrompted,
 		};
 	}
 
@@ -182,19 +186,18 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		assert(actionResult.SDKDeployParams);
 		assert(actionResult.projectType);
 
-		const { deployResult, questionsPrompted } = actionResult;
-		if (!questionsPrompted) {
-			this._showNonInteraciveDeployContentProtectionOption(actionResult);
-		}
+		const { deployResult } = actionResult;
 
+		
 		if (SDKOperationResultUtils.hasErrors(deployResult)) {
 			SDKOperationResultUtils.logErrors(deployResult);
 		} else {
+			this._showApplyContentProtectionOptionMessage(actionResult);
 			SDKOperationResultUtils.logMessages(deployResult);
 		}
 	}
 
-	_showNonInteraciveDeployContentProtectionOption(actionResult) {
+	_showApplyContentProtectionOptionMessage(actionResult) {
 		const { projectType, SDKDeployParams } = actionResult;
 
 		if (projectType === PROJECT_SUITEAPP) {
@@ -219,6 +222,5 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				);
 			}
 		}
-
 	}
 };
