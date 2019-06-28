@@ -10,9 +10,17 @@ module.exports = {
 		HOST: '-DproxyHost',
 		PORT: '-DproxyPort',
 	},
+	FILE_NAMES: {
+		HIDING_PREFERENCE: 'hiding.xml',
+		LOCKING_PREFERENCE: 'locking.xml',
+	},
+	FOLDER_NAMES: {
+		FILE_CABINET: '/FileCabinet',
+		INSTALLATION_PREFERENCES: '/InstallationPreferences',
+		OBJECTS: '/Objects',
+	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	MANIFEST_XML: 'manifest.xml',
-	OBJECTS_FOLDER: 'Objects',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	REST_ROLES_URL: 'https://system.netsuite.com/rest/roles',
