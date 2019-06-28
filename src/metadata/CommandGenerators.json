@@ -1,13 +1,22 @@
 [
     {
-        "commandName": "listfiles",
-        "interactiveGenerator": "commands/ListFilesCommandGenerator",
-        "nonInteractiveGenerator": "commands/ListFilesCommandGenerator"
+        "commandName": "adddependencies",
+        "nonInteractiveGenerator": "commands/AddDependenciesCommandGenerator"
     },
     {
-        "commandName": "listobjects",
-        "interactiveGenerator": "commands/ListObjectsCommandGenerator",
-        "nonInteractiveGenerator": "commands/ListObjectsCommandGenerator"
+        "commandName": "createobject",
+        "interactiveGenerator": "commands/CreateObjectCommandGenerator",
+        "nonInteractiveGenerator": "commands/CreateObjectCommandGenerator"
+    },
+    {
+        "commandName": "createproject",
+        "interactiveGenerator": "commands/CreateProjectCommandGenerator",
+        "nonInteractiveGenerator": "commands/CreateProjectCommandGenerator"
+    },
+    {
+        "commandName": "deploy",
+        "interactiveGenerator": "commands/DeployCommandGenerator",
+        "nonInteractiveGenerator": "commands/DeployCommandGenerator"
     },
     {
         "commandName": "importfiles",
@@ -20,24 +29,14 @@
         "nonInteractiveGenerator": "commands/ImportObjectsCommandGenerator"
     },
     {
-        "commandName": "setupaccount",
-        "interactiveGenerator": "./commands/SetupCommandGenerator",
-        "nonInteractiveGenerator": "./commands/SetupCommandGenerator"
+        "commandName": "listfiles",
+        "interactiveGenerator": "commands/ListFilesCommandGenerator",
+        "nonInteractiveGenerator": "commands/ListFilesCommandGenerator"
     },
     {
-        "commandName": "createproject",
-        "interactiveGenerator": "commands/CreateProjectCommandGenerator",
-        "nonInteractiveGenerator": "commands/CreateProjectCommandGenerator"
-    },
-    {
-        "commandName": "validate",
-        "interactiveGenerator": "commands/ValidateCommandGenerator",
-        "nonInteractiveGenerator": "commands/SDKWrapperCommandGenerator"
-    },
-    {
-        "commandName": "createobject",
-        "interactiveGenerator": "commands/CreateObjectCommandGenerator",
-        "nonInteractiveGenerator": "commands/CreateObjectCommandGenerator"
+        "commandName": "listobjects",
+        "interactiveGenerator": "commands/ListObjectsCommandGenerator",
+        "nonInteractiveGenerator": "commands/ListObjectsCommandGenerator"
     },
     {
         "commandName": "localserver",
@@ -49,7 +48,13 @@
         "nonInteractiveGenerator": "commands/ProxyCommandGenerator"
     },
     {
-        "commandName": "adddependencies",
-        "nonInteractiveGenerator": "commands/AddDependenciesCommandGenerator"
+        "commandName": "setupaccount",
+        "interactiveGenerator": "./commands/SetupCommandGenerator",
+        "nonInteractiveGenerator": "./commands/SetupCommandGenerator"
+    },
+    {
+        "commandName": "validate",
+        "interactiveGenerator": "commands/ValidateCommandGenerator",
+        "nonInteractiveGenerator": "commands/SDKWrapperCommandGenerator"
     }
 ]

@@ -6,9 +6,7 @@ const FileSystemService = require('../services/FileSystemService');
 const TemplateKeys = require('../templates/TemplateKeys');
 const chalk = require('chalk');
 const { join } = require('path');
-
-const OBJECTS_FOLDER = 'Objects';
-const FILECABINET_FOLDER = 'FileCabinet';
+const { FOLDER_NAMES } = require('../ApplicationConstants');
 
 module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -21,7 +19,7 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 			return { name: folder.replace(this._projectFolder, ''), value: folder };
 		};
 		var objectDirectoryChoices = this._fileSystemService
-			.getFoldersFromDirectory(join(this._projectFolder, OBJECTS_FOLDER))
+			.getFoldersFromDirectory(join(this._projectFolder, FOLDER_NAMES.OBJECTS))
 			.map(transformFoldersToChoicesFunc);
 
 		return prompt([
@@ -64,7 +62,7 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 		]).then(mainAnswers => {
 			if (mainAnswers.createrelatedfiles) {
 				var fileCabinetDirectoryChoices = this._fileSystemService
-					.getFoldersFromDirectory(join(this._projectFolder, FILECABINET_FOLDER))
+					.getFoldersFromDirectory(join(this._projectFolder, FOLDER_NAMES.FILE_CABINET))
 					.map(transformFoldersToChoicesFunc);
 
 				return prompt([

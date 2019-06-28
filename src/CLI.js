@@ -5,7 +5,10 @@ var path = require('path');
 const program = require('commander');
 const NodeUtils = require('./utils/NodeUtils');
 const TranslationService = require('./services/TranslationService');
-const { INTERACTIVE_OPTION_DESCRIPTION, CLI_TITLE, ERRORS } = require('./services/TranslationKeys');
+const {
+	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE },
+	ERRORS,
+} = require('./services/TranslationKeys');
 const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapExceptionMessage;
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
@@ -43,6 +46,7 @@ module.exports = class CLI {
 						NodeUtils.COLORS.ERROR
 					);
 				})
+				.usage(TranslationService.getMessage(USAGE))
 				.parse(process.argv);
 
 			if (!program.args.length) {
@@ -84,7 +88,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeUtils.println(TranslationService.getMessage(CLI_TITLE), NodeUtils.COLORS.RESULT);
+		NodeUtils.println(TranslationService.getMessage(TITLE), NodeUtils.COLORS.RESULT);
 		program.help();
 	}
 };
