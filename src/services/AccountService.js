@@ -44,39 +44,6 @@ module.exports = class AccountService {
 		});
 	}
 
-	getIssueToken(accountDetails) {
-		assert(accountDetails);
-		assert(accountDetails.accountId);
-		assert(accountDetails.roleId);
-		assert(accountDetails.email);
-		assert(accountDetails.password);
-
-		const options = {
-			url: REST_ISSUE_TOKEN_URL,
-			qs: {
-				[CONSUMER_REQUEST_PARAM.KEY]: Base64.decode(CONSUMER_REQUEST_PARAM.VALUE),
-			},
-			proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
-			headers: {
-				Authorization: this._getNLAuthorizationHeaderString({
-					accountId: accountDetails.accountId,
-					roleId: accountDetails.roleId,
-					email: accountDetails.email,
-					password: accountDetails.password,
-				}),
-			},
-		};
-
-		return new Promise(async (resolve, reject) => {
-			try {
-				const result = await request(options).promise();
-				resolve(result);
-			} catch (error) {
-				reject(this.throwRequestError(error));
-			}
-		});
-	}
-
 	throwRequestError(errorResponse) {
 		try {
 			// server response with status not OK

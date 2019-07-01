@@ -7,7 +7,6 @@ const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const FileUtils = require('../utils/FileUtils');
-const AccountDetailsService = require('./../core/accountsetup/AccountDetailsService');
 const AccountDetails = require('./../core/accountsetup/AccountDetails');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
