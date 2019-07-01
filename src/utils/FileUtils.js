@@ -1,4 +1,6 @@
 'use strict';
+const TranslationService = require('../services/TranslationService'); 
+const { ERRORS } = require('../services/TranslationKeys'); 
 
 const fs = require('fs');
 
@@ -8,9 +10,7 @@ module.exports = {
 
 		fs.writeFileSync(fileName, content, 'utf8', function(error) {
 			if (error) {
-				throw `There was a problem while creating the file ${fileName} \n Error: ${JSON.stringify(
-					error
-				)}`;
+				throw TranslationService.getMessage(ERRORS.WRITNG_FILE, fileName, JSON.stringify(error));
 			}
 		});
 	},

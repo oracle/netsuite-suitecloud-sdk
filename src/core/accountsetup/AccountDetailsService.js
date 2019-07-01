@@ -34,10 +34,10 @@ module.exports = class AccountDetailsService {
 	save(accountDetails) {
 		assert(accountDetails);
 		this.set(accountDetails);
-		this.saveCached();
+		this._saveCached();
 	}
 
-	saveCached() {
+	_saveCached() {
 		assert(CACHED_ACCOUNT_DETAILS);
 		try {
 			// nest the values into a 'default' property
