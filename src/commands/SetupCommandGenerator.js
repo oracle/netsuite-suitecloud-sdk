@@ -7,13 +7,13 @@ const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const FileUtils = require('../utils/FileUtils');
-const AccountDetailsService = require('./../core/accountsetup/AccountDetailsService');
 const AccountDetails = require('./../core/accountsetup/AccountDetails');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const AccountService = require('../services/AccountService');
 const inquirer = require('inquirer');
 
+const ISSUE_TOKEN_COMMAND = 'issuetoken';
 const SAVE_TOKEN_COMMAND = 'savetoken';
 
 const {
@@ -50,7 +50,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._accountService = new AccountService();
-		this._accountDetailsService = new AccountDetailsService();
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -175,7 +174,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 			{
 				when: response => !response[ANSWERS.ISSUE_A_TOKEN],
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
+				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 				name: ANSWERS.SAVE_TOKEN_ID,
 				message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
 				filter: fieldValue => fieldValue.trim(),
@@ -183,7 +183,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			},
 			{
 				when: response => !response[ANSWERS.ISSUE_A_TOKEN],
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
+				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 				name: ANSWERS.SAVE_TOKEN_SECRET,
 				message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
 				filter: fieldValue => fieldValue.trim(),
@@ -219,13 +220,25 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		return FileUtils.exists(path.join(this._executionPath, ACCOUNT_DETAILS_FILENAME));
 	}
 
+	_issueToken(params) {
+		const executionContextForSaveToken = new SDKExecutionContext({
+			command: ISSUE_TOKEN_COMMAND,
+			showOutput: false,
+			params,
+		});
+
+		return executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContextForSaveToken),
+			message: TranslationService.getMessage(MESSAGES.ISSUING_TBA_TOKEN),
+		});
+	}
+
 	_saveToken(params) {
-		let executionContextForSaveToken = new SDKExecutionContext({
+		const executionContextForSaveToken = new SDKExecutionContext({
 			command: SAVE_TOKEN_COMMAND,
 			showOutput: false,
 			params,
 		});
-		this._applyDefaultContextParams(executionContextForSaveToken);
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForSaveToken),
@@ -245,30 +258,34 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		};
 		const newAccountDetails = AccountDetails.fromJson(contextValues);
 
+		let operationResult;
+		const accountParams = {
+			url: answers.environment,
+			email: answers.email,
+			account: answers.account,
+			role: answers.role,
+		};
+
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
-			const JSONResponse = await executeWithSpinner({
-				action: this._accountService.getIssueToken(newAccountDetails),
-				message: TranslationService.getMessage(MESSAGES.ISSUING_TBA_TOKEN),
+			operationResult = await this._issueToken({
+				...accountParams,
+				password: answers.password,
 			});
-
-			const issueTokenResponse = JSON.parse(JSONResponse);
-			answers[ANSWERS.SAVE_TOKEN_ID] = issueTokenResponse.tokenId;
-			answers[ANSWERS.SAVE_TOKEN_SECRET] = issueTokenResponse.tokenSecret;
+		} else {
+			operationResult = await this._saveToken({
+				...accountParams,
+				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
+				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
+			});
 		}
 
-		this._accountDetailsService.set(newAccountDetails);
-
-		const saveTokenResponse = await this._saveToken({
-			tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
-			tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
-		});
-
-		if (SDKOperationResultUtils.hasErrors(saveTokenResponse)) {
-			throw SDKOperationResultUtils.getMessagesString(saveTokenResponse);
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			throw SDKOperationResultUtils.getMessagesString(operationResult);
 		}
-		this._accountDetailsService.save();
 
-		return saveTokenResponse;
+		this._accountDetailsService.save(newAccountDetails);
+
+		return operationResult;
 	}
 
 	_formatOutput(operationResult) {
