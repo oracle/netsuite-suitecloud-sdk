@@ -155,7 +155,7 @@
 	"ERRORS_XML_MANIFEST_TAG_MISSING": "The manifest.xml file does not contain the manifest tag.",
 	"ERRORS_XML_PROJECTTYPE_ATTRIBUTE_MISSING": "The manifest field does not contain the projecttype attribute in the manifest.xml file.",
 	"ERRORS_XML_PROJECTTYPE_INCORRECT": "The projecttype attribute within the manifest field in the manifest.xml file must be either SUITEAPP or ACCOUNTCUSTOMIZATION.",
-	"ERRORS_WRITING_ACCOUNT_JSON": "There was an error when editing the account.json file. Run \"sdf setupaccount\" again.",
+	"ERRORS_WRITING_ACCOUNT_JSON": "There was an error when editing the account.json file.{0}",
 	"ERRORS_WRITING_FILE": "There was a problem while creating the file {0}.\n  Error: {1}",
 	"ERRORS_WRONG_PROXY_SETTING": "The {0} proxy URL server is invalid. It must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80.",
 		

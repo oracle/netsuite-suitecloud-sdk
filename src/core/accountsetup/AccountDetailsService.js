@@ -1,6 +1,7 @@
 const FileUtils = require('../../utils/FileUtils');
 const TranslationService = require('../../services/TranslationService');
 const AccountDetails = require('./AccountDetails');
+const { lineBreak } = require('../../utils/NodeUtils');
 const { ERRORS } = require('../../services/TranslationKeys');
 const { ACCOUNT_DETAILS_FILENAME } = require('../../ApplicationConstants');
 const assert = require('assert');
@@ -46,7 +47,8 @@ module.exports = class AccountDetailsService {
 			};
 			FileUtils.create(ACCOUNT_DETAILS_FILENAME, defaultAccountDetails);
 		} catch (error) {
-			throw TranslationService.getMessage(ERRORS.WRITING_ACCOUNT_JSON);
+			const errorMessage = error != null && error.message ? `${lineBreak}Error: ${error.message}` : '';
+			throw TranslationService.getMessage(ERRORS.WRITING_ACCOUNT_JSON, errorMessage);
 		}
 	}
 
