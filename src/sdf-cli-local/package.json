@@ -1,19 +1,19 @@
 {
-  "name": "sdf-cli-local",
-  "version": "1.0.0",
-  "description": "POC for SDF CLI Local",
-  "main": "index.js",
-  "author": "NetSuite",
-  "license": "MIT",
-  "preferGlobal": true,
-  "dependencies": {
-    "async": "2.6.2",
-    "glob": "7.1.3",
-    "path": "0.12.7",
-    "fast-xml-parser": "3.12.14",
-    "underscore": "1.9.1",
-    "node-sass": "4.11.0",
-    "express": "4.16.4",
-    "cors": "2.8.5"
-  }
+	"name": "sdf-cli-local",
+	"version": "1.0.0",
+	"description": "SDF CLI Local command",
+	"main": "index.js",
+	"author": "NetSuite",
+	"license": "MIT",
+	"preferGlobal": true,
+	"dependencies": {
+		"async": "3.0.1",
+		"cors": "2.8.5",
+		"express": "4.17.1",
+		"fast-xml-parser": "3.12.16",
+		"glob": "7.1.4",
+		"handlebars": "4.1.2",
+		"node-sass": "4.12.0",
+		"underscore": "1.9.1"
+	}
 }
