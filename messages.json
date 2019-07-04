@@ -107,6 +107,7 @@
 	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
 	"COMMAND_OPTION_IS_MANDATORY": "\"{0}\" option is mandatory.",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
+	"COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION": "Suggested interactive command: \"sdf {0} -i\"",
 	
 	"COMMAND_PROXY_ARGS_VALIDATION_SET_CLEAR_BOTH_SPECIFIED": "You can only specify one option for the command, either \"--set\" or \"-–clear\".",
 	"COMMAND_PROXY_ARGS_VALIDATION_SET_CLEAR_NEITHER_SPECIFIED": "You must specify one option for the command, either \"--set\" or \"–-clear\".",

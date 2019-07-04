@@ -13,7 +13,12 @@ module.exports = {
 	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
 	COLORS: AVAILABLE_COLORS,
 	println: function(message, color) {
-		console.log(this.formatString(message, { color: color }));
+		if(message){
+			console.log(this.formatString(message, { color: color }));
+		}
+		else{
+			console.log();
+		}
 	},
 	formatString: (str, options) => {
 		var color = options.color || AVAILABLE_COLORS.DEFAULT;

@@ -6,6 +6,14 @@ module.exports = {
 		} else {
 			return exception;
 		}
+	},
+
+	unwrapInformationMessage(exception) {
+		if (exception.getInfoMessage) {
+			return exception.getInfoMessage();
+		} else {
+			return '';
+		}
 	}
 
 };
