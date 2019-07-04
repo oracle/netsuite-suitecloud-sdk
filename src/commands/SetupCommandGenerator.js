@@ -280,7 +280,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			throw SDKOperationResultUtils.getMessagesString(operationResult);
+			throw SDKOperationResultUtils.getMessagesString(this._enrichServerErrorMessage(operationResult));
 		}
 
 		this._accountDetailsService.save(newAccountDetails);
@@ -294,5 +294,15 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			TranslationService.getMessage(OUTPUT.SUCCESSFUL),
 			NodeUtils.COLORS.RESULT
 		);
+	}
+
+	_enrichServerErrorMessage(operationResult) {
+		operationResult.messages = operationResult.messages.map((message) => {
+			if(JSON.stringify(message) === TranslationService.getMessage(ERRORS.ERRORS_SERVER_ERROR_2FA_REQUIRED)){
+				message = TranslationService.getMessage(ERRORS.ERRORS_CLI_ERROR_2FA_REQUIRED);
+			}
+			return message;
+		});
+		return operationResult;
 	}
 };
