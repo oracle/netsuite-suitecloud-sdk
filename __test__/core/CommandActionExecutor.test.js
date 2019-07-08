@@ -204,4 +204,31 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		expect(mockCommandOutputHandler.showErrorResult).toBeCalledTimes(1);
 		expect(mockCommandOutputHandler.showSuccessResult).toBeCalledTimes(0);
 	});
+
+	it('Should throw EXCEPTION when running as interactive and current command does not support it.', async () => {
+		
+		const CommandsMetadataServiceNotSupportInteractiveMode = jest.fn(() => ({
+			getCommandMetadataByName: jest.fn(() => {
+				return { isSetupRequired: false, supportsInteractiveMode: false };
+			}),
+		}));
+
+		const commandExecutorWithoutAccountConf = new CommandActionExecutor({
+			commandOutputHandler: mockCommandOutputHandler,
+			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
+			cliConfigurationService: new CliConfigurationService(),
+			commandInstanceFactory: new CommandInstanceFactory(),
+			accountDetailsService: new AccountDetailsService(),
+			commandsMetadataService: new CommandsMetadataServiceNotSupportInteractiveMode(),
+		});
+
+		await commandExecutorWithoutAccountConf.executeAction({
+			executionPath: 'C:/',
+			commandName: 'importobjects',
+			runInInteractiveMode: true,
+			arguments: {},
+		});
+		expect(mockCommandOutputHandler.showErrorResult).toBeCalledTimes(1);
+		expect(mockCommandOutputHandler.showSuccessResult).toBeCalledTimes(0);
+	});
 });
