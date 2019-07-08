@@ -51,6 +51,7 @@ module.exports = class CommandActionExecutor {
 				commandMetadata: commandMetadata,
 				projectFolder: projectFolder,
 				executionPath: context.executionPath,
+				commandOptionsValidator: this._commandOptionsValidator
 			});
 
 			const commandArguments = this._extractOptionValuesFromArguments(
