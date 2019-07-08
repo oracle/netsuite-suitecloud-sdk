@@ -167,11 +167,13 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	_formatOutput(operationResult) {
 		const { data } = operationResult;
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult)
+			if (operationResult.resultMessage) {
+				SDKOperationResultUtils.logResultMessage(operationResult);
+			} else {
+				SDKOperationResultUtils.logErrors(operationResult)
+			}
 			return;
 		}
-
-		SDKOperationResultUtils.logMessages(operationResult)
 
 		if (Array.isArray(data) && data.length) {
 			NodeUtils.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), NodeUtils.COLORS.RESULT);

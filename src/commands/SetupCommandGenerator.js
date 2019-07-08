@@ -280,7 +280,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			throw SDKOperationResultUtils.getMessagesString(operationResult);
+			throw SDKOperationResultUtils.getErrorMessagesString(operationResult);
 		}
 
 		this._accountDetailsService.save(newAccountDetails);
@@ -289,7 +289,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(operationResult) {
-		SDKOperationResultUtils.logMessages(operationResult);
+		SDKOperationResultUtils.logResultMessage(operationResult);
 		NodeUtils.println(
 			TranslationService.getMessage(OUTPUT.SUCCESSFUL),
 			NodeUtils.COLORS.RESULT
