@@ -6,19 +6,14 @@ const AVAILABLE_COLORS = {
 	RESULT: chalk.green,
 	ERROR: chalk.red,
 	INFO: chalk.cyan,
-	WARNING: chalk.yellow
+	WARNING: chalk.yellow,
 };
 
 module.exports = {
 	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
 	COLORS: AVAILABLE_COLORS,
 	println: function(message, color) {
-		if(message){
-			console.log(this.formatString(message, { color: color }));
-		}
-		else{
-			console.log();
-		}
+		console.log(this.formatString(message, { color: color }));
 	},
 	formatString: (str, options) => {
 		var color = options.color || AVAILABLE_COLORS.DEFAULT;

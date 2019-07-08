@@ -1,19 +1,9 @@
 module.exports = {
-
 	unwrapExceptionMessage(exception) {
-		if (exception.getErrorMessage) {
-			return exception.getErrorMessage();
-		} else {
-			return exception;
-		}
+		return exception.getErrorMessage ? exception.getErrorMessage() : exception;
 	},
 
 	unwrapInformationMessage(exception) {
-		if (exception.getInfoMessage) {
-			return exception.getInfoMessage();
-		} else {
-			return '';
-		}
-	}
-
+		return exception.getInfoMessage ? exception.getInfoMessage() : '';
+	},
 };

@@ -2,7 +2,7 @@ const assert = require('assert');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
 const CLIException = require('../CLIException');
-const TRANSLATION_KEYS = require('../services/TranslationKeys');
+const { ERRORS, COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION } = require('../services/TranslationKeys');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -77,11 +77,11 @@ module.exports = class CommandActionExecutor {
 
 	_checkCanExecute(context) {
 		if (context.commandMetadata.isSetupRequired && !context.accountDetails) {
-			throw TranslationService.getMessage(TRANSLATION_KEYS.ERRORS.SETUP_REQUIRED);
+			throw TranslationService.getMessage(ERRORS.SETUP_REQUIRED);
 		}
 		if (context.runInInteractiveMode && !context.commandMetadata.supportsInteractiveMode) {
 			throw TranslationService.getMessage(
-				TRANSLATION_KEYS.ERRORS.COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE,
+				ERRORS.COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE,
 				context.commandMetadata.name
 			);
 		}
@@ -116,16 +116,23 @@ module.exports = class CommandActionExecutor {
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
 			const argumentsFromQuestions =
-				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
+				runInInteractiveMode || command.commandMetadata.forceInteractiveMode
 					? await command.getCommandQuestions(inquirer.prompt)
 					: {};
 
-			const commandArgumentsWithQuestionArguments = { ...overridedCommandArguments, ...argumentsFromQuestions };
+			const commandArgumentsWithQuestionArguments = {
+				...overridedCommandArguments,
+				...argumentsFromQuestions,
+			};
 			let commandArgumentsAfterPreActionFunc = command.preActionFunc
 				? command.preActionFunc(commandArgumentsWithQuestionArguments)
 				: commandArgumentsWithQuestionArguments;
 
-			this._checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, command.commandMetadata, runInInteractiveMode);
+			this._checkCommandValidationErrors(
+				commandArgumentsAfterPreActionFunc,
+				command.commandMetadata,
+				runInInteractiveMode
+			);
 
 			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);
 
@@ -142,24 +149,28 @@ module.exports = class CommandActionExecutor {
 		}
 	}
 
-	_checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, commandMetadata, runInInteractiveMode){
-
-			const validationErrors = this._commandOptionsValidator.validate({
+	_checkCommandValidationErrors(
+		commandArgumentsAfterPreActionFunc,
+		commandMetadata,
+		runInInteractiveMode
+	) {
+		const validationErrors = this._commandOptionsValidator.validate({
 			commandOptions: commandMetadata.options,
 			arguments: commandArgumentsAfterPreActionFunc,
 		});
 
-		if (validationErrors.length == 0) 
-			return;
+		if (validationErrors.length == 0) return;
 
 		const formattedError = this._commandOptionsValidator.formatErrors(validationErrors);
-		var suggestedCommand = !runInInteractiveMode && commandMetadata.supportsInteractiveMode ? 
-			TranslationService.getMessage(
-				TRANSLATION_KEYS.COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
-				commandMetadata.name
-		) : undefined;
+		const suggestedCommandMessage =
+			!runInInteractiveMode && commandMetadata.supportsInteractiveMode
+				? TranslationService.getMessage(
+						COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
+						commandMetadata.name
+				  )
+				: null;
 
-		throw new CLIException(-10, formattedError, suggestedCommand);
+		throw new CLIException(-10, formattedError, suggestedCommandMessage);
 	}
 
 	_applyDefaultContextParams(args, accountDetails) {

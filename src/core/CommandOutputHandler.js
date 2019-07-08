@@ -1,5 +1,5 @@
 const NodeUtils = require('./../utils/NodeUtils');
-const {unwrapExceptionMessage, unwrapInformationMessage} = require('./../utils/ExceptionUtils');
+const { unwrapExceptionMessage, unwrapInformationMessage } = require('./../utils/ExceptionUtils');
 
 module.exports = class CommandOutputHandler {
 	showSuccessResult(actionResult, formatOutputFunction) {
@@ -15,8 +15,8 @@ module.exports = class CommandOutputHandler {
 
 		const informativeMessage = unwrapInformationMessage(error);
 
-		if(informativeMessage){
-			NodeUtils.println();
+		if (informativeMessage) {
+			NodeUtils.println(NodeUtils.lineBreak);
 			NodeUtils.println(informativeMessage, NodeUtils.COLORS.INFO);
 		}
 	}
