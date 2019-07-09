@@ -18,7 +18,6 @@ module.exports = class CommandInstanceFactory {
 			commandMetadata,
 			projectFolder: options.projectFolder,
 			executionPath: options.executionPath,
-			commandOptionsValidator: options.commandOptionsValidator
 		});
 
 		return generatorInstance.create();

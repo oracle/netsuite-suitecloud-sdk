@@ -1,6 +1,7 @@
 const assert = require('assert');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
+const OutputFormat = require('../utils/OutputFormatUtils');
 const { ERRORS } = require('./../services/TranslationKeys');
 
 module.exports = class CommandActionExecutor {
@@ -51,7 +52,6 @@ module.exports = class CommandActionExecutor {
 				commandMetadata: commandMetadata,
 				projectFolder: projectFolder,
 				executionPath: context.executionPath,
-				commandOptionsValidator: this._commandOptionsValidator
 			});
 
 			const commandArguments = this._extractOptionValuesFromArguments(
@@ -130,7 +130,7 @@ module.exports = class CommandActionExecutor {
 				arguments: commandArgumentsAfterPreActionFunc,
 			});
 			if (validationErrors.length > 0) {
-				throw this._commandOptionsValidator.formatErrors(validationErrors);
+				throw OutputFormat.formatErrors(validationErrors);
 			}
 
 			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);

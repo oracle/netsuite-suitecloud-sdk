@@ -6,6 +6,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
+const OutputFormat = require('../utils/OutputFormatUtils');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
@@ -57,7 +58,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
-		this._commandOptionsValidator = options.commandOptionsValidator;
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -188,9 +188,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const validationErrorMessages = this._validateParams(answers);
 		if (validationErrorMessages.length > 0) {
-			return Promise.reject(
-				this._commandOptionsValidator.formatErrors(validationErrorMessages)
-			);
+			throw OutputFormat.formatErrors(validationErrorMessages);
 		}
 
 		const params = {
