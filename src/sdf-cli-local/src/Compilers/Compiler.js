@@ -2,7 +2,7 @@
 
 const SassCompiler = require('./SassCompiler');
 const TemplatesCompiler = require('./TemplatesCompiler');
-const JavascriptCompiler = require('./JavascriptCompiler');
+// const JavascriptCompiler = require('./JavascriptCompiler');
 const AssetsCompiler = require('./AssetsCompiler');
 
 const Utils = require('../Utils');

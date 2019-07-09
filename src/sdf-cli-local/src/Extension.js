@@ -3,6 +3,8 @@
 const AbstractExtension = require('./AbstractExtension');
 const Utils = require('./Utils');
 const _ = require('underscore');
+const path = require('path');
+const Script = require('./Resources/Types/Javascript');
 
 module.exports = class Extension extends AbstractExtension {
 	constructor(options) {
@@ -21,16 +23,30 @@ module.exports = class Extension extends AbstractExtension {
 		if (this.javascript) {
 			return this.javascript;
 		}
-		this.javascript = { applications: {} };
+		this.javascript = { };
 
 		const javascript = this.raw_extension.javascript || {};
 		const javascript_app = javascript.application || {};
 
-		_.each(javascript_app, (js, app) => {
-			this.javascript.applications[app] = Utils.parseFiles(js);
-		});
+		this.iterateResources(javascript_app, (resource_path, app) => {
 
-		this.javascript.entrypoints = _.mapObject(javascript.entrypoints, Utils.parseFileName);
+			if (this.javascript[resource_path]) {
+				this.javascript[resource_path].addApplication(app);
+				return;
+			}
+
+			const file_format = '.js';
+			this.javascript[resource_path] = new Script({
+				basesrc: this._excludeBasePath(resource_path),
+				src: this._excludeBasePath(resource_path),
+				dst: path.basename(resource_path),
+				name: path.basename(resource_path, path.extname(resource_path)),
+				format: file_format,
+				extension_asset_url: this.getAssetsUrl(),
+				extension_fullname: this.getExtensionFullName('.'),
+				app: app,
+			});
+		});
 
 		return this.javascript;
 	}

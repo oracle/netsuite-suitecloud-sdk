@@ -10,6 +10,8 @@ module.exports = class AbstractExtension {
 		const objects_path = options.objects_path;
 		const extension_xml = options.extension_xml;
 
+		this.templates = {};
+
 		this.raw_extension = Utils.parseXml(objects_path, extension_xml);
 	}
 
@@ -21,16 +23,28 @@ module.exports = class AbstractExtension {
 		});
 	}
 	getTemplates() {
-		if (this.templates) {
-			return this.templates;
-		}
-		this.templates = {};
-
+		// todo check if this.templates exist, like the other methods do
 		let templates = this.raw_extension.templates || {};
 		templates = templates.application || {};
 
-		_.each(templates, (tpl, app) => {
-			this.templates[app] = Utils.parseFiles(tpl);
+		this.iterateResources(templates, (resource_path, app) => {
+
+			if (this.templates[resource_path]) {
+				this.templates[resource_path].addApplication(app);
+				return;
+			}
+
+			const file_format = '.js';
+			this.templates[resource_path] = new Template({
+				basesrc: this._excludeBasePath(resource_path),
+				src: this._excludeBasePath(resource_path),
+				dst: path.basename(resource_path) + file_format,
+				name: path.basename(resource_path, path.extname(resource_path)),
+				format: file_format,
+				extension_asset_url: this.getAssetsUrl(),
+				extension_fullname: this.getExtensionFullName('.'),
+				app: app,
+			});
 		});
 
 		if (!_.isEmpty(overrides)) {
