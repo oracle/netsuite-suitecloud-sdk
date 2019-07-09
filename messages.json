@@ -131,6 +131,15 @@
 	"COMMAND_SETUPACCOUNT_MESSAGES_RETRIEVING_ACCOUNT_INFO": "Retrieving account information.",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SAVING_TBA_TOKEN": "Saving the TBA token.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_SUCCESSFUL": "The account has been successfully set up.",
+
+	"COMMAND_VALIDATE_QUESTIONS_SERVER_SIDE": "How do you want to validate your project?",
+	"COMMAND_VALIDATE_QUESTIONS_APPLY_CONTENT_PROTECTION": "Do you want to apply content protection?",
+	"COMMAND_VALIDATE_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
+	"COMMAND_VALIDATE_QUESTIONS_CHOICES_AGAINST_ACCOUNT": "Against account",
+	"COMMAND_VALIDATE_QUESTIONS_CHOICES_LOCAL": "Locally",
+	"COMMAND_VALIDATE_QUESTIONS_CHOICES_IGNORE": "Ignore the account-specific values",
+	"COMMAND_VALIDATE_QUESTIONS_CHOICES_WARNING": "Display a warning",
+	"COMMAND_VALIDATE_QUESTIONS_CHOICES_CANCEL": "Cancel the process",
 	
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 	

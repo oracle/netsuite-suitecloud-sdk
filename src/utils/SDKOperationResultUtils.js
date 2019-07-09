@@ -31,5 +31,8 @@ module.exports = {
 		if (Array.isArray(messages)) {
 			messages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
 		}
+	},
+	logResultMessage: operationResult => {
+		NodeUtils.println(operationResult.resultMessage, NodeUtils.COLORS.RESULT)
 	}
 };
