@@ -3,8 +3,11 @@
 const Theme = require('./Theme');
 const Extension = require('./Extension');
 const path = require('path');
+const glob = require('glob').sync;
 
 const _ = require('underscore');
+
+const Resource = require('./Resources/Resource');
 
 module.exports = class CompilationContext {
 	constructor(options) {
@@ -15,11 +18,17 @@ module.exports = class CompilationContext {
 		this.files_path = options.files_path;
 		this.project_folder = options.project_folder;
 
+		Resource.setBaseSrc(this.files_path);
+
 		this.theme = new Theme({ objects_path: objects_path, extension_xml: theme });
 
 		this.extensions = _.map(extensions, extension => {
 			return new Extension({ objects_path: objects_path, extension_xml: extension });
 		});
+
+		this.all_extensions = [this.theme].concat(this.extensions);
+
+
 	}
 
 	setLocalServerPath(path) {
@@ -34,8 +43,12 @@ module.exports = class CompilationContext {
 		return this.theme.getSassOverrides();
 	}
 
-	getAllExtensions() {
-		return [this.theme].concat(this.extensions);
+	getTemplates(){	
+		let templates = {};	
+		this.all_extensions.map(extension => 
+			templates = _.extend(templates, extension.getTemplates())
+		);
+		return this.handleOverrides(templates, this.getTplOverrides());
 	}
 
 	getSass() {
@@ -43,9 +56,8 @@ module.exports = class CompilationContext {
 			files: [],
 			entrypoints: {},
 		};
-		const extensions = this.getAllExtensions();
 
-		_.each(extensions, extension => {
+		_.each(this.all_extensions, extension => {
 			const ext_sass = extension.getSass();
 			const ext_assets_path = extension.getLocalAssetsPath('assets');
 
@@ -102,17 +114,21 @@ module.exports = class CompilationContext {
 		return assets;
 	}
 
-	getExtensionByFile(file) {
-		let found = { base_path: '' };
-		this.getAllExtensions().forEach(extension => {
-			if (extension.have(file) && extension.base_path.length > found.base_path.length) {
-				found = extension;
-			}
-		});
-		return found;
-	}
-
 	excludeBaseFilesPath(dir) {
 		return path.normalize(dir).replace(this.files_path, '');
+	}
+
+	handleOverrides(resources, overrides) {
+		_.mapObject(resources, (resource)=>{
+			const override = overrides[resource.src];
+			if (override) {
+				const full_path = glob(path.join(this.project_folder, '**', override.src));
+				if (full_path.length) {
+					resource.override_fullsrc = full_path[0];
+					resource.override = override.src;
+				}
+			}
+		})
+		return resources;
 	}
 };

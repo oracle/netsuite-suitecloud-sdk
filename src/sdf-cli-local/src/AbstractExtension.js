@@ -15,13 +15,13 @@ module.exports = class AbstractExtension {
 		this.base_url = 'http://localhost:7777'; // TODO remove and use cli-config
 	}
 
-	getTemplatesFlatted() {
-		if (this.templates_flatted) {
-			return this.templates_flatted;
-		}
-		return (this.templates_flatted = _.uniq(_.flatten(_.map(this.getTemplates()))));
+	iterateResources(resources, func) {
+		_.each(resources, (rsc_array, app) => {
+			Utils.parseFiles(rsc_array).forEach(resource_path => {
+				func(resource_path, app);
+			});
+		});
 	}
-
 	getTemplates() {
 		if (this.templates) {
 			return this.templates;
