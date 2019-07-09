@@ -13,7 +13,14 @@ module.exports = class AbstractExtension {
 		this.raw_extension = Utils.parseXml(objects_path, extension_xml);
 	}
 
-	getTemplates(overrides = {}) {
+	iterateResources(resources, func) {
+		_.each(resources, (rsc_array, app) => {
+			Utils.parseFiles(rsc_array).forEach(resource_path => {
+				func(resource_path, app);
+			});
+		});
+	}
+	getTemplates() {
 		if (this.templates) {
 			return this.templates;
 		}
