@@ -1,8 +1,10 @@
 const FileUtils = require('../../utils/FileUtils');
 const TranslationService = require('../../services/TranslationService');
 const AccountDetails = require('./AccountDetails');
+const { lineBreak } = require('../../utils/NodeUtils');
 const { ERRORS } = require('../../services/TranslationKeys');
 const { ACCOUNT_DETAILS_FILENAME } = require('../../ApplicationConstants');
+const assert = require('assert');
 
 const DEFAULT_ACCOUNT = 'default';
 const DEFAULT_ACCOUNT_PROPERTIES_KEYS = [
@@ -30,7 +32,14 @@ module.exports = class AccountDetailsService {
 		CACHED_ACCOUNT_DETAILS = accountDetails;
 	}
 
-	save() {
+	save(accountDetails) {
+		assert(accountDetails);
+		this.set(accountDetails);
+		this._saveCached();
+	}
+
+	_saveCached() {
+		assert(CACHED_ACCOUNT_DETAILS);
 		try {
 			// nest the values into a 'default' property
 			const defaultAccountDetails = {
@@ -38,7 +47,8 @@ module.exports = class AccountDetailsService {
 			};
 			FileUtils.create(ACCOUNT_DETAILS_FILENAME, defaultAccountDetails);
 		} catch (error) {
-			throw TranslationService.getMessage(ERRORS.WRITING_ACCOUNT_JSON);
+			const errorMessage = error != null && error.message ? `${lineBreak}Error: ${error.message}` : '';
+			throw TranslationService.getMessage(ERRORS.WRITING_ACCOUNT_JSON, errorMessage);
 		}
 	}
 
