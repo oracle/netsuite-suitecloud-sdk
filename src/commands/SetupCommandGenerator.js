@@ -280,6 +280,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			const errorMessage = SDKOperationResultUtils.getResultMessage(operationResult);
+			if (errorMessage) {
+				throw errorMessage;
+			}
 			throw SDKOperationResultUtils.getErrorMessagesString(operationResult);
 		}
 

@@ -166,12 +166,9 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_formatOutput(operationResult) {
 		const { data } = operationResult;
+		SDKOperationResultUtils.logResultMessage(operationResult);
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			if (operationResult.resultMessage) {
-				SDKOperationResultUtils.logResultMessage(operationResult);
-			} else {
-				SDKOperationResultUtils.logErrors(operationResult)
-			}
+			SDKOperationResultUtils.logErrors(operationResult);
 			return;
 		}
 

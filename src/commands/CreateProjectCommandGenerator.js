@@ -250,7 +250,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	}
 
 	_formatOutput(result) {
-		console.log(result)
 		if (!result) {
 			return;
 		}

@@ -12,6 +12,10 @@ module.exports = {
 		}
 		return '';
 	},
+	getResultMessage: operationResult => {
+		const { resultMessage } = operationResult;
+		return resultMessage ? resultMessage : '';
+	},
 	hasErrors: operationResult => {
 		return operationResult.status === OperationResultStatus.ERROR;
 	},
