@@ -6,6 +6,8 @@ const _ = require('underscore');
 const path = require('path');
 const url = require('url');
 
+const Template = require('./Resources/Types/Template');
+
 module.exports = class AbstractExtension {
 	constructor(options) {
 		const objects_path = options.objects_path;
@@ -22,17 +24,31 @@ module.exports = class AbstractExtension {
 			});
 		});
 	}
+
 	getTemplates() {
 		if (this.templates) {
 			return this.templates;
 		}
 		this.templates = {};
-
 		let templates = this.raw_extension.templates || {};
 		templates = templates.application || {};
 
-		_.each(templates, (tpl, app) => {
-			this.templates[app] = Utils.parseFiles(tpl, _.bind(this._excludeBasePath, this));
+		this.iterateResources(templates, (resource_path, app) => {
+			if (this.templates[resource_path]) {
+				this.templates[resource_path].addApplication(app);
+				return;
+			}
+
+			const file_format = '.js';
+			this.templates[resource_path] = new Template({
+				basesrc: this._excludeBasePath(resource_path),
+				src: this._excludeBasePath(resource_path),
+				dst: path.basename(resource_path) + file_format,
+				name: path.basename(resource_path, path.extname(resource_path)),
+				format: file_format,
+				extension: this,
+				app: app,
+			});
 		});
 
 		return this.templates;
@@ -95,9 +111,5 @@ module.exports = class AbstractExtension {
 		});
 
 		return this.assets;
-	}
-
-	have(file) {
-		return path.normalize(file).indexOf(path.normalize(this.base_path)) > -1;
 	}
 };

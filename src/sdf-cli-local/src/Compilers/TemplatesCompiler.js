@@ -4,110 +4,72 @@ const handlebars = require('handlebars');
 const _ = require('underscore');
 const Utils = require('../Utils');
 const path = require('path');
-const glob = require('glob').sync;
 const Log = require('../services/Log');
 const FileSystem = require('../services/FileSystem');
 
 module.exports = class TemplatesCompiler {
 	constructor(options) {
 		this.context = options.context;
-		this.templates_list = {};
 		this.entrypoints = {};
 		this.template_extension = '.js';
 		this.resource_type = 'Templates';
 		this.templates_folder = 'templates';
 		this.processed_templates_folder = 'processed-templates';
 		this.overrides = this.context.getTplOverrides();
+		this.templates = this.context.getTemplates();
 	}
 
 	compile(file) {
 		Log.result('COMPILATION_START', [this.resource_type]);
 
-		// Uncomment for watch task:
-		// if (file) {
-		// 	return Utils.runParallel([
-		// 		this.writeTemplate(
-		// 			this.context.excludeBaseFilesPath(file),
-		// 			this.context.getExtensionByFile(file)
-		// 		),
-		// 	]);
-		// }
+		this.createTemplateFolders(); // TODO pre-save folder path in constructor
 
 		this.setCompilerNameLookupHelper();
-		const extensions = this.context.getAllExtensions();
 
 		// first create templates files
-		const templates = extensions.map(_.bind(this.writeTemplates, this));
+		const templates = this.writeTemplates();
 		return Utils.runParallel(_.flatten(templates)).then(() => {
 			// then create require.js config files
-			const entrypoints = extensions.map(_.bind(this.writeEntrypoints, this));
-			return Utils.runParallel(_.flatten(entrypoints)).then(() =>
+			const entrypoints = this.writeEntrypoints();
+			return Utils.runParallel(entrypoints).then(() =>
 				Log.result('COMPILATION_FINISH', [this.resource_type])
 			);
 		});
 	}
 
-	writeTemplate(template, extension) {
-		//paths:
-		const source_path = this.handleOverride(template);
-		const template_name = path.basename(template);
-		const dest_path = path.join(
-			this.processed_templates_path,
-			template_name + this.template_extension
-		);
+	writeTemplate(template) {	
 
 		return () =>
 			//read original template file:
-			Utils.getFileContent(source_path).then(template_source_content => {
-				const precompiled = handlebars.precompile(template_source_content);
-				const content = this.wrapTemplate({
-					name: template_name,
-					original_content: template_source_content,
-					precompiled_content: precompiled,
-					extension_url: extension.getAssetsUrl(),
+			template.sourceContent().then(content => {
+
+				template.setPrecomplied(handlebars.precompile(content));
+
+				template.applications.forEach((app)=>{
+					const basename = template.getBasename();
+					this.entrypoints[app] = this.entrypoints[app] || {};
+					this.entrypoints[app][basename] = `${this.processed_templates_folder}/${basename}`;
 				});
 
 				//write final template file:
-				return (
-					this.addToTemplatesList(template_name) && Utils.writeFile(dest_path, content)
-				);
+				template.logOverrideMessage();
+				return Utils.writeFile(path.join(this.processed_templates_path, template.dst), this.wrapTemplate(template));
 			});
 	}
 
-	addToTemplatesList(template_name) {
-		if (!this.context.isWatch && this.templates_list[template_name]) {
-			return false;
-		}
-		return (this.templates_list[template_name] = Utils.forwardSlashes(
-			path.join(this.processed_templates_folder, template_name)
-		));
+	writeTemplates() {
+		return _.map(this.templates, template => this.writeTemplate(template));
 	}
 
-	writeTemplates(extension) {
-		const resources = extension.getTemplatesFlatted();
-		if (resources.length) {
-			this.createTemplateFolders();
-		}
-		return _.map(resources, template => this.writeTemplate(template, extension));
-	}
-
-	writeEntrypoints(extension) {
-		const resources = extension.getTemplates();
-
-		return _.map(resources, (templates, app) => {
-			_.each(templates, template => {
-				template = path.basename(template);
-				this.entrypoints[app] = this.entrypoints[app] || {};
-				this.entrypoints[app][template] = this.templates_list[template];
-			});
-
+	writeEntrypoints() {
+		return ['checkout', 'shopping', 'myaccount'].map(app => {
 			const dest = path.join(
 				this.templates_path,
 				`${app}-templates${this.template_extension}`
 			);
 			const entryfile_content = {
 				paths: this.entrypoints[app],
-				baseUrl: extension.base_url,
+				baseUrl: 'http://localhost:7777', // TODO remove and use cli-config
 			};
 
 			return () => Utils.writeFile(dest, this.wrapEntrypoint(entryfile_content));
@@ -119,39 +81,19 @@ module.exports = class TemplatesCompiler {
 	}
 
 	wrapTemplate(template) {
-		const extension_path = template.extension_url;
-		const theme_path = this.context.theme.getAssetsUrl();
-		const template_name = path.basename(template.name, path.extname(template.name));
-		const dependencies = this.getDependencies(template.original_content).join();
-
 		return `define('${
+			template.getFilename()
+		}', [${
+			template.getDependencies().join()
+		}], function (Handlebars, compilerNameLookup){ var t = ${
+			template.precompiled
+		}; var main = t.main; t.main = function(){ arguments[1] = arguments[1] || {}; var ctx = arguments[1]; ctx._extension_path = '${
+			template.extension_assets_url
+		}'; ctx._theme_path = '${
+			this.context.theme.getAssetsUrl()
+		}'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${
 			template.name
-		}', [${dependencies}], function (Handlebars, compilerNameLookup){ var t = ${
-			template.precompiled_content
-		}; var main = t.main; t.main = function(){ arguments[1] = arguments[1] || {}; var ctx = arguments[1]; ctx._extension_path = '${extension_path}'; ctx._theme_path = '${theme_path}'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${template_name}'; return template;});`;
-	}
-
-	handleOverride(file) {
-		const override = this.overrides[file];
-		if (override) {
-			Log.default('OVERRIDE', [file, override.src]);
-			const full_path = glob(path.join(this.context.project_folder, '**', override.src));
-			if (full_path.length) {
-				return full_path[0];
-			}
-		}
-		return path.join(this.context.files_path, file);
-	}
-
-	getDependencies(template) {
-		const regex = /data-\w*\-{0,1}template=\"([^"]+)\"/gm;
-		const dependencies = [`'Handlebars'`, `'Handlebars.CompilerNameLookup'`];
-		let result;
-
-		while ((result = regex.exec(template))) {
-			dependencies.push(`'${result[1]}.tpl'`);
-		}
-		return _.uniq(dependencies);
+		}'; return template;});`;
 	}
 
 	setCompilerNameLookupHelper() {
