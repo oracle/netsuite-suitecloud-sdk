@@ -21,6 +21,7 @@ const {
 	LINKS,
 	MANIFEST_XML,
 	REST_ROLES_URL,
+	PROD_ENVIRONMENT_ADDRESS,
 } = require('../ApplicationConstants');
 
 const {
@@ -31,6 +32,7 @@ const {
 
 const ANSWERS = {
 	OVERWRITE: 'overwrite',
+	DEVELOPMENT_URL: 'developmentUrl',
 	EMAIL: 'email',
 	PASSWORD: 'password',
 	COMPANY_ID: 'companyId',
@@ -52,7 +54,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		this._accountService = new AccountService();
 	}
 
-	async _getCommandQuestions(prompt) {
+	async _getCommandQuestions(prompt, commandArguments) {
 		this._checkWorkingDirectoryContainsValidProject();
 
 		if (this._accountDetailsFileExists()) {
@@ -76,12 +78,27 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 		}
 
+		let developmentUrlAnswer = null;
+
+		if (commandArguments && commandArguments.development) {
+			developmentUrlAnswer = await prompt([
+				{
+					type: CommandUtils.INQUIRER_TYPES.INPUT,
+					name: ANSWERS.DEVELOPMENT_URL,
+					message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_URL),
+					filter: answer => answer.trim(),
+					validate: fieldValue =>
+						showValidationResults(fieldValue, validateFieldIsNotEmpty),
+				},
+			]);
+		}
+
 		const credentialsAnswers = await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: ANSWERS.EMAIL,
 				message: TranslationService.getMessage(QUESTIONS.EMAIL),
-				filter: ansewer => ansewer.trim(),
+				filter: answer => answer.trim(),
 				validate: fieldValue =>
 					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateEmail),
 			},
@@ -89,15 +106,17 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 				name: ANSWERS.PASSWORD,
 				message: TranslationService.getMessage(QUESTIONS.PASSWORD),
-				filter: ansewer => ansewer.trim(),
+				filter: answer => answer.trim(),
 				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 			},
 		]);
 
+		const baseAddress = this._getBaseAddress(developmentUrlAnswer);
+
 		const accountAndRolesJSON = await executeWithSpinner({
 			action: this._accountService.getAccountAndRoles({
 				...credentialsAnswers,
-				restRolesUrl: REST_ROLES_URL,
+				restRolesUrl: `${baseAddress}${REST_ROLES_URL}`,
 			}),
 			message: TranslationService.getMessage(MESSAGES.RETRIEVING_ACCOUNT_INFO),
 		});
@@ -204,6 +223,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			).name,
 			...issueOrSaveTokenAnswers,
 		};
+	}
+
+	_getBaseAddress(developmentUrlAnswer) {
+		return developmentUrlAnswer
+			? developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]
+			: PROD_ENVIRONMENT_ADDRESS;
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {

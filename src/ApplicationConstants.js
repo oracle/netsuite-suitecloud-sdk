@@ -23,8 +23,8 @@ module.exports = {
 	MANIFEST_XML: 'manifest.xml',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
-	REST_ROLES_URL: 'https://system.netsuite.com/rest/roles',
-	REST_ISSUE_TOKEN_URL: 'https://system.netsuite.com/rest/issuetoken',
+	PROD_ENVIRONMENT_ADDRESS:'https://system.netsuite.com',
+	REST_ROLES_URL: '/rest/roles',
 	LINKS: {
 		HOW_TO: {
 			ISSUE_A_TOKEN: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html'
