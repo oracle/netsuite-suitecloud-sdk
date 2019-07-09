@@ -162,15 +162,16 @@ module.exports = class CommandActionExecutor {
 		if (validationErrors.length == 0) return;
 
 		const formattedError = this._commandOptionsValidator.formatErrors(validationErrors);
-		const suggestedCommandMessage =
-			!runInInteractiveMode && commandMetadata.supportsInteractiveMode
-				? TranslationService.getMessage(
-						COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
-						commandMetadata.name
-				  )
-				: null;
 
-		throw new CLIException(-10, formattedError, suggestedCommandMessage);
+		if(!runInInteractiveMode && commandMetadata.supportsInteractiveMode)
+		{
+			const suggestedCommandMessage =TranslationService.getMessage(
+				COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
+				commandMetadata.name );
+			throw new CLIException(-10, formattedError, suggestedCommandMessage);
+		}
+
+		throw new CLIException(-10, formattedError);
 	}
 
 	_applyDefaultContextParams(args, accountDetails) {
