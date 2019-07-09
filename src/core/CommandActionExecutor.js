@@ -1,7 +1,7 @@
 const assert = require('assert');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
-const OutputFormat = require('../utils/OutputFormatUtils');
+const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
 const { ERRORS } = require('./../services/TranslationKeys');
 
 module.exports = class CommandActionExecutor {
@@ -130,7 +130,7 @@ module.exports = class CommandActionExecutor {
 				arguments: commandArgumentsAfterPreActionFunc,
 			});
 			if (validationErrors.length > 0) {
-				throw OutputFormat.formatErrors(validationErrors);
+				throw ValidationErrorsFormatter.formatErrors(validationErrors);
 			}
 
 			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);

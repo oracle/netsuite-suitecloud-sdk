@@ -6,7 +6,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
-const OutputFormat = require('../utils/OutputFormatUtils');
+const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
@@ -188,7 +188,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const validationErrorMessages = this._validateParams(answers);
 		if (validationErrorMessages.length > 0) {
-			throw OutputFormat.formatErrors(validationErrorMessages);
+			throw ValidationErrorsFormatter.formatErrors(validationErrorMessages);
 		}
 
 		const params = {
