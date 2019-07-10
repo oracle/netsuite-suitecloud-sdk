@@ -309,9 +309,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			validationErrors.push(
 				showValidationResults(
 					answers[COMMAND_OPTIONS.PROJECT_VERSION],
-					validateProjectVersion,
 					optionValue =>
-						validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION)
+						validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION),
+					validateProjectVersion
 				)
 			);
 
