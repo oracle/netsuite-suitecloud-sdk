@@ -1,7 +1,6 @@
 'use strict';
 const TranslationService = require('../services/TranslationService');
 const TRANSLATION_KEYS = require('../services/TranslationKeys');
-const { lineBreak } = require('../utils/NodeUtils');
 const assert = require('assert');
 
 module.exports = class CommandOptionsValidator {
@@ -31,16 +30,5 @@ module.exports = class CommandOptionsValidator {
 			}
 		}
 		return validationErrors;
-	}
-
-	formatErrors(validationErrors) {
-		assert(validationErrors);
-		assert(Array.isArray(validationErrors));
-
-		var errorMessageHeader = TranslationService.getMessage(
-			TRANSLATION_KEYS.COMMAND_OPTIONS_VALIDATION_ERRORS
-		);
-		var valiationErrorsString = validationErrors.join(lineBreak);
-		return `${errorMessageHeader}${lineBreak}${valiationErrorsString}`;
 	}
 };
