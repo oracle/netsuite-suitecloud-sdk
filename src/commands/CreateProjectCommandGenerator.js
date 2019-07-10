@@ -270,11 +270,11 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				TranslationService.getMessage(MESSAGES.PROCESS_FAILED),
 				NodeUtils.COLORS.ERROR
 			);
-			SDKOperationResultUtils.logErrors(result.operationResult);
+			SDKOperationResultUtils.logResultMessage(result.operationResult);
 			return;
 		}
 
-		SDKOperationResultUtils.logMessages(result.operationResult);
+		SDKOperationResultUtils.logResultMessage(result.operationResult);
 		const projectTypeText =
 			result.projectType === ApplicationConstants.PROJECT_SUITEAPP
 				? SUITEAPP_PROJECT_TYPE_DISPLAY
