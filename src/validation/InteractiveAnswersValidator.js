@@ -5,6 +5,7 @@ const {
 	ANSWERS_VALIDATION_MESSAGES,
 	COMMAND_OPTION_IS_MANDATORY,
 } = require('../services/TranslationKeys');
+const url = require('url');
 
 const VALIDATION_RESULT_FAILURE = validationError => ({
 	result: false,
@@ -153,6 +154,16 @@ class InteractiveAnswersValidator {
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(
 					TranslationService.getMessage(COMMAND_OPTION_IS_MANDATORY, optionName)
+			  );
+	}
+
+	validateDevUrl(devUrlValue) {
+		const proxyUrl = url.parse(devUrlValue);
+
+		return proxyUrl.hostname
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(
+					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.DEV_URL)
 			  );
 	}
 }

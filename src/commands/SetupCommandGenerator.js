@@ -43,6 +43,7 @@ const ANSWERS = {
 };
 
 const {
+	validateDevUrl,
 	validateFieldIsNotEmpty,
 	validateEmail,
 	showValidationResults,
@@ -78,9 +79,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 		}
 
+		const isDevelopment = commandArguments && commandArguments.dev;
 		let developmentUrlAnswer = null;
 
-		if (commandArguments && commandArguments.development) {
+		if (isDevelopment) {
 			developmentUrlAnswer = await prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -88,7 +90,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_URL),
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
-						showValidationResults(fieldValue, validateFieldIsNotEmpty),
+						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl),
 				},
 			]);
 		}
@@ -212,6 +214,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		]);
 
 		return {
+			isDevelopment: isDevelopment,
 			email: credentialsAnswers[ANSWERS.EMAIL],
 			password: credentialsAnswers[ANSWERS.PASSWORD],
 			account: selectedAccountId,
@@ -273,6 +276,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(answers) {
 		const contextValues = {
+			isDevelopment: answers.isDevelopment,
 			netsuiteUrl: answers.environment,
 			accountId: answers.account,
 			accountName: answers.accountName,
@@ -289,6 +293,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			email: answers.email,
 			account: answers.account,
 			role: answers.role,
+			isDevelopment: answers.isDevelopment
 		};
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
