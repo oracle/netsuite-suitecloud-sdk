@@ -159,8 +159,7 @@ class InteractiveAnswersValidator {
 
 	validateDevUrl(devUrlValue) {
 		const proxyUrl = url.parse(devUrlValue);
-
-		return proxyUrl.hostname
+		return proxyUrl.hostname && proxyUrl.protocol
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(
 					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.DEV_URL)
