@@ -19,7 +19,10 @@ module.exports = class CommandOptionsValidator {
 			const option = options.commandOptions[optionId];
 			const aliasId = option.alias;
 			if (options.commandOptions.hasOwnProperty(optionId)) {
-				if (option.mandatory && !isMandatoryOptionPresent(optionId, aliasId, options.arguments)) {
+				if (
+					option.mandatory &&
+					!isMandatoryOptionPresent(optionId, aliasId, options.arguments)
+				) {
 					validationErrors.push(
 						TranslationService.getMessage(
 							TRANSLATION_KEYS.COMMAND_OPTION_IS_MANDATORY,

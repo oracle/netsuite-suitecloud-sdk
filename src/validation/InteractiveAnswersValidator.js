@@ -1,7 +1,10 @@
 'use strict';
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
-const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTION_IS_MANDATORY } = require('../services/TranslationKeys');
+const {
+	ANSWERS_VALIDATION_MESSAGES,
+	COMMAND_OPTION_IS_MANDATORY,
+} = require('../services/TranslationKeys');
 
 const VALIDATION_RESULT_FAILURE = validationError => ({
 	result: false,
@@ -141,9 +144,7 @@ class InteractiveAnswersValidator {
 		return EMAIL_REGEX.test(fieldValue)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(
-					TranslationService.getMessage(
-						ANSWERS_VALIDATION_MESSAGES.INVALID_EMAIL
-						)
+					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.INVALID_EMAIL)
 			  );
 	}
 
