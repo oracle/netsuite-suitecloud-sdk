@@ -35,10 +35,4 @@ module.exports = {
 			}
 		}
 	},
-<<<<<<< HEAD
-	logResultMessage: operationResult => {
-		NodeUtils.println(operationResult.resultMessage, NodeUtils.COLORS.RESULT)
-	}
-=======
->>>>>>> origin/master
 };
