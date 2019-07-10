@@ -2,7 +2,10 @@ const assert = require('assert');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
 const CLIException = require('../CLIException');
-const { ERRORS, COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION } = require('../services/TranslationKeys');
+const {
+	ERRORS,
+	COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
+} = require('../services/TranslationKeys');
 const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
 
 module.exports = class CommandActionExecutor {
@@ -134,7 +137,7 @@ module.exports = class CommandActionExecutor {
 				command.commandMetadata,
 				runInInteractiveMode
 			);
-			
+
 			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);
 
 			if (commandUserExtension.onCompleted) {
@@ -162,13 +165,13 @@ module.exports = class CommandActionExecutor {
 
 		if (validationErrors.length == 0) return;
 
-		const formattedError =  ValidationErrorsFormatter.formatErrors(validationErrors);
+		const formattedError = ValidationErrorsFormatter.formatErrors(validationErrors);
 
-		if(!runInInteractiveMode && commandMetadata.supportsInteractiveMode)
-		{
-			const suggestedCommandMessage =TranslationService.getMessage(
+		if (!runInInteractiveMode && commandMetadata.supportsInteractiveMode) {
+			const suggestedCommandMessage = TranslationService.getMessage(
 				COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
-				commandMetadata.name );
+				commandMetadata.name
+			);
 			throw new CLIException(-10, formattedError, suggestedCommandMessage);
 		}
 

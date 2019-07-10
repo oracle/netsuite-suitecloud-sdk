@@ -16,8 +16,7 @@ module.exports = class CommandOutputHandler {
 		const informativeMessage = unwrapInformationMessage(error);
 
 		if (informativeMessage) {
-			NodeUtils.println(NodeUtils.lineBreak);
-			NodeUtils.println(informativeMessage, NodeUtils.COLORS.INFO);
+			NodeUtils.println(`${NodeUtils.lineBreak}${informativeMessage}`, NodeUtils.COLORS.INFO);
 		}
 	}
 
