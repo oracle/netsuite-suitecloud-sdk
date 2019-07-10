@@ -3,6 +3,7 @@ const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
 const CLIException = require('../CLIException');
 const { ERRORS, COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION } = require('../services/TranslationKeys');
+const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -133,7 +134,7 @@ module.exports = class CommandActionExecutor {
 				command.commandMetadata,
 				runInInteractiveMode
 			);
-
+			
 			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);
 
 			if (commandUserExtension.onCompleted) {
@@ -161,7 +162,7 @@ module.exports = class CommandActionExecutor {
 
 		if (validationErrors.length == 0) return;
 
-		const formattedError = this._commandOptionsValidator.formatErrors(validationErrors);
+		const formattedError =  ValidationErrorsFormatter.formatErrors(validationErrors);
 
 		if(!runInInteractiveMode && commandMetadata.supportsInteractiveMode)
 		{
