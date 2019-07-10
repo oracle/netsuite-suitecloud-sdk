@@ -1,7 +1,12 @@
 const assert = require('assert');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
-const { ERRORS } = require('./../services/TranslationKeys');
+const CLIException = require('../CLIException');
+const {
+	ERRORS,
+	COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
+} = require('../services/TranslationKeys');
+const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -115,22 +120,28 @@ module.exports = class CommandActionExecutor {
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
 			const argumentsFromQuestions =
+<<<<<<< HEAD
 				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
 					? await command.getCommandQuestions(inquirer.prompt, commandArguments)
+=======
+				runInInteractiveMode || command.commandMetadata.forceInteractiveMode
+					? await command.getCommandQuestions(inquirer.prompt)
+>>>>>>> master
 					: {};
 
-			const commandArgumentsWithQuestionArguments = { ...overridedCommandArguments, ...argumentsFromQuestions };
+			const commandArgumentsWithQuestionArguments = {
+				...overridedCommandArguments,
+				...argumentsFromQuestions,
+			};
 			let commandArgumentsAfterPreActionFunc = command.preActionFunc
 				? command.preActionFunc(commandArgumentsWithQuestionArguments)
 				: commandArgumentsWithQuestionArguments;
 
-			const validationErrors = this._commandOptionsValidator.validate({
-				commandOptions: command.commandMetadata.options,
-				arguments: commandArgumentsAfterPreActionFunc,
-			});
-			if (validationErrors.length > 0) {
-				throw this._commandOptionsValidator.formatErrors(validationErrors);
-			}
+			this._checkCommandValidationErrors(
+				commandArgumentsAfterPreActionFunc,
+				command.commandMetadata,
+				runInInteractiveMode
+			);
 
 			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);
 
@@ -145,6 +156,31 @@ module.exports = class CommandActionExecutor {
 			}
 			throw error;
 		}
+	}
+
+	_checkCommandValidationErrors(
+		commandArgumentsAfterPreActionFunc,
+		commandMetadata,
+		runInInteractiveMode
+	) {
+		const validationErrors = this._commandOptionsValidator.validate({
+			commandOptions: commandMetadata.options,
+			arguments: commandArgumentsAfterPreActionFunc,
+		});
+
+		if (validationErrors.length == 0) return;
+
+		const formattedError = ValidationErrorsFormatter.formatErrors(validationErrors);
+
+		if (!runInInteractiveMode && commandMetadata.supportsInteractiveMode) {
+			const suggestedCommandMessage = TranslationService.getMessage(
+				COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
+				commandMetadata.name
+			);
+			throw new CLIException(-10, formattedError, suggestedCommandMessage);
+		}
+
+		throw new CLIException(-10, formattedError);
 	}
 
 	_applyDefaultContextParams(args, accountDetails) {

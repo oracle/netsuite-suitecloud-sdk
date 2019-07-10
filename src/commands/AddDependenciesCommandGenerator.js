@@ -149,6 +149,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 
 	_formatOutput(operationResult) {
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logResultMessage(operationResult);
 			SDKOperationResultUtils.logErrors(operationResult);
 			return;
 		}
@@ -156,10 +157,8 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		const { data } = operationResult;
 		if (data.length === 0) {
 			NodeUtils.println(
-				TranslationService.getMessage(
-					MESSAGES.NO_UNRESOLVED_DEPENDENCIES,
-					NodeUtils.COLORS.RESULT
-				)
+				TranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES),
+				NodeUtils.COLORS.RESULT
 			);
 			return;
 		}
