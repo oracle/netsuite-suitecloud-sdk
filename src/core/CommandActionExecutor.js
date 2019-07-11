@@ -4,9 +4,8 @@ const TranslationService = require('./../services/TranslationService');
 const CLIException = require('../CLIException');
 const {
 	ERRORS,
-	COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
 } = require('../services/TranslationKeys');
-const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
+const { checkValidationErrors } = require('../validation/ParametersValidator');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -163,19 +162,7 @@ module.exports = class CommandActionExecutor {
 			arguments: commandArgumentsAfterPreActionFunc,
 		});
 
-		if (validationErrors.length == 0) return;
-
-		const formattedError = ValidationErrorsFormatter.formatErrors(validationErrors);
-
-		if (!runInInteractiveMode && commandMetadata.supportsInteractiveMode) {
-			const suggestedCommandMessage = TranslationService.getMessage(
-				COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
-				commandMetadata.name
-			);
-			throw new CLIException(-10, formattedError, suggestedCommandMessage);
-		}
-
-		throw new CLIException(-10, formattedError);
+		checkValidationErrors(validationErrors, runInInteractiveMode, commandMetadata);
 	}
 
 	_applyDefaultContextParams(args, accountDetails) {

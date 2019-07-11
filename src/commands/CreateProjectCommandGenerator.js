@@ -6,7 +6,6 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
-const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
@@ -53,6 +52,8 @@ const {
 	validateXMLCharacters,
 	validateNotUndefined,
 } = require('../validation/InteractiveAnswersValidator');
+
+const { checkValidationErrors } = require('../validation/ParametersValidator');
 
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -186,10 +187,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			ApplicationConstants.MANIFEST_XML
 		);
 
-		const validationErrorMessages = this._validateParams(answers);
-		if (validationErrorMessages.length > 0) {
-			throw ValidationErrorsFormatter.formatErrors(validationErrorMessages);
-		}
+		const validationErrors = this._validateParams(answers);
+
+		checkValidationErrors(validationErrors, false, this._commandMetadata);
 
 		const params = {
 			//Enclose in double quotes to also support project names with spaces
