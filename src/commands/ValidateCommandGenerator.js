@@ -10,7 +10,7 @@ const ProjectMetadataService = require('../services/ProjectMetadataService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 
 const {
-	COMMAND_VALIDATE: { QUESTIONS, QUESTIONS_CHOICES },
+	COMMAND_VALIDATE: { QUESTIONS, QUESTIONS_CHOICES, OUTPUT },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -28,9 +28,16 @@ const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
 };
 
 const APPLY_CONTENT_PROTECTION_VALUE = {
-	TRUE : 'T',
-	FALSE: 'F'
-}
+	TRUE: 'T',
+	FALSE: 'F',
+};
+
+const ERROR_LEVEL = {
+	ERROR: 'ERROR',
+	WARNING: 'WARNING',
+};
+
+var isServerValidation = false;
 
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -114,7 +121,6 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 	_preExecuteAction(args) {
 		args.project = this._projectFolder;
-		args.log = this._projectFolder;
 		return args;
 	}
 
@@ -129,6 +135,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 		if (answers[COMMAND_OPTIONS.SERVER]) {
 			flags.push(COMMAND_OPTIONS.SERVER);
+			isServerValidation = true;
 		}
 
 		delete answers[COMMAND_OPTIONS.SERVER];
@@ -151,12 +158,47 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logErrors(operationResult);
 		} else {
-			if (Array.isArray(data)) {
-				data.forEach(resultLine => {
-					NodeUtils.println(resultLine, NodeUtils.COLORS.INFO);
-				});
+			if (isServerValidation) {
+				if (Array.isArray(data)) {
+					data.forEach(resultLine => {
+						NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
+					});
+				}
+			} else {
+				this._logValidationEntries(data.warnings, true);
+				this._logValidationEntries(data.errors, false);
 			}
 		}
-		SDKOperationResultUtils.logResultMessage;
+		SDKOperationResultUtils.logResultMessage(operationResult);
+	}
+
+	_logValidationEntries(errorsOrWarnings, isWarning) {
+		const files = [];
+		errorsOrWarnings.forEach(entry => {
+			if (files.indexOf(entry.filePath) === -1) {
+				files.push(entry.filePath);
+			}
+		});
+
+		const headingLabel = isWarning
+			? TranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING)
+			: TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR);
+		const color = isWarning ? NodeUtils.COLORS.WARNING : NodeUtils.COLORS.ERROR;
+
+		NodeUtils.println(`${headingLabel}:`, color);
+
+		files.forEach(file => {
+			const fileString = `    ${file}`;
+			NodeUtils.println(fileString, color);
+			errorsOrWarnings
+				.filter(entry => entry.filePath === file)
+				.forEach(entry => {
+					const lineNumberLabel = TranslationService.getMessage(OUTPUT.LABEL_LINE_NUMBER);
+					const entryString = `        - ${lineNumberLabel} ${entry.lineNumber} - ${
+						entry.message
+					}`;
+					NodeUtils.println(entryString, color);
+				});
+		});
 	}
 };

@@ -55,6 +55,6 @@
     {
         "commandName": "validate",
         "interactiveGenerator": "commands/ValidateCommandGenerator",
-        "nonInteractiveGenerator": "commands/SDKWrapperCommandGenerator"
+        "nonInteractiveGenerator": "commands/ValidateCommandGenerator"
     }
 ]
