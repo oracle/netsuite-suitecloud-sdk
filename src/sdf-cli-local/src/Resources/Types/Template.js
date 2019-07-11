@@ -11,12 +11,6 @@ module.exports = class Template extends Resource {
 		this.format = '.js';
 	}
 
-	sourceContent() {
-		return Utils.getFileContent(this.fullsrc()).then(content => {
-			return (this.content = content);
-		});
-	}
-
 	getDependencies() {
 		const dependencies = [`'Handlebars'`, `'Handlebars.CompilerNameLookup'`];
 		const regex = /data-\w*\-{0,1}template=\"([^"]+)\"/gm;
