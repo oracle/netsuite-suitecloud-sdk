@@ -2,6 +2,7 @@ const _ = require('underscore');
 const Utils = require('../Utils');
 const path = require('path');
 const Log = require('../services/Log');
+const FileSystem = require('../services/FileSystem');
 
 let _basesrc = '';
 
@@ -18,9 +19,9 @@ module.exports = class Resource {
 		this.override_fullsrc;
 		this.override;
 	}
-	
+
 	sourceContent() {
-		return Utils.getFileContent(this.fullsrc()).then(content => {
+		return FileSystem.getFileContent(this.fullsrc()).then(content => {
 			return (this.content = content);
 		});
 	}
