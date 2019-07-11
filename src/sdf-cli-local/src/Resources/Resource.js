@@ -16,6 +16,12 @@ module.exports = class Resource {
 		this.override_fullsrc;
 		this.override;
 	}
+	
+	sourceContent() {
+		return Utils.getFileContent(this.fullsrc()).then(content => {
+			return (this.content = content);
+		});
+	}
 
 	addApplication(app) {
 		this.applications = _.union(this.applications, [app]);
