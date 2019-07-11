@@ -23,6 +23,14 @@ class FileSystem {
 		return folder_path;
 	}
 
+	getFileContent(dir) {
+		return promisify(fs.readFile)(dir, 'utf8');
+	}
+
+	writeFile(dest, content) {
+		return promisify(fs.writeFile)(dest, content);
+	}
+
 	copyFile(src, dest) {
 		(src = path.normalize(src)), (dest = path.normalize(dest));
 		const folder = path.dirname(dest);

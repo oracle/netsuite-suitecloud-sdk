@@ -2,6 +2,7 @@ const _ = require('underscore');
 const Utils = require('../Utils');
 const path = require('path');
 const Log = require('../services/Log');
+const FileSystem = require('../services/FileSystem');
 
 let _basesrc = '';
 
@@ -11,14 +12,16 @@ module.exports = class Resource {
 		this.dst = options.dst;
 		this.name = options.name;
 		this.format = options.format || '';
-		this.extension_assets_url = options.extension.getAssetsUrl();
+		this.content = '';
+		this.extension_asset_url = options.extension_asset_url;
+		this.extension_fullname = options.extension_fullname;
 		this.applications = _.flatten([options.app]);
 		this.override_fullsrc;
 		this.override;
 	}
-	
+
 	sourceContent() {
-		return Utils.getFileContent(this.fullsrc()).then(content => {
+		return FileSystem.getFileContent(this.fullsrc()).then(content => {
 			return (this.content = content);
 		});
 	}
