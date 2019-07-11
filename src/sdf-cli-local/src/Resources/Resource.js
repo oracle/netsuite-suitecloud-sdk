@@ -18,7 +18,7 @@ module.exports = class Resource {
 		this.override_fullsrc;
 		this.override;
 	}
-
+	
 	sourceContent() {
 		return Utils.getFileContent(this.fullsrc()).then(content => {
 			return (this.content = content);
@@ -37,6 +37,10 @@ module.exports = class Resource {
 
 	fullsrc() {
 		return this.override_fullsrc || path.join(_basesrc, this.src);
+	}
+
+	fulldst() {
+		return this.dst;
 	}
 
 	getBasename() {
