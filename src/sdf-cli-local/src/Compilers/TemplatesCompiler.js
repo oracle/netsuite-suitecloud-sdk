@@ -37,23 +37,26 @@ module.exports = class TemplatesCompiler {
 		});
 	}
 
-	writeTemplate(template) {	
-
+	writeTemplate(template) {
 		return () =>
 			//read original template file:
 			template.sourceContent().then(content => {
-
 				template.setPrecomplied(handlebars.precompile(content));
 
-				template.applications.forEach((app)=>{
+				template.applications.forEach(app => {
 					const basename = template.getBasename();
 					this.entrypoints[app] = this.entrypoints[app] || {};
-					this.entrypoints[app][basename] = `${this.processed_templates_folder}/${basename}`;
+					this.entrypoints[app][basename] = `${
+						this.processed_templates_folder
+					}/${basename}`;
 				});
 
 				//write final template file:
 				template.logOverrideMessage();
-				return Utils.writeFile(path.join(this.processed_templates_path, template.dst), this.wrapTemplate(template));
+				return Utils.writeFile(
+					path.join(this.processed_templates_path, template.dst),
+					this.wrapTemplate(template)
+				);
 			});
 	}
 
@@ -81,17 +84,13 @@ module.exports = class TemplatesCompiler {
 	}
 
 	wrapTemplate(template) {
-		return `define('${
-			template.getFilename()
-		}', [${
-			template.getDependencies().join()
-		}], function (Handlebars, compilerNameLookup){ var t = ${
+		return `define('${template.getFilename()}', [${template
+			.getDependencies()
+			.join()}], function (Handlebars, compilerNameLookup){ var t = ${
 			template.precompiled
 		}; var main = t.main; t.main = function(){ arguments[1] = arguments[1] || {}; var ctx = arguments[1]; ctx._extension_path = '${
 			template.extension_assets_url
-		}'; ctx._theme_path = '${
-			this.context.theme.getAssetsUrl()
-		}'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${
+		}'; ctx._theme_path = '${this.context.theme.getAssetsUrl()}'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${
 			template.name
 		}'; return template;});`;
 	}

@@ -4,7 +4,7 @@ const Utils = require('../Utils');
 const path = require('path');
 const Log = require('../services/Log');
 
-let = _basesrc = ''; 
+let _basesrc = ''; 
 
 module.exports = class Resource {
 

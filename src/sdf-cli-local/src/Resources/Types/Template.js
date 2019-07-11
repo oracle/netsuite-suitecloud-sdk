@@ -1,12 +1,10 @@
-
 const _ = require('underscore');
 const Utils = require('../../Utils');
 const Resource = require('../Resource');
 
 module.exports = class Template extends Resource {
 	constructor(options) {
-
-        super(options);
+		super(options);
 
 		this.content = '';
 		this.precompiled = '';
@@ -22,9 +20,9 @@ module.exports = class Template extends Resource {
 	getDependencies() {
 		const dependencies = [`'Handlebars'`, `'Handlebars.CompilerNameLookup'`];
 		const regex = /data-\w*\-{0,1}template=\"([^"]+)\"/gm;
-		
+
 		let result;
-		while (result = regex.exec(this.content)) {
+		while ((result = regex.exec(this.content))) {
 			dependencies.push(`'${result[1]}.tpl'`);
 		}
 		return _.uniq(dependencies);

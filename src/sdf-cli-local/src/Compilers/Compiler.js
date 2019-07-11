@@ -21,7 +21,7 @@ module.exports = class Compiler {
 			new SassCompiler({ context: this.context }),
 			new TemplatesCompiler({ context: this.context }),
 			// new JavascriptCompiler({context: this.context}),
-			new AssetsCompiler({context: this.context}),
+			new AssetsCompiler({ context: this.context }),
 		];
 
 		const binded_compilers = _.map(compilers, compiler => _.bind(compiler.compile, compiler));
