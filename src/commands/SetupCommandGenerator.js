@@ -22,6 +22,7 @@ const {
 	MANIFEST_XML,
 	REST_ROLES_URL,
 	PROD_ENVIRONMENT_ADDRESS,
+	HTTP_PROTOCOL
 } = require('../ApplicationConstants');
 
 const {
@@ -93,6 +94,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl),
 				},
 			]);
+
+
 		}
 
 		const credentialsAnswers = await prompt([
@@ -119,6 +122,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			action: this._accountService.getAccountAndRoles({
 				...credentialsAnswers,
 				restRolesUrl: `${baseAddress}${REST_ROLES_URL}`,
+				isDevelopment
 			}),
 			message: TranslationService.getMessage(MESSAGES.RETRIEVING_ACCOUNT_INFO),
 		});
@@ -230,7 +234,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	_getBaseAddress(developmentUrlAnswer) {
 		return developmentUrlAnswer
-			? developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]
+			?  `${HTTP_PROTOCOL}${developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]}`
 			: PROD_ENVIRONMENT_ADDRESS;
 	}
 

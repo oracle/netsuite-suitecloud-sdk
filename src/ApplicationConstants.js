@@ -24,6 +24,7 @@ module.exports = {
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	PROD_ENVIRONMENT_ADDRESS:'https://system.netsuite.com',
+	HTTP_PROTOCOL:'http://',
 	REST_ROLES_URL: '/rest/roles',
 	LINKS: {
 		HOW_TO: {

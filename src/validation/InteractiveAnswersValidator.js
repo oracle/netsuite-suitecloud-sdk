@@ -31,6 +31,8 @@ const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX =
 	'^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
 const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
+const SUBDOMAIN_DOMAIN_URL_REGEX = /[\w\d].*\.[\w\d].*\.[\w\d].*/;
+
 class InteractiveAnswersValidator {
 	showValidationResults(value, ...funcs) {
 		for (const func of funcs) {
@@ -158,8 +160,8 @@ class InteractiveAnswersValidator {
 	}
 
 	validateDevUrl(devUrlValue) {
-		const proxyUrl = url.parse(devUrlValue);
-		return proxyUrl.hostname && proxyUrl.protocol
+		const  builtUrl = url.parse(devUrlValue);
+		return !builtUrl.protocol && SUBDOMAIN_DOMAIN_URL_REGEX.test(devUrlValue)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(
 					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.DEV_URL)
