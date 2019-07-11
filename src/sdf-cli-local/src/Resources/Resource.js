@@ -1,13 +1,11 @@
-
 const _ = require('underscore');
 const Utils = require('../Utils');
 const path = require('path');
 const Log = require('../services/Log');
 
-let = _basesrc = ''; 
+let _basesrc = '';
 
 module.exports = class Resource {
-
 	constructor(options) {
 		this.src = options.src;
 		this.dst = options.dst;
@@ -19,36 +17,33 @@ module.exports = class Resource {
 		this.override;
 	}
 
-	addApplication(app){
-		this.applications = _.union(this.applications, [app])
+	addApplication(app) {
+		this.applications = _.union(this.applications, [app]);
 	}
 
-	logOverrideMessage(){
+	logOverrideMessage() {
 		if (this.override) {
 			Log.default('OVERRIDE', [this.src, this.override]);
 		}
 	}
 
-	fullsrc (){
+	fullsrc() {
 		return this.override_fullsrc || path.join(_basesrc, this.src);
 	}
 
-	fulldst (){
+	fulldst() {
 		return this.dst;
 	}
 
-	getBasename (){
+	getBasename() {
 		return path.basename(this.src);
 	}
 
-	getFilename(){
+	getFilename() {
 		return this.name + this.format;
 	}
 
-	static setBaseSrc(value){
+	static setBaseSrc(value) {
 		_basesrc = value;
 	}
-
 };
-
-

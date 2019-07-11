@@ -4,6 +4,7 @@ const Utils = require('./Utils');
 const Log = require('./services/Log');
 const _ = require('underscore');
 const path = require('path');
+const url = require('url');
 
 module.exports = class AbstractExtension {
 	constructor(options) {
@@ -11,6 +12,7 @@ module.exports = class AbstractExtension {
 		const extension_xml = options.extension_xml;
 
 		this.raw_extension = Utils.parseXml(objects_path, extension_xml);
+		this.base_url = 'http://localhost:7777'; // TODO remove and use cli-config
 	}
 
 	iterateResources(resources, func) {
@@ -20,12 +22,12 @@ module.exports = class AbstractExtension {
 			});
 		});
 	}
+
 	getTemplates() {
 		if (this.templates) {
 			return this.templates;
 		}
 		this.templates = {};
-
 		let templates = this.raw_extension.templates || {};
 		templates = templates.application || {};
 
@@ -79,6 +81,10 @@ module.exports = class AbstractExtension {
 
 	getLocalAssetsPath(folder = '') {
 		return path.join(folder, this.getExtensionFullName('/'));
+	}
+
+	getAssetsUrl() {
+		return Utils.forwardSlashes(url.resolve(this.base_url, this.getLocalAssetsPath()));
 	}
 
 	getAssets() {
