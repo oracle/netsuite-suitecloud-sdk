@@ -32,11 +32,6 @@ const APPLY_CONTENT_PROTECTION_VALUE = {
 	FALSE: 'F',
 };
 
-const ERROR_LEVEL = {
-	ERROR: 'ERROR',
-	WARNING: 'WARNING',
-};
-
 var isServerValidation = false;
 
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
