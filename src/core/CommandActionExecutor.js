@@ -1,11 +1,10 @@
 const assert = require('assert');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
-const CLIException = require('../CLIException');
 const {
 	ERRORS,
 } = require('../services/TranslationKeys');
-const { checkValidationErrors } = require('../validation/ParametersValidator');
+const { throwValidationException } = require('../utils/ExceptionUtils');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -162,7 +161,9 @@ module.exports = class CommandActionExecutor {
 			arguments: commandArgumentsAfterPreActionFunc,
 		});
 
-		checkValidationErrors(validationErrors, runInInteractiveMode, commandMetadata);
+		if(validationErrors.length > 0) {
+			throwValidationException(validationErrors, runInInteractiveMode, commandMetadata);
+		}
 	}
 
 	_applyDefaultContextParams(args, accountDetails) {

@@ -53,7 +53,7 @@ const {
 	validateNotUndefined,
 } = require('../validation/InteractiveAnswersValidator');
 
-const { checkValidationErrors } = require('../validation/ParametersValidator');
+const { throwValidationException } = require('../utils/ExceptionUtils');
 
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -189,7 +189,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const validationErrors = this._validateParams(answers);
 
-		checkValidationErrors(validationErrors, false, this._commandMetadata);
+		if(validationErrors.length > 0){
+			throwValidationException(validationErrors, false, this._commandMetadata);
+		}
 
 		const params = {
 			//Enclose in double quotes to also support project names with spaces
