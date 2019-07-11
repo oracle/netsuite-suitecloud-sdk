@@ -27,8 +27,6 @@ module.exports = class CompilationContext {
 		});
 
 		this.all_extensions = [this.theme].concat(this.extensions);
-
-
 	}
 
 	setLocalServerPath(path) {
@@ -43,10 +41,10 @@ module.exports = class CompilationContext {
 		return this.theme.getSassOverrides();
 	}
 
-	getTemplates(){	
-		let templates = {};	
-		this.all_extensions.map(extension => 
-			templates = _.extend(templates, extension.getTemplates())
+	getTemplates() {
+		let templates = {};
+		this.all_extensions.map(
+			extension => (templates = _.extend(templates, extension.getTemplates()))
 		);
 		return this.handleOverrides(templates, this.getTplOverrides());
 	}
@@ -76,9 +74,11 @@ module.exports = class CompilationContext {
 	}
 
 	getJavascript() {
-		let javascript = {};	
-		this.extensions.map(extension => // Change this map function.
-			javascript = _.extend(javascript, extension.getJavascript())
+		let javascript = {};
+		this.extensions.map(
+			(
+				extension // Change this map function.
+			) => (javascript = _.extend(javascript, extension.getJavascript()))
 		);
 		return javascript;
 	}
@@ -100,7 +100,7 @@ module.exports = class CompilationContext {
 	}
 
 	handleOverrides(resources, overrides) {
-		_.mapObject(resources, (resource)=>{
+		_.mapObject(resources, resource => {
 			const override = overrides[resource.src];
 			if (override) {
 				const full_path = glob(path.join(this.project_folder, '**', override.src));
@@ -109,7 +109,7 @@ module.exports = class CompilationContext {
 					resource.override = override.src;
 				}
 			}
-		})
+		});
 		return resources;
 	}
 };

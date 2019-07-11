@@ -28,7 +28,6 @@ module.exports = class AbstractExtension {
 		templates = templates.application || {};
 
 		this.iterateResources(templates, (resource_path, app) => {
-
 			if (this.templates[resource_path]) {
 				this.templates[resource_path].addApplication(app);
 				return;

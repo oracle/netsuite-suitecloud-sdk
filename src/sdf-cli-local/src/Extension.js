@@ -23,13 +23,12 @@ module.exports = class Extension extends AbstractExtension {
 		if (this.javascript) {
 			return this.javascript;
 		}
-		this.javascript = { };
+		this.javascript = {};
 
 		const javascript = this.raw_extension.javascript || {};
 		const javascript_app = javascript.application || {};
 
 		this.iterateResources(javascript_app, (resource_path, app) => {
-
 			if (this.javascript[resource_path]) {
 				this.javascript[resource_path].addApplication(app);
 				return;

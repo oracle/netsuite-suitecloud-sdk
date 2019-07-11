@@ -39,17 +39,15 @@ module.exports = class JavascriptCompiler {
 		var waitForAllFiles = this.readFiles(resources);
 		Promise.all(waitForAllFiles).then(e => {
 			//apps:
-			_.each(this.compiled_files,(app)=>{
+			_.each(this.compiled_files, app => {
 				//extensions
-				_.each(app,(extension)=>{
-
-				});
+				_.each(app, extension => {});
 			});
 		});
 	}
 
-	wrapExtModule() {		
-		extensions["MatiG.ExtTest.1.0.0"] = function() {
+	wrapExtModule() {
+		// extensions["MatiG.ExtTest.1.0.0"] = function() {
 	}
 
 	createFolder() {
