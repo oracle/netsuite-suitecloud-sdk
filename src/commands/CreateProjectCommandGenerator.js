@@ -49,8 +49,11 @@ const {
 	validateFieldIsLowerCase,
 	validatePublisherId,
 	validateProjectVersion,
-	validateXMLCharacters
+	validateXMLCharacters,
+	validateNotUndefined,
 } = require('../validation/InteractiveAnswersValidator');
+
+const { throwValidationException } = require('../utils/ExceptionUtils');
 
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -81,7 +84,12 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				name: COMMAND_OPTIONS.PROJECT_NAME,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
 				filter: fieldValue => fieldValue.trim(),
-				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateXMLCharacters),
+				validate: fieldValue =>
+					showValidationResults(
+						fieldValue,
+						validateFieldIsNotEmpty,
+						validateXMLCharacters
+					),
 			},
 			{
 				when: function(response) {
@@ -166,7 +174,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			// parentdirectory is a mandatory option in javaCLI but it must be computed in the nodeCLI
 			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = 'not_specified';
 		}
-		
+
 		return answers;
 	}
 
@@ -178,6 +186,12 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			SOURCE_FOLDER,
 			ApplicationConstants.MANIFEST_XML
 		);
+
+		const validationErrors = this._validateParams(answers);
+
+		if(validationErrors.length > 0){
+			throwValidationException(validationErrors, false, this._commandMetadata);
+		}
 
 		const params = {
 			//Enclose in double quotes to also support project names with spaces
@@ -258,11 +272,11 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				TranslationService.getMessage(MESSAGES.PROCESS_FAILED),
 				NodeUtils.COLORS.ERROR
 			);
-			SDKOperationResultUtils.logErrors(result.operationResult);
+			SDKOperationResultUtils.logResultMessage(result.operationResult);
 			return;
 		}
 
-		SDKOperationResultUtils.logMessages(result.operationResult);
+		SDKOperationResultUtils.logResultMessage(result.operationResult);
 		const projectTypeText =
 			result.projectType === ApplicationConstants.PROJECT_SUITEAPP
 				? SUITEAPP_PROJECT_TYPE_DISPLAY
@@ -274,5 +288,46 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			NodeUtils.lineBreak
 		);
 		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+	}
+
+	_validateParams(answers) {
+		const validationErrors = [];
+		validationErrors.push(
+			showValidationResults(
+				answers[COMMAND_OPTIONS.PROJECT_NAME],
+				validateFieldIsNotEmpty,
+				validateXMLCharacters
+			)
+		);
+		if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
+			validationErrors.push(
+				showValidationResults(
+					answers[COMMAND_OPTIONS.PUBLISHER_ID],
+					optionValue => validateNotUndefined(optionValue, COMMAND_OPTIONS.PUBLISHER_ID),
+					validatePublisherId
+				)
+			);
+
+			validationErrors.push(
+				showValidationResults(
+					answers[COMMAND_OPTIONS.PROJECT_VERSION],
+					optionValue =>
+						validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION),
+					validateProjectVersion
+				)
+			);
+
+			validationErrors.push(
+				showValidationResults(
+					answers[COMMAND_OPTIONS.PROJECT_ID],
+					optionValue => validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_ID),
+					validateFieldIsNotEmpty,
+					validateFieldHasNoSpaces,
+					validateFieldIsLowerCase
+				)
+			);
+		}
+
+		return validationErrors.filter(item => item !== true);
 	}
 };

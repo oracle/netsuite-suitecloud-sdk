@@ -1,7 +1,10 @@
 const assert = require('assert');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
-const { ERRORS } = require('./../services/TranslationKeys');
+const {
+	ERRORS,
+} = require('../services/TranslationKeys');
+const { throwValidationException } = require('../utils/ExceptionUtils');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -115,22 +118,23 @@ module.exports = class CommandActionExecutor {
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
 			const argumentsFromQuestions =
-				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
+				runInInteractiveMode || command.commandMetadata.forceInteractiveMode
 					? await command.getCommandQuestions(inquirer.prompt)
 					: {};
 
-			const commandArgumentsWithQuestionArguments = { ...overridedCommandArguments, ...argumentsFromQuestions };
+			const commandArgumentsWithQuestionArguments = {
+				...overridedCommandArguments,
+				...argumentsFromQuestions,
+			};
 			let commandArgumentsAfterPreActionFunc = command.preActionFunc
 				? command.preActionFunc(commandArgumentsWithQuestionArguments)
 				: commandArgumentsWithQuestionArguments;
 
-			const validationErrors = this._commandOptionsValidator.validate({
-				commandOptions: command.commandMetadata.options,
-				arguments: commandArgumentsAfterPreActionFunc,
-			});
-			if (validationErrors.length > 0) {
-				throw this._commandOptionsValidator.formatErrors(validationErrors);
-			}
+			this._checkCommandValidationErrors(
+				commandArgumentsAfterPreActionFunc,
+				command.commandMetadata,
+				runInInteractiveMode
+			);
 
 			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);
 
@@ -144,6 +148,21 @@ module.exports = class CommandActionExecutor {
 				commandUserExtension.onError(error);
 			}
 			throw error;
+		}
+	}
+
+	_checkCommandValidationErrors(
+		commandArgumentsAfterPreActionFunc,
+		commandMetadata,
+		runInInteractiveMode
+	) {
+		const validationErrors = this._commandOptionsValidator.validate({
+			commandOptions: commandMetadata.options,
+			arguments: commandArgumentsAfterPreActionFunc,
+		});
+
+		if(validationErrors.length > 0) {
+			throwValidationException(validationErrors, runInInteractiveMode, commandMetadata);
 		}
 	}
 
