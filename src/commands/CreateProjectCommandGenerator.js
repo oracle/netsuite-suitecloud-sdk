@@ -51,6 +51,7 @@ const {
 	validateProjectVersion,
 	validateXMLCharacters,
 	validateNotUndefined,
+	validateProjectType,
 } = require('../validation/InteractiveAnswersValidator');
 
 const { throwValidationException } = require('../utils/ExceptionUtils');
@@ -297,6 +298,12 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				answers[COMMAND_OPTIONS.PROJECT_NAME],
 				validateFieldIsNotEmpty,
 				validateXMLCharacters
+			)
+		);
+		validationErrors.push(
+			showValidationResults(
+				answers[COMMAND_OPTIONS.TYPE],
+				validateProjectType
 			)
 		);
 		if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {

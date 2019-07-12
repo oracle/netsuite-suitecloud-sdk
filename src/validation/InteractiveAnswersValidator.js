@@ -6,6 +6,8 @@ const {
 	COMMAND_OPTION_IS_MANDATORY,
 } = require('../services/TranslationKeys');
 
+const ApplicationConstants = require('../ApplicationConstants');
+
 const VALIDATION_RESULT_FAILURE = validationError => ({
 	result: false,
 	validationMessage: validationError,
@@ -154,6 +156,12 @@ class InteractiveAnswersValidator {
 			: VALIDATION_RESULT_FAILURE(
 					TranslationService.getMessage(COMMAND_OPTION_IS_MANDATORY, optionName)
 			  );
+	}
+
+	validateProjectType(value) {
+		return [ApplicationConstants.PROJECT_SUITEAPP,ApplicationConstants.PROJECT_ACP].includes(value) ? VALIDATION_RESULT_SUCCESS : VALIDATION_RESULT_FAILURE(
+			TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE)
+		);
 	}
 }
 

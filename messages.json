@@ -28,6 +28,7 @@
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATION_CANCELED": "The creation process has been canceled.",
 	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
 	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Do you want to overwrite the {0} project? All the files and folders from the former project will be deleted and replaced by the new project.",
+	"COMMAND_CREATEPROJECT_WRONG_PROJECT_TYPE": "Invalid \"type\" specified. The expected values are the following - \"ACCOUNTCUSTOMIZATION, SUITEAPP\".",
 
 	"COMMAND_DEPLOY_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection can not be applied in an Account Customziaton Project.",
 	"COMMAND_DEPLOY_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalue option. Enter either WARNING or ERROR.",
