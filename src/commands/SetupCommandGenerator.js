@@ -22,7 +22,7 @@ const {
 	MANIFEST_XML,
 	REST_ROLES_URL,
 	PROD_ENVIRONMENT_ADDRESS,
-	HTTP_PROTOCOL
+	HTTP_PROTOCOL,
 } = require('../ApplicationConstants');
 
 const {
@@ -80,7 +80,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 		}
 
-		const isDevelopment = commandArguments && commandArguments.dev;
+		const isDevelopment =
+			commandArguments && commandArguments.dev != undefined && commandArguments.dev;
+
 		let developmentUrlAnswer = null;
 
 		if (isDevelopment) {
@@ -94,8 +96,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl),
 				},
 			]);
-
-
 		}
 
 		const credentialsAnswers = await prompt([
@@ -122,7 +122,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			action: this._accountService.getAccountAndRoles({
 				...credentialsAnswers,
 				restRolesUrl: `${baseAddress}${REST_ROLES_URL}`,
-				isDevelopment
+				isDevelopment,
 			}),
 			message: TranslationService.getMessage(MESSAGES.RETRIEVING_ACCOUNT_INFO),
 		});
@@ -234,7 +234,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	_getBaseAddress(developmentUrlAnswer) {
 		return developmentUrlAnswer
-			?  `${HTTP_PROTOCOL}${developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]}`
+			? `${HTTP_PROTOCOL}${developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]}`
 			: PROD_ENVIRONMENT_ADDRESS;
 	}
 
@@ -297,7 +297,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			email: answers.email,
 			account: answers.account,
 			role: answers.role,
-			isDevelopment: answers.isDevelopment
+			isDevelopment: answers.isDevelopment,
 		};
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
