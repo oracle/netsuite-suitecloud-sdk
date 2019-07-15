@@ -27,23 +27,25 @@ module.exports = class Extension extends AbstractExtension {
 
 		const javascript = this.raw_extension.javascript || {};
 		const javascript_app = javascript.application || {};
+		const javascript_entrypoints = javascript.entrypoints || {};
 
-		this.iterateResources(javascript_app, (resource_path, app) => {
-			if (this.javascript[resource_path]) {
-				this.javascript[resource_path].addApplication(app);
-				return;
-			}
+		_.each({ javascript_app, javascript_entrypoints }, (resources, key) => {
+			this.iterateResources(resources, (resource_path, app) => {
+				if (this.javascript[resource_path]) {
+					this.javascript[resource_path].addApplication(app);
+					return;
+				}
 
-			const file_format = '.js';
-			this.javascript[resource_path] = new Script({
-				basesrc: this._excludeBasePath(resource_path),
-				src: this._excludeBasePath(resource_path),
-				dst: path.basename(resource_path),
-				name: path.basename(resource_path, path.extname(resource_path)),
-				format: file_format,
-				extension_asset_url: this.getAssetsUrl(),
-				extension_fullname: this.getExtensionFullName('.'),
-				app: app,
+				this.javascript[resource_path] = new Script({
+					basesrc: this._excludeBasePath(resource_path),
+					src: this._excludeBasePath(resource_path),
+					dst: path.basename(resource_path),
+					name: path.basename(resource_path, path.extname(resource_path)),
+					isEntrypoint: key === 'javascript_entrypoints',
+					extension_asset_url: this.getAssetsUrl(),
+					extension_fullname: this.getExtensionFullName('.'),
+					app: app,
+				});
 			});
 		});
 

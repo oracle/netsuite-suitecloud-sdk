@@ -6,6 +6,7 @@ module.exports = class Javascript extends Resource {
 	constructor(options) {
 		super(options);
 
+		this.isEntrypoint = !!options.isEntrypoint;
 		this.format = '.js';
 	}
 };

@@ -12,17 +12,19 @@ module.exports = class AbstractExtension {
 		const objects_path = options.objects_path;
 		const extension_xml = options.extension_xml;
 
-		this.templates = {};
-
 		this.raw_extension = Utils.parseXml(objects_path, extension_xml);
 		this.base_url = 'http://localhost:7777'; // TODO remove and use cli-config
 	}
 
 	iterateResources(resources, func) {
-		_.each(resources, (rsc_array, app) => {
-			Utils.parseFiles(rsc_array).forEach(resource_path => {
-				func(resource_path, app);
-			});
+		_.each(resources, (rsc, app) => {
+			if (_.isString(rsc)) {
+				func(Utils.parseFileName(rsc), app);
+			} else {
+				Utils.parseFiles(rsc).forEach(resource_path => {
+					func(resource_path, app);
+				});
+			}
 		});
 	}
 

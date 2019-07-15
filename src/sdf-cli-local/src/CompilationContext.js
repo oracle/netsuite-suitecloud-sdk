@@ -75,10 +75,8 @@ module.exports = class CompilationContext {
 
 	getJavascript() {
 		let javascript = {};
-		this.extensions.map(
-			(
-				extension // Change this map function.
-			) => (javascript = _.extend(javascript, extension.getJavascript()))
+		this.extensions.forEach(
+			extension => (javascript = _.extend(javascript, extension.getJavascript()))
 		);
 		return javascript;
 	}
