@@ -1,8 +1,6 @@
 'use strict';
 const OperationResultStatus = require('../commands/OperationResultStatus');
 const NodeUtils = require('./NodeUtils');
-const TranslationService = require('../services/TranslationService');
-const { ERRORS } = require('../services/TranslationKeys');
 
 module.exports = {
 	getErrorMessagesString: operationResult => {
@@ -34,5 +32,15 @@ module.exports = {
 				NodeUtils.println(resultMessage, NodeUtils.COLORS.RESULT);
 			}
 		}
+	},
+	getErrorCode: operationResult => {
+		const { errorCode } = operationResult;
+		return errorCode ? errorCode : '';
+	},
+	setResultMessage: (operationResult, message) => {
+		return {
+			...operationResult,
+			resultMessage : message
+		};
 	},
 };

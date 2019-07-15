@@ -40,6 +40,8 @@ const ANSWERS = {
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 };
 
+const ERROR_CODES = require('../error-codes');
+
 const {
 	validateFieldIsNotEmpty,
 	validateEmail,
@@ -301,12 +303,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_enrichServerErrorMessage(operationResult) {
-		operationResult.messages = operationResult.messages.map((message) => {
-			if(JSON.stringify(message) === TranslationService.getMessage(ERRORS.ERRORS_SERVER_ERROR_2FA_REQUIRED)){
-				message = TranslationService.getMessage(ERRORS.ERRORS_CLI_ERROR_2FA_REQUIRED);
-			}
-			return message;
-		});
+		if(SDKOperationResultUtils.getErrorCode(operationResult) === ERROR_CODES.TWO_FA_REQUIRED) {
+			return SDKOperationResultUtils.setResultMessage(operationResult,TranslationService.getMessage(ERRORS.ERRORS_CLI_ERROR_2FA_REQUIRED))
+		}
 		return operationResult;
 	}
 };
