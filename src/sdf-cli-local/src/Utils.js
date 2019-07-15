@@ -30,15 +30,6 @@ const Utils = {
 		return parsed_xml;
 	},
 
-	getFileContent: dir => {
-		// TODO move to FyleSystem class
-		return promisify(fs.readFile)(dir, 'utf8');
-	},
-
-	writeFile: (dest, content) => {
-		return promisify(fs.writeFile)(dest, content);
-	},
-
 	parseFiles: (files_xml, replacer) => {
 		let files = files_xml.files || {};
 		files = files.file || {};

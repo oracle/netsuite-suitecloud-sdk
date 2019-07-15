@@ -55,7 +55,7 @@ module.exports = class TemplatesCompiler {
 
 				//write final template file:
 				template.logOverrideMessage();
-				return Utils.writeFile(
+				return FileSystem.writeFile(
 					path.join(this.processed_templates_path, template.dst),
 					this.wrapTemplate(template)
 				);
@@ -78,7 +78,7 @@ module.exports = class TemplatesCompiler {
 				// TODO remove and use cli-config
 			};
 
-			return () => Utils.writeFile(dest, this.wrapEntrypoint(entryfile_content));
+			return () => FileSystem.writeFile(dest, this.wrapEntrypoint(entryfile_content));
 		});
 	}
 
