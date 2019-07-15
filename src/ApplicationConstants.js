@@ -5,6 +5,7 @@ module.exports = {
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
 	SDF_SDK_PATHNAME: '../bin/cli-2019.2.0-SNAPSHOT.jar',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
+	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
 	SDK_PROXY_JVM_OPTIONS: {
 		PROTOCOL: '-DproxyProtocol',
 		HOST: '-DproxyHost',

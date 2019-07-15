@@ -1,6 +1,7 @@
 'use strict';
 
 const {
+	SDK_DEVELOPMENT_MODE_JVM_OPTION,
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDF_SDK_PATHNAME,
@@ -30,7 +31,11 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} "${path.join(
+			const developmentModeOption = executionContext.isDevelopmentMode()
+				? SDK_DEVELOPMENT_MODE_JVM_OPTION
+				: '';
+
+			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} ${developmentModeOption} "${path.join(
 				__dirname,
 				SDF_SDK_PATHNAME
 			)}" ${executionContext.getCommand()} ${cliParamsAsString}`;

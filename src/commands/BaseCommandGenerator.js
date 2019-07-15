@@ -30,6 +30,8 @@ module.exports = class BaseCommandGenerator {
 		sdkExecutionContext.addParam('role', accountDetails.roleId);
 		sdkExecutionContext.addParam('email', accountDetails.email);
 		sdkExecutionContext.addParam('url', accountDetails.netSuiteUrl);
+
+		if (accountDetails.isDevelopment) sdkExecutionContext.setDevelopmentMode();
 	}
 
 	_preExecuteAction(args) {

@@ -7,7 +7,9 @@ module.exports = class SDKExecutionContext {
 		assert(options.command, 'Command is mandatory option');
 		this._command = options.command;
 		this._showOutput = typeof options.showOutput === 'undefined' ? true : options.showOutput;
-		this._integrationMode = typeof options.integrationMode === 'undefined' ? true : options.integrationMode;
+		this._integrationMode =
+			typeof options.integrationMode === 'undefined' ? true : options.integrationMode;
+		this._developmentMode = false;
 		this._params = {};
 		this._flags = [];
 
@@ -60,4 +62,11 @@ module.exports = class SDKExecutionContext {
 		return this._integrationMode;
 	}
 
+	isDevelopmentMode() {
+		return this._developmentMode;
+	}
+
+	setDevelopmentMode() {
+		this._developmentMode = true;
+	}
 };

@@ -252,12 +252,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		return FileUtils.exists(path.join(this._executionPath, ACCOUNT_DETAILS_FILENAME));
 	}
 
-	_issueToken(params) {
+	_issueToken(params, isDevelopment) {
 		const executionContextForSaveToken = new SDKExecutionContext({
 			command: ISSUE_TOKEN_COMMAND,
 			showOutput: false,
 			params,
 		});
+
+		if (isDevelopment) executionContextForSaveToken.setDevelopmentMode();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForSaveToken),
@@ -265,12 +267,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
-	_saveToken(params) {
+	_saveToken(params, isDevelopment) {
 		const executionContextForSaveToken = new SDKExecutionContext({
 			command: SAVE_TOKEN_COMMAND,
 			showOutput: false,
 			params,
 		});
+
+		if (isDevelopment) executionContextForSaveToken.setDevelopmentMode();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForSaveToken),
@@ -297,20 +301,21 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			email: answers.email,
 			account: answers.account,
 			role: answers.role,
-			isDevelopment: answers.isDevelopment,
 		};
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
 			operationResult = await this._issueToken({
 				...accountParams,
 				password: answers.password,
-			});
+			},
+			answers.isDevelopment);
 		} else {
 			operationResult = await this._saveToken({
 				...accountParams,
 				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
 				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
-			});
+			},
+			answers.isDevelopment);
 		}
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
