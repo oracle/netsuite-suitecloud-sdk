@@ -40,7 +40,7 @@ const ANSWERS = {
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 };
 
-const ERROR_CODES = require('../error-codes');
+const SDKErrorCodes = require('../SDKErrorCodes');
 
 const {
 	validateFieldIsNotEmpty,
@@ -282,7 +282,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			const errorMessage = SDKOperationResultUtils.getResultMessage(this._enrichServerErrorMessage(operationResult));
+			const errorMessage = this._getEnrichedServerErrorMessage(operationResult);
 			if (errorMessage) {
 				throw errorMessage;
 			}
@@ -302,10 +302,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		);
 	}
 
-	_enrichServerErrorMessage(operationResult) {
-		if(SDKOperationResultUtils.getErrorCode(operationResult) === ERROR_CODES.TWO_FA_REQUIRED) {
-			return SDKOperationResultUtils.setResultMessage(operationResult,TranslationService.getMessage(ERRORS.ERRORS_CLI_ERROR_2FA_REQUIRED))
+	_getEnrichedServerErrorMessage(operationResult) {
+		if (
+			SDKOperationResultUtils.getErrorCode(operationResult) === SDKErrorCodes.TWO_FA_REQUIRED
+		) {
+			return TranslationService.getMessage(ERRORS.ERRORS_CLI_ERROR_2FA_REQUIRED);
 		}
-		return operationResult;
+		return SDKOperationResultUtils.getResultMessage(operationResult);
 	}
 };

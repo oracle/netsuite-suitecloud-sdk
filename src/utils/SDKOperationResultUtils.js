@@ -37,10 +37,4 @@ module.exports = {
 		const { errorCode } = operationResult;
 		return errorCode ? errorCode : '';
 	},
-	setResultMessage: (operationResult, message) => {
-		return {
-			...operationResult,
-			resultMessage : message
-		};
-	},
 };
