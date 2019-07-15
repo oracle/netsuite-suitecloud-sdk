@@ -15,6 +15,7 @@ const assert = require('assert');
 const {
 	FILE_NAMES,
 	FOLDER_NAMES,
+	LINKS,
 	PROJECT_ACP,
 	PROJECT_SUITEAPP,
 } = require('../ApplicationConstants');
@@ -55,9 +56,11 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _getCommandQuestions(prompt) {
+		const isSuiteAppProject = this._isSuiteAppProject();
+
 		const answers = await prompt([
 			{
-				when: this._isSuiteAppProject() && this._hasLockOrHideFiles(),
+				when: isSuiteAppProject && this._hasLockOrHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION,
 				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
@@ -68,6 +71,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				],
 			},
 			{
+				when: !isSuiteAppProject,
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
@@ -87,7 +91,28 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 					},
 				],
 			},
+			{
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: COMMAND.FLAGS.VALIDATE,
+				message: TranslationService.getMessage(QUESTIONS.PERFORM_LOCAL_VALIDATION),
+				default: 0,
+				choices: [
+					{ name: TranslationService.getMessage(YES), value: true },
+					{ name: TranslationService.getMessage(NO), value: false },
+				],
+			}
 		]);
+
+		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
+			NodeUtils.println(
+				TranslationService.getMessage(
+					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,
+					LINKS.HOW_TO.CREATE_HIDDING_XML,
+					LINKS.HOW_TO.CREATE_LOCKING_XML
+				),
+				NodeUtils.COLORS.INFO
+			);
+		}
 
 		return answers;
 	}
@@ -163,6 +188,10 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		const { projectType } = answers;
 		const SDKDeployParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
+		if (SDKDeployParams[COMMAND.FLAGS.VALIDATE]) {
+			delete SDKDeployParams[COMMAND.FLAGS.VALIDATE];
+			flags.push(COMMAND.FLAGS.VALIDATE);
+		}
 		const executionContextForDeploy = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: SDKDeployParams,

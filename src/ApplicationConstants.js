@@ -27,7 +27,9 @@ module.exports = {
 	REST_ISSUE_TOKEN_URL: 'https://system.netsuite.com/rest/issuetoken',
 	LINKS: {
 		HOW_TO: {
-			ISSUE_A_TOKEN: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html'
+			CREATE_HIDDING_XML: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html',
+			CREATE_LOCKING_XML: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html',
+			ISSUE_A_TOKEN: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html',
 		}
 	},
 	CONSUMER_REQUEST_PARAM:{
