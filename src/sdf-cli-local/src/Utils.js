@@ -55,10 +55,6 @@ const Utils = {
 		return file_name.replace(/^\[(.*)\]$/, '$1');
 	},
 
-	forwardSlashes(path) {
-		return path.replace(/\\/g, '/');
-	},
-
 	runParallel: tasks => {
 		const parallel = async.parallel;
 
