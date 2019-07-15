@@ -4,6 +4,7 @@ const handlebars = require('handlebars');
 const _ = require('underscore');
 const Utils = require('../Utils');
 const fs = require('fs');
+const url = require('url');
 const path = require('path');
 const Log = require('../services/Log');
 const FileSystem = require('../services/FileSystem');
@@ -49,9 +50,7 @@ module.exports = class TemplatesCompiler {
 				template.applications.forEach(app => {
 					const basename = template.getBasename();
 					this.entrypoints[app] = this.entrypoints[app] || {};
-					this.entrypoints[app][basename] = `${
-						this.processed_templates_folder
-					}/${basename}`;
+					this.entrypoints[app][basename] = basename;
 				});
 
 				//write final template file:
@@ -75,7 +74,8 @@ module.exports = class TemplatesCompiler {
 			);
 			const entryfile_content = {
 				paths: this.entrypoints[app],
-				baseUrl: 'http://localhost:7777', // TODO remove and use cli-config
+				baseUrl: url.resolve('http://localhost:7777/', `${this.templates_folder}/${this.processed_templates_folder}`), 
+				// TODO remove and use cli-config
 			};
 
 			return () => Utils.writeFile(dest, this.wrapEntrypoint(entryfile_content));
