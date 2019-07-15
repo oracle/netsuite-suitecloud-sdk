@@ -26,12 +26,12 @@ module.exports = function(req, res) {
 		javascript_libs: {
 			tag: 'script',
 			resource: 'javascript_libs',
-			url: `${protocol}://${host}/javascript/javascript-libs.js`,
+			url: `${protocol}://${host}/templates/javascript-libs.js`,
 		},
 		templates: {
 			tag: 'script',
 			resource: 'templates',
-			url: `${protocol}://${host}/templates/processed-templates/${app}-templates.js`,
+			url: `${protocol}://${host}/templates/${app}-templates.js`,
 		},
 		js_core: {
 			tag: 'script',
