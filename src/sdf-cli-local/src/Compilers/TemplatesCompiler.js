@@ -3,6 +3,7 @@
 const handlebars = require('handlebars');
 const _ = require('underscore');
 const Utils = require('../Utils');
+const fs = require('fs');
 const path = require('path');
 const Log = require('../services/Log');
 const FileSystem = require('../services/FileSystem');
@@ -25,6 +26,8 @@ module.exports = class TemplatesCompiler {
 		this.createTemplateFolders(); // TODO pre-save folder path in constructor
 
 		this.setCompilerNameLookupHelper();
+		// new file with template helpers:
+		this.writeJavascriptLibsFile();
 
 		// first create templates files
 		const templates = this.writeTemplates();
@@ -93,6 +96,22 @@ module.exports = class TemplatesCompiler {
 		}'; ctx._theme_path = '${this.context.theme.getAssetsUrl()}'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${
 			template.name
 		}'; return template;});`;
+	}
+	
+	writeJavascriptLibsFile() {
+		let content = '';
+		['loadTemplateSafe', 'Handlebars.CompilerNameLookup'].map(filename => {
+			content += fs
+				.readFileSync(
+					path.join(
+						process.mainModule.filename,
+						'../../src/sdf-cli-local/src/client-scripts',
+						filename + '.js'
+					)
+				)
+				.toString();
+		});
+		fs.writeFileSync(path.join(this.templates_path, 'javascript-libs.js'), content);
 	}
 
 	setCompilerNameLookupHelper() {

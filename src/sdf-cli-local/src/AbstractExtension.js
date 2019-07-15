@@ -40,13 +40,11 @@ module.exports = class AbstractExtension {
 				return;
 			}
 
-			const file_format = '.js';
 			this.templates[resource_path] = new Template({
 				basesrc: this._excludeBasePath(resource_path),
 				src: this._excludeBasePath(resource_path),
-				dst: path.basename(resource_path) + file_format,
+				dst: path.basename(resource_path) + '.js',
 				name: path.basename(resource_path, path.extname(resource_path)),
-				format: file_format,
 				extension: this,
 				app: app,
 			});
