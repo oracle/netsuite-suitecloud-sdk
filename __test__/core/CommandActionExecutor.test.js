@@ -1,6 +1,5 @@
 'use strict';
 const CommandActionExecutor = require('../../src/core/CommandActionExecutor');
-const CLIException = require('../../src/CLIException');
 
 describe('CommandActionExecutor ExecuteAction():', function() {
 	// STARTING MOCKS.
