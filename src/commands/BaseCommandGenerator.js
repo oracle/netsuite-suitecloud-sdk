@@ -27,7 +27,9 @@ module.exports = class BaseCommandGenerator {
 
 	_getExecutionContext(options){
 		const sdkExecutionContext = new SDKExecutionContext(options);
-		this._applyDefaultContextParams(sdkExecutionContext);
+		if (this._commandMetadata.isSetupRequired) {
+			this._applyDefaultContextParams(sdkExecutionContext);
+		}
 		return sdkExecutionContext;
 	}
 
