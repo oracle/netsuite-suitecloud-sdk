@@ -43,6 +43,8 @@ const ANSWERS = {
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 };
 
+const SDKErrorCodes = require('../SDKErrorCodes');
+
 const {
 	validateDevUrl,
 	validateFieldIsNotEmpty,
@@ -319,7 +321,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			const errorMessage = SDKOperationResultUtils.getResultMessage(operationResult);
+			const errorMessage = this._getEnrichedServerErrorMessage(operationResult);
 			if (errorMessage) {
 				throw errorMessage;
 			}
@@ -337,5 +339,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			TranslationService.getMessage(OUTPUT.SUCCESSFUL),
 			NodeUtils.COLORS.RESULT
 		);
+	}
+
+	_getEnrichedServerErrorMessage(operationResult) {
+		if (
+			SDKOperationResultUtils.getErrorCode(operationResult) === SDKErrorCodes.TWO_FA_REQUIRED
+		) {
+			return TranslationService.getMessage(ERRORS.ERRORS_CLI_ERROR_2FA_REQUIRED);
+		}
+		return SDKOperationResultUtils.getResultMessage(operationResult);
 	}
 };
