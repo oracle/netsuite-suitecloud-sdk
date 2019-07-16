@@ -7,6 +7,8 @@ const {
 } = require('../services/TranslationKeys');
 const url = require('url');
 
+const ApplicationConstants = require('../ApplicationConstants');
+
 const VALIDATION_RESULT_FAILURE = validationError => ({
 	result: false,
 	validationMessage: validationError,
@@ -159,6 +161,7 @@ class InteractiveAnswersValidator {
 			  );
 	}
 
+<<<<<<< HEAD
 	validateDevUrl(devUrlValue) {
 		const  builtUrl = url.parse(devUrlValue);
 		return !builtUrl.protocol && SUBDOMAIN_DOMAIN_URL_REGEX.test(devUrlValue)
@@ -166,6 +169,12 @@ class InteractiveAnswersValidator {
 			: VALIDATION_RESULT_FAILURE(
 					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.DEV_URL)
 			  );
+=======
+	validateProjectType(value) {
+		return [ApplicationConstants.PROJECT_SUITEAPP,ApplicationConstants.PROJECT_ACP].includes(value) ? VALIDATION_RESULT_SUCCESS : VALIDATION_RESULT_FAILURE(
+			TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE)
+		);
+>>>>>>> master
 	}
 }
 

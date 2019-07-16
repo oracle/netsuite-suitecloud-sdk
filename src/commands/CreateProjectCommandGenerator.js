@@ -5,7 +5,6 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
-const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
@@ -51,7 +50,10 @@ const {
 	validateProjectVersion,
 	validateXMLCharacters,
 	validateNotUndefined,
+	validateProjectType,
 } = require('../validation/InteractiveAnswersValidator');
+
+const { throwValidationException } = require('../utils/ExceptionUtils');
 
 module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -185,9 +187,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			ApplicationConstants.MANIFEST_XML
 		);
 
-		const validationErrorMessages = this._validateParams(answers);
-		if (validationErrorMessages.length > 0) {
-			throw ValidationErrorsFormatter.formatErrors(validationErrorMessages);
+		const validationErrors = this._validateParams(answers);
+
+		if(validationErrors.length > 0){
+			throwValidationException(validationErrors, false, this._commandMetadata);
 		}
 
 		const params = {
@@ -296,6 +299,12 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				validateXMLCharacters
 			)
 		);
+		validationErrors.push(
+			showValidationResults(
+				answers[COMMAND_OPTIONS.TYPE],
+				validateProjectType
+			)
+		);
 		if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
 			validationErrors.push(
 				showValidationResults(
@@ -308,9 +317,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			validationErrors.push(
 				showValidationResults(
 					answers[COMMAND_OPTIONS.PROJECT_VERSION],
-					validateProjectVersion,
 					optionValue =>
-						validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION)
+						validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION),
+					validateProjectVersion
 				)
 			);
 
