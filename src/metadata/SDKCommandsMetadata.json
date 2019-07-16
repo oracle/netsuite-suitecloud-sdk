@@ -1299,7 +1299,7 @@
 				"option": "applycontentprotection",
 				"description": "Apply the content protection settings from the hiding.xml and locking.xml files.",
 				"mandatory": false,
-				"type": "SINGLE",
+				"type": "FLAG",
 				"alias": "c",
 				"usage": "T",
 				"defaultOption": false,

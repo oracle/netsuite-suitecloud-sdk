@@ -124,38 +124,45 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		});
 
 		const operationResult = await this._sdkExecutor.execute(executionContext);
-		return { operationResult, isServerValidation: isServerValidation };
+		return { operationResult, isServerValidation };
 	}
 
-	_formatOutput(result) {
-		const operationResult = result.operationResult;
+	_formatOutput(actionResult) {
+		const { operationResult, isServerValidation } = actionResult;
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logErrors(operationResult);
-		} else if (result.isServerValidation && Array.isArray(data)) {
+		} else if (isServerValidation && Array.isArray(data)) {
 			data.forEach(resultLine => {
 				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
 			});
-		} else if (!result.isServerValidation) {
-			this._logValidationEntries(data.warnings, true);
-			this._logValidationEntries(data.errors, false);
+		} else if (!isServerValidation) {
+			this._showLocalValidationResultData(data);
 		}
 		SDKOperationResultUtils.logResultMessage(operationResult);
 	}
 
-	_logValidationEntries(entries, isWarning) {
+	_showLocalValidationResultData(data) {
+		this._logValidationEntries(
+			data.warnings,
+			TranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING),
+			NodeUtils.COLORS.WARNING
+		);
+		this._logValidationEntries(
+			data.errors,
+			TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR),
+			NodeUtils.COLORS.ERROR
+		);
+	}
+
+	_logValidationEntries(entries, headingLabel, color) {
 		const files = [];
 		entries.forEach(entry => {
-			if (files.indexOf(entry.filePath) === -1) {
+			if (!files.includes(entry.filePath)) {
 				files.push(entry.filePath);
 			}
 		});
-
-		const headingLabel = isWarning
-			? TranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING)
-			: TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR);
-		const color = isWarning ? NodeUtils.COLORS.WARNING : NodeUtils.COLORS.ERROR;
 
 		if (entries.length > 0) {
 			NodeUtils.println(`${headingLabel}:`, color);
