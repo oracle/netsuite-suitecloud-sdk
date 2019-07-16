@@ -1,6 +1,7 @@
 'use strict';
 
 const SDKExecutor = require('../SDKExecutor').SDKExecutor;
+const SDKExecutionContext = require('../SDKExecutionContext');
 const AccountDetailsService = require('./../core/accountsetup/AccountDetailsService');
 const Command = require('./Command');
 const assert = require('assert');
@@ -23,6 +24,12 @@ module.exports = class BaseCommandGenerator {
 		return prompt([]);
 	}
 	_executeAction() {}
+
+	_getExecutionContext(options){
+		const sdkExecutionContext = new SDKExecutionContext(options);
+		this._applyDefaultContextParams(sdkExecutionContext);
+		return sdkExecutionContext;
+	}
 
 	_applyDefaultContextParams(sdkExecutionContext) {
 		const accountDetails = this._accountDetailsService.get();

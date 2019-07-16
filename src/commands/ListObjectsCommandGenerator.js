@@ -7,7 +7,6 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
@@ -26,7 +25,12 @@ const COMMAND_QUESTIONS_NAMES = {
 };
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
+	COMMAND_LISTOBJECTS: {
+		LISTING_OBJECTS,
+		QUESTIONS,
+		SUCCESS_OBJECTS_IMPORTED,
+		SUCCESS_NO_OBJECTS,
+	},
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -150,7 +154,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		if (Array.isArray(params.type)) {
 			params.type = params.type.join(' ');
 		}
-		let executionContext = new SDKExecutionContext({
+		let executionContext = this._getExecutionContext({
 			command: this._commandMetadata.name,
 			params,
 			showOutput: false,
@@ -173,10 +177,18 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		if (Array.isArray(data) && data.length) {
-			NodeUtils.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), NodeUtils.COLORS.RESULT);
-			data.forEach(object => NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT));
+			NodeUtils.println(
+				TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED),
+				NodeUtils.COLORS.RESULT
+			);
+			data.forEach(object =>
+				NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT)
+			);
 		} else {
-			NodeUtils.println(TranslationService.getMessage(SUCCESS_NO_OBJECTS), NodeUtils.COLORS.RESULT);
+			NodeUtils.println(
+				TranslationService.getMessage(SUCCESS_NO_OBJECTS),
+				NodeUtils.COLORS.RESULT
+			);
 		}
 	}
 };

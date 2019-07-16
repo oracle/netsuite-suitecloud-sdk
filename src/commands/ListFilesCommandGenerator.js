@@ -21,11 +21,10 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
-			const executionContext = new SDKExecutionContext({
+			const executionContext = this._getExecutionContext({
 				command: LIST_FOLDERS_COMMAND,
 				showOutput: false,
 			});
-			this._applyDefaultContextParams(executionContext);
 
 			return executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
@@ -66,7 +65,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	_executeAction(answers) {
 		// quote folder path to preserve spaces
 		answers.folder = `\"${answers.folder}\"`;
-		const executionContext = new SDKExecutionContext({
+		const executionContext = this._getExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
 		});

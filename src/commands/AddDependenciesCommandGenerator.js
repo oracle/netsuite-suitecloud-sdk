@@ -66,7 +66,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 	}
 
 	_executeAction(answers) {
-		const executionContext = new SDKExecutionContext({
+		const executionContext = this._getExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
 			flags: [COMMAND_OPTIONS.ALL],

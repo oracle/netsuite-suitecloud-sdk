@@ -2,7 +2,6 @@
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
@@ -75,11 +74,10 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_listFolders() {
-		const executionContextListFolders = new SDKExecutionContext({
+		const executionContextListFolders = this._getExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
 			showOutput: false,
 		});
-		this._applyDefaultContextParams(executionContextListFolders);
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextListFolders),
@@ -110,11 +108,10 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContextListFiles = new SDKExecutionContext({
+		const executionContextListFiles = this._getExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFILES,
 			params: selectFolderAnswer,
 		});
-		this._applyDefaultContextParams(executionContextListFiles);
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextListFiles),
@@ -179,7 +176,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
-		const executionContextImportObjects = new SDKExecutionContext({
+		const executionContextImportObjects = this._getExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
 		});

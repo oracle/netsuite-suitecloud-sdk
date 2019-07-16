@@ -6,7 +6,6 @@ const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
@@ -64,12 +63,11 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			prompt(questions)
 				.then(firstAnswers => {
 					const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
-					const executionContextForListObjects = new SDKExecutionContext({
+					const executionContextForListObjects = this._getExecutionContext({
 						command: this._listObjectsMetadata.name,
 						showOutput: false,
 						params: paramsForListObjects,
 					});
-					this._applyDefaultContextParams(executionContextForListObjects);
 
 					executeWithSpinner({
 						action: this._sdkExecutor.execute(executionContextForListObjects),
@@ -293,7 +291,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-		const executionContextForImportObjects = new SDKExecutionContext({
+		const executionContextForImportObjects = this._getExecutionContext({
 			command: this._commandMetadata.name,
 			params,
 		});

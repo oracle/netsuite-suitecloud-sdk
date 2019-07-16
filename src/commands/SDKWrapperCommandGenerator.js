@@ -1,7 +1,6 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
@@ -37,7 +36,7 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_executeAction(args) {
-		const executionContext = new SDKExecutionContext({
+		const executionContext = this._getExecutionContext({
 			command: this._commandMetadata.name,
 			integrationMode: false,
 		});

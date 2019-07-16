@@ -3,7 +3,6 @@
 const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
@@ -163,7 +162,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		const { projectType } = answers;
 		const SDKDeployParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
-		const executionContextForDeploy = new SDKExecutionContext({
+		const executionContextForDeploy = this._getExecutionContext({
 			command: this._commandMetadata.name,
 			params: SDKDeployParams,
 			flags,
