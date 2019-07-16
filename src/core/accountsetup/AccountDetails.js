@@ -8,10 +8,12 @@ module.exports = class AccountDetails {
 		this._roleName = options.roleName;
 		this._password = options.password;
 		this._isAccountSetup = true;
+		this._isDevelopment = options.isDevelopment;
 	}
 
 	static fromJson(json) {
 		return new AccountDetails({
+			isDevelopment: json.isDevelopment,
 			netsuiteUrl: json.netsuiteUrl,
 			accountId: json.accountId,
 			accountName: json.accountName,
@@ -25,6 +27,7 @@ module.exports = class AccountDetails {
 
 	toJSONWithoutPassword() {
 		return {
+			isDevelopment: this._isDevelopment,
 			netsuiteUrl: this._netsuiteUrl,
 			accountId: this._accountId,
 			accountName: this._accountName,
@@ -65,5 +68,9 @@ module.exports = class AccountDetails {
 
 	get isAccountSetup() {
 		return this._isAccountSetup;
+	}
+
+	get isDevelopment() {
+		return this._isDevelopment;
 	}
 };
