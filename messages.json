@@ -132,6 +132,8 @@
 	"COMMAND_SETUPACCOUNT_MESSAGES_RETRIEVING_ACCOUNT_INFO": "Retrieving account information.",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SAVING_TBA_TOKEN": "Saving the TBA token.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_SUCCESSFUL": "The account has been successfully set up.",
+	
+	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
 	"COMMAND_VALIDATE_QUESTIONS_SERVER_SIDE": "How do you want to validate your project?",
 	"COMMAND_VALIDATE_QUESTIONS_APPLY_CONTENT_PROTECTION": "Do you want to apply content protection?",
@@ -141,11 +143,10 @@
 	"COMMAND_VALIDATE_QUESTIONS_CHOICES_IGNORE": "Ignore the account-specific values",
 	"COMMAND_VALIDATE_QUESTIONS_CHOICES_WARNING": "Display a warning",
 	"COMMAND_VALIDATE_QUESTIONS_CHOICES_CANCEL": "Cancel the process",
-	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "WARNINGS",
-	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "ERRORS",
+	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "The following warnings were found during local validation",
+	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_LABEL_LINE_NUMBER": "Line No.",
-	
-	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
+
 	
 	"ERRORS_ACCOUNT_DETAILS_FILE_CONTENT": "The structure of the {0} file in your current project folder is not correct. Delete the file and run \"sdf setupaccount\".",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"cli-config.js\" module defined in the project. Details:{0}{1}",
@@ -173,5 +174,9 @@
 	"ERRORS_WRONG_PROXY_SETTING": "The {0} proxy URL server is invalid. It must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80.",
 		
 	"NO": "No",
+
+	"SDF_PROJECT_UTILS_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection can not be applied in an Account Customziaton Project.",
+	"SDF_PROJECT_UTILS_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalue option. Enter either WARNING or ERROR.",
+
 	"YES": "Yes"
 }

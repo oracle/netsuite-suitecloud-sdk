@@ -6,11 +6,12 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const CommandUtils = require('../utils/CommandUtils');
+const SDFProjectUtils = require('../utils/SDFProjectUtils');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
-const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const assert = require('assert');
 
 const {
-	COMMAND_VALIDATE: { QUESTIONS, QUESTIONS_CHOICES, OUTPUT },
+	COMMAND_VALIDATE: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, OUTPUT },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -22,17 +23,14 @@ const COMMAND_OPTIONS = {
 };
 
 const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
-	IGNORE: 'IGNORE',
-	WARNING: 'WARNING',
 	ERROR: 'ERROR',
+	WARNING: 'WARNING',
 };
 
 const APPLY_CONTENT_PROTECTION_VALUE = {
 	TRUE: 'T',
 	FALSE: 'F',
 };
-
-var isServerValidation = false;
 
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -66,14 +64,8 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
-				default: 0,
+				default: 1,
 				choices: [
-					{
-						name: TranslationService.getMessage(
-							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.IGNORE
-						),
-						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.IGNORE,
-					},
 					{
 						name: TranslationService.getMessage(
 							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.WARNING
@@ -89,7 +81,9 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				],
 			},
 			{
-				when: this._isSuiteAppProject(),
+				when:
+					SDFProjectUtils.isSuiteAppProject(this._projectFolder) &&
+					SDFProjectUtils.hasLockOrHideFiles(this._projectFolder),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION,
 				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
@@ -108,68 +102,51 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		]);
 	}
 
-	_isSuiteAppProject() {
-		return (
-			this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP
-		);
+	_preExecuteAction(answers) {
+		SDFProjectUtils.validateAndDeployPreExecuteAction(answers, this._projectFolder);
+		return answers;
 	}
 
-	_preExecuteAction(args) {
-		args.project = this._projectFolder;
-		return args;
-	}
-
-	_executeAction(answers) {
-		if (!answers[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION]) {
-			delete answers[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
-		} else {
-			answers[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] = APPLY_CONTENT_PROTECTION_VALUE.TRUE;
-		}
-
+	async _executeAction(answers) {
+		let isServerValidation = false;
 		const flags = [];
 
 		if (answers[COMMAND_OPTIONS.SERVER]) {
 			flags.push(COMMAND_OPTIONS.SERVER);
 			isServerValidation = true;
 		}
-
 		delete answers[COMMAND_OPTIONS.SERVER];
-
-		if (answers.accountspecificvalues === ACCOUNT_SPECIFIC_VALUES_OPTIONS.IGNORE) {
-			delete answers.accountspecificvalues;
-		}
 
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
 			flags: flags,
 		});
-		return this._sdkExecutor.execute(executionContext);
+
+		const operationResult = await this._sdkExecutor.execute(executionContext);
+		return { operationResult, isServerValidation: isServerValidation };
 	}
 
-	_formatOutput(operationResult) {
+	_formatOutput(result) {
+		const operationResult = result.operationResult;
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logErrors(operationResult);
-		} else {
-			if (isServerValidation) {
-				if (Array.isArray(data)) {
-					data.forEach(resultLine => {
-						NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
-					});
-				}
-			} else {
-				this._logValidationEntries(data.warnings, true);
-				this._logValidationEntries(data.errors, false);
-			}
+		} else if (result.isServerValidation && Array.isArray(data)) {
+			data.forEach(resultLine => {
+				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
+			});
+		} else if (!result.isServerValidation) {
+			this._logValidationEntries(data.warnings, true);
+			this._logValidationEntries(data.errors, false);
 		}
 		SDKOperationResultUtils.logResultMessage(operationResult);
 	}
 
-	_logValidationEntries(errorsOrWarnings, isWarning) {
+	_logValidationEntries(entries, isWarning) {
 		const files = [];
-		errorsOrWarnings.forEach(entry => {
+		entries.forEach(entry => {
 			if (files.indexOf(entry.filePath) === -1) {
 				files.push(entry.filePath);
 			}
@@ -180,12 +157,14 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			: TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR);
 		const color = isWarning ? NodeUtils.COLORS.WARNING : NodeUtils.COLORS.ERROR;
 
-		NodeUtils.println(`${headingLabel}:`, color);
+		if (entries.length > 0) {
+			NodeUtils.println(`${headingLabel}:`, color);
+		}
 
 		files.forEach(file => {
 			const fileString = `    ${file}`;
 			NodeUtils.println(fileString, color);
-			errorsOrWarnings
+			entries
 				.filter(entry => entry.filePath === file)
 				.forEach(entry => {
 					const lineNumberLabel = TranslationService.getMessage(OUTPUT.LABEL_LINE_NUMBER);

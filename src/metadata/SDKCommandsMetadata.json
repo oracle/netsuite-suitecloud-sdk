@@ -1289,6 +1289,7 @@
 				"description": "Indicates that the server will perform the validation.",
 				"mandatory": false,
 				"type": "FLAG",
+				"alias": "s",
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
@@ -1298,7 +1299,7 @@
 				"option": "applycontentprotection",
 				"description": "Apply the content protection settings from the hiding.xml and locking.xml files.",
 				"mandatory": false,
-				"type": "FLAG",
+				"type": "SINGLE",
 				"alias": "c",
 				"usage": "T",
 				"defaultOption": false,
@@ -1307,7 +1308,7 @@
 			{
 				"name": "accountspecificvalues",
 				"option": "accountspecificvalues",
-				"description": "Flag account-specific values as either a warning or an error. Enter WARNING for the deployment process to continue if there are account-specific values in the project, or ERROR to stop when the project contains account-specific values.",
+				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "WARNING",
