@@ -25,7 +25,7 @@ module.exports = class Watch {
 
 			const resource_type = compiler.resource_type.toLowerCase();
 
-			if (resource_type === 'sass') {
+			if (resource_type === 'sass' || resource_type === 'javascript') {
 				compiler.compile();
 			} else {
 				this.context.all_extensions.forEach(extension => {
@@ -34,10 +34,6 @@ module.exports = class Watch {
 
 						if (path.normalize(key).includes(filename_no_base)) {
 							compiler.compile([template]);
-							Log.result('COMPILATION_START_FOR', [
-								compiler.resource_type,
-								path.basename(filename),
-							]);
 						}
 					});
 				});
