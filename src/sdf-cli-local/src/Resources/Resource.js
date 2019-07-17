@@ -10,11 +10,8 @@ module.exports = class Resource {
 	constructor(options) {
 		this.src = options.src;
 		this.dst = options.dst;
-		this.name = options.name;
-		this.format = options.format || '';
+		this.name = options.name || '';
 		this.content = '';
-		this.extension_asset_url = options.extension_asset_url;
-		this.extension_fullname = options.extension_fullname;
 		this.applications = _.flatten([options.app]);
 		this.override_fullsrc;
 		this.override;
@@ -49,7 +46,7 @@ module.exports = class Resource {
 	}
 
 	getFilename() {
-		return this.name + this.format;
+		return this.name + (this.format || '');
 	}
 
 	static setBaseSrc(value) {
