@@ -19,10 +19,14 @@ module.exports = class AbstractExtension {
 	}
 
 	iterateResources(resources, func) {
-		_.each(resources, (rsc_array, app) => {
-			Utils.parseFiles(rsc_array).forEach(resource_path => {
-				func(resource_path, app);
-			});
+		_.each(resources, (rsc, app) => {
+			if (_.isString(rsc)) {
+				func(Utils.parseFileName(rsc), app);
+			} else {
+				Utils.parseFiles(rsc).forEach(resource_path => {
+					func(resource_path, app);
+				});
+			}
 		});
 	}
 

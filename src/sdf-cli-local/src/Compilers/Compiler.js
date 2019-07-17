@@ -20,7 +20,7 @@ module.exports = class Compiler {
 		const compilers = [
 			new SassCompiler({ context: this.context }),
 			new TemplatesCompiler({ context: this.context }),
-			// new JavascriptCompiler({context: this.context}),
+			new JavascriptCompiler({context: this.context}),
 			new AssetsCompiler({ context: this.context }),
 		];
 

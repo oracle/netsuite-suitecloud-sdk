@@ -74,29 +74,10 @@ module.exports = class CompilationContext {
 	}
 
 	getJavascript() {
-		let javascript = {
-			applications: {},
-			entrypoints: {},
-		};
-		const extensions = this.extensions;
-
-		_.each(extensions, extension => {
-			const ext_javascript = extension.getJavascript();
-
-			_.each(ext_javascript.entrypoints, (app_javascript, app) => {
-				javascript.entrypoints[app] = javascript.entrypoints[app] || [];
-				javascript.entrypoints[app].push(app_javascript);
-			});
-
-			_.each(ext_javascript.applications, (app_javascript, app) => {
-				javascript.applications[app] = javascript.applications[app] || [];
-				javascript.applications[app] = _.union(
-					javascript.applications[app],
-					app_javascript
-				);
-			});
-		});
-
+		let javascript = {};
+		this.extensions.forEach(
+			extension => (javascript = _.extend(javascript, extension.getJavascript()))
+		);
 		return javascript;
 	}
 
