@@ -47,7 +47,7 @@ module.exports = class JavascriptCompiler {
 						const ext_name = resource.extension_fullname;
 						const app_file = application_files[app_name];
 						const ext_content = app_file.javascript_modules[ext_name] || '';
-						// if is entrypoint append to the end
+						// if it is an entrypoint, append to the end
 						// also add a try catch block that call SC.addExtensionModule
 						if (resource.isEntrypoint) {
 							app_file.content_at_the_end += this.createTryCatchBlock(
@@ -56,7 +56,7 @@ module.exports = class JavascriptCompiler {
 							);
 							app_file.javascript_modules[ext_name] += content;
 						} else {
-							// if isn't an entrypoint append first
+							// if it is not an entrypoint, append first
 							app_file.javascript_modules[ext_name] = content + ext_content;
 						}
 					});
