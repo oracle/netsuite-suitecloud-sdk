@@ -188,12 +188,16 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 
 		const { deployResult } = actionResult;
 
-		
 		if (SDKOperationResultUtils.hasErrors(deployResult)) {
+			SDKOperationResultUtils.logResultMessage(deployResult);
 			SDKOperationResultUtils.logErrors(deployResult);
 		} else {
 			this._showApplyContentProtectionOptionMessage(actionResult);
-			SDKOperationResultUtils.logMessages(deployResult);
+			const { data } = deployResult;
+			SDKOperationResultUtils.logResultMessage(deployResult);
+			if (Array.isArray(data)) {
+				data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
+			}
 		}
 	}
 
