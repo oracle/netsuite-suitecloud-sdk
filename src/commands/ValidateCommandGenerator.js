@@ -8,10 +8,10 @@ const TranslationService = require('../services/TranslationService');
 const CommandUtils = require('../utils/CommandUtils');
 const SDFProjectUtils = require('../utils/SDFProjectUtils');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
-const assert = require('assert');
+const { executeWithSpinner } = require('../ui/CliSpinner');
 
 const {
-	COMMAND_VALIDATE: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, OUTPUT },
+	COMMAND_VALIDATE: { MESSAGES, QUESTIONS, QUESTIONS_CHOICES, OUTPUT },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -27,7 +27,7 @@ const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
 	WARNING: 'WARNING',
 };
 
-const APPLY_CONTENT_PROTECTION_VALUE = {
+const APPLY_CONTENT_PROTECTION_VALUES = {
 	TRUE: 'T',
 	FALSE: 'F',
 };
@@ -108,6 +108,8 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(answers) {
+		const SDKDeployParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+
 		let isServerValidation = false;
 		const flags = [];
 
@@ -123,8 +125,12 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			flags: flags,
 		});
 
-		const operationResult = await this._sdkExecutor.execute(executionContext);
-		return { operationResult, isServerValidation };
+		const operationResult = await executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContext),
+			message: TranslationService.getMessage(MESSAGES.VALIDATING),
+		});
+
+		return { operationResult, SDKDeployParams, isServerValidation };
 	}
 
 	_formatOutput(actionResult) {
@@ -139,8 +145,36 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			});
 		} else if (!isServerValidation) {
 			this._showLocalValidationResultData(data);
+			this._showApplyContentProtectionOptionMessage(actionResult);
 		}
 		SDKOperationResultUtils.logResultMessage(operationResult);
+	}
+
+	_showApplyContentProtectionOptionMessage(actionResult) {
+		const { SDKDeployParams } = actionResult;
+
+		if (SDFProjectUtils.isSuiteAppProject(this._projectFolder)) {
+			if (
+				SDKDeployParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] ===
+				APPLY_CONTENT_PROTECTION_VALUES.TRUE
+			) {
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.APPLYING_CONTENT_PROTECTION,
+						this._executionPath
+					),
+					NodeUtils.COLORS.INFO
+				);
+			} else {
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
+						this._executionPath
+					),
+					NodeUtils.COLORS.INFO
+				);
+			}
+		}
 	}
 
 	_showLocalValidationResultData(data) {
@@ -174,10 +208,12 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			entries
 				.filter(entry => entry.filePath === file)
 				.forEach(entry => {
-					const lineNumberLabel = TranslationService.getMessage(OUTPUT.LABEL_LINE_NUMBER);
-					const entryString = `        - ${lineNumberLabel} ${entry.lineNumber} - ${
+					const validationOutputMessage = TranslationService.getMessage(
+						OUTPUT.VALIDATION_OUTPUT_MESSAGE,
+						entry.lineNumber,
 						entry.message
-					}`;
+					);
+					const entryString = `        ${validationOutputMessage}`;
 					NodeUtils.println(entryString, color);
 				});
 		});

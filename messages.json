@@ -136,6 +136,9 @@
 	
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
+	"COMMAND_VALIDATE_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally applying content protection.",
+	"COMMAND_VALIDATE_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally without applying content protection.",
+	"COMMAND_VALIDATE_MESSAGES_VALIDATING": "Validating...",
 	"COMMAND_VALIDATE_QUESTIONS_SERVER_SIDE": "How do you want to validate your project?",
 	"COMMAND_VALIDATE_QUESTIONS_APPLY_CONTENT_PROTECTION": "Do you want to apply content protection?",
 	"COMMAND_VALIDATE_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
@@ -147,7 +150,7 @@
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "The following warnings were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_LABEL_LINE_NUMBER": "Line No.",
-
+	"COMMAND_VALIDATE_OUTPUT_VALIDATION_OUTPUT_MESSAGE": "- Line No. {0} - {1}",
 	
 	"ERRORS_ACCOUNT_DETAILS_FILE_CONTENT": "The structure of the {0} file in your current project folder is not correct. Delete the file and run \"sdf setupaccount\".",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"cli-config.js\" module defined in the project. Details:{0}{1}",
