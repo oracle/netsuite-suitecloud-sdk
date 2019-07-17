@@ -38,22 +38,6 @@ module.exports = class AbstractExtension {
 			this.templates[app] = Utils.parseFiles(tpl);
 		});
 
-		if (!_.isEmpty(overrides)) {
-			_.each(this.templates, (templates, app) => {
-				_.each(templates, (template, index) => {
-					const template_path = path.normalize(
-						template.replace(this.base_path, this.name + '/')
-					);
-					const override = overrides[template_path] && overrides[template_path].src;
-
-					if (override) {
-						Log.default('OVERRIDE', [template, override]);
-						templates[index] = override;
-					}
-				});
-			});
-		}
-
 		return this.templates;
 	}
 
