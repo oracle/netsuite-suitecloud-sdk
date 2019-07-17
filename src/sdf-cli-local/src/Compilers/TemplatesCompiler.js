@@ -23,7 +23,7 @@ module.exports = class TemplatesCompiler {
 
 		this.templates = resources || this.context.getTemplates();
 
-		this.createTemplateFolders(); 
+		this.createTemplateFolders();
 
 		this.setCompilerNameLookupHelper();
 		// new file with template helpers:
@@ -67,13 +67,13 @@ module.exports = class TemplatesCompiler {
 
 	writeEntrypoints() {
 		return ['checkout', 'shopping', 'myaccount'].map(app => {
-			const dest = path.join(
-				this.templates_path,
-				`${app}-templates.js`
-			);
+			const dest = path.join(this.templates_path, `${app}-templates.js`);
 			const entryfile_content = {
 				paths: this.entrypoints[app],
-				baseUrl: url.resolve('http://localhost:7777/', `${this.templates_folder}/${this.processed_templates_folder}`), 
+				baseUrl: url.resolve(
+					'http://localhost:7777/',
+					`${this.templates_folder}/${this.processed_templates_folder}`
+				),
 				// TODO remove and use cli-config
 			};
 
@@ -96,7 +96,7 @@ module.exports = class TemplatesCompiler {
 			template.name
 		}'; return template;});`;
 	}
-	
+
 	writeJavascriptLibsFile() {
 		// create javascript-libs.js
 		let content = '';
