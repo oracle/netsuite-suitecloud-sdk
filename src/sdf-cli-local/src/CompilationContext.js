@@ -83,13 +83,9 @@ module.exports = class CompilationContext {
 
 	getAssets() {
 		let assets = {};
-		const extensions = this.extensions.concat(this.theme);
-
-		_.each(extensions, extension => {
-			const ext_assets = extension.getAssets();
-			assets = _.union(assets, ext_assets);
-		});
-
+		this.all_extensions.forEach(
+			extension => (assets = _.extend(assets, extension.getAssets()))
+		);
 		return assets;
 	}
 

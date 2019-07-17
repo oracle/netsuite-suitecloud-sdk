@@ -12,19 +12,20 @@ const _ = require('underscore');
 module.exports = class Compiler {
 	constructor(options) {
 		this.context = options.context;
+		this.compilers = {
+			sass: new SassCompiler({ context: this.context }),
+			templates: new TemplatesCompiler({ context: this.context }),
+			javascript: new JavascriptCompiler({ context: this.context }),
+			assets: new AssetsCompiler({ context: this.context }),
+		};
 	}
 
 	compile() {
 		this._createLocalServerFolder(this.context);
 
-		const compilers = [
-			new SassCompiler({ context: this.context }),
-			new TemplatesCompiler({ context: this.context }),
-			new JavascriptCompiler({context: this.context}),
-			new AssetsCompiler({ context: this.context }),
-		];
-
-		const binded_compilers = _.map(compilers, compiler => _.bind(compiler.compile, compiler));
+		const binded_compilers = _.map(this.compilers, compiler =>
+			_.bind(compiler.compile, compiler)
+		);
 		return Utils.runParallel(binded_compilers);
 	}
 

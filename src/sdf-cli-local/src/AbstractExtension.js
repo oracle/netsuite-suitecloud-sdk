@@ -8,6 +8,7 @@ const path = require('path');
 const url = require('url');
 
 const Template = require('./Resources/Types/Template');
+const Resource = require('./Resources/Resource');
 
 module.exports = class AbstractExtension {
 	constructor(options) {
@@ -94,25 +95,22 @@ module.exports = class AbstractExtension {
 		if (this.assets) {
 			return this.assets;
 		}
-		this.assets = [];
+		this.assets = {};
 		const folder = 'assets';
 
 		const ext_assets = this.raw_extension.assets || {};
 		const assets_local_path = this.getLocalAssetsPath(folder);
 
-		_.each(ext_assets, asset => {
-			return Utils.parseFiles(asset, file => {
-				const src = path.normalize(this._excludeBasePath(file));
-				// first match of assets folder name and first match of extension name are removed from the dest path:
-				const dest = path.join(
-					assets_local_path,
-					src.replace(folder, '').replace(this.name, '')
-				);
+		this.iterateResources(ext_assets, (resource_path, type) => {
+			const src = path.normalize(this._excludeBasePath(resource_path));
+			// first match of assets folder name and first match of extension name are removed from the dest path:
+			const dst = path.join(
+				assets_local_path,
+				src.replace(folder, '').replace(this.name, '')
+			);
 
-				this.assets.push({ dest: dest, src: src });
-			});
+			this.assets[resource_path] = new Resource({ src, dst });
 		});
-
 		return this.assets;
 	}
 };

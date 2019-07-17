@@ -24,8 +24,8 @@ module.exports = class AssetsCompiler {
 		return _.map(resources, resource => {
 			return () =>
 				FileSystem.copyFile(
-					path.join(this.context.files_path, resource.src),
-					path.join(this.context.local_server_path, resource.dest)
+					resource.fullsrc(),
+					path.join(this.context.local_server_path, resource.dst)
 				);
 		});
 	}
