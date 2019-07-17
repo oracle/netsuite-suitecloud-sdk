@@ -2,8 +2,10 @@
 
 const Utils = require('./Utils');
 const Log = require('./services/Log');
+const FileSystem = require('./services/FileSystem');
 const _ = require('underscore');
 const path = require('path');
+const url = require('url');
 
 const Resource = require('./Resources/Resource');
 
@@ -13,14 +15,22 @@ module.exports = class AbstractExtension {
 		const extension_xml = options.extension_xml;
 
 		this.raw_extension = Utils.parseXml(objects_path, extension_xml);
+		this.base_url = 'http://localhost:7777'; // TODO remove and use cli-config
 	}
 
-	getTemplates(overrides = {}) {
+	iterateResources(resources, func) {
+		_.each(resources, (rsc_array, app) => {
+			Utils.parseFiles(rsc_array).forEach(resource_path => {
+				func(resource_path, app);
+			});
+		});
+	}
+
+	getTemplates() {
 		if (this.templates) {
 			return this.templates;
 		}
 		this.templates = {};
-
 		let templates = this.raw_extension.templates || {};
 		templates = templates.application || {};
 
@@ -74,6 +84,10 @@ module.exports = class AbstractExtension {
 
 	getLocalAssetsPath(folder = '') {
 		return path.join(folder, this.getExtensionFullName('/'));
+	}
+
+	getAssetsUrl() {
+		return FileSystem.forwardDashes(url.resolve(this.base_url, this.getLocalAssetsPath()));
 	}
 
 	getAssets() {
