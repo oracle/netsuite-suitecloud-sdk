@@ -49,7 +49,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		const listFoldersResult = await this._listFolders();
 
 		if (SDKOperationResultUtils.hasErrors(listFoldersResult)) {
-			throw SDKOperationResultUtils.getMessagesString(listFoldersResult);
+			throw SDKOperationResultUtils.getErrorMessagesString(listFoldersResult);
 		}
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
@@ -57,10 +57,10 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		const listFilesResult = await this._listFiles(selectFolderAnswer);
 
 		if (SDKOperationResultUtils.hasErrors(listFilesResult)) {
-			throw SDKOperationResultUtils.getMessagesString(listFilesResult);
+			throw SDKOperationResultUtils.getErrorMessagesString(listFilesResult);
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
-			throw SDKOperationResultUtils.getMessagesString(listFilesResult);
+			throw SDKOperationResultUtils.getErrorMessagesString(listFilesResult);
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
@@ -194,11 +194,10 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logResultMessage(operationResult);
 			SDKOperationResultUtils.logErrors(operationResult);
 			return;
 		}
-
-		SDKOperationResultUtils.logMessages(operationResult);
 
 		if (Array.isArray(data.results)) {
 			const successful = data.results.filter(result => result.loaded === true);

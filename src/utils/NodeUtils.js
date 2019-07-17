@@ -6,7 +6,7 @@ const AVAILABLE_COLORS = {
 	RESULT: chalk.green,
 	ERROR: chalk.red,
 	INFO: chalk.cyan,
-	WARNING: chalk.yellow
+	WARNING: chalk.yellow,
 };
 
 module.exports = {

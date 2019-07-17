@@ -1,7 +1,12 @@
 'use strict';
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
-const { ANSWERS_VALIDATION_MESSAGES } = require('../services/TranslationKeys');
+const {
+	ANSWERS_VALIDATION_MESSAGES,
+	COMMAND_OPTION_IS_MANDATORY,
+} = require('../services/TranslationKeys');
+
+const ApplicationConstants = require('../ApplicationConstants');
 
 const VALIDATION_RESULT_FAILURE = validationError => ({
 	result: false,
@@ -141,10 +146,22 @@ class InteractiveAnswersValidator {
 		return EMAIL_REGEX.test(fieldValue)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(
-					TranslationService.getMessage(
-						ANSWERS_VALIDATION_MESSAGES.INVALID_EMAIL
-					)
+					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.INVALID_EMAIL)
 			  );
+	}
+
+	validateNotUndefined(value, optionName) {
+		return value !== undefined
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(
+					TranslationService.getMessage(COMMAND_OPTION_IS_MANDATORY, optionName)
+			  );
+	}
+
+	validateProjectType(value) {
+		return [ApplicationConstants.PROJECT_SUITEAPP,ApplicationConstants.PROJECT_ACP].includes(value) ? VALIDATION_RESULT_SUCCESS : VALIDATION_RESULT_FAILURE(
+			TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE)
+		);
 	}
 }
 
