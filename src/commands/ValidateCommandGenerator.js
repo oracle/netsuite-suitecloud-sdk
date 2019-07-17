@@ -103,8 +103,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_preExecuteAction(answers) {
-		SDFProjectUtils.validateAndDeployPreExecuteAction(answers, this._projectFolder);
-		return answers;
+		return SDFProjectUtils.validateAndDeployPreExecuteAction(answers, this._projectFolder);
 	}
 
 	async _executeAction(answers) {
@@ -208,13 +207,14 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			entries
 				.filter(entry => entry.filePath === file)
 				.forEach(entry => {
-					const validationOutputMessage = TranslationService.getMessage(
-						OUTPUT.VALIDATION_OUTPUT_MESSAGE,
-						entry.lineNumber,
-						entry.message
+					NodeUtils.println(
+						TranslationService.getMessage(
+							OUTPUT.VALIDATION_OUTPUT_MESSAGE,
+							entry.lineNumber,
+							entry.message
+						),
+						color
 					);
-					const entryString = `        ${validationOutputMessage}`;
-					NodeUtils.println(entryString, color);
 				});
 		});
 	}

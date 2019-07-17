@@ -108,7 +108,7 @@ class SDFProjectUtils {
 				: APPLY_CONTENT_PROTECTION_VALUES.FALSE;
 		}
 
-		return { ...args, projectType };
+		return { ...args };
 	}
 }
 
