@@ -18,13 +18,15 @@ module.exports = class TemplatesCompiler {
 		this.templates_folder = 'templates';
 		this.processed_templates_folder = 'processed-templates';
 		this.overrides = this.context.getTplOverrides();
-		this.templates = this.context.getTemplates();
+		this.templates = {};
 	}
 
-	compile(file) {
+	compile(resources) {
 		Log.result('COMPILATION_START', [this.resource_type]);
 
-		this.createTemplateFolders(); // TODO pre-save folder path in constructor
+		this.templates = resources || this.context.getTemplates();
+
+		this.createTemplateFolders(); 
 
 		this.setCompilerNameLookupHelper();
 		// new file with template helpers:
