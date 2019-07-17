@@ -8,6 +8,7 @@ const LocalServer = require('./LocalServer');
 const Translation = require('./services/Translation');
 const Log = require('./services/Log');
 const FileSystem = require('./services/FileSystem');
+const Watch = require('./Watch');
 
 const _ = require('underscore');
 
@@ -58,7 +59,7 @@ module.exports = class LocalCommand {
 		return prompt(options);
 	}
 
-	executeAction(answers) {
+	async executeAction(answers) {
 		if (!answers.extensions || answers.extensions === true) {
 			answers.extensions = [];
 		}
@@ -75,8 +76,13 @@ module.exports = class LocalCommand {
 		const context = this._createCompilationContext(theme, extensions);
 		const compiler = new Compiler({ context: context });
 		const local_server = new LocalServer({ context: context });
+		const watch = new Watch({ context: context, compilers: compiler.compilers });
 
-		return compiler.compile().then(_.bind(local_server.startServer, local_server));
+		await compiler.compile();
+
+		watch.start();
+
+		return local_server.startServer();
 	}
 
 	_createCompilationContext(theme, extensions) {
