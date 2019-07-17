@@ -31,7 +31,7 @@ module.exports = class TemplatesCompiler {
 
 		// first create templates files
 		const templates = this.writeTemplates();
-		return Utils.runParallel(_.flatten(templates)).then(() => {
+		return Utils.runParallel(templates).then(() => {
 			// then create require.js config files
 			const entrypoints = this.writeEntrypoints();
 			return Utils.runParallel(entrypoints).then(() =>
