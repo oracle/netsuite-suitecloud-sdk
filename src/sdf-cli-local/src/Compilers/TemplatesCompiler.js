@@ -94,7 +94,7 @@ module.exports = class TemplatesCompiler {
 			.join()}], function (Handlebars, compilerNameLookup){ var t = ${
 			template.precompiled
 		}; var main = t.main; t.main = function(){ arguments[1] = arguments[1] || {}; var ctx = arguments[1]; ctx._extension_path = '${
-			template.extension_assets_url
+			template.extension_asset_url
 		}'; ctx._theme_path = '${this.context.theme.getAssetsUrl()}'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${
 			template.name
 		}'; return template;});`;

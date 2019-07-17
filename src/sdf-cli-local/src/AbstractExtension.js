@@ -45,7 +45,7 @@ module.exports = class AbstractExtension {
 				src: this._excludeBasePath(resource_path),
 				dst: path.basename(resource_path) + '.js',
 				name: path.basename(resource_path, path.extname(resource_path)),
-				extension: this,
+				extension_asset_url: this.getAssetsUrl(),
 				app: app,
 			});
 		});
