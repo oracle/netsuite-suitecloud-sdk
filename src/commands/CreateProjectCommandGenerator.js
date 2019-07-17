@@ -284,7 +284,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				: ACCOUNT_CUSTOMIZATION_DISPLAY;
 		const message = TranslationService.getMessage(
 			MESSAGES.PROJECT_CREATED,
-			projectTypeText,
+			projectTypeText.toLowerCase(),
 			result.projectDirectory,
 			NodeUtils.lineBreak
 		);
