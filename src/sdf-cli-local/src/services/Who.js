@@ -16,7 +16,7 @@ module.exports = function(req, res) {
 		requirejs: {
 			tag: 'script',
 			resource: 'requirejs',
-			url: `${protocol}://${host}/javascript/require.js`,
+			url: `${protocol}://${host}/require.js`,
 		},
 		define_patch: {
 			tag: 'script',
@@ -26,7 +26,7 @@ module.exports = function(req, res) {
 		javascript_libs: {
 			tag: 'script',
 			resource: 'javascript_libs',
-			url: 'javascript-libs.js',
+			url: `${protocol}://${host}/templates/javascript-libs.js`,
 		},
 		templates: {
 			tag: 'script',
@@ -41,7 +41,7 @@ module.exports = function(req, res) {
 		js_extensions: {
 			tag: 'script',
 			resource: 'js_extensions',
-			url: `${protocol}://${host}/extensions/${app}_ext.js`,
+			url: `${protocol}://${host}/javascript/${app}_ext.js`,
 		},
 	};
 
