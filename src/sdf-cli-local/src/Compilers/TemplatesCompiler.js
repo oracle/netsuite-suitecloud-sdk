@@ -13,12 +13,9 @@ module.exports = class TemplatesCompiler {
 	constructor(options) {
 		this.context = options.context;
 		this.entrypoints = {};
-		this.template_extension = '.js';
 		this.resource_type = 'Templates';
 		this.templates_folder = 'templates';
 		this.processed_templates_folder = 'processed-templates';
-		this.overrides = this.context.getTplOverrides();
-		this.templates = {};
 	}
 
 	compile(resources) {
@@ -72,7 +69,7 @@ module.exports = class TemplatesCompiler {
 		return ['checkout', 'shopping', 'myaccount'].map(app => {
 			const dest = path.join(
 				this.templates_path,
-				`${app}-templates${this.template_extension}`
+				`${app}-templates.js`
 			);
 			const entryfile_content = {
 				paths: this.entrypoints[app],
@@ -101,6 +98,7 @@ module.exports = class TemplatesCompiler {
 	}
 	
 	writeJavascriptLibsFile() {
+		// create javascript-libs.js
 		let content = '';
 		['loadTemplateSafe', 'Handlebars.CompilerNameLookup'].map(filename => {
 			content += fs

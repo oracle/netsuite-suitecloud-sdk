@@ -6,9 +6,9 @@ module.exports = class Template extends Resource {
 	constructor(options) {
 		super(options);
 
-		this.content = '';
 		this.precompiled = '';
 		this.format = '.js';
+		this.extension_asset_url = options.extension_asset_url;
 	}
 
 	getDependencies() {
