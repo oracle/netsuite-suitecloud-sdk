@@ -29,11 +29,12 @@ module.exports = class Watch {
 				compiler.compile();
 			} else {
 				this.context.all_extensions.forEach(extension => {
-					_.each(extension[resource_type], (template, key) => {
+					_.each(extension[resource_type], (resource, key) => {
 						const filename_no_base = this.context.excludeBaseFilesPath(filename);
 
 						if (path.normalize(key).includes(filename_no_base)) {
-							compiler.compile([template]);
+							// compile one file
+							compiler.compile([resource]);
 						}
 					});
 				});
