@@ -14,8 +14,7 @@ module.exports = class LocalServer {
 		this.context = options.context;
 	}
 
-	startServer(files) {
-		files = _.flatten(files);
+	startServer() {
 
 		//TODO override with config values
 		let server_config = {
