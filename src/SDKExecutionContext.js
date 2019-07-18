@@ -6,10 +6,12 @@ module.exports = class SDKExecutionContext {
 	constructor(options) {
 		assert(options.command, 'Command is mandatory option');
 		this._command = options.command;
-		this._showOutput = typeof options.showOutput === 'undefined' ? true : options.showOutput;
 		this._integrationMode =
 			typeof options.integrationMode === 'undefined' ? true : options.integrationMode;
-		this._developmentMode = false;
+		this._includeAccountDetailsParams =
+			typeof options.includeAccountDetailsParams === 'undefined'
+				? false
+				: options.includeAccountDetailsParams;
 		this._params = {};
 		this._flags = [];
 
@@ -32,10 +34,6 @@ module.exports = class SDKExecutionContext {
 		flags.forEach(flag => {
 			this.addFlag(flag);
 		});
-	}
-
-	get showOutput() {
-		return this._showOutput;
 	}
 
 	getCommand() {
@@ -62,11 +60,7 @@ module.exports = class SDKExecutionContext {
 		return this._integrationMode;
 	}
 
-	isDevelopmentMode() {
-		return this._developmentMode;
-	}
-
-	setDevelopmentMode() {
-		this._developmentMode = true;
+	get includeAccountDetailsParams() {
+		return this._includeAccountDetailsParams;
 	}
 };

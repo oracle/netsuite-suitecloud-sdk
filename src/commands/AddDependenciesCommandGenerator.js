@@ -66,10 +66,11 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 	}
 
 	_executeAction(answers) {
-		const executionContext = this._getExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
 			flags: [COMMAND_OPTIONS.ALL],
+			requiresContextParams: true
 		});
 
 		return executeWithSpinner({

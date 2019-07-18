@@ -6,6 +6,7 @@ const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
@@ -59,7 +60,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			throw SDKOperationResultUtils.getErrorMessagesString(listFilesResult);
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
-			throw SDKOperationResultUtils.getErrorMessagesString(listFilesResult);
+			throw SDKOperationResultUtils.getResultMessage(listFilesResult);
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
@@ -74,9 +75,9 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_listFolders() {
-		const executionContextListFolders = this._getExecutionContext({
+		const executionContextListFolders = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
-			showOutput: false,
+			includeAccountDetailsParams: true,
 		});
 
 		return executeWithSpinner({
@@ -108,8 +109,9 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContextListFiles = this._getExecutionContext({
+		const executionContextListFiles = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFILES,
+			includeAccountDetailsParams: true,
 			params: selectFolderAnswer,
 		});
 
@@ -176,8 +178,9 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
-		const executionContextImportObjects = this._getExecutionContext({
+		const executionContextImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
+			includeAccountDetailsParams: true, 
 			params: answers,
 		});
 

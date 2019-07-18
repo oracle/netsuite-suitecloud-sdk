@@ -11,6 +11,8 @@ const AccountDetails = require('./../core/accountsetup/AccountDetails');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const AccountService = require('../services/AccountService');
+const AccountDetailsService = require('./../core/accountsetup/AccountDetailsService');
+
 const inquirer = require('inquirer');
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
@@ -56,6 +58,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._accountService = new AccountService();
+		this._accountDetailsService = new AccountDetailsService();
 	}
 
 	async _getCommandQuestions(prompt, commandArguments) {
@@ -254,14 +257,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		return FileUtils.exists(path.join(this._executionPath, ACCOUNT_DETAILS_FILENAME));
 	}
 
-	_issueToken(params, isDevelopment) {
+	_issueToken(params) {
 		const executionContextForSaveToken = new SDKExecutionContext({
 			command: ISSUE_TOKEN_COMMAND,
-			showOutput: false,
 			params,
+			includeAccountDetailsParams: true,
 		});
-
-		if (isDevelopment) executionContextForSaveToken.setDevelopmentMode();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForSaveToken),
@@ -269,14 +270,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
-	_saveToken(params, isDevelopment) {
+	_saveToken(params) {
 		const executionContextForSaveToken = new SDKExecutionContext({
 			command: SAVE_TOKEN_COMMAND,
-			showOutput: false,
 			params,
+			includeAccountDetailsParams: true,
 		});
-
-		if (isDevelopment) executionContextForSaveToken.setDevelopmentMode();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForSaveToken),
@@ -296,28 +295,19 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			password: answers.password,
 		};
 		const newAccountDetails = AccountDetails.fromJson(contextValues);
+		this._accountDetailsService.set(newAccountDetails);
 
 		let operationResult;
-		const accountParams = {
-			url: answers.environment,
-			email: answers.email,
-			account: answers.account,
-			role: answers.role,
-		};
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
 			operationResult = await this._issueToken({
-				...accountParams,
 				password: answers.password,
-			},
-			answers.isDevelopment);
+			});
 		} else {
 			operationResult = await this._saveToken({
-				...accountParams,
 				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
 				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
-			},
-			answers.isDevelopment);
+			});
 		}
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {

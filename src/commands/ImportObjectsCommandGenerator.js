@@ -12,6 +12,7 @@ const { join } = require('path');
 const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -63,10 +64,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			prompt(questions)
 				.then(firstAnswers => {
 					const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
-					const executionContextForListObjects = this._getExecutionContext({
+					const executionContextForListObjects = new SDKExecutionContext({
 						command: this._listObjectsMetadata.name,
-						showOutput: false,
 						params: paramsForListObjects,
+						includeAccountDetailsParams: true
 					});
 
 					executeWithSpinner({
@@ -291,9 +292,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-		const executionContextForImportObjects = this._getExecutionContext({
+		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
+			includeAccountDetailsParams: true,
 		});
 
 		return executeWithSpinner({

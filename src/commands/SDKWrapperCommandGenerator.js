@@ -3,6 +3,7 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const CommandUtils = require('../utils/CommandUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const {
 	COMMAND_SDK_WRAPPER: { MESSAGES },
@@ -36,7 +37,7 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_executeAction(args) {
-		const executionContext = this._getExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			integrationMode: false,
 		});

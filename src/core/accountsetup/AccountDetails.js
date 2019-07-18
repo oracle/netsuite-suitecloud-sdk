@@ -13,7 +13,6 @@ module.exports = class AccountDetails {
 
 	static fromJson(json) {
 		return new AccountDetails({
-			isDevelopment: json.isDevelopment,
 			netsuiteUrl: json.netsuiteUrl,
 			accountId: json.accountId,
 			accountName: json.accountName,
@@ -21,20 +20,19 @@ module.exports = class AccountDetails {
 			roleId: json.roleId,
 			roleName: json.roleName,
 			password: json.password,
-			accountId: json.accountId,
+			isDevelopment: json.isDevelopment,
 		});
 	}
 
 	toJSONWithoutPassword() {
 		return {
-			isDevelopment: this._isDevelopment,
 			netsuiteUrl: this._netsuiteUrl,
 			accountId: this._accountId,
 			accountName: this._accountName,
 			email: this._email,
 			roleId: this._roleId,
 			roleName: this._roleName,
-			accountId: this._accountId,
+			isDevelopment: this._isDevelopment,
 		};
 	}
 

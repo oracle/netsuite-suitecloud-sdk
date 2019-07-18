@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const SDKExecutionContext = require('../SDKExecutionContext');
 
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -81,10 +82,11 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 		delete answers.server;
 
-		let executionContext = this._getExecutionContext({
+		let executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
 			flags: flags,
+			includeAccountDetailsParams: true,
 		});
 
 		return this._sdkExecutor.execute(executionContext);

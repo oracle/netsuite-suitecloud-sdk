@@ -9,6 +9,7 @@ const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -154,10 +155,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		if (Array.isArray(params.type)) {
 			params.type = params.type.join(' ');
 		}
-		let executionContext = this._getExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
-			showOutput: false,
+			includeAccountDetailsParams: true,
 		});
 
 		const actionListObjects = this._sdkExecutor.execute(executionContext);

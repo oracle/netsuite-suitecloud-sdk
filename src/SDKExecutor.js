@@ -9,6 +9,7 @@ const {
 const path = require('path');
 const spawn = require('child_process').spawn;
 const UserPreferencesService = require('./services/userpreferences/UserPreferencesService');
+const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
@@ -16,12 +17,22 @@ const { ERRORS } = require('./services/TranslationKeys');
 module.exports.SDKExecutor = class SDKExecutor {
 	constructor() {
 		this._userPreferencesService = new UserPreferencesService();
+		this._accountDetailsService = new AccountDetailsService();
 	}
 
 	execute(executionContext) {
 		const proxyJarSettings = this._getProxySettingsIfSet();
+		const accountDetails = this._accountDetailsService.get();
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
+
+			if (executionContext.includeAccountDetailsParams) {
+				executionContext.addParam('account', accountDetails.accountId);
+				executionContext.addParam('role', accountDetails.roleId);
+				executionContext.addParam('email', accountDetails.email);
+				executionContext.addParam('url', accountDetails.netSuiteUrl);
+			}
+
 			const cliParamsAsString = this._convertParamsObjToString(
 				executionContext.getParams(),
 				executionContext.getFlags()
@@ -31,7 +42,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const developmentModeOption = executionContext.isDevelopmentMode()
+			const developmentModeOption = accountDetails.isDevelopment
 				? SDK_DEVELOPMENT_MODE_JVM_OPTION
 				: '';
 

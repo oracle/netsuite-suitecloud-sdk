@@ -8,6 +8,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
@@ -210,7 +211,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const actionCreateProject = new Promise(async (resolve, reject) => {
 			try {
-				const executionContextCreateProject = this._getExecutionContext({
+				const executionContextCreateProject = new SDKExecutionContext({
 					command: this._commandMetadata.name,
 					params: params,
 				});

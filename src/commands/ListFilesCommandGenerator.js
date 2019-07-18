@@ -21,9 +21,9 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
-			const executionContext = this._getExecutionContext({
+			const executionContext = new SDKExecutionContext({
 				command: LIST_FOLDERS_COMMAND,
-				showOutput: false,
+				includeAccountDetailsParams: true,
 			});
 
 			return executeWithSpinner({
@@ -65,9 +65,10 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	_executeAction(answers) {
 		// quote folder path to preserve spaces
 		answers.folder = `\"${answers.folder}\"`;
-		const executionContext = this._getExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
+			includeAccountDetails: true
 		});
 
 		return executeWithSpinner({

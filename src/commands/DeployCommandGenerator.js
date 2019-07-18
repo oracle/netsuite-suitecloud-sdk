@@ -9,6 +9,7 @@ const { executeWithSpinner } = require('../ui/CliSpinner');
 const FileUtils = require('../utils/FileUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const assert = require('assert');
 
 const {
@@ -162,8 +163,9 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		const { projectType } = answers;
 		const SDKDeployParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
-		const executionContextForDeploy = this._getExecutionContext({
+		const executionContextForDeploy = new SDKExecutionContext({
 			command: this._commandMetadata.name,
+			includeAccountDetailsParams: true,
 			params: SDKDeployParams,
 			flags,
 		});
