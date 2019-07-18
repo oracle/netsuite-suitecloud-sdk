@@ -1,3 +1,9 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
+'use strict';
+
 module.exports = class AccountDetails {
 	constructor(options) {
 		this._netsuiteUrl = options.netsuiteUrl;
@@ -19,7 +25,6 @@ module.exports = class AccountDetails {
 			roleId: json.roleId,
 			roleName: json.roleName,
 			password: json.password,
-			accountId: json.accountId,
 		});
 	}
 
@@ -31,7 +36,6 @@ module.exports = class AccountDetails {
 			email: this._email,
 			roleId: this._roleId,
 			roleName: this._roleName,
-			accountId: this._accountId,
 		};
 	}
 
