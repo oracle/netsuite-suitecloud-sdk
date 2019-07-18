@@ -71,7 +71,10 @@ class SDFProjectUtils {
 	validateAndDeployPreExecuteAction(args, projectFolder) {
 		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(projectFolder);
 
-		if (args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES)) {
+		if (
+			args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES) &&
+			this.isACProject(projectFolder)
+		) {
 			assert(
 				typeof args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] === 'string',
 				TranslationService.getMessage(ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION)

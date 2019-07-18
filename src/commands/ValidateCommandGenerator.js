@@ -61,6 +61,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				],
 			},
 			{
+				when: SDFProjectUtils.isACProject(this._projectFolder),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
