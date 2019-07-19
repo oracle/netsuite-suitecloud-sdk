@@ -1,8 +1,11 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 'use strict';
+
 const OperationResultStatus = require('../commands/OperationResultStatus');
 const NodeUtils = require('./NodeUtils');
-const TranslationService = require('../services/TranslationService');
-const { ERRORS } = require('../services/TranslationKeys');
 
 module.exports = {
 	getErrorMessagesString: operationResult => {
@@ -34,5 +37,9 @@ module.exports = {
 				NodeUtils.println(resultMessage, NodeUtils.COLORS.RESULT);
 			}
 		}
+	},
+	getErrorCode: operationResult => {
+		const { errorCode } = operationResult;
+		return errorCode ? errorCode : '';
 	},
 };

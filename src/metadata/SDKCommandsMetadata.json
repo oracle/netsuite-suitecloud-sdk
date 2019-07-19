@@ -1290,6 +1290,7 @@
 				"description": "Indicates that the server will perform the validation.",
 				"mandatory": false,
 				"type": "FLAG",
+				"alias": "s",
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": false

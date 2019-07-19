@@ -1,4 +1,9 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 'use strict';
+
 const os = require('os');
 const chalk = require('chalk');
 const AVAILABLE_COLORS = {
@@ -6,7 +11,7 @@ const AVAILABLE_COLORS = {
 	RESULT: chalk.green,
 	ERROR: chalk.red,
 	INFO: chalk.cyan,
-	WARNING: chalk.yellow
+	WARNING: chalk.yellow,
 };
 
 module.exports = {
