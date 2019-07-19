@@ -1,56 +1,35 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
 'use strict';
 
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const path = require('path');
-const FileUtils = require('../utils/FileUtils');
+const FileUtils = require('./FileUtils');
+const NodeUtils = require('./NodeUtils');
 const TranslationService = require('../services/TranslationService');
-const CommandUtils = require('../utils/CommandUtils');
-const assert = require('assert');
 
 const {
-	FILE_NAMES,
-	FOLDER_NAMES,
-	PROJECT_ACP,
-	PROJECT_SUITEAPP,
-} = require('../ApplicationConstants');
-
-const {
-	SDF_PROJECT_UTILS: { ERRORS },
+	SDF_PROJECT_UTILS: { MESSAGES }
 } = require('../services/TranslationKeys');
 
-const COMMAND = {
-	OPTIONS: {
-		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
-		PROJECT: 'project',
-	},
-	FLAGS: {
-		NO_PREVIEW: 'no_preview',
-		SKIP_WARNING: 'skip_warning',
-		VALIDATE: 'validate',
-	},
+const { FILE_NAMES, FOLDER_NAMES, PROJECT_SUITEAPP } = require('../ApplicationConstants');
+
+const COMMAND_OPTIONS = {
+	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
+	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 };
 
-const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
-	ERROR: 'ERROR',
-	WARNING: 'WARNING',
-};
 const APPLY_CONTENT_PROTECTION_VALUES = {
-	FALSE: 'F',
 	TRUE: 'T',
+	FALSE: 'F',
 };
 
 class SDFProjectUtils {
 	constructor() {
 		this._projectMetadataService = new ProjectMetadataService();
-	}
-
-	isSuiteAppProject(projectFolder) {
-		return this._projectMetadataService.getProjectType(projectFolder) === PROJECT_SUITEAPP;
-	}
-
-	isACProject(projectFolder) {
-		return this._projectMetadataService.getProjectType(projectFolder) === PROJECT_ACP;
 	}
 
 	hasLockOrHideFiles(projectFolder) {
@@ -68,50 +47,29 @@ class SDFProjectUtils {
 		);
 	}
 
-	validateAndDeployPreExecuteAction(args, projectFolder) {
-		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(projectFolder);
-
-		if (
-			args.hasOwnProperty(COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES) &&
-			this.isACProject(projectFolder)
-		) {
-			assert(
-				typeof args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] === 'string',
-				TranslationService.getMessage(ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION)
-			);
-			const upperCaseValue = args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES].toUpperCase();
-
-			switch (upperCaseValue) {
-				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING:
-					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] =
-						ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING;
-					break;
-				case ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR:
-					args[COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES] =
-						ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR;
-					break;
-				default:
-					throw TranslationService.getMessage(
-						ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION
-					);
+	showApplyContentProtectionOptionMessage(SDKParams, projectType, projectFolder) {
+		if (projectType === PROJECT_SUITEAPP) {
+			if (
+				SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] ===
+				APPLY_CONTENT_PROTECTION_VALUES.TRUE
+			) {
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.APPLYING_CONTENT_PROTECTION,
+						projectFolder
+					),
+					NodeUtils.COLORS.INFO
+				);
+			} else {
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
+						projectFolder
+					),
+					NodeUtils.COLORS.INFO
+				);
 			}
 		}
-
-		const projectType = this._projectMetadataService.getProjectType(projectFolder);
-
-		if (args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] && projectType === PROJECT_ACP) {
-			throw TranslationService.getMessage(ERRORS.APPLY_CONTENT_PROTECTION_IN_ACP);
-		}
-
-		if (projectType === PROJECT_SUITEAPP) {
-			args[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = args[
-				COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION
-			]
-				? APPLY_CONTENT_PROTECTION_VALUES.TRUE
-				: APPLY_CONTENT_PROTECTION_VALUES.FALSE;
-		}
-
-		return { ...args };
 	}
 }
 

@@ -1,7 +1,8 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
@@ -11,8 +12,11 @@ const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const CommandUtils = require('../utils/CommandUtils');
 const SDFProjectUtils = require('../utils/SDFProjectUtils');
+const ValidateSDFProjectUtils = require('../utils/ValidateSDFProjectUtils');
 const ProjectMetadataService = require('../services/ProjectMetadataService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
+
+const { PROJECT_ACP, PROJECT_SUITEAPP } = require('../ApplicationConstants');
 
 const {
 	COMMAND_VALIDATE: { MESSAGES, QUESTIONS, QUESTIONS_CHOICES, OUTPUT },
@@ -24,6 +28,7 @@ const COMMAND_OPTIONS = {
 	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
+	PROJECT: 'project',
 };
 
 const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
@@ -40,6 +45,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._projectMetadataService = new ProjectMetadataService();
+		this._projectType = this._projectMetadataService.getProjectType(this._projectFolder);
 	}
 
 	_getCommandQuestions(prompt) {
@@ -65,7 +71,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				],
 			},
 			{
-				when: SDFProjectUtils.isACProject(this._projectFolder),
+				when: this._projectType === PROJECT_ACP,
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
@@ -87,7 +93,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			},
 			{
 				when:
-					SDFProjectUtils.isSuiteAppProject(this._projectFolder) &&
+					this._projectType === PROJECT_SUITEAPP &&
 					SDFProjectUtils.hasLockOrHideFiles(this._projectFolder),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION,
@@ -108,7 +114,10 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_preExecuteAction(answers) {
-		return SDFProjectUtils.validateAndDeployPreExecuteAction(answers, this._projectFolder);
+		answers[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		answers = ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(answers);
+		answers = ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(answers, this._projectType);
+		return answers;
 	}
 
 	async _executeAction(answers) {
@@ -120,12 +129,12 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		if (answers[COMMAND_OPTIONS.SERVER]) {
 			flags.push(COMMAND_OPTIONS.SERVER);
 			isServerValidation = true;
+			delete SDKParams[COMMAND_OPTIONS.SERVER];
 		}
-		delete answers[COMMAND_OPTIONS.SERVER];
 
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
-			params: answers,
+			params: SDKParams,
 			flags: flags,
 		});
 
@@ -138,7 +147,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(actionResult) {
-		const { operationResult, isServerValidation } = actionResult;
+		const { operationResult, isServerValidation, SDKParams } = actionResult;
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
@@ -148,37 +157,10 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
 			});
 		} else if (!isServerValidation) {
+			SDFProjectUtils.showApplyContentProtectionOptionMessage(SDKParams, this._projectType, this._projectFolder);
 			this._showLocalValidationResultData(data);
-			this._showApplyContentProtectionOptionMessage(actionResult);
 		}
 		SDKOperationResultUtils.logResultMessage(operationResult);
-	}
-
-	_showApplyContentProtectionOptionMessage(actionResult) {
-		const { SDKParams } = actionResult;
-
-		if (SDFProjectUtils.isSuiteAppProject(this._projectFolder)) {
-			if (
-				SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] ===
-				APPLY_CONTENT_PROTECTION_VALUES.TRUE
-			) {
-				NodeUtils.println(
-					TranslationService.getMessage(
-						MESSAGES.APPLYING_CONTENT_PROTECTION,
-						this._executionPath
-					),
-					NodeUtils.COLORS.INFO
-				);
-			} else {
-				NodeUtils.println(
-					TranslationService.getMessage(
-						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
-						this._executionPath
-					),
-					NodeUtils.COLORS.INFO
-				);
-			}
-		}
 	}
 
 	_showLocalValidationResultData(data) {
