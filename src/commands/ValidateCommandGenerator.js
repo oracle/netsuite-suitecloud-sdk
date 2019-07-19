@@ -112,7 +112,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(answers) {
-		const SDKDeployParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+		const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 
 		let isServerValidation = false;
 		const flags = [];
@@ -134,7 +134,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			message: TranslationService.getMessage(MESSAGES.VALIDATING),
 		});
 
-		return { operationResult, SDKDeployParams, isServerValidation };
+		return { operationResult, SDKParams, isServerValidation };
 	}
 
 	_formatOutput(actionResult) {
@@ -155,11 +155,11 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_showApplyContentProtectionOptionMessage(actionResult) {
-		const { SDKDeployParams } = actionResult;
+		const { SDKParams } = actionResult;
 
 		if (SDFProjectUtils.isSuiteAppProject(this._projectFolder)) {
 			if (
-				SDKDeployParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] ===
+				SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] ===
 				APPLY_CONTENT_PROTECTION_VALUES.TRUE
 			) {
 				NodeUtils.println(
