@@ -225,7 +225,7 @@
 			{
 				"name": "applycontentprotection",
 				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files.",
+				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
 				"mandatory": false,
 				"type": "FLAG",
 				"alias": "c",
@@ -236,7 +236,7 @@
 			{
 				"name": "accountspecificvalues",
 				"option": "accountspecificvalues",
-				"description": "Flag account-specific values as either a warning or an error. Enter WARNING for the deployment process to continue if there are account-specific values in the project, or ERROR to stop when the project contains account-specific values.",
+				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "WARNING",
@@ -926,7 +926,7 @@
 			{
 				"name": "applycontentprotection",
 				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files.",
+				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
 				"mandatory": false,
 				"type": "FLAG",
 				"alias": "c",
@@ -937,7 +937,7 @@
 			{
 				"name": "accountspecificvalues",
 				"option": "accountspecificvalues",
-				"description": "Flag account-specific values as either a warning or an error. Enter WARNING for the deployment process to continue if there are account-specific values in the project, or ERROR to stop when the project contains account-specific values.",
+				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "WARNING",
@@ -1298,7 +1298,7 @@
 			{
 				"name": "applycontentprotection",
 				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files.",
+				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
 				"mandatory": false,
 				"type": "FLAG",
 				"alias": "c",
@@ -1309,7 +1309,7 @@
 			{
 				"name": "accountspecificvalues",
 				"option": "accountspecificvalues",
-				"description": "Flag account-specific values as either a warning or an error. Enter WARNING for the deployment process to continue if there are account-specific values in the project, or ERROR to stop when the project contains account-specific values.",
+				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "WARNING",
