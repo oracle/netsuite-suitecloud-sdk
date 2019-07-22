@@ -11,12 +11,11 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const CommandUtils = require('../utils/CommandUtils');
-const SDFProjectUtils = require('../utils/SDFProjectUtils');
 const ValidateSDFProjectUtils = require('../utils/ValidateSDFProjectUtils');
-const ProjectMetadataService = require('../services/ProjectMetadataService');
+const ProjectInfoService = require('../services/ProjectInfoService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 
-const { PROJECT_ACP, PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
 const {
 	COMMAND_VALIDATE: { MESSAGES, QUESTIONS, QUESTIONS_CHOICES, OUTPUT },
@@ -36,16 +35,11 @@ const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
 	WARNING: 'WARNING',
 };
 
-const APPLY_CONTENT_PROTECTION_VALUES = {
-	TRUE: 'T',
-	FALSE: 'F',
-};
-
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._projectMetadataService = new ProjectMetadataService();
-		this._projectType = this._projectMetadataService.getProjectType(this._projectFolder);
+		this._projectMetadataService = new ProjectInfoService(this._projectFolder);
+		this._projectType = this._projectMetadataService.getProjectType();
 	}
 
 	_getCommandQuestions(prompt) {
@@ -94,7 +88,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			{
 				when:
 					this._projectType === PROJECT_SUITEAPP &&
-					SDFProjectUtils.hasLockOrHideFiles(this._projectFolder),
+					this._projectMetadataService.hasLockOrHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION,
 				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
@@ -115,8 +109,13 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 	_preExecuteAction(answers) {
 		answers[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		answers = ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(answers);
-		answers = ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(answers, this._projectType);
+		answers = ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(
+			answers
+		);
+		answers = ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(
+			answers,
+			this._projectType
+		);
 		return answers;
 	}
 
@@ -157,10 +156,32 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
 			});
 		} else if (!isServerValidation) {
-			SDFProjectUtils.showApplyContentProtectionOptionMessage(SDKParams, this._projectType, this._projectFolder);
+			this._showApplyContentProtectionOptionMessage(SDKParams);
 			this._showLocalValidationResultData(data);
 		}
 		SDKOperationResultUtils.logResultMessage(operationResult);
+	}
+
+	_showApplyContentProtectionOptionMessage(SDKParams) {
+		if (this._projectType === PROJECT_SUITEAPP) {
+			if (SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE) {
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.APPLYING_CONTENT_PROTECTION,
+						this._projectFolder
+					),
+					NodeUtils.COLORS.INFO
+				);
+			} else {
+				NodeUtils.println(
+					TranslationService.getMessage(
+						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
+						this._projectFolder
+					),
+					NodeUtils.COLORS.INFO
+				);
+			}
+		}
 	}
 
 	_showLocalValidationResultData(data) {

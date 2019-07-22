@@ -138,6 +138,8 @@
 	
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
+	"COMMAND_VALIDATE_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally applying content protection.",
+	"COMMAND_VALIDATE_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally without applying content protection.",
 	"COMMAND_VALIDATE_MESSAGES_VALIDATING": "Validating...",
 	"COMMAND_VALIDATE_QUESTIONS_SERVER_SIDE": "How do you want to validate your project?",
 	"COMMAND_VALIDATE_QUESTIONS_APPLY_CONTENT_PROTECTION": "Do you want to apply content protection?",
@@ -178,9 +180,6 @@
 	"ERRORS_CLI_ERROR_2FA_REQUIRED": "The token could not be issued. You tried to issue a token, but your role requires 2FA.  You must save a TBA token issued in NetSuite. To learn how to issue a token in NetSuite, see https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html",
 		
 	"NO": "No",
-	
-	"SDF_PROJECT_UTILS_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally applying content protection.",
-	"SDF_PROJECT_UTILS_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally without applying content protection.",
 	
 	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection can not be applied in an Account Customziaton Project.",
 	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalue option. Enter either WARNING or ERROR.",
