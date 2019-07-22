@@ -9,7 +9,7 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
-const ProjectMetadataService = require('../services/ProjectMetadataService');
+const ProjectInfoService = require('../services/ProjectInfoService');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
@@ -53,7 +53,7 @@ const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._projectMetadataService = new ProjectMetadataService();
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(
@@ -130,7 +130,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_generateListObjectQuestions() {
 		const questions = [];
-		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			const questionSpecifySuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SPECIFY_SUITEAPP,

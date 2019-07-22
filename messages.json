@@ -11,7 +11,7 @@
 	"ANSWERS_VALIDATION_MESSAGES_SCRIPT_ID_FORMAT": "The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.",
 	
 	"CLI_INTERACTIVE_OPTION_DESCRIPTION": "run the command in interactive mode",
-	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite 2019.2)",
+	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite {0})",
 	"CLI_USAGE": "command [option]",
 	
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_ADDING_DEPENDENCIES": "Adding dependencies...",
@@ -36,9 +36,11 @@
 	"COMMAND_DEPLOY_QUESTIONS_APPLY_CONTENT_PROTECTION": "Do you want to apply content protection?",
 	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the process",
 	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning",
+	"COMMAND_DEPLOY_QUESTIONS_PERFORM_LOCAL_VALIDATION": "Do you want to validate locally before deploying?",
 	"COMMAND_DEPLOY_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed applying content protection.",
 	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying...",
 	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed without applying content protection.",
+	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_CONTENT_PROTECTION_REASON": "Content protection was not applied because the InstallationPreferences folder is empty. You need to create the hiding.xml and locking.xml files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {0}.\nTo learn how to create a locking.xml file, see {1}.",
 	
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
@@ -136,6 +138,8 @@
 	
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
+	"COMMAND_VALIDATE_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally applying content protection.",
+	"COMMAND_VALIDATE_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally without applying content protection.",
 	"COMMAND_VALIDATE_MESSAGES_VALIDATING": "Validating...",
 	"COMMAND_VALIDATE_QUESTIONS_SERVER_SIDE": "How do you want to validate your project?",
 	"COMMAND_VALIDATE_QUESTIONS_APPLY_CONTENT_PROTECTION": "Do you want to apply content protection?",
@@ -177,10 +181,7 @@
 		
 	"NO": "No",
 	
-	"SDF_PROJECT_UTILS_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally applying content protection.",
-	"SDF_PROJECT_UTILS_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally without applying content protection.",
-	
-	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection can not be applied in an Account Customziaton Project.",
+	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection cannot be applied to account customization projects.",
 	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalue option. Enter either WARNING or ERROR.",
 
 	"YES": "Yes"

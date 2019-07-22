@@ -10,7 +10,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
-const ProjectMetadataService = require('../services/ProjectMetadataService');
+const ProjectInfoService = require('../services/ProjectInfoService');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
@@ -38,13 +38,13 @@ const {
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._projectMetadataService = new ProjectMetadataService();
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
 	_getCommandQuestions(prompt) {
 		var questions = [];
 		//create a class to see type based on manifest.
-		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
 
 			const questionSpecificSuiteApp = {
