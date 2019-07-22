@@ -8,7 +8,7 @@
 const TranslationService = require('../services/TranslationService');
 const assert = require('assert');
 
-const { PROJECT_ACP, PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_FALSE, SDK_TRUE } = require('../ApplicationConstants');
 
 const COMMAND = {
 	OPTIONS: {
@@ -26,10 +26,6 @@ const COMMAND = {
 const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
 	ERROR: 'ERROR',
 	WARNING: 'WARNING',
-};
-const APPLY_CONTENT_PROTECTION_VALUES = {
-	FALSE: 'F',
-	TRUE: 'T',
 };
 
 const {
@@ -75,8 +71,8 @@ class ValidateSDFProjectUtils {
 			newArgs[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] = args[
 				COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION
 			]
-				? APPLY_CONTENT_PROTECTION_VALUES.TRUE
-				: APPLY_CONTENT_PROTECTION_VALUES.FALSE;
+				? SDK_TRUE
+				: SDK_FALSE;
 		}
 
 		return newArgs;

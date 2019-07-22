@@ -189,7 +189,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		const manifestFilePath = path.join(
 			projectAbsolutePath,
 			SOURCE_FOLDER,
-			ApplicationConstants.MANIFEST_XML
+			ApplicationConstants.FILE_NAMES.MANIFEST_XML
 		);
 
 		const validationErrors = this._validateParams(answers);

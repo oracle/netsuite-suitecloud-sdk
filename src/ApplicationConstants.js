@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 module.exports = {
@@ -20,6 +20,7 @@ module.exports = {
 	FILE_NAMES: {
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
+		MANIFEST_XML: 'manifest.xml',
 	},
 	FOLDER_NAMES: {
 		FILE_CABINET: '/FileCabinet',
@@ -27,7 +28,6 @@ module.exports = {
 		OBJECTS: '/Objects',
 	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
-	MANIFEST_XML: 'manifest.xml',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	PROD_ENVIRONMENT_ADDRESS:'https://system.netsuite.com',
@@ -35,11 +35,19 @@ module.exports = {
 	REST_ROLES_URL: '/rest/roles',
 	LINKS: {
 		HOW_TO: {
-			ISSUE_A_TOKEN: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html'
-		}
+			CREATE_HIDDING_XML:
+				'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html',
+			CREATE_LOCKING_XML:
+				'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html',
+			ISSUE_A_TOKEN:
+				'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html',
+		},
 	},
-	CONSUMER_REQUEST_PARAM:{
+	CONSUMER_REQUEST_PARAM: {
 		KEY: 'consumerKey',
-		VALUE: 'NmRhNTdiZjA1YTYyNDdmYzg3NmM2ZDIyODE4NGZmNDg3NzYwYTM4MmE0M2FjN2U5M2VhZmY3NDM4MDNkMjJhYw==',
+		VALUE:
+			'NmRhNTdiZjA1YTYyNDdmYzg3NmM2ZDIyODE4NGZmNDg3NzYwYTM4MmE0M2FjN2U5M2VhZmY3NDM4MDNkMjJhYw==',
 	},
+	SDK_FALSE: 'F',
+	SDK_TRUE: 'T',
 };

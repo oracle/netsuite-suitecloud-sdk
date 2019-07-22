@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
@@ -11,7 +11,7 @@ const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const ProjectMetadataService = require('../services/ProjectMetadataService');
+const ProjectInfoService = require('../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
@@ -42,11 +42,11 @@ const {
 module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._projectMetadataService = new ProjectMetadataService();
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
 	async _getCommandQuestions(prompt) {
-		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
@@ -178,13 +178,13 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_executeAction(answers) {
-		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
 		const executionContextImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
-			includeAccountDetailsParams: true, 
+			includeAccountDetailsParams: true,
 			params: answers,
 		});
 

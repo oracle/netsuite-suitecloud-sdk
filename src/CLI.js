@@ -17,6 +17,8 @@ const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapException
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
 
+const CLI_VERSION = '19.2.1'
+
 module.exports = class CLI {
 	constructor(dependencies) {
 		assert(dependencies);
@@ -39,7 +41,7 @@ module.exports = class CLI {
 			this._initializeCommands(commandMetadataList, runInInteractiveMode);
 
 			program
-				.version('0.0.1', '-v, --version')
+				.version(CLI_VERSION, '--version') //TODO: add proper version (19.2)
 				.option(
 					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
 					TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION)
@@ -92,7 +94,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeUtils.println(TranslationService.getMessage(TITLE), NodeUtils.COLORS.RESULT);
+		NodeUtils.println(TranslationService.getMessage(TITLE, CLI_VERSION), NodeUtils.COLORS.INFO);
 		program.help();
 	}
 };

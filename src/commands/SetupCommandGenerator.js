@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const path = require('path');
@@ -25,7 +25,7 @@ const SAVE_TOKEN_COMMAND = 'savetoken';
 const {
 	ACCOUNT_DETAILS_FILENAME,
 	LINKS,
-	MANIFEST_XML,
+	FILE_NAMES: { MANIFEST_XML },
 	REST_ROLES_URL,
 	PROD_ENVIRONMENT_ADDRESS,
 	HTTP_PROTOCOL,
