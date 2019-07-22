@@ -121,14 +121,15 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_preExecuteAction(args) {
-		args[COMMAND.OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-
-		args = ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(args);
-		args = ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(
-			args,
-			this._projectType
-		);
-		return args;
+		return {
+			...args,
+			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
+			...ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(args),
+			...ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(
+				args,
+				this._projectType
+			)
+		};
 	}
 
 	async _executeAction(answers) {

@@ -108,15 +108,15 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_preExecuteAction(answers) {
-		answers[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		answers = ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(
-			answers
-		);
-		answers = ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(
-			answers,
-			this._projectType
-		);
-		return answers;
+		return {
+			...answers,
+			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
+			...ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(answers),
+			...ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(
+				answers,
+				this._projectType
+			)
+		};
 	}
 
 	async _executeAction(answers) {

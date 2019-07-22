@@ -30,7 +30,6 @@ module.exports = {
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	REST_ROLES_URL: 'https://system.netsuite.com/rest/roles',
-	REST_ISSUE_TOKEN_URL: 'https://system.netsuite.com/rest/issuetoken',
 	LINKS: {
 		HOW_TO: {
 			CREATE_HIDDING_XML:
@@ -40,11 +39,6 @@ module.exports = {
 			ISSUE_A_TOKEN:
 				'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html',
 		},
-	},
-	CONSUMER_REQUEST_PARAM: {
-		KEY: 'consumerKey',
-		VALUE:
-			'NmRhNTdiZjA1YTYyNDdmYzg3NmM2ZDIyODE4NGZmNDg3NzYwYTM4MmE0M2FjN2U5M2VhZmY3NDM4MDNkMjJhYw==',
 	},
 	SDK_FALSE: 'F',
 	SDK_TRUE: 'T',

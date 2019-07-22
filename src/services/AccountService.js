@@ -7,11 +7,10 @@
 const request = require('request-promise-native');
 const assert = require('assert');
 const UserPreferencesService = require('./userpreferences/UserPreferencesService');
-const Base64 = require('../utils/Base64');
-const { REST_ISSUE_TOKEN_URL, CONSUMER_REQUEST_PARAM } = require('../ApplicationConstants');
 const TranslationService = require('./TranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
+
 const NLAuthorizationHeader = {
 	name: 'NLAuth',
 	params: {
