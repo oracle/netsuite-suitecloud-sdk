@@ -181,7 +181,7 @@
 		
 	"NO": "No",
 	
-	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection can not be applied in an Account Customziaton Project.",
+	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection cannot be applied to account customization projects.",
 	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalue option. Enter either WARNING or ERROR.",
 
 	"YES": "Yes"
