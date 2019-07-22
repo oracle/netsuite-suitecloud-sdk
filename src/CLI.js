@@ -41,7 +41,7 @@ module.exports = class CLI {
 			this._initializeCommands(commandMetadataList, runInInteractiveMode);
 
 			program
-				.version(CLI_VERSION, '--version') //TODO: add proper version (19.2)
+				.version(CLI_VERSION, '--version')
 				.option(
 					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
 					TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION)

@@ -10,6 +10,7 @@ const UserPreferencesService = require('./userpreferences/UserPreferencesService
 const TranslationService = require('./TranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
+
 const NLAuthorizationHeader = {
 	name: 'NLAuth',
 	params: {
