@@ -18,5 +18,5 @@ npm link
 
 SDF CLI should now be available from within any directory. Verify with:
 ```
-sdf
+scloud
 ```
