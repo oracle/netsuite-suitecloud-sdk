@@ -10,13 +10,13 @@ const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
 const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -70,10 +70,9 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
 					const executionContextForListObjects = new SDKExecutionContext({
 						command: this._listObjectsMetadata.name,
-						showOutput: false,
 						params: paramsForListObjects,
+						includeAccountDetailsParams: true
 					});
-					this._applyDefaultContextParams(executionContextForListObjects);
 
 					executeWithSpinner({
 						action: this._sdkExecutor.execute(executionContextForListObjects),
@@ -300,6 +299,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
+			includeAccountDetailsParams: true,
 		});
 
 		return executeWithSpinner({

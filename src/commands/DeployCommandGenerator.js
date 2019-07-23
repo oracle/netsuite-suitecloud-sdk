@@ -6,13 +6,13 @@
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const ValidateSDFProjectUtils = require('../utils/ValidateSDFProjectUtils');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const assert = require('assert');
 
 const {
@@ -141,6 +141,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		}
 		const executionContextForDeploy = new SDKExecutionContext({
 			command: this._commandMetadata.name,
+			includeAccountDetailsParams: true,
 			params: SDKParams,
 			flags,
 		});

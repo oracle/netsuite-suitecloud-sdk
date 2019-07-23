@@ -5,7 +5,6 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
@@ -13,6 +12,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },

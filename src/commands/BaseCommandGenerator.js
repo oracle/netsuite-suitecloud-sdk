@@ -5,7 +5,6 @@
 'use strict';
 
 const SDKExecutor = require('../SDKExecutor').SDKExecutor;
-const AccountDetailsService = require('./../core/accountsetup/AccountDetailsService');
 const Command = require('./Command');
 const assert = require('assert');
 
@@ -16,7 +15,6 @@ module.exports = class BaseCommandGenerator {
 		assert(options.projectFolder);
 
 		this._sdkExecutor = new SDKExecutor();
-		this._accountDetailsService = new AccountDetailsService();
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;
@@ -26,15 +24,8 @@ module.exports = class BaseCommandGenerator {
 	_getCommandQuestions(prompt) {
 		return prompt([]);
 	}
+	
 	_executeAction() {}
-
-	_applyDefaultContextParams(sdkExecutionContext) {
-		const accountDetails = this._accountDetailsService.get();
-		sdkExecutionContext.addParam('account', accountDetails.accountId);
-		sdkExecutionContext.addParam('role', accountDetails.roleId);
-		sdkExecutionContext.addParam('email', accountDetails.email);
-		sdkExecutionContext.addParam('url', accountDetails.netSuiteUrl);
-	}
 
 	_preExecuteAction(args) {
 		return args;

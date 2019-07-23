@@ -135,6 +135,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			command: this._commandMetadata.name,
 			params: SDKParams,
 			flags: flags,
+			includeAccountDetailsParams: true,
 		});
 
 		const operationResult = await executeWithSpinner({

@@ -10,6 +10,7 @@ const {
 	ANSWERS_VALIDATION_MESSAGES,
 	COMMAND_OPTION_IS_MANDATORY,
 } = require('../services/TranslationKeys');
+const url = require('url');
 
 const ApplicationConstants = require('../ApplicationConstants');
 
@@ -36,6 +37,8 @@ const SUITEAPP_ID_FORMAT_REGEX =
 const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX =
 	'^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
 const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+const SUBDOMAIN_DOMAIN_URL_REGEX = /[\w\d].*\.[\w\d].*\.[\w\d].*/;
 
 class InteractiveAnswersValidator {
 	showValidationResults(value, ...funcs) {
@@ -163,10 +166,23 @@ class InteractiveAnswersValidator {
 			  );
 	}
 
+	validateDevUrl(devUrlValue) {
+		const builtUrl = url.parse(devUrlValue);
+		return !builtUrl.protocol && SUBDOMAIN_DOMAIN_URL_REGEX.test(devUrlValue)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(
+					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.DEV_URL)
+			  );
+	}
+	
 	validateProjectType(value) {
-		return [ApplicationConstants.PROJECT_SUITEAPP,ApplicationConstants.PROJECT_ACP].includes(value) ? VALIDATION_RESULT_SUCCESS : VALIDATION_RESULT_FAILURE(
-			TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE)
-		);
+		return [ApplicationConstants.PROJECT_SUITEAPP, ApplicationConstants.PROJECT_ACP].includes(
+			value
+		)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(
+					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE)
+			  );
 	}
 }
 

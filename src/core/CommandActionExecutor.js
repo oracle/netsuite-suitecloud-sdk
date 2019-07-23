@@ -124,8 +124,8 @@ module.exports = class CommandActionExecutor {
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
 
 			const argumentsFromQuestions =
-				runInInteractiveMode || command.commandMetadata.forceInteractiveMode
-					? await command.getCommandQuestions(inquirer.prompt)
+				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
+					? await command.getCommandQuestions(inquirer.prompt, commandArguments)
 					: {};
 
 			const commandArgumentsWithQuestionArguments = {

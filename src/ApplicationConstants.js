@@ -11,6 +11,7 @@ module.exports = {
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
 	SDF_SDK_PATHNAME: '../bin/cli-2019.2.0-SNAPSHOT.jar',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
+	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
 	SDK_PROXY_JVM_OPTIONS: {
 		PROTOCOL: '-DproxyProtocol',
 		HOST: '-DproxyHost',
@@ -29,7 +30,9 @@ module.exports = {
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
-	REST_ROLES_URL: 'https://system.netsuite.com/rest/roles',
+	PROD_ENVIRONMENT_ADDRESS:'https://system.netsuite.com',
+	HTTP_PROTOCOL:'http://',
+	REST_ROLES_URL: '/rest/roles',
 	LINKS: {
 		HOW_TO: {
 			CREATE_HIDDING_XML:

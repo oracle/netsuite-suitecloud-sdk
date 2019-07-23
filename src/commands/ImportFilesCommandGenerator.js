@@ -1,16 +1,16 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
@@ -64,7 +64,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			throw SDKOperationResultUtils.getErrorMessagesString(listFilesResult);
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
-			throw SDKOperationResultUtils.getErrorMessagesString(listFilesResult);
+			throw SDKOperationResultUtils.getResultMessage(listFilesResult);
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
@@ -81,9 +81,8 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_listFolders() {
 		const executionContextListFolders = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
-			showOutput: false,
+			includeAccountDetailsParams: true,
 		});
-		this._applyDefaultContextParams(executionContextListFolders);
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextListFolders),
@@ -116,9 +115,9 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
 		const executionContextListFiles = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFILES,
+			includeAccountDetailsParams: true,
 			params: selectFolderAnswer,
 		});
-		this._applyDefaultContextParams(executionContextListFiles);
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextListFiles),
@@ -185,6 +184,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		const executionContextImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
+			includeAccountDetailsParams: true,
 			params: answers,
 		});
 

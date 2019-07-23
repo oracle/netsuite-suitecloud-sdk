@@ -15,6 +15,8 @@ const AccountDetails = require('./../core/accountsetup/AccountDetails');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const AccountService = require('../services/AccountService');
+const AccountDetailsService = require('./../core/accountsetup/AccountDetailsService');
+
 const inquirer = require('inquirer');
 
 const ISSUE_TOKEN_COMMAND = 'issuetoken';
@@ -25,6 +27,8 @@ const {
 	LINKS,
 	FILE_NAMES: { MANIFEST_XML },
 	REST_ROLES_URL,
+	PROD_ENVIRONMENT_ADDRESS,
+	HTTP_PROTOCOL,
 } = require('../ApplicationConstants');
 
 const {
@@ -35,6 +39,7 @@ const {
 
 const ANSWERS = {
 	OVERWRITE: 'overwrite',
+	DEVELOPMENT_URL: 'developmentUrl',
 	EMAIL: 'email',
 	PASSWORD: 'password',
 	COMPANY_ID: 'companyId',
@@ -47,6 +52,7 @@ const ANSWERS = {
 const SDKErrorCodes = require('../SDKErrorCodes');
 
 const {
+	validateDevUrl,
 	validateFieldIsNotEmpty,
 	validateEmail,
 	showValidationResults,
@@ -56,9 +62,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._accountService = new AccountService();
+		this._accountDetailsService = new AccountDetailsService();
 	}
 
-	async _getCommandQuestions(prompt) {
+	async _getCommandQuestions(prompt, commandArguments) {
 		this._checkWorkingDirectoryContainsValidProject();
 
 		if (this._accountDetailsFileExists()) {
@@ -82,12 +89,30 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 		}
 
+		const isDevelopment =
+			commandArguments && commandArguments.dev != undefined && commandArguments.dev;
+
+		let developmentUrlAnswer = null;
+
+		if (isDevelopment) {
+			developmentUrlAnswer = await prompt([
+				{
+					type: CommandUtils.INQUIRER_TYPES.INPUT,
+					name: ANSWERS.DEVELOPMENT_URL,
+					message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_URL),
+					filter: answer => answer.trim(),
+					validate: fieldValue =>
+						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl),
+				},
+			]);
+		}
+
 		const credentialsAnswers = await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: ANSWERS.EMAIL,
 				message: TranslationService.getMessage(QUESTIONS.EMAIL),
-				filter: ansewer => ansewer.trim(),
+				filter: answer => answer.trim(),
 				validate: fieldValue =>
 					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateEmail),
 			},
@@ -95,15 +120,18 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 				name: ANSWERS.PASSWORD,
 				message: TranslationService.getMessage(QUESTIONS.PASSWORD),
-				filter: ansewer => ansewer.trim(),
+				filter: answer => answer.trim(),
 				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 			},
 		]);
 
+		const baseAddress = this._getBaseAddress(developmentUrlAnswer);
+
 		const accountAndRolesJSON = await executeWithSpinner({
 			action: this._accountService.getAccountAndRoles({
 				...credentialsAnswers,
-				restRolesUrl: REST_ROLES_URL,
+				restRolesUrl: `${baseAddress}${REST_ROLES_URL}`,
+				isDevelopment,
 			}),
 			message: TranslationService.getMessage(MESSAGES.RETRIEVING_ACCOUNT_INFO),
 		});
@@ -199,6 +227,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		]);
 
 		return {
+			isDevelopment: isDevelopment,
 			email: credentialsAnswers[ANSWERS.EMAIL],
 			password: credentialsAnswers[ANSWERS.PASSWORD],
 			account: selectedAccountId,
@@ -210,6 +239,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			).name,
 			...issueOrSaveTokenAnswers,
 		};
+	}
+
+	_getBaseAddress(developmentUrlAnswer) {
+		return developmentUrlAnswer
+			? `${HTTP_PROTOCOL}${developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]}`
+			: PROD_ENVIRONMENT_ADDRESS;
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {
@@ -229,8 +264,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	_issueToken(params) {
 		const executionContextForSaveToken = new SDKExecutionContext({
 			command: ISSUE_TOKEN_COMMAND,
-			showOutput: false,
 			params,
+			includeAccountDetailsParams: true,
 		});
 
 		return executeWithSpinner({
@@ -242,8 +277,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	_saveToken(params) {
 		const executionContextForSaveToken = new SDKExecutionContext({
 			command: SAVE_TOKEN_COMMAND,
-			showOutput: false,
 			params,
+			includeAccountDetailsParams: true,
 		});
 
 		return executeWithSpinner({
@@ -254,6 +289,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(answers) {
 		const contextValues = {
+			isDevelopment: answers.isDevelopment,
 			netsuiteUrl: answers.environment,
 			accountId: answers.account,
 			accountName: answers.accountName,
@@ -263,23 +299,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			password: answers.password,
 		};
 		const newAccountDetails = AccountDetails.fromJson(contextValues);
+		this._accountDetailsService.set(newAccountDetails);
 
 		let operationResult;
-		const accountParams = {
-			url: answers.environment,
-			email: answers.email,
-			account: answers.account,
-			role: answers.role,
-		};
 
 		if (answers[ANSWERS.ISSUE_A_TOKEN]) {
 			operationResult = await this._issueToken({
-				...accountParams,
 				password: answers.password,
 			});
 		} else {
 			operationResult = await this._saveToken({
-				...accountParams,
 				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
 				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
 			});

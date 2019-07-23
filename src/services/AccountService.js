@@ -26,18 +26,8 @@ module.exports = class AccountService {
 		this._userPreferencesService = new UserPreferencesService();
 	}
 
-	getAccountAndRoles({ email, password, restRolesUrl }) {
-		assert(email);
-		assert(password);
-		assert(restRolesUrl);
-
-		const options = {
-			url: restRolesUrl,
-			proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
-			headers: {
-				Authorization: this._getNLAuthorizationHeaderString({ email, password }),
-			},
-		};
+	getAccountAndRoles({ email, password, restRolesUrl, isDevelopment }) {
+		const options = this._getRequestOptions(email, password, restRolesUrl, isDevelopment);
 
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -47,6 +37,31 @@ module.exports = class AccountService {
 				reject(this.throwRequestError(error));
 			}
 		});
+	}
+
+	_getRequestOptions(email, password, restRolesUrl, isDevelopment) {
+		assert(email);
+		assert(password);
+		assert(restRolesUrl);
+		assert(typeof isDevelopment === 'boolean');
+
+		const authorizationValue = this._getNLAuthorizationHeaderString({ email, password });
+		if (isDevelopment) {
+			return {
+				url: restRolesUrl,
+				headers: {
+					Authorization: authorizationValue
+				}
+			};
+		} else {
+			return {
+				url: restRolesUrl,
+				proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
+				headers: {
+					Authorization: authorizationValue
+				}
+			};
+		}
 	}
 
 	throwRequestError(errorResponse) {

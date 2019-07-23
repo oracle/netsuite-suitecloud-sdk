@@ -5,7 +5,15 @@
         "description": "Set up an account to use with the SuiteCloud CLI for Node.js.",
 		"isSetupRequired": false,
 		"forceInteractiveMode": true,
-        "options": []
+        "options": [
+            {
+                "name": "dev",
+                "alias": "d",
+                "description": "Specify the domain URL of the account you want to use. You only need to specify the domain URL if you are not using a production account.",
+                "type": "FLAG",
+                "mandatory": false
+            }
+        ]
     },
     "createobject": {
         "name": "createobject",

@@ -74,6 +74,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 			command: this._commandMetadata.name,
 			params: answers,
 			flags: [COMMAND_OPTIONS.ALL],
+			requiresContextParams: true
 		});
 
 		return executeWithSpinner({
