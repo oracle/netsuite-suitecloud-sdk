@@ -26,7 +26,8 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 	execute(executionContext) {
 		const proxyJarSettings = this._getProxySettingsIfSet();
-		const accountDetails = this._accountDetailsService.get();
+		const accountDetails = executionContext.includeAccountDetailsParams ? this._accountDetailsService.get() : null;
+		
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
 
@@ -46,7 +47,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const developmentModeOption = accountDetails.isDevelopment
+			const developmentModeOption = accountDetails && accountDetails.isDevelopment
 				? SDK_DEVELOPMENT_MODE_JVM_OPTION
 				: '';
 
