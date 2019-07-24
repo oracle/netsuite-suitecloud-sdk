@@ -46,7 +46,8 @@ module.exports = class JavascriptCompiler {
 					resource.applications.forEach(app_name => {
 						const ext_name = resource.extension_fullname;
 						const app_file = application_files[app_name];
-						const ext_content = app_file.javascript_modules[ext_name] || '';
+						app_file.javascript_modules[ext_name] =
+							app_file.javascript_modules[ext_name] || '';
 						// if it is an entrypoint, append to the end
 						// also add a try catch block that call SC.addExtensionModule
 						if (resource.isEntrypoint) {
@@ -57,7 +58,8 @@ module.exports = class JavascriptCompiler {
 							app_file.javascript_modules[ext_name] += content;
 						} else {
 							// if it is not an entrypoint, append first
-							app_file.javascript_modules[ext_name] = content + ext_content;
+							app_file.javascript_modules[ext_name] =
+								content + app_file.javascript_modules[ext_name];
 						}
 					});
 				})
@@ -76,20 +78,20 @@ module.exports = class JavascriptCompiler {
 		});
 	}
 
-	createModuleBlock(content, extension_name) {
+	createModuleBlock(content, ext_name) {
 		return `
-		extensions["${extension_name}"] = function() {			
+		extensions["${ext_name}"] = function() {			
 			function getExtensionAssetsPath(asset){
-				return 'extensions/${extension_name.replace(/\./g, '/')}' + asset;
+				return 'extensions/${ext_name.replace(/#/g, '/')}' + asset;
 			}
 			${content}
 		};`;
 	}
 
-	createTryCatchBlock(entrypoint, extension_name) {
+	createTryCatchBlock(entrypoint, ext_name) {
 		return `
 		try {
-			extensions['${extension_name}']();
+			extensions['${ext_name}']();
 			SC.addExtensionModule('${entrypoint}');
 		}
 		catch(error)
