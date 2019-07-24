@@ -3,8 +3,8 @@
 	"version": "1.0.0",
 	"description": "SuiteCloud CLI for Node.js",
 	"main": "src/index.js",
-	"author": "NetSuite",
-	"license": "MIT",
+	"author": "Oracle NetSuite",
+	"license": "UPL",
 	"preferGlobal": true,
 	"bin": {
 		"scloud": "src/index.js"
