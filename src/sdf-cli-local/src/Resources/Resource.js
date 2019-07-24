@@ -12,15 +12,13 @@ module.exports = class Resource {
 		this.dst = options.dst;
 		this.name = options.name || '';
 		this.content = '';
-		this.applications = _.flatten([options.app]);
+		this.applications = [options.app];
 		this.override_fullsrc;
 		this.override;
 	}
 
-	sourceContent() {
-		return FileSystem.getFileContent(this.fullsrc()).then(content => {
-			return (this.content = content);
-		});
+	async sourceContent() {
+		return (this.content = await FileSystem.getFileContent(this.fullsrc()));
 	}
 
 	addApplication(app) {
