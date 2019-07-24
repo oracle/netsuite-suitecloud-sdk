@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const NodeUtils = require('../utils/NodeUtils');
@@ -45,10 +45,7 @@ class InteractiveAnswersValidator {
 		for (const func of funcs) {
 			const validationOutput = func(value);
 			if (!validationOutput.result) {
-				return NodeUtils.formatString(validationOutput.validationMessage, {
-					color: NodeUtils.COLORS.ERROR,
-					bold: true,
-				});
+				return validationOutput.validationMessage;
 			}
 		}
 		return true;
@@ -174,7 +171,7 @@ class InteractiveAnswersValidator {
 					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.DEV_URL)
 			  );
 	}
-	
+
 	validateProjectType(value) {
 		return [ApplicationConstants.PROJECT_SUITEAPP, ApplicationConstants.PROJECT_ACP].includes(
 			value
