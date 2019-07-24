@@ -28,7 +28,14 @@ class FileSystem {
 	}
 
 	writeFile(dest, content) {
-		return promisify(fs.writeFile)(dest, content);
+		return new Promise((resolve, reject) => {
+			try {
+				fs.writeFileSync(dest, content);
+				resolve();
+			} catch (error) {
+				reject(error);
+			}
+		});
 	}
 
 	copyFile(src, dest) {
