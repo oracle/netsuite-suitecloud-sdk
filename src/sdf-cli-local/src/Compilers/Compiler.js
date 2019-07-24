@@ -5,6 +5,9 @@ const TemplatesCompiler = require('./TemplatesCompiler');
 const JavascriptCompiler = require('./JavascriptCompiler');
 const AssetsCompiler = require('./AssetsCompiler');
 
+const fs = require('fs');
+const path = require('path');
+
 const Utils = require('../Utils');
 const FileSystem = require('../services/FileSystem');
 const _ = require('underscore');
@@ -33,5 +36,19 @@ module.exports = class Compiler {
 		// create/override local server:
 		const local_folder = FileSystem.createFolder(serverFolder, context.project_folder, true);
 		context.setLocalServerPath(local_folder);
+		this._createRequireJSFile(local_folder);
+	}
+
+	_createRequireJSFile(local_folder) {
+		const src = path.join(
+			process.mainModule.filename,
+			'../..',
+			'node_modules',
+			'sdf-cli-local',
+			'node_modules',
+			'requirejs',
+			'require.js'
+		);
+		fs.copyFileSync(src, path.join(local_folder, 'require.js'));
 	}
 };
