@@ -15,7 +15,6 @@ module.exports = class LocalServer {
 	}
 
 	startServer() {
-
 		//TODO override with config values
 		let server_config = {
 			run_https: false,
@@ -34,8 +33,6 @@ module.exports = class LocalServer {
 		app.use('/who/:app', whoService);
 		//Serves the script patch to ignore tpl defines executed by core javascript file
 		app.use('/define_patch.js', this._definePatchService);
-		//Serves the script for requirejs
-		app.use('/require.js', this._getRequireJs);
 
 		app.listen(server_config.port, () => {
 			this._localMessage(server_config);
@@ -66,20 +63,6 @@ module.exports = class LocalServer {
 
 		res.setHeader('Content-Type', 'application/javascript');
 		res.send(`${response}; define_patch();`);
-	}
-
-	_getRequireJs(req, res) {
-		const src = path.join(
-			process.mainModule.filename,
-			'../..',
-			'node_modules',
-			'sdf-cli-local',
-			'node_modules',
-			'requirejs',
-			'require.js'
-		);
-		res.setHeader('Content-Type', 'application/javascript');
-		res.send(fs.readFileSync(src).toString());
 	}
 
 	_localMessage(server_config) {
