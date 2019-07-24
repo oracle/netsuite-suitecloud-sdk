@@ -80,9 +80,9 @@ module.exports = class JavascriptCompiler {
 
 	createModuleBlock(content, ext_name) {
 		return `
-		extensions["${ext_name}"] = function() {			
+		extensions["${ext_name.replace(/#/g, '.')}"] = function() {			
 			function getExtensionAssetsPath(asset){
-				return 'extensions/${ext_name.replace(/#/g, '/')}' + asset;
+				return 'assets/${ext_name.replace(/#/g, '/')}/' + asset;
 			}
 			${content}
 		};`;
@@ -91,7 +91,7 @@ module.exports = class JavascriptCompiler {
 	createTryCatchBlock(entrypoint, ext_name) {
 		return `
 		try {
-			extensions['${ext_name}']();
+			extensions['${ext_name.replace(/#/g, '.')}']();
 			SC.addExtensionModule('${entrypoint}');
 		}
 		catch(error)
