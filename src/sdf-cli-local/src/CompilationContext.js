@@ -109,7 +109,7 @@ module.exports = class CompilationContext {
 	}
 
 	excludeBaseFilesPath(dir) {
-		return path.normalize(dir).replace(this.files_path, '');
+		return path.relative(this.files_path, dir);
 	}
 
 	handleOverrides(resources, overrides) {
