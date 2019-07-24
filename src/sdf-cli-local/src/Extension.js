@@ -42,7 +42,7 @@ module.exports = class Extension extends AbstractExtension {
 					dst: path.basename(resource_path),
 					name: path.basename(resource_path, path.extname(resource_path)),
 					isEntrypoint: key === 'javascript_entrypoints',
-					extension_fullname: this.getExtensionFullName('.'),
+					extension_fullname: this.getExtensionFullName('#'),
 					app: app,
 				});
 			});
