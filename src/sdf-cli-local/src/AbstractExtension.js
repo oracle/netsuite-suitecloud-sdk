@@ -88,7 +88,9 @@ module.exports = class AbstractExtension {
 	}
 
 	getAssetsUrl() {
-		return FileSystem.forwardDashes(url.resolve(this.base_url, this.getLocalAssetsPath()));
+		return FileSystem.forwardDashes(
+			url.resolve(this.base_url, `assets/${this.getLocalAssetsPath()}`)
+		);
 	}
 
 	getAssets() {

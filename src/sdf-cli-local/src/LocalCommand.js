@@ -96,11 +96,15 @@ module.exports = class LocalCommand {
 	}
 
 	_validateTheme(theme) {
-		if (_.isEqual(theme, [])) {
-			throw Translation.getMessage('NO_THEMES', [this.objects_path]);
-		}
-		if (!this.themes[theme]) {
-			throw Translation.getMessage('THEME_NOT_FOUND', [theme, this.objects_path]);
+		if (Array.isArray(theme)) {
+			// interactive mode
+			if (!theme.length) {
+				throw Translation.getMessage('NO_THEMES', [this.objects_path]);
+			}
+		} else {
+			if (!this.themes[theme]) {
+				throw Translation.getMessage('THEME_NOT_FOUND', [theme, this.objects_path]);
+			}
 		}
 
 		return theme;

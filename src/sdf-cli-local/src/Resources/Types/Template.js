@@ -7,7 +7,7 @@ module.exports = class Template extends Resource {
 		super(options);
 
 		this.precompiled = '';
-		this.format = '.js';
+		this.format = '.tpl';
 		this.extension_asset_url = options.extension_asset_url;
 	}
 

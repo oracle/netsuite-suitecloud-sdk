@@ -66,7 +66,7 @@ module.exports = class TemplatesCompiler {
 	}
 
 	writeEntrypoints() {
-		return ['checkout', 'shopping', 'myaccount'].map(app => {
+		return _.map(this.entrypoints, (entrypoint, app) => {
 			const dest = path.join(this.templates_path, `${app}-templates.js`);
 			const entryfile_content = {
 				paths: this.entrypoints[app],
@@ -92,7 +92,7 @@ module.exports = class TemplatesCompiler {
 			template.precompiled
 		}; var main = t.main; t.main = function(){ arguments[1] = arguments[1] || {}; var ctx = arguments[1]; ctx._extension_path = '${
 			template.extension_asset_url
-		}'; ctx._theme_path = '${this.context.theme.getAssetsUrl()}'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${
+		}/'; ctx._theme_path = '${this.context.theme.getAssetsUrl()}/'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${
 			template.name
 		}'; return template;});`;
 	}
