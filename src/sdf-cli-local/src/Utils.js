@@ -4,18 +4,17 @@
 */
 'use strict';
 
-const xml_parser = require('fast-xml-parser');
+const { Parser } = require('xml2js');
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob').sync;
-const _ = require('underscore');
 const async = require('async');
 const { promisify } = require('util');
 
 const Translation = require('./services/Translation');
 
 const Utils = {
-	parseXml: (project_folder, xml_file) => {
+	parseXml(project_folder, xml_file) {
 		let file_path = path.join(project_folder, '**', xml_file);
 		file_path = glob(file_path);
 		file_path = file_path.length ? file_path[0] : null;
@@ -25,35 +24,46 @@ const Utils = {
 		}
 
 		const xml_data = fs.readFileSync(file_path).toString();
-		if (!xml_parser.validate(xml_data)) {
-			throw Translation.getMessage('INVALID_XML', [file_path]);
-		}
 
-		const parsed_xml = xml_parser.parse(xml_data, {});
+		let parsed_xml = {};
+
+		new Parser({ explicitArray: false, trim: true, emptyTag: null }).parseString(
+			xml_data,
+			function(error, result) {
+				if (error) {
+					throw error;
+				}
+				parsed_xml = result;
+			}
+		);
 
 		return parsed_xml;
 	},
 
-	parseFiles: (files_xml, replacer) => {
-		let files = files_xml.files || {};
-		files = files.file || {};
-		files = _.map(files, file => {
-			file = Utils.parseFileName(file);
-			return replacer ? replacer(file) : file;
-		});
-
-		return files;
+	arrayUnion(arr1, arr2 = []) {
+		return [...new Set([...arr1, ...arr2])];
 	},
 
-	parseFileName: file => {
+	parseFiles(files_xml, replacer) {
+		const parsed_files = [];
+		let files = files_xml.files || {};
+		files = files.file || {};
+		for (const key in files) {
+			const file = Utils.parseFileName(files[key]);
+			parsed_files.push(replacer ? replacer(file) : file);
+		}
+		return parsed_files;
+	},
+
+	parseFileName(file) {
 		const file_name = file.filename || file;
 		return file_name.replace(/^\[(.*)\]$/, '$1');
 	},
 
-	runParallel: tasks => {
+	runParallel(tasks) {
 		const parallel = async.parallel;
 
-		const wrapped_tasks = _.map(tasks, task => {
+		const wrapped_tasks = tasks.map(task => {
 			return callback => {
 				try {
 					const promise = task();

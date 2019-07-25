@@ -32,14 +32,13 @@ module.exports = class DeployXml {
 
 		const path = require('path');
 		const glob = require('glob').sync;
-		const _ = require('underscore');
 		const objects_path = glob(path.join(this.objects_path, '*'));
 
 		this.objects = {
 			extensions: {},
 			themes: {},
 		};
-		_.each(objects_path, object_path => {
+		objects_path.forEach(object_path => {
 			const name = path.basename(object_path);
 
 			if (/^custcommerceextension/.test(name)) {

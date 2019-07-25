@@ -6,7 +6,6 @@
 
 const AbstractExtension = require('./AbstractExtension');
 const Utils = require('./Utils');
-const _ = require('underscore');
 const path = require('path');
 
 module.exports = class Theme extends AbstractExtension {
@@ -41,13 +40,13 @@ module.exports = class Theme extends AbstractExtension {
 
 		overrides = overrides.override || overrides;
 
-		if (_.isEmpty(overrides)) {
+		if (!Object.keys(overrides).length) {
 			return overrides;
 		}
 
-		overrides = _.isArray(overrides) ? overrides : [overrides];
+		overrides = Array.isArray(overrides) ? overrides : [overrides];
 
-		overrides = _.map(overrides, override => {
+		overrides = overrides.map(override => {
 			let dst = path.normalize(override.dst).split(path.sep);
 			dst.shift();
 			dst[dst.length - 1] = dst[dst.length - 1].replace(/^\_(.*)(\.scss)$/, '$1$2');
@@ -58,12 +57,16 @@ module.exports = class Theme extends AbstractExtension {
 			};
 		});
 
-		overrides = _.filter(overrides, override => {
+		overrides = overrides.filter(override => {
 			const regex = new RegExp(`\.${file_ext}$`);
 			return file_ext === 'all' || regex.test(override.src);
 		});
+		const indexed = {};
+		overrides.forEach(override => {
+			indexed[override.dst] = override;
+		});
 
-		this.overrides[file_ext] = _.indexBy(overrides, 'dst');
+		this.overrides[file_ext] = indexed;
 		return this.overrides[file_ext];
 	}
 };

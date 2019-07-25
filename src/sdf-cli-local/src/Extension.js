@@ -5,8 +5,6 @@
 'use strict';
 
 const AbstractExtension = require('./AbstractExtension');
-const Utils = require('./Utils');
-const _ = require('underscore');
 const path = require('path');
 const Script = require('./Resources/Types/Javascript');
 
@@ -33,7 +31,7 @@ module.exports = class Extension extends AbstractExtension {
 		const javascript_app = javascript.application || {};
 		const javascript_entrypoints = javascript.entrypoints || {};
 
-		_.each({ javascript_app, javascript_entrypoints }, (resources, key) => {
+		Object.entries({ javascript_app, javascript_entrypoints }).forEach(([key, resources]) => {
 			this.iterateResources(resources, (resource_path, app) => {
 				if (this.javascript[resource_path]) {
 					this.javascript[resource_path].addApplication(app);

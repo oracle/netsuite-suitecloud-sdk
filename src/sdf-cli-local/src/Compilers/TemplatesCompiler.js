@@ -5,7 +5,6 @@
 'use strict';
 
 const handlebars = require('handlebars');
-const _ = require('underscore');
 const Utils = require('../Utils');
 const fs = require('fs');
 const url = require('url');
@@ -66,11 +65,16 @@ module.exports = class TemplatesCompiler {
 	}
 
 	writeTemplates() {
-		return _.map(this.templates, template => this.writeTemplate(template));
+		const promises = [];
+		for (const template_path in this.templates) {
+			promises.push(this.writeTemplate(this.templates[template_path]));
+		}
+		return promises;
 	}
 
 	writeEntrypoints() {
-		return _.map(this.entrypoints, (entrypoint, app) => {
+		const promises = [];
+		for (const app in this.entrypoints) {
 			const dest = path.join(this.templates_path, `${app}-templates.js`);
 			const entryfile_content = {
 				paths: this.entrypoints[app],
@@ -81,8 +85,9 @@ module.exports = class TemplatesCompiler {
 				// TODO remove and use cli-config
 			};
 
-			return () => FileSystem.writeFile(dest, this.wrapEntrypoint(entryfile_content));
-		});
+			promises.push(() => FileSystem.writeFile(dest, this.wrapEntrypoint(entryfile_content)));
+		}
+		return promises;
 	}
 
 	wrapEntrypoint(entrypoint) {

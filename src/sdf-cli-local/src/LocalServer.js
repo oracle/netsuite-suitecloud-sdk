@@ -9,9 +9,6 @@ const whoService = require('./services/Who');
 
 const express = require('express');
 const cors = require('cors');
-const _ = require('underscore');
-const fs = require('fs');
-const path = require('path');
 
 module.exports = class LocalServer {
 	constructor(options) {
@@ -29,7 +26,7 @@ module.exports = class LocalServer {
 		const app = express();
 		app.use(cors({ origin: true }));
 
-		_.each(server_config.folders, folder => {
+		server_config.folders.forEach(folder => {
 			app.use('/', express.static(folder));
 		});
 

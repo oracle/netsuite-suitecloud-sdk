@@ -9,7 +9,7 @@ const Extension = require('./Extension');
 const path = require('path');
 const glob = require('glob').sync;
 
-const _ = require('underscore');
+const Utils = require('./Utils');
 
 const Resource = require('./Resources/Resource');
 
@@ -26,9 +26,9 @@ module.exports = class CompilationContext {
 
 		this.theme = new Theme({ objects_path: objects_path, extension_xml: theme });
 
-		this.extensions = _.map(extensions, extension => {
-			return new Extension({ objects_path: objects_path, extension_xml: extension });
-		});
+		this.extensions = extensions.map(
+			extension => new Extension({ objects_path: objects_path, extension_xml: extension })
+		);
 
 		this.all_extensions = [this.theme].concat(this.extensions);
 	}
@@ -47,31 +47,32 @@ module.exports = class CompilationContext {
 
 	getTemplates() {
 		let templates = {};
-		this.all_extensions.map(
-			extension => (templates = _.extend(templates, extension.getTemplates()))
+		this.all_extensions.forEach(
+			extension => (templates = Object.assign(templates, extension.getTemplates()))
 		);
 		return this.handleOverrides(templates, this.getTplOverrides());
 	}
 
 	getSass() {
-		let sass = {
+		const sass = {
 			files: [],
 			entrypoints: {},
 		};
 
-		_.each(this.all_extensions, extension => {
+		this.all_extensions.forEach(extension => {
 			const ext_sass = extension.getSass();
 			const ext_assets_path = extension.getLocalAssetsPath('assets');
 
-			_.each(ext_sass.entrypoints, (app_sass, app) => {
+			for (const app in ext_sass.entrypoints) {
+				const app_sass = ext_sass.entrypoints[app];
 				sass.entrypoints[app] = sass.entrypoints[app] || [];
 				sass.entrypoints[app].push({
 					entry: app_sass,
 					assets_path: ext_assets_path,
 				});
-			});
+			}
 
-			sass.files = _.union(sass.files, ext_sass.files);
+			sass.files = Utils.arrayUnion(sass.files, ext_sass.files);
 		});
 
 		return sass;
@@ -80,7 +81,7 @@ module.exports = class CompilationContext {
 	getJavascript() {
 		let javascript = {};
 		this.extensions.forEach(
-			extension => (javascript = _.extend(javascript, extension.getJavascript()))
+			extension => (javascript = Object.assign(javascript, extension.getJavascript()))
 		);
 		return javascript;
 	}
@@ -88,7 +89,7 @@ module.exports = class CompilationContext {
 	getAssets() {
 		let assets = {};
 		this.all_extensions.forEach(
-			extension => (assets = _.extend(assets, extension.getAssets()))
+			extension => (assets = Object.assign(assets, extension.getAssets()))
 		);
 		return assets;
 	}
@@ -98,7 +99,8 @@ module.exports = class CompilationContext {
 	}
 
 	handleOverrides(resources, overrides) {
-		_.mapObject(resources, resource => {
+		for (const resource_path in resources) {
+			const resource = resources[resource_path];
 			const override = overrides[resource.src];
 			if (override) {
 				const full_path = glob(path.join(this.project_folder, '**', override.src));
@@ -107,7 +109,7 @@ module.exports = class CompilationContext {
 					resource.override = override.src;
 				}
 			}
-		});
+		}
 		return resources;
 	}
 };

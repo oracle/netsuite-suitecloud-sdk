@@ -5,9 +5,7 @@
 'use strict';
 
 const watch = require('node-watch');
-const Log = require('./services/Log');
 const path = require('path');
-const _ = require('underscore');
 
 module.exports = class Watch {
 	constructor(options) {
@@ -33,14 +31,15 @@ module.exports = class Watch {
 				compiler.compile();
 			} else {
 				this.context.all_extensions.forEach(extension => {
-					_.each(extension[resource_type], (resource, key) => {
+					for (const resource_path in extension[resource_type]) {
+						const resource = extension[resource_type][resource_path];
 						const filename_no_base = this.context.excludeBaseFilesPath(filename);
 
-						if (path.normalize(key).includes(filename_no_base)) {
+						if (path.normalize(resource_path).includes(filename_no_base)) {
 							// compile one file
 							compiler.compile([resource]);
 						}
-					});
+					}
 				});
 			}
 		});

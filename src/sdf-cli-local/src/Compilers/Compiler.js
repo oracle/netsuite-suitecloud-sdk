@@ -11,10 +11,8 @@ const AssetsCompiler = require('./AssetsCompiler');
 
 const fs = require('fs');
 const path = require('path');
-
 const Utils = require('../Utils');
 const FileSystem = require('../services/FileSystem');
-const _ = require('underscore');
 
 module.exports = class Compiler {
 	constructor(options) {
@@ -30,9 +28,11 @@ module.exports = class Compiler {
 	compile() {
 		this._createLocalServerFolder(this.context);
 
-		const binded_compilers = _.map(this.compilers, compiler =>
-			_.bind(compiler.compile, compiler)
-		);
+		const binded_compilers = [];
+		for (const name in this.compilers) {
+			const compiler = this.compilers[name];
+			binded_compilers.push(() => compiler.compile.apply(compiler));
+		}
 		return Utils.runParallel(binded_compilers);
 	}
 

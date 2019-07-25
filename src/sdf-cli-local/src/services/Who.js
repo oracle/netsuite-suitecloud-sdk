@@ -49,7 +49,7 @@ module.exports = function(req, res) {
 		},
 	};
 
-	const response = _.values(resources);
+	const response = Object.values(resources);
 
 	res.setHeader('Content-Type', 'application/json');
 	res.json(response);

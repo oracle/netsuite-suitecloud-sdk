@@ -5,9 +5,7 @@
 'use strict';
 
 const Utils = require('./Utils');
-const Log = require('./services/Log');
 const FileSystem = require('./services/FileSystem');
-const _ = require('underscore');
 const path = require('path');
 const url = require('url');
 
@@ -24,15 +22,16 @@ module.exports = class AbstractExtension {
 	}
 
 	iterateResources(resources, func) {
-		_.each(resources, (rsc, app) => {
-			if (_.isString(rsc)) {
+		for (const app in resources) {
+			const rsc = resources[app];
+			if (typeof rsc === 'string') {
 				func(Utils.parseFileName(rsc), app);
 			} else {
 				Utils.parseFiles(rsc).forEach(resource_path => {
 					func(resource_path, app);
 				});
 			}
-		});
+		}
 	}
 
 	getTemplates() {
@@ -68,13 +67,14 @@ module.exports = class AbstractExtension {
 		}
 		this.sass = {};
 
-		let sass = this.raw_extension.sass || {};
+		const sass = this.raw_extension.sass || {};
 
 		this.sass.files = Utils.parseFiles(sass);
-		this.sass.entrypoints = _.mapObject(sass.entrypoints, entrypoint => {
-			entrypoint = Utils.parseFileName(entrypoint);
-			return this._excludeBasePath(entrypoint);
-		});
+		this.sass.entrypoints = {};
+		for (const app in sass.entrypoints) {
+			const entrypoint = Utils.parseFileName(sass.entrypoints[app]);
+			this.sass.entrypoints[app] = this._excludeBasePath(entrypoint);
+		}
 
 		return this.sass;
 	}

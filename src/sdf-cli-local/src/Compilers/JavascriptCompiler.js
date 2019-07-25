@@ -7,7 +7,6 @@
 const Utils = require('../Utils');
 const Log = require('../services/Log');
 const path = require('path');
-const _ = require('underscore');
 const FileSystem = require('../services/FileSystem');
 
 module.exports = class JavascriptCompiler {
@@ -42,8 +41,10 @@ module.exports = class JavascriptCompiler {
 			myaccount: { javascript_modules: {}, content_at_the_end: '' },
 		};
 
-		await Promise.all(
-			_.map(resources, resource =>
+		const read_files_promises = [];
+		for (const resource_path in resources) {
+			const resource = resources[resource_path];
+			read_files_promises.push(
 				// read all files content:
 				resource.sourceContent().then(content => {
 					// then add the file content on each application_file
@@ -67,19 +68,32 @@ module.exports = class JavascriptCompiler {
 						}
 					});
 				})
-			)
-		);
+			);
+		}
 
-		return _.map(application_files, (application_file, app_name) => {
+		await Promise.all(read_files_promises);
+
+		const write_files_promises = [];
+
+		for (const app_name in application_files) {
+			const application_file = application_files[app_name];
+			// javascript modules content:
+			const javascript_modules = [];
+			for (const ext_name in application_file.javascript_modules) {
+				javascript_modules.push(
+					this.createModuleBlock(application_file.javascript_modules[ext_name], ext_name)
+				);
+			}
+			// define full content and dest and write file.
 			const content = `
 				var extensions = {};
-				${_.map(application_file.javascript_modules, this.createModuleBlock).join('')}
+				${javascript_modules.join('')}
 				${application_file.content_at_the_end}
 			`;
 			const dest = path.join(this.js_path, `${app_name}_ext.js`);
-			// define content and dest and write file.
-			return () => FileSystem.writeFile(dest, content);
-		});
+			write_files_promises.push(() => FileSystem.writeFile(dest, content));
+		}
+		return write_files_promises;
 	}
 
 	createModuleBlock(content, ext_name) {

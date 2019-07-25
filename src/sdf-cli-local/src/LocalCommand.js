@@ -14,8 +14,6 @@ const Log = require('./services/Log');
 const FileSystem = require('./services/FileSystem');
 const Watch = require('./Watch');
 
-const _ = require('underscore');
-
 module.exports = class LocalCommand {
 	constructor(options) {
 		this._projectFolder = options.projectFolder;
@@ -51,7 +49,7 @@ module.exports = class LocalCommand {
 			},
 		];
 
-		if (!_.isEmpty(extensions)) {
+		if (extensions.length) {
 			options.push({
 				type: 'checkbox',
 				name: 'extensions',
@@ -71,7 +69,7 @@ module.exports = class LocalCommand {
 		let extensionsList = Array.isArray(answers.extensions)
 			? answers.extensions
 			: answers.extensions.split(',');
-		const extensions = _.map(extensionsList, extension => extension.trim());
+		const extensions = extensionsList.map(extension => extension.trim());
 
 		//Validate answers
 		this._validateTheme(theme);
@@ -115,7 +113,7 @@ module.exports = class LocalCommand {
 	}
 
 	_validateExtensions(extensions) {
-		_.each(extensions, extension => {
+		extensions.forEach(extension => {
 			if (!this.extensions[extension]) {
 				throw Translation.getMessage('EXTENSION_NOT_FOUND', [extension, this.objects_path]);
 			}

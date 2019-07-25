@@ -7,7 +7,6 @@
 const Utils = require('../Utils');
 const FileSystem = require('../services/FileSystem');
 const Log = require('../services/Log');
-const _ = require('underscore');
 const sass_compiler = require('node-sass');
 const fs = require('fs');
 const path = require('path');
@@ -27,11 +26,7 @@ module.exports = class SassCompiler {
 
 		const meta_entrypoints = this.buildMetaEntrypoints(resources.entrypoints);
 
-		return Utils.runParallel(
-			_.map(meta_entrypoints, (meta_entrypoint, app) => {
-				return () => this._compile(meta_entrypoint, app);
-			})
-		).then(() => {
+		return Utils.runParallel(meta_entrypoints).then(() => {
 			Log.result('COMPILATION_FINISH', [this.resource_type]);
 		});
 	}
@@ -41,26 +36,30 @@ module.exports = class SassCompiler {
 	}
 
 	buildMetaEntrypoints(entrypoints) {
-		return _.mapObject(entrypoints, files => {
-			return _.map(files, file => {
-				const local_functions = this._localFunctions({
-					assets_folder: FileSystem.forwardDashes(file.assets_path),
-				});
-				file.entry = FileSystem.forwardDashes(file.entry);
-				return local_functions + `@import "${file.entry}";`;
-			}).join('');
-		});
+		const promises = [];
+		for (const app in entrypoints) {
+			const entrypoint = entrypoints[app]
+				.map(file => {
+					const local_functions = this._localFunctions({
+						assets_folder: FileSystem.forwardDashes(file.assets_path),
+					});
+					file.entry = FileSystem.forwardDashes(file.entry);
+					return local_functions + `@import "${file.entry}";`;
+				})
+				.join('');
+			promises.push(() => this._compile(entrypoint, app));
+		}
+		return promises;
 	}
 
 	_compile(entrypoint, app) {
 		return new Promise((resolve, reject) => {
 			Log.result('COMPILATION_START_FOR', [this.resource_type, app]);
-
 			sass_compiler.render(
 				{
 					data: entrypoint,
 					includePaths: [this.context.files_path],
-					importer: _.bind(this._importer, this),
+					importer: (...args) => this._importer.apply(this, args),
 				},
 				(error, result) => {
 					if (error) {
