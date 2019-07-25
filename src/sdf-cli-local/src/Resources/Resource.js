@@ -1,5 +1,8 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 const _ = require('underscore');
-const Utils = require('../Utils');
 const path = require('path');
 const Log = require('../services/Log');
 const FileSystem = require('../services/FileSystem');
