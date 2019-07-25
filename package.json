@@ -1,13 +1,13 @@
 {
-	"name": "@netsuite/sdf-cli",
+	"name": "@oracle/netsuite-suitecloud-node-cli",
 	"version": "1.0.0",
 	"description": "SuiteCloud CLI for Node.js",
-	"main": "src/sdf.js",
-	"author": "NetSuite",
-	"license": "MIT",
+	"main": "src/index.js",
+	"author": "Oracle NetSuite",
+	"license": "UPL",
 	"preferGlobal": true,
 	"bin": {
-		"sdf": "src/sdf.js"
+		"scloud": "src/index.js"
 	},
 	"dependencies": {
 		"chalk": "^2.4.2",

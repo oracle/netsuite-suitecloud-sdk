@@ -1,7 +1,10 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
@@ -9,6 +12,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
@@ -185,7 +189,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		const manifestFilePath = path.join(
 			projectAbsolutePath,
 			SOURCE_FOLDER,
-			ApplicationConstants.MANIFEST_XML
+			ApplicationConstants.FILE_NAMES.MANIFEST_XML
 		);
 
 		const validationErrors = this._validateParams(answers);

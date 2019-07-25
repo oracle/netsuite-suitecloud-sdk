@@ -1,3 +1,7 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 'use strict';
 
 const inquirer = require('inquirer');
@@ -6,10 +10,10 @@ const CommandUtils = require('../utils/CommandUtils');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
-const ProjectMetadataService = require('../services/ProjectMetadataService');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const ProjectInfoService = require('../services/ProjectInfoService');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -26,7 +30,12 @@ const COMMAND_QUESTIONS_NAMES = {
 };
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS, SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
+	COMMAND_LISTOBJECTS: {
+		LISTING_OBJECTS,
+		QUESTIONS,
+		SUCCESS_OBJECTS_IMPORTED,
+		SUCCESS_NO_OBJECTS,
+	},
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -34,13 +43,13 @@ const {
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._projectMetadataService = new ProjectMetadataService();
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
 	_getCommandQuestions(prompt) {
 		var questions = [];
 		//create a class to see type based on manifest.
-		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
 
 			const questionSpecificSuiteApp = {
@@ -150,10 +159,10 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		if (Array.isArray(params.type)) {
 			params.type = params.type.join(' ');
 		}
-		let executionContext = new SDKExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
-			showOutput: false,
+			includeAccountDetailsParams: true,
 		});
 
 		const actionListObjects = this._sdkExecutor.execute(executionContext);
@@ -173,10 +182,18 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		if (Array.isArray(data) && data.length) {
-			NodeUtils.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), NodeUtils.COLORS.RESULT);
-			data.forEach(object => NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT));
+			NodeUtils.println(
+				TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED),
+				NodeUtils.COLORS.RESULT
+			);
+			data.forEach(object =>
+				NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT)
+			);
 		} else {
-			NodeUtils.println(TranslationService.getMessage(SUCCESS_NO_OBJECTS), NodeUtils.COLORS.RESULT);
+			NodeUtils.println(
+				TranslationService.getMessage(SUCCESS_NO_OBJECTS),
+				NodeUtils.COLORS.RESULT
+			);
 		}
 	}
 };

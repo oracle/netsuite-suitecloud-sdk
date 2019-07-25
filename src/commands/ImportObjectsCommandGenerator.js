@@ -1,3 +1,7 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 'use strict';
 
 const inquirer = require('inquirer');
@@ -5,14 +9,14 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
-const ProjectMetadataService = require('../services/ProjectMetadataService');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const ProjectInfoService = require('../services/ProjectInfoService');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
 const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../SDKExecutionContext');
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -49,7 +53,7 @@ const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._projectMetadataService = new ProjectMetadataService();
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(
@@ -66,10 +70,9 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
 					const executionContextForListObjects = new SDKExecutionContext({
 						command: this._listObjectsMetadata.name,
-						showOutput: false,
 						params: paramsForListObjects,
+						includeAccountDetailsParams: true
 					});
-					this._applyDefaultContextParams(executionContextForListObjects);
 
 					executeWithSpinner({
 						action: this._sdkExecutor.execute(executionContextForListObjects),
@@ -126,7 +129,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_generateListObjectQuestions() {
 		const questions = [];
-		if (this._projectMetadataService.getProjectType(this._projectFolder) === PROJECT_SUITEAPP) {
+		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			const questionSpecifySuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SPECIFY_SUITEAPP,
@@ -296,6 +299,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
+			includeAccountDetailsParams: true,
 		});
 
 		return executeWithSpinner({

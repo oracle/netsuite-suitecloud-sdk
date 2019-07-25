@@ -1,6 +1,11 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 'use strict';
 
 const {
+	SDK_DEVELOPMENT_MODE_JVM_OPTION,
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDF_SDK_PATHNAME,
@@ -8,6 +13,7 @@ const {
 const path = require('path');
 const spawn = require('child_process').spawn;
 const UserPreferencesService = require('./services/userpreferences/UserPreferencesService');
+const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
@@ -15,12 +21,23 @@ const { ERRORS } = require('./services/TranslationKeys');
 module.exports.SDKExecutor = class SDKExecutor {
 	constructor() {
 		this._userPreferencesService = new UserPreferencesService();
+		this._accountDetailsService = new AccountDetailsService();
 	}
 
 	execute(executionContext) {
 		const proxyJarSettings = this._getProxySettingsIfSet();
+		const accountDetails = executionContext.includeAccountDetailsParams ? this._accountDetailsService.get() : null;
+		
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
+
+			if (executionContext.includeAccountDetailsParams) {
+				executionContext.addParam('account', accountDetails.accountId);
+				executionContext.addParam('role', accountDetails.roleId);
+				executionContext.addParam('email', accountDetails.email);
+				executionContext.addParam('url', accountDetails.netSuiteUrl);
+			}
+
 			const cliParamsAsString = this._convertParamsObjToString(
 				executionContext.getParams(),
 				executionContext.getFlags()
@@ -30,7 +47,11 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} "${path.join(
+			const developmentModeOption = accountDetails && accountDetails.isDevelopment
+				? SDK_DEVELOPMENT_MODE_JVM_OPTION
+				: '';
+
+			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} ${developmentModeOption} "${path.join(
 				__dirname,
 				SDF_SDK_PATHNAME
 			)}" ${executionContext.getCommand()} ${cliParamsAsString}`;

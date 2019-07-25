@@ -1,3 +1,7 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
@@ -70,6 +74,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 			command: this._commandMetadata.name,
 			params: answers,
 			flags: [COMMAND_OPTIONS.ALL],
+			requiresContextParams: true
 		});
 
 		return executeWithSpinner({

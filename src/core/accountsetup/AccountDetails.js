@@ -1,3 +1,9 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
+'use strict';
+
 module.exports = class AccountDetails {
 	constructor(options) {
 		this._netsuiteUrl = options.netsuiteUrl;
@@ -8,6 +14,7 @@ module.exports = class AccountDetails {
 		this._roleName = options.roleName;
 		this._password = options.password;
 		this._isAccountSetup = true;
+		this._isDevelopment = options.isDevelopment;
 	}
 
 	static fromJson(json) {
@@ -19,7 +26,7 @@ module.exports = class AccountDetails {
 			roleId: json.roleId,
 			roleName: json.roleName,
 			password: json.password,
-			accountId: json.accountId,
+			isDevelopment: json.isDevelopment,
 		});
 	}
 
@@ -31,7 +38,7 @@ module.exports = class AccountDetails {
 			email: this._email,
 			roleId: this._roleId,
 			roleName: this._roleName,
-			accountId: this._accountId,
+			isDevelopment: this._isDevelopment,
 		};
 	}
 
@@ -65,5 +72,9 @@ module.exports = class AccountDetails {
 
 	get isAccountSetup() {
 		return this._isAccountSetup;
+	}
+
+	get isDevelopment() {
+		return this._isDevelopment;
 	}
 };

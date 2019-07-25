@@ -1,4 +1,4 @@
-# SuiteCloud Development Framework CLI for Node.js
+# SuiteCloud CLI for Node.js
 
 ### Prerequisites
 The following software should be installed on your system
@@ -11,12 +11,12 @@ To install the package locally from source run the following command and verify 
 npm install
 ```
 
-To make sdf command globally available on your system run:
+To make scloud command globally available on your system run:
 ```
 npm link
 ```
 
-SDF CLI should now be available from within any directory. Verify with:
+SuiteCloud CLI commands should now be available from within any directory. You can access help by running:
 ```
-sdf
+scloud
 ```

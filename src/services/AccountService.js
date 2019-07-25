@@ -1,11 +1,16 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
+'use strict';
+
 const request = require('request-promise-native');
 const assert = require('assert');
 const UserPreferencesService = require('./userpreferences/UserPreferencesService');
-const Base64 = require('../utils/Base64');
-const { REST_ISSUE_TOKEN_URL, CONSUMER_REQUEST_PARAM } = require('../ApplicationConstants');
 const TranslationService = require('./TranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
+
 const NLAuthorizationHeader = {
 	name: 'NLAuth',
 	params: {
@@ -21,18 +26,8 @@ module.exports = class AccountService {
 		this._userPreferencesService = new UserPreferencesService();
 	}
 
-	getAccountAndRoles({ email, password, restRolesUrl }) {
-		assert(email);
-		assert(password);
-		assert(restRolesUrl);
-
-		const options = {
-			url: restRolesUrl,
-			proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
-			headers: {
-				Authorization: this._getNLAuthorizationHeaderString({ email, password }),
-			},
-		};
+	getAccountAndRoles({ email, password, restRolesUrl, isDevelopment }) {
+		const options = this._getRequestOptions(email, password, restRolesUrl, isDevelopment);
 
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -42,6 +37,31 @@ module.exports = class AccountService {
 				reject(this.throwRequestError(error));
 			}
 		});
+	}
+
+	_getRequestOptions(email, password, restRolesUrl, isDevelopment) {
+		assert(email);
+		assert(password);
+		assert(restRolesUrl);
+		assert(typeof isDevelopment === 'boolean');
+
+		const authorizationValue = this._getNLAuthorizationHeaderString({ email, password });
+		if (isDevelopment) {
+			return {
+				url: restRolesUrl,
+				headers: {
+					Authorization: authorizationValue
+				}
+			};
+		} else {
+			return {
+				url: restRolesUrl,
+				proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
+				headers: {
+					Authorization: authorizationValue
+				}
+			};
+		}
 	}
 
 	throwRequestError(errorResponse) {

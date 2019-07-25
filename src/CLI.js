@@ -1,3 +1,7 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 'use strict';
 
 const assert = require('assert');
@@ -12,6 +16,8 @@ const {
 const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapExceptionMessage;
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
+
+const CLI_VERSION = '19.2.1'
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -35,7 +41,7 @@ module.exports = class CLI {
 			this._initializeCommands(commandMetadataList, runInInteractiveMode);
 
 			program
-				.version('0.0.1', '-v, --version')
+				.version(CLI_VERSION, '--version')
 				.option(
 					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
 					TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION)
@@ -88,7 +94,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeUtils.println(TranslationService.getMessage(TITLE), NodeUtils.COLORS.RESULT);
+		NodeUtils.println(TranslationService.getMessage(TITLE, CLI_VERSION), NodeUtils.COLORS.INFO);
 		program.help();
 	}
 };
