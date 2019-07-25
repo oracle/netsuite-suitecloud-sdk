@@ -44,8 +44,6 @@ module.exports = class Compiler {
 			process.mainModule.filename,
 			'../..',
 			'node_modules',
-			'sdf-cli-local',
-			'node_modules',
 			'requirejs',
 			'require.js'
 		);
