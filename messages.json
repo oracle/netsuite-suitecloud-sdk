@@ -102,10 +102,8 @@
 	"COMMAND_LOCAL_CHOOSE_THEME": "Select a theme",
 	"COMMAND_LOCAL_CHOOSE_EXTENSION": "Select the extensions",
 	"COMMAND_LOCAL_OVERRIDE": "Overriding: {0}\nWith: {1}",
-	"COMMAND_LOCAL_NO_THEMES": "No theme xml valid files found in {0}",
-	"COMMAND_LOCAL_RESOURCE_NOT_FOUND": "{0} not found in {1}",
-	"COMMAND_LOCAL_THEME_NOT_FOUND": "Theme {0} not found in {1}",
-	"COMMAND_LOCAL_EXTENSION_NOT_FOUND": "Extension {0} not found in {1}",
+	"COMMAND_LOCAL_NO_THEMES": "No theme.xml file was found in {0}",
+	"COMMAND_LOCAL_RESOURCE_NOT_FOUND": "The process failed. The {0} file was not found in the project.",
 	"COMMAND_LOCAL_INVALID_XML": "Invalid xml {0}",
 	
 	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",

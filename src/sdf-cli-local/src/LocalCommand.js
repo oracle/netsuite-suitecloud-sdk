@@ -98,7 +98,7 @@ module.exports = class LocalCommand {
 			throw Translation.getMessage('NO_THEMES', [this.objects_path]);
 		}
 		if (!this.themes[theme]) {
-			throw Translation.getMessage('THEME_NOT_FOUND', [theme, this.objects_path]);
+			throw Translation.getMessage('RESOURCE_NOT_FOUND', [theme, this.objects_path]);
 		}
 
 		return theme;
@@ -107,7 +107,7 @@ module.exports = class LocalCommand {
 	_validateExtensions(extensions) {
 		_.each(extensions, extension => {
 			if (!this.extensions[extension]) {
-				throw Translation.getMessage('EXTENSION_NOT_FOUND', [extension, this.objects_path]);
+				throw Translation.getMessage('RESOURCE_NOT_FOUND', [extension, this.objects_path]);
 			}
 		});
 
