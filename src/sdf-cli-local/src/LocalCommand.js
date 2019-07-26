@@ -115,7 +115,7 @@ module.exports = class LocalCommand {
 	_validateExtensions(extensions) {
 		extensions.forEach(extension => {
 			if (!this.extensions[extension]) {
-				throw Translation.getMessage('EXTENSION_NOT_FOUND', [extension, this.objects_path]);
+				throw Translation.getMessage('RESOURCE_NOT_FOUND', [extension, this.objects_path]);
 			}
 		});
 
