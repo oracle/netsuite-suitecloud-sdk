@@ -4,8 +4,6 @@
 */
 'use strict';
 
-const _ = require('underscore');
-
 module.exports = function(req, res) {
 	const protocol = req.protocol;
 	const host = req.get('host');

@@ -5,7 +5,7 @@
 'use strict';
 
 const DeployXml = require('./DeployXml');
-const Compiler = require('./Compilers/Compiler');
+const Compiler = require('./compilers/Compiler');
 const CompilationContext = require('./CompilationContext');
 const LocalServer = require('./LocalServer');
 

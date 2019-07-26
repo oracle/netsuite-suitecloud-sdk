@@ -6,7 +6,7 @@
 
 const AbstractExtension = require('./AbstractExtension');
 const path = require('path');
-const Script = require('./Resources/Types/Javascript');
+const Script = require('./resources/types/Javascript');
 
 module.exports = class Extension extends AbstractExtension {
 	constructor(options) {

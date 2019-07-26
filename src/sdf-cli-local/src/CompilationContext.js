@@ -11,7 +11,7 @@ const glob = require('glob').sync;
 
 const Utils = require('./Utils');
 
-const Resource = require('./Resources/Resource');
+const Resource = require('./resources/Resource');
 
 module.exports = class CompilationContext {
 	constructor(options) {

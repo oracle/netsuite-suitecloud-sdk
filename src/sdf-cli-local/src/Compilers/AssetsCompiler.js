@@ -18,12 +18,12 @@ module.exports = class AssetsCompiler {
 	compile(resources) {
 		Log.result('COMPILATION_START', [this.resource_type]);
 		resources = resources || this.context.getAssets();
-		return Utils.runParallel(this.copyResources(resources)).then(() => {
+		return Utils.runParallel(this._copyResources(resources)).then(() => {
 			Log.result('COMPILATION_FINISH', [this.resource_type]);
 		});
 	}
 
-	copyResources(resources) {
+	_copyResources(resources) {
 		const promises = [];
 
 		for (const resource_path in resources) {

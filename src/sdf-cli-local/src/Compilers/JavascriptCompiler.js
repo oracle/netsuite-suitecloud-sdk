@@ -15,19 +15,19 @@ module.exports = class JavascriptCompiler {
 		this.resource_type = 'Javascript';
 	}
 
-	createFolder() {
+	_createFolder() {
 		this.js_path = FileSystem.createFolder('javascript', this.context.local_server_path);
 	}
 
 	async compile(resources = this.context.getJavascript()) {
 		Log.result('COMPILATION_START', [this.resource_type]);
-		this.createFolder();
-		return Utils.runParallel(await this.createFiles(resources)).then(() => {
+		this._createFolder();
+		return Utils.runParallel(await this._createFiles(resources)).then(() => {
 			Log.result('COMPILATION_FINISH', [this.resource_type]);
 		});
 	}
 
-	async createFiles(resources) {
+	async _createFiles(resources) {
 		/**
 		 * The {app}_ext.js generated file content will be like:
 		 *	`var extensions = {};`
@@ -56,7 +56,7 @@ module.exports = class JavascriptCompiler {
 						// if it is an entrypoint, append to the end
 						// also add a try catch block that call SC.addExtensionModule
 						if (resource.isEntrypoint) {
-							app_file.content_at_the_end += this.createTryCatchBlock(
+							app_file.content_at_the_end += this._createTryCatchBlock(
 								resource.name,
 								resource.extension_fullname
 							);
@@ -81,7 +81,7 @@ module.exports = class JavascriptCompiler {
 			const javascript_modules = [];
 			for (const ext_name in application_file.javascript_modules) {
 				javascript_modules.push(
-					this.createModuleBlock(application_file.javascript_modules[ext_name], ext_name)
+					this._createModuleBlock(application_file.javascript_modules[ext_name], ext_name)
 				);
 			}
 			// define full content and dest and write file.
@@ -96,7 +96,7 @@ module.exports = class JavascriptCompiler {
 		return write_files_promises;
 	}
 
-	createModuleBlock(content, ext_name) {
+	_createModuleBlock(content, ext_name) {
 		return `
 		extensions["${ext_name.replace(/#/g, '.')}"] = function() {			
 			function getExtensionAssetsPath(asset){
@@ -106,7 +106,7 @@ module.exports = class JavascriptCompiler {
 		};`;
 	}
 
-	createTryCatchBlock(entrypoint, ext_name) {
+	_createTryCatchBlock(entrypoint, ext_name) {
 		return `
 		try {
 			extensions['${ext_name.replace(/#/g, '.')}']();

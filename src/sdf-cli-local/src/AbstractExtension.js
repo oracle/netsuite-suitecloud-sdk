@@ -9,8 +9,8 @@ const FileSystem = require('./services/FileSystem');
 const path = require('path');
 const url = require('url');
 
-const Template = require('./Resources/Types/Template');
-const Resource = require('./Resources/Resource');
+const Template = require('./resources/types/Template');
+const Resource = require('./resources/Resource');
 
 module.exports = class AbstractExtension {
 	constructor(options) {

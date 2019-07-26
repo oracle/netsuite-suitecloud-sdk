@@ -26,24 +26,24 @@ module.exports = class TemplatesCompiler {
 
 		this.templates = resources || this.context.getTemplates();
 
-		this.createTemplateFolders();
+		this._createTemplateFolders();
 
-		this.setCompilerNameLookupHelper();
+		this._setCompilerNameLookupHelper();
 		// new file with template helpers:
-		this.writeJavascriptLibsFile();
+		this._writeJavascriptLibsFile();
 
 		// first create templates files
-		const templates = this.writeTemplates();
+		const templates = this._writeTemplates();
 		return Utils.runParallel(templates).then(() => {
 			// then create require.js config files
-			const entrypoints = this.writeEntrypoints();
+			const entrypoints = this._writeEntrypoints();
 			return Utils.runParallel(entrypoints).then(() =>
 				Log.result('COMPILATION_FINISH', [this.resource_type])
 			);
 		});
 	}
 
-	writeTemplate(template) {
+	_writeTemplate(template) {
 		return () =>
 			//read original template file:
 			template.sourceContent().then(content => {
@@ -59,20 +59,20 @@ module.exports = class TemplatesCompiler {
 				template.logOverrideMessage();
 				return FileSystem.writeFile(
 					path.join(this.processed_templates_path, template.dst),
-					this.wrapTemplate(template)
+					this._wrapTemplate(template)
 				);
 			});
 	}
 
-	writeTemplates() {
+	_writeTemplates() {
 		const promises = [];
 		for (const template_path in this.templates) {
-			promises.push(this.writeTemplate(this.templates[template_path]));
+			promises.push(this._writeTemplate(this.templates[template_path]));
 		}
 		return promises;
 	}
 
-	writeEntrypoints() {
+	_writeEntrypoints() {
 		const promises = [];
 		for (const app in this.entrypoints) {
 			const dest = path.join(this.templates_path, `${app}-templates.js`);
@@ -85,16 +85,16 @@ module.exports = class TemplatesCompiler {
 				// TODO remove and use cli-config
 			};
 
-			promises.push(() => FileSystem.writeFile(dest, this.wrapEntrypoint(entryfile_content)));
+			promises.push(() => FileSystem.writeFile(dest, this._wrapEntrypoint(entryfile_content)));
 		}
 		return promises;
 	}
 
-	wrapEntrypoint(entrypoint) {
+	_wrapEntrypoint(entrypoint) {
 		return `require.config(${JSON.stringify(entrypoint, null, 2)})`;
 	}
 
-	wrapTemplate(template) {
+	_wrapTemplate(template) {
 		return `define('${template.getFilename()}', [${template
 			.getDependencies()
 			.join()}], function (Handlebars, compilerNameLookup){ var t = ${
@@ -106,7 +106,7 @@ module.exports = class TemplatesCompiler {
 		}'; return template;});`;
 	}
 
-	writeJavascriptLibsFile() {
+	_writeJavascriptLibsFile() {
 		// create javascript-libs.js
 		let content = '';
 		['loadTemplateSafe', 'Handlebars.CompilerNameLookup'].map(filename => {
@@ -123,12 +123,12 @@ module.exports = class TemplatesCompiler {
 		fs.writeFileSync(path.join(this.templates_path, 'javascript-libs.js'), content);
 	}
 
-	setCompilerNameLookupHelper() {
+	_setCompilerNameLookupHelper() {
 		handlebars.JavaScriptCompiler.prototype.nameLookup = (parent, name) =>
 			`compilerNameLookup(${parent},"${name}")`;
 	}
 
-	createTemplateFolders() {
+	_createTemplateFolders() {
 		this.templates_path = FileSystem.createFolder(
 			this.templates_folder,
 			this.context.local_server_path

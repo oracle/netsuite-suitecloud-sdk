@@ -20,22 +20,22 @@ module.exports = class SassCompiler {
 
 	compile(resources) {
 		Log.result('COMPILATION_START', [this.resource_type]);
-		this.createCssFolder();
+		this._createCssFolder();
 		this.overrides = this.context.getSassOverrides();
 		resources = this.context.getSass();
 
-		const meta_entrypoints = this.buildMetaEntrypoints(resources.entrypoints);
+		const meta_entrypoints = this._buildMetaEntrypoints(resources.entrypoints);
 
 		return Utils.runParallel(meta_entrypoints).then(() => {
 			Log.result('COMPILATION_FINISH', [this.resource_type]);
 		});
 	}
 
-	createCssFolder() {
+	_createCssFolder() {
 		this.css_path = FileSystem.createFolder('css', this.context.local_server_path);
 	}
 
-	buildMetaEntrypoints(entrypoints) {
+	_buildMetaEntrypoints(entrypoints) {
 		const promises = [];
 		for (const app in entrypoints) {
 			const entrypoint = entrypoints[app]
