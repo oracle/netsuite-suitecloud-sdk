@@ -24,19 +24,19 @@
     },
     "localserver": {
         "name": "localserver",
-        "description": "Generate a local server of your SuiteCommerce extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777.",
+        "description": "Generate a local server of your SuiteCommerce extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777. You can use this server to run and test the SuiteCommerce themes and extensions that you are developing",
         "isSetupRequired": false,
         "options": [
             {
                 "name": "theme",
                 "alias": "theme",
-                "description": "Specify the SuiteCommerce theme you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file. You can only specify one theme.",
+                "description": "Specify the SuiteCommerce theme you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project. You can only specify one theme.",
                 "mandatory": true
             },
             {
                 "name": "extensions",
                 "alias": "extensions",
-                "description": "Specify the SuiteCommerce extension you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file. To specify multiple extensions, enter the names of the objects separated by commas.",
+                "description": "Specify the SuiteCommerce extension you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project. To specify multiple extensions, enter the names of the objects separated by commas.",
                 "mandatory": false
             }
         ]
