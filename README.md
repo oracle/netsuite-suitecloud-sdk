@@ -1,5 +1,3 @@
-# SuiteCloud CLI for Node.js
-
 ## Installation
 ### Prerequisites
 The following software should be installed on your system
@@ -49,3 +47,11 @@ If you would like to use `scloud` with a Runbox/Fatbox/ScrumBox, you should setu
 scloud setupaccount --dev
 ```
 Notice that for this last command to work, you should have a specific migrate in your development account. Right now, it's not integrated to ML/Release but available in `CL 2437113`.
+
+## Troubleshooting
+The SuiteCloud CLI for Node.js uses a Java SDK internally which is available in the `bin` folder of this repository. Sometimes `git` does not manage to download binary files and that could happen the first time you run `npm install`. 
+If the `jar` is not correctly downloaded, it will appear in the folder with a size of less than 1KB. The file should be around 15MB. If that's the case, you will encounter this error when you run a command:
+```
+Error: Invalid or corrupt jarfile \bin\cli-2019.2.0-SNAPSHOT.jar
+```
+To fix this, download manually the `jar` from this repository and place it in the corresponding `bin` folder in your computer.
