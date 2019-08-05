@@ -5,7 +5,16 @@ The following software should be installed on your system
 - JRE v.8
 
 ### Getting `scloud` set up in your environment
-To install the package locally from source run the following command and verify node_modules directory is generated:
+The SuiteCloud CLI for Node.js uses a Java SDK internally which is available in the `bin` folder of this repository. To avoid problems with LFS it's suggested to follow these steps to properly clone the repository:
+```
+git clone --no-checkout git@orahub.oraclecorp.com:netsuite-platform-devtools/netsuite-suitecloud-nodejs-cli.git
+cd netsuite-suitecloud-nodejs-cli
+git lfs install --skip-smudge
+git checkout master
+```
+If there's still problem with downloading the `jar` file see [Troubleshooting](#troubleshooting) section below.
+
+To install 3rd party dependencies run the following command and verify node_modules directory is generated:
 ```
 npm install
 ```
@@ -49,7 +58,7 @@ scloud setupaccount --dev
 Notice that for this last command to work, you should have a specific migrate in your development account. Right now, it's not integrated to ML/Release but available in `CL 2437113`.
 
 ## Troubleshooting
-The SuiteCloud CLI for Node.js uses a Java SDK internally which is available in the `bin` folder of this repository. Sometimes `git` does not manage to download binary files and that could happen the first time you run `npm install`. 
+Sometimes `git` does not manage to download binary files correctly and that could happen the first time you run `npm install`. 
 If the `jar` is not correctly downloaded, it will appear in the folder with a size of less than 1KB. The file should be around 15MB. If that's the case, you will encounter this error when you run a command:
 ```
 Error: Invalid or corrupt jarfile \bin\cli-2019.2.0-SNAPSHOT.jar
