@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const {
@@ -17,6 +17,7 @@ const AccountDetailsService = require('./core/accountsetup/AccountDetailsService
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
+const SDKErrorCodes = require('./SDKErrorCodes');
 
 module.exports.SDKExecutor = class SDKExecutor {
 	constructor() {
@@ -74,6 +75,17 @@ module.exports.SDKExecutor = class SDKExecutor {
 						const output = executionContext.isIntegrationMode()
 							? JSON.parse(lastSdkOutput)
 							: lastSdkOutput;
+						if (
+							executionContext.isIntegrationMode &&
+							output.errorCode &&
+							output.errorCode === SDKErrorCodes.NO_TBA_SET_FOR_ACCOUNT
+						) {
+							reject(
+								TranslationService.getMessage(
+									ERRORS.SDKEXECUTOR.NO_TBA_FOR_ACCOUNT_AND_ROLE
+								)
+							);
+						}
 						resolve(output);
 					} catch (error) {
 						reject(
