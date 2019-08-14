@@ -40,6 +40,7 @@
 	"COMMAND_DEPLOY_QUESTIONS_PERFORM_LOCAL_VALIDATION": "Do you want to validate locally before deploying?",
 	"COMMAND_DEPLOY_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed applying content protection.",
 	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying...",
+	"COMMAND_DEPLOY_MESSAGES_LOCALLY_VALIDATED": "The \"{0}\" project has been locally validated.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed without applying content protection.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_CONTENT_PROTECTION_REASON": "Content protection was not applied because the InstallationPreferences folder is empty. You need to create the hiding.xml and locking.xml files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {0}.\nTo learn how to create a locking.xml file, see {1}.",
 	
@@ -72,8 +73,8 @@
 	"COMMAND_IMPORTOBJECTS_MESSAGES_NO_OBJECTS_TO_LIST": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID or script ID.",
 	"COMMAND_IMPORTOBJECTS_MESSAGES_CANCEL_IMPORT": "The importing process has been canceled.",
 	"COMMAND_IMPORTOBJECTS_MESSAGES_IMPORTING_OBJECTS": "Importing objects...",
-	"COMMAND_IMPORTOBJECTS_MESSAGES_IMPORTED_OBJECTS": "The following object(s) were imported successfully:",
-	"COMMAND_IMPORTOBJECTS_MESSAGES_UNIMPORTED_OBJECTS": "The following object(s) were not imported:",
+	"COMMAND_IMPORTOBJECTS_MESSAGES_IMPORTED_OBJECTS": "The following objects were imported to your project:",
+	"COMMAND_IMPORTOBJECTS_MESSAGES_UNIMPORTED_OBJECTS": "The following objects were not imported to your project:",
 	
 	"COMMAND_LISTFILES_ERROR": "Something went wrong with {0}, error: {1}",
 	"COMMAND_LISTFILES_LOADING_FILES": "Loading files...",
@@ -179,7 +180,7 @@
 	"ERRORS_WRITING_ACCOUNT_JSON": "There was an error when editing the account.json file.{0}",
 	"ERRORS_WRITING_FILE": "There was a problem while creating the file {0}.\n  Error: {1}",
 	"ERRORS_WRONG_PROXY_SETTING": "The {0} proxy URL server is invalid. It must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80.",
-	"ERRORS_CLI_ERROR_2FA_REQUIRED": "The token could not be issued. You tried to issue a token, but your role requires 2FA.  You must save a TBA token issued in NetSuite. To learn how to issue a token in NetSuite, see https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html",
+	"ERRORS_CLI_ERROR_2FA_REQUIRED": "The token could not be issued. You tried to issue a token, but your role requires 2FA. You must save a TBA token issued in NetSuite. To learn how to issue a token in NetSuite, see https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html",
 		
 	"NO": "No",
 	
