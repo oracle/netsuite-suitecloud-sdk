@@ -31,7 +31,7 @@ module.exports = class Compiler {
 		const binded_compilers = [];
 		for (const name in this.compilers) {
 			const compiler = this.compilers[name];
-			binded_compilers.push(() => compiler.compile.apply(compiler));
+			binded_compilers.push(compiler.compile.bind(compiler));
 		}
 		return Utils.runParallel(binded_compilers);
 	}

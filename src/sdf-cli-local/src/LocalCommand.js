@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const DeployXml = require('./DeployXml');
@@ -101,11 +101,13 @@ module.exports = class LocalCommand {
 		if (Array.isArray(theme)) {
 			// interactive mode
 			if (!theme.length) {
-				throw Translation.getMessage('NO_THEMES', [this.objects_path]);
+				throw new Error(Translation.getMessage('NO_THEMES', [this.objects_path]));
 			}
 		} else {
 			if (!this.themes[theme]) {
-				throw Translation.getMessage('THEME_NOT_FOUND', [theme, this.objects_path]);
+				throw new Error(
+					Translation.getMessage('RESOURCE_NOT_FOUND', [theme, this.objects_path])
+				);
 			}
 		}
 

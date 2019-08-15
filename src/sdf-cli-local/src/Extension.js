@@ -39,7 +39,6 @@ module.exports = class Extension extends AbstractExtension {
 				}
 
 				this.javascript[resource_path] = new Script({
-					basesrc: this._excludeBasePath(resource_path),
 					src: this._excludeBasePath(resource_path),
 					dst: path.basename(resource_path),
 					name: path.basename(resource_path, path.extname(resource_path)),

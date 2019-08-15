@@ -13,6 +13,7 @@ const cors = require('cors');
 module.exports = class LocalServer {
 	constructor(options) {
 		this.context = options.context;
+		this.server = null;
 	}
 
 	startServer() {
@@ -35,12 +36,18 @@ module.exports = class LocalServer {
 		//Serves the script patch to ignore tpl defines executed by core javascript file
 		app.use('/define_patch.js', this._definePatchService);
 
-		app.listen(server_config.port, () => {
+		this.server = app.listen(server_config.port, () => {
 			this._localMessage(server_config);
 		});
 
 		//server is listening so we return a new promise that will never be resolved
 		return new Promise(() => {});
+	}
+
+	closeServer() {
+		if (this.server) {
+			this.server.close();
+		}
 	}
 
 	_definePatchService(req, res) {

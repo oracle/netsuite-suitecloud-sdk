@@ -25,7 +25,7 @@ module.exports = class Template extends Resource {
 		return Utils.arrayUnion(dependencies);
 	}
 
-	setPrecomplied(value) {
+	setPrecompiled(value) {
 		this.precompiled = value;
 	}
 };

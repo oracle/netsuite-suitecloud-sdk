@@ -9,6 +9,7 @@ const Translation = require('./Translation');
 class Log {
 	constructor() {
 		this.separator = '-'.repeat(45);
+		this.colors = {};
 	}
 
 	start(colors) {
@@ -22,8 +23,11 @@ class Log {
 		return `[${timestamp}.${date.getMilliseconds()}] `;
 	}
 
-	custom(message, params, color = this.colors.DEFAULT || (() => {})) {
+	custom(message, params, color = this.colors.DEFAULT) {
 		message = Translation.getMessage(message, params) || message;
+		if (typeof color !== 'function') {
+			color = msg => msg;
+		}
 		console.log(color(this._time() + message));
 	}
 

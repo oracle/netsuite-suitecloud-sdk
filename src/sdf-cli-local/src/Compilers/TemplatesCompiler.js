@@ -47,7 +47,7 @@ module.exports = class TemplatesCompiler {
 		return () =>
 			//read original template file:
 			template.sourceContent().then(content => {
-				template.setPrecomplied(handlebars.precompile(content));
+				template.setPrecompiled(handlebars.precompile(content));
 
 				template.applications.forEach(app => {
 					const basename = template.getBasename();
@@ -85,7 +85,9 @@ module.exports = class TemplatesCompiler {
 				// TODO remove and use cli-config
 			};
 
-			promises.push(() => FileSystem.writeFile(dest, this._wrapEntrypoint(entryfile_content)));
+			promises.push(() =>
+				FileSystem.writeFile(dest, this._wrapEntrypoint(entryfile_content))
+			);
 		}
 		return promises;
 	}
@@ -111,13 +113,7 @@ module.exports = class TemplatesCompiler {
 		let content = '';
 		['loadTemplateSafe', 'Handlebars.CompilerNameLookup'].map(filename => {
 			content += fs
-				.readFileSync(
-					path.join(
-						process.mainModule.filename,
-						'../../src/sdf-cli-local/src/client-scripts',
-						filename + '.js'
-					)
-				)
+				.readFileSync(path.join(__dirname, '../../src/client-scripts', filename + '.js'))
 				.toString();
 		});
 		fs.writeFileSync(path.join(this.templates_path, 'javascript-libs.js'), content);

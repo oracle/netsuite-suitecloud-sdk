@@ -31,7 +31,7 @@ module.exports = class Resource {
 
 	logOverrideMessage() {
 		if (this.override) {
-			Log.default('OVERRIDE', [this.src, this.override]);
+			Log.default('OVERRIDE', [FileSystem.forwardDashes(this.src), this.override]);
 		}
 	}
 

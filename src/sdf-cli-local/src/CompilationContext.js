@@ -50,7 +50,7 @@ module.exports = class CompilationContext {
 		this.all_extensions.forEach(
 			extension => (templates = Object.assign(templates, extension.getTemplates()))
 		);
-		return this.handleOverrides(templates, this.getTplOverrides());
+		return this._handleOverrides(templates, this.getTplOverrides());
 	}
 
 	getSass() {
@@ -98,7 +98,7 @@ module.exports = class CompilationContext {
 		return path.relative(this.files_path, dir);
 	}
 
-	handleOverrides(resources, overrides) {
+	_handleOverrides(resources, overrides) {
 		for (const resource_path in resources) {
 			const resource = resources[resource_path];
 			const override = overrides[resource.src];

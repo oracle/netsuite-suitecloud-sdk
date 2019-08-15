@@ -59,7 +59,7 @@ module.exports = class SassCompiler {
 				{
 					data: entrypoint,
 					includePaths: [this.context.files_path],
-					importer: (...args) => this._importer.apply(this, args),
+					importer: this._importer.bind(this),
 				},
 				(error, result) => {
 					if (error) {

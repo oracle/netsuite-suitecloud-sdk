@@ -30,13 +30,13 @@
             {
                 "name": "theme",
                 "alias": "theme",
-                "description": "Specify the SuiteCommerce theme you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project. You can only specify one theme.",
+                "description": "Specify the SuiteCommerce theme you want to include in your local build. You can only specify one theme. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project.",
                 "mandatory": true
             },
             {
                 "name": "extensions",
                 "alias": "extensions",
-                "description": "Specify the SuiteCommerce extension you want to include in your local build. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project. To specify multiple extensions, enter the names of the objects separated by commas.",
+                "description": "Specify the SuiteCommerce extension you want to include in your local build. To specify multiple extensions, enter the names of the objects separated by commas. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project.",
                 "mandatory": false
             }
         ]
