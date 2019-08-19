@@ -2,12 +2,12 @@
 	"name": "@oracle/netsuite-suitecloud-node-cli",
 	"version": "1.0.0",
 	"description": "SuiteCloud CLI for Node.js",
-	"main": "src/index.js",
+	"main": "src/scloud.js",
 	"author": "Oracle NetSuite",
 	"license": "UPL",
 	"preferGlobal": true,
 	"bin": {
-		"scloud": "src/index.js"
+		"scloud": "src/scloud.js"
 	},
 	"dependencies": {
 		"chalk": "^2.4.2",

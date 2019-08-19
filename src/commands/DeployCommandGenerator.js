@@ -15,12 +15,7 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const assert = require('assert');
 
-const {
-	LINKS,
-	PROJECT_ACP,
-	PROJECT_SUITEAPP,
-	SDK_TRUE,
-} = require('../ApplicationConstants');
+const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
 const {
 	COMMAND_DEPLOY: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
@@ -128,7 +123,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			...ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(
 				args,
 				this._projectType
-			)
+			),
 		};
 	}
 
@@ -154,20 +149,28 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		return {
 			deployResult,
 			SDKParams,
+			flags,
 		};
 	}
 
 	_formatOutput(actionResult) {
 		assert(actionResult.deployResult);
 		assert(actionResult.SDKParams);
+		assert(actionResult.flags);
 
-		const { deployResult, SDKParams } = actionResult;
+		const { deployResult, SDKParams, flags } = actionResult;
 
 		if (SDKOperationResultUtils.hasErrors(deployResult)) {
 			SDKOperationResultUtils.logResultMessage(deployResult);
 			SDKOperationResultUtils.logErrors(deployResult);
 		} else {
 			this._showApplyContentProtectionOptionMessage(SDKParams);
+			if (Array.isArray(flags) && flags.includes(COMMAND.FLAGS.VALIDATE)) {
+				NodeUtils.princodetln(
+					TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
+					NodeUtils.COLORS.INFO
+				);
+			}
 			const { data } = deployResult;
 			SDKOperationResultUtils.logResultMessage(deployResult);
 			if (Array.isArray(data)) {
