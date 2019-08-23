@@ -9,7 +9,9 @@ module.exports = {
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
-	SDF_SDK_PATHNAME: '../bin/cli-2019.2.0-SNAPSHOT.jar',
+	SDK_DIRECTORY_NAME: 'bin',
+	SDK_FILENAME: 'cli-2020.1.0-SNAPSHOT.jar',
+	SDK_PATHNAME: `../${this.SDK_DIRECTORY_NAME}/${this.SDK_FILENAME}`,
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
 	SDK_PROXY_JVM_OPTIONS: {

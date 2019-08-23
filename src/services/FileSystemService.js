@@ -20,7 +20,7 @@ const path = require('path');
 
 const CHAR_ENCODING_UTF8 = 'utf-8';
 
-module.exports = class FileService {
+module.exports = class FileSystemService {
 	getFoldersFromDirectory(parentFolder) {
 		assert(parentFolder);
 		const getDirectories = source =>
@@ -28,7 +28,7 @@ module.exports = class FileService {
 				.map(name => path.join(source, name))
 				.filter(source => lstatSync(source).isDirectory());
 
-		var availableDirectories = getDirectories(parentFolder);
+		const availableDirectories = getDirectories(parentFolder);
 
 		return [parentFolder, ...availableDirectories];
 	}
@@ -54,9 +54,9 @@ module.exports = class FileService {
 						`${options.fileName}.${options.fileExtension}`
 					),
 					content.toString(),
-					(writtingError, data) => {
-						if (writtingError) {
-							reject(writtingError);
+					(writingError, data) => {
+						if (writingError) {
+							reject(writingError);
 						}
 						resolve();
 					}
@@ -74,6 +74,8 @@ module.exports = class FileService {
 		if (!existsSync(targetFolder)) {
 			mkdirSync(path.join(targetFolder));
 		}
+
+		return targetFolder;
 	}
 
 	renameFolder(oldPath, newPath) {

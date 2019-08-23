@@ -155,7 +155,11 @@
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "The following warnings were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_VALIDATION_OUTPUT_MESSAGE": "        - Line No. {0} - {1}",
-	
+
+	"DOWNLOADING_SUITECLOUD_SDK": "Downloading SuiteCloud SDK dependencies...",
+	"DOWNLOADING_SUITECLOUD_SDK_SUCCESS": "SuiteCloud SDK dependencies downloaded successfully.",
+	"DOWNLOADING_SUITECLOUD_SDK_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
+
 	"ERRORS_ACCOUNT_DETAILS_FILE_CONTENT": "The structure of the {0} file in your current project folder is not correct. Delete the file and run \"scloud setupaccount\".",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"cli-config.js\" module defined in the project. Details:{0}{1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE": "The return value of the function should be an object with the property \"arguments\" of type \"object\".",

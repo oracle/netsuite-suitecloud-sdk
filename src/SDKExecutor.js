@@ -8,7 +8,7 @@ const {
 	SDK_DEVELOPMENT_MODE_JVM_OPTION,
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
-	SDF_SDK_PATHNAME,
+	SDK_PATHNAME,
 } = require('./ApplicationConstants');
 const path = require('path');
 const spawn = require('child_process').spawn;
@@ -53,7 +53,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} ${developmentModeOption} "${path.join(
 				__dirname,
-				SDF_SDK_PATHNAME
+				SDK_PATHNAME
 			)}" ${executionContext.getCommand()} ${cliParamsAsString}`;
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });

@@ -1,12 +1,16 @@
+# binaries
+bin/*
+
 # dependencies
 node_modules
 
 # generated files
 account.json
 error.log
-/bin/.clicache
 
-src/configuration/LocalConfig.js
+# config
+src/core/sdksetup/config.json
+
+# ide
 .vscode/*
-
 .idea/*
