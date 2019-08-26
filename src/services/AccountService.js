@@ -45,23 +45,19 @@ module.exports = class AccountService {
 		assert(restRolesUrl);
 		assert(typeof isDevelopment === 'boolean');
 
-		const authorizationValue = this._getNLAuthorizationHeaderString({ email, password });
-		if (isDevelopment) {
-			return {
-				url: restRolesUrl,
-				headers: {
-					Authorization: authorizationValue
-				}
-			};
-		} else {
-			return {
-				url: restRolesUrl,
-				proxy: this._userPreferencesService.getUserPreferences().proxyUrl,
-				headers: {
-					Authorization: authorizationValue
-				}
-			};
+		const authorizationHeader = this._getNLAuthorizationHeaderString({ email, password });
+		let options = {
+			url: restRolesUrl,
+			headers: {
+				Authorization: authorizationHeader,
+			},
+		};
+
+		if (!isDevelopment) {
+			options.proxy = this._userPreferencesService.getUserPreferences().proxyUrl;
 		}
+
+		return options;
 	}
 
 	throwRequestError(errorResponse) {

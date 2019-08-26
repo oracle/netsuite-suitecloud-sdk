@@ -75,7 +75,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					name: ANSWERS.OVERWRITE,
 					message: TranslationService.getMessage(
 						QUESTIONS.OVERWRITE_ACCOUNT_DETAILS_FILE,
-						ACCOUNT_DETAILS_FILENAME
+						ACCOUNT_DETAILS_FILENAME,
 					),
 					default: 0,
 					choices: [
@@ -89,10 +89,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 		}
 
-		const isDevelopment =
-			commandArguments && commandArguments.dev != undefined && commandArguments.dev;
-
-		let developmentUrlAnswer = null;
+		const isDevelopment = commandArguments && commandArguments.dev !== undefined && commandArguments.dev;
+		let developmentUrlAnswer;
 
 		if (isDevelopment) {
 			developmentUrlAnswer = await prompt([
@@ -193,7 +191,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				name: ANSWERS.ISSUE_A_TOKEN,
 				message: TranslationService.getMessage(
 					QUESTIONS.ISSUE_A_TOKEN,
-					LINKS.HOW_TO.ISSUE_A_TOKEN
+					LINKS.HOW_TO.ISSUE_A_TOKEN,
 				),
 				choices: [
 					{
@@ -235,7 +233,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			environment: accountsInfo[selectedAccountId].dataCenterURLs.systemDomain.split('//')[1],
 			role: selectedRoleId,
 			roleName: accountsInfo[selectedAccountId].roles.find(
-				role => role.internalId === selectedRoleId
+				role => role.internalId === selectedRoleId,
 			).name,
 			...issueOrSaveTokenAnswers,
 		};
@@ -252,7 +250,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			throw TranslationService.getMessage(
 				ERRORS.NOT_PROJECT_FOLDER,
 				MANIFEST_XML,
-				this._projectFolder
+				this._projectFolder,
 			);
 		}
 	}
@@ -331,7 +329,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		SDKOperationResultUtils.logResultMessage(operationResult);
 		NodeUtils.println(
 			TranslationService.getMessage(OUTPUT.SUCCESSFUL),
-			NodeUtils.COLORS.RESULT
+			NodeUtils.COLORS.RESULT,
 		);
 	}
 

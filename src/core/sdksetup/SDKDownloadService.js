@@ -70,16 +70,15 @@ module.exports = class SDKDownloadService {
 	}
 
 	_downloadFile(url, destinationFile) {
+		const proxy = process.env.npm_config_https_proxy ||
+			process.env.npm_config_proxy;
+
 		const options = {
 			method: 'GET',
 			uri: url,
 			encoding: 'binary',
+			...(proxy && { proxy: proxy }),
 		};
-
-		const proxy = process.env.npm_config_https_proxy ||
-			process.env.npm_config_http_proxy ||
-			process.env.npm_config_proxy;
-		if (proxy) options.proxy = proxy;
 
 		return request(options).then(function(body) {
 			const file = fs.createWriteStream(destinationFile);

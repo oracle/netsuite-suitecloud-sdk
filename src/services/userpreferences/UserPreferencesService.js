@@ -17,7 +17,7 @@ const USER_PREFERENCES_FILEPATH = path.join(
 	HOME_PATH,
 	SDF_USER_PREFERENCES_FOLDER,
 	NODEJS_CLI_FOLDER,
-	USER_PREFERENCES_FILE
+	USER_PREFERENCES_FILE,
 );
 
 const DEFAULT_USER_PREFERENCES = new UserPreferences({
@@ -37,10 +37,10 @@ module.exports = class UserPreferencesService {
 	}
 
 	setUserPreferences(userPreferences) {
-		this._createFolderIfDoesntExist(HOME_PATH, SDF_USER_PREFERENCES_FOLDER);
-		this._createFolderIfDoesntExist(
+		this._fileSystemService.createFolder(HOME_PATH, SDF_USER_PREFERENCES_FOLDER);
+		this._fileSystemService.createFolder(
 			path.join(HOME_PATH, SDF_USER_PREFERENCES_FOLDER),
-			NODEJS_CLI_FOLDER
+			NODEJS_CLI_FOLDER,
 		);
 		FileUtils.create(USER_PREFERENCES_FILEPATH, userPreferences);
 	}
@@ -66,9 +66,4 @@ module.exports = class UserPreferencesService {
 		return DEFAULT_USER_PREFERENCES;
 	}
 
-	_createFolderIfDoesntExist(parentDirectory, folder) {
-		if (!this._fileSystemService.folderExists(path.join(parentDirectory, folder))) {
-			this._fileSystemService.createFolder(parentDirectory, folder);
-		}
-	}
 };
