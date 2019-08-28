@@ -32,7 +32,7 @@ const {
 	DOWNLOADING_SUITECLOUD_SDK_ERROR,
 } = require('../../services/TranslationKeys');
 
-module.exports = class SDKDownloadService {
+class SDKDownloadService {
 
 	constructor() {
 		this._fileSystemService = new FileSystemService();
@@ -73,11 +73,13 @@ module.exports = class SDKDownloadService {
 		const proxy = process.env.npm_config_https_proxy ||
 			process.env.npm_config_proxy;
 
+		const isProxyRequired = proxy && fs.existsSync(path.resolve(__dirname, CONFIG_FILE));
+
 		const options = {
 			method: 'GET',
 			uri: url,
 			encoding: 'binary',
-			...(proxy && { proxy: proxy }),
+			...(isProxyRequired && { proxy: proxy }),
 		};
 
 		return request(options).then(function(body) {
@@ -87,4 +89,6 @@ module.exports = class SDKDownloadService {
 		});
 	}
 
-};
+}
+
+module.exports = new SDKDownloadService();

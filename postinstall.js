@@ -4,6 +4,4 @@
 */
 'use strict';
 
-const SDKDownloadService = require('./src/core/sdksetup/SDKDownloadService');
-
-new SDKDownloadService().download();
+require('./src/core/sdksetup/SDKDownloadService').download();
