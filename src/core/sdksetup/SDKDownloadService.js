@@ -73,7 +73,7 @@ class SDKDownloadService {
 		const proxy = process.env.npm_config_https_proxy ||
 			process.env.npm_config_proxy;
 
-		const isProxyRequired = proxy && fs.existsSync(path.resolve(__dirname, CONFIG_FILE));
+		const isProxyRequired = proxy && !fs.existsSync(path.resolve(__dirname, CONFIG_FILE));
 
 		const options = {
 			method: 'GET',

@@ -46,18 +46,14 @@ module.exports = class AccountService {
 		assert(typeof isDevelopment === 'boolean');
 
 		const authorizationHeader = this._getNLAuthorizationHeaderString({ email, password });
-		let options = {
+
+		return {
 			url: restRolesUrl,
 			headers: {
 				Authorization: authorizationHeader,
 			},
+			...(!isDevelopment && { proxy: this._userPreferencesService.getUserPreferences().proxyUrl }),
 		};
-
-		if (!isDevelopment) {
-			options.proxy = this._userPreferencesService.getUserPreferences().proxyUrl;
-		}
-
-		return options;
 	}
 
 	throwRequestError(errorResponse) {
