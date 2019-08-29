@@ -47,4 +47,4 @@ If you would like to use `scloud` with a Runbox/Fatbox/ScrumBox, you should setu
 ```
 scloud setupaccount --dev
 ```
-Notice that for this last command to work, you should have a specific migrate in your development account. Right now, it's not integrated to ML/Release but available in `CL 2437113`.
+
