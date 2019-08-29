@@ -12,14 +12,13 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
+	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL }
 } = require('../services/TranslationKeys');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 
 module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
-
 	constructor(options) {
 		super(options);
 	}
@@ -34,10 +33,8 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			return executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
 				message: TranslationService.getMessage(LOADING_FOLDERS),
-			}).then(operationResult => {
-				if (SDKOperationResultUtils.hasErrors(operationResult)) {
-					throw operationResult.resultMessage;
-				}
+			})
+			.then(operationResult => {
 				resolve(
 					prompt([
 						{
@@ -47,14 +44,13 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 							default: SUITE_SCRIPTS_FOLDER,
 							choices: this._getFileCabinetFolders(operationResult),
 						},
-					]),
+					])
 				);
-			}).catch(error => {
-				NodeUtils.println(
-					TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error),
-					NodeUtils.COLORS.ERROR,
-				);
-			});
+			})
+			// TODO : find right mecanism to treat the error
+			.catch( error => {
+				NodeUtils.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
+			})
 		});
 	}
 
@@ -76,7 +72,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
-			includeAccountDetails: true,
+			includeAccountDetails: true
 		});
 
 		return executeWithSpinner({
@@ -90,7 +86,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+			SDKOperationResultUtils.logErrors(operationResult)
 			return;
 		}
 
@@ -98,7 +94,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 		if (Array.isArray(data)) {
 			data.forEach(fileName => {
-				NodeUtils.println(fileName, NodeUtils.COLORS.RESULT);
+				NodeUtils.println(fileName, NodeUtils.COLORS.RESULT)
 			});
 		}
 	}
