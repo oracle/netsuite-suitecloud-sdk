@@ -8,7 +8,8 @@ const {
 	SDK_DEVELOPMENT_MODE_JVM_OPTION,
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
-	SDF_SDK_PATHNAME,
+	SDK_DIRECTORY_NAME,
+	SDK_FILENAME,
 } = require('./ApplicationConstants');
 const path = require('path');
 const spawn = require('child_process').spawn;
@@ -19,15 +20,16 @@ const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 
 module.exports.SDKExecutor = class SDKExecutor {
+
 	constructor() {
 		this._userPreferencesService = new UserPreferencesService();
 		this._accountDetailsService = new AccountDetailsService();
 	}
 
 	execute(executionContext) {
-		const proxyJarSettings = this._getProxySettingsIfSet();
+		const proxyOptions = this._getProxyOptions();
 		const accountDetails = executionContext.includeAccountDetailsParams ? this._accountDetailsService.get() : null;
-		
+
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
 
@@ -38,9 +40,9 @@ module.exports.SDKExecutor = class SDKExecutor {
 				executionContext.addParam('url', accountDetails.netSuiteUrl);
 			}
 
-			const cliParamsAsString = this._convertParamsObjToString(
+			const cliParams = this._convertParamsObjToString(
 				executionContext.getParams(),
-				executionContext.getFlags()
+				executionContext.getFlags(),
 			);
 
 			const integrationModeOption = executionContext.isIntegrationMode()
@@ -51,10 +53,9 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_DEVELOPMENT_MODE_JVM_OPTION
 				: '';
 
-			const jvmCommand = `java ${proxyJarSettings} -jar ${integrationModeOption} ${developmentModeOption} "${path.join(
-				__dirname,
-				SDF_SDK_PATHNAME
-			)}" ${executionContext.getCommand()} ${cliParamsAsString}`;
+			const sdkJarPath = `"${path.join(__dirname, `../${SDK_DIRECTORY_NAME}/${SDK_FILENAME}`)}"`;
+			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption}`;
+			const jvmCommand = `java -jar ${vmOptions} ${sdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
@@ -77,7 +78,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 						resolve(output);
 					} catch (error) {
 						reject(
-							TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
+							TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error),
 						);
 					}
 				} else if (code !== 0) {
@@ -87,7 +88,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 		});
 	}
 
-	_getProxySettingsIfSet() {
+	_getProxyOptions() {
 		const userPreferences = this._userPreferencesService.getUserPreferences();
 		if (!userPreferences.useProxy) {
 			return '';
@@ -103,6 +104,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 		const hostName = proxyUrl.hostname;
 		const port = proxyUrl.port;
 		const { PROTOCOL, HOST, PORT } = SDK_PROXY_JVM_OPTIONS;
+
 		return `${PROTOCOL}=${protocolWithoutColon} ${HOST}=${hostName} ${PORT}=${port}`;
 	}
 
