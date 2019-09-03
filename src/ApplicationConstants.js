@@ -10,7 +10,7 @@ module.exports = {
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
 	SDK_DIRECTORY_NAME: 'bin',
-	SDK_FILENAME: 'cli-2019.2.0.jar',
+	SDK_FILENAME: 'cli-2019.2.1.jar',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
 	SDK_PROXY_JVM_OPTIONS: {
