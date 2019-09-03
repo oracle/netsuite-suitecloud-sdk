@@ -166,7 +166,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		} else {
 			this._showApplyContentProtectionOptionMessage(SDKParams);
 			if (Array.isArray(flags) && flags.includes(COMMAND.FLAGS.VALIDATE)) {
-				NodeUtils.princodetln(
+				NodeUtils.println(
 					TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
 					NodeUtils.COLORS.INFO
 				);

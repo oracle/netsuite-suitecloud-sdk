@@ -173,7 +173,7 @@
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 	"ERRORS_PROCESS_FAILED": "The process has failed.",
 	"ERRORS_PROMPTING_INTERACTIVE_QUESTIONS_FAILED": "There was an internal error while prompting interactive questions. Details:{0}{1}",
-	"ERRORS_SDKEXECUTOR_AUTHENTICATION": "Authentication error: please run \"scloud setupaccount\"",
+	"ERRORS_SDKEXECUTOR_NO_TBA_FOR_ACCOUNT_AND_ROLE": "The email, domain URL, account ID, and role combination in your account.json file has not been set up for token-based authentication (TBA). Run \"scloud setupaccount\" to set up TBA.",
 	"ERRORS_SDKEXECUTOR_RUNNING_COMMAND": "There was an internal error while running the command. Details: {0}",
 	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}",
 	"ERRORS_SETUP_REQUIRED": "No account has been set up for this project. Run \"scloud setupaccount\" to link your project with your account.",
