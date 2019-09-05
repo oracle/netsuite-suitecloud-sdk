@@ -5,6 +5,8 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 	// STARTING MOCKS.
 	const mockShowErrorResult = jest.fn();
 	const mockShowSuccessResult = jest.fn();
+	const mockCommandUserExtensionOnCompleted = jest.fn();
+	const mockCommandUserExtensionOnError = jest.fn();
 
 	const CommandOutputHandler = jest.fn(() => ({
 		showErrorResult: mockShowErrorResult,
@@ -30,6 +32,8 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		beforeExecuting: jest.fn(() => {
 			return { arguments: {} };
 		}),
+		onCompleted: mockCommandUserExtensionOnCompleted,
+		onError: mockCommandUserExtensionOnError,
 	}));
 
 	const CliConfigurationService = jest.fn(() => ({
@@ -61,19 +65,22 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		})
 	}));
 
-	const commandExecutor = new CommandActionExecutor({
-		commandOutputHandler: mockCommandOutputHandler,
-		commandOptionsValidator: new CommandOptionsValidatorWithoutErrors(),
-		cliConfigurationService: new CliConfigurationService(),
-		commandInstanceFactory: new CommandInstanceFactory(),
-		accountDetailsService: new AccountDetailsService(),
-		commandsMetadataService: new CommandsMetadataService(),
-	});
-
+	let commandExecutor;
 	beforeEach(() => {
 		// Clear all instances and calls to constructor and all methods:
+		commandExecutor = new CommandActionExecutor({
+			commandOutputHandler: mockCommandOutputHandler,
+			commandOptionsValidator: new CommandOptionsValidatorWithoutErrors(),
+			cliConfigurationService: new CliConfigurationService(),
+			commandInstanceFactory: new CommandInstanceFactory(),
+			accountDetailsService: new AccountDetailsService(),
+			commandsMetadataService: new CommandsMetadataService(),
+		});
+
 		mockShowErrorResult.mockClear();
 		mockShowSuccessResult.mockClear();
+		mockCommandUserExtensionOnCompleted.mockClear();
+		mockCommandUserExtensionOnError.mockClear();
 	});
 
 	let error = null;
@@ -230,4 +237,51 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		expect(mockCommandOutputHandler.showErrorResult).toBeCalledTimes(1);
 		expect(mockCommandOutputHandler.showSuccessResult).toBeCalledTimes(0);
 	});
+
+	it('Should trigger CommandUserExtension.onError.', async () => {
+		const CommandInstanceFactory = jest.fn(() => ({
+			create: jest.fn(() => {
+				return {
+					commandMetadata: { options: {} },
+					_commandMetadata: {},
+					getCommandQuestions: jest.fn(),
+					actionFunc: jest.fn(() => ({operationResult: {status: "ERROR", resultMessage: ""}})),
+					formatOutputFunc: jest.fn(),
+				};
+			}),
+		}));
+		commandExecutor._commandInstanceFactory = new CommandInstanceFactory();
+
+		await commandExecutor.executeAction({
+			executionPath: 'C:/',
+			commandName: 'deploy',
+			runInInteractiveMode: false,
+			arguments: {},
+		});
+		expect(mockCommandUserExtensionOnError).toBeCalledTimes(1);
+	});
+
+	it('Should trigger CommandUserExtension.onCompleted.', async () => {
+		const CommandInstanceFactory = jest.fn(() => ({
+			create: jest.fn(() => {
+				return {
+					commandMetadata: { options: {} },
+					_commandMetadata: {},
+					getCommandQuestions: jest.fn(),
+					actionFunc: jest.fn(() => ({operationResult: {status: "SUCCESS", resultMessage: ""}})),
+					formatOutputFunc: jest.fn(),
+				};
+			}),
+		}));
+		commandExecutor._commandInstanceFactory = new CommandInstanceFactory();
+
+		await commandExecutor.executeAction({
+			executionPath: 'C:/',
+			commandName: 'deploy',
+			runInInteractiveMode: false,
+			arguments: {},
+		});
+		expect(mockCommandUserExtensionOnCompleted).toBeCalledTimes(1);
+	});
+
 });

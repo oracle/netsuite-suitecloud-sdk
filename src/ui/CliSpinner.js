@@ -4,8 +4,6 @@
 */
 'use strict';
 
-'use strict';
-
 const assert = require('assert');
 const Spinner = require('cli-spinner').Spinner;
 

@@ -9,7 +9,8 @@ module.exports = {
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	ACCOUNT_DETAILS_FILENAME: 'account.json',
-	SDF_SDK_PATHNAME: '../bin/cli-2019.2.0-SNAPSHOT.jar',
+	SDK_DIRECTORY_NAME: 'bin',
+	SDK_FILENAME: 'cli-2019.2.1.jar',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
 	SDK_PROXY_JVM_OPTIONS: {
@@ -30,8 +31,8 @@ module.exports = {
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
-	PROD_ENVIRONMENT_ADDRESS:'https://system.netsuite.com',
-	HTTP_PROTOCOL:'http://',
+	PROD_ENVIRONMENT_ADDRESS: 'https://system.netsuite.com',
+	HTTP_PROTOCOL: 'http://',
 	REST_ROLES_URL: '/rest/roles',
 	LINKS: {
 		HOW_TO: {

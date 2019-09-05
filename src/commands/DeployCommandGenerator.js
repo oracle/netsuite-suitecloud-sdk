@@ -18,7 +18,7 @@ const assert = require('assert');
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
 const {
-	COMMAND_DEPLOY: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
+	COMMAND_DEPLOY: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
@@ -141,38 +141,38 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			flags,
 		});
 
-		const deployResult = await executeWithSpinner({
+		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForDeploy),
 			message: TranslationService.getMessage(MESSAGES.DEPLOYING),
 		});
 
 		return {
-			deployResult,
+			operationResult,
 			SDKParams,
 			flags,
 		};
 	}
 
 	_formatOutput(actionResult) {
-		assert(actionResult.deployResult);
+		assert(actionResult.operationResult);
 		assert(actionResult.SDKParams);
 		assert(actionResult.flags);
 
-		const { deployResult, SDKParams, flags } = actionResult;
+		const { operationResult, SDKParams, flags } = actionResult;
 
-		if (SDKOperationResultUtils.hasErrors(deployResult)) {
-			SDKOperationResultUtils.logResultMessage(deployResult);
-			SDKOperationResultUtils.logErrors(deployResult);
+		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+			SDKOperationResultUtils.logResultMessage(operationResult);
+			SDKOperationResultUtils.logErrors(operationResult);
 		} else {
 			this._showApplyContentProtectionOptionMessage(SDKParams);
 			if (Array.isArray(flags) && flags.includes(COMMAND.FLAGS.VALIDATE)) {
-				NodeUtils.princodetln(
+				NodeUtils.println(
 					TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
 					NodeUtils.COLORS.INFO
 				);
 			}
-			const { data } = deployResult;
-			SDKOperationResultUtils.logResultMessage(deployResult);
+			const { data } = operationResult;
+			SDKOperationResultUtils.logResultMessage(operationResult);
 			if (Array.isArray(data)) {
 				data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
 			}

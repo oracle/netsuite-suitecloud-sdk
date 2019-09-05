@@ -11,6 +11,7 @@ const {
 	ERRORS,
 } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
+const OperationResultStatus = require('../commands/OperationResultStatus');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -144,8 +145,15 @@ module.exports = class CommandActionExecutor {
 
 			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);
 
-			if (commandUserExtension.onCompleted) {
-				commandUserExtension.onCompleted(actionResult);
+			if (actionResult) {
+				if (actionResult.operationResult
+					&& actionResult.operationResult.status === OperationResultStatus.ERROR) {
+					throw actionResult.operationResult.resultMessage;
+				}
+
+				if (commandUserExtension.onCompleted) {
+					commandUserExtension.onCompleted(actionResult);
+				}
 			}
 
 			return actionResult;

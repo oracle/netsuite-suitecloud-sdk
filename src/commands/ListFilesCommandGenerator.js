@@ -91,7 +91,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		}
 
 		SDKOperationResultUtils.logResultMessage(operationResult);
-		
+
 		if (Array.isArray(data)) {
 			data.forEach(fileName => {
 				NodeUtils.println(fileName, NodeUtils.COLORS.RESULT)

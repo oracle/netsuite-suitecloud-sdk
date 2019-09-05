@@ -6,6 +6,7 @@
 	"author": "Oracle NetSuite",
 	"license": "UPL",
 	"preferGlobal": true,
+	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/cli/java/latest",
 	"bin": {
 		"scloud": "src/scloud.js"
 	},
@@ -23,6 +24,7 @@
 		"jest": "^24.7.1"
 	},
 	"scripts": {
-		"test": "jest"
+		"test": "jest",
+		"postinstall": "node postinstall.js"
 	}
 }
