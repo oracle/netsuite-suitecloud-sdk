@@ -15,7 +15,7 @@ module.exports = class Resource {
 		this.name = options.name || '';
 		this.content = '';
 		this.applications = [options.app];
-		this.override_fullsrc;
+		this.overrideFullsrc;
 		this.override;
 	}
 
@@ -36,7 +36,7 @@ module.exports = class Resource {
 	}
 
 	fullsrc() {
-		return this.override_fullsrc || path.join(_basesrc, this.src);
+		return this.overrideFullsrc || path.join(_basesrc, this.src);
 	}
 
 	fulldst() {

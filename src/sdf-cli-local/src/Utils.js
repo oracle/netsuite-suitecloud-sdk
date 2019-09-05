@@ -14,56 +14,56 @@ const { promisify } = require('util');
 const Translation = require('./services/Translation');
 
 const Utils = {
-	parseXml(project_folder, xml_file) {
-		let file_path = path.join(project_folder, '**', xml_file);
-		file_path = glob(file_path);
-		file_path = file_path.length ? file_path[0] : null;
+	parseXml(projectFolder, xmlFile) {
+		let filePath = path.join(projectFolder, '**', xmlFile);
+		filePath = glob(filePath);
+		filePath = filePath.length ? filePath[0] : null;
 
-		if (!file_path) {
-			throw Translation.getMessage('RESOURCE_NOT_FOUND', [xml_file, project_folder]);
+		if (!filePath) {
+			throw Translation.getMessage('RESOURCE_NOT_FOUND', [xmlFile, projectFolder]);
 		}
 
-		const xml_data = fs.readFileSync(file_path).toString();
+		const xmlData = fs.readFileSync(filePath).toString();
 
-		let parsed_xml = {};
+		let parsedXml = {};
 
 		new Parser({ explicitArray: false, trim: true, emptyTag: null }).parseString(
-			xml_data,
+			xmlData,
 			function(error, result) {
 				if (error) {
 					throw error;
 				}
-				parsed_xml = result;
+				parsedXml = result;
 			}
 		);
 
-		return parsed_xml;
+		return parsedXml;
 	},
 
 	arrayUnion(arr1, arr2 = []) {
 		return [...new Set([...arr1, ...arr2])];
 	},
 
-	parseFiles(files_xml, replacer) {
-		const parsed_files = [];
-		let files = files_xml.files || {};
+	parseFiles(filesXml, replacer) {
+		const parsedFiles = [];
+		let files = filesXml.files || {};
 		files = files.file || {};
 		for (const key in files) {
 			const file = Utils.parseFileName(files[key]);
-			parsed_files.push(replacer ? replacer(file) : file);
+			parsedFiles.push(replacer ? replacer(file) : file);
 		}
-		return parsed_files;
+		return parsedFiles;
 	},
 
 	parseFileName(file) {
-		const file_name = file.filename || file;
-		return file_name.replace(/^\[(.*)\]$/, '$1');
+		const fileName = file.filename || file;
+		return fileName.replace(/^\[(.*)\]$/, '$1');
 	},
 
 	runParallel(tasks) {
 		const parallel = async.parallel;
 
-		const wrapped_tasks = tasks.map(task => {
+		const wrappedTasks = tasks.map(task => {
 			return callback => {
 				try {
 					const promise = task();
@@ -77,7 +77,7 @@ const Utils = {
 			};
 		});
 
-		return promisify(parallel)(wrapped_tasks);
+		return promisify(parallel)(wrappedTasks);
 	},
 };
 

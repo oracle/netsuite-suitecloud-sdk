@@ -16,13 +16,13 @@ module.exports = class TemplatesCompiler {
 	constructor(options) {
 		this.context = options.context;
 		this.entrypoints = {};
-		this.resource_type = 'Templates';
-		this.templates_folder = 'templates';
-		this.processed_templates_folder = 'processed-templates';
+		this.resourceType = 'Templates';
+		this.templatesFolder = 'templates';
+		this.processedTemplatesFolder = 'processed-templates';
 	}
 
 	compile(resources) {
-		Log.result('COMPILATION_START', [this.resource_type]);
+		Log.result('COMPILATION_START', [this.resourceType]);
 
 		this.templates = resources || this.context.getTemplates();
 
@@ -38,7 +38,7 @@ module.exports = class TemplatesCompiler {
 			// then create require.js config files
 			const entrypoints = this._writeEntrypoints();
 			return Utils.runParallel(entrypoints).then(() =>
-				Log.result('COMPILATION_FINISH', [this.resource_type])
+				Log.result('COMPILATION_FINISH', [this.resourceType])
 			);
 		});
 	}
@@ -58,7 +58,7 @@ module.exports = class TemplatesCompiler {
 				//write final template file:
 				template.logOverrideMessage();
 				return FileSystem.writeFile(
-					path.join(this.processed_templates_path, template.dst),
+					path.join(this.processedTemplatesPath, template.dst),
 					this._wrapTemplate(template)
 				);
 			});
@@ -66,8 +66,8 @@ module.exports = class TemplatesCompiler {
 
 	_writeTemplates() {
 		const promises = [];
-		for (const template_path in this.templates) {
-			promises.push(this._writeTemplate(this.templates[template_path]));
+		for (const templatePath in this.templates) {
+			promises.push(this._writeTemplate(this.templates[templatePath]));
 		}
 		return promises;
 	}
@@ -75,19 +75,17 @@ module.exports = class TemplatesCompiler {
 	_writeEntrypoints() {
 		const promises = [];
 		for (const app in this.entrypoints) {
-			const dest = path.join(this.templates_path, `${app}-templates.js`);
-			const entryfile_content = {
+			const dest = path.join(this.templatesPath, `${app}-templates.js`);
+			const entryfileContent = {
 				paths: this.entrypoints[app],
 				baseUrl: url.resolve(
 					'http://localhost:7777/',
-					`${this.templates_folder}/${this.processed_templates_folder}`
+					`${this.templatesFolder}/${this.processedTemplatesFolder}`
 				),
 				// TODO remove and use cli-config
 			};
 
-			promises.push(() =>
-				FileSystem.writeFile(dest, this._wrapEntrypoint(entryfile_content))
-			);
+			promises.push(() => FileSystem.writeFile(dest, this._wrapEntrypoint(entryfileContent)));
 		}
 		return promises;
 	}
@@ -102,7 +100,7 @@ module.exports = class TemplatesCompiler {
 			.join()}], function (Handlebars, compilerNameLookup){ var t = ${
 			template.precompiled
 		}; var main = t.main; t.main = function(){ arguments[1] = arguments[1] || {}; var ctx = arguments[1]; ctx._extension_path = '${
-			template.extension_asset_url
+			template.extensionAssetUrl
 		}/'; ctx._theme_path = '${this.context.theme.getAssetsUrl()}/'; return main.apply(this, arguments); }; var template = Handlebars.template(t); template.Name = '${
 			template.name
 		}'; return template;});`;
@@ -116,7 +114,7 @@ module.exports = class TemplatesCompiler {
 				.readFileSync(path.join(__dirname, '../../src/client-scripts', filename + '.js'))
 				.toString();
 		});
-		fs.writeFileSync(path.join(this.templates_path, 'javascript-libs.js'), content);
+		fs.writeFileSync(path.join(this.templatesPath, 'javascript-libs.js'), content);
 	}
 
 	_setCompilerNameLookupHelper() {
@@ -125,13 +123,13 @@ module.exports = class TemplatesCompiler {
 	}
 
 	_createTemplateFolders() {
-		this.templates_path = FileSystem.createFolder(
-			this.templates_folder,
-			this.context.local_server_path
+		this.templatesPath = FileSystem.createFolder(
+			this.templatesFolder,
+			this.context.localServerPath
 		);
-		this.processed_templates_path = FileSystem.createFolder(
-			this.processed_templates_folder,
-			this.templates_path
+		this.processedTemplatesPath = FileSystem.createFolder(
+			this.processedTemplatesFolder,
+			this.templatesPath
 		);
 	}
 };

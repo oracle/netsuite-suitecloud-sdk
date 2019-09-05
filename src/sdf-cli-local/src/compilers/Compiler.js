@@ -28,23 +28,23 @@ module.exports = class Compiler {
 	compile() {
 		this._createLocalServerFolder(this.context);
 
-		const binded_compilers = [];
+		const bindedCompilers = [];
 		for (const name in this.compilers) {
 			const compiler = this.compilers[name];
-			binded_compilers.push(compiler.compile.bind(compiler));
+			bindedCompilers.push(compiler.compile.bind(compiler));
 		}
-		return Utils.runParallel(binded_compilers);
+		return Utils.runParallel(bindedCompilers);
 	}
 
 	_createLocalServerFolder(context) {
 		const serverFolder = 'LocalServer';
 		// create/override local server:
-		const local_folder = FileSystem.createFolder(serverFolder, context.project_folder, true);
-		context.setLocalServerPath(local_folder);
-		this._createRequireJSFile(local_folder);
+		const localFolder = FileSystem.createFolder(serverFolder, context.projectFolder, true);
+		context.setLocalServerPath(localFolder);
+		this._createRequireJSFile(localFolder);
 	}
 
-	_createRequireJSFile(local_folder) {
+	_createRequireJSFile(localFolder) {
 		const src = path.join(
 			process.mainModule.filename,
 			'../..',
@@ -52,6 +52,6 @@ module.exports = class Compiler {
 			'requirejs',
 			'require.js'
 		);
-		fs.copyFileSync(src, path.join(local_folder, 'require.js'));
+		fs.copyFileSync(src, path.join(localFolder, 'require.js'));
 	}
 };

@@ -14,7 +14,7 @@ module.exports = class Watch {
 	}
 
 	start() {
-		watch(this.context.files_path, { recursive: true }, (evtname, filename) => {
+		watch(this.context.filesPath, { recursive: true }, (evtname, filename) => {
 			const extname = path.extname(filename).slice(1);
 
 			const filemap = {
@@ -25,17 +25,16 @@ module.exports = class Watch {
 
 			const compiler = filemap[extname] || this.compilers.assets;
 
-			const resource_type = compiler.resource_type.toLowerCase();
+			const resourceType = compiler.resourceType.toLowerCase();
 
-			if (resource_type === 'sass' || resource_type === 'javascript') {
+			if (resourceType === 'sass' || resourceType === 'javascript') {
 				compiler.compile();
 			} else {
-				this.context.all_extensions.forEach(extension => {
-					for (const resource_path in extension[resource_type]) {
-						const resource = extension[resource_type][resource_path];
-						const filename_no_base = this.context.excludeBaseFilesPath(filename);
-
-						if (path.normalize(resource_path).includes(filename_no_base)) {
+				this.context.allExtensions.forEach(extension => {
+					for (const resourcePath in extension[resourceType]) {
+						const resource = extension[resourceType][resourcePath];
+						const filenameNoBase = this.context.excludeBaseFilesPath(filename);
+						if (path.normalize(resourcePath).includes(filenameNoBase)) {
 							// compile one file
 							compiler.compile([resource]);
 						}

@@ -13,12 +13,12 @@ module.exports = class Extension extends AbstractExtension {
 		super(options);
 
 		this.PREFIX = 'commerceextension';
-		this.raw_extension = this.raw_extension[this.PREFIX];
+		this.rawExtension = this.rawExtension[this.PREFIX];
 
-		this.base_path = this.raw_extension.basepath;
-		this.vendor = this.raw_extension.vendor;
-		this.name = this.raw_extension.name;
-		this.version = this.raw_extension.version;
+		this.basePath = this.rawExtension.basepath;
+		this.vendor = this.rawExtension.vendor;
+		this.name = this.rawExtension.name;
+		this.version = this.rawExtension.version;
 	}
 
 	getJavascript() {
@@ -27,23 +27,23 @@ module.exports = class Extension extends AbstractExtension {
 		}
 		this.javascript = {};
 
-		const javascript = this.raw_extension.javascript || {};
-		const javascript_app = javascript.application || {};
-		const javascript_entrypoints = javascript.entrypoints || {};
+		const javascript = this.rawExtension.javascript || {};
+		const javascriptApp = javascript.application || {};
+		const javascriptEntrypoints = javascript.entrypoints || {};
 
-		Object.entries({ javascript_app, javascript_entrypoints }).forEach(([key, resources]) => {
-			this.iterateResources(resources, (resource_path, app) => {
-				if (this.javascript[resource_path]) {
-					this.javascript[resource_path].addApplication(app);
+		Object.entries({ javascriptApp, javascriptEntrypoints }).forEach(([key, resources]) => {
+			this.iterateResources(resources, (resourcePath, app) => {
+				if (this.javascript[resourcePath]) {
+					this.javascript[resourcePath].addApplication(app);
 					return;
 				}
 
-				this.javascript[resource_path] = new Script({
-					src: this._excludeBasePath(resource_path),
-					dst: path.basename(resource_path),
-					name: path.basename(resource_path, path.extname(resource_path)),
-					isEntrypoint: key === 'javascript_entrypoints',
-					extension_fullname: this.getExtensionFullName('#'),
+				this.javascript[resourcePath] = new Script({
+					src: this._excludeBasePath(resourcePath),
+					dst: path.basename(resourcePath),
+					name: path.basename(resourcePath, path.extname(resourcePath)),
+					isEntrypoint: key === 'javascriptEntrypoints',
+					extensionFullname: this.getExtensionFullName('#'),
 					app: app,
 				});
 			});

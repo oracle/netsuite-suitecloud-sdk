@@ -14,11 +14,11 @@ const Resource = require('./resources/Resource');
 
 module.exports = class AbstractExtension {
 	constructor(options) {
-		const objects_path = options.objects_path;
-		const extension_xml = options.extension_xml;
+		const objectsPath = options.objectsPath;
+		const extensionXml = options.extensionXml;
 
-		this.raw_extension = Utils.parseXml(objects_path, extension_xml);
-		this.base_url = 'http://localhost:7777'; // TODO remove and use cli-config
+		this.rawExtension = Utils.parseXml(objectsPath, extensionXml);
+		this.baseUrl = 'http://localhost:7777'; // TODO remove and use cli-config
 	}
 
 	iterateResources(resources, func) {
@@ -27,8 +27,8 @@ module.exports = class AbstractExtension {
 			if (typeof rsc === 'string') {
 				func(Utils.parseFileName(rsc), app);
 			} else {
-				Utils.parseFiles(rsc).forEach(resource_path => {
-					func(resource_path, app);
+				Utils.parseFiles(rsc).forEach(resourcePath => {
+					func(resourcePath, app);
 				});
 			}
 		}
@@ -39,21 +39,21 @@ module.exports = class AbstractExtension {
 			return this.templates;
 		}
 		this.templates = {};
-		let templates = this.raw_extension.templates || {};
+		let templates = this.rawExtension.templates || {};
 		templates = templates.application || {};
 
-		this.iterateResources(templates, (resource_path, app) => {
-			if (this.templates[resource_path]) {
-				this.templates[resource_path].addApplication(app);
+		this.iterateResources(templates, (resourcePath, app) => {
+			if (this.templates[resourcePath]) {
+				this.templates[resourcePath].addApplication(app);
 				return;
 			}
 
-			this.templates[resource_path] = new Template({
-				basesrc: this._excludeBasePath(resource_path),
-				src: this._excludeBasePath(resource_path),
-				dst: path.basename(resource_path) + '.js',
-				name: path.basename(resource_path, path.extname(resource_path)),
-				extension_asset_url: this.getAssetsUrl(),
+			this.templates[resourcePath] = new Template({
+				basesrc: this._excludeBasePath(resourcePath),
+				src: this._excludeBasePath(resourcePath),
+				dst: path.basename(resourcePath) + '.js',
+				name: path.basename(resourcePath, path.extname(resourcePath)),
+				extensionAssetUrl: this.getAssetsUrl(),
 				app: app,
 			});
 		});
@@ -67,7 +67,7 @@ module.exports = class AbstractExtension {
 		}
 		this.sass = {};
 
-		const sass = this.raw_extension.sass || {};
+		const sass = this.rawExtension.sass || {};
 
 		this.sass.files = Utils.parseFiles(sass);
 		this.sass.entrypoints = {};
@@ -80,7 +80,7 @@ module.exports = class AbstractExtension {
 	}
 
 	_excludeBasePath(file) {
-		return path.join(this.name, file.replace(new RegExp(`^${this.base_path}`), ''));
+		return path.join(this.name, file.replace(new RegExp(`^${this.basePath}`), ''));
 	}
 
 	getExtensionFullName(separator = ' - ') {
@@ -93,7 +93,7 @@ module.exports = class AbstractExtension {
 
 	getAssetsUrl() {
 		return FileSystem.forwardDashes(
-			url.resolve(this.base_url, `assets/${this.getLocalAssetsPath()}`)
+			url.resolve(this.baseUrl, `assets/${this.getLocalAssetsPath()}`)
 		);
 	}
 
@@ -104,18 +104,15 @@ module.exports = class AbstractExtension {
 		this.assets = {};
 		const folder = 'assets';
 
-		const ext_assets = this.raw_extension.assets || {};
-		const assets_local_path = this.getLocalAssetsPath(folder);
+		const extAssets = this.rawExtension.assets || {};
+		const assetsLocalPath = this.getLocalAssetsPath(folder);
 
-		this.iterateResources(ext_assets, (resource_path, type) => {
-			const src = path.normalize(this._excludeBasePath(resource_path));
+		this.iterateResources(extAssets, (resourcePath, type) => {
+			const src = path.normalize(this._excludeBasePath(resourcePath));
 			// first match of assets folder name and first match of extension name are removed from the dest path:
-			const dst = path.join(
-				assets_local_path,
-				src.replace(folder, '').replace(this.name, '')
-			);
+			const dst = path.join(assetsLocalPath, src.replace(folder, '').replace(this.name, ''));
 
-			this.assets[resource_path] = new Resource({ src, dst });
+			this.assets[resourcePath] = new Resource({ src, dst });
 		});
 		return this.assets;
 	}

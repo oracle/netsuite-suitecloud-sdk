@@ -10,6 +10,6 @@ module.exports = class Javascript extends Resource {
 
 		this.isEntrypoint = !!options.isEntrypoint;
 		this.format = '.js';
-		this.extension_fullname = options.extension_fullname;
+		this.extensionFullname = options.extensionFullname;
 	}
 };

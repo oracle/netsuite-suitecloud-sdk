@@ -13,12 +13,12 @@ module.exports = class Theme extends AbstractExtension {
 		super(options);
 
 		this.PREFIX = 'commercetheme';
-		this.raw_extension = this.raw_extension[this.PREFIX];
+		this.rawExtension = this.rawExtension[this.PREFIX];
 
-		this.base_path = this.raw_extension.basepath;
-		this.vendor = this.raw_extension.vendor;
-		this.name = this.raw_extension.name;
-		this.version = this.raw_extension.version;
+		this.basePath = this.rawExtension.basepath;
+		this.vendor = this.rawExtension.vendor;
+		this.name = this.rawExtension.name;
+		this.version = this.rawExtension.version;
 
 		this.overrides = {};
 	}
@@ -31,12 +31,12 @@ module.exports = class Theme extends AbstractExtension {
 		return this._getOverrides('scss');
 	}
 
-	_getOverrides(file_ext = 'all') {
-		if (this.overrides[file_ext]) {
-			return this.overrides[file_ext];
+	_getOverrides(fileExt = 'all') {
+		if (this.overrides[fileExt]) {
+			return this.overrides[fileExt];
 		}
 
-		let overrides = this.raw_extension.overrides || {};
+		let overrides = this.rawExtension.overrides || {};
 
 		overrides = overrides.override || overrides;
 
@@ -58,15 +58,15 @@ module.exports = class Theme extends AbstractExtension {
 		});
 
 		overrides = overrides.filter(override => {
-			const regex = new RegExp(`\.${file_ext}$`);
-			return file_ext === 'all' || regex.test(override.src);
+			const regex = new RegExp(`\.${fileExt}$`);
+			return fileExt === 'all' || regex.test(override.src);
 		});
 		const indexed = {};
 		overrides.forEach(override => {
 			indexed[override.dst] = override;
 		});
 
-		this.overrides[file_ext] = indexed;
-		return this.overrides[file_ext];
+		this.overrides[fileExt] = indexed;
+		return this.overrides[fileExt];
 	}
 };

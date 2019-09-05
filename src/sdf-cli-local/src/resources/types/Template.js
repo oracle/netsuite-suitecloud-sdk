@@ -11,7 +11,7 @@ module.exports = class Template extends Resource {
 
 		this.precompiled = '';
 		this.format = '.tpl';
-		this.extension_asset_url = options.extension_asset_url;
+		this.extensionAssetUrl = options.extensionAssetUrl;
 	}
 
 	getDependencies() {

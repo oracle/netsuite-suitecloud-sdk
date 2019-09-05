@@ -17,14 +17,14 @@ class FileSystem {
 		return dir.replace(/\\/g, '/');
 	}
 
-	createFolder(folder_name, parent_path, override) {
-		parent_path = this.forwardDashes(parent_path);
-		const folder_path = path.join(parent_path, folder_name);
+	createFolder(folderName, parentPath, override) {
+		parentPath = this.forwardDashes(parentPath);
+		const folderPath = path.join(parentPath, folderName);
 		if (override) {
-			this.service.deleteFolderRecursive(folder_path);
+			this.service.deleteFolderRecursive(folderPath);
 		}
-		this.service.createFolder(parent_path, folder_name);
-		return folder_path;
+		this.service.createFolder(parentPath, folderName);
+		return folderPath;
 	}
 
 	getFileContent(dir) {

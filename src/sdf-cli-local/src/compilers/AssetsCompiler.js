@@ -12,26 +12,26 @@ const FileSystem = require('../services/FileSystem');
 module.exports = class AssetsCompiler {
 	constructor(options) {
 		this.context = options.context;
-		this.resource_type = 'Assets';
+		this.resourceType = 'Assets';
 	}
 
 	compile(resources) {
-		Log.result('COMPILATION_START', [this.resource_type]);
+		Log.result('COMPILATION_START', [this.resourceType]);
 		resources = resources || this.context.getAssets();
 		return Utils.runParallel(this._copyResources(resources)).then(() => {
-			Log.result('COMPILATION_FINISH', [this.resource_type]);
+			Log.result('COMPILATION_FINISH', [this.resourceType]);
 		});
 	}
 
 	_copyResources(resources) {
 		const promises = [];
 
-		for (const resource_path in resources) {
-			const resource = resources[resource_path];
+		for (const resourcePath in resources) {
+			const resource = resources[resourcePath];
 			promises.push(() =>
 				FileSystem.copyFile(
 					resource.fullsrc(),
-					path.join(this.context.local_server_path, resource.dst)
+					path.join(this.context.localServerPath, resource.dst)
 				)
 			);
 		}

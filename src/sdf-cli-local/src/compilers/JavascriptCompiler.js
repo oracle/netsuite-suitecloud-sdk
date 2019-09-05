@@ -12,18 +12,18 @@ const FileSystem = require('../services/FileSystem');
 module.exports = class JavascriptCompiler {
 	constructor(options) {
 		this.context = options.context;
-		this.resource_type = 'Javascript';
+		this.resourceType = 'Javascript';
 	}
 
 	_createFolder() {
-		this.js_path = FileSystem.createFolder('javascript', this.context.local_server_path);
+		this.jsPath = FileSystem.createFolder('javascript', this.context.localServerPath);
 	}
 
 	async compile(resources = this.context.getJavascript()) {
-		Log.result('COMPILATION_START', [this.resource_type]);
+		Log.result('COMPILATION_START', [this.resourceType]);
 		this._createFolder();
 		return Utils.runParallel(await this._createFiles(resources)).then(() => {
-			Log.result('COMPILATION_FINISH', [this.resource_type]);
+			Log.result('COMPILATION_FINISH', [this.resourceType]);
 		});
 	}
 
@@ -31,85 +31,85 @@ module.exports = class JavascriptCompiler {
 		/**
 		 * The {app}_ext.js generated file content will be like:
 		 *	`var extensions = {};`
-		 *	`javascript_modules`
+		 *	`javascriptModules`
 		 *	`last javascript must be the entrypoint`
-		 *	`content_at_the_end (call methods in javascript_modules)`
+		 *	`contentAtTheEnd (call methods in javascriptModules)`
 		 */
-		const application_files = {
-			checkout: { javascript_modules: {}, content_at_the_end: '' },
-			shopping: { javascript_modules: {}, content_at_the_end: '' },
-			myaccount: { javascript_modules: {}, content_at_the_end: '' },
+		const applicationFiles = {
+			checkout: { javascriptModules: {}, contentAtTheEnd: '' },
+			shopping: { javascriptModules: {}, contentAtTheEnd: '' },
+			myaccount: { javascriptModules: {}, contentAtTheEnd: '' },
 		};
 
-		const read_files_promises = [];
-		for (const resource_path in resources) {
-			const resource = resources[resource_path];
-			read_files_promises.push(
+		const readFilesPromises = [];
+		for (const resourcePath in resources) {
+			const resource = resources[resourcePath];
+			readFilesPromises.push(
 				// read all files content:
 				resource.sourceContent().then(content => {
-					// then add the file content on each application_file
-					resource.applications.forEach(app_name => {
-						const ext_name = resource.extension_fullname;
-						const app_file = application_files[app_name];
-						app_file.javascript_modules[ext_name] =
-							app_file.javascript_modules[ext_name] || '';
+					// then add the file content on each applicationFile
+					resource.applications.forEach(appName => {
+						const extName = resource.extensionFullname;
+						const appFile = applicationFiles[appName];
+						appFile.javascriptModules[extName] =
+							appFile.javascriptModules[extName] || '';
 						// if it is an entrypoint, append to the end
 						// also add a try catch block that call SC.addExtensionModule
 						if (resource.isEntrypoint) {
-							app_file.content_at_the_end += this._createTryCatchBlock(
+							appFile.contentAtTheEnd += this._createTryCatchBlock(
 								resource.name,
-								resource.extension_fullname
+								resource.extensionFullname
 							);
-							app_file.javascript_modules[ext_name] += content;
+							appFile.javascriptModules[extName] += content;
 						} else {
 							// if it is not an entrypoint, append first
-							app_file.javascript_modules[ext_name] =
-								content + app_file.javascript_modules[ext_name];
+							appFile.javascriptModules[extName] =
+								content + appFile.javascriptModules[extName];
 						}
 					});
 				})
 			);
 		}
 
-		await Promise.all(read_files_promises);
+		await Promise.all(readFilesPromises);
 
-		const write_files_promises = [];
+		const writeFilesPromises = [];
 
-		for (const app_name in application_files) {
-			const application_file = application_files[app_name];
+		for (const appName in applicationFiles) {
+			const applicationFile = applicationFiles[appName];
 			// javascript modules content:
-			const javascript_modules = [];
-			for (const ext_name in application_file.javascript_modules) {
-				javascript_modules.push(
-					this._createModuleBlock(application_file.javascript_modules[ext_name], ext_name)
+			const javascriptModules = [];
+			for (const extName in applicationFile.javascriptModules) {
+				javascriptModules.push(
+					this._createModuleBlock(applicationFile.javascriptModules[extName], extName)
 				);
 			}
 			// define full content and dest and write file.
 			const content = `
 				var extensions = {};
-				${javascript_modules.join('')}
-				${application_file.content_at_the_end}
+				${javascriptModules.join('')}
+				${applicationFile.contentAtTheEnd}
 			`;
-			const dest = path.join(this.js_path, `${app_name}_ext.js`);
-			write_files_promises.push(() => FileSystem.writeFile(dest, content));
+			const dest = path.join(this.jsPath, `${appName}_ext.js`);
+			writeFilesPromises.push(() => FileSystem.writeFile(dest, content));
 		}
-		return write_files_promises;
+		return writeFilesPromises;
 	}
 
-	_createModuleBlock(content, ext_name) {
+	_createModuleBlock(content, extName) {
 		return `
-		extensions["${ext_name.replace(/#/g, '.')}"] = function() {			
+		extensions["${extName.replace(/#/g, '.')}"] = function() {			
 			function getExtensionAssetsPath(asset){
-				return 'assets/${ext_name.replace(/#/g, '/')}/' + asset;
+				return 'assets/${extName.replace(/#/g, '/')}/' + asset;
 			}
 			${content}
 		};`;
 	}
 
-	_createTryCatchBlock(entrypoint, ext_name) {
+	_createTryCatchBlock(entrypoint, extName) {
 		return `
 		try {
-			extensions['${ext_name.replace(/#/g, '.')}']();
+			extensions['${extName.replace(/#/g, '.')}']();
 			SC.addExtensionModule('${entrypoint}');
 		}
 		catch(error)

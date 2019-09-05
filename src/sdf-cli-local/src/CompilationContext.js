@@ -15,26 +15,26 @@ const Resource = require('./resources/Resource');
 
 module.exports = class CompilationContext {
 	constructor(options) {
-		const objects_path = options.objects_path;
+		const objectsPath = options.objectsPath;
 		const theme = options.theme;
 		const extensions = options.extensions || [];
 
-		this.files_path = options.files_path;
-		this.project_folder = options.project_folder;
+		this.filesPath = options.filesPath;
+		this.projectFolder = options.projectFolder;
 
-		Resource.setBaseSrc(this.files_path);
+		Resource.setBaseSrc(this.filesPath);
 
-		this.theme = new Theme({ objects_path: objects_path, extension_xml: theme });
+		this.theme = new Theme({ objectsPath: objectsPath, extensionXml: theme });
 
 		this.extensions = extensions.map(
-			extension => new Extension({ objects_path: objects_path, extension_xml: extension })
+			extension => new Extension({ objectsPath: objectsPath, extensionXml: extension })
 		);
 
-		this.all_extensions = [this.theme].concat(this.extensions);
+		this.allExtensions = [this.theme].concat(this.extensions);
 	}
 
 	setLocalServerPath(path) {
-		this.local_server_path = path;
+		this.localServerPath = path;
 	}
 
 	getTplOverrides() {
@@ -47,7 +47,7 @@ module.exports = class CompilationContext {
 
 	getTemplates() {
 		let templates = {};
-		this.all_extensions.forEach(
+		this.allExtensions.forEach(
 			extension => (templates = Object.assign(templates, extension.getTemplates()))
 		);
 		return this._handleOverrides(templates, this.getTplOverrides());
@@ -59,20 +59,20 @@ module.exports = class CompilationContext {
 			entrypoints: {},
 		};
 
-		this.all_extensions.forEach(extension => {
-			const ext_sass = extension.getSass();
-			const ext_assets_path = extension.getLocalAssetsPath('assets');
+		this.allExtensions.forEach(extension => {
+			const extSass = extension.getSass();
+			const extAssetsPath = extension.getLocalAssetsPath('assets');
 
-			for (const app in ext_sass.entrypoints) {
-				const app_sass = ext_sass.entrypoints[app];
+			for (const app in extSass.entrypoints) {
+				const appSass = extSass.entrypoints[app];
 				sass.entrypoints[app] = sass.entrypoints[app] || [];
 				sass.entrypoints[app].push({
-					entry: app_sass,
-					assets_path: ext_assets_path,
+					entry: appSass,
+					assetsPath: extAssetsPath,
 				});
 			}
 
-			sass.files = Utils.arrayUnion(sass.files, ext_sass.files);
+			sass.files = Utils.arrayUnion(sass.files, extSass.files);
 		});
 
 		return sass;
@@ -88,24 +88,24 @@ module.exports = class CompilationContext {
 
 	getAssets() {
 		let assets = {};
-		this.all_extensions.forEach(
+		this.allExtensions.forEach(
 			extension => (assets = Object.assign(assets, extension.getAssets()))
 		);
 		return assets;
 	}
 
 	excludeBaseFilesPath(dir) {
-		return path.relative(this.files_path, dir);
+		return path.relative(this.filesPath, dir);
 	}
 
 	_handleOverrides(resources, overrides) {
-		for (const resource_path in resources) {
-			const resource = resources[resource_path];
+		for (const resourcePath in resources) {
+			const resource = resources[resourcePath];
 			const override = overrides[resource.src];
 			if (override) {
-				const full_path = glob(path.join(this.project_folder, '**', override.src));
-				if (full_path.length) {
-					resource.override_fullsrc = full_path[0];
+				const fullPath = glob(path.join(this.projectFolder, '**', override.src));
+				if (fullPath.length) {
+					resource.overrideFullsrc = fullPath[0];
 					resource.override = override.src;
 				}
 			}
