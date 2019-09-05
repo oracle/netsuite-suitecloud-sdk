@@ -38,11 +38,20 @@ module.exports = class CommandActionExecutor {
 		assert(context.executionPath);
 		assert(typeof context.runInInteractiveMode === 'boolean');
 
+		let commandUserExtension;
 		try {
 			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(
 				context.commandName
 			);
+
 			const commandName = context.commandName;
+
+			this._cliConfigurationService.initialize(context.executionPath);
+			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
+			commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
+				commandName
+			);
+
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
@@ -50,11 +59,6 @@ module.exports = class CommandActionExecutor {
 				? this._accountDetailsService.get()
 				: null;
 			this._checkCanExecute({ runInInteractiveMode, commandMetadata, accountDetails });
-			this._cliConfigurationService.initialize(context.executionPath);
-			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
-			const commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
-				commandName
-			);
 
 			const command = this._commandInstanceFactory.create({
 				runInInteractiveMode: runInInteractiveMode,
@@ -78,9 +82,23 @@ module.exports = class CommandActionExecutor {
 			});
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
+
+			if (actionResult && actionResult.operationResult) {
+				if (actionResult.operationResult.status === OperationResultStatus.SUCCESS
+					&& commandUserExtension.onCompleted) {
+					commandUserExtension.onCompleted(actionResult);
+				} else if (actionResult.operationResult.status === OperationResultStatus.ERROR
+					&& commandUserExtension.onError) {
+					commandUserExtension.onError(actionResult);
+				}
+			}
+
 			return actionResult;
 		} catch (error) {
 			this._commandOutputHandler.showErrorResult(error);
+			if (commandUserExtension.onError) {
+				commandUserExtension.onError(error);
+			}
 		}
 	}
 
@@ -143,20 +161,7 @@ module.exports = class CommandActionExecutor {
 				runInInteractiveMode
 			);
 
-			const actionResult = await command.actionFunc(commandArgumentsAfterPreActionFunc);
-
-			if (actionResult) {
-				if (actionResult.operationResult
-					&& actionResult.operationResult.status === OperationResultStatus.ERROR) {
-					throw actionResult.operationResult.resultMessage;
-				}
-
-				if (commandUserExtension.onCompleted) {
-					commandUserExtension.onCompleted(actionResult);
-				}
-			}
-
-			return actionResult;
+			return await command.actionFunc(commandArgumentsAfterPreActionFunc);
 		} catch (error) {
 			if (commandUserExtension.onError) {
 				commandUserExtension.onError(error);
