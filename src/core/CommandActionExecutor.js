@@ -43,7 +43,6 @@ module.exports = class CommandActionExecutor {
 			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(
 				context.commandName
 			);
-
 			const commandName = context.commandName;
 
 			this._cliConfigurationService.initialize(context.executionPath);
@@ -163,9 +162,6 @@ module.exports = class CommandActionExecutor {
 
 			return await command.actionFunc(commandArgumentsAfterPreActionFunc);
 		} catch (error) {
-			if (commandUserExtension.onError) {
-				commandUserExtension.onError(error);
-			}
 			throw error;
 		}
 	}
