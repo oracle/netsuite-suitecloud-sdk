@@ -39,6 +39,7 @@ const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX =
 const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 const SUBDOMAIN_DOMAIN_URL_REGEX = /[\w\d].*\.[\w\d].*\.[\w\d].*/;
+const PRODUCTION_ACCOUNT_URL_REGEX = /^system(\.[\w-]+)?.netsuite.com$|^([\w-]+\.)app\.netsuite\.com$/i;
 
 class InteractiveAnswersValidator {
 	showValidationResults(value, ...funcs) {
@@ -180,6 +181,12 @@ class InteractiveAnswersValidator {
 			: VALIDATION_RESULT_FAILURE(
 					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE)
 			  );
+	}
+
+	validateNotProductionUrl(url) {
+		return !url.match(PRODUCTION_ACCOUNT_URL_REGEX)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_URL_WITH_DEV_FLAG));
 	}
 }
 
