@@ -55,6 +55,7 @@ const {
 	validateDevUrl,
 	validateFieldIsNotEmpty,
 	validateEmail,
+	validateNotProductionUrl,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 
@@ -100,7 +101,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_URL),
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
-						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl),
+						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl, validateNotProductionUrl),
 				},
 			]);
 		}
