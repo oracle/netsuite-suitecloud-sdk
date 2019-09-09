@@ -221,15 +221,15 @@ describe('validateNotProductionUrl', () => {
 	const failureResponse = {
 		result: false,
 		validationMessage:
-			'Enter a non-production domain URL. If you want to use a production account, run "scloud setupaccount" without the "--dev" flag.',
+			'Enter a development domain URL. If you want to use a production account, run "scloud setupaccount" without the "--dev" flag.',
 	};
 
 	it('should return a response with a positive result when the URL is non-production one', () => {
 		const nonProductionURLs = [
-			'luperez-quarks.se4.eng.netsuite.com',
-			'drebolleda-scrumbox-eu.du3.eng.netsuite.com',
-			'syedaliali.se4.eng.netsuite.com',
-			'rmercene2.se4.eng.netsuite.com',
+			'lp-quarks.se4.eng.netsuite.com',
+			'dr-scrumbox-eu.du3.eng.netsuite.com',
+			'sa.se4.eng.netsuite.com',
+			'rm2.se4.eng.netsuite.com',
 		];
 		nonProductionURLs.forEach(url =>
 			expect(validateNotProductionUrl(url)).toEqual(positiveResponse)
