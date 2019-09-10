@@ -11,8 +11,9 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const CommandUtils = require('../utils/CommandUtils');
-const ValidateSDFProjectUtils = require('../utils/ValidateSDFProjectUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
+const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
+const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 
 const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
@@ -38,8 +39,15 @@ const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
 module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._projectMetadataService = new ProjectInfoService(this._projectFolder);
-		this._projectType = this._projectMetadataService.getProjectType();
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._projectType = this._projectInfoService.getProjectType();
+		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
+			projectInfoService: this._projectInfoService,
+		});
+		this._applyContentProtectionArgumentHandler = new ApplyContentProtectinoArgumentHandler({
+			projectInfoService: this._projectInfoService,
+			commandName: this._commandMetadata.name,
+		});
 	}
 
 	_getCommandQuestions(prompt) {
@@ -88,7 +96,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			{
 				when:
 					this._projectType === PROJECT_SUITEAPP &&
-					this._projectMetadataService.hasLockOrHideFiles(),
+					this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION,
 				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
@@ -107,15 +115,15 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		]);
 	}
 
-	_preExecuteAction(answers) {
+	_preExecuteAction(args) {
+		this._accountSpecificValuesArgumentHandler.validate(args);
+		this._applyContentProtectionArgumentHandler.validate(args);
+
 		return {
-			...answers,
+			...args,
 			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
-			...ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(answers),
-			...ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(
-				answers,
-				this._projectType
-			)
+			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
+			...this._applyContentProtectionArgumentHandler.transformArgument(args),
 		};
 	}
 
