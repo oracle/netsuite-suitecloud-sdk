@@ -40,7 +40,6 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
-		this._projectType = this._projectInfoService.getProjectType();
 		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
 			projectInfoService: this._projectInfoService,
 		});
@@ -73,7 +72,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				],
 			},
 			{
-				when: this._projectType === PROJECT_ACP,
+				when: this._projectInfoService.getProjectType() === PROJECT_ACP,
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
@@ -95,7 +94,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			},
 			{
 				when:
-					this._projectType === PROJECT_SUITEAPP &&
+					this._projectInfoService.getProjectType() === PROJECT_SUITEAPP &&
 					this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION,
@@ -172,7 +171,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_showApplyContentProtectionOptionMessage(SDKParams) {
-		if (this._projectType === PROJECT_SUITEAPP) {
+		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			if (SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE) {
 				NodeUtils.println(
 					TranslationService.getMessage(
