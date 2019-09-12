@@ -7,7 +7,7 @@
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "This field contains forbidden characters. Use only lowercase letters and numbers.",
 	"ANSWERS_VALIDATION_MESSAGES_INVALID_EMAIL": "Invalid email address.",
-	"ANSWERS_VALIDATION_MESSAGES_PRODUCTION_URL_WITH_DEV_FLAG": "Enter a development domain URL. If you want to use a production account, run \"scloud setupaccount\" without the \"--dev\" flag.",
+	"ANSWERS_VALIDATION_MESSAGES_PRODUCTION_URL_WITH_DEV_FLAG": "Enter a non-production domain URL. If you want to use a production account, run \"scloud setupaccount\" without the \"--dev\" option.",
 	"ANSWERS_VALIDATION_MESSAGES_PROJECT_VERSION_FORMAT": "The project version must only contain digits and dots. Ensure it follows a pattern such as \"0.0.0\".",
 	"ANSWERS_VALIDATION_MESSAGES_PUBLISHER_ID_FORMAT": "The publisher ID must be a fully qualified name, such as \"com.netsuite\". It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.",
 	"ANSWERS_VALIDATION_MESSAGES_SCRIPT_ID_FORMAT": "The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.",
@@ -43,7 +43,7 @@
 	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying...",
 	"COMMAND_DEPLOY_MESSAGES_LOCALLY_VALIDATED": "The \"{0}\" project has been locally validated.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed without applying content protection.",
-	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_CONTENT_PROTECTION_REASON": "Content protection was not applied because the InstallationPreferences folder doesn't have hiding.xml and locking.xml files. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {0}.\nTo learn how to create a locking.xml file, see {1}.",
+	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_CONTENT_PROTECTION_REASON": "Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {0}.\nTo learn how to create a locking.xml file, see {1}.",
 
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
@@ -174,6 +174,8 @@
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 	"ERRORS_PROCESS_FAILED": "The process has failed.",
 	"ERRORS_PROMPTING_INTERACTIVE_QUESTIONS_FAILED": "There was an internal error while prompting interactive questions. Details:{0}{1}",
+	"ERRORS_SCRUMBOX_URL_NOT_FOUND": "The {0} URL does not exist. Check the domain URL and try again.\n\n{1}",
+	"ERRORS_SDKEXECUTOR_NO_JAR_FILE_FOUND": "There is no JAR file in your CLI for Node.js. Run \"npm install\" from \"{0}\" to install the JAR file.",
 	"ERRORS_SDKEXECUTOR_NO_TBA_FOR_ACCOUNT_AND_ROLE": "The email, domain URL, account ID, and role combination in your account.json file has not been set up for token-based authentication (TBA). Run \"scloud setupaccount\" to set up TBA.",
 	"ERRORS_SDKEXECUTOR_RUNNING_COMMAND": "There was an internal error while running the command. Details: {0}",
 	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}",
@@ -191,9 +193,9 @@
 	"NO": "No",
 
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP": "Account-specific values cannot be applied to SuiteApps.",
-	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalues option. Enter either WARNING or ERROR.",
+	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
 	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection cannot be applied to account customization projects.",
-	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITHOUT_HIDING_AND_LOCKING": "The {0} command can not proceed applying content protection because the InstallationPreferences folder doesn't have hiding.xml and locking.xml files.\nTo learn how to create a hiding.xml file, see {1}.\nTo learn how to create a locking.xml file, see {2}.",
+	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITHOUT_HIDING_AND_LOCKING": "There was an error with the {0} command. Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {1}.\nTo learn how to create a locking.xml file, see {2}.",
 
 	"YES": "Yes"
 }

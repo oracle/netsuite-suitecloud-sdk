@@ -10,6 +10,7 @@ const UserPreferencesService = require('./userpreferences/UserPreferencesService
 const TranslationService = require('./TranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
+const ENOTFOUND = 'ENOTFOUND'
 
 const NLAuthorizationHeader = {
 	name: 'NLAuth',
@@ -67,6 +68,10 @@ module.exports = class AccountService {
 			// timedout response
 			if (errorResponse.cause && errorResponse.cause.code === ERROR_TIMED_OUT) {
 				return TranslationService.getMessage(ERRORS.TIMED_OUT_CONNECTION);
+			}
+			// unable to reach a scrumbox url
+			if (errorResponse.cause && errorResponse.cause.code === ENOTFOUND) {
+				return TranslationService.getMessage(ERRORS.SCRUMBOX_URL_NOT_FOUND, errorResponse.cause.host, errorResponse.message);
 			}
 			// other responses - just forward the message
 			if (errorResponse.message) {
