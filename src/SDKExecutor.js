@@ -12,6 +12,7 @@ const {
 	SDK_FILENAME,
 } = require('./ApplicationConstants');
 const path = require('path');
+const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const UserPreferencesService = require('./services/userpreferences/UserPreferencesService');
 const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
@@ -54,9 +55,13 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_DEVELOPMENT_MODE_JVM_OPTION
 				: '';
 
-			const sdkJarPath = `"${path.join(__dirname, `../${SDK_DIRECTORY_NAME}/${SDK_FILENAME}`)}"`;
+			const sdkJarPath = path.join(__dirname, `../${SDK_DIRECTORY_NAME}/${SDK_FILENAME}`);
+			if (!FileUtils.exists(sdkJarPath)) {
+				throw TranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND, path.join(__dirname,".."));
+			}
+			const quotedSdkJarPath = `"${sdkJarPath}"`;
 			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption}`;
-			const jvmCommand = `java -jar ${vmOptions} ${sdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
+			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
