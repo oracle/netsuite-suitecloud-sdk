@@ -117,7 +117,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						fieldValue,
 						validateFieldIsNotEmpty,
 						validateFieldHasNoSpaces,
-						validateFieldIsLowerCase
+						fieldValue => validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, fieldValue)
 					),
 			},
 			{
@@ -334,7 +334,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					optionValue => validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_ID),
 					validateFieldIsNotEmpty,
 					validateFieldHasNoSpaces,
-					validateFieldIsLowerCase
+					optionValue => validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, optionValue)
 				)
 			);
 		}
