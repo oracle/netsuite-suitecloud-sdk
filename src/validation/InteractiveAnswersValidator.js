@@ -68,11 +68,11 @@ class InteractiveAnswersValidator {
 			  );
 	}
 
-	validateFieldIsLowerCase(fieldValue) {
+	validateFieldIsLowerCase(fieldOptionId, fieldValue) {
 		return fieldValue.match(ALPHANUMERIC_LOWERCASE_WHOLE_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(
-					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FIELD_NOT_LOWER_CASE)
+					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FIELD_NOT_LOWER_CASE, fieldOptionId)
 			  );
 	}
 

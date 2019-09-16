@@ -5,7 +5,7 @@
 	"ANSWERS_VALIDATION_MESSAGES_EMPTY_FIELD": "This value cannot be empty.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_SPACES": "This field cannot contain spaces.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
-	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "This field contains forbidden characters. Use only lowercase letters and numbers.",
+	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "The {0} field contains forbidden characters. Use only lowercase letters and numbers.",
 	"ANSWERS_VALIDATION_MESSAGES_INVALID_EMAIL": "Invalid email address.",
 	"ANSWERS_VALIDATION_MESSAGES_PRODUCTION_URL_WITH_DEV_FLAG": "Enter a non-production domain URL. If you want to use a production account, run \"scloud setupaccount\" without the \"--dev\" option.",
 	"ANSWERS_VALIDATION_MESSAGES_PROJECT_VERSION_FORMAT": "The project version must only contain digits and dots. Ensure it follows a pattern such as \"0.0.0\".",
@@ -156,7 +156,7 @@
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "The following warnings were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_VALIDATION_OUTPUT_MESSAGE": "        - Line No. {0} - {1}",
-	
+
 	"DOWNLOADING_SUITECLOUD_SDK": "Downloading SuiteCloud SDK dependencies...",
 	"DOWNLOADING_SUITECLOUD_SDK_SUCCESS": "SuiteCloud SDK dependencies downloaded successfully.",
 	"DOWNLOADING_SUITECLOUD_SDK_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
