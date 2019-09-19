@@ -25,6 +25,8 @@ const DEFAULT_USER_PREFERENCES = new UserPreferences({
 	proxyUrl: '',
 });
 
+const USER_PREFERENCES_PROPERTIES_KEYS = ['proxUrl', 'useProxy'];
+
 let CACHED_USER_PREFERENCES;
 
 module.exports = class UserPreferencesService {
@@ -59,6 +61,7 @@ module.exports = class UserPreferencesService {
 				return CACHED_USER_PREFERENCES;
 			}
 			const userPreferencesJson = FileUtils.readAsJson(USER_PREFERENCES_FILEPATH);
+			this._validateUserPreferencesFileStructure(userPreferencesJson);
 			const userPreferences = UserPreferences.fromJson(userPreferencesJson);
 			CACHED_USER_PREFERENCES = userPreferences;
 			return userPreferences;
@@ -66,4 +69,15 @@ module.exports = class UserPreferencesService {
 		return DEFAULT_USER_PREFERENCES;
 	}
 
+	_validateUserPreferencesFileStructure(userPreferencesJson) {
+		
+		USER_PREFERENCES_PROPERTIES_KEYS.forEach(propertyKey => {
+			if (!userPreferencesJson.hasOwnProperty(propertyKey)) {
+				throw TranslationService.getMessage(
+					ERRORS.ACCOUNT_DETAILS_FILE_CONTENT,
+					USER_PREFERENCES_FILEPATH
+				);
+			}
+		});
+	}
 };
