@@ -7,6 +7,7 @@
 const {
 	SDK_DEVELOPMENT_MODE_JVM_OPTION,
 	SDK_INTEGRATION_MODE_JVM_OPTION,
+	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDK_DIRECTORY_NAME,
 	SDK_FILENAME,
@@ -55,12 +56,14 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_DEVELOPMENT_MODE_JVM_OPTION
 				: '';
 
+			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
+
 			const sdkJarPath = path.join(__dirname, `../${SDK_DIRECTORY_NAME}/${SDK_FILENAME}`);
 			if (!FileUtils.exists(sdkJarPath)) {
 				throw TranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND, path.join(__dirname,".."));
 			}
 			const quotedSdkJarPath = `"${sdkJarPath}"`;
-			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption}`;
+			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption} ${clientPlatformVersionOption}`;
 			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });
