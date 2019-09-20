@@ -22,11 +22,13 @@ module.exports = {
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
 		MANIFEST_XML: 'manifest.xml',
+		USER_PREFERENCES: 'userpreferences.json'
 	},
 	FOLDER_NAMES: {
 		FILE_CABINET: '/FileCabinet',
 		INSTALLATION_PREFERENCES: '/InstallationPreferences',
 		OBJECTS: '/Objects',
+		USER_PREFERENCES: '.suitecloud-cli-nodejs',
 	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
