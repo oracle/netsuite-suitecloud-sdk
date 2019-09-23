@@ -67,7 +67,7 @@ module.exports = class UserPreferencesService {
 	_validateUserPreferencesFileStructure(userPreferencesJson) {
 		USER_PREFERENCES_PROPERTIES_KEYS.forEach(propertyKey => {
 			if (!userPreferencesJson.hasOwnProperty(propertyKey)) {
-				throw TranslationService.getMessage(ERRORS.USER_PREFERENCES_FILE_CONTENT, FILE_NAMES.USER_PREFERENCES);
+				throw TranslationService.getMessage(ERRORS.USER_PREFERENCES_FILE_CONTENT);
 			}
 		});
 	}
