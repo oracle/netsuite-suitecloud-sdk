@@ -86,8 +86,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_setProxy(proxyUrl) {
-		const existingUserPreferences = this._userPreferencesService.getUserPreferences();
-		const alreadyHasProxySetup = existingUserPreferences.useProxy;
+		const alreadyHasProxySetup = this._userPreferencesService.hasUserPreferences();
 		this._userPreferencesService.setUserPreferences(
 			new UserPreferences({
 				useProxy: true,
