@@ -49,18 +49,19 @@ describe('validateFieldHasNoSpaces', function() {
 });
 
 describe('validateFieldIsLowerCase', function() {
+	const fieldOptionId = 'testFieldOptionId';
 	const failureResponse = {
 		result: false,
 		validationMessage:
-			'This field contains forbidden characters. Use only lowercase letters and numbers.',
+			'The ' + fieldOptionId + ' field contains forbidden characters. Use only lowercase letters and numbers.',
 	};
 
 	it('should return true when string is in lower case', function() {
-		expect(validateFieldIsLowerCase('lowercase')).toEqual(positiveResponse);
+		expect(validateFieldIsLowerCase(fieldOptionId,'lowercase')).toEqual(positiveResponse);
 	});
 
 	it('should return false with validation message when string is not all in lower case', function() {
-		expect(validateFieldIsLowerCase('WithUpperCase')).toEqual(failureResponse);
+		expect(validateFieldIsLowerCase(fieldOptionId,'WithUpperCase')).toEqual(failureResponse);
 	});
 });
 
