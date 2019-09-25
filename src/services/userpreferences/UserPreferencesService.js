@@ -55,7 +55,15 @@ module.exports = class UserPreferencesService {
 			if (CACHED_USER_PREFERENCES) {
 				return CACHED_USER_PREFERENCES;
 			}
-			const userPreferencesJson = FileUtils.readAsJson(USER_PREFERENCES_FILEPATH);
+			let userPreferencesJson;
+			try {
+				userPreferencesJson = FileUtils.readAsJson(`${USER_PREFERENCES_FILEPATH}`);
+			} catch (error) {
+				throw `${TranslationService.getMessage(
+					ERRORS.JSON_PARSING_PROBLEM,
+					USER_PREFERENCES_FILEPATH
+				)}\n${TranslationService.getMessage(ERRORS.USER_PREFERENCES_FILE_CONTENT)}`;
+			}
 			this._validateUserPreferencesFileStructure(userPreferencesJson);
 			const userPreferences = UserPreferences.fromJson(userPreferencesJson);
 			CACHED_USER_PREFERENCES = userPreferences;
