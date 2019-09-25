@@ -55,27 +55,23 @@ module.exports = class UserPreferencesService {
 			if (CACHED_USER_PREFERENCES) {
 				return CACHED_USER_PREFERENCES;
 			}
-			let userPreferencesJson;
 			try {
-				userPreferencesJson = FileUtils.readAsJson(`${USER_PREFERENCES_FILEPATH}`);
+				const userPreferencesJson = FileUtils.readAsJson(USER_PREFERENCES_FILEPATH);
+				this._validateUserPreferencesProperties(userPreferencesJson);
+				const userPreferences = UserPreferences.fromJson(userPreferencesJson);
+				CACHED_USER_PREFERENCES = userPreferences;
+				return userPreferences;
 			} catch (error) {
-				throw `${TranslationService.getMessage(
-					ERRORS.JSON_PARSING_PROBLEM,
-					USER_PREFERENCES_FILEPATH
-				)}\n${TranslationService.getMessage(ERRORS.USER_PREFERENCES_FILE_CONTENT)}`;
-			}
-			this._validateUserPreferencesFileStructure(userPreferencesJson);
-			const userPreferences = UserPreferences.fromJson(userPreferencesJson);
-			CACHED_USER_PREFERENCES = userPreferences;
-			return userPreferences;
+				throw TranslationService.getMessage(ERRORS.USER_PREFERENCES_FILE_CONTENT);
+			}	
 		}
 		return DEFAULT_USER_PREFERENCES;
 	}
 
-	_validateUserPreferencesFileStructure(userPreferencesJson) {
+	_validateUserPreferencesProperties(userPreferencesJson) {
 		USER_PREFERENCES_PROPERTIES_KEYS.forEach(propertyKey => {
 			if (!userPreferencesJson.hasOwnProperty(propertyKey)) {
-				throw TranslationService.getMessage(ERRORS.USER_PREFERENCES_FILE_CONTENT);
+				throw Error(`Missing ${propertyKey} property in the ${USER_PREFERENCES_FILEPATH} file.`);
 			}
 		});
 	}
