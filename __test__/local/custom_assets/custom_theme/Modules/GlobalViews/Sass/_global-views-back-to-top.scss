@@ -1,0 +1,21 @@
+.global-views-back-to-top {
+    background: red;
+    border-bottom: 1px solid red;
+    display: block;
+    text-align:center;
+    padding-bottom: 12px;
+
+    @media (min-width: $screen-sm-min) {
+        display: none;
+    }
+}
+.global-views-back-to-top a:hover {
+    text-decoration: none;
+}
+.global-views-back-to-top-icon {
+    @extend .sc-value;
+    color: red;
+    display: block;
+    font-size: 22px;
+    padding: 12px;
+}

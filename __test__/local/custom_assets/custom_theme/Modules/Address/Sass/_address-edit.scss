@@ -1,0 +1,32 @@
+.address-edit {
+    @extend .sc-value;
+}
+.address-edit-form-button-submit {
+    @extend .sc-value;
+    @extend .sc-value;
+}
+.address-edit-form-button-cancel {
+    @extend .sc-value;
+    @extend .sc-value;
+    margin-top: 15px;
+
+    @media (min-width: $screen-sm-min) {
+        margin-left: 15px;
+        margin-top: 0;
+    }
+}
+.address-edit-form-button-reset {
+    @extend .sc-value;
+    @extend .sc-value;
+    margin-top: 15px;
+    margin-top: 15px;
+
+    @media (min-width: $screen-sm-min) {
+        margin-left: 15px;
+        margin-top: 0;
+    }
+}
+
+
+
+

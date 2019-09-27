@@ -1,0 +1,56 @@
+.global-views-message{
+	@extend .sc-value;
+	position:relative;
+	margin-bottom: 15px;
+}
+
+.global-views-message-button {
+	@extend .sc-value;
+}
+.global-views-message-success {
+	color: red;
+	background-color: red;
+
+	p {
+		color: red;
+		font-size:12px;
+	}
+}
+.global-views-message-info {
+	color: red;
+	background-color: red;
+
+	p {
+		color: red;
+		font-size:12px;
+	}
+}
+.global-views-message-error {
+	@extend .sc-value;
+
+	p {
+		color: red;
+		font-size:12px;
+	}
+}
+.global-views-message-warning {
+	color: red;
+  	background-color: red;
+
+	p {
+		color: red;
+		font-size:12px;
+	}
+}
+.global-views-message-icon-success i {
+	color: red;
+}
+.global-views-message-icon-info i {
+	color: red;
+}
+.global-views-message-icon-error i {
+	color: red;
+}
+.global-views-message-icon-warning i {
+	color: red;
+}

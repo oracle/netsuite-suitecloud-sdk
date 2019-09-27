@@ -1,0 +1,48 @@
+.creditcard-edit-button-back {
+    @extend .sc-value;
+}
+
+.creditcard-edit-button-back-icon {
+    @extend .sc-value;
+}
+
+.creditcard-edit {
+    @extend .sc-value;
+}
+
+.creditcard-edit-form-button-submit {
+    @extend .sc-value;
+    margin: 15px;
+}
+
+.creditcard-edit-form-button-cancel {
+    @extend .sc-value;
+}
+
+.creditcard-edit-form-button-reset {
+    @extend .sc-value;
+}
+
+//Modal CreditCardDetailsView
+.global-views-modal-content .global-views-modal-content-body {
+
+    .creditcard-edit {
+        background: none;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+
+
+
+
+
+
+.creditcard-edit-card-selected {
+    opacity:1;
+}
+
+.creditcard-edit-card-no-selected {
+    opacity:0.1;
+}

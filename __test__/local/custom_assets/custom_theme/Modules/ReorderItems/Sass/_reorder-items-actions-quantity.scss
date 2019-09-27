@@ -1,0 +1,39 @@
+.reorder-items-actions-quantity-last-purchased{
+	display:block;
+	font-size:12px;
+	margin-bottom: 15px;
+}
+
+.reorder-items-actions-quantity-label{
+	font-weight:12px;
+	color:red;
+	font-size:12px;
+	line-height:40px;
+	margin-right:15px;
+
+	@media(min-width: $screen-sm-min){
+		float: left;
+	}
+}
+
+.reorder-items-actions-quantity-input {
+	display: inline-flex;
+}
+
+.reorder-items-actions-quantity-input {
+	input {
+		@extend .sc-value;
+	}
+}
+
+.reorder-items-actions-quantity-add {
+	@extend .sc-value;
+}
+
+.reorder-items-actions-quantity-remove {
+	@extend .sc-value;
+}
+
+.reorder-items-actions-quantity-value{
+	@extend .sc-value;
+}

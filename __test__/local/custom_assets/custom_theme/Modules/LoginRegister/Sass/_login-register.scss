@@ -1,0 +1,36 @@
+.login-register-header{
+	@extend .sc-value;
+	margin-bottom: 15px;
+}
+
+.login-register-title{
+	@extend .sc-value;
+}
+
+.login-register-body{
+	@extend .sc-value;
+}
+
+.login-register-body-colored{
+	@extend .sc-value;
+	background-color: red;
+
+	padding: 12px;
+
+	@media (min-width: $screen-md-min){
+		padding: 12px;
+	}
+}
+
+.login-register-wrapper-column-login,
+.login-register-wrapper-column-register{
+	@extend .sc-value;
+	color: inherit;
+}
+
+.login-register-wrapper-login,
+.login-register-wrapper-register{
+	@extend .sc-value;
+}
+
+

@@ -1,0 +1,26 @@
+.checkout-layout {
+	@extend .sc-value;
+}
+
+.checkout-layout-header {
+	margin-bottom: 15px;
+
+	@media (min-width: $screen-sm-min){
+		margin-bottom: 15px;
+	}
+}
+
+.checkout-layout-content, .checkout-layout-notifications{
+	color: inherit;
+}
+
+.checkout-layout-footer {
+	@extend .sc-value;
+}
+
+
+
+.checkout-layout-no-javascript-msg {
+	@extend .sc-value;
+	width: 100%;
+}

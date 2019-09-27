@@ -1,0 +1,9 @@
+.cart-summary-gift-certificate-cell {
+	@extend .sc-value;
+}
+
+.cart-summary-gift-certificate-cell-value {
+	float:right;
+  	padding-right: 12px;
+	font-size:12px;
+}

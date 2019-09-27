@@ -1,0 +1,25 @@
+.cart-item-actions-links {
+	margin-top: 15px;
+	display: table;
+	width: auto;
+
+	a {
+		display: table-cell;
+		height: $sc-target-size;
+		vertical-align: middle;
+		padding-right: 15px;
+	}
+
+	@media (max-width: $screen-md-max) {
+		margin-top: 0;
+	}
+}
+
+.cart-item-actions-item-list-actionable-edit-button-edit {
+	margin-right: 15px;
+}
+
+.cart-item-actions-item-list-actionable-edit-content-saveforlater {
+	margin-right: 15px;
+}
+

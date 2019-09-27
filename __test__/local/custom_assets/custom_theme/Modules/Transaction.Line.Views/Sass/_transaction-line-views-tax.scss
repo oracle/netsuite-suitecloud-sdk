@@ -1,0 +1,13 @@
+.transaction-line-views-tax {
+
+	@extend .sc-value;
+	
+	.transaction-line-views-tax-label {
+		@extend .sc-value;
+	}
+	.transaction-line-views-tax-amount-value,
+	.transaction-line-views-tax-rate-value {
+		@extend .sc-value;
+	}
+	
+} 

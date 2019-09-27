@@ -1,0 +1,30 @@
+.global-views-modal-large {
+	@extend .sc-value;
+}
+.global-views-modal-content {
+	@extend .sc-value;
+	padding: 15px;
+	border-radius: 10px;
+	display: block;
+	-webkit-box-shadow: 0 2px 5px transparentize($sc-neutral-shade-500, 1-0.2);
+	box-shadow: 0 2px 5px transparentize($sc-neutral-shade-500, 1-0.2);
+}
+.global-views-modal-content-header {
+	margin-bottom:15px;
+	display: inline-block;
+	width: 100%;
+}
+.global-views-modal-content-header-close {
+  margin-top: -2px;
+	float:right;
+	font-size:35px;
+	font-weight:12px;
+	line-height:20px;
+	color: red;
+	cursor: pointer;
+	background: none;
+}
+.global-views-modal-content-header-title {
+	@extend .sc-value;
+}
+

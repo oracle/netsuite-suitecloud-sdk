@@ -1,0 +1,55 @@
+.login-register-checkout-as-guest-header{
+	margin-bottom: 15px;
+}
+
+.login-register-checkout-as-guest-body {
+	margin-bottom: 15px;
+}
+
+.login-register-checkout-as-guest-description{
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.login-register-checkout-as-guest-control-group{
+	margin-top: 15px;
+}
+
+
+
+.login-register-checkout-as-guest-required{
+	@extend .sc-value;
+}
+
+.login-register-checkout-as-guest-input{
+	@extend .sc-value;
+}
+
+.login-register-checkout-as-guest-submit,
+.login-register-checkout-as-guest-button-show
+{
+	@extend .sc-value;
+	@extend .sc-value;
+}
+
+.login-register-checkout-as-guest-form-messages{
+	margin-top: 15px;
+
+	.global-views-message-error {
+		@extend .sc-value;
+		margin-bottom: 0;
+	}
+
+	.global-views-message-button {
+		display: none;
+	}
+}
+
+.login-register-checkout-as-guest-form-controls-group{
+	@extend .sc-value;
+}
+
+
+
+
+

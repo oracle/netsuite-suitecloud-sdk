@@ -1,0 +1,102 @@
+.recordviews-selectable-actionable-row {
+	border-bottom: 1px solid red;
+	cursor: pointer;
+}
+
+.recordviews-selectable-actionable-row.disabled{
+	cursor: default;
+}
+
+.recordviews-selectable-actionable-row:hover{
+	background-color: red;
+}
+
+.recordviews-selectable-actionable-row.recordviews-selectable-actionable-active{
+	background-color: red;
+}
+
+.recordviews-selectable-actionable-td-selectable{
+	@extend .sc-value;
+	@extend .sc-value;
+
+	padding-top: 12px;
+	padding-bottom: 12px;
+
+	@media (min-width: $screen-md-min){
+		padding-top: 0;
+		padding-bottom:0;
+	}
+}
+
+.recordviews-selectable-actionable-td-title{
+	padding-top: 12px;
+	width:100%;
+
+	@media (min-width: $screen-md-min){
+		padding-top: 0;
+		width:25%;
+	}
+}
+
+.recordviews-selectable-actionable-td-amount{
+
+	@media (min-width: $screen-sm-min){
+		padding-bottom: 12px;
+	}
+
+	@media (min-width: $screen-md-min){
+		padding-bottom: 0;
+	}
+}
+
+.recordviews-selectable-actionable-td-action{
+	padding-top: 12px;
+	padding-bottom: 12px;
+
+	@media (min-width: $screen-sm-min){
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+}
+
+
+.recordviews-selectable-actionable-label{
+	@extend .sc-value;
+}
+
+.recordviews-selectable-actionable-value{
+	@extend .sc-value;
+}
+
+.recordviews-selectable-actionable-anchor{
+	@extend .sc-value;
+}
+
+.recordviews-selectable-actionable-title{
+	@extend .sc-value;
+}
+
+.recordviews-selectable-actionable-td-amount{
+	.recordviews-selectable-actionable-value{
+		color: red;
+	}
+}
+
+.recordviews-selectable-actionable-label{
+
+	@media (min-width:$screen-md-min){
+		display: none;
+	}
+}
+
+.recordviews-selectable-actionable-td,
+.recordviews-selectable-actionable-td-action
+{
+	@media (min-width: $screen-md-min){
+		text-align: right;
+	}
+}
+
+.recordviews-selectable-actionable-td-action{
+	@extend .sc-value;
+}

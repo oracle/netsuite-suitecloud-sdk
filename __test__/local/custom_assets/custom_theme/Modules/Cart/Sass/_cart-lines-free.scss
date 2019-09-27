@@ -1,0 +1,131 @@
+.cart-lines-free-name{
+	margin-bottom:15px;
+}
+
+.cart-lines-free-name-link{
+	@extend .sc-value;
+}
+
+.cart-lines-free-name-viewonly{
+	@extend .sc-value;
+}
+
+.cart-lines-free-thumbnail{
+	img{
+		width:200px;
+	}
+}
+
+.cart-lines-free-price{
+	margin-bottom:15px;
+}
+
+.cart-lines-free-price .transaction-line-views-price-lead{
+	@extend .sc-value;
+}
+
+.cart-lines-free-options{
+	.cart-option{
+		font-size:12px;
+	}
+}
+
+.cart-lines-free-row {
+	@extend .sc-value;
+	margin-bottom:15px;
+}
+
+.cart-lines-free-col-first {
+	@extend .sc-value;
+	@extend .sc-value;
+}
+
+.cart-lines-free-col-middle {
+	@extend .sc-value;
+	@extend .sc-value;
+
+	.cart-lines-free-item-actions{
+		@media (max-width: $screen-md-max) {
+			display: none;
+		}
+	}
+}
+
+.cart-lines-free-col-last {
+	@extend .sc-value;
+	@extend .sc-value;
+
+	.cart-lines-free-item-actions{
+		@media (min-width: $screen-lg-min) {
+			display: none;
+		}
+	}
+}
+
+.cart-lines-free-item-summary-quantity-add {
+	@extend .sc-value;
+}
+
+.cart-lines-free-item-summary-quantity-remove {
+	@extend .sc-value;
+}
+
+.cart-lines-free-item-summary-quantity-value {
+ 	@extend .sc-value;
+}
+
+.cart-lines-free-item-summary-container-qty {
+	overflow: auto;
+}
+
+.cart-lines-free-item-summary-container-qty-label, .cart-lines-free-item-summary-container-qty-value {
+
+	@extend .sc-value;
+	color: red;
+	font-weight: 600;
+	margin-bottom: 0;
+
+	@media (min-width: $screen-md-min) {
+		display: inline-block;
+		vertical-align: middle;
+	}
+}
+.cart-lines-free-item-summary-container-qty-input {
+	@extend .sc-value;
+
+	@media (min-width: $screen-md-min) {
+			display: inline-block;
+			vertical-align: middle;
+			margin-left: 15px;
+	}
+}
+
+.cart-lines-free-item-summary-amount-label{
+	@extend .sc-value;
+	color: red;
+	font-weight: 600;
+}
+
+.cart-lines-free-item-summary-view-old-price{
+	@extend .sc-value;
+	margin-left: 15px;
+}
+
+.cart-lines-free-shipping-method {
+	margin-top: 15px;
+}
+
+.cart-lines-free-item-actions {
+	@extend .sc-value;
+}
+
+.cart-lines-free-badge {
+	@extend .sc-value;
+	position: absolute;
+}
+
+
+
+
+
+

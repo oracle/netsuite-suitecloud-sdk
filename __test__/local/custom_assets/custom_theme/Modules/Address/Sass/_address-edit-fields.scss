@@ -1,0 +1,45 @@
+.address-edit-fields {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    display: inline-block;
+}
+
+.address-edit-fields-required,
+.address-edit-fields-group-label-required {
+    @extend .sc-value;
+}
+.address-edit-fields-group-input {
+    @extend .sc-value;
+}
+.address-edit-fields-group-input-zip {
+    @extend .sc-value;
+}
+.address-edit-fields-group-input-checkbox {
+    font-weight: 12px;
+}
+.address-edit-fields-group-form-controls p {
+    margin-bottom: 15px;
+}
+
+.address-edit-fields-company-optional-label,
+.address-edit-fields-phone-optional-label {
+	@extend .sc-value;
+	font-weight: 12px;
+	display: inline;
+}
+.address-edit-fields-addr2-optional-label {
+	@extend .sc-value;
+}
+
+.address-edit-fields-input-required{
+    @extend .sc-value;
+}
+.address-edit-fields-input-help{
+    @extend .sc-value;
+}
+
+.address-edit-fields-icon-question-sign{
+    @extend .sc-value;
+}
+
+

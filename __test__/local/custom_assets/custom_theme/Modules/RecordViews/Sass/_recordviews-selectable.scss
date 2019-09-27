@@ -1,0 +1,81 @@
+.recordviews-selectable-row {
+	border-bottom: 1px solid red;
+	cursor: pointer;
+}
+
+.recordviews-selectable-row:hover{
+	background-color: red;
+}
+
+.recordviews-selectable-row.recordviews-selectable-active{
+	background-color: red;
+}
+
+.recordviews-selectable-td-selectable{
+	@extend .sc-value;
+	@extend .sc-value;
+
+	padding-top: 12px;
+	padding-bottom: 12px;
+
+	@media (min-width: $screen-md-min){
+		padding-top: 0;
+		padding-bottom:0;
+	}
+}
+
+.recordviews-selectable-td-title{
+	padding-top: 12px;
+
+	@media (min-width: $screen-md-min){
+		padding-top: 0;
+	}
+}
+
+.recordviews-selectable-td-last{
+	padding-bottom: 12px;
+
+	@media (min-width: $screen-md-min){
+		padding-bottom: 0;
+	}
+}
+
+
+.recordviews-selectable-label{
+	@extend .sc-value;
+}
+
+.recordviews-selectable-value{
+	@extend .sc-value;
+}
+
+.recordviews-selectable-anchor{
+	@extend .sc-value;
+	color: red;
+}
+
+.recordviews-selectable-title{
+	@extend .sc-value;
+}
+
+.recordviews-selectable-actionable-td-amount{
+	.recordviews-selectable-actionable-value{
+		color: red;
+	}
+}
+
+.recordviews-selectable-label{
+
+	@media (min-width:$screen-md-min){
+		display: none;
+	}
+}
+
+.recordviews-selectable-td
+{
+	@media (min-width: $screen-md-min){
+		text-align: right;
+	}
+}
+
+

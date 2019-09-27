@@ -1,0 +1,164 @@
+$credit-card-height: 230px;
+$credit-card-height-offset: 20px;
+
+.creditcard {
+    @extend .sc-value;
+    color: inherit;
+    @extend .sc-value;
+    margin-bottom: 15px;
+}
+
+.creditcard-require-field {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    display: inline-block;
+}
+
+.creditcard-required {
+    @extend .sc-value;
+}
+
+.overview-payment .creditcard,
+.order-wizard-paymentmethod-creditcard-module .creditcard {
+    width: 100%;
+    padding: 0;
+}
+
+.creditcard-content {
+    width: 100%;
+
+    @media(min-width: $screen-sm-min) {
+        min-height: $credit-card-height + $credit-card-height-offset;
+    }
+}
+
+.creditcard-list .creditcard-content,
+.creditcard-module-list-placeholder .creditcard-content {
+    @extend .sc-value;
+
+    @media(min-width: $screen-sm-min) {
+        min-height: $credit-card-height + $credit-card-height-offset;
+    }
+}
+
+.creditcard-section {
+    @extend .sc-value;
+    margin-bottom:15px;
+    padding: 0;
+}
+
+.creditcard-number {
+    display: inline-block;
+}
+
+.creditcard-security-code-section {
+    @extend .sc-value;
+    padding: 0;
+}
+
+.creditcard-header-icon {
+    float: right;
+    margin-right: 15px;
+    width:auto;
+    height:$sc-target-size-mobile;
+}
+
+.creditcard-default {
+    @extend .sc-value;
+}
+
+.creditcard-default-icon {
+    @extend .sc-value;
+}
+
+.creditcard-actions {
+    clear: both;
+    margin-top: 15px;
+    text-align: right;
+}
+
+.creditcard-edit-form-button-edit {
+    @extend .sc-value;
+    @extend .sc-value;
+    margin-left: 0;
+    text-align: center;
+    margin-right:15px;
+
+    @media (min-width: $screen-xs-min) and (max-width: $screen-lg-min)  {
+        margin-bottom:15px;
+    }
+}
+
+.creditcard-use-this-card-button {
+    @extend .sc-value;
+    @extend .sc-value;
+    @extend .sc-value;
+    margin-top:15px;
+    margin-bottom:15px;
+
+    @media (min-width: $screen-sm-min) {
+        margin-bottom:0px;
+    }
+}
+
+.creditcard-edit-form {
+    clear:both;
+}
+
+.creditcard-edit-form-button-remove {
+    @extend .sc-value;
+    @extend .sc-value;
+}
+
+.creditcard-name {
+    margin-bottom:15px;
+}
+
+// checkout specific (hide back to myaccount btn)
+.checkout-layout ~ .modal-container .creditcard-edit-back {
+    display: none;
+}
+
+.creditcard-new-card {
+	@extend .sc-value;
+    height: 154px;
+}
+
+.creditcard-new-card-title {
+    display: inline-block;
+    margin-top: 20px;
+    color: $sc-neutral-shade-300;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.creditcard-action {
+    @extend .sc-value;
+}
+
+.creditcard-container {
+    padding: 12px;
+}
+
+.creditcard-selector {
+    @extend .sc-value;
+    cursor: pointer;
+    border-bottom: 0px;
+    padding: 12px;
+}
+
+.creditcard-selected {
+	background-color: $sc-neutral-shade-0;
+}
+
+.creditcard-selector-option {
+    margin-bottom: 0px;
+    cursor: pointer;
+}
+
+.creditcard-new-card-plus-icon {
+	@extend .sc-value;
+    font-size: 2.5rem;
+    color: red;
+}
+

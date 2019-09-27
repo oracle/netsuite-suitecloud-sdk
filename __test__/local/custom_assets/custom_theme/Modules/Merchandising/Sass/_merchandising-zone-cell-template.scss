@@ -1,0 +1,19 @@
+.merchandising-zone-cell-template{
+	.item-view-lead-price{
+		text-align:center;
+	}
+	.item-views-price{
+		text-align:center;
+	}
+	.item-views-related-item-rate{
+		width:92px;
+		margin:0 auto;
+	}
+	.item-relations-related-item-thumbnail{
+		display:inline;
+		min-height:120px;
+		img{
+			height:125px;
+		}
+	}
+}
