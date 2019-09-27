@@ -6,6 +6,7 @@
 
 const Utils = require('./Utils');
 const FileSystem = require('./services/FileSystem');
+const LocalServer = require('./LocalServer');
 const path = require('path');
 const url = require('url');
 
@@ -18,7 +19,6 @@ module.exports = class AbstractExtension {
 		const extensionXml = options.extensionXml;
 
 		this.rawExtension = Utils.parseXml(objectsPath, extensionXml);
-		this.baseUrl = 'http://localhost:7777'; // TODO remove and use cli-config
 	}
 
 	iterateResources(resources, func) {
@@ -93,7 +93,7 @@ module.exports = class AbstractExtension {
 
 	getAssetsUrl() {
 		return FileSystem.forwardDashes(
-			url.resolve(this.baseUrl, `assets/${this.getLocalAssetsPath()}`)
+			url.resolve(LocalServer.serverUrl(), `assets/${this.getLocalAssetsPath()}`)
 		);
 	}
 

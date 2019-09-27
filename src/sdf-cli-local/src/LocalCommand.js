@@ -75,16 +75,17 @@ module.exports = class LocalCommand {
 		this._validateTheme(theme);
 		this._validateExtensions(extensions);
 
+		LocalServer.config({ port: answers.port, runhttps: answers.runhttps });
+
 		const context = this._createCompilationContext(theme, extensions);
 		const compiler = new Compiler({ context: context });
-		const localServer = new LocalServer({ context: context });
 		const watch = new Watch({ context: context, compilers: compiler.compilers });
 
 		await compiler.compile();
 
 		watch.start();
 
-		return localServer.startServer();
+		return LocalServer.startServer(context.localServerPath);
 	}
 
 	_createCompilationContext(theme, extensions) {

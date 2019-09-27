@@ -96,7 +96,7 @@
 	"COMMAND_LOCAL_COMPILATION_START_FOR": "Starting {0} compilation for {1}",
 	"COMMAND_LOCAL_COMPILATION_FINISH": "Finished {0} compilation",
 	"COMMAND_LOCAL_COMPILATION_FINISH_FOR": "Finished {0} compilation for {1}",
-	"COMMAND_LOCAL_SERVER": "Local server available at http{0}://localhost:{1}",
+	"COMMAND_LOCAL_SERVER": "Local server available at {0}",
 	"COMMAND_LOCAL_WATCH": "Watching current folder: {0}",
 	"COMMAND_LOCAL_SSP_LOCAL_FILES_INFO": "Please check your local.ssp applications to start working locally",
 	"COMMAND_LOCAL_CANCEL_ACTION": "To cancel enter: control + c",

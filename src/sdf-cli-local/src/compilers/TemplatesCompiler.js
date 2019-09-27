@@ -11,6 +11,7 @@ const url = require('url');
 const path = require('path');
 const Log = require('../services/Log');
 const FileSystem = require('../services/FileSystem');
+const LocalServer = require('../LocalServer');
 
 module.exports = class TemplatesCompiler {
 	constructor(options) {
@@ -79,10 +80,9 @@ module.exports = class TemplatesCompiler {
 			const entryfileContent = {
 				paths: this.entrypoints[app],
 				baseUrl: url.resolve(
-					'http://localhost:7777/',
+					LocalServer.serverUrl(),
 					`${this.templatesFolder}/${this.processedTemplatesFolder}`
 				),
-				// TODO remove and use cli-config
 			};
 
 			promises.push(() => FileSystem.writeFile(dest, this._wrapEntrypoint(entryfileContent)));

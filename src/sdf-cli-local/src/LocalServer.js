@@ -10,34 +10,40 @@ const whoService = require('./services/Who');
 const express = require('express');
 const cors = require('cors');
 
-module.exports = class LocalServer {
-	constructor(options) {
-		this.context = options.context;
+class LocalServer {
+	constructor() {
+		this.port = 7777;
+		this.runhttps = false;
 		this.server = null;
 	}
 
-	startServer() {
-		//TODO override with config values
-		let serverConfig = {
-			runHttps: false,
-			port: 7777,
-			folders: [this.context.localServerPath],
-		};
+	config(options){
+		if (options.port) {
+			this.port = options.port;
+		}
+		if (options.runhttps) {
+			this.runhttps = options.runhttps === "true" || options.runhttps === true;
+		}
+	}
+
+	startServer(localPath) {
 
 		const app = express();
 		app.use(cors({ origin: true }));
 
-		serverConfig.folders.forEach(folder => {
-			app.use('/', express.static(folder));
-		});
+		app.use('/', express.static(localPath));
 
 		//Service used by the index-local.ssp files to know what files load
 		app.use('/who/:app', whoService);
 		//Serves the script patch to ignore tpl defines executed by core javascript file
 		app.use('/define_patch.js', this._definePatchService);
 
-		this.server = app.listen(serverConfig.port, () => {
-			this._localMessage(serverConfig);
+		this.server = app.listen(this.port, () => {
+			Log.info(Log.separator);
+			Log.default('SERVER', [this.serverUrl()]);
+			Log.info('WATCH', [localPath]);
+			Log.info('SSP_LOCAL_FILES_INFO');
+			Log.default('CANCEL_ACTION');
 		});
 
 		//server is listening so we return a new promise that will never be resolved
@@ -48,6 +54,10 @@ module.exports = class LocalServer {
 		if (this.server) {
 			this.server.close();
 		}
+	}
+
+	serverUrl(){
+		return `http${this.runhttps ? 's' : ''}://localhost:${this.port}`;
 	}
 
 	_definePatchService(req, res) {
@@ -72,12 +82,6 @@ module.exports = class LocalServer {
 		res.setHeader('Content-Type', 'application/javascript');
 		res.send(`${response}; define_patch();`);
 	}
-
-	_localMessage(serverConfig) {
-		Log.info(Log.separator);
-		Log.default('SERVER', [serverConfig.runHttps ? 's' : '', serverConfig.port]);
-		Log.info('WATCH', [serverConfig.folders]);
-		Log.info('SSP_LOCAL_FILES_INFO');
-		Log.default('CANCEL_ACTION');
-	}
 };
+
+module.exports = new LocalServer();

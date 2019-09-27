@@ -13,9 +13,15 @@
 		return {
 			load: function(name, req, onload, config) {
 				try {
-					req([name], function(value) {
-						onload(value);
-					});
+					req(
+						[name],
+						function(value) {
+							onload(value);
+						},
+						function() {
+							onload(null);
+						}
+					);
 				} catch (e) {}
 			},
 		};

@@ -38,6 +38,18 @@
                 "alias": "extensions",
                 "description": "Specify the SuiteCommerce extension you want to include in your local build. To specify multiple extensions, enter the names of the objects separated by commas. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project.",
                 "mandatory": false
+            },
+            {
+                "name": "port",
+                "alias": "port",
+                "description": "Specify the port number where the server is located.",
+                "mandatory": false
+            },
+            {
+                "name": "runhttps",
+                "alias": "runhttps",
+                "description": "Set to true if you are using https protocol locally.",
+                "mandatory": false
             }
         ]
     },
