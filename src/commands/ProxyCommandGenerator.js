@@ -10,8 +10,8 @@ const {
 	COMMAND_PROXY: { ARGS_VALIDATION, MESSAGES },
 } = require('../services/TranslationKeys');
 const NodeUtils = require('../utils/NodeUtils');
-const UserPreferencesService = require('../services/userpreferences/UserPreferencesService');
-const UserPreferences = require('../services/userpreferences/UserPreferences');
+const CLISettingsService = require('../services/settings/CLISettingsService');
+const CLISettings = require('../services/settings/CLISettings');
 const url = require('url');
 
 const SET_OPTION = 'set';
@@ -20,7 +20,7 @@ const CLEAR_FLAG_OPTION = 'clear';
 module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._userPreferencesService = new UserPreferencesService();
+		this._CLISettingsService = new CLISettingsService();
 	}
 
 	_executeAction(args) {
@@ -86,9 +86,9 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_setProxy(proxyUrl) {
-		const alreadyHasProxySetup = this._userPreferencesService.hasUserPreferences();
-		this._userPreferencesService.setUserPreferences(
-			new UserPreferences({
+		const alreadyHasProxySetup = this._CLISettingsService.hasCLISettings();
+		this._CLISettingsService.setCLISettings(
+			new CLISettings({
 				useProxy: true,
 				proxyUrl: proxyUrl,
 			})
@@ -97,6 +97,6 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_clearProxy() {
-		this._userPreferencesService.clearUserPreferences();
+		this._CLISettingsService.clearCLISettings();
 	}
 };
