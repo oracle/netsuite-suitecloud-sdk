@@ -33,25 +33,25 @@ module.exports = class CLISettingsService {
 		this._fileSystemService = new FileSystemService();
 	}
 
-	hasCLISettings() {
+	hasSettings() {
 		return FileUtils.exists(CLI_SETTINGS_FILEPATH);
 	}
 
-	setCLISettings(cliSettings) {
+	saveSettings(cliSettings) {
 		this._fileSystemService.createFolder(HOME_PATH, FOLDER_NAMES.SUITECLOUD_SDK);
 		FileUtils.create(CLI_SETTINGS_FILEPATH, cliSettings);
 	}
 
-	clearCLISettings() {
-		if (!this.hasCLISettings()) {
+	clearSettings() {
+		if (!this.hasSettings()) {
 			return;
 		}
-		this.setCLISettings(DEFAULT_CLI_SETTINGS);
+		this.saveSettings(DEFAULT_CLI_SETTINGS);
 		CACHED_CLI_SETTINGS = null;
 	}
 
-	getCLISettings() {
-		if (this.hasCLISettings()) {
+	getSettings() {
+		if (this.hasSettings()) {
 			if (CACHED_CLI_SETTINGS) {
 				return CACHED_CLI_SETTINGS;
 			}
@@ -62,7 +62,7 @@ module.exports = class CLISettingsService {
 				CACHED_CLI_SETTINGS = cliSettings;
 				return cliSettings;
 			} catch (error) {
-				throw TranslationService.getMessage(ERRORS.USER_PREFERENCES_FILE_CONTENT);
+				throw TranslationService.getMessage(ERRORS.CLI_SETTINGS_FILE_CONTENT);
 			}	
 		}
 		return DEFAULT_CLI_SETTINGS;

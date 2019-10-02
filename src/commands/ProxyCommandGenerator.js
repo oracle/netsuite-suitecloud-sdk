@@ -86,8 +86,8 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_setProxy(proxyUrl) {
-		const alreadyHasProxySetup = this._CLISettingsService.hasCLISettings();
-		this._CLISettingsService.setCLISettings(
+		const alreadyHasProxySetup = this._CLISettingsService.hasSettings();
+		this._CLISettingsService.saveSettings(
 			new CLISettings({
 				useProxy: true,
 				proxyUrl: proxyUrl,
@@ -97,6 +97,6 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_clearProxy() {
-		this._CLISettingsService.clearCLISettings();
+		this._CLISettingsService.clearSettings();
 	}
 };

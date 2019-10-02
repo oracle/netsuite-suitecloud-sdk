@@ -109,7 +109,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 	}
 
 	_getProxyOptions() {
-		const cliSettings = this._CLISettingsService.getCLISettings();
+		const cliSettings = this._CLISettingsService.getSettings();
 		if (!cliSettings.useProxy) {
 			return '';
 		}

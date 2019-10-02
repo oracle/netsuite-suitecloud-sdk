@@ -53,7 +53,7 @@ module.exports = class AccountService {
 			headers: {
 				Authorization: authorizationHeader,
 			},
-			...(!isDevelopment && { proxy: this._CLISettingsService.getCLISettings().proxyUrl }),
+			...(!isDevelopment && { proxy: this._CLISettingsService.getSettings().proxyUrl }),
 		};
 	}
 
