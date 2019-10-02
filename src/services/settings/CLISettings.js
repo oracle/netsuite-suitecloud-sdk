@@ -4,7 +4,7 @@
 */
 'use strict';
 
-module.exports = class UserPreferences {
+module.exports = class CLISettings {
 	constructor(options) {
 		this._useProxy = options.useProxy;
 		this._proxyUrl = options.proxyUrl;
@@ -26,7 +26,7 @@ module.exports = class UserPreferences {
 	}
 
 	static fromJson(json) {
-		return new UserPreferences({
+		return new CLISettings({
 			useProxy: json.useProxy,
 			proxyUrl: json.proxyUrl,
 		});

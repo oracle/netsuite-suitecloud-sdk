@@ -6,7 +6,7 @@
 
 const request = require('request-promise-native');
 const assert = require('assert');
-const UserPreferencesService = require('./userpreferences/UserPreferencesService');
+const CLISettingsService = require('./settings/CLISettingsService');
 const TranslationService = require('./TranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
@@ -24,7 +24,7 @@ const NLAuthorizationHeader = {
 
 module.exports = class AccountService {
 	constructor() {
-		this._userPreferencesService = new UserPreferencesService();
+		this._CLISettingsService = new CLISettingsService();
 	}
 
 	getAccountAndRoles({ email, password, restRolesUrl, isDevelopment }) {
@@ -53,7 +53,7 @@ module.exports = class AccountService {
 			headers: {
 				Authorization: authorizationHeader,
 			},
-			...(!isDevelopment && { proxy: this._userPreferencesService.getUserPreferences().proxyUrl }),
+			...(!isDevelopment && { proxy: this._CLISettingsService.getSettings().proxyUrl }),
 		};
 	}
 

@@ -15,7 +15,7 @@ const {
 const path = require('path');
 const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
-const UserPreferencesService = require('./services/userpreferences/UserPreferencesService');
+const CLISettingsService = require('./services/settings/CLISettingsService');
 const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
@@ -25,7 +25,7 @@ const SDKErrorCodes = require('./SDKErrorCodes');
 module.exports.SDKExecutor = class SDKExecutor {
 
 	constructor() {
-		this._userPreferencesService = new UserPreferencesService();
+		this._CLISettingsService = new CLISettingsService();
 		this._accountDetailsService = new AccountDetailsService();
 	}
 
@@ -109,15 +109,15 @@ module.exports.SDKExecutor = class SDKExecutor {
 	}
 
 	_getProxyOptions() {
-		const userPreferences = this._userPreferencesService.getUserPreferences();
-		if (!userPreferences.useProxy) {
+		const cliSettings = this._CLISettingsService.getSettings();
+		if (!cliSettings.useProxy) {
 			return '';
 		}
-		const proxyUrl = url.parse(userPreferences.proxyUrl);
+		const proxyUrl = url.parse(cliSettings.proxyUrl);
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
 			throw TranslationService.getMessage(
 				ERRORS.WRONG_PROXY_SETTING,
-				userPreferences.proxyUrl
+				cliSettings.proxyUrl
 			);
 		}
 		const protocolWithoutColon = proxyUrl.protocol.slice(0, -1);
