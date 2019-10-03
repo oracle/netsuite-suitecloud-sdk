@@ -10,8 +10,8 @@ const {
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDK_DIRECTORY_NAME,
-	SDK_FILENAME,
 } = require('./ApplicationConstants');
+const SDKProperties = require('./core/sdksetup/SDKProperties');
 const path = require('path');
 const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
@@ -58,7 +58,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
-			const sdkJarPath = path.join(__dirname, `../${SDK_DIRECTORY_NAME}/${SDK_FILENAME}`);
+			const sdkJarPath = path.join(__dirname, `../${SDK_DIRECTORY_NAME}/${SDKProperties.getSDKFileName()}`);
 			if (!FileUtils.exists(sdkJarPath)) {
 				throw TranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND, path.join(__dirname,".."));
 			}
