@@ -96,6 +96,10 @@ describe('validateProjectVersion', function() {
 			'The project version must only contain digits and dots. Ensure it follows a pattern such as "0.0.0".',
 	};
 
+	it('should return true when string is in valid project version format with parts having more than one digit', function() {
+		expect(validateProjectVersion('10.100.1000')).toEqual(positiveResponse);
+	});
+
 	it('should return true when string is in valid project version format', function() {
 		expect(validateProjectVersion('1.0.0')).toEqual(positiveResponse);
 	});
