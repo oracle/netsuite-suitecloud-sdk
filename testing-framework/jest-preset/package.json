@@ -1,0 +1,12 @@
+{
+    "name": "suitecloud-testing-jest-preset",
+    "main": "jest-preset.js",
+    "version": "1.0.0",
+    "author": "Quarks",
+    "dependencies": {
+        "@babel/core": "^7.6.3",
+        "@babel/preset-env": "^7.6.3",
+        "babel-jest": "^24.9.0",
+        "babel-plugin-transform-amd-to-commonjs": "1.4.0"
+    }
+}
