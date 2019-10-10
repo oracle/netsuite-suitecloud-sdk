@@ -111,6 +111,15 @@ module.exports = [
 		},
 	},
 	{
+		name: 'Dataset',
+		value: {
+			name: 'Dataset',
+			type: 'dataset',
+			prefix: 'custdataset_',
+			hasRelatedFiles: false,
+		},
+	},
+	{
 		name: 'Email Template',
 		value: {
 			name: 'Email Template',
@@ -564,6 +573,15 @@ module.exports = [
 			name: 'Translation Collection',
 			type: 'translationcollection',
 			prefix: 'custcollection_',
+			hasRelatedFiles: false,
+		},
+	},
+	{
+		name: 'Workbook',
+		value: {
+            name: 'Workbook',
+			type: 'workbook',
+			prefix: 'customworkflow_',
 			hasRelatedFiles: false,
 		},
 	},
