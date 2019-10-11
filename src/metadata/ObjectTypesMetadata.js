@@ -581,7 +581,7 @@ module.exports = [
 		value: {
             name: 'Workbook',
 			type: 'workbook',
-			prefix: 'customworkflow_',
+			prefix: 'custworkbook_',
 			hasRelatedFiles: false,
 		},
 	},
