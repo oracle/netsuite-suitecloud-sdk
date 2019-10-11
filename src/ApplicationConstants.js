@@ -13,6 +13,7 @@ module.exports = {
 	SDK_FILENAME: 'cli-2019.2.1.jar',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
+	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION: '-DclientPlatformVersion',
 	SDK_PROXY_JVM_OPTIONS: {
 		PROTOCOL: '-DproxyProtocol',
 		HOST: '-DproxyHost',
@@ -22,11 +23,13 @@ module.exports = {
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
 		MANIFEST_XML: 'manifest.xml',
+		CLI_SETTINGS: 'nodejs-cli-settings.json'
 	},
 	FOLDER_NAMES: {
 		FILE_CABINET: '/FileCabinet',
 		INSTALLATION_PREFERENCES: '/InstallationPreferences',
 		OBJECTS: '/Objects',
+		SUITECLOUD_SDK: '.suitecloud-sdk',
 	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',

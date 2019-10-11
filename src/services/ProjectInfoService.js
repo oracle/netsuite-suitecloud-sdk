@@ -114,7 +114,7 @@ module.exports = class ProjectInfoService {
 		return CACHED_PROJECT_TYPE;
 	}
 
-	hasLockOrHideFiles() {
+	hasLockAndHideFiles() {
 		const pathToInstallationPreferences = path.join(
 			this._projectFolder,
 			FOLDER_NAMES.INSTALLATION_PREFERENCES
@@ -122,7 +122,7 @@ module.exports = class ProjectInfoService {
 		return (
 			FileUtils.exists(
 				path.join(pathToInstallationPreferences, FILE_NAMES.HIDING_PREFERENCE)
-			) ||
+			) &&
 			FileUtils.exists(
 				path.join(pathToInstallationPreferences, FILE_NAMES.LOCKING_PREFERENCE)
 			)
