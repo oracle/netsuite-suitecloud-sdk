@@ -20,7 +20,7 @@ const assert = require('assert');
 
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
-const MANIFEST_TAG_REGEX = '<manifest.*>[^]*</manifest>$';
+const MANIFEST_TAG_REGEX = '[\\s\\n]*<manifest.*>[^]*</manifest>[\\s\\n]*$';
 
 
 let CACHED_PROJECT_TYPE;
