@@ -75,11 +75,12 @@ module.exports = class CLI {
 
 	_isInstalledJavaVersionSupported() {
 		const installedJavaVersion = this._getInstalledJavaVersion();
-		return installedJavaVersion.replace('"', '').startsWith(`${SDK_REQUIRED_JAVA_VERSION}.`);
+		return installedJavaVersion.startsWith(`"${SDK_REQUIRED_JAVA_VERSION}.`);
 	}
 
 	_getInstalledJavaVersion() {
-		const childProcess = spawn('java -fullversion', [], { shell: true });
+		const cmd = 'java -fullversion';
+		const childProcess = spawn(cmd, [], { shell: true });
 		const fullVersionOutput = childProcess.stderr.toString();
 		const segments = fullVersionOutput.split(' ');
 		return segments[3]; //The actual version is in the 4th segment of the output (i.e. java full version "11.1.0_201-b09")
