@@ -167,7 +167,7 @@
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE": "The return value of the function should be an object with the property \"arguments\" of type \"object\".",
 	"ERRORS_CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE": "There was an error while loading configuration file {0}. Please review the file and try again. Details:{1}{2}",
 	"ERRORS_CLI_SETTINGS_FILE_CONTENT": "There is a problem with your proxy settings. Run \"scloud proxy --set http://my-proxy-domain:80\", with the proxy server URL you want to use, or clear it by running \"scloud proxy --clear\".",
-	"ERRORS_CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version is not compatible with SDF CLI. Install JRE version {0}.",
+	"ERRORS_CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version is not compatible with CLI for Java. Install Java JDK version {0}.",
 	"ERRORS_COMMAND_DOES_NOT_EXIST": "The \"{0}\" command does not exist. Run \"scloud\" to see the supported commands.",
 	"ERRORS_COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE": "The \"{0}\" command does not support interactive mode. Run \"scloud {0} --help\" to see how to run the command.",
 	"ERRORS_FILE": "There was an error in the file {0}: \n",
