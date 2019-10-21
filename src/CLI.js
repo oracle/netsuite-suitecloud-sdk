@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const assert = require('assert');
@@ -13,11 +13,13 @@ const {
 	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE },
 	ERRORS,
 } = require('./services/TranslationKeys');
+const { SDK_REQUIRED_JAVA_VERSION } = require('./ApplicationConstants');
+const spawn = require('child_process').spawnSync;
 const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapExceptionMessage;
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
 
-const CLI_VERSION = '19.2.1'
+const CLI_VERSION = '19.2.1';
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -33,6 +35,14 @@ module.exports = class CLI {
 
 	start(process) {
 		try {
+			if (!this._isInstalledJavaVersionSupported()) {
+				throw new Error(
+					TranslationService.getMessage(
+						ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+						SDK_REQUIRED_JAVA_VERSION
+					)
+				);
+			}
 			const rootCLIPath = this._getCLIRootPath();
 			this._commandsMetadataService.initializeCommandsMetadata(rootCLIPath);
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
@@ -61,6 +71,18 @@ module.exports = class CLI {
 		} catch (exception) {
 			NodeUtils.println(unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 		}
+	}
+
+	_isInstalledJavaVersionSupported() {
+		const installedJavaVersion = this._getInstalledJavaVersion();
+		return installedJavaVersion.replace('"', '').startsWith(`${SDK_REQUIRED_JAVA_VERSION}.`);
+	}
+
+	_getInstalledJavaVersion() {
+		const childProcess = spawn('java -fullversion', [], { shell: true });
+		const fullVersionOutput = childProcess.stderr.toString();
+		const segments = fullVersionOutput.split(' ');
+		return segments[3]; //The actual version is in the 4th segment of the output (i.e. java full version "11.1.0_201-b09")
 	}
 
 	_getCLIRootPath() {
