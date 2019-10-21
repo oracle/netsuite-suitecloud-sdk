@@ -75,7 +75,7 @@ module.exports = class CLI {
 
 	_isInstalledJavaVersionSupported() {
 		const installedJavaVersion = this._getInstalledJavaVersion();
-		return installedJavaVersion.startsWith(`"${SDK_REQUIRED_JAVA_VERSION}.`);
+		return installedJavaVersion.startsWith(`"${SDK_REQUIRED_JAVA_VERSION}`);
 	}
 
 	_getInstalledJavaVersion() {
