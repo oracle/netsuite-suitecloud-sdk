@@ -10,12 +10,15 @@ const {
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDK_DIRECTORY_NAME,
+	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
 const SDKProperties = require('./core/sdksetup/SDKProperties');
 const path = require('path');
 const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
+const CLISettings = require('./services/settings/CLISettings');
+const EnvironmentInformationService = require('./services/EnvironmentInformationService')
 const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
@@ -27,14 +30,24 @@ module.exports.SDKExecutor = class SDKExecutor {
 	constructor() {
 		this._CLISettingsService = new CLISettingsService();
 		this._accountDetailsService = new AccountDetailsService();
+		this._environmentInformationService = new EnvironmentInformationService();
 	}
 
 	execute(executionContext) {
 		const proxyOptions = this._getProxyOptions();
+		const isJavaVersionValid = this._isJavaVersionValid();
 		const accountDetails = executionContext.includeAccountDetailsParams ? this._accountDetailsService.get() : null;
 
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
+
+			if (!isJavaVersionValid) {
+				this._checkJavaVersionAndUpdateEnvironmentSettings();
+				throw TranslationService.getMessage(
+					ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+					SDK_REQUIRED_JAVA_VERSION
+				);
+			}
 
 			if (executionContext.includeAccountDetailsParams) {
 				executionContext.addParam('account', accountDetails.accountId);
@@ -102,10 +115,30 @@ module.exports.SDKExecutor = class SDKExecutor {
 						);
 					}
 				} else if (code !== 0) {
+					this._checkJavaVersionAndUpdateEnvironmentSettings();
 					reject(TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code));
 				}
 			});
 		});
+	}
+
+	_checkJavaVersionAndUpdateEnvironmentSettings() {
+		if (!this._environmentInformationService.isInstalledJavaVersionValid()) {
+			throw TranslationService.getMessage(
+				ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+				SDK_REQUIRED_JAVA_VERSION
+			);
+		} else {
+			const currentSettings = this._CLISettingsService.getSettings();
+			let newSettings = JSON.parse(JSON.stringify(currentSettings));
+			newSettings.isJavaVersionValid = true;
+			this._CLISettingsService.saveSettings(CLISettings.fromJson(newSettings));
+		}
+	}
+
+	_isJavaVersionValid() {
+		const cliSettings = this._CLISettingsService.getSettings();
+		return cliSettings.isJavaVersionValid;
 	}
 
 	_getProxyOptions() {

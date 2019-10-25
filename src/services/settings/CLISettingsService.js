@@ -24,6 +24,7 @@ const CLI_SETTINGS_PROPERTIES_KEYS = ['proxyUrl', 'useProxy'];
 const DEFAULT_CLI_SETTINGS = new CLISettings({
 	useProxy: false,
 	proxyUrl: '',
+	isJavaVersionValid: false
 });
 
 let CACHED_CLI_SETTINGS;

@@ -97,6 +97,12 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_clearProxy() {
-		this._CLISettingsService.clearSettings();
+		if (this._CLISettingsService.hasSettings()) {
+			const currentSettings = this._CLISettingsService.getSettings();
+			let newSettings = JSON.parse(JSON.stringify(currentSettings));
+			newSettings.useProxy = false;
+			newSettings.proxyUrl = '';
+			this._CLISettingsService.saveSettings(CLISettings.fromJson(newSettings));
+		}
 	}
 };

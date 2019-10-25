@@ -35,14 +35,6 @@ module.exports = class CLI {
 
 	start(process) {
 		try {
-			if (!this._isInstalledJavaVersionSupported()) {
-				throw new Error(
-					TranslationService.getMessage(
-						ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
-						SDK_REQUIRED_JAVA_VERSION
-					)
-				);
-			}
 			const rootCLIPath = this._getCLIRootPath();
 			this._commandsMetadataService.initializeCommandsMetadata(rootCLIPath);
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
@@ -71,19 +63,6 @@ module.exports = class CLI {
 		} catch (exception) {
 			NodeUtils.println(unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 		}
-	}
-
-	_isInstalledJavaVersionSupported() {
-		const installedJavaVersion = this._getInstalledJavaVersion();
-		return installedJavaVersion.startsWith(`"${SDK_REQUIRED_JAVA_VERSION}`);
-	}
-
-	_getInstalledJavaVersion() {
-		const cmd = 'java -fullversion';
-		const childProcess = spawn(cmd, [], { shell: true });
-		const fullVersionOutput = childProcess.stderr.toString();
-		const segments = fullVersionOutput.split(' ');
-		return segments[3]; //The actual version is in the 4th segment of the output (i.e. java full version "11.1.0_201-b09")
 	}
 
 	_getCLIRootPath() {
