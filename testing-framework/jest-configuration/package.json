@@ -1,6 +1,6 @@
 {
-    "name": "suitecloud-testing-jest-preset",
-    "main": "jest-preset.js",
+    "name": "suitecloud-testing-jest-configuration",
+    "main": "SuiteCloudJestConfiguration.js",
     "version": "1.0.0",
     "author": "Quarks",
     "dependencies": {

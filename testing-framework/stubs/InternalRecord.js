@@ -422,7 +422,7 @@ define(['./Line', './Sublist'], function(Line, Sublist) {
          */
 
         this.getSublist = function(options) {
-            return new Sublist();
+            return Sublist;
         };
 
         /**

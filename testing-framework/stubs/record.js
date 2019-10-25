@@ -23,11 +23,11 @@ define(['./InternalRecord'], function(Record) {
    * @since 2015.2
    */
   record.prototype.create = function(options) {
-    return new Record();
+    return Record;
   };
   record.prototype.create.promise = function(options) {
     return new Promise(resolve => {
-      resolve(new Record());
+      resolve(Record);
     });
   };
 
