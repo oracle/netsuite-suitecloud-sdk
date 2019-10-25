@@ -7,30 +7,35 @@
 const Utils = require('../Utils');
 const Log = require('../services/Log');
 const path = require('path');
-const _ = require('underscore');
 const FileSystem = require('../services/FileSystem');
 
 module.exports = class AssetsCompiler {
 	constructor(options) {
 		this.context = options.context;
-		this.resource_type = 'Assets';
+		this.resourceType = 'Assets';
 	}
 
 	compile(resources) {
-		Log.result('COMPILATION_START', [this.resource_type]);
+		Log.result('COMPILATION_START', [this.resourceType]);
 		resources = resources || this.context.getAssets();
-		return Utils.runParallel(this.copyResources(resources)).then(() => {
-			Log.result('COMPILATION_FINISH', [this.resource_type]);
+		return Utils.runParallel(this._copyResources(resources)).then(() => {
+			Log.result('COMPILATION_FINISH', [this.resourceType]);
 		});
 	}
 
-	copyResources(resources) {
-		return _.map(resources, resource => {
-			return () =>
+	_copyResources(resources) {
+		const promises = [];
+
+		for (const resourcePath in resources) {
+			const resource = resources[resourcePath];
+			promises.push(() =>
 				FileSystem.copyFile(
-					path.join(this.context.files_path, resource.src),
-					path.join(this.context.local_server_path, resource.dest)
-				);
-		});
+					resource.fullsrc(),
+					path.join(this.context.localServerPath, resource.dst)
+				)
+			);
+		}
+
+		return promises;
 	}
 };

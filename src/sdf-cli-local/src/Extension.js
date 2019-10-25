@@ -5,36 +5,49 @@
 'use strict';
 
 const AbstractExtension = require('./AbstractExtension');
-const Utils = require('./Utils');
-const _ = require('underscore');
+const path = require('path');
+const Script = require('./resources/types/Javascript');
 
 module.exports = class Extension extends AbstractExtension {
 	constructor(options) {
 		super(options);
 
 		this.PREFIX = 'commerceextension';
-		this.raw_extension = this.raw_extension[this.PREFIX];
+		this.rawExtension = this.rawExtension[this.PREFIX];
 
-		this.base_path = this.raw_extension.basepath;
-		this.vendor = this.raw_extension.vendor;
-		this.name = this.raw_extension.name;
-		this.version = this.raw_extension.version;
+		this.basePath = this.rawExtension.basepath;
+		this.vendor = this.rawExtension.vendor;
+		this.name = this.rawExtension.name;
+		this.version = this.rawExtension.version;
 	}
 
 	getJavascript() {
 		if (this.javascript) {
 			return this.javascript;
 		}
-		this.javascript = { applications: {} };
+		this.javascript = {};
 
-		const javascript = this.raw_extension.javascript || {};
-		const javascript_app = javascript.application || {};
+		const javascript = this.rawExtension.javascript || {};
+		const javascriptApp = javascript.application || {};
+		const javascriptEntrypoints = javascript.entrypoints || {};
 
-		_.each(javascript_app, (js, app) => {
-			this.javascript.applications[app] = Utils.parseFiles(js);
+		Object.entries({ javascriptApp, javascriptEntrypoints }).forEach(([key, resources]) => {
+			this.iterateResources(resources, (resourcePath, app) => {
+				if (this.javascript[resourcePath]) {
+					this.javascript[resourcePath].addApplication(app);
+					return;
+				}
+
+				this.javascript[resourcePath] = new Script({
+					src: this._excludeBasePath(resourcePath),
+					dst: path.basename(resourcePath),
+					name: path.basename(resourcePath, path.extname(resourcePath)),
+					isEntrypoint: key === 'javascriptEntrypoints',
+					extensionFullname: this.getExtensionFullName('#'),
+					app: app,
+				});
+			});
 		});
-
-		this.javascript.entrypoints = _.mapObject(javascript.entrypoints, Utils.parseFileName);
 
 		return this.javascript;
 	}
