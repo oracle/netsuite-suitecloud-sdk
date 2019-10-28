@@ -16,13 +16,13 @@ module.exports = class DeployXml {
 
 		this.deploy = Utils.parseXml(this._projectFolder, 'deploy.xml').deploy;
 
-		let objects_path = this.deploy.objects.path;
-		objects_path = path.join(this._projectFolder, objects_path.substr(1));
-		this.objects_path = path.dirname(objects_path);
+		let objectsPath = this.deploy.objects.path;
+		objectsPath = path.join(this._projectFolder, objectsPath.substr(1));
+		this.objectsPath = path.dirname(objectsPath);
 
-		let files_path = this.deploy.files.path;
-		files_path = path.join(this._projectFolder, files_path.substr(1));
-		this.files_path = path.dirname(files_path);
+		let filesPath = this.deploy.files.path;
+		filesPath = path.join(this._projectFolder, filesPath.substr(1));
+		this.filesPath = path.dirname(filesPath);
 	}
 
 	getObjects() {
@@ -32,20 +32,19 @@ module.exports = class DeployXml {
 
 		const path = require('path');
 		const glob = require('glob').sync;
-		const _ = require('underscore');
-		const objects_path = glob(path.join(this.objects_path, '*'));
+		const objectsPath = glob(path.join(this.objectsPath, '*'));
 
 		this.objects = {
 			extensions: {},
 			themes: {},
 		};
-		_.each(objects_path, object_path => {
-			const name = path.basename(object_path);
+		objectsPath.forEach(objectPath => {
+			const name = path.basename(objectPath);
 
 			if (/^custcommerceextension/.test(name)) {
-				this.objects.extensions[name] = object_path;
+				this.objects.extensions[name] = objectPath;
 			} else if (/^custcommercetheme/.test(name)) {
-				this.objects.themes[name] = object_path;
+				this.objects.themes[name] = objectPath;
 			}
 		});
 		return this.objects;

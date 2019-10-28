@@ -4,55 +4,66 @@
 */
 'use strict';
 
-const xml_parser = require('fast-xml-parser');
+const { Parser } = require('xml2js');
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob').sync;
-const _ = require('underscore');
 const async = require('async');
 const { promisify } = require('util');
 
 const Translation = require('./services/Translation');
 
 const Utils = {
-	parseXml: (project_folder, xml_file) => {
-		let file_path = path.join(project_folder, '**', xml_file);
-		file_path = glob(file_path);
-		file_path = file_path.length ? file_path[0] : null;
+	parseXml(projectFolder, xmlFile) {
+		let filePath = path.join(projectFolder, '**', xmlFile);
+		filePath = glob(filePath);
+		filePath = filePath.length ? filePath[0] : null;
 
-		if (!file_path) {
-			throw Translation.getMessage('RESOURCE_NOT_FOUND', [xml_file, project_folder]);
+		if (!filePath) {
+			throw Translation.getMessage('RESOURCE_NOT_FOUND', [xmlFile, projectFolder]);
 		}
 
-		const xml_data = fs.readFileSync(file_path).toString();
-		if (!xml_parser.validate(xml_data)) {
-			throw Translation.getMessage('INVALID_XML', [file_path]);
-		}
+		const xmlData = fs.readFileSync(filePath).toString();
 
-		const parsed_xml = xml_parser.parse(xml_data, {});
+		let parsedXml = {};
 
-		return parsed_xml;
+		new Parser({ explicitArray: false, trim: true, emptyTag: null }).parseString(
+			xmlData,
+			function(error, result) {
+				if (error) {
+					throw error;
+				}
+				parsedXml = result;
+			}
+		);
+
+		return parsedXml;
 	},
 
-	parseFiles: (files_xml, replacer) => {
-		let files = files_xml.files || {};
+	arrayUnion(arr1, arr2 = []) {
+		return [...new Set([...arr1, ...arr2])];
+	},
+
+	parseFiles(filesXml, replacer) {
+		const parsedFiles = [];
+		let files = filesXml.files || {};
 		files = files.file || {};
-		files = _.map(files, file => {
-			file = Utils.parseFileName(file);
-			return replacer ? replacer(file) : file;
-		});
-		return files;
+		for (const key in files) {
+			const file = Utils.parseFileName(files[key]);
+			parsedFiles.push(replacer ? replacer(file) : file);
+		}
+		return parsedFiles;
 	},
 
-	parseFileName: file => {
-		const file_name = file.filename || file;
-		return file_name.replace(/^\[(.*)\]$/, '$1');
+	parseFileName(file) {
+		const fileName = file.filename || file;
+		return fileName.replace(/^\[(.*)\]$/, '$1');
 	},
 
-	runParallel: tasks => {
+	runParallel(tasks) {
 		const parallel = async.parallel;
 
-		const wrapped_tasks = _.map(tasks, task => {
+		const wrappedTasks = tasks.map(task => {
 			return callback => {
 				try {
 					const promise = task();
@@ -66,7 +77,7 @@ const Utils = {
 			};
 		});
 
-		return promisify(parallel)(wrapped_tasks);
+		return promisify(parallel)(wrappedTasks);
 	},
 };
 
