@@ -13,5 +13,8 @@ module.exports = {
 	},
 	PROJECTCONFIGS: {
 		cliconfig: require.resolve('./projectconfigs/cli-config.js'),
+		cliconfigunittest: require.resolve('./projectconfigs/cli-config-unit-test.js'),
+		jestconfig: require.resolve('./projectconfigs/jest.config.js.template'),
+		packagejson: require.resolve('./projectconfigs/package.json'),
 	},
 };

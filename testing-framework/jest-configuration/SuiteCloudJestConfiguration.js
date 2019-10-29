@@ -35,6 +35,9 @@ class SuiteCloudAdvancedJestConfiguration {
 		this.projectFolder = options.projectFolder;
 		this.projectType = options.projectType;
 		this.customStubs = options.customStubs;
+		if (this.customStubs == null) {
+			this.customStubs = [];
+		}
 	}
 
 	_getSuiteScriptFolderPath() {

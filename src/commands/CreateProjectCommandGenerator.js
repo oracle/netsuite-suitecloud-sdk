@@ -14,6 +14,7 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
+const NpmInstallRunner = require('../services/NpmInstallRunner');
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
 	YES,
@@ -29,7 +30,14 @@ const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
 const SOURCE_FOLDER = 'src';
 const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const CLI_CONFIG_FILENAME = 'cli-config';
+const CLI_CONFIG_UNIT_TEST_TEMPLATE_KEY = 'cliconfigunittest';
 const CLI_CONFIG_EXTENSION = 'js';
+const PACKAGE_TEMPLATE_KEY = 'packagejson';
+const PACKAGE_FILENAME = 'package';
+const PACKAGE_EXTENSION = 'json';
+const JEST_CONFIG_TEMPLATE_KEY = 'jestconfig';
+const JEST_CONFIG_FILENAME = 'jest.config';
+const JEST_CONFIG_EXTENSION = 'js';
 
 const COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
@@ -39,6 +47,7 @@ const COMMAND_OPTIONS = {
 	PROJECT_VERSION: 'projectversion',
 	PUBLISHER_ID: 'publisherid',
 	TYPE: 'type',
+	INCLUDE_UNIT_TESTING: 'includeunittesting'
 };
 
 const COMMAND_ANSWERS = {
@@ -129,6 +138,16 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
 				validate: fieldValue => showValidationResults(fieldValue, validateProjectVersion),
 			},
+			{
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: COMMAND_OPTIONS.INCLUDE_UNIT_TESTING,
+				message: TranslationService.getMessage(QUESTIONS.INCLUDE_UNIT_TESTING),
+				default: 0,
+				choices: [
+					{ name: TranslationService.getMessage(YES), value: true },
+					{ name: TranslationService.getMessage(NO), value: false },
+				],
+			}
 		]);
 
 		const projectFolderName = this._getProjectFolderName(answers);
@@ -245,17 +264,68 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					answers[COMMAND_OPTIONS.PROJECT_NAME]
 				);
 
+				//TODO - create dummy unit test.
+				let cliConfigTemplateKey = TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY];
+				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
+					cliConfigTemplateKey = TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_UNIT_TEST_TEMPLATE_KEY];
+
+					await this._fileSystemService.createFileFromTemplate({
+						template: TemplateKeys.PROJECTCONFIGS[PACKAGE_TEMPLATE_KEY],
+						destinationFolder: projectAbsolutePath,
+						fileName: PACKAGE_FILENAME,
+						fileExtension: PACKAGE_EXTENSION,
+					});
+
+					await this._fileSystemService.replaceStringInFile(
+						projectAbsolutePath + '/package.json',
+						'{{name}}',
+						 answers[COMMAND_OPTIONS.PROJECT_NAME]
+					);
+
+					let version = '1.0.0';
+					if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
+						version = answers[COMMAND_OPTIONS.PROJECT_VERSION];
+					}
+					await this._fileSystemService.replaceStringInFile(
+						projectAbsolutePath + '/package.json',
+						'{{version}}',
+						 version
+					);
+
+					await this._fileSystemService.createFileFromTemplate({
+						template: TemplateKeys.PROJECTCONFIGS[JEST_CONFIG_TEMPLATE_KEY],
+						destinationFolder: projectAbsolutePath,
+						fileName: JEST_CONFIG_FILENAME,
+						fileExtension: JEST_CONFIG_EXTENSION,
+					});
+
+					let jestConfigProjectType = 'SuiteCloudJestConfiguration.ProjectType.ACP';
+					if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
+						jestConfigProjectType = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
+					}
+					await this._fileSystemService.replaceStringInFile(
+						projectAbsolutePath + '/jest.config.js',
+						'{{projectType}}',
+						jestConfigProjectType
+					);
+
+					NpmInstallRunner.run(projectAbsolutePath);
+				}
+
 				await this._fileSystemService.createFileFromTemplate({
-					template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
+					template: cliConfigTemplateKey,
 					destinationFolder: projectAbsolutePath,
 					fileName: CLI_CONFIG_FILENAME,
 					fileExtension: CLI_CONFIG_EXTENSION,
 				});
 
+				await this._fileSystemService.createFolder(projectAbsolutePath, '__tests__');
+
 				return resolve({
 					operationResult: operationResult,
 					projectType: answers[COMMAND_OPTIONS.TYPE],
 					projectDirectory: projectAbsolutePath,
+					includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]
 				});
 			} catch (error) {
 				reject(error);
@@ -293,6 +363,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			NodeUtils.lineBreak
 		);
 		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+
+		if (result.includeUnitTesting) {
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.DUMMY_UNIT_TEST_ADDED), NodeUtils.COLORS.RESULT);
+		}
 	}
 
 	_validateParams(answers) {
