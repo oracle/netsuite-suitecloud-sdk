@@ -5,15 +5,14 @@
 'use strict';
 
 const DeployXml = require('./DeployXml');
-const Compiler = require('./Compilers/Compiler');
+const Compiler = require('./compilers/Compiler');
 const CompilationContext = require('./CompilationContext');
 const LocalServer = require('./LocalServer');
 
 const Translation = require('./services/Translation');
 const Log = require('./services/Log');
 const FileSystem = require('./services/FileSystem');
-
-const _ = require('underscore');
+const Watch = require('./Watch');
 
 module.exports = class LocalCommand {
 	constructor(options) {
@@ -29,11 +28,11 @@ module.exports = class LocalCommand {
 		}
 		this.init = true;
 
-		const deploy_xml = new DeployXml({ projectFolder: this._projectFolder });
-		const objects = deploy_xml.getObjects();
+		const deployXml = new DeployXml({ projectFolder: this._projectFolder });
+		const objects = deployXml.getObjects();
 
-		this.objects_path = deploy_xml.objects_path;
-		this.files_path = deploy_xml.files_path;
+		this.objectsPath = deployXml.objectsPath;
+		this.filesPath = deployXml.filesPath;
 		this.themes = objects.themes;
 		this.extensions = objects.extensions;
 	}
@@ -50,7 +49,7 @@ module.exports = class LocalCommand {
 			},
 		];
 
-		if (!_.isEmpty(extensions)) {
+		if (extensions.length) {
 			options.push({
 				type: 'checkbox',
 				name: 'extensions',
@@ -62,7 +61,7 @@ module.exports = class LocalCommand {
 		return prompt(options);
 	}
 
-	executeAction(answers) {
+	async executeAction(answers) {
 		if (!answers.extensions || answers.extensions === true) {
 			answers.extensions = [];
 		}
@@ -70,44 +69,56 @@ module.exports = class LocalCommand {
 		let extensionsList = Array.isArray(answers.extensions)
 			? answers.extensions
 			: answers.extensions.split(',');
-		const extensions = _.map(extensionsList, extension => extension.trim());
+		const extensions = extensionsList.map(extension => extension.trim());
 
 		//Validate answers
 		this._validateTheme(theme);
 		this._validateExtensions(extensions);
 
+		LocalServer.config({ port: answers.port, runhttps: answers.runhttps });
+
 		const context = this._createCompilationContext(theme, extensions);
 		const compiler = new Compiler({ context: context });
-		const local_server = new LocalServer({ context: context });
+		const watch = new Watch({ context: context, compilers: compiler.compilers });
 
-		return compiler.compile().then(_.bind(local_server.startServer, local_server));
+		await compiler.compile();
+
+		watch.start();
+
+		return LocalServer.startServer(context.localServerPath);
 	}
 
 	_createCompilationContext(theme, extensions) {
 		return new CompilationContext({
 			theme: theme,
 			extensions: extensions,
-			objects_path: this.objects_path,
-			files_path: this.files_path,
-			project_folder: this._projectFolder,
+			objectsPath: this.objectsPath,
+			filesPath: this.filesPath,
+			projectFolder: this._projectFolder,
 		});
 	}
 
 	_validateTheme(theme) {
-		if (_.isEqual(theme, [])) {
-			throw Translation.getMessage('NO_THEMES', [this.objects_path]);
-		}
-		if (!this.themes[theme]) {
-			throw Translation.getMessage('THEME_NOT_FOUND', [theme, this.objects_path]);
+		if (Array.isArray(theme)) {
+			// interactive mode
+			if (!theme.length) {
+				throw new Error(Translation.getMessage('NO_THEMES', [this.objectsPath]));
+			}
+		} else {
+			if (!this.themes[theme]) {
+				throw new Error(
+					Translation.getMessage('RESOURCE_NOT_FOUND', [theme, this.objectsPath])
+				);
+			}
 		}
 
 		return theme;
 	}
 
 	_validateExtensions(extensions) {
-		_.each(extensions, extension => {
+		extensions.forEach(extension => {
 			if (!this.extensions[extension]) {
-				throw Translation.getMessage('EXTENSION_NOT_FOUND', [extension, this.objects_path]);
+				throw Translation.getMessage('RESOURCE_NOT_FOUND', [extension, this.objectsPath]);
 			}
 		});
 

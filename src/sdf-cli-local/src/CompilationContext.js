@@ -6,27 +6,35 @@
 
 const Theme = require('./Theme');
 const Extension = require('./Extension');
+const path = require('path');
+const glob = require('glob').sync;
 
-const _ = require('underscore');
+const Utils = require('./Utils');
+
+const Resource = require('./resources/Resource');
 
 module.exports = class CompilationContext {
 	constructor(options) {
-		const objects_path = options.objects_path;
+		const objectsPath = options.objectsPath;
 		const theme = options.theme;
 		const extensions = options.extensions || [];
 
-		this.files_path = options.files_path;
-		this.project_folder = options.project_folder;
+		this.filesPath = options.filesPath;
+		this.projectFolder = options.projectFolder;
 
-		this.theme = new Theme({ objects_path: objects_path, extension_xml: theme });
+		Resource.setBaseSrc(this.filesPath);
 
-		this.extensions = _.map(extensions, extension => {
-			return new Extension({ objects_path: objects_path, extension_xml: extension });
-		});
+		this.theme = new Theme({ objectsPath: objectsPath, extensionXml: theme });
+
+		this.extensions = extensions.map(
+			extension => new Extension({ objectsPath: objectsPath, extensionXml: extension })
+		);
+
+		this.allExtensions = [this.theme].concat(this.extensions);
 	}
 
 	setLocalServerPath(path) {
-		this.local_server_path = path;
+		this.localServerPath = path;
 	}
 
 	getTplOverrides() {
@@ -39,81 +47,69 @@ module.exports = class CompilationContext {
 
 	getTemplates() {
 		let templates = {};
-		const extensions = this.extensions.concat(this.theme);
-		const overrides = this.getTplOverrides();
-
-		_.each(extensions, extension => {
-			const ext_templates = extension.getTemplates(overrides);
-
-			templates = _.mapObject(ext_templates, (app_templates, app) => {
-				return _.union(templates[app], app_templates);
-			});
-		});
-
-		return templates;
+		this.allExtensions.forEach(
+			extension => (templates = Object.assign(templates, extension.getTemplates()))
+		);
+		return this._handleOverrides(templates, this.getTplOverrides());
 	}
 
 	getSass() {
-		let sass = {
+		const sass = {
 			files: [],
 			entrypoints: {},
 		};
-		const extensions = [this.theme].concat(this.extensions);
 
-		_.each(extensions, extension => {
-			const ext_sass = extension.getSass();
-			const ext_assets_path = extension.getLocalAssetsPath('assets');
+		this.allExtensions.forEach(extension => {
+			const extSass = extension.getSass();
+			const extAssetsPath = extension.getLocalAssetsPath('assets');
 
-			_.each(ext_sass.entrypoints, (app_sass, app) => {
+			for (const app in extSass.entrypoints) {
+				const appSass = extSass.entrypoints[app];
 				sass.entrypoints[app] = sass.entrypoints[app] || [];
 				sass.entrypoints[app].push({
-					entry: app_sass,
-					assets_path: ext_assets_path,
+					entry: appSass,
+					assetsPath: extAssetsPath,
 				});
-			});
+			}
 
-			sass.files = _.union(sass.files, ext_sass.files);
+			sass.files = Utils.arrayUnion(sass.files, extSass.files);
 		});
 
 		return sass;
 	}
 
 	getJavascript() {
-		let javascript = {
-			applications: {},
-			entrypoints: {},
-		};
-		const extensions = this.extensions;
-
-		_.each(extensions, extension => {
-			const ext_javascript = extension.getJavascript();
-
-			_.each(ext_javascript.entrypoints, (app_javascript, app) => {
-				javascript.entrypoints[app] = javascript.entrypoints[app] || [];
-				javascript.entrypoints[app].push(app_javascript);
-			});
-
-			_.each(ext_javascript.applications, (app_javascript, app) => {
-				javascript.applications[app] = javascript.applications[app] || [];
-				javascript.applications[app] = _.union(
-					javascript.applications[app],
-					app_javascript
-				);
-			});
-		});
-
+		let javascript = {};
+		this.extensions.forEach(
+			extension => (javascript = Object.assign(javascript, extension.getJavascript()))
+		);
 		return javascript;
 	}
 
 	getAssets() {
 		let assets = {};
-		const extensions = this.extensions.concat(this.theme);
-
-		_.each(extensions, extension => {
-			const ext_assets = extension.getAssets();
-			assets = _.union(assets, ext_assets);
-		});
-
+		this.allExtensions.forEach(
+			extension => (assets = Object.assign(assets, extension.getAssets()))
+		);
 		return assets;
+	}
+
+	excludeBaseFilesPath(dir) {
+		return path.relative(this.filesPath, dir);
+	}
+
+	_handleOverrides(resources, overrides) {
+		for (const resourcePath in resources) {
+			const resource = resources[resourcePath];
+			const override = overrides[resource.src];
+			if (override) {
+				const fullPath = glob(path.join(this.projectFolder, '**', override.src));
+				if (fullPath.length) {
+					resource.overrideFullsrc = fullPath[0];
+					resource.override = override.src;
+				}
+			}
+		}
+		return resources;
 	}
 };

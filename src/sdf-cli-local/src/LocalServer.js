@@ -9,50 +9,79 @@ const whoService = require('./services/Who');
 
 const express = require('express');
 const cors = require('cors');
-const _ = require('underscore');
 
-module.exports = class LocalServer {
-	constructor(options) {
-		this.context = options.context;
+class LocalServer {
+	constructor() {
+		this.port = 7777;
+		this.runhttps = false;
+		this.server = null;
 	}
 
-	startServer(files) {
-		files = _.flatten(files);
+	config(options){
+		if (options.port) {
+			this.port = options.port;
+		}
+		if (options.runhttps) {
+			this.runhttps = options.runhttps === "true" || options.runhttps === true;
+		}
+	}
 
-		//TODO override with config values
-		let server_config = {
-			run_https: false,
-			port: 7777,
-			folders: [this.context.local_server_path],
-		};
+	startServer(localPath) {
 
 		const app = express();
 		app.use(cors({ origin: true }));
 
-		_.each(server_config.folders, folder => {
-			app.use('/', express.static(folder));
-		});
+		app.use('/', express.static(localPath));
 
 		//Service used by the index-local.ssp files to know what files load
 		app.use('/who/:app', whoService);
 		//Serves the script patch to ignore tpl defines executed by core javascript file
 		app.use('/define_patch.js', this._definePatchService);
 
-		app.listen(server_config.port, () => {
-			this._localMessage(server_config);
+		this.server = app.listen(this.port, () => {
+			Log.info(Log.separator);
+			Log.default('SERVER', [this.serverUrl()]);
+			Log.info('WATCH', [localPath]);
+			Log.info('SSP_LOCAL_FILES_INFO');
+			Log.default('CANCEL_ACTION');
 		});
 
 		//server is listening so we return a new promise that will never be resolved
 		return new Promise(() => {});
 	}
 
-	_definePatchService() {}
+	closeServer() {
+		if (this.server) {
+			this.server.close();
+		}
+	}
 
-	_localMessage(server_config) {
-		Log.info(Log.separator);
-		Log.default('SERVER', [server_config.run_https ? 's' : '', server_config.port]);
-		Log.info('WATCH', [server_config.folders]);
-		Log.info('SSP_LOCAL_FILES_INFO');
-		Log.default('CANCEL_ACTION');
+	serverUrl(){
+		return `http${this.runhttps ? 's' : ''}://localhost:${this.port}`;
+	}
+
+	_definePatchService(req, res) {
+		var response = function define_patch() {
+			var src_define = define;
+			define = function define(name, cb) {
+				var is_tpl = name && /\.tpl$/.test(name);
+				var cb_string = cb ? cb.toString().replace(/\s/g, '') : '';
+				var is_empty_cb = cb_string === 'function(){}';
+
+				if (is_tpl && is_empty_cb) {
+					return;
+				}
+				return src_define.apply(this, arguments);
+			};
+
+			define.amd = {
+				jQuery: true,
+			};
+		};
+
+		res.setHeader('Content-Type', 'application/javascript');
+		res.send(`${response}; define_patch();`);
 	}
 };
+
+module.exports = new LocalServer();
