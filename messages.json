@@ -195,6 +195,9 @@
 
 	"NO": "No",
 
+	"UNIT_TEST_TEST_FAILED": "The tests failed.",
+	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures, The Deployment will not continue.",
+
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP": "Account-specific values cannot be applied to SuiteApps.",
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
 	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection cannot be applied to account customization projects.",

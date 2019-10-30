@@ -30,14 +30,20 @@ const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
 const SOURCE_FOLDER = 'src';
 const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const CLI_CONFIG_FILENAME = 'cli-config';
-const CLI_CONFIG_UNIT_TEST_TEMPLATE_KEY = 'cliconfigunittest';
 const CLI_CONFIG_EXTENSION = 'js';
-const PACKAGE_TEMPLATE_KEY = 'packagejson';
-const PACKAGE_FILENAME = 'package';
-const PACKAGE_EXTENSION = 'json';
-const JEST_CONFIG_TEMPLATE_KEY = 'jestconfig';
-const JEST_CONFIG_FILENAME = 'jest.config';
-const JEST_CONFIG_EXTENSION = 'js';
+
+const UNIT_TEST_CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
+const UNIT_TEST_CLI_CONFIG_FILENAME = 'cli-config';
+const UNIT_TEST_CLI_CONFIG_EXTENSION = 'js';
+const UNIT_TEST_PACKAGE_TEMPLATE_KEY = 'packagejson';
+const UNIT_TEST_PACKAGE_FILENAME = 'package';
+const UNIT_TEST_PACKAGE_EXTENSION = 'json';
+const UNIT_TEST_JEST_CONFIG_TEMPLATE_KEY = 'jestconfig';
+const UNIT_TEST_JEST_CONFIG_FILENAME = 'jest.config';
+const UNIT_TEST_JEST_CONFIG_EXTENSION = 'js';
+const UNIT_TEST_SAMPLE_TEST_KEY = 'sampletest';
+const UNIT_TEST_SAMPLE_TEST_FILENAME = 'sample-test';
+const UNIT_TEST_SAMPLE_TEST_EXTENSION = 'js';
 
 const COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
@@ -264,62 +270,22 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					answers[COMMAND_OPTIONS.PROJECT_NAME]
 				);
 
-				//TODO - create dummy unit test.
-				let cliConfigTemplateKey = TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY];
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
-					cliConfigTemplateKey = TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_UNIT_TEST_TEMPLATE_KEY];
-
-					await this._fileSystemService.createFileFromTemplate({
-						template: TemplateKeys.PROJECTCONFIGS[PACKAGE_TEMPLATE_KEY],
-						destinationFolder: projectAbsolutePath,
-						fileName: PACKAGE_FILENAME,
-						fileExtension: PACKAGE_EXTENSION,
-					});
-
-					await this._fileSystemService.replaceStringInFile(
-						projectAbsolutePath + '/package.json',
-						'{{name}}',
-						 answers[COMMAND_OPTIONS.PROJECT_NAME]
-					);
-
-					let version = '1.0.0';
-					if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
-						version = answers[COMMAND_OPTIONS.PROJECT_VERSION];
-					}
-					await this._fileSystemService.replaceStringInFile(
-						projectAbsolutePath + '/package.json',
-						'{{version}}',
-						 version
-					);
-
-					await this._fileSystemService.createFileFromTemplate({
-						template: TemplateKeys.PROJECTCONFIGS[JEST_CONFIG_TEMPLATE_KEY],
-						destinationFolder: projectAbsolutePath,
-						fileName: JEST_CONFIG_FILENAME,
-						fileExtension: JEST_CONFIG_EXTENSION,
-					});
-
-					let jestConfigProjectType = 'SuiteCloudJestConfiguration.ProjectType.ACP';
-					if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
-						jestConfigProjectType = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
-					}
-					await this._fileSystemService.replaceStringInFile(
-						projectAbsolutePath + '/jest.config.js',
-						'{{projectType}}',
-						jestConfigProjectType
-					);
+					await this._createUnitTestFiles(
+						answers[COMMAND_OPTIONS.TYPE],
+						answers[COMMAND_OPTIONS.PROJECT_NAME],
+						answers[COMMAND_OPTIONS.PROJECT_VERSION],
+						projectAbsolutePath);
 
 					NpmInstallRunner.run(projectAbsolutePath);
+				} else {
+					await this._fileSystemService.createFileFromTemplate({
+						template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
+						destinationFolder: projectAbsolutePath,
+						fileName: CLI_CONFIG_FILENAME,
+						fileExtension: CLI_CONFIG_EXTENSION,
+					});
 				}
-
-				await this._fileSystemService.createFileFromTemplate({
-					template: cliConfigTemplateKey,
-					destinationFolder: projectAbsolutePath,
-					fileName: CLI_CONFIG_FILENAME,
-					fileExtension: CLI_CONFIG_EXTENSION,
-				});
-
-				await this._fileSystemService.createFolder(projectAbsolutePath, '__tests__');
 
 				return resolve({
 					operationResult: operationResult,
@@ -335,6 +301,85 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		return executeWithSpinner({
 			action: actionCreateProject,
 			message: TranslationService.getMessage(MESSAGES.CREATING_PROJECT),
+		});
+	}
+
+	async _createUnitTestFiles(type, projectName, projectVersion, projectAbsolutePath) {
+		this._createUnitTestCliConfigFile(projectAbsolutePath);
+		this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
+		this._createJestConfigFile(type, projectAbsolutePath);
+		this._createSampleUnitTestFile(projectAbsolutePath);
+	}
+
+	async _createUnitTestCliConfigFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.UNIT_TEST[UNIT_TEST_CLI_CONFIG_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: UNIT_TEST_CLI_CONFIG_FILENAME,
+			fileExtension: UNIT_TEST_CLI_CONFIG_EXTENSION,
+		});
+	}
+
+	async _createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.UNIT_TEST[UNIT_TEST_PACKAGE_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: UNIT_TEST_PACKAGE_FILENAME,
+			fileExtension: UNIT_TEST_PACKAGE_EXTENSION,
+		});
+
+		let packageJsonAbsolutePath = path.join(projectAbsolutePath, 'package.json');
+		await this._fileSystemService.replaceStringInFile(
+			packageJsonAbsolutePath,
+			'{{name}}',
+			projectName
+		);
+
+		let version = '1.0.0';
+		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
+			version = projectVersion;
+		}
+		await this._fileSystemService.replaceStringInFile(
+			packageJsonAbsolutePath,
+			'{{version}}',
+			version
+		);
+
+		const nodeCliAbsolutePath = path.resolve(__dirname, '../../').replace(/\\/g, '/');
+		await this._fileSystemService.replaceStringInFile(
+			packageJsonAbsolutePath,
+			'{{node-cli-absolute-path}}',
+			nodeCliAbsolutePath
+		);
+	}
+
+	async _createJestConfigFile(type, projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.UNIT_TEST[UNIT_TEST_JEST_CONFIG_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: UNIT_TEST_JEST_CONFIG_FILENAME,
+			fileExtension: UNIT_TEST_JEST_CONFIG_EXTENSION,
+		});
+
+		let jestConfigProjectType = 'SuiteCloudJestConfiguration.ProjectType.ACP';
+		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
+			jestConfigProjectType = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
+		}
+		let jestConfigAbsolutePath = path.join(projectAbsolutePath, 'jest.config.js');
+		await this._fileSystemService.replaceStringInFile(
+			jestConfigAbsolutePath,
+			'{{projectType}}',
+			jestConfigProjectType
+		);
+	}
+
+	async _createSampleUnitTestFile(projectAbsolutePath) {
+		let testsFolderAbsolutePath = this._fileSystemService.createFolder(projectAbsolutePath, '__tests__');
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.UNIT_TEST[UNIT_TEST_SAMPLE_TEST_KEY],
+			destinationFolder: testsFolderAbsolutePath,
+			fileName: UNIT_TEST_SAMPLE_TEST_FILENAME,
+			fileExtension: UNIT_TEST_SAMPLE_TEST_EXTENSION,
 		});
 	}
 

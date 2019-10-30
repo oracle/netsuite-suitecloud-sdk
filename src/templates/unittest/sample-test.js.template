@@ -1,0 +1,17 @@
+import record from "N/record";
+
+jest.mock("N/record");
+
+beforeEach(() => {
+	jest.clearAllMocks();
+});
+
+describe("Dummy test", () => {
+	it("should do something", () => {
+		// given
+		var dummy = {
+			// some funtion here
+		};
+		record.create.mockReturnValue(dummy);
+	});
+});

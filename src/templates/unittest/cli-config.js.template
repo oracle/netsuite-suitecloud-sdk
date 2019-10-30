@@ -1,5 +1,5 @@
 const jest = require('jest');
-const suiteCloudUnitTestRunner = require('SuiteCloudUnitTestRunner');
+const suiteCloudUnitTestRunner = require('@oracle/netsuite-suitecloud-node-cli/testing-framework/services/SuiteCloudUnitTestRunner');
 
 module.exports = {
 	defaultProjectFolder: 'src',
