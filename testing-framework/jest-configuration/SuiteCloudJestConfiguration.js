@@ -1,11 +1,16 @@
+/*
+** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+*/
 const assert = require('assert');
 const TESTING_FRAMEWORK_PATH = '@oracle/netsuite-suitecloud-node-cli/testing-framework';
 const CORE_STUBS_PATH = `${TESTING_FRAMEWORK_PATH}/stubs`;
 const nodeModulesToTransform = [CORE_STUBS_PATH].join('|');
 const SUITESCRIPT_FOLDER_REGEX = '^SuiteScripts(.*)$';
+const ProjectInfoService = require('../services/ProjectInfoService');
 
 const PROJECT_TYPE = {
-	SuiteApp: 'SUITEAPP',
+	SUITEAPP: 'SUITEAPP',
 	ACP: 'ACP',
 };
 
@@ -38,14 +43,15 @@ class SuiteCloudAdvancedJestConfiguration {
 		if (this.customStubs == null) {
 			this.customStubs = [];
 		}
+		this.projectInfoService = new ProjectInfoService(this.projectFolder);
 	}
 
 	_getSuiteScriptFolderPath() {
 		if (this.projectType === PROJECT_TYPE.ACP) {
 			return `<rootDir>/${this.projectFolder}/FileCabinet/SuiteScripts$1`;
 		}
-		if (this.projectType === PROJECT_TYPE.SuiteApp) {
-			throw 'Not implemented! Karl, bring some magic here :)';
+		if (this.projectType === PROJECT_TYPE.SUITEAPP) {
+			return `<rootDir>/${this.projectFolder}/FileCabinet/SuiteApps/${applicationId}$1`;
 		}
 		throw 'Unrecognized projectType. Please revisit your SuiteCloud Jest configuration';
 	}

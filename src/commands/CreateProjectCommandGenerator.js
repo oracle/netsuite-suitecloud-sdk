@@ -5,7 +5,6 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
@@ -26,12 +25,22 @@ const path = require('path');
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
 const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
+const JEST_CONFIG_FILENAME = 'jest.config.js';
+const JEST_CONFIG_PROJECT_TYPE_ACP = 'SuiteCloudJestConfiguration.ProjectType.ACP';
+const JEST_CONFIG_PROJECT_TYPE_SUITEAPP = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
+const JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE = '{{projectType}}';
+const PACKAGE_JSON_FILENAME = 'package.json';
+const PACKAGE_JSON_DEFAULT_VERSION = '1.0.0';
+const PACKAGE_JSON_REPLACE_STRING_NAME = '{{name}}';
+const PACKAGE_JSON_REPLACE_STRING_VERSION = '{{version}}';
+const PACKAGE_JSON_REPLACE_STRING_NODE_CLI_PATH = '{{node-cli-absolute-path}}';
 
 const SOURCE_FOLDER = 'src';
+const UNIT_TEST_TEST_FOLDER = '__tests__';
+
 const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const CLI_CONFIG_FILENAME = 'cli-config';
 const CLI_CONFIG_EXTENSION = 'js';
-
 const UNIT_TEST_CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const UNIT_TEST_CLI_CONFIG_FILENAME = 'cli-config';
 const UNIT_TEST_CLI_CONFIG_EXTENSION = 'js';
@@ -42,7 +51,7 @@ const UNIT_TEST_JEST_CONFIG_TEMPLATE_KEY = 'jestconfig';
 const UNIT_TEST_JEST_CONFIG_FILENAME = 'jest.config';
 const UNIT_TEST_JEST_CONFIG_EXTENSION = 'js';
 const UNIT_TEST_SAMPLE_TEST_KEY = 'sampletest';
-const UNIT_TEST_SAMPLE_TEST_FILENAME = 'sample-test';
+const UNIT_TEST_SAMPLE_TEST_FILENAME = 'dummy-test';
 const UNIT_TEST_SAMPLE_TEST_EXTENSION = 'js';
 
 const COMMAND_OPTIONS = {
@@ -208,7 +217,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		return answers;
 	}
 
-	_executeAction(answers) {
+	async _executeAction(answers) {
 		const projectFolderName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
 		const projectAbsolutePath = answers[COMMAND_OPTIONS.PARENT_DIRECTORY];
 		const manifestFilePath = path.join(
@@ -240,6 +249,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const actionCreateProject = new Promise(async (resolve, reject) => {
 			try {
+				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
 				const executionContextCreateProject = new SDKExecutionContext({
 					command: this._commandMetadata.name,
 					params: params,
@@ -271,13 +281,15 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				);
 
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
+					NodeUtils.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), NodeUtils.COLORS.INFO);
 					await this._createUnitTestFiles(
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
 						answers[COMMAND_OPTIONS.PROJECT_VERSION],
 						projectAbsolutePath);
 
-					NpmInstallRunner.run(projectAbsolutePath);
+					NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeUtils.COLORS.INFO);
+					await NpmInstallRunner.run(projectAbsolutePath);
 				} else {
 					await this._fileSystemService.createFileFromTemplate({
 						template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
@@ -298,10 +310,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			}
 		});
 
-		return executeWithSpinner({
-			action: actionCreateProject,
-			message: TranslationService.getMessage(MESSAGES.CREATING_PROJECT),
-		});
+		return await actionCreateProject;
 	}
 
 	async _createUnitTestFiles(type, projectName, projectVersion, projectAbsolutePath) {
@@ -328,27 +337,27 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			fileExtension: UNIT_TEST_PACKAGE_EXTENSION,
 		});
 
-		let packageJsonAbsolutePath = path.join(projectAbsolutePath, 'package.json');
+		let packageJsonAbsolutePath = path.join(projectAbsolutePath, PACKAGE_JSON_FILENAME);
 		await this._fileSystemService.replaceStringInFile(
 			packageJsonAbsolutePath,
-			'{{name}}',
+			PACKAGE_JSON_REPLACE_STRING_NAME,
 			projectName
 		);
 
-		let version = '1.0.0';
+		let version = PACKAGE_JSON_DEFAULT_VERSION;
 		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
 			version = projectVersion;
 		}
 		await this._fileSystemService.replaceStringInFile(
 			packageJsonAbsolutePath,
-			'{{version}}',
+			PACKAGE_JSON_REPLACE_STRING_VERSION,
 			version
 		);
 
 		const nodeCliAbsolutePath = path.resolve(__dirname, '../../').replace(/\\/g, '/');
 		await this._fileSystemService.replaceStringInFile(
 			packageJsonAbsolutePath,
-			'{{node-cli-absolute-path}}',
+			PACKAGE_JSON_REPLACE_STRING_NODE_CLI_PATH,
 			nodeCliAbsolutePath
 		);
 	}
@@ -361,20 +370,20 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			fileExtension: UNIT_TEST_JEST_CONFIG_EXTENSION,
 		});
 
-		let jestConfigProjectType = 'SuiteCloudJestConfiguration.ProjectType.ACP';
+		let jestConfigProjectType = JEST_CONFIG_PROJECT_TYPE_ACP;
 		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
-			jestConfigProjectType = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
+			jestConfigProjectType = JEST_CONFIG_PROJECT_TYPE_SUITEAPP;
 		}
-		let jestConfigAbsolutePath = path.join(projectAbsolutePath, 'jest.config.js');
+		let jestConfigAbsolutePath = path.join(projectAbsolutePath, JEST_CONFIG_FILENAME);
 		await this._fileSystemService.replaceStringInFile(
 			jestConfigAbsolutePath,
-			'{{projectType}}',
+			JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE,
 			jestConfigProjectType
 		);
 	}
 
 	async _createSampleUnitTestFile(projectAbsolutePath) {
-		let testsFolderAbsolutePath = this._fileSystemService.createFolder(projectAbsolutePath, '__tests__');
+		let testsFolderAbsolutePath = this._fileSystemService.createFolder(projectAbsolutePath, UNIT_TEST_TEST_FOLDER);
 		await this._fileSystemService.createFileFromTemplate({
 			template: TemplateKeys.UNIT_TEST[UNIT_TEST_SAMPLE_TEST_KEY],
 			destinationFolder: testsFolderAbsolutePath,
