@@ -9,9 +9,9 @@ beforeEach(() => {
 describe("Sample test", () => {
 	it("should do something", () => {
 		// given
-		var sample = {
+		var stub = {
 			// some function here
 		};
-		record.create.mockReturnValue(sample);
+		record.create.mockReturnValue(stub);
 	});
 });
