@@ -6,12 +6,12 @@ beforeEach(() => {
 	jest.clearAllMocks();
 });
 
-describe("Dummy test", () => {
+describe("Sample test", () => {
 	it("should do something", () => {
 		// given
-		var dummy = {
-			// some funtion here
+		var sample = {
+			// some function here
 		};
-		record.create.mockReturnValue(dummy);
+		record.create.mockReturnValue(sample);
 	});
 });

@@ -1,4 +1,4 @@
-define(['./InternalRecord'], function(Record) {
+define(['./RecordInstance'], function(Record) {
   /**
    * SuiteScript record common module
    *

@@ -51,7 +51,7 @@ const UNIT_TEST_JEST_CONFIG_TEMPLATE_KEY = 'jestconfig';
 const UNIT_TEST_JEST_CONFIG_FILENAME = 'jest.config';
 const UNIT_TEST_JEST_CONFIG_EXTENSION = 'js';
 const UNIT_TEST_SAMPLE_TEST_KEY = 'sampletest';
-const UNIT_TEST_SAMPLE_TEST_FILENAME = 'dummy-test';
+const UNIT_TEST_SAMPLE_TEST_FILENAME = 'sample-test';
 const UNIT_TEST_SAMPLE_TEST_EXTENSION = 'js';
 
 const COMMAND_OPTIONS = {
@@ -419,7 +419,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
 
 		if (result.includeUnitTesting) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.DUMMY_UNIT_TEST_ADDED), NodeUtils.COLORS.RESULT);
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED), NodeUtils.COLORS.RESULT);
 		}
 	}
 

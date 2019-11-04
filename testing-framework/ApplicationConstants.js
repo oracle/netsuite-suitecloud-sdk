@@ -8,5 +8,6 @@ module.exports = {
 	DEFAULT_MESSAGES_FILE: '../messages.json',
 	FILE_NAMES: {
 		MANIFEST_XML: 'manifest.xml',
-	}
+	},
+	PROJECT_SUITEAPP: 'SUITEAPP'
 };

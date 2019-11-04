@@ -16,16 +16,16 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record.js`,
 	},
 	{
-		module: 'InternalRecord',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/InternalRecord.js`,
+		module: 'N/record/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstance.js`,
 	},
 	{
-		module: 'Line',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/Line.js`,
+		module: 'N/record/line',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstanceLine.js`,
 	},
 	{
-		module: 'Sublist',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/Sublist.js`,
+		module: 'N/record/sublist',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstanceSublist.js`,
 	},
 ];
 

@@ -6,6 +6,7 @@
 
 const {
 	FILE_NAMES,
+	PROJECT_SUITEAPP
 } = require('../ApplicationConstants');
 const FileUtils = require('../utils/FileUtils');
 const TranslationService = require('../services/TranslationService');
@@ -60,7 +61,7 @@ module.exports = class ProjectInfoService {
 			if (result) {
 				let projectType = result.manifest.$.projecttype;
 
-				if (projectType === 'SUITEAPP') {
+				if (projectType === PROJECT_SUITEAPP) {
 					applicationId = result.manifest.publisherid + '.' + result.manifest.projectid;
 				} else {
 					validationError = TranslationService.getMessage(TranslationKeys.ERRORS.ONLY_SUITEAPP_HAVE_APP_ID);
