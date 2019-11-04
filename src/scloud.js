@@ -12,7 +12,7 @@ const CommandInstanceFactory = require('./core/CommandInstanceFactory');
 const CommandRegistrationService = require('./core/CommandRegistrationService');
 const CommandOptionsValidator = require('./core/CommandOptionsValidator');
 const CLIConfigurationService = require('./core/extensibility/CLIConfigurationService');
-const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
+const AuthenticationService = require('./core/authentication/AuthenticationService');
 const CommandOutputHandler = require('./core/CommandOutputHandler');
 
 const commandsMetadataServiceSingleton = new CommandsMetadataService();
@@ -25,7 +25,7 @@ const cliInstance = new CLI({
 		commandOptionsValidator: new CommandOptionsValidator(),
 		cliConfigurationService: new CLIConfigurationService(),
 		commandInstanceFactory: new CommandInstanceFactory(),
-		accountDetailsService: new AccountDetailsService(),
+		authenticationService: new AuthenticationService(),
 		commandsMetadataService: commandsMetadataServiceSingleton,
 	}),
 });

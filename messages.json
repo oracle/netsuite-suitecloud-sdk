@@ -121,7 +121,6 @@
 	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_SETUP": "The {0} proxy server URL has been set.",
 
 	"COMMAND_SETUPACCOUNT_ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"scloud setupaccount\" in a valid project folder.",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_OVERWRITE_ACCOUNT_DETAILS_FILE": "Do you want to overwrite the existing project’s {0} file?",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_EMAIL": "Enter your email:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_PASSWORD": "Enter your password:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_COMPANY_ID": "Select the account ID:",
@@ -159,8 +158,6 @@
 	"DOWNLOADING_SUITECLOUD_SDK_SUCCESS": "SuiteCloud SDK dependencies downloaded successfully.",
 	"DOWNLOADING_SUITECLOUD_SDK_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
 	"DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE": "The JAR file is not available from this URL.",
-
-	"ERRORS_ACCOUNT_DETAILS_FILE_CONTENT": "The structure of the {0} file in your current project folder is not correct. Delete the file and run \"scloud setupaccount\".",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"cli-config.js\" module defined in the project. Details:{0}{1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE": "The return value of the function should be an object with the property \"arguments\" of type \"object\".",
 	"ERRORS_CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE": "There was an error while loading configuration file {0}. Please review the file and try again. Details:{1}{2}",

@@ -8,7 +8,7 @@ module.exports = {
 	SDK_COMMANDS_METADATA_FILE: 'metadata/SDKCommandsMetadata.json',
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
-	ACCOUNT_DETAILS_FILENAME: 'account.json',
+    PROJECT_FILENAME: 'project.json',
 	SDK_DIRECTORY_NAME: 'bin',
 	SDK_FILENAME: 'cli-2019.2.1.jar',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',

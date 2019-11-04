@@ -162,7 +162,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
-			includeAccountDetailsParams: true,
+			includeProjectDefaultAuthId: true,
 		});
 
 		const actionListObjects = this._sdkExecutor.execute(executionContext);

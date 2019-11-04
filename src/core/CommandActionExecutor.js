@@ -23,14 +23,14 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.commandInstanceFactory);
 		assert(dependencies.commandsMetadataService);
 		assert(dependencies.commandOutputHandler);
-		assert(dependencies.accountDetailsService);
+		assert(dependencies.authenticationService);
 
 		this._commandOptionsValidator = dependencies.commandOptionsValidator;
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandInstanceFactory = dependencies.commandInstanceFactory;
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._commandOutputHandler = dependencies.commandOutputHandler;
-		this._accountDetailsService = dependencies.accountDetailsService;
+		this._authenticationService = dependencies.authenticationService;
 	}
 
 	async executeAction(context) {
@@ -56,10 +56,10 @@ module.exports = class CommandActionExecutor {
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
-			const accountDetails = commandMetadata.isSetupRequired
-				? this._accountDetailsService.get()
+			const projectConfiguration = commandMetadata.isSetupRequired
+				? this._authenticationService.getProjectDefaultAuthId()
 				: null;
-			this._checkCanExecute({ runInInteractiveMode, commandMetadata, accountDetails });
+			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
 
 			const command = this._commandInstanceFactory.create({
 				runInInteractiveMode: runInInteractiveMode,
@@ -79,7 +79,7 @@ module.exports = class CommandActionExecutor {
 				runInInteractiveMode: context.runInInteractiveMode,
 				isSetupRequired: commandMetadata.isSetupRequired,
 				commandUserExtension: commandUserExtension,
-				accountDetails: accountDetails,
+				projectConfiguration: projectConfiguration,
 			});
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
@@ -106,7 +106,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_checkCanExecute(context) {
-		if (context.commandMetadata.isSetupRequired && !context.accountDetails) {
+		if (context.commandMetadata.isSetupRequired && !context.projectConfiguration) {
 			throw TranslationService.getMessage(ERRORS.SETUP_REQUIRED);
 		}
 		if (context.runInInteractiveMode && !context.commandMetadata.supportsInteractiveMode) {
@@ -130,7 +130,7 @@ module.exports = class CommandActionExecutor {
 
 	async _executeCommandAction(options) {
 		const command = options.command;
-		const accountDetails = options.accountDetails;
+		const projectConfiguration = options.projectConfiguration;
 		const isSetupRequired = options.isSetupRequired;
 		const runInInteractiveMode = options.runInInteractiveMode;
 		const commandUserExtension = options.commandUserExtension;
@@ -140,7 +140,7 @@ module.exports = class CommandActionExecutor {
 			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
 				command: this,
 				arguments: isSetupRequired
-					? this._applyDefaultContextParams(commandArguments, accountDetails)
+					? this._applyDefaultContextParams(commandArguments, projectConfiguration)
 					: commandArguments,
 			});
 			const overridedCommandArguments = beforeExecutingOutput.arguments;
@@ -185,11 +185,8 @@ module.exports = class CommandActionExecutor {
 		}
 	}
 
-	_applyDefaultContextParams(args, accountDetails) {
-		args.account = accountDetails.accountId;
-		args.role = accountDetails.roleId;
-		args.email = accountDetails.email;
-		args.url = accountDetails.netSuiteUrl;
+	_applyDefaultContextParams(args, projectConfiguration) {
+		args.authId = projectConfiguration.defaultAuthId;
 		return args;
 	}
 };
