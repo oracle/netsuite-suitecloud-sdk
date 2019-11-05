@@ -17,8 +17,7 @@ const path = require('path');
 const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
-const CLISettings = require('./services/settings/CLISettings');
-const EnvironmentInformationService = require('./services/EnvironmentInformationService')
+const EnvironmentInformationService = require('./services/EnvironmentInformationService');
 const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
@@ -26,7 +25,6 @@ const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
 
 module.exports.SDKExecutor = class SDKExecutor {
-
 	constructor() {
 		this._CLISettingsService = new CLISettingsService();
 		this._accountDetailsService = new AccountDetailsService();
@@ -35,18 +33,26 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 	execute(executionContext) {
 		const proxyOptions = this._getProxyOptions();
-		const isJavaVersionValid = this._isJavaVersionValid();
-		const accountDetails = executionContext.includeAccountDetailsParams ? this._accountDetailsService.get() : null;
+		const accountDetails = executionContext.includeAccountDetailsParams
+			? this._accountDetailsService.get()
+			: null;
 
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
+			let lastSdkError = '';
 
-			if (!isJavaVersionValid) {
-				this._checkJavaVersionAndUpdateEnvironmentSettings();
-				throw TranslationService.getMessage(
-					ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
-					SDK_REQUIRED_JAVA_VERSION
-				);
+			if (this._CLISettingsService.getIsJavaVersionValid()) {
+				if(this._environmentInformationService.isInstalledJavaVersionValid()){
+					this._CLISettingsService.setIsJavaVersionValid(true);
+				} else {
+					reject(
+						TranslationService.getMessage(
+							ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+							SDK_REQUIRED_JAVA_VERSION
+						)
+					);
+					return;
+				}
 			}
 
 			if (executionContext.includeAccountDetailsParams) {
@@ -58,22 +64,29 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			const cliParams = this._convertParamsObjToString(
 				executionContext.getParams(),
-				executionContext.getFlags(),
+				executionContext.getFlags()
 			);
 
 			const integrationModeOption = executionContext.isIntegrationMode()
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const developmentModeOption = accountDetails && accountDetails.isDevelopment
-				? SDK_DEVELOPMENT_MODE_JVM_OPTION
-				: '';
+			const developmentModeOption =
+				accountDetails && accountDetails.isDevelopment
+					? SDK_DEVELOPMENT_MODE_JVM_OPTION
+					: '';
 
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
-			const sdkJarPath = path.join(__dirname, `../${SDK_DIRECTORY_NAME}/${SDKProperties.getSDKFileName()}`);
+			const sdkJarPath = path.join(
+				__dirname,
+				`../${SDK_DIRECTORY_NAME}/${SDKProperties.getSDKFileName()}`
+			);
 			if (!FileUtils.exists(sdkJarPath)) {
-				throw TranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND, path.join(__dirname,".."));
+				throw TranslationService.getMessage(
+					ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND,
+					path.join(__dirname, '..')
+				);
 			}
 			const quotedSdkJarPath = `"${sdkJarPath}"`;
 			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption} ${clientPlatformVersionOption}`;
@@ -82,13 +95,11 @@ module.exports.SDKExecutor = class SDKExecutor {
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
 			childProcess.stderr.on('data', data => {
-				const sdkOutput = data.toString('utf8');
-				reject(sdkOutput);
+				lastSdkError += data.toString('utf8');
 			});
 
 			childProcess.stdout.on('data', data => {
-				const sdkOutput = data.toString('utf8');
-				lastSdkOutput += sdkOutput;
+				lastSdkOutput += data.toString('utf8');
 			});
 
 			childProcess.on('close', code => {
@@ -111,34 +122,30 @@ module.exports.SDKExecutor = class SDKExecutor {
 						resolve(output);
 					} catch (error) {
 						reject(
-							TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error),
+							TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
 						);
 					}
 				} else if (code !== 0) {
-					this._checkJavaVersionAndUpdateEnvironmentSettings();
-					reject(TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code));
+					if (!this._environmentInformationService.isInstalledJavaVersionValid()) {
+						this._CLISettingsService.setIsJavaVersionValid(false);
+						reject(
+							TranslationService.getMessage(
+								ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+								SDK_REQUIRED_JAVA_VERSION
+							)
+						);
+						return;
+					}
+					reject(
+						TranslationService.getMessage(
+							ERRORS.SDKEXECUTOR.SDK_ERROR,
+							code,
+							lastSdkError
+						)
+					);
 				}
 			});
 		});
-	}
-
-	_checkJavaVersionAndUpdateEnvironmentSettings() {
-		if (!this._environmentInformationService.isInstalledJavaVersionValid()) {
-			throw TranslationService.getMessage(
-				ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
-				SDK_REQUIRED_JAVA_VERSION
-			);
-		} else {
-			const currentSettings = this._CLISettingsService.getSettings();
-			let newSettings = JSON.parse(JSON.stringify(currentSettings));
-			newSettings.isJavaVersionValid = true;
-			this._CLISettingsService.saveSettings(CLISettings.fromJson(newSettings));
-		}
-	}
-
-	_isJavaVersionValid() {
-		const cliSettings = this._CLISettingsService.getSettings();
-		return cliSettings.isJavaVersionValid;
 	}
 
 	_getProxyOptions() {
@@ -148,10 +155,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 		}
 		const proxyUrl = url.parse(cliSettings.proxyUrl);
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
-			throw TranslationService.getMessage(
-				ERRORS.WRONG_PROXY_SETTING,
-				cliSettings.proxyUrl
-			);
+			throw TranslationService.getMessage(ERRORS.WRONG_PROXY_SETTING, cliSettings.proxyUrl);
 		}
 		const protocolWithoutColon = proxyUrl.protocol.slice(0, -1);
 		const hostName = proxyUrl.hostname;

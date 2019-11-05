@@ -13,8 +13,6 @@ const {
 	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE },
 	ERRORS,
 } = require('./services/TranslationKeys');
-const { SDK_REQUIRED_JAVA_VERSION } = require('./ApplicationConstants');
-const spawn = require('child_process').spawnSync;
 const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapExceptionMessage;
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
@@ -79,7 +77,7 @@ module.exports = class CLI {
 				commandMetadata: commandMetadata,
 				program: program,
 				runInInteractiveMode: runInInteractiveMode,
-				executeCommandFunction: async options => {
+				executeCommandFunction: async options => {				
 					await this._commandActionExecutor.executeAction({
 						executionPath: process.cwd(),
 						commandName: commandMetadata.name,

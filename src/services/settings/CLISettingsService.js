@@ -20,7 +20,7 @@ const CLI_SETTINGS_FILEPATH = path.join(
 	FILE_NAMES.CLI_SETTINGS
 );
 
-const CLI_SETTINGS_PROPERTIES_KEYS = ['proxyUrl', 'useProxy'];
+const CLI_SETTINGS_PROPERTIES_KEYS = ['proxyUrl', 'useProxy', 'isJavaVersionValid'];
 const DEFAULT_CLI_SETTINGS = new CLISettings({
 	useProxy: false,
 	proxyUrl: '',
@@ -64,15 +64,41 @@ module.exports = class CLISettingsService {
 				return cliSettings;
 			} catch (error) {
 				throw TranslationService.getMessage(ERRORS.CLI_SETTINGS_FILE_CONTENT);
-			}	
+			}
 		}
 		return DEFAULT_CLI_SETTINGS;
+	}
+
+	getIsJavaVersionValid() {
+		if (CACHED_CLI_SETTINGS) {
+			return CACHED_CLI_SETTINGS.isJavaVersionValid;
+		} else {
+			return this.getSettings().isJavaVersionValid
+		}
+	}
+
+	setIsJavaVersionValid(boolean) {
+		let newSettings;
+		if (CACHED_CLI_SETTINGS) {
+			if(CACHED_CLI_SETTINGS.isJavaVersionValid === boolean) {
+				return;
+			} else {
+				newSettings = {...CACHED_CLI_SETTINGS.toJSON()};
+			}
+		} else {
+			newSettings = this.getSettings().toJSON();
+		}
+		newSettings.isJavaVersionValid = boolean;
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		this.saveSettings(CACHED_CLI_SETTINGS);
 	}
 
 	_validateCLISettingsProperties(CLISettingsJson) {
 		CLI_SETTINGS_PROPERTIES_KEYS.forEach(propertyKey => {
 			if (!CLISettingsJson.hasOwnProperty(propertyKey)) {
-				throw Error(`Missing ${propertyKey} property in the ${CLI_SETTINGS_FILEPATH} file.`);
+				throw Error(
+					`Missing ${propertyKey} property in the ${CLI_SETTINGS_FILEPATH} file.`
+				);
 			}
 		});
 	}
