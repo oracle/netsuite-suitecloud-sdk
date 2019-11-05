@@ -1,0 +1,11 @@
+{
+  "name": "{{name}}",
+  "version": "{{version}}",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "@oracle/netsuite-suitecloud-node-cli": "file:{{node-cli-absolute-path}}"
+  }
+}

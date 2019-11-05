@@ -9,9 +9,15 @@ module.exports = {
 		blankscript: require.resolve('./scripts/blankscript.js'),
 	},
 	OBJECTS: {
-        	commerceextension: require.resolve('./objects/commerceextension.xml')
+		commerceextension: require.resolve('./objects/commerceextension.xml'),
 	},
 	PROJECTCONFIGS: {
 		cliconfig: require.resolve('./projectconfigs/cli-config.js'),
 	},
+	UNIT_TEST: {
+		cliconfig: require.resolve('./unittest/cli-config.js.template'),
+		jestconfig: require.resolve('./unittest/jest.config.js.template'),
+		packagejson: require.resolve('./unittest/package.json.template'),
+		sampletest: require.resolve('./unittest/sample-test.js.template'),
+	}
 };

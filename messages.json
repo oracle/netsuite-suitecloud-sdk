@@ -25,10 +25,14 @@
 	"COMMAND_CREATEPROJECT_ENTER_PUBLISHER_ID": "Enter the publisher ID.",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_ID": "Enter the project ID.",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_VERSION": "Enter the project version.",
+	"COMMAND_CREATEPROJECT_INCLUDE_UNIT_TESTING": "Do you want to include unit testing with the Jest testing framework? ***This will install NPM module dependencies.",
 	"COMMAND_CREATEPROJECT_ERRORS_PROCESS_FAILED": "The createproject process failed.",
+	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT_STRUCTURE": "Creating the project structure...",
+	"COMMAND_CREATEPROJECT_MESSAGE_SAMPLE_UNIT_TEST_ADDED": "A sample unit test example has been added in the cli-config.js file of your project.",
+	"COMMAND_CREATEPROJECT_MESSAGE_INIT_NPM_DEPENDENCIES": "Initializing npm dependencies for the testing environment...",
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATED": "The {0} project was created successfully in {1}.{2}Navigate to {1} and run \"scloud setupaccount\" to link your project with your account.",
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATION_CANCELED": "The creation process has been canceled.",
-	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
+	"COMMAND_CREATEPROJECT_MESSAGE_SETUP_TEST_ENV": "Setting up the testing environment...",
 	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Do you want to overwrite the {0} project? All the files and folders from the former project will be deleted and replaced by the new project.",
 	"COMMAND_CREATEPROJECT_WRONG_PROJECT_TYPE": "Invalid \"type\" specified. The expected values are the following - \"ACCOUNTCUSTOMIZATION, SUITEAPP\".",
 
@@ -190,6 +194,9 @@
 	"ERRORS_CLI_ERROR_2FA_REQUIRED": "The token could not be issued. You tried to issue a token, but your role requires 2FA. You must save a TBA token issued in NetSuite. To learn how to issue a token in NetSuite, see https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html",
 
 	"NO": "No",
+
+	"UNIT_TEST_TEST_FAILED": "The tests failed.",
+	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures, The Deployment will not continue.",
 
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP": "Account-specific values cannot be applied to SuiteApps.",
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
