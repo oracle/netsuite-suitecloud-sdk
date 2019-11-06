@@ -34,63 +34,72 @@ module.exports = class CLISettingsService {
 		this._fileSystemService = new FileSystemService();
 	}
 
-	hasSettings() {
-		return FileUtils.exists(CLI_SETTINGS_FILEPATH);
-	}
-
-	saveSettings(cliSettings) {
+	_saveSettings(cliSettings) {
 		this._fileSystemService.createFolder(HOME_PATH, FOLDER_NAMES.SUITECLOUD_SDK);
 		FileUtils.create(CLI_SETTINGS_FILEPATH, cliSettings);
 	}
 
-	clearSettings() {
-		if (!this.hasSettings()) {
-			return;
+	_getSettings() {
+		if (CACHED_CLI_SETTINGS) {
+			return CACHED_CLI_SETTINGS;
 		}
-		this.saveSettings(DEFAULT_CLI_SETTINGS);
-		CACHED_CLI_SETTINGS = null;
-	}
-
-	getSettings() {
-		if (this.hasSettings()) {
-			if (CACHED_CLI_SETTINGS) {
-				return CACHED_CLI_SETTINGS;
-			}
+		if (FileUtils.exists(CLI_SETTINGS_FILEPATH)) {
 			try {
 				const cliSettingsJson = FileUtils.readAsJson(CLI_SETTINGS_FILEPATH);
 				this._validateCLISettingsProperties(cliSettingsJson);
-				const cliSettings = CLISettings.fromJson(cliSettingsJson);
-				CACHED_CLI_SETTINGS = cliSettings;
-				return cliSettings;
+				CACHED_CLI_SETTINGS = CLISettings.fromJson(cliSettingsJson);
+				return CLISettings.fromJson(cliSettingsJson);
 			} catch (error) {
 				throw TranslationService.getMessage(ERRORS.CLI_SETTINGS_FILE_CONTENT);
 			}
 		}
+		CACHED_CLI_SETTINGS = DEFAULT_CLI_SETTINGS;
 		return DEFAULT_CLI_SETTINGS;
 	}
 
-	getIsJavaVersionValid() {
-		if (CACHED_CLI_SETTINGS) {
-			return CACHED_CLI_SETTINGS.isJavaVersionValid;
-		} else {
-			return this.getSettings().isJavaVersionValid
-		}
+	isJavaVersionValid() {
+		return this._getSettings().isJavaVersionValid;
 	}
 
-	setIsJavaVersionValid(boolean) {
-		let newSettings;
-		if (CACHED_CLI_SETTINGS) {
-			if(CACHED_CLI_SETTINGS.isJavaVersionValid === boolean) {
-				return;
-			} else {
-				newSettings = {...CACHED_CLI_SETTINGS.toJSON()};
-			}
-		} else {
-			newSettings = this.getSettings().toJSON();
+	setJavaVersionValid(value) {
+		const newSettings = this._getSettings().toJSON();
+		if (newSettings.isJavaVersionValid === value) {
+			return;
 		}
-		newSettings.isJavaVersionValid = boolean;
+		newSettings.isJavaVersionValid = value;
 		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
-		this.saveSettings(CACHED_CLI_SETTINGS);
+		this._saveSettings(CACHED_CLI_SETTINGS);
+	}
+
+	proxyUrl() {
+		return this._getSettings().proxyUrl;
+	}
+
+	setProxyUrl(url) {
+		const newSettings = this._getSettings().toJSON();
+		if (newSettings.proxyUrl === url && newSettings.useProxy === true) {
+			return;
+		}
+		newSettings.useProxy = true;
+		newSettings.proxyUrl = url;
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		this._saveSettings(CACHED_CLI_SETTINGS);
+	}
+
+	useProxy() {
+		return this._getSettings().useProxy;
+	}
+
+	clearProxy() {
+		const newSettings = this._getSettings().toJSON();
+		if (newSettings.useProxy === false) {
+			return;
+		}
+		newSettings.useProxy = false;
+		newSettings.proxyUrl = '';
+
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 
 	_validateCLISettingsProperties(CLISettingsJson) {

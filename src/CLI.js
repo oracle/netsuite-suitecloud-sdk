@@ -77,7 +77,7 @@ module.exports = class CLI {
 				commandMetadata: commandMetadata,
 				program: program,
 				runInInteractiveMode: runInInteractiveMode,
-				executeCommandFunction: async options => {				
+				executeCommandFunction: async options => {
 					await this._commandActionExecutor.executeAction({
 						executionPath: process.cwd(),
 						commandName: commandMetadata.name,

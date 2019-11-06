@@ -20,8 +20,8 @@ module.exports = class EnvironmentInformationService {
 		const childProcess = spawn('java', ['-fullversion'], { shell: true });
 		const fullVersionOutput = childProcess.stderr.toString(); //The output should be: java full version "11.1.0_201-b09"
 		const javaVersion = new RegExp('java full version').test(fullVersionOutput)
-			? fullVersionOutput.split(' ')[3].replace(/"/g, '')
-			: false;
+			? fullVersionOutput.split(' ')[3].replace(/"|\r\n|\n|\r/g, '')
+			: '';
 		return javaVersion; 
 	}
 };

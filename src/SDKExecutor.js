@@ -41,13 +41,23 @@ module.exports.SDKExecutor = class SDKExecutor {
 			let lastSdkOutput = '';
 			let lastSdkError = '';
 
-			if (this._CLISettingsService.getIsJavaVersionValid()) {
-				if(this._environmentInformationService.isInstalledJavaVersionValid()){
-					this._CLISettingsService.setIsJavaVersionValid(true);
+			if (!this._CLISettingsService.isJavaVersionValid()) {
+				const javaVersionInstalled = this._environmentInformationService.getInstalledJavaVersionString();
+				if (javaVersionInstalled.startsWith(SDK_REQUIRED_JAVA_VERSION)) {
+					this._CLISettingsService.setJavaVersionValid(true);
+				} else if (javaVersionInstalled === '') {
+					reject(
+						TranslationService.getMessage(
+							ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED,
+							SDK_REQUIRED_JAVA_VERSION
+						)
+					);
+					return;
 				} else {
 					reject(
 						TranslationService.getMessage(
 							ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+							javaVersionInstalled,
 							SDK_REQUIRED_JAVA_VERSION
 						)
 					);
@@ -126,16 +136,31 @@ module.exports.SDKExecutor = class SDKExecutor {
 						);
 					}
 				} else if (code !== 0) {
-					if (!this._environmentInformationService.isInstalledJavaVersionValid()) {
-						this._CLISettingsService.setIsJavaVersionValid(false);
-						reject(
-							TranslationService.getMessage(
-								ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
-								SDK_REQUIRED_JAVA_VERSION
-							)
-						);
-						return;
+					// check if the problem was due to bad Java Version
+					const javaVersionInstalled = this._environmentInformationService.getInstalledJavaVersionString();
+					if (!javaVersionInstalled.startsWith(SDK_REQUIRED_JAVA_VERSION)) {
+						this._CLISettingsService.setJavaVersionValid(false);
+						if (javaVersionInstalled === '') {
+							reject(
+								TranslationService.getMessage(
+									ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED,
+									SDK_REQUIRED_JAVA_VERSION
+								)
+							);
+							return;
+						} else {
+							reject(
+								TranslationService.getMessage(
+									ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+									javaVersionInstalled,
+									SDK_REQUIRED_JAVA_VERSION
+								)
+							);
+							return;
+						}
 					}
+
+					// java version was not the problem
 					reject(
 						TranslationService.getMessage(
 							ERRORS.SDKEXECUTOR.SDK_ERROR,
@@ -149,11 +174,10 @@ module.exports.SDKExecutor = class SDKExecutor {
 	}
 
 	_getProxyOptions() {
-		const cliSettings = this._CLISettingsService.getSettings();
-		if (!cliSettings.useProxy) {
+		if (!this._CLISettingsService.useProxy()) {
 			return '';
 		}
-		const proxyUrl = url.parse(cliSettings.proxyUrl);
+		const proxyUrl = url.parse(this._CLISettingsService.proxyUrl());
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
 			throw TranslationService.getMessage(ERRORS.WRONG_PROXY_SETTING, cliSettings.proxyUrl);
 		}
