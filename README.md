@@ -1,50 +1,60 @@
+# SuiteCloud CLI for Node.js
+SuiteCloud Command Line Interface (CLI) for Node.js is a SuiteCloud SDK tool to manage SuiteCloud project components and validate and deploy projects to your account.\
+CLI for Node.js is an interactive tool that guides you through all the steps of the communication between your local project and your account.
+
+## Prerequisites
+The following software is required to work with SuiteCloud CLI for Node.js:
+- Node.js version 10
+- Java JDK version 11
+
+Read the full list of prerequisites in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558708810.html).
+  
 ## Installation
-### Prerequisites
-The following software should be installed on your system
-- Node.js 10
-- JRE 11
-
-### Getting `scloud` set up in your environment
-To install 3rd party dependencies run the following command and verify node_modules directory is generated:
+To install CLI for Node.js, run the following command:
 ```
-npm install
-```
-The SuiteCloud CLI for Node.js uses a Java SDK internally which will be downloaded into the `bin` folder of this repository as part of `npm install`.
-
-To make `scloud` command globally available on your system run:
-```
-npm link
+npm install suitecloud-cli -global
 ```
 
-SuiteCloud CLI commands should now be available from within any directory. You can access help by running:
+CLI for Node.js is available from within any directory by running `scloud`.
+
+## Usage
+CLI for Node.js uses the following syntax: 
 ```
-scloud
+scloud <command> <option> <argument>
 ```
 
-### Installing SuiteCloud Node.js CLI inside the Oracle corporate network
-For npm to work inside the Oracle Network, you must configure the proxy in npm by running:
-```
-npm config set proxy http://www-proxy-lon.uk.oracle.com --global
-npm config set https-proxy http://www-proxy-lon.uk.oracle.com --global
-```
-Notice that the example uses the UK Oracle proxy. You may want to change the proxy configuration to a closer one to your location.
+### Commands
+| Command | Description |
+| --- | --- |
+| [`adddependencies`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155981452469.html)| Adds missing dependencies to the manifest file.|
+|[`createproject`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041348327.html)|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
+|[`deploy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044636320.html)|Deploys the folder containing the project.|
+|[`importfiles`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041963273.html)|Imports files from an account to your account customization project.|
+|[`importobjects`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042181820.html)|Imports custom objects from an account to your SuiteCloud project.|
+|[`listfiles`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042966488.html)|Lists the files in the File Cabinet of your account.|
+|[`listobjects`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043303237.html)|Lists the custom objects deployed in an account.|
+|[`localserver`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043691482.html)|Generates a local server of your SuiteCommerce extensions and themes.|
+|[`manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs (authid) for all your projects.|
+|[`proxy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044426239.html)|Configures a proxy server.|
+|[`setupaccount`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
+|[`validate`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
 
-Unfortunately, for some reason npm throws an UNABLE_TO_VERIFY_LEAF_SIGNATURE error when working behind a proxy. Therefore, if you want to install a module you must run these commands first:
+To check the help for a specific command, run the following command:
 ```
-npm config set registry http://registry.npmjs.org/ --global
-npm config set strict-ssl false --global
+scloud {command} -h
 ```
-## Getting started with SuiteCloud Node.js CLI
-Start by navigating to an SDF project folder or create your new project by running:
+
+Read the detailed documentation for all the commands in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_155931263126.html).
+
+## Getting Started
+Create a new project in an empty folder by running the following command:
 ```
 scloud createproject -i
 ```
-Once you have a valid project, you can setup your account configuration by running:
+
+After you create a project, configure a NetSuite account, by running the following command within the project folder:
 ```
 scloud setupaccount
 ```
-If you would like to use `scloud` with a Runbox/Fatbox/ScrumBox, you should setup your account configuration with:
-```
-scloud setupaccount --dev
-```
-
+Read all the documentation about CLI for Node.js in [NetSuite's Help Center](
+https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
