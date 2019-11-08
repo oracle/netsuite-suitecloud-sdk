@@ -71,7 +71,7 @@ module.exports = class CLISettingsService {
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 
-	proxyUrl() {
+	getProxyUrl() {
 		return this._getSettings().proxyUrl;
 	}
 
