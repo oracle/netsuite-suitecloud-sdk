@@ -18,7 +18,6 @@ const AuthenticationService = require('./../core/authentication/AuthenticationSe
 const OperationResultStatus = require('./OperationResultStatus');
 
 const inquirer = require('inquirer');
-const SAVE_TOKEN_COMMAND = 'savetoken';
 
 const {
 	FILE_NAMES: { MANIFEST_XML },
@@ -37,10 +36,24 @@ const ANSWERS = {
 	PASSWORD: 'password',
 	COMPANY_ID: 'companyId',
 	ROLE_ID: 'roleId',
-	ISSUE_A_TOKEN: 'issueAToken',
 	SAVE_TOKEN_ID: 'saveTokenId',
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
+	SELECTED_AUTH_ID: 'selected_auth_id',
+	AUTH_MODE: 'AUTH_MODE',
+	NEW_AUTH_ID: 'NEW_AUTH_ID',
 };
+
+const AUTH_MODE = {
+	OAUTH: 'OAUTH',
+	SAVE_TOKEN: 'SAVE_TOKEN',
+	REUSE: 'REUSE',
+}
+
+const COMMANDS = {
+	AUTHENTICATE: 'authenticate',
+	MANAGEAUTH: 'manageauth',
+	SAVE_TOKEN: 'savetoken',
+}
 
 const {
 	validateDevUrl,
@@ -48,6 +61,8 @@ const {
 	validateNotProductionUrl,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
+
+const CREATE_NEW_AUTH = '******CREATE_NEW_AUTH*******!£$%&*';
 
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -62,50 +77,69 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let developmentUrlAnswer;
 
 		const getAuthListContext = new SDKExecutionContext({
-			command: 'manageauth',
+			command: COMMANDS.MANAGEAUTH,
 			flags: ['list'],
 		});
 
-		const existingAuthenticationsResponse = await executeWithSpinner({
+		const existingAuthIDsResponse = await executeWithSpinner({
 			action: this._sdkExecutor.execute(getAuthListContext),
 			message: 'Getting list of available authentication IDs configured in this machine',
 		});
 
-		const choices = [
-			{
-				name:
-					chalk.bold('New authentication') +
-					' - Do not reuse an existing authentication and setup a new one.',
-				value: 'NEW_AUTH',
-			},
-			new inquirer.Separator(),
-		];
-		Object.keys(existingAuthenticationsResponse.data).forEach(function(key, index) {
-			const authentication = existingAuthenticationsResponse.data[key];
-			const isDevLabel = authentication.isDev ? `[DEV: ${authentication.urls.app}]` : '';
-			choices.push({
-				name: `${key} - ${authentication.accountId} ${isDevLabel}`,
-				value: key,
-			});
-		});
+		// TODO: Consider that manageauth -list command can fail
 
-		const authIdAnswer = await prompt([
-			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: 'AUTH_ID',
-				message: 'Do you want to use an existing authentication ID for this project?',
-				choices: choices,
-			},
-		]);
-		let newAuthenticationModeAnswers;
-		if (authIdAnswer['AUTH_ID'] !== 'NEW_AUTH') {
+		let authIdAnswer;
+		const choices = [];
+		const auhtIDs = Object.keys(existingAuthIDsResponse.data);
+		
+		if (auhtIDs.length > 0) {
+			// There are already some existing authIDs
+			choices.push(
+				{
+					name:
+						chalk.bold('New authentication') +
+						' - Do not reuse an existing authentication and setup a new one.',
+						value: CREATE_NEW_AUTH,
+				});
+			choices.push(new inquirer.Separator());
+			auhtIDs.forEach(function(key, index) {
+				const authentication = existingAuthIDsResponse.data[key];
+				const isDevLabel = authentication.isDev ? `[DEV: ${authentication.urls.app}]` : '';
+				choices.push({
+					name: `${key} - ${authentication.accountId} ${isDevLabel}`,
+					value: key,
+				});
+			});
+			choices.push(new inquirer.Separator());
+
+			authIdAnswer = await prompt([
+				{
+					type: CommandUtils.INQUIRER_TYPES.LIST,
+					name: ANSWERS.SELECTED_AUTH_ID,
+					message: 'Do you want to use an existing authentication ID for this project?',
+					choices: choices,
+				},
+			]);
+		} else {
+			// There was no previous authIDs
+			authIdAnswer = {
+				[ANSWERS.SELECTED_AUTH_ID]: CREATE_NEW_AUTH
+			}
+		}
+
+		const selectedAuthID = authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
+		let newAuthenticationAnswers;
+		// reusing an already set authID
+		if (selectedAuthID !== CREATE_NEW_AUTH) {
 			return {
 				createNewAuthentication: false,
-				existingAuthId: authIdAnswer['AUTH_ID'],
-				mode: 'REUSE',
+				existingAuthId: selectedAuthID,
+				mode: AUTH_MODE.REUSE,
 			};
 		}
-		if (authIdAnswer['AUTH_ID'] === 'NEW_AUTH') {
+
+		// creating a new authID
+		if (selectedAuthID === CREATE_NEW_AUTH) {
 			if (isDevelopment) {
 				developmentUrlAnswer = await prompt([
 					{
@@ -122,31 +156,31 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 							),
 					},
 				]);
-			}
-			newAuthenticationModeAnswers = await prompt([
+			} 
+			newAuthenticationAnswers = await prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
-					name: 'AUTH_MODE',
+					name: ANSWERS.AUTH_MODE,
 					message: 'Please select the authentication mode.',
 					choices: [
 						{
 							name: 'Browser-based authentication.',
-							value: 'OAUTH',
+							value: AUTH_MODE.OAUTH,
 						},
 						{
 							name: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_OPTION),
-							value: 'SAVE',
+							value: AUTH_MODE.SAVE_TOKEN,
 						},
 					],
 				},
 				{
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
-					name: 'NEW_AUTH_ID',
+					name: ANSWERS.NEW_AUTH_ID,
 					message: 'Please specify an AuthID for the new authentication.',
 					filter: answer => answer.trim(),
 				},
 				{
-					when: response => response['AUTH_MODE'] === 'SAVE',
+					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 					name: ANSWERS.SAVE_TOKEN_ID,
@@ -156,7 +190,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						showValidationResults(fieldValue, validateFieldIsNotEmpty),
 				},
 				{
-					when: response => response['AUTH_MODE'] === 'SAVE',
+					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 					name: ANSWERS.SAVE_TOKEN_SECRET,
@@ -170,12 +204,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			return {
 				isDevelopment: isDevelopment,
 				createNewAuthentication: true,
-				newAuthId: newAuthenticationModeAnswers['NEW_AUTH_ID'],
-				url: developmentUrlAnswer ? developmentUrlAnswer.developmentUrl : null,
-				mode: newAuthenticationModeAnswers['AUTH_MODE'],
+				newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
+				url: developmentUrlAnswer ? developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL] : 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
+				mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
 				saveToken: {
-					id: newAuthenticationModeAnswers[ANSWERS.SAVE_TOKEN_ID],
-					secret: newAuthenticationModeAnswers[ANSWERS.SAVE_TOKEN_SECRET],
+					id: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
+					secret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
 				},
 			};
 		}
@@ -199,14 +233,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(answers) {
 		let authId;
-		if (answers.mode === 'OAUTH') {
+		if (answers.mode === AUTH_MODE.OAUTH) {
 			await this._performBrowserBasedAuthentication({
 				authId: answers.newAuthId,
 				url: answers.url,
 			});
 			authId = answers.newAuthId;
 		}
-		if (answers.mode === 'SAVE') {
+		if (answers.mode === AUTH_MODE.SAVE_TOKEN) {
 			await this._saveToken({
 				authId: answers.newAuthId,
 				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
@@ -216,7 +250,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			});
 			authId = answers.newAuthId;
 		}
-		if (answers.mode === 'REUSE') {
+		if (answers.mode === AUTH_MODE.REUSE) {
 			authId = answers.existingAuthId;
 		}
 		this._authenticationService.setDefaultAuthentication(authId);
@@ -230,7 +264,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _performBrowserBasedAuthentication(params) {
 		const authenticateSDKExecutionContext = new SDKExecutionContext({
-			command: 'authenticate',
+			command: COMMANDS.AUTHENTICATE,
 			params,
 		});
 
@@ -243,7 +277,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _saveToken(params) {
 		const executionContextForSaveToken = new SDKExecutionContext({
-			command: SAVE_TOKEN_COMMAND,
+			command: COMMANDS.SAVE_TOKEN,
 			params,
 		});
 
