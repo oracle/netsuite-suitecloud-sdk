@@ -11,7 +11,6 @@ const {
 } = require('../services/TranslationKeys');
 const NodeUtils = require('../utils/NodeUtils');
 const CLISettingsService = require('../services/settings/CLISettingsService');
-const CLISettings = require('../services/settings/CLISettings');
 const url = require('url');
 
 const SET_OPTION = 'set';
@@ -86,7 +85,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_setProxy(proxyUrl) {
-		const proxyUrlIsDifferent = this._CLISettingsService.proxyUrl() != proxyUrl;
+		const proxyUrlIsDifferent = this._CLISettingsService.getProxyUrl() != proxyUrl;
 		this._CLISettingsService.setProxyUrl(proxyUrl);
 		return { proxyOverrided: proxyUrlIsDifferent };
 	}

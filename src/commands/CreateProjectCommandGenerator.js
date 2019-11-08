@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
@@ -141,7 +141,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						fieldValue,
 						validateFieldIsNotEmpty,
 						validateFieldHasNoSpaces,
-						fieldValue => validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, fieldValue)
+						fieldValue =>
+							validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, fieldValue)
 					),
 			},
 			{
@@ -166,7 +167,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		]);
 
 		const projectFolderName = this._getProjectFolderName(answers);
-		const projectAbsolutePath = path.join(this._projectFolder, projectFolderName);
+		const projectAbsolutePath = path.join(this._executionPath, projectFolderName);
 
 		if (
 			this._fileSystemService.folderExists(projectAbsolutePath) &&
@@ -205,7 +206,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		const projectFolderName = this._getProjectFolderName(answers);
 		if (projectFolderName) {
 			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = path.join(
-				this._projectFolder,
+				this._executionPath,
 				projectFolderName
 			);
 			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
@@ -228,7 +229,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const validationErrors = this._validateParams(answers);
 
-		if(validationErrors.length > 0){
+		if (validationErrors.length > 0) {
 			throwValidationException(validationErrors, false, this._commandMetadata);
 		}
 
@@ -245,7 +246,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			}),
 		};
 
-		this._fileSystemService.createFolder(this._projectFolder, projectFolderName);
+		this._fileSystemService.createFolder(this._executionPath, projectFolderName);
 
 		const actionCreateProject = new Promise(async (resolve, reject) => {
 			try {
@@ -306,6 +307,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]
 				});
 			} catch (error) {
+				this._fileSystemService.deleteFolderRecursive(
+					path.join(this._executionPath, projectFolderName)
+				);
 				reject(error);
 			}
 		});
@@ -433,10 +437,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			)
 		);
 		validationErrors.push(
-			showValidationResults(
-				answers[COMMAND_OPTIONS.TYPE],
-				validateProjectType
-			)
+			showValidationResults(answers[COMMAND_OPTIONS.TYPE], validateProjectType)
 		);
 		if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
 			validationErrors.push(
