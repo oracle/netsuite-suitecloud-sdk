@@ -6,6 +6,6 @@
   },
   "devDependencies": {
     "jest": "^24.9.0",
-    "@oracle/netsuite-suitecloud-node-cli": "file:{{node-cli-absolute-path}}"
+    "@oracle/netsuite-suitecloud-testing-framework": "file:{{node-cli-absolute-path}}"
   }
 }

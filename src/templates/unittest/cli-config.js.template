@@ -1,4 +1,4 @@
-const SuiteCloudJestUnitTestRunner = require('@oracle/netsuite-suitecloud-node-cli/testing-framework/services/SuiteCloudJestUnitTestRunner');
+const SuiteCloudJestUnitTestRunner = require('@oracle/netsuite-suitecloud-testing-framework/services/SuiteCloudJestUnitTestRunner');
 
 module.exports = {
 	defaultProjectFolder: 'src',
