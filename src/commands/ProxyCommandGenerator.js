@@ -39,7 +39,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 			const setProxyResult = this._setProxy(proxyUrlArgument);
 			actionResult.proxyOverrided = setProxyResult.proxyOverrided;
 		} else {
-			this._clearProxy();
+			this._CLISettingsService.clearProxy();
 		}
 
 		return Promise.resolve(actionResult);
@@ -86,17 +86,8 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_setProxy(proxyUrl) {
-		const alreadyHasProxySetup = this._CLISettingsService.hasSettings();
-		this._CLISettingsService.saveSettings(
-			new CLISettings({
-				useProxy: true,
-				proxyUrl: proxyUrl,
-			})
-		);
-		return { proxyOverrided: alreadyHasProxySetup };
-	}
-
-	_clearProxy() {
-		this._CLISettingsService.clearSettings();
+		const proxyUrlIsDifferent = this._CLISettingsService.proxyUrl() != proxyUrl;
+		this._CLISettingsService.setProxyUrl(proxyUrl);
+		return { proxyOverrided: proxyUrlIsDifferent };
 	}
 };
