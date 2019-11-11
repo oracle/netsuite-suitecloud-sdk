@@ -5,7 +5,9 @@ module.exports = {
 	commands: {
 		deploy: {
 			beforeExecuting: async args => {
-				await SuiteCloudJestUnitTestRunner.run({jestOptions : args});
+				await SuiteCloudJestUnitTestRunner.run({
+				    // Jest configuration options.
+				});
 				return args;
 			},
 		},

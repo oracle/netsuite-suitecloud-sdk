@@ -7,11 +7,10 @@ const {
 module.exports = {
 	run: async function(args) {
 		try {
-			const jestResult = await jest.runCLI(args.jestOptions, [process.cwd()]);
+			const jestResult = await jest.runCLI(args, [process.cwd()]);
 			if (!jestResult.results.success) {
 				throw TranslationService.getMessage(MESSAGES.UNIT_TEST.TEST_FAILED);
 			}
-			return args;
 		} catch (error) {
 			throw TranslationService.getMessage(MESSAGES.UNIT_TEST.TEST_FAILURES_PRESENT);
 		}
