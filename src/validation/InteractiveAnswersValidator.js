@@ -187,6 +187,12 @@ class InteractiveAnswersValidator {
 					)
 			  );
 	}
+
+	validateValueNotInList(newAuhtID, authIDs) {
+		return !authIDs.includes(newAuhtID)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE('This auhtID is already used');
+	}
 }
 
 module.exports = new InteractiveAnswersValidator();

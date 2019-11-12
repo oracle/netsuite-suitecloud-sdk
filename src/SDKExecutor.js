@@ -65,8 +65,10 @@ module.exports.SDKExecutor = class SDKExecutor {
 				);
 			}
 			const quotedSdkJarPath = `"${sdkJarPath}"`;
-			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption} ${clientPlatformVersionOption}`;
-			const jvmCommand = `java -jar ${vmOptions} -DintegrationConsumerKey=b05d56072f779a7a11ccf0f8d1cd337beead2e788d91ac5fed2ba4a439cc16c5 -DintegrationConsumerSecret=ddefd9d9744bec6162167413c6fd493920e635dffba400e237be9e0829dd9452  ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
+			const vmIntegrationConsumerKey = '-DintegrationConsumerKey=b05d56072f779a7a11ccf0f8d1cd337beead2e788d91ac5fed2ba4a439cc16c5';
+			const vmintegrationConsumerSecret = '-DintegrationConsumerSecret=ddefd9d9744bec6162167413c6fd493920e635dffba400e237be9e0829dd9452';
+			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption} ${clientPlatformVersionOption} ${vmIntegrationConsumerKey} ${vmintegrationConsumerSecret}`;
+			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 

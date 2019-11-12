@@ -21,21 +21,14 @@ const inquirer = require('inquirer');
 
 const {
 	FILE_NAMES: { MANIFEST_XML },
-	PROD_ENVIRONMENT_ADDRESS,
-	HTTP_PROTOCOL,
 } = require('../ApplicationConstants');
 
 const {
-	COMMAND_SETUPACCOUNT: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
+	COMMAND_SETUPACCOUNT: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES, OUTPUT },
 } = require('../services/TranslationKeys');
 
 const ANSWERS = {
-	OVERWRITE: 'overwrite',
 	DEVELOPMENT_URL: 'developmentUrl',
-	EMAIL: 'email',
-	PASSWORD: 'password',
-	COMPANY_ID: 'companyId',
-	ROLE_ID: 'roleId',
 	SAVE_TOKEN_ID: 'saveTokenId',
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 	SELECTED_AUTH_ID: 'selected_auth_id',
@@ -47,18 +40,21 @@ const AUTH_MODE = {
 	OAUTH: 'OAUTH',
 	SAVE_TOKEN: 'SAVE_TOKEN',
 	REUSE: 'REUSE',
-}
+};
 
 const COMMANDS = {
 	AUTHENTICATE: 'authenticate',
 	MANAGEAUTH: 'manageauth',
 	SAVE_TOKEN: 'savetoken',
-}
+};
 
 const {
 	validateDevUrl,
+	validateFieldHasNoSpaces,
 	validateFieldIsNotEmpty,
 	validateNotProductionUrl,
+	validateValueNotInList,
+	validateXMLCharacters,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 
@@ -83,31 +79,35 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		const existingAuthIDsResponse = await executeWithSpinner({
 			action: this._sdkExecutor.execute(getAuthListContext),
-			message: 'Getting list of available authentication IDs configured in this machine',
+			message: TranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
 		});
 
-		// TODO: Consider that manageauth -list command can fail
+		// Consider that manageauth -list command can fail
+		if (SDKOperationResultUtils.hasErrors(existingAuthIDsResponse)) {
+			throw SDKOperationResultUtils.getResultMessage(existingAuthIDsResponse);
+		}
 
 		let authIdAnswer;
 		const choices = [];
 		const auhtIDs = Object.keys(existingAuthIDsResponse.data);
-		
+
 		if (auhtIDs.length > 0) {
 			// There are already some existing authIDs
-			choices.push(
-				{
-					name:
-						chalk.bold('New authentication') +
-						' - Do not reuse an existing authentication and setup a new one.',
-						value: CREATE_NEW_AUTH,
-				});
+			choices.push({
+				name: chalk.bold(
+					TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)
+				),
+				value: CREATE_NEW_AUTH,
+			});
 			choices.push(new inquirer.Separator());
-			auhtIDs.forEach(function(key, index) {
-				const authentication = existingAuthIDsResponse.data[key];
+			choices.push(new inquirer.Separator(TranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
+
+			auhtIDs.forEach(authID => {
+				const authentication = existingAuthIDsResponse.data[authID];
 				const isDevLabel = authentication.isDev ? `[DEV: ${authentication.urls.app}]` : '';
 				choices.push({
-					name: `${key} - ${authentication.accountId} ${isDevLabel}`,
-					value: key,
+					name: `${authID} - ${authentication.accountId} ${isDevLabel}`,
+					value: authID,
 				});
 			});
 			choices.push(new inquirer.Separator());
@@ -116,19 +116,18 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: ANSWERS.SELECTED_AUTH_ID,
-					message: 'Do you want to use an existing authentication ID for this project?',
+					message: TranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
 					choices: choices,
 				},
 			]);
 		} else {
 			// There was no previous authIDs
 			authIdAnswer = {
-				[ANSWERS.SELECTED_AUTH_ID]: CREATE_NEW_AUTH
-			}
+				[ANSWERS.SELECTED_AUTH_ID]: CREATE_NEW_AUTH,
+			};
 		}
 
 		const selectedAuthID = authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
-		let newAuthenticationAnswers;
 		// reusing an already set authID
 		if (selectedAuthID !== CREATE_NEW_AUTH) {
 			return {
@@ -156,19 +155,21 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 							),
 					},
 				]);
-			} 
-			newAuthenticationAnswers = await prompt([
+			}
+			const newAuthenticationAnswers = await prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: ANSWERS.AUTH_MODE,
-					message: 'Please select the authentication mode.',
+					message: TranslationService.getMessage(QUESTIONS.AUTH_MODE),
 					choices: [
 						{
-							name: 'Browser-based authentication.',
+							name: TranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.OAUTH),
 							value: AUTH_MODE.OAUTH,
 						},
 						{
-							name: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_OPTION),
+							name: TranslationService.getMessage(
+								QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN
+							),
 							value: AUTH_MODE.SAVE_TOKEN,
 						},
 					],
@@ -176,8 +177,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				{
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS.NEW_AUTH_ID,
-					message: 'Please specify an AuthID for the new authentication.',
+					message: TranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
 					filter: answer => answer.trim(),
+					validate: fieldValue =>
+						showValidationResults(
+							fieldValue,
+							validateFieldIsNotEmpty,
+							validateFieldHasNoSpaces,
+							validateXMLCharacters,
+							fieldValue => validateValueNotInList(fieldValue, auhtIDs)
+						),
 				},
 				{
 					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
@@ -205,7 +214,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				isDevelopment: isDevelopment,
 				createNewAuthentication: true,
 				newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
-				url: developmentUrlAnswer ? developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL] : 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
+				url: developmentUrlAnswer
+					? developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]
+					: 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 				mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
 				saveToken: {
 					id: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
@@ -213,12 +224,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				},
 			};
 		}
-	}
-
-	_getBaseAddress(developmentUrlAnswer) {
-		return developmentUrlAnswer
-			? `${HTTP_PROTOCOL}${developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]}`
-			: PROD_ENVIRONMENT_ADDRESS;
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {
@@ -270,7 +275,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(authenticateSDKExecutionContext),
-			message: 'Performing browser-based authentication. Please check your browser',
+			message: TranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
 	}
@@ -291,14 +296,15 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	_formatOutput(operationResult) {
 		let resultMessage;
 		switch (operationResult.mode) {
-			case 'OAUTH':
-				resultMessage = `Browser-based authentication completed successfully. This project will use the authentication with AuthId '${operationResult.authId}' as default`;
+			case AUTH_MODE.OAUTH:
+				resultMessage = TranslationService.getMessage(OUTPUT.NEW_OAUTH, operationResult.authId);
 				break;
-			case 'SAVE':
-				resultMessage = `Token saved successfully. This project will use the authentication with AuthId '${operationResult.authId}' as default`;
+			case AUTH_MODE.SAVE_TOKEN:
+				resultMessage = TranslationService.getMessage(OUTPUT.NEW_SAVED_TOKEN, operationResult.authId);
 				break;
-			case 'REUSE':
-				resultMessage = `This project will use the authentication with AuthId '${operationResult.authId}' as default`;
+			case AUTH_MODE.REUSE:
+				resultMessage = TranslationService.getMessage(OUTPUT.REUSED_AUTH_ID, operationResult.authId);
+				break;
 			default:
 				break;
 		}
