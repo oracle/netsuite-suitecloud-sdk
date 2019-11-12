@@ -1,3 +1,8 @@
+{{!--
+ Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+--}}
+
 <div class="home">
 	<div data-cms-area="home_cms_area_1" data-cms-area-filters="path"></div>
 

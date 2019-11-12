@@ -1,3 +1,8 @@
+{{!--
+ Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+--}}
+
 <tr class="transaction-line-views-cell-navigable {{cellClassName}} item-{{itemId}}" data-id="{{itemId}}" data-item-type="{{itemType}}">
 	<td class="transaction-line-views-cell-navigable-item-image" name="item-image">
 		{{#if isFreeGift}}

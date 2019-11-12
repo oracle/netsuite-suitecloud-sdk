@@ -1,3 +1,8 @@
+{{!--
+ Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+--}}
+
 {{#if showTax}}
 <div class="transaction-line-views-tax">
 	<span class="transaction-line-views-tax-label">{{translate 'Taxes:'}}</span>

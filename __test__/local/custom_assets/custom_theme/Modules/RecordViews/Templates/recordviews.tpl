@@ -1,3 +1,8 @@
+{{!--
+ Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+--}}
+
 <tr class="recordviews-row" data-item-id="{{id}}" data-navigation-hashtag="{{detailsURL}}" data-action="navigate">
 	<td class="recordviews-title" data-name="title">
 		<span class="recordviews-title-value">

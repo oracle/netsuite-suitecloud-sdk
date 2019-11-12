@@ -1,3 +1,8 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
 @import "../variables";
 @import "../CheckoutApplication/Sass/checkout-layout";
 @import "../Address/Sass/address-details";
@@ -29,24 +34,6 @@
 @import "../CreditCard/Sass/creditcard-edit";
 @import "../CreditCard/Sass/creditcard-list";
 @import "../CreditCard/Sass/creditcard";
-@import "../ErrorManagement/Sass/error-management-expired-link";
-@import "../ErrorManagement/Sass/error-management-forbidden-error";
-@import "../ErrorManagement/Sass/error-management-internal-error";
-@import "../ErrorManagement/Sass/error-management-logged-out";
-@import "../ErrorManagement/Sass/error-management-page-not-found";
-@import "../GlobalViews/Sass/global-views-back-to-top";
-@import "../GlobalViews/Sass/global-views-breadcrumb";
-@import "../GlobalViews/Sass/global-views-confirmation";
-@import "../GlobalViews/Sass/global-views-countriesDropdown";
-@import "../GlobalViews/Sass/global-views-currency-selector";
-@import "../GlobalViews/Sass/global-views-format-payment-method";
-@import "../GlobalViews/Sass/global-views-host-selector";
-@import "../GlobalViews/Sass/global-views-message";
-@import "../GlobalViews/Sass/global-views-modal";
-@import "../GlobalViews/Sass/global-views-pagination";
-@import "../GlobalViews/Sass/global-views-rating-by-star";
-@import "../GlobalViews/Sass/global-views-star-rating";
-@import "../GlobalViews/Sass/global-views-states";
 @import "../Transaction.Line.Views/Sass/transaction-line-views-cell-actionable-expanded";
 @import "../Transaction.Line.Views/Sass/transaction-line-views-cell-actionable";
 @import "../Transaction.Line.Views/Sass/transaction-line-views-cell-navigable-actionable";

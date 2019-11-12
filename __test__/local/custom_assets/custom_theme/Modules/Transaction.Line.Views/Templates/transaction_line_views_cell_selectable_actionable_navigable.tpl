@@ -1,3 +1,8 @@
+{{!--
+ Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+--}}
+
 <tr class="transaction-line-views-cell-selectable-actionable-navigable-row{{#if isLineChecked}} selected{{/if}}" data-action="{{actionType}}" data-id="{{lineId}}">
 	<td class="transaction-line-views-cell-selectable-actionable-navigable-select">
 		<input type="checkbox" value="{{itemId}}" data-action="select" {{#if isLineChecked}}checked{{/if}}>

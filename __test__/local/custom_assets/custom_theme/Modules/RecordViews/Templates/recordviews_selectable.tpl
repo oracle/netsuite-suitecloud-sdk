@@ -1,3 +1,8 @@
+{{!--
+ Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+--}}
+
 <tr class="recordviews-selectable-row {{#if isChecked}}recordviews-selectable-active{{/if}} {{#unless isActive}}recordviews-selectable-disabled{{/unless}}" data-action="{{actionType}}" data-id="{{id}}">
 	<td class="recordviews-selectable-td-selectable">
 		<input class="recordviews-selectable-checkbox" type="checkbox" value="{{id}}" data-action="select" {{#if isChecked}}checked{{/if}} {{#unless isActive}}disabled{{/unless}}>

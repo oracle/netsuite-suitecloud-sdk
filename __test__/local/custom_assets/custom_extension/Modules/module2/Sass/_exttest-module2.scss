@@ -1,11 +1,7 @@
 /*
-	Sass Application Entry Point
-	Link all your sass dependencies in the right order
-
-	Example:
-	@import "other-sass-file.scss";
-	@import "../../<other module>/Sass/other-sass-file.scss";
-*/ 
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 
 .module2-info-card {
     @extend .sc-value;

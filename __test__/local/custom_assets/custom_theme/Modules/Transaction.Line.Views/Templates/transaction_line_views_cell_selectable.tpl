@@ -1,3 +1,8 @@
+{{!--
+ Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+--}}
+
 	<tr class="item-{{itemId}}  {{#if isLineSelected}}transaction-line-views-cell-selectable-multishipto-line-selected{{/if}}" data-item-id="{{itemId}}" data-type="row" data-line-id="{{lineId}}"  data-action="select-unselected-item">
 		<td class="transaction-line-views-cell-selectable-item-selector">
 				<input data-type="checkbox-item-selector" type="checkbox" {{#if isLineSelected}}checked{{/if}} />
