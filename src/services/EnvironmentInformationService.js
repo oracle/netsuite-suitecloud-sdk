@@ -19,7 +19,7 @@ module.exports = class EnvironmentInformationService {
 	getInstalledJavaVersionString() {
 		const childProcess = spawn('java', ['-version'], { shell: true });
 		const javaVersionOutput = childProcess.stderr.toString(); //The output should be: java full version "11.1.0_201-b09"
-		const javaVersion = new RegExp('java version').test(javaVersionOutput)
+		const javaVersion = /\bjava version\b|\bopenjdk version\b/gi.test(javaVersionOutput)
 			? javaVersionOutput.split(' ')[2].replace(/"|\r\n|\n|\r/g, '')
 			: '';
 		
