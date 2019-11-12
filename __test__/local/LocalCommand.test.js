@@ -80,10 +80,10 @@ describe('executeAction', function() {
 
 describe('getCommandQuestions', function() {
 	it('should call the callback and return prompt choices', async () => {
-		const callback = jest.fn((options)=>options);
-		
+		const callback = jest.fn(options => options);
+
 		const results = await localCommand.getCommandQuestions(callback);
-			
+
 		expect(results).toBeDefined();
 		expect(results.length).toBeGreaterThan(0);
 

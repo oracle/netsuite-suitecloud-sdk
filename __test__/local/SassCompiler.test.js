@@ -4,12 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const SassCompiler = require('../../src/sdf-cli-local/src/compilers/SassCompiler');
 
-const {
-	ROOT,
-	SERVERPATH,
-	removeFolder,
-	mockClearConsoleLog,
-} = require('./helpers');
+const { ROOT, SERVERPATH, removeFolder, mockClearConsoleLog } = require('./helpers');
 
 const resources = {
 	entrypoints: {

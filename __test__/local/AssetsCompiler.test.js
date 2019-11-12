@@ -4,12 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const AssetsCompiler = require('../../src/sdf-cli-local/src/compilers/AssetsCompiler');
 
-const {
-	SERVERPATH,
-	CUSTOM_ASSETS_PATH,
-	removeFolder,
-	mockClearConsoleLog,
-} = require('./helpers');
+const { SERVERPATH, CUSTOM_ASSETS_PATH, removeFolder, mockClearConsoleLog } = require('./helpers');
 
 let assetsCompiler;
 let context;
@@ -22,14 +17,8 @@ const Asset = jest.fn((src, dst) => ({
 }));
 
 const assets = [
-	new Asset(
-		'custom_theme/assets/img/carousel-home-1.png',
-		'assets/vendor/custom_theme/1.0.0/dst1.png'
-	),
-	new Asset(
-		'custom_theme/assets/img/carousel-home-2.png',
-		'assets/vendor/custom_theme/1.0.0/dst2.jpg'
-	),
+	new Asset('custom_theme/assets/img/carousel-home-1.png', 'assets/vendor/custom_theme/1.0.0/dst1.png'),
+	new Asset('custom_theme/assets/img/carousel-home-2.png', 'assets/vendor/custom_theme/1.0.0/dst2.jpg'),
 ];
 
 const CompilationContext = jest.fn(() => ({
@@ -51,9 +40,7 @@ describe('compile', function() {
 	});
 
 	it('should create all assets files in the local server folder location', () => {
-		const assetsCreated = fs.readdirSync(
-			path.join(context.localServerPath, 'assets/vendor/custom_theme/1.0.0')
-		);
+		const assetsCreated = fs.readdirSync(path.join(context.localServerPath, 'assets/vendor/custom_theme/1.0.0'));
 		expect(assetsCreated.length).toStrictEqual(assets.length);
 		assets.forEach(asset => {
 			expect(assetsCreated).toContain(path.basename(asset.dst));

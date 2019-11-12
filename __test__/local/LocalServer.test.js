@@ -6,10 +6,7 @@ const url = require('url');
 const LocalServer = require('../../src/sdf-cli-local/src/LocalServer');
 const requestGet = promisify(request.get);
 
-const {
-	SERVERPATH,
-	mockClearConsoleLog,
-} = require('./helpers');
+const { SERVERPATH, mockClearConsoleLog } = require('./helpers');
 
 const CompilationContext = jest.fn(() => ({
 	localServerPath: SERVERPATH,
@@ -45,15 +42,7 @@ describe('startServer', function() {
 		expect(response.statusCode).toBe(200);
 
 		const json = JSON.parse(response.body);
-		const resourcesExpected = [
-			'css',
-			'requirejs',
-			'define_patch',
-			'javascript_libs',
-			'templates',
-			'js_core',
-			'js_extensions',
-		];
+		const resourcesExpected = ['css', 'requirejs', 'define_patch', 'javascript_libs', 'templates', 'js_core', 'js_extensions'];
 
 		expect(json.length).toBe(resourcesExpected.length);
 
@@ -63,7 +52,7 @@ describe('startServer', function() {
 	});
 });
 
-describe('closeServer', function(){
+describe('closeServer', function() {
 	it('close the server in port 7777', async function() {
 		LocalServer.closeServer();
 	});

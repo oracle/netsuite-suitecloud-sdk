@@ -4,11 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const TemplatesCompiler = require('../../src/sdf-cli-local/src/compilers/TemplatesCompiler');
 
-const {
-	SERVERPATH,
-	removeFolder,
-	mockClearConsoleLog,
-} = require('./helpers');
+const { SERVERPATH, removeFolder, mockClearConsoleLog } = require('./helpers');
 
 const applications = ['shopping', 'checkout', 'myaccount'];
 
@@ -72,9 +68,7 @@ describe('compile', function() {
 	});
 
 	it('should create all template files in the local server processed-templates folder location', () => {
-		const resourcesCreated = fs.readdirSync(
-			path.join(context.localServerPath, 'templates/processed-templates')
-		);
+		const resourcesCreated = fs.readdirSync(path.join(context.localServerPath, 'templates/processed-templates'));
 		expect(resourcesCreated.length).toStrictEqual(resources.length);
 		resources.forEach(resource => {
 			expect(resourcesCreated).toContain(resource.dst);
@@ -82,18 +76,14 @@ describe('compile', function() {
 	});
 
 	it('should create one require config file for each application in the local server templates folder location', () => {
-		const applicationConfigFilesCreated = fs.readdirSync(
-			path.join(context.localServerPath, 'templates')
-		);
+		const applicationConfigFilesCreated = fs.readdirSync(path.join(context.localServerPath, 'templates'));
 		applications.forEach(application => {
 			expect(applicationConfigFilesCreated).toContain(application + '-templates.js');
 		});
 	});
 
 	it('should create javascript libs file in the local server templates folder location', () => {
-		const applicationConfigFilesCreated = fs.readdirSync(
-			path.join(context.localServerPath, 'templates')
-		);
+		const applicationConfigFilesCreated = fs.readdirSync(path.join(context.localServerPath, 'templates'));
 		expect(applicationConfigFilesCreated).toContain('javascript-libs.js');
 	});
 });

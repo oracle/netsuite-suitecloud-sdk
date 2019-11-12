@@ -18,7 +18,6 @@ module.exports.createLocalserverFolder = function() {
 	fs.mkdirSync(SERVERPATH, { recursive: true });
 };
 module.exports.removeFolder = function(folder = '') {
-	
 	(function deleteFolderRecursive(dir) {
 		if (fs.existsSync(dir)) {
 			fs.readdirSync(dir).forEach(file => {
@@ -34,7 +33,6 @@ module.exports.removeFolder = function(folder = '') {
 			fs.rmdirSync(dir);
 		}
 	})(path.join(SERVERPATH, folder));
-	
 };
 module.exports.mockClearConsoleLog = function() {
 	console.log = jest.fn();

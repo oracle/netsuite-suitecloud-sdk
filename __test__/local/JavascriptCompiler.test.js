@@ -4,11 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const JavascriptCompiler = require('../../src/sdf-cli-local/src/compilers/JavascriptCompiler');
 
-const {
-	SERVERPATH,
-	removeFolder,
-	mockClearConsoleLog,
-} = require('./helpers');
+const { SERVERPATH, removeFolder, mockClearConsoleLog } = require('./helpers');
 
 // const extensionPath = 'vendor/custom_extension/1.0.0/';
 const themePath = 'vendor/custom_theme/1.0.0/';
@@ -80,22 +76,16 @@ describe('compile', function() {
 	});
 
 	it('should create all javascript files in the local server folder', () => {
-		const resourcesCreated = fs.readdirSync(
-			path.join(context.localServerPath, 'javascript')
-		);
+		const resourcesCreated = fs.readdirSync(path.join(context.localServerPath, 'javascript'));
 		expect(resourcesCreated.length).toStrictEqual(applications.length);
 	});
 
 	it('should always write the entrypoint after the other js files content', () => {
 		applications.forEach(app => {
-			const resourceContent = fs
-				.readFileSync(path.join(context.localServerPath, 'javascript', app + '_ext.js'))
-				.toString();
+			const resourceContent = fs.readFileSync(path.join(context.localServerPath, 'javascript', app + '_ext.js')).toString();
 			expect(resourceContent.indexOf('ExtTest.View')).toBeGreaterThan(-1); // normal script defined in resources
 			expect(resourceContent.indexOf('vendor.ExtTest.module1')).toBeGreaterThan(-1); // entrypoint script defined in resources
-			expect(resourceContent.indexOf('vendor.ExtTest.module1')).toBeGreaterThan(
-				resourceContent.indexOf('ExtTest.View')
-			);
+			expect(resourceContent.indexOf('vendor.ExtTest.module1')).toBeGreaterThan(resourceContent.indexOf('ExtTest.View'));
 		});
 	});
 });
