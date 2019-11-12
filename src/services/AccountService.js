@@ -6,10 +6,11 @@
 
 const request = require('request-promise-native');
 const assert = require('assert');
-const UserPreferencesService = require('./userpreferences/UserPreferencesService');
+const CLISettingsService = require('./settings/CLISettingsService');
 const TranslationService = require('./TranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
+const ENOTFOUND = 'ENOTFOUND'
 
 const NLAuthorizationHeader = {
 	name: 'NLAuth',
@@ -23,7 +24,7 @@ const NLAuthorizationHeader = {
 
 module.exports = class AccountService {
 	constructor() {
-		this._userPreferencesService = new UserPreferencesService();
+		this._CLISettingsService = new CLISettingsService();
 	}
 
 	getAccountAndRoles({ email, password, restRolesUrl, isDevelopment }) {
@@ -52,7 +53,7 @@ module.exports = class AccountService {
 			headers: {
 				Authorization: authorizationHeader,
 			},
-			...(!isDevelopment && { proxy: this._userPreferencesService.getUserPreferences().proxyUrl }),
+			...(!isDevelopment && { proxy: this._CLISettingsService.getSettings().proxyUrl }),
 		};
 	}
 
@@ -67,6 +68,10 @@ module.exports = class AccountService {
 			// timedout response
 			if (errorResponse.cause && errorResponse.cause.code === ERROR_TIMED_OUT) {
 				return TranslationService.getMessage(ERRORS.TIMED_OUT_CONNECTION);
+			}
+			// unable to reach a scrumbox url
+			if (errorResponse.cause && errorResponse.cause.code === ENOTFOUND) {
+				return TranslationService.getMessage(ERRORS.SCRUMBOX_URL_NOT_FOUND, errorResponse.cause.host, errorResponse.message);
 			}
 			// other responses - just forward the message
 			if (errorResponse.message) {

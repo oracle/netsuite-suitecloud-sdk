@@ -10,6 +10,7 @@ const {
 	validateSuiteApp,
 	validateScriptId,
 	validateXMLCharacters,
+	validateNotProductionUrl,
 	validateEmail,
 } = require('../../src/validation/InteractiveAnswersValidator');
 
@@ -48,18 +49,19 @@ describe('validateFieldHasNoSpaces', function() {
 });
 
 describe('validateFieldIsLowerCase', function() {
+	const fieldOptionId = 'testFieldOptionId';
 	const failureResponse = {
 		result: false,
 		validationMessage:
-			'This field contains forbidden characters. Use only lowercase letters and numbers.',
+			'The ' + fieldOptionId + ' field contains forbidden characters. Use only lowercase letters and numbers.',
 	};
 
 	it('should return true when string is in lower case', function() {
-		expect(validateFieldIsLowerCase('lowercase')).toEqual(positiveResponse);
+		expect(validateFieldIsLowerCase(fieldOptionId,'lowercase')).toEqual(positiveResponse);
 	});
 
 	it('should return false with validation message when string is not all in lower case', function() {
-		expect(validateFieldIsLowerCase('WithUpperCase')).toEqual(failureResponse);
+		expect(validateFieldIsLowerCase(fieldOptionId,'WithUpperCase')).toEqual(failureResponse);
 	});
 });
 
@@ -93,6 +95,10 @@ describe('validateProjectVersion', function() {
 		validationMessage:
 			'The project version must only contain digits and dots. Ensure it follows a pattern such as "0.0.0".',
 	};
+
+	it('should return true when string is in valid project version format with parts having more than one digit', function() {
+		expect(validateProjectVersion('10.100.1000')).toEqual(positiveResponse);
+	});
 
 	it('should return true when string is in valid project version format', function() {
 		expect(validateProjectVersion('1.0.0')).toEqual(positiveResponse);
@@ -213,5 +219,38 @@ describe('validateEmail', () => {
 		expect(validateEmail('mywrongemail@domain..com')).toEqual(failureResponse);
 		expect(validateEmail('mywrongemail@domain')).toEqual(failureResponse);
 		expect(validateEmail('mywrongemail@domain.c')).toEqual(failureResponse);
+	});
+});
+
+describe('validateNotProductionUrl', () => {
+	const failureResponse = {
+		result: false,
+		validationMessage:
+			'Enter a non-production domain URL. If you want to use a production account, run "scloud setupaccount" without the "--dev" option.',
+	};
+
+	it('should return a response with a positive result when the URL is non-production one', () => {
+		const nonProductionURLs = [
+			'lp-quarks.se4.eng.netsuite.com',
+			'dr-scrumbox-eu.du3.eng.netsuite.com',
+			'sa.se4.eng.netsuite.com',
+			'rm2.se4.eng.netsuite.com',
+		];
+		nonProductionURLs.forEach(url =>
+			expect(validateNotProductionUrl(url)).toEqual(positiveResponse)
+		);
+	});
+
+	it('should return a response with a negative result when using a production url', () => {
+		const productinoURLs = [
+			'system.netsuite.com',
+			'system.na1.netsuite.com',
+			'12345.app.netsuite.com',
+			'wolfelectronics.app.netsuite.com',
+			'Wolf-Electronics.app.netsuite.com',
+		];
+		productinoURLs.forEach(url =>
+			expect(validateNotProductionUrl(url)).toEqual(failureResponse)
+		);
 	});
 });

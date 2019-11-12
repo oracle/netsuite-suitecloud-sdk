@@ -318,6 +318,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		if (!operationResult.data) {
+			SDKOperationResultUtils.logResultMessage(operationResult);
 			return;
 		}
 

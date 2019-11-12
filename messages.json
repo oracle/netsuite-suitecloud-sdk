@@ -1,15 +1,16 @@
 {
 	"ANSWERS_VALIDATION_MESSAGES_APP_ID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as \"com.example.mysuiteapp\".",
 	"ANSWERS_VALIDATION_MESSAGES_CHOOSE_OPTION": "Error: You should choose at least one option.",
+	"ANSWERS_VALIDATION_MESSAGES_DEV_URL": "The specified domain is wrongly formatted. Ensure it follows a pattern such as 'subdomain.domain.com'.",
 	"ANSWERS_VALIDATION_MESSAGES_EMPTY_FIELD": "This value cannot be empty.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_SPACES": "This field cannot contain spaces.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
-	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "This field contains forbidden characters. Use only lowercase letters and numbers.",
+	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "The {0} field contains forbidden characters. Use only lowercase letters and numbers.",
 	"ANSWERS_VALIDATION_MESSAGES_INVALID_EMAIL": "Invalid email address.",
+	"ANSWERS_VALIDATION_MESSAGES_PRODUCTION_URL_WITH_DEV_FLAG": "Enter a non-production domain URL. If you want to use a production account, run \"scloud setupaccount\" without the \"--dev\" option.",
 	"ANSWERS_VALIDATION_MESSAGES_PROJECT_VERSION_FORMAT": "The project version must only contain digits and dots. Ensure it follows a pattern such as \"0.0.0\".",
 	"ANSWERS_VALIDATION_MESSAGES_PUBLISHER_ID_FORMAT": "The publisher ID must be a fully qualified name, such as \"com.netsuite\". It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.",
 	"ANSWERS_VALIDATION_MESSAGES_SCRIPT_ID_FORMAT": "The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.",
-	"ANSWERS_VALIDATION_MESSAGES_DEV_URL": "The specified domain is wrongly formatted. Ensure it follows a pattern such as 'subdomain.domain.com'.",
 
 	"CLI_INTERACTIVE_OPTION_DESCRIPTION": "run the command in interactive mode",
 	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite {0})",
@@ -24,10 +25,14 @@
 	"COMMAND_CREATEPROJECT_ENTER_PUBLISHER_ID": "Enter the publisher ID.",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_ID": "Enter the project ID.",
 	"COMMAND_CREATEPROJECT_ENTER_PROJECT_VERSION": "Enter the project version.",
+	"COMMAND_CREATEPROJECT_INCLUDE_UNIT_TESTING": "Do you want to include unit testing with the Jest testing framework? ***This will install NPM module dependencies.",
 	"COMMAND_CREATEPROJECT_ERRORS_PROCESS_FAILED": "The createproject process failed.",
+	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT_STRUCTURE": "Creating the project structure...",
+	"COMMAND_CREATEPROJECT_MESSAGE_SAMPLE_UNIT_TEST_ADDED": "A sample unit test example has been added in the \"__tests__\" folder of your project.",
+	"COMMAND_CREATEPROJECT_MESSAGE_INIT_NPM_DEPENDENCIES": "Initializing npm dependencies for the testing environment...",
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATED": "The {0} project was created successfully in {1}.{2}Navigate to {1} and run \"scloud setupaccount\" to link your project with your account.",
 	"COMMAND_CREATEPROJECT_MESSAGE_PROJECT_CREATION_CANCELED": "The creation process has been canceled.",
-	"COMMAND_CREATEPROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
+	"COMMAND_CREATEPROJECT_MESSAGE_SETUP_TEST_ENV": "Setting up the testing environment...",
 	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Do you want to overwrite the {0} project? All the files and folders from the former project will be deleted and replaced by the new project.",
 	"COMMAND_CREATEPROJECT_WRONG_PROJECT_TYPE": "Invalid \"type\" specified. The expected values are the following - \"ACCOUNTCUSTOMIZATION, SUITEAPP\".",
 
@@ -42,7 +47,7 @@
 	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying...",
 	"COMMAND_DEPLOY_MESSAGES_LOCALLY_VALIDATED": "The \"{0}\" project has been locally validated.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed without applying content protection.",
-	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_CONTENT_PROTECTION_REASON": "Content protection was not applied because the InstallationPreferences folder is empty. You need to create the hiding.xml and locking.xml files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {0}.\nTo learn how to create a locking.xml file, see {1}.",
+	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_CONTENT_PROTECTION_REASON": "Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {0}.\nTo learn how to create a locking.xml file, see {1}.",
 
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
@@ -111,14 +116,14 @@
 	"COMMAND_OPTION_IS_MANDATORY": "\"{0}\" option is mandatory.",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION": "You can use the interactive mode by running \"scloud {0} -i\"",
-	
+
 	"COMMAND_PROXY_ARGS_VALIDATION_SET_CLEAR_BOTH_SPECIFIED": "You can only specify one option for the command, either \"--set\" or \"-–clear\".",
 	"COMMAND_PROXY_ARGS_VALIDATION_SET_CLEAR_NEITHER_SPECIFIED": "You must specify one option for the command, either \"--set\" or \"–-clear\".",
 	"COMMAND_PROXY_ARGS_VALIDATION_PROXY_URL": "The proxy URL server must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80.",
-	"COMMAND_PROXY_MESSAGES_PROXY_OVERRIDDEN": "The proxy server has been overwritten and changed to {0}.",
-	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_CLEARED": "The proxy server has been cleared.",
-	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_SETUP": "The {0} proxy has been set.",
-	
+	"COMMAND_PROXY_MESSAGES_PROXY_OVERRIDDEN": "The proxy server URL has been overwritten and changed to {0}.",
+	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_CLEARED": "The proxy server URL has been cleared.",
+	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_SETUP": "The {0} proxy server URL has been set.",
+
 	"COMMAND_SETUPACCOUNT_ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"scloud setupaccount\" in a valid project folder.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_OVERWRITE_ACCOUNT_DETAILS_FILE": "Do you want to overwrite the existing project’s {0} file?",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_EMAIL": "Enter your email:",
@@ -135,7 +140,7 @@
 	"COMMAND_SETUPACCOUNT_MESSAGES_RETRIEVING_ACCOUNT_INFO": "Retrieving account information...",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SAVING_TBA_TOKEN": "Saving the TBA token.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_SUCCESSFUL": "The account has been successfully set up.",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_DEVELOPMENT_URL":"Enter your domain URL:",
+	"COMMAND_SETUPACCOUNT_QUESTIONS_DEVELOPMENT_URL": "Enter your domain URL:",
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
@@ -163,6 +168,9 @@
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"cli-config.js\" module defined in the project. Details:{0}{1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE": "The return value of the function should be an object with the property \"arguments\" of type \"object\".",
 	"ERRORS_CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE": "There was an error while loading configuration file {0}. Please review the file and try again. Details:{1}{2}",
+	"ERRORS_CLI_SETTINGS_FILE_CONTENT": "There is a problem with your proxy settings. Run \"scloud proxy --set http://my-proxy-domain:80\", with the proxy server URL you want to use, or clear it by running \"scloud proxy --clear\".",
+	"ERRORS_CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with CLI for Node.js. Install Java JDK version {1}.",
+	"ERRORS_CLI_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install Java JDK version {0} to run CLI for Node.js.",
 	"ERRORS_COMMAND_DOES_NOT_EXIST": "The \"{0}\" command does not exist. Run \"scloud\" to see the supported commands.",
 	"ERRORS_COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE": "The \"{0}\" command does not support interactive mode. Run \"scloud {0} --help\" to see how to run the command.",
 	"ERRORS_FILE": "There was an error in the file {0}: \n",
@@ -171,9 +179,11 @@
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 	"ERRORS_PROCESS_FAILED": "The process has failed.",
 	"ERRORS_PROMPTING_INTERACTIVE_QUESTIONS_FAILED": "There was an internal error while prompting interactive questions. Details:{0}{1}",
+	"ERRORS_SCRUMBOX_URL_NOT_FOUND": "The {0} URL does not exist. Check the domain URL and try again.\n\n{1}",
+	"ERRORS_SDKEXECUTOR_NO_JAR_FILE_FOUND": "There is no JAR file in your CLI for Node.js. Run \"npm install\" from \"{0}\" to install the JAR file.",
 	"ERRORS_SDKEXECUTOR_NO_TBA_FOR_ACCOUNT_AND_ROLE": "The email, domain URL, account ID, and role combination in your account.json file has not been set up for token-based authentication (TBA). Run \"scloud setupaccount\" to set up TBA.",
 	"ERRORS_SDKEXECUTOR_RUNNING_COMMAND": "There was an internal error while running the command. Details: {0}",
-	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}",
+	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}\n{1}",
 	"ERRORS_SETUP_REQUIRED": "No account has been set up for this project. Run \"scloud setupaccount\" to link your project with your account.",
 	"ERRORS_SETUP_VALID_FOLDER": "Please run setupaccount in a valid folder. Could not find a {0} file in the project folder {1}.",
 	"ERRORS_TIMED_OUT_CONNECTION": "The connection has timed out. If you are behind a proxy, you must configure the same proxy server in CLI for Node.js. Run \"scloud proxy -h\" to learn how to set up a proxy server.",
@@ -187,8 +197,13 @@
 
 	"NO": "No",
 
-	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection cannot be applied to account customization projects.",
-	"VALIDATE_SDF_PROJECT_UTILS_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalue option. Enter either WARNING or ERROR.",
+	"UNIT_TEST_TEST_FAILED": "The tests failed.",
+	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures, The Deployment will not continue.",
+
+	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP": "Account-specific values cannot be applied to SuiteApps.",
+	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
+	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection cannot be applied to account customization projects.",
+	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITHOUT_HIDING_AND_LOCKING": "There was an error with the {0} command. Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {1}.\nTo learn how to create a locking.xml file, see {2}.",
 
 	"YES": "Yes"
 }

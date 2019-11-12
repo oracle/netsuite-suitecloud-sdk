@@ -1,10 +1,8 @@
 {
 	"name": "sdf-cli-local",
 	"version": "1.0.0",
-	"description": "SDF CLI Local command",
+	"description": "SuiteCloud CLI Local command",
 	"main": "index.js",
-	"author": "NetSuite",
-	"license": "MIT",
 	"preferGlobal": true,
 	"dependencies": {
 		"async": "3.0.1",

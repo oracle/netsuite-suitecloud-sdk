@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const assert = require('assert');
@@ -17,7 +17,7 @@ const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapException
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
 
-const CLI_VERSION = '19.2.1'
+const CLI_VERSION = '19.2.1';
 
 module.exports = class CLI {
 	constructor(dependencies) {

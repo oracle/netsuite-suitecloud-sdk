@@ -7,32 +7,51 @@
 const {
 	SDK_DEVELOPMENT_MODE_JVM_OPTION,
 	SDK_INTEGRATION_MODE_JVM_OPTION,
+	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDK_DIRECTORY_NAME,
-	SDK_FILENAME,
+	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
+const SDKProperties = require('./core/sdksetup/SDKProperties');
 const path = require('path');
+const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
-const UserPreferencesService = require('./services/userpreferences/UserPreferencesService');
+const CLISettingsService = require('./services/settings/CLISettingsService');
+const EnvironmentInformationService = require('./services/EnvironmentInformationService');
 const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
 
-module.exports.SDKExecutor = class SDKExecutor {
+const DATA_EVENT = 'data';
+const CLOSE_EVENT = 'close';
+const UTF8 = 'utf8';
 
+module.exports.SDKExecutor = class SDKExecutor {
 	constructor() {
-		this._userPreferencesService = new UserPreferencesService();
+		this._CLISettingsService = new CLISettingsService();
 		this._accountDetailsService = new AccountDetailsService();
+		this._environmentInformationService = new EnvironmentInformationService();
 	}
 
 	execute(executionContext) {
 		const proxyOptions = this._getProxyOptions();
-		const accountDetails = executionContext.includeAccountDetailsParams ? this._accountDetailsService.get() : null;
+		const accountDetails = executionContext.includeAccountDetailsParams
+			? this._accountDetailsService.get()
+			: null;
 
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
+			let lastSdkError = '';
+
+			if (!this._CLISettingsService.isJavaVersionValid()) {
+				const javaVersionError = this._checkIfJavaVersionIssue();
+				if (javaVersionError) {
+					reject(javaVersionError);
+					return;
+				}
+			}
 
 			if (executionContext.includeAccountDetailsParams) {
 				executionContext.addParam('account', accountDetails.accountId);
@@ -43,34 +62,45 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			const cliParams = this._convertParamsObjToString(
 				executionContext.getParams(),
-				executionContext.getFlags(),
+				executionContext.getFlags()
 			);
 
 			const integrationModeOption = executionContext.isIntegrationMode()
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const developmentModeOption = accountDetails && accountDetails.isDevelopment
-				? SDK_DEVELOPMENT_MODE_JVM_OPTION
-				: '';
+			const developmentModeOption =
+				accountDetails && accountDetails.isDevelopment
+					? SDK_DEVELOPMENT_MODE_JVM_OPTION
+					: '';
 
-			const sdkJarPath = `"${path.join(__dirname, `../${SDK_DIRECTORY_NAME}/${SDK_FILENAME}`)}"`;
-			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption}`;
-			const jvmCommand = `java -jar ${vmOptions} ${sdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
+			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
+
+			const sdkJarPath = path.join(
+				__dirname,
+				`../${SDK_DIRECTORY_NAME}/${SDKProperties.getSDKFileName()}`
+			);
+			if (!FileUtils.exists(sdkJarPath)) {
+				throw TranslationService.getMessage(
+					ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND,
+					path.join(__dirname, '..')
+				);
+			}
+			const quotedSdkJarPath = `"${sdkJarPath}"`;
+			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption} ${clientPlatformVersionOption}`;
+			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
-			childProcess.stderr.on('data', data => {
-				const sdkOutput = data.toString('utf8');
-				reject(sdkOutput);
+			childProcess.stderr.on(DATA_EVENT, data => {
+				lastSdkError += data.toString(UTF8);
 			});
 
-			childProcess.stdout.on('data', data => {
-				const sdkOutput = data.toString('utf8');
-				lastSdkOutput += sdkOutput;
+			childProcess.stdout.on(DATA_EVENT, data => {
+				lastSdkOutput += data.toString(UTF8);
 			});
 
-			childProcess.on('close', code => {
+			childProcess.on(CLOSE_EVENT, code => {
 				if (code === 0) {
 					try {
 						const output = executionContext.isIntegrationMode()
@@ -90,27 +120,32 @@ module.exports.SDKExecutor = class SDKExecutor {
 						resolve(output);
 					} catch (error) {
 						reject(
-							TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error),
+							TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
 						);
 					}
 				} else if (code !== 0) {
-					reject(TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code));
+					// check if the problem was due to bad Java Version
+					const javaVersionError = this._checkIfJavaVersionIssue();
+
+					const sdkErrorMessage = TranslationService.getMessage(
+						ERRORS.SDKEXECUTOR.SDK_ERROR,
+						code,
+						lastSdkError
+					);
+
+					reject(javaVersionError ? javaVersionError : sdkErrorMessage);
 				}
 			});
 		});
 	}
 
 	_getProxyOptions() {
-		const userPreferences = this._userPreferencesService.getUserPreferences();
-		if (!userPreferences.useProxy) {
+		if (!this._CLISettingsService.useProxy()) {
 			return '';
 		}
-		const proxyUrl = url.parse(userPreferences.proxyUrl);
+		const proxyUrl = url.parse(this._CLISettingsService.getProxyUrl());
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
-			throw TranslationService.getMessage(
-				ERRORS.WRONG_PROXY_SETTING,
-				userPreferences.proxyUrl
-			);
+			throw TranslationService.getMessage(ERRORS.WRONG_PROXY_SETTING, cliSettings.proxyUrl);
 		}
 		const protocolWithoutColon = proxyUrl.protocol.slice(0, -1);
 		const hostName = proxyUrl.hostname;
@@ -136,5 +171,26 @@ module.exports.SDKExecutor = class SDKExecutor {
 		}
 
 		return cliParamsAsString;
+	}
+
+	_checkIfJavaVersionIssue() {
+		const javaVersionInstalled = this._environmentInformationService.getInstalledJavaVersionString();
+		if (javaVersionInstalled.startsWith(SDK_REQUIRED_JAVA_VERSION)) {
+			this._CLISettingsService.setJavaVersionValid(true);
+			return;
+		}
+
+		this._CLISettingsService.setJavaVersionValid(false);
+		if (javaVersionInstalled === '') {
+			return TranslationService.getMessage(
+				ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED,
+				SDK_REQUIRED_JAVA_VERSION
+			);
+		}
+		return TranslationService.getMessage(
+			ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+			javaVersionInstalled,
+			SDK_REQUIRED_JAVA_VERSION
+		);
 	}
 };

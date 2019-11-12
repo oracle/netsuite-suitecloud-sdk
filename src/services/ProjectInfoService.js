@@ -20,7 +20,7 @@ const assert = require('assert');
 
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
-const MANIFEST_TAG_REGEX = '<manifest.*>[^]*</manifest>$';
+const MANIFEST_TAG_REGEX = '[\\s\\n]*<manifest.*>[^]*</manifest>[\\s\\n]*$';
 
 
 let CACHED_PROJECT_TYPE;
@@ -114,7 +114,7 @@ module.exports = class ProjectInfoService {
 		return CACHED_PROJECT_TYPE;
 	}
 
-	hasLockOrHideFiles() {
+	hasLockAndHideFiles() {
 		const pathToInstallationPreferences = path.join(
 			this._projectFolder,
 			FOLDER_NAMES.INSTALLATION_PREFERENCES
@@ -122,7 +122,7 @@ module.exports = class ProjectInfoService {
 		return (
 			FileUtils.exists(
 				path.join(pathToInstallationPreferences, FILE_NAMES.HIDING_PREFERENCE)
-			) ||
+			) &&
 			FileUtils.exists(
 				path.join(pathToInstallationPreferences, FILE_NAMES.LOCKING_PREFERENCE)
 			)

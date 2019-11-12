@@ -55,6 +55,7 @@ const {
 	validateDevUrl,
 	validateFieldIsNotEmpty,
 	validateEmail,
+	validateNotProductionUrl,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 
@@ -100,7 +101,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_URL),
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
-						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl),
+						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl, validateNotProductionUrl),
 				},
 			]);
 		}
@@ -230,7 +231,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			password: credentialsAnswers[ANSWERS.PASSWORD],
 			account: selectedAccountId,
 			accountName: accountsInfo[selectedAccountId].name,
-			environment: accountsInfo[selectedAccountId].dataCenterURLs.systemDomain.split('//')[1],
+			// using restDomain URL instead of systemDomain because is working well with SandBox accounts
+			environment: accountsInfo[selectedAccountId].dataCenterURLs.restDomain.split('//')[1],
 			role: selectedRoleId,
 			roleName: accountsInfo[selectedAccountId].roles.find(
 				role => role.internalId === selectedRoleId,

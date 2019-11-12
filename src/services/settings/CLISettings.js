@@ -4,10 +4,15 @@
 */
 'use strict';
 
-module.exports = class UserPreferences {
+module.exports = class CLISettings {
 	constructor(options) {
 		this._useProxy = options.useProxy;
 		this._proxyUrl = options.proxyUrl;
+		this._isJavaVersionValid = options.isJavaVersionValid;
+	}
+
+	get isJavaVersionValid() {
+		return this._isJavaVersionValid;
 	}
 
 	get proxyUrl() {
@@ -22,13 +27,15 @@ module.exports = class UserPreferences {
 		return {
 			proxyUrl: this._proxyUrl,
 			useProxy: this._useProxy,
+			isJavaVersionValid: this._isJavaVersionValid,
 		};
 	}
 
 	static fromJson(json) {
-		return new UserPreferences({
+		return new CLISettings({
 			useProxy: json.useProxy,
 			proxyUrl: json.proxyUrl,
+			isJavaVersionValid: json.isJavaVersionValid,
 		});
 	}
 };

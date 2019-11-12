@@ -7,7 +7,8 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
-const ValidateSDFProjectUtils = require('../utils/ValidateSDFProjectUtils');
+const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
+const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
@@ -47,6 +48,13 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._projectType = this._projectInfoService.getProjectType();
+		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
+			projectInfoService: this._projectInfoService,
+		});
+		this._applyContentProtectionArgumentHandler = new ApplyContentProtectinoArgumentHandler({
+			projectInfoService: this._projectInfoService,
+			commandName: this._commandMetadata.name,
+		});
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -55,7 +63,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 
 		const answers = await prompt([
 			{
-				when: isSuiteAppProject && this._projectInfoService.hasLockOrHideFiles(),
+				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION,
 				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
@@ -116,14 +124,14 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_preExecuteAction(args) {
+		this._accountSpecificValuesArgumentHandler.validate(args);
+		this._applyContentProtectionArgumentHandler.validate(args);
+
 		return {
 			...args,
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
-			...ValidateSDFProjectUtils.validateAndTransformAccountSpecificValuesArgument(args),
-			...ValidateSDFProjectUtils.validateAndTransformApplyContentProtectionArgument(
-				args,
-				this._projectType
-			),
+			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
+			...this._applyContentProtectionArgumentHandler.transformArgument(args),
 		};
 	}
 
