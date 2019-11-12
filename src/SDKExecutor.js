@@ -10,22 +10,29 @@ const {
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDK_DIRECTORY_NAME,
+	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
 const SDKProperties = require('./core/sdksetup/SDKProperties');
 const path = require('path');
 const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
+const EnvironmentInformationService = require('./services/EnvironmentInformationService');
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
 const AuthenticationService = require('./core/authentication/AuthenticationService');
 
+const DATA_EVENT = 'data';
+const CLOSE_EVENT = 'close';
+const UTF8 = 'utf8';
+
 module.exports.SDKExecutor = class SDKExecutor {
 	constructor() {
 		this._CLISettingsService = new CLISettingsService();
 		this._authenticationService = new AuthenticationService();
+		this._environmentInformationService = new EnvironmentInformationService();
 	}
 
 	execute(executionContext) {
@@ -36,6 +43,15 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
+			let lastSdkError = '';
+
+			if (!this._CLISettingsService.isJavaVersionValid()) {
+				const javaVersionError = this._checkIfJavaVersionIssue();
+				if (javaVersionError) {
+					reject(javaVersionError);
+					return;
+				}
+			}
 
 			if (executionContext.includeProjectDefaultAuthId) {
 				executionContext.addParam('authId', authId);
@@ -51,7 +67,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 				: '';
 
 			const developmentModeOption = SDK_DEVELOPMENT_MODE_JVM_OPTION; //HARDCODED: this should be in the SDK
-
+			
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
 			const sdkJarPath = path.join(
@@ -72,17 +88,15 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
-			childProcess.stderr.on('data', data => {
-				const sdkOutput = data.toString('utf8');
-				reject(sdkOutput);
+			childProcess.stderr.on(DATA_EVENT, data => {
+				lastSdkError += data.toString(UTF8);
 			});
 
-			childProcess.stdout.on('data', data => {
-				const sdkOutput = data.toString('utf8');
-				lastSdkOutput += sdkOutput;
+			childProcess.stdout.on(DATA_EVENT, data => {
+				lastSdkOutput += data.toString(UTF8);
 			});
 
-			childProcess.on('close', code => {
+			childProcess.on(CLOSE_EVENT, code => {
 				if (code === 0) {
 					try {
 						const output = executionContext.isIntegrationMode()
@@ -106,18 +120,26 @@ module.exports.SDKExecutor = class SDKExecutor {
 						);
 					}
 				} else if (code !== 0) {
-					reject(TranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code));
+					// check if the problem was due to bad Java Version
+					const javaVersionError = this._checkIfJavaVersionIssue();
+
+					const sdkErrorMessage = TranslationService.getMessage(
+						ERRORS.SDKEXECUTOR.SDK_ERROR,
+						code,
+						lastSdkError
+					);
+
+					reject(javaVersionError ? javaVersionError : sdkErrorMessage);
 				}
 			});
 		});
 	}
 
 	_getProxyOptions() {
-		const cliSettings = this._CLISettingsService.getSettings();
-		if (!cliSettings.useProxy) {
+		if (!this._CLISettingsService.useProxy()) {
 			return '';
 		}
-		const proxyUrl = url.parse(cliSettings.proxyUrl);
+		const proxyUrl = url.parse(this._CLISettingsService.getProxyUrl());
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
 			throw TranslationService.getMessage(ERRORS.WRONG_PROXY_SETTING, cliSettings.proxyUrl);
 		}
@@ -145,5 +167,26 @@ module.exports.SDKExecutor = class SDKExecutor {
 		}
 
 		return cliParamsAsString;
+	}
+
+	_checkIfJavaVersionIssue() {
+		const javaVersionInstalled = this._environmentInformationService.getInstalledJavaVersionString();
+		if (javaVersionInstalled.startsWith(SDK_REQUIRED_JAVA_VERSION)) {
+			this._CLISettingsService.setJavaVersionValid(true);
+			return;
+		}
+
+		this._CLISettingsService.setJavaVersionValid(false);
+		if (javaVersionInstalled === '') {
+			return TranslationService.getMessage(
+				ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED,
+				SDK_REQUIRED_JAVA_VERSION
+			);
+		}
+		return TranslationService.getMessage(
+			ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
+			javaVersionInstalled,
+			SDK_REQUIRED_JAVA_VERSION
+		);
 	}
 };
