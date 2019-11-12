@@ -188,10 +188,10 @@ class InteractiveAnswersValidator {
 			  );
 	}
 
-	validateValueNotInList(newAuhtID, authIDs) {
+	validateAuthIDNotInList(newAuhtID, authIDs) {
 		return !authIDs.includes(newAuhtID)
 			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE('This auhtID is already used');
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.AUTH_ID_ALREADY_USED));
 	}
 }
 

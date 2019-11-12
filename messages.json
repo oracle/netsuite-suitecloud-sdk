@@ -1,5 +1,6 @@
 {
 	"ANSWERS_VALIDATION_MESSAGES_APP_ID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as \"com.example.mysuiteapp\".",
+	"ANSWERS_VALIDATION_MESSAGES_AUTH_ID_ALREADY_USED": "This authentication ID (authID) already exists. Enter a new one.",
 	"ANSWERS_VALIDATION_MESSAGES_CHOOSE_OPTION": "Error: You should choose at least one option.",
 	"ANSWERS_VALIDATION_MESSAGES_DEV_URL": "The specified domain is wrongly formatted. Ensure it follows a pattern such as 'subdomain.domain.com'.",
 	"ANSWERS_VALIDATION_MESSAGES_EMPTY_FIELD": "This value cannot be empty.",

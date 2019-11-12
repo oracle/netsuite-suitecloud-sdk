@@ -53,7 +53,7 @@ const {
 	validateFieldHasNoSpaces,
 	validateFieldIsNotEmpty,
 	validateNotProductionUrl,
-	validateValueNotInList,
+	validateAuthIDNotInList,
 	validateXMLCharacters,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
@@ -185,7 +185,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 							validateFieldIsNotEmpty,
 							validateFieldHasNoSpaces,
 							validateXMLCharacters,
-							fieldValue => validateValueNotInList(fieldValue, auhtIDs)
+							fieldValue => validateAuthIDNotInList(fieldValue, auhtIDs)
 						),
 				},
 				{
