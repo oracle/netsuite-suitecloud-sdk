@@ -145,6 +145,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						type: CommandUtils.INQUIRER_TYPES.INPUT,
 						name: ANSWERS.DEVELOPMENT_URL,
 						message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_URL),
+						// HARDCODED just for convinience
+						default: 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 						filter: answer => answer.trim(),
 						validate: fieldValue =>
 							showValidationResults(
@@ -216,6 +218,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
 				url: developmentUrlAnswer
 					? developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]
+					// HARDCODED to always provide a url even without --dev
 					: 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 				mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
 				saveToken: {

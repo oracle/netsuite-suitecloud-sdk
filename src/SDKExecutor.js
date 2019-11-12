@@ -67,7 +67,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 				: '';
 
 			const developmentModeOption = SDK_DEVELOPMENT_MODE_JVM_OPTION; //HARDCODED: this should be in the SDK
-			
+
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
 			const sdkJarPath = path.join(
@@ -81,8 +81,12 @@ module.exports.SDKExecutor = class SDKExecutor {
 				);
 			}
 			const quotedSdkJarPath = `"${sdkJarPath}"`;
+
+			// HARDCODED: this integration key/secret should be used by java SDK when Luis Scrumbox url is used
+			// 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com'
 			const vmIntegrationConsumerKey = '-DintegrationConsumerKey=b05d56072f779a7a11ccf0f8d1cd337beead2e788d91ac5fed2ba4a439cc16c5';
 			const vmintegrationConsumerSecret = '-DintegrationConsumerSecret=ddefd9d9744bec6162167413c6fd493920e635dffba400e237be9e0829dd9452';
+			
 			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption} ${clientPlatformVersionOption} ${vmIntegrationConsumerKey} ${vmintegrationConsumerSecret}`;
 			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
