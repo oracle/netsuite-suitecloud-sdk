@@ -14,12 +14,12 @@ module.exports = {
 				stdio: [process.stdin, process.stdout, process.stderr]
 			});
 
-			result.on('exit', function(code) {
-				resolve(code);
-			});
-
-			result.on('error', function(error) {
-				reject(error);
+			result.on('close', code => {
+				if (code === 0) {
+					resolve(code);
+				} else if (code !== 0) {
+					reject(code);
+				}
 			});
 		});
 	}

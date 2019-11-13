@@ -280,6 +280,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					answers[COMMAND_OPTIONS.PROJECT_NAME]
 				);
 
+				let npmInstallResultCode;
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
 					NodeUtils.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), NodeUtils.COLORS.INFO);
 					await this._createUnitTestFiles(
@@ -289,7 +290,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						projectAbsolutePath);
 
 					NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeUtils.COLORS.INFO);
-					await NpmInstallRunner.run(projectAbsolutePath);
+					npmInstallResultCode = await this._runNpmInstall(projectAbsolutePath);
 				} else {
 					await this._fileSystemService.createFileFromTemplate({
 						template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
@@ -303,7 +304,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					operationResult: operationResult,
 					projectType: answers[COMMAND_OPTIONS.TYPE],
 					projectDirectory: projectAbsolutePath,
-					includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]
+					includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING],
+					npmInstallResultCode: npmInstallResultCode
 				});
 			} catch (error) {
 				reject(error);
@@ -392,6 +394,14 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		});
 	}
 
+	async _runNpmInstall(projectAbsolutePath) {
+		try {
+			return await NpmInstallRunner.run(projectAbsolutePath);
+		} catch (error) {
+			return error;
+		}
+	}
+
 	_formatOutput(result) {
 		if (!result) {
 			return;
@@ -420,6 +430,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		if (result.includeUnitTesting) {
 			NodeUtils.println(TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED), NodeUtils.COLORS.RESULT);
+			if (result.npmInstallResultCode !== 0) {
+				NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeUtils.COLORS.ERROR);
+			}
 		}
 	}
 
