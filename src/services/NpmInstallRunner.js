@@ -4,21 +4,27 @@
 */
 const childProcess = require('child_process');
 
+const PLATFORM_WIN = 'win32';
+const COMMAND_NPM_WIN = 'npm.cmd';
+const COMMAND_NPM_UNIX = 'npm';
+const NPM_ARG_INSTALL = 'install';
+const NPM_RESULT_CLOSE = 'close';
+
 module.exports = {
 	run: function(projectAbsolutePath) {
 		return new Promise((resolve, reject) => {
-			let npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+			let npm = process.platform === PLATFORM_WIN ? COMMAND_NPM_WIN : COMMAND_NPM_UNIX;
 
-			const result = childProcess.spawn( npm, ['install'], {
+			const result = childProcess.spawn( npm, [NPM_ARG_INSTALL], {
 				cwd: projectAbsolutePath,
 				stdio: [process.stdin, process.stdout, process.stderr]
 			});
 
-			result.on('close', code => {
+			result.on(NPM_RESULT_CLOSE, code => {
 				if (code === 0) {
-					resolve(code);
+					resolve();
 				} else if (code !== 0) {
-					reject(code);
+					reject();
 				}
 			});
 		});
