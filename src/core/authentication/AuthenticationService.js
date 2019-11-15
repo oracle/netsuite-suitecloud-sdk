@@ -8,21 +8,21 @@ const FileUtils = require('../../utils/FileUtils');
 const TranslationService = require('../../services/TranslationService');
 const { lineBreak } = require('../../utils/NodeUtils');
 const { ERRORS } = require('../../services/TranslationKeys');
-const { PROJECT_FILENAME } = require('../../ApplicationConstants');
+const { FILE_NAMES } = require('../../ApplicationConstants');
 
 let CACHED_DEFAULT_AUTH_ID;
 module.exports = class AuthenticationService {
 	setDefaultAuthentication(authId) {
 		try {
-			// nest the values into a 'default' property
+			// nest the values into a 'defaultAuthId' property
 			const projectConfiguration = {
 				defaultAuthId: authId,
 			};
-			FileUtils.create(PROJECT_FILENAME, projectConfiguration);
+			FileUtils.create(FILE_NAMES.PROJECT_JSON, projectConfiguration);
 		} catch (error) {
 			const errorMessage =
 				error != null && error.message ? `${lineBreak}Error: ${error.message}` : '';
-			throw TranslationService.getMessage(ERRORS.WRITING_ACCOUNT_JSON, errorMessage); //CHANGE TO WRITING_PROJECT_JSON
+			throw TranslationService.getMessage(ERRORS.WRITING_PROJECT_JSON, errorMessage);
 		}
 	}
 

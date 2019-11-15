@@ -16,7 +16,7 @@ const UTF8 = 'utf8';
 
 		fs.writeFileSync(fileName, content, UTF8, function(error) {
 			if (error) {
-				throw TranslationService.getMessage(ERRORS.WRITNG_FILE, fileName, JSON.stringify(error));
+				throw TranslationService.getMessage(ERRORS.WRITING_FILE, fileName, JSON.stringify(error));
 			}
 		});
 	}

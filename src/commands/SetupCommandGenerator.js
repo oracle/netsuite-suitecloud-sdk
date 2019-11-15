@@ -48,6 +48,10 @@ const COMMANDS = {
 	SAVE_TOKEN: 'savetoken',
 };
 
+const FLAGS = {
+	LIST: 'list'
+};
+
 const {
 	validateDevUrl,
 	validateFieldHasNoSpaces,
@@ -74,7 +78,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		const getAuthListContext = new SDKExecutionContext({
 			command: COMMANDS.MANAGEAUTH,
-			flags: ['list'],
+			flags: [FLAGS.LIST],
 		});
 
 		const existingAuthIDsResponse = await executeWithSpinner({
@@ -82,7 +86,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			message: TranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
 		});
 
-		// Consider that manageauth -list command can fail
 		if (SDKOperationResultUtils.hasErrors(existingAuthIDsResponse)) {
 			throw SDKOperationResultUtils.getResultMessage(existingAuthIDsResponse);
 		}
@@ -92,7 +95,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		const auhtIDs = Object.keys(existingAuthIDsResponse.data);
 
 		if (auhtIDs.length > 0) {
-			// There are already some existing authIDs
 			choices.push({
 				name: chalk.bold(
 					TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)
@@ -128,6 +130,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		const selectedAuthID = authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
+		
 		// reusing an already set authID
 		if (selectedAuthID !== CREATE_NEW_AUTH) {
 			return {
