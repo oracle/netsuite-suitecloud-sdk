@@ -27,7 +27,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		return new Promise(resolve => {
 			const executionContext = new SDKExecutionContext({
 				command: LIST_FOLDERS_COMMAND,
-				includeAccountDetailsParams: true,
+				includeProjectDefaultAuthId: true,
 			});
 
 			return executeWithSpinner({
@@ -72,7 +72,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		const executionContext = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params: answers,
-			includeAccountDetails: true
+			includeProjectDefaultAuthId: true
 		});
 
 		return executeWithSpinner({

@@ -71,7 +71,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					const executionContextForListObjects = new SDKExecutionContext({
 						command: this._listObjectsMetadata.name,
 						params: paramsForListObjects,
-						includeAccountDetailsParams: true
+						includeProjectDefaultAuthId: true
 					});
 
 					executeWithSpinner({
@@ -299,7 +299,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
-			includeAccountDetailsParams: true,
+			includeProjectDefaultAuthId: true,
 		});
 
 		return executeWithSpinner({

@@ -81,7 +81,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_listFolders() {
 		const executionContextListFolders = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
-			includeAccountDetailsParams: true,
+			includeProjectDefaultAuthId: true,
 		});
 
 		return executeWithSpinner({
@@ -115,7 +115,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
 		const executionContextListFiles = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFILES,
-			includeAccountDetailsParams: true,
+			includeProjectDefaultAuthId: true,
 			params: selectFolderAnswer,
 		});
 
@@ -184,7 +184,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		const executionContextImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
-			includeAccountDetailsParams: true,
+			includeProjectDefaultAuthId: true,
 			params: answers,
 		});
 

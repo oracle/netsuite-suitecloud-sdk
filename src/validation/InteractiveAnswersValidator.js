@@ -72,7 +72,10 @@ class InteractiveAnswersValidator {
 		return fieldValue.match(ALPHANUMERIC_LOWERCASE_WHOLE_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(
-					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FIELD_NOT_LOWER_CASE, fieldOptionId)
+					TranslationService.getMessage(
+						ANSWERS_VALIDATION_MESSAGES.FIELD_NOT_LOWER_CASE,
+						fieldOptionId
+					)
 			  );
 	}
 
@@ -148,14 +151,6 @@ class InteractiveAnswersValidator {
 			  );
 	}
 
-	validateEmail(fieldValue) {
-		return EMAIL_REGEX.test(fieldValue)
-			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE(
-					TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.INVALID_EMAIL)
-			  );
-	}
-
 	validateNotUndefined(value, optionName) {
 		return value !== undefined
 			? VALIDATION_RESULT_SUCCESS
@@ -186,7 +181,17 @@ class InteractiveAnswersValidator {
 	validateNotProductionUrl(url) {
 		return !url.match(PRODUCTION_ACCOUNT_URL_REGEX)
 			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_URL_WITH_DEV_FLAG));
+			: VALIDATION_RESULT_FAILURE(
+					TranslationService.getMessage(
+						ANSWERS_VALIDATION_MESSAGES.PRODUCTION_URL_WITH_DEV_FLAG
+					)
+			  );
+	}
+
+	validateAuthIDNotInList(newAuhtID, authIDs) {
+		return !authIDs.includes(newAuhtID)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.AUTH_ID_ALREADY_USED));
 	}
 }
 

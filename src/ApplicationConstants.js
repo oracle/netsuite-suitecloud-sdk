@@ -8,7 +8,6 @@ module.exports = {
 	SDK_COMMANDS_METADATA_FILE: 'metadata/SDKCommandsMetadata.json',
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
-	ACCOUNT_DETAILS_FILENAME: 'account.json',
 	SDK_DIRECTORY_NAME: 'bin',
 	SDK_FILENAME: 'cli-2019.2.1.jar',
 	SDK_REQUIRED_JAVA_VERSION: '11',
@@ -21,6 +20,7 @@ module.exports = {
 		PORT: '-DproxyPort',
 	},
 	FILE_NAMES: {
+		PROJECT_JSON: 'project.json',
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
 		MANIFEST_XML: 'manifest.xml',

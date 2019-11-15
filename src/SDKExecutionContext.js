@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const assert = require('assert');
@@ -12,10 +12,10 @@ module.exports = class SDKExecutionContext {
 		this._command = options.command;
 		this._integrationMode =
 			typeof options.integrationMode === 'undefined' ? true : options.integrationMode;
-		this._includeAccountDetailsParams =
-			typeof options.includeAccountDetailsParams === 'undefined'
+		this._includeProjectDefaultAuthId =
+			typeof options.includeProjectDefaultAuthId === 'undefined'
 				? false
-				: options.includeAccountDetailsParams;
+				: options.includeProjectDefaultAuthId;
 		this._params = {};
 		this._flags = [];
 
@@ -64,7 +64,7 @@ module.exports = class SDKExecutionContext {
 		return this._integrationMode;
 	}
 
-	get includeAccountDetailsParams() {
-		return this._includeAccountDetailsParams;
+	get includeProjectDefaultAuthId() {
+		return this._includeProjectDefaultAuthId;
 	}
 };

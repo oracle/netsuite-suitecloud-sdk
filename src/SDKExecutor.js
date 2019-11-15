@@ -18,11 +18,11 @@ const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
 const EnvironmentInformationService = require('./services/EnvironmentInformationService');
-const AccountDetailsService = require('./core/accountsetup/AccountDetailsService');
 const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
+const AuthenticationService = require('./core/authentication/AuthenticationService');
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
@@ -31,14 +31,14 @@ const UTF8 = 'utf8';
 module.exports.SDKExecutor = class SDKExecutor {
 	constructor() {
 		this._CLISettingsService = new CLISettingsService();
-		this._accountDetailsService = new AccountDetailsService();
+		this._authenticationService = new AuthenticationService();
 		this._environmentInformationService = new EnvironmentInformationService();
 	}
 
 	execute(executionContext) {
 		const proxyOptions = this._getProxyOptions();
-		const accountDetails = executionContext.includeAccountDetailsParams
-			? this._accountDetailsService.get()
+		const authId = executionContext.includeProjectDefaultAuthId
+			? this._authenticationService.getProjectDefaultAuthId()
 			: null;
 
 		return new Promise((resolve, reject) => {
@@ -53,11 +53,8 @@ module.exports.SDKExecutor = class SDKExecutor {
 				}
 			}
 
-			if (executionContext.includeAccountDetailsParams) {
-				executionContext.addParam('account', accountDetails.accountId);
-				executionContext.addParam('role', accountDetails.roleId);
-				executionContext.addParam('email', accountDetails.email);
-				executionContext.addParam('url', accountDetails.netSuiteUrl);
+			if (executionContext.includeProjectDefaultAuthId) {
+				executionContext.addParam('authId', authId);
 			}
 
 			const cliParams = this._convertParamsObjToString(
@@ -69,10 +66,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const developmentModeOption =
-				accountDetails && accountDetails.isDevelopment
-					? SDK_DEVELOPMENT_MODE_JVM_OPTION
-					: '';
+			const developmentModeOption = SDK_DEVELOPMENT_MODE_JVM_OPTION; //HARDCODED: this should be in the SDK
 
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
@@ -87,7 +81,13 @@ module.exports.SDKExecutor = class SDKExecutor {
 				);
 			}
 			const quotedSdkJarPath = `"${sdkJarPath}"`;
-			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption} ${clientPlatformVersionOption}`;
+
+			// HARDCODED: this integration key/secret should be used by java SDK when Luis Scrumbox url is used
+			// 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com'
+			const vmIntegrationConsumerKey = '-DintegrationConsumerKey=b05d56072f779a7a11ccf0f8d1cd337beead2e788d91ac5fed2ba4a439cc16c5';
+			const vmintegrationConsumerSecret = '-DintegrationConsumerSecret=ddefd9d9744bec6162167413c6fd493920e635dffba400e237be9e0829dd9452';
+			
+			const vmOptions = `${proxyOptions} ${integrationModeOption} ${developmentModeOption} ${clientPlatformVersionOption} ${vmIntegrationConsumerKey} ${vmintegrationConsumerSecret}`;
 			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 			const childProcess = spawn(jvmCommand, [], { shell: true });

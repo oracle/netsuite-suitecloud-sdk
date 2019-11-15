@@ -144,7 +144,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		}
 		const executionContextForDeploy = new SDKExecutionContext({
 			command: this._commandMetadata.name,
-			includeAccountDetailsParams: true,
+			includeProjectDefaultAuthId: true,
 			params: SDKParams,
 			flags,
 		});
