@@ -36,11 +36,20 @@ module.exports = class AuthenticationService {
 		if (CACHED_DEFAULT_AUTH_ID) {
 			return CACHED_DEFAULT_AUTH_ID;
 		}
+		
 		const projectFilePath = path.join(this._excutionPath,FILE_NAMES.PROJECT_JSON);
+
 		if (FileUtils.exists(projectFilePath)) {
-			const fileContentJson = FileUtils.readAsJson(projectFilePath);
-			CACHED_DEFAULT_AUTH_ID = fileContentJson.defaultAuthId;
-			return CACHED_DEFAULT_AUTH_ID;
+			try {
+				const fileContentJson = FileUtils.readAsJson(projectFilePath);
+				CACHED_DEFAULT_AUTH_ID = fileContentJson.defaultAuthId;
+				if (CACHED_DEFAULT_AUTH_ID === undefined) {
+					throw TranslationService.getMessage(ERRORS.MISSING_DEFAULT_AUTH_ID);
+				}
+				return CACHED_DEFAULT_AUTH_ID;
+			} catch (error) {
+				throw TranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error)
+			}
 		}
 	}
 };
