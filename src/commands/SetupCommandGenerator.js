@@ -49,7 +49,7 @@ const COMMANDS = {
 };
 
 const FLAGS = {
-	LIST: 'list'
+	LIST: 'list',
 };
 
 const {
@@ -72,8 +72,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _getCommandQuestions(prompt, commandArguments) {
 		this._checkWorkingDirectoryContainsValidProject();
-		const isDevelopment =
-			commandArguments && commandArguments.dev !== undefined && commandArguments.dev;
+		const isDevelopment = commandArguments && commandArguments.dev !== undefined && commandArguments.dev;
 		let developmentUrlAnswer;
 
 		const getAuthListContext = new SDKExecutionContext({
@@ -96,9 +95,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		if (auhtIDs.length > 0) {
 			choices.push({
-				name: chalk.bold(
-					TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)
-				),
+				name: chalk.bold(TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
 				value: CREATE_NEW_AUTH,
 			});
 			choices.push(new inquirer.Separator());
@@ -106,9 +103,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 			auhtIDs.forEach(authID => {
 				const authentication = existingAuthIDsResponse.data[authID];
-				const isDevLabel = authentication.isDev ? `[DEV: ${authentication.urls.app}]` : '';
+				const isDevLabel = authentication.isDev
+					? TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID_DEV_URL, authentication.urls.app)
+					: '';
 				choices.push({
-					name: `${authID} - ${authentication.accountId} ${isDevLabel}`,
+					name: TranslationService.getMessage(
+						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID,
+						authID,
+						authentication.accountId,
+						isDevLabel
+					),
 					value: authID,
 				});
 			});
@@ -130,7 +134,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		const selectedAuthID = authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
-		
+
 		// reusing an already set authID
 		if (selectedAuthID !== CREATE_NEW_AUTH) {
 			return {
@@ -151,13 +155,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						// HARDCODED just for convinience
 						default: 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 						filter: answer => answer.trim(),
-						validate: fieldValue =>
-							showValidationResults(
-								fieldValue,
-								validateFieldIsNotEmpty,
-								validateDevUrl,
-								validateNotProductionUrl
-							),
+						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl, validateNotProductionUrl),
 					},
 				]);
 			}
@@ -172,9 +170,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 							value: AUTH_MODE.OAUTH,
 						},
 						{
-							name: TranslationService.getMessage(
-								QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN
-							),
+							name: TranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN),
 							value: AUTH_MODE.SAVE_TOKEN,
 						},
 					],
@@ -185,12 +181,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					message: TranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
-						showValidationResults(
-							fieldValue,
-							validateFieldIsNotEmpty,
-							validateFieldHasNoSpaces,
-							validateXMLCharacters,
-							fieldValue => validateAuthIDNotInList(fieldValue, auhtIDs)
+						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateXMLCharacters, fieldValue =>
+							validateAuthIDNotInList(fieldValue, auhtIDs)
 						),
 				},
 				{
@@ -200,8 +192,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					name: ANSWERS.SAVE_TOKEN_ID,
 					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
 					filter: fieldValue => fieldValue.trim(),
-					validate: fieldValue =>
-						showValidationResults(fieldValue, validateFieldIsNotEmpty),
+					validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 				},
 				{
 					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
@@ -210,8 +201,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					name: ANSWERS.SAVE_TOKEN_SECRET,
 					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
 					filter: fieldValue => fieldValue.trim(),
-					validate: fieldValue =>
-						showValidationResults(fieldValue, validateFieldIsNotEmpty),
+					validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 				},
 			]);
 
@@ -221,8 +211,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
 				url: developmentUrlAnswer
 					? developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]
-					// HARDCODED to always provide a url even without --dev
-					: 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
+					: // HARDCODED to always provide a url even without --dev
+					  'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 				mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
 				saveToken: {
 					id: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
@@ -234,11 +224,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			throw TranslationService.getMessage(
-				ERRORS.NOT_PROJECT_FOLDER,
-				MANIFEST_XML,
-				this._projectFolder
-			);
+			throw TranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder);
 		}
 	}
 
@@ -316,10 +302,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		NodeUtils.println(resultMessage, NodeUtils.COLORS.RESULT);
-		NodeUtils.println(
-			TranslationService.getMessage(OUTPUT.SUCCESSFUL),
-			NodeUtils.COLORS.RESULT
-		);
+		NodeUtils.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), NodeUtils.COLORS.RESULT);
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {

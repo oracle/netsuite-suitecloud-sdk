@@ -21,7 +21,7 @@ module.exports = class AuthenticationService {
 			FileUtils.create(FILE_NAMES.PROJECT_JSON, projectConfiguration);
 		} catch (error) {
 			const errorMessage =
-				error != null && error.message ? `${lineBreak}Error: ${error.message}` : '';
+				error != null && error.message ? TranslationService.getMessage(ERRORS.ADD_ERROR_LINE, error.message) : '';
 			throw TranslationService.getMessage(ERRORS.WRITING_PROJECT_JSON, errorMessage);
 		}
 	}
