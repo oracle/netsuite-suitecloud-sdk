@@ -181,7 +181,7 @@
 	"ERRORS_FILE": "There was an error in the file {0}: \n",
 	"ERRORS_FILE_NOT_EXIST": "The file {0} was not found in the project.",
 	"ERRORS_GENERAL_CONNECTION_PROBLEM": "There was an error when communicating with the server. Try again later.",
-	"ERRORS_MISSING_DEFAULT_AUTH_ID": "The defaultId property is missing.",
+	"ERRORS_MISSING_DEFAULT_AUTH_ID": "The {0} property is missing.",
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 	"ERRORS_PROCESS_FAILED": "The process has failed.",
 	"ERRORS_PROMPTING_INTERACTIVE_QUESTIONS_FAILED": "There was an internal error while prompting interactive questions. Details:{0}{1}",
