@@ -30,8 +30,8 @@ module.exports = class AuthenticationService {
 		if (CACHED_DEFAULT_AUTH_ID) {
 			return CACHED_DEFAULT_AUTH_ID;
 		}
-		if (FileUtils.exists(PROJECT_FILENAME)) {
-			const fileContentJson = FileUtils.readAsJson(PROJECT_FILENAME);
+		if (FileUtils.exists(FILE_NAMES.PROJECT_JSON)) {
+			const fileContentJson = FileUtils.readAsJson(FILE_NAMES.PROJECT_JSON);
 			CACHED_DEFAULT_AUTH_ID = fileContentJson.defaultAuthId;
 			return CACHED_DEFAULT_AUTH_ID;
 		}
