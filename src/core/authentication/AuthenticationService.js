@@ -9,13 +9,15 @@ const TranslationService = require('../../services/TranslationService');
 const { ERRORS } = require('../../services/TranslationKeys');
 const { FILE_NAMES } = require('../../ApplicationConstants');
 
+const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId' 
+
 let CACHED_DEFAULT_AUTH_ID;
 module.exports = class AuthenticationService {
 	setDefaultAuthentication(authId) {
 		try {
-			// nest the values into a 'defaultAuthId' property
+			// nest the values into a DEFAULT_AUTH_ID_PROPERTY property
 			const projectConfiguration = {
-				defaultAuthId: authId,
+				[DEFAULT_AUTH_ID_PROPERTY]: authId,
 			};
 			FileUtils.create(FILE_NAMES.PROJECT_JSON, projectConfiguration);
 		} catch (error) {
@@ -32,10 +34,10 @@ module.exports = class AuthenticationService {
 		if (FileUtils.exists(FILE_NAMES.PROJECT_JSON)) {
 			try {
 				const fileContentJson = FileUtils.readAsJson(FILE_NAMES.PROJECT_JSON);
-				CACHED_DEFAULT_AUTH_ID = fileContentJson.defaultAuthId;
-				if (CACHED_DEFAULT_AUTH_ID === undefined) {
-					throw TranslationService.getMessage(ERRORS.MISSING_DEFAULT_AUTH_ID);
+				if (!fileContentJson.hasOwnProperty(DEFAULT_AUTH_ID_PROPERTY)) {
+					throw TranslationService.getMessage(ERRORS.MISSING_DEFAULT_AUTH_ID, DEFAULT_AUTH_ID_PROPERTY);
 				}
+				CACHED_DEFAULT_AUTH_ID = fileContentJson[DEFAULT_AUTH_ID_PROPERTY];
 				return CACHED_DEFAULT_AUTH_ID;
 			} catch (error) {
 				throw TranslationService.getMessage(ERRORS.WRONG_JSON_FILE, FILE_NAMES.PROJECT_JSON, error)
