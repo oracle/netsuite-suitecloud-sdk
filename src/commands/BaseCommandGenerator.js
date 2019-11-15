@@ -7,6 +7,7 @@
 const SDKExecutor = require('../SDKExecutor').SDKExecutor;
 const Command = require('./Command');
 const assert = require('assert');
+const AuthenticationService = require('../core/authentication/AuthenticationService');
 
 module.exports = class BaseCommandGenerator {
 	constructor(options) {
@@ -14,7 +15,7 @@ module.exports = class BaseCommandGenerator {
 		assert(options.commandMetadata);
 		assert(options.projectFolder);
 
-		this._sdkExecutor = new SDKExecutor();
+		this._sdkExecutor = new SDKExecutor(new AuthenticationService(options.executionPath));
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;

@@ -14,10 +14,14 @@ const CommandOptionsValidator = require('./core/CommandOptionsValidator');
 const CLIConfigurationService = require('./core/extensibility/CLIConfigurationService');
 const AuthenticationService = require('./core/authentication/AuthenticationService');
 const CommandOutputHandler = require('./core/CommandOutputHandler');
+const path = require('path');
 
-const commandsMetadataServiceSingleton = new CommandsMetadataService();
+const executionPath = process.cwd()
+const rootCLIPath = path.dirname(require.main.filename);
+const commandsMetadataServiceSingleton = new CommandsMetadataService(rootCLIPath);
 
 const cliInstance = new CLI({
+	executionPath,
 	commandsMetadataService: commandsMetadataServiceSingleton,
 	commandRegistrationService: new CommandRegistrationService(),
 	commandActionExecutor: new CommandActionExecutor({
@@ -25,7 +29,7 @@ const cliInstance = new CLI({
 		commandOptionsValidator: new CommandOptionsValidator(),
 		cliConfigurationService: new CLIConfigurationService(),
 		commandInstanceFactory: new CommandInstanceFactory(),
-		authenticationService: new AuthenticationService(),
+		authenticationService: new AuthenticationService(executionPath),
 		commandsMetadataService: commandsMetadataServiceSingleton,
 	}),
 });

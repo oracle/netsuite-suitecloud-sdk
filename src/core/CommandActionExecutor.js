@@ -99,7 +99,7 @@ module.exports = class CommandActionExecutor {
 			return actionResult;
 		} catch (error) {
 			this._commandOutputHandler.showErrorResult(error);
-			if (commandUserExtension.onError) {
+			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
 		}

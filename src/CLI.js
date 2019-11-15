@@ -5,7 +5,7 @@
 'use strict';
 
 const assert = require('assert');
-var path = require('path');
+// var path = require('path');
 const program = require('commander');
 const NodeUtils = require('./utils/NodeUtils');
 const TranslationService = require('./services/TranslationService');
@@ -25,16 +25,18 @@ module.exports = class CLI {
 		assert(dependencies.commandsMetadataService);
 		assert(dependencies.commandActionExecutor);
 		assert(dependencies.commandRegistrationService);
+		assert(dependencies.executionPath)
 
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._commandActionExecutor = dependencies.commandActionExecutor;
 		this._commandRegistrationService = dependencies.commandRegistrationService;
+		this._executionPath = dependencies.executionPath;
 	}
 
 	start(process) {
 		try {
-			const rootCLIPath = this._getCLIRootPath();
-			this._commandsMetadataService.initializeCommandsMetadata(rootCLIPath);
+			// const rootCLIPath = this._getCLIRootPath();
+			this._commandsMetadataService.initializeCommandsMetadata();
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
 
 			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();
@@ -63,9 +65,9 @@ module.exports = class CLI {
 		}
 	}
 
-	_getCLIRootPath() {
-		return path.dirname(require.main.filename);
-	}
+	// _getCLIRootPath() {
+	// 	return path.dirname(require.main.filename);
+	// }
 
 	_initializeCommands(commandMetadataList, runInInteractiveMode) {
 		const commandsMetadataArraySortedByCommandName = Object.values(commandMetadataList).sort(
@@ -79,7 +81,7 @@ module.exports = class CLI {
 				runInInteractiveMode: runInInteractiveMode,
 				executeCommandFunction: async options => {
 					await this._commandActionExecutor.executeAction({
-						executionPath: process.cwd(),
+						executionPath: this._executionPath,
 						commandName: commandMetadata.name,
 						runInInteractiveMode: runInInteractiveMode,
 						arguments: options,

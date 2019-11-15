@@ -21,15 +21,18 @@ function executeForEachCommandMetadata(commandsMetadata, func) {
 }
 
 module.exports = class CommandsMetadataService {
-	initializeCommandsMetadata(rootCLIPath) {
+	constructor(rootCLIPath) {
+		this._rootCLIPath = rootCLIPath;
+	}
+	initializeCommandsMetadata() {
 		var sdkCommandsMetadata = this._getMetadataFromFile(
-			path.join(rootCLIPath, ApplicationConstants.SDK_COMMANDS_METADATA_FILE)
+			path.join(this._rootCLIPath, ApplicationConstants.SDK_COMMANDS_METADATA_FILE)
 		);
 		var nodeCommandsMetadata = this._getMetadataFromFile(
-			path.join(rootCLIPath, ApplicationConstants.NODE_COMMANDS_METADATA_FILE)
+			path.join(this._rootCLIPath, ApplicationConstants.NODE_COMMANDS_METADATA_FILE)
 		);
 		var commandGeneratorsMetadata = this._getMetadataFromFile(
-			path.join(rootCLIPath, ApplicationConstants.COMMAND_GENERATORS_METADATA_FILE)
+			path.join(this._rootCLIPath, ApplicationConstants.COMMAND_GENERATORS_METADATA_FILE)
 		);
 		var combinedMetadata = {
 			...sdkCommandsMetadata,
@@ -38,8 +41,7 @@ module.exports = class CommandsMetadataService {
 		combinedMetadata = this._transformCommandsOptionsToObject(combinedMetadata);
 		combinedMetadata = this._addCommandGeneratorMetadata(
 			commandGeneratorsMetadata,
-			combinedMetadata,
-			rootCLIPath
+			combinedMetadata
 		);
 		COMMANDS_METADATA_CACHE = combinedMetadata;
 	}
@@ -80,7 +82,7 @@ module.exports = class CommandsMetadataService {
 		return commandsMetadata;
 	}
 
-	_addCommandGeneratorMetadata(commandGeneratorsMetadata, commandsMetadata, rootCLIPath) {
+	_addCommandGeneratorMetadata(commandGeneratorsMetadata, commandsMetadata) {
 		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
 			var generatorMetadata = commandGeneratorsMetadata.find(generatorMetadata => {
 				return generatorMetadata.commandName == commandMetadata.name;
@@ -90,12 +92,12 @@ module.exports = class CommandsMetadataService {
 				generatorMetadata && generatorMetadata.nonInteractiveGenerator
 					? generatorMetadata.nonInteractiveGenerator
 					: SDK_WRAPPER_GENERATOR;
-			commandMetadata.nonInteractiveGenerator = path.join(rootCLIPath, defaultGenerator);
+			commandMetadata.nonInteractiveGenerator = path.join(this._rootCLIPath, defaultGenerator);
 			commandMetadata.supportsInteractiveMode = false;
 
 			if (generatorMetadata && generatorMetadata.interactiveGenerator) {
 				commandMetadata.interactiveGenerator = path.join(
-					rootCLIPath,
+					this._rootCLIPath,
 					generatorMetadata.interactiveGenerator
 				);
 				commandMetadata.supportsInteractiveMode = true;
