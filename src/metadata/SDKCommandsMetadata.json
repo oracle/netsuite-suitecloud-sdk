@@ -61,7 +61,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -71,7 +71,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -81,7 +81,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -91,7 +91,45 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			}
+		]
+	},
+	"authenticate": {
+		"name": "authenticate",
+		"usage": "",
+		"description": "Grants authorization for SuiteCloud SDK to access NetSuite with an account-role combination.",
+		"isSetupRequired": false,
+		"options": [
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "url",
+				"option": "url",
+				"description": "References the URL used to access the account.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -259,7 +297,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -269,7 +307,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -279,7 +317,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -289,7 +327,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -327,7 +375,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -337,7 +385,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -347,7 +395,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -357,7 +405,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -395,7 +453,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -405,7 +463,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -415,7 +473,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -425,7 +483,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -473,7 +541,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -483,7 +551,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -493,7 +561,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -503,7 +571,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -556,6 +634,17 @@
 				"disableInIntegrationMode": false
 			},
 			{
+				"name": "excludefiles",
+				"option": "excludefiles",
+				"description": "Indicates that the SuiteScript files referenced in custom objects are not imported. It can only be used in account customization projects (ACP).",
+				"mandatory": false,
+				"type": "FLAG",
+				"alias": "excludefiles",
+				"usage": "\/Objects",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			{
 				"name": "project",
 				"option": "project",
 				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
@@ -571,7 +660,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -581,7 +670,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -591,7 +680,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -601,7 +690,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -616,20 +715,20 @@
 			{
 				"name": "url",
 				"option": "url",
-				"description": "The domain url.",
-				"mandatory": true,
+				"description": "Specify the domain URL. It overrides the SDF file settings.",
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
 			{
 				"name": "email",
 				"option": "email",
-				"description": "The user's email.",
-				"mandatory": true,
+				"description": "Specify your email address. It overrides the SDF file settings.",
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -637,9 +736,9 @@
 				"name": "account",
 				"option": "account",
 				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": true,
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -647,9 +746,19 @@
 				"name": "role",
 				"option": "role",
 				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": true,
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -664,20 +773,20 @@
 			{
 				"name": "url",
 				"option": "url",
-				"description": "The domain url.",
-				"mandatory": true,
+				"description": "Specify the domain URL. It overrides the SDF file settings.",
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
 			{
 				"name": "email",
 				"option": "email",
-				"description": "The user's email.",
-				"mandatory": true,
+				"description": "Specify your email address. It overrides the SDF file settings.",
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -685,9 +794,9 @@
 				"name": "account",
 				"option": "account",
 				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": true,
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -695,9 +804,19 @@
 				"name": "role",
 				"option": "role",
 				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": true,
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -722,20 +841,20 @@
 			{
 				"name": "url",
 				"option": "url",
-				"description": "The domain url.",
-				"mandatory": true,
+				"description": "Specify the domain URL. It overrides the SDF file settings.",
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
 			{
 				"name": "email",
 				"option": "email",
-				"description": "The user's email.",
-				"mandatory": true,
+				"description": "Specify your email address. It overrides the SDF file settings.",
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -743,9 +862,9 @@
 				"name": "account",
 				"option": "account",
 				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": true,
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -753,9 +872,19 @@
 				"name": "role",
 				"option": "role",
 				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": true,
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -793,7 +922,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -803,7 +932,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -813,7 +942,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -823,7 +952,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -868,20 +1007,20 @@
 			{
 				"name": "url",
 				"option": "url",
-				"description": "The domain url.",
-				"mandatory": true,
+				"description": "Specify the domain URL. It overrides the SDF file settings.",
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
 			{
 				"name": "email",
 				"option": "email",
-				"description": "The user's email.",
-				"mandatory": true,
+				"description": "Specify your email address. It overrides the SDF file settings.",
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -889,9 +1028,9 @@
 				"name": "account",
 				"option": "account",
 				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": true,
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -899,9 +1038,77 @@
 				"name": "role",
 				"option": "role",
 				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": true,
+				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			}
+		]
+	},
+	"manageauth": {
+		"name": "manageauth",
+		"usage": "",
+		"description": "Manages authentication IDs (authid) for all your projects.",
+		"isSetupRequired": false,
+		"options": [
+			{
+				"name": "list",
+				"option": "list",
+				"description": "Prints a list of all the configured authentication IDs (authID). Usage: manageauth -list.",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "info",
+				"option": "info",
+				"description": "Prints the following information for the specified authentication ID (authID): account ID, role ID, and url. Usage: manageauth -info {authID}.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "rename",
+				"option": "rename",
+				"description": "Rename an authentication ID (authID). You must specifiy it together with the renameto option. Usage: manageauth -rename {authID} -renameto {newauthID}.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "renameto",
+				"option": "renameto",
+				"description": "Enter the new ID for an authentication ID (authID). You must specifiy it together with the rename option. Usage: manageauth -rename {authID} -renameto {newauthID}.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "remove",
+				"option": "remove",
+				"description": "Remove an authentication ID (authID. Usage: manageauth -remove {authID}.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -960,7 +1167,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -970,7 +1177,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -980,7 +1187,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -990,7 +1197,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -1028,7 +1245,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1038,7 +1255,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1048,7 +1265,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1058,7 +1275,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -1096,7 +1323,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1106,7 +1333,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1116,7 +1343,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1126,7 +1353,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -1164,7 +1401,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1174,7 +1411,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1184,7 +1421,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1194,7 +1431,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -1232,7 +1479,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1242,7 +1489,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1252,7 +1499,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1262,7 +1509,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -1332,7 +1589,7 @@
 				"description": "Specify the domain URL. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "system.netsuite.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1342,7 +1599,7 @@
 				"description": "Specify your email address. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "test@netsuiteide.com",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1352,7 +1609,7 @@
 				"description": "Specify your account ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "0000001",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -1362,7 +1619,17 @@
 				"description": "Specify the role ID. It overrides the SDF file settings.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "3",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			{
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
