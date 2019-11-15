@@ -181,6 +181,7 @@
 	"ERRORS_FILE": "There was an error in the file {0}: \n",
 	"ERRORS_FILE_NOT_EXIST": "The file {0} was not found in the project.",
 	"ERRORS_GENERAL_CONNECTION_PROBLEM": "There was an error when communicating with the server. Try again later.",
+	"ERRORS_MISSING_DEFAULT_AUTH_ID": "The defaultId property is missing.",
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 	"ERRORS_PROCESS_FAILED": "The process has failed.",
 	"ERRORS_PROMPTING_INTERACTIVE_QUESTIONS_FAILED": "There was an internal error while prompting interactive questions. Details:{0}{1}",
@@ -197,6 +198,7 @@
 	"ERRORS_XML_PROJECTTYPE_INCORRECT": "The projecttype attribute within the manifest field in the manifest.xml file must be either SUITEAPP or ACCOUNTCUSTOMIZATION.",
 	"ERRORS_WRITING_PROJECT_JSON": "There was an error when editing the project.json file.{0}",
 	"ERRORS_WRITING_FILE": "There was a problem while creating the file {0}.\n  Error: {1}",
+	"ERRORS_WRONG_JSON_FILE": "There was a problem when reading the {0} file.\n{1}",
 	"ERRORS_WRONG_PROXY_SETTING": "The {0} proxy URL server is invalid. It must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80.",
 	"ERRORS_CLI_ERROR_2FA_REQUIRED": "The token could not be issued. You tried to issue a token, but your role requires 2FA. You must save a TBA token issued in NetSuite. To learn how to issue a token in NetSuite, see https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html",
 

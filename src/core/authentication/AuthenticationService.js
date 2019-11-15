@@ -6,7 +6,6 @@
 
 const FileUtils = require('../../utils/FileUtils');
 const TranslationService = require('../../services/TranslationService');
-const { lineBreak } = require('../../utils/NodeUtils');
 const { ERRORS } = require('../../services/TranslationKeys');
 const { FILE_NAMES } = require('../../ApplicationConstants');
 
@@ -31,9 +30,16 @@ module.exports = class AuthenticationService {
 			return CACHED_DEFAULT_AUTH_ID;
 		}
 		if (FileUtils.exists(FILE_NAMES.PROJECT_JSON)) {
-			const fileContentJson = FileUtils.readAsJson(FILE_NAMES.PROJECT_JSON);
-			CACHED_DEFAULT_AUTH_ID = fileContentJson.defaultAuthId;
-			return CACHED_DEFAULT_AUTH_ID;
+			try {
+				const fileContentJson = FileUtils.readAsJson(FILE_NAMES.PROJECT_JSON);
+				CACHED_DEFAULT_AUTH_ID = fileContentJson.defaultAuthId;
+				if (CACHED_DEFAULT_AUTH_ID === undefined) {
+					throw TranslationService.getMessage(ERRORS.MISSING_DEFAULT_AUTH_ID);
+				}
+				return CACHED_DEFAULT_AUTH_ID;
+			} catch (error) {
+				throw TranslationService.getMessage(ERRORS.WRONG_JSON_FILE, FILE_NAMES.PROJECT_JSON, error)
+			}
 		}
 	}
 };
