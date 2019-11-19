@@ -4,17 +4,10 @@
 */
 'use strict';
 
-const ApplicationConstants = require('../ApplicationConstants');
-const FileUtils = require('../utils/FileUtils');
-const path = require('path');
-let MESSAGES;
+const { DEFAULT_MESSAGES_FILE } = require('../ApplicationConstants');
+const MESSAGES = require(DEFAULT_MESSAGES_FILE);
 
 class TranslationService {
-	constructor() {
-		const filePath = path.join(__dirname, ApplicationConstants.DEFAULT_MESSAGES_FILE);
-		MESSAGES = FileUtils.readAsJson(filePath);
-	}
-
 	_injectParameters(message, params) {
 		return message.replace(/{(\d+)}/g, function(match, number) {
 			return typeof params[number] !== 'undefined' ? params[number] : match;
