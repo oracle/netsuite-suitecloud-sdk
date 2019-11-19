@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const TemplatesCompiler = require('../../src/sdf-cli-local/src/compilers/TemplatesCompiler');
 
-const { SERVERPATH, removeFolder, mockClearConsoleLog } = require('./helpers');
+const { SERVERPATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 
 const applications = ['shopping', 'checkout', 'myaccount'];
 
@@ -69,6 +69,7 @@ const compiler = new TemplatesCompiler({ context: context });
 
 describe('compile', function() {
 	beforeAll(async () => {
+		createLocalserverFolder();
 		await compiler.compile();
 	});
 

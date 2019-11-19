@@ -20,7 +20,9 @@ module.exports.ROOT = ROOT;
 module.exports.SERVERPATH = SERVERPATH;
 module.exports.CUSTOM_ASSETS_PATH = CUSTOM_ASSETS_PATH;
 module.exports.createLocalserverFolder = function() {
-	fs.mkdirSync(SERVERPATH, { recursive: true });
+	if (!fs.existsSync(SERVERPATH)) {
+		fs.mkdirSync(SERVERPATH, { recursive: true });
+	}
 };
 module.exports.removeFolder = function(folder = '') {
 	(function deleteFolderRecursive(dir) {
@@ -38,6 +40,9 @@ module.exports.removeFolder = function(folder = '') {
 			fs.rmdirSync(dir);
 		}
 	})(path.join(SERVERPATH, folder));
+	if (fs.existsSync(SERVERPATH) && fs.readdirSync(SERVERPATH).length == 0){
+		fs.rmdirSync(SERVERPATH);
+	}
 };
 module.exports.mockClearConsoleLog = function() {
 	console.log = jest.fn();

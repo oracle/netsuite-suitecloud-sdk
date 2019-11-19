@@ -11,7 +11,7 @@ const url = require('url');
 const LocalServer = require('../../src/sdf-cli-local/src/LocalServer');
 const requestGet = promisify(request.get);
 
-const { SERVERPATH, mockClearConsoleLog } = require('./helpers');
+const { SERVERPATH, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 
 const CompilationContext = jest.fn(() => ({
 	localServerPath: SERVERPATH,
@@ -23,6 +23,9 @@ const context = new CompilationContext();
 const baseUrl = 'http://localhost:7777/';
 
 describe('startServer', function() {
+	beforeAll(async () => {
+		createLocalserverFolder();
+	});
 	it('should open a server in the 7777 port', async () => {
 		LocalServer.startServer(context.localServerPath);
 		await new Promise(resolve => setTimeout(resolve, 1500));

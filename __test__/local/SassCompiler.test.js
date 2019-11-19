@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const SassCompiler = require('../../src/sdf-cli-local/src/compilers/SassCompiler');
 
-const { ROOT, SERVERPATH, removeFolder, mockClearConsoleLog } = require('./helpers');
+const { ROOT, SERVERPATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 
 const resources = {
 	entrypoints: {
@@ -53,6 +53,7 @@ const compiler = new SassCompiler({ context: context });
 
 describe('compile', function() {
 	beforeAll(async () => {
+		createLocalserverFolder();
 		await compiler.compile();
 	});
 

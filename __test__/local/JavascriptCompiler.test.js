@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const JavascriptCompiler = require('../../src/sdf-cli-local/src/compilers/JavascriptCompiler');
 
-const { SERVERPATH, removeFolder, mockClearConsoleLog } = require('./helpers');
+const { SERVERPATH, removeFolder, createLocalserverFolder, mockClearConsoleLog } = require('./helpers');
 
 // const extensionPath = 'vendor/custom_extension/1.0.0/';
 const themePath = 'vendor/custom_theme/1.0.0/';
@@ -77,6 +77,7 @@ const compiler = new JavascriptCompiler({ context: context });
 
 describe('compile', function() {
 	beforeAll(async () => {
+		createLocalserverFolder();
 		await compiler.compile();
 	});
 

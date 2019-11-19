@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const AssetsCompiler = require('../../src/sdf-cli-local/src/compilers/AssetsCompiler');
 
-const { SERVERPATH, CUSTOM_ASSETS_PATH, removeFolder, mockClearConsoleLog } = require('./helpers');
+const { SERVERPATH, CUSTOM_ASSETS_PATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 
 let assetsCompiler;
 let context;
@@ -41,6 +41,7 @@ assetsCompiler = new AssetsCompiler({ context: context });
 
 describe('compile', function() {
 	beforeAll(async () => {
+		createLocalserverFolder();
 		await assetsCompiler.compile();
 	});
 
