@@ -1,0 +1,50 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+.login-register-register-form-description{
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.login-register-register-form-controls-group{
+	margin-top: 15px;
+}
+
+
+
+
+
+.login-register-register-form-required{
+	@extend .sc-value;
+}
+
+.login-register-register-form-input{
+	@extend .sc-value;
+}
+
+.login-register-register-form-submit{
+	@extend .sc-value;
+	@extend .sc-value;
+}
+
+.login-register-register-form-messages{
+	margin-top: 15px;
+
+	.global-views-message-error {
+		@extend .sc-value;
+		margin-bottom: 0;
+	}
+
+	.global-views-message-button {
+		display: none;
+	}
+}
+
+
+
+
+
+
+

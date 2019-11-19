@@ -1,0 +1,33 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+ .merchandising-zone-container .bx-wrapper {
+	position: relative;
+}
+
+.merchandising-zone-container .bx-controls-direction {
+    text-align: right;
+}
+
+.merchandising-zone {
+    padding-top: 12px;
+}
+.merchandising-zone-container {
+    min-height: 200px;
+}
+
+.merchandising-zone h3 {
+    margin-bottom: 15px;
+}
+
+.merchandising-zone .merchandising-zone-cell-template {
+    text-align: center;
+}
+
+.merchandising-zone .global-views-star-rating {
+    margin: 0 auto;
+    display: inline-block;
+}
+

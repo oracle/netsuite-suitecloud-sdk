@@ -1,0 +1,13 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+.transaction-line-views-selected-option-label {
+    margin-bottom: 15px;
+    @extend .sc-value;
+}
+.transaction-line-views-selected-option-value {
+    margin-bottom: 15px;
+    @extend .sc-value;
+}
