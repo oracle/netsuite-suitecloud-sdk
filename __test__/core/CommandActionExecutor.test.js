@@ -56,13 +56,13 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 	}));
 
 	const AccountDetailsService = jest.fn(() => ({
-		get: jest.fn()
+		get: jest.fn(),
 	}));
 
 	const CommandsMetadataService = jest.fn(() => ({
 		getCommandMetadataByName: jest.fn(() => {
 			return { isSetupRequired: false, supportsInteractiveMode: true };
-		})
+		}),
 	}));
 
 	let commandExecutor;
@@ -185,7 +185,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 	});
 
 	it('Should throw EXCEPTION when setup is required and there is not any account configured.', async () => {
-		
 		const CommandsMetadataServiceSetupRequired = jest.fn(() => ({
 			getCommandMetadataByName: jest.fn(() => {
 				return { isSetupRequired: true, supportsInteractiveMode: true };
@@ -212,7 +211,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 	});
 
 	it('Should throw EXCEPTION when running as interactive and current command does not support it.', async () => {
-		
 		const CommandsMetadataServiceNotSupportInteractiveMode = jest.fn(() => ({
 			getCommandMetadataByName: jest.fn(() => {
 				return { isSetupRequired: false, supportsInteractiveMode: false };
@@ -245,7 +243,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 					commandMetadata: { options: {} },
 					_commandMetadata: {},
 					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() => ({operationResult: {status: "ERROR", resultMessage: ""}})),
+					actionFunc: jest.fn(() => ({ operationResult: { status: 'ERROR', resultMessage: '' } })),
 					formatOutputFunc: jest.fn(),
 				};
 			}),
@@ -268,7 +266,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 					commandMetadata: { options: {} },
 					_commandMetadata: {},
 					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() => ({operationResult: {status: "SUCCESS", resultMessage: ""}})),
+					actionFunc: jest.fn(() => ({ operationResult: { status: 'SUCCESS', resultMessage: '' } })),
 					formatOutputFunc: jest.fn(),
 				};
 			}),
@@ -283,5 +281,4 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		});
 		expect(mockCommandUserExtensionOnCompleted).toBeCalledTimes(1);
 	});
-
 });

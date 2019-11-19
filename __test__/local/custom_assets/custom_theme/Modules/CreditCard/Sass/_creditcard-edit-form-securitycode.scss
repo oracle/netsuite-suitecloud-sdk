@@ -1,0 +1,36 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
+
+
+.creditcard-edit-form-securitycode-group-label-required {
+    @extend .sc-value;
+}
+
+input.creditcard-edit-form-securitycode-group-input {
+    width: 100px;
+    float: left;
+}
+
+.creditcard-edit-form-securitycode {
+	clear: both;
+}
+
+.creditcard-edit-form-securitycode-controls {
+	@extend .sc-value;
+}
+
+
+
+.creditcard-edit-form-securitycode-link {
+    float: left;
+    padding: 12px;
+}
+
+.creditcard-edit-form-securitycode-icon {
+   @extend .sc-value;
+   color: red;
+   font-size: 12px;
+}

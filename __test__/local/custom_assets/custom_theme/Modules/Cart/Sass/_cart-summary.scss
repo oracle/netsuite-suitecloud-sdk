@@ -1,0 +1,293 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+ .cart-summary-container{
+		margin-bottom:15px;
+		border:1px solid red;
+		@media(min-width: $screen-sm-min){
+			margin-bottom:0px;
+		}
+}
+
+.cart-summary-title{
+	background:red;
+	text-align:center;
+	padding:12px;
+	margin-bottom:15px;
+	border-bottom: 1px solid red;
+}
+
+.cart-summary-expander-container{
+	padding: 12px;
+	clear:both;
+
+	.control-group {
+		margin-top: 0;
+	}
+}
+.cart-summary-expander-head{
+	@extend .sc-value;
+}
+
+.cart-summary-expander-head-toggle{
+	@extend .sc-value;
+
+	font-weight: normal;
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+.cart-summary-expander-toggle-icon{
+	@extend .sc-value;
+}
+
+.cart-summary-expander-toggle-icon-promocode {
+	@extend .sc-value;
+}
+
+.cart-summary-expander-body{
+	@extend .sc-value;
+}
+
+.cart-summary-button-estimate{
+	@extend .sc-value;
+	@extend .sc-value;
+	width: 100%;
+	margin-top:15px;
+}
+
+.cart-summary-estimate-input{
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.cart-summary-button-container {
+	margin-top: 15px;
+}
+
+.cart-summary-button-proceed-checkout {
+	display: none;
+	@extend .sc-value;
+
+	&.cart-summary-button-proceed-checkout-sb {
+		display: block;
+	}
+
+	@media (min-width: $screen-sm-min), (orientation: landscape) {
+		display: block;
+	}
+}
+
+.cart-summary-total{
+	p{
+		@extend .sc-value;
+	}
+}
+
+.cart-summary-subtotal{
+	margin-bottom:15px;
+	font-weight:12px;
+	text-transform:uppercase;
+	font-size:12px;
+}
+
+.cart-summary-subtotal-legend{
+	font-size:12px;
+	text-transform:capitalize;
+	font-weight:12px;
+	margin:0px 15px;
+}
+
+.cart-summary-grid{
+	clear:both;
+}
+
+.cart-summary-grid-float{
+	@extend .sc-value;
+}
+
+.cart-summary-shipping-cost-applied{
+	margin-bottom:15px;
+	font-size:12px;
+}
+
+.cart-summary-grid-left{
+	padding-left:12px;
+}
+
+.cart-summary-grid-right{
+	float:right;
+	padding-left: 12px;
+	padding-right:12px;
+}
+
+.cart-summary-remove-action{
+	margin-left: 15px;
+	cursor: pointer;
+	cursor: hand;
+
+	i {
+		@extend .sc-value;
+		@extend .sc-value;
+		color: red;
+		position: relative;
+		top: 2px;
+	}
+}
+
+/* Summary extend labels */
+
+.cart-summary-label-shipto{
+	@extend .sc-value;
+}
+
+
+
+.cart-summary-label-shipping{
+	@extend .sc-value;
+}
+
+.cart-summary-amount-shipping{
+	@extend .sc-value;
+}
+
+.cart-summary-amount-handling{
+	@extend .sc-value;
+}
+
+.cart-summary-label-tax{
+	@extend .sc-value;
+}
+
+.cart-summary-amount-tax{
+	@extend .sc-value;
+}
+
+.cart-summary-label-total{
+	@extend .sc-value;
+}
+
+.cart-summary-amount-total{
+	@extend .sc-value;
+}
+
+.cart-summary-label-subtotal{
+	@extend .sc-value;
+}
+
+.cart-summary-amount-subtotal{
+	@extend .sc-value;
+}
+
+.cart-summary-label-discount-total{
+	@extend .sc-value;
+	font-size:12px;
+}
+
+.cart-summary-amount-discount-total{
+	@extend .sc-value;
+	font-size:12px;
+}
+
+.cart-summary-label{
+	display:block;
+}
+
+.cart-summary-input-country{
+
+	margin-bottom:15px;
+}
+
+/* GIFT CERTIFICATES */
+.cart-summary-giftcertificate-applied {
+	padding-bottom: 12px;
+}
+
+.cart-summary-giftcertificate-applied-title {
+	@extend .sc-value;
+}
+
+.cart-summary-promocode{
+	font-size:12px;
+	overflow:hidden;
+}
+
+.cart-summary-promocode-container {
+	margin-top: 15px;
+}
+
+
+
+.cart-summary-expander-tooltip{
+	@extend .sc-value;
+}
+
+/* FIX (rename/move)*/
+.cart-summary-item-quantity-subtotal{
+	font-weight: 12px;
+}
+
+.cart-summary-zip-code{
+	@extend .sc-value;
+	width: 100%;
+}
+
+.cart-summary-button-proceed-checkout{
+	@extend .sc-value;
+}
+
+.cart-summary-btn-paypal-express{
+	@extend .sc-value;
+
+	margin-left: -15px;
+  margin-right: -15px;
+  margin-bottom: 15px;
+
+	@media (min-width: $screen-sm-min), (orientation: landscape) {
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: auto;
+	}
+}
+
+.cart-summary-btn-paypal-express-image {
+	width: 100%;
+
+	@media (max-width: $screen-xs-max) {
+		width: auto;
+	}
+}
+
+.cart-summary-continue-shopping {
+	@extend .sc-value;
+	display: inline-block;
+	margin-top: 15px;
+}
+
+.cart-summary-login-to-see-price {
+	font-weight: normal;
+}
+
+.cart-summary-message {
+	@extend .sc-value;
+ }
+
+.cart-summary-msg-description {
+	@extend .sc-value;
+	display: block;
+	text-align: left;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+
+.cart-summary-pickup-container {
+	margin-bottom:15px;
+	font-size:12px;
+}
+
+.cart-summary-pickup-label-free {
+	@extend .sc-value;
+	color: red;
+}

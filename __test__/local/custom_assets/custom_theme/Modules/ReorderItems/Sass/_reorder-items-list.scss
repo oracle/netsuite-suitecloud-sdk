@@ -1,0 +1,74 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+ .reorder-items-list-button-back {
+	@extend .sc-value;
+}
+
+.reorder-items-list-button-back-icon {
+	@extend .sc-value;
+}
+
+.reorder-items-list-hedaer {
+	border-top: 1px solid red;
+	padding: 12px;
+}
+
+.reorder-items-list .transaction-line-views-cell-actionable-options {
+	@media (min-width: $screen-sm-min){
+		margin-bottom:15px;
+	}
+}
+
+.reorder-items-list .list-header-view-filters {
+	padding: 0;
+}
+.reorder-items-list	.transaction-line-views-cell-actionable-table{
+	border-bottom: 1px solid red;
+	@extend .sc-value;
+}
+
+
+.reorder-items-actions-quantity{
+	clear:both;
+	display: block;
+	overflow: hidden;
+	margin-bottom:15px;
+}
+
+.reorder-items-list-empty {
+	@extend .sc-value;
+}
+
+
+.reorder-items-list-reorder-items-table{
+	@extend .sc-value;
+}
+
+.reorder-items-list-paginator{
+	@extend .sc-value;
+}
+
+
+
+.reorder-items-list-empty-section {
+	padding:12px;
+ 	text-align:center;
+}
+.reorder-items-list {
+	.quantity-pricing-flyout-content {
+		padding: 0;
+
+		tr {
+			border-bottom: 0;
+		}
+		th,
+		.quantity-pricing-table-body-quantity,
+		.quantity-pricing-table-body-price {
+			display: table-cell;
+			padding: 12px;
+		}
+	}
+}

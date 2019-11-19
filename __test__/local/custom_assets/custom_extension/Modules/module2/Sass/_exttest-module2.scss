@@ -1,0 +1,14 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
+.module2-info-card {
+    @extend .sc-value;
+}
+
+.module2-info-card-content {
+    @extend .sc-value;
+    color: red;
+    font-weight: bold;
+}
