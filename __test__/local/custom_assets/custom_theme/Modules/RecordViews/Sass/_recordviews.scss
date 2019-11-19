@@ -1,0 +1,132 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
+.recordviews-row {
+	border-bottom: 1px solid red;
+	font-size: 12px;
+	line-height: 1.8;
+	@media (min-width: $screen-md-min) {
+		line-height: normal;
+		padding: 0;
+	}
+}
+
+.recordviews-row:hover {
+	background-color: red;
+}
+
+
+//----------------------
+//	HEADER
+//----------------------
+
+.recordviews-row-header {
+	@extend .sc-value;
+	display: none;
+	@media (min-width: $screen-md-min) {
+		display: table-header-group;
+	}
+}
+
+.recordviews-table {
+	//@extend .sc-value;
+	@extend .sc-value;
+	min-height: $sc-target-size;
+
+	td {
+		vertical-align: middle;
+	}
+}
+
+//----------------------
+//	TITLES
+//----------------------
+
+.recordviews-date-header,
+.recordviews-items-header,
+.recordviews-status-header,
+.recordviews-currency-header
+{
+	@extend .sc-value;
+}
+
+//----------------------
+//	VALUES
+//----------------------
+
+.recordviews-generic {
+	@extend .sc-value;
+}
+.recordviews-title {
+	@extend .sc-value;
+	@extend .sc-value;
+	color: red;
+	@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+		width: 100%;
+	}
+}
+
+.recordviews-date {
+	@extend .sc-value;
+}
+.recordviews-currency {
+	@extend .sc-value;
+	@extend .sc-value;
+}
+.recordviews-status {
+	@extend .sc-value;
+	@extend .sc-value;
+	color: red;
+}
+.recordviews-label {
+	@extend .sc-value;
+	font-weight:12px;
+
+	@media (min-width: $screen-md-min) {
+		display: none;
+	}
+}
+
+
+//----------------------
+//	VALUES ON MOBILE
+//----------------------
+
+
+
+//----------------------
+//	VALUES & TITLES ON DESKTOP
+//----------------------
+
+@media (min-width: $screen-md-min) {
+
+	.recordviews-date-header,
+	.recordviews-date {
+		text-align: right;
+	}
+	.recordviews-items-header,
+	.recordviews-items {
+		text-align: right;
+	}
+	.recordviews-currency-header,
+	.recordviews-currency {
+		text-align: right;
+	}
+
+	.recordviews-status {
+		text-align: left;
+	}
+}
+
+
+
+
+
+
+
+.recordviews-value {
+	font-weight:12px;
+}
+

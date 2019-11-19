@@ -1,0 +1,161 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+ .address-list {
+   h2{
+        margin-bottom:15px;
+   }
+}
+
+.address-details-info{
+    margin-bottom:15px;
+    min-height: 145px;
+}
+.address-details-container p {
+    font-style: normal;
+}
+.address-details-container {
+    padding: 12px;
+}
+.address-details-container-multiselect-address-line {
+    p {
+        display: inline-block;
+    }
+}
+.address-details-select-address {
+    @extend .sc-value;
+    @extend .sc-value;
+    width: 100%;
+}
+.address-details-default-shipping-icon {
+    @extend .sc-value;
+    color: red;
+    vertical-align: top;
+}
+.address-details-address-name{
+    font-style:normal;
+    font-weight: 12px;
+    font-size:12px;
+    word-wrap: break-word;
+}
+
+.address-details-actions{
+    margin-top:15px;
+    text-align: right;
+}
+
+.address-details-edit-address,
+.address-details-remove-address {
+    @extend .sc-value;
+    margin-right: 15px;
+    cursor: pointer;
+}
+.address-details-edit-address {
+    margin-bottom: 15px;
+}
+.address-details-remove-address {
+    margin-right: 0;
+}
+.address-details-change-address{
+    @extend .sc-value;
+    @extend .sc-value;
+    margin-top: 15px;
+    display:inline-block;
+    @media (min-width: $screen-sm-min) {
+        margin-top: 0;
+    }
+}
+
+.address-details-remove-address {
+    margin-bottom: 0;
+}
+.address-details-default-shipping,
+.address-details-default-billing {
+    font-size: 12px;
+    margin-bottom: 0;
+}
+
+.address-details-container-multiselect-address-title{
+    font-style:normal;
+    text-transform:capitalize;
+}
+
+.address-details-container-multiselect-address-city{
+    display:inline;
+}
+
+.address-details-container-multiselect-address-state{
+    display:inline;
+}
+
+.address-details-container-multiselect-address-zip{
+    display:inline;
+}
+
+//Modal AddressDetailsView
+.global-views-modal-content .global-views-modal-content-body {
+    .address-edit-fields {
+        margin-top: 0;
+    }
+    .address-edit {
+        background: none;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+.address-details-invalid-remove-msg {
+    @extend .sc-value;
+}
+
+.address-details-new-address {
+	@extend .sc-value;
+    height: 235px;
+}
+
+.address-details-new-address-title {
+    display: inline-block;
+    margin-top: 60px;
+    color: $sc-neutral-shade-300;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.address-details-info-icon {
+    @extend .sc-value;
+    color: red;
+    font-size: 12px;
+    cursor: pointer;
+ }
+
+.address-details-selector {
+    @extend .sc-value;
+    cursor: pointer;
+    border-bottom: 0px;
+    padding: 12px;
+}
+
+.address-details {
+    @extend .sc-value;
+}
+
+.address-details-selected {
+	background-color: $sc-neutral-shade-0;
+}
+
+.address-details-action {
+    @extend .sc-value;
+}
+
+.address-details-selector-option {
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.address-details-new-address-plus-icon {
+	@extend .sc-value;
+    font-size: 2.5rem;
+    color: red;
+}

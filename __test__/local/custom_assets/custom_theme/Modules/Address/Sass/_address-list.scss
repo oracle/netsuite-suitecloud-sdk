@@ -1,0 +1,20 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
+.address-list {
+    @extend .sc-value;
+}
+.address-list-button-container {
+    margin: 0 0 15px;
+}
+.address-list-button-info-cards-new {
+    @extend .sc-value;
+}
+.address-list-button-back {
+    @extend .sc-value;
+}
+.address-list-button-back-icon {
+    @extend .sc-value;
+}

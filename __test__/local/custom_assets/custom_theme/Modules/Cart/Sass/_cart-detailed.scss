@@ -1,0 +1,148 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+.cart-detailed{
+	@extend .sc-value;
+
+	.transaction-line-views-selected-option-color-label-text,
+	.transaction-line-views-tax-label,
+	.cart-item-summary-item-list-actionable-amount-label,
+	.cart-item-summary-item-list-actionable-label-qty{
+		color: red;
+		font-weight: 600;
+	}
+
+	.transaction-line-views-selected-option {
+		.transaction-line-views-selected-option-label{
+			color: red;
+			font-weight: 600;
+		}
+	}
+}
+
+
+
+.cart-detailed-title{
+	@extend .sc-value;
+}
+
+.cart-detailed-title-details-count{
+	@extend .sc-value;
+	@extend .sc-value;
+}
+
+
+
+.cart-detailed-right{
+	@extend .sc-value;
+	margin-top: 15px;
+	@media (min-width: $screen-sm-min) {
+		margin-top: 0;
+	}
+}
+
+.cart-detailed-body{
+	@extend .sc-value;
+}
+
+.cart-detailed-left{
+	@extend .sc-value;
+}
+
+.cart-detailed-empty{
+	@extend .sc-value;
+}
+
+
+
+
+
+.cart-detailed-savedforlater {
+	@extend .sc-value;
+
+	.product-list-details-later {
+		border-top:1px solid red;
+		padding-top: 12px;
+		border-bottom: 0;
+		margin: 0;
+	}
+	.product-list-details-later-button-saveforlater-pusher {
+		margin-bottom: 30px;
+		margin-top: 0;
+	}
+}
+
+.cart-detailed-proceed-to-checkout-container{
+	@extend .sc-value;
+}
+
+.cart-detailed-proceed-to-checkout{
+	@extend .sc-value;
+}
+
+
+
+.cart-detailed-body-empty-title{
+	@extend .sc-value;
+}
+
+	.product-list-details-later {
+		border-top:1px solid red;
+		padding-top: 12px;
+}
+
+
+
+.cart-detailed-recently-viewed{
+	border-top:1px solid red;
+	padding-top: 12px;
+}
+
+
+
+
+
+
+
+.cart-detailed-body-empty-info{
+	@extend .sc-value;
+}
+
+.cart-detailed-item-view-cell-actionable-table{
+	@extend .sc-value;
+  	border-collapse: collapse;
+
+	.transaction-line-views-cell-actionable-table-middle, .transaction-line-views-cell-actionable-table-first,
+	.transaction-line-views-cell-actionable-table-last {
+    	padding-bottom: 0;
+
+		@media (min-width: $screen-md-min) {
+			padding-bottom: 80px;
+		}
+	}
+
+	td {
+		padding-bottom: 80px;
+	}
+	.quantity-pricing td {
+		padding-bottom: 12px;
+	}
+}
+
+
+
+
+.cart-detailed-item-free-info{
+	@extend .sc-value;
+	margin: 0;
+}
+.cart-detailed-item-free-info .global-views-message-info {
+	@extend .sc-value;
+	@extend .sc-value;
+	@extend .sc-value;
+	@extend .sc-value;
+	@extend .sc-value;
+}
+

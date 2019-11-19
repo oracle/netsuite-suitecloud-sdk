@@ -1,0 +1,70 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
+
+
+
+
+	.cart-item-summary-item-list-actionable-label-qty {
+
+	@extend .sc-value;
+	margin-bottom: 0;
+
+		@media (min-width: $screen-md-min) {
+		display: inline-block;
+		vertical-align: middle;
+		}
+	}
+	.cart-item-summary-item-list-actionable-input-qty {
+	@extend .sc-value;
+
+	@media (min-width: $screen-md-min) {
+			display: inline-block;
+		vertical-align: middle;
+			margin-left: 15px;
+}
+}
+
+.cart-item-summary-item-list-actionable-amount{
+	@extend .sc-value;
+}
+
+.cart-item-summary-item-list-actionable-amount-label{
+	@extend .sc-value;
+}
+
+.cart-item-summary-item-view-old-price{
+	@extend .sc-value;
+}
+
+
+
+.cart-item-summary-quantity-title-help{
+	clear: both;
+	margin-top: 15px;
+	display: block;
+	font-weight:12px;
+}
+
+.cart-item-summary-quantity-add {
+	@extend .sc-value;
+}
+
+.cart-item-summary-quantity-remove {
+	@extend .sc-value;
+}
+
+.cart-item-summary-quantity-value {
+ 	@extend .sc-value;
+}
+
+.cart-item-summary-promocodes .cart-promocode-list-item-container{
+	@extend .sc-value;
+	padding-left: 0;
+}
+
+.cart-item-summary-promocodes .cart-promocode-list-item-code-value {
+	@extend .sc-value;
+}
