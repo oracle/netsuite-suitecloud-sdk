@@ -21,10 +21,10 @@ const rootCLIPath = path.dirname(require.main.filename);
 const commandsMetadataServiceSingleton = new CommandsMetadataService(rootCLIPath);
 
 const cliInstance = new CLI({
-	executionPath,
 	commandsMetadataService: commandsMetadataServiceSingleton,
 	commandRegistrationService: new CommandRegistrationService(),
 	commandActionExecutor: new CommandActionExecutor({
+		executionPath,
 		commandOutputHandler: new CommandOutputHandler(),
 		commandOptionsValidator: new CommandOptionsValidator(),
 		cliConfigurationService: new CLIConfigurationService(),

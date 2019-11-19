@@ -25,12 +25,10 @@ module.exports = class CLI {
 		assert(dependencies.commandsMetadataService);
 		assert(dependencies.commandActionExecutor);
 		assert(dependencies.commandRegistrationService);
-		assert(dependencies.executionPath)
 
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._commandActionExecutor = dependencies.commandActionExecutor;
 		this._commandRegistrationService = dependencies.commandRegistrationService;
-		this._executionPath = dependencies.executionPath;
 	}
 
 	start(process) {
@@ -81,7 +79,6 @@ module.exports = class CLI {
 				runInInteractiveMode: runInInteractiveMode,
 				executeCommandFunction: async options => {
 					await this._commandActionExecutor.executeAction({
-						executionPath: this._executionPath,
 						commandName: commandMetadata.name,
 						runInInteractiveMode: runInInteractiveMode,
 						arguments: options,

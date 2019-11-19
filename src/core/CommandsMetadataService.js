@@ -1,13 +1,12 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const path = require('path');
 const FileUtils = require('../utils/FileUtils');
-const ApplicationConstants = require('../ApplicationConstants');
-
+const { SDK_COMMANDS_METADATA_FILE, NODE_COMMANDS_METADATA_FILE, COMMAND_GENERATORS_METADATA_FILE } = require('../ApplicationConstants');
 const SDK_WRAPPER_GENERATOR = 'commands/SDKWrapperCommandGenerator';
 let COMMANDS_METADATA_CACHE;
 
@@ -25,24 +24,17 @@ module.exports = class CommandsMetadataService {
 		this._rootCLIPath = rootCLIPath;
 	}
 	initializeCommandsMetadata() {
-		var sdkCommandsMetadata = this._getMetadataFromFile(
-			path.join(this._rootCLIPath, ApplicationConstants.SDK_COMMANDS_METADATA_FILE)
+		const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
+		const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
+		const commandGeneratorsMetadata = this._getMetadataFromFile(
+			path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE)
 		);
-		var nodeCommandsMetadata = this._getMetadataFromFile(
-			path.join(this._rootCLIPath, ApplicationConstants.NODE_COMMANDS_METADATA_FILE)
-		);
-		var commandGeneratorsMetadata = this._getMetadataFromFile(
-			path.join(this._rootCLIPath, ApplicationConstants.COMMAND_GENERATORS_METADATA_FILE)
-		);
-		var combinedMetadata = {
+		let combinedMetadata = {
 			...sdkCommandsMetadata,
 			...nodeCommandsMetadata,
 		};
 		combinedMetadata = this._transformCommandsOptionsToObject(combinedMetadata);
-		combinedMetadata = this._addCommandGeneratorMetadata(
-			commandGeneratorsMetadata,
-			combinedMetadata
-		);
+		combinedMetadata = this._addCommandGeneratorMetadata(commandGeneratorsMetadata, combinedMetadata);
 		COMMANDS_METADATA_CACHE = combinedMetadata;
 	}
 
@@ -71,9 +63,8 @@ module.exports = class CommandsMetadataService {
 
 	_transformCommandsOptionsToObject(commandsMetadata) {
 		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
-			var optionsTransformedIntoObject = commandMetadata.options.reduce((result, item) => {
-				if (item.name == null)
-					throw 'Invalid Metadata, mising id property in command options';
+			const optionsTransformedIntoObject = commandMetadata.options.reduce((result, item) => {
+				if (item.name == null) throw 'Invalid Metadata, mising id property in command options';
 				result[item.name] = item;
 				return result;
 			}, {});
@@ -84,22 +75,17 @@ module.exports = class CommandsMetadataService {
 
 	_addCommandGeneratorMetadata(commandGeneratorsMetadata, commandsMetadata) {
 		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
-			var generatorMetadata = commandGeneratorsMetadata.find(generatorMetadata => {
+			const generatorMetadata = commandGeneratorsMetadata.find(generatorMetadata => {
 				return generatorMetadata.commandName == commandMetadata.name;
 			});
 
 			const defaultGenerator =
-				generatorMetadata && generatorMetadata.nonInteractiveGenerator
-					? generatorMetadata.nonInteractiveGenerator
-					: SDK_WRAPPER_GENERATOR;
+				generatorMetadata && generatorMetadata.nonInteractiveGenerator ? generatorMetadata.nonInteractiveGenerator : SDK_WRAPPER_GENERATOR;
 			commandMetadata.nonInteractiveGenerator = path.join(this._rootCLIPath, defaultGenerator);
 			commandMetadata.supportsInteractiveMode = false;
 
 			if (generatorMetadata && generatorMetadata.interactiveGenerator) {
-				commandMetadata.interactiveGenerator = path.join(
-					this._rootCLIPath,
-					generatorMetadata.interactiveGenerator
-				);
+				commandMetadata.interactiveGenerator = path.join(this._rootCLIPath, generatorMetadata.interactiveGenerator);
 				commandMetadata.supportsInteractiveMode = true;
 			}
 		});
