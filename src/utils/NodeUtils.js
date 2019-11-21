@@ -15,16 +15,9 @@ const AVAILABLE_COLORS = {
 };
 
 class NodeUtils {
-	constructor() {
-		this._logger = console.log;
-	}
 
-	setLogger(logger) {
-		this._logger = logger;
-	}
-	
 	println(message, color) {
-		this._logger(this.formatString(message, { color: color }));
+		console.log(this.formatString(message, { color: color }));
 	}
 
 	formatString(str, options) {
