@@ -150,6 +150,8 @@
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
+	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID":"Select the objects you want to update from your account:",
+
 	"COMMAND_VALIDATE_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally applying content protection.",
 	"COMMAND_VALIDATE_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been validated locally without applying content protection.",
 	"COMMAND_VALIDATE_MESSAGES_VALIDATING": "Validating...",

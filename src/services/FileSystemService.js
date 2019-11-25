@@ -1,20 +1,10 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
-const {
-	lstatSync,
-	readdirSync,
-	readFile,
-	writeFile,
-	mkdirSync,
-	renameSync,
-	existsSync,
-	unlinkSync,
-	rmdirSync,
-} = require('fs');
+const { lstatSync, readdirSync, readFile, writeFile, mkdirSync, renameSync, existsSync, unlinkSync, rmdirSync } = require('fs');
 const assert = require('assert');
 const path = require('path');
 
@@ -33,6 +23,23 @@ module.exports = class FileSystemService {
 		return [parentFolder, ...availableDirectories];
 	}
 
+	getFilesFromDirectory(parentFolder) {
+		assert(parentFolder)
+		const fullPathFiles = [];
+		const getFilesRecursively = source =>
+			readdirSync(source).forEach(file => {
+				const fullPath = path.join(source, file);
+				if (lstatSync(fullPath).isDirectory()) {
+					getFilesRecursively(fullPath);
+				} else {
+					fullPathFiles.push(fullPath);
+				}
+			});
+
+		getFilesRecursively(parentFolder);
+		return fullPathFiles;
+	}
+
 	createFileFromTemplate(options) {
 		assert(options.template);
 		assert(options.destinationFolder);
@@ -49,10 +56,7 @@ module.exports = class FileSystemService {
 				}
 
 				writeFile(
-					path.join(
-						options.destinationFolder,
-						`${options.fileName}.${options.fileExtension}`
-					),
+					path.join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
 					content.toString(),
 					(writingError, data) => {
 						if (writingError) {
