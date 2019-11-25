@@ -1,4 +1,5 @@
 {
+	"ANSWERS_VALIDATION_MESSAGES_ALPHANUMERIC_HYPEN_UNDERSCORE": "This field contains forbidden characters. Use only alphanumerical characters, hyphens, or underscores.",
 	"ANSWERS_VALIDATION_MESSAGES_APP_ID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as \"com.example.mysuiteapp\".",
 	"ANSWERS_VALIDATION_MESSAGES_AUTH_ID_ALREADY_USED": "This authentication ID (authID) already exists. Enter a new one.",
 	"ANSWERS_VALIDATION_MESSAGES_CHOOSE_OPTION": "Error: You should choose at least one option.",
@@ -8,6 +9,7 @@
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "The {0} field contains forbidden characters. Use only lowercase letters and numbers.",
 	"ANSWERS_VALIDATION_MESSAGES_INVALID_EMAIL": "Invalid email address.",
+	"ANSWERS_VALIDATION_MESSAGES_MAX_LENGTH": "This field can only contain up to {0} characters.",
 	"ANSWERS_VALIDATION_MESSAGES_PRODUCTION_URL_WITH_DEV_FLAG": "Enter a non-production domain URL. If you want to use a production account, run \"scloud setupaccount\" without the \"--dev\" option.",
 	"ANSWERS_VALIDATION_MESSAGES_PROJECT_VERSION_FORMAT": "The project version must only contain digits and dots. Ensure it follows a pattern such as \"0.0.0\".",
 	"ANSWERS_VALIDATION_MESSAGES_PUBLISHER_ID_FORMAT": "The publisher ID must be a fully qualified name, such as \"com.netsuite\". It must contain lowercase alphanumeric characters and exactly one period. The ID cannot begin or end with a period.",
@@ -143,9 +145,9 @@
 	"COMMAND_SETUPACCOUNT_MESSAGES_SAVING_TBA_TOKEN": "Saving the TBA token...",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SELECT_CONFIGURED_AUTHID": "Select a configured authentication ID (authID):",
 	"COMMAND_SETUPACCOUNT_MESSAGES_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
-	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_OAUTH": "The account has been successfully authenticated. This project will use the authentication ID {0} as the default authentication method.",
-	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_SAVED_TOKEN": "The TBA token was successfully saved in your application with the {0} authentication ID, and set as the default authentication method.",
-	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID {0} as the default authentication method.",
+	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_OAUTH": "The account has been successfully authenticated. This project will use the authentication ID {0} as default. If you want to change your default credentials, run \"scloud setupaccount\" again.",
+	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_SAVED_TOKEN": "The TBA token was successfully saved in your application with the {0} authentication ID, and set as default. If you want to change your default credentials, run \"scloud setupaccount\" again.",
+	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID {0} as default.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_SUCCESSFUL": "The account has been successfully set up.",
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
