@@ -134,7 +134,7 @@
 	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID (authID):",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ID": "Enter the Token ID:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_SECRET": "Enter the Token Secret:",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_SELECT_AUTHID": "Select or create an authentication ID (authID):",
+	"COMMAND_SETUPACCOUNT_QUESTIONS_SELECT_AUTHID": "Select or create an authentication ID (authID):\n  ***The authentication ID that you select or create will be set up as default.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_AUTH_MODE_OAUTH": "Browser-based authentication.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_AUTH_MODE_SAVE_TOKEN": "Save a TBA token issued in NetSuite.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_NEW_AUTH_ID": "Create a new authentication ID (authID).",
