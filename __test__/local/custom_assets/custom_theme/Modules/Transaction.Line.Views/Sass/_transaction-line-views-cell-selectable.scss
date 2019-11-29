@@ -1,0 +1,122 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+ .transaction-line-views-cell-selectable{
+	@extend .sc-value;
+	th{
+		font-weight:12px;
+		padding-bottom:12px;
+		color:red;
+		font-size:12px;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-selector{
+	@extend .sc-value;
+	@extend .sc-value;
+	padding:12px;
+}
+
+.transaction-line-views-cell-selectable-item-image{
+	@extend .sc-value;
+	@extend .sc-value;
+	padding:12px;
+	img {
+		width:100%;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-details{
+	width:100%;
+	padding-top:12px;
+	@media(min-width: $screen-lg-min){
+		width:30%;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-displayname {
+	@extend .sc-value;
+	display: block;
+	width: 100%;
+}
+
+.transaction-line-views-cell-selectable-item-qty{
+	@extend .sc-value;
+	width:100%;
+	text-align:left;
+	font-size:12px;
+	@media (min-width: $screen-lg-min){
+		width:25%;
+		text-align:right;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-unit-price{
+	@extend .sc-value;
+	text-align:left;
+	font-size:12px;
+
+	@media (min-width: $screen-lg-min){
+		width:15%;
+		text-align:right;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-unit-price-label {
+	@extend .sc-value;
+	@media (min-width: $screen-md-min) {
+		display: none;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-unit-price-value {
+	@extend .sc-value;
+}
+
+.transaction-line-views-cell-selectable-item-amount{
+	@extend .sc-value;
+	@extend .sc-value;
+	@extend .sc-value;
+	padding-bottom: 12px;
+	text-align:left;
+	font-size:12px;
+
+	@media(min-width: $screen-lg-min){
+		width:15%;
+		text-align:right;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-amount-label {
+	@extend .sc-value;
+	@media (min-width: $screen-md-min) {
+		display: none;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-amount-value {
+	@extend .sc-value;
+}
+
+.transaction-line-views-cell-selectable-col-reason{
+	@extend .sc-value;
+	@extend .sc-value;
+}
+
+.transaction-line-views-cell-selectable-visible-phone{
+	@extend .sc-value;
+	display:inline;
+	@media (min-width: $screen-lg-min){
+		display:none;
+	}
+}
+
+.transaction-line-views-cell-selectable-item-displayname-viewonly{
+	@extend .sc-value;
+}
+
+.transaction-line-views-cell-selectable-multishipto-line-selected{
+	background: red;
+}

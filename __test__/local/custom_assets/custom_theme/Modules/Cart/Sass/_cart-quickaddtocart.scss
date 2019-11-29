@@ -1,0 +1,25 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
+.cart-quickaddtocart-quantity {
+	height: $sc-target-size-mobile;
+ 	padding:15px;
+ 	width: 90px;
+ 	text-align: right;
+	background-color: #ebf1f4;
+	border: 0;
+	-webkit-border-radius: 0 0 0 0;
+	border-radius: 0 0 0 0;
+	font-weight:12px;
+	margin-bottom:15px;
+}
+
+.cart-quickaddtocart-button {
+	@extend .sc-value;
+	@extend .sc-value;
+}
+
+
+

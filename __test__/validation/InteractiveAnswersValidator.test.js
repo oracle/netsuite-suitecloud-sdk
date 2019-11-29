@@ -52,16 +52,15 @@ describe('validateFieldIsLowerCase', function() {
 	const fieldOptionId = 'testFieldOptionId';
 	const failureResponse = {
 		result: false,
-		validationMessage:
-			'The ' + fieldOptionId + ' field contains forbidden characters. Use only lowercase letters and numbers.',
+		validationMessage: 'The ' + fieldOptionId + ' field contains forbidden characters. Use only lowercase letters and numbers.',
 	};
 
 	it('should return true when string is in lower case', function() {
-		expect(validateFieldIsLowerCase(fieldOptionId,'lowercase')).toEqual(positiveResponse);
+		expect(validateFieldIsLowerCase(fieldOptionId, 'lowercase')).toEqual(positiveResponse);
 	});
 
 	it('should return false with validation message when string is not all in lower case', function() {
-		expect(validateFieldIsLowerCase(fieldOptionId,'WithUpperCase')).toEqual(failureResponse);
+		expect(validateFieldIsLowerCase(fieldOptionId, 'WithUpperCase')).toEqual(failureResponse);
 	});
 });
 
@@ -92,8 +91,7 @@ describe('validatePublisherId', function() {
 describe('validateProjectVersion', function() {
 	const failureResponse = {
 		result: false,
-		validationMessage:
-			'The project version must only contain digits and dots. Ensure it follows a pattern such as "0.0.0".',
+		validationMessage: 'The project version must only contain digits and dots. Ensure it follows a pattern such as "0.0.0".',
 	};
 
 	it('should return true when string is in valid project version format with parts having more than one digit', function() {
@@ -135,8 +133,7 @@ describe('validateArrayIsNotEmpty', function() {
 describe('validateSuiteApp', function() {
 	const failureResponse = {
 		result: false,
-		validationMessage:
-			'The specified application ID is wrongly formatted. Ensure it follows a pattern such as "com.example.mysuiteapp".',
+		validationMessage: 'The specified application ID is wrongly formatted. Ensure it follows a pattern such as "com.example.mysuiteapp".',
 	};
 
 	it('should return true when string is in valid SuiteApp id format', function() {
@@ -159,8 +156,7 @@ describe('validateSuiteApp', function() {
 describe('validateScriptId', function() {
 	const failureResponse = {
 		result: false,
-		validationMessage:
-			'The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.',
+		validationMessage: 'The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.',
 	};
 
 	it('should return true when string is a valid script id', function() {
@@ -175,30 +171,19 @@ describe('validateScriptId', function() {
 describe('validateXMLCharacters', () => {
 	const failureResponse = {
 		result: false,
-		validationMessage:
-			'This field contains at least one of the following forbidden characters: <, >, &, \', or ".',
+		validationMessage: 'This field contains at least one of the following forbidden characters: <, >, &, \', or ".',
 	};
 
 	it("should return a response with a positive result when the string dosen't contain invalid characters", () => {
-		const someValidStrings = [
-			'My valid string 90 (with parenthesis)',
-			'Another one with dolar $ signs $',
-			'Even another one with % ^ * - _ ',
-		];
-		someValidStrings.forEach(string =>
-			expect(validateXMLCharacters(string)).toEqual(positiveResponse)
-		);
+		const someValidStrings = ['My valid string 90 (with parenthesis)', 'Another one with dolar $ signs $', 'Even another one with % ^ * - _ '];
+		someValidStrings.forEach(string => expect(validateXMLCharacters(string)).toEqual(positiveResponse));
 	});
 
 	it('should return a response with a negative result and a validation message when the string contains any of the following characters:   < > & \' " ', () => {
 		expect(validateXMLCharacters('< my invalid string >')).toEqual(failureResponse);
-		expect(validateXMLCharacters('using and ampersand & to check it fails')).toEqual(
-			failureResponse
-		);
+		expect(validateXMLCharacters('using and ampersand & to check it fails')).toEqual(failureResponse);
 		expect(validateXMLCharacters('using " some quotes \' characters')).toEqual(failureResponse);
-		expect(
-			validateXMLCharacters("mixing_Some > of them < all 'in' the &same string \"")
-		).toEqual(failureResponse);
+		expect(validateXMLCharacters("mixing_Some > of them < all 'in' the &same string \"")).toEqual(failureResponse);
 	});
 });
 
@@ -216,9 +201,7 @@ describe('validateNotProductionUrl', () => {
 			'sa.se4.eng.netsuite.com',
 			'rm2.se4.eng.netsuite.com',
 		];
-		nonProductionURLs.forEach(url =>
-			expect(validateNotProductionUrl(url)).toEqual(positiveResponse)
-		);
+		nonProductionURLs.forEach(url => expect(validateNotProductionUrl(url)).toEqual(positiveResponse));
 	});
 
 	it('should return a response with a negative result when using a production url', () => {
@@ -229,8 +212,6 @@ describe('validateNotProductionUrl', () => {
 			'wolfelectronics.app.netsuite.com',
 			'Wolf-Electronics.app.netsuite.com',
 		];
-		productinoURLs.forEach(url =>
-			expect(validateNotProductionUrl(url)).toEqual(failureResponse)
-		);
+		productinoURLs.forEach(url => expect(validateNotProductionUrl(url)).toEqual(failureResponse));
 	});
 });

@@ -1,0 +1,141 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+ .recordviews-actionable-row {
+	border-bottom: 1px solid red;
+	font-size: 12px;
+	line-height: 1.8;
+	@media (min-width: $screen-md-min) {
+		line-height: normal;
+	}
+}
+
+.recordviews-actionable {
+	@extend .sc-value;
+}
+
+.recordviews-actionable:hover {
+	background-color: red;
+}
+
+.recordviews-actionable-table {
+	@extend .sc-value;
+	min-height: $sc-target-size;
+
+	td {
+		vertical-align: middle;
+	}
+}
+
+.recordviews-actionable-header {
+	@extend .sc-value;
+	font-weight: 12px;
+	display: none;
+
+	@media (min-width: $screen-md-min) {
+		display: table-header-group;
+	}
+}
+
+.recordviews-actionable-header th {
+	padding: 12px;
+}
+
+// .recordviews-actionable-title-header,
+// .recordviews-actionable-date-header,
+// .recordviews-actionable-currency-header,
+// .recordviews-actionable-status-header,
+// .recordviews-actionable-actions-header {
+// 	color: red;
+// }
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+
+	.recordviews-actionable-title {
+		width: 100%;
+	}
+
+	.recordviews-actionable-actions {
+		width: 50%;
+		text-align: right;
+		padding-right: 12px;
+	}
+}
+
+@media (min-width: $screen-md-min) {
+	.recordviews-actionable-title-header,
+	.recordviews-actionable-title {
+		width: 20%;
+	}
+	.recordviews-actionable-origin-header,
+	.recordviews-actionable-origin {
+		width: 25%;
+		text-align: left;
+	}
+	.recordviews-actionable-date-header,
+	.recordviews-actionable-date {
+		width: 15%;
+		text-align: right;
+	}
+	.recordviews-actionable-currency-header,
+	.recordviews-actionable-currency {
+		width: 20%;
+		text-align: right;
+	}
+	.recordviews-actionable-status-header,
+	.recordviews-actionable-status {
+		width: 25%;
+		text-align: left;
+	}
+	.recordviews-actionable-actions-header,
+	.recordviews-actionable-actions {
+		width: 20%;
+		text-align: right;
+	}
+}
+
+.recordviews-actionable-title {
+	@extend .sc-value;
+	@extend .sc-value;
+}
+
+.recordviews-actionable-date {
+	@extend .sc-value;
+}
+
+.recordviews-actionable-currency {
+	@extend .sc-value;
+}
+
+.recordviews-actionable-status {
+	@extend .sc-value;
+	@extend .sc-value;
+	color: red;
+	@media (min-width: $screen-sm-min) {
+		padding-bottom: 12px;
+	}
+}
+
+.recordviews-actionable-actions {
+	@extend .sc-value;
+	padding-bottom: 12px;
+
+	@media (min-width: $screen-sm-min) {
+		.recordviews-actionable-label {
+			display: none;
+		}
+	}
+}
+
+.recordviews-actionable-label {
+	@extend .sc-value;
+	@media (min-width: $screen-md-min) {
+		display: none;
+	}
+}
+
+.recordviews-actionable-value {
+	font-size:14px;
+}

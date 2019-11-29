@@ -1,0 +1,86 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+.cart-confirmation-modal {
+	@extend .sc-value;
+}
+.cart-confirmation-modal-img{
+	color: inherit;
+	// TODO: Show this image container and fix modal scroll in cart - iOS SCASCS-2847:
+	display: none;
+	@media (min-width: $screen-sm-min) {
+		display: block;
+	}
+}
+.cart-confirmation-modal-details {
+	color: inherit;
+
+	.transaction-line-views-price {
+		margin-bottom:15px;
+	}
+}
+.cart-confirmation-modal-item-name {
+	@extend .sc-value;
+	margin-bottom: 12px;
+	display: inline-block;
+}
+.cart-confirmation-modal-price {
+	@extend .sc-value;
+}
+
+.cart-confirmation-modal-sku-label{
+	@extend .sc-value;
+}
+.cart-confirmation-modal-sku-value{
+	@extend .sc-value;
+	}
+.cart-confirmation-modal-quantity-label{
+	@extend .sc-value;
+}
+.cart-confirmation-modal-quantity-value{
+	@extend .sc-value;
+}
+.cart-confirmation-modal-actions {
+	margin-top: 12px;
+}
+.cart-confirmation-modal-view-cart{
+	color: inherit;
+	padding-left: 0;
+	padding-right: 0;
+
+	@media (min-width: $screen-md-min) {
+		padding-right: 12px;
+	}
+}
+.cart-confirmation-modal-continue-shopping {
+	color: inherit;
+	padding-right: 0;
+	padding-left: 0;
+
+	@media (min-width: $screen-md-min) {
+		padding-left: 12px;
+	}
+}
+.cart-confirmation-modal-view-cart-button {
+	@extend .sc-value;
+	@extend .sc-value;
+	width: 100%;
+ 	font-weight: 12px;
+ 	margin-top: 15px;
+	border: 1px solid red;
+	text-align: center;
+}
+.cart-confirmation-modal-view-cart-button:disabled{
+	border: 1px solid desaturate(lighten(red, 40), 9);
+}
+.cart-confirmation-modal-continue-shopping-button {
+	@extend .sc-value;
+	@extend .sc-value;
+	width: 100%;
+	margin-top: 15px;
+	font-weight: 12px;
+}
+
+

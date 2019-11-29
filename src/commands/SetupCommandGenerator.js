@@ -58,7 +58,8 @@ const {
 	validateFieldIsNotEmpty,
 	validateNotProductionUrl,
 	validateAuthIDNotInList,
-	validateXMLCharacters,
+	validateAlphanumericHyphenUnderscore,
+	validateMaximunLength,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 
@@ -181,8 +182,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					message: TranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
-						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateXMLCharacters, fieldValue =>
-							validateAuthIDNotInList(fieldValue, auhtIDs)
+						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, fieldValue =>
+							validateAuthIDNotInList(fieldValue, auhtIDs), validateAlphanumericHyphenUnderscore, validateMaximunLength
 						),
 				},
 				{

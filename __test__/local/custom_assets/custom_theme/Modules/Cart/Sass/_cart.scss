@@ -1,0 +1,173 @@
+/*
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+ 
+.cart{
+	color: inherit;
+}
+
+.cart-title{
+	margin-bottom:15px;
+	padding-bottom:12px;
+	border-bottom:1px solid red;
+
+	@media (min-width: $screen-sm-min) {
+		margin-bottom:15px;
+	}
+}
+
+.cart-title-details-count{
+	display: inline-block;
+	color:red;
+	text-transform: capitalize;
+
+	@media(max-width: $screen-xs-max){
+		display:block;
+		margin-top: 15px;
+	}
+}
+
+.cart-body{
+	@extend .sc-value;
+	padding-bottom:12px;
+}
+
+.cart-left{
+	color: inherit;
+	@extend .sc-value;
+}
+
+.cart-left {
+
+
+	.items-views-selected-option-picker{
+		display: none;
+	}
+	.items-views-selected-option-label,
+	.items-views-selected-option-color p {
+		margin-bottom: 0;
+	}
+}
+
+.cart-right{
+	color: inherit;
+	@extend .sc-value;
+}
+
+.cart-empty{
+	color: inherit;
+	@extend .sc-value;
+}
+
+.button-proceed-checkout{
+	@extend .sc-value;
+	@extend .sc-value;
+	@extend .sc-value;
+}
+
+.btn-paypal-express {
+  text-align: center;
+  margin-top: 15px;
+}
+// sticky
+.cart-proceed-to-checkout-container {
+	margin-bottom: 15px;
+	@media (min-width: $screen-sm-min) {
+		display: none;
+	}
+}
+.cart-proceed-to-checkout {
+	@extend .sc-value;
+}
+
+
+.button-saveforlater-addtocart{
+	@extend .sc-value;
+	@extend .sc-value;
+	display: block;
+	margin-bottom: 15px;
+}
+
+.button-saveforlater-remove{
+	@extend .sc-value;
+	@extend .sc-value;
+	display: block;
+	margin-bottom: 15px;
+}
+
+.saveforlater-actions{
+	clear:both;
+	display:block;
+}
+
+.saveforlater-cell{
+	@extend .sc-value;
+	color: inherit;
+}
+
+.cart-savedforlater [data-pusher]{
+	background:$sc-neutral-shade-0;
+
+	@media (min-width: $screen-sm-min) {
+		background: none;
+    }
+}
+
+.product-list-details-later-col{
+	padding-right:12px;
+}
+
+//	TO DO: remove this declaration
+// .product-list-details-later-macro-details span.spinner > .sub, .product-list-details-later-macro-details span.spinner > .add{
+//     float: left;
+//     width: 41px;
+//     height: 41px;
+//     text-align: center;
+//     line-height: 41px;
+//     color: $sc-neutral-shade-0;
+//     background: red;
+//     border-right: 0;
+//     cursor: pointer;
+//     transition: 0.1s linear;
+//     -o-transition: 0.1s linear;
+//     -ms-transition: 0.1s linear;
+//     -moz-transition: 0.1s linear;
+//     -webkit-transition: 0.1s linear;
+//     margin-right: 4px;
+//     @media(min-width: $screen-sm-min){
+// 		display:none;
+// 	}
+// }
+
+//	TO DO: remove this declaration
+// .transaction-line-cell-actionable-table span.spinner > .sub, .transaction-line-cell-actionable-table span.spinner > .add{
+//     float: left;
+//     width: 41px;
+//     height: 41px;
+//     text-align: center;
+//     line-height: 41px;
+//     color: $sc-neutral-shade-0;
+//     background: red;
+//     border-right: 0;
+//     cursor: pointer;
+//     transition: 0.1s linear;
+//     -o-transition: 0.1s linear;
+//     -ms-transition: 0.1s linear;
+//     -moz-transition: 0.1s linear;
+//     -webkit-transition: 0.1s linear;
+//     margin-right: 4px;
+//     @media(min-width: $screen-sm-min){
+// 		display:none;
+// 	}
+// }
+
+.button-saveforlater-addtocart{
+	display:inline-block;
+	width:auto;
+}
+
+
+.cart-body-empty-info {
+	margin-bottom:15px;
+}
