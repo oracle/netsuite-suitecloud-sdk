@@ -28,7 +28,7 @@ const ANSWERS_NAMES = {
 	DESTINATION_FOLDER: 'destinationfolder',
 	PROJECT_FOLDER: 'project',
 	OBJECTS_SELECTED: 'objects_selected',
-	OVERRITE_OBJECTS: 'overwrite_objects',
+	OVERWRITE_OBJECTS: 'overwrite_objects',
 };
 const IMPORT_0BJECT = {
 	SUCCESS: 'SUCCESS',
@@ -251,8 +251,8 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		const questionOverwriteConfirmation = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: ANSWERS_NAMES.OVERRITE_OBJECTS,
-			message: TranslationService.getMessage(QUESTIONS.OVERRITE_OBJECTS),
+			name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
+			message: TranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS),
 			default: 0,
 			choices: [
 				{ name: TranslationService.getMessage(YES), value: true },
@@ -291,7 +291,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_executeAction(answers) {
-		if (answers[ANSWERS_NAMES.OVERRITE_OBJECTS] === false) {
+		if (answers[ANSWERS_NAMES.OVERWRITE_OBJECTS] === false) {
 			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
 
