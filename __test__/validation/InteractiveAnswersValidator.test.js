@@ -202,26 +202,6 @@ describe('validateXMLCharacters', () => {
 	});
 });
 
-// describe('validateEmail', () => {
-// 	const failureResponse = {
-// 		result: false,
-// 		validationMessage: 'Invalid email address.',
-// 	};
-
-// 	it('should return a response with a positive result when the string is a valid email address', () => {
-// 		expect(validateEmail('myemail@domain.com')).toEqual(positiveResponse);
-// 		expect(validateEmail('my.email@domain.com')).toEqual(positiveResponse);
-// 	});
-
-// 	it('should return a response with a negative result and a validation message when the string contains an invalid email address', () => {
-// 		expect(validateEmail('mywrongemail.domain.com')).toEqual(failureResponse);
-// 		expect(validateEmail('.mywrongemail@domain.com')).toEqual(failureResponse);
-// 		expect(validateEmail('mywrongemail@domain..com')).toEqual(failureResponse);
-// 		expect(validateEmail('mywrongemail@domain')).toEqual(failureResponse);
-// 		expect(validateEmail('mywrongemail@domain.c')).toEqual(failureResponse);
-// 	});
-// });
-
 describe('validateNotProductionUrl', () => {
 	const failureResponse = {
 		result: false,

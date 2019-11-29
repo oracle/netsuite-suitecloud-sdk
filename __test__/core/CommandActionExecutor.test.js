@@ -95,20 +95,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		expect(error.code).toBe('ERR_ASSERTION');
 	});
 
-	// it('should throw ASSERT EXCEPTION when executionPath is undefined.', async () => {
-	// 	error = null;
-	// 	try {
-	// 		await commandExecutor.executeAction({
-	// 			executionPath: undefined,
-	// 			commandName: 'importobjects',
-	// 			runInInteractiveMode: true,
-	// 			arguments: {},
-	// 		});
-	// 	} catch (e) {
-	// 		error = e;
-	// 	}
-	// 	expect(error.code).toBe('ERR_ASSERTION');
-	// });
 	it('should throw ASSERT EXCEPTION when commandName is undefined.', async () => {
 		error = null;
 		try {

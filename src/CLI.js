@@ -33,7 +33,6 @@ module.exports = class CLI {
 
 	start(process) {
 		try {
-			// const rootCLIPath = this._getCLIRootPath();
 			this._commandsMetadataService.initializeCommandsMetadata();
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
 
@@ -62,11 +61,7 @@ module.exports = class CLI {
 			NodeUtils.println(unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 		}
 	}
-
-	// _getCLIRootPath() {
-	// 	return path.dirname(require.main.filename);
-	// }
-
+	
 	_initializeCommands(commandMetadataList, runInInteractiveMode) {
 		const commandsMetadataArraySortedByCommandName = Object.values(commandMetadataList).sort(
 			(command1, command2) => command1.name.localeCompare(command2.name)
