@@ -5,7 +5,6 @@
 'use strict';
 
 const assert = require('assert');
-// var path = require('path');
 const program = require('commander');
 const NodeUtils = require('./utils/NodeUtils');
 const TranslationService = require('./services/TranslationService');
@@ -61,7 +60,7 @@ module.exports = class CLI {
 			NodeUtils.println(unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
 		}
 	}
-	
+
 	_initializeCommands(commandMetadataList, runInInteractiveMode) {
 		const commandsMetadataArraySortedByCommandName = Object.values(commandMetadataList).sort(
 			(command1, command2) => command1.name.localeCompare(command2.name)
