@@ -26,9 +26,7 @@ module.exports = class CommandsMetadataService {
 	initializeCommandsMetadata() {
 		const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
 		const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
-		const commandGeneratorsMetadata = this._getMetadataFromFile(
-			path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE)
-		);
+		const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
 		let combinedMetadata = {
 			...sdkCommandsMetadata,
 			...nodeCommandsMetadata,
@@ -81,8 +79,9 @@ module.exports = class CommandsMetadataService {
 				return generatorMetadata.commandName == commandMetadata.name;
 			});
 
-			const defaultGenerator =
-				generatorMetadata && generatorMetadata.nonInteractiveGenerator ? generatorMetadata.nonInteractiveGenerator : SDK_WRAPPER_GENERATOR;
+			const defaultGenerator = generatorMetadata && generatorMetadata.nonInteractiveGenerator
+				? generatorMetadata.nonInteractiveGenerator
+				: SDK_WRAPPER_GENERATOR;
 			commandMetadata.nonInteractiveGenerator = path.join(this._rootCLIPath, defaultGenerator);
 			commandMetadata.supportsInteractiveMode = false;
 
