@@ -38,7 +38,7 @@ const COMMAND_OPTIONS = {
 const MAX_ENTRIES_BEFORE_FILTER = 30;
 const XML_EXTENSION = '.xml';
 
-const UPADATED_OBJECT_TYPE = {
+const UPDATED_OBJECT_TYPE = {
 	SUCCESS: 'SUCCESS',
 };
 
@@ -49,8 +49,8 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _getCommandQuestions(prompt) {
-		const pahtToObjectsFolder = path.join(this._projectFolder, FOLDER_NAMES.OBJECTS);
-		const filesInObjectsFolder = this._fileSystemService.getFilesFromDirectory(pahtToObjectsFolder);
+		const pathToObjectsFolder = path.join(this._projectFolder, FOLDER_NAMES.OBJECTS);
+		const filesInObjectsFolder = this._fileSystemService.getFilesFromDirectory(pathToObjectsFolder);
 		const foundXMLFiles = filesInObjectsFolder
 			.filter(filename => filename.endsWith(XML_EXTENSION))
 			.map(file => ({
@@ -58,7 +58,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				value: path.basename(file, XML_EXTENSION),
 			}));
 
-		if (foundXMLFiles.length == 0) {
+		if (foundXMLFiles.length === 0) {
 			throw TranslationService.getMessage(ERRORS.NO_OBJECTS_IN_PROJECT);
 		}
 
@@ -160,8 +160,8 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			return;
 		}
 
-		const updatedObjects = data.filter(element => element.type === UPADATED_OBJECT_TYPE.SUCCESS);
-		const noUpdatedObjects = data.filter(element => element.type !== UPADATED_OBJECT_TYPE.SUCCESS);
+		const updatedObjects = data.filter(element => element.type === UPDATED_OBJECT_TYPE.SUCCESS);
+		const noUpdatedObjects = data.filter(element => element.type !== UPDATED_OBJECT_TYPE.SUCCESS);
 		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
 
 		if (updatedObjects.length > 0) {
