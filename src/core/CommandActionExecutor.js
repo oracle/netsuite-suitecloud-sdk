@@ -18,6 +18,7 @@ const NodeUtils = require('../utils/NodeUtils');
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
 		assert(dependencies);
+		assert(dependencies.executionPath);
 		assert(dependencies.commandOptionsValidator);
 		assert(dependencies.cliConfigurationService);
 		assert(dependencies.commandInstanceFactory);
@@ -25,6 +26,7 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.commandOutputHandler);
 		assert(dependencies.authenticationService);
 
+		this._executionPath = dependencies.executionPath;
 		this._commandOptionsValidator = dependencies.commandOptionsValidator;
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandInstanceFactory = dependencies.commandInstanceFactory;
@@ -37,7 +39,6 @@ module.exports = class CommandActionExecutor {
 		assert(context);
 		assert(context.arguments);
 		assert(context.commandName);
-		assert(context.executionPath);
 		assert(typeof context.runInInteractiveMode === 'boolean');
 
 		let commandUserExtension;
@@ -47,7 +48,7 @@ module.exports = class CommandActionExecutor {
 			);
 			const commandName = context.commandName;
 
-			this._cliConfigurationService.initialize(context.executionPath);
+			this._cliConfigurationService.initialize(this._executionPath);
 			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
 			commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
 				commandName
@@ -65,7 +66,7 @@ module.exports = class CommandActionExecutor {
 				runInInteractiveMode: runInInteractiveMode,
 				commandMetadata: commandMetadata,
 				projectFolder: projectFolder,
-				executionPath: context.executionPath,
+				executionPath: this._executionPath,
 			});
 
 			const commandArguments = this._extractOptionValuesFromArguments(
@@ -99,7 +100,7 @@ module.exports = class CommandActionExecutor {
 			return actionResult;
 		} catch (error) {
 			this._commandOutputHandler.showErrorResult(error);
-			if (commandUserExtension.onError) {
+			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
 		}

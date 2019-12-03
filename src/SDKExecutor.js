@@ -22,16 +22,15 @@ const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
-const AuthenticationService = require('./core/authentication/AuthenticationService');
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
 module.exports.SDKExecutor = class SDKExecutor {
-	constructor() {
+	constructor(authenticationService) {
 		this._CLISettingsService = new CLISettingsService();
-		this._authenticationService = new AuthenticationService();
+		this._authenticationService = authenticationService;
 		this._environmentInformationService = new EnvironmentInformationService();
 	}
 

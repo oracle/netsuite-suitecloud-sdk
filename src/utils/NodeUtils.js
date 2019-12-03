@@ -14,16 +14,25 @@ const AVAILABLE_COLORS = {
 	WARNING: chalk.yellow,
 };
 
-module.exports = {
-	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
-	COLORS: AVAILABLE_COLORS,
-	println: function(message, color) {
+class NodeUtils {
+
+	println(message, color) {
 		console.log(this.formatString(message, { color: color }));
-	},
-	formatString: (str, options) => {
+	}
+
+	formatString(str, options) {
 		var color = options.color || AVAILABLE_COLORS.DEFAULT;
 		var bold = options.bold ? chalk.bold : str => str;
 		return bold(color(str));
-	},
-	lineBreak: os.EOL,
-};
+	}
+
+	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
+	get COLORS() {
+		return AVAILABLE_COLORS;
+	}		
+	get lineBreak() {
+		return os.EOL;
+	}
+}
+
+module.exports = new NodeUtils();

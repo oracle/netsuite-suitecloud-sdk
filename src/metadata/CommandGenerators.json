@@ -53,6 +53,11 @@
         "nonInteractiveGenerator": "./commands/SetupCommandGenerator"
     },
     {
+        "commandName": "update",
+        "interactiveGenerator": "./commands/UpdateCommandGenerator",
+        "nonInteractiveGenerator": "./commands/UpdateCommandGenerator"
+    },
+    {
         "commandName": "validate",
         "interactiveGenerator": "commands/ValidateCommandGenerator",
         "nonInteractiveGenerator": "commands/ValidateCommandGenerator"
