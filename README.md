@@ -1,50 +1,43 @@
 # SuiteCloud CLI for Node.js
+> ⚠ This project is work in progress.
+> The full supported version will be available after NetSuite 20.1 is released.
+
 SuiteCloud Command Line Interface (CLI) for Node.js is a SuiteCloud SDK tool to manage SuiteCloud project components and validate and deploy projects to your account.\
 CLI for Node.js is an interactive tool that guides you through all the steps of the communication between your local project and your account.
 
 ## Prerequisites
 The following software is required to work with SuiteCloud CLI for Node.js:
-- Node.js version 10
-- Java JDK version 11
-
-Read the full list of prerequisites in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558708810.html).
+- Node.js version 10.16.0 LTS
+- Java JRE version 8
   
 ## Installation
-To install CLI for Node.js, run the following command:
-```
-npm install suitecloud-cli -global
-```
-
-CLI for Node.js is available from within any directory by running `scloud`.
+Download the contents of this repository as a ZIP file, and do the following:
+1.  Unzip the file in an empty folder.
+2.  From within this folder, run `npm install`.
+3.  Optionally, to make CLI for Node.js available from within any directory, run `npm link`.
 
 ## Usage
 CLI for Node.js uses the following syntax: 
 ```
-scloud <command> <option> <argument>
+scloud <command> <--option> <argument>
 ```
 
 ### Commands
 | Command | Description |
 | --- | --- |
-| [`adddependencies`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155981452469.html)| Adds missing dependencies to the manifest file.|
-|[`createproject`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041348327.html)|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
-|[`deploy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044636320.html)|Deploys the folder containing the project.|
-|[`importfiles`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041963273.html)|Imports files from an account to your account customization project.|
-|[`importobjects`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042181820.html)|Imports custom objects from an account to your SuiteCloud project.|
-|[`listfiles`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042966488.html)|Lists the files in the File Cabinet of your account.|
-|[`listobjects`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043303237.html)|Lists the custom objects deployed in an account.|
-|[`localserver`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043691482.html)|Generates a local server of your SuiteCommerce extensions and themes.|
-|[`manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs (authid) for all your projects.|
-|[`proxy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044426239.html)|Configures a proxy server.|
-|[`setupaccount`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
-|[`validate`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
+|`adddependencies`| Adds missing dependencies to the manifest file.|
+|`createproject`|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
+|`deploy`|Deploys the folder containing the project.|
+|`importfiles`|Imports files from an account to your account customization project.|
+|`importobjects`|Imports custom objects from an account to your SuiteCloud project.|
+|`listfiles`|Lists the files in the File Cabinet of your account.|
+|`listobjects`|Lists the custom objects deployed in an account.|
+|`localserver`|Generates a local server of your SuiteCommerce extensions and themes.|
+|`proxy`|Configures a proxy server.|
+|`setupaccount`|Sets up an account to use with the SuiteCloud CLI for Node.js.|
+|`validate`|Validates the folder containing the SuiteCloud project.|
 
-To check the help for a specific command, run the following command:
-```
-scloud {command} -h
-```
-
-Read the detailed documentation for all the commands in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_155931263126.html).
+To check the help for a specific command, run `scloud {command} -h`.
 
 ## Getting Started
 Create a new project in an empty folder by running the following command:
@@ -56,10 +49,6 @@ After you create a project, configure a NetSuite account, by running the followi
 ```
 scloud setupaccount
 ```
-
-## Documentation
-Read all the documentation about CLI for Node.js in [NetSuite's Help Center](
-https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
 
 ## [Contributing](./CONTRIBUTING.md)
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](./CONTRIBUTING.md) for details.
