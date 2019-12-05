@@ -68,7 +68,7 @@ const CREATE_NEW_AUTH = '******CREATE_NEW_AUTH*******!£$%&*';
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._authenticationService = new AuthenticationService();
+		this._authenticationService = new AuthenticationService(options.executionPath);
 	}
 
 	async _getCommandQuestions(prompt, commandArguments) {

@@ -8,18 +8,25 @@ const FileUtils = require('../../utils/FileUtils');
 const TranslationService = require('../../services/TranslationService');
 const { ERRORS } = require('../../services/TranslationKeys');
 const { FILE_NAMES } = require('../../ApplicationConstants');
+const assert = require('assert');
+const path = require('path');
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId' 
 
 let CACHED_DEFAULT_AUTH_ID;
 module.exports = class AuthenticationService {
+	constructor(executionPath) {
+		assert(executionPath)
+		this._excutionPath = executionPath;
+	}
+	
 	setDefaultAuthentication(authId) {
 		try {
 			// nest the values into a DEFAULT_AUTH_ID_PROPERTY property
 			const projectConfiguration = {
 				[DEFAULT_AUTH_ID_PROPERTY]: authId,
 			};
-			FileUtils.create(FILE_NAMES.PROJECT_JSON, projectConfiguration);
+			FileUtils.create(path.join(this._excutionPath,FILE_NAMES.PROJECT_JSON), projectConfiguration);
 		} catch (error) {
 			const errorMessage =
 				error != null && error.message ? TranslationService.getMessage(ERRORS.ADD_ERROR_LINE, error.message) : '';
@@ -31,16 +38,19 @@ module.exports = class AuthenticationService {
 		if (CACHED_DEFAULT_AUTH_ID) {
 			return CACHED_DEFAULT_AUTH_ID;
 		}
-		if (FileUtils.exists(FILE_NAMES.PROJECT_JSON)) {
+		
+		const projectFilePath = path.join(this._excutionPath,FILE_NAMES.PROJECT_JSON);
+
+		if (FileUtils.exists(projectFilePath)) {
 			try {
-				const fileContentJson = FileUtils.readAsJson(FILE_NAMES.PROJECT_JSON);
+				const fileContentJson = FileUtils.readAsJson(projectFilePath);
 				if (!fileContentJson.hasOwnProperty(DEFAULT_AUTH_ID_PROPERTY)) {
 					throw TranslationService.getMessage(ERRORS.MISSING_DEFAULT_AUTH_ID, DEFAULT_AUTH_ID_PROPERTY);
 				}
 				CACHED_DEFAULT_AUTH_ID = fileContentJson[DEFAULT_AUTH_ID_PROPERTY];
 				return CACHED_DEFAULT_AUTH_ID;
 			} catch (error) {
-				throw TranslationService.getMessage(ERRORS.WRONG_JSON_FILE, FILE_NAMES.PROJECT_JSON, error)
+				throw TranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error)
 			}
 		}
 	}
