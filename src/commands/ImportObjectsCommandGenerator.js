@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const inquirer = require('inquirer');
@@ -28,13 +28,15 @@ const ANSWERS_NAMES = {
 	DESTINATION_FOLDER: 'destinationfolder',
 	PROJECT_FOLDER: 'project',
 	OBJECTS_SELECTED: 'objects_selected',
+	IMPORT_REFERENCED_SUITESCRIPTS: 'import_referenced_suitescripts',
 	OVERRITE_OBJECTS: 'overwrite_objects',
 };
-const IMPORT_0BJECT = {
-	SUCCESS: 'SUCCESS',
-	FAILED: 'FAILED',
+
+const COMMAND_FLAGS = {
+	EXCLUDE_FILES: 'excludefiles',
 };
-const { PROJECT_SUITEAPP, FOLDER_NAMES } = require('../ApplicationConstants');
+
+const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDER_NAMES } = require('../ApplicationConstants');
 const {
 	COMMAND_IMPORTOBJECTS: { ERRORS, QUESTIONS, MESSAGES },
 	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED },
@@ -42,12 +44,7 @@ const {
 	NO,
 } = require('../services/TranslationKeys');
 
-const {
-	validateArrayIsNotEmpty,
-	validateScriptId,
-	validateSuiteApp,
-	showValidationResults,
-} = require('../validation/InteractiveAnswersValidator');
+const { validateArrayIsNotEmpty, validateScriptId, validateSuiteApp, showValidationResults } = require('../validation/InteractiveAnswersValidator');
 const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
 
 module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
@@ -56,9 +53,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
-		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(
-			LIST_OBJECTS_COMMAND_NAME
-		);
+		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 	}
 
 	_getCommandQuestions(prompt) {
@@ -71,7 +66,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 					const executionContextForListObjects = new SDKExecutionContext({
 						command: this._listObjectsMetadata.name,
 						params: paramsForListObjects,
-						includeProjectDefaultAuthId: true
+						includeProjectDefaultAuthId: true,
 					});
 
 					executeWithSpinner({
@@ -86,44 +81,23 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 								return;
 							}
 							if (Array.isArray(data) && operationResult.data.length === 0) {
-								NodeUtils.println(
-									TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST),
-									NodeUtils.COLORS.RESULT
-								);
+								NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.RESULT);
 								return;
 							}
 
-							const questions = this._generateSelectionObjectQuestions(
-								operationResult
-							);
+							const questions = this._generateSelectionObjectQuestions(operationResult);
 
 							prompt(questions).then(secondAnswers => {
 								const combinedAnswers = { ...firstAnswers, ...secondAnswers };
-								const finalAnswers = this._arrangeAnswersForImportObjects(
-									combinedAnswers
-								);
+								const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
 								resolve(finalAnswers);
 							});
 						})
 						.catch(error => {
-							reject(
-								TranslationService.getMessage(
-									ERRORS.CALLING_LIST_OBJECTS,
-									NodeUtils.lineBreak,
-									error
-								)
-							);
+							reject(TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak, error));
 						});
 				})
-				.catch(error =>
-					reject(
-						TranslationService.getMessage(
-							PROMPTING_INTERACTIVE_QUESTIONS_FAILED,
-							NodeUtils.lineBreak,
-							error
-						)
-					)
-				);
+				.catch(error => reject(TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error)));
 		});
 	}
 
@@ -230,6 +204,20 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		};
 		questions.push(questionListObjectsSelection);
 
+		if (this._projectInfoService.getProjectType() === PROJECT_ACP) {
+			const questionImportReferencedSuiteScripts = {
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS,
+				message: TranslationService.getMessage(QUESTIONS.IMPORT_REFERENCED_SUITESCRIPTS),
+				default: 0,
+				choices: [
+					{ name: TranslationService.getMessage(YES), value: true },
+					{ name: TranslationService.getMessage(NO), value: false },
+				],
+			};
+			questions.push(questionImportReferencedSuiteScripts);
+		}
+
 		// extracting root prefix
 		// replacing '\' for '/', this is done because destinationfolder option in java-sdf works only with '/'
 		// sourroundig "" to the folder string so it will handle blank spaces case
@@ -265,9 +253,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_arrangeAnswersForListObjects(answers) {
 		if (answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
-			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(
-				' '
-			);
+			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(' ');
 		}
 		return CommandUtils.extractCommandOptions(answers, this._listObjectsMetadata);
 	}
@@ -278,15 +264,14 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		} else if (answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].length > 1) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
 		}
-		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED]
-			.map(el => el.scriptId)
-			.join(' ');
+		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map(el => el.scriptId).join(' ');
 
 		return answers;
 	}
 
 	_preExecuteAction(answers) {
 		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
+
 		return answers;
 	}
 
@@ -295,10 +280,17 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
 
+		const flags = [];
+		if (this._projectInfoService.getProjectType() === PROJECT_ACP && !answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
+			flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
+			delete answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
+		}
+
 		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
+			flags: flags,
 			includeProjectDefaultAuthId: true,
 		});
 
@@ -306,6 +298,52 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			action: this._sdkExecutor.execute(executionContextForImportObjects),
 			message: TranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
 		});
+	}
+
+	_logImportedObjects(importedObjects) {
+		if (importedObjects.length) {
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
+			importedObjects.forEach(objectImport => {
+				NodeUtils.println(`    - ${objectImport.customObject.type}:${objectImport.customObject.id}`, NodeUtils.COLORS.RESULT);
+				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
+			});
+		}
+	}
+
+	_logUnImportedObjects(unImportedObjects) {
+		if (unImportedObjects.length) {
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
+			unImportedObjects.forEach(objectImport => {
+				NodeUtils.println(`    - ${objectImport.customObject.type}:${objectImport.customObject.id}`, NodeUtils.COLORS.WARNING);
+			});
+		}
+	}
+
+	_logReferencedFileImportResult(referencedFileImportResult) {
+		const importedFiles = referencedFileImportResult.successfulImports;
+		const unImportedFiles = referencedFileImportResult.failedImports;
+
+		if (importedFiles.length || unImportedFiles.length) {
+			const referencedFilesLogMessage = `        - ${TranslationService.getMessage(MESSAGES.REFERENCED_SUITESCRIPT_FILES)}`;
+			NodeUtils.println(referencedFilesLogMessage, NodeUtils.COLORS.RESULT);
+
+			importedFiles.forEach(importedFile => {
+				const importedFileLogMessage = `            - ${TranslationService.getMessage(
+					MESSAGES.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
+					importedFile.path
+				)}`;
+				NodeUtils.println(importedFileLogMessage, NodeUtils.COLORS.RESULT);
+			});
+
+			unImportedFiles.forEach(unImportedFile => {
+				const unimportedFileLogMessage = `            - ${TranslationService.getMessage(
+					MESSAGES.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
+					unImportedFile.path,
+					unImportedFile.message
+				)}`;
+				NodeUtils.println(unimportedFileLogMessage, NodeUtils.COLORS.WARNING);
+			});
+		}
 	}
 
 	_formatOutput(operationResult) {
@@ -322,36 +360,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			return;
 		}
 
-		const importedObjects = data.customObjects.filter(
-			customObject => customObject.result.code === IMPORT_0BJECT.SUCCESS
-		);
-		const unImportedObjects = data.customObjects.filter(
-			customObject => customObject.result.code === IMPORT_0BJECT.FAILED
-		);
-
-		if (importedObjects.length) {
-			NodeUtils.println(
-				TranslationService.getMessage(MESSAGES.IMPORTED_OBJECTS),
-				NodeUtils.COLORS.RESULT
-			);
-			importedObjects.forEach(customObject =>
-				NodeUtils.println(
-					`${customObject.type}:${customObject.id}`,
-					NodeUtils.COLORS.RESULT
-				)
-			);
-		}
-		if (unImportedObjects.length) {
-			NodeUtils.println(
-				TranslationService.getMessage(MESSAGES.UNIMPORTED_OBJECTS),
-				NodeUtils.COLORS.WARNING
-			);
-			unImportedObjects.forEach(customObject =>
-				NodeUtils.println(
-					`${customObject.type}:${customObject.id}:${customObject.result.message}`,
-					NodeUtils.COLORS.WARNING
-				)
-			);
-		}
+		this._logImportedObjects(data.successfulImports);
+		this._logUnImportedObjects(data.failedImports);
 	}
 };
