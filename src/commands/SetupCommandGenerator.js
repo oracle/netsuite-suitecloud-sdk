@@ -29,11 +29,12 @@ const {
 
 const ANSWERS = {
 	DEVELOPMENT_URL: 'developmentUrl',
-	SAVE_TOKEN_ID: 'saveTokenId',
-	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 	SELECTED_AUTH_ID: 'selected_auth_id',
 	AUTH_MODE: 'AUTH_MODE',
 	NEW_AUTH_ID: 'NEW_AUTH_ID',
+	SAVE_TOKEN_ROLE_ID: 'saveTokenRoleId',
+	SAVE_TOKEN_ID: 'saveTokenId',
+	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 };
 
 const AUTH_MODE = {
@@ -60,6 +61,7 @@ const {
 	validateAuthIDNotInList,
 	validateAlphanumericHyphenUnderscore,
 	validateMaximunLength,
+	validateInteger,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 
@@ -188,6 +190,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				},
 				{
 					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
+					type: CommandUtils.INQUIRER_TYPES.INPUT,
+					name: ANSWERS.SAVE_TOKEN_ROLE_ID,
+					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ROLE_ID),
+					filter: fieldValue => fieldValue.trim(),
+					validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateInteger),
+				},
+				{
+					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 					name: ANSWERS.SAVE_TOKEN_ID,
@@ -216,9 +226,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					  'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 				mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
 				saveToken: {
-					id: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
-					secret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
-				},
+					roleId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ROLE_ID],
+					tokenId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
+					tokenSecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
+				}
 			};
 		}
 	}
@@ -240,11 +251,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 		if (answers.mode === AUTH_MODE.SAVE_TOKEN) {
 			await this._saveToken({
-				authId: answers.newAuthId,
-				tokenid: answers[ANSWERS.SAVE_TOKEN_ID],
-				tokensecret: answers[ANSWERS.SAVE_TOKEN_SECRET],
-				url: url,
-				isDev: true,
+				authid: answers.newAuthId,
+				url: answers.url,
+				savetoken: '',
+				roleid: answers.saveToken.roleId,
+				tokenid: answers.saveToken.tokenId,
+				tokensecret: answers.saveToken.tokenSecret,
 			});
 			authId = answers.newAuthId;
 		}
@@ -275,7 +287,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _saveToken(params) {
 		const executionContextForSaveToken = new SDKExecutionContext({
-			command: COMMANDS.SAVE_TOKEN,
+			command: COMMANDS.AUTHENTICATE,
 			params,
 		});
 
