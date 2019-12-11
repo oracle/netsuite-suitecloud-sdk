@@ -590,7 +590,7 @@
 	"importobjects": {
 		"name": "importobjects",
 		"usage": "",
-		"description": "Import custom objects from an account to your project.",
+		"description": "Imports custom objects from your NetSuite account to the SDF project. In account customization projects (ACP), if SuiteScript files are referenced in the custom objects you import, these files get imported by default.",
 		"isSetupRequired": true,
 		"options": [
 			{

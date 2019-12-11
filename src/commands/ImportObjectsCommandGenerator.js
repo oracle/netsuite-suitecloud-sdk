@@ -29,6 +29,7 @@ const ANSWERS_NAMES = {
 	PROJECT_FOLDER: 'project',
 	OBJECTS_SELECTED: 'objects_selected',
 	OVERWRITE_OBJECTS: 'overwrite_objects',
+	IMPORT_REFERENCED_SUITESCRIPTS: 'import_referenced_suitescripts',
 };
 
 const COMMAND_FLAGS = {
@@ -37,7 +38,7 @@ const COMMAND_FLAGS = {
 
 const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDER_NAMES } = require('../ApplicationConstants');
 const {
-	COMMAND_IMPORTOBJECTS: { ERRORS, QUESTIONS, MESSAGES },
+	COMMAND_IMPORTOBJECTS: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
 	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED },
 	YES,
 	NO,
@@ -46,7 +47,7 @@ const {
 const { validateArrayIsNotEmpty, validateScriptId, validateSuiteApp, showValidationResults } = require('../validation/InteractiveAnswersValidator');
 const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
 
-module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator {
+module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
@@ -280,16 +281,21 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 
 		const flags = [];
-		if (this._projectInfoService.getProjectType() === PROJECT_ACP && !answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
+		if (
+			this._projectInfoService.getProjectType() === PROJECT_ACP &&
+			(answers[COMMAND_FLAGS.EXCLUDE_FILES] ||
+				(answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]))
+		) {
 			flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
 			delete answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
+			delete answers[COMMAND_FLAGS.EXCLUDE_FILES];
 		}
 
 		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const executionContextForImportObjects = new SDKExecutionContext({
 			command: this._commandMetadata.name,
 			params,
-			flags: flags,
+			flags,
 			includeProjectDefaultAuthId: true,
 		});
 
@@ -301,9 +307,12 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_logImportedObjects(importedObjects) {
 		if (importedObjects.length) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
+			NodeUtils.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
 			importedObjects.forEach(objectImport => {
-				NodeUtils.println(`    - ${objectImport.customObject.type}:${objectImport.customObject.id}`, NodeUtils.COLORS.RESULT);
+				NodeUtils.println(
+					TranslationService.getMessage(OUTPUT.OBJECT_IMPORTED, objectImport.customObject.type, objectImport.customObject.id),
+					NodeUtils.COLORS.RESULT
+				);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
 		}
@@ -311,9 +320,17 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 	_logUnImportedObjects(unImportedObjects) {
 		if (unImportedObjects.length) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
+			NodeUtils.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
 			unImportedObjects.forEach(objectImport => {
-				NodeUtils.println(`    - ${objectImport.customObject.type}:${objectImport.customObject.id}`, NodeUtils.COLORS.WARNING);
+				NodeUtils.println(
+					TranslationService.getMessage(
+						OUTPUT.OBJECT_IMPORT_FAILED,
+						objectImport.customObject.type,
+						objectImport.customObject.id,
+						objectImport.customObject.result.message
+					),
+					NodeUtils.COLORS.WARNING
+				);
 			});
 		}
 	}
@@ -323,23 +340,20 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const unImportedFiles = referencedFileImportResult.failedImports;
 
 		if (importedFiles.length || unImportedFiles.length) {
-			const referencedFilesLogMessage = `        - ${TranslationService.getMessage(MESSAGES.REFERENCED_SUITESCRIPT_FILES)}`;
+			const referencedFilesLogMessage = TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILES);
 			NodeUtils.println(referencedFilesLogMessage, NodeUtils.COLORS.RESULT);
 
 			importedFiles.forEach(importedFile => {
-				const importedFileLogMessage = `            - ${TranslationService.getMessage(
-					MESSAGES.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
-					importedFile.path
-				)}`;
+				const importedFileLogMessage = TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED, importedFile.path);
 				NodeUtils.println(importedFileLogMessage, NodeUtils.COLORS.RESULT);
 			});
 
 			unImportedFiles.forEach(unImportedFile => {
-				const unimportedFileLogMessage = `            - ${TranslationService.getMessage(
-					MESSAGES.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
+				const unimportedFileLogMessage = TranslationService.getMessage(
+					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
 					unImportedFile.path,
 					unImportedFile.message
-				)}`;
+				);
 				NodeUtils.println(unimportedFileLogMessage, NodeUtils.COLORS.WARNING);
 			});
 		}
