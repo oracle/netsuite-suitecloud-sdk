@@ -32,7 +32,7 @@ const ANSWERS = {
 	SELECTED_AUTH_ID: 'selected_auth_id',
 	AUTH_MODE: 'AUTH_MODE',
 	NEW_AUTH_ID: 'NEW_AUTH_ID',
-	SAVE_TOKEN_ROLE_ID: 'saveTokenRoleId',
+	SAVE_TOKEN_ACCOUNT: 'account',
 	SAVE_TOKEN_ID: 'saveTokenId',
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 };
@@ -61,7 +61,6 @@ const {
 	validateAuthIDNotInList,
 	validateAlphanumericHyphenUnderscore,
 	validateMaximunLength,
-	validateInteger,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 
@@ -191,10 +190,15 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				{
 					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
-					name: ANSWERS.SAVE_TOKEN_ROLE_ID,
-					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ROLE_ID),
+					name: ANSWERS.SAVE_TOKEN_ACCOUNT,
+					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT),
 					filter: fieldValue => fieldValue.trim(),
-					validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateInteger),
+					validate: fieldValue => showValidationResults(
+						fieldValue,
+						validateFieldIsNotEmpty,
+						validateFieldHasNoSpaces,
+						validateAlphanumericHyphenUnderscore
+					),
 				},
 				{
 					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
@@ -216,21 +220,23 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				},
 			]);
 
-			return {
+			let answers = {
 				isDevelopment: isDevelopment,
 				createNewAuthentication: true,
 				newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
-				url: developmentUrlAnswer
-					? developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL]
-					: // HARDCODED to always provide a url even without --dev
-					  'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 				mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
 				saveToken: {
-					roleId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ROLE_ID],
+					account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT],
 					tokenId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
 					tokenSecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
 				}
 			};
+
+			if (developmentUrlAnswer) {
+				answers.url = developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL];
+			}
+
+			return answers;
 		}
 	}
 
@@ -250,14 +256,19 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			authId = answers.newAuthId;
 		}
 		if (answers.mode === AUTH_MODE.SAVE_TOKEN) {
-			await this._saveToken({
+			let commandParams = {
 				authid: answers.newAuthId,
-				url: answers.url,
 				savetoken: '',
-				roleid: answers.saveToken.roleId,
+				account: answers.saveToken.account,
 				tokenid: answers.saveToken.tokenId,
 				tokensecret: answers.saveToken.tokenSecret,
-			});
+			};
+
+			if (answers.url) {
+				commandParams.url = answers.url;
+			}
+
+			await this._saveToken(commandParams);
 			authId = answers.newAuthId;
 		}
 		if (answers.mode === AUTH_MODE.REUSE) {

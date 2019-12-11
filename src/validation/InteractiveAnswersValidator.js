@@ -160,15 +160,6 @@ class InteractiveAnswersValidator {
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.MAX_LENGTH, maxLength));
 	}
-
-	validateInteger(fieldValue) {
-		const integerValue = parseInt(fieldValue);
-		if (isNaN(integerValue) || !Number.isInteger(integerValue)) {
-			return VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.INVALID_ROLE_ID));
-		}
-
-		return VALIDATION_RESULT_SUCCESS;
-	}
 }
 
 module.exports = new InteractiveAnswersValidator();
