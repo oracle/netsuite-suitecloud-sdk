@@ -65,7 +65,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 				? SDK_INTEGRATION_MODE_JVM_OPTION
 				: '';
 
-			const developmentModeOption = SDK_DEVELOPMENT_MODE_JVM_OPTION; //HARDCODED: this should be in the SDK
+			const developmentModeOption = executionContext.isDevelopmentMode() ? SDK_DEVELOPMENT_MODE_JVM_OPTION : '';
 
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 

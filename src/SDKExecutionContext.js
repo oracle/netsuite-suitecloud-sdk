@@ -16,6 +16,7 @@ module.exports = class SDKExecutionContext {
 			typeof options.includeProjectDefaultAuthId === 'undefined'
 				? false
 				: options.includeProjectDefaultAuthId;
+		this._developmentMode = typeof options.developmentMode === 'undefined' ? false : options.developmentMode;
 		this._params = {};
 		this._flags = [];
 
@@ -66,5 +67,9 @@ module.exports = class SDKExecutionContext {
 
 	get includeProjectDefaultAuthId() {
 		return this._includeProjectDefaultAuthId;
+	}
+
+	isDevelopmentMode() {
+		return this._developmentMode;
 	}
 };

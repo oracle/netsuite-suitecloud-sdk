@@ -28,11 +28,11 @@ const {
 } = require('../services/TranslationKeys');
 
 const ANSWERS = {
-	DEVELOPMENT_URL: 'developmentUrl',
+	DEVELOPMENT_MODE_URL: 'developmentModeUrl',
 	SELECTED_AUTH_ID: 'selected_auth_id',
 	AUTH_MODE: 'AUTH_MODE',
 	NEW_AUTH_ID: 'NEW_AUTH_ID',
-	SAVE_TOKEN_ACCOUNT: 'account',
+	SAVE_TOKEN_ACCOUNT_ID: 'accountId',
 	SAVE_TOKEN_ID: 'saveTokenId',
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 };
@@ -46,11 +46,11 @@ const AUTH_MODE = {
 const COMMANDS = {
 	AUTHENTICATE: 'authenticate',
 	MANAGEAUTH: 'manageauth',
-	SAVE_TOKEN: 'savetoken',
 };
 
 const FLAGS = {
 	LIST: 'list',
+	SAVTOKEN: 'savetoken',
 };
 
 const {
@@ -74,8 +74,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _getCommandQuestions(prompt, commandArguments) {
 		this._checkWorkingDirectoryContainsValidProject();
-		const isDevelopment = commandArguments && commandArguments.dev !== undefined && commandArguments.dev;
-		let developmentUrlAnswer;
 
 		const getAuthListContext = new SDKExecutionContext({
 			command: COMMANDS.MANAGEAUTH,
@@ -147,13 +145,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 
 		// creating a new authID
+		let developmentModeUrlAnswer;
 		if (selectedAuthID === CREATE_NEW_AUTH) {
-			if (isDevelopment) {
-				developmentUrlAnswer = await prompt([
+			const developmentMode = commandArguments && commandArguments.dev !== undefined && commandArguments.dev;
+
+			if (developmentMode) {
+				developmentModeUrlAnswer = await prompt([
 					{
 						type: CommandUtils.INQUIRER_TYPES.INPUT,
-						name: ANSWERS.DEVELOPMENT_URL,
-						message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_URL),
+						name: ANSWERS.DEVELOPMENT_MODE_URL,
+						message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
 						// HARDCODED just for convinience
 						default: 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 						filter: answer => answer.trim(),
@@ -190,8 +191,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				{
 					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
-					name: ANSWERS.SAVE_TOKEN_ACCOUNT,
-					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT),
+					name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
+					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
 					filter: fieldValue => fieldValue.trim(),
 					validate: fieldValue => showValidationResults(
 						fieldValue,
@@ -220,23 +221,23 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				},
 			]);
 
-			let answers = {
-				isDevelopment: isDevelopment,
+			const executeActionContext = {
+				developmentMode: developmentMode,
 				createNewAuthentication: true,
 				newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
 				mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
 				saveToken: {
-					account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT],
+					account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
 					tokenId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
 					tokenSecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
 				}
 			};
 
-			if (developmentUrlAnswer) {
-				answers.url = developmentUrlAnswer[ANSWERS.DEVELOPMENT_URL];
+			if (developmentModeUrlAnswer) {
+				executeActionContext.url = developmentModeUrlAnswer[ANSWERS.DEVELOPMENT_MODE_URL];
 			}
 
-			return answers;
+			return executeActionContext;
 		}
 	}
 
@@ -246,39 +247,41 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 
-	async _executeAction(answers) {
+	async _executeAction(executeActionContext) {
 		let authId;
-		if (answers.mode === AUTH_MODE.OAUTH) {
-			await this._performBrowserBasedAuthentication({
-				authId: answers.newAuthId,
-				url: answers.url,
-			});
-			authId = answers.newAuthId;
-		}
-		if (answers.mode === AUTH_MODE.SAVE_TOKEN) {
-			let commandParams = {
-				authid: answers.newAuthId,
-				savetoken: '',
-				account: answers.saveToken.account,
-				tokenid: answers.saveToken.tokenId,
-				tokensecret: answers.saveToken.tokenSecret,
+		if (executeActionContext.mode === AUTH_MODE.OAUTH) {
+			const commandParams = {
+				authId: executeActionContext.newAuthId,
 			};
 
-			if (answers.url) {
-				commandParams.url = answers.url;
+			if (executeActionContext.url) {
+				commandParams.url = executeActionContext.url;
 			}
 
-			await this._saveToken(commandParams);
-			authId = answers.newAuthId;
-		}
-		if (answers.mode === AUTH_MODE.REUSE) {
+			await this._performBrowserBasedAuthentication(commandParams);
+			authId = executeActionContext.newAuthId;
+		} else if (executeActionContext.mode === AUTH_MODE.SAVE_TOKEN) {
+			const commandParams = {
+				authid: executeActionContext.newAuthId,
+				account: executeActionContext.saveToken.account,
+				tokenid: executeActionContext.saveToken.tokenId,
+				tokensecret: executeActionContext.saveToken.tokenSecret,
+			};
+
+			if (executeActionContext.url) {
+				commandParams.url = executeActionContext.url;
+			}
+
+			await this._saveToken(commandParams, executeActionContext.developmentMode);
+			authId = executeActionContext.newAuthId;
+		} else if (executeActionContext.mode === AUTH_MODE.REUSE) {
 			authId = answers.existingAuthId;
 		}
 		this._authenticationService.setDefaultAuthentication(authId);
 
 		return {
 			status: OperationResultStatus.SUCCESS,
-			mode: answers.mode,
+			mode: executeActionContext.mode,
 			authId: authId,
 		};
 	}
@@ -296,10 +299,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		this._checkOperationResultIsSuccessful(operationResult);
 	}
 
-	async _saveToken(params) {
+	async _saveToken(params, developmentMode) {
 		const executionContextForSaveToken = new SDKExecutionContext({
 			command: COMMANDS.AUTHENTICATE,
 			params,
+			flags: [FLAGS.SAVTOKEN],
+			developmentMode: developmentMode,
 		});
 
 		const operationResult = await executeWithSpinner({

@@ -130,9 +130,9 @@
 
 	"COMMAND_SETUPACCOUNT_ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"scloud setupaccount\" in a valid project folder.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_AUTH_MODE": "Select an authentication method:",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_DEVELOPMENT_URL": "Enter your domain URL:",
+	"COMMAND_SETUPACCOUNT_QUESTIONS_DEVELOPMENT_MODE_URL": "Enter your domain URL:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID (authID):",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ACCOUNT": "Enter the account:",
+	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ACCOUNT_ID": "Enter the account ID:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ID": "Enter the Token ID:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_SECRET": "Enter the Token Secret:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SELECT_AUTHID": "Select or create an authentication ID (authID):\n  ***The authentication ID that you select or create will be set up as default.",
