@@ -329,7 +329,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		if (Array.isArray(importedObjects) && importedObjects.length) {
 			NodeUtils.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
 			importedObjects.forEach(objectImport => {
-				const importedObjectLogMessage = `${NodeUtils.getPadding(1)}- ${objectImport.customObject.type}:${objectImport.customObject.id}"`;
+				const importedObjectLogMessage = `${NodeUtils.getPadding(1)}- ${objectImport.customObject.type}:${objectImport.customObject.id}`;
 				NodeUtils.println(importedObjectLogMessage, NodeUtils.COLORS.RESULT);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
