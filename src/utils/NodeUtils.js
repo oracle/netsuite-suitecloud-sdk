@@ -13,6 +13,7 @@ const AVAILABLE_COLORS = {
 	INFO: chalk.cyan,
 	WARNING: chalk.yellow,
 };
+const padding = "\u0020\u0020\u0020\u0020";//4 spaces
 
 class NodeUtils {
 
@@ -24,6 +25,17 @@ class NodeUtils {
 		var color = options.color || AVAILABLE_COLORS.DEFAULT;
 		var bold = options.bold ? chalk.bold : str => str;
 		return bold(color(str));
+	}
+
+	getPadding(padCount) {
+		if (padCount) {
+			let paddings = "";
+			for (var i = 0; i < padCount; i++) {
+				paddings += padding;
+			}
+			return paddings;
+		}
+		return padding;
 	}
 
 	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color

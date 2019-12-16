@@ -329,7 +329,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		if (Array.isArray(importedObjects) && importedObjects.length) {
 			NodeUtils.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
 			importedObjects.forEach(objectImport => {
-				const importedObjectLogMessage = `    - ${objectImport.customObject.type}:${objectImport.customObject.id}"`;
+				const importedObjectLogMessage = `${NodeUtils.getPadding(1)}- ${objectImport.customObject.type}:${objectImport.customObject.id}"`;
 				NodeUtils.println(importedObjectLogMessage, NodeUtils.COLORS.RESULT);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
@@ -343,13 +343,13 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const thereAreReferencedFiles =
 			(Array.isArray(importedFiles) && importedFiles.length) || (Array.isArray(unImportedFiles) && unImportedFiles.length);
 		if (thereAreReferencedFiles) {
-			const referencedFilesLogMessage = `        - ${TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILES)}`;
+			const referencedFilesLogMessage = `${NodeUtils.getPadding(2)}- ${TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILES)}`;
 			NodeUtils.println(referencedFilesLogMessage, NodeUtils.COLORS.RESULT);
 		}
 
 		if (Array.isArray(importedFiles) && importedFiles.length) {
 			importedFiles.forEach(importedFile => {
-				const importedFileLogMessage = `            - ${TranslationService.getMessage(
+				const importedFileLogMessage = `${NodeUtils.getPadding(3)}- ${TranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
 					importedFile.path
 				)}`;
@@ -359,7 +359,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 		if (Array.isArray(unImportedFiles) && unImportedFiles.length) {
 			unImportedFiles.forEach(unImportedFile => {
-				const unimportedFileLogMessage = `            - ${TranslationService.getMessage(
+				const unimportedFileLogMessage = `${NodeUtils.getPadding(3)}- ${TranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
 					unImportedFile.path,
 					unImportedFile.message
@@ -373,7 +373,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
 			NodeUtils.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
 			unImportedObjects.forEach(objectImport => {
-				const unimportedObjectLogMessage = `    - ${TranslationService.getMessage(
+				const unimportedObjectLogMessage = `${NodeUtils.getPadding(1)}- ${TranslationService.getMessage(
 					OUTPUT.OBJECT_IMPORT_FAILED,
 					objectImport.customObject.type,
 					objectImport.customObject.id,
