@@ -14,12 +14,14 @@ module.exports = class BaseCommandGenerator {
 		assert(options);
 		assert(options.commandMetadata);
 		assert(options.projectFolder);
+		assert(typeof options.runInInteractiveMode === 'boolean');
 
 		this._sdkExecutor = new SDKExecutor(new AuthenticationService(options.executionPath));
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;
 		this._executionPath = options.executionPath;
+		this._runInInteractiveMode = options.runInInteractiveMode;
 	}
 
 	_getCommandQuestions(prompt) {
