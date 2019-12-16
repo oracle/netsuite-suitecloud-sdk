@@ -56,49 +56,48 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 	}
 
-	_getCommandQuestions(prompt) {
-		const questions = this._generateListObjectQuestions();
+	async _getCommandQuestions(prompt) {
+		try {
+			const listObjectQuestions = this._generateListObjectQuestions();
+			const listObjectAnswers = await prompt(listObjectQuestions);
 
-		return new Promise((resolve, reject) => {
-			prompt(questions)
-				.then(firstAnswers => {
-					const paramsForListObjects = this._arrangeAnswersForListObjects(firstAnswers);
-					const executionContextForListObjects = new SDKExecutionContext({
-						command: this._listObjectsMetadata.name,
-						params: paramsForListObjects,
-						includeProjectDefaultAuthId: true,
-					});
+			const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
+			const executionContextForListObjects = new SDKExecutionContext({
+				command: this._listObjectsMetadata.name,
+				params: paramsForListObjects,
+				includeProjectDefaultAuthId: true,
+			});
 
-					executeWithSpinner({
-						action: this._sdkExecutor.execute(executionContextForListObjects),
-						message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
-					})
-						.then(operationResult => {
-							const { data } = operationResult;
-							if (SDKOperationResultUtils.hasErrors(operationResult)) {
-								SDKOperationResultUtils.logResultMessage(operationResult);
-								SDKOperationResultUtils.logErrors(operationResult);
-								return;
-							}
-							if (Array.isArray(data) && operationResult.data.length === 0) {
-								NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.RESULT);
-								return;
-							}
+			let operationResult;
+			try {
+				operationResult = await executeWithSpinner({
+					action: this._sdkExecutor.execute(executionContextForListObjects),
+					message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
+				});
+			} catch (error) {
+				return Promise.reject(TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak, error));
+			}
 
-							const questions = this._generateSelectionObjectQuestions(operationResult);
+			const { data } = operationResult;
+			if (SDKOperationResultUtils.hasErrors(operationResult)) {
+				SDKOperationResultUtils.logResultMessage(operationResult);
+				SDKOperationResultUtils.logErrors(operationResult);
+				return;
+			}
+			if (Array.isArray(data) && operationResult.data.length === 0) {
+				NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.RESULT);
+				return;
+			}
 
-							prompt(questions).then(secondAnswers => {
-								const combinedAnswers = { ...firstAnswers, ...secondAnswers };
-								const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
-								resolve(finalAnswers);
-							});
-						})
-						.catch(error => {
-							reject(TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak, error));
-						});
-				})
-				.catch(error => reject(TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error)));
-		});
+			const selectionObjectQuestions = this._generateSelectionObjectQuestions(operationResult);
+
+			const selectionObjectAnswers = await prompt(selectionObjectQuestions);
+			const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers };
+			const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
+			return finalAnswers;
+		} catch (error) {
+			return Promise.reject(TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error));
+		}
 	}
 
 	_generateListObjectQuestions() {
@@ -305,60 +304,6 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		});
 	}
 
-	_logImportedObjects(importedObjects) {
-		if (importedObjects.length) {
-			NodeUtils.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
-			importedObjects.forEach(objectImport => {
-				NodeUtils.println(
-					TranslationService.getMessage(OUTPUT.OBJECT_IMPORTED, objectImport.customObject.type, objectImport.customObject.id),
-					NodeUtils.COLORS.RESULT
-				);
-				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
-			});
-		}
-	}
-
-	_logUnImportedObjects(unImportedObjects) {
-		if (unImportedObjects.length) {
-			NodeUtils.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
-			unImportedObjects.forEach(objectImport => {
-				NodeUtils.println(
-					TranslationService.getMessage(
-						OUTPUT.OBJECT_IMPORT_FAILED,
-						objectImport.customObject.type,
-						objectImport.customObject.id,
-						objectImport.customObject.result.message
-					),
-					NodeUtils.COLORS.WARNING
-				);
-			});
-		}
-	}
-
-	_logReferencedFileImportResult(referencedFileImportResult) {
-		const importedFiles = referencedFileImportResult.successfulImports;
-		const unImportedFiles = referencedFileImportResult.failedImports;
-
-		if (importedFiles.length || unImportedFiles.length) {
-			const referencedFilesLogMessage = TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILES);
-			NodeUtils.println(referencedFilesLogMessage, NodeUtils.COLORS.RESULT);
-
-			importedFiles.forEach(importedFile => {
-				const importedFileLogMessage = TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED, importedFile.path);
-				NodeUtils.println(importedFileLogMessage, NodeUtils.COLORS.RESULT);
-			});
-
-			unImportedFiles.forEach(unImportedFile => {
-				const unimportedFileLogMessage = TranslationService.getMessage(
-					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
-					unImportedFile.path,
-					unImportedFile.message
-				);
-				NodeUtils.println(unimportedFileLogMessage, NodeUtils.COLORS.WARNING);
-			});
-		}
-	}
-
 	_formatOutput(operationResult) {
 		const { data } = operationResult;
 
@@ -375,5 +320,63 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 		this._logImportedObjects(data.successfulImports);
 		this._logUnImportedObjects(data.failedImports);
+	}
+
+	_logImportedObjects(importedObjects) {
+		if (Array.isArray(importedObjects) && importedObjects.length) {
+			NodeUtils.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
+			importedObjects.forEach(objectImport => {
+				NodeUtils.println(`    - ${objectImport.customObject.type}:${objectImport.customObject.id}"`, NodeUtils.COLORS.RESULT);
+				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
+			});
+		}
+	}
+
+	_logReferencedFileImportResult(referencedFileImportResult) {
+		const importedFiles = referencedFileImportResult.successfulImports;
+		const unImportedFiles = referencedFileImportResult.failedImports;
+
+		if (!Array.isArray(importedFiles) && !Array.isArray(unImportedFiles)) {
+			return;
+		}
+
+		if (importedFiles.length || unImportedFiles.length) {
+			const referencedFilesLogMessage = `        - ${TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILES)}`;
+			NodeUtils.println(referencedFilesLogMessage, NodeUtils.COLORS.RESULT);
+
+			importedFiles.forEach(importedFile => {
+				const importedFileLogMessage = `            - ${TranslationService.getMessage(
+					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
+					importedFile.path
+				)}`;
+				NodeUtils.println(importedFileLogMessage, NodeUtils.COLORS.RESULT);
+			});
+
+			unImportedFiles.forEach(unImportedFile => {
+				const unimportedFileLogMessage = `            - ${TranslationService.getMessage(
+					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
+					unImportedFile.path,
+					unImportedFile.message
+				)}`;
+				NodeUtils.println(unimportedFileLogMessage, NodeUtils.COLORS.WARNING);
+			});
+		}
+	}
+
+	_logUnImportedObjects(unImportedObjects) {
+		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
+			NodeUtils.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
+			unImportedObjects.forEach(objectImport => {
+				NodeUtils.println(
+					`    - ${TranslationService.getMessage(
+						OUTPUT.OBJECT_IMPORT_FAILED,
+						objectImport.customObject.type,
+						objectImport.customObject.id,
+						objectImport.customObject.result.message
+					)}`,
+					NodeUtils.COLORS.WARNING
+				);
+			});
+		}
 	}
 };
