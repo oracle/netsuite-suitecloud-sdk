@@ -24,6 +24,7 @@ module.exports = class CommandInstanceFactory {
 			commandMetadata,
 			projectFolder: options.projectFolder,
 			executionPath: options.executionPath,
+			runInInteractiveMode: options.runInInteractiveMode,
 		});
 
 		return generatorInstance.create();
