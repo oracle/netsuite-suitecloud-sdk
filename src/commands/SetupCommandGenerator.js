@@ -273,7 +273,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			await this._saveToken(commandParams, executeActionContext.developmentMode);
 			authId = executeActionContext.newAuthId;
 		} else if (executeActionContext.mode === AUTH_MODE.REUSE) {
-			authId = answers.existingAuthId;
+			authId = executeActionContext.existingAuthId;
 		}
 		this._authenticationService.setDefaultAuthentication(authId);
 
