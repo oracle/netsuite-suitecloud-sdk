@@ -256,7 +256,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				commandParams.url = executeActionContext.url;
 			}
 
-			await this._performBrowserBasedAuthentication(commandParams);
+			await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
 			authId = executeActionContext.newAuthId;
 		} else if (executeActionContext.mode === AUTH_MODE.SAVE_TOKEN) {
 			const commandParams = {
@@ -284,10 +284,11 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		};
 	}
 
-	async _performBrowserBasedAuthentication(params) {
+	async _performBrowserBasedAuthentication(params, developmentMode) {
 		const authenticateSDKExecutionContext = new SDKExecutionContext({
 			command: COMMANDS.AUTHENTICATE,
 			params,
+			developmentMode: developmentMode,
 		});
 
 		const operationResult = await executeWithSpinner({
