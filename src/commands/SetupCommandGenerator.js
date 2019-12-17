@@ -155,8 +155,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						type: CommandUtils.INQUIRER_TYPES.INPUT,
 						name: ANSWERS.DEVELOPMENT_MODE_URL,
 						message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
-						// HARDCODED just for convinience
-						default: 'luperez-restricted-tbal-dusa1-001.eng.netsuite.com',
 						filter: answer => answer.trim(),
 						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl, validateNotProductionUrl),
 					},
