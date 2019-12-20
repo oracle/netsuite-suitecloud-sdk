@@ -160,7 +160,7 @@
 
 	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any custom objects. Run \"scloud importobjects -i\" to import objects from your account to your project.",
 	"COMMAND_UPDATE_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your search?",
-	"COMMAND_UPDATE_QUESTIONS_OVERWRITE_OBJECTS": "All the objects in the project will be overwritten with the objects from the account. Do you want to continue?",
+	"COMMAND_UPDATE_QUESTIONS_OVERWRITE_OBJECTS": "All the selected objects in the project will be overwritten with the objects from the account. Do you want to continue?",
 	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID": "Select the objects you want to update from your account:",
 	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID_FILTER": "Enter the full or partial script ID:",
 	"COMMAND_UPDATE_MESSAGES_CANCEL_UPDATE": "The updating process was cancelled. No objects were overwritten.",
