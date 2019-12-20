@@ -1,1638 +1,869 @@
 {
-	"adddependencies": {
-		"name": "adddependencies",
-		"usage": "",
-		"description": "Add the missing dependencies to the manifest file.",
-		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "all",
-				"option": "all",
-				"description": "Add all missing dependencies to the SuiteCloud project. When specified, ensure that you do not use the -feature, -file, and -object options.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "feature",
-				"option": "feature",
-				"description": "Specify the feature dependency references to add to the project. Each reference is a name:value pair that is delimited by a space. For example, CUSTOMRECORD:required. When specified, ensure that you do not use the -all option.",
-				"mandatory": false,
-				"type": "MULTIPLE",
-				"usage": "CUSTOMRECORD:required [...]",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "file",
-				"option": "file",
-				"description": "Specify the files to add to the project. When specified, ensure that you do not use the -all option.",
-				"mandatory": false,
-				"type": "MULTIPLE",
-				"usage": "\/js\/test.js [...]",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "object",
-				"option": "object",
-				"description": "Specify the object script IDs to add to the project. When specified, ensure that you do not use the -all option.",
-				"mandatory": false,
-				"type": "MULTIPLE",
-				"usage": "scriptid [...]",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"authenticate": {
-		"name": "authenticate",
-		"usage": "",
-		"description": "Grants authorization for SuiteCloud SDK to access NetSuite with an account-role combination.",
-		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "References the URL used to access the account.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"createproject": {
-		"name": "createproject",
-		"usage": "",
-		"description": "Create a SuiteCloud Project.",
-		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "parentdirectory",
-				"option": "parentdirectory",
-				"description": "Set the parent folder where to create the project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "d:\/foo\/bar",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "overwrite",
-				"option": "overwrite",
-				"description": "Overwrite the existing project.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "type",
-				"option": "type",
-				"description": "Specify the project type.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "ACCOUNTCUSTOMIZATION",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "projectname",
-				"option": "projectname",
-				"description": "Specify the project name.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "FooBar",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "publisherid",
-				"option": "publisherid",
-				"description": "Specify the publisher ID. It is mandatory for SuiteApps.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "com.netsuite",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "projectid",
-				"option": "projectid",
-				"description": "Specify the project ID. It is mandatory for SuiteApps.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "foobar",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "projectversion",
-				"option": "projectversion",
-				"description": "Specify the project version. It is mandatory for SuiteApps.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "1.0.0",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			}
-		]
-	},
-	"deploy": {
-		"name": "deploy",
-		"usage": "",
-		"description": "Deploy the folder or ZIP file containing the project. The project folder is zipped before deployment, only including the files and folders referenced in the deploy.xml file.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:\/path\/test.log",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "validate",
-				"option": "validate",
-				"description": "Validate the project before deploying. If an error ocurrs during the deployment, the process is stopped.",
-				"mandatory": false,
-				"type": "FLAG",
-				"alias": "v",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "no_preview",
-				"option": "no_preview",
-				"description": "Skip the preview step.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "skip_warning",
-				"option": "skip_warning",
-				"description": "Indicates that the warning before deployment to production account will be skipped.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
-				"mandatory": false,
-				"type": "FLAG",
-				"alias": "c",
-				"usage": "T",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "accountspecificvalues",
-				"option": "accountspecificvalues",
-				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "WARNING",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"importbundle": {
-		"name": "importbundle",
-		"usage": "",
-		"description": "Import a bundle as an Account Customization project.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": true,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "bundleid",
-				"option": "bundleid",
-				"description": "Specify the bundle ID of the bundle you want to import.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "123",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"importconfiguration": {
-		"name": "importconfiguration",
-		"usage": "",
-		"description": "Import the features from an account.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "configurationid",
-				"option": "configurationid",
-				"description": "Import account features by their IDs. To specify multiple feature IDs, enter the IDs separated by spaces.",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "features:all_features [...]",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"importfiles": {
-		"name": "importfiles",
-		"usage": "",
-		"description": "Import files from an account to your account customization project. You cannot import files from a SuiteApp.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "paths",
-				"option": "paths",
-				"description": "Specify the file cabinet paths of the files to import. For example, \"\/SuiteScripts\".",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "\"\/SuiteScripts\/test.js\"",
-				"defaultOption": true,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "excludeproperties",
-				"option": "excludeproperties",
-				"description": "Exclude all file properties within the .attributes folder.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"importobjects": {
-		"name": "importobjects",
-		"usage": "",
-		"description": "Imports custom objects from your NetSuite account to the SDF project. In account customization projects (ACP), if SuiteScript files are referenced in the custom objects you import, these files get imported by default.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "appid",
-				"option": "appid",
-				"description": "Specify your application ID. If specified, only custom objects with that application ID are imported. Otherwise, only custom objects with no application ID are imported.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "org.mycompany.helloworldapp",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "scriptid",
-				"option": "scriptid",
-				"description": "Specify the script ID. To specify multiple IDs, enter the IDs separated by spaces. Enter \"ALL\" to import all custom objects of the specified type.",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "customrecord_tes01 customrecord_test02 [...]",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "type",
-				"option": "type",
-				"description": "Specify the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https:\/\/system.netsuite.com\/app\/help\/helpcenter.nl?fid=sdfxml.html.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "customrecordtype",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "destinationfolder",
-				"option": "destinationfolder",
-				"description": "Specify the project folder where objects will be stored. It must be within the Objects folder of your project. For example, \/Objects\/MyObjects.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "\/Objects",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "excludefiles",
-				"option": "excludefiles",
-				"description": "Indicates that the SuiteScript files referenced in custom objects are not imported. It can only be used in account customization projects (ACP).",
-				"mandatory": false,
-				"type": "FLAG",
-				"alias": "excludefiles",
-				"usage": "\/Objects",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"listbundles": {
-		"name": "listbundles",
-		"usage": "",
-		"description": "List the bundles installed in an account.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"listconfiguration": {
-		"name": "listconfiguration",
-		"usage": "",
-		"description": "List the features that are available in an account.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"listfiles": {
-		"name": "listfiles",
-		"usage": "",
-		"description": "List the files from the file cabinet.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "folder",
-				"option": "folder",
-				"description": "Specify the File Cabinet path, for example, \"\/SuiteScripts\". All files within subfolders are included.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "\"\/SuiteScripts\"",
-				"defaultOption": true,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"listmissingdependencies": {
-		"name": "listmissingdependencies",
-		"usage": "",
-		"description": "List the missing dependencies of the project.",
-		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"description": "Sets the log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:\/path\/test.log",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"listobjects": {
-		"name": "listobjects",
-		"usage": "",
-		"description": "List the custom objects deployed in an account.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "appid",
-				"option": "appid",
-				"description": "Specify your application ID. If specified, only custom objects with that application ID are listed. Otherwise, only custom objects with no application ID are listed.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "org.mycompany.helloworldapp",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "scriptid",
-				"option": "scriptid",
-				"description": "Specify the script ID. If you specify it, only objects containing that script ID will be listed. Otherwise, all objects are listed.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "customrecord",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "type",
-				"option": "type",
-				"description": "Specify the type of custom objects to list. To specify multiple types, enter the types separated by spaces. Otherwise, all types are listed. To see what custom objects are supported by SDF, see https:\/\/system.netsuite.com\/app\/help\/helpcenter.nl?fid=sdfxml.html.",
-				"mandatory": false,
-				"type": "MULTIPLE",
-				"usage": "customrecordtype workflow [...]",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"manageauth": {
-		"name": "manageauth",
-		"usage": "",
-		"description": "Manages authentication IDs (authid) for all your projects.",
-		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "list",
-				"option": "list",
-				"description": "Prints a list of all the configured authentication IDs (authID). Usage: manageauth -list.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "info",
-				"option": "info",
-				"description": "Prints the following information for the specified authentication ID (authID): account ID, role ID, and url. Usage: manageauth -info {authID}.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "rename",
-				"option": "rename",
-				"description": "Rename an authentication ID (authID). You must specifiy it together with the renameto option. Usage: manageauth -rename {authID} -renameto {newauthID}.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "renameto",
-				"option": "renameto",
-				"description": "Enter the new ID for an authentication ID (authID). You must specifiy it together with the rename option. Usage: manageauth -rename {authID} -renameto {newauthID}.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "remove",
-				"option": "remove",
-				"description": "Remove an authentication ID (authID. Usage: manageauth -remove {authID}.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"preview": {
-		"name": "preview",
-		"usage": "",
-		"description": "Preview the deployment steps of a folder or zipped file containing the project. The project folder is zipped before previewing.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"description": "Specify the preview log file location, as either a directory path or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, preview log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:\/path\/test.log",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
-				"mandatory": false,
-				"type": "FLAG",
-				"alias": "c",
-				"usage": "T",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "accountspecificvalues",
-				"option": "accountspecificvalues",
-				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "WARNING",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"update": {
-		"name": "update",
-		"usage": "",
-		"description": "Overwrite the custom objects in the project with the custom objects in an account.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "scriptid",
-				"option": "scriptid",
-				"description": "Specify the script ID of the objects you want to overwrite.",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "scriptid [...]",
-				"defaultOption": true,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"updatecustomrecordwithinstances": {
-		"name": "updatecustomrecordwithinstances",
-		"usage": "",
-		"description": "Overwrite the custom record object and all its instances in the project with the ones in an account.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "scriptid",
-				"option": "scriptid",
-				"description": "Specify the script ID.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "customrecord_test",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"uploadfiles": {
-		"name": "uploadfiles",
-		"usage": "",
-		"description": "Upload files from your project to an account.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "paths",
-				"option": "paths",
-				"description": "Specify the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"\/SuiteScripts\/File.js\" \"\/SuiteScripts\/NewFile.js\".",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "\"\/SuiteScripts\/test.js\"",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"uploadfolders": {
-		"name": "uploadfolders",
-		"usage": "",
-		"description": "Upload files within specific folders from your project to an account.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "paths",
-				"option": "paths",
-				"description": "Specify the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"\/SuiteScripts\" \"\/SuiteScripts\/Test\".",
-				"mandatory": true,
-				"type": "MULTIPLE",
-				"usage": "\"\/SuiteScripts\/foobar\"",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	},
-	"validate": {
-		"name": "validate",
-		"usage": "",
-		"description": "Validate the folder or ZIP file containing the project.",
-		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:\/path\/test.log",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "server",
-				"option": "server",
-				"description": "Indicates that the server will perform the validation.",
-				"mandatory": false,
-				"type": "FLAG",
-				"alias": "s",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
-				"mandatory": false,
-				"type": "FLAG",
-				"alias": "c",
-				"usage": "T",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "accountspecificvalues",
-				"option": "accountspecificvalues",
-				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "WARNING",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:\/project\/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "url",
-				"option": "url",
-				"description": "Specify the domain URL. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "email",
-				"option": "email",
-				"description": "Specify your email address. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "account",
-				"option": "account",
-				"description": "Specify your account ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "role",
-				"option": "role",
-				"description": "Specify the role ID. It overrides the SDF file settings.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			}
-		]
-	}
+    "adddependencies": {
+        "name": "adddependencies",
+        "usage": "",
+        "description": "Adds the missing dependencies to the manifest file.",
+        "isSetupRequired": false,
+        "options": [
+            {
+                "name": "all",
+                "option": "all",
+                "description": "Add all missing dependencies to the SuiteCloud project. When specified, ensure that you do not use the -feature, -file, and -object options.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "feature",
+                "option": "feature",
+                "description": "Specify the feature dependency references to add to the project. Each reference is a name:value pair that is delimited by a space. For example, CUSTOMRECORD:required. When specified, ensure that you do not use the -all option.",
+                "mandatory": false,
+                "type": "MULTIPLE",
+                "usage": "CUSTOMRECORD:required [...]",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "file",
+                "option": "file",
+                "description": "Specify the files to add to the project. When specified, ensure that you do not use the -all option.",
+                "mandatory": false,
+                "type": "MULTIPLE",
+                "usage": "\/js\/test.js [...]",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "object",
+                "option": "object",
+                "description": "Specify the object script IDs to add to the project. When specified, ensure that you do not use the -all option.",
+                "mandatory": false,
+                "type": "MULTIPLE",
+                "usage": "scriptid [...]",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "description": "Set the folder or zipped file containing the project. It overrides the default project.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "description": "Specify the domain URL. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "description": "Specify your email address. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "description": "Specify your account ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "description": "Specify the role ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "authid",
+                "option": "authid",
+                "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            }
+        ]
+    },
+    "createproject": {
+        "name": "createproject",
+        "usage": "",
+        "description": "Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).",
+        "isSetupRequired": false,
+        "options": [
+            {
+                "name": "parentdirectory",
+                "option": "parentdirectory",
+                "description": "Set the parent folder where to create the project.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "d:\/foo\/bar",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "overwrite",
+                "option": "overwrite",
+                "description": "Overwrite the existing project.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "type",
+                "option": "type",
+                "description": "Specify the project type.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "ACCOUNTCUSTOMIZATION",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "projectname",
+                "option": "projectname",
+                "description": "Specify the project name.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "FooBar",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "publisherid",
+                "option": "publisherid",
+                "description": "Specify the publisher ID. It is mandatory for SuiteApps.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "com.netsuite",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "projectid",
+                "option": "projectid",
+                "description": "Specify the project ID. It is mandatory for SuiteApps.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "foobar",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "projectversion",
+                "option": "projectversion",
+                "description": "Specify the project version. It is mandatory for SuiteApps.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "1.0.0",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            }
+        ]
+    },
+    "deploy": {
+        "name": "deploy",
+        "usage": "",
+        "description": "Deploys the folder containing the project. The project folder is zipped before deployment, only including the files and folders referenced in the deploy.xml file.",
+        "isSetupRequired": true,
+        "options": [
+            {
+                "name": "log",
+                "option": "log",
+                "description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "d:\/path\/test.log",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "validate",
+                "option": "validate",
+                "description": "Validate the project before deploying. If an error ocurrs during the deployment, the process is stopped.",
+                "mandatory": false,
+                "type": "FLAG",
+                "alias": "v",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "no_preview",
+                "option": "no_preview",
+                "description": "Skip the preview step.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "skip_warning",
+                "option": "skip_warning",
+                "description": "Indicates that the warning before deployment to production account will be skipped.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "applycontentprotection",
+                "option": "applycontentprotection",
+                "description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
+                "mandatory": false,
+                "type": "FLAG",
+                "alias": "c",
+                "usage": "T",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "accountspecificvalues",
+                "option": "accountspecificvalues",
+                "description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "WARNING",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "description": "Set the folder or zipped file containing the project. It overrides the default project.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "description": "Specify the domain URL. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "description": "Specify your email address. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "description": "Specify your account ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "description": "Specify the role ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "authid",
+                "option": "authid",
+                "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            }
+        ]
+    },
+    "importfiles": {
+        "name": "importfiles",
+        "usage": "",
+        "description": "Imports files from an account to your account customization project. You cannot import files from a SuiteApp.",
+        "isSetupRequired": true,
+        "options": [
+            {
+                "name": "paths",
+                "option": "paths",
+                "description": "Specify the File Cabinet paths of the files to import. For example, \"\/SuiteScripts\".",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "\"\/SuiteScripts\/test.js\"",
+                "defaultOption": true,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "excludeproperties",
+                "option": "excludeproperties",
+                "description": "Exclude all file properties within the .attributes folder.",
+                "mandatory": false,
+                "type": "FLAG",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "description": "Set the folder or zipped file containing the project. It overrides the default project.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "description": "Specify the domain URL. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "description": "Specify your email address. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "description": "Specify your account ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "description": "Specify the role ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "authid",
+                "option": "authid",
+                "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            }
+        ]
+    },
+    "importobjects": {
+        "name": "importobjects",
+        "usage": "",
+        "description": "Imports custom objects from your NetSuite account to the SDF project. In account customization projects (ACP), if SuiteScript files are referenced in the custom objects you import, these files get imported by default.",
+        "isSetupRequired": true,
+        "options": [
+            {
+                "name": "appid",
+                "option": "appid",
+                "description": "Specify your application ID. If specified, only custom objects with that application ID are imported. Otherwise, only custom objects with no application ID are imported.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "org.mycompany.helloworldapp",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "scriptid",
+                "option": "scriptid",
+                "description": "Specify the script ID. To specify multiple IDs, enter the IDs separated by spaces. Enter \"ALL\" to import all custom objects of the specified type.",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "customrecord_tes01 customrecord_test02 [...]",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "type",
+                "option": "type",
+                "description": "Specify the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https:\/\/system.netsuite.com\/app\/help\/helpcenter.nl?fid=sdfxml.html.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "customrecordtype",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "destinationfolder",
+                "option": "destinationfolder",
+                "description": "Specify the project folder where objects will be stored. It must be within the Objects folder of your project. For example, \/Objects\/MyObjects.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "\/Objects",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "excludefiles",
+                "option": "excludefiles",
+                "description": "Indicates that the SuiteScript files referenced in custom objects are not imported. It can only be used in account customization projects (ACP).",
+                "mandatory": false,
+                "type": "FLAG",
+                "alias": "excludefiles",
+                "usage": "\/Objects",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "description": "Set the folder or zipped file containing the project. It overrides the default project.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "description": "Specify the domain URL. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "description": "Specify your email address. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "description": "Specify your account ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "description": "Specify the role ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "authid",
+                "option": "authid",
+                "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            }
+        ]
+    },
+    "listfiles": {
+        "name": "listfiles",
+        "usage": "",
+        "description": "Lists the files in the File Cabinet of your account.",
+        "isSetupRequired": true,
+        "options": [
+            {
+                "name": "folder",
+                "option": "folder",
+                "description": "Specify the File Cabinet path, for example, \"\/SuiteScripts\". All files within subfolders are included.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "\"\/SuiteScripts\"",
+                "defaultOption": true,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "description": "Specify the domain URL. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "description": "Specify your email address. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "description": "Specify your account ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "description": "Specify the role ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "authid",
+                "option": "authid",
+                "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            }
+        ]
+    },
+    "listobjects": {
+        "name": "listobjects",
+        "usage": "",
+        "description": "Lists the custom objects deployed in an account.",
+        "isSetupRequired": true,
+        "options": [
+            {
+                "name": "appid",
+                "option": "appid",
+                "description": "Specify your application ID. If specified, only custom objects with that application ID are listed. Otherwise, only custom objects with no application ID are listed.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "org.mycompany.helloworldapp",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "scriptid",
+                "option": "scriptid",
+                "description": "Specify the script ID. If you specify it, only objects containing that script ID will be listed. Otherwise, all objects are listed.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "customrecord",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "type",
+                "option": "type",
+                "description": "Specify the type of custom objects to list. To specify multiple types, enter the types separated by spaces. Otherwise, all types are listed. To see what custom objects are supported by SDF, see https:\/\/system.netsuite.com\/app\/help\/helpcenter.nl?fid=sdfxml.html.",
+                "mandatory": false,
+                "type": "MULTIPLE",
+                "usage": "customrecordtype workflow [...]",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "description": "Specify the domain URL. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "description": "Specify your email address. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "description": "Specify your account ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "description": "Specify the role ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "authid",
+                "option": "authid",
+                "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            }
+        ]
+    },
+    "update": {
+        "name": "update",
+        "usage": "",
+        "description": "Overwrites the custom objects in the project with the custom objects in an account.",
+        "isSetupRequired": true,
+        "options": [
+            {
+                "name": "scriptid",
+                "option": "scriptid",
+                "description": "Specify the script ID of the objects you want to overwrite.",
+                "mandatory": true,
+                "type": "MULTIPLE",
+                "usage": "scriptid [...]",
+                "defaultOption": true,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "description": "Set the folder or zipped file containing the project. It overrides the default project.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "description": "Specify the domain URL. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "description": "Specify your email address. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "description": "Specify your account ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "description": "Specify the role ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "authid",
+                "option": "authid",
+                "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            }
+        ]
+    },
+    "validate": {
+        "name": "validate",
+        "usage": "",
+        "description": "Validates the folder containing the SuiteCloud project.",
+        "isSetupRequired": true,
+        "options": [
+            {
+                "name": "log",
+                "option": "log",
+                "description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "d:\/path\/test.log",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "server",
+                "option": "server",
+                "description": "Indicates that the server will perform the validation.",
+                "mandatory": false,
+                "type": "FLAG",
+                "alias": "s",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "applycontentprotection",
+                "option": "applycontentprotection",
+                "description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
+                "mandatory": false,
+                "type": "FLAG",
+                "alias": "c",
+                "usage": "T",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "accountspecificvalues",
+                "option": "accountspecificvalues",
+                "description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "WARNING",
+                "defaultOption": false,
+                "disableInIntegrationMode": false
+            },
+            {
+                "name": "project",
+                "option": "project",
+                "description": "Set the folder or zipped file containing the project. It overrides the default project.",
+                "mandatory": true,
+                "type": "SINGLE",
+                "usage": "c:\/project\/",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "url",
+                "option": "url",
+                "description": "Specify the domain URL. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "email",
+                "option": "email",
+                "description": "Specify your email address. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "account",
+                "option": "account",
+                "description": "Specify your account ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "role",
+                "option": "role",
+                "description": "Specify the role ID. It overrides the SDF file settings.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            },
+            {
+                "name": "authid",
+                "option": "authid",
+                "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+                "mandatory": false,
+                "type": "SINGLE",
+                "usage": "",
+                "defaultOption": false,
+                "disableInIntegrationMode": true
+            }
+        ]
+    }
 }
