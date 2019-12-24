@@ -19,7 +19,7 @@ Download the contents of this repository as a ZIP file, and do the following:
 ## Usage
 CLI for Node.js uses the following syntax: 
 ```
-scloud <command> <--option> <argument>
+suitecloud <command> <--option> <argument>
 ```
 
 ### Commands
@@ -37,17 +37,17 @@ scloud <command> <--option> <argument>
 |`setupaccount`|Sets up an account to use with the SuiteCloud CLI for Node.js.|
 |`validate`|Validates the folder containing the SuiteCloud project.|
 
-To check the help for a specific command, run `scloud {command} -h`.
+To check the help for a specific command, run `suitecloud {command} -h`.
 
 ## Getting Started
 Create a new project in an empty folder by running the following command:
 ```
-scloud createproject -i
+suitecloud createproject -i
 ```
 
 After you create a project, configure a NetSuite account, by running the following command within the project folder:
 ```
-scloud setupaccount
+suitecloud setupaccount
 ```
 
 ## [Contributing](./CONTRIBUTING.md)
