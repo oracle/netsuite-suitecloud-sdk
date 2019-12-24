@@ -15,12 +15,12 @@ To install CLI for Node.js, run the following command:
 npm install suitecloud-cli -global
 ```
 
-CLI for Node.js is available from within any directory by running `scloud`.
+CLI for Node.js is available from within any directory by running `suitecloud`.
 
 ## Usage
 CLI for Node.js uses the following syntax: 
 ```
-scloud <command> <option> <argument>
+suitecloud <command> <option> <argument>
 ```
 
 ### Commands
@@ -41,7 +41,7 @@ scloud <command> <option> <argument>
 
 To check the help for a specific command, run the following command:
 ```
-scloud {command} -h
+suitecloud {command} -h
 ```
 
 Read the detailed documentation for all the commands in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_155931263126.html).
@@ -49,12 +49,12 @@ Read the detailed documentation for all the commands in [NetSuite's Help Center]
 ## Getting Started
 Create a new project in an empty folder by running the following command:
 ```
-scloud createproject -i
+suitecloud createproject -i
 ```
 
 After you create a project, configure a NetSuite account, by running the following command within the project folder:
 ```
-scloud setupaccount
+suitecloud setupaccount
 ```
 
 ## Documentation
