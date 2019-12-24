@@ -211,7 +211,7 @@ describe('validateNotProductionUrl', () => {
 	const failureResponse = {
 		result: false,
 		validationMessage:
-			'Enter a non-production domain URL. If you want to use a production account, run "scloud setupaccount" without the "--dev" option.',
+			'Enter a non-production domain URL. If you want to use a production account, run "suitecloud setupaccount" without the "--dev" option.',
 	};
 
 	it('should return a response with a positive result when the URL is non-production one', () => {
