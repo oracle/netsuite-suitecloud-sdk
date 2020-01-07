@@ -2,9 +2,9 @@
     "setupaccount": {
         "name": "setupaccount",
         "alias": "sa",
-        "description": "Set up an account to use with the SuiteCloud CLI for Node.js.",
-		"isSetupRequired": false,
-		"forceInteractiveMode": true,
+        "description": "Sets up an account to use with the SuiteCloud CLI for Node.js.",
+        "isSetupRequired": false,
+        "forceInteractiveMode": true,
         "options": [
             {
                 "name": "dev",
@@ -15,16 +15,9 @@
             }
         ]
     },
-    "createobject": {
-        "name": "createobject",
-        "alias": "ca",
-        "description": "Create objects",
-        "isSetupRequired": false,
-        "options": []
-    },
     "localserver": {
         "name": "localserver",
-        "description": "Generate a local server of your SuiteCommerce extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777. You can use this server to run and test the SuiteCommerce themes and extensions that you are developing",
+        "description": "Generates a local server of your SuiteCommerce extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777. You can use this server to run and test the SuiteCommerce themes and extensions that you are developing",
         "isSetupRequired": false,
         "options": [
             {
@@ -55,7 +48,7 @@
     },
     "proxy": {
         "name": "proxy",
-        "description": "Configure a proxy server.",
+        "description": "Configures a proxy server.",
         "isSetupRequired": false,
         "options": [
             {

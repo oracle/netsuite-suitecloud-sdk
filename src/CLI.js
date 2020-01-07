@@ -16,7 +16,7 @@ const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapException
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
 
-const CLI_VERSION = '19.2.1';
+const CLI_VERSION = '20.1.0';
 
 module.exports = class CLI {
 	constructor(dependencies) {
