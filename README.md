@@ -7,8 +7,8 @@ CLI for Node.js is an interactive tool that guides you through all the steps of 
 
 ## Prerequisites
 The following software is required to work with SuiteCloud CLI for Node.js:
-- Node.js version 10.16.0 LTS
-- Java JRE version 8
+- Node.js version 12.14 LTS
+- Java JRE version 11
   
 ## Installation
 Download the contents of this repository as a ZIP file, and do the following:
