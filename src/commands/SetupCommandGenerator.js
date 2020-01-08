@@ -50,7 +50,8 @@ const COMMANDS = {
 
 const FLAGS = {
 	LIST: 'list',
-	SAVTOKEN: 'savetoken',
+	SAVETOKEN: 'savetoken',
+	DEVELOPMENTMODE: 'developmentmode'
 };
 
 const {
@@ -285,11 +286,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _performBrowserBasedAuthentication(params, developmentMode) {
-		const authenticateSDKExecutionContext = new SDKExecutionContext({
+		const executionContextOptions = {
 			command: COMMANDS.AUTHENTICATE,
 			params,
-			developmentMode: developmentMode,
-		});
+		};
+
+		if (developmentMode) {
+			executionContextOptions.flags = [FLAGS.DEVELOPMENTMODE];
+		}
+
+		const authenticateSDKExecutionContext = new SDKExecutionContext(executionContextOptions);
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(authenticateSDKExecutionContext),
@@ -299,15 +305,20 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _saveToken(params, developmentMode) {
-		const executionContextForSaveToken = new SDKExecutionContext({
+		const executionContextOptions = {
 			command: COMMANDS.AUTHENTICATE,
 			params,
-			flags: [FLAGS.SAVTOKEN],
-			developmentMode: developmentMode,
-		});
+			flags: [FLAGS.SAVETOKEN]
+		};
+
+		if (developmentMode) {
+			executionContextOptions.flags.push(FLAGS.DEVELOPMENTMODE);
+		}
+
+		const executionContext = new SDKExecutionContext(executionContextOptions);
 
 		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForSaveToken),
+			action: this._sdkExecutor.execute(executionContext),
 			message: TranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
