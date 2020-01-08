@@ -4,7 +4,7 @@ CLI for Node.js is an interactive tool that guides you through all the steps of 
 
 ## Prerequisites
 The following software is required to work with SuiteCloud CLI for Node.js:
-- Node.js version 10
+- Node.js version 12.14 LTS
 - Java JDK version 11
 
 Read the full list of prerequisites in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558708810.html).
