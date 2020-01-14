@@ -92,9 +92,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			}
 
 			const selectionObjectQuestions = this._generateSelectionObjectQuestions(operationResult);
-			const selectionObjectAnswers = await prompt(selectionObjectQuestions);			
+			const selectionObjectAnswers = await prompt(selectionObjectQuestions);
 
-			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);						
+			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
 			const anwersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
 
 			const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection };
@@ -213,8 +213,8 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 	_generateQuestionsAfterObjectSelection(selectionObjectAnswers) {
 		const questions = [];
 
-		const customScript = selectionObjectAnswers.objects_selected.find(element => element.scriptId.startsWith(CUSTOM_SCRIPT_PREFIX));
-		if (this._projectInfoService.getProjectType() === PROJECT_ACP && customScript) {
+		const hasCustomScript = selectionObjectAnswers.objects_selected.some(element => element.scriptId.startsWith(CUSTOM_SCRIPT_PREFIX));
+		if (this._projectInfoService.getProjectType() === PROJECT_ACP && hasCustomScript) {
 			const questionImportReferencedSuiteScripts = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS,
