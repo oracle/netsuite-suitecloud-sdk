@@ -47,6 +47,8 @@ const {
 const { validateArrayIsNotEmpty, validateScriptId, validateSuiteApp, showValidationResults } = require('../validation/InteractiveAnswersValidator');
 const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
 
+const CUSTOM_SCRIPT_PREFIX = 'customscript_';
+
 module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
@@ -90,9 +92,12 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			}
 
 			const selectionObjectQuestions = this._generateSelectionObjectQuestions(operationResult);
-
 			const selectionObjectAnswers = await prompt(selectionObjectQuestions);
-			const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers };
+
+			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
+			const anwersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
+
+			const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection };
 			const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
 			return finalAnswers;
 		} catch (error) {
@@ -202,8 +207,14 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
 		questions.push(questionListObjectsSelection);
+		return questions;
+	}
 
-		if (this._projectInfoService.getProjectType() === PROJECT_ACP) {
+	_generateQuestionsAfterObjectSelection(selectionObjectAnswers) {
+		const questions = [];
+
+		const hasCustomScript = selectionObjectAnswers.objects_selected.some(element => element.scriptId.startsWith(CUSTOM_SCRIPT_PREFIX));
+		if (this._projectInfoService.getProjectType() === PROJECT_ACP && hasCustomScript) {
 			const questionImportReferencedSuiteScripts = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS,
