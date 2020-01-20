@@ -59,50 +59,59 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 	}
 
 	async _getCommandQuestions(prompt) {
+						
+		let listObjectAnswers;
 		try {
 			const listObjectQuestions = this._generateListObjectQuestions();
-			const listObjectAnswers = await prompt(listObjectQuestions);
-
-			const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
-			const executionContextForListObjects = new SDKExecutionContext({
-				command: this._listObjectsMetadata.name,
-				params: paramsForListObjects,
-				includeProjectDefaultAuthId: true,
-			});
-
-			let operationResult;
-			try {
-				operationResult = await executeWithSpinner({
-					action: this._sdkExecutor.execute(executionContextForListObjects),
-					message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
-				});
-			} catch (error) {
-				throw TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak, error);
-			}
-
-			const { data } = operationResult;
-			if (SDKOperationResultUtils.hasErrors(operationResult)) {
-				SDKOperationResultUtils.logResultMessage(operationResult);
-				SDKOperationResultUtils.logErrors(operationResult);
-				return;
-			}
-			if (Array.isArray(data) && operationResult.data.length === 0) {
-				NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.RESULT);
-				return;
-			}
-
-			const selectionObjectQuestions = this._generateSelectionObjectQuestions(operationResult);
-			const selectionObjectAnswers = await prompt(selectionObjectQuestions);
-
-			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
-			const anwersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
-
-			const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection };
-			const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
-			return finalAnswers;
+			listObjectAnswers = await prompt(listObjectQuestions);
 		} catch (error) {
 			throw TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error);
+		}			
+
+		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
+		const executionContextForListObjects = new SDKExecutionContext({
+			command: this._listObjectsMetadata.name,
+			params: paramsForListObjects,
+			includeProjectDefaultAuthId: true,
+		});
+
+		let listObjectsResult;
+		try {
+			listObjectsResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForListObjects),
+				message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
+			});
+		} catch (error) {
+			throw TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak, error);
 		}
+
+		const { data } = listObjectsResult;
+		if (SDKOperationResultUtils.hasErrors(listObjectsResult)) {
+			SDKOperationResultUtils.logResultMessage(listObjectsResult);
+			SDKOperationResultUtils.logErrors(listObjectsResult);
+			throw SDKOperationResultUtils.getErrorMessagesString(listObjectsResult);
+		}
+		if (Array.isArray(data) && listObjectsResult.data.length === 0) {
+			NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.RESULT);
+			return;
+		}
+		
+		let selectionObjectAnswers;
+		let anwersAfterObjectSelection;
+		try {
+			const selectionObjectQuestions = this._generateSelectionObjectQuestions(listObjectsResult);
+			selectionObjectAnswers = await prompt(selectionObjectQuestions);
+
+			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
+			anwersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
+		} catch (error) {
+			throw TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error);
+		}			
+
+		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection };
+		const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
+		return finalAnswers;
+		
 	}
 
 	_generateListObjectQuestions() {
