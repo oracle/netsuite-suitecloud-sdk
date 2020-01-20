@@ -273,6 +273,30 @@ module.exports = [
 		},
 	},
 	{
+		name: 'Plug-in - Financial Institution Connectivity',
+		value: {
+			name: 'Plug-in - Financial Institution Connectivity',
+			type: 'ficonnectivityplugin',
+			prefix: 'customscript_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
+		name: 'Plug-in - Parser',
+		value: {
+			name: 'Plug-in - Parser',
+			type: 'bankstatementparserplugin',
+			prefix: 'customscript_',
+            hasRelatedFiles: true,
+            relatedFiles: [
+                { type:'blankscript' }
+            ]
+		},
+	},
+	{
 		name: 'Plug-in - Payment Gateway',
 		value: {
 			name: 'Plug-in - Payment Gateway',
