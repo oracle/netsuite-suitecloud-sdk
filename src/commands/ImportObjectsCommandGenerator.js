@@ -58,15 +58,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 	}
 
-	async _getCommandQuestions(prompt) {
-						
-		let listObjectAnswers;
-		try {
-			const listObjectQuestions = this._generateListObjectQuestions();
-			listObjectAnswers = await prompt(listObjectQuestions);
-		} catch (error) {
-			throw TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error);
-		}			
+	async _getCommandQuestions(prompt) {						
+		const listObjectQuestions = this._generateListObjectQuestions();
+		let listObjectAnswers = await prompt(listObjectQuestions);		
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
 		const executionContextForListObjects = new SDKExecutionContext({
@@ -92,8 +86,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			throw SDKOperationResultUtils.getErrorMessagesString(listObjectsResult);
 		}
 		if (Array.isArray(data) && listObjectsResult.data.length === 0) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST), NodeUtils.COLORS.RESULT);
-			return;
+			throw NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST));
 		}
 		
 		let selectionObjectAnswers;
