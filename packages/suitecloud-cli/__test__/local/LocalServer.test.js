@@ -8,7 +8,7 @@
 const { promisify } = require('util');
 const request = require('request');
 const url = require('url');
-const LocalServer = require('../../src/sdf-cli-local/src/LocalServer');
+const LocalServer = require('@oracle/sdf-cli-local/src/LocalServer');
 const requestGet = promisify(request.get);
 
 const { SERVERPATH, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');

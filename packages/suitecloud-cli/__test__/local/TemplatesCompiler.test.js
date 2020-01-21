@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const TemplatesCompiler = require('../../src/sdf-cli-local/src/compilers/TemplatesCompiler');
+const TemplatesCompiler = require('@oracle/sdf-cli-local/src/compilers/TemplatesCompiler');
 
 const { SERVERPATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 

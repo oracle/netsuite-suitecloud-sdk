@@ -1,5 +1,5 @@
 # binaries
-bin/*
+/packages/suitecloud-cli/bin/*
 
 # dependencies
 node_modules
@@ -9,8 +9,11 @@ account.json
 error.log
 
 # config
-src/core/sdksetup/config.json
+packages/suitecloud-cli/src/core/sdksetup/config.json
 
 # ide
 .vscode/*
 .idea/*
+
+#package-lock of packages doesn't make sense with Lerna
+/packages/*/package-lock.json

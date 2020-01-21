@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const SassCompiler = require('../../src/sdf-cli-local/src/compilers/SassCompiler');
+const SassCompiler = require('@oracle/sdf-cli-local/src/compilers/SassCompiler');
 
 const { ROOT, SERVERPATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 

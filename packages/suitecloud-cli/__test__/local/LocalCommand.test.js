@@ -5,7 +5,7 @@
 
 'use strict';
 
-const LocalCommand = require('../../src/sdf-cli-local/src/LocalCommand');
+const LocalCommand = require('@oracle/sdf-cli-local/src/LocalCommand');
 
 let localCommand;
 

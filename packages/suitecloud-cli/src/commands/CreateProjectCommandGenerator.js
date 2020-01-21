@@ -360,7 +360,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			version
 		);
 
-		const nodeCliAbsolutePath = path.resolve(__dirname, '../../testing-framework').replace(/\\/g, '/');
+		const nodeCliAbsolutePath = path.resolve(__dirname, '../../../testing-framework').replace(/\\/g, '/');
 		await this._fileSystemService.replaceStringInFile(
 			packageJsonAbsolutePath,
 			PACKAGE_JSON_REPLACE_STRING_NODE_CLI_PATH,
