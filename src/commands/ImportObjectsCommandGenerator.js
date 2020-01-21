@@ -60,7 +60,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 	async _getCommandQuestions(prompt) {						
 		const listObjectQuestions = this._generateListObjectQuestions();
-		let listObjectAnswers = await prompt(listObjectQuestions);		
+		const listObjectAnswers = await prompt(listObjectQuestions);		
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
 		const executionContextForListObjects = new SDKExecutionContext({
