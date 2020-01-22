@@ -151,7 +151,7 @@
 	"COMMAND_SETUPACCOUNT_MESSAGES_SAVING_TBA_TOKEN": "Saving the TBA token...",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SELECT_CONFIGURED_AUTHID": "Select a configured authentication ID (authID):",
 	"COMMAND_SETUPACCOUNT_MESSAGES_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
-	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_OAUTH": "The account has been successfully authenticated. This project will use the authentication ID {0} as default. If you want to change your default credentials, run \"suitecloud setupaccount\" again.",
+	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_OAUTH": "The account has been successfully authenticated for the following company and role: {0} - {1}. This project will use the authentication ID {2} as default. If you want to change your default credentials, run \"suitecloud setupaccount\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_SAVED_TOKEN": "The TBA token was successfully saved in your application with the {0} authentication ID, and set as default. If you want to change your default credentials, run \"suitecloud setupaccount\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID {0} as default.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_SUCCESSFUL": "The account has been successfully set up.",
