@@ -85,7 +85,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			SDKOperationResultUtils.logErrors(listObjectsResult);
 			throw SDKOperationResultUtils.getErrorMessagesString(listObjectsResult);
 		}
-		if (Array.isArray(data) && listObjectsResult.data.length === 0) {			
+		if (Array.isArray(data) && listObjectsResult.data.length === 0) {
 			throw TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST);
 		}
 		
