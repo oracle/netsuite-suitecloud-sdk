@@ -85,8 +85,8 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			SDKOperationResultUtils.logErrors(listObjectsResult);
 			throw SDKOperationResultUtils.getErrorMessagesString(listObjectsResult);
 		}
-		if (Array.isArray(data) && listObjectsResult.data.length === 0) {
-			throw NodeUtils.println(TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST));
+		if (Array.isArray(data) && listObjectsResult.data.length === 0) {			
+			throw TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST);
 		}
 		
 		let selectionObjectAnswers;
