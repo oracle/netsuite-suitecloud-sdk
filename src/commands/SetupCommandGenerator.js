@@ -107,7 +107,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				const isDevLabel = authentication.isDev
 					? TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID_DEV_URL, authentication.urls.app)
 					: '';
-				const accountInfo = `${authentication.accountInfo.companyName}, ${authentication.accountInfo.roleName}`;
+				const accountInfo = `${authentication.accountInfo.companyName} [${authentication.accountInfo.roleName}]`;
 				choices.push({
 					name: TranslationService.getMessage(
 						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID,
