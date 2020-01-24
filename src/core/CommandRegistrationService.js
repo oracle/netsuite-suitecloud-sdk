@@ -57,7 +57,7 @@ module.exports = class CommandRegistrationService {
 			option1.name.localeCompare(option2.name)
 		);
 		optionsSortedByName.forEach(option => {
-			if (option.disableInIntegrationMode || option.hidden) {
+			if (option.disableInIntegrationMode) {
 				return;
 			}
 			let mandatoryOptionString = '';
