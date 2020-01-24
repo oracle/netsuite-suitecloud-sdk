@@ -107,11 +107,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				const isDevLabel = authentication.isDev
 					? TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID_DEV_URL, authentication.urls.app)
 					: '';
+				const accountInfo = `${authentication.accountInfo.companyName} [${authentication.accountInfo.roleName}]`;
 				choices.push({
 					name: TranslationService.getMessage(
 						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID,
 						authID,
-						authentication.accountId,
+						accountInfo,
 						isDevLabel
 					),
 					value: authID,
@@ -248,6 +249,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(executeActionContext) {
 		let authId;
+		let accountInfo;
 		if (executeActionContext.mode === AUTH_MODE.OAUTH) {
 			const commandParams = {
 				authId: executeActionContext.newAuthId,
@@ -257,8 +259,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				commandParams.url = executeActionContext.url;
 			}
 
-			await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
+			const operationResult = await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
 			authId = executeActionContext.newAuthId;
+			accountInfo = operationResult.data.accountInfo;
 		} else if (executeActionContext.mode === AUTH_MODE.SAVE_TOKEN) {
 			const commandParams = {
 				authid: executeActionContext.newAuthId,
@@ -282,6 +285,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			status: OperationResultStatus.SUCCESS,
 			mode: executeActionContext.mode,
 			authId: authId,
+			accountInfo: accountInfo
 		};
 	}
 
@@ -302,6 +306,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			message: TranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
+
+		return operationResult;
 	}
 
 	async _saveToken(params, developmentMode) {
@@ -328,7 +334,13 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let resultMessage;
 		switch (operationResult.mode) {
 			case AUTH_MODE.OAUTH:
-				resultMessage = TranslationService.getMessage(OUTPUT.NEW_OAUTH, operationResult.authId);
+				resultMessage = TranslationService.getMessage(
+					OUTPUT.NEW_OAUTH,
+					operationResult.accountInfo.companyName,
+					operationResult.accountInfo.roleName,
+					operationResult.authId
+					);
+				NodeUtils.println(JSON.stringify(operationResult));
 				break;
 			case AUTH_MODE.SAVE_TOKEN:
 				resultMessage = TranslationService.getMessage(OUTPUT.NEW_SAVED_TOKEN, operationResult.authId);
