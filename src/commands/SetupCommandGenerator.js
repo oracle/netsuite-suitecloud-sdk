@@ -104,7 +104,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 			auhtIDs.forEach(authID => {
 				const authentication = existingAuthIDsResponse.data[authID];
-				const isDevLabel = authentication.isDev
+				const isDevLabel = authentication.developmentMode
 					? TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID_DEV_URL, authentication.urls.app)
 					: '';
 				const accountInfo = `${authentication.accountInfo.companyName} [${authentication.accountInfo.roleName}]`;
@@ -340,7 +340,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					operationResult.accountInfo.roleName,
 					operationResult.authId
 					);
-				NodeUtils.println(JSON.stringify(operationResult));
 				break;
 			case AUTH_MODE.SAVE_TOKEN:
 				resultMessage = TranslationService.getMessage(OUTPUT.NEW_SAVED_TOKEN, operationResult.authId);
