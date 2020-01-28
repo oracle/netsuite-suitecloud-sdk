@@ -47,7 +47,7 @@ module.exports = class Compiler {
 	_createRequireJSFile(localFolder) {
 		const src = path.join(
 			process.mainModule.filename,
-			'../../../sdf-cli-local',
+			'../../../localserver-cli-command',
 			'node_modules',
 			'requirejs',
 			'require.js'

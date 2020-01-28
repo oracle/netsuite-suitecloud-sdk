@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "bin": {
-    "suitecloud": "./packages/suitecloud-cli/src/suitecloud.js"
+    "suitecloud": "./packages/node-cli/src/suitecloud.js"
   },
   "devDependencies": {
     "lerna": "^3.20.2"

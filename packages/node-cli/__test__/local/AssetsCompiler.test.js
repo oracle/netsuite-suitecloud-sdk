@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const AssetsCompiler = require('@oracle/sdf-cli-local/src/compilers/AssetsCompiler');
+const AssetsCompiler = require('@oracle/netsuite-suitecloud-localserver-cli-command/src/compilers/AssetsCompiler');
 
 const { SERVERPATH, CUSTOM_ASSETS_PATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 

@@ -9,7 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 // normally this is called only when localserver command is executed
-const FileSystem = require('@oracle/sdf-cli-local/src/services/FileSystem');
+const FileSystem = require('@oracle/netsuite-suitecloud-localserver-cli-command/src/services/FileSystem');
 FileSystem.start(require('../../src/services/FileSystemService'));
 
 const ROOT = './__test__/local';

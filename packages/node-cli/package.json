@@ -1,5 +1,5 @@
 {
-  "name": "@oracle/netsuite-suitecloud-node-cli",
+  "name": "@oracle/netsuite-suitecloud-nodejs-cli",
   "version": "1.0.0",
   "description": "SuiteCloud CLI for Node.js",
   "keywords": [
@@ -8,12 +8,9 @@
     "SDF"
   ],
   "bugs": {
-    "url": "https://github.com/oracle/netsuite-suitecloud-node-cli/issues"
+    "url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/oracle/netsuite-suitecloud-node-cli.git"
-  },
+  "repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/node-cli",
   "main": "./src/suitecloud.js",
   "preferGlobal": true,
   "sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/cli/java/latest",
@@ -26,7 +23,7 @@
     "commander": "^2.20.0",
     "inquirer": "^6.3.1",
     "request-promise-native": "^1.0.7",
-    "@oracle/sdf-cli-local": "1.0.0",
+    "@oracle/netsuite-suitecloud-localserver-cli-command": "1.0.0",
     "vm2": "^3.8.0",
     "xml2js": "^0.4.19"
   }, 

@@ -5,7 +5,7 @@
 
 'use strict';
 
-const LocalCommand = require('@oracle/sdf-cli-local/src/LocalCommand');
+const LocalCommand = require('@oracle/netsuite-suitecloud-localserver-cli-command/src/LocalCommand');
 
 let localCommand;
 

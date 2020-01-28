@@ -1,0 +1,28 @@
+{
+	"name": "@oracle/netsuite-suitecloud-localserver-cli-command",
+	"version": "1.0.0",
+	"description": "SuiteCloud CLI Local command",
+  "repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/extensions/localserver-cli-command",
+  "bugs": {
+    "url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"
+  },
+  "keywords": [
+    "NetSuite",
+    "SuiteCloud",
+    "SDF"
+  ],
+  "license": "UPL-1.0",
+	"main": "index.js",
+	"preferGlobal": true,
+	"dependencies": {
+		"async": "3.0.1",
+		"cors": "2.8.5",
+		"express": "4.17.1",
+		"glob": "7.1.4",
+		"handlebars": "4.1.2",
+		"node-sass": "4.12.0",
+		"node-watch": "0.6.2",
+		"requirejs": "2.3.6",
+		"xml2js": "^0.4.19"
+	}
+}

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const TESTING_FRAMEWORK_PATH = '@oracle/netsuite-suitecloud-testing-framework';
+const TESTING_FRAMEWORK_PATH = '@oracle/netsuite-suitecloud-unit-testing';
 const CORE_STUBS_PATH = `${TESTING_FRAMEWORK_PATH}/stubs`;
 const nodeModulesToTransform = [CORE_STUBS_PATH].join('|');
 const SUITESCRIPT_FOLDER_REGEX = '^SuiteScripts(.*)$';

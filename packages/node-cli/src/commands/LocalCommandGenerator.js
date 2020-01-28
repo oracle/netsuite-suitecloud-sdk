@@ -4,7 +4,7 @@
 */
 'use strict';
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const LocalCommand = require('@oracle/sdf-cli-local').LocalCommand;
+const LocalCommand = require('@oracle/netsuite-suitecloud-localserver-cli-command').LocalCommand;
 
 const { COLORS } = require('./../utils/NodeUtils');
 const { COMMAND_LOCAL } = require('./../services/TranslationKeys');
