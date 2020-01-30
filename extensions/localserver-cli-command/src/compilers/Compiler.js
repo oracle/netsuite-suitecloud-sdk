@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const SassCompiler = require('./SassCompiler');
@@ -47,7 +47,7 @@ module.exports = class Compiler {
 	_createRequireJSFile(localFolder) {
 		const src = path.join(
 			process.mainModule.filename,
-			'../../../localserver-cli-command',
+			'../../../../extensions/localserver-cli-command',
 			'node_modules',
 			'requirejs',
 			'require.js'
