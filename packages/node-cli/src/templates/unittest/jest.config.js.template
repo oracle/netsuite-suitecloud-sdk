@@ -1,0 +1,7 @@
+const SuiteCloudJestConfiguration = require("@oracle/netsuite-suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
+const cliConfig = require("./cli-config");
+
+module.exports = SuiteCloudJestConfiguration.build({
+	projectFolder: cliConfig.defaultProjectFolder,
+	projectType: {{projectType}},
+});
