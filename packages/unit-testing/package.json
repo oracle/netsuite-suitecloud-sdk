@@ -1,7 +1,6 @@
 {
   "name": "@oracle/netsuite-suitecloud-unit-testing",
   "version": "1.0.0",
-  "author": "Oracle",
   "repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/unit-testing",
   "bugs": {
     "url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"

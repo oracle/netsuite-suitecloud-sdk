@@ -62,7 +62,7 @@ Read all the documentation about CLI for Node.js in [NetSuite's Help Center](
 https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
 
 ## [Contributing](./CONTRIBUTING.md)
-SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](./CONTRIBUTING.md) for details.
+SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](../../CONTRIBUTING.md) for details.
 
 ## [License](./LICENSE.txt)
 Copyright (c) 2019 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
