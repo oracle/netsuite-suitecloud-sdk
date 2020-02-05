@@ -58,9 +58,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 	}
 
-	async _getCommandQuestions(prompt) {						
+	async _getCommandQuestions(prompt) {
 		const listObjectQuestions = this._generateListObjectQuestions();
-		const listObjectAnswers = await prompt(listObjectQuestions);		
+		const listObjectAnswers = await prompt(listObjectQuestions);
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
 		const executionContextForListObjects = new SDKExecutionContext({
@@ -88,23 +88,26 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		if (Array.isArray(data) && listObjectsResult.data.length === 0) {
 			throw TranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST);
 		}
-		
+
 		let selectionObjectAnswers;
 		let anwersAfterObjectSelection;
+		let overwriteConfirmationAnswer;
 		try {
 			const selectionObjectQuestions = this._generateSelectionObjectQuestions(listObjectsResult);
 			selectionObjectAnswers = await prompt(selectionObjectQuestions);
 
 			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
 			anwersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
+
+			const overwriteConfirmationQuestion = this._generateOverwriteConfirmationQuestion(anwersAfterObjectSelection);
+			overwriteConfirmationAnswer = await prompt(overwriteConfirmationQuestion);
 		} catch (error) {
 			throw TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error);
-		}			
+		}
 
-		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection };
+		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection, ...overwriteConfirmationAnswer };
 		const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
 		return finalAnswers;
-		
 	}
 
 	_generateListObjectQuestions() {
@@ -248,11 +251,26 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			choices: objectDirectoryChoices,
 		};
 		questions.push(questionDestinationFolder);
+		return questions;
+	}
+
+	_generateOverwriteConfirmationQuestion(answersAfterObjectSelection) {
+		const questions = [];
+
+		let overwriteConfirmationMessageKey;
+		if (
+			answersAfterObjectSelection[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined &&
+			answersAfterObjectSelection[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]
+		) {
+			overwriteConfirmationMessageKey = QUESTIONS.OVERWRITE_OBJECTS_AND_FILES;
+		} else {
+			overwriteConfirmationMessageKey = QUESTIONS.OVERWRITE_OBJECTS;
+		}
 
 		const questionOverwriteConfirmation = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
-			message: TranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS),
+			message: TranslationService.getMessage(overwriteConfirmationMessageKey),
 			default: 0,
 			choices: [
 				{ name: TranslationService.getMessage(YES), value: true },
