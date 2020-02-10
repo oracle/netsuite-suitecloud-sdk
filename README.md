@@ -12,10 +12,10 @@ Read the full list of prerequisites in [NetSuite's Help Center](https://system.n
 ## Supported Versions
 Although you may have access to older versions of CLI for Node.js, only the versions in this section are officially supported.
 
-Each version of CLI for Node.js works optimally with a specific NetSuite version. To check the  equivalence among verisons, see the following table:
+Each version of CLI for Node.js in NPM works optimally with a specific NetSuite version. To check the equivalence among versions, see the following table:
 
-| NPM | NetSuite |
-|-----|:--:|
+| Version in NPM | Version in NetSuite |
+|:--------------:|:-------------------:|
 | 1.0.X | 20.1 |
   
 ## Installation
