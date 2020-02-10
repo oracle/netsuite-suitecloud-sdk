@@ -115,7 +115,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						accountInfo,
 						isDevLabel
 					),
-					value: authID,
+					value: {authId: authID, accountInfo: authentication.accountInfo},
 				});
 			});
 			choices.push(new inquirer.Separator());
@@ -135,20 +135,20 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			};
 		}
 
-		const selectedAuthID = authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
+		const selectedAuth = authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
 
-		// reusing an already set authID
-		if (selectedAuthID !== CREATE_NEW_AUTH) {
+		if (selectedAuth !== CREATE_NEW_AUTH) {
+			// reuse existing authID
 			return {
 				createNewAuthentication: false,
-				existingAuthId: selectedAuthID,
+				authentication: selectedAuth,
 				mode: AUTH_MODE.REUSE,
 			};
 		}
 
 		// creating a new authID
 		let developmentModeUrlAnswer;
-		if (selectedAuthID === CREATE_NEW_AUTH) {
+		if (selectedAuth === CREATE_NEW_AUTH) {
 			const developmentMode = commandArguments && commandArguments.dev !== undefined && commandArguments.dev;
 
 			if (developmentMode) {
@@ -277,7 +277,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			await this._saveToken(commandParams, executeActionContext.developmentMode);
 			authId = executeActionContext.newAuthId;
 		} else if (executeActionContext.mode === AUTH_MODE.REUSE) {
-			authId = executeActionContext.existingAuthId;
+			authId = executeActionContext.authentication.authId;
+			accountInfo = executeActionContext.authentication.accountInfo;
 		}
 		this._authenticationService.setDefaultAuthentication(authId);
 
@@ -342,10 +343,19 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					);
 				break;
 			case AUTH_MODE.SAVE_TOKEN:
-				resultMessage = TranslationService.getMessage(OUTPUT.NEW_SAVED_TOKEN, operationResult.authId);
+				resultMessage = TranslationService.getMessage(
+					OUTPUT.NEW_SAVED_TOKEN,
+					operationResult.accountInfo.companyName,
+					operationResult.accountInfo.roleName,
+					operationResult.authId
+				);
 				break;
 			case AUTH_MODE.REUSE:
-				resultMessage = TranslationService.getMessage(OUTPUT.REUSED_AUTH_ID, operationResult.authId);
+				resultMessage = TranslationService.getMessage(
+					OUTPUT.REUSED_AUTH_ID,
+					operationResult.authId,
+					operationResult.accountInfo.companyName,
+					operationResult.accountInfo.roleName);
 				break;
 			default:
 				break;
