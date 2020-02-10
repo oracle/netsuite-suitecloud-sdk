@@ -4,15 +4,24 @@ CLI for Node.js is an interactive tool that guides you through all the steps of 
 
 ## Prerequisites
 The following software is required to work with SuiteCloud CLI for Node.js:
-- Node.js version 12.14 LTS
+- Node.js version 12.14.0 LTS or greater
 - Java JDK version 11
 
 Read the full list of prerequisites in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558708810.html).
+
+## Supported Versions
+Although you may have access to older versions of CLI for Node.js, only the versions in this section are officially supported.
+
+Each version of CLI for Node.js works optimally with a specific NetSuite version. To check the  equivalence among verisons, see the following table:
+
+| NPM | NetSuite |
+|-----|:--:|
+| 1.0.X | 20.1 |
   
 ## Installation
 To install CLI for Node.js, run the following command:
 ```
-npm install @oracle/netsuite-suitecloud-nodejs-cli --global
+npm install --global @oracle/netsuite-suitecloud-nodejs-cli
 ```
 
 CLI for Node.js is available from within any directory by running `suitecloud`.
@@ -37,6 +46,7 @@ suitecloud <command> <option> <argument>
 |[`manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs (authid) for all your projects.|
 |[`proxy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044426239.html)|Configures a proxy server.|
 |[`setupaccount`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
+|[`update`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156050566547.html)|Overwrite the custom objects in the project with the custom objects in an account.|
 |[`validate`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
 
 To check the help for a specific command, run the following command:
