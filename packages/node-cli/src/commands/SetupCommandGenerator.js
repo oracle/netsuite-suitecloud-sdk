@@ -331,31 +331,31 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		this._checkOperationResultIsSuccessful(operationResult);
 	}
 
-	_formatOutput(operationResult) {
+	_formatOutput(actionResult) {
 		let resultMessage;
-		switch (operationResult.mode) {
+		switch (actionResult.mode) {
 			case AUTH_MODE.OAUTH:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.NEW_OAUTH,
-					operationResult.accountInfo.companyName,
-					operationResult.accountInfo.roleName,
-					operationResult.authId
+					actionResult.accountInfo.companyName,
+					actionResult.accountInfo.roleName,
+					actionResult.authId
 					);
 				break;
 			case AUTH_MODE.SAVE_TOKEN:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.NEW_SAVED_TOKEN,
-					operationResult.accountInfo.companyName,
-					operationResult.accountInfo.roleName,
-					operationResult.authId
+					actionResult.accountInfo.companyName,
+					actionResult.accountInfo.roleName,
+					actionResult.authId
 				);
 				break;
 			case AUTH_MODE.REUSE:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.REUSED_AUTH_ID,
-					operationResult.authId,
-					operationResult.accountInfo.companyName,
-					operationResult.accountInfo.roleName);
+					actionResult.authId,
+					actionResult.accountInfo.companyName,
+					actionResult.accountInfo.roleName);
 				break;
 			default:
 				break;
