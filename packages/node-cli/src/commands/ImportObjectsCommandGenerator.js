@@ -47,7 +47,7 @@ const {
 const { validateArrayIsNotEmpty, validateScriptId, validateSuiteApp, showValidationResults } = require('../validation/InteractiveAnswersValidator');
 const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
 
-const CUSTOM_SCRIPT_PREFIX = 'customscript_';
+const CUSTOM_SCRIPT_PREFIX = 'customscript';
 
 module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
