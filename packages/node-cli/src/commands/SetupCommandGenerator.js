@@ -105,12 +105,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			auhtIDs.forEach(authID => {
 				const authentication = existingAuthIDsResponse.data[authID];
 				const isDevLabel = authentication.developmentMode
-					? TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID_DEV_URL, authentication.urls.app)
+					? TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
 					: '';
 				const accountInfo = `${authentication.accountInfo.companyName} [${authentication.accountInfo.roleName}]`;
 				choices.push({
 					name: TranslationService.getMessage(
-						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUHT_ID,
+						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
 						authID,
 						accountInfo,
 						isDevLabel
