@@ -274,8 +274,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				commandParams.url = executeActionContext.url;
 			}
 
-			await this._saveToken(commandParams, executeActionContext.developmentMode);
+			const operationResult = await this._saveToken(commandParams, executeActionContext.developmentMode);
 			authId = executeActionContext.newAuthId;
+			accountInfo = operationResult.data.accountInfo;
 		} else if (executeActionContext.mode === AUTH_MODE.REUSE) {
 			authId = executeActionContext.authentication.authId;
 			accountInfo = executeActionContext.authentication.accountInfo;
@@ -329,6 +330,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			message: TranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
+
+		return operationResult;
 	}
 
 	_formatOutput(actionResult) {
