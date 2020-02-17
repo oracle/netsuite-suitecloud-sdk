@@ -186,32 +186,3 @@ describe('validateXMLCharacters', () => {
 		expect(validateXMLCharacters("mixing_Some > of them < all 'in' the &same string \"")).toEqual(failureResponse);
 	});
 });
-
-describe('validateNotProductionUrl', () => {
-	const failureResponse = {
-		result: false,
-		validationMessage:
-			'Enter a non-production domain URL. If you want to use a production account, run "suitecloud setupaccount" without the "--dev" option.',
-	};
-
-	it('should return a response with a positive result when the URL is non-production one', () => {
-		const nonProductionURLs = [
-			'lp-quarks.se4.eng.netsuite.com',
-			'dr-scrumbox-eu.du3.eng.netsuite.com',
-			'sa.se4.eng.netsuite.com',
-			'rm2.se4.eng.netsuite.com',
-		];
-		nonProductionURLs.forEach(url => expect(validateNotProductionUrl(url)).toEqual(positiveResponse));
-	});
-
-	it('should return a response with a negative result when using a production url', () => {
-		const productinoURLs = [
-			'system.netsuite.com',
-			'system.na1.netsuite.com',
-			'12345.app.netsuite.com',
-			'wolfelectronics.app.netsuite.com',
-			'Wolf-Electronics.app.netsuite.com',
-		];
-		productinoURLs.forEach(url => expect(validateNotProductionUrl(url)).toEqual(failureResponse));
-	});
-});

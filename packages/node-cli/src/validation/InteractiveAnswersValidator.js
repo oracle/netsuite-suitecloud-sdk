@@ -32,10 +32,6 @@ const XML_FORBIDDEN_CHARACTERS_REGEX = /[<>&'"]/;
 const PROJECT_VERSION_FORMAT_REGEX = '^\\d+(\\.\\d+){2}$';
 const SUITEAPP_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '(\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '){2}$';
 const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
-const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-const SUBDOMAIN_DOMAIN_URL_REGEX = /[\w\d].*\.[\w\d].*\.[\w\d].*/;
-const PRODUCTION_ACCOUNT_URL_REGEX = /^system(\.[\w-]+)?.netsuite.com$|^([\w-]+\.)app\.netsuite\.com$/i;
 
 class InteractiveAnswersValidator {
 	showValidationResults(value, ...funcs) {
@@ -124,27 +120,14 @@ class InteractiveAnswersValidator {
 			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(COMMAND_OPTION_IS_MANDATORY, optionName));
 	}
 
-	validateDevUrl(devUrlValue) {
-		const builtUrl = url.parse(devUrlValue);
-		return !builtUrl.protocol && SUBDOMAIN_DOMAIN_URL_REGEX.test(devUrlValue)
-			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.DEV_URL));
-	}
-
 	validateProjectType(value) {
 		return [ApplicationConstants.PROJECT_SUITEAPP, ApplicationConstants.PROJECT_ACP].includes(value)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE));
 	}
 
-	validateNotProductionUrl(url) {
-		return !url.match(PRODUCTION_ACCOUNT_URL_REGEX)
-			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_URL_WITH_DEV_FLAG));
-	}
-
-	validateAuthIDNotInList(newAuhtID, authIDs) {
-		return !authIDs.includes(newAuhtID)
+	validateAuthIDNotInList(newAuthID, authIDs) {
+		return !authIDs.includes(newAuthID)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.AUTH_ID_ALREADY_USED));
 	}
