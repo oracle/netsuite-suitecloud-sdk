@@ -8,12 +8,11 @@ const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
-	SDK_DIRECTORY_NAME,
+	FOLDER_NAMES,
 	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
 const SDKProperties = require('./core/sdksetup/SDKProperties');
 const path = require('path');
-const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
 const EnvironmentInformationService = require('./services/EnvironmentInformationService');
@@ -21,6 +20,8 @@ const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
+const SDKDownloadService = require('./services/SDKDownloadService');
+const HOME_PATH = require('os').homedir();
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
@@ -39,7 +40,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 			? this._authenticationService.getProjectDefaultAuthId()
 			: null;
 
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let lastSdkOutput = '';
 			let lastSdkError = '';
 
@@ -47,6 +48,16 @@ module.exports.SDKExecutor = class SDKExecutor {
 				const javaVersionError = this._checkIfJavaVersionIssue();
 				if (javaVersionError) {
 					reject(javaVersionError);
+					return;
+				}
+			}
+
+			if (!this._CLISettingsService.isSdkDownloaded()) {
+				if (await SDKDownloadService.download()) {
+					this._CLISettingsService.setSdkDownloaded(true);
+				}
+				else {
+					this._CLISettingsService.setSdkDownloaded(false);
 					return;
 				}
 			}
@@ -66,16 +77,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
-			const sdkJarPath = path.join(
-				__dirname,
-				`../${SDK_DIRECTORY_NAME}/${SDKProperties.getSDKFileName()}`
-			);
-			if (!FileUtils.exists(sdkJarPath)) {
-				throw TranslationService.getMessage(
-					ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND,
-					path.join(__dirname, '..')
-				);
-			}
+			const sdkJarPath = path.join(HOME_PATH, FOLDER_NAMES.SUITECLOUD_SDK, SDKProperties.getSDKFileName());
 			const quotedSdkJarPath = `"${sdkJarPath}"`;
 			
 			const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatformVersionOption}`;

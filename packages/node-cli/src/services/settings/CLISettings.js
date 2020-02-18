@@ -9,6 +9,7 @@ module.exports = class CLISettings {
 		this._useProxy = options.useProxy;
 		this._proxyUrl = options.proxyUrl;
 		this._isJavaVersionValid = options.isJavaVersionValid;
+		this._isSdkDownloaded = options.isSdkDownloaded;
 	}
 
 	get isJavaVersionValid() {
@@ -23,11 +24,16 @@ module.exports = class CLISettings {
 		return this._useProxy;
 	}
 
+	get isSdkDownloaded() {
+		return this._isSdkDownloaded;
+	}
+
 	toJSON() {
 		return {
 			proxyUrl: this._proxyUrl,
 			useProxy: this._useProxy,
 			isJavaVersionValid: this._isJavaVersionValid,
+			isSdkDownloaded: this._isSdkDownloaded
 		};
 	}
 
@@ -36,6 +42,7 @@ module.exports = class CLISettings {
 			useProxy: json.useProxy,
 			proxyUrl: json.proxyUrl,
 			isJavaVersionValid: json.isJavaVersionValid,
+			isSdkDownloaded: json.isSdkDownloaded
 		});
 	}
 };

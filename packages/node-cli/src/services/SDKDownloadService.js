@@ -7,25 +7,20 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('request-promise-native');
-const SDKProperties = require('./SDKProperties');
-
-const ROOT_DIRECTORY = path.dirname(require.main.filename);
-
-const { SDK_DIRECTORY_NAME } = require('../../ApplicationConstants');
-
-const NodeUtils = require('../../utils/NodeUtils');
-const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
-
-const TranslationService = require('../../services/TranslationService');
-const FileSystemService = require('../../services/FileSystemService');
-const { executeWithSpinner } = require('../../ui/CliSpinner');
-
+const SDKProperties = require('../core/sdksetup/SDKProperties');
+const { FOLDER_NAMES } = require('../ApplicationConstants');
+const NodeUtils = require('../utils/NodeUtils');
+const unwrapExceptionMessage = require('../utils/ExceptionUtils').unwrapExceptionMessage;
+const TranslationService = require('./TranslationService');
+const FileSystemService = require('./FileSystemService');
+const { executeWithSpinner } = require('../ui/CliSpinner');
+const HOME_PATH = require('os').homedir();
 const {
 	DOWNLOADING_SUITECLOUD_SDK,
 	DOWNLOADING_SUITECLOUD_SDK_SUCCESS,
 	DOWNLOADING_SUITECLOUD_SDK_ERROR,
 	DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE,
-} = require('../../services/TranslationKeys');
+} = require('./TranslationKeys');
 
 const VALID_JAR_CONTENT_TYPES = [
 	'application/java-archive',
@@ -38,34 +33,22 @@ class SDKDownloadService {
 		this._fileSystemService = new FileSystemService();
 	}
 
-	download() {
-		const sdkDirectory = this._fileSystemService.createFolder(
-			ROOT_DIRECTORY,
-			SDK_DIRECTORY_NAME
-		);
-
+	async download() {
+		const sdkDirectory = this._fileSystemService.createFolder(HOME_PATH, FOLDER_NAMES.SUITECLOUD_SDK);
 		const fullURL = `${SDKProperties.getDownloadURL()}/${SDKProperties.getSDKFileName()}`;
 
-		executeWithSpinner({
-			action: this._downloadFile(fullURL, sdkDirectory),
-			message: TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
-		})
-			.then(() =>
-				NodeUtils.println(
-					TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS),
-					NodeUtils.COLORS.INFO
-				)
-			)
-			.catch(error =>
-				NodeUtils.println(
-					TranslationService.getMessage(
-						DOWNLOADING_SUITECLOUD_SDK_ERROR,
-						fullURL,
-						unwrapExceptionMessage(error)
-					),
-					NodeUtils.COLORS.ERROR
-				)
-			);
+		try {
+			await executeWithSpinner({
+				action: this._downloadFile(fullURL, sdkDirectory),
+				message: TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
+			});
+			NodeUtils.println(TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS), NodeUtils.COLORS.INFO);
+			return true;
+		}
+		catch (error) {
+			NodeUtils.println(TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)), NodeUtils.COLORS.ERROR);
+			return false;
+		}
 	}
 
 	_downloadFile(url, sdkDirectory) {

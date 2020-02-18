@@ -20,11 +20,12 @@ const CLI_SETTINGS_FILEPATH = path.join(
 	FILE_NAMES.CLI_SETTINGS
 );
 
-const CLI_SETTINGS_PROPERTIES_KEYS = ['proxyUrl', 'useProxy', 'isJavaVersionValid'];
+const CLI_SETTINGS_PROPERTIES_KEYS = ['proxyUrl', 'useProxy', 'isJavaVersionValid', 'isSdkDownloaded'];
 const DEFAULT_CLI_SETTINGS = new CLISettings({
 	useProxy: false,
 	proxyUrl: '',
-	isJavaVersionValid: false
+	isJavaVersionValid: false,
+	isSdkDownloaded: false
 });
 
 let CACHED_CLI_SETTINGS;
@@ -67,6 +68,20 @@ module.exports = class CLISettingsService {
 			return;
 		}
 		newSettings.isJavaVersionValid = value;
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		this._saveSettings(CACHED_CLI_SETTINGS);
+	}
+
+	isSdkDownloaded() {
+		return this._getSettings().isSdkDownloaded;
+	}
+	
+	setSdkDownloaded(value) {
+		const newSettings = this._getSettings().toJSON();
+		if (newSettings.isSdkDownloaded === value) {
+			return;
+		}
+		newSettings.isSdkDownloaded = value;
 		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
