@@ -7,16 +7,16 @@
 const FileUtils = require('../../utils/FileUtils');
 const TranslationService = require('../../services/TranslationService');
 const { ERRORS } = require('../../services/TranslationKeys');
-const { FILE_NAMES } = require('../../ApplicationConstants');
+const { FILES } = require('../../ApplicationConstants');
 const assert = require('assert');
 const path = require('path');
 
-const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId' 
+const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
 let CACHED_DEFAULT_AUTH_ID;
 module.exports = class AuthenticationService {
 	constructor(executionPath) {
-		assert(executionPath)
+		assert(executionPath);
 		this._excutionPath = executionPath;
 	}
 	
@@ -26,7 +26,7 @@ module.exports = class AuthenticationService {
 			const projectConfiguration = {
 				[DEFAULT_AUTH_ID_PROPERTY]: authId,
 			};
-			FileUtils.create(path.join(this._excutionPath,FILE_NAMES.PROJECT_JSON), projectConfiguration);
+			FileUtils.create(path.join(this._excutionPath, FILES.PROJECT_JSON), projectConfiguration);
 		} catch (error) {
 			const errorMessage =
 				error != null && error.message ? TranslationService.getMessage(ERRORS.ADD_ERROR_LINE, error.message) : '';
@@ -39,7 +39,7 @@ module.exports = class AuthenticationService {
 			return CACHED_DEFAULT_AUTH_ID;
 		}
 		
-		const projectFilePath = path.join(this._excutionPath,FILE_NAMES.PROJECT_JSON);
+		const projectFilePath = path.join(this._excutionPath, FILES.PROJECT_JSON);
 
 		if (FileUtils.exists(projectFilePath)) {
 			try {

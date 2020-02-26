@@ -1,6 +1,3 @@
-# binaries
-/packages/node-cli/bin/*
-
 # dependencies
 node_modules
 
