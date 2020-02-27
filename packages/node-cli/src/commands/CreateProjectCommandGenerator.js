@@ -359,13 +359,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			PACKAGE_JSON_REPLACE_STRING_VERSION,
 			version
 		);
-
-		const nodeCliAbsolutePath = path.resolve(__dirname, '../../../unit-testing').replace(/\\/g, '/');
-		await this._fileSystemService.replaceStringInFile(
-			packageJsonAbsolutePath,
-			PACKAGE_JSON_REPLACE_STRING_NODE_CLI_PATH,
-			nodeCliAbsolutePath
-		);
 	}
 
 	async _createJestConfigFile(type, projectAbsolutePath) {
