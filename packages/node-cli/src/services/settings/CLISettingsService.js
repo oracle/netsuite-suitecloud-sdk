@@ -12,12 +12,12 @@ const TranslationService = require('../TranslationService');
 const { ERRORS } = require('../TranslationKeys');
 
 const HOME_PATH = require('os').homedir();
-const { FILE_NAMES, FOLDER_NAMES } = require('../../ApplicationConstants');
+const { FILES, FOLDERS } = require('../../ApplicationConstants');
 
 const CLI_SETTINGS_FILEPATH = path.join(
 	HOME_PATH,
-	FOLDER_NAMES.SUITECLOUD_SDK,
-	FILE_NAMES.CLI_SETTINGS
+	FOLDERS.SUITECLOUD_SDK,
+	FILES.CLI_SETTINGS
 );
 
 const CLI_SETTINGS_PROPERTIES_KEYS = ['proxyUrl', 'useProxy', 'isJavaVersionValid'];
@@ -35,7 +35,7 @@ module.exports = class CLISettingsService {
 	}
 
 	_saveSettings(cliSettings) {
-		this._fileSystemService.createFolder(HOME_PATH, FOLDER_NAMES.SUITECLOUD_SDK);
+		this._fileSystemService.createFolder(HOME_PATH, FOLDERS.SUITECLOUD_SDK);
 		FileUtils.create(CLI_SETTINGS_FILEPATH, cliSettings);
 	}
 
