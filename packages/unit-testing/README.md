@@ -17,8 +17,8 @@ npm install @oracle/netsuite-suitecloud-unit-testing --save-dev
 
 ⚠ SuiteCloud Unit Testing is installed as a `devDependency`.
 
-## [Contributing](../../CONTRIBUTING.md)
-Suitecloud Unit Testing is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](../../CONTRIBUTING.md) for details.
+## [Contributing](/CONTRIBUTING.md)
+Suitecloud Unit Testing is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
 
-## [License](../../LICENSE.txt)
+## [License](/LICENSE.txt)
 Copyright (c) 2019 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
