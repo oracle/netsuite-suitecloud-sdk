@@ -8,7 +8,7 @@ const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
-	SDK_DIRECTORY_NAME,
+	FOLDERS,
 	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
 const SDKProperties = require('./core/sdksetup/SDKProperties');
@@ -21,6 +21,7 @@ const url = require('url');
 const TranslationService = require('./services/TranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
+const HOME_PATH = require('os').homedir();
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
@@ -67,8 +68,8 @@ module.exports.SDKExecutor = class SDKExecutor {
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
 			const sdkJarPath = path.join(
-				__dirname,
-				`../${SDK_DIRECTORY_NAME}/${SDKProperties.getSDKFileName()}`
+				HOME_PATH,
+				`${FOLDERS.SUITECLOUD_SDK}/${SDKProperties.getSDKFileName()}`
 			);
 			if (!FileUtils.exists(sdkJarPath)) {
 				throw TranslationService.getMessage(

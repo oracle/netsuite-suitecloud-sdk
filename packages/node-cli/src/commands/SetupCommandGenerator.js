@@ -20,7 +20,7 @@ const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilde
 const inquirer = require('inquirer');
 
 const {
-	FILE_NAMES: { MANIFEST_XML },
+	FILES: { MANIFEST_XML },
 } = require('../ApplicationConstants');
 
 const {

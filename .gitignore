@@ -1,20 +1,9 @@
-# binaries
-/packages/node-cli/bin/*
-
 # dependencies
-node_modules
-
-# generated files
-account.json
-error.log
-
-# config
-packages/node-cli/src/core/sdksetup/config.json
+**/node_modules/**
 
 # ide
-.vscode/*
-.idea/*
+**/.vscode/**
+**/.idea/**
 
 #package-lock of packages doesn't make sense with Lerna
-/packages/*/package-lock.json
-/extensions/*/package-lock.json
+**/package-lock.json

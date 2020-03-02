@@ -12,10 +12,10 @@ module.exports = {
 		commerceextension: require.resolve('./objects/commerceextension.xml'),
 	},
 	PROJECTCONFIGS: {
-		cliconfig: require.resolve('./projectconfigs/cli-config.js'),
+		cliconfig: require.resolve('./projectconfigs/suitecloud.config.js'),
 	},
 	UNIT_TEST: {
-		cliconfig: require.resolve('./unittest/cli-config.js.template'),
+		cliconfig: require.resolve('./unittest/suitecloud.config.js.template'),
 		jestconfig: require.resolve('./unittest/jest.config.js.template'),
 		packagejson: require.resolve('./unittest/package.json.template'),
 		sampletest: require.resolve('./unittest/sample-test.js.template'),

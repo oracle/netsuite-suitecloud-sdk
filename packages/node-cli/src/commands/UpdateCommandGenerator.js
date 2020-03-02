@@ -23,7 +23,7 @@ const {
 
 const { validateArrayIsNotEmpty, validateScriptId, showValidationResults } = require('../validation/InteractiveAnswersValidator');
 
-const { FOLDER_NAMES } = require('../ApplicationConstants');
+const { FOLDERS } = require('../ApplicationConstants');
 const ANSWERS_NAMES = {
 	FILTER_BY_SCRIPT_ID: 'filterByScriptId',
 	OVERWRITE_OBJECTS: 'overwriteObjects',
@@ -50,7 +50,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _getCommandQuestions(prompt) {
-		const pathToObjectsFolder = path.join(this._projectFolder, FOLDER_NAMES.OBJECTS);
+		const pathToObjectsFolder = path.join(this._projectFolder, FOLDERS.OBJECTS);
 		const filesInObjectsFolder = this._fileSystemService.getFilesFromDirectory(pathToObjectsFolder);
 		const foundXMLFiles = filesInObjectsFolder
 			.filter(filename => filename.endsWith(XML_EXTENSION))
