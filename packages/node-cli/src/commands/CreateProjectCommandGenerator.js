@@ -39,10 +39,10 @@ const SOURCE_FOLDER = 'src';
 const UNIT_TEST_TEST_FOLDER = '__tests__';
 
 const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
-const CLI_CONFIG_FILENAME = 'cli-config';
+const CLI_CONFIG_FILENAME = 'suitecloud.config';
 const CLI_CONFIG_EXTENSION = 'js';
 const UNIT_TEST_CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
-const UNIT_TEST_CLI_CONFIG_FILENAME = 'cli-config';
+const UNIT_TEST_CLI_CONFIG_FILENAME = 'suitecloud.config';
 const UNIT_TEST_CLI_CONFIG_EXTENSION = 'js';
 const UNIT_TEST_PACKAGE_TEMPLATE_KEY = 'packagejson';
 const UNIT_TEST_PACKAGE_FILENAME = 'package';
