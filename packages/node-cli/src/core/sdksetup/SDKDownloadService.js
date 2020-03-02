@@ -9,9 +9,9 @@ const path = require('path');
 const request = require('request-promise-native');
 const SDKProperties = require('./SDKProperties');
 
-const ROOT_DIRECTORY = path.dirname(require.main.filename);
+const HOME_PATH = require('os').homedir();
 
-const { SDK_DIRECTORY_NAME } = require('../../ApplicationConstants');
+const { FOLDERS } = require('../../ApplicationConstants');
 
 const NodeUtils = require('../../utils/NodeUtils');
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
@@ -40,8 +40,8 @@ class SDKDownloadService {
 
 	download() {
 		const sdkDirectory = this._fileSystemService.createFolder(
-			ROOT_DIRECTORY,
-			SDK_DIRECTORY_NAME
+			HOME_PATH,
+			FOLDERS.SUITECLOUD_SDK
 		);
 
 		const fullURL = `${SDKProperties.getDownloadURL()}/${SDKProperties.getSDKFileName()}`;

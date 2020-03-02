@@ -11,7 +11,7 @@ const path = require('path');
 const TranslationService = require('./../../services/TranslationService');
 const { ERRORS } = require('./../../services/TranslationKeys');
 const CommandUserExtension = require('./CommandUserExtension');
-const CLI_CONFIG_JS_FILE = 'cli-config.js';
+const CLI_CONFIG_JS_FILE = 'suitecloud.config.js';
 const DEFAULT_CONFIG = {
 	defaultProjectFolder: '',
 	commands: {},

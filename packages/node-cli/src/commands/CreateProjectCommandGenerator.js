@@ -39,10 +39,10 @@ const SOURCE_FOLDER = 'src';
 const UNIT_TEST_TEST_FOLDER = '__tests__';
 
 const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
-const CLI_CONFIG_FILENAME = 'cli-config';
+const CLI_CONFIG_FILENAME = 'suitecloud.config';
 const CLI_CONFIG_EXTENSION = 'js';
 const UNIT_TEST_CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
-const UNIT_TEST_CLI_CONFIG_FILENAME = 'cli-config';
+const UNIT_TEST_CLI_CONFIG_FILENAME = 'suitecloud.config';
 const UNIT_TEST_CLI_CONFIG_EXTENSION = 'js';
 const UNIT_TEST_PACKAGE_TEMPLATE_KEY = 'packagejson';
 const UNIT_TEST_PACKAGE_FILENAME = 'package';
@@ -224,7 +224,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		const manifestFilePath = path.join(
 			projectAbsolutePath,
 			SOURCE_FOLDER,
-			ApplicationConstants.FILE_NAMES.MANIFEST_XML
+			ApplicationConstants.FILES.MANIFEST_XML
 		);
 
 		const validationErrors = this._validateParams(answers);
@@ -358,13 +358,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			packageJsonAbsolutePath,
 			PACKAGE_JSON_REPLACE_STRING_VERSION,
 			version
-		);
-
-		const nodeCliAbsolutePath = path.resolve(__dirname, '../../../unit-testing').replace(/\\/g, '/');
-		await this._fileSystemService.replaceStringInFile(
-			packageJsonAbsolutePath,
-			PACKAGE_JSON_REPLACE_STRING_NODE_CLI_PATH,
-			nodeCliAbsolutePath
 		);
 	}
 

@@ -20,7 +20,7 @@ const OperationResultStatus = require('./OperationResultStatus');
 const inquirer = require('inquirer');
 
 const {
-	FILE_NAMES: { MANIFEST_XML },
+	FILES: { MANIFEST_XML },
 } = require('../ApplicationConstants');
 
 const {
@@ -55,10 +55,8 @@ const FLAGS = {
 };
 
 const {
-	validateDevUrl,
 	validateFieldHasNoSpaces,
 	validateFieldIsNotEmpty,
-	validateNotProductionUrl,
 	validateAuthIDNotInList,
 	validateAlphanumericHyphenUnderscore,
 	validateMaximunLength,
@@ -92,9 +90,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		let authIdAnswer;
 		const choices = [];
-		const auhtIDs = Object.keys(existingAuthIDsResponse.data);
+		const authIDs = Object.keys(existingAuthIDsResponse.data);
 
-		if (auhtIDs.length > 0) {
+		if (authIDs.length > 0) {
 			choices.push({
 				name: chalk.bold(TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
 				value: CREATE_NEW_AUTH,
@@ -102,7 +100,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			choices.push(new inquirer.Separator());
 			choices.push(new inquirer.Separator(TranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
-			auhtIDs.forEach(authID => {
+			authIDs.forEach(authID => {
 				const authentication = existingAuthIDsResponse.data[authID];
 				const isDevLabel = authentication.developmentMode
 					? TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
@@ -158,7 +156,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						name: ANSWERS.DEVELOPMENT_MODE_URL,
 						message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
 						filter: answer => answer.trim(),
-						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateDevUrl, validateNotProductionUrl),
+						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 					},
 				]);
 			}
@@ -185,7 +183,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
 						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, fieldValue =>
-							validateAuthIDNotInList(fieldValue, auhtIDs), validateAlphanumericHyphenUnderscore, validateMaximunLength
+							validateAuthIDNotInList(fieldValue, authIDs), validateAlphanumericHyphenUnderscore, validateMaximunLength
 						),
 				},
 				{
