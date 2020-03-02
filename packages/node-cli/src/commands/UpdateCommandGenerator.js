@@ -13,6 +13,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
@@ -134,24 +135,34 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(args) {
-		if (args.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !args[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
-			throw TranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
+		try {
+			if (args.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !args[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
+				throw TranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
+			}
+			const SDKParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
+
+			const executionContextForUpdate = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				includeProjectDefaultAuthId: true,
+				params: SDKParams,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForUpdate),
+				message: TranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
+			});
+
+			const actionResultContext = {
+				operationResult: operationResult
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
 		}
-		const SDKParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
-
-		const executionContextForUpdate = new SDKExecutionContext({
-			command: this._commandMetadata.name,
-			includeProjectDefaultAuthId: true,
-			params: SDKParams,
-		});
-
-		return await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForUpdate),
-			message: TranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
-		});
 	}
 
-	_formatOutput(operationResult) {
+	_formatOutput(actionResult) {
+		const operationResult = actionResult._context.operationResult;
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {

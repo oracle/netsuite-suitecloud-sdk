@@ -15,6 +15,7 @@ const ProjectInfoService = require('../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
 const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const { executeWithSpinner } = require('../ui/CliSpinner');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -127,34 +128,43 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(answers) {
-		const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+		try {
+			const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 
-		let isServerValidation = false;
-		const flags = [];
+			let isServerValidation = false;
+			const flags = [];
 
-		if (answers[COMMAND_OPTIONS.SERVER]) {
-			flags.push(COMMAND_OPTIONS.SERVER);
-			isServerValidation = true;
-			delete SDKParams[COMMAND_OPTIONS.SERVER];
+			if (answers[COMMAND_OPTIONS.SERVER]) {
+				flags.push(COMMAND_OPTIONS.SERVER);
+				isServerValidation = true;
+				delete SDKParams[COMMAND_OPTIONS.SERVER];
+			}
+
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				params: SDKParams,
+				flags: flags,
+				includeProjectDefaultAuthId: true,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: TranslationService.getMessage(MESSAGES.VALIDATING),
+			});
+
+			const actionResultContext = {
+				operationResult: operationResult,
+				SDKParams: SDKParams,
+				isServerValidation: isServerValidation
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
 		}
-
-		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.name,
-			params: SDKParams,
-			flags: flags,
-			includeProjectDefaultAuthId: true,
-		});
-
-		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(MESSAGES.VALIDATING),
-		});
-
-		return { operationResult, SDKParams, isServerValidation };
 	}
 
 	_formatOutput(actionResult) {
-		const { operationResult, isServerValidation, SDKParams } = actionResult;
+		const { operationResult, isServerValidation, SDKParams } = actionResult._context;
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {

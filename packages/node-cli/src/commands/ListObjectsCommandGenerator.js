@@ -20,6 +20,7 @@ const {
 	validateSuiteApp,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 const COMMAND_QUESTIONS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -154,26 +155,36 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return prompt(questions);
 	}
 
-	_executeAction(answers) {
-		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-		if (Array.isArray(params.type)) {
-			params.type = params.type.join(' ');
+	async _executeAction(answers) {
+		try {
+			const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+			if (Array.isArray(params.type)) {
+				params.type = params.type.join(' ');
+			}
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				params,
+				includeProjectDefaultAuthId: true,
+			});
+
+			const actionListObjects = this._sdkExecutor.execute(executionContext);
+
+			const operationResult = await executeWithSpinner({
+				action: actionListObjects,
+				message: TranslationService.getMessage(LISTING_OBJECTS),
+			});
+
+			const actionResultContext = {
+				operationResult: operationResult
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
 		}
-		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.name,
-			params,
-			includeProjectDefaultAuthId: true,
-		});
-
-		const actionListObjects = this._sdkExecutor.execute(executionContext);
-
-		return executeWithSpinner({
-			action: actionListObjects,
-			message: TranslationService.getMessage(LISTING_OBJECTS),
-		});
 	}
 
-	_formatOutput(operationResult) {
+	_formatOutput(actionResult) {
+		const operationResult = actionResult._context.operationResult;
 		const { data } = operationResult;
 		SDKOperationResultUtils.logResultMessage(operationResult);
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {

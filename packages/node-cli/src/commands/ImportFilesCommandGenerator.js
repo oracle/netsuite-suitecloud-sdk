@@ -18,6 +18,7 @@ const {
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 const COMMAND_OPTIONS = {
@@ -177,24 +178,34 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		return answers;
 	}
 
-	_executeAction(answers) {
-		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
+	async _executeAction(answers) {
+		try {
+			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
+				throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
+			}
+
+			const executionContextImportObjects = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				includeProjectDefaultAuthId: true,
+				params: answers,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextImportObjects),
+				message: TranslationService.getMessage(MESSAGES.IMPORTING_FILES),
+			});
+
+			const actionResultContext = {
+				operationResult: operationResult
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build;
 		}
-
-		const executionContextImportObjects = new SDKExecutionContext({
-			command: this._commandMetadata.name,
-			includeProjectDefaultAuthId: true,
-			params: answers,
-		});
-
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextImportObjects),
-			message: TranslationService.getMessage(MESSAGES.IMPORTING_FILES),
-		});
 	}
 
-	_formatOutput(operationResult) {
+	_formatOutput(actionResult) {
+		const operationResult = actionResult._context.operationResult;
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {

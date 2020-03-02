@@ -15,6 +15,7 @@ const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const assert = require('assert');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -136,37 +137,43 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(answers) {
-		const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
-		if (SDKParams[COMMAND.FLAGS.VALIDATE]) {
-			delete SDKParams[COMMAND.FLAGS.VALIDATE];
-			flags.push(COMMAND.FLAGS.VALIDATE);
+		try {
+			const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+			const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
+			if (SDKParams[COMMAND.FLAGS.VALIDATE]) {
+				delete SDKParams[COMMAND.FLAGS.VALIDATE];
+				flags.push(COMMAND.FLAGS.VALIDATE);
+			}
+			const executionContextForDeploy = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				includeProjectDefaultAuthId: true,
+				params: SDKParams,
+				flags,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForDeploy),
+				message: TranslationService.getMessage(MESSAGES.DEPLOYING),
+			});
+
+			const actionResultContext = {
+				operationResult: operationResult,
+				SDKParams: SDKParams,
+				flags: flags
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
 		}
-		const executionContextForDeploy = new SDKExecutionContext({
-			command: this._commandMetadata.name,
-			includeProjectDefaultAuthId: true,
-			params: SDKParams,
-			flags,
-		});
-
-		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForDeploy),
-			message: TranslationService.getMessage(MESSAGES.DEPLOYING),
-		});
-
-		return {
-			operationResult,
-			SDKParams,
-			flags,
-		};
 	}
 
 	_formatOutput(actionResult) {
-		assert(actionResult.operationResult);
-		assert(actionResult.SDKParams);
-		assert(actionResult.flags);
+		const actionResultContext = actionResult._context;
+		assert(actionResultContext.operationResult);
+		assert(actionResultContext.SDKParams);
+		assert(actionResultContext.flags);
 
-		const { operationResult, SDKParams, flags } = actionResult;
+		const { operationResult, SDKParams, flags } = actionResultContext;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logResultMessage(operationResult);

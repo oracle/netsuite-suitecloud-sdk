@@ -11,6 +11,7 @@ const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -69,18 +70,27 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		return answers;
 	}
 
-	_executeAction(answers) {
-		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.name,
-			params: answers,
-			flags: [COMMAND_OPTIONS.ALL],
-			requiresContextParams: true
-		});
+	async _executeAction(answers) {
+		try {
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				params: answers,
+				flags: [COMMAND_OPTIONS.ALL],
+				requiresContextParams: true
+			});
 
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
-		});
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
+			});
+
+			const actionResultContext = {
+				operationResult: operationResult
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
+		}
 	}
 
 	_supportsInteractiveMode() {
@@ -152,7 +162,8 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		return dependenciesString;
 	}
 
-	_formatOutput(operationResult) {
+	_formatOutput(actionResult) {
+		const operationResult = actionResult._context.operationResult;
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logResultMessage(operationResult);
 			SDKOperationResultUtils.logErrors(operationResult);

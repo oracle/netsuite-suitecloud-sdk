@@ -17,6 +17,7 @@ const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -106,8 +107,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		}
 
 		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection, ...overwriteConfirmationAnswer };
-		const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
-		return finalAnswers;
+		return this._arrangeAnswersForImportObjects(combinedAnswers);
 	}
 
 	_generateListObjectQuestions() {
@@ -305,40 +305,50 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		return answers;
 	}
 
-	_executeAction(answers) {
-		if (answers[ANSWERS_NAMES.OVERWRITE_OBJECTS] === false) {
-			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
-		}
-
-		const flags = [];
-
-		if (this._runInInteractiveMode) {
-			if (answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
-				flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
-				delete answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
+	async _executeAction(answers) {
+		try {
+			if (answers[ANSWERS_NAMES.OVERWRITE_OBJECTS] === false) {
+				throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 			}
-		} else {
-			if (answers[COMMAND_FLAGS.EXCLUDE_FILES]) {
-				flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
-				delete answers[COMMAND_FLAGS.EXCLUDE_FILES];
+
+			const flags = [];
+
+			if (this._runInInteractiveMode) {
+				if (answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
+					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
+					delete answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
+				}
+			} else {
+				if (answers[COMMAND_FLAGS.EXCLUDE_FILES]) {
+					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
+					delete answers[COMMAND_FLAGS.EXCLUDE_FILES];
+				}
 			}
+
+			const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+			const executionContextForImportObjects = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				params,
+				flags,
+				includeProjectDefaultAuthId: true,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForImportObjects),
+				message: TranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
+			});
+
+			const actionResultContext = {
+				operationResult: operationResult
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
 		}
-
-		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-		const executionContextForImportObjects = new SDKExecutionContext({
-			command: this._commandMetadata.name,
-			params,
-			flags,
-			includeProjectDefaultAuthId: true,
-		});
-
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForImportObjects),
-			message: TranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
-		});
 	}
 
-	_formatOutput(operationResult) {
+	_formatOutput(actionResult) {
+		const operationResult = actionResult._context.operationResult;
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {

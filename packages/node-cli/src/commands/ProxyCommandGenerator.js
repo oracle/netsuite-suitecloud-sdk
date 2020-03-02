@@ -11,6 +11,7 @@ const {
 } = require('../services/TranslationKeys');
 const NodeUtils = require('../utils/NodeUtils');
 const CLISettingsService = require('../services/settings/CLISettingsService');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 const url = require('url');
 
 const SET_OPTION = 'set';
@@ -22,40 +23,52 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 		this._CLISettingsService = new CLISettingsService();
 	}
 
-	_executeAction(args) {
-		const proxyUrlArgument = args[SET_OPTION];
-		const shouldClearArgument = args[CLEAR_FLAG_OPTION];
+	async _executeAction(args) {
+		try {
+			const proxyUrlArgument = args[SET_OPTION];
+			const shouldClearArgument = args[CLEAR_FLAG_OPTION];
 
-		this._validateArguments(proxyUrlArgument, shouldClearArgument);
-		const isSettingProxy = !!proxyUrlArgument;
+			this._validateArguments(proxyUrlArgument, shouldClearArgument);
+			const isSettingProxy = !!proxyUrlArgument;
 
-		const actionResult = {
-			isSettingProxy: isSettingProxy,
-			proxyUrl: proxyUrlArgument,
-		};
-		if (isSettingProxy) {
-			this._validateProxyUrl(proxyUrlArgument);
-			const setProxyResult = this._setProxy(proxyUrlArgument);
-			actionResult.proxyOverrided = setProxyResult.proxyOverrided;
-		} else {
-			this._CLISettingsService.clearProxy();
+			const proxyCommandAction = {
+				isSettingProxy: isSettingProxy,
+				proxyUrl: proxyUrlArgument,
+			};
+			if (isSettingProxy) {
+				this._validateProxyUrl(proxyUrlArgument);
+				const setProxyResult = this._setProxy(proxyUrlArgument);
+				proxyCommandAction.proxyOverrided = setProxyResult.proxyOverrided;
+			} else {
+				this._CLISettingsService.clearProxy();
+			}
+
+
+			const proxyCommandData = await Promise.resolve(proxyCommandAction);
+			const actionResultContext = {
+				isSettingProxy: proxyCommandData.isSettingProxy,
+				proxyUrl: proxyCommandData.proxyUrl,
+				proxyOverrided: proxyCommandData.proxyOverrided
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
 		}
-
-		return Promise.resolve(actionResult);
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.isSettingProxy) {
-			if (actionResult.proxyOverrided) {
+		const actionResultContext = actionResult._context;
+		if (actionResultContext.isSettingProxy) {
+			if (actionResultContext.proxyOverrided) {
 				NodeUtils.println(
-					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl),
+					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResultContext.proxyUrl),
 					NodeUtils.COLORS.RESULT
 				);
 			} else {
 				NodeUtils.println(
 					TranslationService.getMessage(
 						MESSAGES.SUCCESFULLY_SETUP,
-						actionResult.proxyUrl
+						actionResultContext.proxyUrl
 					),
 					NodeUtils.COLORS.RESULT
 				);
@@ -85,7 +98,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_setProxy(proxyUrl) {
-		const proxyUrlIsDifferent = this._CLISettingsService.getProxyUrl() != proxyUrl;
+		const proxyUrlIsDifferent = this._CLISettingsService.getProxyUrl() !== proxyUrl;
 		this._CLISettingsService.setProxyUrl(proxyUrl);
 		return { proxyOverrided: proxyUrlIsDifferent };
 	}

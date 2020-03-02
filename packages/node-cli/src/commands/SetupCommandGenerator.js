@@ -15,7 +15,7 @@ const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const AuthenticationService = require('./../core/authentication/AuthenticationService');
-const OperationResultStatus = require('./OperationResultStatus');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const inquirer = require('inquirer');
 
@@ -246,47 +246,51 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(executeActionContext) {
-		let authId;
-		let accountInfo;
-		if (executeActionContext.mode === AUTH_MODE.OAUTH) {
-			const commandParams = {
-				authId: executeActionContext.newAuthId,
-			};
+		try {
+			let authId;
+			let accountInfo;
+			if (executeActionContext.mode === AUTH_MODE.OAUTH) {
+				const commandParams = {
+					authId: executeActionContext.newAuthId,
+				};
 
-			if (executeActionContext.url) {
-				commandParams.url = executeActionContext.url;
+				if (executeActionContext.url) {
+					commandParams.url = executeActionContext.url;
+				}
+
+				const operationResult = await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
+				authId = executeActionContext.newAuthId;
+				accountInfo = operationResult.data.accountInfo;
+			} else if (executeActionContext.mode === AUTH_MODE.SAVE_TOKEN) {
+				const commandParams = {
+					authid: executeActionContext.newAuthId,
+					account: executeActionContext.saveToken.account,
+					tokenid: executeActionContext.saveToken.tokenId,
+					tokensecret: executeActionContext.saveToken.tokenSecret,
+				};
+
+				if (executeActionContext.url) {
+					commandParams.url = executeActionContext.url;
+				}
+
+				const operationResult = await this._saveToken(commandParams, executeActionContext.developmentMode);
+				authId = executeActionContext.newAuthId;
+				accountInfo = operationResult.data.accountInfo;
+			} else if (executeActionContext.mode === AUTH_MODE.REUSE) {
+				authId = executeActionContext.authentication.authId;
+				accountInfo = executeActionContext.authentication.accountInfo;
 			}
+			this._authenticationService.setDefaultAuthentication(authId);
 
-			const operationResult = await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
-			authId = executeActionContext.newAuthId;
-			accountInfo = operationResult.data.accountInfo;
-		} else if (executeActionContext.mode === AUTH_MODE.SAVE_TOKEN) {
-			const commandParams = {
-				authid: executeActionContext.newAuthId,
-				account: executeActionContext.saveToken.account,
-				tokenid: executeActionContext.saveToken.tokenId,
-				tokensecret: executeActionContext.saveToken.tokenSecret,
+			const actionResultContext = {
+				mode: executeActionContext.mode,
+				authId: authId,
+				accountInfo: accountInfo
 			};
-
-			if (executeActionContext.url) {
-				commandParams.url = executeActionContext.url;
-			}
-
-			const operationResult = await this._saveToken(commandParams, executeActionContext.developmentMode);
-			authId = executeActionContext.newAuthId;
-			accountInfo = operationResult.data.accountInfo;
-		} else if (executeActionContext.mode === AUTH_MODE.REUSE) {
-			authId = executeActionContext.authentication.authId;
-			accountInfo = executeActionContext.authentication.accountInfo;
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
 		}
-		this._authenticationService.setDefaultAuthentication(authId);
-
-		return {
-			status: OperationResultStatus.SUCCESS,
-			mode: executeActionContext.mode,
-			authId: authId,
-			accountInfo: accountInfo
-		};
 	}
 
 	async _performBrowserBasedAuthentication(params, developmentMode) {
@@ -334,29 +338,30 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	_formatOutput(actionResult) {
 		let resultMessage;
-		switch (actionResult.mode) {
+		const actionResultContext = actionResult._context;
+		switch (actionResultContext.mode) {
 			case AUTH_MODE.OAUTH:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.NEW_OAUTH,
-					actionResult.accountInfo.companyName,
-					actionResult.accountInfo.roleName,
-					actionResult.authId
+					actionResultContext.accountInfo.companyName,
+					actionResultContext.accountInfo.roleName,
+					actionResultContext.authId
 					);
 				break;
 			case AUTH_MODE.SAVE_TOKEN:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.NEW_SAVED_TOKEN,
-					actionResult.accountInfo.companyName,
-					actionResult.accountInfo.roleName,
-					actionResult.authId
+					actionResultContext.accountInfo.companyName,
+					actionResultContext.accountInfo.roleName,
+					actionResultContext.authId
 				);
 				break;
 			case AUTH_MODE.REUSE:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.REUSED_AUTH_ID,
-					actionResult.authId,
-					actionResult.accountInfo.companyName,
-					actionResult.accountInfo.roleName);
+					actionResultContext.authId,
+					actionResultContext.accountInfo.companyName,
+					actionResultContext.accountInfo.roleName);
 				break;
 			default:
 				break;

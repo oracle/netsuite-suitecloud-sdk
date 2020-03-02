@@ -14,6 +14,7 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL }
 } = require('../services/TranslationKeys');
+const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
@@ -66,27 +67,37 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
-	_executeAction(answers) {
-		// quote folder path to preserve spaces
-		answers.folder = `\"${answers.folder}\"`;
-		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.name,
-			params: answers,
-			includeProjectDefaultAuthId: true
-		});
+	async _executeAction(answers) {
+		try {
+			// quote folder path to preserve spaces
+			answers.folder = `\"${answers.folder}\"`;
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.name,
+				params: answers,
+				includeProjectDefaultAuthId: true
+			});
 
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(LOADING_FILES),
-		});
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: TranslationService.getMessage(LOADING_FILES),
+			});
+
+			const actionResultContext = {
+				operationResult: operationResult
+			};
+			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+		} catch (error) {
+			return new ActionResultBuilder().withError(error).build();
+		}
 	}
 
-	_formatOutput(operationResult) {
+	_formatOutput(actionResult) {
+		const operationResult = actionResult._context.operationResult;
 		const { data } = operationResult;
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult)
+			SDKOperationResultUtils.logErrors(operationResult);
 			return;
 		}
 
