@@ -24,7 +24,7 @@ module.exports = class ActionResult {
 		this._context = options.context;
 		this._error = options.error;
 
-		Objects.preventExtensions(this);
+		Object.preventExtensions(this);
 	}
 
 	get getStatus() {
