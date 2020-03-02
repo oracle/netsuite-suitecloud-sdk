@@ -28,6 +28,7 @@ let CACHED_PROJECT_TYPE;
 module.exports = class ProjectInfoService {
 	constructor(projectFolder) {
 		assert(projectFolder);
+		CACHED_PROJECT_TYPE = null;
 		this._projectFolder = projectFolder;
 	}
 

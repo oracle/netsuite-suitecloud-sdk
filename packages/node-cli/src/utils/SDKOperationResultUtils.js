@@ -9,11 +9,14 @@ const NodeUtils = require('./NodeUtils');
 
 module.exports = {
 	getErrorMessagesString: operationResult => {
-		const { errorMessages } = operationResult;
+		const { errorMessages, resultMessage } = operationResult;
 		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
+			if (resultMessage) {
+				errorMessages.unshift(resultMessage);
+			}
 			return errorMessages.join(NodeUtils.lineBreak);
 		}
-		return '';
+		return resultMessage;
 	},
 	getResultMessage: operationResult => {
 		const { resultMessage } = operationResult;

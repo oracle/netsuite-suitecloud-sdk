@@ -17,6 +17,7 @@ let CACHED_DEFAULT_AUTH_ID;
 module.exports = class AuthenticationService {
 	constructor(executionPath) {
 		assert(executionPath)
+		CACHED_DEFAULT_AUTH_ID = null;
 		this._excutionPath = executionPath;
 	}
 	
