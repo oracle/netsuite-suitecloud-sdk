@@ -1,13 +1,13 @@
 const CliCommandsMetadataService = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/CommandsMetadataService');
 
 export default class CommandsMetadataSingelton {
-    private _commandsMetadataServiceSingelton : any;
+    private commandsMetadataServiceSingelton : any;
     private static instance : CommandsMetadataSingelton;
 
     private constructor() {
       const suitecloudNodeJsSourcePath: string = require.resolve('@oracle/netsuite-suitecloud-nodejs-cli').split('\\suitecloud.js')[0];
-	    this._commandsMetadataServiceSingelton = new CliCommandsMetadataService(suitecloudNodeJsSourcePath);
-	    this._commandsMetadataServiceSingelton.initializeCommandsMetadata();
+	    this.commandsMetadataServiceSingelton = new CliCommandsMetadataService(suitecloudNodeJsSourcePath);
+	    this.commandsMetadataServiceSingelton.initializeCommandsMetadata();
     }
 
     public static getInstance(): CommandsMetadataSingelton {
@@ -18,7 +18,7 @@ export default class CommandsMetadataSingelton {
       }
 
     public getMetadata() : any {
-        return this._commandsMetadataServiceSingelton;
+        return this.commandsMetadataServiceSingelton;
     }
 }
 

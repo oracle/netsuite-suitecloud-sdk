@@ -6,11 +6,10 @@ const CLIConfigurationService = require('@oracle/netsuite-suitecloud-nodejs-cli/
 const AuthenticationService = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/authentication/AuthenticationService');
 
 export default class SuiteCloudCLIRunner {
-	_commandActionExecutor: any;
-	_commandsMetadataService: any;
-
+	private commandActionExecutor: any;
+	
 	constructor(executionPath: string, commandsMetadataService: any) { 
-		this._commandActionExecutor = new CommandActionExecutor({
+		this.commandActionExecutor = new CommandActionExecutor({
 			executionPath,
 			commandOutputHandler: new CommandOutputHandler(),
 			commandOptionsValidator: new CommandOptionsValidator(),
@@ -24,6 +23,6 @@ export default class SuiteCloudCLIRunner {
 	run(options: any) {
 		options.runInInteractiveMode = false;
 		options.throwExceptionOnError = true;
-		return this._commandActionExecutor.executeAction(options);
+		return this.commandActionExecutor.executeAction(options);
 	}
 }
