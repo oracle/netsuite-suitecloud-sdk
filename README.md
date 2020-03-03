@@ -1,9 +1,9 @@
 # SuiteCloud SDK
-SuiteCloud Software Development Kit (SuiteCloud SDK) are the set of tools that allow you to customize accounts through SuiteCloud Development Framework (SDF).
+SuiteCloud Software Development Kit (SuiteCloud SDK) are the set of tools that allow you to customize accounts and create SuiteApps through SuiteCloud Development Framework (SDF).
 
 In this GitHub repository, the following SuiteCloud SDK tools are available:
 - [SuiteCloud CLI for Node.js](./packages/node-cli)
-- [Unit Testing with Jest](./packages/unit-testing)
+- [SuiteCloud Unit Testing](./packages/unit-testing)
 
 You can also extend SuiteCloud CLI for Node.js with the following command:
 - [localserver](./extensions/localserver-cli-command)
