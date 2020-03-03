@@ -67,7 +67,7 @@ module.exports = class CLISettingsService {
 			return;
 		}
 		newSettings.isJavaVersionValid = value;
-		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 
@@ -82,7 +82,7 @@ module.exports = class CLISettingsService {
 		}
 		newSettings.useProxy = true;
 		newSettings.proxyUrl = url;
-		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 
@@ -98,7 +98,7 @@ module.exports = class CLISettingsService {
 		newSettings.useProxy = false;
 		newSettings.proxyUrl = '';
 
-		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 

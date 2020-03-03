@@ -1,5 +1,5 @@
 {
-	"name": "@oracle/netsuite-suitecloud-localserver-cli-command",
+	"name": "@oracle/suitecloud-cli-localserver-command",
 	"version": "1.0.0",
 	"description": "SuiteCloud CLI Local command",
 	"repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/extensions/localserver-cli-command",

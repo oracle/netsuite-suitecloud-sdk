@@ -86,7 +86,7 @@ class InteractiveAnswersValidator {
 				? VALIDATION_RESULT_SUCCESS
 				: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.EMPTY_FIELD));
 
-		if (notEmpty.result != true) {
+		if (notEmpty.result !== true) {
 			return notEmpty;
 		} else if (!fieldValue.match(SUITEAPP_ID_FORMAT_REGEX)) {
 			return VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.APP_ID_FORMAT));
@@ -100,7 +100,7 @@ class InteractiveAnswersValidator {
 				? VALIDATION_RESULT_SUCCESS
 				: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.EMPTY_FIELD));
 
-		if (notEmpty.result != true) {
+		if (notEmpty.result !== true) {
 			return notEmpty;
 		} else if (!fieldValue.match(SCRIPT_ID_REGEX)) {
 			return VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.SCRIPT_ID_FORMAT));

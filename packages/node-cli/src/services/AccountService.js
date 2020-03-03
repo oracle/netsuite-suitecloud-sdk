@@ -10,7 +10,7 @@ const CLISettingsService = require('./settings/CLISettingsService');
 const TranslationService = require('./TranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
-const ENOTFOUND = 'ENOTFOUND'
+const ENOTFOUND = 'ENOTFOUND';
 
 const NLAuthorizationHeader = {
 	name: 'NLAuth',
