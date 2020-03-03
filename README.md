@@ -5,9 +5,6 @@ In this GitHub repository, the following SuiteCloud SDK tools are available:
 - [SuiteCloud CLI for Node.js](./packages/node-cli)
 - [SuiteCloud Unit Testing](./packages/unit-testing)
 
-You can also extend SuiteCloud CLI for Node.js with the following command:
-- [localserver](./extensions/localserver-cli-command)
-
 ## Documentation
 Read all the documentation about SuiteCloud SDK in [NetSuite's Help Center](
 https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_156026236161.html).
