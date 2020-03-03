@@ -138,7 +138,7 @@ class InteractiveAnswersValidator {
 			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.ALPHANUMERIC_HYPEN_UNDERSCORE));
 	}
 
-	validateMaximunLength(fieldValue, maxLength = 40) {
+	validateMaximumLength(fieldValue, maxLength = 40) {
 		return fieldValue.length <= maxLength
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.MAX_LENGTH, maxLength));
