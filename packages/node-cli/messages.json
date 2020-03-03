@@ -51,7 +51,7 @@
 	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed without applying content protection.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_CONTENT_PROTECTION_REASON": "Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {0}.\nTo learn how to create a locking.xml file, see {1}.",
 
-	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Somtehing went wrong with {0}, error: {1}",
+	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Something went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
 	"COMMAND_IMPORTFILES_QUESTIONS_EXCLUDE_PROPERTIES": "Do you want to exclude all file properties within the .attributes folder?",
 	"COMMAND_IMPORTFILES_QUESTIONS_OVERWRITE_FILES": "All the files in the project will be overwritten with the files from the account. Do you want to continue?",
