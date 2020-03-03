@@ -13,33 +13,32 @@ export default async function deploy() {
     if (executionPath) {
         const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
 
-        deployInfo.showTriggerActionInfo();
-
-        const deployResult = await suiteCloudRunner.run({
-            commandName: 'deploy',
-            arguments: {},
-            runInInteractiveMode: false,
-        });
-
-        // there was an exception and there is no operationResult
-        if (!deployResult.hasOwnProperty('operationResult')) {
-            deployInfo.showErrorMessage(unwrapExceptionMessage(deployResult));
+        deployInfo.showTriggeredActionInfo();
+        let deployResult;
+        try {
+            deployResult = await suiteCloudRunner.run({
+                commandName: 'deploy',
+                arguments: {},
+            });
+        } catch (error) {
+            deployInfo.showErrorMessage(unwrapExceptionMessage(error));
             return;
         }
 
-        if (Array.isArray(deployResult.operationResult.data)) {
+        if (deployResult.operationResult.status === 'SUCCESS' && Array.isArray(deployResult.operationResult.data)) {
             deployResult.operationResult.data.forEach((element: any) => {
                 scloudOutput.appendLine(element);
             });
             deployInfo.showCompletedActionInfo();
         } else {
-            scloudOutput.appendLine(deployResult.operationResult.resultMessage);
             if (Array.isArray(deployResult.operationResult.errorMessages) && (deployResult.operationResult.errorMessages.length > 0)) {
                 deployResult.operationResult.errorMessages.forEach((message: string) => scloudOutput.appendLine(message));
-            } 
-            deployInfo.showFailedActionInfo();
+            } else {
+                scloudOutput.appendLine(deployResult.operationResult.resultMessage);
+            }
+            deployInfo.showCompletedActionError();
         }
     } else {
-        deployInfo.showTriggerActionFailed();
+        deployInfo.showTriggeredActionError();
     }
 }

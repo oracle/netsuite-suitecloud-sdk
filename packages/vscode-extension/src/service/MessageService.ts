@@ -7,28 +7,28 @@ export class MessageService {
 		this._commandName = commandName;
 	}
 
-	showTriggerActionInfo() {
-		vscode.window.showInformationMessage(`SuiteCloud: ${this._commandName} command triggered.`);
+	showTriggeredActionInfo() {
+		vscode.window.showInformationMessage(`The ${this._commandName} command has been triggered.`);
 	}
 
-	showTriggerActionFailed() {
-		vscode.window.showErrorMessage(`SuiteCloud: ${this._commandName} command can not be triggered because the root folder could not be found.`);
+	showTriggeredActionError() {
+		vscode.window.showErrorMessage(`The ${this._commandName} command cannot be triggered because the root folder could not be found.`);
 	}
 
 	showCompletedActionInfo() {
 		vscode.window
-			.showInformationMessage(`SuiteCloud: ${this._commandName} command executed.`, `check result in ${scloudOutput.name} output channel.`)
+			.showInformationMessage(`The ${this._commandName} command has been successfully executed.`, `See details`)
 			.then(this._showOutputIfClicked);
 	}
 
-	showFailedActionInfo() {
+	showCompletedActionError() {
 		vscode.window
-			.showErrorMessage(`SuiteCloud: Something went wrong with the ${this._commandName} command`, `click here to see more details.`)
+			.showErrorMessage(`Something went wrong with the ${this._commandName} command`, `See details`)
 			.then(this._showOutputIfClicked);
     }
     
     showErrorMessage(message: string) {
-        vscode.window.showErrorMessage(`SuiteCloud: Something went wrong with the ${this._commandName} command. ${message}`);
+        vscode.window.showErrorMessage(`Something went wrong with the ${this._commandName} command.\n${message}`);
     }
 
 	_showOutputIfClicked(message: string | undefined) {

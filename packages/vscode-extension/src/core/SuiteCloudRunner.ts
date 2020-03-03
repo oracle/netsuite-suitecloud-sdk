@@ -22,6 +22,8 @@ export default class SuiteCloudCLIRunner {
 	}
 
 	run(options: any) {
+		options.runInInteractiveMode = false;
+		options.throwExceptionOnError = true;
 		return this._commandActionExecutor.executeAction(options);
 	}
 }

@@ -1,16 +1,17 @@
 import * as vscode from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
-import { getRootProjectFolder } from '../util/ExtensionUtil';
+import { getRootProjectFolder, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import { scloudOutput } from '../extension';
 import { MessageService } from '../service/MessageService';
 
 const objectTypes: [] = require('@oracle/netsuite-suitecloud-nodejs-cli/src/metadata/ObjectTypesMetadata');
 
 export default async function listobjects() {
-    const listobjectsInfo = new MessageService('listobjects');
 
+    const listobjectsInfo = new MessageService('listobjects');
     const executionPath = getRootProjectFolder();
+
     if (executionPath) {
         const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
 
@@ -29,15 +30,20 @@ export default async function listobjects() {
             args.type = selectedType.join(' ');
         }
 
-        listobjectsInfo.showTriggerActionInfo();
+        listobjectsInfo.showTriggeredActionInfo();
+        let listObjectsResult;
+        try {
+             listObjectsResult = await suiteCloudRunner.run({
+                commandName: 'listobjects',
+                arguments: {
+                    ...args,
+                },
+            }); 
+        } catch (error) {
+            listobjectsInfo.showErrorMessage(unwrapExceptionMessage(error));
+            return;
+        }
 
-        const listObjectsResult = await suiteCloudRunner.run({
-            commandName: 'listobjects',
-            arguments: {
-                ...args,
-            },
-            runInInteractiveMode: false,
-        });
 
         if (listObjectsResult.status === 'SUCCESS') {
             const listedObjects = listObjectsResult.data.map((el: any) => `${el.type}: ${el.scriptId}`);
@@ -45,10 +51,10 @@ export default async function listobjects() {
             listobjectsInfo.showCompletedActionInfo();
         } else {
             scloudOutput.appendLine(listObjectsResult.resultMessage);
-            listobjectsInfo.showFailedActionInfo();
+            listobjectsInfo.showCompletedActionError();
         }
 
     } else {
-        listobjectsInfo.showTriggerActionFailed();
+        listobjectsInfo.showTriggeredActionError();
     }
 }

@@ -103,7 +103,9 @@ module.exports = class CommandActionExecutor {
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
-			return error;
+			if (context.throwExceptionOnError) {
+				throw error
+			}
 		}
 	}
 
