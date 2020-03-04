@@ -33,7 +33,7 @@ export default async function listobjects() {
 		let listObjectsResult;
 		try {
 			listObjectsResult = await suiteCloudRunner.run({
-				commandName: 'listobjects',
+				commandName: 'object:list',
 				arguments: { type: selectedObjectTypes.join(' ') }
 			});
 		} catch (error) {
