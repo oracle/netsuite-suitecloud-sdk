@@ -140,7 +140,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 		const SDKParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
 
 		const executionContextForUpdate = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			includeProjectDefaultAuthId: true,
 			params: SDKParams,
 		});

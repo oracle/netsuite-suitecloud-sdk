@@ -252,7 +252,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			try {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
 				const executionContextCreateProject = new SDKExecutionContext({
-					command: this._commandMetadata.name,
+					command: this._commandMetadata.sdkCommand,
 					params: params,
 				});
 

@@ -40,8 +40,8 @@
     },
     {
         "commandName": "suitecommerce:localserver",
-        "interactiveGenerator": "commands/LocalCommandGenerator",
-        "nonInteractiveGenerator": "commands/LocalCommandGenerator"
+        "interactiveGenerator": "commands/LocalServerCommandGenerator",
+        "nonInteractiveGenerator": "commands/LocalServerCommandGenerator"
     },
     {
         "commandName": "config:proxy",
