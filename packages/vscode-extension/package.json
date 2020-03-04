@@ -10,6 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onCommand:extension.adddependencies",
 		"onCommand:extension.deploy",
 		"onCommand:extension.listobjects",
 		"onCommand:extension.update"
@@ -17,6 +18,11 @@
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
+			{
+				"command": "extension.adddependencies",
+				"title": "adddependencies",
+				"category": "suitecloud"
+			},
 			{
 				"command": "extension.deploy",
 				"title": "deploy",
@@ -29,6 +35,11 @@
 			}
 		],
 		"keybindings": [
+			{
+				"command": "extension.adddependencies",
+				"key": "ctrl+alt+shift+a",
+				"mac": "ctrl+alt+shift+a"
+			},
 			{
 			  "command": "extension.deploy",
 			  "key": "ctrl+d",
