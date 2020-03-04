@@ -14,7 +14,7 @@ define('vendor.ExtTest.module2', ['vendor.ExtTest.module2.View'], function(modul
 			// https://system.netsuite.com/help/helpcenter/en_US/APIs/SuiteCommerce/Extensibility/Frontend/index.html
 
 			/** @type {LayoutComponent} */
-			var layout = container.getComponent('Layout');
+			const layout = container.getComponent('Layout');
 
 			if (layout) {
 				layout.addChildView('Header.Logo', function() {

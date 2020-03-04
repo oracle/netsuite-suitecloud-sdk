@@ -8,7 +8,7 @@
 const { promisify } = require('util');
 const request = require('request');
 const url = require('url');
-const LocalServer = require('@oracle/netsuite-suitecloud-localserver-cli-command/src/LocalServer');
+const LocalServer = require('@oracle/suitecloud-cli-localserver-command/src/LocalServer');
 const requestGet = promisify(request.get);
 
 const { SERVERPATH, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');

@@ -1,5 +1,5 @@
 {
-	"name": "@oracle/netsuite-suitecloud-nodejs-cli",
+	"name": "@oracle/suitecloud-cli",
 	"version": "1.0.0",
 	"description": "SuiteCloud CLI for Node.js",
 	"keywords": [
@@ -23,7 +23,7 @@
 		"commander": "^2.20.0",
 		"inquirer": "^6.3.1",
 		"request-promise-native": "^1.0.7",
-		"@oracle/netsuite-suitecloud-localserver-cli-command": "1.0.0",
+		"@oracle/suitecloud-cli-localserver-command": "1.0.0",
 		"vm2": "^3.8.0",
 		"xml2js": "^0.4.19"
 	},

@@ -9,7 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 // normally this is called only when localserver command is executed
-const FileSystem = require('@oracle/netsuite-suitecloud-localserver-cli-command/src/services/FileSystem');
+const FileSystem = require('@oracle/suitecloud-cli-localserver-command/src/services/FileSystem');
 FileSystem.start(require('../../src/services/FileSystemService'));
 
 const ROOT = './__test__/local';
@@ -40,7 +40,7 @@ module.exports.removeFolder = function(folder = '') {
 			fs.rmdirSync(dir);
 		}
 	})(path.join(SERVERPATH, folder));
-	if (fs.existsSync(SERVERPATH) && fs.readdirSync(SERVERPATH).length == 0){
+	if (fs.existsSync(SERVERPATH) && fs.readdirSync(SERVERPATH).length === 0){
 		fs.rmdirSync(SERVERPATH);
 	}
 };

@@ -11,7 +11,7 @@ Read the full list of prerequisites in [NetSuite's Help Center](https://system.n
 ## Installation
 To install SuiteCloud Unit Testing package in the project, run the following command:
 ```
-npm install @oracle/netsuite-suitecloud-unit-testing --save-dev
+npm install @oracle/suitecloud-unit-testing --save-dev
 ```
 
 It's installed as a devDependency as well when using [Node.js CLI](../../packages/node-cli/README.md) createproject command and adding Jest as testing framework

@@ -61,12 +61,12 @@ class LocalServer {
 	}
 
 	_definePatchService(req, res) {
-		var response = function define_patch() {
-			var src_define = define;
+		const response = function define_patch() {
+			const src_define = define;
 			define = function define(name, cb) {
-				var is_tpl = name && /\.tpl$/.test(name);
-				var cb_string = cb ? cb.toString().replace(/\s/g, '') : '';
-				var is_empty_cb = cb_string === 'function(){}';
+				const is_tpl = name && /\.tpl$/.test(name);
+				const cb_string = cb ? cb.toString().replace(/\s/g, '') : '';
+				const is_empty_cb = cb_string === 'function(){}';
 
 				if (is_tpl && is_empty_cb) {
 					return;
@@ -82,6 +82,6 @@ class LocalServer {
 		res.setHeader('Content-Type', 'application/javascript');
 		res.send(`${response}; define_patch();`);
 	}
-};
+}
 
 module.exports = new LocalServer();

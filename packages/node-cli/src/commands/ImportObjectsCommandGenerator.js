@@ -106,8 +106,8 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		}
 
 		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection, ...overwriteConfirmationAnswer };
-		const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
-		return finalAnswers;
+
+		return this._arrangeAnswersForImportObjects(combinedAnswers);
 	}
 
 	_generateListObjectQuestions() {

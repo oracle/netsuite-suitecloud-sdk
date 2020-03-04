@@ -1,5 +1,5 @@
 {
-  "name": "@oracle/netsuite-suitecloud-sdk",
+  "name": "@oracle/suitecloud-sdk",
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
