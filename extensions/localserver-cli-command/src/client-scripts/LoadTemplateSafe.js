@@ -28,7 +28,7 @@
 	});
 
 	function copyProperties(source, dest) {
-		for (const property in source) {
+		for (var property in source) {
 			if (source.hasOwnProperty(property)) {
 				dest[property] = source[property];
 			}
@@ -37,7 +37,7 @@
 
 	function insertPlugin(deps) {
 		if (deps.splice) {
-			for (let i = 0; i < deps.length; i++) {
+			for (var i = 0; i < deps.length; i++) {
 				if (
 					deps[i].indexOf('.tpl') !== -1 &&
 					deps[i].indexOf('SC.LoadTemplateSafe!') === -1
@@ -49,7 +49,7 @@
 	}
 
 	function wrapFunction(func, param_index) {
-		const original = func;
+		var original = func;
 
 		func = function() {
 			insertPlugin(arguments[param_index]);
