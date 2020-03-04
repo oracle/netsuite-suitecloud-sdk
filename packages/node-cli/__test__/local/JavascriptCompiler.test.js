@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const JavascriptCompiler = require('@oracle/netsuite-suitecloud-localserver-cli-command/src/compilers/JavascriptCompiler');
+const JavascriptCompiler = require('@oracle/suitecloud-cli-localserver-command/src/compilers/JavascriptCompiler');
 
 const { SERVERPATH, removeFolder, createLocalserverFolder, mockClearConsoleLog } = require('./helpers');
 
@@ -18,7 +18,7 @@ const extensionFullname = 'vendor#custom_theme#1.0.0';
 const applications = ['shopping', 'checkout', 'myaccount'];
 
 const Script = jest.fn(function(options = { src, dst, applications, isEntrypoint }) {
-	var name = path.basename(options.dst, path.extname(options.dst));
+	const name = path.basename(options.dst, path.extname(options.dst));
 	return {
 		basesrc: options.src,
 		dst: options.dst,

@@ -21,7 +21,7 @@ Each version of CLI for Node.js in NPM works optimally with a specific NetSuite 
 ## Installation
 To install CLI for Node.js, run the following command:
 ```
-npm install --global @oracle/netsuite-suitecloud-nodejs-cli
+npm install --global @oracle/suitecloud-cli
 ```
 
 CLI for Node.js is available from within any directory by running `suitecloud`.

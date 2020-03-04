@@ -16,7 +16,7 @@ const AuthenticationService = require('./core/authentication/AuthenticationServi
 const CommandOutputHandler = require('./core/CommandOutputHandler');
 const path = require('path');
 
-const executionPath = process.cwd()
+const executionPath = process.cwd();
 const rootCLIPath = path.dirname(require.main.filename);
 const commandsMetadataServiceSingleton = new CommandsMetadataService(rootCLIPath);
 

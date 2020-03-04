@@ -47,7 +47,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_getCommandQuestions(prompt) {
-		var questions = [];
+		const questions = [];
 		//create a class to see type based on manifest.
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
