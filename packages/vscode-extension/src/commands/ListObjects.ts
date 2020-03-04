@@ -8,7 +8,7 @@ import { MessageService } from '../service/MessageService';
 const objectTypes: {
 	name: string;
 	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
-}[] = require('@oracle/netsuite-suitecloud-nodejs-cli/src/metadata/ObjectTypesMetadata');
+}[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 export default async function listobjects() {
 	const listobjectsMessageService = new MessageService('listobjects');

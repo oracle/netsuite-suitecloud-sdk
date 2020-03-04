@@ -1,6 +1,6 @@
-# netsuite-suitecloud-vscode-extension README
+# suitecloud-vscode-extension README
 
-This is the README for your extension "netsuite-suitecloud-vscode-extension". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "suitecloud-vscode-extension". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

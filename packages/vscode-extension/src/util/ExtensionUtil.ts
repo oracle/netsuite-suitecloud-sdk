@@ -8,9 +8,9 @@ export function getRootProjectFolder(): string | null {
 	return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : null;
 }
 
-export const { unwrapExceptionMessage } = require('@oracle/netsuite-suitecloud-nodejs-cli/src/utils/ExceptionUtils');
+export const { unwrapExceptionMessage } = require('@oracle/suitecloud-cli/src/utils/ExceptionUtils');
 
 export const operationResultStatus: {
 	SUCCESS: string;
 	ERROR: string;
-} = require('@oracle/netsuite-suitecloud-nodejs-cli/src/commands/OperationResultStatus');
+} = require('@oracle/suitecloud-cli/src/commands/OperationResultStatus');

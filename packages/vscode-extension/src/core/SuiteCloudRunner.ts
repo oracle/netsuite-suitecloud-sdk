@@ -1,9 +1,9 @@
-const CommandActionExecutor = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/CommandActionExecutor');
-const CommandInstanceFactory = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/CommandInstanceFactory');
-const CommandOptionsValidator = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/CommandOptionsValidator');
-const CommandOutputHandler = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/CommandOutputHandler');
-const CLIConfigurationService = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/extensibility/CLIConfigurationService');
-const AuthenticationService = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/authentication/AuthenticationService');
+const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
+const CommandInstanceFactory = require('@oracle/suitecloud-cli/src/core/CommandInstanceFactory');
+const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
+const CommandOutputHandler = require('@oracle/suitecloud-cli/src/core/CommandOutputHandler');
+const CLIConfigurationService = require('@oracle/suitecloud-cli/src/core/extensibility/CLIConfigurationService');
+const AuthenticationService = require('@oracle/suitecloud-cli/src/core/authentication/AuthenticationService');
 
 export default class SuiteCloudRunner {
 	private commandActionExecutor: any;
