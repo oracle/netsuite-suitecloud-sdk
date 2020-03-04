@@ -1,7 +1,7 @@
 {
 	"name": "@oracle/netsuite-suitecloud-localserver-cli-command",
 	"version": "1.0.0",
-	"description": "SuiteCloud CLI Local command",
+	"description": "SuiteCloud CLI localserver command",
 	"repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/extensions/localserver-cli-command",
 	"bugs": {
 		"url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"

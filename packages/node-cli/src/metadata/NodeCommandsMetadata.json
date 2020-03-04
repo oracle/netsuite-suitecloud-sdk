@@ -17,7 +17,7 @@
     },
     "localserver": {
         "name": "localserver",
-        "description": "Generates a local server of your SuiteCommerce extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777. You can use this server to run and test the SuiteCommerce themes and extensions that you are developing",
+        "description": "Generates a local server of your SuiteCommerce extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777. You can use this server to run and test the SuiteCommerce themes and extensions that you are developing.",
         "isSetupRequired": false,
         "options": [
             {
