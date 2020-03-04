@@ -42,7 +42,7 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 
 	_executeAction(args) {
 		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			integrationMode: false,
 		});
 

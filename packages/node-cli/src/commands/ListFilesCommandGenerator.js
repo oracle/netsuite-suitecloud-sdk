@@ -70,7 +70,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		// quote folder path to preserve spaces
 		answers.folder = `\"${answers.folder}\"`;
 		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			params: answers,
 			includeProjectDefaultAuthId: true
 		});

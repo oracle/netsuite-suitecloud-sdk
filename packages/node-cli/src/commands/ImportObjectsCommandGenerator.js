@@ -64,7 +64,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
 		const executionContextForListObjects = new SDKExecutionContext({
-			command: this._listObjectsMetadata.name,
+			command: this._listObjectsMetadata.sdkCommand,
 			params: paramsForListObjects,
 			includeProjectDefaultAuthId: true,
 		});
@@ -326,7 +326,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const executionContextForImportObjects = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			params,
 			flags,
 			includeProjectDefaultAuthId: true,

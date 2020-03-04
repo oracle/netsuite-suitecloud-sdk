@@ -53,7 +53,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		});
 		this._applyContentProtectionArgumentHandler = new ApplyContentProtectinoArgumentHandler({
 			projectInfoService: this._projectInfoService,
-			commandName: this._commandMetadata.name,
+			commandName: this._commandMetadata.sdkCommand,
 		});
 	}
 
@@ -143,7 +143,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			flags.push(COMMAND.FLAGS.VALIDATE);
 		}
 		const executionContextForDeploy = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			includeProjectDefaultAuthId: true,
 			params: SDKParams,
 			flags,

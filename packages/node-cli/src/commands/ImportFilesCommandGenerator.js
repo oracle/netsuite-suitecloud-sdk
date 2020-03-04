@@ -183,7 +183,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		}
 
 		const executionContextImportObjects = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			includeProjectDefaultAuthId: true,
 			params: answers,
 		});
