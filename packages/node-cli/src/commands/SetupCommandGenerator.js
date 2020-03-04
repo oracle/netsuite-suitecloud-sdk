@@ -59,7 +59,7 @@ const {
 	validateFieldIsNotEmpty,
 	validateAuthIDNotInList,
 	validateAlphanumericHyphenUnderscore,
-	validateMaximunLength,
+	validateMaximumLength,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 
@@ -183,7 +183,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
 						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, fieldValue =>
-							validateAuthIDNotInList(fieldValue, authIDs), validateAlphanumericHyphenUnderscore, validateMaximunLength
+							validateAuthIDNotInList(fieldValue, authIDs), validateAlphanumericHyphenUnderscore, validateMaximumLength
 						),
 				},
 				{
