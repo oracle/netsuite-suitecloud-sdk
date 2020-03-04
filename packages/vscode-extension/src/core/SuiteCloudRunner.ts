@@ -5,10 +5,10 @@ const CommandOutputHandler = require('@oracle/netsuite-suitecloud-nodejs-cli/src
 const CLIConfigurationService = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/extensibility/CLIConfigurationService');
 const AuthenticationService = require('@oracle/netsuite-suitecloud-nodejs-cli/src/core/authentication/AuthenticationService');
 
-export default class SuiteCloudCLIRunner {
+export default class SuiteCloudRunner {
 	private commandActionExecutor: any;
-	
-	constructor(executionPath: string, commandsMetadataService: any) { 
+
+	constructor(executionPath: string, commandsMetadataService: any) {
 		this.commandActionExecutor = new CommandActionExecutor({
 			executionPath,
 			commandOutputHandler: new CommandOutputHandler(),
@@ -16,7 +16,7 @@ export default class SuiteCloudCLIRunner {
 			cliConfigurationService: new CLIConfigurationService(),
 			commandInstanceFactory: new CommandInstanceFactory(),
 			authenticationService: new AuthenticationService(executionPath),
-			commandsMetadataService: commandsMetadataService,
+			commandsMetadataService: commandsMetadataService
 		});
 	}
 

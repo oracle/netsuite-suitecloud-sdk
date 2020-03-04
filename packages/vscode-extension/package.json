@@ -1,6 +1,6 @@
 {
-	"name": "netsuite-suitecloud-vscode-extension",
-	"displayName": "netsuite-suitecloud-vscode-extension",
+	"name": "@oracle/suitecloud-vscode-extension",
+	"displayName": "suitecloud-vscode-extension",
 	"description": "netsuite suitecloud vscode extension based on nodejs-cli",
 	"version": "0.0.1",
 	"engines": {
@@ -44,7 +44,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
-		"@oracle/netsuite-suitecloud-nodejs-cli": "^1.0.0"
+		"@oracle/suitecloud-cli": "^1.0.0"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
