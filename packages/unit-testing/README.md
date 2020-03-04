@@ -27,7 +27,7 @@ const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/Sui
 
 module.exports = SuiteCloudJestConfiguration.build({
   projectFolder: 'src', //or your project folder
-  projectType: SuiteCloudJestConfiguration.ProjectType.SuiteApp,
+  projectType: SuiteCloudJestConfiguration.ProjectType.SUITEAPP,
 });
 ```
 
