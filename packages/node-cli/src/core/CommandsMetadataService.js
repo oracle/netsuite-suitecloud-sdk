@@ -63,7 +63,7 @@ module.exports = class CommandsMetadataService {
 		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
 			const optionsTransformedIntoObject = commandMetadata.options.reduce((result, item) => {
 				if (item.name == null) {
-					throw 'Invalid Metadata, mising id property in command options';
+					throw 'Invalid Metadata, missing "name" property in command options';
 				}
 				result[item.name] = item;
 				return result;

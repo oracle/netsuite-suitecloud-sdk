@@ -10,7 +10,7 @@ const { COLORS } = require('./../utils/NodeUtils');
 const { COMMAND_LOCAL } = require('./../services/TranslationKeys');
 const TranslationService = require('./../services/TranslationService');
 const FileSystemService = require('./../services/FileSystemService');
-module.exports = class LocalCommandGenerator extends BaseCommandGenerator {
+module.exports = class LocalServerCommandGenerator extends BaseCommandGenerator {
 
 	constructor(options) {
 		super(options);

@@ -160,7 +160,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			params.type = params.type.join(' ');
 		}
 		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			params,
 			includeProjectDefaultAuthId: true,
 		});
