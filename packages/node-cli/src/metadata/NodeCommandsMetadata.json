@@ -1,6 +1,6 @@
 {
-    "setupaccount": {
-        "name": "setupaccount",
+    "account:setup": {
+        "name": "account:setup",
         "alias": "sa",
         "description": "Sets up an account to use with the SuiteCloud CLI for Node.js.",
         "isSetupRequired": false,
@@ -46,8 +46,8 @@
             }
         ]
     },
-    "proxy": {
-        "name": "proxy",
+    "config:proxy": {
+        "name": "config:proxy",
         "description": "Configures a proxy server.",
         "isSetupRequired": false,
         "options": [

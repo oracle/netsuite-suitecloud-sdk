@@ -1,64 +1,64 @@
 [
     {
-        "commandName": "adddependencies",
+        "commandName": "project:adddependencies",
         "nonInteractiveGenerator": "commands/AddDependenciesCommandGenerator"
     },
     {
-        "commandName": "createobject",
+        "commandName": "object:create",
         "interactiveGenerator": "commands/CreateObjectCommandGenerator",
         "nonInteractiveGenerator": "commands/CreateObjectCommandGenerator"
     },
     {
-        "commandName": "createproject",
+        "commandName": "project:create",
         "interactiveGenerator": "commands/CreateProjectCommandGenerator",
         "nonInteractiveGenerator": "commands/CreateProjectCommandGenerator"
     },
     {
-        "commandName": "deploy",
+        "commandName": "project:deploy",
         "interactiveGenerator": "commands/DeployCommandGenerator",
         "nonInteractiveGenerator": "commands/DeployCommandGenerator"
     },
     {
-        "commandName": "importfiles",
+        "commandName": "file:import",
         "interactiveGenerator": "commands/ImportFilesCommandGenerator",
         "nonInteractiveGenerator": "commands/ImportFilesCommandGenerator"
     },
     {
-        "commandName": "importobjects",
+        "commandName": "object:import",
         "interactiveGenerator": "commands/ImportObjectsCommandGenerator",
         "nonInteractiveGenerator": "commands/ImportObjectsCommandGenerator"
     },
     {
-        "commandName": "listfiles",
+        "commandName": "file:list",
         "interactiveGenerator": "commands/ListFilesCommandGenerator",
         "nonInteractiveGenerator": "commands/ListFilesCommandGenerator"
     },
     {
-        "commandName": "listobjects",
+        "commandName": "object:list",
         "interactiveGenerator": "commands/ListObjectsCommandGenerator",
         "nonInteractiveGenerator": "commands/ListObjectsCommandGenerator"
     },
     {
-        "commandName": "localserver",
+        "commandName": "suitecommerce:localserver",
         "interactiveGenerator": "commands/LocalCommandGenerator",
         "nonInteractiveGenerator": "commands/LocalCommandGenerator"
     },
     {
-        "commandName": "proxy",
+        "commandName": "config:proxy",
         "nonInteractiveGenerator": "commands/ProxyCommandGenerator"
     },
     {
-        "commandName": "setupaccount",
+        "commandName": "account::setup",
         "interactiveGenerator": "./commands/SetupCommandGenerator",
         "nonInteractiveGenerator": "./commands/SetupCommandGenerator"
     },
     {
-        "commandName": "update",
+        "commandName": "object:update",
         "interactiveGenerator": "./commands/UpdateCommandGenerator",
         "nonInteractiveGenerator": "./commands/UpdateCommandGenerator"
     },
     {
-        "commandName": "validate",
+        "commandName": "project:validate",
         "interactiveGenerator": "commands/ValidateCommandGenerator",
         "nonInteractiveGenerator": "commands/ValidateCommandGenerator"
     }

@@ -36,7 +36,7 @@ const COMMAND_FLAGS = {
 	EXCLUDE_FILES: 'excludefiles',
 };
 
-const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDER_NAMES } = require('../ApplicationConstants');
+const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDERS } = require('../ApplicationConstants');
 const {
 	COMMAND_IMPORTOBJECTS: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
 	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED },
@@ -106,8 +106,8 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		}
 
 		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection, ...overwriteConfirmationAnswer };
-		const finalAnswers = this._arrangeAnswersForImportObjects(combinedAnswers);
-		return finalAnswers;
+
+		return this._arrangeAnswersForImportObjects(combinedAnswers);
 	}
 
 	_generateListObjectQuestions() {
@@ -241,7 +241,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
 		const objectDirectoryChoices = this._fileSystemService
-			.getFoldersFromDirectory(join(this._projectFolder, FOLDER_NAMES.OBJECTS))
+			.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.OBJECTS))
 			.map(transformFoldersToChoicesFunc);
 
 		const questionDestinationFolder = {

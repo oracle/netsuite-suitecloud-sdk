@@ -83,7 +83,7 @@ module.exports = class CLI {
 	}
 
 	_isRunningInInteractiveMode() {
-		return process.argv[3] == INTERACTIVE_ALIAS || process.argv[3] === INTERACTIVE_OPTION;
+		return process.argv[3] === INTERACTIVE_ALIAS || process.argv[3] === INTERACTIVE_OPTION;
 	}
 
 	_printHelp() {

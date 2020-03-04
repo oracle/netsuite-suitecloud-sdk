@@ -27,8 +27,7 @@ const UTF8 = 'utf8';
 	}
 
 	readAsString(fileName) {
-		const content = fs.readFileSync(fileName, UTF8);
-		return content;
+		return fs.readFileSync(fileName, UTF8);
 	}
 
 	exists(fileName) {

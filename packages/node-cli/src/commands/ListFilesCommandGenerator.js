@@ -86,7 +86,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 		if (SDKOperationResultUtils.hasErrors(operationResult)) {
 			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult)
+			SDKOperationResultUtils.logErrors(operationResult);
 			return;
 		}
 

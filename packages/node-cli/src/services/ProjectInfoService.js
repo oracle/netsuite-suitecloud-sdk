@@ -8,8 +8,8 @@ const { ERRORS } = require('./TranslationKeys');
 const {
 	PROJECT_SUITEAPP,
 	PROJECT_ACP,
-	FILE_NAMES,
-	FOLDER_NAMES,
+	FILES,
+	FOLDERS,
 } = require('../ApplicationConstants');
 const CLIException = require('../CLIException');
 const FileUtils = require('../utils/FileUtils');
@@ -66,7 +66,7 @@ module.exports = class ProjectInfoService {
 			return CACHED_PROJECT_TYPE;
 		}
 
-		const manifestPath = path.join(this._projectFolder, FILE_NAMES.MANIFEST_XML);
+		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
 
 		if (!FileUtils.exists(manifestPath)) {
 			const errorMessage =
@@ -117,14 +117,14 @@ module.exports = class ProjectInfoService {
 	hasLockAndHideFiles() {
 		const pathToInstallationPreferences = path.join(
 			this._projectFolder,
-			FOLDER_NAMES.INSTALLATION_PREFERENCES
+			FOLDERS.INSTALLATION_PREFERENCES
 		);
 		return (
 			FileUtils.exists(
-				path.join(pathToInstallationPreferences, FILE_NAMES.HIDING_PREFERENCE)
+				path.join(pathToInstallationPreferences, FILES.HIDING_PREFERENCE)
 			) &&
 			FileUtils.exists(
-				path.join(pathToInstallationPreferences, FILE_NAMES.LOCKING_PREFERENCE)
+				path.join(pathToInstallationPreferences, FILES.LOCKING_PREFERENCE)
 			)
 		);
 	}

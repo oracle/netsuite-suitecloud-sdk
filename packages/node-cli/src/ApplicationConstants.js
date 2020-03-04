@@ -8,8 +8,7 @@ module.exports = {
 	SDK_COMMANDS_METADATA_FILE: 'metadata/SDKCommandsMetadata.json',
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
-	SDK_DIRECTORY_NAME: 'bin',
-	SDK_FILENAME: 'cli-2019.2.1.jar',
+	SDK_FILENAME: 'cli-2020.1.0.jar',
 	SDK_REQUIRED_JAVA_VERSION: '11',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
@@ -19,14 +18,14 @@ module.exports = {
 		HOST: '-DproxyHost',
 		PORT: '-DproxyPort',
 	},
-	FILE_NAMES: {
+	FILES: {
 		PROJECT_JSON: 'project.json',
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
 		MANIFEST_XML: 'manifest.xml',
 		CLI_SETTINGS: 'nodejs-cli-settings.json'
 	},
-	FOLDER_NAMES: {
+	FOLDERS: {
 		FILE_CABINET: '/FileCabinet',
 		INSTALLATION_PREFERENCES: '/InstallationPreferences',
 		OBJECTS: '/Objects',

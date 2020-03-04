@@ -76,7 +76,7 @@ module.exports = class CommandsMetadataService {
 	_addCommandGeneratorMetadata(commandGeneratorsMetadata, commandsMetadata) {
 		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
 			const generatorMetadata = commandGeneratorsMetadata.find(generatorMetadata => {
-				return generatorMetadata.commandName == commandMetadata.name;
+				return generatorMetadata.commandName === commandMetadata.name;
 			});
 
 			const defaultGenerator = generatorMetadata && generatorMetadata.nonInteractiveGenerator

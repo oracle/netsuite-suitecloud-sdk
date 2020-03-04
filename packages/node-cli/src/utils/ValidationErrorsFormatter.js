@@ -14,10 +14,10 @@ class ValidationErrorsFormatter {
 		assert(validationErrors);
 		assert(Array.isArray(validationErrors));
 
-		var errorMessageHeader = TranslationService.getMessage(
+		const errorMessageHeader = TranslationService.getMessage(
 			TRANSLATION_KEYS.COMMAND_OPTIONS_VALIDATION_ERRORS
 		);
-		var validationErrorsString = validationErrors.join(lineBreak);
+		const validationErrorsString = validationErrors.join(lineBreak);
 		return `${errorMessageHeader}${lineBreak}${validationErrorsString}`;
 	}
 }

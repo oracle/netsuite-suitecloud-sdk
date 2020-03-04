@@ -10,7 +10,7 @@ const FileSystemService = require('../services/FileSystemService');
 const TemplateKeys = require('../templates/TemplateKeys');
 const chalk = require('chalk');
 const { join } = require('path');
-const { FOLDER_NAMES } = require('../ApplicationConstants');
+const { FOLDERS } = require('../ApplicationConstants');
 
 module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -19,11 +19,11 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 	}
 
 	_getCommandQuestions(prompt) {
-		var transformFoldersToChoicesFunc = folder => {
-			return { name: folder.replace(this._projectFolder, ''), value: folder };
+		const transformFoldersToChoicesFunc = folder => {
+			return {name: folder.replace(this._projectFolder, ''), value: folder};
 		};
-		var objectDirectoryChoices = this._fileSystemService
-			.getFoldersFromDirectory(join(this._projectFolder, FOLDER_NAMES.OBJECTS))
+		const objectDirectoryChoices = this._fileSystemService
+			.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.OBJECTS))
 			.map(transformFoldersToChoicesFunc);
 
 		return prompt([
@@ -65,8 +65,8 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 			},
 		]).then(mainAnswers => {
 			if (mainAnswers.createrelatedfiles) {
-				var fileCabinetDirectoryChoices = this._fileSystemService
-					.getFoldersFromDirectory(join(this._projectFolder, FOLDER_NAMES.FILE_CABINET))
+				const fileCabinetDirectoryChoices = this._fileSystemService
+					.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.FILE_CABINET))
 					.map(transformFoldersToChoicesFunc);
 
 				return prompt([
@@ -98,18 +98,18 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 	}
 
 	_executeAction(answers) {
-		var createFilePromise = this._fileSystemService.createFileFromTemplate({
+		const createFilePromise = this._fileSystemService.createFileFromTemplate({
 			template: TemplateKeys.SCRIPTS['blankscript'],
 			destinationFolder: answers.relatedfiledestinationfolder,
 			fileName: answers.relatedfilename,
 			fileExtension: 'js',
 		});
-		var createObjectPromise = this._fileSystemService.createFileFromTemplate({
+		const createObjectPromise = this._fileSystemService.createFileFromTemplate({
 			template: TemplateKeys.OBJECTS['commerceextension'],
 			destinationFolder: answers.folder,
 			fileName: answers.objectfilename,
 			fileExtension: 'xml',
-			bindings: [{ id: 'scriptid', value: answers.type.prefix + answers.objectfilename }],
+			bindings: [{id: 'scriptid', value: answers.type.prefix + answers.objectfilename}],
 		});
 		return Promise.all([createFilePromise, createObjectPromise]).then(() => {
 			console.log(

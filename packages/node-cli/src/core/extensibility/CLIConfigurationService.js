@@ -11,7 +11,7 @@ const path = require('path');
 const TranslationService = require('./../../services/TranslationService');
 const { ERRORS } = require('./../../services/TranslationKeys');
 const CommandUserExtension = require('./CommandUserExtension');
-const CLI_CONFIG_JS_FILE = 'cli-config.js';
+const CLI_CONFIG_JS_FILE = 'suitecloud.config.js';
 const DEFAULT_CONFIG = {
 	defaultProjectFolder: '',
 	commands: {},
@@ -26,13 +26,13 @@ module.exports = class CLIConfigurationService {
 
 	initialize(executionPath) {
 		this._executionPath = executionPath;
-		var cliConfigFile = path.join(this._executionPath, CLI_CONFIG_JS_FILE);
+		const cliConfigFile = path.join(this._executionPath, CLI_CONFIG_JS_FILE);
 		if (!FileUtils.exists(cliConfigFile)) {
 			return;
 		}
 
 		try {
-			var nodeVm = new NodeVM({
+			const nodeVm = new NodeVM({
 				console: 'inherit',
 				sandbox: {},
 				require: {
@@ -54,7 +54,7 @@ module.exports = class CLIConfigurationService {
 	}
 
 	getCommandUserExtension(commandName) {
-		var commandExtension =
+		const commandExtension =
 			this._cliConfig && this._cliConfig.commands[commandName]
 				? this._cliConfig.commands[commandName]
 				: {};
@@ -62,12 +62,12 @@ module.exports = class CLIConfigurationService {
 	}
 
 	getProjectFolder(command) {
-		var defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder)
+		const defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder)
 			? this._cliConfig.defaultProjectFolder
 			: '';
 
-		var commandConfig = this._cliConfig && this._cliConfig.commands[command];
-		var commandOverridenProjectFolder;
+		const commandConfig = this._cliConfig && this._cliConfig.commands[command];
+		let commandOverridenProjectFolder;
 		if (commandConfig && isString(commandConfig.projectFolder)) {
 			commandOverridenProjectFolder = commandConfig.projectFolder;
 		}
