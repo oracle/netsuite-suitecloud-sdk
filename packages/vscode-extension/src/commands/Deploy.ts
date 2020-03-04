@@ -17,7 +17,7 @@ export default async function deploy() {
         let deployResult;
         try {
             deployResult = await suiteCloudRunner.run({
-                commandName: 'deploy',
+                commandName: 'project:deploy',
                 arguments: {}
             });
         } catch (error) {
