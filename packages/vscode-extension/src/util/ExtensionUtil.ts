@@ -8,10 +8,10 @@ export function getRootProjectFolder(): string | null {
 	return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : null;
 }
 
-export const { unwrapExceptionMessage, unwrapInformationMessage } = require('@oracle/netsuite-suitecloud-nodejs-cli/src/utils/ExceptionUtils');
-export const NodeUtils = require('@oracle/netsuite-suitecloud-nodejs-cli/src/utils/NodeUtils');
+export const { unwrapExceptionMessage, unwrapInformationMessage } = require('@oracle/suitecloud-cli/src/utils/ExceptionUtils');
+export const NodeUtils = require('@oracle/suitecloud-cli/src/utils/NodeUtils');
 
 export const OperationResultStatus: {
 	SUCCESS: string;
 	ERROR: string;
-} = require('@oracle/netsuite-suitecloud-nodejs-cli/src/commands/OperationResultStatus');
+} = require('@oracle/suitecloud-cli/src/commands/OperationResultStatus');

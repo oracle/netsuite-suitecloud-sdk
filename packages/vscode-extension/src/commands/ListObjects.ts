@@ -7,7 +7,7 @@ import { unwrapExceptionMessage, OperationResultStatus } from '../util/Extension
 const objectTypes: {
 	name: string;
 	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
-}[] = require('@oracle/netsuite-suitecloud-nodejs-cli/src/metadata/ObjectTypesMetadata');
+}[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 export default class ListObjects extends BaseAction {
 
