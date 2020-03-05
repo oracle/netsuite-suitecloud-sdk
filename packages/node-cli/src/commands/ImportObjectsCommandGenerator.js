@@ -45,7 +45,7 @@ const {
 } = require('../services/TranslationKeys');
 
 const { validateArrayIsNotEmpty, validateScriptId, validateSuiteApp, showValidationResults } = require('../validation/InteractiveAnswersValidator');
-const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
+const LIST_OBJECTS_COMMAND_NAME = 'object:list';
 
 const CUSTOM_SCRIPT_PREFIX = 'customscript';
 
@@ -113,7 +113,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 	_generateListObjectQuestions() {
 		const questions = [];
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			const questionSpecifySuiteApp = {
+			const specifySuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SPECIFY_SUITEAPP,
 				message: TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID),
@@ -124,9 +124,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				],
 				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			};
-			questions.push(questionSpecifySuiteApp);
+			questions.push(specifySuiteApp);
 
-			const questionAppId = {
+			const specifyAppId = {
 				when: function(response) {
 					return response[ANSWERS_NAMES.SPECIFY_SUITEAPP];
 				},
@@ -135,10 +135,10 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				message: TranslationService.getMessage(QUESTIONS.APPID),
 				validate: fieldValue => showValidationResults(fieldValue, validateSuiteApp),
 			};
-			questions.push(questionAppId);
+			questions.push(specifyAppId);
 		}
 
-		const questionShowAllObjects = {
+		const showAllObjects = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_OBJECT_TYPE,
 			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
@@ -148,9 +148,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				{ name: TranslationService.getMessage(NO), value: true },
 			],
 		};
-		questions.push(questionShowAllObjects);
+		questions.push(showAllObjects);
 
-		const questionCustomOjects = {
+		const selectObjectType = {
 			when: function(answers) {
 				return answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE];
 			},
@@ -167,10 +167,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			],
 			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
+		questions.push(selectObjectType);
 
-		questions.push(questionCustomOjects);
-
-		const questionSpecifyScriptId = {
+		const filterByScriptId = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
@@ -180,9 +179,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				{ name: TranslationService.getMessage(NO), value: false },
 			],
 		};
-		questions.push(questionSpecifyScriptId);
+		questions.push(filterByScriptId);
 
-		const questionScriptId = {
+		const specifyScriptId = {
 			when: function(response) {
 				return response[ANSWERS_NAMES.SPECIFY_SCRIPT_ID];
 			},
@@ -191,7 +190,8 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: fieldValue => showValidationResults(fieldValue, validateScriptId),
 		};
-		questions.push(questionScriptId);
+		questions.push(specifyScriptId);
+
 		return questions;
 	}
 
