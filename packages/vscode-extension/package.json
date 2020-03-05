@@ -41,11 +41,11 @@
 				"mac": "ctrl+alt+shift+a"
 			},
 			{
-			  "command": "extension.deploy",
-			  "key": "ctrl+d",
-			  "mac": "cmd+d"
+				"command": "extension.deploy",
+				"key": "ctrl+d",
+				"mac": "cmd+d"
 			}
-		  ]
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

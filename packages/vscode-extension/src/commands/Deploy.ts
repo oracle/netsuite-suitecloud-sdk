@@ -1,44 +1,43 @@
-import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
-import { getRootProjectFolder, unwrapExceptionMessage, operationResultStatus } from '../util/ExtensionUtil';
+import { unwrapExceptionMessage, OperationResultStatus } from '../util/ExtensionUtil';
 import { scloudOutput } from '../extension';
 import { MessageService } from '../service/MessageService';
+import BaseAction from './BaseAction';
 
 
-export default async function deploy() {
+export default class Deploy extends BaseAction {
+    constructor() {
+        super({ messageService: new MessageService('deploy') });
+    }
 
-    const deployMessageService = new MessageService('deploy');
-    const executionPath = getRootProjectFolder();
-
-    if (executionPath) {
-        const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
-
-        deployMessageService.showTriggeredActionInfo();
+    async execute() {
+        this.messageService.showTriggeredActionInfo();
         let deployResult;
-        try {
-            deployResult = await suiteCloudRunner.run({
-                commandName: 'project:deploy',
-                arguments: {}
-            });
-        } catch (error) {
-            deployMessageService.showErrorMessage(unwrapExceptionMessage(error));
-            return;
-        }
-
-        if (deployResult.operationResult?.status === operationResultStatus.SUCCESS && Array.isArray(deployResult.operationResult.data)) {
-            deployResult.operationResult.data.forEach((element: any) => {
-                scloudOutput.appendLine(element);
-            });
-            deployMessageService.showCompletedActionInfo();
-        } else {
-            if (Array.isArray(deployResult.operationResult.errorMessages) && (deployResult.operationResult.errorMessages.length > 0)) {
-                deployResult.operationResult.errorMessages.forEach((message: string) => scloudOutput.appendLine(message));
-            } else {
-                scloudOutput.appendLine(deployResult.operationResult.resultMessage);
+        if (this.suiteCloudRunner && this.messageService) {
+            try {
+                deployResult = await this.suiteCloudRunner.run({
+                    commandName: 'project:deploy',
+                    arguments: {}
+                });
+            } catch (error) {
+                this.messageService.showErrorMessage(unwrapExceptionMessage(error));
+                return;
             }
-            deployMessageService.showCompletedActionError();
+
+            if (deployResult.operationResult?.status === OperationResultStatus.SUCCESS && Array.isArray(deployResult.operationResult.data)) {
+                deployResult.operationResult.data.forEach((element: any) => {
+                    scloudOutput.appendLine(element);
+                });
+                this.messageService.showCompletedActionInfo();
+            } else {
+                if (Array.isArray(deployResult.operationResult.errorMessages) && (deployResult.operationResult.errorMessages.length > 0)) {
+                    deployResult.operationResult.errorMessages.forEach((message: string) => scloudOutput.appendLine(message));
+                } else {
+                    scloudOutput.appendLine(deployResult.operationResult.resultMessage);
+                }
+                this.messageService.showCompletedActionError();
+            }
+        } else {
+            this.messageService.showTriggeredActionError();
         }
-    } else {
-        deployMessageService.showTriggeredActionError();
     }
 }

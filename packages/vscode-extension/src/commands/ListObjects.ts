@@ -1,55 +1,58 @@
 import { window } from 'vscode';
-import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
-import { getRootProjectFolder, unwrapExceptionMessage, operationResultStatus } from '../util/ExtensionUtil';
 import { scloudOutput } from '../extension';
 import { MessageService } from '../service/MessageService';
+import BaseAction from './BaseAction';
+import { unwrapExceptionMessage, OperationResultStatus } from '../util/ExtensionUtil';
 
 const objectTypes: {
 	name: string;
 	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
 }[] = require('@oracle/netsuite-suitecloud-nodejs-cli/src/metadata/ObjectTypesMetadata');
 
-export default async function listobjects() {
-	const listobjectsMessageService = new MessageService('listobjects');
-	const executionPath = getRootProjectFolder();
+export default class ListObjects extends BaseAction {
 
-	if (executionPath) {
-		const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
+	constructor() {
+		super({ messageService: new MessageService('deploy') });
+	}
 
-		const selectedObjectTypes = await window.showQuickPick(
-			objectTypes.map(objectType => objectType.value.type),
-			{
-				placeHolder: 'select your object type or nothing to list them all',
-				canPickMany: true
+	async execute() {
+
+		if (this.suiteCloudRunner && this.messageService) {
+
+			const selectedObjectTypes = await window.showQuickPick(
+				objectTypes.map(objectType => objectType.value.type),
+				{
+					placeHolder: 'select your object type or nothing to list them all',
+					canPickMany: true
+				}
+			);
+
+			if (selectedObjectTypes === undefined) {
+				return;
 			}
-		);
 
-		if (selectedObjectTypes === undefined) {
-			return;
-		}
+			this.messageService.showTriggeredActionInfo();
+			let listObjectsResult;
+			try {
+				listObjectsResult = await this.suiteCloudRunner.run({
+					commandName: 'object:list',
+					arguments: { type: selectedObjectTypes.join(' ') }
+				});
+			} catch (error) {
+				this.messageService.showErrorMessage(unwrapExceptionMessage(error));
+				return;
+			}
 
-		listobjectsMessageService.showTriggeredActionInfo();
-		let listObjectsResult;
-		try {
-			listObjectsResult = await suiteCloudRunner.run({
-				commandName: 'object:list',
-				arguments: { type: selectedObjectTypes.join(' ') }
-			});
-		} catch (error) {
-			listobjectsMessageService.showErrorMessage(unwrapExceptionMessage(error));
-			return;
-		}
-
-		if (listObjectsResult.status === operationResultStatus.SUCCESS) {
-			const listedObjects = listObjectsResult.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
-			listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
-			listobjectsMessageService.showCompletedActionInfo();
+			if (listObjectsResult.status === OperationResultStatus.SUCCESS) {
+				const listedObjects = listObjectsResult.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
+				listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
+				this.messageService.showCompletedActionInfo();
+			} else {
+				scloudOutput.appendLine(listObjectsResult.resultMessage);
+				this.messageService.showCompletedActionError();
+			}
 		} else {
-			scloudOutput.appendLine(listObjectsResult.resultMessage);
-			listobjectsMessageService.showCompletedActionError();
+			this.messageService.showTriggeredActionError();
 		}
-	} else {
-		listobjectsMessageService.showTriggeredActionError();
 	}
 }
