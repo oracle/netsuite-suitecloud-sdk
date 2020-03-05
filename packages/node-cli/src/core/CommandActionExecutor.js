@@ -144,7 +144,7 @@ module.exports = class CommandActionExecutor {
 					? this._applyDefaultContextParams(commandArguments, projectConfiguration)
 					: commandArguments,
 			});
-			const overridedCommandArguments = beforeExecutingOutput.arguments;
+			const overriddenCommandArguments = beforeExecutingOutput.arguments;
 
 			const argumentsFromQuestions =
 				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
@@ -152,7 +152,7 @@ module.exports = class CommandActionExecutor {
 					: {};
 
 			const commandArgumentsWithQuestionArguments = {
-				...overridedCommandArguments,
+				...overriddenCommandArguments,
 				...argumentsFromQuestions,
 			};
 			let commandArgumentsAfterPreActionFunc = command.preActionFunc
