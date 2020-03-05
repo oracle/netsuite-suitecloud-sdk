@@ -9,11 +9,18 @@ const NodeUtils = require('./NodeUtils');
 
 module.exports = {
 	getErrorMessagesString: operationResult => {
+		let errors = '';
 		const { errorMessages } = operationResult;
 		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
-			return errorMessages.join(NodeUtils.lineBreak);
+			errors = errorMessages.join(NodeUtils.lineBreak);
 		}
-		return '';
+		// TODO: this is temporary workaround,
+		//  it must be fixed in OperationResult returned from SDK core
+		//  errors must never be placed in resultMessage property
+		if (errors === '') {
+			errors = operationResult.resultMessage;
+		}
+		return errors;
 	},
 	getResultMessage: operationResult => {
 		const { resultMessage } = operationResult;

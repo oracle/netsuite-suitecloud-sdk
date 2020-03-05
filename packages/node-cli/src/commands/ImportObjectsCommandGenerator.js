@@ -90,22 +90,22 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		}
 
 		let selectionObjectAnswers;
-		let anwersAfterObjectSelection;
+		let answersAfterObjectSelection;
 		let overwriteConfirmationAnswer;
 		try {
 			const selectionObjectQuestions = this._generateSelectionObjectQuestions(listObjectsResult);
 			selectionObjectAnswers = await prompt(selectionObjectQuestions);
 
 			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
-			anwersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
+			answersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
 
-			const overwriteConfirmationQuestion = this._generateOverwriteConfirmationQuestion(anwersAfterObjectSelection);
+			const overwriteConfirmationQuestion = this._generateOverwriteConfirmationQuestion(answersAfterObjectSelection);
 			overwriteConfirmationAnswer = await prompt(overwriteConfirmationQuestion);
 		} catch (error) {
 			throw TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error);
 		}
 
-		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection, ...overwriteConfirmationAnswer };
+		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...answersAfterObjectSelection, ...overwriteConfirmationAnswer };
 
 		return this._arrangeAnswersForImportObjects(combinedAnswers);
 	}
