@@ -45,4 +45,4 @@ npm install @oracle/suitecloud-unit-testing --save-dev
 Suitecloud Unit Testing is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
-Copyright (c) 2019 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2020 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
