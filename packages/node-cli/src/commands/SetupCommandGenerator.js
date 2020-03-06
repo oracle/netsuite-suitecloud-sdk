@@ -156,7 +156,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						name: ANSWERS.DEVELOPMENT_MODE_URL,
 						message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
 						filter: answer => answer.trim(),
-						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
 					},
 				]);
 			}

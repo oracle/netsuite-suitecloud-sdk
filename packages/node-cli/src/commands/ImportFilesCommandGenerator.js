@@ -79,13 +79,13 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_listFolders() {
-		const executionContextListFolders = new SDKExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
 			includeProjectDefaultAuthId: true,
 		});
 
 		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextListFolders),
+			action: this._sdkExecutor.execute(executionContext),
 			message: TranslationService.getMessage(MESSAGES.LOADING_FOLDERS),
 		});
 	}
@@ -113,14 +113,14 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContextListFiles = new SDKExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFILES,
 			includeProjectDefaultAuthId: true,
 			params: selectFolderAnswer,
 		});
 
 		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextListFiles),
+			action: this._sdkExecutor.execute(executionContext),
 			message: TranslationService.getMessage(MESSAGES.LOADING_FILES),
 		});
 	}
