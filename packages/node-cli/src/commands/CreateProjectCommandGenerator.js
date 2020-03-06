@@ -25,6 +25,7 @@ const path = require('path');
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
 const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
+const DEFAULT_PROJECT_VERSION = "1.0.0";
 const JEST_CONFIG_FILENAME = 'jest.config.js';
 const JEST_CONFIG_PROJECT_TYPE_ACP = 'SuiteCloudJestConfiguration.ProjectType.ACP';
 const JEST_CONFIG_PROJECT_TYPE_SUITEAPP = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
@@ -152,6 +153,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_VERSION,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
+				default: DEFAULT_PROJECT_VERSION,
 				validate: fieldValue => showValidationResults(fieldValue, validateProjectVersion),
 			},
 			{
