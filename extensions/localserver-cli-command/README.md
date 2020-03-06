@@ -10,4 +10,4 @@ To work with the localserver for SuiteCloud CLI for Node.js, you need to install
 localserver for SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](../../CONTRIBUTING.md) for details.
 
 ## [License](../../LICENSE.txt)
-Copyright (c) 2019 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2020 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.

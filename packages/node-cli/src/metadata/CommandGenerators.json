@@ -48,7 +48,7 @@
         "nonInteractiveGenerator": "commands/ProxyCommandGenerator"
     },
     {
-        "commandName": "account::setup",
+        "commandName": "account:setup",
         "interactiveGenerator": "./commands/SetupCommandGenerator",
         "nonInteractiveGenerator": "./commands/SetupCommandGenerator"
     },

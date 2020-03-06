@@ -13,4 +13,4 @@ https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_156026236161.html
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](./CONTRIBUTING.md) for details.
 
 ## [License](./LICENSE.txt)
-Copyright (c) 2019 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2020 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.

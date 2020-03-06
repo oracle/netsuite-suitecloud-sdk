@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -144,7 +144,7 @@ module.exports = class CommandActionExecutor {
 					? this._applyDefaultContextParams(commandArguments, projectConfiguration)
 					: commandArguments,
 			});
-			const overridedCommandArguments = beforeExecutingOutput.arguments;
+			const overriddenCommandArguments = beforeExecutingOutput.arguments;
 
 			const argumentsFromQuestions =
 				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
@@ -152,7 +152,7 @@ module.exports = class CommandActionExecutor {
 					: {};
 
 			const commandArgumentsWithQuestionArguments = {
-				...overridedCommandArguments,
+				...overriddenCommandArguments,
 				...argumentsFromQuestions,
 			};
 			let commandArgumentsAfterPreActionFunc = command.preActionFunc

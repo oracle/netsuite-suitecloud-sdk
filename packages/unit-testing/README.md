@@ -37,7 +37,7 @@ To install SuiteCloud Unit Testing in your project, from your project folder, ru
 npm install @oracle/suitecloud-unit-testing --save-dev
 ```
 
-➡ If you use SuiteCloud CLI for Node.js, you can install SuiteCloud Unit Testing when running the [`createproject`](../../packages/node-cli/README.md/##Commands) command by following the questions prompted.
+➡ If you use SuiteCloud CLI for Node.js, you can install SuiteCloud Unit Testing when running the [`project:create`](../../packages/node-cli/README.md/##Commands) command by following the questions prompted.
 
 ⚠ SuiteCloud Unit Testing is installed as a `devDependency`.
 
@@ -45,4 +45,4 @@ npm install @oracle/suitecloud-unit-testing --save-dev
 Suitecloud Unit Testing is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
-Copyright (c) 2019 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2020 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
