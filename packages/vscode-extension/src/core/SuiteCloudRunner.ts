@@ -9,7 +9,7 @@ export default class SuiteCloudRunner {
 	private commandActionExecutor: any;
 
 	constructor(executionPath: string, commandsMetadataService: any) {
-		this.commandActionExecutor = new CommandActionExecutor({
+		this.commandActionExecutor = new CommandActionExecutor({   //THIS SHOULD BE A FACTORY METHOD INSIDE THE CLI CommandActionExecutorFactory.get({executionPath:executionPath})
 			executionPath,
 			commandOutputHandler: new CommandOutputHandler(),
 			commandOptionsValidator: new CommandOptionsValidator(),

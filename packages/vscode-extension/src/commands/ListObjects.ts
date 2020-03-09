@@ -1,8 +1,9 @@
 import { window } from 'vscode';
+import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import { scloudOutput } from '../extension';
 import { MessageService } from '../service/MessageService';
+import { OperationResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import { unwrapExceptionMessage, OperationResultStatus } from '../util/ExtensionUtil';
 
 const objectTypes: {
 	name: string;
@@ -10,14 +11,15 @@ const objectTypes: {
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 export default class ListObjects extends BaseAction {
+	static readonly commandName = "listdependencies";
 
-	constructor() {
-		super({ messageService: new MessageService('deploy') });
-	}
 
-	async execute() {
+	async execute(opts: {
+		suiteCloudRunner: SuiteCloudRunner,
+		messageService: MessageService
+	}) {
 
-		if (this.suiteCloudRunner && this.messageService) {
+		if (opts.suiteCloudRunner && opts.messageService) {
 
 			const selectedObjectTypes = await window.showQuickPick(
 				objectTypes.map(objectType => objectType.value.type),
@@ -31,28 +33,28 @@ export default class ListObjects extends BaseAction {
 				return;
 			}
 
-			this.messageService.showTriggeredActionInfo();
+			opts.messageService.showTriggeredActionInfo();
 			let listObjectsResult;
 			try {
-				listObjectsResult = await this.suiteCloudRunner.run({
+				listObjectsResult = await opts.suiteCloudRunner.run({
 					commandName: 'object:list',
 					arguments: { type: selectedObjectTypes.join(' ') }
 				});
 			} catch (error) {
-				this.messageService.showErrorMessage(unwrapExceptionMessage(error));
+				opts.messageService.showErrorMessage(unwrapExceptionMessage(error));
 				return;
 			}
 
 			if (listObjectsResult.status === OperationResultStatus.SUCCESS) {
 				const listedObjects = listObjectsResult.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
 				listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
-				this.messageService.showCompletedActionInfo();
+				opts.messageService.showCompletedActionInfo();
 			} else {
 				scloudOutput.appendLine(listObjectsResult.resultMessage);
-				this.messageService.showCompletedActionError();
+				opts.messageService.showCompletedActionError();
 			}
 		} else {
-			this.messageService.showTriggeredActionError();
+			opts.messageService.showTriggeredActionError();
 		}
 	}
 }

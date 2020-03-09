@@ -1,0 +1,10 @@
+{
+	"ADD_DEPENDENCIES_ADDED": "The following dependencies have been added to the manifest file:",
+	"ADD_DEPENDENCIES_EMPTY": "There are no dependencies to add to the manifest file.",
+	"ADD_DEPENDENCIES_ERROR": "There was an error when adding missing dependencies.",
+	"COMMAND_ERROR": "Something went wrong with the {0} command",
+	"COMMAND_ROOT_FOLDER_NOT_FOUND": "The {0} command cannot be triggered because the root folder could not be found.",
+	"COMMAND_SUCCESS": "The {0} command has been successfully executed.",
+	"COMMAND_TRIGGERED": "The {0} command has been triggered.",
+	"SEE_DETAILS": "See details"
+}

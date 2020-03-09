@@ -5,48 +5,28 @@ import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
 import Deploy from './commands/Deploy';
 import ListObjects from './commands/ListObjects';
-import { NodeUtils, unwrapExceptionMessage, unwrapInformationMessage } from './util/ExtensionUtil';
-// import  NodeUtils from '@oracle/netsuite-suitecloud-nodejs-cli/src/utils/NodeUtils';
-// import * as NodeUtils from '../../node-cli/src/utils/NodeUtils.js'
+import SuiteCloudRunner from './core/SuiteCloudRunner';
+import CommandsMetadataSingleton from './service/CommandsMetadataSingleton';
+import { MessageService } from './service/MessageService';
+import { getRootProjectFolder } from './util/ExtensionUtil';
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'Netsuite SuiteCloud';
 
 export const scloudOutput: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
 
 // HANDLES EXECUTION OF ACTIONS - CENTRAL POINT
 class ActionExecutor {
-	constructor() {
-	}
-
 	execute<T extends BaseAction>(action: T) {
-		//validations..
-		action.execute();
+		const executionPath = getRootProjectFolder();
+		if (!executionPath) {
+			throw "Not in a valid project"; //Change to typed expection that can be handled and show a nice error to the user
+		}
+		const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
+		action.execute({
+			suiteCloudRunner: suiteCloudRunner,
+			messageService: new MessageService(action.commandName)
+		});
 	}
 }
-
-class VSCommandOutputHandler {
-	showSuccessResult(actionResult: any, formatOutputFunction: (arg0: any) => void) {
-		if (!formatOutputFunction) {
-			this._defaultSuccessOutputFormat(actionResult);
-		} else {
-			formatOutputFunction(actionResult);
-		}
-	}
-
-	showErrorResult(error: any) {
-		NodeUtils.println(unwrapExceptionMessage(error), NodeUtils.COLORS.ERROR);
-
-		const informativeMessage = unwrapInformationMessage(error);
-
-		if (informativeMessage) {
-			NodeUtils.println(`${NodeUtils.lineBreak}${informativeMessage}`, NodeUtils.COLORS.INFO);
-		}
-	}
-
-	_defaultSuccessOutputFormat(actionResult: any) {
-		NodeUtils.println(actionResult, NodeUtils.COLORS.RESULT);
-	}
-};
-
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -61,12 +41,10 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let addDependenciesDisposable = vscode.commands.registerCommand('extension.adddependencies', () => {
 		actionExecutor.execute(new AddDependencies());
-		new Deploy().execute();
 	});
 	context.subscriptions.push(addDependenciesDisposable);
 	let deployDisposable = vscode.commands.registerCommand('extension.deploy', () => {
 		actionExecutor.execute(new Deploy());
-		new Deploy().execute();
 	});
 	context.subscriptions.push(deployDisposable);
 

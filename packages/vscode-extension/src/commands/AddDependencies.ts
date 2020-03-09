@@ -1,84 +1,79 @@
+/*
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
-import { getRootProjectFolder, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import { scloudOutput } from '../extension';
-import { MessageService } from '../service/MessageService';
+import OperationResult from '../OperationResult';
+import { MessageService, VSCommandOutputHandler } from '../service/MessageService';
+import * as TranslationKeys from '../service/TranslationKeys';
+import { TranslationService } from '../service/TranslationService';
+import { unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
+const SUCCESS = "SUCCESS";
+const translationService = new TranslationService();
 
 export default class AddDependencies extends BaseAction {
+    static readonly commandName = "adddependencies";
 
-    constructor() {
-        super({ messageService: new MessageService('adddependencies') });
-    }
-
-    async execute() {
-        if (this.suiteCloudRunner && this.messageService) {
-            this.messageService.showTriggeredActionInfo();
-            let addDependenciesResult;
+    async execute(opts: {
+        suiteCloudRunner: SuiteCloudRunner,
+        messageService: MessageService
+    }) {
+        if (opts.suiteCloudRunner && opts.messageService) {
+            opts.messageService.showTriggeredActionInfo();
             try {
-                addDependenciesResult = await this.suiteCloudRunner.run({
+                let result = await opts.suiteCloudRunner.run({
                     commandName: 'project:adddependencies',
                     arguments: {},
                 });
+
+                if (result.status === SUCCESS) {
+                    VSCommandOutputHandler.showSuccessResult(result, this.successFormatOutput);
+                    opts.messageService.showCompletedActionInfo();
+                }
+                else {
+                    VSCommandOutputHandler.showErrorResult(result.errorMessages, this.errorFormatOutput);
+                    opts.messageService.showCompletedActionError();
+                }
+
             } catch (error) {
-                this.messageService.showErrorMessage(unwrapExceptionMessage(error));
+                opts.messageService.showErrorMessage(unwrapExceptionMessage(error));
                 return;
             }
 
-            if (addDependenciesResult.status === 'SUCCESS' && Array.isArray(addDependenciesResult.data)) {
 
-                if (addDependenciesResult.data && addDependenciesResult.data.length > 0) {
-                    scloudOutput.appendLine("The following dependencies have been added to the manifest file:");
-                    addDependenciesResult.data.forEach((element: any) => {
-                        scloudOutput.appendLine(element.type + ":" + element.value);
-                    });
-                    this.messageService.showCompletedActionInfo();
-                }
-                else {
-                    scloudOutput.appendLine("There are no dependencies to add to the manifest file.");
-                }
-            } else {
-                scloudOutput.appendLine("There was an error when adding missing dependencies.");
-                if (Array.isArray(addDependenciesResult.errorMessages) && (addDependenciesResult.errorMessages.length > 0)) {
-                    addDependenciesResult.errorMessages.forEach((message: string) => scloudOutput.appendLine(message));
-                } else {
-                    scloudOutput.appendLine(addDependenciesResult.resultMessage);
-                }
-                this.messageService.showCompletedActionError();
-            }
         } else {
-            this.messageService.showTriggeredActionError();
+            opts.messageService.showTriggeredActionError();
+        }
+    }
+
+    private successFormatOutput(result: OperationResult) {
+        if (result.resultMessage) {
+            scloudOutput.appendLine(result.resultMessage);
+        }
+        if (result.data && result.data.length > 0) {
+            let message = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED);
+            scloudOutput.appendLine(message);
+            result.data.forEach((element: any) => {
+                scloudOutput.appendLine(element.type + ":" + element.value);
+            });
+        }
+        else {
+            let message = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.EMPTY);
+            scloudOutput.appendLine(message);
+        }
+    }
+
+    private errorFormatOutput(result: OperationResult) {
+        let message = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR);
+        scloudOutput.appendLine(message);
+        if (Array.isArray(result.errorMessages) && (result.errorMessages.length > 0)) {
+            result.errorMessages.forEach((message: string) => scloudOutput.appendLine(message));
+        } else {
+            scloudOutput.appendLine(result.resultMessage);
         }
     }
 }
-
-
-
-
-
-// function _formatOutput(operationResult) {
-//     if (SDKOperationResultUtils.hasErrors(operationResult)) {
-//         SDKOperationResultUtils.logResultMessage(operationResult);
-//         SDKOperationResultUtils.logErrors(operationResult);
-//         return;
-//     }
-
-//     const { data } = operationResult;
-//     if (data.length === 0) {
-//         NodeUtils.println(
-//             TranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES),
-//             NodeUtils.COLORS.RESULT
-//         );
-//         return;
-//     }
-
-//     NodeUtils.println(
-//         TranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST),
-//         NodeUtils.COLORS.RESULT
-//     );
-
-//     this._getDependenciesStringsArray(data)
-//         .sort()
-//         .forEach(output => NodeUtils.println(output, NodeUtils.COLORS.RESULT));
-// }

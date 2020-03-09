@@ -1,43 +1,38 @@
-import { unwrapExceptionMessage, OperationResultStatus } from '../util/ExtensionUtil';
-import { scloudOutput } from '../extension';
-import { MessageService } from '../service/MessageService';
+import SuiteCloudRunner from '../core/SuiteCloudRunner';
+import { MessageService, VSCommandOutputHandler } from '../service/MessageService';
+import { unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 
 export default class Deploy extends BaseAction {
-    constructor() {
-        super({ messageService: new MessageService('deploy') });
-    }
+    static readonly commandName = "deploy";
 
-    async execute() {
-        this.messageService.showTriggeredActionInfo();
-        let deployResult;
-        if (this.suiteCloudRunner && this.messageService) {
+    async execute(opts: {
+        suiteCloudRunner: SuiteCloudRunner,
+        messageService: MessageService
+    }) {
+        opts.messageService.showTriggeredActionInfo();
+        if (opts.suiteCloudRunner && opts.messageService) {
             try {
-                deployResult = await this.suiteCloudRunner.run({
+                let result = await opts.suiteCloudRunner.run({
                     commandName: 'project:deploy',
                     arguments: {}
                 });
+                if (result.status === "SUCCESS") {
+                    VSCommandOutputHandler.showSuccessResult(result.operationResult);
+                    opts.messageService.showCompletedActionInfo();
+                }
+                else {
+                    VSCommandOutputHandler.showErrorResult(result.operationResult);
+                    opts.messageService.showCompletedActionError();
+                }
             } catch (error) {
-                this.messageService.showErrorMessage(unwrapExceptionMessage(error));
+                opts.messageService.showErrorMessage(unwrapExceptionMessage(error));
                 return;
             }
 
-            if (deployResult.operationResult?.status === OperationResultStatus.SUCCESS && Array.isArray(deployResult.operationResult.data)) {
-                deployResult.operationResult.data.forEach((element: any) => {
-                    scloudOutput.appendLine(element);
-                });
-                this.messageService.showCompletedActionInfo();
-            } else {
-                if (Array.isArray(deployResult.operationResult.errorMessages) && (deployResult.operationResult.errorMessages.length > 0)) {
-                    deployResult.operationResult.errorMessages.forEach((message: string) => scloudOutput.appendLine(message));
-                } else {
-                    scloudOutput.appendLine(deployResult.operationResult.resultMessage);
-                }
-                this.messageService.showCompletedActionError();
-            }
         } else {
-            this.messageService.showTriggeredActionError();
+            opts.messageService.showTriggeredActionError();
         }
     }
 }
