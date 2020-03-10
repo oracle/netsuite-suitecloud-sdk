@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
@@ -156,7 +156,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						name: ANSWERS.DEVELOPMENT_MODE_URL,
 						message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
 						filter: answer => answer.trim(),
-						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
 					},
 				]);
 			}
