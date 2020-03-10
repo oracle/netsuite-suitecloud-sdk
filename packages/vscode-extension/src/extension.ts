@@ -7,7 +7,7 @@ import Deploy from './commands/Deploy';
 import ListObjects from './commands/ListObjects';
 import SuiteCloudRunner from './core/SuiteCloudRunner';
 import CommandsMetadataSingleton from './service/CommandsMetadataSingleton';
-import { MessageService } from './service/MessageService';
+import MessageService from './service/MessageService';
 import { getRootProjectFolder } from './util/ExtensionUtil';
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'Netsuite SuiteCloud';
 

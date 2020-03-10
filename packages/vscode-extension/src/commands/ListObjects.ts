@@ -1,9 +1,9 @@
 import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import { scloudOutput } from '../extension';
-import { MessageService } from '../service/MessageService';
+import MessageService from '../service/MessageService';
 import { OperationResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 
 const objectTypes: {
 	name: string;
@@ -11,8 +11,7 @@ const objectTypes: {
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 export default class ListObjects extends BaseAction {
-	static readonly commandName = "listdependencies";
-
+	readonly commandName: string = "listdependencies";
 
 	async execute(opts: {
 		suiteCloudRunner: SuiteCloudRunner,
@@ -34,9 +33,9 @@ export default class ListObjects extends BaseAction {
 			}
 
 			opts.messageService.showTriggeredActionInfo();
-			let listObjectsResult;
+			let result;
 			try {
-				listObjectsResult = await opts.suiteCloudRunner.run({
+				result = await opts.suiteCloudRunner.run({
 					commandName: 'object:list',
 					arguments: { type: selectedObjectTypes.join(' ') }
 				});
@@ -45,12 +44,13 @@ export default class ListObjects extends BaseAction {
 				return;
 			}
 
-			if (listObjectsResult.status === OperationResultStatus.SUCCESS) {
-				const listedObjects = listObjectsResult.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
-				listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
+			if (result.status === OperationResultStatus.SUCCESS) {
+				// const listedObjects = result.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
+				// listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
+				VSCommandOutputHandler.showSuccessResult(result);
 				opts.messageService.showCompletedActionInfo();
 			} else {
-				scloudOutput.appendLine(listObjectsResult.resultMessage);
+				VSCommandOutputHandler.showErrorResult(result);
 				opts.messageService.showCompletedActionError();
 			}
 		} else {

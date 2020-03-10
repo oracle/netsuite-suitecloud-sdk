@@ -1,11 +1,12 @@
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import { MessageService, VSCommandOutputHandler } from '../service/MessageService';
+import MessageService from '../service/MessageService';
 import { unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 
 
 export default class Deploy extends BaseAction {
-    static readonly commandName = "deploy";
+    readonly commandName: string = "deploy";
 
     async execute(opts: {
         suiteCloudRunner: SuiteCloudRunner,

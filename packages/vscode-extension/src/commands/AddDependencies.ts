@@ -6,9 +6,10 @@
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import { scloudOutput } from '../extension';
 import OperationResult from '../OperationResult';
-import { MessageService, VSCommandOutputHandler } from '../service/MessageService';
+import MessageService from '../service/MessageService';
 import * as TranslationKeys from '../service/TranslationKeys';
 import { TranslationService } from '../service/TranslationService';
+import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 import { unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
@@ -16,7 +17,7 @@ const SUCCESS = "SUCCESS";
 const translationService = new TranslationService();
 
 export default class AddDependencies extends BaseAction {
-    static readonly commandName = "adddependencies";
+    readonly commandName: string = "adddependencies";
 
     async execute(opts: {
         suiteCloudRunner: SuiteCloudRunner,
@@ -35,7 +36,7 @@ export default class AddDependencies extends BaseAction {
                     opts.messageService.showCompletedActionInfo();
                 }
                 else {
-                    VSCommandOutputHandler.showErrorResult(result.errorMessages, this.errorFormatOutput);
+                    VSCommandOutputHandler.showErrorResult(result, this.errorFormatOutput);
                     opts.messageService.showCompletedActionError();
                 }
 

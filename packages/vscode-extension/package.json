@@ -20,17 +20,17 @@
 		"commands": [
 			{
 				"command": "extension.adddependencies",
-				"title": "adddependencies",
+				"title": "Add Dependency References to the Manifest",
 				"category": "suitecloud"
 			},
 			{
 				"command": "extension.deploy",
-				"title": "deploy",
+				"title": "Deploy project",
 				"category": "suitecloud"
 			},
 			{
 				"command": "extension.listobjects",
-				"title": "listobjects",
+				"title": "List objects",
 				"category": "suitecloud"
 			}
 		],
