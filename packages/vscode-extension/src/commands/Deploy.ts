@@ -7,6 +7,7 @@ import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 
 export default class Deploy extends BaseAction {
     readonly commandName: string = "deploy";
+    vsCommandOutputHandler = new VSCommandOutputHandler();
 
     async execute(opts: {
         suiteCloudRunner: SuiteCloudRunner,
@@ -20,11 +21,11 @@ export default class Deploy extends BaseAction {
                     arguments: {}
                 });
                 if (result.status === "SUCCESS") {
-                    VSCommandOutputHandler.showSuccessResult(result.operationResult);
+                    this.vsCommandOutputHandler.showSuccessResult(result.operationResult);
                     opts.messageService.showCompletedActionInfo();
                 }
                 else {
-                    VSCommandOutputHandler.showErrorResult(result.operationResult);
+                    this.vsCommandOutputHandler.showErrorResult(result.operationResult);
                     opts.messageService.showCompletedActionError();
                 }
             } catch (error) {

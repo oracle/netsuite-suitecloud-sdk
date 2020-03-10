@@ -26,20 +26,33 @@ export default class MessageService {
 		window.showErrorMessage(this.translationService.getMessage(TranslationKeys.COMMAND.ROOT_FOLDER_NOT_FOUND, [this.commandName]));
 	}
 
-	showCompletedActionInfo() {
+	showCompletedActionInfo(successMessage?: string) {
+		const message = successMessage
+			? successMessage
+			: this.translationService.getMessage(TranslationKeys.COMMAND.SUCCESS, [this.commandName]);
 		const SEE_DETAILS = this.translationService.getMessage(TranslationKeys.SEE_DETAILS);
-		window.showInformationMessage(this.translationService.getMessage(TranslationKeys.COMMAND.SUCCESS, [this.commandName]), SEE_DETAILS)
+		window.showInformationMessage(message, SEE_DETAILS)
 			.then(this.showOutputIfClicked);
 	}
 
-	showCompletedActionError() {
+	showCompletedActionError(errorMessage?: string) {
+		const message = errorMessage
+			? errorMessage
+			: this.translationService.getMessage(TranslationKeys.COMMAND.ERROR, [this.commandName]);
 		const SEE_DETAILS = this.translationService.getMessage(TranslationKeys.SEE_DETAILS);
-		window.showErrorMessage(this.translationService.getMessage(TranslationKeys.COMMAND.ERROR, [this.commandName]), SEE_DETAILS)
+		window.showErrorMessage(message, SEE_DETAILS)
 			.then(this.showOutputIfClicked);
 	}
 
-	showErrorMessage(message: string) {
-		window.showErrorMessage(this.translationService.getMessage(TranslationKeys.COMMAND.ERROR, [this.commandName]));
+	showInformationMessage(infoMessage: string) {
+		window.showInformationMessage(infoMessage);
+	}
+
+	showErrorMessage(errorMessage?: string) {
+		const message = errorMessage
+			? errorMessage
+			: this.translationService.getMessage(TranslationKeys.COMMAND.ERROR, [this.commandName]);;
+		window.showErrorMessage(message);
 	}
 
 	private showOutputIfClicked(message?: string) {

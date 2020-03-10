@@ -1,9 +1,9 @@
 import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
+import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 import { OperationResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 
 const objectTypes: {
 	name: string;
@@ -11,12 +11,14 @@ const objectTypes: {
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 export default class ListObjects extends BaseAction {
-	readonly commandName: string = "listdependencies";
+	readonly commandName: string = "object:list";
+	vsCommandOutputHandler = new VSCommandOutputHandler();
 
 	async execute(opts: {
 		suiteCloudRunner: SuiteCloudRunner,
 		messageService: MessageService
 	}) {
+
 
 		if (opts.suiteCloudRunner && opts.messageService) {
 
@@ -47,10 +49,10 @@ export default class ListObjects extends BaseAction {
 			if (result.status === OperationResultStatus.SUCCESS) {
 				// const listedObjects = result.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
 				// listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
-				VSCommandOutputHandler.showSuccessResult(result);
+				this.vsCommandOutputHandler.showSuccessResult(result);
 				opts.messageService.showCompletedActionInfo();
 			} else {
-				VSCommandOutputHandler.showErrorResult(result);
+				this.vsCommandOutputHandler.showErrorResult(result);
 				opts.messageService.showCompletedActionError();
 			}
 		} else {

@@ -8,7 +8,7 @@ import OperationResult from '../OperationResult';
 import { NodeUtils, unwrapExceptionMessage, unwrapInformationMessage } from '../util/ExtensionUtil';
 
 export default class VSCommandOutputHandler {
-	private static defaultSuccessOutputFormat(actionResult: OperationResult) {
+	private defaultSuccessOutputFormat(actionResult: OperationResult) {
 		NodeUtils.println(actionResult, NodeUtils.COLORS.RESULT);
 		scloudOutput.appendLine(actionResult.resultMessage);
 		actionResult.data.forEach((element: any) => {
@@ -16,7 +16,7 @@ export default class VSCommandOutputHandler {
 		});
 	}
 
-	private static defaultErrorOutputFormat(actionResult: OperationResult) {
+	private defaultErrorOutputFormat(actionResult: OperationResult) {
 		NodeUtils.println(actionResult, NodeUtils.COLORS.ERROR);
 		scloudOutput.appendLine(actionResult.resultMessage);
 		if (Array.isArray(actionResult.errorMessages)) {
@@ -32,7 +32,7 @@ export default class VSCommandOutputHandler {
 			});
 		}
 	}
-	static showSuccessResult(actionResult: any, formatOutputFunction?: (arg0: any) => void) {
+	showSuccessResult(actionResult: any, formatOutputFunction?: (arg0: any) => void) {
 		if (formatOutputFunction) {
 			formatOutputFunction(actionResult);
 		} else {
@@ -41,7 +41,7 @@ export default class VSCommandOutputHandler {
 		}
 	}
 
-	static showErrorResult(actionResult: any, formatOutputFunction?: (arg0: any) => void) {
+	showErrorResult(actionResult: any, formatOutputFunction?: (arg0: any) => void) {
 		if (formatOutputFunction) {
 			formatOutputFunction(actionResult);
 		} else {
