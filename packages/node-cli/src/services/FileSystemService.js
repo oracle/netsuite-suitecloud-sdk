@@ -110,13 +110,13 @@ module.exports = class FileSystemService {
 		}
 	}
 
-	emptyFolderRecursive(folderPath, exceptionPath) {
+	emptyFolderRecursive(folderPath, excludePath) {
 		assert(folderPath);
 		let self = this;
 		if (existsSync(folderPath)) {
 			readdirSync(folderPath).forEach(file => {
 				let currentPath = path.join(folderPath, file);
-				if (currentPath !== exceptionPath) {
+				if (currentPath !== excludePath) {
 					if (lstatSync(currentPath).isDirectory()) {
 						// recurse
 						self.deleteFolderRecursive(currentPath);
