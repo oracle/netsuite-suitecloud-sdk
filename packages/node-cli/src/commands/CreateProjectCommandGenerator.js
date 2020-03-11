@@ -252,6 +252,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const actionCreateProject = new Promise(async (resolve, reject) => {
 			try {
+				if(answers[COMMAND_OPTIONS.OVERWRITE]) {
+					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
+				}
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
 				const executionContextCreateProject = new SDKExecutionContext({
 					command: this._commandMetadata.sdkCommand,
@@ -274,7 +277,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
 					const oldPath = path.join(projectAbsolutePath, projectFolderName);
 					const newPath = path.join(projectAbsolutePath, SOURCE_FOLDER);
-					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath, oldPath);
+					this._fileSystemService.deleteFolderRecursive(newPath);
 					this._fileSystemService.renameFolder(oldPath, newPath);
 				}
 				this._fileSystemService.replaceStringInFile(
