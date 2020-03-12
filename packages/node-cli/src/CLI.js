@@ -4,6 +4,7 @@
  */
 'use strict';
 
+const path = require('path');
 const assert = require('assert');
 const program = require('commander');
 const NodeUtils = require('./utils/NodeUtils');
@@ -16,7 +17,8 @@ const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapException
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
 
-const CLI_VERSION = '20.1.0';
+// suitecloud executable is in {root}/src/suitecloud.js. package.json file is one level before
+const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -32,6 +34,9 @@ module.exports = class CLI {
 
 	start(process) {
 		try {
+			const configFile = require(PACKAGE_FILE);
+			const version = configFile? configFile.version : "unknown";
+
 			this._commandsMetadataService.initializeCommandsMetadata();
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
 
@@ -39,7 +44,7 @@ module.exports = class CLI {
 			this._initializeCommands(commandMetadataList, runInInteractiveMode);
 
 			program
-				.version(CLI_VERSION, '--version')
+				.version(version, '--version')
 				.option(
 					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
 					TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION)

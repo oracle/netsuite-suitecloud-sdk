@@ -250,10 +250,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const actionCreateProject = new Promise(async (resolve, reject) => {
 			try {
+				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
 				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
-				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
 				const executionContextCreateProject = new SDKExecutionContext({
 					command: this._commandMetadata.sdkCommand,
 					params: params,
@@ -306,6 +306,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				return resolve({
 					operationResult: operationResult,
 					projectType: answers[COMMAND_OPTIONS.TYPE],
+					projectName: answers[COMMAND_OPTIONS.PROJECT_NAME],
 					projectDirectory: projectAbsolutePath,
 					includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING],
 					npmInstallSuccess: npmInstallSuccess,
@@ -322,10 +323,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	}
 
 	async _createUnitTestFiles(type, projectName, projectVersion, projectAbsolutePath) {
-		this._createUnitTestCliConfigFile(projectAbsolutePath);
-		this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
-		this._createJestConfigFile(type, projectAbsolutePath);
-		this._createSampleUnitTestFile(projectAbsolutePath);
+		await this._createUnitTestCliConfigFile(projectAbsolutePath);
+		await this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
+		await this._createJestConfigFile(type, projectAbsolutePath);
+		await this._createSampleUnitTestFile(projectAbsolutePath);
 	}
 
 	async _createUnitTestCliConfigFile(projectAbsolutePath) {
@@ -411,24 +412,20 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		}
 
 		SDKOperationResultUtils.logResultMessage(result.operationResult);
-		const projectTypeText =
-			result.projectType === ApplicationConstants.PROJECT_SUITEAPP
-				? SUITEAPP_PROJECT_TYPE_DISPLAY
-				: ACCOUNT_CUSTOMIZATION_DISPLAY;
-		const message = TranslationService.getMessage(
-			MESSAGES.PROJECT_CREATED,
-			projectTypeText.toLowerCase(),
-			result.projectDirectory,
-			NodeUtils.lineBreak
-		);
-		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+
+		const projectCreatedMessage = TranslationService.getMessage(MESSAGES.PROJECT_CREATED, result.projectName);
+		NodeUtils.println(projectCreatedMessage, NodeUtils.COLORS.RESULT);
 
 		if (result.includeUnitTesting) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED), NodeUtils.COLORS.RESULT);
+			const sampleUnitTestMessage = TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
+			NodeUtils.println(sampleUnitTestMessage, NodeUtils.COLORS.RESULT);
 			if (!result.npmInstallSuccess) {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeUtils.COLORS.ERROR);
 			}
 		}
+
+		const navigateToProjectMessage = TranslationService.getMessage(MESSAGES.NAVIGATE_TO_FOLDER, result.projectDirectory);
+		NodeUtils.println(navigateToProjectMessage, NodeUtils.COLORS.RESULT);
 	}
 
 	_validateParams(answers) {
