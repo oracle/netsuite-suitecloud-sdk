@@ -99,10 +99,8 @@ module.exports = class FileSystemService {
 			readdirSync(folderPath).forEach(file => {
 				let currentPath = path.join(folderPath, file);
 				if (lstatSync(currentPath).isDirectory()) {
-					// recurse
 					self.deleteFolderRecursive(currentPath);
 				} else {
-					// delete file
 					unlinkSync(currentPath);
 				}
 			});
@@ -117,10 +115,8 @@ module.exports = class FileSystemService {
 			readdirSync(folderPath).forEach(file => {
 				let currentPath = path.join(folderPath, file);
 				if (lstatSync(currentPath).isDirectory()) {
-					// recurse
 					self.deleteFolderRecursive(currentPath);
 				} else {
-					// delete file
 					unlinkSync(currentPath);
 				}
 			});
