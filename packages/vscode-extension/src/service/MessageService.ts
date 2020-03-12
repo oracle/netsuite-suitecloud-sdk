@@ -4,8 +4,8 @@
  */
 
 import { window } from 'vscode';
-import { scloudOutput } from '../extension';
-import * as TranslationKeys from '../service/TranslationKeys';
+import { Output } from '../extension';
+import { COMMAND, SEE_DETAILS } from '../service/TranslationKeys';
 import { TranslationService } from '../service/TranslationService';
 
 export default class MessageService {
@@ -19,28 +19,26 @@ export default class MessageService {
 	}
 
 	showTriggeredActionInfo() {
-		window.showInformationMessage(this.translationService.getMessage(TranslationKeys.COMMAND.TRIGGERED, [this.commandName]));
+		window.showInformationMessage(this.translationService.getMessage(COMMAND.TRIGGERED, [this.commandName]));
 	}
 
 	showTriggeredActionError() {
-		window.showErrorMessage(this.translationService.getMessage(TranslationKeys.COMMAND.ROOT_FOLDER_NOT_FOUND, [this.commandName]));
+		window.showErrorMessage(this.translationService.getMessage(COMMAND.ROOT_FOLDER_NOT_FOUND, [this.commandName]));
 	}
 
 	showCompletedActionInfo(successMessage?: string) {
 		const message = successMessage
 			? successMessage
-			: this.translationService.getMessage(TranslationKeys.COMMAND.SUCCESS, [this.commandName]);
-		const SEE_DETAILS = this.translationService.getMessage(TranslationKeys.SEE_DETAILS);
-		window.showInformationMessage(message, SEE_DETAILS)
+			: this.translationService.getMessage(COMMAND.SUCCESS, [this.commandName]);
+		window.showInformationMessage(message, this.translationService.getMessage(SEE_DETAILS))
 			.then(this.showOutputIfClicked);
 	}
 
 	showCompletedActionError(errorMessage?: string) {
 		const message = errorMessage
 			? errorMessage
-			: this.translationService.getMessage(TranslationKeys.COMMAND.ERROR, [this.commandName]);
-		const SEE_DETAILS = this.translationService.getMessage(TranslationKeys.SEE_DETAILS);
-		window.showErrorMessage(message, SEE_DETAILS)
+			: this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);
+		window.showErrorMessage(message, this.translationService.getMessage(SEE_DETAILS))
 			.then(this.showOutputIfClicked);
 	}
 
@@ -51,13 +49,13 @@ export default class MessageService {
 	showErrorMessage(errorMessage?: string) {
 		const message = errorMessage
 			? errorMessage
-			: this.translationService.getMessage(TranslationKeys.COMMAND.ERROR, [this.commandName]);;
+			: this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);;
 		window.showErrorMessage(message);
 	}
 
 	private showOutputIfClicked(message?: string) {
 		if (message) {
-			scloudOutput.show();
+			Output.show();
 		}
 	}
 }

@@ -17,4 +17,6 @@ export const COMMAND = {
     TRIGGERED: "COMMAND_TRIGGERED"
 };
 
+export const NOT_IN_VALID_PROJECT = "NOT_IN_VALID_PROJECT";
+
 export const SEE_DETAILS = "SEE_DETAILS";

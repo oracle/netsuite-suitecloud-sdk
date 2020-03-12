@@ -1,32 +1,13 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { ActionExecutor } from './ActionExecutor';
 import AddDependencies from './commands/AddDependencies';
-import BaseAction from './commands/BaseAction';
 import Deploy from './commands/Deploy';
 import ListObjects from './commands/ListObjects';
-import SuiteCloudRunner from './core/SuiteCloudRunner';
-import CommandsMetadataSingleton from './service/CommandsMetadataSingleton';
-import MessageService from './service/MessageService';
-import { getRootProjectFolder } from './util/ExtensionUtil';
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'Netsuite SuiteCloud';
 
-export const scloudOutput: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
-
-// HANDLES EXECUTION OF ACTIONS - CENTRAL POINT
-class ActionExecutor {
-	execute<T extends BaseAction>(action: T) {
-		const executionPath = getRootProjectFolder();
-		if (!executionPath) {
-			throw "Not in a valid project"; //Change to typed expection that can be handled and show a nice error to the user
-		}
-		const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
-		action.execute({
-			suiteCloudRunner: suiteCloudRunner,
-			messageService: new MessageService(action.commandName)
-		});
-	}
-}
+export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed

@@ -3,49 +3,49 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { scloudOutput } from '../extension';
-import OperationResult from '../OperationResult';
+import { Output } from '../extension';
+import OperationResult from '../types/OperationResult';
 import { NodeUtils, unwrapExceptionMessage, unwrapInformationMessage } from '../util/ExtensionUtil';
 
 export default class VSCommandOutputHandler {
-	private defaultSuccessOutputFormat(actionResult: OperationResult) {
-		NodeUtils.println(actionResult, NodeUtils.COLORS.RESULT);
-		scloudOutput.appendLine(actionResult.resultMessage);
-		actionResult.data.forEach((element: any) => {
-			scloudOutput.appendLine(element);
+	private defaultSuccessOutputFormat(operationResult: OperationResult) {
+		NodeUtils.println(operationResult, NodeUtils.COLORS.RESULT);
+		Output.appendLine(operationResult.resultMessage);
+		operationResult.data.forEach((element: any) => {
+			Output.appendLine(element);
 		});
 	}
 
-	private defaultErrorOutputFormat(actionResult: OperationResult) {
-		NodeUtils.println(actionResult, NodeUtils.COLORS.ERROR);
-		scloudOutput.appendLine(actionResult.resultMessage);
-		if (Array.isArray(actionResult.errorMessages)) {
-			actionResult.errorMessages.forEach(error => {
+	private defaultErrorOutputFormat(operationResult: OperationResult) {
+		NodeUtils.println(operationResult, NodeUtils.COLORS.ERROR);
+		Output.appendLine(operationResult.resultMessage);
+		if (Array.isArray(operationResult.errorMessages)) {
+			operationResult.errorMessages.forEach(error => {
 				NodeUtils.println(unwrapExceptionMessage(error), NodeUtils.COLORS.ERROR);
-				scloudOutput.appendLine(error);
+				Output.appendLine(error);
 				const informativeMessage = unwrapInformationMessage(error);
 
 				if (informativeMessage) {
 					NodeUtils.println(`${NodeUtils.lineBreak}${informativeMessage}`, NodeUtils.COLORS.INFO);
-					scloudOutput.appendLine(informativeMessage);
+					Output.appendLine(informativeMessage);
 				}
 			});
 		}
 	}
-	showSuccessResult(actionResult: any, formatOutputFunction?: (arg0: any) => void) {
+	showSuccessResult(operationResult: OperationResult, formatOutputFunction?: (arg0: OperationResult) => void) {
 		if (formatOutputFunction) {
-			formatOutputFunction(actionResult);
+			formatOutputFunction(operationResult);
 		} else {
-			this.defaultSuccessOutputFormat(actionResult);
+			this.defaultSuccessOutputFormat(operationResult);
 
 		}
 	}
 
-	showErrorResult(actionResult: any, formatOutputFunction?: (arg0: any) => void) {
+	showErrorResult(operationResult: OperationResult, formatOutputFunction?: (arg0: OperationResult) => void) {
 		if (formatOutputFunction) {
-			formatOutputFunction(actionResult);
+			formatOutputFunction(operationResult);
 		} else {
-			this.defaultErrorOutputFormat(actionResult);
+			this.defaultErrorOutputFormat(operationResult);
 
 		}
 	}

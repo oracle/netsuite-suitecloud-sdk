@@ -4,16 +4,15 @@
  */
 
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import { scloudOutput } from '../extension';
-import OperationResult from '../OperationResult';
+import { Output } from '../extension';
+import OperationResult from '../types/OperationResult';
 import MessageService from '../service/MessageService';
 import * as TranslationKeys from '../service/TranslationKeys';
 import { TranslationService } from '../service/TranslationService';
 import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
-import { unwrapExceptionMessage } from '../util/ExtensionUtil';
+import { unwrapExceptionMessage, OperationResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
-const SUCCESS = "SUCCESS";
 const translationService = new TranslationService();
 
 const DEPENDENCY_TYPES = {
@@ -63,64 +62,58 @@ export default class AddDependencies extends BaseAction {
         suiteCloudRunner: SuiteCloudRunner,
         messageService: MessageService
     }) {
-        if (opts.suiteCloudRunner && opts.messageService) {
-            opts.messageService.showTriggeredActionInfo();
-            try {
-                let result: OperationResult = await opts.suiteCloudRunner.run({
-                    commandName: 'project:adddependencies',
-                    arguments: {},
-                });
+        opts.messageService.showTriggeredActionInfo();
+        try {
+            let result: OperationResult = await opts.suiteCloudRunner.run({
+                commandName: this.commandName,
+                arguments: {},
+            });
 
-                if (result.status === SUCCESS) {
-                    if (result.data.length > 0) {
-                        opts.messageService.showCompletedActionInfo(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED));
-                    }
-                    else {
-                        opts.messageService.showInformationMessage(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.EMPTY));
-                    }
-                    this.vsCommandOutputHandler.showSuccessResult(result, this.successFormatOutput.bind(this));
+            if (result.status === OperationResultStatus.SUCCESS) {
+                if (result.data.length > 0) {
+                    opts.messageService.showCompletedActionInfo(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED));
                 }
                 else {
-                    this.vsCommandOutputHandler.showErrorResult(result, this.errorFormatOutput);
-                    opts.messageService.showCompletedActionError(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR));
+                    opts.messageService.showInformationMessage(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.EMPTY));
                 }
-
-            } catch (error) {
-                const errorMessage = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR);
-                opts.messageService.showErrorMessage(errorMessage);
-                this.vsCommandOutputHandler.showErrorResult(errorMessage);
-                this.vsCommandOutputHandler.showErrorResult(unwrapExceptionMessage(error));
-                return;
+                this.vsCommandOutputHandler.showSuccessResult(result, this.successFormatOutput.bind(this));
+            }
+            else {
+                this.vsCommandOutputHandler.showErrorResult(result, this.errorFormatOutput);
+                opts.messageService.showCompletedActionError(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR));
             }
 
-
-        } else {
-            opts.messageService.showTriggeredActionError();
+        } catch (error) {
+            const errorMessage = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR);
+            opts.messageService.showErrorMessage(errorMessage);
+            this.vsCommandOutputHandler.showErrorResult(errorMessage);
+            this.vsCommandOutputHandler.showErrorResult(unwrapExceptionMessage(error));
+            return;
         }
     }
 
     private successFormatOutput(result: OperationResult) {
         if (result.data && result.data.length > 0) {
             const message = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED_LOG);
-            scloudOutput.appendLine(message);
+            Output.appendLine(message);
 
             this.getDependenciesStringsArray(result.data).forEach((element: string) => {
-                scloudOutput.appendLine(element);
+                Output.appendLine(element);
             });
         }
         else {
             const message = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.EMPTY);
-            scloudOutput.appendLine(message);
+            Output.appendLine(message);
         }
     }
 
     private errorFormatOutput(result: OperationResult) {
         let message = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR);
-        scloudOutput.appendLine(message);
+        Output.appendLine(message);
         if (Array.isArray(result.errorMessages) && (result.errorMessages.length > 0)) {
-            result.errorMessages.forEach((message: string) => scloudOutput.appendLine(message));
+            result.errorMessages.forEach((message: string) => Output.appendLine(message));
         } else {
-            scloudOutput.appendLine(result.resultMessage);
+            Output.appendLine(result.resultMessage);
         }
     }
 

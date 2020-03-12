@@ -7,5 +7,6 @@
 	"COMMAND_ROOT_FOLDER_NOT_FOUND": "The {0} command cannot be triggered because the root folder could not be found.",
 	"COMMAND_SUCCESS": "The {0} command has been successfully executed.",
 	"COMMAND_TRIGGERED": "The {0} command has been triggered.",
+	"NOT_IN_VALID_PROJECT": "Not in a valid project",
 	"SEE_DETAILS": "See details"
 }

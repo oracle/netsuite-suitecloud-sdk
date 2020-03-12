@@ -6,7 +6,7 @@ import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 
 
 export default class Deploy extends BaseAction {
-    readonly commandName: string = "deploy";
+    readonly commandName: string = "project:deploy";
     vsCommandOutputHandler = new VSCommandOutputHandler();
 
     async execute(opts: {
@@ -17,7 +17,7 @@ export default class Deploy extends BaseAction {
         if (opts.suiteCloudRunner && opts.messageService) {
             try {
                 let result = await opts.suiteCloudRunner.run({
-                    commandName: 'project:deploy',
+                    commandName: this.commandName,
                     arguments: {}
                 });
                 if (result.status === "SUCCESS") {

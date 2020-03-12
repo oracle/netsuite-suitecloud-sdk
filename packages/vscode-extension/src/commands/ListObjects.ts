@@ -38,7 +38,7 @@ export default class ListObjects extends BaseAction {
 			let result;
 			try {
 				result = await opts.suiteCloudRunner.run({
-					commandName: 'object:list',
+					commandName: this.commandName,
 					arguments: { type: selectedObjectTypes.join(' ') }
 				});
 			} catch (error) {
@@ -47,8 +47,6 @@ export default class ListObjects extends BaseAction {
 			}
 
 			if (result.status === OperationResultStatus.SUCCESS) {
-				// const listedObjects = result.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
-				// listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
 				this.vsCommandOutputHandler.showSuccessResult(result);
 				opts.messageService.showCompletedActionInfo();
 			} else {
