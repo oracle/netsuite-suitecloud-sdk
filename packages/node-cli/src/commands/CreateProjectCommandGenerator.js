@@ -32,9 +32,7 @@ const JEST_CONFIG_PROJECT_TYPE_SUITEAPP = 'SuiteCloudJestConfiguration.ProjectTy
 const JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE = '{{projectType}}';
 const PACKAGE_JSON_FILENAME = 'package.json';
 const PACKAGE_JSON_DEFAULT_VERSION = '1.0.0';
-const PACKAGE_JSON_REPLACE_STRING_NAME = '{{name}}';
 const PACKAGE_JSON_REPLACE_STRING_VERSION = '{{version}}';
-const PACKAGE_JSON_REPLACE_STRING_NODE_CLI_PATH = '{{node-cli-absolute-path}}';
 
 const SOURCE_FOLDER = 'src';
 const UNIT_TEST_TEST_FOLDER = '__tests__';
@@ -346,11 +344,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		});
 
 		let packageJsonAbsolutePath = path.join(projectAbsolutePath, PACKAGE_JSON_FILENAME);
-		await this._fileSystemService.replaceStringInFile(
-			packageJsonAbsolutePath,
-			PACKAGE_JSON_REPLACE_STRING_NAME,
-			projectName
-		);
 
 		let version = PACKAGE_JSON_DEFAULT_VERSION;
 		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
