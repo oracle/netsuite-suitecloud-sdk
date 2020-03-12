@@ -25,7 +25,7 @@ const path = require('path');
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
 const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
-const DEFAULT_PROJECT_VERSION = "1.0.0";
+const DEFAULT_PROJECT_VERSION = '1.0.0';
 const JEST_CONFIG_FILENAME = 'jest.config.js';
 const JEST_CONFIG_PROJECT_TYPE_ACP = 'SuiteCloudJestConfiguration.ProjectType.ACP';
 const JEST_CONFIG_PROJECT_TYPE_SUITEAPP = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
@@ -61,7 +61,7 @@ const COMMAND_OPTIONS = {
 	PROJECT_VERSION: 'projectversion',
 	PUBLISHER_ID: 'publisherid',
 	TYPE: 'type',
-	INCLUDE_UNIT_TESTING: 'includeunittesting'
+	INCLUDE_UNIT_TESTING: 'includeunittesting',
 };
 
 const COMMAND_ANSWERS = {
@@ -163,7 +163,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					{ name: TranslationService.getMessage(YES), value: true },
 					{ name: TranslationService.getMessage(NO), value: false },
 				],
-			}
+			},
 		]);
 
 		const projectFolderName = this._getProjectFolderName(answers);
@@ -250,15 +250,16 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 		const actionCreateProject = new Promise(async (resolve, reject) => {
 			try {
+				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
+					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
+				}
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
 				const executionContextCreateProject = new SDKExecutionContext({
 					command: this._commandMetadata.sdkCommand,
 					params: params,
 				});
 
-				const operationResult = await this._sdkExecutor.execute(
-					executionContextCreateProject
-				);
+				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
 				if (SDKOperationResultUtils.hasErrors(operationResult)) {
 					resolve({
@@ -288,7 +289,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
 						answers[COMMAND_OPTIONS.PROJECT_VERSION],
-						projectAbsolutePath);
+						projectAbsolutePath
+					);
 
 					NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeUtils.COLORS.INFO);
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
@@ -306,7 +308,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					projectType: answers[COMMAND_OPTIONS.TYPE],
 					projectDirectory: projectAbsolutePath,
 					includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING],
-					npmInstallSuccess: npmInstallSuccess
+					npmInstallSuccess: npmInstallSuccess,
 				});
 			} catch (error) {
 				this._fileSystemService.deleteFolderRecursive(
