@@ -13,10 +13,10 @@ const path = require('path');
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
-let CACHED_DEFAULT_AUTH_ID;
 module.exports = class AuthenticationService {
 	constructor(executionPath) {
 		assert(executionPath);
+		this._CACHED_DEFAULT_AUTH_ID = null;
 		this._excutionPath = executionPath;
 	}
 	
@@ -35,8 +35,8 @@ module.exports = class AuthenticationService {
 	}
 
 	getProjectDefaultAuthId() {
-		if (CACHED_DEFAULT_AUTH_ID) {
-			return CACHED_DEFAULT_AUTH_ID;
+		if (this._CACHED_DEFAULT_AUTH_ID) {
+			return this._CACHED_DEFAULT_AUTH_ID;
 		}
 		
 		const projectFilePath = path.join(this._excutionPath, FILES.PROJECT_JSON);
@@ -47,8 +47,8 @@ module.exports = class AuthenticationService {
 				if (!fileContentJson.hasOwnProperty(DEFAULT_AUTH_ID_PROPERTY)) {
 					throw TranslationService.getMessage(ERRORS.MISSING_DEFAULT_AUTH_ID, DEFAULT_AUTH_ID_PROPERTY);
 				}
-				CACHED_DEFAULT_AUTH_ID = fileContentJson[DEFAULT_AUTH_ID_PROPERTY];
-				return CACHED_DEFAULT_AUTH_ID;
+				this._CACHED_DEFAULT_AUTH_ID = fileContentJson[DEFAULT_AUTH_ID_PROPERTY];
+				return this._CACHED_DEFAULT_AUTH_ID;
 			} catch (error) {
 				throw TranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error)
 			}
