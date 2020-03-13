@@ -1,17 +1,37 @@
-import record from "N/record";
+import record from 'N/record';
 
-jest.mock("N/record");
+jest.mock('N/record');
 
 beforeEach(() => {
 	jest.clearAllMocks();
 });
 
-describe("Sample test", () => {
-	it("should do something", () => {
+describe('Basic jest test with simple assert', () => {
+	it('should assert', () => {
+		const a = 'foobar';
+		const b = 'foobar';
+		expect(a).toMatch(b);
+	});
+});
+
+describe('Sample test with provided record module stub', () => {
+	it('should create Record object', () => {
 		// given
-		var stub = {
-			// some function here
+		const recordMock = {
+			id: 7777,
+			type: 'ACCOUNT'
+			// more properties and functions here if needed
 		};
-		record.create.mockReturnValue(stub);
+		record.create.mockReturnValue(recordMock);
+
+		// when
+		const createdRecord = record.create(recordMock);
+
+		// then
+		expect(record.create).toHaveBeenCalledWith(recordMock);
+		expect(createdRecord).toMatchObject({
+			id: 7777,
+			type: 'ACCOUNT'
+		})
 	});
 });
