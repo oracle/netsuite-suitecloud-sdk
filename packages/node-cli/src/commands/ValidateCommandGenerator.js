@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
@@ -46,7 +46,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		});
 		this._applyContentProtectionArgumentHandler = new ApplyContentProtectinoArgumentHandler({
 			projectInfoService: this._projectInfoService,
-			commandName: this._commandMetadata.name,
+			commandName: this._commandMetadata.sdkCommand,
 		});
 	}
 
@@ -141,7 +141,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			}
 
 			const executionContext = new SDKExecutionContext({
-				command: this._commandMetadata.name,
+				command: this._commandMetadata.sdkCommand,
 				params: SDKParams,
 				flags: flags,
 				includeProjectDefaultAuthId: true,

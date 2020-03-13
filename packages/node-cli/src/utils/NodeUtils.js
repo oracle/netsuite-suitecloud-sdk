@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -22,15 +22,15 @@ class NodeUtils {
 	}
 
 	formatString(str, options) {
-		var color = options.color || AVAILABLE_COLORS.DEFAULT;
-		var bold = options.bold ? chalk.bold : str => str;
+		const color = options.color || AVAILABLE_COLORS.DEFAULT;
+		const bold = options.bold ? chalk.bold : str => str;
 		return bold(color(str));
 	}
 
 	getPadding(padCount) {
 		if (padCount) {
 			let paddings = "";
-			for (var i = 0; i < padCount; i++) {
+			for (let i = 0; i < padCount; i++) {
 				paddings += padding;
 			}
 			return paddings;

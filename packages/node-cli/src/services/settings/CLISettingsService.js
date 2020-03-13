@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
@@ -67,7 +67,7 @@ module.exports = class CLISettingsService {
 			return;
 		}
 		newSettings.isJavaVersionValid = value;
-		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 
@@ -82,7 +82,7 @@ module.exports = class CLISettingsService {
 		}
 		newSettings.useProxy = true;
 		newSettings.proxyUrl = url;
-		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 
@@ -98,7 +98,7 @@ module.exports = class CLISettingsService {
 		newSettings.useProxy = false;
 		newSettings.proxyUrl = '';
 
-		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings)
+		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 

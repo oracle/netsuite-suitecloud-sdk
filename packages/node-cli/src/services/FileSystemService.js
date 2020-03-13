@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
@@ -24,7 +24,7 @@ module.exports = class FileSystemService {
 	}
 
 	getFilesFromDirectory(parentFolder) {
-		assert(parentFolder)
+		assert(parentFolder);
 		const fullPathFiles = [];
 		const getFilesRecursively = source =>
 			readdirSync(source).forEach(file => {
@@ -141,11 +141,11 @@ module.exports = class FileSystemService {
 
 	isFolderEmpty(path) {
 		assert(path);
-		readdirSync(path).length != 0;
+		readdirSync(path).length !== 0;
 	}
 
 	_processTemplateBindings(content, bindings) {
-		var processedContent = content;
+		let processedContent = content;
 		bindings.forEach(binding => {
 			processedContent = content.replace(`{{${binding.id}}}`, binding.value);
 		});

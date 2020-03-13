@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -42,7 +42,7 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 
 	_executeAction(args) {
 		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			integrationMode: false,
 		});
 

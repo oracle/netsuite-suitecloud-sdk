@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
@@ -80,13 +80,13 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_listFolders() {
-		const executionContextListFolders = new SDKExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
 			includeProjectDefaultAuthId: true,
 		});
 
 		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextListFolders),
+			action: this._sdkExecutor.execute(executionContext),
 			message: TranslationService.getMessage(MESSAGES.LOADING_FOLDERS),
 		});
 	}
@@ -114,14 +114,14 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContextListFiles = new SDKExecutionContext({
+		const executionContext = new SDKExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFILES,
 			includeProjectDefaultAuthId: true,
 			params: selectFolderAnswer,
 		});
 
 		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextListFiles),
+			action: this._sdkExecutor.execute(executionContext),
 			message: TranslationService.getMessage(MESSAGES.LOADING_FILES),
 		});
 	}
@@ -185,7 +185,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			}
 
 			const executionContextImportObjects = new SDKExecutionContext({
-				command: this._commandMetadata.name,
+				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
 				params: answers,
 			});

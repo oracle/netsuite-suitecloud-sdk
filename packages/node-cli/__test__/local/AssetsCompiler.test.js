@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const AssetsCompiler = require('@oracle/netsuite-suitecloud-localserver-cli-command/src/compilers/AssetsCompiler');
+const AssetsCompiler = require('@oracle/suitecloud-cli-localserver-command/src/compilers/AssetsCompiler');
 
 const { SERVERPATH, CUSTOM_ASSETS_PATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 

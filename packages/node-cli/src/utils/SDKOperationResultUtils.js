@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -9,11 +9,14 @@ const NodeUtils = require('./NodeUtils');
 
 module.exports = {
 	getErrorMessagesString: operationResult => {
-		const { errorMessages } = operationResult;
+		const { errorMessages, resultMessage } = operationResult;
 		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
+			if (resultMessage) {
+				errorMessages.unshift(resultMessage);
+			}
 			return errorMessages.join(NodeUtils.lineBreak);
 		}
-		return '';
+		return resultMessage;
 	},
 	getResultMessage: operationResult => {
 		const { resultMessage } = operationResult;

@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -26,13 +26,13 @@ module.exports = class CLIConfigurationService {
 
 	initialize(executionPath) {
 		this._executionPath = executionPath;
-		var cliConfigFile = path.join(this._executionPath, CLI_CONFIG_JS_FILE);
+		const cliConfigFile = path.join(this._executionPath, CLI_CONFIG_JS_FILE);
 		if (!FileUtils.exists(cliConfigFile)) {
 			return;
 		}
 
 		try {
-			var nodeVm = new NodeVM({
+			const nodeVm = new NodeVM({
 				console: 'inherit',
 				sandbox: {},
 				require: {
@@ -54,7 +54,7 @@ module.exports = class CLIConfigurationService {
 	}
 
 	getCommandUserExtension(commandName) {
-		var commandExtension =
+		const commandExtension =
 			this._cliConfig && this._cliConfig.commands[commandName]
 				? this._cliConfig.commands[commandName]
 				: {};
@@ -62,12 +62,12 @@ module.exports = class CLIConfigurationService {
 	}
 
 	getProjectFolder(command) {
-		var defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder)
+		const defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder)
 			? this._cliConfig.defaultProjectFolder
 			: '';
 
-		var commandConfig = this._cliConfig && this._cliConfig.commands[command];
-		var commandOverridenProjectFolder;
+		const commandConfig = this._cliConfig && this._cliConfig.commands[command];
+		let commandOverridenProjectFolder;
 		if (commandConfig && isString(commandConfig.projectFolder)) {
 			commandOverridenProjectFolder = commandConfig.projectFolder;
 		}

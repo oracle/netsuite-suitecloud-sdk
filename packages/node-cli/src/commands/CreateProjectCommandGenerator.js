@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
@@ -26,6 +26,7 @@ const path = require('path');
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
 const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
+const DEFAULT_PROJECT_VERSION = "1.0.0";
 const JEST_CONFIG_FILENAME = 'jest.config.js';
 const JEST_CONFIG_PROJECT_TYPE_ACP = 'SuiteCloudJestConfiguration.ProjectType.ACP';
 const JEST_CONFIG_PROJECT_TYPE_SUITEAPP = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
@@ -153,6 +154,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_VERSION,
 				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
+				default: DEFAULT_PROJECT_VERSION,
 				validate: fieldValue => showValidationResults(fieldValue, validateProjectVersion),
 			},
 			{
@@ -254,7 +256,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				try {
 					NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
 					const executionContextCreateProject = new SDKExecutionContext({
-						command: this._commandMetadata.name,
+						command: this._commandMetadata.sdkCommand,
 						params: params,
 					});
 

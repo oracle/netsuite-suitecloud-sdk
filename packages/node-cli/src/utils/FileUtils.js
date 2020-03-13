@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -27,8 +27,7 @@ const UTF8 = 'utf8';
 	}
 
 	readAsString(fileName) {
-		const content = fs.readFileSync(fileName, UTF8);
-		return content;
+		return fs.readFileSync(fileName, UTF8);
 	}
 
 	exists(fileName) {

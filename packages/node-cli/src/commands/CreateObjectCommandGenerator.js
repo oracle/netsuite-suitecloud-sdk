@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -19,10 +19,10 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 	}
 
 	_getCommandQuestions(prompt) {
-		var transformFoldersToChoicesFunc = folder => {
-			return { name: folder.replace(this._projectFolder, ''), value: folder };
+		const transformFoldersToChoicesFunc = folder => {
+			return {name: folder.replace(this._projectFolder, ''), value: folder};
 		};
-		var objectDirectoryChoices = this._fileSystemService
+		const objectDirectoryChoices = this._fileSystemService
 			.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.OBJECTS))
 			.map(transformFoldersToChoicesFunc);
 
@@ -65,7 +65,7 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 			},
 		]).then(mainAnswers => {
 			if (mainAnswers.createrelatedfiles) {
-				var fileCabinetDirectoryChoices = this._fileSystemService
+				const fileCabinetDirectoryChoices = this._fileSystemService
 					.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.FILE_CABINET))
 					.map(transformFoldersToChoicesFunc);
 
@@ -98,18 +98,18 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 	}
 
 	_executeAction(answers) {
-		var createFilePromise = this._fileSystemService.createFileFromTemplate({
+		const createFilePromise = this._fileSystemService.createFileFromTemplate({
 			template: TemplateKeys.SCRIPTS['blankscript'],
 			destinationFolder: answers.relatedfiledestinationfolder,
 			fileName: answers.relatedfilename,
 			fileExtension: 'js',
 		});
-		var createObjectPromise = this._fileSystemService.createFileFromTemplate({
+		const createObjectPromise = this._fileSystemService.createFileFromTemplate({
 			template: TemplateKeys.OBJECTS['commerceextension'],
 			destinationFolder: answers.folder,
 			fileName: answers.objectfilename,
 			fileExtension: 'xml',
-			bindings: [{ id: 'scriptid', value: answers.type.prefix + answers.objectfilename }],
+			bindings: [{id: 'scriptid', value: answers.type.prefix + answers.objectfilename}],
 		});
 		return Promise.all([createFilePromise, createObjectPromise]).then(() => {
 			console.log(

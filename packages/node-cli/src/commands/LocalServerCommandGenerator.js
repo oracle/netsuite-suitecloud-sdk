@@ -1,16 +1,16 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const LocalCommand = require('@oracle/netsuite-suitecloud-localserver-cli-command').LocalCommand;
+const LocalCommand = require('@oracle/suitecloud-cli-localserver-command').LocalCommand;
 
 const { COLORS } = require('./../utils/NodeUtils');
 const { COMMAND_LOCAL } = require('./../services/TranslationKeys');
 const TranslationService = require('./../services/TranslationService');
 const FileSystemService = require('./../services/FileSystemService');
-module.exports = class LocalCommandGenerator extends BaseCommandGenerator {
+module.exports = class LocalServerCommandGenerator extends BaseCommandGenerator {
 
 	constructor(options) {
 		super(options);

@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
@@ -46,7 +46,7 @@ const {
 } = require('../services/TranslationKeys');
 
 const { validateArrayIsNotEmpty, validateScriptId, validateSuiteApp, showValidationResults } = require('../validation/InteractiveAnswersValidator');
-const LIST_OBJECTS_COMMAND_NAME = 'listobjects';
+const LIST_OBJECTS_COMMAND_NAME = 'object:list';
 
 const CUSTOM_SCRIPT_PREFIX = 'customscript';
 
@@ -65,7 +65,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
 		const executionContextForListObjects = new SDKExecutionContext({
-			command: this._listObjectsMetadata.name,
+			command: this._listObjectsMetadata.sdkCommand,
 			params: paramsForListObjects,
 			includeProjectDefaultAuthId: true,
 		});
@@ -91,29 +91,30 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		}
 
 		let selectionObjectAnswers;
-		let anwersAfterObjectSelection;
+		let answersAfterObjectSelection;
 		let overwriteConfirmationAnswer;
 		try {
 			const selectionObjectQuestions = this._generateSelectionObjectQuestions(listObjectsResult);
 			selectionObjectAnswers = await prompt(selectionObjectQuestions);
 
 			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
-			anwersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
+			answersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
 
-			const overwriteConfirmationQuestion = this._generateOverwriteConfirmationQuestion(anwersAfterObjectSelection);
+			const overwriteConfirmationQuestion = this._generateOverwriteConfirmationQuestion(answersAfterObjectSelection);
 			overwriteConfirmationAnswer = await prompt(overwriteConfirmationQuestion);
 		} catch (error) {
 			throw TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error);
 		}
 
-		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...anwersAfterObjectSelection, ...overwriteConfirmationAnswer };
+		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...answersAfterObjectSelection, ...overwriteConfirmationAnswer };
+
 		return this._arrangeAnswersForImportObjects(combinedAnswers);
 	}
 
 	_generateListObjectQuestions() {
 		const questions = [];
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			const questionSpecifySuiteApp = {
+			const specifySuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SPECIFY_SUITEAPP,
 				message: TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID),
@@ -124,9 +125,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				],
 				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			};
-			questions.push(questionSpecifySuiteApp);
+			questions.push(specifySuiteApp);
 
-			const questionAppId = {
+			const specifyAppId = {
 				when: function(response) {
 					return response[ANSWERS_NAMES.SPECIFY_SUITEAPP];
 				},
@@ -135,10 +136,10 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				message: TranslationService.getMessage(QUESTIONS.APPID),
 				validate: fieldValue => showValidationResults(fieldValue, validateSuiteApp),
 			};
-			questions.push(questionAppId);
+			questions.push(specifyAppId);
 		}
 
-		const questionShowAllObjects = {
+		const showAllObjects = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_OBJECT_TYPE,
 			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
@@ -148,9 +149,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				{ name: TranslationService.getMessage(NO), value: true },
 			],
 		};
-		questions.push(questionShowAllObjects);
+		questions.push(showAllObjects);
 
-		const questionCustomOjects = {
+		const selectObjectType = {
 			when: function(answers) {
 				return answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE];
 			},
@@ -167,10 +168,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			],
 			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
+		questions.push(selectObjectType);
 
-		questions.push(questionCustomOjects);
-
-		const questionSpecifyScriptId = {
+		const filterByScriptId = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_SCRIPT_ID,
 			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
@@ -180,9 +180,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				{ name: TranslationService.getMessage(NO), value: false },
 			],
 		};
-		questions.push(questionSpecifyScriptId);
+		questions.push(filterByScriptId);
 
-		const questionScriptId = {
+		const specifyScriptId = {
 			when: function(response) {
 				return response[ANSWERS_NAMES.SPECIFY_SCRIPT_ID];
 			},
@@ -191,7 +191,8 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: fieldValue => showValidationResults(fieldValue, validateScriptId),
 		};
-		questions.push(questionScriptId);
+		questions.push(specifyScriptId);
+
 		return questions;
 	}
 
@@ -325,13 +326,13 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				}
 			}
 
-			const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-			const executionContextForImportObjects = new SDKExecutionContext({
-				command: this._commandMetadata.name,
-				params,
-				flags,
-				includeProjectDefaultAuthId: true,
-			});
+		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+		const executionContextForImportObjects = new SDKExecutionContext({
+			command: this._commandMetadata.name,
+			params,
+			flags,
+			includeProjectDefaultAuthId: true,
+		});
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForImportObjects),

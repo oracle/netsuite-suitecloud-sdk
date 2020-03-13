@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
@@ -22,12 +22,10 @@ const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
 const MANIFEST_TAG_REGEX = '[\\s\\n]*<manifest.*>[^]*</manifest>[\\s\\n]*$';
 
-
-let CACHED_PROJECT_TYPE;
-
 module.exports = class ProjectInfoService {
 	constructor(projectFolder) {
 		assert(projectFolder);
+		this._CACHED_PROJECT_TYPE = null;
 		this._projectFolder = projectFolder;
 	}
 
@@ -62,8 +60,8 @@ module.exports = class ProjectInfoService {
 	}
 
 	getProjectType() {
-		if (CACHED_PROJECT_TYPE) {
-			return CACHED_PROJECT_TYPE;
+		if (this._CACHED_PROJECT_TYPE) {
+			return this._CACHED_PROJECT_TYPE;
 		}
 
 		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
@@ -110,8 +108,8 @@ module.exports = class ProjectInfoService {
 			throw new CLIException(-10, validationError);
 		}
 
-		CACHED_PROJECT_TYPE = projectType;
-		return CACHED_PROJECT_TYPE;
+		this._CACHED_PROJECT_TYPE = projectType;
+		return this._CACHED_PROJECT_TYPE;
 	}
 
 	hasLockAndHideFiles() {

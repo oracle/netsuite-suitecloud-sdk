@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -16,7 +16,7 @@ const AuthenticationService = require('./core/authentication/AuthenticationServi
 const CommandOutputHandler = require('./core/CommandOutputHandler');
 const path = require('path');
 
-const executionPath = process.cwd()
+const executionPath = process.cwd();
 const rootCLIPath = path.dirname(require.main.filename);
 const commandsMetadataServiceSingleton = new CommandsMetadataService(rootCLIPath);
 

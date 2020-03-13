@@ -1,5 +1,5 @@
 /*
- ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
@@ -63,7 +63,7 @@ module.exports = class CommandsMetadataService {
 		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
 			const optionsTransformedIntoObject = commandMetadata.options.reduce((result, item) => {
 				if (item.name == null) {
-					throw 'Invalid Metadata, mising id property in command options';
+					throw 'Invalid Metadata, missing "name" property in command options';
 				}
 				result[item.name] = item;
 				return result;
@@ -76,7 +76,7 @@ module.exports = class CommandsMetadataService {
 	_addCommandGeneratorMetadata(commandGeneratorsMetadata, commandsMetadata) {
 		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
 			const generatorMetadata = commandGeneratorsMetadata.find(generatorMetadata => {
-				return generatorMetadata.commandName == commandMetadata.name;
+				return generatorMetadata.commandName === commandMetadata.name;
 			});
 
 			const defaultGenerator = generatorMetadata && generatorMetadata.nonInteractiveGenerator
