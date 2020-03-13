@@ -19,6 +19,8 @@ const INTERACTIVE_OPTION = '--interactive';
 
 // suitecloud executable is in {root}/src/suitecloud.js. package.json file is one level before
 const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
+const configFile = require(PACKAGE_FILE);
+const CLI_VERSION = configFile? configFile.version : "unknown";
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -34,8 +36,6 @@ module.exports = class CLI {
 
 	start(process) {
 		try {
-			const configFile = require(PACKAGE_FILE);
-			const version = configFile? configFile.version : "unknown";
 
 			this._commandsMetadataService.initializeCommandsMetadata();
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
@@ -44,7 +44,7 @@ module.exports = class CLI {
 			this._initializeCommands(commandMetadataList, runInInteractiveMode);
 
 			program
-				.version(version, '--version')
+				.version(CLI_VERSION, '--version')
 				.option(
 					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
 					TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION)
