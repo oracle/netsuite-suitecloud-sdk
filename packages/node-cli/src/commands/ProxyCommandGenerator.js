@@ -11,7 +11,6 @@ const {
 } = require('../services/TranslationKeys');
 const NodeUtils = require('../utils/NodeUtils');
 const CLISettingsService = require('../services/settings/CLISettingsService');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 const url = require('url');
 
 const SET_OPTION = 'set';
@@ -50,9 +49,9 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 				proxyUrl: proxyCommandData.proxyUrl,
 				proxyOverrided: proxyCommandData.proxyOverrided
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

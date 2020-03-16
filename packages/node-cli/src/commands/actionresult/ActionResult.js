@@ -4,39 +4,75 @@
 */
 'use strict';
 const assert = require('assert');
-const ActionResultStatus = require('../actionresult/ActionResultStatus');
 
-module.exports = class ActionResult {
+export const ERROR = "ERROR";
+export const SUCCESS = "SUCCESS";
 
-	constructor(options) {
-		assert(options);
-		assert(options.status, "status is required when creating an ActionResult object.");
+export default class ActionResult {
 
-		if (options.status === ActionResultStatus.SUCCESS) {
-			assert(options.context, "context is required when ActionResult is a success.");
-		}
+	constructor(build) {
+		this.validateBuild(build);
 
-		if (options.status === ActionResultStatus.ERROR) {
-			assert(options.error, "error is required when ActionResult is an error.");
-		}
-
-		this._status = options.status;
-		this._context = options.context;
-		this._error = options.error;
+		this._status = build.status;
+		this._context = build.context;
+		this._error = build.error;
 
 		Object.preventExtensions(this);
 	}
 
-	get getStatus() {
+	validateBuild(build) {
+		assert(build);
+		assert(build.status, "status is required when creating an ActionResult object.");
+		if (build.status === SUCCESS) {
+			assert(build.context, "context is required when ActionResult is a success.");
+		}
+		if (build.status === ERROR) {
+			assert(build.error, "error is required when ActionResult is an error.");
+		}
+	}
+
+	get status() {
 		return this._status;
 	}
 
-	get getContext() {
+	get context() {
 		return this._context;
 	}
 
-	get getError() {
+	get error() {
 		return this._error;
 	}
 
+	static get Builder() {
+		class Builder {
+			constructor() { }
+
+			withSuccess(context) {
+				this.status = SUCCESS;
+				this.context = context;
+
+				return this;
+			}
+
+			withError(error) {
+				this.status = ERROR;
+				this.error = error;
+
+				return this;
+			}
+
+			build(context) {
+				return new ActionResult({
+					status: this.status,
+					context: this.context,
+					error: this.error
+				});
+			}
+		};
+	}
+
 };
+
+
+
+

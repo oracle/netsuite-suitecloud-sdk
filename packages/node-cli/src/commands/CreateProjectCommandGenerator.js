@@ -19,7 +19,6 @@ const {
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const path = require('path');
 
@@ -326,9 +325,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING],
 				npmInstallSuccess: actionCreateProjectData.npmInstallSuccess
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

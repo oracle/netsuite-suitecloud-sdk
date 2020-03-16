@@ -17,7 +17,6 @@ const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -342,9 +341,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			const actionResultContext = {
 				operationResult: operationResult
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

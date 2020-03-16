@@ -15,7 +15,6 @@ const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const assert = require('assert');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -161,9 +160,9 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				SDKParams: SDKParams,
 				flags: flags
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

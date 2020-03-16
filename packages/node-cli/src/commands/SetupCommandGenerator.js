@@ -15,7 +15,6 @@ const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const AuthenticationService = require('./../core/authentication/AuthenticationService');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const inquirer = require('inquirer');
 
@@ -287,9 +286,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				authId: authId,
 				accountInfo: accountInfo
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

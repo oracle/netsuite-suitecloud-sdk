@@ -15,7 +15,6 @@ const ProjectInfoService = require('../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
 const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -157,9 +156,9 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				SDKParams: SDKParams,
 				isServerValidation: isServerValidation
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

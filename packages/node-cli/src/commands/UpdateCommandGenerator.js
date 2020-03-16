@@ -13,7 +13,6 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
@@ -155,9 +154,9 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			const actionResultContext = {
 				operationResult: operationResult
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

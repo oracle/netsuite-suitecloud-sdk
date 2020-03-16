@@ -14,7 +14,6 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL }
 } = require('../services/TranslationKeys');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
@@ -85,9 +84,9 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			const actionResultContext = {
 				operationResult: operationResult
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

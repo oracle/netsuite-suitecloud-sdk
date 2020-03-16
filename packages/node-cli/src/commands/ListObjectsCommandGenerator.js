@@ -20,7 +20,6 @@ const {
 	validateSuiteApp,
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 const COMMAND_QUESTIONS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -177,9 +176,9 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			const actionResultContext = {
 				operationResult: operationResult
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 

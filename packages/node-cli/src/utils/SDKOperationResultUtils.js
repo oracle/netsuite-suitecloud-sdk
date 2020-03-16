@@ -29,7 +29,7 @@ module.exports = {
 		const { errorMessages } = operationResult;
 		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
 			errorMessages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
-		} 
+		}
 	},
 	logResultMessage: operationResult => {
 		const { resultMessage } = operationResult;
@@ -45,4 +45,15 @@ module.exports = {
 		const { errorCode } = operationResult;
 		return errorCode ? errorCode : '';
 	},
+	createActionResultFrom(operationResult) {
+		if(operationResult.status ===ActionResult.SUCCESS){
+			const actionResultContext = {
+				operationResult: operationResult
+			};
+			return new ActionResult.Builder().withSuccess(actionResultContext);
+		}
+		else {
+			return new ActionResult.Builder().withError(operationResult.errorMessages);
+		}
+	}
 };

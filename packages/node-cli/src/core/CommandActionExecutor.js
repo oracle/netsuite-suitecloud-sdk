@@ -15,7 +15,6 @@ const OperationResultStatus = require('../commands/OperationResultStatus');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const ActionResult = require('../commands/actionresult/ActionResult');
-const ActionResultStatus = require('../commands/actionresult/ActionResultStatus');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -89,13 +88,13 @@ module.exports = class CommandActionExecutor {
 				throw 'INTERNAL ERROR: Command must return an ActionResult object.';
 			}
 
-			if (actionResult._status === ActionResultStatus.ERROR) {
-				throw actionResult._error;
+			if (actionResult.status === ERROR) {
+				throw actionResult.error;
 			}
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
 
-			const actionResultContext = actionResult._context;
+			const actionResultContext = actionResult.context;
 			if (actionResultContext.operationResult) {
 				const operationResult = actionResultContext.operationResult;
 				if (operationResult.status === OperationResultStatus.SUCCESS && commandUserExtension.onCompleted) {
@@ -106,7 +105,7 @@ module.exports = class CommandActionExecutor {
 						+ SDKOperationResultUtils.getErrorMessagesString(operationResult);
 					commandUserExtension.onError(error);
 				}
-			} else if (actionResult._status === ActionResultStatus.SUCCESS && commandUserExtension.onCompleted) {
+			} else if (actionResult.status === SUCCESS && commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
 			}
 

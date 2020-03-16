@@ -11,7 +11,6 @@ const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -84,12 +83,12 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			const actionResultContext = {
-				operationResult: operationResult
-			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return SDKOperationResultUtils.createActionResultFrom(operationResult);
+
+
+			
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build();
+			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 
@@ -127,18 +126,18 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		objects.forEach(object => {
 			const appIdDisplay = object.appId
 				? `in [${OBJECT_CONTAINER_PREFIX.SUITEAPP} - ${OBJECT_REFERENCE_ATTRIBUTES.APP_ID}${
-						object.appId
-				  }]`
+				object.appId
+				}]`
 				: '';
 			const bundleIdDisplay = object.bundleIds
 				? `in [${OBJECT_CONTAINER_PREFIX.BUNDLE} - ${
-						OBJECT_REFERENCE_ATTRIBUTES.BUNDLE_ID
-				  }${object.bundleIds}]`
+				OBJECT_REFERENCE_ATTRIBUTES.BUNDLE_ID
+				}${object.bundleIds}]`
 				: '';
 			const scriptIdDisplay = `${OBJECT_REFERENCE_ATTRIBUTES.SCRIPT_ID}${object.scriptId}`;
 			dependenciesString.push(
 				`[${
-					DEPENDENCY_TYPES.OBJECT.prefix
+				DEPENDENCY_TYPES.OBJECT.prefix
 				} ${scriptIdDisplay}] ${appIdDisplay}${bundleIdDisplay}`
 			);
 		});
@@ -153,7 +152,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				: '';
 			const objectTypeDisplay = `${OBJECT_REFERENCE_ATTRIBUTES.OBJECT_TYPE}${
 				platforExtension.objectType
-			}`;
+				}`;
 			dependenciesString.push(
 				`${DEPENDENCY_TYPES.PLATFORMEXTENSION.prefix} ${appIdDisplay}${objectTypeDisplay}`
 			);

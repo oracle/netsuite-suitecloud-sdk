@@ -18,7 +18,6 @@ const {
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
-const ActionResultBuilder = require('../commands/actionresult/ActionResultBuilder');
 
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 const COMMAND_OPTIONS = {
@@ -198,9 +197,9 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			const actionResultContext = {
 				operationResult: operationResult
 			};
-			return new ActionResultBuilder().withSuccess(actionResultContext).build();
+			return new ActionResult.Builder().withSuccess(actionResultContext).build();
 		} catch (error) {
-			return new ActionResultBuilder().withError(error).build;
+			return new ActionResult.Builder().withError(error).build;
 		}
 	}
 
