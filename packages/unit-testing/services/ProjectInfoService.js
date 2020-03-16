@@ -5,7 +5,7 @@
 'use strict';
 
 const {
-	FILE_NAMES,
+	FILES,
 	PROJECT_SUITEAPP
 } = require('../ApplicationConstants');
 const FileUtils = require('../utils/FileUtils');
@@ -26,7 +26,7 @@ module.exports = class ProjectInfoService {
 	}
 
 	getApplicationId() {
-		const manifestPath = path.join(this._projectFolder, FILE_NAMES.MANIFEST_XML);
+		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
 
 		if (!FileUtils.exists(manifestPath)) {
 			const errorMessage =
