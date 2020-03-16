@@ -1,6 +1,8 @@
 import record from 'N/record';
+import Record from 'N/record/instance';
 
 jest.mock('N/record');
+jest.mock('N/record/instance');
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -14,24 +16,22 @@ describe('Basic jest test with simple assert', () => {
 	});
 });
 
-describe('Sample test with provided record module stub', () => {
-	it('should create Record object', () => {
+describe('Sample test with provided record module stubs', () => {
+	it('should update Sales Order memo field', () => {
 		// given
-		const recordMock = {
-			id: 7777,
-			type: 'ACCOUNT'
-			// more properties and functions here if needed
-		};
-		record.create.mockReturnValue(recordMock);
+		const salesOrderId = 1352;
+		record.load.mockReturnValue(Record);
+		Record.save.mockReturnValue(salesOrderId);
 
 		// when
-		const createdRecord = record.create(recordMock);
+		let salesOrderRecord = record.load({id: salesOrderId});
+		salesOrderRecord.setValue({fieldId: 'memo', value: 'foobar'});
+		const updatedSalesOrderId = salesOrderRecord.save({enableSourcing: false});
 
 		// then
-		expect(record.create).toHaveBeenCalledWith(recordMock);
-		expect(createdRecord).toMatchObject({
-			id: 7777,
-			type: 'ACCOUNT'
-		})
+		expect(record.load).toHaveBeenCalledWith({id: salesOrderId});
+		expect(Record.setValue).toHaveBeenCalledWith({fieldId: 'memo', value: 'foobar'});
+		expect(Record.save).toHaveBeenCalledWith({enableSourcing: false});
+		expect(salesOrderId).toBe(updatedSalesOrderId);
 	});
 });
