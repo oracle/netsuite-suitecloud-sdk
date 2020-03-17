@@ -45,13 +45,7 @@ module.exports = class Compiler {
 	}
 
 	_createRequireJSFile(localFolder) {
-		const src = path.join(
-			process.mainModule.filename,
-			'../../../../extensions/localserver-cli-command',
-			'node_modules',
-			'requirejs',
-			'require.js'
-		);
+		const src = require.resolve('requirejs');
 		fs.copyFileSync(src, path.join(localFolder, 'require.js'));
 	}
 };
