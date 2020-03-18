@@ -4,19 +4,14 @@
 */
 'use strict';
 const assert = require('assert');
+const ActionResult = require('./ActionResult');
 
-const ERROR = "ERROR";
-const SUCCESS = "SUCCESS";
-
-class ActionResult {
+class DeployActionResult extends ActionResult {
 
 	constructor(build) {
-		this.validateBuild(build);
-
-		this._status = build.status;
-		this._data = build.data;
-		this._resultMessage = build.resultMessage;
-		this._error = build.error;
+		super(build)
+		this._isValidate = build._isValidate ? true:false;
+		this._isApplyProtection = build._isApplyProtection ? true : false
 	}
 
 	validateBuild(build) {
@@ -24,26 +19,19 @@ class ActionResult {
 		assert(build.status, "status is required when creating an ActionResult object.");
 		if (build.status === SUCCESS) {
 			assert(build.data, "data is required when ActionResult is a success.");
+			assert(build.resultMessage, "resultMessage is required when ActionResult is a success.");
 		}
 		if (build.status === ERROR) {
 			assert(build.error, "error is required when ActionResult is an error.");
 		}
 	}
 
-	get status() {
-		return this._status;
+	get isValidate() {
+		return this._isValidate;
 	}
 
-	get error() {
-		return this._error;
-	}
-
-	get data() {
-		return this._data;
-	}
-
-	get resultMessage() {
-		return this._resultMessage;
+	get isApplyProtection() {
+		return this._isApplyProtection;
 	}
 
 	static get Builder() {
@@ -64,23 +52,17 @@ class ActionResult {
 			}
 
 			build() {
-				return new ActionResult({
+				return new DeployActionResult({
 					status: this.status,
-					...(this.data && { data: this.data }),
+					...(this.data && {data: this.data}),
 					...(this.resultMessage && { resultMessage: this.resultMessage }),
 					...(this.error && { error: this.error }),
+					...(this.isValidate && {isValidate: this.isValidate}),
+					...(this.isApplyProtection && {isApplyProtection: this.isApplyProtection})
 				});
 			}
 		};
 	}
-
-	static get SUCCESS() {
-		return SUCCESS;
-	}
-
-	static get ERROR() {
-		return ERROR;
-	}
 };
 
-module.exports = ActionResult;
+module.exports = DeployActionResult;

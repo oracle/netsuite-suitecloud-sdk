@@ -4,8 +4,8 @@
 */
 'use strict';
 
-const OperationResultStatus = require('../commands/OperationResultStatus');
 const NodeUtils = require('./NodeUtils');
+const { ERROR } = require('../commands/actionresult/ActionResult');
 
 module.exports = {
 	getErrorMessagesString: operationResult => {
@@ -23,7 +23,7 @@ module.exports = {
 		return resultMessage ? resultMessage : '';
 	},
 	hasErrors: operationResult => {
-		return operationResult.status === OperationResultStatus.ERROR;
+		return operationResult.status === ERROR;
 	},
 	logErrors: operationResult => {
 		const { errorMessages } = operationResult;
@@ -34,7 +34,7 @@ module.exports = {
 	logResultMessage: operationResult => {
 		const { resultMessage } = operationResult;
 		if (resultMessage) {
-			if (operationResult.status === OperationResultStatus.ERROR) {
+			if (operationResult.status === ERROR) {
 				NodeUtils.println(resultMessage, NodeUtils.COLORS.ERROR);
 			} else {
 				NodeUtils.println(resultMessage, NodeUtils.COLORS.RESULT);
@@ -45,15 +45,4 @@ module.exports = {
 		const { errorCode } = operationResult;
 		return errorCode ? errorCode : '';
 	},
-	createActionResultFrom(operationResult) {
-		if(operationResult.status ===ActionResult.SUCCESS){
-			const actionResultContext = {
-				operationResult: operationResult
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext);
-		}
-		else {
-			return new ActionResult.Builder().withError(operationResult.errorMessages);
-		}
-	}
 };

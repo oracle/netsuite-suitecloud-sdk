@@ -4,17 +4,17 @@
  */
 'use strict';
 
+const ActionResult = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
-const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
+const ApplyContentProtectionArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const assert = require('assert');
+const DeployActionResultMapper = require('../mappers/DeployActionResultMapper')
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -51,7 +51,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
 			projectInfoService: this._projectInfoService,
 		});
-		this._applyContentProtectionArgumentHandler = new ApplyContentProtectinoArgumentHandler({
+		this._applyContentProtectionArgumentHandler = new ApplyContentProtectionArgumentHandler({
 			projectInfoService: this._projectInfoService,
 			commandName: this._commandMetadata.sdkCommand,
 		});
@@ -155,47 +155,45 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(MESSAGES.DEPLOYING),
 			});
 
-			const actionResultContext = {
-				operationResult: operationResult,
-				SDKParams: SDKParams,
-				flags: flags
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+			var isValidate = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
+			var isApplyContentProtection =
+				(this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+					? true
+					: false;
+
+			return DeployActionResultMapper.createActionResultFrom(operationResult, isValidate, isApplyContentProtection);
 		} catch (error) {
 			return new ActionResult.Builder().withError(error).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		const actionResultContext = actionResult._context;
-		assert(actionResultContext.operationResult);
-		assert(actionResultContext.SDKParams);
-		assert(actionResultContext.flags);
 
-		const { operationResult, SDKParams, flags } = actionResultContext;
-
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+		if (actionResult.error) {
+			if (actionResult.resultMessage) {
+				logResultMessage(actionResult);
+			}
+			logErrors(actionResult.error);
 		} else {
-			this._showApplyContentProtectionOptionMessage(SDKParams);
-			if (Array.isArray(flags) && flags.includes(COMMAND.FLAGS.VALIDATE)) {
+			this._showApplyContentProtectionOptionMessage(isApplyContentProtection);
+			if (actionResult.isValidate) {
 				NodeUtils.println(
 					TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
 					NodeUtils.COLORS.INFO
 				);
 			}
-			const { data } = operationResult;
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			if (Array.isArray(data)) {
+			if (actionResult.resultMessage) {
+				logResultMessage(actionResult);
+			}
+			if (Array.isArray(actionResult.data)) {
 				data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
 			}
 		}
 	}
 
-	_showApplyContentProtectionOptionMessage(SDKParams) {
+	_showApplyContentProtectionOptionMessage(isApplyContentProtection) {
 		if (this._projectType === PROJECT_SUITEAPP) {
-			if (SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE) {
+			if (isApplyContentProtection === SDK_TRUE) {
 				NodeUtils.println(
 					TranslationService.getMessage(
 						MESSAGES.APPLYING_CONTENT_PROTECTION,
@@ -215,3 +213,5 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 };
+
+

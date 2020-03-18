@@ -4,11 +4,14 @@
  */
 'use strict';
 
+// const CreateProjectActionResult = require('../commands/actionresult/CreateProjectActionResult');
+const CreateProjectActionResultMapper = require('../mappers/CreateProjectActionResultMapper');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
+const SDKActionResultUtils = require('../utils/SDKActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
@@ -122,7 +125,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					),
 			},
 			{
-				when: function(response) {
+				when: function (response) {
 					return response[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -131,7 +134,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				validate: fieldValue => showValidationResults(fieldValue, validatePublisherId),
 			},
 			{
-				when: function(response) {
+				when: function (response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -147,7 +150,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					),
 			},
 			{
-				when: function(response) {
+				when: function (response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -318,14 +321,15 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			});
 
 			const actionCreateProjectData = await actionCreateProject;
-			const actionResultContext = {
-				operationResult: actionCreateProjectData.operationResult,
-				projectType: answers[COMMAND_OPTIONS.TYPE],
-				projectDirectory: actionCreateProjectData.projectDirectory,
-				includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING],
-				npmInstallSuccess: actionCreateProjectData.npmInstallSuccess
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+
+			var projectType = answers[COMMAND_OPTIONS.TYPE];
+			var includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
+
+			return CreateProjectActionResultMapper.createActionResultFrom(
+				actionCreateProjectData,
+				projectType,
+				includeUnitTesting);
+
 		} catch (error) {
 			return new ActionResult.Builder().withError(error).build();
 		}
@@ -416,32 +420,31 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		if (!actionResult) {
 			return;
 		}
-		const actionResultContext = actionResult._context;
-		if (SDKOperationResultUtils.hasErrors(actionResultContext.operationResult)) {
-			NodeUtils.println(
+		if (SDKActionResultUtils.hasErrors(actionResult)) {
+			logger.println(
 				TranslationService.getMessage(MESSAGES.PROCESS_FAILED),
-				NodeUtils.COLORS.ERROR
+				logger.COLORS.ERROR
 			);
-			SDKOperationResultUtils.logResultMessage(actionResultContext.operationResult);
+			SDKActionResultUtils.logResultMessage(actionResult);
 			return;
 		}
 
-		SDKOperationResultUtils.logResultMessage(actionResultContext.operationResult);
+		SDKActionResultUtils.logResultMessage(actionResult);
 		const projectTypeText =
-			actionResultContext.projectType === ApplicationConstants.PROJECT_SUITEAPP
+			actionResult.projectType === ApplicationConstants.PROJECT_SUITEAPP
 				? SUITEAPP_PROJECT_TYPE_DISPLAY
 				: ACCOUNT_CUSTOMIZATION_DISPLAY;
 		const message = TranslationService.getMessage(
 			MESSAGES.PROJECT_CREATED,
 			projectTypeText.toLowerCase(),
-			actionResultContext.projectDirectory,
+			actionResult.projectDirectory,
 			NodeUtils.lineBreak
 		);
 		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
 
-		if (actionResultContext.includeUnitTesting) {
+		if (actionResult.includeUnitTesting) {
 			NodeUtils.println(TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED), NodeUtils.COLORS.RESULT);
-			if (!actionResultContext.npmInstallSuccess) {
+			if (!actionResult.npmInstallSuccess) {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeUtils.COLORS.ERROR);
 			}
 		}

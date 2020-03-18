@@ -11,10 +11,10 @@ const {
 	ERRORS,
 } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
-const OperationResultStatus = require('../commands/OperationResultStatus');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SDKActionResultUtils = require('../utils/SDKActionResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const ActionResult = require('../commands/actionresult/ActionResult');
+const { SUCCESS, ERROR } = require('../commands/actionresult/ActionResult');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -94,21 +94,14 @@ module.exports = class CommandActionExecutor {
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
 
-			const actionResultContext = actionResult.context;
-			if (actionResultContext.operationResult) {
-				const operationResult = actionResultContext.operationResult;
-				if (operationResult.status === OperationResultStatus.SUCCESS && commandUserExtension.onCompleted) {
+				if (actionResult.status === SUCCESS && commandUserExtension.onCompleted) {
 					commandUserExtension.onCompleted(actionResult);
-				} else if (operationResult.status === OperationResultStatus.ERROR && commandUserExtension.onError) {
-					const error = SDKOperationResultUtils.getResultMessage(operationResult)
+				} else if (actionResult.status === ERROR && commandUserExtension.onError) {
+					const error = SDKActionResultUtils.getResultMessage(actionResult)
 						+ NodeUtils.lineBreak
-						+ SDKOperationResultUtils.getErrorMessagesString(operationResult);
+						+ SDKActionResultUtils.getErrorMessagesString(actionResult);
 					commandUserExtension.onError(error);
 				}
-			} else if (actionResult.status === SUCCESS && commandUserExtension.onCompleted) {
-				commandUserExtension.onCompleted(actionResult);
-			}
-
 			return actionResult;
 		} catch (error) {
 			this._commandOutputHandler.showErrorResult(error);
@@ -196,7 +189,7 @@ module.exports = class CommandActionExecutor {
 			arguments: commandArgumentsAfterPreActionFunc,
 		});
 
-		if(validationErrors.length > 0) {
+		if (validationErrors.length > 0) {
 			throwValidationException(validationErrors, runInInteractiveMode, commandMetadata);
 		}
 	}

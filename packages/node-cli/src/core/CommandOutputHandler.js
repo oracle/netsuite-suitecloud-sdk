@@ -6,9 +6,11 @@
 
 const NodeUtils = require('./../utils/NodeUtils');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('./../utils/ExceptionUtils');
+const ActionResult = require('../commands/actionresult/ActionResult');
 
 module.exports = class CommandOutputHandler {
 	showSuccessResult(actionResult, formatOutputFunction) {
+		// TODO assert(actionResult instanceof ActionResult);
 		if (!formatOutputFunction) {
 			this._defaultSuccessOutputFormat(actionResult);
 		} else {
