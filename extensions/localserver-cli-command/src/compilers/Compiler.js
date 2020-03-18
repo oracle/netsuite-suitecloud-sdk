@@ -46,6 +46,11 @@ module.exports = class Compiler {
 
 	_createRequireJSFile(localFolder) {
 		const src = require.resolve('requirejs');
-		fs.copyFileSync(src, path.join(localFolder, 'require.js'));
+		const dst = path.join(localFolder, 'require.js');
+		fs.copyFileSync(src, dst);
+
+		let content = fs.readFileSync(dst).toString();
+		content = content.replace('#!/usr/bin/env node', '');
+		fs.writeFileSync(dst, content);
 	}
 };
