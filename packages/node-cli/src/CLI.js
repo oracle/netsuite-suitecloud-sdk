@@ -21,7 +21,7 @@ const INTERACTIVE_OPTION = '--interactive';
 const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 const configFile = require(PACKAGE_FILE);
 const CLI_VERSION = configFile? configFile.version : "unknown";
-const NS_VERSION = '20.1.0';
+const COMPATIBLE_NS_VERSION = '2020.1';
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -93,7 +93,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeUtils.println(TranslationService.getMessage(TITLE, NS_VERSION), NodeUtils.COLORS.INFO);
+		NodeUtils.println(TranslationService.getMessage(TITLE, COMPATIBLE_NS_VERSION), NodeUtils.COLORS.INFO);
 		program.help();
 	}
 };
