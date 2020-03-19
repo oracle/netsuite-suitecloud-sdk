@@ -26,7 +26,7 @@ module.exports = class DeployXml {
 		let filesPath = this.deploy.files.path;
 		filesPath = path.join(this._projectFolder, filesPath.substr(1));
 
-		if(isACP){
+		if (isACP) {
 			filesPath = path.join(path.dirname(filesPath), 'SuiteScripts', path.basename(filesPath));
 		}
 
