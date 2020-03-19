@@ -5,8 +5,10 @@ Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestj
 The following software is required to use SuiteCloud Unit Testing package:
 - Node.js version 12.14.0 LTS or greater
 - [Jest](https://jestjs.io/docs/en/getting-started.html)
-- A `__tests__` folder in the root of your SDF project.
-- A `jest.config.js` file in the root of your SDF project.
+
+Also, to properly structure your test files, create the following elements in the root of your SDF project:
+- A `__tests__` folder
+- A `jest.config.js` file
 
 ## `jest.config.js` File Examples
 The `jest.config.js` file must follow a specific structure. Depending on your SDF project type, check one of the following examples:
@@ -54,21 +56,21 @@ The first example covers testing for the **N/record** module, which is fully moc
 Make sure your project follows a structure similar to the one presented below:
 ```
 myAccountCustomizationProject
-		> __tests__
-					> Suitelet.test.js
-		> src
-					> AccountConfiguration
-					> FileCabinet
-							> SuiteScripts
-                  > Suitelet.js
-							> Templates
-							> Web Site Hosting Files
-					> Objects
-					> Translations
-					deploy.xml
-					manifest.xml
-		suitecloud.config.js
-		jest.config.js
+> __tests__
+	> Suitelet.test.js
+> src
+	> AccountConfiguration
+	> FileCabinet
+		> SuiteScripts
+      > Suitelet.js
+		> Templates
+		> Web Site Hosting Files
+	> Objects
+	> Translations
+  deploy.xml
+  manifest.xml
+suitecloud.config.js
+jest.config.js
 ```
 
 To see the content of the files you need to make SuiteCloud Unit Testing work, check the following list:
@@ -78,8 +80,8 @@ To see the content of the files you need to make SuiteCloud Unit Testing work, c
 const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
-		projectFolder: 'src',
-		projectType: SuiteCloudJestConfiguration.ProjectType.ACP,
+	projectFolder: 'src',
+	projectType: SuiteCloudJestConfiguration.ProjectType.ACP,
 });
 ```
 
@@ -155,22 +157,22 @@ In order for your tests to fully work, your project needs to follow a specific s
 
 ```
 myAccountCustomizationProject
-		> customStubs
-					> http.js
-		> __tests__
-					> http.test.js
-		> src
-					> AccountConfiguration
-					> FileCabinet
-							> SuiteScripts
-							> Templates
-							> Web Site Hosting Files
-					> Objects
-					> Translations
-					deploy.xml
-					manifest.xml
-		suitecloud.config.js
-		jest.config.js
+> customStubs
+	> http.js
+> __tests__
+	> http.test.js
+> src
+	> AccountConfiguration
+	> FileCabinet
+		> SuiteScripts
+		> Templates
+		> Web Site Hosting Files
+	> Objects
+	> Translations
+	deploy.xml
+	manifest.xml
+suitecloud.config.js
+jest.config.js
 ```
 
 Once you have a file structure similar to the one above, you can start creating the testing files. 
