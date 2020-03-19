@@ -460,7 +460,6 @@
         "description": "Indicates that the SuiteScript files referenced in custom objects are not imported. It can only be used in account customization projects (ACP).",
         "mandatory": false,
         "type": "FLAG",
-        "alias": "excludefiles",
         "usage": "\/Objects",
         "defaultOption": false,
         "disableInIntegrationMode": false

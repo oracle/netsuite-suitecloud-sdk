@@ -16,12 +16,20 @@ module.exports = class DeployXml {
 
 		this.deploy = Utils.parseXml(this._projectFolder, 'deploy.xml').deploy;
 
+		const { manifest } = Utils.parseXml(this._projectFolder, 'manifest.xml');
+		const isACP = manifest.$.projecttype === 'ACCOUNTCUSTOMIZATION';
+
 		let objectsPath = this.deploy.objects.path;
 		objectsPath = path.join(this._projectFolder, objectsPath.substr(1));
 		this.objectsPath = path.dirname(objectsPath);
 
 		let filesPath = this.deploy.files.path;
 		filesPath = path.join(this._projectFolder, filesPath.substr(1));
+
+		if (isACP) {
+			filesPath = path.join(path.dirname(filesPath), 'SuiteScripts', path.basename(filesPath));
+		}
+
 		this.filesPath = path.dirname(filesPath);
 	}
 
