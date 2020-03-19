@@ -4,21 +4,23 @@ const CreateProjectActionResult = require('../commands/actionresult/CreateProjec
 const DefaultActionResultMapper = require('./DefaultActionResultMapper');
 
 
-class CreateProjectActionResultMapper extends DefaultActionResultMapper {
+class CreateProjectActionResultMapper extends DefaultActionResultMapper.class {
     constructor() {
         super()
     }
 
     createActionResultFrom(actionCreateProjectData, projectType, includeUnitTesting) {
         if (actionCreateProjectData.operationResult.status === ActionResult.SUCCESS) {
-            return CreateProjectActionResult.Builder.withSuccess(
-                actionCreateProjectData.operationResult.data,
-                actionCreateProjectData.operationResult.resultMessage,
-                projectType,
-                actionCreateProjectData.projectDirectory,
-                includeUnitTesting,
-                actionCreateProjectData.npmInstallSuccess
-            ).build();
+            return CreateProjectActionResult.Builder
+                .withSuccess()
+                .withData(actionCreateProjectData.operationResult.data)
+                .withResultMessage(actionCreateProjectData.operationResult.resultMessage)
+                .withProjectType(projectType)
+                .fromDirectory(actionCreateProjectData.projectDirectory)
+                .withUnitTesting(includeUnitTesting)
+                .withSuccessfullNpmInstalled(actionCreateProjectData.operationResult)
+                .build();
+
         }
         else {
             return CreateProjectActionResult.Builder.withError(actionCreateProjectData.operationResult.errorMessages);

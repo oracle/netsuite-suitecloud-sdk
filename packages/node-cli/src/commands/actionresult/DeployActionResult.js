@@ -10,7 +10,7 @@ class DeployActionResult extends ActionResult {
 
 	constructor(build) {
 		super(build)
-		this._isValidate = build._isValidate ? true:false;
+		this._isValidate = build._isValidate ? true : false;
 		this._isApplyProtection = build._isApplyProtection ? true : false
 	}
 
@@ -38,27 +38,40 @@ class DeployActionResult extends ActionResult {
 		return new class Builder {
 			constructor() { }
 
-			withSuccess(data, resultMessage) {
-				this.status = SUCCESS;
-				this.data = data;
-				this.resultMessage = resultMessage;
+			withSuccess() {
+				this.status = ActionResult.SUCCESS;
 				return this;
 			}
 
 			withError(error) {
-				this.status = ERROR;
+				this.status = ActionResult.ERROR;
 				this.error = error;
+				return this;
+			}
+
+			withData(data) {
+				this.data = data;
+				return this;
+			}
+
+			withValidate(isValidate) {
+				this.isValidate = isValidate;
+				return this;
+			}
+
+			withAppliedProtection(isApplyProtection) {
+				this.isApplyProtection = isApplyProtection;
 				return this;
 			}
 
 			build() {
 				return new DeployActionResult({
 					status: this.status,
-					...(this.data && {data: this.data}),
+					...(this.data && { data: this.data }),
 					...(this.resultMessage && { resultMessage: this.resultMessage }),
 					...(this.error && { error: this.error }),
-					...(this.isValidate && {isValidate: this.isValidate}),
-					...(this.isApplyProtection && {isApplyProtection: this.isApplyProtection})
+					...(this.isValidate && { isValidate: this.isValidate }),
+					...(this.isApplyProtection && { isApplyProtection: this.isApplyProtection })
 				});
 			}
 		};

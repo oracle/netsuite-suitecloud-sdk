@@ -47,20 +47,44 @@ class CreateProjectActionResult extends ActionResult {
 		return new class Builder {
 			constructor() { }
 
-			withSuccess(data, resultMessage, projectType, projectDirectory, includeUnitTesting, npmInstallSuccess) {
+			withSuccess() {
 				this.status = ActionResult.SUCCESS;
-				this.data = data;
-				this.resultMessage = resultMessage;
-				this.projectType = projectType;
-				this.projectDirectory = projectDirectory;
-				this.includeUnitTesting = includeUnitTesting;
-				this.npmInstallSuccess = npmInstallSuccess;
 				return this;
 			}
 
 			withError(error) {
 				this.status = ActionResult.ERROR;
 				this.error = error;
+				return this;
+			}
+
+			withData(data) {
+				this.data = data;
+				return this;
+			}
+
+			withResultMessage(resultMessage) {
+				this.resultMessage = resultMessage;
+				return this;
+			}
+
+			withProjectType(projectType) {
+				this.projectType = projectType;
+				return this;
+			}
+
+			fromDirectory(projectDirectory) {
+				this.projectDirectory = projectDirectory;
+				return this;
+			}
+
+			withUnitTesting(includeUnitTesting) {
+				this.includeUnitTesting = includeUnitTesting;
+				return this;
+			}
+
+			withSuccessfullNpmInstalled(npmInstallSuccess) {
+				this.npmInstallSuccess = npmInstallSuccess;
 				return this;
 			}
 

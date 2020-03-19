@@ -163,7 +163,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 
 			return DeployActionResultMapper.createActionResultFrom(operationResult, isValidate, isApplyContentProtection);
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build();
+			return ActionResult.Builder.withError(error).build();
 		}
 	}
 

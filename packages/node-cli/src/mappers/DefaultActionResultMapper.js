@@ -7,12 +7,17 @@ class DefaultActionResultMapper {
     constructor() { }
     createActionResultFrom(operationResult) {
         if (operationResult.status === SUCCESS) {
-            return new ActionResult.Builder().withSuccess(operationResult.data, operationResult.resultMessage).build();
+            return ActionResult.Builder
+                .withSuccess()
+                .withData(operationResult.data)
+                .withResultMessage(operationResult.resultMessage)
+                .build();
         }
         else {
-            return new ActionResult.Builder().withError(operationResult.errorMessages);
+            return new ActionResult.Builder.withError(operationResult.errorMessages);
         }
     }
 }
 
-module.exports = DefaultActionResultMapper;
+module.exports = new DefaultActionResultMapper();
+module.exports.class = DefaultActionResultMapper;

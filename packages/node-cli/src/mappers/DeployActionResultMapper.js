@@ -11,7 +11,13 @@ class DeployActionResultMapper extends DefaultActionResultMapper {
 
     createActionResultFrom(operationResult, isValidate, isApplyProtection) {
         if (operationResult.status === SUCCESS) {
-            return new DeployActionResult.Builder().withSuccess(operationResult.data, operationResult.resultMessage, isValidate, isApplyProtection).build();
+            return DeployActionResult.Builder
+                .withSuccess()
+                .withData(operationResult.data)
+                .withResultMessage(operationResult.resultMessage)
+                .withValidate(isValidate)
+                .withAppliedProtection(isApplyProtection)
+                .build();
         }
         else {
             return new DeployActionResult.Builder().withError(operationResult.errorMessages);

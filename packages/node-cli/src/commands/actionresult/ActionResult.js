@@ -50,10 +50,18 @@ class ActionResult {
 		return new class Builder {
 			constructor() { }
 
-			withSuccess(data, resultMessage) {
+			withSuccess() {
 				this.status = SUCCESS;
-				this.data = data;
+				return this;
+			}
+
+			withResultMessage(resultMessage) {
 				this.resultMessage = resultMessage;
+				return this;
+			}
+
+			withData(data) {
+				this.data = data;
 				return this;
 			}
 
