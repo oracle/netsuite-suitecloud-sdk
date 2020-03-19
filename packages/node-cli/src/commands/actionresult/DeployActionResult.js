@@ -22,7 +22,7 @@ class DeployActionResult extends ActionResult {
 			assert(build.resultMessage, "resultMessage is required when ActionResult is a success.");
 		}
 		if (build.status === ERROR) {
-			assert(build.error, "error is required when ActionResult is an error.");
+			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
 		}
 	}
 
@@ -43,9 +43,9 @@ class DeployActionResult extends ActionResult {
 				return this;
 			}
 
-			withError(error) {
+			withError(errorMessages) {
 				this.status = ActionResult.ERROR;
-				this.error = error;
+				this.errorMessages = errorMessages;
 				return this;
 			}
 
@@ -69,7 +69,7 @@ class DeployActionResult extends ActionResult {
 					status: this.status,
 					...(this.data && { data: this.data }),
 					...(this.resultMessage && { resultMessage: this.resultMessage }),
-					...(this.error && { error: this.error }),
+					...(this.errorMessages && { errorMessages: this.errorMessages }),
 					...(this.isValidate && { isValidate: this.isValidate }),
 					...(this.isApplyProtection && { isApplyProtection: this.isApplyProtection })
 				});

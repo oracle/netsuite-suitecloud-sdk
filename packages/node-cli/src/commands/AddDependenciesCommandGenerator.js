@@ -4,12 +4,14 @@
 */
 'use strict';
 
+const DefaultActionResultMapper = require('../mappers/DefaultActionResultMapper')
+const ActionResult = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
 
 const {
@@ -83,12 +85,9 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return SDKOperationResultUtils.createActionResultFrom(operationResult);
-
-
-			
+			return DefaultActionResultMapper.createActionResultFrom(operationResult);
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build();
+			return ActionResult.Builder.withError(error).build();
 		}
 	}
 
@@ -162,15 +161,15 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 	}
 
 	_formatOutput(actionResult) {
-		const operationResult = actionResult._context.operationResult;
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+		if (actionResult.error) {
+			if (actionResult.resultMessage) {
+				ActionResultUtils.logResultMessage(actionResult);
+			}
+			ActionResultUtils.logErrors(actionResult.error);
 			return;
 		}
 
-		const { data } = operationResult;
-		if (data.length === 0) {
+		if (actionResult.data.length === 0) {
 			NodeUtils.println(
 				TranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES),
 				NodeUtils.COLORS.RESULT
@@ -183,7 +182,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 			NodeUtils.COLORS.RESULT
 		);
 
-		this._getDependenciesStringsArray(data)
+		this._getDependenciesStringsArray(actionResult.data)
 			.sort()
 			.forEach(output => NodeUtils.println(output, NodeUtils.COLORS.RESULT));
 	}

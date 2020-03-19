@@ -11,7 +11,7 @@ const {
 	ERRORS,
 } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
-const SDKActionResultUtils = require('../utils/SDKActionResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const ActionResult = require('../commands/actionresult/ActionResult');
 const { SUCCESS, ERROR } = require('../commands/actionresult/ActionResult');
@@ -89,7 +89,7 @@ module.exports = class CommandActionExecutor {
 			}
 
 			if (actionResult.status === ERROR) {
-				throw actionResult.error;
+				throw actionResult.errorMessages;
 			}
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
@@ -97,9 +97,9 @@ module.exports = class CommandActionExecutor {
 				if (actionResult.status === SUCCESS && commandUserExtension.onCompleted) {
 					commandUserExtension.onCompleted(actionResult);
 				} else if (actionResult.status === ERROR && commandUserExtension.onError) {
-					const error = SDKActionResultUtils.getResultMessage(actionResult)
+					const error = ActionResultUtils.getResultMessage(actionResult)
 						+ NodeUtils.lineBreak
-						+ SDKActionResultUtils.getErrorMessagesString(actionResult);
+						+ ActionResultUtils.getErrorMessagesString(actionResult);
 					commandUserExtension.onError(error);
 				}
 			return actionResult;

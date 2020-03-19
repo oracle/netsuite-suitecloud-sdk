@@ -16,7 +16,7 @@ class ActionResult {
 		this._status = build.status;
 		this._data = build.data;
 		this._resultMessage = build.resultMessage;
-		this._error = build.error;
+		this._errorMessages = build.errorMessages;
 	}
 
 	validateBuild(build) {
@@ -26,7 +26,7 @@ class ActionResult {
 			assert(build.data, "data is required when ActionResult is a success.");
 		}
 		if (build.status === ERROR) {
-			assert(build.error, "error is required when ActionResult is an error.");
+			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
 		}
 	}
 
@@ -34,8 +34,8 @@ class ActionResult {
 		return this._status;
 	}
 
-	get error() {
-		return this._error;
+	get errorMessages() {
+		return this._errorMessages;
 	}
 
 	get data() {
@@ -65,9 +65,9 @@ class ActionResult {
 				return this;
 			}
 
-			withError(error) {
+			withError(errorMessages) {
 				this.status = ERROR;
-				this.error = error;
+				this.errorMessages = errorMessages;
 				return this;
 			}
 
@@ -76,7 +76,7 @@ class ActionResult {
 					status: this.status,
 					...(this.data && { data: this.data }),
 					...(this.resultMessage && { resultMessage: this.resultMessage }),
-					...(this.error && { error: this.error }),
+					...(this.errorMessages && { errorMessages: this.errorMessages }),
 				});
 			}
 		};

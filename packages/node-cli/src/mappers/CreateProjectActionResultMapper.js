@@ -23,7 +23,10 @@ class CreateProjectActionResultMapper extends DefaultActionResultMapper.class {
 
         }
         else {
-            return CreateProjectActionResult.Builder.withError(actionCreateProjectData.operationResult.errorMessages);
+            return CreateProjectActionResult.Builder
+                .withError(actionCreateProjectData.operationResult.errorMessages)
+                .withResultMessage(actionCreateProjectData.operationResult.resultMessage)
+                .build();
         }
     }
 }

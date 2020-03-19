@@ -20,7 +20,10 @@ class DeployActionResultMapper extends DefaultActionResultMapper {
                 .build();
         }
         else {
-            return new DeployActionResult.Builder().withError(operationResult.errorMessages);
+            return new DeployActionResult.Builder()
+                .withError(operationResult.errorMessages)
+                .withResultMessage(operationResult.resultMessage)
+                .build();
         }
     }
 }

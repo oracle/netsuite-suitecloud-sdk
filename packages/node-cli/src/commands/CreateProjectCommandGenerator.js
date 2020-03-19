@@ -11,7 +11,7 @@ const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
-const SDKActionResultUtils = require('../utils/SDKActionResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
@@ -243,14 +243,17 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				//Enclose in double quotes to also support project names with spaces
 				parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
 				type: answers[COMMAND_OPTIONS.TYPE],
-				projectname: SOURCE_FOLDER,
-				...(answers[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
-				...(answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP && {
-					publisherid: answers[COMMAND_OPTIONS.PUBLISHER_ID],
-					projectid: answers[COMMAND_OPTIONS.PROJECT_ID],
-					projectversion: answers[COMMAND_OPTIONS.PROJECT_VERSION],
-				}),
-			};
+				projectname: SOURCE_FOLDER
+			}
+			if (answers[COMMAND_OPTIONS.OVERWRITE]) {
+				params.overwrite = '';
+			}
+			if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
+				params.publisherid = answers[COMMAND_OPTIONS.PUBLISHER_ID];
+				params.projectid = answers[COMMAND_OPTIONS.PROJECT_ID];
+				params.projectversion = answers[COMMAND_OPTIONS.PROJECT_VERSION];
+
+			}
 
 			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
 
@@ -409,16 +412,16 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		if (!actionResult) {
 			return;
 		}
-		if (SDKActionResultUtils.hasErrors(actionResult)) {
+		if (ActionResultUtils.hasErrors(actionResult)) {
 			NodeUtils.println(
 				TranslationService.getMessage(MESSAGES.PROCESS_FAILED),
 				NodeUtils.COLORS.ERROR
 			);
-			SDKActionResultUtils.logResultMessage(actionResult);
+			ActionResultUtils.logResultMessage(actionResult);
 			return;
 		}
 
-		SDKActionResultUtils.logResultMessage(actionResult);
+		ActionResultUtils.logResultMessage(actionResult);
 		const projectTypeText =
 			actionResult.projectType === ApplicationConstants.PROJECT_SUITEAPP
 				? SUITEAPP_PROJECT_TYPE_DISPLAY

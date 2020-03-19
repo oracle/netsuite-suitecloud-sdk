@@ -14,7 +14,10 @@ class DefaultActionResultMapper {
                 .build();
         }
         else {
-            return new ActionResult.Builder.withError(operationResult.errorMessages);
+            return new ActionResult.Builder
+                .withError(operationResult.errorMessages)
+                .withResultMessage(operationResult.resultMessage)
+                .build();
         }
     }
 }
