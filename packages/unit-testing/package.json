@@ -10,6 +10,9 @@
     "SuiteCloud",
     "SDF"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "UPL-1.0",
   "main": "jest-configuration/SuiteCloudJestConfiguration.js",
   "dependencies": {
