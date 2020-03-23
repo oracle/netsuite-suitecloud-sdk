@@ -20,7 +20,7 @@ To get started with SuiteCloud Unit Testing, do the following:
 
 1. Inside of your SDF project folder, create a `src` folder.
 2. Move your project files inside of the `src` folder.
-3. To initialize NPM, from the root of your SDF project folder, run `npm init`.
+3. To initialize the NPM package, from the root of your SDF project folder, run `npm init`.
 >💡 A `package.json` file is created in your SDF project folder.
 4. In your `package.json` file, paste the following code:
 ```json
@@ -48,7 +48,7 @@ describe('Basic jest test with simple assert', () => {
 8. From the root of your SDF project folder, run `npm test`
 to run your test. You should see an output similar to following:
 ```
-PASS  __tests__/BasicJest.test.js
+PASS  __tests__/sample-test.js
   Basic jest test with simple assert
     √ should assert stings are equal (2ms)
 ```
@@ -59,7 +59,7 @@ PASS  __tests__/BasicJest.test.js
 ➡ If you use SuiteCloud CLI for Node.js, you can install SuiteCloud Unit Testing when running the [`project:create`](../../packages/node-cli/README.md/##Commands) command by following the questions prompted.
 
 ## Additional Configuration
-To properly structure and run your test files, create a `jest.config.js` file, inside of the root of your SDF project folder.
+To properly run your tests against the SuiteScript 2.X files of your SDF project, create a `jest.config.js` file inside of the root of your SDF project folder.
 
 The `jest.config.js` file must follow a specific structure. Depending on your SDF project type, check one of the following examples:
 
