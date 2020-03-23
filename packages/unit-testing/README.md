@@ -22,7 +22,7 @@ To get started with SuiteCloud Unit Testing, do the following:
 2. Move your project files inside of the `src` folder.
 3. To initialize the NPM package, from the root of your SDF project folder, run `npm init`.
 >💡 A `package.json` file is created in your SDF project folder.
-4. In your `package.json` file, paste the following code:
+4. In your `package.json` file, add the following code:
 ```json
 {
   "scripts": {
