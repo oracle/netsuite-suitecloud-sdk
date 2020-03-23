@@ -11,6 +11,9 @@
 		"SuiteCloud",
 		"SDF"
 	],
+	"publishConfig": {
+		"access": "public"
+	},
 	"license": "UPL-1.0",
 	"main": "index.js",
 	"preferGlobal": true,
