@@ -1,20 +1,58 @@
 # SuiteCloud Unit Testing
 Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestjs.io/) for your SDF projects.
 
+## Features
+- Provides a default configuration to run unit tests with Jest in SDF projects.
+- Support unit testing for SuiteScript 2.X files.
+- Provides SuiteScript 2.X stubs.
+>💡 For NetSuite 2020.1, only the **N/record** module is supported.
+- Allows you to create custom stubs for SuiteScript 2.X or custom modules.
+- Supports code coverage capabilities through Jest.
+
 ## Prerequisites
-The following software is required to use SuiteCloud Unit Testing package:
 - Node.js version 12.14.0 LTS or greater
-- [Jest](https://jestjs.io/docs/en/getting-started.html)
+- An SDF project
 
-Also, to properly structure your test files, create the following elements in the root of your SDF project:
-- A `__tests__` folder
-- A `jest.config.js` file
+## Installation
+> ⚠ SuiteCloud Unit Testing is installed as a `devDependency`.
 
-## `jest.config.js` File Examples
+To install SuiteCloud Unit Testing in your SDF project, do the following:
+
+1. Inside of your SDF project folder, create a `src` folder.
+2. Move your project files inside of the `src` folder.
+3. To initialize NPM, from the root of your SDF project folder, run `npm init`.
+>💡 A `package.json` file is created in your SDF project folder.
+4. In your `package.json` file, paste the following code:
+```json
+{
+  "scripts": {
+    "test": "jest"
+  }
+}
+```
+5. From the root of your SDF project folder, run `npm install --save-dev @oracle/suitecloud-unit-testing jest`.
+
+➡ If you use SuiteCloud CLI for Node.js, you can install SuiteCloud Unit Testing when running the [`project:create`](../../packages/node-cli/README.md/##Commands) command by following the questions prompted.
+
+## Setup
+To properly structure and run your test files, create the following elements:
+- A `__tests__` folder, inside of the root of your SDF project folder.
+- A `sample-test.js` file, inside of the `__tests__` folder, with the following content:
+```javascript
+describe('Basic jest test with simple assert', () => {
+    it('should assert stings are equal', () => {
+        const a = 'foobar';
+        const b = 'foobar';
+        expect(a).toMatch(b);
+    });
+});
+```
+- A `jest.config.js` file, inside of the root of your SDF project folder.
+
 The `jest.config.js` file must follow a specific structure. Depending on your SDF project type, check one of the following examples:
 
 - For Account Customization Projects:
-```
+```javascript
 const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
@@ -24,7 +62,7 @@ module.exports = SuiteCloudJestConfiguration.build({
 ```
 
 - For SuiteApps:
-```
+```javascript
 const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
@@ -33,15 +71,10 @@ module.exports = SuiteCloudJestConfiguration.build({
 });
 ```
 
-## Installation
-> ⚠ SuiteCloud Unit Testing is installed as a `devDependency`.
+## Usage
+To run your SuiteCloud unit tests, from the root of your SDF project folder, run `npm test`.
 
-To install SuiteCloud Unit Testing in your project, from your project folder, run the following command:
-```
-npm install @oracle/suitecloud-unit-testing --save-dev
-```
-
-➡ If you use SuiteCloud CLI for Node.js, you can install SuiteCloud Unit Testing when running the [`project:create`](../../packages/node-cli/README.md/##Commands) command by following the questions prompted.
+If you want to run tests with coverage, from the root of your SDF project folder, run `npm test --coverage`.
 
 ## SuiteCloud Unit Testing Examples
 
@@ -53,7 +86,7 @@ The first example covers testing for the **N/record** module, which is fully moc
 
 ### N/record Module Example
 
-Make sure your project follows a structure similar to the one presented below:
+This example follows the structure presented below:
 ```
 myAccountCustomizationProject
 > __tests__
@@ -73,7 +106,7 @@ suitecloud.config.js
 jest.config.js
 ```
 
-To see the content of the files you need to make SuiteCloud Unit Testing work, check the following list:
+See below the content of the SuiteCloud Unit Testing files:
 
 - `jest.config.js` file
 ```javascript
@@ -153,7 +186,7 @@ To read a comprehensive description of this example, visit [NetSuite's Help Cent
 
 ### Custom Stub Example 
 
-In order for your tests to fully work, your project needs to follow a specific structure. Use the following structure as an example:
+This example follows the structure presented below:
 
 ```
 myAccountCustomizationProject
@@ -173,11 +206,9 @@ myAccountCustomizationProject
 	manifest.xml
 suitecloud.config.js
 jest.config.js
-```
+``` 
 
-Once you have a file structure similar to the one above, you can start creating the testing files. 
-
-To see the content of the files you need to make SuiteCloud Unit Testing work, check the following list:
+See below the content of the SuiteCloud Unit Testing files:
 
 - `jest.config.js` file
 ```javascript
@@ -189,13 +220,13 @@ module.exports = SuiteCloudJestConfiguration.build({
 		customStubs: [
 			{
 				module: "N/http",
-				path: "&lt;rootDir>/customStubs/http.js"
+				path: "<rootDir>/customStubs/http.js"
 			}
 		]
 });
 ```
 - `http.js` file: This is the stub file. It partially mocks NetSuite's **N/http** module.
->💡 The JSDoc annotations are copied from NetSuite's **N/http** module. Comment out the ones you do not need, or remove them completely.
+>💡 The JSDoc annotations are copied from NetSuite's **N/http** module, but are not required to run SuiteCloud unit testing.
 ```javascript
 define([], function() {
     /**
