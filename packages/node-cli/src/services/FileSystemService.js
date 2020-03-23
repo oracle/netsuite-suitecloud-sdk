@@ -20,7 +20,20 @@ module.exports = class FileSystemService {
 
 		const availableDirectories = getDirectories(parentFolder);
 
-		return [parentFolder, ...availableDirectories];
+		return availableDirectories;
+	}
+
+	getFoldersFromDirectoryRecursively(parentFolder) {
+		assert(parentFolder);
+		const folders = [];
+		const getFoldersRecursively = source =>
+				this.getFoldersFromDirectory(source).forEach(folder => {
+				folders.push(folder);
+				getFoldersRecursively(folder);
+			});
+		getFoldersRecursively(parentFolder);
+
+		return folders;
 	}
 
 	getFilesFromDirectory(parentFolder) {
