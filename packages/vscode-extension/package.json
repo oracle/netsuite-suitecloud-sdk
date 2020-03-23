@@ -39,9 +39,7 @@
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile",
-		"test": "node ./out/test/runTest.js"
+		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
 		"@oracle/suitecloud-cli": "^1.0.0"

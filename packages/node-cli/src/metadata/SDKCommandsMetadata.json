@@ -408,124 +408,123 @@
       ]
   },
   "object:import": {
-      "name": "object:import",
-      "sdkCommand": "importobjects",
-      "usage": "",
-      "description": "Imports custom objects from your NetSuite account to the SDF project. In account customization projects (ACP), if SuiteScript files are referenced in the custom objects you import, these files get imported by default.",
-      "isSetupRequired": true,
-      "options": [
-          {
-              "name": "appid",
-              "option": "appid",
-              "description": "Specify your application ID. If specified, only custom objects with that application ID are imported. Otherwise, only custom objects with no application ID are imported.",
-              "mandatory": false,
-              "type": "SINGLE",
-              "usage": "org.mycompany.helloworldapp",
-              "defaultOption": false,
-              "disableInIntegrationMode": false
-          },
-          {
-              "name": "scriptid",
-              "option": "scriptid",
-              "description": "Specify the script ID. To specify multiple IDs, enter the IDs separated by spaces. Enter \"ALL\" to import all custom objects of the specified type.",
-              "mandatory": true,
-              "type": "MULTIPLE",
-              "usage": "customrecord_tes01 customrecord_test02 [...]",
-              "defaultOption": false,
-              "disableInIntegrationMode": false
-          },
-          {
-              "name": "type",
-              "option": "type",
-              "description": "Specify the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https:\/\/system.netsuite.com\/app\/help\/helpcenter.nl?fid=sdfxml.html.",
-              "mandatory": true,
-              "type": "SINGLE",
-              "usage": "customrecordtype",
-              "defaultOption": false,
-              "disableInIntegrationMode": false
-          },
-          {
-              "name": "destinationfolder",
-              "option": "destinationfolder",
-              "description": "Specify the project folder where objects will be stored. It must be within the Objects folder of your project. For example, \/Objects\/MyObjects.",
-              "mandatory": true,
-              "type": "SINGLE",
-              "usage": "\/Objects",
-              "defaultOption": false,
-              "disableInIntegrationMode": false
-          },
-          {
-              "name": "excludefiles",
-              "option": "excludefiles",
-              "description": "Indicates that the SuiteScript files referenced in custom objects are not imported. It can only be used in account customization projects (ACP).",
-              "mandatory": false,
-              "type": "FLAG",
-              "alias": "excludefiles",
-              "usage": "\/Objects",
-              "defaultOption": false,
-              "disableInIntegrationMode": false
-          },
-          {
-              "name": "project",
-              "option": "project",
-              "description": "Set the folder or zipped file containing the project. It overrides the default project.",
-              "mandatory": true,
-              "type": "SINGLE",
-              "usage": "c:\/project\/",
-              "defaultOption": false,
-              "disableInIntegrationMode": true
-          },
-          {
-              "name": "url",
-              "option": "url",
-              "description": "Specify the domain URL. It overrides the SDF file settings.",
-              "mandatory": false,
-              "type": "SINGLE",
-              "usage": "",
-              "defaultOption": false,
-              "disableInIntegrationMode": true
-          },
-          {
-              "name": "email",
-              "option": "email",
-              "description": "Specify your email address. It overrides the SDF file settings.",
-              "mandatory": false,
-              "type": "SINGLE",
-              "usage": "",
-              "defaultOption": false,
-              "disableInIntegrationMode": true
-          },
-          {
-              "name": "account",
-              "option": "account",
-              "description": "Specify your account ID. It overrides the SDF file settings.",
-              "mandatory": false,
-              "type": "SINGLE",
-              "usage": "",
-              "defaultOption": false,
-              "disableInIntegrationMode": true
-          },
-          {
-              "name": "role",
-              "option": "role",
-              "description": "Specify the role ID. It overrides the SDF file settings.",
-              "mandatory": false,
-              "type": "SINGLE",
-              "usage": "",
-              "defaultOption": false,
-              "disableInIntegrationMode": true
-          },
-          {
-              "name": "authid",
-              "option": "authid",
-              "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
-              "mandatory": false,
-              "type": "SINGLE",
-              "usage": "",
-              "defaultOption": false,
-              "disableInIntegrationMode": true
-          }
-      ]
+    "name": "object:import",
+    "sdkCommand": "importobjects",
+    "usage": "",
+    "description": "Imports custom objects from your NetSuite account to the SDF project. In account customization projects (ACP), if SuiteScript files are referenced in the custom objects you import, these files get imported by default.",
+    "isSetupRequired": true,
+    "options": [
+      {
+        "name": "appid",
+        "option": "appid",
+        "description": "Specify your application ID. If specified, only custom objects with that application ID are imported. Otherwise, only custom objects with no application ID are imported.",
+        "mandatory": false,
+        "type": "SINGLE",
+        "usage": "org.mycompany.helloworldapp",
+        "defaultOption": false,
+        "disableInIntegrationMode": false
+      },
+      {
+        "name": "scriptid",
+        "option": "scriptid",
+        "description": "Specify the script ID. To specify multiple IDs, enter the IDs separated by spaces. Enter \"ALL\" to import all custom objects of the specified type.",
+        "mandatory": true,
+        "type": "MULTIPLE",
+        "usage": "customrecord_tes01 customrecord_test02 [...]",
+        "defaultOption": false,
+        "disableInIntegrationMode": false
+      },
+      {
+        "name": "type",
+        "option": "type",
+        "description": "Specify the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https:\/\/system.netsuite.com\/app\/help\/helpcenter.nl?fid=sdfxml.html.",
+        "mandatory": true,
+        "type": "SINGLE",
+        "usage": "customrecordtype",
+        "defaultOption": false,
+        "disableInIntegrationMode": false
+      },
+      {
+        "name": "destinationfolder",
+        "option": "destinationfolder",
+        "description": "Specify the project folder where objects will be stored. It must be within the Objects folder of your project. For example, \/Objects\/MyObjects.",
+        "mandatory": true,
+        "type": "SINGLE",
+        "usage": "\/Objects",
+        "defaultOption": false,
+        "disableInIntegrationMode": false
+      },
+      {
+        "name": "excludefiles",
+        "option": "excludefiles",
+        "description": "Indicates that the SuiteScript files referenced in custom objects are not imported. It can only be used in account customization projects (ACP).",
+        "mandatory": false,
+        "type": "FLAG",
+        "usage": "\/Objects",
+        "defaultOption": false,
+        "disableInIntegrationMode": false
+      },
+      {
+        "name": "project",
+        "option": "project",
+        "description": "Set the folder or zipped file containing the project. It overrides the default project.",
+        "mandatory": true,
+        "type": "SINGLE",
+        "usage": "c:\/project\/",
+        "defaultOption": false,
+        "disableInIntegrationMode": true
+      },
+      {
+        "name": "url",
+        "option": "url",
+        "description": "Specify the domain URL. It overrides the SDF file settings.",
+        "mandatory": false,
+        "type": "SINGLE",
+        "usage": "",
+        "defaultOption": false,
+        "disableInIntegrationMode": true
+      },
+      {
+        "name": "email",
+        "option": "email",
+        "description": "Specify your email address. It overrides the SDF file settings.",
+        "mandatory": false,
+        "type": "SINGLE",
+        "usage": "",
+        "defaultOption": false,
+        "disableInIntegrationMode": true
+      },
+      {
+        "name": "account",
+        "option": "account",
+        "description": "Specify your account ID. It overrides the SDF file settings.",
+        "mandatory": false,
+        "type": "SINGLE",
+        "usage": "",
+        "defaultOption": false,
+        "disableInIntegrationMode": true
+      },
+      {
+        "name": "role",
+        "option": "role",
+        "description": "Specify the role ID. It overrides the SDF file settings.",
+        "mandatory": false,
+        "type": "SINGLE",
+        "usage": "",
+        "defaultOption": false,
+        "disableInIntegrationMode": true
+      },
+      {
+        "name": "authid",
+        "option": "authid",
+        "description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+        "mandatory": false,
+        "type": "SINGLE",
+        "usage": "",
+        "defaultOption": false,
+        "disableInIntegrationMode": true
+      }
+    ]
   },
   "file:list": {
       "name": "file:list",

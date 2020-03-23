@@ -25,16 +25,14 @@ const path = require('path');
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
 const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
-const DEFAULT_PROJECT_VERSION = "1.0.0";
+const DEFAULT_PROJECT_VERSION = '1.0.0';
 const JEST_CONFIG_FILENAME = 'jest.config.js';
 const JEST_CONFIG_PROJECT_TYPE_ACP = 'SuiteCloudJestConfiguration.ProjectType.ACP';
 const JEST_CONFIG_PROJECT_TYPE_SUITEAPP = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
 const JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE = '{{projectType}}';
 const PACKAGE_JSON_FILENAME = 'package.json';
 const PACKAGE_JSON_DEFAULT_VERSION = '1.0.0';
-const PACKAGE_JSON_REPLACE_STRING_NAME = '{{name}}';
 const PACKAGE_JSON_REPLACE_STRING_VERSION = '{{version}}';
-const PACKAGE_JSON_REPLACE_STRING_NODE_CLI_PATH = '{{node-cli-absolute-path}}';
 
 const SOURCE_FOLDER = 'src';
 const UNIT_TEST_TEST_FOLDER = '__tests__';
@@ -63,7 +61,7 @@ const COMMAND_OPTIONS = {
 	PROJECT_VERSION: 'projectversion',
 	PUBLISHER_ID: 'publisherid',
 	TYPE: 'type',
-	INCLUDE_UNIT_TESTING: 'includeunittesting'
+	INCLUDE_UNIT_TESTING: 'includeunittesting',
 };
 
 const COMMAND_ANSWERS = {
@@ -165,7 +163,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					{ name: TranslationService.getMessage(YES), value: true },
 					{ name: TranslationService.getMessage(NO), value: false },
 				],
-			}
+			},
 		]);
 
 		const projectFolderName = this._getProjectFolderName(answers);
@@ -253,14 +251,15 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		const actionCreateProject = new Promise(async (resolve, reject) => {
 			try {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
+				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
+					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
+				}
 				const executionContextCreateProject = new SDKExecutionContext({
 					command: this._commandMetadata.sdkCommand,
 					params: params,
 				});
 
-				const operationResult = await this._sdkExecutor.execute(
-					executionContextCreateProject
-				);
+				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
 				if (SDKOperationResultUtils.hasErrors(operationResult)) {
 					resolve({
@@ -290,7 +289,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
 						answers[COMMAND_OPTIONS.PROJECT_VERSION],
-						projectAbsolutePath);
+						projectAbsolutePath
+					);
 
 					NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeUtils.COLORS.INFO);
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
@@ -306,9 +306,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				return resolve({
 					operationResult: operationResult,
 					projectType: answers[COMMAND_OPTIONS.TYPE],
+					projectName: answers[COMMAND_OPTIONS.PROJECT_NAME],
 					projectDirectory: projectAbsolutePath,
 					includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING],
-					npmInstallSuccess: npmInstallSuccess
+					npmInstallSuccess: npmInstallSuccess,
 				});
 			} catch (error) {
 				this._fileSystemService.deleteFolderRecursive(
@@ -322,10 +323,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	}
 
 	async _createUnitTestFiles(type, projectName, projectVersion, projectAbsolutePath) {
-		this._createUnitTestCliConfigFile(projectAbsolutePath);
-		this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
-		this._createJestConfigFile(type, projectAbsolutePath);
-		this._createSampleUnitTestFile(projectAbsolutePath);
+		await this._createUnitTestCliConfigFile(projectAbsolutePath);
+		await this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
+		await this._createJestConfigFile(type, projectAbsolutePath);
+		await this._createSampleUnitTestFile(projectAbsolutePath);
 	}
 
 	async _createUnitTestCliConfigFile(projectAbsolutePath) {
@@ -346,11 +347,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		});
 
 		let packageJsonAbsolutePath = path.join(projectAbsolutePath, PACKAGE_JSON_FILENAME);
-		await this._fileSystemService.replaceStringInFile(
-			packageJsonAbsolutePath,
-			PACKAGE_JSON_REPLACE_STRING_NAME,
-			projectName
-		);
 
 		let version = PACKAGE_JSON_DEFAULT_VERSION;
 		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
@@ -416,24 +412,20 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		}
 
 		SDKOperationResultUtils.logResultMessage(result.operationResult);
-		const projectTypeText =
-			result.projectType === ApplicationConstants.PROJECT_SUITEAPP
-				? SUITEAPP_PROJECT_TYPE_DISPLAY
-				: ACCOUNT_CUSTOMIZATION_DISPLAY;
-		const message = TranslationService.getMessage(
-			MESSAGES.PROJECT_CREATED,
-			projectTypeText.toLowerCase(),
-			result.projectDirectory,
-			NodeUtils.lineBreak
-		);
-		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
+
+		const projectCreatedMessage = TranslationService.getMessage(MESSAGES.PROJECT_CREATED, result.projectName);
+		NodeUtils.println(projectCreatedMessage, NodeUtils.COLORS.RESULT);
 
 		if (result.includeUnitTesting) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED), NodeUtils.COLORS.RESULT);
+			const sampleUnitTestMessage = TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
+			NodeUtils.println(sampleUnitTestMessage, NodeUtils.COLORS.RESULT);
 			if (!result.npmInstallSuccess) {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeUtils.COLORS.ERROR);
 			}
 		}
+
+		const navigateToProjectMessage = TranslationService.getMessage(MESSAGES.NAVIGATE_TO_FOLDER, result.projectDirectory);
+		NodeUtils.println(navigateToProjectMessage, NodeUtils.COLORS.RESULT);
 	}
 
 	_validateParams(answers) {
