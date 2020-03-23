@@ -7,6 +7,9 @@
 		"SuiteCloud",
 		"SDF"
 	],
+	"publishConfig": {
+		"access": "public"
+	},
 	"bugs": {
 		"url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"
 	},
