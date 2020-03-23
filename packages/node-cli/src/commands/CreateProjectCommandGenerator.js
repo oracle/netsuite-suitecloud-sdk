@@ -5,7 +5,8 @@
 'use strict';
 
 // const CreateProjectActionResult = require('../commands/actionresult/CreateProjectActionResult');
-const CreateProjectActionResultMapper = require('../mappers/CreateProjectActionResultMapper');
+const ActionResult = require('../commands/actionresult/ActionResult');
+const CreateProjectActionResult = require('../commands/actionresult/CreateProjectActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
@@ -265,13 +266,24 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			var projectType = answers[COMMAND_OPTIONS.TYPE];
 			var includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
-			return CreateProjectActionResultMapper.createActionResultFrom(
-				actionCreateProjectData,
-				projectType,
-				includeUnitTesting);
+
+			return actionCreateProjectData.operationResult.status === ActionResult.SUCCESS
+				? CreateProjectActionResult.Builder
+					.withSuccess()
+					.withData(actionCreateProjectData.operationResult.data)
+					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
+					.withProjectType(projectType)
+					.fromDirectory(actionCreateProjectData.projectDirectory)
+					.withUnitTesting(includeUnitTesting)
+					.withSuccessfullNpmInstalled(actionCreateProjectData.operationResult)
+					.build()
+				: CreateProjectActionResult.Builder
+					.withError(actionCreateProjectData.operationResult.errorMessages)
+					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
+					.build();
 
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build();
+			return CreateProjectActionResult.Builder.withError(error).build();
 		}
 	}
 

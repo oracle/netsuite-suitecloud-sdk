@@ -14,7 +14,6 @@ const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const DeployActionResultMapper = require('../mappers/DeployActionResultMapper')
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -161,9 +160,20 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 					? true
 					: false;
 
-			return DeployActionResultMapper.createActionResultFrom(operationResult, isValidate, isApplyContentProtection);
+			return operationResult.status == ActionResult.SUCCESS
+				? DeployActionResult.Builder
+					.withSuccess()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.withValidate(isValidate)
+					.withAppliedProtection(isApplyProtection)
+					.build()
+				: DeployActionResult.Builder
+					.withError(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build();
+			return DeployActionResult.Builder.withError(error).build();
 		}
 	}
 

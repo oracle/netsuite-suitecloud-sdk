@@ -4,7 +4,6 @@
 */
 'use strict';
 
-const DefaultActionResultMapper = require('../mappers/DefaultActionResultMapper')
 const ActionResult = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
@@ -85,7 +84,16 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return DefaultActionResultMapper.createActionResultFrom(operationResult);
+			rreturn operationResult.status === SUCCESS
+			? ActionResult.Builder
+				.withSuccess()
+				.withData(operationResult.data)
+				.withResultMessage(operationResult.resultMessage)
+				.build()
+			: new ActionResult.Builder
+				.withError(operationResult.errorMessages)
+				.withResultMessage(operationResult.resultMessage)
+				.build();
 		} catch (error) {
 			return ActionResult.Builder.withError(error).build();
 		}
