@@ -1,6 +1,7 @@
 {
 	"name": "@oracle/suitecloud-cli",
 	"version": "1.0.0",
+	"license": "UPL-1.0",
 	"description": "SuiteCloud CLI for Node.js",
 	"keywords": [
 		"NetSuite",
