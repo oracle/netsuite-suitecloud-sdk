@@ -5,7 +5,7 @@ Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestj
 - Provides a default configuration to run unit tests with Jest in SDF projects.
 - Supports unit testing for SuiteScript 2.X files.
 - Provides SuiteScript 2.X stubs.
->💡 For NetSuite 2020.1, only the **N/record** module is supported.
+>💡 For SuiteCloud Unit Testing 1.X.X, only the **N/record** module is supported.
 - Allows you to create custom stubs for SuiteScript 2.X or custom modules.
 - Supports code coverage capabilities through Jest.
 
@@ -96,21 +96,23 @@ The first example covers testing for the **N/record** module, which is fully moc
 This example follows the structure presented below:
 ```
 myAccountCustomizationProject
-> __tests__
-	> Suitelet.test.js
-> src
-	> AccountConfiguration
-	> FileCabinet
-		> SuiteScripts
-      > Suitelet.js
-		> Templates
-		> Web Site Hosting Files
-	> Objects
-	> Translations
-  deploy.xml
-  manifest.xml
-suitecloud.config.js
-jest.config.js
+├── __tests__
+│   └── sample-test.js
+├── node_modules
+├── src
+│   ├── AccountConfiguration
+│   ├── FileCabinet
+│       ├── SuiteScripts
+│           └── Suitelet.js
+│   ├── Objects
+│   ├── Translations
+│   ├── deploy.xml
+│   └── manifest.xml
+├── jest.config.js
+├── suitecloud.config.js
+├── package-lock.json
+├── package.json
+└── project.json
 ```
 
 See below the content of the SuiteCloud Unit Testing files:
@@ -197,22 +199,26 @@ This example follows the structure presented below:
 
 ```
 myAccountCustomizationProject
-> customStubs
-	> http.js
-> __tests__
-	> http.test.js
-> src
-	> AccountConfiguration
-	> FileCabinet
-		> SuiteScripts
-		> Templates
-		> Web Site Hosting Files
-	> Objects
-	> Translations
-	deploy.xml
-	manifest.xml
-suitecloud.config.js
-jest.config.js
+├── customStubs
+│   └── http.js
+├── __tests__
+│   └── http.test.js
+├── node_modules
+├── src
+│   ├── AccountConfiguration
+│   ├── FileCabinet
+│       ├── SuiteScripts
+│       ├── Templates
+│       ├── Web Site Hosting Files 
+│   ├── Objects
+│   ├── Translations
+│   ├── deploy.xml
+│   └── manifest.xml
+├── jest.config.js
+├── suitecloud.config.js
+├── package-lock.json
+├── package.json
+└── project.json
 ``` 
 
 See below the content of the SuiteCloud Unit Testing files:
