@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
 import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
-import { OperationResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
+import { unwrapExceptionMessage, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const objectTypes: {
@@ -46,13 +46,17 @@ export default class ListObjects extends BaseAction {
 				return;
 			}
 
-			if (result.status === OperationResultStatus.SUCCESS) {
+			if (result.status === actionResultStatus.SUCCESS) {
 				this.vsCommandOutputHandler.showSuccessResult(result);
 				opts.messageService.showCompletedActionInfo();
 			} else {
 				this.vsCommandOutputHandler.showErrorResult(result);
 				opts.messageService.showCompletedActionError();
 			}
+		// if (listObjectsResult.status === actionResultStatus.SUCCESS) {
+		// 	const listedObjects = listObjectsResult.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
+		// 	listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
+		// 	listobjectsMessageService.showCompletedActionInfo();
 		} else {
 			opts.messageService.showTriggeredActionError();
 		}

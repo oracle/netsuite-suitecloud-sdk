@@ -6,13 +6,14 @@
 
 const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const ActionResult = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const TranslationService = require('../services/TranslationService');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const {
 	validateArrayIsNotEmpty,
@@ -72,7 +73,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			questions.push(questionSpecificSuiteApp);
 
 			const questionAppId = {
-				when: function(response) {
+				when: function (response) {
 					return response.specifysuiteapp;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -102,7 +103,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		questions.push(questionFilterByCustomObjects);
 
 		const questionCustomObjects = {
-			when: function(answers) {
+			when: function (answers) {
 				return !answers.typeall;
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
@@ -141,7 +142,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		questions.push(questionSpecificScriptId);
 
 		const questionScriptId = {
-			when: function(response) {
+			when: function (response) {
 				return response.specifyscriptid;
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -154,39 +155,53 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return prompt(questions);
 	}
 
-	_executeAction(answers) {
-		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-		if (Array.isArray(params.type)) {
-			params.type = params.type.join(' ');
+	async _executeAction(answers) {
+		try {
+			const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+			if (Array.isArray(params.type)) {
+				params.type = params.type.join(' ');
+			}
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				params,
+				includeProjectDefaultAuthId: true,
+			});
+
+			const actionListObjects = this._sdkExecutor.execute(executionContext);
+
+			const operationResult = await executeWithSpinner({
+				action: actionListObjects,
+				message: TranslationService.getMessage(LISTING_OBJECTS),
+			});
+
+			return operationResult.status === ActionResult.SUCCESS
+				? ActionResult.Builder
+					.withSuccess()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.withError(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build();
+		} catch (error) {
+			return ActionResult.Builder.withError(error).build();
 		}
-		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			params,
-			includeProjectDefaultAuthId: true,
-		});
-
-		const actionListObjects = this._sdkExecutor.execute(executionContext);
-
-		return executeWithSpinner({
-			action: actionListObjects,
-			message: TranslationService.getMessage(LISTING_OBJECTS),
-		});
 	}
 
-	_formatOutput(operationResult) {
-		const { data } = operationResult;
-		SDKOperationResultUtils.logResultMessage(operationResult);
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult);
+	_formatOutput(actionResult) {
+		ActionResultUtils.logResultMessage(actionResult);
+		if (ActionResultUtils.hasErrors(actionResult)) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		if (Array.isArray(data) && data.length) {
+		if (Array.isArray(actionResult.data) && actionResult.data.length) {
 			NodeUtils.println(
 				TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED),
 				NodeUtils.COLORS.RESULT
 			);
-			data.forEach(object =>
+			actionResult.data.forEach(object =>
 				NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT)
 			);
 		} else {

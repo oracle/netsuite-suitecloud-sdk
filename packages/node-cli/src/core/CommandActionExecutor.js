@@ -11,9 +11,9 @@ const {
 	ERRORS,
 } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
-const OperationResultStatus = require('../commands/OperationResultStatus');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
+const ActionResult = require('../commands/actionresult/ActionResult');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -83,20 +83,32 @@ module.exports = class CommandActionExecutor {
 				projectConfiguration: projectConfiguration,
 			});
 
-			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
+			if (!(actionResult instanceof ActionResult)) {
+				throw 'INTERNAL ERROR: Command must return an ActionResult object.';
+			}
 
-			if (actionResult && actionResult.operationResult) {
-				const operationResult = actionResult.operationResult;
-				if (operationResult.status === OperationResultStatus.SUCCESS && commandUserExtension.onCompleted) {
-					commandUserExtension.onCompleted(actionResult);
-				} else if (operationResult.status === OperationResultStatus.ERROR && commandUserExtension.onError) {
-					const error = SDKOperationResultUtils.getResultMessage(operationResult)
-						+ NodeUtils.lineBreak
-						+ SDKOperationResultUtils.getErrorMessagesString(operationResult);
-					commandUserExtension.onError(error);
+			if (actionResult.status === ActionResult.ERROR) {
+				if (actionResult.errorMessages && Array.isArray(actionResult.errorMessages) && actionResult.size > 0) {
+					throw actionResult.errorMessages;
+				}
+				else if (actionResult.resultMessage) {
+					throw actionResult.resultMessage;
+				}
+				else {
+					throw 'Unexpected Error' //TODO Code Review and Change message
 				}
 			}
 
+			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
+
+			if (actionResult.status === ActionResult.SUCCESS && commandUserExtension.onCompleted) {
+				commandUserExtension.onCompleted(actionResult);
+			} else if (actionResult.status === ActionResult.ERROR && commandUserExtension.onError) {
+				const error = ActionResultUtils.getResultMessage(actionResult)
+					+ NodeUtils.lineBreak
+					+ ActionResultUtils.getErrorMessagesString(actionResult);
+				commandUserExtension.onError(error);
+			}
 			return actionResult;
 		} catch (error) {
 			this._commandOutputHandler.showErrorResult(error);
@@ -184,7 +196,7 @@ module.exports = class CommandActionExecutor {
 			arguments: commandArgumentsAfterPreActionFunc,
 		});
 
-		if(validationErrors.length > 0) {
+		if (validationErrors.length > 0) {
 			throwValidationException(validationErrors, runInInteractiveMode, commandMetadata);
 		}
 	}

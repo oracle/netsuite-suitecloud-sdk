@@ -4,8 +4,8 @@
 */
 'use strict';
 
-const OperationResultStatus = require('../commands/OperationResultStatus');
 const NodeUtils = require('./NodeUtils');
+const { ERROR } = require('../commands/actionresult/ActionResult');
 
 module.exports = {
 	getErrorMessagesString: operationResult => {
@@ -23,18 +23,18 @@ module.exports = {
 		return resultMessage ? resultMessage : '';
 	},
 	hasErrors: operationResult => {
-		return operationResult.status === OperationResultStatus.ERROR;
+		return operationResult.status === ERROR;
 	},
 	logErrors: operationResult => {
 		const { errorMessages } = operationResult;
 		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
 			errorMessages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
-		} 
+		}
 	},
 	logResultMessage: operationResult => {
 		const { resultMessage } = operationResult;
 		if (resultMessage) {
-			if (operationResult.status === OperationResultStatus.ERROR) {
+			if (operationResult.status === ERROR) {
 				NodeUtils.println(resultMessage, NodeUtils.COLORS.ERROR);
 			} else {
 				NodeUtils.println(resultMessage, NodeUtils.COLORS.RESULT);

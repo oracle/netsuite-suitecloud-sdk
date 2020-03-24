@@ -4,6 +4,7 @@
 */
 'use strict';
 
+const ProxyActionResult = require('../commands/actionresult/ProxyActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TranslationService = require('../services/TranslationService');
 const {
@@ -22,26 +23,37 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 		this._CLISettingsService = new CLISettingsService();
 	}
 
-	_executeAction(args) {
-		const proxyUrlArgument = args[SET_OPTION];
-		const shouldClearArgument = args[CLEAR_FLAG_OPTION];
+	async _executeAction(args) {
+		try {
+			const proxyUrlArgument = args[SET_OPTION];
+			const shouldClearArgument = args[CLEAR_FLAG_OPTION];
 
-		this._validateArguments(proxyUrlArgument, shouldClearArgument);
-		const isSettingProxy = !!proxyUrlArgument;
+			this._validateArguments(proxyUrlArgument, shouldClearArgument);
+			const isSettingProxy = !!proxyUrlArgument;
 
-		const actionResult = {
-			isSettingProxy: isSettingProxy,
-			proxyUrl: proxyUrlArgument,
-		};
-		if (isSettingProxy) {
-			this._validateProxyUrl(proxyUrlArgument);
-			const setProxyResult = this._setProxy(proxyUrlArgument);
-			actionResult.proxyOverrided = setProxyResult.proxyOverrided;
-		} else {
-			this._CLISettingsService.clearProxy();
+			const proxyCommandAction = {
+				isSettingProxy: isSettingProxy,
+				proxyUrl: proxyUrlArgument,
+			};
+			if (isSettingProxy) {
+				this._validateProxyUrl(proxyUrlArgument);
+				const setProxyResult = this._setProxy(proxyUrlArgument);
+				proxyCommandAction.proxyOverrided = setProxyResult.proxyOverrided;
+			} else {
+				this._CLISettingsService.clearProxy();
+			}
+
+
+			const proxyCommandData = await Promise.resolve(proxyCommandAction);
+			return ProxyActionResult.Builder
+				.withSuccess()
+				.isSettingProxy(proxyCommandData.isSettingProxy)
+				.withProxyUrl(proxyCommandData.proxyUrl)
+				.isProxyOverrided(proxyCommandData.proxyOverrided)
+				.build();
+		} catch (error) {
+			return ProxyActionResult.Builder.withError(error).build();
 		}
-
-		return Promise.resolve(actionResult);
 	}
 
 	_formatOutput(actionResult) {

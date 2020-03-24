@@ -6,13 +6,14 @@
 const path = require('path');
 const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const ActionResult = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
@@ -134,29 +135,43 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(args) {
-		if (args.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !args[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
-			throw TranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
+		try {
+			if (args.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !args[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
+				throw TranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
+			}
+			const SDKParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
+
+			const executionContextForUpdate = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				includeProjectDefaultAuthId: true,
+				params: SDKParams,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForUpdate),
+				message: TranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
+			});
+
+			return operationResult.status === ActionResult.SUCCESS
+				? ActionResult.Builder
+					.withSuccess()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.withError(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build();
+		} catch (error) {
+			return ActionResult.Builder.withError(error).build();
 		}
-		const SDKParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
-
-		const executionContextForUpdate = new SDKExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			includeProjectDefaultAuthId: true,
-			params: SDKParams,
-		});
-
-		return await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForUpdate),
-			message: TranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
-		});
 	}
 
-	_formatOutput(operationResult) {
-		const { data } = operationResult;
+	_formatOutput(actionResult) {
 
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+		if (ActionResultUtils.hasErrors(actionResult)) {
+			ActionResultUtils.logResultMessage(actionResult);
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 

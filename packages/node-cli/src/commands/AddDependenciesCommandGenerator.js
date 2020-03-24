@@ -4,12 +4,13 @@
 */
 'use strict';
 
+const ActionResult = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
 
 const {
@@ -69,18 +70,33 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		return answers;
 	}
 
-	_executeAction(answers) {
-		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			params: answers,
-			flags: [COMMAND_OPTIONS.ALL],
-			requiresContextParams: true
-		});
+	async _executeAction(answers) {
+		try {
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				params: answers,
+				flags: [COMMAND_OPTIONS.ALL],
+				requiresContextParams: true
+			});
 
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
-		});
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
+			});
+
+			return operationResult.status === ActionResult.SUCCESS
+			? ActionResult.Builder
+				.withSuccess()
+				.withData(operationResult.data)
+				.withResultMessage(operationResult.resultMessage)
+				.build()
+			: ActionResult.Builder
+				.withError(operationResult.errorMessages)
+				.withResultMessage(operationResult.resultMessage)
+				.build();
+		} catch (error) {
+			return ActionResult.Builder.withError(error).build();
+		}
 	}
 
 	_supportsInteractiveMode() {
@@ -117,18 +133,18 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		objects.forEach(object => {
 			const appIdDisplay = object.appId
 				? `in [${OBJECT_CONTAINER_PREFIX.SUITEAPP} - ${OBJECT_REFERENCE_ATTRIBUTES.APP_ID}${
-						object.appId
-				  }]`
+				object.appId
+				}]`
 				: '';
 			const bundleIdDisplay = object.bundleIds
 				? `in [${OBJECT_CONTAINER_PREFIX.BUNDLE} - ${
-						OBJECT_REFERENCE_ATTRIBUTES.BUNDLE_ID
-				  }${object.bundleIds}]`
+				OBJECT_REFERENCE_ATTRIBUTES.BUNDLE_ID
+				}${object.bundleIds}]`
 				: '';
 			const scriptIdDisplay = `${OBJECT_REFERENCE_ATTRIBUTES.SCRIPT_ID}${object.scriptId}`;
 			dependenciesString.push(
 				`[${
-					DEPENDENCY_TYPES.OBJECT.prefix
+				DEPENDENCY_TYPES.OBJECT.prefix
 				} ${scriptIdDisplay}] ${appIdDisplay}${bundleIdDisplay}`
 			);
 		});
@@ -143,7 +159,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				: '';
 			const objectTypeDisplay = `${OBJECT_REFERENCE_ATTRIBUTES.OBJECT_TYPE}${
 				platforExtension.objectType
-			}`;
+				}`;
 			dependenciesString.push(
 				`${DEPENDENCY_TYPES.PLATFORMEXTENSION.prefix} ${appIdDisplay}${objectTypeDisplay}`
 			);
@@ -152,15 +168,16 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		return dependenciesString;
 	}
 
-	_formatOutput(operationResult) {
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+	_formatOutput(actionResult) {
+		if (actionResult.error) {
+			if (actionResult.resultMessage) {
+				ActionResultUtils.logResultMessage(actionResult);
+			}
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		const { data } = operationResult;
-		if (data.length === 0) {
+		if (actionResult.data.length === 0) {
 			NodeUtils.println(
 				TranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES),
 				NodeUtils.COLORS.RESULT
@@ -173,7 +190,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 			NodeUtils.COLORS.RESULT
 		);
 
-		this._getDependenciesStringsArray(data)
+		this._getDependenciesStringsArray(actionResult.data)
 			.sort()
 			.forEach(output => NodeUtils.println(output, NodeUtils.COLORS.RESULT));
 	}

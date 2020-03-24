@@ -4,11 +4,15 @@
  */
 'use strict';
 
+// const CreateProjectActionResult = require('../commands/actionresult/CreateProjectActionResult');
+const ActionResult = require('../commands/actionresult/ActionResult');
+const CreateProjectActionResult = require('../commands/actionresult/CreateProjectActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
@@ -25,16 +29,14 @@ const path = require('path');
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
 const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
-const DEFAULT_PROJECT_VERSION = "1.0.0";
+const DEFAULT_PROJECT_VERSION = '1.0.0';
 const JEST_CONFIG_FILENAME = 'jest.config.js';
 const JEST_CONFIG_PROJECT_TYPE_ACP = 'SuiteCloudJestConfiguration.ProjectType.ACP';
 const JEST_CONFIG_PROJECT_TYPE_SUITEAPP = 'SuiteCloudJestConfiguration.ProjectType.SUITEAPP';
 const JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE = '{{projectType}}';
 const PACKAGE_JSON_FILENAME = 'package.json';
 const PACKAGE_JSON_DEFAULT_VERSION = '1.0.0';
-const PACKAGE_JSON_REPLACE_STRING_NAME = '{{name}}';
 const PACKAGE_JSON_REPLACE_STRING_VERSION = '{{version}}';
-const PACKAGE_JSON_REPLACE_STRING_NODE_CLI_PATH = '{{node-cli-absolute-path}}';
 
 const SOURCE_FOLDER = 'src';
 const UNIT_TEST_TEST_FOLDER = '__tests__';
@@ -63,7 +65,7 @@ const COMMAND_OPTIONS = {
 	PROJECT_VERSION: 'projectversion',
 	PUBLISHER_ID: 'publisherid',
 	TYPE: 'type',
-	INCLUDE_UNIT_TESTING: 'includeunittesting'
+	INCLUDE_UNIT_TESTING: 'includeunittesting',
 };
 
 const COMMAND_ANSWERS = {
@@ -122,7 +124,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					),
 			},
 			{
-				when: function(response) {
+				when: function (response) {
 					return response[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -131,7 +133,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				validate: fieldValue => showValidationResults(fieldValue, validatePublisherId),
 			},
 			{
-				when: function(response) {
+				when: function (response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -147,7 +149,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					),
 			},
 			{
-				when: function(response) {
+				when: function (response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -165,7 +167,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					{ name: TranslationService.getMessage(YES), value: true },
 					{ name: TranslationService.getMessage(NO), value: false },
 				],
-			}
+			},
 		]);
 
 		const projectFolderName = this._getProjectFolderName(answers);
@@ -221,46 +223,81 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	}
 
 	async _executeAction(answers) {
-		const projectFolderName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
-		const projectAbsolutePath = answers[COMMAND_OPTIONS.PARENT_DIRECTORY];
-		const manifestFilePath = path.join(
-			projectAbsolutePath,
-			SOURCE_FOLDER,
-			ApplicationConstants.FILES.MANIFEST_XML
-		);
+		try {
+			const projectFolderName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
+			const projectAbsolutePath = answers[COMMAND_OPTIONS.PARENT_DIRECTORY];
+			const manifestFilePath = path.join(
+				projectAbsolutePath,
+				SOURCE_FOLDER,
+				ApplicationConstants.FILES.MANIFEST_XML
+			);
 
-		const validationErrors = this._validateParams(answers);
+			const validationErrors = this._validateParams(answers);
 
-		if (validationErrors.length > 0) {
-			throwValidationException(validationErrors, false, this._commandMetadata);
+			if (validationErrors.length > 0) {
+				throwValidationException(validationErrors, false, this._commandMetadata);
+			}
+
+			const params = {
+				//Enclose in double quotes to also support project names with spaces
+				parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
+				type: answers[COMMAND_OPTIONS.TYPE],
+				projectname: SOURCE_FOLDER
+			}
+			if (answers[COMMAND_OPTIONS.OVERWRITE]) {
+				params.overwrite = '';
+			}
+			if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
+				params.publisherid = answers[COMMAND_OPTIONS.PUBLISHER_ID];
+				params.projectid = answers[COMMAND_OPTIONS.PROJECT_ID];
+				params.projectversion = answers[COMMAND_OPTIONS.PROJECT_VERSION];
+
+			}
+
+			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
+
+			const actionCreateProject = new Promise(this.createProject(
+				params, answers, projectAbsolutePath, projectFolderName, manifestFilePath));
+
+			const actionCreateProjectData = await actionCreateProject;
+
+			var projectType = answers[COMMAND_OPTIONS.TYPE];
+			var includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
+
+
+			return actionCreateProjectData.operationResult.status === ActionResult.SUCCESS
+				? CreateProjectActionResult.Builder
+					.withSuccess()
+					.withData(actionCreateProjectData.operationResult.data)
+					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
+					.withProjectType(projectType)
+					.fromDirectory(actionCreateProjectData.projectDirectory)
+					.withUnitTesting(includeUnitTesting)
+					.withSuccessfullNpmInstalled(actionCreateProjectData.operationResult)
+					.build()
+				: CreateProjectActionResult.Builder
+					.withError(actionCreateProjectData.operationResult.errorMessages)
+					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
+					.build();
+
+		} catch (error) {
+			return CreateProjectActionResult.Builder.withError(error).build();
 		}
+	}
 
-		const params = {
-			//Enclose in double quotes to also support project names with spaces
-			parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
-			type: answers[COMMAND_OPTIONS.TYPE],
-			projectname: SOURCE_FOLDER,
-			...(answers[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
-			...(answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP && {
-				publisherid: answers[COMMAND_OPTIONS.PUBLISHER_ID],
-				projectid: answers[COMMAND_OPTIONS.PROJECT_ID],
-				projectversion: answers[COMMAND_OPTIONS.PROJECT_VERSION],
-			}),
-		};
-
-		this._fileSystemService.createFolder(this._executionPath, projectFolderName);
-
-		const actionCreateProject = new Promise(async (resolve, reject) => {
+	createProject(params, answers, projectAbsolutePath, projectFolderName, manifestFilePath) {
+		return async (resolve, reject) => {
 			try {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
+				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
+					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
+				}
 				const executionContextCreateProject = new SDKExecutionContext({
 					command: this._commandMetadata.sdkCommand,
 					params: params,
 				});
 
-				const operationResult = await this._sdkExecutor.execute(
-					executionContextCreateProject
-				);
+				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
 				if (SDKOperationResultUtils.hasErrors(operationResult)) {
 					resolve({
@@ -270,19 +307,13 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					});
 					return;
 				}
-
 				if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
 					const oldPath = path.join(projectAbsolutePath, projectFolderName);
 					const newPath = path.join(projectAbsolutePath, SOURCE_FOLDER);
 					this._fileSystemService.deleteFolderRecursive(newPath);
 					this._fileSystemService.renameFolder(oldPath, newPath);
 				}
-				this._fileSystemService.replaceStringInFile(
-					manifestFilePath,
-					SOURCE_FOLDER,
-					answers[COMMAND_OPTIONS.PROJECT_NAME]
-				);
-
+				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, answers[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
 					NodeUtils.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), NodeUtils.COLORS.INFO);
@@ -290,11 +321,13 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
 						answers[COMMAND_OPTIONS.PROJECT_VERSION],
-						projectAbsolutePath);
+						projectAbsolutePath
+					);
 
 					NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeUtils.COLORS.INFO);
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
-				} else {
+				}
+				else {
 					await this._fileSystemService.createFileFromTemplate({
 						template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
 						destinationFolder: projectAbsolutePath,
@@ -302,30 +335,24 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						fileExtension: CLI_CONFIG_EXTENSION,
 					});
 				}
-
 				return resolve({
 					operationResult: operationResult,
-					projectType: answers[COMMAND_OPTIONS.TYPE],
 					projectDirectory: projectAbsolutePath,
-					includeUnitTesting: answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING],
 					npmInstallSuccess: npmInstallSuccess
 				});
-			} catch (error) {
-				this._fileSystemService.deleteFolderRecursive(
-					path.join(this._executionPath, projectFolderName)
-				);
+			}
+			catch (error) {
+				this._fileSystemService.deleteFolderRecursive(path.join(this._executionPath, projectFolderName));
 				reject(error);
 			}
-		});
-
-		return await actionCreateProject;
+		};
 	}
 
 	async _createUnitTestFiles(type, projectName, projectVersion, projectAbsolutePath) {
-		this._createUnitTestCliConfigFile(projectAbsolutePath);
-		this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
-		this._createJestConfigFile(type, projectAbsolutePath);
-		this._createSampleUnitTestFile(projectAbsolutePath);
+		await this._createUnitTestCliConfigFile(projectAbsolutePath);
+		await this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
+		await this._createJestConfigFile(type, projectAbsolutePath);
+		await this._createSampleUnitTestFile(projectAbsolutePath);
 	}
 
 	async _createUnitTestCliConfigFile(projectAbsolutePath) {
@@ -346,11 +373,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		});
 
 		let packageJsonAbsolutePath = path.join(projectAbsolutePath, PACKAGE_JSON_FILENAME);
-		await this._fileSystemService.replaceStringInFile(
-			packageJsonAbsolutePath,
-			PACKAGE_JSON_REPLACE_STRING_NAME,
-			projectName
-		);
 
 		let version = PACKAGE_JSON_DEFAULT_VERSION;
 		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
@@ -402,38 +424,33 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		}
 	}
 
-	_formatOutput(result) {
-		if (!result) {
+	_formatOutput(actionResult) {
+		if (!actionResult) {
 			return;
 		}
-		if (SDKOperationResultUtils.hasErrors(result.operationResult)) {
+		if (ActionResultUtils.hasErrors(actionResult)) {
 			NodeUtils.println(
 				TranslationService.getMessage(MESSAGES.PROCESS_FAILED),
 				NodeUtils.COLORS.ERROR
 			);
-			SDKOperationResultUtils.logResultMessage(result.operationResult);
+			ActionResultUtils.logResultMessage(actionResult);
 			return;
 		}
+		ActionResultUtils.logResultMessage(actionResult);
+		
+		const projectCreatedMessage = TranslationService.getMessage(MESSAGES.PROJECT_CREATED, actionResult.projectName);
+		NodeUtils.println(projectCreatedMessage, NodeUtils.COLORS.RESULT);
 
-		SDKOperationResultUtils.logResultMessage(result.operationResult);
-		const projectTypeText =
-			result.projectType === ApplicationConstants.PROJECT_SUITEAPP
-				? SUITEAPP_PROJECT_TYPE_DISPLAY
-				: ACCOUNT_CUSTOMIZATION_DISPLAY;
-		const message = TranslationService.getMessage(
-			MESSAGES.PROJECT_CREATED,
-			projectTypeText.toLowerCase(),
-			result.projectDirectory,
-			NodeUtils.lineBreak
-		);
-		NodeUtils.println(message, NodeUtils.COLORS.RESULT);
-
-		if (result.includeUnitTesting) {
-			NodeUtils.println(TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED), NodeUtils.COLORS.RESULT);
-			if (!result.npmInstallSuccess) {
+		if (actionResult.includeUnitTesting) {
+			const sampleUnitTestMessage = TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
+			NodeUtils.println(sampleUnitTestMessage, NodeUtils.COLORS.RESULT);
+			if (!actionResult.npmInstallSuccess) {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeUtils.COLORS.ERROR);
 			}
 		}
+
+		const navigateToProjectMessage = TranslationService.getMessage(MESSAGES.NAVIGATE_TO_FOLDER, actionResult.projectDirectory);
+		NodeUtils.println(navigateToProjectMessage, NodeUtils.COLORS.RESULT);
 	}
 
 	_validateParams(answers) {
