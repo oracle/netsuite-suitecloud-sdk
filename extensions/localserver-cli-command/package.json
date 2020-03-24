@@ -1,6 +1,7 @@
 {
 	"name": "@oracle/suitecloud-cli-localserver-command",
 	"version": "1.0.0",
+	"license": "UPL-1.0",
 	"description": "SuiteCloud CLI localserver command",
 	"repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/extensions/localserver-cli-command",
 	"bugs": {
@@ -14,7 +15,6 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"license": "UPL-1.0",
 	"main": "index.js",
 	"preferGlobal": true,
 	"dependencies": {
