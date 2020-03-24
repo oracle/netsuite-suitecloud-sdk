@@ -7,11 +7,10 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
 const { executeWithSpinner } = require('../ui/CliSpinner');
+const FileCabinetService = require('../services/FileCabinetService');
 const FileSystemService = require('../services/FileSystemService');
 const NodeUtils = require('../utils/NodeUtils');
 const path = require('path');
-const ProjectInfoService = require('../services/ProjectInfoService');
-const { pathIsUnrestricted } = require('../validation/FileCabinetValidator');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
@@ -44,9 +43,9 @@ const { validateArrayIsNotEmpty, showValidationResults } = require('../validatio
 module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
 		this.localFileCabinetFolder = path.join(this._projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
+		this._fileCabinetService = new FileCabinetService(this.localFileCabinetFolder);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -65,13 +64,13 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_generateSelectFolderQuestion() {
-		const localFileCabinetSubFolders = this._fileSystemService.getFoldersFromDirectoryRecursively(this.localFileCabinetFolder);
+		const localFileCabinetSubFolders = this._fileCabinetService.getFileCabinetFoldersRecursively(this.localFileCabinetFolder);
 
 		const transformFoldersToChoicesFunc = folder => {
-			const name = this._getFileCabinetRelativePath(folder);
+			const name = this._fileCabinetService.getFileCabinetRelativePath(folder);
 
 			let disabledMessage = '';
-			if (!pathIsUnrestricted(name)) {
+			if (!this._fileCabinetService.pathIsUnrestricted(name)) {
 				disabledMessage = TranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER);
 			} else if (!this._fileSystemService.getFilesFromDirectory(folder).length) {
 				disabledMessage = TranslationService.getMessage(MESSAGES.EMPTY_FOLDER);
@@ -85,6 +84,10 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		};
 
 		const localFileCabinetFoldersChoices = localFileCabinetSubFolders.map(transformFoldersToChoicesFunc);
+
+		if (!localFileCabinetFoldersChoices.some(choice => !choice.disabled)) {
+			throw TranslationService.getMessage(MESSAGES.NOTHING_TO_UPLOAD);
+		}
 
 		return [
 			{
@@ -100,7 +103,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		const files = this._fileSystemService.getFilesFromDirectory(selectedFolder);
 
 		const transformFilesToChoicesFunc = file => {
-			const path = this._getFileCabinetRelativePath(file);
+			const path = this._fileCabinetService.getFileCabinetRelativePath(file);
 			return { name: path, value: path };
 		};
 		const filesChoices = files.map(transformFilesToChoicesFunc);
@@ -114,10 +117,6 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 		];
-	}
-
-	_getFileCabinetRelativePath(file) {
-		return file.replace(this.localFileCabinetFolder, '').replace(/\\/g, '/');
 	}
 
 	_generateOverwriteQuestion() {
@@ -171,16 +170,19 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		if (Array.isArray(data)) {
 			const successfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.SUCCESS);
 			const unsuccessfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.ERROR);
-			if (Array.isArray(successfulUploads) && successfulUploads.length) {
+			if (successfulUploads && successfulUploads.length) {
 				NodeUtils.println(TranslationService.getMessage(OUTPUT.FILES_UPLOADED), NodeUtils.COLORS.RESULT);
 				successfulUploads.forEach(result => {
-					NodeUtils.println(this._getFileCabinetRelativePath(result.file.path), NodeUtils.COLORS.RESULT);
+					NodeUtils.println(this._fileCabinetService.getFileCabinetRelativePath(result.file.path), NodeUtils.COLORS.RESULT);
 				});
 			}
-			if (Array.isArray(unsuccessfulUploads) && unsuccessfulUploads.length) {
+			if (unsuccessfulUploads && unsuccessfulUploads.length) {
 				NodeUtils.println(TranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED), NodeUtils.COLORS.WARNING);
 				unsuccessfulUploads.forEach(result => {
-					NodeUtils.println(`${this._getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`, NodeUtils.COLORS.WARNING);
+					NodeUtils.println(
+						`${this._fileCabinetService.getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`,
+						NodeUtils.COLORS.WARNING
+					);
 				});
 			}
 		}

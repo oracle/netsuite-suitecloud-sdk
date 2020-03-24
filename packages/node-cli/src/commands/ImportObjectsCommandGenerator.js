@@ -240,9 +240,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			name: folder.replace(this._projectFolder, ''),
 			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
-		const objectDirectoryChoices = this._fileSystemService
-			.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.OBJECTS))
-			.map(transformFoldersToChoicesFunc);
+		const objectsFolder = join(this._projectFolder, FOLDERS.OBJECTS);
+		const objectsSubFolders = this._fileSystemService.getFoldersFromDirectory(objectsFolder);
+		const objectDirectoryChoices = [objectsFolder, ...objectsSubFolders].map(transformFoldersToChoicesFunc);
 
 		const questionDestinationFolder = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
