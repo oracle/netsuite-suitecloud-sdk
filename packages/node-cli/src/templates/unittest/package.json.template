@@ -1,5 +1,5 @@
 {
-  "name": "{{name}}",
+  "name": "suitecloud-project",
   "version": "{{version}}",
   "scripts": {
     "test": "jest"
