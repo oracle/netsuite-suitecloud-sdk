@@ -5,12 +5,13 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const ActionResult = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL }
 } = require('../services/TranslationKeys');
@@ -34,23 +35,23 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				action: this._sdkExecutor.execute(executionContext),
 				message: TranslationService.getMessage(LOADING_FOLDERS),
 			})
-			.then(operationResult => {
-				resolve(
-					prompt([
-						{
-							type: CommandUtils.INQUIRER_TYPES.LIST,
-							name: this._commandMetadata.options.folder.name,
-							message: TranslationService.getMessage(SELECT_FOLDER),
-							default: SUITE_SCRIPTS_FOLDER,
-							choices: this._getFileCabinetFolders(operationResult),
-						},
-					])
-				);
-			})
-			// TODO : find right mecanism to treat the error
-			.catch( error => {
-				NodeUtils.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
-			})
+				.then(operationResult => {
+					resolve(
+						prompt([
+							{
+								type: CommandUtils.INQUIRER_TYPES.LIST,
+								name: this._commandMetadata.options.folder.name,
+								message: TranslationService.getMessage(SELECT_FOLDER),
+								default: SUITE_SCRIPTS_FOLDER,
+								choices: this._getFileCabinetFolders(operationResult),
+							},
+						])
+					);
+				})
+				// TODO : find right mecanism to treat the error
+				.catch(error => {
+					NodeUtils.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
+				})
 		});
 	}
 
@@ -81,29 +82,33 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(LOADING_FILES),
 			});
 
-			const actionResultContext = {
-				operationResult: operationResult
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+			return operationResult.status === ActionResult.SUCCESS
+				? ActionResult.Builder
+					.withSuccess()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.withError(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build();
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build();
+			return ActionResult.Builder.withError(error).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		const operationResult = actionResult._context.operationResult;
-		const { data } = operationResult;
 
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+		if (ActionResultUtils.hasErrors(actionResult)) {
+			ActionResultUtils.logResultMessage(actionResult);
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		SDKOperationResultUtils.logResultMessage(operationResult);
+		ActionResultUtils.logResultMessage(actionResult);
 
-		if (Array.isArray(data)) {
-			data.forEach(fileName => {
+		if (Array.isArray(actionResult.data)) {
+			actionResult.data.forEach(fileName => {
 				NodeUtils.println(fileName, NodeUtils.COLORS.RESULT)
 			});
 		}

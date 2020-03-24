@@ -6,8 +6,10 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const ActionResult = require('../commands/actionresult/ActionResult');
+const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const CommandUtils = require('../utils/CommandUtils');
@@ -151,37 +153,40 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
-			const actionResultContext = {
-				operationResult: operationResult,
-				SDKParams: SDKParams,
-				isServerValidation: isServerValidation
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+			return operationResult.status == ActionResult.SUCCESS
+				? DeployActionResult.Builder
+					.withSuccess()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.isServerValidation(isServerValidation)
+					.appliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+					.build()
+				: DeployActionResult.Builder
+					.withError(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build();
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build();
+			return DeployActionResult.Builder.withError(error).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		const { operationResult, isServerValidation, SDKParams } = actionResult._context;
-		const { data } = operationResult;
-
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult);
-		} else if (isServerValidation && Array.isArray(data)) {
-			data.forEach(resultLine => {
+		if (ActionResultUtils.hasErrors(actionResult)) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
+		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
+			actionResult.data.forEach(resultLine => {
 				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
 			});
-		} else if (!isServerValidation) {
-			this._showApplyContentProtectionOptionMessage(SDKParams);
-			this._showLocalValidationResultData(data);
+		} else if (!actionResult.isServerValidation) {
+			this._showApplyContentProtectionOptionMessage(actionResult.appliedContentProtection);
+			this._showLocalValidationResultData(actionResult.data);
 		}
-		SDKOperationResultUtils.logResultMessage(operationResult);
+		ActionResultUtils.logResultMessage(actionResult);
 	}
 
-	_showApplyContentProtectionOptionMessage(SDKParams) {
+	_showApplyContentProtectionOptionMessage(isAppliedContentProtection) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			if (SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE) {
+			if (isAppliedContentProtection) {
 				NodeUtils.println(
 					TranslationService.getMessage(
 						MESSAGES.APPLYING_CONTENT_PROTECTION,

@@ -5,6 +5,8 @@
 'use strict';
 
 const ActionResult = require('../commands/actionresult/ActionResult');
+const ActionResultUtils = require('../utils/ActionResultUtils')
+const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
@@ -154,7 +156,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(MESSAGES.DEPLOYING),
 			});
 
-			var isValidate = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
+			var isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
 			var isApplyContentProtection =
 				(this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
 					? true
@@ -165,8 +167,8 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 					.withSuccess()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.withValidate(isValidate)
-					.withAppliedProtection(isApplyProtection)
+					.isServerValidation(isServerValidation)
+					.appliedContentProtection(isApplyContentProtection)
 					.build()
 				: DeployActionResult.Builder
 					.withError(operationResult.errorMessages)
@@ -181,22 +183,22 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 
 		if (actionResult.error) {
 			if (actionResult.resultMessage) {
-				logResultMessage(actionResult);
+				ActionResultUtils.logResultMessage(actionResult);
 			}
-			logErrors(actionResult.error);
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 		} else {
-			this._showApplyContentProtectionOptionMessage(isApplyContentProtection);
-			if (actionResult.isValidate) {
+			this._showApplyContentProtectionOptionMessage(actionResult.appliedContentProtection);
+			if (actionResult.isServerValidation) {
 				NodeUtils.println(
 					TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
 					NodeUtils.COLORS.INFO
 				);
 			}
 			if (actionResult.resultMessage) {
-				logResultMessage(actionResult);
+				ActionResultUtils.logResultMessage(actionResult);
 			}
 			if (Array.isArray(actionResult.data)) {
-				data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
+				actionResult.data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
 			}
 		}
 	}

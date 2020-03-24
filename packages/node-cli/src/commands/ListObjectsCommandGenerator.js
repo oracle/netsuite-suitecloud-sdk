@@ -6,13 +6,14 @@
 
 const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const ActionResult = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const TranslationService = require('../services/TranslationService');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const {
 	validateArrayIsNotEmpty,
@@ -72,7 +73,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			questions.push(questionSpecificSuiteApp);
 
 			const questionAppId = {
-				when: function(response) {
+				when: function (response) {
 					return response.specifysuiteapp;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -102,7 +103,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		questions.push(questionFilterByCustomObjects);
 
 		const questionCustomObjects = {
-			when: function(answers) {
+			when: function (answers) {
 				return !answers.typeall;
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
@@ -141,7 +142,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		questions.push(questionSpecificScriptId);
 
 		const questionScriptId = {
-			when: function(response) {
+			when: function (response) {
 				return response.specifyscriptid;
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -173,30 +174,34 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				message: TranslationService.getMessage(LISTING_OBJECTS),
 			});
 
-			const actionResultContext = {
-				operationResult: operationResult
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+			return operationResult.status === ActionResult.SUCCESS
+				? ActionResult.Builder
+					.withSuccess()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.withError(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build();
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build();
+			return ActionResult.Builder.withError(error).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		const operationResult = actionResult._context.operationResult;
-		const { data } = operationResult;
-		SDKOperationResultUtils.logResultMessage(operationResult);
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult);
+		ActionResultUtils.logResultMessage(actionResult);
+		if (ActionResultUtils.hasErrors(actionResult)) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		if (Array.isArray(data) && data.length) {
+		if (Array.isArray(actionResult.data) && actionResult.data.length) {
 			NodeUtils.println(
 				TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED),
 				NodeUtils.COLORS.RESULT
 			);
-			data.forEach(object =>
+			actionResult.data.forEach(object =>
 				NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT)
 			);
 		} else {

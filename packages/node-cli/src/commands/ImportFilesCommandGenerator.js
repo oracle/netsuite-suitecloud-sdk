@@ -5,11 +5,13 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const ActionResult = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
@@ -194,28 +196,32 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 				message: TranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
-			const actionResultContext = {
-				operationResult: operationResult
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+			return operationResult.status === ActionResult.SUCCESS
+				? ActionResult.Builder
+					.withSuccess()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.withError(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build();
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build;
+			return ActionResult.Builder.withError(error).build;
 		}
 	}
 
 	_formatOutput(actionResult) {
-		const operationResult = actionResult._context.operationResult;
-		const { data } = operationResult;
 
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+		if (ActionResultUtils.hasErrors(actionResult)) {
+			ActionResultUtils.logResultMessage(actionResult);
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		if (Array.isArray(data.results)) {
-			const successful = data.results.filter(result => result.loaded === true);
-			const unsuccessful = data.results.filter(result => result.loaded !== true);
+		if (Array.isArray(actionResult.data.results)) {
+			const successful = actionResult.data.results.filter(result => result.loaded === true);
+			const unsuccessful = actionResult.data.results.filter(result => result.loaded !== true);
 			if (successful.length) {
 				NodeUtils.println(
 					TranslationService.getMessage(OUTPUT.FILES_IMPORTED),

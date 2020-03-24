@@ -84,13 +84,13 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			rreturn operationResult.status === SUCCESS
+			return operationResult.status === ActionResult.SUCCESS
 			? ActionResult.Builder
 				.withSuccess()
 				.withData(operationResult.data)
 				.withResultMessage(operationResult.resultMessage)
 				.build()
-			: new ActionResult.Builder
+			: ActionResult.Builder
 				.withError(operationResult.errorMessages)
 				.withResultMessage(operationResult.resultMessage)
 				.build();
@@ -173,7 +173,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 			if (actionResult.resultMessage) {
 				ActionResultUtils.logResultMessage(actionResult);
 			}
-			ActionResultUtils.logErrors(actionResult.error);
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 

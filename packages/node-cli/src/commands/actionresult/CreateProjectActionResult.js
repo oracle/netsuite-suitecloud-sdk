@@ -21,6 +21,8 @@ class CreateProjectActionResult extends ActionResult {
 		assert(build.status, "status is required when creating an ActionResult object.");
 		if (build.status === ActionResult.SUCCESS) {
 			assert(build.data, "data is required when ActionResult is a success.");
+			assert(build.projectDirectory, "projectDirectory is required when ActionResult is a success.");
+			assert(build.projectType, "projectType is required when ActionResult is a success.");
 		}
 		if (build.status === ActionResult.ERROR) {
 			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");

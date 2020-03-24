@@ -6,31 +6,38 @@
 const assert = require('assert');
 const ActionResult = require('./ActionResult');
 
-class DeployActionResult extends ActionResult {
+class ProxyProjectActionResult extends ActionResult {
 
 	constructor(build) {
 		super(build)
-		this._isServerValidation = build.isServerValidation ? true : false;
-		this._appliedContentProtection = build.appliedContentProtection ? true : false
+		this._isSettingProxy = build.isSettingProxy;
+		this._proxyUrl = build.proxyUrl;
+		this._isProxyOverrided = build.isProxyOverrided;
 	}
 
 	validateBuild(build) {
 		assert(build);
 		assert(build.status, "status is required when creating an ActionResult object.");
 		if (build.status === ActionResult.SUCCESS) {
-			assert(build.data, "data is required when ActionResult is a success.");
+			if (build.isSettingProxy) {
+				assert(build.proxyUrl, "proxyUrl is required when ActionResult is a success.");
+			}
 		}
 		if (build.status === ActionResult.ERROR) {
 			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
 		}
 	}
 
-	get isServerValidation() {
-		return this._isServerValidation;
+	get isSettingProxy() {
+		return this._isSettingProxy;
 	}
 
-	get appliedContentProtection() {
-		return this._appliedContentProtection;
+	get proxyUrl() {
+		return this._proxyUrl;
+	}
+
+	get isProxyOverrided() {
+		return this._isProxyOverrided;
 	}
 
 	static get Builder() {
@@ -48,38 +55,33 @@ class DeployActionResult extends ActionResult {
 				return this;
 			}
 
-			withData(data) {
-				this.data = data;
+
+			isSettingProxy(isSettingProxy) {
+				this.isSettingProxy = isSettingProxy;
 				return this;
 			}
 
-			withResultMessage(resultMessage) {
-				this.resultMessage = resultMessage;
+			withProxyUrl(proxyUrl) {
+				this.proxyUrl = proxyUrl;
 				return this;
 			}
 
-			isServerValidation(isServerValidation) {
-				this.isServerValidation = isServerValidation;
-				return this;
-			}
-
-			appliedContentProtection(appliedContentProtection) {
-				this.appliedContentProtection = appliedContentProtection;
+			isProxyOverrided(isProxyOverrided) {
+				this.isProxyOverrided = isProxyOverrided;
 				return this;
 			}
 
 			build() {
-				return new DeployActionResult({
+				return new ProxyProjectActionResult({
 					status: this.status,
-					...(this.data && { data: this.data }),
-					...(this.resultMessage && { resultMessage: this.resultMessage }),
 					...(this.errorMessages && { errorMessages: this.errorMessages }),
-					...(this.isServerValidation && { isServerValidation: this.isServerValidation }),
-					...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection })
+					...(this.isSettingProxy && { isSettingProxy: this.isSettingProxy }),
+					...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
+					...(this.isProxyOverrided && { proxyOverrided: this.isProxyOverrided })
 				});
 			}
 		};
 	}
 };
 
-module.exports = DeployActionResult;
+module.exports = ProxyProjectActionResult;

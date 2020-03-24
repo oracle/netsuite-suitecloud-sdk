@@ -7,6 +7,8 @@
 const chalk = require('chalk');
 const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const ActionResult = require('../commands/actionresult/ActionResult');
+const SetupActionResult = require('../commands/actionresult/SetupActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
@@ -112,7 +114,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						accountInfo,
 						isDevLabel
 					),
-					value: {authId: authID, accountInfo: authentication.accountInfo},
+					value: { authId: authID, accountInfo: authentication.accountInfo },
 				});
 			});
 			choices.push(new inquirer.Separator());
@@ -281,14 +283,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 			this._authenticationService.setDefaultAuthentication(authId);
 
-			const actionResultContext = {
-				mode: executeActionContext.mode,
-				authId: authId,
-				accountInfo: accountInfo
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+			return SetupActionResult.Builder
+				.withSuccess()
+				.withMode(executeActionContext.mode)
+				.withAuthId(authId)
+				.withAccountInfo(accountInfo)
+				.build();
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build();
+			return SetupActionResult.Builder.withError(error).build();
 		}
 	}
 
@@ -337,30 +339,29 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	_formatOutput(actionResult) {
 		let resultMessage;
-		const actionResultContext = actionResult._context;
-		switch (actionResultContext.mode) {
+		switch (actionResult.mode) {
 			case AUTH_MODE.OAUTH:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.NEW_OAUTH,
-					actionResultContext.accountInfo.companyName,
-					actionResultContext.accountInfo.roleName,
-					actionResultContext.authId
-					);
+					actionResult.accountInfo.companyName,
+					actionResult.accountInfo.roleName,
+					actionResult.authId
+				);
 				break;
 			case AUTH_MODE.SAVE_TOKEN:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.NEW_SAVED_TOKEN,
-					actionResultContext.accountInfo.companyName,
-					actionResultContext.accountInfo.roleName,
-					actionResultContext.authId
+					actionResult.accountInfo.companyName,
+					actionResult.accountInfo.roleName,
+					actionResult.authId
 				);
 				break;
 			case AUTH_MODE.REUSE:
 				resultMessage = TranslationService.getMessage(
 					OUTPUT.REUSED_AUTH_ID,
-					actionResultContext.authId,
-					actionResultContext.accountInfo.companyName,
-					actionResultContext.accountInfo.roleName);
+					actionResult.authId,
+					actionResult.accountInfo.companyName,
+					actionResult.accountInfo.roleName);
 				break;
 			default:
 				break;

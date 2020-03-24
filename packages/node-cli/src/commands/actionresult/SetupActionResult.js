@@ -6,31 +6,38 @@
 const assert = require('assert');
 const ActionResult = require('./ActionResult');
 
-class DeployActionResult extends ActionResult {
+class SetupCommandActionResult extends ActionResult {
 
 	constructor(build) {
 		super(build)
-		this._isServerValidation = build.isServerValidation ? true : false;
-		this._appliedContentProtection = build.appliedContentProtection ? true : false
+		this._mode = build.mode;
+		this._authId = build.authId;
+		this._accountInfo = build.accountInfo;
 	}
 
 	validateBuild(build) {
 		assert(build);
 		assert(build.status, "status is required when creating an ActionResult object.");
 		if (build.status === ActionResult.SUCCESS) {
-			assert(build.data, "data is required when ActionResult is a success.");
+			assert(build.mode, "mode is required when ActionResult is a success.");
+			assert(build.authId, "authId is required when ActionResult is a success.");
+			assert(build.accountInfo, "accountInfo is required when ActionResult is a success.");
 		}
 		if (build.status === ActionResult.ERROR) {
 			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
 		}
 	}
 
-	get isServerValidation() {
-		return this._isServerValidation;
+	get mode() {
+		return this._mode;
 	}
 
-	get appliedContentProtection() {
-		return this._appliedContentProtection;
+	get authId() {
+		return this._authId;
+	}
+
+	get accountInfo() {
+		return this._accountInfo;
 	}
 
 	static get Builder() {
@@ -48,38 +55,32 @@ class DeployActionResult extends ActionResult {
 				return this;
 			}
 
-			withData(data) {
-				this.data = data;
+			withMode(mode) {
+				this.mode = mode;
 				return this;
 			}
 
-			withResultMessage(resultMessage) {
-				this.resultMessage = resultMessage;
+			withAuthId(authId) {
+				this.authId = authId;
 				return this;
 			}
 
-			isServerValidation(isServerValidation) {
-				this.isServerValidation = isServerValidation;
-				return this;
-			}
-
-			appliedContentProtection(appliedContentProtection) {
-				this.appliedContentProtection = appliedContentProtection;
+			withAccountInfo(accountInfo) {
+				this.accountInfo = accountInfo;
 				return this;
 			}
 
 			build() {
-				return new DeployActionResult({
+				return new SetupCommandActionResult({
 					status: this.status,
-					...(this.data && { data: this.data }),
-					...(this.resultMessage && { resultMessage: this.resultMessage }),
 					...(this.errorMessages && { errorMessages: this.errorMessages }),
-					...(this.isServerValidation && { isServerValidation: this.isServerValidation }),
-					...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection })
+					...(this.mode && { mode: this.mode }),
+					...(this.authId && { authId: this.authId }),
+					...(this.accountInfo && { accountInfo: this.accountInfo })
 				});
 			}
 		};
 	}
 };
 
-module.exports = DeployActionResult;
+module.exports = SetupCommandActionResult;

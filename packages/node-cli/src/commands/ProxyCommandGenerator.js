@@ -4,6 +4,7 @@
 */
 'use strict';
 
+const ProxyActionResult = require('../commands/actionresult/ProxyActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TranslationService = require('../services/TranslationService');
 const {
@@ -44,30 +45,29 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 
 
 			const proxyCommandData = await Promise.resolve(proxyCommandAction);
-			const actionResultContext = {
-				isSettingProxy: proxyCommandData.isSettingProxy,
-				proxyUrl: proxyCommandData.proxyUrl,
-				proxyOverrided: proxyCommandData.proxyOverrided
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+			return ProxyActionResult.Builder
+				.withSuccess()
+				.isSettingProxy(proxyCommandData.isSettingProxy)
+				.withProxyUrl(proxyCommandData.proxyUrl)
+				.isProxyOverrided(proxyCommandData.proxyOverrided)
+				.build();
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build();
+			return ProxyActionResult.Builder.withError(error).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		const actionResultContext = actionResult._context;
-		if (actionResultContext.isSettingProxy) {
-			if (actionResultContext.proxyOverrided) {
+		if (actionResult.isSettingProxy) {
+			if (actionResult.proxyOverrided) {
 				NodeUtils.println(
-					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResultContext.proxyUrl),
+					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl),
 					NodeUtils.COLORS.RESULT
 				);
 			} else {
 				NodeUtils.println(
 					TranslationService.getMessage(
 						MESSAGES.SUCCESFULLY_SETUP,
-						actionResultContext.proxyUrl
+						actionResult.proxyUrl
 					),
 					NodeUtils.COLORS.RESULT
 				);

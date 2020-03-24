@@ -6,6 +6,7 @@
 
 const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const ActionResult = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
@@ -15,6 +16,7 @@ const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
 const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ANSWERS_NAMES = {
@@ -338,32 +340,35 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				message: TranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
 			});
 
-			const actionResultContext = {
-				operationResult: operationResult
-			};
-			return new ActionResult.Builder().withSuccess(actionResultContext).build();
+			return operationResult.status === ActionResult.SUCCESS
+			? ActionResult.Builder
+				.withSuccess()
+				.withData(operationResult.data)
+				.withResultMessage(operationResult.resultMessage)
+				.build()
+			: ActionResult.Builder
+				.withError(operationResult.errorMessages)
+				.withResultMessage(operationResult.resultMessage)
+				.build();
 		} catch (error) {
-			return new ActionResult.Builder().withError(error).build();
+			return ActionResult.Builder.withError(error).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		const operationResult = actionResult._context.operationResult;
-		const { data } = operationResult;
-
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+		if (ActionResultUtils.hasErrors(actionResult)) {
+			ActionResultUtils.logResultMessage(actionResult);
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		if (!operationResult.data) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
+		if (!actionResult.data) {
+			ActionResultUtils.logResultMessage(actionResult);
 			return;
 		}
 
-		this._logImportedObjects(data.successfulImports);
-		this._logUnImportedObjects(data.failedImports);
+		this._logImportedObjects(actionResult.data.successfulImports);
+		this._logUnImportedObjects(actionResult.data.failedImports);
 	}
 
 	_logImportedObjects(importedObjects) {
