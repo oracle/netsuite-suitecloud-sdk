@@ -329,7 +329,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const executionContextForImportObjects = new SDKExecutionContext({
-			command: this._commandMetadata.name,
+			command: this._commandMetadata.sdkCommand,
 			params,
 			flags,
 			includeProjectDefaultAuthId: true,
