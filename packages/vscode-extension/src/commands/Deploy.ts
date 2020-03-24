@@ -1,8 +1,8 @@
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
-import { unwrapExceptionMessage } from '../util/ExtensionUtil';
-import BaseAction from './BaseAction';
 import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
+import { actionResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
+import BaseAction from './BaseAction';
 
 
 export default class Deploy extends BaseAction {
@@ -20,7 +20,7 @@ export default class Deploy extends BaseAction {
                     commandName: this.commandName,
                     arguments: {}
                 });
-                if (result.status === "SUCCESS") {
+                if (result.status === actionResultStatus.SUCCESS) {
                     this.vsCommandOutputHandler.showSuccessResult(result.operationResult);
                     opts.messageService.showCompletedActionInfo();
                 }

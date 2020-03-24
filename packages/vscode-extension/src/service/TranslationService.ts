@@ -2,8 +2,9 @@
 ** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
-const ApplicationConstants = require('../../../node-cli/src/ApplicationConstants');
-const FileUtils = require('../../../node-cli/src/utils/FileUtils');
+// const ApplicationConstants = require('../../../node-cli/src/ApplicationConstants');
+const ApplicationConstants = require('@oracle/suitecloud-cli/src/ApplicationConstants');
+const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
 const path = require('path');
 let MESSAGES: { [x: string]: any; };
 
