@@ -46,13 +46,13 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 
 			const proxyCommandData = await Promise.resolve(proxyCommandAction);
 			return ProxyActionResult.Builder
-				.withSuccess()
+				.success()
 				.isSettingProxy(proxyCommandData.isSettingProxy)
 				.withProxyUrl(proxyCommandData.proxyUrl)
 				.isProxyOverrided(proxyCommandData.proxyOverrided)
 				.build();
 		} catch (error) {
-			return ProxyActionResult.Builder.withError(error).build();
+			return ProxyActionResult.Builder.error(error).build();
 		}
 	}
 

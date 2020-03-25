@@ -4,13 +4,14 @@
 */
 'use strict';
 
-const ActionResult = require('../commands/actionresult/ActionResult');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
 
 const {
@@ -84,18 +85,18 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return operationResult.status === ActionResult.SUCCESS
-			? ActionResult.Builder
-				.withSuccess()
-				.withData(operationResult.data)
-				.withResultMessage(operationResult.resultMessage)
-				.build()
-			: ActionResult.Builder
-				.withError(operationResult.errorMessages)
-				.withResultMessage(operationResult.resultMessage)
-				.build();
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
+				? ActionResult.Builder
+					.success()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.error(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build();
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build();
+			return ActionResult.Builder.error(error).build();
 		}
 	}
 

@@ -13,7 +13,7 @@ const {
 const { throwValidationException } = require('../utils/ExceptionUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
-const ActionResult = require('../commands/actionresult/ActionResult');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -88,26 +88,14 @@ module.exports = class CommandActionExecutor {
 			}
 
 			if (actionResult.status === ActionResult.ERROR) {
-				if (actionResult.errorMessages && Array.isArray(actionResult.errorMessages) && actionResult.size > 0) {
-					throw actionResult.errorMessages;
-				}
-				else if (actionResult.resultMessage) {
-					throw actionResult.resultMessage;
-				}
-				else {
-					throw 'Unexpected Error' //TODO Code Review and Change message
-				}
+				throw ActionResultUtils.getErrorMessagesString(actionResult);
 			}
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
 
-			if (actionResult.status === ActionResult.SUCCESS && commandUserExtension.onCompleted) {
+			if (commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
-			} else if (actionResult.status === ActionResult.ERROR && commandUserExtension.onError) {
-				const error = ActionResultUtils.getResultMessage(actionResult)
-					+ NodeUtils.lineBreak
-					+ ActionResultUtils.getErrorMessagesString(actionResult);
-				commandUserExtension.onError(error);
+
 			}
 			return actionResult;
 		} catch (error) {

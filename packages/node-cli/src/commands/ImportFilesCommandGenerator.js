@@ -5,7 +5,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const ActionResult = require('../commands/actionresult/ActionResult');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
@@ -196,18 +196,18 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 				message: TranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
-			return operationResult.status === ActionResult.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder
-					.withSuccess()
+					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 				: ActionResult.Builder
-					.withError(operationResult.errorMessages)
+					.error(operationResult.errorMessages)
 					.withResultMessage(operationResult.resultMessage)
 					.build();
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build;
+			return ActionResult.Builder.error(error).build;
 		}
 	}
 

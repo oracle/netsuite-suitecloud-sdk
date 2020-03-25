@@ -4,8 +4,8 @@
  */
 'use strict';
 
-const ActionResult = require('../commands/actionresult/ActionResult');
 const ActionResultUtils = require('../utils/ActionResultUtils')
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
@@ -162,20 +162,20 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 					? true
 					: false;
 
-			return operationResult.status == ActionResult.SUCCESS
+			return operationResult.status == SDKOperationResultUtils.SUCCESS
 				? DeployActionResult.Builder
-					.withSuccess()
+					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.isServerValidation(isServerValidation)
 					.appliedContentProtection(isApplyContentProtection)
 					.build()
 				: DeployActionResult.Builder
-					.withError(operationResult.errorMessages)
+					.error(operationResult.errorMessages)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 		} catch (error) {
-			return DeployActionResult.Builder.withError(error).build();
+			return DeployActionResult.Builder.error(error).build();
 		}
 	}
 

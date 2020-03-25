@@ -4,9 +4,9 @@
 */
 'use strict';
 const assert = require('assert');
-const ActionResult = require('./ActionResult');
+const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
-class ProxyProjectActionResult extends ActionResult {
+class ProxyActionResult extends ActionResult {
 
 	constructor(build) {
 		super(build)
@@ -41,47 +41,37 @@ class ProxyProjectActionResult extends ActionResult {
 	}
 
 	static get Builder() {
-		return new class Builder {
-			constructor() { }
-
-			withSuccess() {
-				this.status = ActionResult.SUCCESS;
-				return this;
-			}
-
-			withError(errorMessages) {
-				this.status = ActionResult.ERROR;
-				this.errorMessages = errorMessages;
-				return this;
-			}
-
-
-			isSettingProxy(isSettingProxy) {
-				this.isSettingProxy = isSettingProxy;
-				return this;
-			}
-
-			withProxyUrl(proxyUrl) {
-				this.proxyUrl = proxyUrl;
-				return this;
-			}
-
-			isProxyOverrided(isProxyOverrided) {
-				this.isProxyOverrided = isProxyOverrided;
-				return this;
-			}
-
-			build() {
-				return new ProxyProjectActionResult({
-					status: this.status,
-					...(this.errorMessages && { errorMessages: this.errorMessages }),
-					...(this.isSettingProxy && { isSettingProxy: this.isSettingProxy }),
-					...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
-					...(this.isProxyOverrided && { proxyOverrided: this.isProxyOverrided })
-				});
-			}
-		};
+		return new ProxyActionResultBuilder();
 	}
 };
 
-module.exports = ProxyProjectActionResult;
+
+class ProxyActionResultBuilder extends ActionResultBuilder {
+	constructor() {
+		super();
+	}
+
+	isSettingProxy(isSettingProxy) {
+		this.isSettingProxy = isSettingProxy;
+		return this;
+	}
+	withProxyUrl(proxyUrl) {
+		this.proxyUrl = proxyUrl;
+		return this;
+	}
+	isProxyOverrided(isProxyOverrided) {
+		this.isProxyOverrided = isProxyOverrided;
+		return this;
+	}
+	build() {
+		return new ProxyActionResult({
+			status: this.status,
+			...(this.errorMessages && { errorMessages: this.errorMessages }),
+			...(this.isSettingProxy && { isSettingProxy: this.isSettingProxy }),
+			...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
+			...(this.isProxyOverrided && { proxyOverrided: this.isProxyOverrided })
+		});
+	}
+};
+
+module.exports = ProxyActionResult;

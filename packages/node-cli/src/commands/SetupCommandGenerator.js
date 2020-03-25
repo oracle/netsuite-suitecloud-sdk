@@ -7,7 +7,6 @@
 const chalk = require('chalk');
 const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const ActionResult = require('../commands/actionresult/ActionResult');
 const SetupActionResult = require('../commands/actionresult/SetupActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
@@ -284,13 +283,13 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			this._authenticationService.setDefaultAuthentication(authId);
 
 			return SetupActionResult.Builder
-				.withSuccess()
+				.success()
 				.withMode(executeActionContext.mode)
 				.withAuthId(authId)
 				.withAccountInfo(accountInfo)
 				.build();
 		} catch (error) {
-			return SetupActionResult.Builder.withError(error).build();
+			return SetupActionResult.Builder.error(error).build();
 		}
 	}
 
