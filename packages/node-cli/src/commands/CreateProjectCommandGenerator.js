@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const CreateProjectActionResult = require('../commands/actionresult/CreateProjectActionResult');
+const ProjectActionResult = require('./actionresult/ProjectActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
@@ -265,7 +265,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 
 			return actionCreateProjectData.operationResult.status === SDKOperationResultUtils.SUCCESS
-				? CreateProjectActionResult.Builder
+				? ProjectActionResult.Builder
 					.success()
 					.withData(actionCreateProjectData.operationResult.data)
 					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
@@ -275,13 +275,13 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					.withUnitTesting(includeUnitTesting)
 					.withSuccessfullNpmInstalled(actionCreateProjectData.operationResult)
 					.build()
-				: CreateProjectActionResult.Builder
+				: ProjectActionResult.Builder
 					.error(actionCreateProjectData.operationResult.errorMessages)
 					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
 					.build();
 
 		} catch (error) {
-			return CreateProjectActionResult.Builder.error(error).build();
+			return ProjectActionResult.Builder.error(error).build();
 		}
 	}
 

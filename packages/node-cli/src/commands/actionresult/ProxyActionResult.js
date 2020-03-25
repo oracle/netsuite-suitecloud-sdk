@@ -7,7 +7,7 @@ const assert = require('assert');
 const ActionResult = require('./ActionResult');
 const { ActionResultBuilder } = require('./ActionResult');
 
-class ProxyProjectActionResult extends ActionResult {
+class ProxyActionResult extends ActionResult {
 
 	constructor(build) {
 		super(build)
@@ -42,12 +42,12 @@ class ProxyProjectActionResult extends ActionResult {
 	}
 
 	static get Builder() {
-		return new ProxyProjectActionResultBuilder();
+		return new ProxyActionResultBuilder();
 	}
 };
 
 
-class ProxyProjectActionResultBuilder extends ActionResultBuilder {
+class ProxyActionResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
 	}
@@ -65,7 +65,7 @@ class ProxyProjectActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 	build() {
-		return new ProxyProjectActionResult({
+		return new ProxyActionResult({
 			status: this.status,
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.isSettingProxy && { isSettingProxy: this.isSettingProxy }),
@@ -75,4 +75,4 @@ class ProxyProjectActionResultBuilder extends ActionResultBuilder {
 	}
 };
 
-module.exports = ProxyProjectActionResult;
+module.exports = ProxyActionResult;
