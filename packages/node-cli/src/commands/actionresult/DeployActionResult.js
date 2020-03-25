@@ -14,17 +14,6 @@ class DeployActionResult extends ActionResult {
 		this._appliedContentProtection = build.appliedContentProtection ? true : false
 	}
 
-	validateBuild(build) {
-		assert(build);
-		assert(build.status, "status is required when creating an ActionResult object.");
-		if (build.status === ActionResult.SUCCESS) {
-			assert(build.data, "data is required when ActionResult is a success.");
-		}
-		if (build.status === ActionResult.ERROR) {
-			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
-		}
-	}
-
 	get isServerValidation() {
 		return this._isServerValidation;
 	}
