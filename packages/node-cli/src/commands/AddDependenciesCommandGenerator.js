@@ -4,7 +4,7 @@
 */
 'use strict';
 
-const ActionResult = require('../commands/actionresult/ActionResult');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
@@ -86,15 +86,15 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-			? ActionResult.Builder
-				.success()
-				.withData(operationResult.data)
-				.withResultMessage(operationResult.resultMessage)
-				.build()
-			: ActionResult.Builder
-				.error(operationResult.errorMessages)
-				.withResultMessage(operationResult.resultMessage)
-				.build();
+				? ActionResult.Builder
+					.success()
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.error(operationResult.errorMessages)
+					.withResultMessage(operationResult.resultMessage)
+					.build();
 		} catch (error) {
 			return ActionResult.Builder.error(error).build();
 		}

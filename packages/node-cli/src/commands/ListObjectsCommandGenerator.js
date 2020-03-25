@@ -6,7 +6,7 @@
 
 const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const ActionResult = require('../commands/actionresult/ActionResult');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');

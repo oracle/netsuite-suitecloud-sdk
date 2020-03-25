@@ -3,8 +3,7 @@
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
-const ActionResult = require('./ActionResult');
-const { ActionResultBuilder } = require('./ActionResult');
+const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class DeployActionResult extends ActionResult {
 
@@ -28,7 +27,7 @@ class DeployActionResult extends ActionResult {
 };
 
 class DeployActioneResultBuilder extends ActionResultBuilder {
-	constructor() { 
+	constructor() {
 		super();
 	}
 	isServerValidation(isServerValidation) {

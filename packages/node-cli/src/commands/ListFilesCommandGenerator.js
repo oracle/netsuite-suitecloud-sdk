@@ -5,7 +5,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const ActionResult = require('../commands/actionresult/ActionResult');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');

@@ -4,8 +4,7 @@
 */
 'use strict';
 const assert = require('assert');
-const ActionResult = require('./ActionResult');
-const { ActionResultBuilder } = require('./ActionResult');
+const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class SetupCommandActionResult extends ActionResult {
 
@@ -49,7 +48,7 @@ class SetupCommandActionResult extends ActionResult {
 class SetupActionResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
-	 }
+	}
 
 	withMode(mode) {
 		this.mode = mode;

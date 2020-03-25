@@ -7,7 +7,6 @@
 const chalk = require('chalk');
 const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const ActionResult = require('../commands/actionresult/ActionResult');
 const SetupActionResult = require('../commands/actionresult/SetupActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');

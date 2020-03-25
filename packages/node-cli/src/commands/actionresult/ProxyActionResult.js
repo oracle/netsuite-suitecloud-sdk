@@ -4,8 +4,7 @@
 */
 'use strict';
 const assert = require('assert');
-const ActionResult = require('./ActionResult');
-const { ActionResultBuilder } = require('./ActionResult');
+const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class ProxyActionResult extends ActionResult {
 

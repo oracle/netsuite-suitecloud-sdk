@@ -96,5 +96,5 @@ class ActionResultBuilder {
 	}
 }
 
-module.exports = ActionResult;
+module.exports.ActionResult = ActionResult;
 module.exports.ActionResultBuilder = ActionResultBuilder;
