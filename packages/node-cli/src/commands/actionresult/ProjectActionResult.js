@@ -6,7 +6,7 @@
 const assert = require('assert');
 const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
-class ProjectActionResult extends ActionResult {
+class CreateProjectActionResult extends ActionResult {
 
 	constructor(build) {
 		super(build)
@@ -46,11 +46,11 @@ class ProjectActionResult extends ActionResult {
 	}
 
 	static get Builder() {
-		return new ProjectActionResultBuilder();
+		return new CreateProjectActionResultBuilder();
 	}
 };
 
-class ProjectActionResultBuilder extends ActionResultBuilder {
+class CreateProjectActionResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
 	}
@@ -81,7 +81,7 @@ class ProjectActionResultBuilder extends ActionResultBuilder {
 	}
 
 	build() {
-		return new ProjectActionResult({
+		return new CreateProjectActionResult({
 			status: this.status,
 			...(this.data && { data: this.data }),
 			...(this.resultMessage && { resultMessage: this.resultMessage }),
@@ -95,4 +95,4 @@ class ProjectActionResultBuilder extends ActionResultBuilder {
 	}
 };
 
-module.exports = ProjectActionResult;
+module.exports = CreateProjectActionResult;

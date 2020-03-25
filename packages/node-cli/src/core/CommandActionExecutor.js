@@ -93,13 +93,9 @@ module.exports = class CommandActionExecutor {
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
 
-			if (actionResult.status === ActionResult.SUCCESS && commandUserExtension.onCompleted) {
+			if (commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
-			} else if (actionResult.status === ActionResult.ERROR && commandUserExtension.onError) {
-				const error = ActionResultUtils.getResultMessage(actionResult)
-					+ NodeUtils.lineBreak
-					+ ActionResultUtils.getErrorMessagesString(actionResult);
-				commandUserExtension.onError(error);
+
 			}
 			return actionResult;
 		} catch (error) {
