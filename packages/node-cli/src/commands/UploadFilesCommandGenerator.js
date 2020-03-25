@@ -44,8 +44,8 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
-		this.localFileCabinetFolder = path.join(this._projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
-		this._fileCabinetService = new FileCabinetService(this.localFileCabinetFolder);
+		this._localFileCabinetFolder = path.join(this._projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
+		this._fileCabinetService = new FileCabinetService(this._localFileCabinetFolder);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -64,13 +64,13 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_generateSelectFolderQuestion() {
-		const localFileCabinetSubFolders = this._fileCabinetService.getFileCabinetFoldersRecursively(this.localFileCabinetFolder);
+		const localFileCabinetSubFolders = this._fileCabinetService.getFileCabinetFoldersRecursively(this._localFileCabinetFolder);
 
 		const transformFoldersToChoicesFunc = folder => {
 			const name = this._fileCabinetService.getFileCabinetRelativePath(folder);
 
 			let disabledMessage = '';
-			if (!this._fileCabinetService.pathIsUnrestricted(name)) {
+			if (!this._fileCabinetService.isUnrestrictedPath(name)) {
 				disabledMessage = TranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER);
 			} else if (!this._fileSystemService.getFilesFromDirectory(folder).length) {
 				disabledMessage = TranslationService.getMessage(MESSAGES.EMPTY_FOLDER);

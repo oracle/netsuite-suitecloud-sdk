@@ -18,11 +18,11 @@ const UNRESTRICTED_PATHS = [SUITESCRIPTS_PATH, TEMPLATES_EMAIL_TEMPLATES_PATH, T
 module.exports = class FileCabinetService {
 	constructor(fileCabinetAbsolutePath) {
 		this._fileSystemService = new FileSystemService();
-		this.fileCabinetAbsolutePath = fileCabinetAbsolutePath;
+		this._fileCabinetAbsolutePath = fileCabinetAbsolutePath;
 	}
 
 	getFileCabinetRelativePath(file) {
-		return file.replace(this.fileCabinetAbsolutePath, '').replace(/\\/g, '/');
+		return file.replace(this._fileCabinetAbsolutePath, '').replace(/\\/g, '/');
 	}
 
 	getFileCabinetFoldersRecursively(parentFolder) {
@@ -39,16 +39,16 @@ module.exports = class FileCabinetService {
 		return folders;
 	}
 
-	pathIsUnrestricted(path) {
+	isUnrestrictedPath(path) {
 		return UNRESTRICTED_PATHS.some(unrestrictedPath => path.startsWith(unrestrictedPath));
 	}
 
 	_shouldEnterFolder(folder) {
-		//Templates itself is a restricted, but it has both restricted and unrestricted child folders, so we still need to get inside it.
-		return this._isTemplatesFolder(folder) || (this._fileSystemService.getFilesFromDirectory(folder).length && this.pathIsUnrestricted(folder));
+		//Templates itself is restricted, but it has both restricted and unrestricted child folders, so we still need to get inside it.
+		return this._isTemplatesFolder(folder) || (this._fileSystemService.getFilesFromDirectory(folder).length && this.isUnrestrictedPath(folder));
 	}
 
 	_isTemplatesFolder(folder) {
-		return folder === path.join(this.fileCabinetAbsolutePath, TEMPLATES_PATH);
+		return folder === path.join(this._fileCabinetAbsolutePath, TEMPLATES_PATH);
 	}
 };

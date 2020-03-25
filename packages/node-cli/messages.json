@@ -158,9 +158,9 @@
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
-	"COMMAND_UPLOADFILES_QUESTIONS_OVERWRITE_FILES": "Files in the File Cabinet will be overwritten. Do you want to continue?",
+	"COMMAND_UPLOADFILES_QUESTIONS_OVERWRITE_FILES": "The selected files will be overwritten in the File Cabinet. Do you want to continue?",
 	"COMMAND_UPLOADFILES_QUESTIONS_SELECT_FILES": "Select the files you want to upload to the File Cabinet.",
-	"COMMAND_UPLOADFILES_QUESTIONS_SELECT_FOLDER": "Select the folder from where you want to upload files.",
+	"COMMAND_UPLOADFILES_QUESTIONS_SELECT_FOLDER": "Select folder from where you want to upload files to the File Cabinet.",
 	"COMMAND_UPLOADFILES_MESSAGES_CANCEL_UPLOAD": "The file upload process has been canceled. No files have been overwritten.",
 	"COMMAND_UPLOADFILES_MESSAGES_EMPTY_FOLDER": "No Files",
 	"COMMAND_UPLOADFILES_MESSAGES_NOTHING_TO_UPLOAD": "All folders are either restricted or have no files.",
