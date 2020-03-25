@@ -11,6 +11,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
 
 const {
@@ -84,18 +85,18 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return operationResult.status === ActionResult.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
 			? ActionResult.Builder
-				.withSuccess()
+				.success()
 				.withData(operationResult.data)
 				.withResultMessage(operationResult.resultMessage)
 				.build()
 			: ActionResult.Builder
-				.withError(operationResult.errorMessages)
+				.error(operationResult.errorMessages)
 				.withResultMessage(operationResult.resultMessage)
 				.build();
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build();
+			return ActionResult.Builder.error(error).build();
 		}
 	}
 

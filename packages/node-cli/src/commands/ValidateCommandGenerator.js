@@ -6,10 +6,10 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const ActionResult = require('../commands/actionresult/ActionResult');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
 const CommandUtils = require('../utils/CommandUtils');
@@ -153,20 +153,20 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
-			return operationResult.status == ActionResult.SUCCESS
+			return operationResult.status == SDKOperationResultUtils.SUCCESS
 				? DeployActionResult.Builder
-					.withSuccess()
+					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.isServerValidation(isServerValidation)
 					.appliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
 					.build()
 				: DeployActionResult.Builder
-					.withError(operationResult.errorMessages)
+					.error(operationResult.errorMessages)
 					.withResultMessage(operationResult.resultMessage)
 					.build();
 		} catch (error) {
-			return DeployActionResult.Builder.withError(error).build();
+			return DeployActionResult.Builder.error(error).build();
 		}
 	}
 

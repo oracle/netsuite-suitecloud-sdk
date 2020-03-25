@@ -5,6 +5,7 @@
 'use strict';
 const assert = require('assert');
 const ActionResult = require('./ActionResult');
+const { ActionResultBuilder } = require('./ActionResult');
 
 class SetupCommandActionResult extends ActionResult {
 
@@ -41,45 +42,38 @@ class SetupCommandActionResult extends ActionResult {
 	}
 
 	static get Builder() {
-		return new class Builder {
-			constructor() { }
+		return new SetupActionResultBuilder();
+	}
+};
 
-			withSuccess() {
-				this.status = ActionResult.SUCCESS;
-				return this;
-			}
+class SetupActionResultBuilder extends ActionResultBuilder {
+	constructor() {
+		super();
+	 }
 
-			withError(errorMessages) {
-				this.status = ActionResult.ERROR;
-				this.errorMessages = errorMessages;
-				return this;
-			}
+	withMode(mode) {
+		this.mode = mode;
+		return this;
+	}
 
-			withMode(mode) {
-				this.mode = mode;
-				return this;
-			}
+	withAuthId(authId) {
+		this.authId = authId;
+		return this;
+	}
 
-			withAuthId(authId) {
-				this.authId = authId;
-				return this;
-			}
+	withAccountInfo(accountInfo) {
+		this.accountInfo = accountInfo;
+		return this;
+	}
 
-			withAccountInfo(accountInfo) {
-				this.accountInfo = accountInfo;
-				return this;
-			}
-
-			build() {
-				return new SetupCommandActionResult({
-					status: this.status,
-					...(this.errorMessages && { errorMessages: this.errorMessages }),
-					...(this.mode && { mode: this.mode }),
-					...(this.authId && { authId: this.authId }),
-					...(this.accountInfo && { accountInfo: this.accountInfo })
-				});
-			}
-		};
+	build() {
+		return new SetupCommandActionResult({
+			status: this.status,
+			...(this.errorMessages && { errorMessages: this.errorMessages }),
+			...(this.mode && { mode: this.mode }),
+			...(this.authId && { authId: this.authId }),
+			...(this.accountInfo && { accountInfo: this.accountInfo })
+		});
 	}
 };
 

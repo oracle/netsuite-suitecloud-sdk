@@ -14,6 +14,7 @@ const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const TranslationService = require('../services/TranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const {
 	validateArrayIsNotEmpty,
@@ -174,18 +175,18 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				message: TranslationService.getMessage(LISTING_OBJECTS),
 			});
 
-			return operationResult.status === ActionResult.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder
-					.withSuccess()
+					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 				: ActionResult.Builder
-					.withError(operationResult.errorMessages)
+					.error(operationResult.errorMessages)
 					.withResultMessage(operationResult.resultMessage)
 					.build();
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build();
+			return ActionResult.Builder.error(error).build();
 		}
 	}
 

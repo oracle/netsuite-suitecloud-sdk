@@ -47,40 +47,7 @@ class ActionResult {
 	}
 
 	static get Builder() {
-		return new class Builder {
-			constructor() { }
-
-			withSuccess() {
-				this.status = SUCCESS;
-				return this;
-			}
-
-			withResultMessage(resultMessage) {
-				this.resultMessage = resultMessage;
-				return this;
-			}
-
-			withData(data) {
-				this.data = data;
-				return this;
-			}
-
-			withError(errorMessages) {
-				this.status = ERROR;
-				this.errorMessages = errorMessages;
-				return this;
-			}
-
-
-			build() {
-				return new ActionResult({
-					status: this.status,
-					...(this.data && { data: this.data }),
-					...(this.resultMessage && { resultMessage: this.resultMessage }),
-					...(this.errorMessages && { errorMessages: this.errorMessages }),
-				});
-			}
-		};
+		return new ActionResultBuilder();
 	}
 
 	static get SUCCESS() {
@@ -92,4 +59,42 @@ class ActionResult {
 	}
 };
 
+
+class ActionResultBuilder {
+	constructor() { }
+
+
+	success() {
+		this.status = SUCCESS;
+		return this;
+	}
+
+	withResultMessage(resultMessage) {
+		this.resultMessage = resultMessage;
+		return this;
+	}
+
+	withData(data) {
+		this.data = data;
+		return this;
+	}
+
+	error(errorMessages) {
+		this.status = ERROR;
+		this.errorMessages = errorMessages;
+		return this;
+	}
+
+
+	build() {
+		return new ActionResult({
+			status: this.status,
+			...(this.data && { data: this.data }),
+			...(this.resultMessage && { resultMessage: this.resultMessage }),
+			...(this.errorMessages && { errorMessages: this.errorMessages }),
+		});
+	}
+}
+
 module.exports = ActionResult;
+module.exports.ActionResultBuilder = ActionResultBuilder;

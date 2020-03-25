@@ -284,13 +284,13 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			this._authenticationService.setDefaultAuthentication(authId);
 
 			return SetupActionResult.Builder
-				.withSuccess()
+				.success()
 				.withMode(executeActionContext.mode)
 				.withAuthId(authId)
 				.withAccountInfo(accountInfo)
 				.build();
 		} catch (error) {
-			return SetupActionResult.Builder.withError(error).build();
+			return SetupActionResult.Builder.error(error).build();
 		}
 	}
 

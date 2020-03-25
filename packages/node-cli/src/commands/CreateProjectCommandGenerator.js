@@ -4,8 +4,6 @@
  */
 'use strict';
 
-// const CreateProjectActionResult = require('../commands/actionresult/CreateProjectActionResult');
-const ActionResult = require('../commands/actionresult/ActionResult');
 const CreateProjectActionResult = require('../commands/actionresult/CreateProjectActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TemplateKeys = require('../templates/TemplateKeys');
@@ -262,26 +260,28 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			const actionCreateProjectData = await actionCreateProject;
 
 			var projectType = answers[COMMAND_OPTIONS.TYPE];
+			var projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
 			var includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
 
-			return actionCreateProjectData.operationResult.status === ActionResult.SUCCESS
+			return actionCreateProjectData.operationResult.status === SDKOperationResultUtils.SUCCESS
 				? CreateProjectActionResult.Builder
-					.withSuccess()
+					.success()
 					.withData(actionCreateProjectData.operationResult.data)
 					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
 					.withProjectType(projectType)
+					.withProjectName(projectName)
 					.fromDirectory(actionCreateProjectData.projectDirectory)
 					.withUnitTesting(includeUnitTesting)
 					.withSuccessfullNpmInstalled(actionCreateProjectData.operationResult)
 					.build()
 				: CreateProjectActionResult.Builder
-					.withError(actionCreateProjectData.operationResult.errorMessages)
+					.error(actionCreateProjectData.operationResult.errorMessages)
 					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
 					.build();
 
 		} catch (error) {
-			return CreateProjectActionResult.Builder.withError(error).build();
+			return CreateProjectActionResult.Builder.error(error).build();
 		}
 	}
 
@@ -326,8 +326,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 					NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeUtils.COLORS.INFO);
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
-				}
-				else {
+				} else {
 					await this._fileSystemService.createFileFromTemplate({
 						template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
 						destinationFolder: projectAbsolutePath,
@@ -437,7 +436,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			return;
 		}
 		ActionResultUtils.logResultMessage(actionResult);
-		
+
 		const projectCreatedMessage = TranslationService.getMessage(MESSAGES.PROJECT_CREATED, actionResult.projectName);
 		NodeUtils.println(projectCreatedMessage, NodeUtils.COLORS.RESULT);
 

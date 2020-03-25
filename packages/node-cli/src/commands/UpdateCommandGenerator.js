@@ -14,6 +14,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
@@ -152,18 +153,18 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 			});
 
-			return operationResult.status === ActionResult.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder
-					.withSuccess()
+					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 				: ActionResult.Builder
-					.withError(operationResult.errorMessages)
+					.error(operationResult.errorMessages)
 					.withResultMessage(operationResult.resultMessage)
 					.build();
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build();
+			return ActionResult.Builder.error(error).build();
 		}
 	}
 

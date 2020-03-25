@@ -340,18 +340,18 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				message: TranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
 			});
 
-			return operationResult.status === ActionResult.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
 			? ActionResult.Builder
-				.withSuccess()
+				.success()
 				.withData(operationResult.data)
 				.withResultMessage(operationResult.resultMessage)
 				.build()
 			: ActionResult.Builder
-				.withError(operationResult.errorMessages)
+				.error(operationResult.errorMessages)
 				.withResultMessage(operationResult.resultMessage)
 				.build();
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build();
+			return ActionResult.Builder.error(error).build();
 		}
 	}
 

@@ -88,15 +88,7 @@ module.exports = class CommandActionExecutor {
 			}
 
 			if (actionResult.status === ActionResult.ERROR) {
-				if (actionResult.errorMessages && Array.isArray(actionResult.errorMessages) && actionResult.size > 0) {
-					throw actionResult.errorMessages;
-				}
-				else if (actionResult.resultMessage) {
-					throw actionResult.resultMessage;
-				}
-				else {
-					throw 'Unexpected Error' //TODO Code Review and Change message
-				}
+				throw ActionResultUtils.getErrorMessagesString(actionResult);
 			}
 
 			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);

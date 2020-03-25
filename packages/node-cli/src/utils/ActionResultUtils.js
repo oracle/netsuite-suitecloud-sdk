@@ -9,12 +9,12 @@ const { ERROR } = require('../commands/actionresult/ActionResult');
 
 module.exports = {
 	getErrorMessagesString: actionResult => {
-		const { error, resultMessage } = actionResult;
-		if (Array.isArray(error) && error.length > 0) {
+		const { errorMessages, resultMessage } = actionResult;
+		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
 			if (resultMessage) {
-				error.unshift(resultMessage);
+				errorMessages.unshift(resultMessage);
 			}
-			return error.join(NodeUtils.lineBreak);
+			return errorMessages.join(NodeUtils.lineBreak);
 		}
 		return resultMessage;
 	},
@@ -34,8 +34,7 @@ module.exports = {
 		if (actionResult.resultMessage) {
 			if (actionResult.status === ERROR) {
 				NodeUtils.println(actionResult.resultMessage, NodeUtils.COLORS.ERROR);
-			}
-			else {
+			} else {
 				NodeUtils.println(actionResult.resultMessage, NodeUtils.COLORS.RESULT);
 			}
 		}

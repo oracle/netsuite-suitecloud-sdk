@@ -5,6 +5,7 @@
 'use strict';
 const assert = require('assert');
 const ActionResult = require('./ActionResult');
+const { ActionResultBuilder } = require('./ActionResult');
 
 class ProxyProjectActionResult extends ActionResult {
 
@@ -41,46 +42,36 @@ class ProxyProjectActionResult extends ActionResult {
 	}
 
 	static get Builder() {
-		return new class Builder {
-			constructor() { }
-
-			withSuccess() {
-				this.status = ActionResult.SUCCESS;
-				return this;
-			}
-
-			withError(errorMessages) {
-				this.status = ActionResult.ERROR;
-				this.errorMessages = errorMessages;
-				return this;
-			}
+		return new ProxyProjectActionResultBuilder();
+	}
+};
 
 
-			isSettingProxy(isSettingProxy) {
-				this.isSettingProxy = isSettingProxy;
-				return this;
-			}
+class ProxyProjectActionResultBuilder extends ActionResultBuilder {
+	constructor() {
+		super();
+	}
 
-			withProxyUrl(proxyUrl) {
-				this.proxyUrl = proxyUrl;
-				return this;
-			}
-
-			isProxyOverrided(isProxyOverrided) {
-				this.isProxyOverrided = isProxyOverrided;
-				return this;
-			}
-
-			build() {
-				return new ProxyProjectActionResult({
-					status: this.status,
-					...(this.errorMessages && { errorMessages: this.errorMessages }),
-					...(this.isSettingProxy && { isSettingProxy: this.isSettingProxy }),
-					...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
-					...(this.isProxyOverrided && { proxyOverrided: this.isProxyOverrided })
-				});
-			}
-		};
+	isSettingProxy(isSettingProxy) {
+		this.isSettingProxy = isSettingProxy;
+		return this;
+	}
+	withProxyUrl(proxyUrl) {
+		this.proxyUrl = proxyUrl;
+		return this;
+	}
+	isProxyOverrided(isProxyOverrided) {
+		this.isProxyOverrided = isProxyOverrided;
+		return this;
+	}
+	build() {
+		return new ProxyProjectActionResult({
+			status: this.status,
+			...(this.errorMessages && { errorMessages: this.errorMessages }),
+			...(this.isSettingProxy && { isSettingProxy: this.isSettingProxy }),
+			...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
+			...(this.isProxyOverrided && { proxyOverrided: this.isProxyOverrided })
+		});
 	}
 };
 

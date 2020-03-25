@@ -12,6 +12,7 @@ const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL }
 } = require('../services/TranslationKeys');
@@ -82,18 +83,18 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(LOADING_FILES),
 			});
 
-			return operationResult.status === ActionResult.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder
-					.withSuccess()
+					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 				: ActionResult.Builder
-					.withError(operationResult.errorMessages)
+					.error(operationResult.errorMessages)
 					.withResultMessage(operationResult.resultMessage)
 					.build();
 		} catch (error) {
-			return ActionResult.Builder.withError(error).build();
+			return ActionResult.Builder.error(error).build();
 		}
 	}
 
