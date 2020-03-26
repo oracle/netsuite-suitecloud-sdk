@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -8,23 +8,22 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class ProxyActionResult extends ActionResult {
 
-	constructor(build) {
-		super(build)
-		this._isSettingProxy = build.isSettingProxy;
-		this._proxyUrl = build.proxyUrl;
-		this._isProxyOverrided = build.isProxyOverrided;
+	constructor(parameters) {
+		super(parameters);
+		this._isSettingProxy = parameters.withSettingProxy;
+		this._proxyUrl = parameters.proxyUrl;
+		this._isProxyOverridden = parameters.isProxyOverridden;
 	}
 
-	validateBuild(build) {
-		assert(build);
-		assert(build.status, "status is required when creating an ActionResult object.");
-		if (build.status === ActionResult.SUCCESS) {
-			if (build.isSettingProxy) {
-				assert(build.proxyUrl, "proxyUrl is required when ActionResult is a success.");
+	validateParameters(parameters) {
+		super.validateParameters(parameters);
+		if (parameters.status === ActionResult.SUCCESS) {
+			if (parameters.withSettingProxy) {
+				assert(parameters.proxyUrl, "proxyUrl is required when ActionResult is a success.");
 			}
 		}
-		if (build.status === ActionResult.ERROR) {
-			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
+		if (parameters.status === ActionResult.ERROR) {
+			assert(parameters.errorMessages, "errorMessages is required when ActionResult is an error.");
 		}
 	}
 
@@ -36,42 +35,49 @@ class ProxyActionResult extends ActionResult {
 		return this._proxyUrl;
 	}
 
-	get isProxyOverrided() {
-		return this._isProxyOverrided;
+	get isProxyOverridden() {
+		return this._isProxyOverridden;
 	}
 
 	static get Builder() {
 		return new ProxyActionResultBuilder();
 	}
-};
-
+}
 
 class ProxyActionResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
 	}
 
-	isSettingProxy(isSettingProxy) {
-		this.isSettingProxy = isSettingProxy;
+	success() {
+		this.status = super.SUCCESS;
 		return this;
 	}
+
+	withSettingProxy(withSettingProxy) {
+		this.withSettingProxy = withSettingProxy;
+		return this;
+	}
+
 	withProxyUrl(proxyUrl) {
 		this.proxyUrl = proxyUrl;
 		return this;
 	}
-	isProxyOverrided(isProxyOverrided) {
-		this.isProxyOverrided = isProxyOverrided;
+
+	isProxyOverridden(isProxyOverridden) {
+		this.isProxyOverridden = isProxyOverridden;
 		return this;
 	}
+
 	build() {
 		return new ProxyActionResult({
 			status: this.status,
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
-			...(this.isSettingProxy && { isSettingProxy: this.isSettingProxy }),
+			...(this.withSettingProxy && { isSettingProxy: this.withSettingProxy }),
 			...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
-			...(this.isProxyOverrided && { proxyOverrided: this.isProxyOverrided })
+			...(this.isProxyOverridden && { proxyOverridden: this.isProxyOverridden })
 		});
 	}
-};
+}
 
 module.exports = ProxyActionResult;

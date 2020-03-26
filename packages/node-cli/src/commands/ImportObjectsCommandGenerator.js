@@ -242,9 +242,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			name: folder.replace(this._projectFolder, ''),
 			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
-		const objectDirectoryChoices = this._fileSystemService
-			.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.OBJECTS))
-			.map(transformFoldersToChoicesFunc);
+		const objectsFolder = join(this._projectFolder, FOLDERS.OBJECTS);
+		const objectsSubFolders = this._fileSystemService.getFoldersFromDirectory(objectsFolder);
+		const objectDirectoryChoices = [objectsFolder, ...objectsSubFolders].map(transformFoldersToChoicesFunc);
 
 		const questionDestinationFolder = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -308,13 +308,12 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 	}
 
 	async _executeAction(answers) {
+		if (answers[ANSWERS_NAMES.OVERWRITE_OBJECTS] === false) {
+			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
+		}
+
 		try {
-			if (answers[ANSWERS_NAMES.OVERWRITE_OBJECTS] === false) {
-				throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
-			}
-
 			const flags = [];
-
 			if (this._runInInteractiveMode) {
 				if (answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
 					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
@@ -342,22 +341,19 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
 			? ActionResult.Builder
-				.success()
 				.withData(operationResult.data)
 				.withResultMessage(operationResult.resultMessage)
 				.build()
 			: ActionResult.Builder
-				.error(operationResult.errorMessages)
-				.withResultMessage(operationResult.resultMessage)
+				.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
 				.build();
 		} catch (error) {
-			return ActionResult.Builder.error(error).build();
+			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		if (ActionResultUtils.hasErrors(actionResult)) {
-			ActionResultUtils.logResultMessage(actionResult);
+		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}

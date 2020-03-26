@@ -289,7 +289,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				.withAccountInfo(accountInfo)
 				.build();
 		} catch (error) {
-			return SetupActionResult.Builder.error(error).build();
+			return SetupActionResult.Builder.withErrors([error]).build();
 		}
 	}
 

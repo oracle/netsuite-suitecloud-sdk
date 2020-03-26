@@ -177,26 +177,24 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder
-					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 				: ActionResult.Builder
-					.error(operationResult.errorMessages)
-					.withResultMessage(operationResult.resultMessage)
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
 					.build();
 		} catch (error) {
-			return ActionResult.Builder.error(error).build();
+			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		ActionResultUtils.logResultMessage(actionResult);
-		if (ActionResultUtils.hasErrors(actionResult)) {
+		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
+		ActionResultUtils.logResultMessage(actionResult);
 		if (Array.isArray(actionResult.data) && actionResult.data.length) {
 			NodeUtils.println(
 				TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED),

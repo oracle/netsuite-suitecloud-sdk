@@ -6,6 +6,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
@@ -153,32 +154,30 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				message: TranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
-			return operationResult.status == SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? DeployActionResult.Builder
-					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.isServerValidation(isServerValidation)
-					.appliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+					.withServerValidation(isServerValidation)
+					.withAppliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
 					.build()
 				: DeployActionResult.Builder
-					.error(operationResult.errorMessages)
-					.withResultMessage(operationResult.resultMessage)
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
 					.build();
 		} catch (error) {
-			return DeployActionResult.Builder.error(error).build();
+			return DeployActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		if (ActionResultUtils.hasErrors(actionResult)) {
+		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
 		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {
 				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
 			});
 		} else if (!actionResult.isServerValidation) {
-			this._showApplyContentProtectionOptionMessage(actionResult.appliedContentProtection);
+			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
 			this._showLocalValidationResultData(actionResult.data);
 		}
 		ActionResultUtils.logResultMessage(actionResult);

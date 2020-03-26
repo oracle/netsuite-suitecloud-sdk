@@ -4,35 +4,35 @@
 */
 'use strict';
 
+const ActionResultUtils = require('./ActionResultUtils');
 const NodeUtils = require('./NodeUtils');
 
 module.exports = {
 
 	SUCCESS: "SUCCESS",
 	ERROR: "ERROR",
+
 	getErrorMessagesString: operationResult => {
-		const { errorMessages, resultMessage } = operationResult;
-		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
-			if (resultMessage) {
-				errorMessages.unshift(resultMessage);
-			}
-			return errorMessages.join(NodeUtils.lineBreak);
-		}
-		return resultMessage;
+		const errorMessages = ActionResultUtils.collectErrorMessages(operationResult);
+		return errorMessages.join(NodeUtils.lineBreak);
 	},
+
 	getResultMessage: operationResult => {
 		const { resultMessage } = operationResult;
 		return resultMessage ? resultMessage : '';
 	},
+
 	hasErrors: operationResult => {
 		return operationResult.status === this.ERROR;
 	},
+
 	logErrors: operationResult => {
 		const { errorMessages } = operationResult;
 		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
 			errorMessages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
 		}
 	},
+
 	logResultMessage: operationResult => {
 		const { resultMessage } = operationResult;
 		if (resultMessage) {
@@ -43,6 +43,7 @@ module.exports = {
 			}
 		}
 	},
+
 	getErrorCode: operationResult => {
 		const { errorCode } = operationResult;
 		return errorCode ? errorCode : '';

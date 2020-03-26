@@ -7,10 +7,10 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class DeployActionResult extends ActionResult {
 
-	constructor(build) {
-		super(build)
-		this._isServerValidation = build.isServerValidation ? true : false;
-		this._appliedContentProtection = build.appliedContentProtection ? true : false
+	constructor(parameters) {
+		super(parameters);
+		this._isServerValidation = parameters.isServerValidation ? true : false;
+		this._appliedContentProtection = parameters.appliedContentProtection ? true : false
 	}
 
 	get isServerValidation() {
@@ -22,22 +22,25 @@ class DeployActionResult extends ActionResult {
 	}
 
 	static get Builder() {
-		return new DeployActioneResultBuilder();
+		return new DeployActionResultBuilder();
 	}
-};
+}
 
-class DeployActioneResultBuilder extends ActionResultBuilder {
+class DeployActionResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
 	}
-	isServerValidation(isServerValidation) {
+
+	withServerValidation(isServerValidation) {
 		this.isServerValidation = isServerValidation;
 		return this;
 	}
-	appliedContentProtection(appliedContentProtection) {
+
+	withAppliedContentProtection(appliedContentProtection) {
 		this.appliedContentProtection = appliedContentProtection;
 		return this;
 	}
+
 	build() {
 		return new DeployActionResult({
 			status: this.status,
@@ -48,6 +51,6 @@ class DeployActioneResultBuilder extends ActionResultBuilder {
 			...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection })
 		});
 	}
-};
+}
 
 module.exports = DeployActionResult;

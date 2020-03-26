@@ -155,29 +155,25 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder
-					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 				: ActionResult.Builder
-					.error(operationResult.errorMessages)
-					.withResultMessage(operationResult.resultMessage)
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
 					.build();
 		} catch (error) {
-			return ActionResult.Builder.error(error).build();
+			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-
-		if (ActionResultUtils.hasErrors(actionResult)) {
-			ActionResultUtils.logResultMessage(actionResult);
+		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		const updatedObjects = data.filter(element => element.type === UPDATED_OBJECT_TYPE.SUCCESS);
-		const noUpdatedObjects = data.filter(element => element.type !== UPDATED_OBJECT_TYPE.SUCCESS);
+		const updatedObjects = actionResult.data.filter(element => element.type === UPDATED_OBJECT_TYPE.SUCCESS);
+		const noUpdatedObjects = actionResult.data.filter(element => element.type !== UPDATED_OBJECT_TYPE.SUCCESS);
 		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
 
 		if (updatedObjects.length > 0) {

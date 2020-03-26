@@ -87,16 +87,14 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder
-					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 				: ActionResult.Builder
-					.error(operationResult.errorMessages)
-					.withResultMessage(operationResult.resultMessage)
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
 					.build();
 		} catch (error) {
-			return ActionResult.Builder.error(error).build();
+			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
@@ -151,15 +149,15 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 		});
 
 		//Platform Extensions
-		const platforExtensions = data.filter(
+		const platformExtensions = data.filter(
 			dependency => dependency.type === DEPENDENCY_TYPES.PLATFORMEXTENSION.name
 		);
-		platforExtensions.forEach(platforExtension => {
-			const appIdDisplay = platforExtension.appId
-				? `${OBJECT_REFERENCE_ATTRIBUTES.APP_ID}${platforExtension.appId}, `
+		platformExtensions.forEach(platformExtension => {
+			const appIdDisplay = platformExtension.appId
+				? `${OBJECT_REFERENCE_ATTRIBUTES.APP_ID}${platformExtension.appId}, `
 				: '';
 			const objectTypeDisplay = `${OBJECT_REFERENCE_ATTRIBUTES.OBJECT_TYPE}${
-				platforExtension.objectType
+				platformExtension.objectType
 				}`;
 			dependenciesString.push(
 				`${DEPENDENCY_TYPES.PLATFORMEXTENSION.prefix} ${appIdDisplay}${objectTypeDisplay}`
@@ -170,10 +168,7 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.error) {
-			if (actionResult.resultMessage) {
-				ActionResultUtils.logResultMessage(actionResult);
-			}
+		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}

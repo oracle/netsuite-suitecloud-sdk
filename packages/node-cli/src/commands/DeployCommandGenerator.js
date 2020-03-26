@@ -6,6 +6,7 @@
 
 const ActionResultUtils = require('../utils/ActionResultUtils')
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
@@ -158,48 +159,41 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 
 			var isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
 			var isApplyContentProtection =
-				(this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
-					? true
-					: false;
+				(this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE);
 
-			return operationResult.status == SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? DeployActionResult.Builder
-					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.isServerValidation(isServerValidation)
-					.appliedContentProtection(isApplyContentProtection)
+					.withAppliedContentProtection(isApplyContentProtection)
 					.build()
 				: DeployActionResult.Builder
-					.error(operationResult.errorMessages)
-					.withResultMessage(operationResult.resultMessage)
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
 					.build()
 		} catch (error) {
-			return DeployActionResult.Builder.error(error).build();
+			return DeployActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-
-		if (actionResult.error) {
-			if (actionResult.resultMessage) {
-				ActionResultUtils.logResultMessage(actionResult);
-			}
+		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
-		} else {
-			this._showApplyContentProtectionOptionMessage(actionResult.appliedContentProtection);
-			if (actionResult.isServerValidation) {
-				NodeUtils.println(
-					TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
-					NodeUtils.COLORS.INFO
-				);
-			}
-			if (actionResult.resultMessage) {
-				ActionResultUtils.logResultMessage(actionResult);
-			}
-			if (Array.isArray(actionResult.data)) {
-				actionResult.data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
-			}
+			return;
+		}
+
+		this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
+		if (actionResult.withServerValidation) {
+			NodeUtils.println(
+				TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
+				NodeUtils.COLORS.INFO
+			);
+		}
+		if (actionResult.resultMessage) {
+			ActionResultUtils.logResultMessage(actionResult);
+		}
+		if (Array.isArray(actionResult.data)) {
+			actionResult.data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
 		}
 	}
 
