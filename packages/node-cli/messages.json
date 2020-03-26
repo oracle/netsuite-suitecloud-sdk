@@ -158,6 +158,17 @@
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
+	"COMMAND_UPLOADFILES_QUESTIONS_OVERWRITE_FILES": "The selected files will be overwritten in the File Cabinet. Do you want to continue?",
+	"COMMAND_UPLOADFILES_QUESTIONS_SELECT_FILES": "Select the files you want to upload to the File Cabinet.",
+	"COMMAND_UPLOADFILES_QUESTIONS_SELECT_FOLDER": "Select folder from where you want to upload files to the File Cabinet.",
+	"COMMAND_UPLOADFILES_MESSAGES_CANCEL_UPLOAD": "The file upload process has been canceled. No files have been overwritten.",
+	"COMMAND_UPLOADFILES_MESSAGES_EMPTY_FOLDER": "No Files",
+	"COMMAND_UPLOADFILES_MESSAGES_NOTHING_TO_UPLOAD": "All folders are either restricted or have no files.",
+	"COMMAND_UPLOADFILES_MESSAGES_RESTRICTED_FOLDER": "Restricted Folder",
+	"COMMAND_UPLOADFILES_MESSAGES_UPLOADING_FILES": "Uploading files...",
+	"COMMAND_UPLOADFILES_OUTPUT_FILES_UPLOADED": "The following files were uploaded:",
+	"COMMAND_UPLOADFILES_OUTPUT_FILES_NOT_UPLOADED": "The following files were not uploaded:",
+
 	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any custom objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
 	"COMMAND_UPDATE_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your search?",
 	"COMMAND_UPDATE_QUESTIONS_OVERWRITE_OBJECTS": "All the selected objects in the project will be overwritten with the objects from the account. Do you want to continue?",
