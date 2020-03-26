@@ -24,20 +24,23 @@ class DeployActionResult extends ActionResult {
 	static get Builder() {
 		return new DeployActioneResultBuilder();
 	}
-};
+}
 
 class DeployActioneResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
 	}
+
 	isServerValidation(isServerValidation) {
 		this.isServerValidation = isServerValidation;
 		return this;
 	}
+
 	appliedContentProtection(appliedContentProtection) {
 		this.appliedContentProtection = appliedContentProtection;
 		return this;
 	}
+
 	build() {
 		return new DeployActionResult({
 			status: this.status,
@@ -48,6 +51,6 @@ class DeployActioneResultBuilder extends ActionResultBuilder {
 			...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection })
 		});
 	}
-};
+}
 
 module.exports = DeployActionResult;

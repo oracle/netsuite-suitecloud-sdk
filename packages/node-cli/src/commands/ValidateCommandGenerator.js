@@ -155,23 +155,21 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 			return operationResult.status == SDKOperationResultUtils.SUCCESS
 				? DeployActionResult.Builder
-					.success()
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.isServerValidation(isServerValidation)
 					.appliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
 					.build()
 				: DeployActionResult.Builder
-					.error(operationResult.errorMessages)
-					.withResultMessage(operationResult.resultMessage)
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
 					.build();
 		} catch (error) {
-			return DeployActionResult.Builder.error(error).build();
+			return DeployActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		if (ActionResultUtils.hasErrors(actionResult)) {
+		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
 		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {

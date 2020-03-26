@@ -9,27 +9,20 @@ const { ERROR } = require('../commands/actionresult/ActionResult');
 
 module.exports = {
 	getErrorMessagesString: actionResult => {
-		const { errorMessages, resultMessage } = actionResult;
-		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
-			if (resultMessage) {
-				errorMessages.unshift(resultMessage);
-			}
-			return errorMessages.join(NodeUtils.lineBreak);
-		}
-		return resultMessage;
+		return actionResult.errorMessages.join(NodeUtils.lineBreak);
 	},
+
 	getResultMessage: actionResult => {
 		const { resultMessage } = actionResult;
 		return resultMessage ? resultMessage : '';
 	},
-	hasErrors: actionResult => {
-		return actionResult.status === ERROR;
+
+	logErrors: errors => {
+		errors.forEach(
+			message => NodeUtils.println(message, NodeUtils.COLORS.ERROR)
+		);
 	},
-	logErrors: error => {
-		if (Array.isArray(error) && error.length > 0) {
-			error.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
-		}
-	},
+
 	logResultMessage: actionResult => {
 		if (actionResult.resultMessage) {
 			if (actionResult.status === ERROR) {
@@ -38,5 +31,23 @@ module.exports = {
 				NodeUtils.println(actionResult.resultMessage, NodeUtils.COLORS.RESULT);
 			}
 		}
+	},
+
+	// TODO: fix operationResult in SDK to always return errors in errorMessage and never in resultMessage
+	collectErrorMessages: operationResult => {
+		let errors = [];
+		const { errorMessages, resultMessage } = operationResult;
+		if (Array.isArray(errorMessages)) {
+			if (resultMessage) {
+				errorMessages.unshift(resultMessage);
+			}
+			errors = errorMessages;
+		} else {
+			errors = [
+				...(resultMessage && resultMessage),
+				...(errorMessages && errorMessages),
+			];
+		}
+		return errors;
 	},
 };

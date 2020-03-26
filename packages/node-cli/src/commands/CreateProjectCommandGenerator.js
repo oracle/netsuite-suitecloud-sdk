@@ -240,48 +240,42 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				//Enclose in double quotes to also support project names with spaces
 				parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
 				type: answers[COMMAND_OPTIONS.TYPE],
-				projectname: SOURCE_FOLDER
-			}
-			if (answers[COMMAND_OPTIONS.OVERWRITE]) {
-				params.overwrite = '';
-			}
-			if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
-				params.publisherid = answers[COMMAND_OPTIONS.PUBLISHER_ID];
-				params.projectid = answers[COMMAND_OPTIONS.PROJECT_ID];
-				params.projectversion = answers[COMMAND_OPTIONS.PROJECT_VERSION];
-
-			}
+				projectname: SOURCE_FOLDER,
+				...(answers[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
+				...(answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP && {
+					publisherid: answers[COMMAND_OPTIONS.PUBLISHER_ID],
+					projectid: answers[COMMAND_OPTIONS.PROJECT_ID],
+					projectversion: answers[COMMAND_OPTIONS.PROJECT_VERSION],
+				}),
+			};
 
 			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
 
-			const actionCreateProject = new Promise(this.createProject(
+			const createProjectAction = new Promise(this.createProject(
 				params, answers, projectAbsolutePath, projectFolderName, manifestFilePath));
 
-			const actionCreateProjectData = await actionCreateProject;
+			const createProjectActionData = await createProjectAction;
 
 			var projectType = answers[COMMAND_OPTIONS.TYPE];
 			var projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
 			var includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
 
-			return actionCreateProjectData.operationResult.status === SDKOperationResultUtils.SUCCESS
+			return createProjectActionData.operationResult.status === SDKOperationResultUtils.SUCCESS
 				? CreateProjectActionResult.Builder
-					.success()
-					.withData(actionCreateProjectData.operationResult.data)
-					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
+					.withData(createProjectActionData.operationResult.data)
+					.withResultMessage(createProjectActionData.operationResult.resultMessage)
 					.withProjectType(projectType)
 					.withProjectName(projectName)
-					.fromDirectory(actionCreateProjectData.projectDirectory)
+					.withProjectDirectory(createProjectActionData.projectDirectory)
 					.withUnitTesting(includeUnitTesting)
-					.withSuccessfullNpmInstalled(actionCreateProjectData.operationResult)
+					.withNpmPackageInitialized(createProjectActionData.operationResult)
 					.build()
 				: CreateProjectActionResult.Builder
-					.error(actionCreateProjectData.operationResult.errorMessages)
-					.withResultMessage(actionCreateProjectData.operationResult.resultMessage)
+					.withErrors(ActionResultUtils.collectErrorMessages(createProjectActionData.operationResult))
 					.build();
-
 		} catch (error) {
-			return CreateProjectActionResult.Builder.error(error).build();
+			return CreateProjectActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
@@ -427,12 +421,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		if (!actionResult) {
 			return;
 		}
-		if (ActionResultUtils.hasErrors(actionResult)) {
-			NodeUtils.println(
-				TranslationService.getMessage(MESSAGES.PROCESS_FAILED),
-				NodeUtils.COLORS.ERROR
-			);
-			ActionResultUtils.logResultMessage(actionResult);
+		if (actionResult.status === ActionResult.ERROR) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 		ActionResultUtils.logResultMessage(actionResult);
@@ -443,7 +433,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		if (actionResult.includeUnitTesting) {
 			const sampleUnitTestMessage = TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
 			NodeUtils.println(sampleUnitTestMessage, NodeUtils.COLORS.RESULT);
-			if (!actionResult.npmInstallSuccess) {
+			if (!actionResult.npmPackageIntitialized) {
 				NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeUtils.COLORS.ERROR);
 			}
 		}

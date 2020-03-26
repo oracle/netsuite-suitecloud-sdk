@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -10,23 +10,24 @@ const SUCCESS = "SUCCESS";
 
 class ActionResult {
 
-	constructor(build) {
-		this.validateBuild(build);
+	constructor(parameters) {
+		this.validateParameters(parameters);
 
-		this._status = build.status;
-		this._data = build.data;
-		this._resultMessage = build.resultMessage;
-		this._errorMessages = build.errorMessages;
+		this._status = parameters.status;
+		this._data = parameters.data;
+		this._resultMessage = parameters.resultMessage;
+		this._errorMessages = parameters.errorMessages;
 	}
 
-	validateBuild(build) {
-		assert(build);
-		assert(build.status, "status is required when creating an ActionResult object.");
-		if (build.status === SUCCESS) {
-			assert(build.data, "data is required when ActionResult is a success.");
+	validateParameters(parameters) {
+		assert(parameters);
+		assert(parameters.status, "status is required when creating an ActionResult object.");
+		if (parameters.status === SUCCESS) {
+			assert(parameters.data, "data is required when ActionResult is a success.");
 		}
-		if (build.status === ERROR) {
-			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
+		if (parameters.status === ERROR) {
+			assert(parameters.errorMessages, "errorMessages is required when ActionResult is an error.");
+			assert(Array.isArray(parameters.errorMessages), 'errorMessages argument must be an array');
 		}
 	}
 
@@ -57,17 +58,10 @@ class ActionResult {
 	static get ERROR() {
 		return ERROR;
 	}
-};
-
+}
 
 class ActionResultBuilder {
 	constructor() { }
-
-
-	success() {
-		this.status = SUCCESS;
-		return this;
-	}
 
 	withResultMessage(resultMessage) {
 		this.resultMessage = resultMessage;
@@ -75,16 +69,16 @@ class ActionResultBuilder {
 	}
 
 	withData(data) {
+		this.status = SUCCESS;
 		this.data = data;
 		return this;
 	}
 
-	error(errorMessages) {
+	withErrors(errorMessages) {
 		this.status = ERROR;
 		this.errorMessages = errorMessages;
 		return this;
 	}
-
 
 	build() {
 		return new ActionResult({

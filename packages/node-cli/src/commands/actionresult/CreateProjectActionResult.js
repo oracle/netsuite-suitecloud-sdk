@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -9,16 +9,16 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 class CreateProjectActionResult extends ActionResult {
 
 	constructor(build) {
-		super(build)
+		super(build);
 		this._projectType = build.projectType;
 		this._projectName = build.projectName;
 		this._projectDirectory = build.projectDirectory;
 		this._includeUnitTesting = build.includeUnitTesting;
-		this._npmInstallSuccess = build.npmInstallSuccess;
+		this._npmPackageInitialized = build.npmPackageIntitialized;
 	}
 
 	validateBuild(build) {
-		super.validateBuild(build);
+		super.validateParameters(build);
 		if (build.status === ActionResult.SUCCESS) {
 			assert(build.projectDirectory, "projectDirectory is required when ActionResult is a success.");
 			assert(build.projectType, "projectType is required when ActionResult is a success.");
@@ -41,14 +41,14 @@ class CreateProjectActionResult extends ActionResult {
 		return this._includeUnitTesting;
 	}
 
-	get npmInstallSuccess() {
-		return this._npmInstallSuccess;
+	get npmPackageInitialized() {
+		return this._npmPackageInitialized;
 	}
 
 	static get Builder() {
 		return new CreateProjectActionResultBuilder();
 	}
-};
+}
 
 class CreateProjectActionResultBuilder extends ActionResultBuilder {
 	constructor() {
@@ -65,7 +65,7 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
-	fromDirectory(projectDirectory) {
+	withProjectDirectory(projectDirectory) {
 		this.projectDirectory = projectDirectory;
 		return this;
 	}
@@ -75,8 +75,8 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
-	withSuccessfullNpmInstalled(npmInstallSuccess) {
-		this.npmInstallSuccess = npmInstallSuccess;
+	withNpmPackageInitialized(npmPackageInitialized) {
+		this.npmPackageIntitialized = npmPackageInitialized;
 		return this;
 	}
 
@@ -90,9 +90,9 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 			...(this.projectName && { projectName: this.projectName }),
 			...(this.projectDirectory && { projectDirectory: this.projectDirectory }),
 			...(this.includeUnitTesting && { includeUnitTesting: this.includeUnitTesting }),
-			...(this.npmInstallSuccess && { npmInstallSuccess: this.npmInstallSuccess })
+			...(this.npmPackageIntitialized && { npmInstallSuccess: this.npmPackageIntitialized })
 		});
 	}
-};
+}
 
 module.exports = CreateProjectActionResult;

@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2019 Oracle and/or its affiliates.  All rights reserved.
+** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
 ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 */
 'use strict';
@@ -9,7 +9,7 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 class SetupCommandActionResult extends ActionResult {
 
 	constructor(build) {
-		super(build)
+		super(build);
 		this._mode = build.mode;
 		this._authId = build.authId;
 		this._accountInfo = build.accountInfo;
@@ -43,11 +43,16 @@ class SetupCommandActionResult extends ActionResult {
 	static get Builder() {
 		return new SetupActionResultBuilder();
 	}
-};
+}
 
 class SetupActionResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
+	}
+
+	success() {
+		this.status = super.SUCCESS;
+		return this;
 	}
 
 	withMode(mode) {
@@ -74,6 +79,6 @@ class SetupActionResultBuilder extends ActionResultBuilder {
 			...(this.accountInfo && { accountInfo: this.accountInfo })
 		});
 	}
-};
+}
 
 module.exports = SetupCommandActionResult;
