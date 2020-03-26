@@ -172,8 +172,8 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			return;
 		}
 
-		const updatedObjects = data.filter(element => element.type === UPDATED_OBJECT_TYPE.SUCCESS);
-		const noUpdatedObjects = data.filter(element => element.type !== UPDATED_OBJECT_TYPE.SUCCESS);
+		const updatedObjects = actionResult.data.filter(element => element.type === UPDATED_OBJECT_TYPE.SUCCESS);
+		const noUpdatedObjects = actionResult.data.filter(element => element.type !== UPDATED_OBJECT_TYPE.SUCCESS);
 		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
 
 		if (updatedObjects.length > 0) {
