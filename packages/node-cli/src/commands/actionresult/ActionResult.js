@@ -63,6 +63,7 @@ class ActionResult {
 class ActionResultBuilder {
 	constructor() { }
 
+    // Used to add message on success only, error messages must never be passed
 	withResultMessage(resultMessage) {
 		this.resultMessage = resultMessage;
 		return this;
