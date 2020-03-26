@@ -43,7 +43,6 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 				this._CLISettingsService.clearProxy();
 			}
 
-
 			const proxyCommandData = await Promise.resolve(proxyCommandAction);
 			return ProxyActionResult.Builder
 				.success()
