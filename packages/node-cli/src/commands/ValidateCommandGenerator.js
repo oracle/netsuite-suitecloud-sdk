@@ -6,6 +6,7 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
@@ -171,11 +172,11 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	_formatOutput(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
-		} else if (actionResult.withServerValidation && Array.isArray(actionResult.data)) {
+		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {
 				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
 			});
-		} else if (!actionResult.withServerValidation) {
+		} else if (!actionResult.isServerValidation) {
 			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
 			this._showLocalValidationResultData(actionResult.data);
 		}

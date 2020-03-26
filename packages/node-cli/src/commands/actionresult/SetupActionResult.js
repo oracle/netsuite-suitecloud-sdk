@@ -16,7 +16,8 @@ class SetupCommandActionResult extends ActionResult {
 	}
 
 	validateParameters(parameters) {
-		super.validateParameters(parameters);
+		assert(parameters);
+		assert(parameters.status, "status is required when creating an ActionResult object.");
 		if (parameters.status === ActionResult.SUCCESS) {
 			assert(parameters.mode, "mode is required when ActionResult is a success.");
 			assert(parameters.authId, "authId is required when ActionResult is a success.");
@@ -50,7 +51,7 @@ class SetupActionResultBuilder extends ActionResultBuilder {
 	}
 
 	success() {
-		this.status = super.SUCCESS;
+		this.status = ActionResult.SUCCESS;
 		return this;
 	}
 

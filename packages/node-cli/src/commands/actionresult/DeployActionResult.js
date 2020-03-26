@@ -9,8 +9,8 @@ class DeployActionResult extends ActionResult {
 
 	constructor(parameters) {
 		super(parameters);
-		this._isServerValidation = parameters.withServerValidation ? true : false;
-		this._appliedContentProtection = parameters.withAppliedContentProtection ? true : false
+		this._isServerValidation = parameters.isServerValidation ? true : false;
+		this._appliedContentProtection = parameters.appliedContentProtection ? true : false
 	}
 
 	get isServerValidation() {
@@ -32,12 +32,12 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 	}
 
 	withServerValidation(isServerValidation) {
-		this.withServerValidation = isServerValidation;
+		this.isServerValidation = isServerValidation;
 		return this;
 	}
 
 	withAppliedContentProtection(appliedContentProtection) {
-		this.withAppliedContentProtection = appliedContentProtection;
+		this.appliedContentProtection = appliedContentProtection;
 		return this;
 	}
 
@@ -47,8 +47,8 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 			...(this.data && { data: this.data }),
 			...(this.resultMessage && { resultMessage: this.resultMessage }),
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
-			...(this.withServerValidation && { isServerValidation: this.withServerValidation }),
-			...(this.withAppliedContentProtection && { appliedContentProtection: this.withAppliedContentProtection })
+			...(this.isServerValidation && { isServerValidation: this.isServerValidation }),
+			...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection })
 		});
 	}
 }

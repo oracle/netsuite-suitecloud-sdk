@@ -6,6 +6,7 @@
 
 const ActionResultUtils = require('../utils/ActionResultUtils')
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
@@ -164,7 +165,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				? DeployActionResult.Builder
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.withServerValidation(isServerValidation)
+					.isServerValidation(isServerValidation)
 					.withAppliedContentProtection(isApplyContentProtection)
 					.build()
 				: DeployActionResult.Builder

@@ -4,6 +4,7 @@
  */
 'use strict';
 
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CreateProjectActionResult = require('./actionresult/CreateProjectActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TemplateKeys = require('../templates/TemplateKeys');
