@@ -1,6 +1,6 @@
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
-import { getRootProjectFolder, unwrapExceptionMessage, operationResultStatus } from '../util/ExtensionUtil';
+import { getRootProjectFolder, unwrapExceptionMessage, actionResultStatus } from '../util/ExtensionUtil';
 import { scloudOutput } from '../extension';
 import { MessageService } from '../service/MessageService';
 
@@ -25,7 +25,7 @@ export default async function deploy() {
             return;
         }
 
-        if (deployResult.operationResult?.status === operationResultStatus.SUCCESS && Array.isArray(deployResult.operationResult.data)) {
+        if (deployResult.operationResult?.status === actionResultStatus.SUCCESS && Array.isArray(deployResult.operationResult.data)) {
             deployResult.operationResult.data.forEach((element: any) => {
                 scloudOutput.appendLine(element);
             });

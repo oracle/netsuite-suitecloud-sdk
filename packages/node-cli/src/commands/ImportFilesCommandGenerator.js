@@ -5,11 +5,13 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
@@ -177,35 +179,45 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		return answers;
 	}
 
-	_executeAction(answers) {
-		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
+	async _executeAction(answers) {
+		try {
+			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
+				throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
+			}
+
+			const executionContextImportObjects = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				includeProjectDefaultAuthId: true,
+				params: answers,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextImportObjects),
+				message: TranslationService.getMessage(MESSAGES.IMPORTING_FILES),
+			});
+
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
+				? ActionResult.Builder
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
+					.build();
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build;
 		}
-
-		const executionContextImportObjects = new SDKExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			includeProjectDefaultAuthId: true,
-			params: answers,
-		});
-
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextImportObjects),
-			message: TranslationService.getMessage(MESSAGES.IMPORTING_FILES),
-		});
 	}
 
-	_formatOutput(operationResult) {
-		const { data } = operationResult;
-
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+	_formatOutput(actionResult) {
+		if (actionResult.status === ActionResult.ERROR) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		if (Array.isArray(data.results)) {
-			const successful = data.results.filter(result => result.loaded === true);
-			const unsuccessful = data.results.filter(result => result.loaded !== true);
+		if (Array.isArray(actionResult.data.results)) {
+			const successful = actionResult.data.results.filter(result => result.loaded === true);
+			const unsuccessful = actionResult.data.results.filter(result => result.loaded !== true);
 			if (successful.length) {
 				NodeUtils.println(
 					TranslationService.getMessage(OUTPUT.FILES_IMPORTED),

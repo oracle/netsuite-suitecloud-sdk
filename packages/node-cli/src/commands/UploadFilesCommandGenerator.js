@@ -12,8 +12,10 @@ const FileSystemService = require('../services/FileSystemService');
 const NodeUtils = require('../utils/NodeUtils');
 const path = require('path');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 
 const {
 	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, OUTPUT },
@@ -145,25 +147,33 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		return answers;
 	}
 
-	_executeAction(answers) {
-		const executionContextUploadFiles = new SDKExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			includeProjectDefaultAuthId: true,
-			params: answers,
-		});
+	async _executeAction(answers) {
+		try {
+			const executionContextUploadFiles = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				includeProjectDefaultAuthId: true,
+				params: answers,
+			});
 
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextUploadFiles),
-			message: TranslationService.getMessage(MESSAGES.UPLOADING_FILES),
-		});
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextUploadFiles),
+				message: TranslationService.getMessage(MESSAGES.UPLOADING_FILES),
+			});
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
+				? ActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.build()
+				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build();
+		}
 	}
 
-	_formatOutput(operationResult) {
-		const { data } = operationResult;
+	_formatOutput(actionResult) {
+		const { data } = actionResult;
 
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+		if (actionResult.status === ActionResult.ERROR) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 

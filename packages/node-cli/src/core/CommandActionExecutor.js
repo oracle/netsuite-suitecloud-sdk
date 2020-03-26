@@ -11,9 +11,8 @@ const {
 	ERRORS,
 } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
-const OperationResultStatus = require('../commands/OperationResultStatus');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const NodeUtils = require('../utils/NodeUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -83,20 +82,20 @@ module.exports = class CommandActionExecutor {
 				projectConfiguration: projectConfiguration,
 			});
 
-			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
-
-			if (actionResult && actionResult.operationResult) {
-				const operationResult = actionResult.operationResult;
-				if (operationResult.status === OperationResultStatus.SUCCESS && commandUserExtension.onCompleted) {
-					commandUserExtension.onCompleted(actionResult);
-				} else if (operationResult.status === OperationResultStatus.ERROR && commandUserExtension.onError) {
-					const error = SDKOperationResultUtils.getResultMessage(operationResult)
-						+ NodeUtils.lineBreak
-						+ SDKOperationResultUtils.getErrorMessagesString(operationResult);
-					commandUserExtension.onError(error);
-				}
+			if (!(actionResult instanceof ActionResult)) {
+				throw 'INTERNAL ERROR: Command must return an ActionResult object.';
 			}
 
+			if (actionResult.status === ActionResult.ERROR) {
+				throw ActionResultUtils.getErrorMessagesString(actionResult);
+			}
+
+			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
+
+			if (commandUserExtension.onCompleted) {
+				commandUserExtension.onCompleted(actionResult);
+
+			}
 			return actionResult;
 		} catch (error) {
 			this._commandOutputHandler.showErrorResult(error);
@@ -184,7 +183,7 @@ module.exports = class CommandActionExecutor {
 			arguments: commandArgumentsAfterPreActionFunc,
 		});
 
-		if(validationErrors.length > 0) {
+		if (validationErrors.length > 0) {
 			throwValidationException(validationErrors, runInInteractiveMode, commandMetadata);
 		}
 	}

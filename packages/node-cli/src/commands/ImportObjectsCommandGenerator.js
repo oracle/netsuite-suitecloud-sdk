@@ -6,6 +6,7 @@
 
 const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
@@ -15,6 +16,7 @@ const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
 const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ANSWERS_NAMES = {
@@ -305,24 +307,24 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		return answers;
 	}
 
-	_executeAction(answers) {
+	async _executeAction(answers) {
 		if (answers[ANSWERS_NAMES.OVERWRITE_OBJECTS] === false) {
 			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
 
-		const flags = [];
-
-		if (this._runInInteractiveMode) {
-			if (answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
-				flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
-				delete answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
+		try {
+			const flags = [];
+			if (this._runInInteractiveMode) {
+				if (answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
+					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
+					delete answers[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
+				}
+			} else {
+				if (answers[COMMAND_FLAGS.EXCLUDE_FILES]) {
+					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
+					delete answers[COMMAND_FLAGS.EXCLUDE_FILES];
+				}
 			}
-		} else {
-			if (answers[COMMAND_FLAGS.EXCLUDE_FILES]) {
-				flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
-				delete answers[COMMAND_FLAGS.EXCLUDE_FILES];
-			}
-		}
 
 		const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 		const executionContextForImportObjects = new SDKExecutionContext({
@@ -332,28 +334,37 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			includeProjectDefaultAuthId: true,
 		});
 
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForImportObjects),
-			message: TranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
-		});
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForImportObjects),
+				message: TranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
+			});
+
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			? ActionResult.Builder
+				.withData(operationResult.data)
+				.withResultMessage(operationResult.resultMessage)
+				.build()
+			: ActionResult.Builder
+				.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
+				.build();
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build();
+		}
 	}
 
-	_formatOutput(operationResult) {
-		const { data } = operationResult;
-
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+	_formatOutput(actionResult) {
+		if (actionResult.status === ActionResult.ERROR) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		if (!operationResult.data) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
+		if (!actionResult.data) {
+			ActionResultUtils.logResultMessage(actionResult);
 			return;
 		}
 
-		this._logImportedObjects(data.successfulImports);
-		this._logUnImportedObjects(data.failedImports);
+		this._logImportedObjects(actionResult.data.successfulImports);
+		this._logUnImportedObjects(actionResult.data.failedImports);
 	}
 
 	_logImportedObjects(importedObjects) {

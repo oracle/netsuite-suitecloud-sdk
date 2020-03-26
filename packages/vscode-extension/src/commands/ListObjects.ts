@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
-import { getRootProjectFolder, unwrapExceptionMessage, operationResultStatus } from '../util/ExtensionUtil';
+import { getRootProjectFolder, unwrapExceptionMessage, actionResultStatus } from '../util/ExtensionUtil';
 import { scloudOutput } from '../extension';
 import { MessageService } from '../service/MessageService';
 
@@ -41,7 +41,7 @@ export default async function listobjects() {
 			return;
 		}
 
-		if (listObjectsResult.status === operationResultStatus.SUCCESS) {
+		if (listObjectsResult.status === actionResultStatus.SUCCESS) {
 			const listedObjects = listObjectsResult.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
 			listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
 			listobjectsMessageService.showCompletedActionInfo();

@@ -6,7 +6,10 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
+const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeUtils = require('../utils/NodeUtils');
 const TranslationService = require('../services/TranslationService');
@@ -127,52 +130,62 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(answers) {
-		const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+		try {
+			const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 
-		let isServerValidation = false;
-		const flags = [];
+			let isServerValidation = false;
+			const flags = [];
 
-		if (answers[COMMAND_OPTIONS.SERVER]) {
-			flags.push(COMMAND_OPTIONS.SERVER);
-			isServerValidation = true;
-			delete SDKParams[COMMAND_OPTIONS.SERVER];
+			if (answers[COMMAND_OPTIONS.SERVER]) {
+				flags.push(COMMAND_OPTIONS.SERVER);
+				isServerValidation = true;
+				delete SDKParams[COMMAND_OPTIONS.SERVER];
+			}
+
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				params: SDKParams,
+				flags: flags,
+				includeProjectDefaultAuthId: true,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: TranslationService.getMessage(MESSAGES.VALIDATING),
+			});
+
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
+				? DeployActionResult.Builder
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.withServerValidation(isServerValidation)
+					.withAppliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+					.build()
+				: DeployActionResult.Builder
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
+					.build();
+		} catch (error) {
+			return DeployActionResult.Builder.withErrors([error]).build();
 		}
-
-		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			params: SDKParams,
-			flags: flags,
-			includeProjectDefaultAuthId: true,
-		});
-
-		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(MESSAGES.VALIDATING),
-		});
-
-		return { operationResult, SDKParams, isServerValidation };
 	}
 
 	_formatOutput(actionResult) {
-		const { operationResult, isServerValidation, SDKParams } = actionResult;
-		const { data } = operationResult;
-
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logErrors(operationResult);
-		} else if (isServerValidation && Array.isArray(data)) {
-			data.forEach(resultLine => {
+		if (actionResult.status === ActionResult.ERROR) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
+		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
+			actionResult.data.forEach(resultLine => {
 				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
 			});
-		} else if (!isServerValidation) {
-			this._showApplyContentProtectionOptionMessage(SDKParams);
-			this._showLocalValidationResultData(data);
+		} else if (!actionResult.isServerValidation) {
+			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
+			this._showLocalValidationResultData(actionResult.data);
 		}
-		SDKOperationResultUtils.logResultMessage(operationResult);
+		ActionResultUtils.logResultMessage(actionResult);
 	}
 
-	_showApplyContentProtectionOptionMessage(SDKParams) {
+	_showApplyContentProtectionOptionMessage(isAppliedContentProtection) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			if (SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE) {
+			if (isAppliedContentProtection) {
 				NodeUtils.println(
 					TranslationService.getMessage(
 						MESSAGES.APPLYING_CONTENT_PROTECTION,

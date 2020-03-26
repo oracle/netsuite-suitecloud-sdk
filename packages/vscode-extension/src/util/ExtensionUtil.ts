@@ -10,7 +10,7 @@ export function getRootProjectFolder(): string | null {
 
 export const { unwrapExceptionMessage } = require('@oracle/suitecloud-cli/src/utils/ExceptionUtils');
 
-export const operationResultStatus: {
+export const actionResultStatus: {
 	SUCCESS: string;
 	ERROR: string;
-} = require('@oracle/suitecloud-cli/src/commands/OperationResultStatus');
+} = require('@oracle/suitecloud-cli/src/commands/actionResult/ActionResult');

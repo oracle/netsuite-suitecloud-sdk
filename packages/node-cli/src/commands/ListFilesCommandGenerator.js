@@ -5,11 +5,13 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeUtils = require('../utils/NodeUtils');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL }
@@ -34,23 +36,23 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				action: this._sdkExecutor.execute(executionContext),
 				message: TranslationService.getMessage(LOADING_FOLDERS),
 			})
-			.then(operationResult => {
-				resolve(
-					prompt([
-						{
-							type: CommandUtils.INQUIRER_TYPES.LIST,
-							name: this._commandMetadata.options.folder.name,
-							message: TranslationService.getMessage(SELECT_FOLDER),
-							default: SUITE_SCRIPTS_FOLDER,
-							choices: this._getFileCabinetFolders(operationResult),
-						},
-					])
-				);
-			})
-			// TODO : find right mecanism to treat the error
-			.catch( error => {
-				NodeUtils.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
-			})
+				.then(operationResult => {
+					resolve(
+						prompt([
+							{
+								type: CommandUtils.INQUIRER_TYPES.LIST,
+								name: this._commandMetadata.options.folder.name,
+								message: TranslationService.getMessage(SELECT_FOLDER),
+								default: SUITE_SCRIPTS_FOLDER,
+								choices: this._getFileCabinetFolders(operationResult),
+							},
+						])
+					);
+				})
+				// TODO : find right mecanism to treat the error
+				.catch(error => {
+					NodeUtils.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
+				})
 		});
 	}
 
@@ -66,34 +68,44 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
-	_executeAction(answers) {
-		// quote folder path to preserve spaces
-		answers.folder = `\"${answers.folder}\"`;
-		const executionContext = new SDKExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			params: answers,
-			includeProjectDefaultAuthId: true
-		});
+	async _executeAction(answers) {
+		try {
+			// quote folder path to preserve spaces
+			answers.folder = `\"${answers.folder}\"`;
+			const executionContext = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				params: answers,
+				includeProjectDefaultAuthId: true
+			});
 
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(LOADING_FILES),
-		});
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: TranslationService.getMessage(LOADING_FILES),
+			});
+
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
+				? ActionResult.Builder
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.build()
+				: ActionResult.Builder
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
+					.build();
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build();
+		}
 	}
 
-	_formatOutput(operationResult) {
-		const { data } = operationResult;
-
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
+	_formatOutput(actionResult) {
+		if (actionResult.status === ActionResult.ERROR) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
 			return;
 		}
 
-		SDKOperationResultUtils.logResultMessage(operationResult);
+		ActionResultUtils.logResultMessage(actionResult);
 
-		if (Array.isArray(data)) {
-			data.forEach(fileName => {
+		if (Array.isArray(actionResult.data)) {
+			actionResult.data.forEach(fileName => {
 				NodeUtils.println(fileName, NodeUtils.COLORS.RESULT)
 			});
 		}

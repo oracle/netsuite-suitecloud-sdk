@@ -4,17 +4,19 @@
  */
 'use strict';
 
+const ActionResultUtils = require('../utils/ActionResultUtils')
+const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
+const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
-const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
+const ApplyContentProtectionArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const NodeUtils = require('../utils/NodeUtils');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const assert = require('assert');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -51,7 +53,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
 			projectInfoService: this._projectInfoService,
 		});
-		this._applyContentProtectionArgumentHandler = new ApplyContentProtectinoArgumentHandler({
+		this._applyContentProtectionArgumentHandler = new ApplyContentProtectionArgumentHandler({
 			projectInfoService: this._projectInfoService,
 			commandName: this._commandMetadata.sdkCommand,
 		});
@@ -136,60 +138,68 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(answers) {
-		const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-		const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
-		if (SDKParams[COMMAND.FLAGS.VALIDATE]) {
-			delete SDKParams[COMMAND.FLAGS.VALIDATE];
-			flags.push(COMMAND.FLAGS.VALIDATE);
+		try {
+			const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+			const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
+			if (SDKParams[COMMAND.FLAGS.VALIDATE]) {
+				delete SDKParams[COMMAND.FLAGS.VALIDATE];
+				flags.push(COMMAND.FLAGS.VALIDATE);
+			}
+			const executionContextForDeploy = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				includeProjectDefaultAuthId: true,
+				params: SDKParams,
+				flags,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForDeploy),
+				message: TranslationService.getMessage(MESSAGES.DEPLOYING),
+			});
+
+			var isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
+			var isApplyContentProtection =
+				(this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE);
+
+			return operationResult.status === SDKOperationResultUtils.SUCCESS
+				? DeployActionResult.Builder
+					.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.isServerValidation(isServerValidation)
+					.withAppliedContentProtection(isApplyContentProtection)
+					.build()
+				: DeployActionResult.Builder
+					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
+					.build()
+		} catch (error) {
+			return DeployActionResult.Builder.withErrors([error]).build();
 		}
-		const executionContextForDeploy = new SDKExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			includeProjectDefaultAuthId: true,
-			params: SDKParams,
-			flags,
-		});
-
-		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForDeploy),
-			message: TranslationService.getMessage(MESSAGES.DEPLOYING),
-		});
-
-		return {
-			operationResult,
-			SDKParams,
-			flags,
-		};
 	}
 
 	_formatOutput(actionResult) {
-		assert(actionResult.operationResult);
-		assert(actionResult.SDKParams);
-		assert(actionResult.flags);
+		if (actionResult.status === ActionResult.ERROR) {
+			ActionResultUtils.logErrors(actionResult.errorMessages);
+			return;
+		}
 
-		const { operationResult, SDKParams, flags } = actionResult;
-
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			SDKOperationResultUtils.logErrors(operationResult);
-		} else {
-			this._showApplyContentProtectionOptionMessage(SDKParams);
-			if (Array.isArray(flags) && flags.includes(COMMAND.FLAGS.VALIDATE)) {
-				NodeUtils.println(
-					TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
-					NodeUtils.COLORS.INFO
-				);
-			}
-			const { data } = operationResult;
-			SDKOperationResultUtils.logResultMessage(operationResult);
-			if (Array.isArray(data)) {
-				data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
-			}
+		this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
+		if (actionResult.withServerValidation) {
+			NodeUtils.println(
+				TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
+				NodeUtils.COLORS.INFO
+			);
+		}
+		if (actionResult.resultMessage) {
+			ActionResultUtils.logResultMessage(actionResult);
+		}
+		if (Array.isArray(actionResult.data)) {
+			actionResult.data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
 		}
 	}
 
-	_showApplyContentProtectionOptionMessage(SDKParams) {
+	_showApplyContentProtectionOptionMessage(isApplyContentProtection) {
 		if (this._projectType === PROJECT_SUITEAPP) {
-			if (SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE) {
+			if (isApplyContentProtection === SDK_TRUE) {
 				NodeUtils.println(
 					TranslationService.getMessage(
 						MESSAGES.APPLYING_CONTENT_PROTECTION,
@@ -209,3 +219,5 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 };
+
+
