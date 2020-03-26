@@ -34,6 +34,11 @@
         "nonInteractiveGenerator": "commands/ListFilesCommandGenerator"
     },
     {
+        "commandName": "file:upload",
+        "interactiveGenerator": "commands/UploadFilesCommandGenerator",
+        "nonInteractiveGenerator": "commands/UploadFilesCommandGenerator"
+    },
+    {
         "commandName": "object:list",
         "interactiveGenerator": "commands/ListObjectsCommandGenerator",
         "nonInteractiveGenerator": "commands/ListObjectsCommandGenerator"
