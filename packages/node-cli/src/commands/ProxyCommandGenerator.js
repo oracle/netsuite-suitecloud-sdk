@@ -46,7 +46,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 			const proxyCommandData = await Promise.resolve(proxyCommandAction);
 			return ProxyActionResult.Builder
 				.success()
-				.isSettingProxy(proxyCommandData.isSettingProxy)
+				.withSettingProxy(proxyCommandData.withSettingProxy)
 				.withProxyUrl(proxyCommandData.proxyUrl)
 				.isProxyOverridden(proxyCommandData.proxyOverridden)
 				.build();
@@ -56,7 +56,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.isSettingProxy) {
+		if (actionResult.withSettingProxy) {
 			if (actionResult.proxyOverridden) {
 				NodeUtils.println(
 					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl),

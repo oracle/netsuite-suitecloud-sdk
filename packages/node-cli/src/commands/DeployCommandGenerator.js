@@ -164,8 +164,8 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				? DeployActionResult.Builder
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.isServerValidation(isServerValidation)
-					.appliedContentProtection(isApplyContentProtection)
+					.withServerValidation(isServerValidation)
+					.withAppliedContentProtection(isApplyContentProtection)
 					.build()
 				: DeployActionResult.Builder
 					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
@@ -181,8 +181,8 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			return;
 		}
 
-		this._showApplyContentProtectionOptionMessage(actionResult.appliedContentProtection);
-		if (actionResult.isServerValidation) {
+		this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
+		if (actionResult.withServerValidation) {
 			NodeUtils.println(
 				TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
 				NodeUtils.COLORS.INFO

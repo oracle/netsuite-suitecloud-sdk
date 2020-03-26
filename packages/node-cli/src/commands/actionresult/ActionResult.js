@@ -12,7 +12,6 @@ class ActionResult {
 
 	constructor(parameters) {
 		this.validateParameters(parameters);
-
 		this._status = parameters.status;
 		this._data = parameters.data;
 		this._resultMessage = parameters.resultMessage;

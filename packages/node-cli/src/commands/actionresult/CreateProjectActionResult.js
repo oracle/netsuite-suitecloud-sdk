@@ -8,20 +8,20 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class CreateProjectActionResult extends ActionResult {
 
-	constructor(build) {
-		super(build);
-		this._projectType = build.projectType;
-		this._projectName = build.projectName;
-		this._projectDirectory = build.projectDirectory;
-		this._includeUnitTesting = build.includeUnitTesting;
-		this._npmPackageInitialized = build.npmPackageIntitialized;
+	constructor(parameters) {
+		super(parameters);
+		this._projectType = parameters.projectType;
+		this._projectName = parameters.projectName;
+		this._projectDirectory = parameters.projectDirectory;
+		this._includeUnitTesting = parameters.includeUnitTesting;
+		this._npmPackageInitialized = parameters.npmPackageIntitialized;
 	}
 
-	validateBuild(build) {
-		super.validateParameters(build);
-		if (build.status === ActionResult.SUCCESS) {
-			assert(build.projectDirectory, "projectDirectory is required when ActionResult is a success.");
-			assert(build.projectType, "projectType is required when ActionResult is a success.");
+	validateParameters(parameters) {
+		super.validateParameters(parameters);
+		if (parameters.status === ActionResult.SUCCESS) {
+			assert(parameters.projectDirectory, "projectDirectory is required when ActionResult is a success.");
+			assert(parameters.projectType, "projectType is required when ActionResult is a success.");
 		}
 	}
 

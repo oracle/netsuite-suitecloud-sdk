@@ -8,23 +8,22 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class SetupCommandActionResult extends ActionResult {
 
-	constructor(build) {
-		super(build);
-		this._mode = build.mode;
-		this._authId = build.authId;
-		this._accountInfo = build.accountInfo;
+	constructor(parameters) {
+		super(parameters);
+		this._mode = parameters.mode;
+		this._authId = parameters.authId;
+		this._accountInfo = parameters.accountInfo;
 	}
 
-	validateBuild(build) {
-		assert(build);
-		assert(build.status, "status is required when creating an ActionResult object.");
-		if (build.status === ActionResult.SUCCESS) {
-			assert(build.mode, "mode is required when ActionResult is a success.");
-			assert(build.authId, "authId is required when ActionResult is a success.");
-			assert(build.accountInfo, "accountInfo is required when ActionResult is a success.");
+	validateParameters(parameters) {
+		super.validateParameters(parameters);
+		if (parameters.status === ActionResult.SUCCESS) {
+			assert(parameters.mode, "mode is required when ActionResult is a success.");
+			assert(parameters.authId, "authId is required when ActionResult is a success.");
+			assert(parameters.accountInfo, "accountInfo is required when ActionResult is a success.");
 		}
-		if (build.status === ActionResult.ERROR) {
-			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
+		if (parameters.status === ActionResult.ERROR) {
+			assert(parameters.errorMessages, "errorMessages is required when ActionResult is an error.");
 		}
 	}
 

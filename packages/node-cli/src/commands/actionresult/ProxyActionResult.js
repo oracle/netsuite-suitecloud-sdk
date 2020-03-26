@@ -8,23 +8,22 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class ProxyActionResult extends ActionResult {
 
-	constructor(build) {
-		super(build);
-		this._isSettingProxy = build.isSettingProxy;
-		this._proxyUrl = build.proxyUrl;
-		this._isProxyOverrided = build.isProxyOverridden;
+	constructor(parameters) {
+		super(parameters);
+		this._isSettingProxy = parameters.withSettingProxy;
+		this._proxyUrl = parameters.proxyUrl;
+		this._isProxyOverridden = parameters.isProxyOverridden;
 	}
 
-	validateBuild(build) {
-		assert(build);
-		assert(build.status, "status is required when creating an ActionResult object.");
-		if (build.status === ActionResult.SUCCESS) {
-			if (build.isSettingProxy) {
-				assert(build.proxyUrl, "proxyUrl is required when ActionResult is a success.");
+	validateParameters(parameters) {
+		super.validateParameters(parameters);
+		if (parameters.status === ActionResult.SUCCESS) {
+			if (parameters.withSettingProxy) {
+				assert(parameters.proxyUrl, "proxyUrl is required when ActionResult is a success.");
 			}
 		}
-		if (build.status === ActionResult.ERROR) {
-			assert(build.errorMessages, "errorMessages is required when ActionResult is an error.");
+		if (parameters.status === ActionResult.ERROR) {
+			assert(parameters.errorMessages, "errorMessages is required when ActionResult is an error.");
 		}
 	}
 
@@ -37,7 +36,7 @@ class ProxyActionResult extends ActionResult {
 	}
 
 	get isProxyOverridden() {
-		return this._isProxyOverrided;
+		return this._isProxyOverridden;
 	}
 
 	static get Builder() {
@@ -55,8 +54,8 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
-	isSettingProxy(isSettingProxy) {
-		this.isSettingProxy = isSettingProxy;
+	withSettingProxy(withSettingProxy) {
+		this.withSettingProxy = withSettingProxy;
 		return this;
 	}
 
@@ -74,7 +73,7 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 		return new ProxyActionResult({
 			status: this.status,
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
-			...(this.isSettingProxy && { isSettingProxy: this.isSettingProxy }),
+			...(this.withSettingProxy && { isSettingProxy: this.withSettingProxy }),
 			...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
 			...(this.isProxyOverridden && { proxyOverridden: this.isProxyOverridden })
 		});

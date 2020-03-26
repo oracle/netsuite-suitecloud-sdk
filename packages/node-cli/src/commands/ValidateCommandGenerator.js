@@ -157,8 +157,8 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				? DeployActionResult.Builder
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.isServerValidation(isServerValidation)
-					.appliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+					.withServerValidation(isServerValidation)
+					.withAppliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
 					.build()
 				: DeployActionResult.Builder
 					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
@@ -171,12 +171,12 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	_formatOutput(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
-		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
+		} else if (actionResult.withServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {
 				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
 			});
-		} else if (!actionResult.isServerValidation) {
-			this._showApplyContentProtectionOptionMessage(actionResult.appliedContentProtection);
+		} else if (!actionResult.withServerValidation) {
+			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
 			this._showLocalValidationResultData(actionResult.data);
 		}
 		ActionResultUtils.logResultMessage(actionResult);

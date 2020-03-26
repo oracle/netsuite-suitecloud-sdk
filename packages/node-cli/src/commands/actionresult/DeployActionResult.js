@@ -7,10 +7,10 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class DeployActionResult extends ActionResult {
 
-	constructor(build) {
-		super(build)
-		this._isServerValidation = build.isServerValidation ? true : false;
-		this._appliedContentProtection = build.appliedContentProtection ? true : false
+	constructor(parameters) {
+		super(parameters);
+		this._isServerValidation = parameters.withServerValidation ? true : false;
+		this._appliedContentProtection = parameters.withAppliedContentProtection ? true : false
 	}
 
 	get isServerValidation() {
@@ -22,22 +22,22 @@ class DeployActionResult extends ActionResult {
 	}
 
 	static get Builder() {
-		return new DeployActioneResultBuilder();
+		return new DeployActionResultBuilder();
 	}
 }
 
-class DeployActioneResultBuilder extends ActionResultBuilder {
+class DeployActionResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
 	}
 
-	isServerValidation(isServerValidation) {
-		this.isServerValidation = isServerValidation;
+	withServerValidation(isServerValidation) {
+		this.withServerValidation = isServerValidation;
 		return this;
 	}
 
-	appliedContentProtection(appliedContentProtection) {
-		this.appliedContentProtection = appliedContentProtection;
+	withAppliedContentProtection(appliedContentProtection) {
+		this.withAppliedContentProtection = appliedContentProtection;
 		return this;
 	}
 
@@ -47,8 +47,8 @@ class DeployActioneResultBuilder extends ActionResultBuilder {
 			...(this.data && { data: this.data }),
 			...(this.resultMessage && { resultMessage: this.resultMessage }),
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
-			...(this.isServerValidation && { isServerValidation: this.isServerValidation }),
-			...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection })
+			...(this.withServerValidation && { isServerValidation: this.withServerValidation }),
+			...(this.withAppliedContentProtection && { appliedContentProtection: this.withAppliedContentProtection })
 		});
 	}
 }
