@@ -1,5 +1,6 @@
 'use strict';
 const CommandActionExecutor = require('../../src/core/CommandActionExecutor');
+const { ActionResult } = require('../../src/commands/actionresult/ActionResult');
 
 describe('CommandActionExecutor ExecuteAction():', function() {
 	// STARTING MOCKS.
@@ -49,14 +50,18 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			return {
 				commandMetadata: { options: {} },
 				getCommandQuestions: jest.fn(),
-				actionFunc: jest.fn(),
+				actionFunc: jest.fn(() =>
+					ActionResult.Builder.withData([])
+						.withResultMessage('')
+						.build()
+				),
 				formatOutputFunc: jest.fn(),
 			};
 		}),
 	}));
 
 	const AuthenticationService = jest.fn(() => ({
-		getProjectDefaultAuthId: jest.fn()
+		getProjectDefaultAuthId: jest.fn(),
 	}));
 
 	const CommandsMetadataService = jest.fn(() => ({
@@ -115,7 +120,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		try {
 			await commandExecutor.executeAction({
 				executionPath: 'C:/',
-				commandName: 'importobjects',
+				commandName: 'object:import',
 				runInInteractiveMode: true,
 				arguments: undefined,
 			});
@@ -130,7 +135,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		try {
 			await commandExecutor.executeAction({
 				executionPath: 'C:/',
-				commandName: 'importobjects',
+				commandName: 'object:import',
 				runInInteractiveMode: 'true',
 				arguments: {},
 			});
@@ -143,7 +148,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 	it('Should execute action (Happy Path).', async () => {
 		await commandExecutor.executeAction({
 			executionPath: 'C:/',
-			commandName: 'importobjects',
+			commandName: 'object:import',
 			runInInteractiveMode: true,
 			arguments: {},
 		});
@@ -164,7 +169,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 		await commandExecutorWithValidationErrors.executeAction({
 			executionPath: 'C:/',
-			commandName: 'importobjects',
+			commandName: 'object:import',
 			runInInteractiveMode: true,
 			arguments: {},
 		});
@@ -191,7 +196,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 		await commandExecutorWithoutAccountConf.executeAction({
 			executionPath: 'C:/',
-			commandName: 'importobjects',
+			commandName: 'object:import',
 			runInInteractiveMode: true,
 			arguments: {},
 		});
@@ -218,7 +223,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 		await commandExecutorWithoutAccountConf.executeAction({
 			executionPath: 'C:/',
-			commandName: 'importobjects',
+			commandName: 'object:import',
 			runInInteractiveMode: true,
 			arguments: {},
 		});
@@ -242,7 +247,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 		await commandExecutor.executeAction({
 			executionPath: 'C:/',
-			commandName: 'deploy',
+			commandName: 'project:deploy',
 			runInInteractiveMode: false,
 			arguments: {},
 		});
@@ -256,7 +261,11 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 					commandMetadata: { options: {} },
 					_commandMetadata: {},
 					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() => ({ operationResult: { status: 'SUCCESS', resultMessage: '' } })),
+					actionFunc: jest.fn(() => 
+						ActionResult.Builder.withData([])
+							.withResultMessage('')
+							.build()
+					),
 					formatOutputFunc: jest.fn(),
 				};
 			}),
@@ -265,7 +274,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 		await commandExecutor.executeAction({
 			executionPath: 'C:/',
-			commandName: 'deploy',
+			commandName: 'project:deploy',
 			runInInteractiveMode: false,
 			arguments: {},
 		});
