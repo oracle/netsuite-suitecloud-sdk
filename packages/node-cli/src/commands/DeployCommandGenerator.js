@@ -165,7 +165,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				? DeployActionResult.Builder
 					.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.isServerValidation(isServerValidation)
+					.withServerValidation(isServerValidation)
 					.withAppliedContentProtection(isApplyContentProtection)
 					.build()
 				: DeployActionResult.Builder
