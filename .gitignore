@@ -2,7 +2,6 @@
 **/node_modules/**
 
 # ide
-**/.vscode/**
 **/.idea/**
 
 # package-lock of packages doesn't make sense with Lerna
