@@ -1,15 +1,15 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
-const NodeUtils = require('./NodeUtils');
+const NodeConsoleLogger = require('./NodeConsoleLogger');
 const { ERROR } = require('../commands/actionresult/ActionResult');
 
 module.exports = {
 	getErrorMessagesString: actionResult => {
-		return actionResult.errorMessages.join(NodeUtils.lineBreak);
+		return actionResult.errorMessages.join(NodeConsoleLogger.lineBreak);
 	},
 
 	getResultMessage: actionResult => {
@@ -18,17 +18,15 @@ module.exports = {
 	},
 
 	logErrors: errors => {
-		errors.forEach(
-			message => NodeUtils.println(message, NodeUtils.COLORS.ERROR)
-		);
+		errors.forEach(message => NodeConsoleLogger.println(message, NodeConsoleLogger.COLORS.ERROR));
 	},
 
 	logResultMessage: actionResult => {
 		if (actionResult.resultMessage) {
 			if (actionResult.status === ERROR) {
-				NodeUtils.println(actionResult.resultMessage, NodeUtils.COLORS.ERROR);
+				NodeConsoleLogger.println(actionResult.resultMessage, NodeConsoleLogger.COLORS.ERROR);
 			} else {
-				NodeUtils.println(actionResult.resultMessage, NodeUtils.COLORS.RESULT);
+				NodeConsoleLogger.println(actionResult.resultMessage, NodeConsoleLogger.COLORS.RESULT);
 			}
 		}
 	},
@@ -43,10 +41,7 @@ module.exports = {
 			}
 			errors = errorMessages;
 		} else {
-			errors = [
-				...(resultMessage && resultMessage),
-				...(errorMessages && errorMessages),
-			];
+			errors = [...(resultMessage && resultMessage), ...(errorMessages && errorMessages)];
 		}
 		return errors;
 	},

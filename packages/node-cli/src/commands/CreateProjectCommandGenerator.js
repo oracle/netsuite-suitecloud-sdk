@@ -13,7 +13,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const NpmInstallRunner = require('../services/NpmInstallRunner');
@@ -283,7 +283,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	createProject(params, answers, projectAbsolutePath, projectFolderName, manifestFilePath) {
 		return async (resolve, reject) => {
 			try {
-				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
+				NodeConsoleLogger.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeConsoleLogger.COLORS.INFO);
 				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
@@ -311,7 +311,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, answers[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
-					NodeUtils.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), NodeUtils.COLORS.INFO);
+					NodeConsoleLogger.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), NodeConsoleLogger.COLORS.INFO);
 					await this._createUnitTestFiles(
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
@@ -319,7 +319,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						projectAbsolutePath
 					);
 
-					NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeUtils.COLORS.INFO);
+					NodeConsoleLogger.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeConsoleLogger.COLORS.INFO);
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
 				} else {
 					await this._fileSystemService.createFileFromTemplate({
@@ -429,18 +429,18 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		ActionResultUtils.logResultMessage(actionResult);
 
 		const projectCreatedMessage = TranslationService.getMessage(MESSAGES.PROJECT_CREATED, actionResult.projectName);
-		NodeUtils.println(projectCreatedMessage, NodeUtils.COLORS.RESULT);
+		NodeConsoleLogger.println(projectCreatedMessage, NodeConsoleLogger.COLORS.RESULT);
 
 		if (actionResult.includeUnitTesting) {
 			const sampleUnitTestMessage = TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
-			NodeUtils.println(sampleUnitTestMessage, NodeUtils.COLORS.RESULT);
+			NodeConsoleLogger.println(sampleUnitTestMessage, NodeConsoleLogger.COLORS.RESULT);
 			if (!actionResult.npmPackageIntitialized) {
-				NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeUtils.COLORS.ERROR);
+				NodeConsoleLogger.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeConsoleLogger.COLORS.ERROR);
 			}
 		}
 
 		const navigateToProjectMessage = TranslationService.getMessage(MESSAGES.NAVIGATE_TO_FOLDER, actionResult.projectDirectory);
-		NodeUtils.println(navigateToProjectMessage, NodeUtils.COLORS.RESULT);
+		NodeConsoleLogger.println(navigateToProjectMessage, NodeConsoleLogger.COLORS.RESULT);
 	}
 
 	_validateParams(answers) {

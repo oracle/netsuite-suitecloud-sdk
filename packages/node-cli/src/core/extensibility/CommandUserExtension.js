@@ -6,7 +6,7 @@
 
 const assert = require('assert');
 const TranslationService = require('../../services/TranslationService');
-const { lineBreak } = require('../../utils/NodeUtils');
+const { lineBreak } = require('../../utils/NodeConsoleLogger');
 const { ERRORS } = require('../../services/TranslationKeys');
 
 module.exports = class CommandUserExtension {

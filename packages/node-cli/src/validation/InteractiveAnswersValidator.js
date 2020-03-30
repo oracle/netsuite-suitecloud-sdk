@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const TranslationService = require('../services/TranslationService');
 const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTION_IS_MANDATORY } = require('../services/TranslationKeys');
 const url = require('url');
@@ -17,8 +17,8 @@ const VALIDATION_RESULT_FAILURE = validationError => ({
 });
 const VALIDATION_RESULT_SUCCESS = { result: true };
 
-NodeUtils.formatString(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.EMPTY_FIELD), {
-	color: NodeUtils.COLORS.ERROR,
+NodeConsoleLogger.formatString(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.EMPTY_FIELD), {
+	color: NodeConsoleLogger.COLORS.ERROR,
 	bold: true,
 });
 

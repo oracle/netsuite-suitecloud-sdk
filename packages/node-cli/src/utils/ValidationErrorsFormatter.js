@@ -1,12 +1,12 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const TranslationService = require('../services/TranslationService');
 const TRANSLATION_KEYS = require('../services/TranslationKeys');
-const { lineBreak } = require('../utils/NodeUtils');
+const { lineBreak } = require('./NodeConsoleLogger');
 const assert = require('assert');
 
 class ValidationErrorsFormatter {
@@ -14,9 +14,7 @@ class ValidationErrorsFormatter {
 		assert(validationErrors);
 		assert(Array.isArray(validationErrors));
 
-		const errorMessageHeader = TranslationService.getMessage(
-			TRANSLATION_KEYS.COMMAND_OPTIONS_VALIDATION_ERRORS
-		);
+		const errorMessageHeader = TranslationService.getMessage(TRANSLATION_KEYS.COMMAND_OPTIONS_VALIDATION_ERRORS);
 		const validationErrorsString = validationErrors.join(lineBreak);
 		return `${errorMessageHeader}${lineBreak}${validationErrorsString}`;
 	}

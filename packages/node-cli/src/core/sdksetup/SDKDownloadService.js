@@ -13,7 +13,7 @@ const HOME_PATH = require('os').homedir();
 
 const { FOLDERS } = require('../../ApplicationConstants');
 
-const NodeUtils = require('../../utils/NodeUtils');
+const NodeConsoleLogger = require('../../utils/NodeConsoleLogger');
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
 
 const TranslationService = require('../../services/TranslationService');
@@ -51,19 +51,19 @@ class SDKDownloadService {
 			message: TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
 		})
 			.then(() =>
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS),
-					NodeUtils.COLORS.INFO
+					NodeConsoleLogger.COLORS.INFO
 				)
 			)
 			.catch(error =>
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(
 						DOWNLOADING_SUITECLOUD_SDK_ERROR,
 						fullURL,
 						unwrapExceptionMessage(error)
 					),
-					NodeUtils.COLORS.ERROR
+					NodeConsoleLogger.COLORS.ERROR
 				)
 			);
 	}

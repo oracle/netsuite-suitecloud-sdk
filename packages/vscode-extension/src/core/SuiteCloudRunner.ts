@@ -1,7 +1,9 @@
+import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
+import VSConsoleLogger from '../service/VSConsoleLogger';
+
 const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
 const CommandInstanceFactory = require('@oracle/suitecloud-cli/src/core/CommandInstanceFactory');
 const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
-const CommandOutputHandler = require('@oracle/suitecloud-cli/src/core/CommandOutputHandler');
 const CLIConfigurationService = require('@oracle/suitecloud-cli/src/core/extensibility/CLIConfigurationService');
 const AuthenticationService = require('@oracle/suitecloud-cli/src/core/authentication/AuthenticationService');
 
@@ -9,14 +11,16 @@ export default class SuiteCloudRunner {
 	private commandActionExecutor: any;
 
 	constructor(executionPath: string, commandsMetadataService: any) {
-		this.commandActionExecutor = new CommandActionExecutor({   //THIS SHOULD BE A FACTORY METHOD INSIDE THE CLI CommandActionExecutorFactory.get({executionPath:executionPath})
+		this.commandActionExecutor = new CommandActionExecutor({
+			//THIS SHOULD BE A FACTORY METHOD INSIDE THE CLI CommandActionExecutorFactory.get({executionPath:executionPath})
 			executionPath,
-			commandOutputHandler: new CommandOutputHandler(),
+			commandOutputHandler: new VSCommandOutputHandler(),
 			commandOptionsValidator: new CommandOptionsValidator(),
 			cliConfigurationService: new CLIConfigurationService(),
 			commandInstanceFactory: new CommandInstanceFactory(),
 			authenticationService: new AuthenticationService(executionPath),
-			commandsMetadataService: commandsMetadataService
+			commandsMetadataService: commandsMetadataService,
+			consoleLogger: new VSConsoleLogger(),
 		});
 	}
 

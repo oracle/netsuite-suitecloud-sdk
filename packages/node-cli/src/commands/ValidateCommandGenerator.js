@@ -11,7 +11,7 @@ const DeployActionResult = require('../commands/actionresult/DeployActionResult'
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const TranslationService = require('../services/TranslationService');
 const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
@@ -174,7 +174,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			ActionResultUtils.logErrors(actionResult.errorMessages);
 		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {
-				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
+				NodeConsoleLogger.println(resultLine, NodeConsoleLogger.COLORS.RESULT);
 			});
 		} else if (!actionResult.isServerValidation) {
 			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
@@ -186,20 +186,20 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 	_showApplyContentProtectionOptionMessage(isAppliedContentProtection) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			if (isAppliedContentProtection) {
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(
 						MESSAGES.APPLYING_CONTENT_PROTECTION,
 						this._projectFolder
 					),
-					NodeUtils.COLORS.INFO
+					NodeConsoleLogger.COLORS.INFO
 				);
 			} else {
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(
 						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
 						this._projectFolder
 					),
-					NodeUtils.COLORS.INFO
+					NodeConsoleLogger.COLORS.INFO
 				);
 			}
 		}
@@ -209,12 +209,12 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		this._logValidationEntries(
 			data.warnings,
 			TranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING),
-			NodeUtils.COLORS.WARNING
+			NodeConsoleLogger.COLORS.WARNING
 		);
 		this._logValidationEntries(
 			data.errors,
 			TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR),
-			NodeUtils.COLORS.ERROR
+			NodeConsoleLogger.COLORS.ERROR
 		);
 	}
 
@@ -227,16 +227,16 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		});
 
 		if (entries.length > 0) {
-			NodeUtils.println(`${headingLabel}:`, color);
+			NodeConsoleLogger.println(`${headingLabel}:`, color);
 		}
 
 		files.forEach(file => {
 			const fileString = `    ${file}`;
-			NodeUtils.println(fileString, color);
+			NodeConsoleLogger.println(fileString, color);
 			entries
 				.filter(entry => entry.filePath === file)
 				.forEach(entry => {
-					NodeUtils.println(
+					NodeConsoleLogger.println(
 						TranslationService.getMessage(
 							OUTPUT.VALIDATION_OUTPUT_MESSAGE,
 							entry.lineNumber,

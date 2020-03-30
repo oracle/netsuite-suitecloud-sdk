@@ -1,15 +1,13 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const assert = require('assert');
 const inquirer = require('inquirer');
 const TranslationService = require('./../services/TranslationService');
-const {
-	ERRORS,
-} = require('../services/TranslationKeys');
+const { ERRORS } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
@@ -24,6 +22,7 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.commandsMetadataService);
 		assert(dependencies.commandOutputHandler);
 		assert(dependencies.authenticationService);
+		assert(dependencies.consoleLogger);
 
 		this._executionPath = dependencies.executionPath;
 		this._commandOptionsValidator = dependencies.commandOptionsValidator;
@@ -32,6 +31,7 @@ module.exports = class CommandActionExecutor {
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._commandOutputHandler = dependencies.commandOutputHandler;
 		this._authenticationService = dependencies.authenticationService;
+		this._consoleLogger = dependencies.consoleLogger;
 	}
 
 	async executeAction(context) {
@@ -42,23 +42,17 @@ module.exports = class CommandActionExecutor {
 
 		let commandUserExtension;
 		try {
-			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(
-				context.commandName
-			);
+			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(context.commandName);
 			const commandName = context.commandName;
 
 			this._cliConfigurationService.initialize(this._executionPath);
 			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
-			commandUserExtension = this._cliConfigurationService.getCommandUserExtension(
-				commandName
-			);
+			commandUserExtension = this._cliConfigurationService.getCommandUserExtension(commandName);
 
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
-			const projectConfiguration = commandMetadata.isSetupRequired
-				? this._authenticationService.getProjectDefaultAuthId()
-				: null;
+			const projectConfiguration = commandMetadata.isSetupRequired ? this._authenticationService.getProjectDefaultAuthId() : null;
 			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
 
 			const command = this._commandInstanceFactory.create({
@@ -66,12 +60,10 @@ module.exports = class CommandActionExecutor {
 				commandMetadata: commandMetadata,
 				projectFolder: projectFolder,
 				executionPath: this._executionPath,
+				consoleLogger: this._consoleLogger,
 			});
 
-			const commandArguments = this._extractOptionValuesFromArguments(
-				command.commandMetadata.options,
-				args
-			);
+			const commandArguments = this._extractOptionValuesFromArguments(command.commandMetadata.options, args);
 
 			const actionResult = await this._executeCommandAction({
 				command: command,
@@ -94,7 +86,6 @@ module.exports = class CommandActionExecutor {
 
 			if (commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
-
 			}
 			return actionResult;
 		} catch (error) {
@@ -113,10 +104,7 @@ module.exports = class CommandActionExecutor {
 			throw TranslationService.getMessage(ERRORS.SETUP_REQUIRED);
 		}
 		if (context.runInInteractiveMode && !context.commandMetadata.supportsInteractiveMode) {
-			throw TranslationService.getMessage(
-				ERRORS.COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE,
-				context.commandMetadata.name
-			);
+			throw TranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE, context.commandMetadata.name);
 		}
 	}
 
@@ -142,9 +130,7 @@ module.exports = class CommandActionExecutor {
 		try {
 			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
 				command: this,
-				arguments: isSetupRequired
-					? this._applyDefaultContextParams(commandArguments, projectConfiguration)
-					: commandArguments,
+				arguments: isSetupRequired ? this._applyDefaultContextParams(commandArguments, projectConfiguration) : commandArguments,
 			});
 			const overriddenCommandArguments = beforeExecutingOutput.arguments;
 
@@ -161,11 +147,7 @@ module.exports = class CommandActionExecutor {
 				? command.preActionFunc(commandArgumentsWithQuestionArguments)
 				: commandArgumentsWithQuestionArguments;
 
-			this._checkCommandValidationErrors(
-				commandArgumentsAfterPreActionFunc,
-				command.commandMetadata,
-				runInInteractiveMode
-			);
+			this._checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, command.commandMetadata, runInInteractiveMode);
 
 			return await command.actionFunc(commandArgumentsAfterPreActionFunc);
 		} catch (error) {
@@ -173,11 +155,7 @@ module.exports = class CommandActionExecutor {
 		}
 	}
 
-	_checkCommandValidationErrors(
-		commandArgumentsAfterPreActionFunc,
-		commandMetadata,
-		runInInteractiveMode
-	) {
+	_checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, commandMetadata, runInInteractiveMode) {
 		const validationErrors = this._commandOptionsValidator.validate({
 			commandOptions: commandMetadata.options,
 			arguments: commandArgumentsAfterPreActionFunc,

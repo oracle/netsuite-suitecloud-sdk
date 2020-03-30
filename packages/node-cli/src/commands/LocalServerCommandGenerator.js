@@ -6,7 +6,7 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const LocalCommand = require('@oracle/suitecloud-cli-localserver-command').LocalCommand;
 
-const { COLORS } = require('./../utils/NodeUtils');
+const { COLORS } = require('../utils/NodeConsoleLogger');
 const { COMMAND_LOCAL } = require('./../services/TranslationKeys');
 const TranslationService = require('./../services/TranslationService');
 const FileSystemService = require('./../services/FileSystemService');

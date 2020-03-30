@@ -10,7 +10,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const {
@@ -51,7 +51,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				})
 				// TODO : find right mecanism to treat the error
 				.catch(error => {
-					NodeUtils.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeUtils.COLORS.ERROR);
+					NodeConsoleLogger.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeConsoleLogger.COLORS.ERROR);
 				})
 		});
 	}
@@ -106,7 +106,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 		if (Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(fileName => {
-				NodeUtils.println(fileName, NodeUtils.COLORS.RESULT)
+				NodeConsoleLogger.println(fileName, NodeConsoleLogger.COLORS.RESULT)
 			});
 		}
 	}

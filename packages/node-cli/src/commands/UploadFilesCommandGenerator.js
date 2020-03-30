@@ -9,7 +9,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const FileCabinetService = require('../services/FileCabinetService');
 const FileSystemService = require('../services/FileSystemService');
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const path = require('path');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
@@ -181,17 +181,17 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 			const successfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.SUCCESS);
 			const unsuccessfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.ERROR);
 			if (successfulUploads && successfulUploads.length) {
-				NodeUtils.println(TranslationService.getMessage(OUTPUT.FILES_UPLOADED), NodeUtils.COLORS.RESULT);
+				NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_UPLOADED), NodeConsoleLogger.COLORS.RESULT);
 				successfulUploads.forEach(result => {
-					NodeUtils.println(this._fileCabinetService.getFileCabinetRelativePath(result.file.path), NodeUtils.COLORS.RESULT);
+					NodeConsoleLogger.println(this._fileCabinetService.getFileCabinetRelativePath(result.file.path), NodeConsoleLogger.COLORS.RESULT);
 				});
 			}
 			if (unsuccessfulUploads && unsuccessfulUploads.length) {
-				NodeUtils.println(TranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED), NodeUtils.COLORS.WARNING);
+				NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED), NodeConsoleLogger.COLORS.WARNING);
 				unsuccessfulUploads.forEach(result => {
-					NodeUtils.println(
+					NodeConsoleLogger.println(
 						`${this._fileCabinetService.getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`,
-						NodeUtils.COLORS.WARNING
+						NodeConsoleLogger.COLORS.WARNING
 					);
 				});
 			}

@@ -9,7 +9,7 @@ const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
@@ -219,23 +219,23 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			const successful = actionResult.data.results.filter(result => result.loaded === true);
 			const unsuccessful = actionResult.data.results.filter(result => result.loaded !== true);
 			if (successful.length) {
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(OUTPUT.FILES_IMPORTED),
-					NodeUtils.COLORS.RESULT
+					NodeConsoleLogger.COLORS.RESULT
 				);
 				successful.forEach(result => {
-					NodeUtils.println(result.path, NodeUtils.COLORS.RESULT);
+					NodeConsoleLogger.println(result.path, NodeConsoleLogger.COLORS.RESULT);
 				});
 			}
 			if (unsuccessful.length) {
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED),
-					NodeUtils.COLORS.WARNING
+					NodeConsoleLogger.COLORS.WARNING
 				);
 				unsuccessful.forEach(result => {
-					NodeUtils.println(
+					NodeConsoleLogger.println(
 						`${result.path}, ${result.message}`,
-						NodeUtils.COLORS.WARNING
+						NodeConsoleLogger.COLORS.WARNING
 					);
 				});
 			}

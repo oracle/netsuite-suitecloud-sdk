@@ -8,7 +8,7 @@ const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const TranslationService = require('../services/TranslationService');
@@ -78,7 +78,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				message: TranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
 			});
 		} catch (error) {
-			throw TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeUtils.lineBreak, error);
+			throw TranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, NodeConsoleLogger.lineBreak, error);
 		}
 
 		const { data } = listObjectsResult;
@@ -104,7 +104,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			const overwriteConfirmationQuestion = this._generateOverwriteConfirmationQuestion(answersAfterObjectSelection);
 			overwriteConfirmationAnswer = await prompt(overwriteConfirmationQuestion);
 		} catch (error) {
-			throw TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeUtils.lineBreak, error);
+			throw TranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, NodeConsoleLogger.lineBreak, error);
 		}
 
 		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...answersAfterObjectSelection, ...overwriteConfirmationAnswer };
@@ -369,10 +369,10 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 	_logImportedObjects(importedObjects) {
 		if (Array.isArray(importedObjects) && importedObjects.length) {
-			NodeUtils.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), NodeUtils.COLORS.RESULT);
+			NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), NodeConsoleLogger.COLORS.RESULT);
 			importedObjects.forEach(objectImport => {
-				const importedObjectLogMessage = `${NodeUtils.getPadding(1)}- ${objectImport.customObject.type}:${objectImport.customObject.id}`;
-				NodeUtils.println(importedObjectLogMessage, NodeUtils.COLORS.RESULT);
+				const importedObjectLogMessage = `${NodeConsoleLogger.getPadding(1)}- ${objectImport.customObject.type}:${objectImport.customObject.id}`;
+				NodeConsoleLogger.println(importedObjectLogMessage, NodeConsoleLogger.COLORS.RESULT);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
 		}
@@ -385,43 +385,43 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const thereAreReferencedFiles =
 			(Array.isArray(importedFiles) && importedFiles.length) || (Array.isArray(unImportedFiles) && unImportedFiles.length);
 		if (thereAreReferencedFiles) {
-			const referencedFilesLogMessage = `${NodeUtils.getPadding(2)}- ${TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILES)}`;
-			NodeUtils.println(referencedFilesLogMessage, NodeUtils.COLORS.RESULT);
+			const referencedFilesLogMessage = `${NodeConsoleLogger.getPadding(2)}- ${TranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILES)}`;
+			NodeConsoleLogger.println(referencedFilesLogMessage, NodeConsoleLogger.COLORS.RESULT);
 		}
 
 		if (Array.isArray(importedFiles) && importedFiles.length) {
 			importedFiles.forEach(importedFile => {
-				const importedFileLogMessage = `${NodeUtils.getPadding(3)}- ${TranslationService.getMessage(
+				const importedFileLogMessage = `${NodeConsoleLogger.getPadding(3)}- ${TranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
 					importedFile.path
 				)}`;
-				NodeUtils.println(importedFileLogMessage, NodeUtils.COLORS.RESULT);
+				NodeConsoleLogger.println(importedFileLogMessage, NodeConsoleLogger.COLORS.RESULT);
 			});
 		}
 
 		if (Array.isArray(unImportedFiles) && unImportedFiles.length) {
 			unImportedFiles.forEach(unImportedFile => {
-				const unimportedFileLogMessage = `${NodeUtils.getPadding(3)}- ${TranslationService.getMessage(
+				const unimportedFileLogMessage = `${NodeConsoleLogger.getPadding(3)}- ${TranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
 					unImportedFile.path,
 					unImportedFile.message
 				)}`;
-				NodeUtils.println(unimportedFileLogMessage, NodeUtils.COLORS.WARNING);
+				NodeConsoleLogger.println(unimportedFileLogMessage, NodeConsoleLogger.COLORS.WARNING);
 			});
 		}
 	}
 
 	_logUnImportedObjects(unImportedObjects) {
 		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
-			NodeUtils.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), NodeUtils.COLORS.WARNING);
+			NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), NodeConsoleLogger.COLORS.WARNING);
 			unImportedObjects.forEach(objectImport => {
-				const unimportedObjectLogMessage = `${NodeUtils.getPadding(1)}- ${TranslationService.getMessage(
+				const unimportedObjectLogMessage = `${NodeConsoleLogger.getPadding(1)}- ${TranslationService.getMessage(
 					OUTPUT.OBJECT_IMPORT_FAILED,
 					objectImport.customObject.type,
 					objectImport.customObject.id,
 					objectImport.customObject.result.message
 				)}`;
-				NodeUtils.println(unimportedObjectLogMessage, NodeUtils.COLORS.WARNING);
+				NodeConsoleLogger.println(unimportedObjectLogMessage, NodeConsoleLogger.COLORS.WARNING);
 			});
 		}
 	}

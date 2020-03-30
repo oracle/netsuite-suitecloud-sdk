@@ -10,7 +10,7 @@ const TranslationService = require('../services/TranslationService');
 const {
 	COMMAND_PROXY: { ARGS_VALIDATION, MESSAGES },
 } = require('../services/TranslationKeys');
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const CLISettingsService = require('../services/settings/CLISettingsService');
 const url = require('url');
 
@@ -58,23 +58,23 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	_formatOutput(actionResult) {
 		if (actionResult.withSettingProxy) {
 			if (actionResult.proxyOverridden) {
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl),
-					NodeUtils.COLORS.RESULT
+					NodeConsoleLogger.COLORS.RESULT
 				);
 			} else {
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(
 						MESSAGES.SUCCESFULLY_SETUP,
 						actionResult.proxyUrl
 					),
-					NodeUtils.COLORS.RESULT
+					NodeConsoleLogger.COLORS.RESULT
 				);
 			}
 		} else {
-			NodeUtils.println(
+			NodeConsoleLogger.println(
 				TranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED),
-				NodeUtils.COLORS.RESULT
+				NodeConsoleLogger.COLORS.RESULT
 			);
 		}
 	}

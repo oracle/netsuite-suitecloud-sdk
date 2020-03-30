@@ -9,7 +9,7 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const TranslationService = require('../services/TranslationService');
@@ -196,17 +196,17 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 		ActionResultUtils.logResultMessage(actionResult);
 		if (Array.isArray(actionResult.data) && actionResult.data.length) {
-			NodeUtils.println(
+			NodeConsoleLogger.println(
 				TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED),
-				NodeUtils.COLORS.RESULT
+				NodeConsoleLogger.COLORS.RESULT
 			);
 			actionResult.data.forEach(object =>
-				NodeUtils.println(`${object.type}:${object.scriptId}`, NodeUtils.COLORS.RESULT)
+				NodeConsoleLogger.println(`${object.type}:${object.scriptId}`, NodeConsoleLogger.COLORS.RESULT)
 			);
 		} else {
-			NodeUtils.println(
+			NodeConsoleLogger.println(
 				TranslationService.getMessage(SUCCESS_NO_OBJECTS),
-				NodeUtils.COLORS.RESULT
+				NodeConsoleLogger.COLORS.RESULT
 			);
 		}
 	}

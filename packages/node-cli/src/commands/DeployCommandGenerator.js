@@ -15,7 +15,7 @@ const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesAr
 const ApplyContentProtectionArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const SDKExecutionContext = require('../SDKExecutionContext');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
@@ -112,13 +112,13 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			isSuiteAppProject &&
 			!answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)
 		) {
-			NodeUtils.println(
+			NodeConsoleLogger.println(
 				TranslationService.getMessage(
 					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,
 					LINKS.HOW_TO.CREATE_HIDDING_XML,
 					LINKS.HOW_TO.CREATE_LOCKING_XML
 				),
-				NodeUtils.COLORS.INFO
+				NodeConsoleLogger.COLORS.INFO
 			);
 		}
 
@@ -184,36 +184,36 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 
 		this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
 		if (actionResult.withServerValidation) {
-			NodeUtils.println(
+			NodeConsoleLogger.println(
 				TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
-				NodeUtils.COLORS.INFO
+				NodeConsoleLogger.COLORS.INFO
 			);
 		}
 		if (actionResult.resultMessage) {
 			ActionResultUtils.logResultMessage(actionResult);
 		}
 		if (Array.isArray(actionResult.data)) {
-			actionResult.data.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.RESULT));
+			actionResult.data.forEach(message => NodeConsoleLogger.println(message, NodeConsoleLogger.COLORS.RESULT));
 		}
 	}
 
 	_showApplyContentProtectionOptionMessage(isApplyContentProtection) {
 		if (this._projectType === PROJECT_SUITEAPP) {
 			if (isApplyContentProtection === SDK_TRUE) {
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(
 						MESSAGES.APPLYING_CONTENT_PROTECTION,
 						this._projectFolder
 					),
-					NodeUtils.COLORS.INFO
+					NodeConsoleLogger.COLORS.INFO
 				);
 			} else {
-				NodeUtils.println(
+				NodeConsoleLogger.println(
 					TranslationService.getMessage(
 						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
 						this._projectFolder
 					),
-					NodeUtils.COLORS.INFO
+					NodeConsoleLogger.COLORS.INFO
 				);
 			}
 		}

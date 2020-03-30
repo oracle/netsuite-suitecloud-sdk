@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const SDKExecutor = require('../SDKExecutor').SDKExecutor;
@@ -15,6 +15,7 @@ module.exports = class BaseCommandGenerator {
 		assert(options.commandMetadata);
 		assert(options.projectFolder);
 		assert(typeof options.runInInteractiveMode === 'boolean');
+		assert(options.consoleLogger);
 
 		this._sdkExecutor = new SDKExecutor(new AuthenticationService(options.executionPath));
 
@@ -22,12 +23,13 @@ module.exports = class BaseCommandGenerator {
 		this._projectFolder = options.projectFolder;
 		this._executionPath = options.executionPath;
 		this._runInInteractiveMode = options.runInInteractiveMode;
+		this._consoleLogger = options.consoleLogger;
 	}
 
 	_getCommandQuestions(prompt) {
 		return prompt([]);
 	}
-	
+
 	_executeAction() {}
 
 	_preExecuteAction(args) {
@@ -42,6 +44,7 @@ module.exports = class BaseCommandGenerator {
 			preActionFunc: this._preExecuteAction.bind(this),
 			actionFunc: this._executeAction.bind(this),
 			formatOutputFunc: this._formatOutput ? this._formatOutput.bind(this) : null,
+			consoleLogger: this._consoleLogger ? this._consoleLogger : new NodeConsoleLogger(),
 		});
 	}
 };

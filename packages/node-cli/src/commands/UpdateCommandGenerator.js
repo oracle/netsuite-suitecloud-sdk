@@ -11,7 +11,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
@@ -177,12 +177,12 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
 
 		if (updatedObjects.length > 0) {
-			NodeUtils.println(TranslationService.getMessage(OUTPUT.UPDATED_OBJECTS), NodeUtils.COLORS.RESULT);
-			updatedObjects.sort(sortByKey).forEach(updatedObject => NodeUtils.println(updatedObject.key, NodeUtils.COLORS.RESULT));
+			NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.UPDATED_OBJECTS), NodeConsoleLogger.COLORS.RESULT);
+			updatedObjects.sort(sortByKey).forEach(updatedObject => NodeConsoleLogger.println(updatedObject.key, NodeConsoleLogger.COLORS.RESULT));
 		}
 		if (noUpdatedObjects.length > 0) {
-			NodeUtils.println(TranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS), NodeUtils.COLORS.WARNING);
-			noUpdatedObjects.sort(sortByKey).forEach(noUpdatedObject => NodeUtils.println(noUpdatedObject.message, NodeUtils.COLORS.WARNING));
+			NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS), NodeConsoleLogger.COLORS.WARNING);
+			noUpdatedObjects.sort(sortByKey).forEach(noUpdatedObject => NodeConsoleLogger.println(noUpdatedObject.message, NodeConsoleLogger.COLORS.WARNING));
 		}
 	}
 };

@@ -11,7 +11,7 @@ const SetupActionResult = require('../commands/actionresult/SetupActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const NodeUtils = require('../utils/NodeUtils');
+const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
@@ -366,8 +366,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				break;
 		}
 
-		NodeUtils.println(resultMessage, NodeUtils.COLORS.RESULT);
-		NodeUtils.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), NodeUtils.COLORS.RESULT);
+		NodeConsoleLogger.println(resultMessage, NodeConsoleLogger.COLORS.RESULT);
+		NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), NodeConsoleLogger.COLORS.RESULT);
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {

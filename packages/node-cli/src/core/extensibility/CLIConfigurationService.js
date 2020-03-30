@@ -1,11 +1,11 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const { NodeVM } = require('vm2');
-const NodeUtils = require('../../utils/NodeUtils');
+const NodeConsoleLogger = require('../../utils/NodeConsoleLogger');
 const FileUtils = require('../../utils/FileUtils');
 const path = require('path');
 const TranslationService = require('./../../services/TranslationService');
@@ -47,33 +47,25 @@ module.exports = class CLIConfigurationService {
 			throw TranslationService.getMessage(
 				ERRORS.CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE,
 				cliConfigFile,
-				NodeUtils.lineBreak,
+				NodeConsoleLogger.lineBreak,
 				error
 			);
 		}
 	}
 
 	getCommandUserExtension(commandName) {
-		const commandExtension =
-			this._cliConfig && this._cliConfig.commands[commandName]
-				? this._cliConfig.commands[commandName]
-				: {};
+		const commandExtension = this._cliConfig && this._cliConfig.commands[commandName] ? this._cliConfig.commands[commandName] : {};
 		return new CommandUserExtension(commandExtension);
 	}
 
 	getProjectFolder(command) {
-		const defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder)
-			? this._cliConfig.defaultProjectFolder
-			: '';
+		const defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder) ? this._cliConfig.defaultProjectFolder : '';
 
 		const commandConfig = this._cliConfig && this._cliConfig.commands[command];
 		let commandOverridenProjectFolder;
 		if (commandConfig && isString(commandConfig.projectFolder)) {
 			commandOverridenProjectFolder = commandConfig.projectFolder;
 		}
-		return path.join(
-			this._executionPath,
-			commandOverridenProjectFolder ? commandOverridenProjectFolder : defaultProjectFolder
-		);
+		return path.join(this._executionPath, commandOverridenProjectFolder ? commandOverridenProjectFolder : defaultProjectFolder);
 	}
 };

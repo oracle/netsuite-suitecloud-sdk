@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
 import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
-import { unwrapExceptionMessage, actionResultStatus } from '../util/ExtensionUtil';
+import { actionResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const objectTypes: {
@@ -11,22 +11,16 @@ const objectTypes: {
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 export default class ListObjects extends BaseAction {
-	readonly commandName: string = "object:list";
+	readonly commandName: string = 'object:list';
 	vsCommandOutputHandler = new VSCommandOutputHandler();
 
-	async execute(opts: {
-		suiteCloudRunner: SuiteCloudRunner,
-		messageService: MessageService
-	}) {
-
-
+	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
 		if (opts.suiteCloudRunner && opts.messageService) {
-
 			const selectedObjectTypes = await window.showQuickPick(
 				objectTypes.map(objectType => objectType.value.type),
 				{
 					placeHolder: 'select your object type or nothing to list them all',
-					canPickMany: true
+					canPickMany: true,
 				}
 			);
 
@@ -39,7 +33,7 @@ export default class ListObjects extends BaseAction {
 			try {
 				result = await opts.suiteCloudRunner.run({
 					commandName: this.commandName,
-					arguments: { type: selectedObjectTypes.join(' ') }
+					arguments: { type: selectedObjectTypes.join(' ') },
 				});
 			} catch (error) {
 				opts.messageService.showErrorMessage(unwrapExceptionMessage(error));
@@ -47,16 +41,10 @@ export default class ListObjects extends BaseAction {
 			}
 
 			if (result.status === actionResultStatus.SUCCESS) {
-				this.vsCommandOutputHandler.showSuccessResult(result);
 				opts.messageService.showCompletedActionInfo();
 			} else {
-				this.vsCommandOutputHandler.showErrorResult(result);
 				opts.messageService.showCompletedActionError();
 			}
-		// if (listObjectsResult.status === actionResultStatus.SUCCESS) {
-		// 	const listedObjects = listObjectsResult.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
-		// 	listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
-		// 	listobjectsMessageService.showCompletedActionInfo();
 		} else {
 			opts.messageService.showTriggeredActionError();
 		}
