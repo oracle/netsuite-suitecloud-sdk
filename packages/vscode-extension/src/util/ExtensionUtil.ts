@@ -17,4 +17,3 @@ export const actionResultStatus: {
 	ERROR: string;
 } = require('@oracle/suitecloud-cli/src/commands/actionResult/ActionResult').ActionResult;
 
-export const CommandOutputHandler = require('@oracle/suitecloud-cli/src/core/CommandOutputHandler');
