@@ -12,7 +12,7 @@ const TranslationService = require('../services/TranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
-const AddDependenciesOutputFormatter = require('./formatOutput/AddDependenciesOutputFormatter');
+const AddDependenciesOutputFormatter = require('./outputFormatters/AddDependenciesOutputFormatter');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -61,9 +61,10 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 		return false;
 	}
 
-	_formatOutput(actionResult) {
-		new AddDependenciesOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new AddDependenciesOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
+	
 }
 
 module.exports = AddDependenciesCommandGenerator;

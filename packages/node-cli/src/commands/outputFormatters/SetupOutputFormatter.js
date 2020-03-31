@@ -5,6 +5,7 @@
 'use strict';
 const OutputFormatter = require('./OutputFormatter');
 const TranslationService = require('../../services/TranslationService');
+const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_SETUPACCOUNT: { OUTPUT },
@@ -21,7 +22,7 @@ class SetupOutputFormatter extends OutputFormatter {
 		super(consoleLogger);
 	}
 
-	formatOutput(actionResult) {
+	formatActionResult(actionResult) {
 		let resultMessage;
 		switch (actionResult.mode) {
 			case AUTH_MODE.OAUTH:
@@ -52,8 +53,8 @@ class SetupOutputFormatter extends OutputFormatter {
 				break;
 		}
 
-		this.consoleLogger.println(resultMessage, this.consoleLogger.COLORS.RESULT);
-		this.consoleLogger.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), this.consoleLogger.COLORS.RESULT);
+		this.consoleLogger.println(resultMessage, COLORS.RESULT);
+		this.consoleLogger.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), COLORS.RESULT);
 	}
 }
 

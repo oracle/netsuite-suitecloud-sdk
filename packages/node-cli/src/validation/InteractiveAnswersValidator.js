@@ -9,6 +9,7 @@ const TranslationService = require('../services/TranslationService');
 const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTION_IS_MANDATORY } = require('../services/TranslationKeys');
 
 const ApplicationConstants = require('../ApplicationConstants');
+const { COLORS } = require('../loggers/LoggerConstants');
 
 const VALIDATION_RESULT_FAILURE = validationError => ({
 	result: false,
@@ -17,7 +18,7 @@ const VALIDATION_RESULT_FAILURE = validationError => ({
 const VALIDATION_RESULT_SUCCESS = { result: true };
 
 NodeConsoleLogger.formatString(TranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.EMPTY_FIELD), {
-	color: NodeConsoleLogger.COLORS.ERROR,
+	color: COLORS.ERROR,
 	bold: true,
 });
 

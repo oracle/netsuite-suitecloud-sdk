@@ -12,10 +12,11 @@ const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const ListFilesOutputFormatter = require('./formatOutput/ListFilesOutputFormatter');
+const ListFilesOutputFormatter = require('./outputFormatters/ListFilesOutputFormatter');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../services/TranslationKeys');
+const { COLORS } = require('../loggers/LoggerConstants');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
@@ -32,30 +33,29 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				includeProjectDefaultAuthId: true,
 			});
 
-			return executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContext),
-				message: TranslationService.getMessage(LOADING_FOLDERS),
-			})
-				.then(operationResult => {
-					resolve(
-						prompt([
-							{
-								type: CommandUtils.INQUIRER_TYPES.LIST,
-								name: this._commandMetadata.options.folder.name,
-								message: TranslationService.getMessage(SELECT_FOLDER),
-								default: SUITE_SCRIPTS_FOLDER,
-								choices: this._getFileCabinetFolders(operationResult),
-							},
-						])
-					);
+			return (
+				executeWithSpinner({
+					action: this._sdkExecutor.execute(executionContext),
+					message: TranslationService.getMessage(LOADING_FOLDERS),
 				})
-				// TODO : find right mecanism to treat the error
-				.catch(error => {
-					this.consoleLogger.println(
-						TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error),
-						this.consoleLogger.COLORS.ERROR
-					);
-				})
+					.then(operationResult => {
+						resolve(
+							prompt([
+								{
+									type: CommandUtils.INQUIRER_TYPES.LIST,
+									name: this._commandMetadata.options.folder.name,
+									message: TranslationService.getMessage(SELECT_FOLDER),
+									default: SUITE_SCRIPTS_FOLDER,
+									choices: this._getFileCabinetFolders(operationResult),
+								},
+							])
+						);
+					})
+					// TODO : find right mecanism to treat the error
+					.catch(error => {
+						this.consoleLogger.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), COLORS.ERROR);
+					})
+			);
 		});
 	}
 
@@ -94,7 +94,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new ListFilesOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new ListFilesOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

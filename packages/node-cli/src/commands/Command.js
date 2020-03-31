@@ -20,7 +20,7 @@ module.exports = class Command {
 		this._preActionFunc = options.preActionFunc;
 		this._action = options.actionFunc;
 		this._options = options.options;
-		this._formatOutputFunc = options.formatOutputFunc;
+		this._formatActionResultFunc = options.formatActionResultFunc;
 	}
 
 	get commandMetadata() {
@@ -43,7 +43,8 @@ module.exports = class Command {
 		return this._action;
 	}
 
-	get formatOutputFunc() {
-		return this._formatOutputFunc;
+	get formatActionResultFunc() {
+		return this._formatActionResultFunc;
 	}
+
 };

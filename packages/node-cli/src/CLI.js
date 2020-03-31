@@ -8,6 +8,7 @@ const path = require('path');
 const assert = require('assert');
 const program = require('commander');
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
+const { COLORS } = require('./loggers/LoggerConstants');
 const TranslationService = require('./services/TranslationService');
 const {
 	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE },
@@ -47,7 +48,7 @@ module.exports = class CLI {
 				.version(CLI_VERSION, '--version')
 				.option(`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`, TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION))
 				.on('command:*', args => {
-					NodeConsoleLogger.println(TranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, args[0]), NodeConsoleLogger.COLORS.ERROR);
+					NodeConsoleLogger.println(TranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, args[0]), COLORS.ERROR);
 				})
 				.usage(TranslationService.getMessage(USAGE))
 				.parse(process.argv);
@@ -56,7 +57,7 @@ module.exports = class CLI {
 				this._printHelp();
 			}
 		} catch (exception) {
-			NodeConsoleLogger.println(unwrapExceptionMessage(exception), NodeConsoleLogger.COLORS.ERROR);
+			NodeConsoleLogger.println(unwrapExceptionMessage(exception), COLORS.ERROR);
 		}
 	}
 
@@ -86,7 +87,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeConsoleLogger.println(TranslationService.getMessage(TITLE, COMPATIBLE_NS_VERSION), NodeConsoleLogger.COLORS.INFO);
+		NodeConsoleLogger.println(TranslationService.getMessage(TITLE, COMPATIBLE_NS_VERSION), COLORS.INFO);
 		program.help();
 	}
 };

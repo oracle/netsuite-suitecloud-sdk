@@ -8,27 +8,28 @@ const TranslationService = require('../../services/TranslationService');
 const {
 	COMMAND_PROXY: { MESSAGES },
 } = require('../../services/TranslationKeys');
+const { COLORS } = require('../../loggers/LoggerConstants');
 
 class ProxyOutputFormatter extends OutputFormatter {
 	constructor(consoleLogger) {
 		super(consoleLogger);
 	}
 
-	formatOutput(actionResult) {
+	formatActionResult(actionResult) {
 		if (actionResult.withSettingProxy) {
 			if (actionResult.proxyOverridden) {
 				this.consoleLogger.println(
 					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl),
-					this.consoleLogger.COLORS.RESULT
+					COLORS.RESULT
 				);
 			} else {
 				this.consoleLogger.println(
 					TranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl),
-					this.consoleLogger.COLORS.RESULT
+					COLORS.RESULT
 				);
 			}
 		} else {
-			this.consoleLogger.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED), this.consoleLogger.COLORS.RESULT);
+			this.consoleLogger.println(TranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED), COLORS.RESULT);
 		}
 	}
 }

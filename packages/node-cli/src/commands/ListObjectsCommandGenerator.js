@@ -15,7 +15,7 @@ const TranslationService = require('../services/TranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const ListObjectsOutputFormatter = require('./formatOutput/ListObjectsOutputFormatter');
+const ListObjectsOutputFormatter = require('./outputFormatters/ListObjectsOutputFormatter');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -180,7 +180,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new ListObjectsOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new ListObjectsOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

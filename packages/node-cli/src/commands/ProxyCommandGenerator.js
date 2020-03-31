@@ -11,7 +11,7 @@ const {
 	COMMAND_PROXY: { ARGS_VALIDATION, MESSAGES },
 } = require('../services/TranslationKeys');
 const CLISettingsService = require('../services/settings/CLISettingsService');
-const ProxyOutputFormatter = require('./formatOutput/ProxyOutputFormatter');
+const ProxyOutputFormatter = require('./outputFormatters/ProxyOutputFormatter');
 const url = require('url');
 
 const SET_OPTION = 'set';
@@ -54,8 +54,8 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new ProxyOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new ProxyOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 
 	_validateArguments(proxyUrlArgument, shouldClearArgument) {

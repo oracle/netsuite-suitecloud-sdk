@@ -44,7 +44,7 @@ module.exports = class BaseCommandGenerator {
 			getCommandQuestionsFunc: this._getCommandQuestions.bind(this),
 			preActionFunc: this._preExecuteAction.bind(this),
 			actionFunc: this._executeAction.bind(this),
-			formatOutputFunc: this._formatOutput ? this._formatOutput.bind(this) : null,
+			formatActionResultFunc: this._formatActionResult ? this._formatActionResult.bind(this) : null,
 			consoleLogger: this._consoleLogger ? this._consoleLogger : NodeConsoleLogger,
 		});
 	}

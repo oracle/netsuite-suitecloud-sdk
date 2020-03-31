@@ -18,8 +18,8 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const ImportObjectsOutputFormatter = require('./formatOutput/ImportObjectsOutputFormatter');
-const { lineBreak } = require('../loggers/ConsoleLogger');
+const ImportObjectsOutputFormatter = require('./outputFormatters/ImportObjectsOutputFormatter');
+const { lineBreak } = require('../loggers/LoggerConstants');
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
@@ -350,7 +350,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new ImportObjectsOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new ImportObjectsOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

@@ -1,7 +1,6 @@
 import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
-import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 import { actionResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
@@ -12,7 +11,6 @@ const objectTypes: {
 
 export default class ListObjects extends BaseAction {
 	readonly commandName: string = 'object:list';
-	vsCommandOutputHandler = new VSCommandOutputHandler();
 
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
 		if (opts.suiteCloudRunner && opts.messageService) {

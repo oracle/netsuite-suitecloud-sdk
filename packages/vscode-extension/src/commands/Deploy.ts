@@ -1,12 +1,10 @@
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
-import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 import { actionResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 export default class Deploy extends BaseAction {
 	readonly commandName: string = 'project:deploy';
-	vsCommandOutputHandler = new VSCommandOutputHandler();
 
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
 		opts.messageService.showTriggeredActionInfo();

@@ -14,7 +14,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const UpdateOutputFormatter = require('./formatOutput/UpdateOutputFormatter');
+const UpdateOutputFormatter = require('./outputFormatters/UpdateOutputFormatter');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES },
@@ -159,7 +159,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new UpdateOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new UpdateOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

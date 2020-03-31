@@ -7,6 +7,7 @@ const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const TranslationService = require('../../services/TranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
+const { COLORS } = require('../../loggers/LoggerConstants');
 
 const { PROJECT_SUITEAPP, SDK_TRUE } = require('../../ApplicationConstants');
 
@@ -17,7 +18,7 @@ class DeployOutputFormatter extends OutputFormatter {
 		this._projectType = projectType;
 	}
 
-	formatOutput(actionResult) {
+	formatActionResult(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
 			this.consoleLogger.logErrors(actionResult.errorMessages);
 			return;
@@ -27,14 +28,14 @@ class DeployOutputFormatter extends OutputFormatter {
 		if (actionResult.withServerValidation) {
 			this.consoleLogger.println(
 				TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
-				this.consoleLogger.COLORS.INFO
+				COLORS.INFO
 			);
 		}
 		if (actionResult.resultMessage) {
 			ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 		}
 		if (Array.isArray(actionResult.data)) {
-			actionResult.data.forEach(message => this.consoleLogger.println(message, this.consoleLogger.COLORS.RESULT));
+			actionResult.data.forEach(message => this.consoleLogger.println(message, COLORS.RESULT));
 		}
 	}
 
@@ -43,12 +44,12 @@ class DeployOutputFormatter extends OutputFormatter {
 			if (isApplyContentProtection === SDK_TRUE) {
 				this.consoleLogger.println(
 					TranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder),
-					this.consoleLogger.COLORS.INFO
+					COLORS.INFO
 				);
 			} else {
 				this.consoleLogger.println(
 					TranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder),
-					this.consoleLogger.COLORS.INFO
+					COLORS.INFO
 				);
 			}
 		}

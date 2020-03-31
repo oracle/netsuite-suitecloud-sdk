@@ -13,7 +13,7 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
-const ImportFilesOutputFormatter = require('./formatOutput/ImportFilesOutputFormatter');
+const ImportFilesOutputFormatter = require('./outputFormatters/ImportFilesOutputFormatter');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
@@ -201,7 +201,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new ImportFilesOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new ImportFilesOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

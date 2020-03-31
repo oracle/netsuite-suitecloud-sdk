@@ -11,6 +11,7 @@ const { ERRORS } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
+const OutputFormatter = require('../commands/outputFormatters/OutputFormatter');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -20,7 +21,6 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.cliConfigurationService);
 		assert(dependencies.commandInstanceFactory);
 		assert(dependencies.commandsMetadataService);
-		assert(dependencies.commandOutputHandler);
 		assert(dependencies.authenticationService);
 		assert(dependencies.consoleLogger);
 
@@ -29,7 +29,6 @@ module.exports = class CommandActionExecutor {
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandInstanceFactory = dependencies.commandInstanceFactory;
 		this._commandsMetadataService = dependencies.commandsMetadataService;
-		this._commandOutputHandler = dependencies.commandOutputHandler;
 		this._authenticationService = dependencies.authenticationService;
 		this._consoleLogger = dependencies.consoleLogger;
 	}
@@ -82,14 +81,14 @@ module.exports = class CommandActionExecutor {
 				throw ActionResultUtils.getErrorMessagesString(actionResult);
 			}
 
-			this._commandOutputHandler.showSuccessResult(actionResult, command.formatOutputFunc);
+			command.formatActionResultFunc(actionResult);
 
 			if (commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
 			}
 			return actionResult;
 		} catch (error) {
-			this._commandOutputHandler.showErrorResult(error);
+			new OutputFormatter(this._consoleLogger).formatError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}

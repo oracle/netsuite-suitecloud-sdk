@@ -7,6 +7,7 @@ const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const TranslationService = require('../../services/TranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
+const { COLORS } = require('../../loggers/LoggerConstants');
 
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 const {
@@ -20,12 +21,12 @@ class ValidateOutputFormatter extends OutputFormatter {
 		this._projectFolder = projectFolder;
 	}
 
-	formatOutput(actionResult) {
+	formatActionResult(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
 			this.consoleLogger.logErrors(actionResult.errorMessages);
 		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {
-				this.consoleLogger.println(resultLine, this.consoleLogger.COLORS.RESULT);
+				this.consoleLogger.println(resultLine, COLORS.RESULT);
 			});
 		} else if (!actionResult.isServerValidation) {
 			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
@@ -39,20 +40,20 @@ class ValidateOutputFormatter extends OutputFormatter {
 			if (isAppliedContentProtection) {
 				this.consoleLogger.println(
 					TranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder),
-					this.consoleLogger.COLORS.INFO
+					COLORS.INFO
 				);
 			} else {
 				this.consoleLogger.println(
 					TranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder),
-					this.consoleLogger.COLORS.INFO
+					COLORS.INFO
 				);
 			}
 		}
 	}
 
 	_showLocalValidationResultData(data) {
-		this._logValidationEntries(data.warnings, TranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), this.consoleLogger.COLORS.WARNING);
-		this._logValidationEntries(data.errors, TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), this.consoleLogger.COLORS.ERROR);
+		this._logValidationEntries(data.warnings, TranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), COLORS.WARNING);
+		this._logValidationEntries(data.errors, TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), COLORS.ERROR);
 	}
 
 	_logValidationEntries(entries, headingLabel, color) {

@@ -55,7 +55,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 						.withResultMessage('')
 						.build()
 				),
-				formatOutputFunc: jest.fn(),
+				formatActionResultFunc: jest.fn(),
 			};
 		}),
 	}));
@@ -239,7 +239,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 					_commandMetadata: {},
 					getCommandQuestions: jest.fn(),
 					actionFunc: jest.fn(() => ({ operationResult: { status: 'ERROR', resultMessage: '' } })),
-					formatOutputFunc: jest.fn(),
+					formatActionResultFunc: jest.fn(),
 				};
 			}),
 		}));
@@ -261,12 +261,12 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 					commandMetadata: { options: {} },
 					_commandMetadata: {},
 					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() => 
+					actionFunc: jest.fn(() =>
 						ActionResult.Builder.withData([])
 							.withResultMessage('')
 							.build()
 					),
-					formatOutputFunc: jest.fn(),
+					formatActionResultFunc: jest.fn(),
 				};
 			}),
 		}));

@@ -6,6 +6,7 @@
 
 const chalk = require('chalk');
 const ConsoleLogger = require('./ConsoleLogger');
+const { COLORS } = require('./LoggerConstants');
 
 class NodeConsoleLogger extends ConsoleLogger {
 	println(message, color) {
@@ -13,7 +14,7 @@ class NodeConsoleLogger extends ConsoleLogger {
 	}
 
 	formatString(str, options) {
-		const color = options.color || ConsoleLogger.COLORS.DEFAULT;
+		const color = options.color || COLORS.DEFAULT;
 		const bold = options.bold ? chalk.bold : str => str;
 		return bold(color(str));
 	}

@@ -7,7 +7,6 @@ import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
 import * as TranslationKeys from '../service/TranslationKeys';
 import { TranslationService } from '../service/TranslationService';
-import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 import ActionResult from '../types/ActionResult';
 import { unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
@@ -16,7 +15,6 @@ const translationService = new TranslationService();
 
 export default class AddDependencies extends BaseAction {
 	readonly commandName: string = 'project:adddependencies';
-	vsCommandOutputHandler = new VSCommandOutputHandler();
 
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
 		opts.messageService.showTriggeredActionInfo();
@@ -27,8 +25,7 @@ export default class AddDependencies extends BaseAction {
 			});
 
 			if (actionResult.status === 'SUCCESS') {
-				//TODO import from ActionResult.SUCCESS?
-				if (actionResult.data.length > 0) {
+ 				if (actionResult.data.length > 0) {
 					opts.messageService.showCompletedActionInfo(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED));
 				} else {
 					opts.messageService.showInformationMessage(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.EMPTY));

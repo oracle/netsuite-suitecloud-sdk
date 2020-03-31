@@ -1,5 +1,4 @@
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
-import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
 
 const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
 const CommandInstanceFactory = require('@oracle/suitecloud-cli/src/core/CommandInstanceFactory');
@@ -14,7 +13,6 @@ export default class SuiteCloudRunner {
 		this.commandActionExecutor = new CommandActionExecutor({
 			//THIS SHOULD BE A FACTORY METHOD INSIDE THE CLI CommandActionExecutorFactory.get({executionPath:executionPath})
 			executionPath,
-			commandOutputHandler: new VSCommandOutputHandler(),
 			commandOptionsValidator: new CommandOptionsValidator(),
 			cliConfigurationService: new CLIConfigurationService(),
 			commandInstanceFactory: new CommandInstanceFactory(),

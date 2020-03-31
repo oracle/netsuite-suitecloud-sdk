@@ -15,7 +15,7 @@ const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
-const UploadFilesOutputFormatter = require('./formatOutput/UploadFilesOutputFormatter');
+const UploadFilesOutputFormatter = require('./outputFormatters/UploadFilesOutputFormatter');
 
 const {
 	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES },
@@ -164,7 +164,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new UploadFilesOutputFormatter(this.consoleLogger, this._fileCabinetService).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new UploadFilesOutputFormatter(this.consoleLogger, this._fileCabinetService).formatActionResult(actionResult);
 	}
 };

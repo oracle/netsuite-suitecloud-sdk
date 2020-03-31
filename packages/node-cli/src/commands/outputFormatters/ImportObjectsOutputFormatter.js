@@ -7,6 +7,7 @@ const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const TranslationService = require('../../services/TranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
+const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_IMPORTOBJECTS: { OUTPUT },
@@ -17,7 +18,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 		super(consoleLogger);
 	}
 
-	formatOutput(actionResult) {
+	formatActionResult(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
 			this.consoleLogger.logErrors(actionResult.errorMessages);
 			return;
@@ -34,12 +35,12 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 
 	_logImportedObjects(importedObjects) {
 		if (Array.isArray(importedObjects) && importedObjects.length) {
-			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), this.consoleLogger.COLORS.RESULT);
+			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), COLORS.RESULT);
 			importedObjects.forEach(objectImport => {
 				const importedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${objectImport.customObject.type}:${
 					objectImport.customObject.id
 				}`;
-				this.consoleLogger.println(importedObjectLogMessage, this.consoleLogger.COLORS.RESULT);
+				this.consoleLogger.println(importedObjectLogMessage, COLORS.RESULT);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
 		}
@@ -55,7 +56,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 			const referencedFilesLogMessage = `${this.consoleLogger.getPadding(2)}- ${TranslationService.getMessage(
 				OUTPUT.REFERENCED_SUITESCRIPT_FILES
 			)}`;
-			this.consoleLogger.println(referencedFilesLogMessage, this.consoleLogger.COLORS.RESULT);
+			this.consoleLogger.println(referencedFilesLogMessage, COLORS.RESULT);
 		}
 
 		if (Array.isArray(importedFiles) && importedFiles.length) {
@@ -64,7 +65,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
 					importedFile.path
 				)}`;
-				this.consoleLogger.println(importedFileLogMessage, this.consoleLogger.COLORS.RESULT);
+				this.consoleLogger.println(importedFileLogMessage, COLORS.RESULT);
 			});
 		}
 
@@ -75,14 +76,14 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 					unImportedFile.path,
 					unImportedFile.message
 				)}`;
-				this.consoleLogger.println(unimportedFileLogMessage, this.consoleLogger.COLORS.WARNING);
+				this.consoleLogger.println(unimportedFileLogMessage, COLORS.WARNING);
 			});
 		}
 	}
 
 	_logUnImportedObjects(unImportedObjects) {
 		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
-			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), this.consoleLogger.COLORS.WARNING);
+			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), COLORS.WARNING);
 			unImportedObjects.forEach(objectImport => {
 				const unimportedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${TranslationService.getMessage(
 					OUTPUT.OBJECT_IMPORT_FAILED,
@@ -90,7 +91,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 					objectImport.customObject.id,
 					objectImport.customObject.result.message
 				)}`;
-				this.consoleLogger.println(unimportedObjectLogMessage, this.consoleLogger.COLORS.WARNING);
+				this.consoleLogger.println(unimportedObjectLogMessage, COLORS.WARNING);
 			});
 		}
 	}

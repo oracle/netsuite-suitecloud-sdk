@@ -15,12 +15,13 @@ const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const NpmInstallRunner = require('../services/NpmInstallRunner');
-const CreateProjectOutputFormatter = require('./formatOutput/CreateProjectOutputFormatter');
+const CreateProjectOutputFormatter = require('./outputFormatters/CreateProjectOutputFormatter');
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
+const { COLORS } = require('../loggers/LoggerConstants');
 
 const path = require('path');
 
@@ -256,7 +257,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	createProject(params, answers, projectAbsolutePath, projectFolderName, manifestFilePath) {
 		return async (resolve, reject) => {
 			try {
-				this.consoleLogger.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), this.consoleLogger.COLORS.INFO);
+				this.consoleLogger.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), COLORS.INFO);
 				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
@@ -284,7 +285,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, answers[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
-					this.consoleLogger.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), this.consoleLogger.COLORS.INFO);
+					this.consoleLogger.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), COLORS.INFO);
 					await this._createUnitTestFiles(
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
@@ -292,7 +293,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						projectAbsolutePath
 					);
 
-					this.consoleLogger.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), this.consoleLogger.COLORS.INFO);
+					this.consoleLogger.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), COLORS.INFO);
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
 				} else {
 					await this._fileSystemService.createFileFromTemplate({
@@ -382,8 +383,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new CreateProjectOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new CreateProjectOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 
 	_validateParams(answers) {

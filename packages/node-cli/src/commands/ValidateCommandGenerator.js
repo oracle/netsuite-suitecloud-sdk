@@ -15,7 +15,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
 const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
-const ValidateOutputFormatter = require('./formatOutput/ValidateOutputFormatter');
+const ValidateOutputFormatter = require('./outputFormatters/ValidateOutputFormatter');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 
 const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
@@ -155,7 +155,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new ValidateOutputFormatter(this.consoleLogger, this._projectInfoService, this._projectFolder).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new ValidateOutputFormatter(this.consoleLogger, this._projectInfoService, this._projectFolder).formatActionResult(actionResult);
 	}
 };

@@ -4,16 +4,7 @@
  */
 'use strict';
 
-const os = require('os');
-const chalk = require('chalk');
-const AVAILABLE_COLORS = {
-	DEFAULT: chalk.white,
-	RESULT: chalk.green,
-	ERROR: chalk.red,
-	INFO: chalk.cyan,
-	WARNING: chalk.yellow,
-};
-const padding = '\u0020\u0020\u0020\u0020'; //4 spaces
+const { padding } = require('./LoggerConstants');
 
 class ConsoleLogger {
 	constructor() {}
@@ -33,15 +24,6 @@ class ConsoleLogger {
 			return paddings;
 		}
 		return padding;
-	}
-
-	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
-	get COLORS() {
-		return AVAILABLE_COLORS;
-	}
-
-	static get lineBreak() {
-		return os.EOL;
 	}
 }
 

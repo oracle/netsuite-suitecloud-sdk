@@ -15,7 +15,7 @@ const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const AuthenticationService = require('./../core/authentication/AuthenticationService');
-const SetupOutputFormatter = require('./formatOutput/SetupOutputFormatter');
+const SetupOutputFormatter = require('./outputFormatters/SetupOutputFormatter');
 
 const inquirer = require('inquirer');
 
@@ -331,8 +331,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		return operationResult;
 	}
 
-	_formatOutput(actionResult) {
-		new SetupOutputFormatter(this.consoleLogger).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new SetupOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {

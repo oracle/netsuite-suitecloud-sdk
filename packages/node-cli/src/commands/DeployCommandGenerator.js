@@ -15,7 +15,7 @@ const ApplyContentProtectionArgumentHandler = require('../utils/ApplyContentProt
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const DeployOutputFormatter = require('./formatOutput/DeployOutputFormatter');
+const DeployOutputFormatter = require('./outputFormatters/DeployOutputFormatter');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -24,6 +24,8 @@ const {
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
+
+const { COLORS } = require('../loggers/LoggerConstants');
 
 const COMMAND = {
 	OPTIONS: {
@@ -110,7 +112,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 					LINKS.HOW_TO.CREATE_HIDDING_XML,
 					LINKS.HOW_TO.CREATE_LOCKING_XML
 				),
-				this.consoleLogger.COLORS.INFO
+				COLORS.INFO
 			);
 		}
 
@@ -164,7 +166,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		}
 	}
 
-	_formatOutput(actionResult) {
-		new DeployOutputFormatter(this.consoleLogger, this._projectFolder, this._projectType).formatOutput(actionResult);
+	_formatActionResult(actionResult) {
+		new DeployOutputFormatter(this.consoleLogger, this._projectFolder, this._projectType).formatActionResult(actionResult);
 	}
 };

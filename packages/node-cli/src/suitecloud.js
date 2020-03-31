@@ -13,7 +13,6 @@ const CommandRegistrationService = require('./core/CommandRegistrationService');
 const CommandOptionsValidator = require('./core/CommandOptionsValidator');
 const CLIConfigurationService = require('./core/extensibility/CLIConfigurationService');
 const AuthenticationService = require('./core/authentication/AuthenticationService');
-const CommandOutputHandler = require('./core/CommandOutputHandler');
 const path = require('path');
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 
@@ -26,7 +25,6 @@ const cliInstance = new CLI({
 	commandRegistrationService: new CommandRegistrationService(),
 	commandActionExecutor: new CommandActionExecutor({
 		executionPath,
-		commandOutputHandler: new CommandOutputHandler(),
 		commandOptionsValidator: new CommandOptionsValidator(),
 		cliConfigurationService: new CLIConfigurationService(),
 		commandInstanceFactory: new CommandInstanceFactory(),

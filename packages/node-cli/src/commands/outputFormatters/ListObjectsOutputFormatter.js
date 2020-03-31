@@ -7,6 +7,7 @@ const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const TranslationService = require('../../services/TranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
+const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_LISTOBJECTS: { SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
@@ -17,7 +18,7 @@ class ListObjectsOutputFormatter extends OutputFormatter {
 		super(consoleLogger);
 	}
 
-	formatOutput(actionResult) {
+	formatActionResult(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
 			this.consoleLogger.logErrors(actionResult.errorMessages);
 			return;
@@ -25,10 +26,10 @@ class ListObjectsOutputFormatter extends OutputFormatter {
 
 		ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 		if (Array.isArray(actionResult.data) && actionResult.data.length) {
-			this.consoleLogger.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), this.consoleLogger.COLORS.RESULT);
-			actionResult.data.forEach(object => this.consoleLogger.println(`${object.type}:${object.scriptId}`, this.consoleLogger.COLORS.RESULT));
+			this.consoleLogger.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), COLORS.RESULT);
+			actionResult.data.forEach(object => this.consoleLogger.println(`${object.type}:${object.scriptId}`, COLORS.RESULT));
 		} else {
-			this.consoleLogger.println(TranslationService.getMessage(SUCCESS_NO_OBJECTS), this.consoleLogger.COLORS.RESULT);
+			this.consoleLogger.println(TranslationService.getMessage(SUCCESS_NO_OBJECTS), COLORS.RESULT);
 		}
 	}
 }

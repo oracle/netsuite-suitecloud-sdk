@@ -6,6 +6,7 @@
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const TranslationService = require('../../services/TranslationService');
+const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_UPDATE: { OUTPUT },
@@ -20,7 +21,7 @@ class UpdateOutputFormatter extends OutputFormatter {
 		super(consoleLogger);
 	}
 
-	formatOutput(actionResult) {
+	formatActionResult(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
 			this.consoleLogger.logErrors(actionResult.errorMessages);
 			return;
@@ -31,14 +32,14 @@ class UpdateOutputFormatter extends OutputFormatter {
 		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
 
 		if (updatedObjects.length > 0) {
-			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.UPDATED_OBJECTS), this.consoleLogger.COLORS.RESULT);
-			updatedObjects.sort(sortByKey).forEach(updatedObject => this.consoleLogger.println(updatedObject.key, this.consoleLogger.COLORS.RESULT));
+			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.UPDATED_OBJECTS), COLORS.RESULT);
+			updatedObjects.sort(sortByKey).forEach(updatedObject => this.consoleLogger.println(updatedObject.key, COLORS.RESULT));
 		}
 		if (noUpdatedObjects.length > 0) {
-			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS), this.consoleLogger.COLORS.WARNING);
+			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS), COLORS.WARNING);
 			noUpdatedObjects
 				.sort(sortByKey)
-				.forEach(noUpdatedObject => this.consoleLogger.println(noUpdatedObject.message, this.consoleLogger.COLORS.WARNING));
+				.forEach(noUpdatedObject => this.consoleLogger.println(noUpdatedObject.message, COLORS.WARNING));
 		}
 	}
 }

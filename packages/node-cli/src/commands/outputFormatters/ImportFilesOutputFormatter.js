@@ -6,6 +6,7 @@
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const TranslationService = require('../../services/TranslationService');
+const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_IMPORTFILES: { OUTPUT },
@@ -16,7 +17,7 @@ class ImportFilesOutputFormatter extends OutputFormatter {
 		super(consoleLogger);
 	}
 
-	formatOutput(actionResult) {
+	formatActionResult(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
 			this.consoleLogger.logErrors(actionResult.errorMessages);
 			return;
@@ -26,15 +27,15 @@ class ImportFilesOutputFormatter extends OutputFormatter {
 			const successful = actionResult.data.results.filter(result => result.loaded === true);
 			const unsuccessful = actionResult.data.results.filter(result => result.loaded !== true);
 			if (successful.length) {
-				this.consoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_IMPORTED), this.consoleLogger.COLORS.RESULT);
+				this.consoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_IMPORTED), COLORS.RESULT);
 				successful.forEach(result => {
-					this.consoleLogger.println(result.path, this.consoleLogger.COLORS.RESULT);
+					this.consoleLogger.println(result.path, COLORS.RESULT);
 				});
 			}
 			if (unsuccessful.length) {
-				this.consoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED), this.consoleLogger.COLORS.WARNING);
+				this.consoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED), COLORS.WARNING);
 				unsuccessful.forEach(result => {
-					this.consoleLogger.println(`${result.path}, ${result.message}`, this.consoleLogger.COLORS.WARNING);
+					this.consoleLogger.println(`${result.path}, ${result.message}`, COLORS.WARNING);
 				});
 			}
 		}
