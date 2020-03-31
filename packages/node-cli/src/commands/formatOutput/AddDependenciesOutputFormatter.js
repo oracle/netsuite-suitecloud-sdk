@@ -50,26 +50,26 @@ const OBJECT_CONTAINER_PREFIX = {
 };
 
 class AddDependenciesOutputFormatter extends OutputFormatter {
-	constructor(logger) {
-		super(logger);
+	constructor(consoleLogger) {
+		super(consoleLogger);
 	}
 
 	formatOutput(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
-			errors.forEach(message => this._logger.println(message, this._logger.COLORS.ERROR));
+			errors.forEach(message => this.consoleLogger.println(message, this.consoleLogger.COLORS.ERROR));
 			return;
 		}
 
 		if (actionResult.data.length === 0) {
-			this._logger.println(TranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES), this._logger.COLORS.RESULT);
+			this.consoleLogger.println(TranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES), this.consoleLogger.COLORS.RESULT);
 			return;
 		}
 
-		this._logger.println(TranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST), this._logger.COLORS.RESULT);
+		this.consoleLogger.println(TranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST), this.consoleLogger.COLORS.RESULT);
 
 		this._getDependenciesStringsArray(actionResult.data)
 			.sort()
-			.forEach(output => this._logger.println(output, this._logger.COLORS.RESULT));
+			.forEach(output => this.consoleLogger.println(output, this.consoleLogger.COLORS.RESULT));
 	}
 
 	_getDependenciesStringsArray(data) {

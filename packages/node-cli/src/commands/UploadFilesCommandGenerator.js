@@ -9,16 +9,16 @@ const CommandUtils = require('../utils/CommandUtils');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const FileCabinetService = require('../services/FileCabinetService');
 const FileSystemService = require('../services/FileSystemService');
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const path = require('path');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
+const UploadFilesOutputFormatter = require('./formatOutput/UploadFilesOutputFormatter');
 
 const {
-	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, OUTPUT },
+	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES },
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
@@ -33,11 +33,6 @@ const COMMAND_OPTIONS = {
 const COMMAND_ANSWERS = {
 	SELECTED_FOLDER: 'selectedFolder',
 	OVERWRITE_FILES: 'overwrite',
-};
-
-const UPLOAD_FILE_RESULT_STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
 };
 
 const { validateArrayIsNotEmpty, showValidationResults } = require('../validation/InteractiveAnswersValidator');
@@ -170,31 +165,6 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_formatOutput(actionResult) {
-		const { data } = actionResult;
-
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		if (Array.isArray(data)) {
-			const successfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.SUCCESS);
-			const unsuccessfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.ERROR);
-			if (successfulUploads && successfulUploads.length) {
-				NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_UPLOADED), NodeConsoleLogger.COLORS.RESULT);
-				successfulUploads.forEach(result => {
-					NodeConsoleLogger.println(this._fileCabinetService.getFileCabinetRelativePath(result.file.path), NodeConsoleLogger.COLORS.RESULT);
-				});
-			}
-			if (unsuccessfulUploads && unsuccessfulUploads.length) {
-				NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED), NodeConsoleLogger.COLORS.WARNING);
-				unsuccessfulUploads.forEach(result => {
-					NodeConsoleLogger.println(
-						`${this._fileCabinetService.getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`,
-						NodeConsoleLogger.COLORS.WARNING
-					);
-				});
-			}
-		}
+		new UploadFilesOutputFormatter(this.consoleLogger, this._fileCabinetService).formatOutput(actionResult);
 	}
 };

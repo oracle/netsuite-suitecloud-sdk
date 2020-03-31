@@ -8,6 +8,7 @@ const SDKExecutor = require('../SDKExecutor').SDKExecutor;
 const Command = require('./Command');
 const assert = require('assert');
 const AuthenticationService = require('../core/authentication/AuthenticationService');
+const NodeConsoleLogger = require('../loggers/NodeConsoleLogger');
 
 module.exports = class BaseCommandGenerator {
 	constructor(options) {
@@ -44,7 +45,11 @@ module.exports = class BaseCommandGenerator {
 			preActionFunc: this._preExecuteAction.bind(this),
 			actionFunc: this._executeAction.bind(this),
 			formatOutputFunc: this._formatOutput ? this._formatOutput.bind(this) : null,
-			consoleLogger: this._consoleLogger ? this._consoleLogger : new NodeConsoleLogger(),
+			consoleLogger: this._consoleLogger ? this._consoleLogger : NodeConsoleLogger,
 		});
+	}
+
+	get consoleLogger() {
+		return this._consoleLogger;
 	}
 };

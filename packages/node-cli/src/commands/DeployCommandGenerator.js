@@ -4,9 +4,8 @@
  */
 'use strict';
 
-const ActionResultUtils = require('../utils/ActionResultUtils')
+const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const { ActionResult } = require('../commands/actionresult/ActionResult');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
@@ -15,8 +14,8 @@ const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesAr
 const ApplyContentProtectionArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const SDKExecutionContext = require('../SDKExecutionContext');
+const DeployOutputFormatter = require('./formatOutput/DeployOutputFormatter');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -83,15 +82,11 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				default: 1,
 				choices: [
 					{
-						name: TranslationService.getMessage(
-							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.DISPLAY_WARNING
-						),
+						name: TranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.DISPLAY_WARNING),
 						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING,
 					},
 					{
-						name: TranslationService.getMessage(
-							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL_PROCESS
-						),
+						name: TranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL_PROCESS),
 						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
 					},
 				],
@@ -108,17 +103,14 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		if (
-			isSuiteAppProject &&
-			!answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)
-		) {
-			NodeConsoleLogger.println(
+		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
+			this.consoleLogger.println(
 				TranslationService.getMessage(
 					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,
 					LINKS.HOW_TO.CREATE_HIDDING_XML,
 					LINKS.HOW_TO.CREATE_LOCKING_XML
 				),
-				NodeConsoleLogger.COLORS.INFO
+				this.consoleLogger.COLORS.INFO
 			);
 		}
 
@@ -158,66 +150,21 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			});
 
 			var isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
-			var isApplyContentProtection =
-				(this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE);
+			var isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? DeployActionResult.Builder
-					.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.withServerValidation(isServerValidation)
-					.withAppliedContentProtection(isApplyContentProtection)
-					.build()
-				: DeployActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
-					.build()
+				? DeployActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.withServerValidation(isServerValidation)
+						.withAppliedContentProtection(isApplyContentProtection)
+						.build()
+				: DeployActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
-		if (actionResult.withServerValidation) {
-			NodeConsoleLogger.println(
-				TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
-				NodeConsoleLogger.COLORS.INFO
-			);
-		}
-		if (actionResult.resultMessage) {
-			ActionResultUtils.logResultMessage(actionResult);
-		}
-		if (Array.isArray(actionResult.data)) {
-			actionResult.data.forEach(message => NodeConsoleLogger.println(message, NodeConsoleLogger.COLORS.RESULT));
-		}
-	}
-
-	_showApplyContentProtectionOptionMessage(isApplyContentProtection) {
-		if (this._projectType === PROJECT_SUITEAPP) {
-			if (isApplyContentProtection === SDK_TRUE) {
-				NodeConsoleLogger.println(
-					TranslationService.getMessage(
-						MESSAGES.APPLYING_CONTENT_PROTECTION,
-						this._projectFolder
-					),
-					NodeConsoleLogger.COLORS.INFO
-				);
-			} else {
-				NodeConsoleLogger.println(
-					TranslationService.getMessage(
-						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
-						this._projectFolder
-					),
-					NodeConsoleLogger.COLORS.INFO
-				);
-			}
-		}
+		new DeployOutputFormatter(this.consoleLogger, this._projectFolder, this._projectType).formatOutput(actionResult);
 	}
 };
-
-

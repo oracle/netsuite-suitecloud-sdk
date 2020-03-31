@@ -3,9 +3,9 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
+import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import ActionResult from '../types/ActionResult';
 import { CommandOutputHandler, unwrapExceptionMessage, unwrapInformationMessage } from '../util/ExtensionUtil';
-import VSConsoleLogger from './VSConsoleLogger';
 
 export default class VSCommandOutputHandler extends CommandOutputHandler {
 	consoleLogger: VSConsoleLogger = new VSConsoleLogger();

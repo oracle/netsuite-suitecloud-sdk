@@ -4,29 +4,20 @@
  */
 'use strict';
 
-const NodeConsoleLogger = require('./NodeConsoleLogger');
+const { lineBreak } = require('../loggers/ConsoleLogger');
 const { ERROR } = require('../commands/actionresult/ActionResult');
 
 module.exports = {
 	getErrorMessagesString: actionResult => {
-		return actionResult.errorMessages.join(NodeConsoleLogger.lineBreak);
+		return actionResult.errorMessages.join(lineBreak);
 	},
 
-	getResultMessage: actionResult => {
-		const { resultMessage } = actionResult;
-		return resultMessage ? resultMessage : '';
-	},
-
-	logErrors: errors => {
-		errors.forEach(message => NodeConsoleLogger.println(message, NodeConsoleLogger.COLORS.ERROR));
-	},
-
-	logResultMessage: actionResult => {
+	logResultMessage: (actionResult, consoleLogger) => {
 		if (actionResult.resultMessage) {
 			if (actionResult.status === ERROR) {
-				NodeConsoleLogger.println(actionResult.resultMessage, NodeConsoleLogger.COLORS.ERROR);
+				consoleLogger.println(actionResult.resultMessage, consoleLogger.COLORS.ERROR);
 			} else {
-				NodeConsoleLogger.println(actionResult.resultMessage, NodeConsoleLogger.COLORS.RESULT);
+				consoleLogger.println(actionResult.resultMessage, consoleLogger.COLORS.RESULT);
 			}
 		}
 	},

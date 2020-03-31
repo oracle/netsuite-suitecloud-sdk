@@ -7,7 +7,7 @@
 const path = require('path');
 const assert = require('assert');
 const program = require('commander');
-const NodeConsoleLogger = require('./utils/NodeConsoleLogger');
+const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 const TranslationService = require('./services/TranslationService');
 const {
 	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE },

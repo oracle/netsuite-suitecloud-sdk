@@ -9,14 +9,14 @@ const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
+const ImportFilesOutputFormatter = require('./formatOutput/ImportFilesOutputFormatter');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
+	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
@@ -36,10 +36,7 @@ const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',
 };
 
-const {
-	validateArrayIsNotEmpty,
-	showValidationResults,
-} = require('../validation/InteractiveAnswersValidator');
+const { validateArrayIsNotEmpty, showValidationResults } = require('../validation/InteractiveAnswersValidator');
 
 module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -106,9 +103,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		return listFoldersResponse.data.map(folder => ({
 			name: folder.path,
 			value: folder.path,
-			disabled: folder.isRestricted
-				? TranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER)
-				: '',
+			disabled: folder.isRestricted ? TranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',
 		}));
 	}
 
@@ -197,48 +192,16 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? ActionResult.Builder
-					.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.build()
-				: ActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
-					.build();
+				? ActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.build()
+				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build;
 		}
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		if (Array.isArray(actionResult.data.results)) {
-			const successful = actionResult.data.results.filter(result => result.loaded === true);
-			const unsuccessful = actionResult.data.results.filter(result => result.loaded !== true);
-			if (successful.length) {
-				NodeConsoleLogger.println(
-					TranslationService.getMessage(OUTPUT.FILES_IMPORTED),
-					NodeConsoleLogger.COLORS.RESULT
-				);
-				successful.forEach(result => {
-					NodeConsoleLogger.println(result.path, NodeConsoleLogger.COLORS.RESULT);
-				});
-			}
-			if (unsuccessful.length) {
-				NodeConsoleLogger.println(
-					TranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED),
-					NodeConsoleLogger.COLORS.WARNING
-				);
-				unsuccessful.forEach(result => {
-					NodeConsoleLogger.println(
-						`${result.path}, ${result.message}`,
-						NodeConsoleLogger.COLORS.WARNING
-					);
-				});
-			}
-		}
+		new ImportFilesOutputFormatter(this.consoleLogger).formatOutput(actionResult);
 	}
 };

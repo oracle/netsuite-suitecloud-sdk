@@ -11,11 +11,11 @@ const SetupActionResult = require('../commands/actionresult/SetupActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const AuthenticationService = require('./../core/authentication/AuthenticationService');
+const SetupOutputFormatter = require('./formatOutput/SetupOutputFormatter');
 
 const inquirer = require('inquirer');
 
@@ -24,7 +24,7 @@ const {
 } = require('../ApplicationConstants');
 
 const {
-	COMMAND_SETUPACCOUNT: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES, OUTPUT },
+	COMMAND_SETUPACCOUNT: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
 } = require('../services/TranslationKeys');
 
 const ANSWERS = {
@@ -51,7 +51,7 @@ const COMMANDS = {
 const FLAGS = {
 	LIST: 'list',
 	SAVETOKEN: 'savetoken',
-	DEVELOPMENTMODE: 'developmentmode'
+	DEVELOPMENTMODE: 'developmentmode',
 };
 
 const {
@@ -107,12 +107,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					: '';
 				const accountInfo = `${authentication.accountInfo.companyName} [${authentication.accountInfo.roleName}]`;
 				choices.push({
-					name: TranslationService.getMessage(
-						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
-						authID,
-						accountInfo,
-						isDevLabel
-					),
+					name: TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID, authID, accountInfo, isDevLabel),
 					value: { authId: authID, accountInfo: authentication.accountInfo },
 				});
 			});
@@ -182,8 +177,13 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					message: TranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
-						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, fieldValue =>
-							validateAuthIDNotInList(fieldValue, authIDs), validateAlphanumericHyphenUnderscore, validateMaximumLength
+						showValidationResults(
+							fieldValue,
+							validateFieldIsNotEmpty,
+							validateFieldHasNoSpaces,
+							fieldValue => validateAuthIDNotInList(fieldValue, authIDs),
+							validateAlphanumericHyphenUnderscore,
+							validateMaximumLength
 						),
 				},
 				{
@@ -192,12 +192,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
 					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
 					filter: fieldValue => fieldValue.trim(),
-					validate: fieldValue => showValidationResults(
-						fieldValue,
-						validateFieldIsNotEmpty,
-						validateFieldHasNoSpaces,
-						validateAlphanumericHyphenUnderscore
-					),
+					validate: fieldValue =>
+						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
 				},
 				{
 					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
@@ -228,7 +224,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
 					tokenId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
 					tokenSecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
-				}
+				},
 			};
 
 			if (developmentModeUrlAnswer) {
@@ -282,8 +278,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 			this._authenticationService.setDefaultAuthentication(authId);
 
-			return SetupActionResult.Builder
-				.success()
+			return SetupActionResult.Builder.success()
 				.withMode(executeActionContext.mode)
 				.withAuthId(authId)
 				.withAccountInfo(accountInfo)
@@ -318,7 +313,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		const executionContextOptions = {
 			command: COMMANDS.AUTHENTICATE,
 			params,
-			flags: [FLAGS.SAVETOKEN]
+			flags: [FLAGS.SAVETOKEN],
 		};
 
 		if (developmentMode) {
@@ -337,37 +332,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(actionResult) {
-		let resultMessage;
-		switch (actionResult.mode) {
-			case AUTH_MODE.OAUTH:
-				resultMessage = TranslationService.getMessage(
-					OUTPUT.NEW_OAUTH,
-					actionResult.accountInfo.companyName,
-					actionResult.accountInfo.roleName,
-					actionResult.authId
-				);
-				break;
-			case AUTH_MODE.SAVE_TOKEN:
-				resultMessage = TranslationService.getMessage(
-					OUTPUT.NEW_SAVED_TOKEN,
-					actionResult.accountInfo.companyName,
-					actionResult.accountInfo.roleName,
-					actionResult.authId
-				);
-				break;
-			case AUTH_MODE.REUSE:
-				resultMessage = TranslationService.getMessage(
-					OUTPUT.REUSED_AUTH_ID,
-					actionResult.authId,
-					actionResult.accountInfo.companyName,
-					actionResult.accountInfo.roleName);
-				break;
-			default:
-				break;
-		}
-
-		NodeConsoleLogger.println(resultMessage, NodeConsoleLogger.COLORS.RESULT);
-		NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), NodeConsoleLogger.COLORS.RESULT);
+		new SetupOutputFormatter(this.consoleLogger).formatOutput(actionResult);
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {

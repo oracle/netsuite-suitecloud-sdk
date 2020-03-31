@@ -5,8 +5,12 @@
 'use strict';
 
 class OutputFormatter {
-	constructor(logger) {
-		this._logger = logger;
+	constructor(consoleLogger) {
+		this._consoleLogger = consoleLogger;
+	}
+
+	get consoleLogger() {
+		return this._consoleLogger;
 	}
 
 	formatOutput(actionResult) {}

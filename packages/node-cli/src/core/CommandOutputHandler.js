@@ -4,7 +4,8 @@
  */
 'use strict';
 
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
+const NodeConsoleLogger = require('../loggers/NodeConsoleLogger');
+const { lineBreak } = require('../loggers/ConsoleLogger');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('./../utils/ExceptionUtils');
 
 module.exports = class CommandOutputHandler {
@@ -18,7 +19,7 @@ module.exports = class CommandOutputHandler {
 		const informativeMessage = unwrapInformationMessage(error);
 
 		if (informativeMessage) {
-			NodeConsoleLogger.println(`${NodeConsoleLogger.lineBreak}${informativeMessage}`, NodeConsoleLogger.COLORS.INFO);
+			NodeConsoleLogger.println(`${lineBreak}${informativeMessage}`, NodeConsoleLogger.COLORS.INFO);
 		}
 	}
 };

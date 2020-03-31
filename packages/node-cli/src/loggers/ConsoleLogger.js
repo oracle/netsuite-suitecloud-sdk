@@ -22,6 +22,8 @@ class ConsoleLogger {
 
 	formatString(str, options) {}
 
+	logErrors(errorMessages) {}
+
 	getPadding(padCount) {
 		if (padCount) {
 			let paddings = '';
@@ -38,7 +40,7 @@ class ConsoleLogger {
 		return AVAILABLE_COLORS;
 	}
 
-	get lineBreak() {
+	static get lineBreak() {
 		return os.EOL;
 	}
 }

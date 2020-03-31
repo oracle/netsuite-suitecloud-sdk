@@ -5,7 +5,7 @@
 'use strict';
 
 const { NodeVM } = require('vm2');
-const NodeConsoleLogger = require('../../utils/NodeConsoleLogger');
+const ConsoleLogger = require('../../loggers/ConsoleLogger');
 const FileUtils = require('../../utils/FileUtils');
 const path = require('path');
 const TranslationService = require('./../../services/TranslationService');
@@ -44,12 +44,7 @@ module.exports = class CLIConfigurationService {
 			const cliConfigFileContent = FileUtils.readAsString(cliConfigFile);
 			this._cliConfig = nodeVm.run(cliConfigFileContent, cliConfigFile);
 		} catch (error) {
-			throw TranslationService.getMessage(
-				ERRORS.CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE,
-				cliConfigFile,
-				NodeConsoleLogger.lineBreak,
-				error
-			);
+			throw TranslationService.getMessage(ERRORS.CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE, cliConfigFile, ConsoleLogger.lineBreak, error);
 		}
 	}
 

@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const inquirer = require('inquirer');
@@ -9,13 +9,13 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const TranslationService = require('../services/TranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
+const ListObjectsOutputFormatter = require('./formatOutput/ListObjectsOutputFormatter');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -32,12 +32,7 @@ const COMMAND_QUESTIONS_NAMES = {
 };
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const {
-	COMMAND_LISTOBJECTS: {
-		LISTING_OBJECTS,
-		QUESTIONS,
-		SUCCESS_OBJECTS_IMPORTED,
-		SUCCESS_NO_OBJECTS,
-	},
+	COMMAND_LISTOBJECTS: { LISTING_OBJECTS, QUESTIONS },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -176,38 +171,16 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? ActionResult.Builder
-					.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.build()
-				: ActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
-					.build();
+				? ActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.build()
+				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		ActionResultUtils.logResultMessage(actionResult);
-		if (Array.isArray(actionResult.data) && actionResult.data.length) {
-			NodeConsoleLogger.println(
-				TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED),
-				NodeConsoleLogger.COLORS.RESULT
-			);
-			actionResult.data.forEach(object =>
-				NodeConsoleLogger.println(`${object.type}:${object.scriptId}`, NodeConsoleLogger.COLORS.RESULT)
-			);
-		} else {
-			NodeConsoleLogger.println(
-				TranslationService.getMessage(SUCCESS_NO_OBJECTS),
-				NodeConsoleLogger.COLORS.RESULT
-			);
-		}
+		new ListObjectsOutputFormatter(this.consoleLogger).formatOutput(actionResult);
 	}
 };

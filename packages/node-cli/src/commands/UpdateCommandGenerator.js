@@ -11,13 +11,13 @@ const CommandUtils = require('../utils/CommandUtils');
 const TranslationService = require('../services/TranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const UpdateOutputFormatter = require('./formatOutput/UpdateOutputFormatter');
 
 const {
-	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
+	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -39,10 +39,6 @@ const COMMAND_OPTIONS = {
 
 const MAX_ENTRIES_BEFORE_FILTER = 30;
 const XML_EXTENSION = '.xml';
-
-const UPDATED_OBJECT_TYPE = {
-	SUCCESS: 'SUCCESS',
-};
 
 module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -154,35 +150,16 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? ActionResult.Builder
-					.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.build()
-				: ActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
-					.build();
+				? ActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.build()
+				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		const updatedObjects = actionResult.data.filter(element => element.type === UPDATED_OBJECT_TYPE.SUCCESS);
-		const noUpdatedObjects = actionResult.data.filter(element => element.type !== UPDATED_OBJECT_TYPE.SUCCESS);
-		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
-
-		if (updatedObjects.length > 0) {
-			NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.UPDATED_OBJECTS), NodeConsoleLogger.COLORS.RESULT);
-			updatedObjects.sort(sortByKey).forEach(updatedObject => NodeConsoleLogger.println(updatedObject.key, NodeConsoleLogger.COLORS.RESULT));
-		}
-		if (noUpdatedObjects.length > 0) {
-			NodeConsoleLogger.println(TranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS), NodeConsoleLogger.COLORS.WARNING);
-			noUpdatedObjects.sort(sortByKey).forEach(noUpdatedObject => NodeConsoleLogger.println(noUpdatedObject.message, NodeConsoleLogger.COLORS.WARNING));
-		}
+		new UpdateOutputFormatter(this.consoleLogger).formatOutput(actionResult);
 	}
 };

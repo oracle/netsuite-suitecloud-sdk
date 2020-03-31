@@ -15,7 +15,7 @@ const CLIConfigurationService = require('./core/extensibility/CLIConfigurationSe
 const AuthenticationService = require('./core/authentication/AuthenticationService');
 const CommandOutputHandler = require('./core/CommandOutputHandler');
 const path = require('path');
-const NodeConsoleLogger = require('./utils/NodeConsoleLogger');
+const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 
 const executionPath = process.cwd();
 const rootCLIPath = path.dirname(require.main.filename);

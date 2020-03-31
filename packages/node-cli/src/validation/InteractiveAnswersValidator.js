@@ -4,10 +4,9 @@
  */
 'use strict';
 
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
+const NodeConsoleLogger = require('../loggers/NodeConsoleLogger');
 const TranslationService = require('../services/TranslationService');
 const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTION_IS_MANDATORY } = require('../services/TranslationKeys');
-const url = require('url');
 
 const ApplicationConstants = require('../ApplicationConstants');
 

@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const ProxyActionResult = require('../commands/actionresult/ProxyActionResult');
@@ -10,8 +10,8 @@ const TranslationService = require('../services/TranslationService');
 const {
 	COMMAND_PROXY: { ARGS_VALIDATION, MESSAGES },
 } = require('../services/TranslationKeys');
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const CLISettingsService = require('../services/settings/CLISettingsService');
+const ProxyOutputFormatter = require('./formatOutput/ProxyOutputFormatter');
 const url = require('url');
 
 const SET_OPTION = 'set';
@@ -44,8 +44,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 			}
 
 			const proxyCommandData = await Promise.resolve(proxyCommandAction);
-			return ProxyActionResult.Builder
-				.success()
+			return ProxyActionResult.Builder.success()
 				.withSettingProxy(proxyCommandData.withSettingProxy)
 				.withProxyUrl(proxyCommandData.proxyUrl)
 				.isProxyOverridden(proxyCommandData.proxyOverridden)
@@ -56,27 +55,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.withSettingProxy) {
-			if (actionResult.proxyOverridden) {
-				NodeConsoleLogger.println(
-					TranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl),
-					NodeConsoleLogger.COLORS.RESULT
-				);
-			} else {
-				NodeConsoleLogger.println(
-					TranslationService.getMessage(
-						MESSAGES.SUCCESFULLY_SETUP,
-						actionResult.proxyUrl
-					),
-					NodeConsoleLogger.COLORS.RESULT
-				);
-			}
-		} else {
-			NodeConsoleLogger.println(
-				TranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED),
-				NodeConsoleLogger.COLORS.RESULT
-			);
-		}
+		new ProxyOutputFormatter(this.consoleLogger).formatOutput(actionResult);
 	}
 
 	_validateArguments(proxyUrlArgument, shouldClearArgument) {

@@ -1,13 +1,12 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 const assert = require('assert');
 const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class CreateProjectActionResult extends ActionResult {
-
 	constructor(parameters) {
 		super(parameters);
 		this._projectType = parameters.projectType;
@@ -20,8 +19,8 @@ class CreateProjectActionResult extends ActionResult {
 	validateParameters(parameters) {
 		super.validateParameters(parameters);
 		if (parameters.status === ActionResult.SUCCESS) {
-			assert(parameters.projectDirectory, "projectDirectory is required when ActionResult is a success.");
-			assert(parameters.projectType, "projectType is required when ActionResult is a success.");
+			assert(parameters.projectDirectory, 'projectDirectory is required when ActionResult is a success.');
+			assert(parameters.projectType, 'projectType is required when ActionResult is a success.');
 		}
 	}
 
@@ -90,7 +89,7 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 			...(this.projectName && { projectName: this.projectName }),
 			...(this.projectDirectory && { projectDirectory: this.projectDirectory }),
 			...(this.includeUnitTesting && { includeUnitTesting: this.includeUnitTesting }),
-			...(this.npmPackageIntitialized && { npmInstallSuccess: this.npmPackageIntitialized })
+			...(this.npmPackageIntitialized && { npmInstallSuccess: this.npmPackageIntitialized }),
 		});
 	}
 }

@@ -17,4 +17,8 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	println(message: string, color?: color) {
 		Output.appendLine(message);
 	}
+
+	logErrors(errorMessages: string[]) {
+		errorMessages.forEach((message: string) => this.println(message));
+	}
 }

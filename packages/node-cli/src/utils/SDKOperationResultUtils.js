@@ -5,7 +5,7 @@
 'use strict';
 
 const ActionResultUtils = require('./ActionResultUtils');
-const NodeConsoleLogger = require('./NodeConsoleLogger');
+const { lineBreak } = require('../loggers/ConsoleLogger');
 
 module.exports = {
 	SUCCESS: 'SUCCESS',
@@ -13,7 +13,7 @@ module.exports = {
 
 	getErrorMessagesString: operationResult => {
 		const errorMessages = ActionResultUtils.collectErrorMessages(operationResult);
-		return errorMessages.join(NodeConsoleLogger.lineBreak);
+		return errorMessages.join(lineBreak);
 	},
 
 	getResultMessage: operationResult => {
@@ -25,20 +25,13 @@ module.exports = {
 		return operationResult.status === this.ERROR;
 	},
 
-	logErrors: operationResult => {
-		const { errorMessages } = operationResult;
-		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
-			errorMessages.forEach(message => NodeConsoleLogger.println(message, NodeConsoleLogger.COLORS.ERROR));
-		}
-	},
-
-	logResultMessage: operationResult => {
+	logResultMessage: (operationResult, consoleLogger) => {
 		const { resultMessage } = operationResult;
 		if (resultMessage) {
 			if (operationResult.status === this.ERROR) {
-				NodeConsoleLogger.println(resultMessage, NodeConsoleLogger.COLORS.ERROR);
+				consoleLogger.println(resultMessage, consoleLogger.COLORS.ERROR);
 			} else {
-				NodeConsoleLogger.println(resultMessage, NodeConsoleLogger.COLORS.RESULT);
+				consoleLogger.println(resultMessage, consoleLogger.COLORS.RESULT);
 			}
 		}
 	},

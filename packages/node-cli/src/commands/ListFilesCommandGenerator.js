@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
@@ -10,11 +10,11 @@ const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const TranslationService = require('../services/TranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const NodeConsoleLogger = require('../utils/NodeConsoleLogger');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const ListFilesOutputFormatter = require('./formatOutput/ListFilesOutputFormatter');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL }
+	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../services/TranslationKeys');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
@@ -51,7 +51,10 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				})
 				// TODO : find right mecanism to treat the error
 				.catch(error => {
-					NodeConsoleLogger.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), NodeConsoleLogger.COLORS.ERROR);
+					this.consoleLogger.println(
+						TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error),
+						this.consoleLogger.COLORS.ERROR
+					);
 				})
 		});
 	}
@@ -61,9 +64,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			return {
 				name: folder.path,
 				value: folder.path,
-				disabled: folder.isRestricted
-					? TranslationService.getMessage(RESTRICTED_FOLDER)
-					: '',
+				disabled: folder.isRestricted ? TranslationService.getMessage(RESTRICTED_FOLDER) : '',
 			};
 		});
 	}
@@ -75,7 +76,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			const executionContext = new SDKExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				params: answers,
-				includeProjectDefaultAuthId: true
+				includeProjectDefaultAuthId: true,
 			});
 
 			const operationResult = await executeWithSpinner({
@@ -84,30 +85,16 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? ActionResult.Builder
-					.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.build()
-				: ActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
-					.build();
+				? ActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.build()
+				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
 	_formatOutput(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		ActionResultUtils.logResultMessage(actionResult);
-
-		if (Array.isArray(actionResult.data)) {
-			actionResult.data.forEach(fileName => {
-				NodeConsoleLogger.println(fileName, NodeConsoleLogger.COLORS.RESULT)
-			});
-		}
+		new ListFilesOutputFormatter(this.consoleLogger).formatOutput(actionResult);
 	}
 };

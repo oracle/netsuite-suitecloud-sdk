@@ -18,7 +18,9 @@ class NodeConsoleLogger extends ConsoleLogger {
 		return bold(color(str));
 	}
 
-	// https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
+	logErrors(errorMessages) {
+		errorMessages.forEach(message => this.println(message, this.COLORS.ERROR));
+	}
 }
 
 module.exports = new NodeConsoleLogger();

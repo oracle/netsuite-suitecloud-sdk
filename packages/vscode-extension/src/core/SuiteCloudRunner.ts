@@ -1,5 +1,5 @@
+import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import VSCommandOutputHandler from '../service/VSCommandOutputHandler';
-import VSConsoleLogger from '../service/VSConsoleLogger';
 
 const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
 const CommandInstanceFactory = require('@oracle/suitecloud-cli/src/core/CommandInstanceFactory');

@@ -62,7 +62,7 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatOutput(actionResult) {
-		new AddDependenciesOutputFormatter(this._consoleLogger).formatOutput(actionResult);
+		new AddDependenciesOutputFormatter(this.consoleLogger).formatOutput(actionResult);
 	}
 }
 

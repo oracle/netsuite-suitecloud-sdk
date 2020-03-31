@@ -13,7 +13,7 @@ const HOME_PATH = require('os').homedir();
 
 const { FOLDERS } = require('../../ApplicationConstants');
 
-const NodeConsoleLogger = require('../../utils/NodeConsoleLogger');
+const NodeConsoleLogger = require('../../loggers/NodeConsoleLogger');
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
 
 const TranslationService = require('../../services/TranslationService');
