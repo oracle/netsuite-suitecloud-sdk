@@ -1,5 +1,5 @@
 # SuiteCloud CLI for Node.js
-<p align="center">
+<p>
   <a href="https://www.npmjs.com/package/@oracle/suitecloud-cli">
     <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-cli.svg" alt="npm-cli"/>
   </a>
