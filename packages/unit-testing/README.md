@@ -1,4 +1,10 @@
 # SuiteCloud Unit Testing
+<p align="center">
+    <a href="https://www.npmjs.com/package/@oracle/suitecloud-unit-testing">
+        <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-unit-testing.svg" alt="npm-unit-testing"/>
+    </a>
+</p>
+
 Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestjs.io/) for your SDF projects.
 
 ## Features
