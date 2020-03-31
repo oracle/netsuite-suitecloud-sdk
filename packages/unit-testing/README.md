@@ -65,7 +65,7 @@ The `jest.config.js` file must follow a specific structure. Depending on your SD
 
 - For Account Customization Projects:
 ```javascript
-const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/SuiteCloudJestConfiguration");
+const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
   projectFolder: 'src', //or your SDF project folder
@@ -75,7 +75,7 @@ module.exports = SuiteCloudJestConfiguration.build({
 
 - For SuiteApps:
 ```javascript
-const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/SuiteCloudJestConfiguration");
+const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
   projectFolder: 'src', //or your SDF project folder
