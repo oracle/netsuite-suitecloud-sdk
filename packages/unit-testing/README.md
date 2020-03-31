@@ -1,5 +1,5 @@
 # SuiteCloud Unit Testing
-<p align="center">
+<p>
     <a href="https://www.npmjs.com/package/@oracle/suitecloud-unit-testing">
         <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-unit-testing.svg" alt="npm-unit-testing"/>
     </a>
