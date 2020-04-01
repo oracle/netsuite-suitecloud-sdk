@@ -1,4 +1,12 @@
+<p align="center"><a href="#"><img width="250" src="https://www.netsuiteblogs.com/Websites/netsuiteblog/templates/Blog2017/images/OracleNetSuite_horiz.svg"></a></p>
+
 # SuiteCloud CLI for Node.js
+<p>
+  <a href="https://www.npmjs.com/package/@oracle/suitecloud-cli">
+    <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-cli.svg" alt="npm-cli"/>
+  </a>
+</p>
+
 SuiteCloud Command Line Interface (CLI) for Node.js is a SuiteCloud SDK tool to manage SuiteCloud project components and validate and deploy projects to your account.\
 CLI for Node.js is an interactive tool that guides you through all the steps of the communication between your local project and your account.
 

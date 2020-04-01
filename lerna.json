@@ -2,9 +2,6 @@
   "version": "independent",
   "npmClient": "npm",
   "command": {
-    "publish": {
-      "ignoreChanges": ["*.md"]
-    },
     "bootstrap": {
       "npmClientArgs": ["--no-package-lock"]
     }

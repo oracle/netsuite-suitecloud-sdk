@@ -1,4 +1,12 @@
+<p align="center"><a href="#"><img width="250" src="https://www.netsuiteblogs.com/Websites/netsuiteblog/templates/Blog2017/images/OracleNetSuite_horiz.svg"></a></p>
+
 # SuiteCloud Unit Testing
+<p>
+    <a href="https://www.npmjs.com/package/@oracle/suitecloud-unit-testing">
+        <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-unit-testing.svg" alt="npm-unit-testing"/>
+    </a>
+</p>
+
 Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestjs.io/) for your SDF projects.
 
 ## Features
@@ -65,7 +73,7 @@ The `jest.config.js` file must follow a specific structure. Depending on your SD
 
 - For Account Customization Projects:
 ```javascript
-const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/SuiteCloudJestConfiguration");
+const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
   projectFolder: 'src', //or your SDF project folder
@@ -75,7 +83,7 @@ module.exports = SuiteCloudJestConfiguration.build({
 
 - For SuiteApps:
 ```javascript
-const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/SuiteCloudJestConfiguration");
+const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
   projectFolder: 'src', //or your SDF project folder
