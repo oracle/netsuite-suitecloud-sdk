@@ -12,8 +12,15 @@ const TEMPLATES_PATH = '/Templates';
 const TEMPLATES_EMAIL_TEMPLATES_PATH = '/Templates/E-mail Templates';
 const TEMPLATES_MARKETING_TEMPLATES_PATH = '/Templates/Marketing Templates';
 const WEB_SITE_HOSTING_FILES_PATH = '/Web Site Hosting Files';
+const SUITEAPPS = '/SuiteApps';
 
-const UNRESTRICTED_PATHS = [SUITESCRIPTS_PATH, TEMPLATES_EMAIL_TEMPLATES_PATH, TEMPLATES_MARKETING_TEMPLATES_PATH, WEB_SITE_HOSTING_FILES_PATH];
+const UNRESTRICTED_PATHS = [
+	SUITESCRIPTS_PATH,
+	TEMPLATES_EMAIL_TEMPLATES_PATH,
+	TEMPLATES_MARKETING_TEMPLATES_PATH,
+	WEB_SITE_HOSTING_FILES_PATH,
+	SUITEAPPS,
+];
 
 module.exports = class FileCabinetService {
 	constructor(fileCabinetAbsolutePath) {
@@ -45,7 +52,7 @@ module.exports = class FileCabinetService {
 
 	_shouldEnterFolder(folder) {
 		//Templates itself is restricted, but it has both restricted and unrestricted child folders, so we still need to get inside it.
-		return this._isTemplatesFolder(folder) || (this._fileSystemService.getFilesFromDirectory(folder).length && this.isUnrestrictedPath(folder));
+		return this._isTemplatesFolder(folder) || (this.isUnrestrictedPath(folder) && this._fileSystemService.getFilesFromDirectory(folder).length);
 	}
 
 	_isTemplatesFolder(folder) {
