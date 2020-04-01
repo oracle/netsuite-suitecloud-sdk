@@ -5,7 +5,7 @@
 
 'use strict';
 
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const assert = require('assert');
 
 const {
@@ -37,11 +37,11 @@ module.exports = class ApplyContentProtectionArgumentHandler {
 			args[APPLY_CONTENT_PROTECTION] &&
 			this._projectInfoService.getProjectType() === PROJECT_ACP
 		) {
-			throw TranslationService.getMessage(ERRORS.APPLY_CONTENT_PROTECTION_IN_ACP);
+			throw NodeTranslationService.getMessage(ERRORS.APPLY_CONTENT_PROTECTION_IN_ACP);
 		}
 
 		if (args[APPLY_CONTENT_PROTECTION] && !this._projectInfoService.hasLockAndHideFiles()) {
-			throw TranslationService.getMessage(
+			throw NodeTranslationService.getMessage(
 				ERRORS.APPLY_CONTENT_PROTECTION_WITHOUT_HIDING_AND_LOCKING,
 				this._commandName,
 				LINKS.HOW_TO.CREATE_HIDDING_XML,

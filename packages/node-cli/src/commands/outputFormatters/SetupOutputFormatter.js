@@ -4,7 +4,7 @@
  */
 'use strict';
 const OutputFormatter = require('./OutputFormatter');
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
@@ -26,7 +26,7 @@ class SetupOutputFormatter extends OutputFormatter {
 		let resultMessage;
 		switch (actionResult.mode) {
 			case AUTH_MODE.OAUTH:
-				resultMessage = TranslationService.getMessage(
+				resultMessage = NodeTranslationService.getMessage(
 					OUTPUT.NEW_OAUTH,
 					actionResult.accountInfo.companyName,
 					actionResult.accountInfo.roleName,
@@ -34,7 +34,7 @@ class SetupOutputFormatter extends OutputFormatter {
 				);
 				break;
 			case AUTH_MODE.SAVE_TOKEN:
-				resultMessage = TranslationService.getMessage(
+				resultMessage = NodeTranslationService.getMessage(
 					OUTPUT.NEW_SAVED_TOKEN,
 					actionResult.accountInfo.companyName,
 					actionResult.accountInfo.roleName,
@@ -42,7 +42,7 @@ class SetupOutputFormatter extends OutputFormatter {
 				);
 				break;
 			case AUTH_MODE.REUSE:
-				resultMessage = TranslationService.getMessage(
+				resultMessage = NodeTranslationService.getMessage(
 					OUTPUT.REUSED_AUTH_ID,
 					actionResult.authId,
 					actionResult.accountInfo.companyName,
@@ -54,7 +54,7 @@ class SetupOutputFormatter extends OutputFormatter {
 		}
 
 		this.consoleLogger.println(resultMessage, COLORS.RESULT);
-		this.consoleLogger.println(TranslationService.getMessage(OUTPUT.SUCCESSFUL), COLORS.RESULT);
+		this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.SUCCESSFUL), COLORS.RESULT);
 	}
 }
 

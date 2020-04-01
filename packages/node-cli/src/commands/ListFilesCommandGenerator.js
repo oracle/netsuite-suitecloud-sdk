@@ -8,7 +8,7 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
@@ -36,7 +36,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			return (
 				executeWithSpinner({
 					action: this._sdkExecutor.execute(executionContext),
-					message: TranslationService.getMessage(LOADING_FOLDERS),
+					message: NodeTranslationService.getMessage(LOADING_FOLDERS),
 				})
 					.then(operationResult => {
 						resolve(
@@ -44,7 +44,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 								{
 									type: CommandUtils.INQUIRER_TYPES.LIST,
 									name: this._commandMetadata.options.folder.name,
-									message: TranslationService.getMessage(SELECT_FOLDER),
+									message: NodeTranslationService.getMessage(SELECT_FOLDER),
 									default: SUITE_SCRIPTS_FOLDER,
 									choices: this._getFileCabinetFolders(operationResult),
 								},
@@ -53,7 +53,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 					})
 					// TODO : find right mecanism to treat the error
 					.catch(error => {
-						this.consoleLogger.println(TranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), COLORS.ERROR);
+						this.consoleLogger.println(NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), COLORS.ERROR);
 					})
 			);
 		});
@@ -64,7 +64,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 			return {
 				name: folder.path,
 				value: folder.path,
-				disabled: folder.isRestricted ? TranslationService.getMessage(RESTRICTED_FOLDER) : '',
+				disabled: folder.isRestricted ? NodeTranslationService.getMessage(RESTRICTED_FOLDER) : '',
 			};
 		});
 	}
@@ -81,7 +81,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
-				message: TranslationService.getMessage(LOADING_FILES),
+				message: NodeTranslationService.getMessage(LOADING_FILES),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS

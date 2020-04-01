@@ -5,7 +5,7 @@
 'use strict';
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 const { COLORS } = require('../../loggers/LoggerConstants');
 
@@ -26,10 +26,10 @@ class ListObjectsOutputFormatter extends OutputFormatter {
 
 		ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 		if (Array.isArray(actionResult.data) && actionResult.data.length) {
-			this.consoleLogger.println(TranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), COLORS.RESULT);
+			this.consoleLogger.println(NodeTranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), COLORS.RESULT);
 			actionResult.data.forEach(object => this.consoleLogger.println(`${object.type}:${object.scriptId}`, COLORS.RESULT));
 		} else {
-			this.consoleLogger.println(TranslationService.getMessage(SUCCESS_NO_OBJECTS), COLORS.RESULT);
+			this.consoleLogger.println(NodeTranslationService.getMessage(SUCCESS_NO_OBJECTS), COLORS.RESULT);
 		}
 	}
 }

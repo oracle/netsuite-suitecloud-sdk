@@ -6,7 +6,7 @@
 
 const assert = require('assert');
 const inquirer = require('inquirer');
-const TranslationService = require('./../services/TranslationService');
+const NodeTranslationService = require('./../services/NodeTranslationService');
 const { ERRORS } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
@@ -100,10 +100,10 @@ module.exports = class CommandActionExecutor {
 
 	_checkCanExecute(context) {
 		if (context.commandMetadata.isSetupRequired && !context.projectConfiguration) {
-			throw TranslationService.getMessage(ERRORS.SETUP_REQUIRED);
+			throw NodeTranslationService.getMessage(ERRORS.SETUP_REQUIRED);
 		}
 		if (context.runInInteractiveMode && !context.commandMetadata.supportsInteractiveMode) {
-			throw TranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE, context.commandMetadata.name);
+			throw NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE, context.commandMetadata.name);
 		}
 	}
 

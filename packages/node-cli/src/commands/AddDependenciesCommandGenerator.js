@@ -8,7 +8,7 @@ const { ActionResult } = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
@@ -44,7 +44,7 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
-				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
+				message: NodeTranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS

@@ -16,7 +16,7 @@ const { FOLDERS } = require('../../ApplicationConstants');
 const NodeConsoleLogger = require('../../loggers/NodeConsoleLogger');
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
 
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const { COLORS } = require('../../loggers/LoggerConstants');
@@ -42,12 +42,12 @@ class SDKDownloadService {
 
 		executeWithSpinner({
 			action: this._downloadFile(fullURL, sdkDirectory),
-			message: TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
+			message: NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
 		})
-			.then(() => NodeConsoleLogger.println(TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS), COLORS.INFO))
+			.then(() => NodeConsoleLogger.println(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS), COLORS.INFO))
 			.catch(error =>
 				NodeConsoleLogger.println(
-					TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)),
+					NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)),
 					COLORS.ERROR
 				)
 			);
@@ -68,7 +68,7 @@ class SDKDownloadService {
 
 		return request(options).then(function(response) {
 			if (!VALID_JAR_CONTENT_TYPES.includes(response.headers['content-type'])) {
-				throw TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE);
+				throw NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE);
 			}
 
 			// remove all JAR files before writing response to file

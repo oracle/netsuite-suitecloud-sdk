@@ -9,7 +9,7 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
@@ -96,7 +96,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.TYPE,
-				message: TranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
+				message: NodeTranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
 				default: 0,
 				choices: [
 					{
@@ -112,7 +112,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_NAME,
-				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
 				filter: fieldValue => fieldValue.trim(),
 				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateXMLCharacters),
 			},
@@ -122,7 +122,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PUBLISHER_ID,
-				message: TranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
 				validate: fieldValue => showValidationResults(fieldValue, validatePublisherId),
 			},
 			{
@@ -131,7 +131,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_ID,
-				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_ID),
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_ID),
 				validate: fieldValue =>
 					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, fieldValue =>
 						validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, fieldValue)
@@ -143,18 +143,18 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_VERSION,
-				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
 				default: DEFAULT_PROJECT_VERSION,
 				validate: fieldValue => showValidationResults(fieldValue, validateProjectVersion),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.INCLUDE_UNIT_TESTING,
-				message: TranslationService.getMessage(QUESTIONS.INCLUDE_UNIT_TESTING),
+				message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_UNIT_TESTING),
 				default: 0,
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: true },
-					{ name: TranslationService.getMessage(NO), value: false },
+					{ name: NodeTranslationService.getMessage(YES), value: true },
+					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
 			},
 		]);
@@ -167,17 +167,17 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: COMMAND_OPTIONS.OVERWRITE,
-					message: TranslationService.getMessage(QUESTIONS.OVERWRITE_PROJECT, projectAbsolutePath),
+					message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_PROJECT, projectAbsolutePath),
 					default: 0,
 					choices: [
-						{ name: TranslationService.getMessage(NO), value: false },
-						{ name: TranslationService.getMessage(YES), value: true },
+						{ name: NodeTranslationService.getMessage(NO), value: false },
+						{ name: NodeTranslationService.getMessage(YES), value: true },
 					],
 				},
 			]);
 			answers[COMMAND_OPTIONS.OVERWRITE] = overwriteAnswer[COMMAND_OPTIONS.OVERWRITE];
 			if (!overwriteAnswer[COMMAND_OPTIONS.OVERWRITE]) {
-				throw TranslationService.getMessage(MESSAGES.PROJECT_CREATION_CANCELED);
+				throw NodeTranslationService.getMessage(MESSAGES.PROJECT_CREATION_CANCELED);
 			}
 		}
 		return answers;
@@ -257,7 +257,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	createProject(params, answers, projectAbsolutePath, projectFolderName, manifestFilePath) {
 		return async (resolve, reject) => {
 			try {
-				this.consoleLogger.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), COLORS.INFO);
+				this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), COLORS.INFO);
 				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
@@ -285,7 +285,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, answers[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
-					this.consoleLogger.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), COLORS.INFO);
+					this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), COLORS.INFO);
 					await this._createUnitTestFiles(
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
@@ -293,7 +293,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						projectAbsolutePath
 					);
 
-					this.consoleLogger.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), COLORS.INFO);
+					this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), COLORS.INFO);
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
 				} else {
 					await this._fileSystemService.createFileFromTemplate({

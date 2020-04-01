@@ -13,7 +13,7 @@ const path = require('path');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const UploadFilesOutputFormatter = require('./outputFormatters/UploadFilesOutputFormatter');
 
@@ -54,7 +54,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 		const overwriteAnswer = await prompt([this._generateOverwriteQuestion()]);
 		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {
-			throw TranslationService.getMessage(MESSAGES.CANCEL_UPLOAD);
+			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPLOAD);
 		}
 
 		return selectFilesAnswer;
@@ -68,9 +68,9 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 			let disabledMessage = '';
 			if (!this._fileCabinetService.isUnrestrictedPath(name)) {
-				disabledMessage = TranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER);
+				disabledMessage = NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER);
 			} else if (!this._fileSystemService.getFilesFromDirectory(folder).length) {
-				disabledMessage = TranslationService.getMessage(MESSAGES.EMPTY_FOLDER);
+				disabledMessage = NodeTranslationService.getMessage(MESSAGES.EMPTY_FOLDER);
 			}
 
 			return {
@@ -83,12 +83,12 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		const localFileCabinetFoldersChoices = localFileCabinetSubFolders.map(transformFoldersToChoicesFunc);
 
 		if (!localFileCabinetFoldersChoices.some(choice => !choice.disabled)) {
-			throw TranslationService.getMessage(MESSAGES.NOTHING_TO_UPLOAD);
+			throw NodeTranslationService.getMessage(MESSAGES.NOTHING_TO_UPLOAD);
 		}
 
 		return [
 			{
-				message: TranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
+				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_ANSWERS.SELECTED_FOLDER,
 				choices: localFileCabinetFoldersChoices,
@@ -107,7 +107,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 		return [
 			{
-				message: TranslationService.getMessage(QUESTIONS.SELECT_FILES),
+				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FILES),
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 				name: COMMAND_OPTIONS.PATHS,
 				choices: filesChoices,
@@ -120,11 +120,11 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		return {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
-			message: TranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
+			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
 			default: 0,
 			choices: [
-				{ name: TranslationService.getMessage(YES), value: true },
-				{ name: TranslationService.getMessage(NO), value: false },
+				{ name: NodeTranslationService.getMessage(YES), value: true },
+				{ name: NodeTranslationService.getMessage(NO), value: false },
 			],
 		};
 	}
@@ -152,7 +152,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextUploadFiles),
-				message: TranslationService.getMessage(MESSAGES.UPLOADING_FILES),
+				message: NodeTranslationService.getMessage(MESSAGES.UPLOADING_FILES),
 			});
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)

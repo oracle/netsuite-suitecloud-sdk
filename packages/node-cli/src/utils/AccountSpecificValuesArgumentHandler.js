@@ -5,7 +5,7 @@
 
 'use strict';
 
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const assert = require('assert');
 const {
 	UTILS: {
@@ -30,10 +30,10 @@ module.exports = class AccountSpecificValuesArgumentHandler {
 		if (args.hasOwnProperty(ACCOUNT_SPECIFIC_VALUES)) {
 			assert(
 				typeof args[ACCOUNT_SPECIFIC_VALUES] === 'string',
-				TranslationService.getMessage(ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION)
+				NodeTranslationService.getMessage(ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION)
 			);
 			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-				throw TranslationService.getMessage(
+				throw NodeTranslationService.getMessage(
 					ERRORS.APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP
 				);
 			}
@@ -53,7 +53,7 @@ module.exports = class AccountSpecificValuesArgumentHandler {
 					newArgs[ACCOUNT_SPECIFIC_VALUES] = ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR;
 					break;
 				default:
-					throw TranslationService.getMessage(
+					throw NodeTranslationService.getMessage(
 						ERRORS.WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION
 					);
 			}

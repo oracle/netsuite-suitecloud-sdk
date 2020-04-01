@@ -8,7 +8,7 @@ const FileSystemService = require('../FileSystemService');
 const FileUtils = require('../../utils/FileUtils');
 const CLISettings = require('./CLISettings');
 const path = require('path');
-const TranslationService = require('../TranslationService');
+const NodeTranslationService = require('../NodeTranslationService');
 const { ERRORS } = require('../TranslationKeys');
 
 const HOME_PATH = require('os').homedir();
@@ -50,7 +50,7 @@ module.exports = class CLISettingsService {
 				CACHED_CLI_SETTINGS = CLISettings.fromJson(cliSettingsJson);
 				return CLISettings.fromJson(cliSettingsJson);
 			} catch (error) {
-				throw TranslationService.getMessage(ERRORS.CLI_SETTINGS_FILE_CONTENT);
+				throw NodeTranslationService.getMessage(ERRORS.CLI_SETTINGS_FILE_CONTENT);
 			}
 		}
 		CACHED_CLI_SETTINGS = DEFAULT_CLI_SETTINGS;

@@ -4,12 +4,9 @@
  */
 'use strict';
 
-const {
-	FILES,
-	PROJECT_SUITEAPP
-} = require('../ApplicationConstants');
+const { FILES, PROJECT_SUITEAPP } = require('../ApplicationConstants');
 const FileUtils = require('../utils/FileUtils');
-const TranslationService = require('../services/TranslationService');
+const UnitTestTranslationService = require('../services/UnitTestTranslationService');
 const TranslationKeys = require('../services/TranslationKeys');
 const TestFrameworkException = require('../TestFrameworkException');
 const path = require('path');
@@ -19,7 +16,6 @@ const assert = require('assert');
 const MANIFEST_TAG_REGEX = '[\\s\\n]*<manifest.*>[^]*</manifest>[\\s\\n]*$';
 
 module.exports = class ProjectInfoService {
-
 	constructor(projectFolder) {
 		assert(projectFolder);
 		this._projectFolder = projectFolder;
@@ -30,9 +26,9 @@ module.exports = class ProjectInfoService {
 
 		if (!FileUtils.exists(manifestPath)) {
 			const errorMessage =
-				TranslationService.getMessage(TranslationKeys.ERRORS.PROCESS_FAILED) +
+				UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.PROCESS_FAILED) +
 				' ' +
-				TranslationService.getMessage(TranslationKeys.ERRORS.FILE_NOT_EXIST, manifestPath);
+				UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.FILE_NOT_EXIST, manifestPath);
 			throw new TestFrameworkException(-10, errorMessage);
 		}
 
@@ -40,9 +36,9 @@ module.exports = class ProjectInfoService {
 
 		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
 			const errorMessage =
-				TranslationService.getMessage(TranslationKeys.ERRORS.PROCESS_FAILED) +
+				UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.PROCESS_FAILED) +
 				' ' +
-				TranslationService.getMessage(TranslationKeys.ERRORS.XML_MANIFEST_TAG_MISSING);
+				UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.XML_MANIFEST_TAG_MISSING);
 			throw new TestFrameworkException(-10, errorMessage);
 		}
 
@@ -52,9 +48,9 @@ module.exports = class ProjectInfoService {
 		parser.parseString(manifestString, function(err, result) {
 			if (err) {
 				const errorMessage =
-					TranslationService.getMessage(TranslationKeys.ERRORS.PROCESS_FAILED) +
+					UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.PROCESS_FAILED) +
 					' ' +
-					TranslationService.getMessage(TranslationKeys.ERRORS.FILE, manifestPath);
+					UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.FILE, manifestPath);
 				validationError = errorMessage + ' ' + err;
 			}
 
@@ -64,7 +60,7 @@ module.exports = class ProjectInfoService {
 				if (projectType === PROJECT_SUITEAPP) {
 					applicationId = result.manifest.publisherid + '.' + result.manifest.projectid;
 				} else {
-					validationError = TranslationService.getMessage(TranslationKeys.ERRORS.ONLY_SUITEAPP_HAVE_APP_ID);
+					validationError = UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.ONLY_SUITEAPP_HAVE_APP_ID);
 				}
 			}
 		});
@@ -75,5 +71,4 @@ module.exports = class ProjectInfoService {
 
 		return applicationId;
 	}
-
 };

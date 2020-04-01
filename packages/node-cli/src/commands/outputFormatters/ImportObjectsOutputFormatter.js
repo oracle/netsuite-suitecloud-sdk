@@ -5,7 +5,7 @@
 ('use strict');
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 const { COLORS } = require('../../loggers/LoggerConstants');
 
@@ -35,7 +35,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 
 	_logImportedObjects(importedObjects) {
 		if (Array.isArray(importedObjects) && importedObjects.length) {
-			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), COLORS.RESULT);
+			this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), COLORS.RESULT);
 			importedObjects.forEach(objectImport => {
 				const importedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${objectImport.customObject.type}:${
 					objectImport.customObject.id
@@ -53,7 +53,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 		const thereAreReferencedFiles =
 			(Array.isArray(importedFiles) && importedFiles.length) || (Array.isArray(unImportedFiles) && unImportedFiles.length);
 		if (thereAreReferencedFiles) {
-			const referencedFilesLogMessage = `${this.consoleLogger.getPadding(2)}- ${TranslationService.getMessage(
+			const referencedFilesLogMessage = `${this.consoleLogger.getPadding(2)}- ${NodeTranslationService.getMessage(
 				OUTPUT.REFERENCED_SUITESCRIPT_FILES
 			)}`;
 			this.consoleLogger.println(referencedFilesLogMessage, COLORS.RESULT);
@@ -61,7 +61,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 
 		if (Array.isArray(importedFiles) && importedFiles.length) {
 			importedFiles.forEach(importedFile => {
-				const importedFileLogMessage = `${this.consoleLogger.getPadding(3)}- ${TranslationService.getMessage(
+				const importedFileLogMessage = `${this.consoleLogger.getPadding(3)}- ${NodeTranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
 					importedFile.path
 				)}`;
@@ -71,7 +71,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 
 		if (Array.isArray(unImportedFiles) && unImportedFiles.length) {
 			unImportedFiles.forEach(unImportedFile => {
-				const unimportedFileLogMessage = `${this.consoleLogger.getPadding(3)}- ${TranslationService.getMessage(
+				const unimportedFileLogMessage = `${this.consoleLogger.getPadding(3)}- ${NodeTranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
 					unImportedFile.path,
 					unImportedFile.message
@@ -83,9 +83,9 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 
 	_logUnImportedObjects(unImportedObjects) {
 		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
-			this.consoleLogger.println(TranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), COLORS.WARNING);
+			this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), COLORS.WARNING);
 			unImportedObjects.forEach(objectImport => {
-				const unimportedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${TranslationService.getMessage(
+				const unimportedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${NodeTranslationService.getMessage(
 					OUTPUT.OBJECT_IMPORT_FAILED,
 					objectImport.customObject.type,
 					objectImport.customObject.id,

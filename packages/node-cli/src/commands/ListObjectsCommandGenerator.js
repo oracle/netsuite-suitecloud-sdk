@@ -11,7 +11,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
@@ -47,7 +47,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questions = [];
 		//create a class to see type based on manifest.
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			let message = TranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
+			let message = NodeTranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
 
 			const questionSpecificSuiteApp = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -56,11 +56,11 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				default: 0,
 				choices: [
 					{
-						name: TranslationService.getMessage(YES),
+						name: NodeTranslationService.getMessage(YES),
 						value: true,
 					},
 					{
-						name: TranslationService.getMessage(NO),
+						name: NodeTranslationService.getMessage(NO),
 						value: false,
 					},
 				],
@@ -74,7 +74,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.APP_ID,
-				message: TranslationService.getMessage(QUESTIONS.APPID),
+				message: NodeTranslationService.getMessage(QUESTIONS.APPID),
 				validate: fieldValue => showValidationResults(fieldValue, validateSuiteApp),
 			};
 			questions.push(questionAppId);
@@ -83,15 +83,15 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questionFilterByCustomObjects = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_QUESTIONS_NAMES.TYPE_ALL,
-			message: TranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
+			message: NodeTranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
 			default: 0,
 			choices: [
 				{
-					name: TranslationService.getMessage(YES),
+					name: NodeTranslationService.getMessage(YES),
 					value: true,
 				},
 				{
-					name: TranslationService.getMessage(NO),
+					name: NodeTranslationService.getMessage(NO),
 					value: false,
 				},
 			],
@@ -104,7 +104,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 			name: COMMAND_QUESTIONS_NAMES.TYPE,
-			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
+			message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
 			choices: [
 				...OBJECT_TYPES.map(customObject => ({
@@ -122,15 +122,15 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		const questionSpecificScriptId = {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_QUESTIONS_NAMES.SPECIFY_SCRIPT_ID,
-			message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
+			message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 			default: false,
 			choices: [
 				{
-					name: TranslationService.getMessage(YES),
+					name: NodeTranslationService.getMessage(YES),
 					value: true,
 				},
 				{
-					name: TranslationService.getMessage(NO),
+					name: NodeTranslationService.getMessage(NO),
 					value: false,
 				},
 			],
@@ -143,7 +143,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: COMMAND_QUESTIONS_NAMES.SCRIPT_ID,
-			message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
+			message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 		};
 		questions.push(questionScriptId);
@@ -167,7 +167,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 
 			const operationResult = await executeWithSpinner({
 				action: actionListObjects,
-				message: TranslationService.getMessage(LISTING_OBJECTS),
+				message: NodeTranslationService.getMessage(LISTING_OBJECTS),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS

@@ -5,7 +5,7 @@
 'use strict';
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 const { COLORS } = require('../../loggers/LoggerConstants');
 
@@ -39,12 +39,12 @@ class ValidateOutputFormatter extends OutputFormatter {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			if (isAppliedContentProtection) {
 				this.consoleLogger.println(
-					TranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder),
+					NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder),
 					COLORS.INFO
 				);
 			} else {
 				this.consoleLogger.println(
-					TranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder),
+					NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder),
 					COLORS.INFO
 				);
 			}
@@ -52,8 +52,8 @@ class ValidateOutputFormatter extends OutputFormatter {
 	}
 
 	_showLocalValidationResultData(data) {
-		this._logValidationEntries(data.warnings, TranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), COLORS.WARNING);
-		this._logValidationEntries(data.errors, TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), COLORS.ERROR);
+		this._logValidationEntries(data.warnings, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), COLORS.WARNING);
+		this._logValidationEntries(data.errors, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), COLORS.ERROR);
 	}
 
 	_logValidationEntries(entries, headingLabel, color) {
@@ -75,7 +75,7 @@ class ValidateOutputFormatter extends OutputFormatter {
 				.filter(entry => entry.filePath === file)
 				.forEach(entry => {
 					this.consoleLogger.println(
-						TranslationService.getMessage(OUTPUT.VALIDATION_OUTPUT_MESSAGE, entry.lineNumber, entry.message),
+						NodeTranslationService.getMessage(OUTPUT.VALIDATION_OUTPUT_MESSAGE, entry.lineNumber, entry.message),
 						color
 					);
 				});

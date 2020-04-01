@@ -8,7 +8,7 @@ const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKExecutionContext = require('../SDKExecutionContext');
@@ -57,7 +57,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			}));
 
 		if (foundXMLFiles.length === 0) {
-			throw TranslationService.getMessage(ERRORS.NO_OBJECTS_IN_PROJECT);
+			throw NodeTranslationService.getMessage(ERRORS.NO_OBJECTS_IN_PROJECT);
 		}
 
 		let filteredObjects;
@@ -67,11 +67,11 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: ANSWERS_NAMES.FILTER_BY_SCRIPT_ID,
-					message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
+					message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 					default: false,
 					choices: [
-						{ name: TranslationService.getMessage(YES), value: true },
-						{ name: TranslationService.getMessage(NO), value: false },
+						{ name: NodeTranslationService.getMessage(YES), value: true },
+						{ name: NodeTranslationService.getMessage(NO), value: false },
 					],
 				},
 				{
@@ -80,7 +80,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 					},
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS_NAMES.SCRIPT_ID_FILTER,
-					message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID_FILTER),
+					message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID_FILTER),
 					validate: fieldValue => showValidationResults(fieldValue, validateScriptId),
 				},
 			]);
@@ -88,7 +88,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				? foundXMLFiles.filter(element => element.value.includes(filterAnswers[ANSWERS_NAMES.SCRIPT_ID_FILTER]))
 				: foundXMLFiles;
 			if (filteredObjects.length === 0) {
-				throw TranslationService.getMessage(MESSAGES.NO_OBJECTS_WITH_SCRIPT_ID_FILTER);
+				throw NodeTranslationService.getMessage(MESSAGES.NO_OBJECTS_WITH_SCRIPT_ID_FILTER);
 			}
 		} else {
 			filteredObjects = foundXMLFiles;
@@ -101,7 +101,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				when: foundXMLFiles.length > 1,
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 				name: ANSWERS_NAMES.SCRIPT_ID_LIST,
-				message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
+				message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 				default: 1,
 				choices: filteredObjects,
 				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
@@ -109,11 +109,11 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
-				message: TranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS),
+				message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS),
 				default: 0,
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: true },
-					{ name: TranslationService.getMessage(NO), value: false },
+					{ name: NodeTranslationService.getMessage(YES), value: true },
+					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
 			},
 		]);
@@ -134,7 +134,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	async _executeAction(args) {
 		try {
 			if (args.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !args[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
-				throw TranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
+				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
 			const SDKParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
 
@@ -146,7 +146,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForUpdate),
-				message: TranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
+				message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS

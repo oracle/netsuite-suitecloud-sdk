@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const TRANSLATION_KEYS = require('../services/TranslationKeys');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const assert = require('assert');
@@ -14,7 +14,7 @@ class ValidationErrorsFormatter {
 		assert(validationErrors);
 		assert(Array.isArray(validationErrors));
 
-		const errorMessageHeader = TranslationService.getMessage(TRANSLATION_KEYS.COMMAND_OPTIONS_VALIDATION_ERRORS);
+		const errorMessageHeader = NodeTranslationService.getMessage(TRANSLATION_KEYS.COMMAND_OPTIONS_VALIDATION_ERRORS);
 		const validationErrorsString = validationErrors.join(lineBreak);
 		return `${errorMessageHeader}${lineBreak}${validationErrorsString}`;
 	}

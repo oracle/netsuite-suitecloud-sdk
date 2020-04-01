@@ -6,7 +6,7 @@
 
 const ProxyActionResult = require('../commands/actionresult/ProxyActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const {
 	COMMAND_PROXY: { ARGS_VALIDATION, MESSAGES },
 } = require('../services/TranslationKeys');
@@ -60,17 +60,17 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 
 	_validateArguments(proxyUrlArgument, shouldClearArgument) {
 		if (!proxyUrlArgument && !shouldClearArgument) {
-			throw TranslationService.getMessage(ARGS_VALIDATION.SET_CLEAR_NEITHER_SPECIFIED);
+			throw NodeTranslationService.getMessage(ARGS_VALIDATION.SET_CLEAR_NEITHER_SPECIFIED);
 		}
 		if (proxyUrlArgument && shouldClearArgument) {
-			throw TranslationService.getMessage(ARGS_VALIDATION.SET_CLEAR_BOTH_SPECIFIED);
+			throw NodeTranslationService.getMessage(ARGS_VALIDATION.SET_CLEAR_BOTH_SPECIFIED);
 		}
 	}
 
 	_validateProxyUrl(proxyUrlArgument) {
 		const proxyUrl = url.parse(proxyUrlArgument);
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
-			throw TranslationService.getMessage(ARGS_VALIDATION.PROXY_URL);
+			throw NodeTranslationService.getMessage(ARGS_VALIDATION.PROXY_URL);
 		}
 	}
 

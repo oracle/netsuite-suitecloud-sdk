@@ -5,7 +5,7 @@
 'use strict';
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
@@ -62,11 +62,11 @@ class AddDependenciesOutputFormatter extends OutputFormatter {
 		}
 
 		if (actionResult.data.length === 0) {
-			this.consoleLogger.println(TranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES), COLORS.RESULT);
+			this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES), COLORS.RESULT);
 			return;
 		}
 
-		this.consoleLogger.println(TranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST), COLORS.RESULT);
+		this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST), COLORS.RESULT);
 
 		this._getDependenciesStringsArray(actionResult.data)
 			.sort()

@@ -6,16 +6,15 @@
 import { window } from 'vscode';
 import { Output } from '../extension';
 import { COMMAND, SEE_DETAILS } from '../service/TranslationKeys';
-import { TranslationService } from '../service/TranslationService';
+import { VSTranslationService } from './VSTranslationService';
 
 export default class MessageService {
-
 	private commandName: string;
-	private translationService: TranslationService;
+	private translationService: VSTranslationService;
 
 	constructor(commandName: string) {
 		this.commandName = commandName;
-		this.translationService = new TranslationService();
+		this.translationService = new VSTranslationService();
 	}
 
 	showTriggeredActionInfo() {
@@ -27,19 +26,13 @@ export default class MessageService {
 	}
 
 	showCompletedActionInfo(successMessage?: string) {
-		const message = successMessage
-			? successMessage
-			: this.translationService.getMessage(COMMAND.SUCCESS, [this.commandName]);
-		window.showInformationMessage(message, this.translationService.getMessage(SEE_DETAILS))
-			.then(this.showOutputIfClicked);
+		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, [this.commandName]);
+		window.showInformationMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
 	}
 
 	showCompletedActionError(errorMessage?: string) {
-		const message = errorMessage
-			? errorMessage
-			: this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);
-		window.showErrorMessage(message, this.translationService.getMessage(SEE_DETAILS))
-			.then(this.showOutputIfClicked);
+		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);
+		window.showErrorMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
 	}
 
 	showInformationMessage(infoMessage: string) {
@@ -47,9 +40,7 @@ export default class MessageService {
 	}
 
 	showErrorMessage(errorMessage?: string) {
-		const message = errorMessage
-			? errorMessage
-			: this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);;
+		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);
 		window.showErrorMessage(message);
 	}
 

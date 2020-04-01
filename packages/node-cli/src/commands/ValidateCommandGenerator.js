@@ -10,7 +10,7 @@ const DeployActionResult = require('../commands/actionresult/DeployActionResult'
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
@@ -56,15 +56,15 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.SERVER,
-				message: TranslationService.getMessage(QUESTIONS.SERVER_SIDE),
+				message: NodeTranslationService.getMessage(QUESTIONS.SERVER_SIDE),
 				default: 0,
 				choices: [
 					{
-						name: TranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.ACCOUNT),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.ACCOUNT),
 						value: true,
 					},
 					{
-						name: TranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.LOCAL),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.LOCAL),
 						value: false,
 					},
 				],
@@ -73,15 +73,15 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				when: this._projectInfoService.getProjectType() === PROJECT_ACP,
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
-				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
+				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
 				default: 1,
 				choices: [
 					{
-						name: TranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.WARNING),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.WARNING),
 						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING,
 					},
 					{
-						name: TranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL),
 						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
 					},
 				],
@@ -90,15 +90,15 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				when: this._projectInfoService.getProjectType() === PROJECT_SUITEAPP && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION,
-				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
+				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
 				default: 0,
 				choices: [
 					{
-						name: TranslationService.getMessage(NO),
+						name: NodeTranslationService.getMessage(NO),
 						value: false,
 					},
 					{
-						name: TranslationService.getMessage(YES),
+						name: NodeTranslationService.getMessage(YES),
 						value: true,
 					},
 				],
@@ -140,7 +140,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
-				message: TranslationService.getMessage(MESSAGES.VALIDATING),
+				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS

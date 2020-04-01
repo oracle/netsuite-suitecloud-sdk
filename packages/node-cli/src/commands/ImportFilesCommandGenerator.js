@@ -7,7 +7,7 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
@@ -46,7 +46,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	async _getCommandQuestions(prompt) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
+			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
 		const listFoldersResult = await this._listFolders();
@@ -71,7 +71,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		const overwriteAnswer = await prompt([this._generateOverwriteQuestion()]);
 		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {
-			throw TranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
+			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
 
 		return selectFilesAnswer;
@@ -85,7 +85,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(MESSAGES.LOADING_FOLDERS),
+			message: NodeTranslationService.getMessage(MESSAGES.LOADING_FOLDERS),
 		});
 	}
 
@@ -93,7 +93,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		return {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_OPTIONS.FOLDER,
-			message: TranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
+			message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
 			default: SUITE_SCRIPTS_FOLDER,
 			choices: this._getFileCabinetFolders(listFoldersResult),
 		};
@@ -103,7 +103,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		return listFoldersResponse.data.map(folder => ({
 			name: folder.path,
 			value: folder.path,
-			disabled: folder.isRestricted ? TranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',
+			disabled: folder.isRestricted ? NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',
 		}));
 	}
 
@@ -118,7 +118,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(MESSAGES.LOADING_FILES),
+			message: NodeTranslationService.getMessage(MESSAGES.LOADING_FILES),
 		});
 	}
 
@@ -127,17 +127,17 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 			{
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 				name: COMMAND_OPTIONS.PATHS,
-				message: TranslationService.getMessage(QUESTIONS.SELECT_FILES),
+				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FILES),
 				choices: listFilesResult.data.map(path => ({ name: path, value: path })),
 				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.EXCLUDE_PROPERTIES,
-				message: TranslationService.getMessage(QUESTIONS.EXCLUDE_PROPERTIES),
+				message: NodeTranslationService.getMessage(QUESTIONS.EXCLUDE_PROPERTIES),
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: true },
-					{ name: TranslationService.getMessage(NO), value: false },
+					{ name: NodeTranslationService.getMessage(YES), value: true },
+					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
 			},
 		];
@@ -147,11 +147,11 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		return {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
-			message: TranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
+			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
 			default: 0,
 			choices: [
-				{ name: TranslationService.getMessage(YES), value: true },
-				{ name: TranslationService.getMessage(NO), value: false },
+				{ name: NodeTranslationService.getMessage(YES), value: true },
+				{ name: NodeTranslationService.getMessage(NO), value: false },
 			],
 		};
 	}
@@ -177,7 +177,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	async _executeAction(answers) {
 		try {
 			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-				throw TranslationService.getMessage(ERRORS.IS_SUITEAPP);
+				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 			}
 
 			const executionContextImportObjects = new SDKExecutionContext({
@@ -188,7 +188,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextImportObjects),
-				message: TranslationService.getMessage(MESSAGES.IMPORTING_FILES),
+				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS

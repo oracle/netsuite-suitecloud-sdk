@@ -8,7 +8,7 @@ const LocalCommand = require('@oracle/suitecloud-cli-localserver-command').Local
 
 const { COLORS } = require('../loggers/ConsoleLogger');
 const { COMMAND_LOCAL } = require('./../services/TranslationKeys');
-const TranslationService = require('./../services/TranslationService');
+const NodeTranslationService = require('./../services/NodeTranslationService');
 const FileSystemService = require('./../services/FileSystemService');
 module.exports = class LocalServerCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
@@ -16,7 +16,7 @@ module.exports = class LocalServerCommandGenerator extends BaseCommandGenerator 
 
 		options.filesystem = FileSystemService;
 		options.colors = COLORS;
-		options.translation = [TranslationService, COMMAND_LOCAL];
+		options.translation = [NodeTranslationService, COMMAND_LOCAL];
 
 		this.local = new LocalCommand(options);
 	}

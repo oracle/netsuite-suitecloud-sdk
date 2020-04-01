@@ -5,7 +5,7 @@
 'use strict';
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
@@ -27,13 +27,13 @@ class ImportFilesOutputFormatter extends OutputFormatter {
 			const successful = actionResult.data.results.filter(result => result.loaded === true);
 			const unsuccessful = actionResult.data.results.filter(result => result.loaded !== true);
 			if (successful.length) {
-				this.consoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_IMPORTED), COLORS.RESULT);
+				this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.FILES_IMPORTED), COLORS.RESULT);
 				successful.forEach(result => {
 					this.consoleLogger.println(result.path, COLORS.RESULT);
 				});
 			}
 			if (unsuccessful.length) {
-				this.consoleLogger.println(TranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED), COLORS.WARNING);
+				this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED), COLORS.WARNING);
 				unsuccessful.forEach(result => {
 					this.consoleLogger.println(`${result.path}, ${result.message}`, COLORS.WARNING);
 				});

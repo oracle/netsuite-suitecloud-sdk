@@ -17,3 +17,4 @@ export const actionResultStatus: {
 	ERROR: string;
 } = require('@oracle/suitecloud-cli/src/commands/actionResult/ActionResult').ActionResult;
 
+export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');

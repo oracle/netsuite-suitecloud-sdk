@@ -13,7 +13,7 @@ const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const AuthenticationService = require('./../core/authentication/AuthenticationService');
 const SetupOutputFormatter = require('./outputFormatters/SetupOutputFormatter');
 
@@ -81,7 +81,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		const existingAuthIDsResponse = await executeWithSpinner({
 			action: this._sdkExecutor.execute(getAuthListContext),
-			message: TranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
+			message: NodeTranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
 		});
 
 		if (SDKOperationResultUtils.hasErrors(existingAuthIDsResponse)) {
@@ -94,20 +94,20 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		if (authIDs.length > 0) {
 			choices.push({
-				name: chalk.bold(TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
+				name: chalk.bold(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
 				value: CREATE_NEW_AUTH,
 			});
 			choices.push(new inquirer.Separator());
-			choices.push(new inquirer.Separator(TranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
+			choices.push(new inquirer.Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
 			authIDs.forEach(authID => {
 				const authentication = existingAuthIDsResponse.data[authID];
 				const isDevLabel = authentication.developmentMode
-					? TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
+					? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
 					: '';
 				const accountInfo = `${authentication.accountInfo.companyName} [${authentication.accountInfo.roleName}]`;
 				choices.push({
-					name: TranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID, authID, accountInfo, isDevLabel),
+					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID, authID, accountInfo, isDevLabel),
 					value: { authId: authID, accountInfo: authentication.accountInfo },
 				});
 			});
@@ -117,7 +117,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: ANSWERS.SELECTED_AUTH_ID,
-					message: TranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
+					message: NodeTranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
 					choices: choices,
 				},
 			]);
@@ -149,7 +149,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					{
 						type: CommandUtils.INQUIRER_TYPES.INPUT,
 						name: ANSWERS.DEVELOPMENT_MODE_URL,
-						message: TranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
+						message: NodeTranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
 						filter: answer => answer.trim(),
 						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
 					},
@@ -159,14 +159,14 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: ANSWERS.AUTH_MODE,
-					message: TranslationService.getMessage(QUESTIONS.AUTH_MODE),
+					message: NodeTranslationService.getMessage(QUESTIONS.AUTH_MODE),
 					choices: [
 						{
-							name: TranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.OAUTH),
+							name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.OAUTH),
 							value: AUTH_MODE.OAUTH,
 						},
 						{
-							name: TranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN),
+							name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN),
 							value: AUTH_MODE.SAVE_TOKEN,
 						},
 					],
@@ -174,7 +174,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				{
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS.NEW_AUTH_ID,
-					message: TranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
+					message: NodeTranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
 					filter: answer => answer.trim(),
 					validate: fieldValue =>
 						showValidationResults(
@@ -190,7 +190,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
-					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
+					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
 					filter: fieldValue => fieldValue.trim(),
 					validate: fieldValue =>
 						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
@@ -200,7 +200,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 					name: ANSWERS.SAVE_TOKEN_ID,
-					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
+					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
 					filter: fieldValue => fieldValue.trim(),
 					validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 				},
@@ -209,7 +209,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 					name: ANSWERS.SAVE_TOKEN_SECRET,
-					message: TranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
+					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
 					filter: fieldValue => fieldValue.trim(),
 					validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 				},
@@ -237,7 +237,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			throw TranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder);
+			throw NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder);
 		}
 	}
 
@@ -302,7 +302,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(authenticateSDKExecutionContext),
-			message: TranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
+			message: NodeTranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
 
@@ -324,7 +324,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
-			message: TranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
+			message: NodeTranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
 

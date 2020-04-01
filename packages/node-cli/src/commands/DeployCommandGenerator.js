@@ -12,7 +12,7 @@ const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
 const ApplyContentProtectionArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const DeployOutputFormatter = require('./outputFormatters/DeployOutputFormatter');
@@ -69,26 +69,26 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION,
-				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
+				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
 				default: 1,
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: true },
-					{ name: TranslationService.getMessage(NO), value: false },
+					{ name: NodeTranslationService.getMessage(YES), value: true },
+					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
 			},
 			{
 				when: isACProject,
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES,
-				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
+				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
 				default: 1,
 				choices: [
 					{
-						name: TranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.DISPLAY_WARNING),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.DISPLAY_WARNING),
 						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING,
 					},
 					{
-						name: TranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL_PROCESS),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL_PROCESS),
 						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
 					},
 				],
@@ -96,18 +96,18 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.FLAGS.VALIDATE,
-				message: TranslationService.getMessage(QUESTIONS.PERFORM_LOCAL_VALIDATION),
+				message: NodeTranslationService.getMessage(QUESTIONS.PERFORM_LOCAL_VALIDATION),
 				default: 0,
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: true },
-					{ name: TranslationService.getMessage(NO), value: false },
+					{ name: NodeTranslationService.getMessage(YES), value: true },
+					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
 			},
 		]);
 
 		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
 			this.consoleLogger.println(
-				TranslationService.getMessage(
+				NodeTranslationService.getMessage(
 					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,
 					LINKS.HOW_TO.CREATE_HIDDING_XML,
 					LINKS.HOW_TO.CREATE_LOCKING_XML
@@ -148,7 +148,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForDeploy),
-				message: TranslationService.getMessage(MESSAGES.DEPLOYING),
+				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING),
 			});
 
 			var isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;

@@ -5,7 +5,7 @@
 'use strict';
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 const { COLORS } = require('../../loggers/LoggerConstants');
 
@@ -27,7 +27,7 @@ class DeployOutputFormatter extends OutputFormatter {
 		this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
 		if (actionResult.withServerValidation) {
 			this.consoleLogger.println(
-				TranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
+				NodeTranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, this._projectFolder),
 				COLORS.INFO
 			);
 		}
@@ -43,12 +43,12 @@ class DeployOutputFormatter extends OutputFormatter {
 		if (this._projectType === PROJECT_SUITEAPP) {
 			if (isApplyContentProtection === SDK_TRUE) {
 				this.consoleLogger.println(
-					TranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder),
+					NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder),
 					COLORS.INFO
 				);
 			} else {
 				this.consoleLogger.println(
-					TranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder),
+					NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder),
 					COLORS.INFO
 				);
 			}

@@ -1,13 +1,13 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
-const { DEFAULT_MESSAGES_FILE } = require('../ApplicationConstants');
-const MESSAGES = require(DEFAULT_MESSAGES_FILE);
-
 class TranslationService {
+	constructor(messagesFile) {
+		this._MESSAGES = require(messagesFile);
+	}
 	_injectParameters(message, params) {
 		return message.replace(/{(\d+)}/g, function(match, number) {
 			return typeof params[number] !== 'undefined' ? params[number] : match;
@@ -15,7 +15,7 @@ class TranslationService {
 	}
 
 	getMessage(key, ...params) {
-		let message = MESSAGES[key];
+		let message = this._MESSAGES[key];
 		if (params && params.length > 0) {
 			return this._injectParameters(message, params);
 		}
@@ -24,4 +24,4 @@ class TranslationService {
 	}
 }
 
-module.exports = new TranslationService();
+module.exports = TranslationService;
