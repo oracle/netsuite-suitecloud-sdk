@@ -8,7 +8,6 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const {
 	COMMAND_PROXY: { MESSAGES },
 } = require('../../services/TranslationKeys');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 class ProxyOutputFormatter extends OutputFormatter {
 	constructor(consoleLogger) {
@@ -18,18 +17,12 @@ class ProxyOutputFormatter extends OutputFormatter {
 	formatActionResult(actionResult) {
 		if (actionResult.withSettingProxy) {
 			if (actionResult.proxyOverridden) {
-				this.consoleLogger.println(
-					NodeTranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl),
-					COLORS.RESULT
-				);
+				this.consoleLogger.result(NodeTranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl));
 			} else {
-				this.consoleLogger.println(
-					NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl),
-					COLORS.RESULT
-				);
+				this.consoleLogger.result(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl));
 			}
 		} else {
-			this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED), COLORS.RESULT);
+			this.consoleLogger.result(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED));
 		}
 	}
 }

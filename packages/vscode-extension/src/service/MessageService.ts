@@ -5,7 +5,7 @@
 
 import { window } from 'vscode';
 import { Output } from '../extension';
-import { COMMAND, SEE_DETAILS } from '../service/TranslationKeys';
+import { COMMAND, SEE_DETAILS } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
 export default class MessageService {

@@ -16,7 +16,6 @@ const ListFilesOutputFormatter = require('./outputFormatters/ListFilesOutputForm
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../services/TranslationKeys');
-const { COLORS } = require('../loggers/LoggerConstants');
 
 const LIST_FOLDERS_COMMAND = 'listfolders';
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
@@ -53,7 +52,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 					})
 					// TODO : find right mecanism to treat the error
 					.catch(error => {
-						this.consoleLogger.println(NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error), COLORS.ERROR);
+						this.consoleLogger.error(NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error));
 					})
 			);
 		});

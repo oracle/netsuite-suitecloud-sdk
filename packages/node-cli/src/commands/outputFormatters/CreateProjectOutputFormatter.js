@@ -6,7 +6,6 @@
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 const {
@@ -29,18 +28,18 @@ class CreateProjectOutputFormatter extends OutputFormatter {
 		ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 
 		const projectCreatedMessage = NodeTranslationService.getMessage(MESSAGES.PROJECT_CREATED, actionResult.projectName);
-		this.consoleLogger.println(projectCreatedMessage, COLORS.RESULT);
+		this.consoleLogger.result(projectCreatedMessage);
 
 		if (actionResult.includeUnitTesting) {
 			const sampleUnitTestMessage = NodeTranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
-			this.consoleLogger.println(sampleUnitTestMessage, COLORS.RESULT);
+			this.consoleLogger.result(sampleUnitTestMessage);
 			if (!actionResult.npmPackageIntitialized) {
-				this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), COLORS.ERROR);
+				this.consoleLogger.error(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED));
 			}
 		}
 
 		const navigateToProjectMessage = NodeTranslationService.getMessage(MESSAGES.NAVIGATE_TO_FOLDER, actionResult.projectDirectory);
-		this.consoleLogger.println(navigateToProjectMessage, COLORS.RESULT);
+		this.consoleLogger.result(navigateToProjectMessage);
 	}
 }
 

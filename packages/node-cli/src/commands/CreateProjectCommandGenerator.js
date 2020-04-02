@@ -21,7 +21,6 @@ const {
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
-const { COLORS } = require('../loggers/LoggerConstants');
 
 const path = require('path');
 
@@ -257,7 +256,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	createProject(params, answers, projectAbsolutePath, projectFolderName, manifestFilePath) {
 		return async (resolve, reject) => {
 			try {
-				this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), COLORS.INFO);
+				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE));
 				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
@@ -285,7 +284,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, answers[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
-					this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), COLORS.INFO);
+					this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV));
 					await this._createUnitTestFiles(
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
@@ -293,7 +292,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						projectAbsolutePath
 					);
 
-					this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), COLORS.INFO);
+					this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
 				} else {
 					await this._fileSystemService.createFileFromTemplate({

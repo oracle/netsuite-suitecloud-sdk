@@ -5,7 +5,7 @@
 'use strict';
 
 const ActionResultUtils = require('./ActionResultUtils');
-const { COLORS, lineBreak } = require('../loggers/LoggerConstants');
+const { lineBreak } = require('../loggers/LoggerConstants');
 
 module.exports = {
 	SUCCESS: 'SUCCESS',
@@ -29,9 +29,9 @@ module.exports = {
 		const { resultMessage } = operationResult;
 		if (resultMessage) {
 			if (operationResult.status === this.ERROR) {
-				consoleLogger.println(resultMessage, COLORS.ERROR);
+				consoleLogger.error(resultMessage);
 			} else {
-				consoleLogger.println(resultMessage, COLORS.RESULT);
+				consoleLogger.result(resultMessage);
 			}
 		}
 	},

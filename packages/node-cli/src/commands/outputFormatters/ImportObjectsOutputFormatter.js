@@ -2,12 +2,11 @@
  ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-('use strict');
+'use strict';
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_IMPORTOBJECTS: { OUTPUT },
@@ -35,12 +34,12 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 
 	_logImportedObjects(importedObjects) {
 		if (Array.isArray(importedObjects) && importedObjects.length) {
-			this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS), COLORS.RESULT);
+			this.consoleLogger.result(NodeTranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS));
 			importedObjects.forEach(objectImport => {
 				const importedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${objectImport.customObject.type}:${
 					objectImport.customObject.id
 				}`;
-				this.consoleLogger.println(importedObjectLogMessage, COLORS.RESULT);
+				this.consoleLogger.result(importedObjectLogMessage);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
 		}
@@ -56,7 +55,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 			const referencedFilesLogMessage = `${this.consoleLogger.getPadding(2)}- ${NodeTranslationService.getMessage(
 				OUTPUT.REFERENCED_SUITESCRIPT_FILES
 			)}`;
-			this.consoleLogger.println(referencedFilesLogMessage, COLORS.RESULT);
+			this.consoleLogger.result(referencedFilesLogMessage);
 		}
 
 		if (Array.isArray(importedFiles) && importedFiles.length) {
@@ -65,7 +64,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
 					importedFile.path
 				)}`;
-				this.consoleLogger.println(importedFileLogMessage, COLORS.RESULT);
+				this.consoleLogger.result(importedFileLogMessage);
 			});
 		}
 
@@ -76,14 +75,14 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 					unImportedFile.path,
 					unImportedFile.message
 				)}`;
-				this.consoleLogger.println(unimportedFileLogMessage, COLORS.WARNING);
+				this.consoleLogger.warning(unimportedFileLogMessage);
 			});
 		}
 	}
 
 	_logUnImportedObjects(unImportedObjects) {
 		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
-			this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS), COLORS.WARNING);
+			this.consoleLogger.warning(NodeTranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS));
 			unImportedObjects.forEach(objectImport => {
 				const unimportedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${NodeTranslationService.getMessage(
 					OUTPUT.OBJECT_IMPORT_FAILED,
@@ -91,7 +90,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 					objectImport.customObject.id,
 					objectImport.customObject.result.message
 				)}`;
-				this.consoleLogger.println(unimportedObjectLogMessage, COLORS.WARNING);
+				this.consoleLogger.warning(unimportedObjectLogMessage);
 			});
 		}
 	}

@@ -5,7 +5,7 @@
 'use strict';
 
 const { ERROR } = require('../commands/actionresult/ActionResult');
-const { COLORS, lineBreak } = require('../loggers/LoggerConstants');
+const { lineBreak } = require('../loggers/LoggerConstants');
 
 
 module.exports = {
@@ -16,9 +16,9 @@ module.exports = {
 	logResultMessage: (actionResult, consoleLogger) => {
 		if (actionResult.resultMessage) {
 			if (actionResult.status === ERROR) {
-				consoleLogger.println(actionResult.resultMessage, COLORS.ERROR);
+				consoleLogger.error(actionResult.resultMessage);
 			} else {
-				consoleLogger.println(actionResult.resultMessage, COLORS.RESULT);
+				consoleLogger.result(actionResult.resultMessage);
 			}
 		}
 	},

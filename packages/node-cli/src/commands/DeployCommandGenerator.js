@@ -25,8 +25,6 @@ const {
 	YES,
 } = require('../services/TranslationKeys');
 
-const { COLORS } = require('../loggers/LoggerConstants');
-
 const COMMAND = {
 	OPTIONS: {
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
@@ -106,13 +104,12 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		]);
 
 		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
-			this.consoleLogger.println(
+			this.consoleLogger.info(
 				NodeTranslationService.getMessage(
 					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,
 					LINKS.HOW_TO.CREATE_HIDDING_XML,
 					LINKS.HOW_TO.CREATE_LOCKING_XML
-				),
-				COLORS.INFO
+				)
 			);
 		}
 

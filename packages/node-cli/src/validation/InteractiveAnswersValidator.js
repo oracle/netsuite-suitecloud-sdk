@@ -4,12 +4,8 @@
  */
 'use strict';
 
-const NodeConsoleLogger = require('../loggers/NodeConsoleLogger');
-const NodeTranslationService = require('../services/NodeTranslationService');
-const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTION_IS_MANDATORY } = require('../services/TranslationKeys');
-
 const ApplicationConstants = require('../ApplicationConstants');
-const { COLORS } = require('../loggers/LoggerConstants');
+const NodeTranslationService = require('../services/NodeTranslationService');
 
 const VALIDATION_RESULT_FAILURE = validationError => ({
 	result: false,
@@ -17,10 +13,7 @@ const VALIDATION_RESULT_FAILURE = validationError => ({
 });
 const VALIDATION_RESULT_SUCCESS = { result: true };
 
-NodeConsoleLogger.formatString(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.EMPTY_FIELD), {
-	color: COLORS.ERROR,
-	bold: true,
-});
+const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTION_IS_MANDATORY } = require('../services/TranslationKeys');
 
 const ALPHANUMERIC_LOWERCASE_REGEX = '[a-z0-9]+';
 const ALPHANUMERIC_LOWERCASE_WHOLE_REGEX = `^${ALPHANUMERIC_LOWERCASE_REGEX}$`;

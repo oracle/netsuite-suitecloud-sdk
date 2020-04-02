@@ -3,9 +3,10 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-export default interface ActionResult {
+export default interface OperationResult {
 	status: string;
 	resultMessage: string;
+	errorCode: string;
 	errorMessages: string[];
 	data: any;
 }

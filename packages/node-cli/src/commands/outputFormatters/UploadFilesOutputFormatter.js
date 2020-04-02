@@ -6,7 +6,6 @@
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_UPLOADFILES: { OUTPUT },
@@ -35,21 +34,15 @@ class UploadFilesOutputFormatter extends OutputFormatter {
 			const successfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.SUCCESS);
 			const unsuccessfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.ERROR);
 			if (successfulUploads && successfulUploads.length) {
-				this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.FILES_UPLOADED), COLORS.RESULT);
+				this.consoleLogger.result(NodeTranslationService.getMessage(OUTPUT.FILES_UPLOADED));
 				successfulUploads.forEach(result => {
-					this.consoleLogger.println(
-						this._fileCabinetService.getFileCabinetRelativePath(result.file.path),
-						COLORS.RESULT
-					);
+					this.consoleLogger.result(this._fileCabinetService.getFileCabinetRelativePath(result.file.path));
 				});
 			}
 			if (unsuccessfulUploads && unsuccessfulUploads.length) {
-				this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED), COLORS.WARNING);
+				this.consoleLogger.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED));
 				unsuccessfulUploads.forEach(result => {
-					this.consoleLogger.println(
-						`${this._fileCabinetService.getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`,
-						COLORS.WARNING
-					);
+					this.consoleLogger.warning(`${this._fileCabinetService.getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`);
 				});
 			}
 		}

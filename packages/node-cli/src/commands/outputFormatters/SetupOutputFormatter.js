@@ -5,7 +5,6 @@
 'use strict';
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_SETUPACCOUNT: { OUTPUT },
@@ -53,8 +52,8 @@ class SetupOutputFormatter extends OutputFormatter {
 				break;
 		}
 
-		this.consoleLogger.println(resultMessage, COLORS.RESULT);
-		this.consoleLogger.println(NodeTranslationService.getMessage(OUTPUT.SUCCESSFUL), COLORS.RESULT);
+		this.consoleLogger.result(resultMessage);
+		this.consoleLogger.result(NodeTranslationService.getMessage(OUTPUT.SUCCESSFUL));
 	}
 }
 

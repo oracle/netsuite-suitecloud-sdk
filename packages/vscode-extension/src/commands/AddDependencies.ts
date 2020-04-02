@@ -8,7 +8,7 @@ import MessageService from '../service/MessageService';
 import * as TranslationKeys from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 import ActionResult from '../types/ActionResult';
-import { unwrapExceptionMessage } from '../util/ExtensionUtil';
+import { actionResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const translationService = new VSTranslationService();
@@ -24,7 +24,7 @@ export default class AddDependencies extends BaseAction {
 				arguments: {},
 			});
 
-			if (actionResult.status === 'SUCCESS') {
+			if (actionResult.status === actionResultStatus.SUCCESS) {
 				if (actionResult.data.length > 0) {
 					opts.messageService.showCompletedActionInfo(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED));
 				} else {

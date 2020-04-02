@@ -11,7 +11,13 @@ class ConsoleLogger {
 
 	println(message, color) {}
 
-	formatString(str, options) {}
+	info(message) {}
+
+	result(message) {}
+
+	warning(message) {}
+
+	error(message) {}
 
 	logErrors(errorMessages) {}
 

@@ -19,7 +19,6 @@ const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExcep
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	DOWNLOADING_SUITECLOUD_SDK,
@@ -44,12 +43,9 @@ class SDKDownloadService {
 			action: this._downloadFile(fullURL, sdkDirectory),
 			message: NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
 		})
-			.then(() => NodeConsoleLogger.println(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS), COLORS.INFO))
+			.then(() => NodeConsoleLogger.info(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS)))
 			.catch(error =>
-				NodeConsoleLogger.println(
-					NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)),
-					COLORS.ERROR
-				)
+				NodeConsoleLogger.error(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)))
 			);
 	}
 

@@ -10,17 +10,33 @@ const { COLORS } = require('./LoggerConstants');
 
 class NodeConsoleLogger extends ConsoleLogger {
 	println(message, color) {
-		console.log(this.formatString(message, { color: color }));
+		console.log(this._formatString(message, { color: color }));
 	}
 
-	formatString(str, options) {
-		const color = options.color || COLORS.DEFAULT;
-		const bold = options.bold ? chalk.bold : str => str;
-		return bold(color(str));
+	info(message) {
+		this.println(message, COLORS.INFO);
+	}
+
+	result(message) {
+		this.println(message, COLORS.RESULT);
+	}
+
+	warning(message) {
+		this.println(message, COLORS.WARNING);
+	}
+
+	error(message) {
+		this.println(message, COLORS.ERROR);
 	}
 
 	logErrors(errorMessages) {
-		errorMessages.forEach(message => this.println(message, this.COLORS.ERROR));
+		errorMessages.forEach(message => this.error(message));
+	}
+
+	_formatString(str, options) {
+		const color = options.color || COLORS.DEFAULT;
+		const bold = options.bold ? chalk.bold : str => str;
+		return bold(color(str));
 	}
 }
 

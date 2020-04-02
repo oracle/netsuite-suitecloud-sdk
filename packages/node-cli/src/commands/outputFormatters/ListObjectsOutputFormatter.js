@@ -7,7 +7,6 @@ const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_LISTOBJECTS: { SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
@@ -26,10 +25,10 @@ class ListObjectsOutputFormatter extends OutputFormatter {
 
 		ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 		if (Array.isArray(actionResult.data) && actionResult.data.length) {
-			this.consoleLogger.println(NodeTranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED), COLORS.RESULT);
-			actionResult.data.forEach(object => this.consoleLogger.println(`${object.type}:${object.scriptId}`, COLORS.RESULT));
+			this.consoleLogger.result(NodeTranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED));
+			actionResult.data.forEach(object => this.consoleLogger.result(`${object.type}:${object.scriptId}`));
 		} else {
-			this.consoleLogger.println(NodeTranslationService.getMessage(SUCCESS_NO_OBJECTS), COLORS.RESULT);
+			this.consoleLogger.result(NodeTranslationService.getMessage(SUCCESS_NO_OBJECTS));
 		}
 	}
 }

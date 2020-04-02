@@ -26,7 +26,7 @@ class ValidateOutputFormatter extends OutputFormatter {
 			this.consoleLogger.logErrors(actionResult.errorMessages);
 		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {
-				this.consoleLogger.println(resultLine, COLORS.RESULT);
+				this.consoleLogger.result(resultLine);
 			});
 		} else if (!actionResult.isServerValidation) {
 			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
@@ -38,14 +38,12 @@ class ValidateOutputFormatter extends OutputFormatter {
 	_showApplyContentProtectionOptionMessage(isAppliedContentProtection) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			if (isAppliedContentProtection) {
-				this.consoleLogger.println(
-					NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder),
-					COLORS.INFO
+				this.consoleLogger.info(
+					NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder)
 				);
 			} else {
-				this.consoleLogger.println(
-					NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder),
-					COLORS.INFO
+				this.consoleLogger.info(
+					NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder)
 				);
 			}
 		}

@@ -6,7 +6,6 @@
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 class ListFilesOutputFormatter extends OutputFormatter {
 	constructor(consoleLogger) {
@@ -23,7 +22,7 @@ class ListFilesOutputFormatter extends OutputFormatter {
 
 		if (Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(fileName => {
-				this.consoleLogger.println(fileName, COLORS.RESULT);
+				this.consoleLogger.result(fileName);
 			});
 		}
 	}

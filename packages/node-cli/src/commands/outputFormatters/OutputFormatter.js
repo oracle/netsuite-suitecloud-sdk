@@ -6,7 +6,6 @@
 
 const { lineBreak } = require('../../loggers/LoggerConstants');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('../../utils/ExceptionUtils');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 class OutputFormatter {
 	constructor(consoleLogger) {
@@ -20,11 +19,11 @@ class OutputFormatter {
 	formatActionResult(actionResult) {}
 
 	formatError(error) {
-		this.consoleLogger.println(unwrapExceptionMessage(error), COLORS.ERROR);
+		this.consoleLogger.error(unwrapExceptionMessage(error));
 		const informativeMessage = unwrapInformationMessage(error);
 
 		if (informativeMessage) {
-			this.consoleLogger.println(`${lineBreak}${informativeMessage}`, COLORS.INFO);
+			this.consoleLogger.info(`${lineBreak}${informativeMessage}`);
 		}
 	}
 }

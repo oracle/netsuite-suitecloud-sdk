@@ -6,7 +6,6 @@
 const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -57,20 +56,20 @@ class AddDependenciesOutputFormatter extends OutputFormatter {
 
 	formatActionResult(actionResult) {
 		if (actionResult.status === ActionResult.ERROR) {
-			errors.forEach(message => this.consoleLogger.println(message, COLORS.ERROR));
+			errors.forEach(message => this.consoleLogger.error(message));
 			return;
 		}
 
 		if (actionResult.data.length === 0) {
-			this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES), COLORS.RESULT);
+			this.consoleLogger.result(NodeTranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES));
 			return;
 		}
 
-		this.consoleLogger.println(NodeTranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST), COLORS.RESULT);
+		this.consoleLogger.result(NodeTranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST));
 
 		this._getDependenciesStringsArray(actionResult.data)
 			.sort()
-			.forEach(output => this.consoleLogger.println(output, COLORS.RESULT));
+			.forEach(output => this.consoleLogger.result(output));
 	}
 
 	_getDependenciesStringsArray(data) {
