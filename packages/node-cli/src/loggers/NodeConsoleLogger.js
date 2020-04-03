@@ -29,10 +29,6 @@ class NodeConsoleLogger extends ConsoleLogger {
 		this.println(message, COLORS.ERROR);
 	}
 
-	logErrors(errorMessages) {
-		errorMessages.forEach(message => this.error(message));
-	}
-
 	_formatString(str, options) {
 		const color = options.color || COLORS.DEFAULT;
 		const bold = options.bold ? chalk.bold : str => str;

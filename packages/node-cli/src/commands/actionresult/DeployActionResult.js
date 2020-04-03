@@ -10,6 +10,7 @@ class DeployActionResult extends ActionResult {
 		super(parameters);
 		this._isServerValidation = parameters.isServerValidation ? true : false;
 		this._appliedContentProtection = parameters.appliedContentProtection ? true : false;
+		this._projectType = parameters.projectType;
 	}
 
 	get isServerValidation() {
@@ -18,6 +19,10 @@ class DeployActionResult extends ActionResult {
 
 	get appliedContentProtection() {
 		return this._appliedContentProtection;
+	}
+
+	get projectType() {
+		return this._projectType;
 	}
 
 	static get Builder() {
@@ -40,6 +45,11 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
+	withProjectType(projectType) {
+		this.projectType = projectType;
+		return this;
+	}
+
 	build() {
 		return new DeployActionResult({
 			status: this.status,
@@ -48,6 +58,7 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.isServerValidation && { isServerValidation: this.isServerValidation }),
 			...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection }),
+			...(this.projectType && { projectType: this.projectType }),
 		});
 	}
 }

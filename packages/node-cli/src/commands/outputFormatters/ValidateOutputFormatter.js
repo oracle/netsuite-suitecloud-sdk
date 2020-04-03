@@ -3,11 +3,9 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
-const { COLORS } = require('../../loggers/LoggerConstants');
 
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 const {
@@ -22,9 +20,7 @@ class ValidateOutputFormatter extends OutputFormatter {
 	}
 
 	formatActionResult(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			this.consoleLogger.logErrors(actionResult.errorMessages);
-		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
+		if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {
 				this.consoleLogger.result(resultLine);
 			});
@@ -38,23 +34,19 @@ class ValidateOutputFormatter extends OutputFormatter {
 	_showApplyContentProtectionOptionMessage(isAppliedContentProtection) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			if (isAppliedContentProtection) {
-				this.consoleLogger.info(
-					NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder)
-				);
+				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder));
 			} else {
-				this.consoleLogger.info(
-					NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder)
-				);
+				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder));
 			}
 		}
 	}
 
 	_showLocalValidationResultData(data) {
-		this._logValidationEntries(data.warnings, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), COLORS.WARNING);
-		this._logValidationEntries(data.errors, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), COLORS.ERROR);
+		this._logValidationEntries(data.warnings, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), this.consoleLogger.warning);
+		this._logValidationEntries(data.errors, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), this.consoleLogger.error);
 	}
 
-	_logValidationEntries(entries, headingLabel, color) {
+	_logValidationEntries(entries, headingLabel, log) {
 		const files = [];
 		entries.forEach(entry => {
 			if (!files.includes(entry.filePath)) {
@@ -63,19 +55,16 @@ class ValidateOutputFormatter extends OutputFormatter {
 		});
 
 		if (entries.length > 0) {
-			this.consoleLogger.println(`${headingLabel}:`, color);
+			log(`${headingLabel}:`);
 		}
 
 		files.forEach(file => {
 			const fileString = `    ${file}`;
-			this.consoleLogger.println(fileString, color);
+			log(fileString);
 			entries
 				.filter(entry => entry.filePath === file)
 				.forEach(entry => {
-					this.consoleLogger.println(
-						NodeTranslationService.getMessage(OUTPUT.VALIDATION_OUTPUT_MESSAGE, entry.lineNumber, entry.message),
-						color
-					);
+					log(NodeTranslationService.getMessage(OUTPUT.VALIDATION_OUTPUT_MESSAGE, entry.lineNumber, entry.message));
 				});
 		});
 	}

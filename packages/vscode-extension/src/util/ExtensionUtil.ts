@@ -23,3 +23,5 @@ export const actionResultStatus: {
 } = require('@oracle/suitecloud-cli/src/commands/actionResult/ActionResult').ActionResult;
 
 export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
+
+export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');

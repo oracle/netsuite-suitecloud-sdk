@@ -6,14 +6,12 @@
 import { Output } from '../extension';
 import { ConsoleLogger } from '../util/ExtensionUtil';
 
-type color = {};
-
 export default class VSConsoleLogger extends ConsoleLogger {
 	VSConsoleLogger() {}
 
 	// Output from VSCode doesn't accept colors, for the moment we would pring in default white
 	// We could explore some workarounds in future like creating a Terminal, importing a new library or just implment it ourselves
-	println(message: string, color?: color) {
+	println(message: string) {
 		Output.appendLine(message);
 	}
 
@@ -30,9 +28,5 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	}
 	error(message: string) {
 		this.println(message);
-	}
-
-	logErrors(errorMessages: string[]) {
-		errorMessages.forEach((message: string) => this.println(message));
 	}
 }

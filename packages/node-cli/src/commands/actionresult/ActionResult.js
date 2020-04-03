@@ -15,6 +15,7 @@ class ActionResult {
 		this._data = parameters.data;
 		this._resultMessage = parameters.resultMessage;
 		this._errorMessages = parameters.errorMessages;
+		this._projectFolder = parameters.projectFolder;
 	}
 
 	validateParameters(parameters) {
@@ -43,6 +44,10 @@ class ActionResult {
 
 	get resultMessage() {
 		return this._resultMessage;
+	}
+
+	get projectFolder() {
+		return this._projectFolder;
 	}
 
 	static get Builder() {
@@ -79,12 +84,18 @@ class ActionResultBuilder {
 		return this;
 	}
 
+	withProjectFolder(projectFolder) {
+		this.projectFolder = projectFolder;
+		return this;
+	}
+
 	build() {
 		return new ActionResult({
 			status: this.status,
 			...(this.data && { data: this.data }),
 			...(this.resultMessage && { resultMessage: this.resultMessage }),
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
+			...(this.projectFolder && { projectFolder: this.projectFolder }),
 		});
 	}
 }

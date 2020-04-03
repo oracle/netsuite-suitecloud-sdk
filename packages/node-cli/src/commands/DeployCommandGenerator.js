@@ -156,6 +156,8 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
 						.withAppliedContentProtection(isApplyContentProtection)
+						.withProjectType(this._projectType)
+						.withProjectFolder(this._projectFolder)
 						.build()
 				: DeployActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
@@ -164,6 +166,6 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_formatActionResult(actionResult) {
-		new DeployOutputFormatter(this.consoleLogger, this._projectFolder, this._projectType).formatActionResult(actionResult);
+		new DeployOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

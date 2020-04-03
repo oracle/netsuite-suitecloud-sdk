@@ -3,7 +3,6 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
@@ -18,11 +17,6 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 	}
 
 	formatActionResult(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			this.consoleLogger.logErrors(actionResult.errorMessages);
-			return;
-		}
-
 		if (!actionResult.data) {
 			ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 			return;

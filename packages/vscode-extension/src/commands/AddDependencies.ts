@@ -18,30 +18,19 @@ export default class AddDependencies extends BaseAction {
 
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
 		opts.messageService.showTriggeredActionInfo();
-		try {
-			let actionResult: ActionResult = await opts.suiteCloudRunner.run({
-				commandName: this.commandName,
-				arguments: {},
-			});
+		let actionResult: ActionResult = await opts.suiteCloudRunner.run({
+			commandName: this.commandName,
+			arguments: {},
+		});
 
-			if (actionResult.status === actionResultStatus.SUCCESS) {
-				if (actionResult.data.length > 0) {
-					opts.messageService.showCompletedActionInfo(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED));
-				} else {
-					opts.messageService.showInformationMessage(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.EMPTY));
-				}
+		if (actionResult.status === actionResultStatus.SUCCESS) {
+			if (actionResult.data.length > 0) {
+				opts.messageService.showCompletedActionInfo(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED));
 			} else {
-				opts.messageService.showCompletedActionError(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR));
+				opts.messageService.showInformationMessage(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.EMPTY));
 			}
-		} catch (error) {
-			const errorMessage = translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR);
-			opts.messageService.showErrorMessage(errorMessage);
-			//TODO Runtime error, we don't want the user to see this message?
-			console.log(errorMessage);
-			console.log(unwrapExceptionMessage(error));
-			// NodeConsoleLogger.println(errorMessage);
-			// NodeConsoleLogger.println(unwrapExceptionMessage(error));
-			return;
+		} else {
+			opts.messageService.showCompletedActionError(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR));
 		}
 	}
 }

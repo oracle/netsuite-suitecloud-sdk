@@ -3,9 +3,11 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
+const FileCabinetService = require('../../services/FileCabinetService');
 const NodeTranslationService = require('../../services/NodeTranslationService');
+const { FILE_CABINET } = require('../../ApplicationConstants').FOLDERS;
+const path = require('path');
 
 const {
 	COMMAND_UPLOADFILES: { OUTPUT },
@@ -17,22 +19,18 @@ const UPLOAD_FILE_RESULT_STATUS = {
 };
 
 class UploadFilesOutputFormatter extends OutputFormatter {
-	constructor(consoleLogger, fileCabinetService) {
+	constructor(consoleLogger) {
 		super(consoleLogger);
-		this._fileCabinetService = fileCabinetService;
 	}
 
 	formatActionResult(actionResult) {
 		const { data } = actionResult;
 
-		if (actionResult.status === ActionResult.ERROR) {
-			this.consoleLogger.logErrors(actionResult.errorMessages);
-			return;
-		}
-
 		if (Array.isArray(data)) {
 			const successfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.SUCCESS);
 			const unsuccessfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.ERROR);
+			const localFileCabinetFolder = path.join(actionResult.projectFolder, FILE_CABINET);
+			this._fileCabinetService = new FileCabinetService(localFileCabinetFolder);
 			if (successfulUploads && successfulUploads.length) {
 				this.consoleLogger.result(NodeTranslationService.getMessage(OUTPUT.FILES_UPLOADED));
 				successfulUploads.forEach(result => {

@@ -29,7 +29,6 @@ export default class SuiteCloudRunner {
 
 	run(options: any) {
 		options.runInInteractiveMode = false;
-		options.throwExceptionOnError = true;
 		return this.commandActionExecutor.executeAction(options);
 	}
 }

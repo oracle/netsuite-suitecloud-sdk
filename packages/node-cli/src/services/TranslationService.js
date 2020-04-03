@@ -5,9 +5,6 @@
 'use strict';
 
 class TranslationService {
-	constructor(messagesFile) {
-		this._MESSAGES = require(messagesFile);
-	}
 	_injectParameters(message, params) {
 		return message.replace(/{(\d+)}/g, function(match, number) {
 			return typeof params[number] !== 'undefined' ? params[number] : match;

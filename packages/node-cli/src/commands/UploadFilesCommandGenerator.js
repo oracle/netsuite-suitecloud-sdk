@@ -23,7 +23,7 @@ const {
 	YES,
 } = require('../services/TranslationKeys');
 
-const ApplicationConstants = require('../ApplicationConstants');
+const { FILE_CABINET } = require('../ApplicationConstants').FOLDERS;
 
 const COMMAND_OPTIONS = {
 	PATHS: 'paths',
@@ -41,7 +41,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
-		this._localFileCabinetFolder = path.join(this._projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
+		this._localFileCabinetFolder = path.join(this._projectFolder, FILE_CABINET);
 		this._fileCabinetService = new FileCabinetService(this._localFileCabinetFolder);
 	}
 
@@ -61,7 +61,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_generateSelectFolderQuestion() {
-		const localFileCabinetSubFolders = this._fileCabinetService.getFileCabinetFoldersRecursively(this._localFileCabinetFolder);
+		const localFileCabinetSubFolders = this._fileCabinetService.getFileCabinetFolders();
 
 		const transformFoldersToChoicesFunc = folder => {
 			const name = this._fileCabinetService.getFileCabinetRelativePath(folder);
@@ -157,6 +157,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
+						.withProjectFolder(this._projectFolder)
 						.build()
 				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
@@ -165,6 +166,6 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_formatActionResult(actionResult) {
-		new UploadFilesOutputFormatter(this.consoleLogger, this._fileCabinetService).formatActionResult(actionResult);
+		new UploadFilesOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

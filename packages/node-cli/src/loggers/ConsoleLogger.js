@@ -9,8 +9,6 @@ const { padding } = require('./LoggerConstants');
 class ConsoleLogger {
 	constructor() {}
 
-	println(message, color) {}
-
 	info(message) {}
 
 	result(message) {}
@@ -18,8 +16,6 @@ class ConsoleLogger {
 	warning(message) {}
 
 	error(message) {}
-
-	logErrors(errorMessages) {}
 
 	getPadding(padCount) {
 		if (padCount) {

@@ -3,7 +3,6 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 
@@ -18,13 +17,6 @@ class CreateProjectOutputFormatter extends OutputFormatter {
 	}
 
 	formatActionResult(actionResult) {
-		if (!actionResult) {
-			return;
-		}
-		if (actionResult.status === ActionResult.ERROR) {
-			this.consoleLogger.logErrors(actionResult.errorMessages);
-			return;
-		}
 		ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 
 		const projectCreatedMessage = NodeTranslationService.getMessage(MESSAGES.PROJECT_CREATED, actionResult.projectName);

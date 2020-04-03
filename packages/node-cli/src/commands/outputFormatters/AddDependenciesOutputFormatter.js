@@ -3,7 +3,6 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const { ActionResult } = require('../actionresult/ActionResult');
 const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 
@@ -55,11 +54,6 @@ class AddDependenciesOutputFormatter extends OutputFormatter {
 	}
 
 	formatActionResult(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			errors.forEach(message => this.consoleLogger.error(message));
-			return;
-		}
-
 		if (actionResult.data.length === 0) {
 			this.consoleLogger.result(NodeTranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES));
 			return;

@@ -3,13 +3,15 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-const path = require('path');
-import { TranslationService } from '../util/ExtensionUtil';
+import { join } from 'path';
+import { FileUtils, TranslationService } from '../util/ExtensionUtil';
 
-const filePath = '../../../vscode-extension/messages.json';
+const MESSAGES_PATH = '../../messages.json';
 
 export class VSTranslationService extends TranslationService {
 	constructor() {
-		super(filePath);
+		super();
+		let filePath = join(__dirname, MESSAGES_PATH);
+		this._MESSAGES = FileUtils.readAsJson(filePath);
 	}
 }

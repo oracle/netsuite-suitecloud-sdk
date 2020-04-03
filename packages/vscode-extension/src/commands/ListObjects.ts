@@ -33,15 +33,10 @@ export default class ListObjects extends BaseAction {
 
 			opts.messageService.showTriggeredActionInfo();
 			let result;
-			try {
-				result = await opts.suiteCloudRunner.run({
-					commandName: this.commandName,
-					arguments: { type: selectedObjectTypes.join(' ') },
-				});
-			} catch (error) {
-				opts.messageService.showErrorMessage(unwrapExceptionMessage(error));
-				return;
-			}
+			result = await opts.suiteCloudRunner.run({
+				commandName: this.commandName,
+				arguments: { type: selectedObjectTypes.join(' ') },
+			});
 
 			if (result.status === actionResultStatus.SUCCESS) {
 				opts.messageService.showCompletedActionInfo();

@@ -14,19 +14,14 @@ export default class Deploy extends BaseAction {
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
 		opts.messageService.showTriggeredActionInfo();
 		if (opts.suiteCloudRunner && opts.messageService) {
-			try {
-				let result = await opts.suiteCloudRunner.run({
-					commandName: this.commandName,
-					arguments: {},
-				});
-				if (result.status === actionResultStatus.SUCCESS) {
-					opts.messageService.showCompletedActionInfo();
-				} else {
-					opts.messageService.showCompletedActionError();
-				}
-			} catch (error) {
-				opts.messageService.showErrorMessage(unwrapExceptionMessage(error));
-				return;
+			let actionResult = await opts.suiteCloudRunner.run({
+				commandName: this.commandName,
+				arguments: {},
+			});
+			if (actionResult.status === actionResultStatus.SUCCESS) {
+				opts.messageService.showCompletedActionInfo();
+			} else {
+				opts.messageService.showCompletedActionError();
 			}
 		} else {
 			opts.messageService.showTriggeredActionError();
