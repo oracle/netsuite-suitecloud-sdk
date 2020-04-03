@@ -56,7 +56,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 						.withResultMessage('')
 						.build()
 				),
-				formatActionResultFunc: jest.fn(),
+				outputFormatter: new OutputFormatter(),
 				consoleLogger: mockConsoleLogger,
 			};
 		}),
@@ -70,6 +70,11 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		getCommandMetadataByName: jest.fn(() => {
 			return { isSetupRequired: false, supportsInteractiveMode: true };
 		}),
+	}));
+
+	const OutputFormatter = jest.fn(() => ({
+		formatActionResult: jest.fn(),
+		formatError: jest.fn(),
 	}));
 
 	let commandExecutor;
@@ -193,12 +198,16 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			consoleLogger: mockConsoleLogger,
 		});
 
-		await commandExecutorWithoutAccountConf.executeAction({
-			executionPath: 'C:/',
-			commandName: 'object:import',
-			runInInteractiveMode: true,
-			arguments: {},
-		});
+		try {
+			await commandExecutorWithoutAccountConf.executeAction({
+				executionPath: 'C:/',
+				commandName: 'object:import',
+				runInInteractiveMode: true,
+				arguments: {},
+			});
+		} catch (error) {
+			expect(error).toBe('No account has been set up for this project. Run "suitecloud account:setup" to link your project with your account.');
+		}
 		expect(mockConsoleLogger.error).toBeCalledTimes(2);
 	});
 
@@ -235,8 +244,8 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 					commandMetadata: { options: {} },
 					_commandMetadata: {},
 					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() => ({ operationResult: { status: 'ERROR', resultMessage: '' } })),
-					formatActionResultFunc: jest.fn(),
+					actionFunc: jest.fn(() => ActionResult.Builder.withErrors([]).build()),
+					outputFormatter: new OutputFormatter(),
 					consoleLogger: mockConsoleLogger,
 				};
 			}),
@@ -264,7 +273,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 							.withResultMessage('')
 							.build()
 					),
-					formatActionResultFunc: jest.fn(),
+					outputFormatter: new OutputFormatter(),
 					consoleLogger: mockConsoleLogger,
 				};
 			}),
