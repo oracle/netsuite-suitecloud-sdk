@@ -69,6 +69,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._authenticationService = new AuthenticationService(options.executionPath);
+		this._outputFormatter = new SetupOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt, commandArguments) {
@@ -329,10 +330,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		this._checkOperationResultIsSuccessful(operationResult);
 
 		return operationResult;
-	}
-
-	_formatActionResult(actionResult) {
-		new SetupOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {

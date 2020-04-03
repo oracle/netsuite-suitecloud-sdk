@@ -26,6 +26,7 @@ const COMMAND_OPTIONS = {
 class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
+		this._outputFormatter = new AddDependenciesOutputFormatter(options.consoleLogger);
 	}
 
 	_preExecuteAction(answers) {
@@ -60,11 +61,6 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 	_supportsInteractiveMode() {
 		return false;
 	}
-
-	_formatActionResult(actionResult) {
-		new AddDependenciesOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
-	}
-	
 }
 
 module.exports = AddDependenciesCommandGenerator;

@@ -1,9 +1,10 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 const assert = require('assert');
+const OutputFormatter = require('../commands/outputFormatters/OutputFormatter');
 
 module.exports = class Command {
 	constructor(options) {
@@ -13,6 +14,7 @@ module.exports = class Command {
 		assert(options.getCommandQuestionsFunc instanceof Function);
 		assert(options.preActionFunc instanceof Function);
 		assert(options.actionFunc instanceof Function);
+		assert(options.outputFormatter instanceof OutputFormatter);
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;
@@ -20,7 +22,7 @@ module.exports = class Command {
 		this._preActionFunc = options.preActionFunc;
 		this._action = options.actionFunc;
 		this._options = options.options;
-		this._formatActionResultFunc = options.formatActionResultFunc;
+		this._outputFormatter = options.outputFormatter;
 	}
 
 	get commandMetadata() {
@@ -43,8 +45,7 @@ module.exports = class Command {
 		return this._action;
 	}
 
-	get formatActionResultFunc() {
-		return this._formatActionResultFunc;
+	get outputFormatter() {
+		return this._outputFormatter;
 	}
-
 };

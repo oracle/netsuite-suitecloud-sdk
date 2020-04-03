@@ -43,6 +43,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		this._fileSystemService = new FileSystemService();
 		this._localFileCabinetFolder = path.join(this._projectFolder, FILE_CABINET);
 		this._fileCabinetService = new FileCabinetService(this._localFileCabinetFolder);
+		this._outputFormatter = new UploadFilesOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -163,9 +164,5 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new UploadFilesOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

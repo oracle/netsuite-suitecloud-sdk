@@ -21,6 +21,7 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._CLISettingsService = new CLISettingsService();
+		this._outputFormatter = new ProxyOutputFormatter(options.consoleLogger);
 	}
 
 	async _executeAction(args) {
@@ -52,10 +53,6 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 		} catch (error) {
 			return ProxyActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new ProxyOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 
 	_validateArguments(proxyUrlArgument, shouldClearArgument) {

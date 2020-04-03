@@ -42,6 +42,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	constructor(options) {
 		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._outputFormatter = new ImportFilesOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -199,9 +200,5 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build;
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new ImportFilesOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

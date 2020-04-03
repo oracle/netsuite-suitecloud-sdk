@@ -6,7 +6,7 @@
 import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
-import { actionResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
+import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const objectTypes: {

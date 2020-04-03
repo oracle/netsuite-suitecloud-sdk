@@ -78,20 +78,26 @@ module.exports = class CommandActionExecutor {
 			}
 
 			if (actionResult.status === ActionResult.ERROR) {
-				throw ActionResultUtils.getErrorMessagesString(actionResult);
+				const error = ActionResultUtils.getErrorMessagesString(actionResult);
+				command.outputFormatter.formatError(error);
+				if (commandUserExtension && commandUserExtension.onError) {
+					commandUserExtension.onError(error);
+				}
+			} else {
+				command.outputFormatter.formatActionResult(actionResult);
+
+				if (commandUserExtension.onCompleted) {
+					commandUserExtension.onCompleted(actionResult);
+				}
 			}
 
-			command.formatActionResultFunc(actionResult);
-
-			if (commandUserExtension.onCompleted) {
-				commandUserExtension.onCompleted(actionResult);
-			}
 			return actionResult;
 		} catch (error) {
 			new OutputFormatter(this._consoleLogger).formatError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
+			throw error;
 		}
 	}
 

@@ -49,6 +49,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			projectInfoService: this._projectInfoService,
 			commandName: this._commandMetadata.sdkCommand,
 		});
+		this._outputFormatter = new ValidateOutputFormatter(this.consoleLogger);
 	}
 
 	_getCommandQuestions(prompt) {
@@ -148,14 +149,12 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
 						.withAppliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+						.withProjectType(this._projectInfoService.getProjectType)
+						.withProjectFolder(this._projectFolder)
 						.build()
 				: DeployActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new ValidateOutputFormatter(this.consoleLogger, this._projectInfoService, this._projectFolder).formatActionResult(actionResult);
 	}
 };

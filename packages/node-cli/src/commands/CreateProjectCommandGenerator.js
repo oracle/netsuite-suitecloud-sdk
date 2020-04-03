@@ -88,6 +88,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
+		this._outputFormatter = new CreateProjectOutputFormatter(this.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -380,10 +381,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		} catch (error) {
 			return false;
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new CreateProjectOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 
 	_validateParams(answers) {

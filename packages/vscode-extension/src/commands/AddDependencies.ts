@@ -8,7 +8,7 @@ import MessageService from '../service/MessageService';
 import * as TranslationKeys from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 import ActionResult from '../types/ActionResult';
-import { actionResultStatus, unwrapExceptionMessage } from '../util/ExtensionUtil';
+import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const translationService = new VSTranslationService();

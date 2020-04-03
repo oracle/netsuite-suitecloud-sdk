@@ -15,8 +15,6 @@ const {
 class ValidateOutputFormatter extends OutputFormatter {
 	constructor(consoleLogger, projectInfoService, projectFolder) {
 		super(consoleLogger);
-		this._projectInfoService = projectInfoService;
-		this._projectFolder = projectFolder;
 	}
 
 	formatActionResult(actionResult) {
@@ -25,18 +23,22 @@ class ValidateOutputFormatter extends OutputFormatter {
 				this.consoleLogger.result(resultLine);
 			});
 		} else if (!actionResult.isServerValidation) {
-			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
+			this._showApplyContentProtectionOptionMessage(
+				actionResult.appliedContentProtection,
+				actionResult.projectType,
+				actionResult.projectFolder
+			);
 			this._showLocalValidationResultData(actionResult.data);
 		}
 		ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 	}
 
-	_showApplyContentProtectionOptionMessage(isAppliedContentProtection) {
-		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
+	_showApplyContentProtectionOptionMessage(isAppliedContentProtection, projectType, projectFolder) {
+		if (projectType === PROJECT_SUITEAPP) {
 			if (isAppliedContentProtection) {
-				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, this._projectFolder));
+				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
 			} else {
-				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, this._projectFolder));
+				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));
 			}
 		}
 	}

@@ -44,6 +44,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
+		this._outputFormatter = new UpdateOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -157,9 +158,5 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new UpdateOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

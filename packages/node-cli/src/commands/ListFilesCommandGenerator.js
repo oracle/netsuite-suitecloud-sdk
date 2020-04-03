@@ -23,6 +23,7 @@ const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
+		this._outputFormatter = new ListFilesOutputFormatter(options.consoleLogger);
 	}
 
 	_getCommandQuestions(prompt) {
@@ -91,9 +92,5 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new ListFilesOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

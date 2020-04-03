@@ -56,6 +56,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			projectInfoService: this._projectInfoService,
 			commandName: this._commandMetadata.sdkCommand,
 		});
+		this._outputFormatter = new DeployOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -163,9 +164,5 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new DeployOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

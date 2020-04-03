@@ -41,6 +41,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	constructor(options) {
 		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._outputFormatter = new ListObjectsOutputFormatter(options.consoleLogger);
 	}
 
 	_getCommandQuestions(prompt) {
@@ -69,7 +70,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			questions.push(questionSpecificSuiteApp);
 
 			const questionAppId = {
-				when: function (response) {
+				when: function(response) {
 					return response.specifysuiteapp;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -99,7 +100,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		questions.push(questionFilterByCustomObjects);
 
 		const questionCustomObjects = {
-			when: function (answers) {
+			when: function(answers) {
 				return !answers.typeall;
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
@@ -138,7 +139,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		questions.push(questionSpecificScriptId);
 
 		const questionScriptId = {
-			when: function (response) {
+			when: function(response) {
 				return response.specifyscriptid;
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -178,9 +179,5 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new ListObjectsOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

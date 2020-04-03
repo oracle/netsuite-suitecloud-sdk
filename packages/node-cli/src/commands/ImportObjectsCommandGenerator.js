@@ -59,6 +59,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
+		this._outputFormatter = new ImportObjectsOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -348,9 +349,5 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatActionResult(actionResult) {
-		new ImportObjectsOutputFormatter(this.consoleLogger).formatActionResult(actionResult);
 	}
 };

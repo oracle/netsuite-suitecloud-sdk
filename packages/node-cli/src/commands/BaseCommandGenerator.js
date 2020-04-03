@@ -9,6 +9,7 @@ const Command = require('./Command');
 const assert = require('assert');
 const AuthenticationService = require('../core/authentication/AuthenticationService');
 const NodeConsoleLogger = require('../loggers/NodeConsoleLogger');
+const OutputFormatter = require('./outputFormatters/OutputFormatter');
 
 module.exports = class BaseCommandGenerator {
 	constructor(options) {
@@ -25,6 +26,7 @@ module.exports = class BaseCommandGenerator {
 		this._executionPath = options.executionPath;
 		this._runInInteractiveMode = options.runInInteractiveMode;
 		this._consoleLogger = options.consoleLogger;
+		this._outputFormatter = options.outputFormatter;
 	}
 
 	_getCommandQuestions(prompt) {
@@ -44,12 +46,16 @@ module.exports = class BaseCommandGenerator {
 			getCommandQuestionsFunc: this._getCommandQuestions.bind(this),
 			preActionFunc: this._preExecuteAction.bind(this),
 			actionFunc: this._executeAction.bind(this),
-			formatActionResultFunc: this._formatActionResult ? this._formatActionResult.bind(this) : null,
-			consoleLogger: this._consoleLogger ? this._consoleLogger : NodeConsoleLogger,
+			outputFormatter: this._outputFormatter ? this._outputFormatter : new OutputFormatter(this._consoleLogger),
+			consoleLogger: this._consoleLogger ? this._consoleLogger : NodeConsoleLogger,			
 		});
 	}
 
 	get consoleLogger() {
 		return this._consoleLogger;
+	}
+
+	get outputFormatter() {
+		return this._outputFormatter;
 	}
 };
