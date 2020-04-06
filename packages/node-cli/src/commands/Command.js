@@ -4,25 +4,19 @@
  */
 'use strict';
 const assert = require('assert');
-const OutputFormatter = require('../commands/outputFormatters/OutputFormatter');
+const BaseOutputHandler = require('./basecommand/BaseOutputHandler');
 
 module.exports = class Command {
 	constructor(options) {
 		assert(options);
 		assert(options.commandMetadata);
 		assert(options.projectFolder);
-		assert(options.getCommandQuestionsFunc instanceof Function);
-		assert(options.preActionFunc instanceof Function);
-		assert(options.actionFunc instanceof Function);
-		assert(options.outputFormatter instanceof OutputFormatter);
+		assert(options.log);
+		assert(options.run instanceof Function);
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;
-		this._getCommandQuestions = options.getCommandQuestionsFunc;
-		this._preActionFunc = options.preActionFunc;
-		this._action = options.actionFunc;
-		this._options = options.options;
-		this._outputFormatter = options.outputFormatter;
+		this._run = options.run;
 	}
 
 	get commandMetadata() {
@@ -33,19 +27,8 @@ module.exports = class Command {
 		return this._projectFolder;
 	}
 
-	get getCommandQuestions() {
-		return this._getCommandQuestions;
+	get run() {
+		return this._run;
 	}
 
-	get preActionFunc() {
-		return this._preActionFunc;
-	}
-
-	get actionFunc() {
-		return this._action;
-	}
-
-	get outputFormatter() {
-		return this._outputFormatter;
-	}
 };

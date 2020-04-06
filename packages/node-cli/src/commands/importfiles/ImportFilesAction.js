@@ -1,0 +1,78 @@
+/*
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+'use strict';
+
+const { ActionResult } = require('../../services/actionresult/ActionResult');
+const CommandUtils = require('../../utils/CommandUtils');
+const NodeTranslationService = require('../../services/NodeTranslationService');
+const { executeWithSpinner } = require('../../ui/CliSpinner');
+const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
+const SDKExecutionContext = require('../../SDKExecutionContext');
+const ProjectInfoService = require('../../services/ProjectInfoService');
+const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
+const BaseAction = require('../basecommand/BaseAction');
+const {
+	COMMAND_IMPORTFILES: { ERRORS, MESSAGES },
+} = require('../../services/TranslationKeys');
+
+const COMMAND_OPTIONS = {
+	FOLDER: 'folder',
+	PATHS: 'paths',
+	EXCLUDE_PROPERTIES: 'excludeproperties',
+	PROJECT: 'project',
+};
+
+module.exports = class ImportFilesAction extends BaseAction {
+	constructor(options) {
+        super(options);
+
+        this._projectInfoService = new ProjectInfoService(this._projectFolder);
+	}
+
+	preExecute(params) {
+		const { PROJECT, PATHS, EXCLUDE_PROPERTIES } = COMMAND_OPTIONS;
+		params[PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		if (params.hasOwnProperty(PATHS)) {
+			if (Array.isArray(params[PATHS])) {
+				params[PATHS] = params[PATHS].map(CommandUtils.quoteString).join(' ');
+			} else {
+				params[PATHS] = CommandUtils.quoteString(params[PATHS]);
+			}
+		}
+		if (params[EXCLUDE_PROPERTIES]) {
+			params[EXCLUDE_PROPERTIES] = '';
+		} else {
+			delete params[EXCLUDE_PROPERTIES];
+		}
+		return params;
+	}
+
+	async execute(params) {
+		try {
+			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
+				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
+			}
+
+			const executionContextImportObjects = new SDKExecutionContext({
+				command: this._commandMetadata.sdkCommand,
+				includeProjectDefaultAuthId: true,
+				params: params,
+			});
+
+			const operationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextImportObjects),
+				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
+			});
+
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+				? ActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.build()
+				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build;
+		}
+	}
+};

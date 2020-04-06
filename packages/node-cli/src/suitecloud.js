@@ -30,7 +30,7 @@ const cliInstance = new CLI({
 		commandInstanceFactory: new CommandInstanceFactory(),
 		authenticationService: new AuthenticationService(executionPath),
 		commandsMetadataService: commandsMetadataServiceSingleton,
-		consoleLogger: NodeConsoleLogger,
+		log: NodeConsoleLogger,
 	}),
 });
 

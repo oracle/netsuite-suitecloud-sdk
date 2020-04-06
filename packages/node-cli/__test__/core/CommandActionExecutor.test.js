@@ -1,6 +1,6 @@
 'use strict';
 const CommandActionExecutor = require('../../src/core/CommandActionExecutor');
-const { ActionResult } = require('../../src/commands/actionresult/ActionResult');
+const { ActionResult } = require('../../src/services/actionresult/ActionResult');
 
 describe('CommandActionExecutor ExecuteAction():', function() {
 	// STARTING MOCKS.
@@ -50,14 +50,12 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		create: jest.fn(() => {
 			return {
 				commandMetadata: { options: {} },
-				getCommandQuestions: jest.fn(),
-				actionFunc: jest.fn(() =>
+				run: jest.fn(() =>
 					ActionResult.Builder.withData([])
 						.withResultMessage('')
 						.build()
 				),
-				outputFormatter: new OutputFormatter(),
-				consoleLogger: mockConsoleLogger,
+				log: mockConsoleLogger,
 			};
 		}),
 	}));
@@ -72,7 +70,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		}),
 	}));
 
-	const OutputFormatter = jest.fn(() => ({
+	const BaseOutputHandler = jest.fn(() => ({
 		formatActionResult: jest.fn(),
 		formatError: jest.fn(),
 	}));
@@ -87,7 +85,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandInstanceFactory: new CommandInstanceFactory(),
 			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
-			consoleLogger: mockConsoleLogger,
+			log: mockConsoleLogger,
 		});
 
 		mockCommandUserExtensionOnCompleted.mockClear();
@@ -169,7 +167,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandInstanceFactory: new CommandInstanceFactory(),
 			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
-			consoleLogger: mockConsoleLogger,
+			log: mockConsoleLogger,
 		});
 
 		await commandExecutorWithValidationErrors.executeAction({
@@ -195,7 +193,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandInstanceFactory: new CommandInstanceFactory(),
 			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceSetupRequired(),
-			consoleLogger: mockConsoleLogger,
+			log: mockConsoleLogger,
 		});
 
 		try {
@@ -225,7 +223,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandInstanceFactory: new CommandInstanceFactory(),
 			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceNotSupportInteractiveMode(),
-			consoleLogger: mockConsoleLogger,
+			log: mockConsoleLogger,
 		});
 
 		await commandExecutorWithoutAccountConf.executeAction({
@@ -243,10 +241,8 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 				return {
 					commandMetadata: { options: {} },
 					_commandMetadata: {},
-					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() => ActionResult.Builder.withErrors([]).build()),
-					outputFormatter: new OutputFormatter(),
-					consoleLogger: mockConsoleLogger,
+					run: jest.fn(() => ActionResult.Builder.withErrors([]).build()),
+					log: mockConsoleLogger,
 				};
 			}),
 		}));
@@ -267,14 +263,12 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 				return {
 					commandMetadata: { options: {} },
 					_commandMetadata: {},
-					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() =>
+					run: jest.fn(() =>
 						ActionResult.Builder.withData([])
 							.withResultMessage('')
 							.build()
 					),
-					outputFormatter: new OutputFormatter(),
-					consoleLogger: mockConsoleLogger,
+					log: mockConsoleLogger,
 				};
 			}),
 		}));

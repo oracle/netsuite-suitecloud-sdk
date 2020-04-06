@@ -10,27 +10,25 @@ const NodeTranslationService = require('./../services/NodeTranslationService');
 const { ERRORS } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
-const { ActionResult } = require('../commands/actionresult/ActionResult');
-const OutputFormatter = require('../commands/outputFormatters/OutputFormatter');
+const { ActionResult } = require('../services/actionresult/ActionResult');
+const BaseOutputHandler = require('../commands/basecommand/BaseOutputHandler');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
 		assert(dependencies);
 		assert(dependencies.executionPath);
-		assert(dependencies.commandOptionsValidator);
 		assert(dependencies.cliConfigurationService);
 		assert(dependencies.commandInstanceFactory);
 		assert(dependencies.commandsMetadataService);
 		assert(dependencies.authenticationService);
-		assert(dependencies.consoleLogger);
+		assert(dependencies.log);
 
 		this._executionPath = dependencies.executionPath;
-		this._commandOptionsValidator = dependencies.commandOptionsValidator;
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandInstanceFactory = dependencies.commandInstanceFactory;
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._authenticationService = dependencies.authenticationService;
-		this._consoleLogger = dependencies.consoleLogger;
+		this._log = dependencies.log;
 	}
 
 	async executeAction(context) {
@@ -59,7 +57,7 @@ module.exports = class CommandActionExecutor {
 				commandMetadata: commandMetadata,
 				projectFolder: projectFolder,
 				executionPath: this._executionPath,
-				consoleLogger: this._consoleLogger,
+				log: this._log,
 			});
 
 			const commandArguments = this._extractOptionValuesFromArguments(command.commandMetadata.options, args);
@@ -82,7 +80,7 @@ module.exports = class CommandActionExecutor {
 				throw error;
 			}
 
-			command.outputFormatter.formatActionResult(actionResult);
+			//command.outputFormatter.formatActionResult(actionResult);
 
 			if (commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
@@ -90,7 +88,7 @@ module.exports = class CommandActionExecutor {
 
 			return actionResult;
 		} catch (error) {
-			let errorMessage = new OutputFormatter(this._consoleLogger).formatError(error);
+			let errorMessage = new BaseOutputHandler({log: this._log}).formatError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
@@ -122,7 +120,7 @@ module.exports = class CommandActionExecutor {
 		const command = options.command;
 		const projectConfiguration = options.projectConfiguration;
 		const isSetupRequired = options.isSetupRequired;
-		const runInInteractiveMode = options.runInInteractiveMode;
+		//const runInInteractiveMode = options.runInInteractiveMode;
 		const commandUserExtension = options.commandUserExtension;
 		let commandArguments = options.arguments;
 
@@ -131,24 +129,24 @@ module.exports = class CommandActionExecutor {
 				command: this,
 				arguments: isSetupRequired ? this._applyDefaultContextParams(commandArguments, projectConfiguration) : commandArguments,
 			});
-			const overriddenCommandArguments = beforeExecutingOutput.arguments;
+			const overriddenArguments = beforeExecutingOutput.arguments;
 
-			const argumentsFromQuestions =
-				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
-					? await command.getCommandQuestions(inquirer.prompt, commandArguments)
-					: {};
+			//const argumentsFromQuestions =
+			//	runInInteractiveMode || command._commandMetadata.forceInteractiveMode
+			//		? await command.getCommandQuestions(inquirer.prompt, commandArguments)
+			//		: {};
 
-			const commandArgumentsWithQuestionArguments = {
-				...overriddenCommandArguments,
-				...argumentsFromQuestions,
-			};
-			let commandArgumentsAfterPreActionFunc = command.preActionFunc
-				? command.preActionFunc(commandArgumentsWithQuestionArguments)
-				: commandArgumentsWithQuestionArguments;
+			//const commandArgumentsWithQuestionArguments = {
+			//	...overriddenArguments,
+			//	...argumentsFromQuestions,
+			//};
+			//let commandArgumentsAfterPreActionFunc = command.preActionFunc
+			//	? command.preActionFunc(commandArgumentsWithQuestionArguments)
+			//	: commandArgumentsWithQuestionArguments;
 
-			this._checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, command.commandMetadata, runInInteractiveMode);
+			//this._checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, command.commandMetadata, runInInteractiveMode);
 
-			return await command.actionFunc(commandArgumentsAfterPreActionFunc);
+			return await command.run(overriddenArguments);
 		} catch (error) {
 			throw error;
 		}

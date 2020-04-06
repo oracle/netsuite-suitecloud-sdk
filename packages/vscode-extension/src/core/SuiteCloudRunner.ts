@@ -23,7 +23,7 @@ export default class SuiteCloudRunner {
 			commandInstanceFactory: new CommandInstanceFactory(),
 			authenticationService: new AuthenticationService(executionPath),
 			commandsMetadataService: commandsMetadataService,
-			consoleLogger: new VSConsoleLogger(),
+			log: new VSConsoleLogger(),
 		});
 	}
 
