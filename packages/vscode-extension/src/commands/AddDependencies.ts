@@ -28,7 +28,7 @@ export default class AddDependencies extends BaseAction {
 			if (actionResult.data.length > 0) {
 				opts.messageService.showCompletedActionInfo(this.translationService.getMessage(ADD_DEPENDENCIES.ADDED));
 			} else {
-				opts.messageService.showInformationMessage(this.translationService.getMessage(ADD_DEPENDENCIES.EMPTY));
+				opts.messageService.showWarningMessage(this.translationService.getMessage(ADD_DEPENDENCIES.EMPTY));
 			}
 		} else {
 			opts.messageService.showCompletedActionError(this.translationService.getMessage(ADD_DEPENDENCIES.ERROR));

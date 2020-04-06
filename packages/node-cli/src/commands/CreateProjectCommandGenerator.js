@@ -214,13 +214,15 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				throwValidationException(validationErrors, false, this._commandMetadata);
 			}
 
+			var projectType = answers[COMMAND_OPTIONS.TYPE];
+
 			const params = {
 				//Enclose in double quotes to also support project names with spaces
 				parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
-				type: answers[COMMAND_OPTIONS.TYPE],
+				type: projectType,
 				projectname: SOURCE_FOLDER,
 				...(answers[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
-				...(answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP && {
+				...(projectType === ApplicationConstants.PROJECT_SUITEAPP && {
 					publisherid: answers[COMMAND_OPTIONS.PUBLISHER_ID],
 					projectid: answers[COMMAND_OPTIONS.PROJECT_ID],
 					projectversion: answers[COMMAND_OPTIONS.PROJECT_VERSION],
@@ -233,7 +235,6 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 			const createProjectActionData = await createProjectAction;
 
-			var projectType = answers[COMMAND_OPTIONS.TYPE];
 			var projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
 			var includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
@@ -244,7 +245,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						.withProjectName(projectName)
 						.withProjectDirectory(createProjectActionData.projectDirectory)
 						.withUnitTesting(includeUnitTesting)
-						.withNpmPackageInitialized(createProjectActionData.operationResult)
+						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
 						.build()
 				: CreateProjectActionResult.Builder.withErrors(
 						ActionResultUtils.collectErrorMessages(createProjectActionData.operationResult)

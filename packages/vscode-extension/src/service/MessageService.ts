@@ -42,6 +42,10 @@ export default class MessageService {
 		window.showInformationMessage(infoMessage);
 	}
 
+	showWarningMessage(infoMessage: string) {
+		window.showWarningMessage(infoMessage);
+	}
+
 	showErrorMessage(errorMessage?: string) {
 		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);
 		window.showErrorMessage(message);

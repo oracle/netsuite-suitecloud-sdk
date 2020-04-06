@@ -86,7 +86,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const { data } = listObjectsResult;
 		if (SDKOperationResultUtils.hasErrors(listObjectsResult)) {
 			SDKOperationResultUtils.logResultMessage(listObjectsResult, this.consoleLogger);
-			listObjectsResult.errorMessages.forEach(message => this.error(message));
+			listObjectsResult.errorMessages.forEach(message => this.consoleLogger.error(message));
 			throw SDKOperationResultUtils.getErrorMessagesString(listObjectsResult);
 		}
 		if (Array.isArray(data) && listObjectsResult.data.length === 0) {
