@@ -5,32 +5,33 @@
 
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
-import * as TranslationKeys from '../service/TranslationKeys';
-import { VSTranslationService } from '../service/VSTranslationService';
+import { ADD_DEPENDENCIES, COMMAND } from '../service/TranslationKeys';
 import ActionResult from '../types/ActionResult';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-
-const translationService = new VSTranslationService();
 
 export default class AddDependencies extends BaseAction {
 	readonly commandName: string = 'project:adddependencies';
 
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
-		opts.messageService.showTriggeredActionInfo();
-		let actionResult: ActionResult = await opts.suiteCloudRunner.run({
+		const commandAction = opts.suiteCloudRunner.run({
 			commandName: this.commandName,
 			arguments: {},
 		});
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, [this.translationService.getMessage(ADD_DEPENDENCIES.COMMAND)]);
+		const statusBarMessage: string = this.translationService.getMessage(ADD_DEPENDENCIES.ADDING);
+		opts.messageService.showTriggeredActionInfo(commandAction, commandMessage, statusBarMessage);
+
+		let actionResult: ActionResult = await commandAction;
 
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			if (actionResult.data.length > 0) {
-				opts.messageService.showCompletedActionInfo(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ADDED));
+				opts.messageService.showCompletedActionInfo(this.translationService.getMessage(ADD_DEPENDENCIES.ADDED));
 			} else {
-				opts.messageService.showInformationMessage(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.EMPTY));
+				opts.messageService.showInformationMessage(this.translationService.getMessage(ADD_DEPENDENCIES.EMPTY));
 			}
 		} else {
-			opts.messageService.showCompletedActionError(translationService.getMessage(TranslationKeys.ADD_DEPENDENCIES.ERROR));
+			opts.messageService.showCompletedActionError(this.translationService.getMessage(ADD_DEPENDENCIES.ERROR));
 		}
 	}
 }

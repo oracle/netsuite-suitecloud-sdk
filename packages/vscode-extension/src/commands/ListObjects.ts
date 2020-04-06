@@ -6,6 +6,7 @@
 import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
+import { COMMAND, LIST_OBJECTS } from '../service/TranslationKeys';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
@@ -31,14 +32,16 @@ export default class ListObjects extends BaseAction {
 				return;
 			}
 
-			opts.messageService.showTriggeredActionInfo();
-			let result;
-			result = await opts.suiteCloudRunner.run({
+			const commandAction = opts.suiteCloudRunner.run({
 				commandName: this.commandName,
 				arguments: { type: selectedObjectTypes.join(' ') },
 			});
+			const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, [this.translationService.getMessage(LIST_OBJECTS.COMMAND)]);
+			const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
+			opts.messageService.showTriggeredActionInfo(commandAction, commandMessage, statusBarMessage);
 
-			if (result.status === actionResultStatus.SUCCESS) {
+			let actionResult = await commandAction;
+			if (actionResult.status === actionResultStatus.SUCCESS) {
 				opts.messageService.showCompletedActionInfo();
 			} else {
 				opts.messageService.showCompletedActionError();

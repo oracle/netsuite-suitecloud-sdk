@@ -19,12 +19,15 @@ class OutputFormatter {
 	formatActionResult(actionResult) {}
 
 	formatError(error) {
-		this.consoleLogger.error(unwrapExceptionMessage(error));
+		const errorMessage = unwrapExceptionMessage(error);
+		this.consoleLogger.error(errorMessage);
 		const informativeMessage = unwrapInformationMessage(error);
 
 		if (informativeMessage) {
 			this.consoleLogger.info(`${lineBreak}${informativeMessage}`);
+			errorMessage += lineBreak + informativeMessage;
 		}
+		return errorMessage;
 	}
 }
 

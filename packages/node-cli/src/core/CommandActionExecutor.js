@@ -93,10 +93,11 @@ module.exports = class CommandActionExecutor {
 
 			return actionResult;
 		} catch (error) {
-			new OutputFormatter(this._consoleLogger).formatError(error);
+			let errorMessage = new OutputFormatter(this._consoleLogger).formatError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
+			return ActionResult.Builder.withErrors(errorMessage);
 		}
 	}
 

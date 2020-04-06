@@ -5,6 +5,7 @@
 
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
+import { COMMAND, DEPLOY } from '../service/TranslationKeys';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
@@ -12,12 +13,16 @@ export default class Deploy extends BaseAction {
 	readonly commandName: string = 'project:deploy';
 
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
-		opts.messageService.showTriggeredActionInfo();
 		if (opts.suiteCloudRunner && opts.messageService) {
-			let actionResult = await opts.suiteCloudRunner.run({
+			const commandAction = opts.suiteCloudRunner.run({
 				commandName: this.commandName,
 				arguments: {},
 			});
+			const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, [this.translationService.getMessage(DEPLOY.COMMAND)]);
+			const statusBarMessage: string = this.translationService.getMessage(DEPLOY.DEPLOYING);
+			opts.messageService.showTriggeredActionInfo(commandAction, commandMessage, statusBarMessage);
+
+			let actionResult = await commandAction;
 			if (actionResult.status === actionResultStatus.SUCCESS) {
 				opts.messageService.showCompletedActionInfo();
 			} else {

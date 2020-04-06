@@ -17,8 +17,11 @@ export default class MessageService {
 		this.translationService = new VSTranslationService();
 	}
 
-	showTriggeredActionInfo() {
-		window.showInformationMessage(this.translationService.getMessage(COMMAND.TRIGGERED, [this.commandName]));
+	showTriggeredActionInfo(actionPromise: number, informationMessage: string, statusBarMessage?: string) {
+		window.showInformationMessage(informationMessage);
+		if (statusBarMessage) {
+			window.setStatusBarMessage(statusBarMessage, actionPromise);
+		}
 	}
 
 	showTriggeredActionError() {

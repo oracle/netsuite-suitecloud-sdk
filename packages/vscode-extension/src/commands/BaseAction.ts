@@ -5,8 +5,10 @@
 
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
+import { VSTranslationService } from '../service/VSTranslationService';
 
 export default abstract class BaseAction {
 	abstract readonly commandName: string;
 	abstract async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }): Promise<void>;
+	translationService = new VSTranslationService();
 }

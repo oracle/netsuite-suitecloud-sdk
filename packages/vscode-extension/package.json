@@ -20,7 +20,7 @@
 		"commands": [
 			{
 				"command": "extension.adddependencies",
-				"title": "Add Dependency References to the Manifest",
+				"title": "Add dependency references to the manifest",
 				"category": "suitecloud"
 			},
 			{
