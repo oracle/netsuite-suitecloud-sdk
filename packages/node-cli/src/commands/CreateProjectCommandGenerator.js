@@ -15,6 +15,7 @@ const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const NpmInstallRunner = require('../services/NpmInstallRunner');
 const CreateProjectOutputFormatter = require('./outputFormatters/CreateProjectOutputFormatter');
+const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapExceptionMessage;
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
 	YES,
@@ -79,6 +80,7 @@ const {
 	validateXMLCharacters,
 	validateNotUndefined,
 	validateProjectType,
+	validateFolder
 } = require('../validation/InteractiveAnswersValidator');
 
 const { throwValidationException } = require('../utils/ExceptionUtils');
@@ -113,7 +115,12 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				name: COMMAND_OPTIONS.PROJECT_NAME,
 				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
 				filter: fieldValue => fieldValue.trim(),
-				validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateXMLCharacters),
+				validate: fieldValue =>
+					showValidationResults(
+						fieldValue,
+						validateFieldIsNotEmpty,
+						validateFolder
+					),
 			},
 			{
 				when: function(response) {
@@ -250,7 +257,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						SDKOperationResultUtils.collectErrorMessages(createProjectActionData.operationResult)
 				  ).build();
 		} catch (error) {
-			return CreateProjectActionResult.Builder.withErrors([error]).build();
+			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}
 	}
 
