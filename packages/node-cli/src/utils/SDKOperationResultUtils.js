@@ -4,7 +4,6 @@
  */
 'use strict';
 
-const ActionResultUtils = require('./ActionResultUtils');
 const { lineBreak } = require('../loggers/LoggerConstants');
 
 module.exports = {
@@ -12,7 +11,7 @@ module.exports = {
 	ERROR: 'ERROR',
 
 	getErrorMessagesString: operationResult => {
-		const errorMessages = ActionResultUtils.collectErrorMessages(operationResult);
+		const errorMessages = this.collectErrorMessages(operationResult);
 		return errorMessages.join(lineBreak);
 	},
 
@@ -39,5 +38,17 @@ module.exports = {
 	getErrorCode: operationResult => {
 		const { errorCode } = operationResult;
 		return errorCode ? errorCode : '';
+	},
+	// TODO: fix operationResult in SDK to always return errors in errorMessage and never in resultMessage
+	collectErrorMessages: operationResult => {
+		const { errorMessages, resultMessage } = operationResult;
+		if (Array.isArray(errorMessages)) {
+			if (resultMessage) {
+				errorMessages.unshift(resultMessage);
+			}
+			return errorMessages;
+		} else {
+			return [resultMessage];
+		}
 	},
 };

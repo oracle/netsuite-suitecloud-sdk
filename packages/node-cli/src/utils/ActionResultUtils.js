@@ -7,7 +7,6 @@
 const { ERROR } = require('../commands/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerConstants');
 
-
 module.exports = {
 	getErrorMessagesString: actionResult => {
 		return actionResult.errorMessages.join(lineBreak);
@@ -21,20 +20,5 @@ module.exports = {
 				consoleLogger.result(actionResult.resultMessage);
 			}
 		}
-	},
-
-	// TODO: fix operationResult in SDK to always return errors in errorMessage and never in resultMessage
-	collectErrorMessages: operationResult => {
-		let errors = [];
-		const { errorMessages, resultMessage } = operationResult;
-		if (Array.isArray(errorMessages)) {
-			if (resultMessage) {
-				errorMessages.unshift(resultMessage);
-			}
-			errors = errorMessages;
-		} else {
-			errors = [...(resultMessage && resultMessage), ...(errorMessages && errorMessages)];
-		}
-		return errors;
 	},
 };

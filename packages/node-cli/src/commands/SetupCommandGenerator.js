@@ -16,7 +16,6 @@ const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const AuthenticationService = require('./../core/authentication/AuthenticationService');
 const SetupOutputFormatter = require('./outputFormatters/SetupOutputFormatter');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 
 const inquirer = require('inquirer');
 
@@ -260,7 +259,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 				const operationResult = await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
 				if (operationResult.status === ERROR) {
-					return SetupActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+					return SetupActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 				}
 				authId = executeActionContext.newAuthId;
 				accountInfo = operationResult.data.accountInfo;
@@ -278,7 +277,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 				const operationResult = await this._saveToken(commandParams, executeActionContext.developmentMode);
 				if (operationResult.status === ERROR) {
-					return SetupActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+					return SetupActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 				}
 				authId = executeActionContext.newAuthId;
 				accountInfo = operationResult.data.accountInfo;

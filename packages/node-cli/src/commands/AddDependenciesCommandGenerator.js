@@ -9,7 +9,6 @@ const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeTranslationService = require('../services/NodeTranslationService');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const AddDependenciesOutputFormatter = require('./outputFormatters/AddDependenciesOutputFormatter');
@@ -52,7 +51,7 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()
-				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

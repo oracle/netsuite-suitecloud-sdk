@@ -10,7 +10,6 @@ const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
@@ -88,7 +87,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
-		this._outputFormatter = new CreateProjectOutputFormatter(this.consoleLogger);
+		this._outputFormatter = new CreateProjectOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -248,7 +247,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
 						.build()
 				: CreateProjectActionResult.Builder.withErrors(
-						ActionResultUtils.collectErrorMessages(createProjectActionData.operationResult)
+						SDKOperationResultUtils.collectErrorMessages(createProjectActionData.operationResult)
 				  ).build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([error]).build();

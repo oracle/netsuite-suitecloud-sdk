@@ -12,7 +12,6 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ListObjectsOutputFormatter = require('./outputFormatters/ListObjectsOutputFormatter');
@@ -175,7 +174,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()
-				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

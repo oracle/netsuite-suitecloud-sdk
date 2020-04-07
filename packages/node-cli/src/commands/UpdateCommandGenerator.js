@@ -12,7 +12,6 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SDKExecutionContext = require('../SDKExecutionContext');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const UpdateOutputFormatter = require('./outputFormatters/UpdateOutputFormatter');
 
@@ -154,7 +153,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()
-				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

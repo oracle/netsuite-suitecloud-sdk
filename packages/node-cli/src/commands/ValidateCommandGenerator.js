@@ -8,7 +8,6 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const CommandUtils = require('../utils/CommandUtils');
@@ -152,7 +151,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 						.withProjectType(this._projectInfoService.getProjectType)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: DeployActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+				: DeployActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}

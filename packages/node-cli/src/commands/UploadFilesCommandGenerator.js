@@ -11,7 +11,6 @@ const FileCabinetService = require('../services/FileCabinetService');
 const FileSystemService = require('../services/FileSystemService');
 const path = require('path');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
@@ -160,7 +159,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 						.withResultMessage(operationResult.resultMessage)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
