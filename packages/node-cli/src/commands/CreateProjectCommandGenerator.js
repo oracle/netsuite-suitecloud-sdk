@@ -17,6 +17,7 @@ const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const NpmInstallRunner = require('../services/NpmInstallRunner');
+const { unwrapExceptionMessage } = require('../utils/ExceptionUtils');
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
 	YES,
@@ -27,7 +28,6 @@ const path = require('path');
 
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
-const ACCOUNT_CUSTOMIZATION_DISPLAY = 'Account Customization';
 const DEFAULT_PROJECT_VERSION = '1.0.0';
 const JEST_CONFIG_FILENAME = 'jest.config.js';
 const JEST_CONFIG_PROJECT_TYPE_ACP = 'SuiteCloudJestConfiguration.ProjectType.ACP';
@@ -82,6 +82,7 @@ const {
 	validateXMLCharacters,
 	validateNotUndefined,
 	validateProjectType,
+	validateFolder
 } = require('../validation/InteractiveAnswersValidator');
 
 const { throwValidationException } = require('../utils/ExceptionUtils');
@@ -119,7 +120,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					showValidationResults(
 						fieldValue,
 						validateFieldIsNotEmpty,
-						validateXMLCharacters
+						validateFolder
 					),
 			},
 			{
@@ -276,7 +277,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					.withErrors(ActionResultUtils.collectErrorMessages(createProjectActionData.operationResult))
 					.build();
 		} catch (error) {
-			return CreateProjectActionResult.Builder.withErrors([error]).build();
+			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}
 	}
 

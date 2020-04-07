@@ -5,8 +5,11 @@
 'use strict';
 
 const { lstatSync, readdirSync, readFile, writeFile, mkdirSync, renameSync, existsSync, unlinkSync, rmdirSync } = require('fs');
+const CLIException = require('../CLIException');
 const assert = require('assert');
 const path = require('path');
+const TranslationService = require('../services/TranslationService');
+const { CANT_CREATE_FOLDER } = require('../services/TranslationKeys').ERRORS;
 
 const CHAR_ENCODING_UTF8 = 'utf-8';
 
@@ -88,8 +91,12 @@ module.exports = class FileSystemService {
 
 		let targetFolder = path.join(parentFolderPath, folderName);
 
-		if (!existsSync(targetFolder)) {
-			mkdirSync(path.join(targetFolder));
+		try {
+			if (!existsSync(targetFolder)) {
+				mkdirSync(path.join(targetFolder));
+			}
+		} catch (e) {
+			throw new CLIException(e.errno,TranslationService.getMessage(CANT_CREATE_FOLDER, e.path, e.code));
 		}
 
 		return targetFolder;
