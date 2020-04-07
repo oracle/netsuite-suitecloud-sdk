@@ -9,7 +9,7 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 class ProxyActionResult extends ActionResult {
 	constructor(parameters) {
 		super(parameters);
-		this._isSettingProxy = parameters.withSettingProxy;
+		this._isSettingProxy = parameters.isSettingProxy;
 		this._proxyUrl = parameters.proxyUrl;
 		this._isProxyOverridden = parameters.isProxyOverridden;
 	}
@@ -18,7 +18,7 @@ class ProxyActionResult extends ActionResult {
 		assert(parameters);
 		assert(parameters.status, 'status is required when creating an ActionResult object.');
 		if (parameters.status === ActionResult.SUCCESS) {
-			if (parameters.withSettingProxy) {
+			if (parameters.isSettingProxy) {
 				assert(parameters.proxyUrl, 'proxyUrl is required when ActionResult is a success.');
 			}
 		}
@@ -55,8 +55,8 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
-	withSettingProxy(withSettingProxy) {
-		this.withSettingProxy = withSettingProxy;
+	withProxySetOption(isSettingProxy) {
+		this.isSettingProxy = isSettingProxy;
 		return this;
 	}
 
@@ -65,7 +65,7 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
-	isProxyOverridden(isProxyOverridden) {
+	withProxyOverridden(isProxyOverridden) {
 		this.isProxyOverridden = isProxyOverridden;
 		return this;
 	}
@@ -73,10 +73,10 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 	build() {
 		return new ProxyActionResult({
 			status: this.status,
+			isSettingProxy: this.isSettingProxy,
+			isProxyOverridden: this.isProxyOverridden,
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
-			...(this.withSettingProxy && { isSettingProxy: this.withSettingProxy }),
 			...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
-			...(this.isProxyOverridden && { proxyOverridden: this.isProxyOverridden }),
 		});
 	}
 }

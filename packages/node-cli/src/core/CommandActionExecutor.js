@@ -79,16 +79,13 @@ module.exports = class CommandActionExecutor {
 
 			if (actionResult.status === ActionResult.ERROR) {
 				const error = ActionResultUtils.getErrorMessagesString(actionResult);
-				command.outputFormatter.formatError(error);
-				if (commandUserExtension && commandUserExtension.onError) {
-					commandUserExtension.onError(error);
-				}
-			} else {
-				command.outputFormatter.formatActionResult(actionResult);
+				throw error;
+			}
 
-				if (commandUserExtension.onCompleted) {
-					commandUserExtension.onCompleted(actionResult);
-				}
+			command.outputFormatter.formatActionResult(actionResult);
+
+			if (commandUserExtension.onCompleted) {
+				commandUserExtension.onCompleted(actionResult);
 			}
 
 			return actionResult;

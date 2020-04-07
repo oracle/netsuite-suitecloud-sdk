@@ -15,8 +15,8 @@ class ProxyOutputFormatter extends OutputFormatter {
 	}
 
 	formatActionResult(actionResult) {
-		if (actionResult.withSettingProxy) {
-			if (actionResult.proxyOverridden) {
+		if (actionResult.isSettingProxy) {
+			if (actionResult.isProxyOverridden) {
 				this.consoleLogger.result(NodeTranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl));
 			} else {
 				this.consoleLogger.result(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl));

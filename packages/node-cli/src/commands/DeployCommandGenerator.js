@@ -149,8 +149,8 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING),
 			});
 
-			var isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
-			var isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
+			const isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
+			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)

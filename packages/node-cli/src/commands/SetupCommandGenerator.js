@@ -16,8 +16,11 @@ const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const AuthenticationService = require('./../core/authentication/AuthenticationService');
 const SetupOutputFormatter = require('./outputFormatters/SetupOutputFormatter');
+const ActionResultUtils = require('../utils/ActionResultUtils');
 
 const inquirer = require('inquirer');
+
+const { ERROR } = require('../utils/SDKOperationResultUtils');
 
 const {
 	FILES: { MANIFEST_XML },
@@ -256,6 +259,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				}
 
 				const operationResult = await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
+				if (operationResult.status === ERROR) {
+					return SetupActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+				}
 				authId = executeActionContext.newAuthId;
 				accountInfo = operationResult.data.accountInfo;
 			} else if (executeActionContext.mode === AUTH_MODE.SAVE_TOKEN) {
@@ -271,6 +277,9 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				}
 
 				const operationResult = await this._saveToken(commandParams, executeActionContext.developmentMode);
+				if (operationResult.status === ERROR) {
+					return SetupActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+				}
 				authId = executeActionContext.newAuthId;
 				accountInfo = operationResult.data.accountInfo;
 			} else if (executeActionContext.mode === AUTH_MODE.REUSE) {

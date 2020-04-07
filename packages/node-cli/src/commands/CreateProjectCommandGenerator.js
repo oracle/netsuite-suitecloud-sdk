@@ -214,7 +214,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				throwValidationException(validationErrors, false, this._commandMetadata);
 			}
 
-			var projectType = answers[COMMAND_OPTIONS.TYPE];
+			const projectType = answers[COMMAND_OPTIONS.TYPE];
 
 			const params = {
 				//Enclose in double quotes to also support project names with spaces
@@ -235,8 +235,8 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 			const createProjectActionData = await createProjectAction;
 
-			var projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
-			var includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
+			const projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
+			const includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
 			return createProjectActionData.operationResult.status === SDKOperationResultUtils.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)

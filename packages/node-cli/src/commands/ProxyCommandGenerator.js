@@ -39,16 +39,16 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 			if (isSettingProxy) {
 				this._validateProxyUrl(proxyUrlArgument);
 				const setProxyResult = this._setProxy(proxyUrlArgument);
-				proxyCommandAction.proxyOverrided = setProxyResult.proxyOverridden;
+				proxyCommandAction.isProxyOverridden = setProxyResult.isProxyOverridden;
 			} else {
 				this._CLISettingsService.clearProxy();
 			}
 
 			const proxyCommandData = await Promise.resolve(proxyCommandAction);
 			return ProxyActionResult.Builder.success()
-				.withSettingProxy(proxyCommandData.withSettingProxy)
+				.withProxySetOption(proxyCommandData.isSettingProxy)
 				.withProxyUrl(proxyCommandData.proxyUrl)
-				.isProxyOverridden(proxyCommandData.proxyOverridden)
+				.withProxyOverridden(proxyCommandData.isProxyOverridden)
 				.build();
 		} catch (error) {
 			return ProxyActionResult.Builder.withErrors([error]).build();
@@ -74,6 +74,6 @@ module.exports = class ProxyCommandGenerator extends BaseCommandGenerator {
 	_setProxy(proxyUrl) {
 		const proxyUrlIsDifferent = this._CLISettingsService.getProxyUrl() !== proxyUrl;
 		this._CLISettingsService.setProxyUrl(proxyUrl);
-		return { proxyOverridden: proxyUrlIsDifferent };
+		return { isProxyOverridden: proxyUrlIsDifferent };
 	}
 };
