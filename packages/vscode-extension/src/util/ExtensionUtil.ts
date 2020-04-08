@@ -22,4 +22,7 @@ export const actionResultStatus: {
 
 export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
 
+//NodeTranslationService is needed in FileUtils
+export const NodeTranslationService = require('@oracle/suitecloud-cli/src/services/NodeTranslationService');
+
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
