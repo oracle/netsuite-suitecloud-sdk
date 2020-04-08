@@ -20,7 +20,7 @@ export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SC
 export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	new VSConsoleLogger().info("Let's rock it, Netsuite SuiteCloud VSCode Extension has been activated!");
+	console.log("Let's rock it, Netsuite SuiteCloud VSCode Extension has been activated!");
 
 	const actionExecutor = new ActionExecutor();
 	// The command has been defined in the package.json file

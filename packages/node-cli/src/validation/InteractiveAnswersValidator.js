@@ -4,8 +4,6 @@
  */
 'use strict';
 
-const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTION_IS_MANDATORY } = require('../services/TranslationKeys');
-
 const ApplicationConstants = require('../ApplicationConstants');
 const NodeTranslationService = require('../services/NodeTranslationService');
 

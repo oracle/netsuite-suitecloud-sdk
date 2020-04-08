@@ -17,24 +17,20 @@ export default class MessageService {
 		this.translationService = new VSTranslationService();
 	}
 
-	showTriggeredActionInfo(actionPromise: number, informationMessage: string, statusBarMessage?: string) {
+	showTriggeredActionInfo(informationMessage: string, actionPromise?: number, statusBarMessage?: string) {
 		window.showInformationMessage(informationMessage);
-		if (statusBarMessage) {
+		if (statusBarMessage && actionPromise) {
 			window.setStatusBarMessage(statusBarMessage, actionPromise);
 		}
 	}
 
-	showTriggeredActionError() {
-		window.showErrorMessage(this.translationService.getMessage(COMMAND.ROOT_FOLDER_NOT_FOUND, [this.commandName]));
-	}
-
 	showCompletedActionInfo(successMessage?: string) {
-		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, [this.commandName]);
+		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.commandName);
 		window.showInformationMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
 	}
 
 	showCompletedActionError(errorMessage?: string) {
-		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);
+		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.commandName);
 		window.showErrorMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
 	}
 
@@ -47,7 +43,7 @@ export default class MessageService {
 	}
 
 	showErrorMessage(errorMessage?: string) {
-		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, [this.commandName]);
+		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.commandName);
 		window.showErrorMessage(message);
 	}
 

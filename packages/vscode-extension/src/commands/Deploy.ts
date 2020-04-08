@@ -13,23 +13,19 @@ export default class Deploy extends BaseAction {
 	readonly commandName: string = 'project:deploy';
 
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
-		if (opts.suiteCloudRunner && opts.messageService) {
-			const commandAction = opts.suiteCloudRunner.run({
-				commandName: this.commandName,
-				arguments: {},
-			});
-			const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, [this.translationService.getMessage(DEPLOY.COMMAND)]);
-			const statusBarMessage: string = this.translationService.getMessage(DEPLOY.DEPLOYING);
-			opts.messageService.showTriggeredActionInfo(commandAction, commandMessage, statusBarMessage);
+		const commandActionPromise = opts.suiteCloudRunner.run({
+			commandName: this.commandName,
+			arguments: {},
+		});
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(DEPLOY.COMMAND));
+		const statusBarMessage: string = this.translationService.getMessage(DEPLOY.DEPLOYING);
+		opts.messageService.showTriggeredActionInfo(commandMessage, commandActionPromise, statusBarMessage);
 
-			let actionResult = await commandAction;
-			if (actionResult.status === actionResultStatus.SUCCESS) {
-				opts.messageService.showCompletedActionInfo();
-			} else {
-				opts.messageService.showCompletedActionError();
-			}
+		const actionResult = await commandActionPromise;
+		if (actionResult.status === actionResultStatus.SUCCESS) {
+			opts.messageService.showCompletedActionInfo();
 		} else {
-			opts.messageService.showTriggeredActionError();
+			opts.messageService.showCompletedActionError();
 		}
 	}
 }

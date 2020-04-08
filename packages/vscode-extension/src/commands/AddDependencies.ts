@@ -14,15 +14,15 @@ export default class AddDependencies extends BaseAction {
 	readonly commandName: string = 'project:adddependencies';
 
 	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
-		const commandAction = opts.suiteCloudRunner.run({
+		const commandActionPromise = opts.suiteCloudRunner.run({
 			commandName: this.commandName,
 			arguments: {},
 		});
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, [this.translationService.getMessage(ADD_DEPENDENCIES.COMMAND)]);
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(ADD_DEPENDENCIES.COMMAND));
 		const statusBarMessage: string = this.translationService.getMessage(ADD_DEPENDENCIES.ADDING);
-		opts.messageService.showTriggeredActionInfo(commandAction, commandMessage, statusBarMessage);
+		opts.messageService.showTriggeredActionInfo(commandMessage, commandActionPromise, statusBarMessage);
 
-		let actionResult: ActionResult = await commandAction;
+		const actionResult: ActionResult = await commandActionPromise;
 
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			if (actionResult.data.length > 0) {
