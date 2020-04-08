@@ -15,7 +15,7 @@ const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const NpmInstallRunner = require('../services/NpmInstallRunner');
 const CreateProjectOutputFormatter = require('./outputFormatters/CreateProjectOutputFormatter');
-const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapExceptionMessage;
+const unwrapExceptionMessage = require('../utils/ExceptionUtils').unwrapExceptionMessage;
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
 	YES,
