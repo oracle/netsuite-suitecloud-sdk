@@ -4,20 +4,18 @@
  */
 'use strict';
 
-const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CreateProjectActionResult = require('./actionresult/CreateProjectActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
-const TranslationService = require('../services/TranslationService');
-const ActionResultUtils = require('../utils/ActionResultUtils');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const NpmInstallRunner = require('../services/NpmInstallRunner');
-const { unwrapExceptionMessage } = require('../utils/ExceptionUtils');
+const CreateProjectOutputFormatter = require('./outputFormatters/CreateProjectOutputFormatter');
+const unwrapExceptionMessage = require('../utils/ExceptionUtils').unwrapExceptionMessage;
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
 	YES,
@@ -91,6 +89,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
+		this._outputFormatter = new CreateProjectOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -98,7 +97,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.TYPE,
-				message: TranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
+				message: NodeTranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
 				default: 0,
 				choices: [
 					{
@@ -114,7 +113,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_NAME,
-				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
 				filter: fieldValue => fieldValue.trim(),
 				validate: fieldValue =>
 					showValidationResults(
@@ -124,48 +123,44 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					),
 			},
 			{
-				when: function (response) {
+				when: function(response) {
 					return response[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PUBLISHER_ID,
-				message: TranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
 				validate: fieldValue => showValidationResults(fieldValue, validatePublisherId),
 			},
 			{
-				when: function (response) {
+				when: function(response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_ID,
-				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_ID),
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_ID),
 				validate: fieldValue =>
-					showValidationResults(
-						fieldValue,
-						validateFieldIsNotEmpty,
-						validateFieldHasNoSpaces,
-						fieldValue =>
-							validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, fieldValue)
+					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, fieldValue =>
+						validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, fieldValue)
 					),
 			},
 			{
-				when: function (response) {
+				when: function(response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_VERSION,
-				message: TranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
 				default: DEFAULT_PROJECT_VERSION,
 				validate: fieldValue => showValidationResults(fieldValue, validateProjectVersion),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.INCLUDE_UNIT_TESTING,
-				message: TranslationService.getMessage(QUESTIONS.INCLUDE_UNIT_TESTING),
+				message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_UNIT_TESTING),
 				default: 0,
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: true },
-					{ name: TranslationService.getMessage(NO), value: false },
+					{ name: NodeTranslationService.getMessage(YES), value: true },
+					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
 			},
 		]);
@@ -173,28 +168,22 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		const projectFolderName = this._getProjectFolderName(answers);
 		const projectAbsolutePath = path.join(this._executionPath, projectFolderName);
 
-		if (
-			this._fileSystemService.folderExists(projectAbsolutePath) &&
-			!this._fileSystemService.isFolderEmpty(projectAbsolutePath)
-		) {
+		if (this._fileSystemService.folderExists(projectAbsolutePath) && !this._fileSystemService.isFolderEmpty(projectAbsolutePath)) {
 			const overwriteAnswer = await prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: COMMAND_OPTIONS.OVERWRITE,
-					message: TranslationService.getMessage(
-						QUESTIONS.OVERWRITE_PROJECT,
-						projectAbsolutePath
-					),
+					message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_PROJECT, projectAbsolutePath),
 					default: 0,
 					choices: [
-						{ name: TranslationService.getMessage(NO), value: false },
-						{ name: TranslationService.getMessage(YES), value: true },
+						{ name: NodeTranslationService.getMessage(NO), value: false },
+						{ name: NodeTranslationService.getMessage(YES), value: true },
 					],
 				},
 			]);
 			answers[COMMAND_OPTIONS.OVERWRITE] = overwriteAnswer[COMMAND_OPTIONS.OVERWRITE];
 			if (!overwriteAnswer[COMMAND_OPTIONS.OVERWRITE]) {
-				throw TranslationService.getMessage(MESSAGES.PROJECT_CREATION_CANCELED);
+				throw NodeTranslationService.getMessage(MESSAGES.PROJECT_CREATION_CANCELED);
 			}
 		}
 		return answers;
@@ -209,10 +198,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	_preExecuteAction(answers) {
 		const projectFolderName = this._getProjectFolderName(answers);
 		if (projectFolderName) {
-			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = path.join(
-				this._executionPath,
-				projectFolderName
-			);
+			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = path.join(this._executionPath, projectFolderName);
 			answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
 		} else {
 			// parentdirectory is a mandatory option in javaCLI but it must be computed in the nodeCLI
@@ -226,11 +212,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		try {
 			const projectFolderName = answers[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
 			const projectAbsolutePath = answers[COMMAND_OPTIONS.PARENT_DIRECTORY];
-			const manifestFilePath = path.join(
-				projectAbsolutePath,
-				SOURCE_FOLDER,
-				ApplicationConstants.FILES.MANIFEST_XML
-			);
+			const manifestFilePath = path.join(projectAbsolutePath, SOURCE_FOLDER, ApplicationConstants.FILES.MANIFEST_XML);
 
 			const validationErrors = this._validateParams(answers);
 
@@ -238,13 +220,15 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				throwValidationException(validationErrors, false, this._commandMetadata);
 			}
 
+			const projectType = answers[COMMAND_OPTIONS.TYPE];
+
 			const params = {
 				//Enclose in double quotes to also support project names with spaces
 				parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
-				type: answers[COMMAND_OPTIONS.TYPE],
+				type: projectType,
 				projectname: SOURCE_FOLDER,
 				...(answers[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
-				...(answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP && {
+				...(projectType === ApplicationConstants.PROJECT_SUITEAPP && {
 					publisherid: answers[COMMAND_OPTIONS.PUBLISHER_ID],
 					projectid: answers[COMMAND_OPTIONS.PROJECT_ID],
 					projectversion: answers[COMMAND_OPTIONS.PROJECT_VERSION],
@@ -253,29 +237,25 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
 
-			const createProjectAction = new Promise(this.createProject(
-				params, answers, projectAbsolutePath, projectFolderName, manifestFilePath));
+			const createProjectAction = new Promise(this.createProject(params, answers, projectAbsolutePath, projectFolderName, manifestFilePath));
 
 			const createProjectActionData = await createProjectAction;
 
-			var projectType = answers[COMMAND_OPTIONS.TYPE];
-			var projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
-			var includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
-
+			const projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
+			const includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
 			return createProjectActionData.operationResult.status === SDKOperationResultUtils.SUCCESS
-				? CreateProjectActionResult.Builder
-					.withData(createProjectActionData.operationResult.data)
-					.withResultMessage(createProjectActionData.operationResult.resultMessage)
-					.withProjectType(projectType)
-					.withProjectName(projectName)
-					.withProjectDirectory(createProjectActionData.projectDirectory)
-					.withUnitTesting(includeUnitTesting)
-					.withNpmPackageInitialized(createProjectActionData.operationResult)
-					.build()
-				: CreateProjectActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(createProjectActionData.operationResult))
-					.build();
+				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
+						.withResultMessage(createProjectActionData.operationResult.resultMessage)
+						.withProjectType(projectType)
+						.withProjectName(projectName)
+						.withProjectDirectory(createProjectActionData.projectDirectory)
+						.withUnitTesting(includeUnitTesting)
+						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
+						.build()
+				: CreateProjectActionResult.Builder.withErrors(
+						SDKOperationResultUtils.collectErrorMessages(createProjectActionData.operationResult)
+				  ).build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}
@@ -284,7 +264,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 	createProject(params, answers, projectAbsolutePath, projectFolderName, manifestFilePath) {
 		return async (resolve, reject) => {
 			try {
-				NodeUtils.println(TranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE), NodeUtils.COLORS.INFO);
+				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE));
 				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
@@ -312,7 +292,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, answers[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
 				if (answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
-					NodeUtils.println(TranslationService.getMessage(MESSAGES.SETUP_TEST_ENV), NodeUtils.COLORS.INFO);
+					this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV));
 					await this._createUnitTestFiles(
 						answers[COMMAND_OPTIONS.TYPE],
 						answers[COMMAND_OPTIONS.PROJECT_NAME],
@@ -320,7 +300,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						projectAbsolutePath
 					);
 
-					NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES), NodeUtils.COLORS.INFO);
+					this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
 				} else {
 					await this._fileSystemService.createFileFromTemplate({
@@ -333,10 +313,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				return resolve({
 					operationResult: operationResult,
 					projectDirectory: projectAbsolutePath,
-					npmInstallSuccess: npmInstallSuccess
+					npmInstallSuccess: npmInstallSuccess,
 				});
-			}
-			catch (error) {
+			} catch (error) {
 				this._fileSystemService.deleteFolderRecursive(path.join(this._executionPath, projectFolderName));
 				reject(error);
 			}
@@ -373,11 +352,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
 			version = projectVersion;
 		}
-		await this._fileSystemService.replaceStringInFile(
-			packageJsonAbsolutePath,
-			PACKAGE_JSON_REPLACE_STRING_VERSION,
-			version
-		);
+		await this._fileSystemService.replaceStringInFile(packageJsonAbsolutePath, PACKAGE_JSON_REPLACE_STRING_VERSION, version);
 	}
 
 	async _createJestConfigFile(type, projectAbsolutePath) {
@@ -393,11 +368,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			jestConfigProjectType = JEST_CONFIG_PROJECT_TYPE_SUITEAPP;
 		}
 		let jestConfigAbsolutePath = path.join(projectAbsolutePath, JEST_CONFIG_FILENAME);
-		await this._fileSystemService.replaceStringInFile(
-			jestConfigAbsolutePath,
-			JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE,
-			jestConfigProjectType
-		);
+		await this._fileSystemService.replaceStringInFile(jestConfigAbsolutePath, JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE, jestConfigProjectType);
 	}
 
 	async _createSampleUnitTestFile(projectAbsolutePath) {
@@ -419,43 +390,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 		}
 	}
 
-	_formatOutput(actionResult) {
-		if (!actionResult) {
-			return;
-		}
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-		ActionResultUtils.logResultMessage(actionResult);
-
-		const projectCreatedMessage = TranslationService.getMessage(MESSAGES.PROJECT_CREATED, actionResult.projectName);
-		NodeUtils.println(projectCreatedMessage, NodeUtils.COLORS.RESULT);
-
-		if (actionResult.includeUnitTesting) {
-			const sampleUnitTestMessage = TranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
-			NodeUtils.println(sampleUnitTestMessage, NodeUtils.COLORS.RESULT);
-			if (!actionResult.npmPackageIntitialized) {
-				NodeUtils.println(TranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED), NodeUtils.COLORS.ERROR);
-			}
-		}
-
-		const navigateToProjectMessage = TranslationService.getMessage(MESSAGES.NAVIGATE_TO_FOLDER, actionResult.projectDirectory);
-		NodeUtils.println(navigateToProjectMessage, NodeUtils.COLORS.RESULT);
-	}
-
 	_validateParams(answers) {
 		const validationErrors = [];
-		validationErrors.push(
-			showValidationResults(
-				answers[COMMAND_OPTIONS.PROJECT_NAME],
-				validateFieldIsNotEmpty,
-				validateXMLCharacters
-			)
-		);
-		validationErrors.push(
-			showValidationResults(answers[COMMAND_OPTIONS.TYPE], validateProjectType)
-		);
+		validationErrors.push(showValidationResults(answers[COMMAND_OPTIONS.PROJECT_NAME], validateFieldIsNotEmpty, validateXMLCharacters));
+		validationErrors.push(showValidationResults(answers[COMMAND_OPTIONS.TYPE], validateProjectType));
 		if (answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
 			validationErrors.push(
 				showValidationResults(
@@ -468,8 +406,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			validationErrors.push(
 				showValidationResults(
 					answers[COMMAND_OPTIONS.PROJECT_VERSION],
-					optionValue =>
-						validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION),
+					optionValue => validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION),
 					validateProjectVersion
 				)
 			);

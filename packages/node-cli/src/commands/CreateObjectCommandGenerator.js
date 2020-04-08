@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
@@ -20,7 +20,7 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 
 	_getCommandQuestions(prompt) {
 		const transformFoldersToChoicesFunc = folder => {
-			return {name: folder.replace(this._projectFolder, ''), value: folder};
+			return { name: folder.replace(this._projectFolder, ''), value: folder };
 		};
 		const objectDirectoryChoices = this._fileSystemService
 			.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.OBJECTS))
@@ -37,9 +37,7 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 				type: 'input',
 				name: 'objectfilename',
 				message: function(answers) {
-					return `Please specify the filename for the ${chalk.green.bold(
-						answers.type.name
-					)} object`;
+					return `Please specify the filename for the ${chalk.green.bold(answers.type.name)} object`;
 				},
 				transformer: function(input, answers, flags) {
 					return `${answers.type.prefix}${input}.xml`;
@@ -49,9 +47,7 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 				type: 'list',
 				name: 'folder',
 				message: function(answers) {
-					return `Where would you like to store the ${chalk.green.bold(
-						answers.type.prefix + answers.objectfilename + '.xml'
-					)} file?`;
+					return `Where would you like to store the ${chalk.green.bold(answers.type.prefix + answers.objectfilename + '.xml')} file?`;
 				},
 				choices: objectDirectoryChoices,
 			},
@@ -82,9 +78,7 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 						type: 'list',
 						name: 'relatedfiledestinationfolder',
 						message: function(answers) {
-							return `Where would you like to store the ${chalk.green.bold(
-								answers.relatedfilename
-							)}.js file?`;
+							return `Where would you like to store the ${chalk.green.bold(answers.relatedfilename)}.js file?`;
 						},
 						choices: fileCabinetDirectoryChoices,
 					},
@@ -109,12 +103,10 @@ module.exports = class CreateObjectCommandGenerator extends BaseCommandGenerator
 			destinationFolder: answers.folder,
 			fileName: answers.objectfilename,
 			fileExtension: 'xml',
-			bindings: [{id: 'scriptid', value: answers.type.prefix + answers.objectfilename}],
+			bindings: [{ id: 'scriptid', value: answers.type.prefix + answers.objectfilename }],
 		});
 		return Promise.all([createFilePromise, createObjectPromise]).then(() => {
-			console.log(
-				`${answers.objectfilename} & ${answers.relatedfilename} were created successfully.`
-			);
+			console.log(`${answers.objectfilename} & ${answers.relatedfilename} were created successfully.`);
 		});
 	}
 };

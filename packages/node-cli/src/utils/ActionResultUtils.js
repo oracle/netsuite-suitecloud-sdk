@@ -1,53 +1,24 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
-const NodeUtils = require('./NodeUtils');
 const { ERROR } = require('../commands/actionresult/ActionResult');
+const { lineBreak } = require('../loggers/LoggerConstants');
 
 module.exports = {
 	getErrorMessagesString: actionResult => {
-		return actionResult.errorMessages.join(NodeUtils.lineBreak);
+		return actionResult.errorMessages.join(lineBreak);
 	},
 
-	getResultMessage: actionResult => {
-		const { resultMessage } = actionResult;
-		return resultMessage ? resultMessage : '';
-	},
-
-	logErrors: errors => {
-		errors.forEach(
-			message => NodeUtils.println(message, NodeUtils.COLORS.ERROR)
-		);
-	},
-
-	logResultMessage: actionResult => {
+	logResultMessage: (actionResult, consoleLogger) => {
 		if (actionResult.resultMessage) {
 			if (actionResult.status === ERROR) {
-				NodeUtils.println(actionResult.resultMessage, NodeUtils.COLORS.ERROR);
+				consoleLogger.error(actionResult.resultMessage);
 			} else {
-				NodeUtils.println(actionResult.resultMessage, NodeUtils.COLORS.RESULT);
+				consoleLogger.result(actionResult.resultMessage);
 			}
 		}
-	},
-
-	// TODO: fix operationResult in SDK to always return errors in errorMessage and never in resultMessage
-	collectErrorMessages: operationResult => {
-		let errors = [];
-		const { errorMessages, resultMessage } = operationResult;
-		if (Array.isArray(errorMessages)) {
-			if (resultMessage) {
-				errorMessages.unshift(resultMessage);
-			}
-			errors = errorMessages;
-		} else {
-			errors = [
-				...(resultMessage && resultMessage),
-				...(errorMessages && errorMessages),
-			];
-		}
-		return errors;
 	},
 };

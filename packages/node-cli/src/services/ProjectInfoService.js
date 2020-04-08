@@ -14,7 +14,7 @@ const {
 const CLIException = require('../CLIException');
 const FileUtils = require('../utils/FileUtils');
 const path = require('path');
-const TranslationService = require('./TranslationService');
+const NodeTranslationService = require('./NodeTranslationService');
 const xml2js = require('xml2js');
 const assert = require('assert');
 
@@ -45,14 +45,14 @@ module.exports = class ProjectInfoService {
 			let manifestTagAttributes = newValue['$'];
 			if (!manifestTagAttributes || !manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE]) {
 				throw new xml2js.ValidationError(
-					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
+					NodeTranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
 				);
 			} else if (
 				manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE] !== PROJECT_SUITEAPP &&
 				manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE] !== PROJECT_ACP
 			) {
 				throw new xml2js.ValidationError(
-					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT)
+					NodeTranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT)
 				);
 			}
 		}
@@ -68,9 +68,9 @@ module.exports = class ProjectInfoService {
 
 		if (!FileUtils.exists(manifestPath)) {
 			const errorMessage =
-				TranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+				NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
 				' ' +
-				TranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath);
+				NodeTranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath);
 			throw new CLIException(-10, errorMessage);
 		}
 
@@ -78,9 +78,9 @@ module.exports = class ProjectInfoService {
 
 		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
 			const errorMessage =
-				TranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+				NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
 				' ' +
-				TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
+				NodeTranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
 			throw new CLIException(-10, errorMessage);
 		}
 		let projectType;
@@ -91,9 +91,9 @@ module.exports = class ProjectInfoService {
 		parser.parseString(manifestString, function(err, result) {
 			if (err) {
 				const errorMessage =
-					TranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+					NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
 					' ' +
-					TranslationService.getMessage(ERRORS.FILE, manifestPath);
+					NodeTranslationService.getMessage(ERRORS.FILE, manifestPath);
 				validationError = errorMessage + ' ' + err;
 			}
 

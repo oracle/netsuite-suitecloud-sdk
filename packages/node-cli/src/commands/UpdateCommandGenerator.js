@@ -8,16 +8,15 @@ const inquirer = require('inquirer');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const FileSystemService = require('../services/FileSystemService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const NodeUtils = require('../utils/NodeUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const UpdateOutputFormatter = require('./outputFormatters/UpdateOutputFormatter');
 
 const {
-	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES, OUTPUT },
+	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -40,14 +39,11 @@ const COMMAND_OPTIONS = {
 const MAX_ENTRIES_BEFORE_FILTER = 30;
 const XML_EXTENSION = '.xml';
 
-const UPDATED_OBJECT_TYPE = {
-	SUCCESS: 'SUCCESS',
-};
-
 module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
+		this._outputFormatter = new UpdateOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -61,7 +57,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			}));
 
 		if (foundXMLFiles.length === 0) {
-			throw TranslationService.getMessage(ERRORS.NO_OBJECTS_IN_PROJECT);
+			throw NodeTranslationService.getMessage(ERRORS.NO_OBJECTS_IN_PROJECT);
 		}
 
 		let filteredObjects;
@@ -71,11 +67,11 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: ANSWERS_NAMES.FILTER_BY_SCRIPT_ID,
-					message: TranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
+					message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 					default: false,
 					choices: [
-						{ name: TranslationService.getMessage(YES), value: true },
-						{ name: TranslationService.getMessage(NO), value: false },
+						{ name: NodeTranslationService.getMessage(YES), value: true },
+						{ name: NodeTranslationService.getMessage(NO), value: false },
 					],
 				},
 				{
@@ -84,7 +80,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 					},
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS_NAMES.SCRIPT_ID_FILTER,
-					message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID_FILTER),
+					message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID_FILTER),
 					validate: fieldValue => showValidationResults(fieldValue, validateScriptId),
 				},
 			]);
@@ -92,7 +88,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				? foundXMLFiles.filter(element => element.value.includes(filterAnswers[ANSWERS_NAMES.SCRIPT_ID_FILTER]))
 				: foundXMLFiles;
 			if (filteredObjects.length === 0) {
-				throw TranslationService.getMessage(MESSAGES.NO_OBJECTS_WITH_SCRIPT_ID_FILTER);
+				throw NodeTranslationService.getMessage(MESSAGES.NO_OBJECTS_WITH_SCRIPT_ID_FILTER);
 			}
 		} else {
 			filteredObjects = foundXMLFiles;
@@ -105,7 +101,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				when: foundXMLFiles.length > 1,
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 				name: ANSWERS_NAMES.SCRIPT_ID_LIST,
-				message: TranslationService.getMessage(QUESTIONS.SCRIPT_ID),
+				message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 				default: 1,
 				choices: filteredObjects,
 				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
@@ -113,11 +109,11 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
-				message: TranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS),
+				message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS),
 				default: 0,
 				choices: [
-					{ name: TranslationService.getMessage(YES), value: true },
-					{ name: TranslationService.getMessage(NO), value: false },
+					{ name: NodeTranslationService.getMessage(YES), value: true },
+					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
 			},
 		]);
@@ -138,7 +134,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	async _executeAction(args) {
 		try {
 			if (args.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !args[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
-				throw TranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
+				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
 			const SDKParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
 
@@ -150,39 +146,16 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForUpdate),
-				message: TranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
+				message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? ActionResult.Builder
-					.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.build()
-				: ActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
-					.build();
+				? ActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.build()
+				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
-		}
-	}
-
-	_formatOutput(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		const updatedObjects = actionResult.data.filter(element => element.type === UPDATED_OBJECT_TYPE.SUCCESS);
-		const noUpdatedObjects = actionResult.data.filter(element => element.type !== UPDATED_OBJECT_TYPE.SUCCESS);
-		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
-
-		if (updatedObjects.length > 0) {
-			NodeUtils.println(TranslationService.getMessage(OUTPUT.UPDATED_OBJECTS), NodeUtils.COLORS.RESULT);
-			updatedObjects.sort(sortByKey).forEach(updatedObject => NodeUtils.println(updatedObject.key, NodeUtils.COLORS.RESULT));
-		}
-		if (noUpdatedObjects.length > 0) {
-			NodeUtils.println(TranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS), NodeUtils.COLORS.WARNING);
-			noUpdatedObjects.sort(sortByKey).forEach(noUpdatedObject => NodeUtils.println(noUpdatedObject.message, NodeUtils.COLORS.WARNING));
 		}
 	}
 };

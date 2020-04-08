@@ -1,44 +1,31 @@
+/*
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
-import { getRootProjectFolder, unwrapExceptionMessage, actionResultStatus } from '../util/ExtensionUtil';
-import { scloudOutput } from '../extension';
-import { MessageService } from '../service/MessageService';
+import MessageService from '../service/MessageService';
+import { COMMAND, DEPLOY } from '../service/TranslationKeys';
+import { actionResultStatus } from '../util/ExtensionUtil';
+import BaseAction from './BaseAction';
 
+export default class Deploy extends BaseAction {
+	readonly commandName: string = 'project:deploy';
 
-export default async function deploy() {
+	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
+		const commandActionPromise = opts.suiteCloudRunner.run({
+			commandName: this.commandName,
+			arguments: {},
+		});
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(DEPLOY.COMMAND));
+		const statusBarMessage: string = this.translationService.getMessage(DEPLOY.DEPLOYING);
+		opts.messageService.showTriggeredActionInfo(commandMessage, commandActionPromise, statusBarMessage);
 
-    const deployMessageService = new MessageService('deploy');
-    const executionPath = getRootProjectFolder();
-
-    if (executionPath) {
-        const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
-
-        deployMessageService.showTriggeredActionInfo();
-        let deployResult;
-        try {
-            deployResult = await suiteCloudRunner.run({
-                commandName: 'project:deploy',
-                arguments: {}
-            });
-        } catch (error) {
-            deployMessageService.showErrorMessage(unwrapExceptionMessage(error));
-            return;
-        }
-
-        if (deployResult.operationResult?.status === actionResultStatus.SUCCESS && Array.isArray(deployResult.operationResult.data)) {
-            deployResult.operationResult.data.forEach((element: any) => {
-                scloudOutput.appendLine(element);
-            });
-            deployMessageService.showCompletedActionInfo();
-        } else {
-            if (Array.isArray(deployResult.operationResult.errorMessages) && (deployResult.operationResult.errorMessages.length > 0)) {
-                deployResult.operationResult.errorMessages.forEach((message: string) => scloudOutput.appendLine(message));
-            } else {
-                scloudOutput.appendLine(deployResult.operationResult.resultMessage);
-            }
-            deployMessageService.showCompletedActionError();
-        }
-    } else {
-        deployMessageService.showTriggeredActionError();
-    }
+		const actionResult = await commandActionPromise;
+		if (actionResult.status === actionResultStatus.SUCCESS) {
+			opts.messageService.showCompletedActionInfo();
+		} else {
+			opts.messageService.showCompletedActionError();
+		}
+	}
 }

@@ -1,12 +1,12 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const assert = require('assert');
-const TranslationService = require('../../services/TranslationService');
-const { lineBreak } = require('../../utils/NodeUtils');
+const NodeTranslationService = require('../../services/NodeTranslationService');
+const { lineBreak } = require('../../loggers/LoggerConstants');
 const { ERRORS } = require('../../services/TranslationKeys');
 
 module.exports = class CommandUserExtension {
@@ -32,11 +32,7 @@ module.exports = class CommandUserExtension {
 			this._validateBeforeExecutingResult(result);
 			return result;
 		} catch (error) {
-			throw TranslationService.getMessage(
-				ERRORS.CLI_CONFIG_BEFORE_EXECUTING_FAILED,
-				lineBreak,
-				error
-			);
+			throw NodeTranslationService.getMessage(ERRORS.CLI_CONFIG_BEFORE_EXECUTING_FAILED, lineBreak, error);
 		}
 	}
 
@@ -56,9 +52,7 @@ module.exports = class CommandUserExtension {
 
 	_validateBeforeExecutingResult(result) {
 		if (typeof result === 'undefined' || typeof result.arguments !== 'object') {
-			throw TranslationService.getMessage(
-				ERRORS.CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE
-			);
+			throw NodeTranslationService.getMessage(ERRORS.CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE);
 		}
 	}
 };

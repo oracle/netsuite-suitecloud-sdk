@@ -1,69 +1,31 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SDKExecutionContext = require('../SDKExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const NodeUtils = require('../utils/NodeUtils');
-const TranslationService = require('../services/TranslationService');
-const ActionResultUtils = require('../utils/ActionResultUtils');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
+const AddDependenciesOutputFormatter = require('./outputFormatters/AddDependenciesOutputFormatter');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
 } = require('../services/TranslationKeys');
-
-const DEPENDENCY_TYPES = {
-	FEATURE: {
-		name: 'FEATURE',
-		prefix: 'Feature -',
-	},
-	FILE: {
-		name: 'FILE',
-		prefix: 'File -',
-	},
-	FOLDER: {
-		name: 'FOLDER',
-		prefix: 'Folder -',
-	},
-	OBJECT: {
-		name: 'OBJECT',
-		prefix: 'Object -',
-	},
-	PLATFORMEXTENSION: {
-		name: 'PLATFORMEXTENSION',
-		prefix: 'Platform Extension -',
-	},
-};
-
-const FEATURE_REQUIRED = 'required';
-const FEATURE_OPTIONAL = 'optional';
-
-const OBJECT_REFERENCE_ATTRIBUTES = {
-	APP_ID: 'appId=',
-	BUNDLE_ID: 'bundleId=',
-	OBJECT_TYPE: 'objectType=',
-	SCRIPT_ID: 'scriptId=',
-};
-
-const OBJECT_CONTAINER_PREFIX = {
-	BUNDLE: 'Bundle',
-	SUITEAPP: 'Application',
-};
 
 const COMMAND_OPTIONS = {
 	ALL: 'all',
 	PROJECT: 'project',
 };
 
-module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenerator {
+class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
+		this._outputFormatter = new AddDependenciesOutputFormatter(options.consoleLogger);
 	}
 
 	_preExecuteAction(answers) {
@@ -77,22 +39,19 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 				command: this._commandMetadata.sdkCommand,
 				params: answers,
 				flags: [COMMAND_OPTIONS.ALL],
-				requiresContextParams: true
+				requiresContextParams: true,
 			});
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
-				message: TranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
+				message: NodeTranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? ActionResult.Builder
-					.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.build()
-				: ActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
-					.build();
+				? ActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.build()
+				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
@@ -101,93 +60,6 @@ module.exports = class AddDependenciesCommandGenerator extends BaseCommandGenera
 	_supportsInteractiveMode() {
 		return false;
 	}
+}
 
-	_getDependenciesStringsArray(data) {
-		const dependenciesString = [];
-		//Features
-		const features = data.filter(
-			dependency => dependency.type === DEPENDENCY_TYPES.FEATURE.name
-		);
-		features.forEach(feature => {
-			const requiredOrOptional = feature.required ? FEATURE_REQUIRED : FEATURE_OPTIONAL;
-			dependenciesString.push(
-				`${DEPENDENCY_TYPES.FEATURE.prefix} ${feature.value}:${requiredOrOptional}`
-			);
-		});
-
-		//Files
-		const files = data.filter(dependency => dependency.type === DEPENDENCY_TYPES.FILE.name);
-		files.forEach(file => {
-			dependenciesString.push(`${DEPENDENCY_TYPES.FILE.prefix} ${file.value}`);
-		});
-
-		//Folders
-		const folders = data.filter(dependency => dependency.type === DEPENDENCY_TYPES.FOLDER.name);
-		folders.forEach(folder => {
-			dependenciesString.push(`${DEPENDENCY_TYPES.FOLDER.prefix} ${folder.value}`);
-		});
-
-		//Objects - Regular, SuiteApp,  Bundle dependencies
-		const objects = data.filter(dependency => dependency.type === DEPENDENCY_TYPES.OBJECT.name);
-		objects.forEach(object => {
-			const appIdDisplay = object.appId
-				? `in [${OBJECT_CONTAINER_PREFIX.SUITEAPP} - ${OBJECT_REFERENCE_ATTRIBUTES.APP_ID}${
-				object.appId
-				}]`
-				: '';
-			const bundleIdDisplay = object.bundleIds
-				? `in [${OBJECT_CONTAINER_PREFIX.BUNDLE} - ${
-				OBJECT_REFERENCE_ATTRIBUTES.BUNDLE_ID
-				}${object.bundleIds}]`
-				: '';
-			const scriptIdDisplay = `${OBJECT_REFERENCE_ATTRIBUTES.SCRIPT_ID}${object.scriptId}`;
-			dependenciesString.push(
-				`[${
-				DEPENDENCY_TYPES.OBJECT.prefix
-				} ${scriptIdDisplay}] ${appIdDisplay}${bundleIdDisplay}`
-			);
-		});
-
-		//Platform Extensions
-		const platformExtensions = data.filter(
-			dependency => dependency.type === DEPENDENCY_TYPES.PLATFORMEXTENSION.name
-		);
-		platformExtensions.forEach(platformExtension => {
-			const appIdDisplay = platformExtension.appId
-				? `${OBJECT_REFERENCE_ATTRIBUTES.APP_ID}${platformExtension.appId}, `
-				: '';
-			const objectTypeDisplay = `${OBJECT_REFERENCE_ATTRIBUTES.OBJECT_TYPE}${
-				platformExtension.objectType
-				}`;
-			dependenciesString.push(
-				`${DEPENDENCY_TYPES.PLATFORMEXTENSION.prefix} ${appIdDisplay}${objectTypeDisplay}`
-			);
-		});
-
-		return dependenciesString;
-	}
-
-	_formatOutput(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		if (actionResult.data.length === 0) {
-			NodeUtils.println(
-				TranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES),
-				NodeUtils.COLORS.RESULT
-			);
-			return;
-		}
-
-		NodeUtils.println(
-			TranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST),
-			NodeUtils.COLORS.RESULT
-		);
-
-		this._getDependenciesStringsArray(actionResult.data)
-			.sort()
-			.forEach(output => NodeUtils.println(output, NodeUtils.COLORS.RESULT));
-	}
-};
+module.exports = AddDependenciesCommandGenerator;

@@ -1,13 +1,12 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 const assert = require('assert');
 const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
 class SetupCommandActionResult extends ActionResult {
-
 	constructor(parameters) {
 		super(parameters);
 		this._mode = parameters.mode;
@@ -17,14 +16,15 @@ class SetupCommandActionResult extends ActionResult {
 
 	validateParameters(parameters) {
 		assert(parameters);
-		assert(parameters.status, "status is required when creating an ActionResult object.");
+		assert(parameters.status, 'status is required when creating an ActionResult object.');
 		if (parameters.status === ActionResult.SUCCESS) {
-			assert(parameters.mode, "mode is required when ActionResult is a success.");
-			assert(parameters.authId, "authId is required when ActionResult is a success.");
-			assert(parameters.accountInfo, "accountInfo is required when ActionResult is a success.");
+			assert(parameters.mode, 'mode is required when ActionResult is a success.');
+			assert(parameters.authId, 'authId is required when ActionResult is a success.');
+			assert(parameters.accountInfo, 'accountInfo is required when ActionResult is a success.');
 		}
 		if (parameters.status === ActionResult.ERROR) {
-			assert(parameters.errorMessages, "errorMessages is required when ActionResult is an error.");
+			assert(parameters.errorMessages, 'errorMessages is required when ActionResult is an error.');
+			assert(Array.isArray(parameters.errorMessages), 'errorMessages argument must be an array');
 		}
 	}
 
@@ -76,7 +76,7 @@ class SetupActionResultBuilder extends ActionResultBuilder {
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.mode && { mode: this.mode }),
 			...(this.authId && { authId: this.authId }),
-			...(this.accountInfo && { accountInfo: this.accountInfo })
+			...(this.accountInfo && { accountInfo: this.accountInfo }),
 		});
 	}
 }

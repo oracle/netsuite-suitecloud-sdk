@@ -6,23 +6,21 @@
 'use strict';
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const { ActionResult } = require('../commands/actionresult/ActionResult');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const NodeUtils = require('../utils/NodeUtils');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesArgumentHandler');
 const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
+const ValidateOutputFormatter = require('./outputFormatters/ValidateOutputFormatter');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 
 const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
 const {
-	COMMAND_VALIDATE: { MESSAGES, QUESTIONS, QUESTIONS_CHOICES, OUTPUT },
+	COMMAND_VALIDATE: { MESSAGES, QUESTIONS, QUESTIONS_CHOICES },
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
@@ -50,6 +48,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			projectInfoService: this._projectInfoService,
 			commandName: this._commandMetadata.sdkCommand,
 		});
+		this._outputFormatter = new ValidateOutputFormatter(this.consoleLogger);
 	}
 
 	_getCommandQuestions(prompt) {
@@ -57,19 +56,15 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.SERVER,
-				message: TranslationService.getMessage(QUESTIONS.SERVER_SIDE),
+				message: NodeTranslationService.getMessage(QUESTIONS.SERVER_SIDE),
 				default: 0,
 				choices: [
 					{
-						name: TranslationService.getMessage(
-							QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.ACCOUNT
-						),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.ACCOUNT),
 						value: true,
 					},
 					{
-						name: TranslationService.getMessage(
-							QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.LOCAL
-						),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.LOCAL),
 						value: false,
 					},
 				],
@@ -78,38 +73,32 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				when: this._projectInfoService.getProjectType() === PROJECT_ACP,
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
-				message: TranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
+				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
 				default: 1,
 				choices: [
 					{
-						name: TranslationService.getMessage(
-							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.WARNING
-						),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.WARNING),
 						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.WARNING,
 					},
 					{
-						name: TranslationService.getMessage(
-							QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL
-						),
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.CANCEL),
 						value: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
 					},
 				],
 			},
 			{
-				when:
-					this._projectInfoService.getProjectType() === PROJECT_SUITEAPP &&
-					this._projectInfoService.hasLockAndHideFiles(),
+				when: this._projectInfoService.getProjectType() === PROJECT_SUITEAPP && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION,
-				message: TranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
+				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
 				default: 0,
 				choices: [
 					{
-						name: TranslationService.getMessage(NO),
+						name: NodeTranslationService.getMessage(NO),
 						value: false,
 					},
 					{
-						name: TranslationService.getMessage(YES),
+						name: NodeTranslationService.getMessage(YES),
 						value: true,
 					},
 				],
@@ -151,100 +140,20 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
-				message: TranslationService.getMessage(MESSAGES.VALIDATING),
+				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? DeployActionResult.Builder
-					.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.withServerValidation(isServerValidation)
-					.withAppliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
-					.build()
-				: DeployActionResult.Builder
-					.withErrors(ActionResultUtils.collectErrorMessages(operationResult))
-					.build();
+				? DeployActionResult.Builder.withData(operationResult.data)
+						.withResultMessage(operationResult.resultMessage)
+						.withServerValidation(isServerValidation)
+						.withAppliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+						.withProjectType(this._projectInfoService.getProjectType)
+						.withProjectFolder(this._projectFolder)
+						.build()
+				: DeployActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	_formatOutput(actionResult) {
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-		} else if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
-			actionResult.data.forEach(resultLine => {
-				NodeUtils.println(resultLine, NodeUtils.COLORS.RESULT);
-			});
-		} else if (!actionResult.isServerValidation) {
-			this._showApplyContentProtectionOptionMessage(actionResult.withAppliedContentProtection);
-			this._showLocalValidationResultData(actionResult.data);
-		}
-		ActionResultUtils.logResultMessage(actionResult);
-	}
-
-	_showApplyContentProtectionOptionMessage(isAppliedContentProtection) {
-		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			if (isAppliedContentProtection) {
-				NodeUtils.println(
-					TranslationService.getMessage(
-						MESSAGES.APPLYING_CONTENT_PROTECTION,
-						this._projectFolder
-					),
-					NodeUtils.COLORS.INFO
-				);
-			} else {
-				NodeUtils.println(
-					TranslationService.getMessage(
-						MESSAGES.NOT_APPLYING_CONTENT_PROTECTION,
-						this._projectFolder
-					),
-					NodeUtils.COLORS.INFO
-				);
-			}
-		}
-	}
-
-	_showLocalValidationResultData(data) {
-		this._logValidationEntries(
-			data.warnings,
-			TranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING),
-			NodeUtils.COLORS.WARNING
-		);
-		this._logValidationEntries(
-			data.errors,
-			TranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR),
-			NodeUtils.COLORS.ERROR
-		);
-	}
-
-	_logValidationEntries(entries, headingLabel, color) {
-		const files = [];
-		entries.forEach(entry => {
-			if (!files.includes(entry.filePath)) {
-				files.push(entry.filePath);
-			}
-		});
-
-		if (entries.length > 0) {
-			NodeUtils.println(`${headingLabel}:`, color);
-		}
-
-		files.forEach(file => {
-			const fileString = `    ${file}`;
-			NodeUtils.println(fileString, color);
-			entries
-				.filter(entry => entry.filePath === file)
-				.forEach(entry => {
-					NodeUtils.println(
-						TranslationService.getMessage(
-							OUTPUT.VALIDATION_OUTPUT_MESSAGE,
-							entry.lineNumber,
-							entry.message
-						),
-						color
-					);
-				});
-		});
 	}
 };

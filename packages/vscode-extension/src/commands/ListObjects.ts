@@ -1,27 +1,29 @@
+/*
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
 import { window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
-import { getRootProjectFolder, unwrapExceptionMessage, actionResultStatus } from '../util/ExtensionUtil';
-import { scloudOutput } from '../extension';
-import { MessageService } from '../service/MessageService';
+import MessageService from '../service/MessageService';
+import { COMMAND, LIST_OBJECTS } from '../service/TranslationKeys';
+import { actionResultStatus } from '../util/ExtensionUtil';
+import BaseAction from './BaseAction';
 
 const objectTypes: {
 	name: string;
 	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
-export default async function listobjects() {
-	const listobjectsMessageService = new MessageService('listobjects');
-	const executionPath = getRootProjectFolder();
+export default class ListObjects extends BaseAction {
+	readonly commandName: string = 'object:list';
 
-	if (executionPath) {
-		const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
-
+	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
 		const selectedObjectTypes = await window.showQuickPick(
 			objectTypes.map(objectType => objectType.value.type),
 			{
 				placeHolder: 'select your object type or nothing to list them all',
-				canPickMany: true
+				canPickMany: true,
 			}
 		);
 
@@ -29,27 +31,19 @@ export default async function listobjects() {
 			return;
 		}
 
-		listobjectsMessageService.showTriggeredActionInfo();
-		let listObjectsResult;
-		try {
-			listObjectsResult = await suiteCloudRunner.run({
-				commandName: 'object:list',
-				arguments: { type: selectedObjectTypes.join(' ') }
-			});
-		} catch (error) {
-			listobjectsMessageService.showErrorMessage(unwrapExceptionMessage(error));
-			return;
-		}
+		const commandActionPromise = opts.suiteCloudRunner.run({
+			commandName: this.commandName,
+			arguments: { type: selectedObjectTypes.join(' ') },
+		});
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(LIST_OBJECTS.COMMAND));
+		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
+		opts.messageService.showTriggeredActionInfo(commandMessage, commandActionPromise, statusBarMessage);
 
-		if (listObjectsResult.status === actionResultStatus.SUCCESS) {
-			const listedObjects = listObjectsResult.data.map((el: { type: string; scriptId: string }) => `${el.type}: ${el.scriptId}`);
-			listedObjects.forEach((obj: string) => scloudOutput.appendLine(obj));
-			listobjectsMessageService.showCompletedActionInfo();
+		const actionResult = await commandActionPromise;
+		if (actionResult.status === actionResultStatus.SUCCESS) {
+			opts.messageService.showCompletedActionInfo();
 		} else {
-			scloudOutput.appendLine(listObjectsResult.resultMessage);
-			listobjectsMessageService.showCompletedActionError();
+			opts.messageService.showCompletedActionError();
 		}
-	} else {
-		listobjectsMessageService.showTriggeredActionError();
 	}
 }

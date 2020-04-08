@@ -1,9 +1,10 @@
-import * as assert from 'assert';
+/*
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
+import * as assert from 'assert';
 import * as vscode from 'vscode';
-// import * as myExtension from '../extension';
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');

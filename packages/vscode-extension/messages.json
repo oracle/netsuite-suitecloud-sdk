@@ -1,0 +1,18 @@
+{
+	"ADD_DEPENDENCIES_ADDED": "Dependencies added to the manifest file.",
+	"ADD_DEPENDENCIES_ADDED_LOG": "The following dependencies have been added to the manifest file:",
+	"ADD_DEPENDENCIES_ADDING": "Adding dependencies...",
+	"ADD_DEPENDENCIES_COMMAND": "Add dependencies",
+	"ADD_DEPENDENCIES_EMPTY": "There are no dependencies to add to the manifest file.",
+	"ADD_DEPENDENCIES_ERROR": "There was an error when adding missing dependencies to the manifest file.",
+	"COMMAND_ERROR": "Something went wrong with the {0} command.",
+	"COMMAND_ROOT_FOLDER_NOT_FOUND": "The {0} command cannot be triggered because the root folder could not be found.",
+	"COMMAND_SUCCESS": "The {0} command has been successfully executed.",
+	"COMMAND_TRIGGERED": "{0} has been triggered.",
+	"DEPLOY_COMMAND": "Deploy",
+	"DEPLOY_DEPLOYING": "Deploying project...",
+	"LIST_OBJECTS_COMMAND": "List objects",
+	"LIST_OBJECTS_LISTING": "Listing objects...",
+	"NOT_IN_VALID_PROJECT": "Not in a valid project",
+	"SEE_DETAILS": "See details"
+}

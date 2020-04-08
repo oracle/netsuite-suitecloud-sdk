@@ -10,6 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onCommand:extension.adddependencies",
 		"onCommand:extension.deploy",
 		"onCommand:extension.listobjects",
 		"onCommand:extension.update"
@@ -18,23 +19,33 @@
 	"contributes": {
 		"commands": [
 			{
+				"command": "extension.adddependencies",
+				"title": "Add dependency references to the manifest",
+				"category": "suitecloud"
+			},
+			{
 				"command": "extension.deploy",
-				"title": "deploy",
+				"title": "Deploy project",
 				"category": "suitecloud"
 			},
 			{
 				"command": "extension.listobjects",
-				"title": "listobjects",
+				"title": "List objects",
 				"category": "suitecloud"
 			}
 		],
 		"keybindings": [
 			{
-			  "command": "extension.deploy",
-			  "key": "ctrl+d",
-			  "mac": "cmd+d"
+				"command": "extension.adddependencies",
+				"key": "ctrl+alt+shift+a",
+				"mac": "ctrl+alt+shift+a"
+			},
+			{
+				"command": "extension.deploy",
+				"key": "ctrl+d",
+				"mac": "cmd+d"
 			}
-		  ]
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

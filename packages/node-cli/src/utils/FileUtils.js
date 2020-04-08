@@ -5,7 +5,7 @@
 'use strict';
 
 const fs = require('fs');
-const TranslationService = require('../services/TranslationService'); 
+const NodeTranslationService = require('../services/NodeTranslationService'); 
 const { ERRORS } = require('../services/TranslationKeys');
 const UTF8 = 'utf8';
 
@@ -16,7 +16,7 @@ const UTF8 = 'utf8';
 
 		fs.writeFileSync(fileName, content, UTF8, function(error) {
 			if (error) {
-				throw TranslationService.getMessage(ERRORS.WRITING_FILE, fileName, JSON.stringify(error));
+				throw NodeTranslationService.getMessage(ERRORS.WRITING_FILE, fileName, JSON.stringify(error));
 			}
 		});
 	}

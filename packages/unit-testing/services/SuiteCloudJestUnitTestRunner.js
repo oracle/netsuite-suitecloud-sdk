@@ -1,5 +1,5 @@
 const jest = require('jest');
-const TranslationService = require('./TranslationService');
+const UnitTestTranslationService = require('./UnitTestTranslationService');
 const TranslationKeys = require('./TranslationKeys');
 
 module.exports = {
@@ -7,10 +7,10 @@ module.exports = {
 		try {
 			const jestResult = await jest.runCLI(args, [process.cwd()]);
 			if (!jestResult.results.success) {
-				throw TranslationService.getMessage(TranslationKeys.ERRORS.TEST_FAILED);
+				throw UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.TEST_FAILED);
 			}
 		} catch (error) {
-			throw TranslationService.getMessage(TranslationKeys.ERRORS.TEST_FAILURES_PRESENT);
+			throw UnitTestTranslationService.getMessage(TranslationKeys.ERRORS.TEST_FAILURES_PRESENT);
 		}
 	}
 };

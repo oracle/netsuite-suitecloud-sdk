@@ -32,7 +32,11 @@ module.exports = class FileCabinetService {
 		return file.replace(this._fileCabinetAbsolutePath, '').replace(/\\/g, '/');
 	}
 
-	getFileCabinetFoldersRecursively(parentFolder) {
+	getFileCabinetFolders() {
+		return this._getFileCabinetFolders(this._fileCabinetAbsolutePath);
+	}
+
+	_getFileCabinetFolders(parentFolder) {
 		const folders = [];
 		const getFoldersRecursively = source =>
 			this._fileSystemService.getFoldersFromDirectory(source).forEach(folder => {

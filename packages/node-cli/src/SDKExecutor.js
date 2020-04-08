@@ -18,7 +18,7 @@ const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
 const EnvironmentInformationService = require('./services/EnvironmentInformationService');
 const url = require('url');
-const TranslationService = require('./services/TranslationService');
+const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
 const HOME_PATH = require('os').homedir();
@@ -72,7 +72,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 				`${FOLDERS.SUITECLOUD_SDK}/${SDKProperties.getSDKFileName()}`
 			);
 			if (!FileUtils.exists(sdkJarPath)) {
-				throw TranslationService.getMessage(
+				throw NodeTranslationService.getMessage(
 					ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND,
 					path.join(__dirname, '..')
 				);
@@ -104,7 +104,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 							output.errorCode === SDKErrorCodes.NO_TBA_SET_FOR_ACCOUNT
 						) {
 							reject(
-								TranslationService.getMessage(
+								NodeTranslationService.getMessage(
 									ERRORS.SDKEXECUTOR.NO_TBA_FOR_ACCOUNT_AND_ROLE
 								)
 							);
@@ -112,14 +112,14 @@ module.exports.SDKExecutor = class SDKExecutor {
 						resolve(output);
 					} catch (error) {
 						reject(
-							TranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
+							NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error)
 						);
 					}
 				} else if (code !== 0) {
 					// check if the problem was due to bad Java Version
 					const javaVersionError = this._checkIfJavaVersionIssue();
 
-					const sdkErrorMessage = TranslationService.getMessage(
+					const sdkErrorMessage = NodeTranslationService.getMessage(
 						ERRORS.SDKEXECUTOR.SDK_ERROR,
 						code,
 						lastSdkError
@@ -137,7 +137,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 		}
 		const proxyUrl = url.parse(this._CLISettingsService.getProxyUrl());
 		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
-			throw TranslationService.getMessage(ERRORS.WRONG_PROXY_SETTING, cliSettings.proxyUrl);
+			throw NodeTranslationService.getMessage(ERRORS.WRONG_PROXY_SETTING, cliSettings.proxyUrl);
 		}
 		const protocolWithoutColon = proxyUrl.protocol.slice(0, -1);
 		const hostName = proxyUrl.hostname;
@@ -174,12 +174,12 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 		this._CLISettingsService.setJavaVersionValid(false);
 		if (javaVersionInstalled === '') {
-			return TranslationService.getMessage(
+			return NodeTranslationService.getMessage(
 				ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED,
 				SDK_REQUIRED_JAVA_VERSION
 			);
 		}
-		return TranslationService.getMessage(
+		return NodeTranslationService.getMessage(
 			ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE,
 			javaVersionInstalled,
 			SDK_REQUIRED_JAVA_VERSION

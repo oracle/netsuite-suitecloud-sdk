@@ -4,7 +4,7 @@
 */
 'use strict';
 
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const TRANSLATION_KEYS = require('../services/TranslationKeys');
 const assert = require('assert');
 
@@ -29,7 +29,7 @@ module.exports = class CommandOptionsValidator {
 					!isMandatoryOptionPresent(optionId, aliasId, options.arguments)
 				) {
 					validationErrors.push(
-						TranslationService.getMessage(
+						NodeTranslationService.getMessage(
 							TRANSLATION_KEYS.COMMAND_OPTION_IS_MANDATORY,
 							option.name
 						)

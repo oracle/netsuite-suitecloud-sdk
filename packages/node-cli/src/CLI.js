@@ -7,8 +7,8 @@
 const path = require('path');
 const assert = require('assert');
 const program = require('commander');
-const NodeUtils = require('./utils/NodeUtils');
-const TranslationService = require('./services/TranslationService');
+const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
+const NodeTranslationService = require('./services/NodeTranslationService');
 const {
 	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE },
 	ERRORS,
@@ -20,7 +20,7 @@ const INTERACTIVE_OPTION = '--interactive';
 // suitecloud executable is in {root}/src/suitecloud.js. package.json file is one level before
 const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 const configFile = require(PACKAGE_FILE);
-const CLI_VERSION = configFile? configFile.version : "unknown";
+const CLI_VERSION = configFile ? configFile.version : 'unknown';
 const COMPATIBLE_NS_VERSION = '2020.1';
 
 module.exports = class CLI {
@@ -37,7 +37,6 @@ module.exports = class CLI {
 
 	start(process) {
 		try {
-
 			this._commandsMetadataService.initializeCommandsMetadata();
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
 
@@ -46,30 +45,24 @@ module.exports = class CLI {
 
 			program
 				.version(CLI_VERSION, '--version')
-				.option(
-					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
-					TranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION)
-				)
+				.option(`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`, NodeTranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION))
 				.on('command:*', args => {
-					NodeUtils.println(
-						TranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, args[0]),
-						NodeUtils.COLORS.ERROR
-					);
+					NodeConsoleLogger.error(NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, args[0]));
 				})
-				.usage(TranslationService.getMessage(USAGE))
+				.usage(NodeTranslationService.getMessage(USAGE))
 				.parse(process.argv);
 
 			if (!program.args.length) {
 				this._printHelp();
 			}
 		} catch (exception) {
-			NodeUtils.println(unwrapExceptionMessage(exception), NodeUtils.COLORS.ERROR);
+			NodeConsoleLogger.error(unwrapExceptionMessage(exception));
 		}
 	}
 
 	_initializeCommands(commandMetadataList, runInInteractiveMode) {
-		const commandsMetadataArraySortedByCommandName = Object.values(commandMetadataList).sort(
-			(command1, command2) => command1.name.localeCompare(command2.name)
+		const commandsMetadataArraySortedByCommandName = Object.values(commandMetadataList).sort((command1, command2) =>
+			command1.name.localeCompare(command2.name)
 		);
 
 		commandsMetadataArraySortedByCommandName.forEach(commandMetadata => {
@@ -93,7 +86,7 @@ module.exports = class CLI {
 	}
 
 	_printHelp() {
-		NodeUtils.println(TranslationService.getMessage(TITLE, COMPATIBLE_NS_VERSION), NodeUtils.COLORS.INFO);
+		NodeConsoleLogger.info(NodeTranslationService.getMessage(TITLE, COMPATIBLE_NS_VERSION));
 		program.help();
 	}
 };

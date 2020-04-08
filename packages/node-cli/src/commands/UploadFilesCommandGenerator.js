@@ -9,21 +9,20 @@ const CommandUtils = require('../utils/CommandUtils');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const FileCabinetService = require('../services/FileCabinetService');
 const FileSystemService = require('../services/FileSystemService');
-const NodeUtils = require('../utils/NodeUtils');
 const path = require('path');
 const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const ActionResultUtils = require('../utils/ActionResultUtils');
 const SDKExecutionContext = require('../SDKExecutionContext');
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
+const UploadFilesOutputFormatter = require('./outputFormatters/UploadFilesOutputFormatter');
 
 const {
-	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, OUTPUT },
+	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES },
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
 
-const ApplicationConstants = require('../ApplicationConstants');
+const { FILE_CABINET } = require('../ApplicationConstants').FOLDERS;
 
 const COMMAND_OPTIONS = {
 	PATHS: 'paths',
@@ -35,19 +34,15 @@ const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',
 };
 
-const UPLOAD_FILE_RESULT_STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-};
-
 const { validateArrayIsNotEmpty, showValidationResults } = require('../validation/InteractiveAnswersValidator');
 
 module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
-		this._localFileCabinetFolder = path.join(this._projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
+		this._localFileCabinetFolder = path.join(this._projectFolder, FILE_CABINET);
 		this._fileCabinetService = new FileCabinetService(this._localFileCabinetFolder);
+		this._outputFormatter = new UploadFilesOutputFormatter(options.consoleLogger);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -59,23 +54,23 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 		const overwriteAnswer = await prompt([this._generateOverwriteQuestion()]);
 		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {
-			throw TranslationService.getMessage(MESSAGES.CANCEL_UPLOAD);
+			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPLOAD);
 		}
 
 		return selectFilesAnswer;
 	}
 
 	_generateSelectFolderQuestion() {
-		const localFileCabinetSubFolders = this._fileCabinetService.getFileCabinetFoldersRecursively(this._localFileCabinetFolder);
+		const localFileCabinetSubFolders = this._fileCabinetService.getFileCabinetFolders();
 
 		const transformFoldersToChoicesFunc = folder => {
 			const name = this._fileCabinetService.getFileCabinetRelativePath(folder);
 
 			let disabledMessage = '';
 			if (!this._fileCabinetService.isUnrestrictedPath(name)) {
-				disabledMessage = TranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER);
+				disabledMessage = NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER);
 			} else if (!this._fileSystemService.getFilesFromDirectory(folder).length) {
-				disabledMessage = TranslationService.getMessage(MESSAGES.EMPTY_FOLDER);
+				disabledMessage = NodeTranslationService.getMessage(MESSAGES.EMPTY_FOLDER);
 			}
 
 			return {
@@ -88,12 +83,12 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		const localFileCabinetFoldersChoices = localFileCabinetSubFolders.map(transformFoldersToChoicesFunc);
 
 		if (!localFileCabinetFoldersChoices.some(choice => !choice.disabled)) {
-			throw TranslationService.getMessage(MESSAGES.NOTHING_TO_UPLOAD);
+			throw NodeTranslationService.getMessage(MESSAGES.NOTHING_TO_UPLOAD);
 		}
 
 		return [
 			{
-				message: TranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
+				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_ANSWERS.SELECTED_FOLDER,
 				choices: localFileCabinetFoldersChoices,
@@ -112,7 +107,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 		return [
 			{
-				message: TranslationService.getMessage(QUESTIONS.SELECT_FILES),
+				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FILES),
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 				name: COMMAND_OPTIONS.PATHS,
 				choices: filesChoices,
@@ -125,11 +120,11 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 		return {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
-			message: TranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
+			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
 			default: 0,
 			choices: [
-				{ name: TranslationService.getMessage(YES), value: true },
-				{ name: TranslationService.getMessage(NO), value: false },
+				{ name: NodeTranslationService.getMessage(YES), value: true },
+				{ name: NodeTranslationService.getMessage(NO), value: false },
 			],
 		};
 	}
@@ -157,44 +152,16 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextUploadFiles),
-				message: TranslationService.getMessage(MESSAGES.UPLOADING_FILES),
+				message: NodeTranslationService.getMessage(MESSAGES.UPLOADING_FILES),
 			});
 			return operationResult.status === SDKOperationResultUtils.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
+						.withProjectFolder(this._projectFolder)
 						.build()
-				: ActionResult.Builder.withErrors(ActionResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
-		}
-	}
-
-	_formatOutput(actionResult) {
-		const { data } = actionResult;
-
-		if (actionResult.status === ActionResult.ERROR) {
-			ActionResultUtils.logErrors(actionResult.errorMessages);
-			return;
-		}
-
-		if (Array.isArray(data)) {
-			const successfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.SUCCESS);
-			const unsuccessfulUploads = data.filter(result => result.type === UPLOAD_FILE_RESULT_STATUS.ERROR);
-			if (successfulUploads && successfulUploads.length) {
-				NodeUtils.println(TranslationService.getMessage(OUTPUT.FILES_UPLOADED), NodeUtils.COLORS.RESULT);
-				successfulUploads.forEach(result => {
-					NodeUtils.println(this._fileCabinetService.getFileCabinetRelativePath(result.file.path), NodeUtils.COLORS.RESULT);
-				});
-			}
-			if (unsuccessfulUploads && unsuccessfulUploads.length) {
-				NodeUtils.println(TranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED), NodeUtils.COLORS.WARNING);
-				unsuccessfulUploads.forEach(result => {
-					NodeUtils.println(
-						`${this._fileCabinetService.getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`,
-						NodeUtils.COLORS.WARNING
-					);
-				});
-			}
 		}
 	}
 };

@@ -13,10 +13,10 @@ const HOME_PATH = require('os').homedir();
 
 const { FOLDERS } = require('../../ApplicationConstants');
 
-const NodeUtils = require('../../utils/NodeUtils');
+const NodeConsoleLogger = require('../../loggers/NodeConsoleLogger');
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
 
-const TranslationService = require('../../services/TranslationService');
+const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 
@@ -27,11 +27,7 @@ const {
 	DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE,
 } = require('../../services/TranslationKeys');
 
-const VALID_JAR_CONTENT_TYPES = [
-	'application/java-archive',
-	'application/x-java-archive',
-	'application/x-jar',
-];
+const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
 class SDKDownloadService {
 	constructor() {
@@ -39,32 +35,17 @@ class SDKDownloadService {
 	}
 
 	download() {
-		const sdkDirectory = this._fileSystemService.createFolder(
-			HOME_PATH,
-			FOLDERS.SUITECLOUD_SDK
-		);
+		const sdkDirectory = this._fileSystemService.createFolder(HOME_PATH, FOLDERS.SUITECLOUD_SDK);
 
 		const fullURL = `${SDKProperties.getDownloadURL()}/${SDKProperties.getSDKFileName()}`;
 
 		executeWithSpinner({
 			action: this._downloadFile(fullURL, sdkDirectory),
-			message: TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
+			message: NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
 		})
-			.then(() =>
-				NodeUtils.println(
-					TranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS),
-					NodeUtils.COLORS.INFO
-				)
-			)
+			.then(() => NodeConsoleLogger.info(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS)))
 			.catch(error =>
-				NodeUtils.println(
-					TranslationService.getMessage(
-						DOWNLOADING_SUITECLOUD_SDK_ERROR,
-						fullURL,
-						unwrapExceptionMessage(error)
-					),
-					NodeUtils.COLORS.ERROR
-				)
+				NodeConsoleLogger.error(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)))
 			);
 	}
 
@@ -83,9 +64,7 @@ class SDKDownloadService {
 
 		return request(options).then(function(response) {
 			if (!VALID_JAR_CONTENT_TYPES.includes(response.headers['content-type'])) {
-				throw TranslationService.getMessage(
-					DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE
-				);
+				throw NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE);
 			}
 
 			// remove all JAR files before writing response to file

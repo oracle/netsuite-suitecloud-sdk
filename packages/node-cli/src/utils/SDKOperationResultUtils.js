@@ -1,20 +1,18 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
-const ActionResultUtils = require('./ActionResultUtils');
-const NodeUtils = require('./NodeUtils');
+const { lineBreak } = require('../loggers/LoggerConstants');
 
 module.exports = {
-
-	SUCCESS: "SUCCESS",
-	ERROR: "ERROR",
+	SUCCESS: 'SUCCESS',
+	ERROR: 'ERROR',
 
 	getErrorMessagesString: operationResult => {
-		const errorMessages = ActionResultUtils.collectErrorMessages(operationResult);
-		return errorMessages.join(NodeUtils.lineBreak);
+		const errorMessages = this.collectErrorMessages(operationResult);
+		return errorMessages.join(lineBreak);
 	},
 
 	getResultMessage: operationResult => {
@@ -26,20 +24,13 @@ module.exports = {
 		return operationResult.status === this.ERROR;
 	},
 
-	logErrors: operationResult => {
-		const { errorMessages } = operationResult;
-		if (Array.isArray(errorMessages) && errorMessages.length > 0) {
-			errorMessages.forEach(message => NodeUtils.println(message, NodeUtils.COLORS.ERROR));
-		}
-	},
-
-	logResultMessage: operationResult => {
+	logResultMessage: (operationResult, consoleLogger) => {
 		const { resultMessage } = operationResult;
 		if (resultMessage) {
 			if (operationResult.status === this.ERROR) {
-				NodeUtils.println(resultMessage, NodeUtils.COLORS.ERROR);
+				consoleLogger.error(resultMessage);
 			} else {
-				NodeUtils.println(resultMessage, NodeUtils.COLORS.RESULT);
+				consoleLogger.result(resultMessage);
 			}
 		}
 	},
@@ -47,5 +38,17 @@ module.exports = {
 	getErrorCode: operationResult => {
 		const { errorCode } = operationResult;
 		return errorCode ? errorCode : '';
+	},
+	// TODO: fix operationResult in SDK to always return errors in errorMessage and never in resultMessage
+	collectErrorMessages: operationResult => {
+		const { errorMessages, resultMessage } = operationResult;
+		if (Array.isArray(errorMessages)) {
+			if (resultMessage) {
+				errorMessages.unshift(resultMessage);
+			}
+			return errorMessages;
+		} else {
+			return [resultMessage];
+		}
 	},
 };
