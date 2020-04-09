@@ -5,8 +5,10 @@
 'use strict';
 const assert = require('assert');
 
-const ERROR = 'ERROR';
-const SUCCESS = 'SUCCESS';
+const STATUS = {
+	ERROR: 'ERROR',
+	SUCCESS: 'SUCCESS',
+};
 
 class ActionResult {
 	constructor(parameters) {
@@ -21,10 +23,10 @@ class ActionResult {
 	validateParameters(parameters) {
 		assert(parameters);
 		assert(parameters.status, 'status is required when creating an ActionResult object.');
-		if (parameters.status === SUCCESS) {
+		if (parameters.status === STATUS.SUCCESS) {
 			assert(parameters.data, 'data is required when ActionResult is a success.');
 		}
-		if (parameters.status === ERROR) {
+		if (parameters.status === STATUS.ERROR) {
 			assert(parameters.errorMessages, 'errorMessages is required when ActionResult is an error.');
 			assert(Array.isArray(parameters.errorMessages), 'errorMessages argument must be an array');
 		}
@@ -54,12 +56,8 @@ class ActionResult {
 		return new ActionResultBuilder();
 	}
 
-	static get SUCCESS() {
-		return SUCCESS;
-	}
-
-	static get ERROR() {
-		return ERROR;
+	static get STATUS() {
+		return STATUS;
 	}
 }
 
@@ -73,13 +71,13 @@ class ActionResultBuilder {
 	}
 
 	withData(data) {
-		this.status = SUCCESS;
+		this.status = STATUS.SUCCESS;
 		this.data = data;
 		return this;
 	}
 
 	withErrors(errorMessages) {
-		this.status = ERROR;
+		this.status = STATUS.ERROR;
 		this.errorMessages = errorMessages;
 		return this;
 	}

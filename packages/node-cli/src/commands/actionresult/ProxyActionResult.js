@@ -17,12 +17,12 @@ class ProxyActionResult extends ActionResult {
 	validateParameters(parameters) {
 		assert(parameters);
 		assert(parameters.status, 'status is required when creating an ActionResult object.');
-		if (parameters.status === ActionResult.SUCCESS) {
+		if (parameters.status === ActionResult.STATUS.SUCCESS) {
 			if (parameters.isSettingProxy) {
 				assert(parameters.proxyUrl, 'proxyUrl is required when ActionResult is a success.');
 			}
 		}
-		if (parameters.status === ActionResult.ERROR) {
+		if (parameters.status === ActionResult.STATUS.ERROR) {
 			assert(parameters.errorMessages, 'errorMessages is required when ActionResult is an error.');
 			assert(Array.isArray(parameters.errorMessages), 'errorMessages argument must be an array');
 		}
@@ -51,7 +51,7 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 	}
 
 	success() {
-		this.status = ActionResult.SUCCESS;
+		this.status = ActionResult.STATUS.SUCCESS;
 		return this;
 	}
 
@@ -77,6 +77,7 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 			isProxyOverridden: this.isProxyOverridden,
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
+			...(this.projectFolder && { projectFolder: this.projectFolder }),
 		});
 	}
 }

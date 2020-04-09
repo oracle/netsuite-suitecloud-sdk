@@ -18,7 +18,7 @@ class CreateProjectActionResult extends ActionResult {
 
 	validateParameters(parameters) {
 		super.validateParameters(parameters);
-		if (parameters.status === ActionResult.SUCCESS) {
+		if (parameters.status === ActionResult.STATUS.SUCCESS) {
 			assert(parameters.projectDirectory, 'projectDirectory is required when ActionResult is a success.');
 			assert(parameters.projectType, 'projectType is required when ActionResult is a success.');
 		}
@@ -90,6 +90,7 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 			...(this.projectDirectory && { projectDirectory: this.projectDirectory }),
 			...(this.includeUnitTesting && { includeUnitTesting: this.includeUnitTesting }),
 			...(this.npmPackageIntitialized && { npmInstallSuccess: this.npmPackageIntitialized }),
+			...(this.projectFolder && { projectFolder: this.projectFolder }),
 		});
 	}
 }

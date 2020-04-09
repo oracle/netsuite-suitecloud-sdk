@@ -244,7 +244,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			const projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
-			return createProjectActionData.operationResult.status === SDKOperationResultUtils.SUCCESS
+			return createProjectActionData.operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
 						.withResultMessage(createProjectActionData.operationResult.resultMessage)
 						.withProjectType(projectType)
@@ -275,7 +275,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
-				if (SDKOperationResultUtils.hasErrors(operationResult)) {
+				if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
 					resolve({
 						operationResult: operationResult,
 						projectType: answers[COMMAND_OPTIONS.TYPE],

@@ -77,7 +77,7 @@ module.exports = class CommandActionExecutor {
 				throw 'INTERNAL ERROR: Command must return an ActionResult object.';
 			}
 
-			if (actionResult.status === ActionResult.ERROR) {
+			if (actionResult.status === ActionResult.STATUS.ERROR) {
 				const error = ActionResultUtils.getErrorMessagesString(actionResult);
 				throw error;
 			}

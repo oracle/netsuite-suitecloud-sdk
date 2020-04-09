@@ -9,6 +9,10 @@ const ActionResultUtils = require('../../utils/ActionResultUtils');
 
 const { PROJECT_SUITEAPP, SDK_TRUE } = require('../../ApplicationConstants');
 
+const {
+	COMMAND_DEPLOY: { MESSAGES },
+} = require('../../services/TranslationKeys');
+
 class DeployOutputFormatter extends OutputFormatter {
 	constructor(consoleLogger) {
 		super(consoleLogger);

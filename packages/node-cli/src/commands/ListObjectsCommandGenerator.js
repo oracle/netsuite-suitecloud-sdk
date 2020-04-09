@@ -170,7 +170,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				message: NodeTranslationService.getMessage(LISTING_OBJECTS),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()

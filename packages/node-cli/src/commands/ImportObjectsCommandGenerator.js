@@ -82,12 +82,11 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			throw NodeTranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, lineBreak, error);
 		}
 
-		const { data } = listObjectsResult;
-		if (SDKOperationResultUtils.hasErrors(listObjectsResult)) {
-			SDKOperationResultUtils.logResultMessage(listObjectsResult, this.consoleLogger);
-			listObjectsResult.errorMessages.forEach(message => this.consoleLogger.error(message));
-			throw SDKOperationResultUtils.getErrorMessagesString(listObjectsResult);
+		if (listObjectsResult.status === SDKOperationResultUtils.STATUS.ERROR) {
+			throw SDKOperationResultUtils.collectErrorMessages(listObjectsResult);
 		}
+		const { data } = listObjectsResult;
+
 		if (Array.isArray(data) && listObjectsResult.data.length === 0) {
 			throw NodeTranslationService.getMessage(MESSAGES.NO_OBJECTS_TO_LIST);
 		}
@@ -125,18 +124,18 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 					{ name: NodeTranslationService.getMessage(YES), value: true },
 					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
-				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			};
 			questions.push(specifySuiteApp);
 
 			const specifyAppId = {
-				when: function(response) {
+				when: function (response) {
 					return response[ANSWERS_NAMES.SPECIFY_SUITEAPP];
 				},
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: ANSWERS_NAMES.APP_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPID),
-				validate: fieldValue => showValidationResults(fieldValue, validateSuiteApp),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateSuiteApp),
 			};
 			questions.push(specifyAppId);
 		}
@@ -154,7 +153,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		questions.push(showAllObjects);
 
 		const selectObjectType = {
-			when: function(answers) {
+			when: function (answers) {
 				return answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE];
 			},
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
@@ -162,13 +161,13 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
 			choices: [
-				...OBJECT_TYPES.map(customObject => ({
+				...OBJECT_TYPES.map((customObject) => ({
 					name: customObject.name,
 					value: customObject.value.type,
 				})),
 				new inquirer.Separator(),
 			],
-			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
+			validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
 		questions.push(selectObjectType);
 
@@ -185,13 +184,13 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		questions.push(filterByScriptId);
 
 		const specifyScriptId = {
-			when: function(response) {
+			when: function (response) {
 				return response[ANSWERS_NAMES.SPECIFY_SCRIPT_ID];
 			},
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.SCRIPT_ID,
 			message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
-			validate: fieldValue => showValidationResults(fieldValue, validateScriptId),
+			validate: (fieldValue) => showValidationResults(fieldValue, validateScriptId),
 		};
 		questions.push(specifyScriptId);
 
@@ -202,7 +201,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const questions = [];
 		const { data } = operationResult;
 
-		const choicesToShow = data.map(object => ({
+		const choicesToShow = data.map((object) => ({
 			name: object.type + ':' + object.scriptId,
 			value: object,
 		}));
@@ -212,7 +211,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			name: ANSWERS_NAMES.OBJECTS_SELECTED,
 			message: NodeTranslationService.getMessage(QUESTIONS.SELECT_OBJECTS),
 			choices: choicesToShow,
-			validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
+			validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
 		questions.push(questionListObjectsSelection);
 		return questions;
@@ -221,7 +220,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 	_generateQuestionsAfterObjectSelection(selectionObjectAnswers) {
 		const questions = [];
 
-		const hasCustomScript = selectionObjectAnswers.objects_selected.some(element => element.scriptId.startsWith(CUSTOM_SCRIPT_PREFIX));
+		const hasCustomScript = selectionObjectAnswers.objects_selected.some((element) => element.scriptId.startsWith(CUSTOM_SCRIPT_PREFIX));
 		if (this._projectInfoService.getProjectType() === PROJECT_ACP && hasCustomScript) {
 			const questionImportReferencedSuiteScripts = {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -239,7 +238,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		// extracting root prefix
 		// replacing '\' for '/', this is done because destinationfolder option in java-sdf works only with '/'
 		// sourroundig "" to the folder string so it will handle blank spaces case
-		const transformFoldersToChoicesFunc = folder => ({
+		const transformFoldersToChoicesFunc = (folder) => ({
 			name: folder.replace(this._projectFolder, ''),
 			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
@@ -297,7 +296,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		} else if (answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].length > 1) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
 		}
-		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map(el => el.scriptId).join(' ');
+		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map((el) => el.scriptId).join(' ');
 
 		return answers;
 	}
@@ -340,10 +339,8 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
-				? ActionResult.Builder.withData(operationResult.data)
-						.withResultMessage(operationResult.resultMessage)
-						.build()
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
