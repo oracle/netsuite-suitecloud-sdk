@@ -47,7 +47,7 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()

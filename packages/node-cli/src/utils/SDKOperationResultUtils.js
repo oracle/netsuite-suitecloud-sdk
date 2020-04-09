@@ -5,8 +5,10 @@
 'use strict';
 
 module.exports = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
+	STATUS: {
+		SUCCESS: 'SUCCESS',
+		ERROR: 'ERROR',
+	},
 
 	getResultMessage: (operationResult) => {
 		const { resultMessage } = operationResult;

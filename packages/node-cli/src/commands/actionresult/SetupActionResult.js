@@ -17,12 +17,12 @@ class SetupCommandActionResult extends ActionResult {
 	validateParameters(parameters) {
 		assert(parameters);
 		assert(parameters.status, 'status is required when creating an ActionResult object.');
-		if (parameters.status === ActionResult.SUCCESS) {
+		if (parameters.status === ActionResult.STATUS.SUCCESS) {
 			assert(parameters.mode, 'mode is required when ActionResult is a success.');
 			assert(parameters.authId, 'authId is required when ActionResult is a success.');
 			assert(parameters.accountInfo, 'accountInfo is required when ActionResult is a success.');
 		}
-		if (parameters.status === ActionResult.ERROR) {
+		if (parameters.status === ActionResult.STATUS.ERROR) {
 			assert(parameters.errorMessages, 'errorMessages is required when ActionResult is an error.');
 			assert(Array.isArray(parameters.errorMessages), 'errorMessages argument must be an array');
 		}
@@ -51,7 +51,7 @@ class SetupActionResultBuilder extends ActionResultBuilder {
 	}
 
 	success() {
-		this.status = ActionResult.SUCCESS;
+		this.status = ActionResult.STATUS.SUCCESS;
 		return this;
 	}
 

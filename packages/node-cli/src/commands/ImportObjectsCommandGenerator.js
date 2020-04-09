@@ -82,7 +82,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			throw NodeTranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, lineBreak, error);
 		}
 
-		if (listObjectsResult.status === SDKOperationResultUtils.ERROR) {
+		if (listObjectsResult.status === SDKOperationResultUtils.STATUS.ERROR) {
 			throw SDKOperationResultUtils.collectErrorMessages(listObjectsResult);
 		}
 		const { data } = listObjectsResult;
@@ -339,7 +339,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {

@@ -51,7 +51,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		const listFoldersResult = await this._listFolders();
 
-		if (listFoldersResult.status === SDKOperationResultUtils.ERROR) {
+		if (listFoldersResult.status === SDKOperationResultUtils.STATUS.ERROR) {
 			throw SDKOperationResultUtils.collectErrorMessages(listFoldersResult);
 		}
 
@@ -59,7 +59,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
 		const listFilesResult = await this._listFiles(selectFolderAnswer);
 
-		if (listFilesResult.status === SDKOperationResultUtils.ERROR) {
+		if (listFilesResult.status === SDKOperationResultUtils.STATUS.ERROR) {
 			throw SDKOperationResultUtils.collectErrorMessages(listFilesResult);
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
@@ -191,7 +191,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()

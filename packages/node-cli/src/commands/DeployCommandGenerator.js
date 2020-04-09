@@ -151,7 +151,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			const isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
 			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)

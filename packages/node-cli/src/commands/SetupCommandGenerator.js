@@ -19,8 +19,6 @@ const SetupOutputFormatter = require('./outputFormatters/SetupOutputFormatter');
 
 const inquirer = require('inquirer');
 
-const { ERROR } = require('../utils/SDKOperationResultUtils');
-
 const {
 	FILES: { MANIFEST_XML },
 } = require('../ApplicationConstants');
@@ -87,7 +85,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			message: NodeTranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
 		});
 
-		if (existingAuthIDsResponse.status === SDKOperationResultUtils.ERROR) {
+		if (existingAuthIDsResponse.status === SDKOperationResultUtils.STATUS.ERROR) {
 			throw SDKOperationResultUtils.getResultMessage(existingAuthIDsResponse);
 		}
 
@@ -258,7 +256,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				}
 
 				const operationResult = await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
-				if (operationResult.status === ERROR) {
+				if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
 					return SetupActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 				}
 				authId = executeActionContext.newAuthId;
@@ -276,7 +274,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				}
 
 				const operationResult = await this._saveToken(commandParams, executeActionContext.developmentMode);
-				if (operationResult.status === ERROR) {
+				if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
 					return SetupActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 				}
 				authId = executeActionContext.newAuthId;
@@ -337,7 +335,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {
-		if (operationResult.status === SDKOperationResultUtils.ERROR) {
+		if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
 			const errorMessage = SDKOperationResultUtils.getResultMessage(operationResult);
 			if (errorMessage) {
 				throw errorMessage;

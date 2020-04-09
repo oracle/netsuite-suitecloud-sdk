@@ -149,7 +149,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()

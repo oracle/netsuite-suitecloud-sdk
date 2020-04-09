@@ -143,7 +143,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)

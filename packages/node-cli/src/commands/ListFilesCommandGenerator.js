@@ -83,7 +83,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(LOADING_FILES),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.SUCCESS
+			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()
