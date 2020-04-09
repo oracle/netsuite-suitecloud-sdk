@@ -275,7 +275,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
-				if (SDKOperationResultUtils.hasErrors(operationResult)) {
+				if (operationResult.status === SDKOperationResultUtils.ERROR) {
 					resolve({
 						operationResult: operationResult,
 						projectType: answers[COMMAND_OPTIONS.TYPE],

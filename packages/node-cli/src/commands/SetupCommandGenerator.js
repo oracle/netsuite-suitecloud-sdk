@@ -87,7 +87,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			message: NodeTranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
 		});
 
-		if (SDKOperationResultUtils.hasErrors(existingAuthIDsResponse)) {
+		if (existingAuthIDsResponse.status === SDKOperationResultUtils.ERROR) {
 			throw SDKOperationResultUtils.getResultMessage(existingAuthIDsResponse);
 		}
 
@@ -103,7 +103,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			choices.push(new inquirer.Separator());
 			choices.push(new inquirer.Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
-			authIDs.forEach(authID => {
+			authIDs.forEach((authID) => {
 				const authentication = existingAuthIDsResponse.data[authID];
 				const isDevLabel = authentication.developmentMode
 					? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
@@ -153,8 +153,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 						type: CommandUtils.INQUIRER_TYPES.INPUT,
 						name: ANSWERS.DEVELOPMENT_MODE_URL,
 						message: NodeTranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
-						filter: answer => answer.trim(),
-						validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
+						filter: (answer) => answer.trim(),
+						validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
 					},
 				]);
 			}
@@ -178,43 +178,43 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS.NEW_AUTH_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
-					filter: answer => answer.trim(),
-					validate: fieldValue =>
+					filter: (answer) => answer.trim(),
+					validate: (fieldValue) =>
 						showValidationResults(
 							fieldValue,
 							validateFieldIsNotEmpty,
 							validateFieldHasNoSpaces,
-							fieldValue => validateAuthIDNotInList(fieldValue, authIDs),
+							(fieldValue) => validateAuthIDNotInList(fieldValue, authIDs),
 							validateAlphanumericHyphenUnderscore,
 							validateMaximumLength
 						),
 				},
 				{
-					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
+					when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
-					filter: fieldValue => fieldValue.trim(),
-					validate: fieldValue =>
+					filter: (fieldValue) => fieldValue.trim(),
+					validate: (fieldValue) =>
 						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
 				},
 				{
-					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
+					when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 					name: ANSWERS.SAVE_TOKEN_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
-					filter: fieldValue => fieldValue.trim(),
-					validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+					filter: (fieldValue) => fieldValue.trim(),
+					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 				},
 				{
-					when: response => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
+					when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
 					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
 					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
 					name: ANSWERS.SAVE_TOKEN_SECRET,
 					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
-					filter: fieldValue => fieldValue.trim(),
-					validate: fieldValue => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+					filter: (fieldValue) => fieldValue.trim(),
+					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 				},
 			]);
 
@@ -287,11 +287,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			}
 			this._authenticationService.setDefaultAuthentication(authId);
 
-			return SetupActionResult.Builder.success()
-				.withMode(executeActionContext.mode)
-				.withAuthId(authId)
-				.withAccountInfo(accountInfo)
-				.build();
+			return SetupActionResult.Builder.success().withMode(executeActionContext.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
 		} catch (error) {
 			return SetupActionResult.Builder.withErrors([error]).build();
 		}
@@ -341,12 +337,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {
-		if (SDKOperationResultUtils.hasErrors(operationResult)) {
+		if (operationResult.status === SDKOperationResultUtils.ERROR) {
 			const errorMessage = SDKOperationResultUtils.getResultMessage(operationResult);
 			if (errorMessage) {
 				throw errorMessage;
 			}
-			throw SDKOperationResultUtils.getErrorMessagesString(operationResult);
+			throw SDKOperationResultUtils.collectErrorMessages(operationResult);
 		}
 	}
 };

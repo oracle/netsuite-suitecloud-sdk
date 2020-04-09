@@ -77,6 +77,7 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 			isProxyOverridden: this.isProxyOverridden,
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.proxyUrl && { proxyUrl: this.proxyUrl }),
+			...(this.projectFolder && { projectFolder: this.projectFolder }),
 		});
 	}
 }

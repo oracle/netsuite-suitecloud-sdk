@@ -90,6 +90,7 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 			...(this.projectDirectory && { projectDirectory: this.projectDirectory }),
 			...(this.includeUnitTesting && { includeUnitTesting: this.includeUnitTesting }),
 			...(this.npmPackageIntitialized && { npmInstallSuccess: this.npmPackageIntitialized }),
+			...(this.projectFolder && { projectFolder: this.projectFolder }),
 		});
 	}
 }

@@ -59,6 +59,7 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 			...(this.isServerValidation && { isServerValidation: this.isServerValidation }),
 			...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection }),
 			...(this.projectType && { projectType: this.projectType }),
+			...(this.projectFolder && { projectFolder: this.projectFolder }),
 		});
 	}
 }
