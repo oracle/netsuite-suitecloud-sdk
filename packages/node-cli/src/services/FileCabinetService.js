@@ -51,7 +51,7 @@ module.exports = class FileCabinetService {
 	}
 
 	isUnrestrictedPath(path) {
-		return UNRESTRICTED_PATHS.some(unrestrictedPath => path.startsWith(unrestrictedPath));
+		return UNRESTRICTED_PATHS.some(unrestrictedPath => this.getFileCabinetRelativePath(path).startsWith(unrestrictedPath));
 	}
 
 	_shouldEnterFolder(folder) {
