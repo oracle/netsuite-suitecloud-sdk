@@ -5,4 +5,4 @@
 **/.idea/**
 
 # transpiled .js files
-packages/**/out
+packages/**/dist

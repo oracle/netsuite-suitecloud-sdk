@@ -11,7 +11,7 @@
             "name": "Launch SuiteCloud Extension",
             "runtimeExecutable": "${execPath}",
             "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-extension"],
-            "outFiles": ["${workspaceFolder}/packages/vscode-extension/out/**/*.js"],
+            "outFiles": ["${workspaceFolder}/packages/vscode-extension/dist/**/*.js"],
             "preLaunchTask": "${defaultBuildTask}"
         },
         {
@@ -19,8 +19,8 @@
             "type": "extensionHost",
             "request": "launch",
             "runtimeExecutable": "${execPath}",
-            "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-extension", "--extensionTestsPath=${workspaceFolder}/packages/vscode-extension/out/test/suite/index"],
-            "outFiles": ["${workspaceFolder}/packages/vscode-extension/out/test/**/*.js"],
+            "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-extension", "--extensionTestsPath=${workspaceFolder}/packages/vscode-extension/dist/test/suite/index"],
+            "outFiles": ["${workspaceFolder}/packages/vscode-extension/dist/test/**/*.js"],
             "preLaunchTask": "${defaultBuildTask}"
         },
         {
