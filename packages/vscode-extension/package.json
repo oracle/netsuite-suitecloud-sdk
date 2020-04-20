@@ -1,7 +1,9 @@
 {
-	"name": "@oracle/suitecloud-vscode-extension",
+	"name": "suitecloud-vscode-extension",
 	"displayName": "suitecloud-vscode-extension",
 	"description": "netsuite suitecloud vscode extension based on nodejs-cli",
+	"publisher": "Oracle",
+	"private": true,
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.40.0"
