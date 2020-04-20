@@ -71,7 +71,7 @@ module.exports = class CLI {
 				program: program,
 				runInInteractiveMode: runInInteractiveMode,
 				executeCommandFunction: async options => {
-					await this._commandActionExecutor.executeAction({
+					return await this._commandActionExecutor.executeAction({
 						commandName: commandMetadata.name,
 						runInInteractiveMode: runInInteractiveMode,
 						arguments: options,
