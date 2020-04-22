@@ -6,7 +6,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const ROOT_DIRECTORY = path.dirname(require.main.filename);
+const ROOT_DIRECTORY = path.dirname(path.resolve(__dirname, '../../'));
 const CONFIG_FILE = './config.json';
 const PACKAGE_FILE = `${ROOT_DIRECTORY}/package.json`;
 const { SDK_FILENAME } = require('../../ApplicationConstants');

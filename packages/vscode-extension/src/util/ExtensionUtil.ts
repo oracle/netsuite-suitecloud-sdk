@@ -26,3 +26,5 @@ export const TranslationService = require('@oracle/suitecloud-cli/src/services/T
 export const NodeTranslationService = require('@oracle/suitecloud-cli/src/services/NodeTranslationService');
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
+
+export const SDKDownloadService = require('@oracle/suitecloud-cli/src/core/sdksetup/SDKDownloadService');
