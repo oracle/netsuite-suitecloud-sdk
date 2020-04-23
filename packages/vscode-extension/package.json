@@ -63,7 +63,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.0.10"
+		"@oracle/suitecloud-cli": "^1.0.2"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
