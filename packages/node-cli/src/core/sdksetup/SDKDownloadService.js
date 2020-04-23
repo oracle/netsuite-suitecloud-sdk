@@ -34,19 +34,21 @@ class SDKDownloadService {
 		this._fileSystemService = new FileSystemService();
 	}
 
-	download() {
+	async download() {
 		const sdkDirectory = this._fileSystemService.createFolder(HOME_PATH, FOLDERS.SUITECLOUD_SDK);
 
 		const fullURL = `${SDKProperties.getDownloadURL()}/${SDKProperties.getSDKFileName()}`;
 
-		executeWithSpinner({
-			action: this._downloadFile(fullURL, sdkDirectory),
-			message: NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
-		})
-			.then(() => NodeConsoleLogger.info(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS)))
-			.catch(error =>
-				NodeConsoleLogger.error(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)))
-			);
+		try {
+			await executeWithSpinner({
+				action: this._downloadFile(fullURL, sdkDirectory),
+				message: NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
+			})
+			NodeConsoleLogger.info(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS));
+		}
+		catch (error) {
+			NodeConsoleLogger.error(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)))
+		}
 	}
 
 	_downloadFile(url, sdkDirectory) {
