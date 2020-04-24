@@ -36,7 +36,9 @@ class SDKDownloadService {
 
 	async download() {
 		const sdkDirectory = this._fileSystemService.createFolder(HOME_PATH, FOLDERS.SUITECLOUD_SDK);
-
+		if (fs.existsSync(path.resolve(sdkDirectory, SDKProperties.getSDKFileName()))) {
+			return;
+		}
 		const fullURL = `${SDKProperties.getDownloadURL()}/${SDKProperties.getSDKFileName()}`;
 
 		try {
@@ -68,11 +70,6 @@ class SDKDownloadService {
 			if (!VALID_JAR_CONTENT_TYPES.includes(response.headers['content-type'])) {
 				throw NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE);
 			}
-
-			// remove all JAR files before writing response to file
-			fs.readdirSync(sdkDirectory)
-				.filter(file => /[.]jar$/.test(file))
-				.map(file => fs.unlinkSync(path.join(sdkDirectory, file)));
 
 			const sdkDestinationFile = path.join(sdkDirectory, SDKProperties.getSDKFileName());
 			const file = fs.createWriteStream(sdkDestinationFile);
