@@ -80,7 +80,7 @@ const {
 	validateXMLCharacters,
 	validateNotUndefined,
 	validateProjectType,
-	validateFolder
+	validateAlphanumericHyphenUnderscoreExtended
 } = require('../validation/InteractiveAnswersValidator');
 
 const { throwValidationException } = require('../utils/ExceptionUtils');
@@ -119,7 +119,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 					showValidationResults(
 						fieldValue,
 						validateFieldIsNotEmpty,
-						validateFolder
+						validateAlphanumericHyphenUnderscoreExtended
 					),
 			},
 			{
