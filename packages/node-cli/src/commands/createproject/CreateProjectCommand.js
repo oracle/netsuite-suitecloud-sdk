@@ -13,8 +13,8 @@ module.exports = class CreateProjectCommand extends BaseCommand {
 	constructor(options) {
 		super(options);
 
-        this._action = new CreateProjectAction(options);
-        this._inputHandler = new CreateProjectInputHandler(options);
-        this._outputHandler = new CreateProjectOutputHandler(options);
+		this._action = new CreateProjectAction(options);
+		this._inputHandler = new CreateProjectInputHandler(options);
+		this._outputHandler = new CreateProjectOutputHandler(options);
 	}
 };

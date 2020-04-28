@@ -17,12 +17,12 @@ module.exports = class ListObjectsOutputHandler extends BaseOutputHandler {
 	}
 
 	formatActionResult(actionResult) {
-		ActionResultUtils.logResultMessage(actionResult, this.log);
+		ActionResultUtils.logResultMessage(actionResult, this._log);
 		if (Array.isArray(actionResult.data) && actionResult.data.length) {
-			this.log.result(NodeTranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED));
-			actionResult.data.forEach(object => this.log.result(`${object.type}:${object.scriptId}`));
+			this._log.result(NodeTranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED));
+			actionResult.data.forEach(object => this._log.result(`${object.type}:${object.scriptId}`));
 		} else {
-			this.log.result(NodeTranslationService.getMessage(SUCCESS_NO_OBJECTS));
+			this._log.result(NodeTranslationService.getMessage(SUCCESS_NO_OBJECTS));
 		}
 	}
 }

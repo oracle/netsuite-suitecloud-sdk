@@ -17,7 +17,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 		this._fileSystemService = new FileSystemService();
 	}
 
-	async getParameters() {
+	async getParameters(params) {
 		const transformFoldersToChoicesFunc = (folder) => {
 			return { name: folder.replace(this._projectFolder, ''), value: folder };
 		};

@@ -18,8 +18,8 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 
 	formatActionResult(actionResult) {
 		if (!actionResult.data) {
-			ActionResultUtils.logResultMessage(actionResult, this.log);
-			return;
+			ActionResultUtils.logResultMessage(actionResult, this._log);
+			return actionResult;
 		}
 
 		this._logImportedObjects(actionResult.data.successfulImports);
@@ -28,12 +28,12 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 
 	_logImportedObjects(importedObjects) {
 		if (Array.isArray(importedObjects) && importedObjects.length) {
-			this.log.result(NodeTranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS));
+			this._log.result(NodeTranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS));
 			importedObjects.forEach(objectImport => {
-				const importedObjectLogMessage = `${this.log.getPadding(1)}- ${objectImport.customObject.type}:${
+				const importedObjectLogMessage = `${this._log.getPadding(1)}- ${objectImport.customObject.type}:${
 					objectImport.customObject.id
 				}`;
-				this.log.result(importedObjectLogMessage);
+				this._log.result(importedObjectLogMessage);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
 		}
@@ -46,45 +46,45 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 		const thereAreReferencedFiles =
 			(Array.isArray(importedFiles) && importedFiles.length) || (Array.isArray(unImportedFiles) && unImportedFiles.length);
 		if (thereAreReferencedFiles) {
-			const referencedFilesLogMessage = `${this.log.getPadding(2)}- ${NodeTranslationService.getMessage(
+			const referencedFilesLogMessage = `${this._log.getPadding(2)}- ${NodeTranslationService.getMessage(
 				OUTPUT.REFERENCED_SUITESCRIPT_FILES
 			)}`;
-			this.log.result(referencedFilesLogMessage);
+			this._log.result(referencedFilesLogMessage);
 		}
 
 		if (Array.isArray(importedFiles) && importedFiles.length) {
 			importedFiles.forEach(importedFile => {
-				const importedFileLogMessage = `${this.log.getPadding(3)}- ${NodeTranslationService.getMessage(
+				const importedFileLogMessage = `${this._log.getPadding(3)}- ${NodeTranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
 					importedFile.path
 				)}`;
-				this.log.result(importedFileLogMessage);
+				this._log.result(importedFileLogMessage);
 			});
 		}
 
 		if (Array.isArray(unImportedFiles) && unImportedFiles.length) {
 			unImportedFiles.forEach(unImportedFile => {
-				const unimportedFileLogMessage = `${this.log.getPadding(3)}- ${NodeTranslationService.getMessage(
+				const unimportedFileLogMessage = `${this._log.getPadding(3)}- ${NodeTranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
 					unImportedFile.path,
 					unImportedFile.message
 				)}`;
-				this.log.warning(unimportedFileLogMessage);
+				this._log.warning(unimportedFileLogMessage);
 			});
 		}
 	}
 
 	_logUnImportedObjects(unImportedObjects) {
 		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
-			this.log.warning(NodeTranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS));
+			this._log.warning(NodeTranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS));
 			unImportedObjects.forEach(objectImport => {
-				const unimportedObjectLogMessage = `${this.log.getPadding(1)}- ${NodeTranslationService.getMessage(
+				const unimportedObjectLogMessage = `${this._log.getPadding(1)}- ${NodeTranslationService.getMessage(
 					OUTPUT.OBJECT_IMPORT_FAILED,
 					objectImport.customObject.type,
 					objectImport.customObject.id,
 					objectImport.customObject.result.message
 				)}`;
-				this.log.warning(unimportedObjectLogMessage);
+				this._log.warning(unimportedObjectLogMessage);
 			});
 		}
 	}

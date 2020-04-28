@@ -52,7 +52,7 @@ module.exports = class SetupOutputHandler extends BaseOutputHandler {
 				break;
 		}
 
-		this.log.result(resultMessage);
-		this.log.result(NodeTranslationService.getMessage(OUTPUT.SUCCESSFUL));
+		this._log.result(resultMessage);
+		this._log.result(NodeTranslationService.getMessage(OUTPUT.SUCCESSFUL));
 	}
 }

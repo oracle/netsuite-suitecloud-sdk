@@ -5,7 +5,6 @@
 'use strict';
 
 const assert = require('assert');
-const inquirer = require('inquirer');
 const NodeTranslationService = require('./../services/NodeTranslationService');
 const { ERRORS } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
@@ -36,12 +35,15 @@ module.exports = class CommandActionExecutor {
 		assert(context.arguments);
 		assert(context.commandName);
 		assert(typeof context.runInInteractiveMode === 'boolean');
+		console.log(`CommandActionExecutor: executeAction`);
 
 		let commandUserExtension;
 		try {
+			console.log(`CommandActionExecutor: _commandsMetadataService.getCommandMetadataByName`);
 			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(context.commandName);
 			const commandName = context.commandName;
 
+			console.log(`CommandActionExecutor: _cliConfigurationService.initialize`);
 			this._cliConfigurationService.initialize(this._executionPath);
 			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
 			commandUserExtension = this._cliConfigurationService.getCommandUserExtension(commandName);
@@ -49,6 +51,7 @@ module.exports = class CommandActionExecutor {
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
+			console.log(`CommandActionExecutor: _checkCanExecute`);
 			const projectConfiguration = commandMetadata.isSetupRequired ? this._authenticationService.getProjectDefaultAuthId() : null;
 			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
 
@@ -60,6 +63,7 @@ module.exports = class CommandActionExecutor {
 				log: this._log,
 			});
 
+			console.log(`CommandActionExecutor: _extractOptionValuesFromArguments`);
 			const commandArguments = this._extractOptionValuesFromArguments(command.commandMetadata.options, args);
 
 			const actionResult = await this._executeCommandAction({
@@ -70,17 +74,6 @@ module.exports = class CommandActionExecutor {
 				commandUserExtension: commandUserExtension,
 				projectConfiguration: projectConfiguration,
 			});
-
-			if (!(actionResult instanceof ActionResult)) {
-				throw 'INTERNAL ERROR: Command must return an ActionResult object.';
-			}
-
-			if (actionResult.status === ActionResult.STATUS.ERROR) {
-				const error = ActionResultUtils.getErrorMessagesString(actionResult);
-				throw error;
-			}
-
-			//command.outputFormatter.formatActionResult(actionResult);
 
 			if (commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
@@ -117,6 +110,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	async _executeCommandAction(options) {
+		console.log(`CommandActionExecutor: _executeCommandAction`);
 		const command = options.command;
 		const projectConfiguration = options.projectConfiguration;
 		const isSetupRequired = options.isSetupRequired;

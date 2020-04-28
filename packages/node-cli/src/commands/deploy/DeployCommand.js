@@ -12,7 +12,7 @@ const DeployOutputHandler = require('./DeployOutputHandler');
 
 module.exports = class DeployCommand extends BaseCommand {
 	constructor(options) {
-		super(options);
+        super(options);
 
         this._action = new DeployAction(options);
         this._inputHandler = new DeployInputHandler(options);

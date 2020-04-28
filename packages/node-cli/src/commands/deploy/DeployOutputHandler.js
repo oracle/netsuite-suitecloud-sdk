@@ -26,22 +26,22 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 		);
 
 		if (actionResult.withServerValidation) {
-			this.log.info(NodeTranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, actionResult.projectFolder));
+			this._log.info(NodeTranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, actionResult.projectFolder));
 		}
 		if (actionResult.resultMessage) {
-			ActionResultUtils.logResultMessage(actionResult, this.log);
+			ActionResultUtils.logResultMessage(actionResult, this._log);
 		}
 		if (Array.isArray(actionResult.data)) {
-			actionResult.data.forEach(message => this.log.result(message));
+			actionResult.data.forEach(message => this._log.result(message));
 		}
 	}
 
 	_showApplyContentProtectionOptionMessage(projectType, isApplyContentProtection, projectFolder) {
 		if (projectType === PROJECT_SUITEAPP) {
 			if (isApplyContentProtection === SDK_TRUE) {
-				this.log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
+				this._log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
 			} else {
-				this.log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));
+				this._log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));
 			}
 		}
 	}

@@ -25,12 +25,12 @@ module.exports = class UpdateOutputHandler extends BaseOutputHandler {
 		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
 
 		if (updatedObjects.length > 0) {
-			this.log.result(NodeTranslationService.getMessage(OUTPUT.UPDATED_OBJECTS));
-			updatedObjects.sort(sortByKey).forEach(updatedObject => this.log.result(updatedObject.key));
+			this._log.result(NodeTranslationService.getMessage(OUTPUT.UPDATED_OBJECTS));
+			updatedObjects.sort(sortByKey).forEach(updatedObject => this._log.result(updatedObject.key));
 		}
 		if (noUpdatedObjects.length > 0) {
-			this.log.warning(NodeTranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS));
-			noUpdatedObjects.sort(sortByKey).forEach(noUpdatedObject => this.log.warning(noUpdatedObject.message));
+			this._log.warning(NodeTranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS));
+			noUpdatedObjects.sort(sortByKey).forEach(noUpdatedObject => this._log.warning(noUpdatedObject.message));
 		}
 	}
 }

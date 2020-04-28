@@ -5,15 +5,18 @@
 'use strict';
 
 const { ActionResult } = require('../../services/actionresult/ActionResult');
+const SDKExecutor = require('../../SDKExecutor');
+const AuthenticationService = require('../../core/authentication/AuthenticationService');
 
 module.exports = class BaseAction {
 	constructor(options) {
 		this._projectFolder = options.projectFolder;
         this._commandMetadata = options.commandMetadata;
-		this._sdkExecutor = options.sdkExecutor;
 		this._executionPath = options.executionPath;
 		this._runInInteractiveMode = options.runInInteractiveMode;
 		this._log = options.log;
+
+		this._sdkExecutor = new SDKExecutor(new AuthenticationService(options.executionPath));
 	 }
 
 	async preExecute(params) {

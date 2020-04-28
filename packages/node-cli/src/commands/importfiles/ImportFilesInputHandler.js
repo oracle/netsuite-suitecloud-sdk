@@ -13,6 +13,10 @@ const SDKExecutionContext = require('../../SDKExecutionContext');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 const BaseInputHandler = require ('../basecommand/BaseInputHandler');
+const SDKExecutor = require('../../SDKExecutor');
+const AuthenticationService = require('../../core/authentication/AuthenticationService');
+const { validateArrayIsNotEmpty, showValidationResults } = require('../../validation/InteractiveAnswersValidator');
+
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
 	NO,
@@ -34,15 +38,16 @@ const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',
 };
 
-const { validateArrayIsNotEmpty, showValidationResults } = require('../../validation/InteractiveAnswersValidator');
-
 module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	constructor(options) {
-        super(options);
+		super(options);
+		// TODO input handlers shouldn't execute actions. rework this
+		this._sdkExecutor = new SDKExecutor(new AuthenticationService(this._executionPath));
+		
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
-	async getParameters() {
+	async getParameters(params) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}

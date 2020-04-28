@@ -17,20 +17,21 @@ module.exports = class CreateProjectOutputHandler extends BaseOutputHandler {
 	}
 
 	formatActionResult(actionResult) {
-		ActionResultUtils.logResultMessage(actionResult, this.log);
+		ActionResultUtils.logResultMessage(actionResult, this._log);
 
 		const projectCreatedMessage = NodeTranslationService.getMessage(MESSAGES.PROJECT_CREATED, actionResult.projectName);
-		this.log.result(projectCreatedMessage);
+		this._log.result(projectCreatedMessage);
 
 		if (actionResult.includeUnitTesting) {
 			const sampleUnitTestMessage = NodeTranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
-			this.log.result(sampleUnitTestMessage);
+			this._log.result(sampleUnitTestMessage);
 			if (!actionResult.npmPackageIntitialized) {
-				this.log.error(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED));
+				this._log.error(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED));
 			}
 		}
 
 		const navigateToProjectMessage = NodeTranslationService.getMessage(MESSAGES.NAVIGATE_TO_FOLDER, actionResult.projectDirectory);
-		this.log.result(navigateToProjectMessage);
+		this._log.result(navigateToProjectMessage);
+		return actionResult;
 	}
 };

@@ -7,12 +7,13 @@
 module.exports = class BaseInputHandler {
 	constructor(options) {
 		this._projectFolder = options.projectFolder;
-		this._sdkExecutor = options.sdkExecutor;
 		this._commandMetadata = options.commandMetadata;
+		this._executionPath = options.executionPath;
 		this._log = options.log;
+		this._runInInteractiveMode = options.runInInteractiveMode;
     }
 
-	async getParameters() {
-		return {};
+	async getParameters(params) {
+		return params;
 	}
 };

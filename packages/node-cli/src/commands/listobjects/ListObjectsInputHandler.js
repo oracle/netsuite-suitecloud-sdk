@@ -38,7 +38,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
-	async getParameters() {
+	async getParameters(params) {
 		const questions = [];
 		//create a class to see type based on manifest.
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {

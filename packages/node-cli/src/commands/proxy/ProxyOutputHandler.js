@@ -17,12 +17,12 @@ module.exports = class ProxyOutputHandler extends BaseOutputHandler {
 	formatActionResult(actionResult) {
 		if (actionResult.isSettingProxy) {
 			if (actionResult.isProxyOverridden) {
-				this.log.result(NodeTranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl));
+				this._log.result(NodeTranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl));
 			} else {
-				this.log.result(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl));
+				this._log.result(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_SETUP, actionResult.proxyUrl));
 			}
 		} else {
-			this.log.result(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED));
+			this._log.result(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED));
 		}
 	}
 }

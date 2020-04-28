@@ -57,10 +57,6 @@ const COMMAND_OPTIONS = {
 	PUBLISHER_ID: 'publisherid',
 	TYPE: 'type',
 	INCLUDE_UNIT_TESTING: 'includeunittesting',
-};
-
-const COMMAND_ANSWERS = {
-	PROJECT_ABSOLUTE_PATH: 'projectabsolutepath',
 	PROJECT_FOLDER_NAME: 'projectfoldername',
 };
 
@@ -84,22 +80,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseAction {
 		this._fileSystemService = new FileSystemService();
 	}
 
-	preExecute(params) {
-		const projectFolderName = this._getProjectFolderName(params);
-		if (projectFolderName) {
-			params[COMMAND_OPTIONS.PARENT_DIRECTORY] = path.join(this._executionPath, projectFolderName);
-			params[COMMAND_ANSWERS.PROJECT_FOLDER_NAME] = projectFolderName;
-		} else {
-			// parentdirectory is a mandatory option in javaCLI but it must be computed in the nodeCLI
-			params[COMMAND_OPTIONS.PARENT_DIRECTORY] = 'not_specified';
-		}
-
-		return params;
-	}
-
 	async execute(params) {
 		try {
-			const projectFolderName = params[COMMAND_ANSWERS.PROJECT_FOLDER_NAME];
+			const projectFolderName = params[COMMAND_OPTIONS.PROJECT_FOLDER_NAME];
 			const projectAbsolutePath = params[COMMAND_OPTIONS.PARENT_DIRECTORY];
 			const manifestFilePath = path.join(projectAbsolutePath, SOURCE_FOLDER, ApplicationConstants.FILES.MANIFEST_XML);
 
@@ -111,7 +94,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseAction {
 
 			const projectType = params[COMMAND_OPTIONS.TYPE];
 
-			const params = {
+			const createProjectParams = {
 				//Enclose in double quotes to also support project names with spaces
 				parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
 				type: projectType,
@@ -126,7 +109,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseAction {
 
 			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
 
-			const createProjectAction = new Promise(this.createProject(params, params, projectAbsolutePath, projectFolderName, manifestFilePath));
+			const createProjectAction = new Promise(this.createProject(createProjectParams, params, projectAbsolutePath, projectFolderName, manifestFilePath));
 
 			const createProjectActionData = await createProjectAction;
 
@@ -150,7 +133,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseAction {
 		}
 	}
 
-	createProject(params, params, projectAbsolutePath, projectFolderName, manifestFilePath) {
+	createProject(createProjectParams, params, projectAbsolutePath, projectFolderName, manifestFilePath) {
 		return async (resolve, reject) => {
 			try {
 				this._log.info(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE));
@@ -159,7 +142,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseAction {
 				}
 				const executionContextCreateProject = new SDKExecutionContext({
 					command: this._commandMetadata.sdkCommand,
-					params: params,
+					params: createProjectParams,
 				});
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);

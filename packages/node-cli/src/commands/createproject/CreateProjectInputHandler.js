@@ -5,10 +5,28 @@
 'use strict';
 
 const { prompt } = require('inquirer');
+const path = require('path');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const CommandUtils = require('../../utils/CommandUtils');
 const ApplicationConstants = require('../../ApplicationConstants');
 const FileSystemService = require('../../services/FileSystemService');
+const BaseInputHandler = require('../basecommand/BaseInputHandler');
+
+const {
+	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
+	YES,
+	NO,
+} = require('../../services/TranslationKeys');
+
+const {
+	validateFieldIsNotEmpty,
+	showValidationResults,
+	validateFieldHasNoSpaces,
+	validateFieldIsLowerCase,
+	validatePublisherId,
+	validateProjectVersion,
+	validateAlphanumericHyphenUnderscoreExtended,
+} = require('../../validation/InteractiveAnswersValidator');
 
 const COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
@@ -19,19 +37,31 @@ const COMMAND_OPTIONS = {
 	PUBLISHER_ID: 'publisherid',
 	TYPE: 'type',
 	INCLUDE_UNIT_TESTING: 'includeunittesting',
+	PROJECT_ABSOLUTE_PATH: 'projectabsolutepath',
+	PROJECT_FOLDER_NAME: 'projectfoldername',
 };
 
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
 const DEFAULT_PROJECT_VERSION = '1.0.0';
 
-module.exports = class CreateObjectInputHandler {
+module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	constructor(options) {
-		this._executionPath = options.projectFolder;
+		super(options);
 		this._fileSystemService = new FileSystemService();
 	}
 
-	async getParameters() {
+	async getParameters(params) {
+		if (!this._runInInteractiveMode) {
+
+			const folderName = this._getProjectFolderName(params);
+			const absolutePath = path.join(this._executionPath, folderName);
+
+			params[COMMAND_OPTIONS.PROJECT_FOLDER_NAME] = folderName;
+			params[COMMAND_OPTIONS.PARENT_DIRECTORY] = absolutePath;
+
+			return params;
+		}
 		const answers = await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -54,7 +84,7 @@ module.exports = class CreateObjectInputHandler {
 				name: COMMAND_OPTIONS.PROJECT_NAME,
 				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
 				filter: (fieldValue) => fieldValue.trim(),
-				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFolder),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateAlphanumericHyphenUnderscoreExtended),
 			},
 			{
 				when: function (response) {
@@ -120,12 +150,27 @@ module.exports = class CreateObjectInputHandler {
 				throw NodeTranslationService.getMessage(MESSAGES.PROJECT_CREATION_CANCELED);
 			}
 		}
+
+		if (projectFolderName) {
+			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = projectAbsolutePath;
+			answers[COMMAND_OPTIONS.PROJECT_FOLDER_NAME] = projectFolderName;
+		} else {
+			// parentdirectory is a mandatory option in javaCLI but it must be computed in the nodeCLI
+			answers[COMMAND_OPTIONS.PARENT_DIRECTORY] = 'not_specified';
+		}
+
 		return answers;
 	}
 
-	_getProjectFolderName(answers) {
-		return answers[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP
-			? answers[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + answers[COMMAND_OPTIONS.PROJECT_ID]
-			: answers[COMMAND_OPTIONS.PROJECT_NAME];
+	_getProjectFolderName(params) {
+		switch (params[COMMAND_OPTIONS.TYPE]) {
+			case ApplicationConstants.PROJECT_SUITEAPP:
+				return params[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + params[COMMAND_OPTIONS.PROJECT_ID];
+			case ApplicationConstants.PROJECT_ACP:
+				return params[COMMAND_OPTIONS.PROJECT_NAME];
+			default:
+				// if --type parameter isn't correct, it doesn't matter the project folder name. It will throw a validation error later
+				return 'not_specified';
+		}
 	}
 };

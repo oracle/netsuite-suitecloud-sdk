@@ -32,15 +32,15 @@ module.exports = class UploadFilesOutputHandler extends BaseOutputHandler {
 			const localFileCabinetFolder = path.join(actionResult.projectFolder, FILE_CABINET);
 			this._fileCabinetService = new FileCabinetService(localFileCabinetFolder);
 			if (successfulUploads && successfulUploads.length) {
-				this.log.result(NodeTranslationService.getMessage(OUTPUT.FILES_UPLOADED));
+				this._log.result(NodeTranslationService.getMessage(OUTPUT.FILES_UPLOADED));
 				successfulUploads.forEach(result => {
-					this.log.result(this._fileCabinetService.getFileCabinetRelativePath(result.file.path));
+					this._log.result(this._fileCabinetService.getFileCabinetRelativePath(result.file.path));
 				});
 			}
 			if (unsuccessfulUploads && unsuccessfulUploads.length) {
-				this.log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED));
+				this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_UPLOADED));
 				unsuccessfulUploads.forEach(result => {
-					this.log.warning(`${this._fileCabinetService.getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`);
+					this._log.warning(`${this._fileCabinetService.getFileCabinetRelativePath(result.file.path)}: ${result.errorMessage}`);
 				});
 			}
 		}

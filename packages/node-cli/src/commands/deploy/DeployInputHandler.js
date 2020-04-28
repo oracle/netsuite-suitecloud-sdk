@@ -45,7 +45,12 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 		this._projectType = this._projectInfoService.getProjectType();
 	}
 
-	async getParameters() {
+	async getParameters(params) {
+
+		if (!this._runInInteractiveMode) {
+			return {[COMMAND.OPTIONS.PROJECT]: this._projectFolder};
+		}
+
 		const isSuiteAppProject = this._projectType === PROJECT_SUITEAPP;
 		const isACProject = this._projectType === PROJECT_ACP;
 
@@ -99,6 +104,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 				)
 			);
 		}
+		answers[COMMAND.OPTIONS.PROJECT] = this._projectFolder;
 
 		return answers;
 	}

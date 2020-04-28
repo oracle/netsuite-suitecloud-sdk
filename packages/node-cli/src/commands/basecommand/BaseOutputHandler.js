@@ -13,7 +13,7 @@ module.exports = class BaseOutputHandler {
 	}
 
 	formatActionResult(actionResult) {
-		return actionResult
+		// Do nothing
 	}
 
 	formatError(error) {

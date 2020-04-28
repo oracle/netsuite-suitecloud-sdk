@@ -26,6 +26,8 @@ const {
 } = require('../../services/TranslationKeys');
 
 const { validateArrayIsNotEmpty, validateScriptId, validateSuiteApp, showValidationResults } = require('../../validation/InteractiveAnswersValidator');
+const SDKExecutor = require('../../SDKExecutor');
+const AuthenticationService = require('../../core/authentication/AuthenticationService');
 
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
@@ -50,13 +52,16 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	constructor(options) {
         super(options);
 
+		// TODO input handlers shouldn't execute actions. rework this
+		this._sdkExecutor = new SDKExecutor(new AuthenticationService(this._executionPath));
+
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 	}
 
-	async getParameters() {
+	async getParameters(params) {
 		const listObjectQuestions = this._generateListObjectQuestions();
 		const listObjectAnswers = await prompt(listObjectQuestions);
 

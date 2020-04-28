@@ -20,7 +20,7 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 	formatActionResult(actionResult) {
 		if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(resultLine => {
-				this.log.result(resultLine);
+				this._log.result(resultLine);
 			});
 		} else if (!actionResult.isServerValidation) {
 			this._showApplyContentProtectionOptionMessage(
@@ -30,22 +30,22 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 			);
 			this._showLocalValidationResultData(actionResult.data);
 		}
-		ActionResultUtils.logResultMessage(actionResult, this.log);
+		ActionResultUtils.logResultMessage(actionResult, this._log);
 	}
 
 	_showApplyContentProtectionOptionMessage(isAppliedContentProtection, projectType, projectFolder) {
 		if (projectType === PROJECT_SUITEAPP) {
 			if (isAppliedContentProtection) {
-				this.log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
+				this._log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
 			} else {
-				this.log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));
+				this._log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));
 			}
 		}
 	}
 
 	_showLocalValidationResultData(data) {
-		this._logValidationEntries(data.warnings, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), this.log.warning);
-		this._logValidationEntries(data.errors, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), this.log.error);
+		this._logValidationEntries(data.warnings, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), this._log.warning);
+		this._logValidationEntries(data.errors, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), this._log.error);
 	}
 
 	_logValidationEntries(entries, headingLabel, log) {

@@ -14,6 +14,8 @@ const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
 const FileUtils = require('../../utils/FileUtils');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
+const SDKExecutor = require('../../SDKExecutor');
+const AuthenticationService = require('../../core/authentication/AuthenticationService');
 
 const {
 	FILES: { MANIFEST_XML },
@@ -22,6 +24,15 @@ const {
 const {
 	COMMAND_SETUPACCOUNT: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
 } = require('../../services/TranslationKeys');
+
+const {
+	validateFieldHasNoSpaces,
+	validateFieldIsNotEmpty,
+	validateAuthIDNotInList,
+	validateAlphanumericHyphenUnderscore,
+	validateMaximumLength,
+	showValidationResults,
+} = require('../../validation/InteractiveAnswersValidator');
 
 const ANSWERS = {
 	DEVELOPMENT_MODE_URL: 'developmentModeUrl',
@@ -50,23 +61,16 @@ const FLAGS = {
 	DEVELOPMENTMODE: 'developmentmode',
 };
 
-const {
-	validateFieldHasNoSpaces,
-	validateFieldIsNotEmpty,
-	validateAuthIDNotInList,
-	validateAlphanumericHyphenUnderscore,
-	validateMaximumLength,
-	showValidationResults,
-} = require('../../validation/InteractiveAnswersValidator');
-
 const CREATE_NEW_AUTH = '******CREATE_NEW_AUTH*******!£$%&*';
 
 module.exports = class SetupInputHandler extends BaseInputHandler {
 	constructor(options) {
-        super(options);
+		super(options);
+		// TODO input handlers shouldn't execute actions. rework this
+		this._sdkExecutor = new SDKExecutor(new AuthenticationService(this._executionPath));
 	}
 
-	async getParameters(commandArguments) {
+	async getParameters(params) {
 		this._checkWorkingDirectoryContainsValidProject();
 
 		const getAuthListContext = new SDKExecutionContext({
@@ -137,7 +141,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		// creating a new authID
 		let developmentModeUrlAnswer;
 		if (selectedAuth === CREATE_NEW_AUTH) {
-			const developmentMode = commandArguments && commandArguments.dev !== undefined && commandArguments.dev;
+			const developmentMode = params && params.dev !== undefined && params.dev;
 
 			if (developmentMode) {
 				developmentModeUrlAnswer = await prompt([

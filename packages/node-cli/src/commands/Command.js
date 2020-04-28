@@ -4,7 +4,6 @@
  */
 'use strict';
 const assert = require('assert');
-const BaseOutputHandler = require('./basecommand/BaseOutputHandler');
 
 module.exports = class Command {
 	constructor(options) {

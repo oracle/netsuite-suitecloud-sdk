@@ -20,15 +20,15 @@ module.exports = class ImportFilesOutputHandler extends BaseOutputHandler {
 			const successful = actionResult.data.results.filter(result => result.loaded === true);
 			const unsuccessful = actionResult.data.results.filter(result => result.loaded !== true);
 			if (successful.length) {
-				this.log.result(NodeTranslationService.getMessage(OUTPUT.FILES_IMPORTED));
+				this._log.result(NodeTranslationService.getMessage(OUTPUT.FILES_IMPORTED));
 				successful.forEach(result => {
-					this.log.result(result.path);
+					this._log.result(result.path);
 				});
 			}
 			if (unsuccessful.length) {
-				this.log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED));
+				this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED));
 				unsuccessful.forEach(result => {
-					this.log.warning(`${result.path}, ${result.message}`);
+					this._log.warning(`${result.path}, ${result.message}`);
 				});
 			}
 		}

@@ -37,8 +37,12 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
-	async getParameters() {
-		return prompt([
+	async getParameters(params) {
+		params[COMMAND_OPTIONS.PROJECT] = this._projectFolder;
+		if (!this._runInInteractiveMode) {
+			return params;
+		}
+		const answers = prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.SERVER,
@@ -90,5 +94,6 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 				],
 			},
 		]);
+		return { ...params, ...answers };
 	}
 };

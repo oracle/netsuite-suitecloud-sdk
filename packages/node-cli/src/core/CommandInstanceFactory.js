@@ -15,10 +15,14 @@ module.exports = class CommandInstanceFactory {
 		assert(typeof options.runInInteractiveMode === 'boolean');
 		assert(options.log);
 
+		console.log(`CommandInstanceFactory: create with options: \n ${JSON.stringify(options)}`);
 		const commandMetadata = options.commandMetadata;
+		console.log(`1`);
 		const commandGeneratorPath = options.runInInteractiveMode ? commandMetadata.interactiveGenerator : commandMetadata.nonInteractiveGenerator;
+		console.log(`2: ${commandGeneratorPath}`);
 
 		const Generator = require(commandGeneratorPath);
+		console.log(`CommandInstanceFactory: Generator: \n ${JSON.stringify(Generator)}`);
 		const generatorInstance = new Generator({
 			commandMetadata,
 			projectFolder: options.projectFolder,

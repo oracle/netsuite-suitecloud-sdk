@@ -12,11 +12,11 @@ module.exports = class ListFilesOutputHandler extends BaseOutputHandler {
 	}
 
 	formatActionResult(actionResult) {
-		ActionResultUtils.logResultMessage(actionResult, this.log);
+		ActionResultUtils.logResultMessage(actionResult, this._log);
 
 		if (Array.isArray(actionResult.data)) {
 			actionResult.data.forEach(fileName => {
-				this.log.result(fileName);
+				this.lo_logg.result(fileName);
 			});
 		}
 	}

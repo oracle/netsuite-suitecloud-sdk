@@ -55,15 +55,16 @@ module.exports = class AddDependenciesOutputFormatter extends BaseOutputHandler 
 
 	formatActionResult(actionResult) {
 		if (actionResult.data.length === 0) {
-			this.log.result(NodeTranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES));
+			this._log.result(NodeTranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES));
 			return;
 		}
 
-		this.log.result(NodeTranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST));
+		this._log.result(NodeTranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST));
 
 		this._getDependenciesStringsArray(actionResult.data)
 			.sort()
-			.forEach(output => this.log.result(output));
+			.forEach(output => this._log.result(output));
+		return actionResult;
 	}
 
 	_getDependenciesStringsArray(data) {

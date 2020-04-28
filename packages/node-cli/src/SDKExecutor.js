@@ -27,7 +27,7 @@ const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
-module.exports.SDKExecutor = class SDKExecutor {
+module.exports = class SDKExecutor {
 	constructor(authenticationService) {
 		this._CLISettingsService = new CLISettingsService();
 		this._authenticationService = authenticationService;
