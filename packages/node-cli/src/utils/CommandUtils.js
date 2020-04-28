@@ -36,7 +36,7 @@ class CommandUtils {
 	}
 
 	quoteString(string) {
-		return `"${string}"`;
+		return `'${string}'`;
 	}
 }
 
