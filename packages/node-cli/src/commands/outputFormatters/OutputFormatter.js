@@ -19,7 +19,7 @@ class OutputFormatter {
 	formatActionResult(actionResult) {}
 
 	formatError(error) {
-		const errorMessage = unwrapExceptionMessage(error);
+		let errorMessage = unwrapExceptionMessage(error);
 		this.consoleLogger.error(errorMessage);
 		const informativeMessage = unwrapInformationMessage(error);
 
