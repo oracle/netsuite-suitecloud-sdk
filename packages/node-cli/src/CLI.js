@@ -21,7 +21,7 @@ const INTERACTIVE_OPTION = '--interactive';
 const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 const configFile = require(PACKAGE_FILE);
 const CLI_VERSION = configFile ? configFile.version : 'unknown';
-const COMPATIBLE_NS_VERSION = '2020.1';
+const COMPATIBLE_NS_VERSION = '2020.2';
 
 module.exports = class CLI {
 	constructor(dependencies) {
