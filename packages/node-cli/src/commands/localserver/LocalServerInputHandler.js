@@ -3,15 +3,17 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const BaseAction = require('../base/BaseAction');
 
-module.exports = class LocalServerAction extends BaseAction {
+const { prompt } = require('inquirer');
+const BaseInputHandler = require('../base/BaseInputHandler');
+
+module.exports = class LocalServerInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 		this.localServer = options.localServer;
 	}
 
-	async execute(params) {
-		return this.localServer.executeAction(params);
+	async getParameters(params) {
+		return this.localServer.getCommandQuestions(prompt);
 	}
 };

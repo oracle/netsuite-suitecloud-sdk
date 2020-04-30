@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const BaseOutputHandler = require('../base/BaseOutputHandler');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const {
 	COMMAND_PROXY: { MESSAGES },
@@ -14,7 +14,7 @@ module.exports = class ProxyOutputHandler extends BaseOutputHandler {
 		super(options);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		if (actionResult.isSettingProxy) {
 			if (actionResult.isProxyOverridden) {
 				this._log.result(NodeTranslationService.getMessage(MESSAGES.PROXY_OVERRIDDEN, actionResult.proxyUrl));
@@ -24,6 +24,6 @@ module.exports = class ProxyOutputHandler extends BaseOutputHandler {
 		} else {
 			this._log.result(NodeTranslationService.getMessage(MESSAGES.SUCCESFULLY_CLEARED));
 		}
+		return actionResult;
 	}
-}
-
+};

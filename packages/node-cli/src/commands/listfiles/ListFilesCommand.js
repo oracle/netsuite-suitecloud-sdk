@@ -4,18 +4,17 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const ListFilesAction = require('./ListFilesAction');
 const ListFilesInputHandler = require('./ListFilesInputHandler');
 const ListFilesOutputHandler = require('./ListFilesOutputHandler');
 
-
-module.exports = class ListFilesCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
-
-        this._action = new ListFilesAction(options);
-        this._inputHandler = new ListFilesInputHandler(options);
-        this._outputHandler = new ListFilesOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(ListFilesAction)
+			.withInput(ListFilesInputHandler)
+			.withOutput(ListFilesOutputHandler)
+			.build();
 	}
 };

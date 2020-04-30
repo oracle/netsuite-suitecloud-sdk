@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const BaseOutputHandler = require('../base/BaseOutputHandler');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 
 const ActionResultUtils = require('../../utils/ActionResultUtils');
@@ -16,7 +16,7 @@ module.exports = class CreateProjectOutputHandler extends BaseOutputHandler {
 		super(options);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		ActionResultUtils.logResultMessage(actionResult, this._log);
 
 		const projectCreatedMessage = NodeTranslationService.getMessage(MESSAGES.PROJECT_CREATED, actionResult.projectName);

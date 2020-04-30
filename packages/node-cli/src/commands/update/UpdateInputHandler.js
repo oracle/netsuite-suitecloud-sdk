@@ -8,7 +8,7 @@ const { prompt, Separator } = require('inquirer');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES },
@@ -36,7 +36,7 @@ const XML_EXTENSION = '.xml';
 
 module.exports = class UpdateInputHandler extends BaseInputHandler {
 	constructor(options) {
-        super(options);
+		super(options);
 		this._fileSystemService = new FileSystemService();
 	}
 
@@ -44,8 +44,8 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		const pathToObjectsFolder = path.join(this._projectFolder, FOLDERS.OBJECTS);
 		const filesInObjectsFolder = this._fileSystemService.getFilesFromDirectory(pathToObjectsFolder);
 		const foundXMLFiles = filesInObjectsFolder
-			.filter(filename => filename.endsWith(XML_EXTENSION))
-			.map(file => ({
+			.filter((filename) => filename.endsWith(XML_EXTENSION))
+			.map((file) => ({
 				name: file.replace(this._projectFolder, '').slice(0, -XML_EXTENSION.length),
 				value: path.basename(file, XML_EXTENSION),
 			}));
@@ -69,17 +69,17 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 					],
 				},
 				{
-					when: response => {
+					when: (response) => {
 						return response[ANSWERS_NAMES.FILTER_BY_SCRIPT_ID];
 					},
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS_NAMES.SCRIPT_ID_FILTER,
 					message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID_FILTER),
-					validate: fieldValue => showValidationResults(fieldValue, validateScriptId),
+					validate: (fieldValue) => showValidationResults(fieldValue, validateScriptId),
 				},
 			]);
 			filteredObjects = filterAnswers[ANSWERS_NAMES.FILTER_BY_SCRIPT_ID]
-				? foundXMLFiles.filter(element => element.value.includes(filterAnswers[ANSWERS_NAMES.SCRIPT_ID_FILTER]))
+				? foundXMLFiles.filter((element) => element.value.includes(filterAnswers[ANSWERS_NAMES.SCRIPT_ID_FILTER]))
 				: foundXMLFiles;
 			if (filteredObjects.length === 0) {
 				throw NodeTranslationService.getMessage(MESSAGES.NO_OBJECTS_WITH_SCRIPT_ID_FILTER);
@@ -98,7 +98,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 				message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 				default: 1,
 				choices: filteredObjects,
-				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -117,5 +117,4 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 			[COMMAND_OPTIONS.SCRIPT_ID]: [...new Set(answers[ANSWERS_NAMES.SCRIPT_ID_LIST])].join(' '),
 		};
 	}
-
 };

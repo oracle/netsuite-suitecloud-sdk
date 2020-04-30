@@ -5,7 +5,7 @@
 'use strict';
 
 const CreateProjectActionResult = require('../../services/actionresult/CreateProjectActionResult');
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const TemplateKeys = require('../../templates/TemplateKeys');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
@@ -74,7 +74,7 @@ const {
 
 const { throwValidationException } = require('../../utils/ExceptionUtils');
 
-module.exports = class CreateProjectCommandGenerator extends BaseAction {
+module.exports = class CreateProjectAction extends BaseAction {
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
@@ -109,7 +109,9 @@ module.exports = class CreateProjectCommandGenerator extends BaseAction {
 
 			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
 
-			const createProjectAction = new Promise(this.createProject(createProjectParams, params, projectAbsolutePath, projectFolderName, manifestFilePath));
+			const createProjectAction = new Promise(
+				this.createProject(createProjectParams, params, projectAbsolutePath, projectFolderName, manifestFilePath)
+			);
 
 			const createProjectActionData = await createProjectAction;
 

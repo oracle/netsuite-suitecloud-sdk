@@ -13,7 +13,7 @@ const ApplyContentProtectionArgumentHandler = require('../../utils/ApplyContentP
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const SDKExecutionContext = require('../../SDKExecutionContext');
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 
 const { PROJECT_SUITEAPP, SDK_TRUE } = require('../../ApplicationConstants');
 
@@ -36,12 +36,11 @@ const COMMAND = {
 };
 
 module.exports = class DeployAction extends BaseAction {
-
 	constructor(options) {
-        super(options);
+		super(options);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
-        this._projectType = this._projectInfoService.getProjectType();
+		this._projectType = this._projectInfoService.getProjectType();
 
 		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
 			projectInfoService: this._projectInfoService,
@@ -49,7 +48,7 @@ module.exports = class DeployAction extends BaseAction {
 		this._applyContentProtectionArgumentHandler = new ApplyContentProtectionArgumentHandler({
 			projectInfoService: this._projectInfoService,
 			commandName: this._commandMetadata.sdkCommand,
-        });
+		});
 	}
 
 	preExecute(params) {
@@ -85,7 +84,8 @@ module.exports = class DeployAction extends BaseAction {
 			});
 
 			const isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
-			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
+			const isApplyContentProtection =
+				this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
 
 			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)

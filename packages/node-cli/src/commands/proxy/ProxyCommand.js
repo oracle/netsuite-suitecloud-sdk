@@ -4,16 +4,15 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const ProxyAction = require('./ProxyAction');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
 const ProxyOutputHandler = require('./ProxyOutputHandler');
 
-module.exports = class ListFilesCommand extends BaseCommand {
-	constructor(options) {
-        super(options);
-        this._action = new ProxyAction(options);
-        this._inputHandler = new BaseInputHandler(options);
-        this._outputHandler = new ProxyOutputHandler(options);
-}
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(ProxyAction)
+			.withOutput(ProxyOutputHandler)
+			.build();
+	}
 };

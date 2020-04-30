@@ -4,16 +4,17 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const UpdateAction = require('./UpdateAction');
 const UpdateInputHandler = require('./UpdateInputHandler');
 const UpdateOutputHandler = require('./UpdateOutputHandler');
 
-module.exports = class UpdateCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
-		this._action = new UpdateAction(options);
-		this._inputHandler = new UpdateInputHandler(options);
-		this._outputHandler = new UpdateOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(UpdateAction)
+			.withInput(UpdateInputHandler)
+			.withOutput(UpdateOutputHandler)
+			.build();
 	}
 };

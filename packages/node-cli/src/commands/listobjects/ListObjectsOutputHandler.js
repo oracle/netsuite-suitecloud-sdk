@@ -5,7 +5,7 @@
 'use strict';
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const BaseOutputHandler = require('../base/BaseOutputHandler');
 
 const {
 	COMMAND_LISTOBJECTS: { SUCCESS_OBJECTS_IMPORTED, SUCCESS_NO_OBJECTS },
@@ -16,13 +16,14 @@ module.exports = class ListObjectsOutputHandler extends BaseOutputHandler {
 		super(options);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		ActionResultUtils.logResultMessage(actionResult, this._log);
 		if (Array.isArray(actionResult.data) && actionResult.data.length) {
 			this._log.result(NodeTranslationService.getMessage(SUCCESS_OBJECTS_IMPORTED));
-			actionResult.data.forEach(object => this._log.result(`${object.type}:${object.scriptId}`));
+			actionResult.data.forEach((object) => this._log.result(`${object.type}:${object.scriptId}`));
 		} else {
 			this._log.result(NodeTranslationService.getMessage(SUCCESS_NO_OBJECTS));
 		}
+		return actionResult;
 	}
-}
+};

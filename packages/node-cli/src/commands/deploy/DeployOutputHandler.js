@@ -5,7 +5,7 @@
 'use strict';
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const BaseOutputHandler = require('../base/BaseOutputHandler');
 
 const { PROJECT_SUITEAPP, SDK_TRUE } = require('../../ApplicationConstants');
 
@@ -18,7 +18,7 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 		super(options);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		this._showApplyContentProtectionOptionMessage(
 			actionResult.projectType,
 			actionResult.withAppliedContentProtection,
@@ -32,8 +32,9 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 		}
 		if (Array.isArray(actionResult.data)) {
-			actionResult.data.forEach(message => this._log.result(message));
+			actionResult.data.forEach((message) => this._log.result(message));
 		}
+		return actionResult;
 	}
 
 	_showApplyContentProtectionOptionMessage(projectType, isApplyContentProtection, projectFolder) {
@@ -45,4 +46,4 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 			}
 		}
 	}
-}
+};

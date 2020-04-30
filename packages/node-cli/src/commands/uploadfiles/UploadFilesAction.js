@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const CommandUtils = require('../../utils/CommandUtils');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
@@ -16,16 +16,14 @@ const {
 	COMMAND_UPLOADFILES: { MESSAGES },
 } = require('../../services/TranslationKeys');
 
-
 const COMMAND_OPTIONS = {
 	PATHS: 'paths',
 	PROJECT: 'project',
 };
 
-
 module.exports = class UploadFilesAction extends BaseAction {
 	constructor(options) {
-        super(options);
+		super(options);
 	}
 
 	preExecute(params) {

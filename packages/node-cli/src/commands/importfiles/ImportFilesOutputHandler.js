@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const BaseOutputHandler = require('../base/BaseOutputHandler');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 
 const {
@@ -15,22 +15,23 @@ module.exports = class ImportFilesOutputHandler extends BaseOutputHandler {
 		super(options);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		if (Array.isArray(actionResult.data.results)) {
-			const successful = actionResult.data.results.filter(result => result.loaded === true);
-			const unsuccessful = actionResult.data.results.filter(result => result.loaded !== true);
+			const successful = actionResult.data.results.filter((result) => result.loaded === true);
+			const unsuccessful = actionResult.data.results.filter((result) => result.loaded !== true);
 			if (successful.length) {
 				this._log.result(NodeTranslationService.getMessage(OUTPUT.FILES_IMPORTED));
-				successful.forEach(result => {
+				successful.forEach((result) => {
 					this._log.result(result.path);
 				});
 			}
 			if (unsuccessful.length) {
 				this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED));
-				unsuccessful.forEach(result => {
+				unsuccessful.forEach((result) => {
 					this._log.warning(`${result.path}, ${result.message}`);
 				});
 			}
 		}
+		return actionResult;
 	}
-}
+};

@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const SetupActionResult = require('../../services/actionresult/SetupActionResult');
 const SDKExecutionContext = require('../../SDKExecutionContext');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
@@ -36,7 +36,7 @@ const FLAGS = {
 module.exports = class SetupAction extends BaseAction {
 	constructor(options) {
 		super(options);
-        this._authenticationService = new AuthenticationService(this._executionPath);
+		this._authenticationService = new AuthenticationService(this._executionPath);
 	}
 
 	async execute(params) {

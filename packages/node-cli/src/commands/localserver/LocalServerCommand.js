@@ -4,17 +4,30 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const LocalServerAction = require('./LocalServerAction');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const LocalServerInputHandler = require('./LocalServerInputHandler');
 
-module.exports = class LocalServerCommand extends BaseCommand {
-	constructor(options) {
-        super(options);
+const LocalCommand = require('@oracle/suitecloud-cli-localserver-command').LocalCommand;
+const { COLORS } = require('../../loggers/LoggerConstants');
+const { COMMAND_LOCAL } = require('../../services/TranslationKeys');
+const NodeTranslationService = require('../../services/NodeTranslationService');
+const FileSystemService = require('../../services/FileSystemService');
 
-        this._action = new LocalServerAction(options);
-        this._inputHandler = new BaseInputHandler(options);
-        this._outputHandler = new BaseOutputHandler(options);
+module.exports = {
+	create(options) {
+
+		options.localServer = new LocalCommand({
+			...options,
+			filesystem: FileSystemService,
+			colors: COLORS,
+			translation: [NodeTranslationService, COMMAND_LOCAL],
+		});
+		options.localServer.initialize();
+
+		return Command.Builder.withOptions(options)
+			.withAction(LocalServerAction)
+			.withInput(LocalServerInputHandler)
+			.build();
 	}
 };

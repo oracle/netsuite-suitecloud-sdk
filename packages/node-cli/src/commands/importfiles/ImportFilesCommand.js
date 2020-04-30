@@ -4,18 +4,19 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const ImportFilesAction = require('./ImportFilesAction');
 const ImportFilesInputHandler = require('./ImportFilesInputHandler');
 const ImportFilesOutputHandler = require('./ImportFilesOutputHandler');
 
 
-module.exports = class ImportFilesCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
-
-        this._action = new ImportFilesAction(options);
-        this._inputHandler = new ImportFilesInputHandler(options);
-        this._outputHandler = new ImportFilesOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(ImportFilesAction)
+			.withInput(ImportFilesInputHandler)
+			.withOutput(ImportFilesOutputHandler)
+			.build();
 	}
 };
+

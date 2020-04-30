@@ -4,16 +4,13 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const SdkWrapperAction = require('./SdkWrapperAction');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
 
-module.exports = class SdkWrapperCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
-		this._action = new SdkWrapperAction(options);
-		this._inputHandler = new BaseInputHandler(options);
-		this._outputHandler = new BaseOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(SdkWrapperAction)
+			.build();
 	}
 };

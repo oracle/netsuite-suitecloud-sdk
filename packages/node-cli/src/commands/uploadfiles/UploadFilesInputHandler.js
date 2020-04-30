@@ -5,7 +5,7 @@
 'use strict';
 
 const { prompt } = require('inquirer');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 const CommandUtils = require('../../utils/CommandUtils');
 const FileCabinetService = require('../../services/FileCabinetService');
 const FileSystemService = require('../../services/FileSystemService');
@@ -30,11 +30,11 @@ const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',
 };
 
-const { validateArrayIsNotEmpty, showValidationResults } = require('../validation/InteractiveAnswersValidator');
+const { validateArrayIsNotEmpty, showValidationResults } = require('../../validation/InteractiveAnswersValidator');
 
 module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 	constructor(options) {
-        super(options);
+		super(options);
 		this._fileSystemService = new FileSystemService();
 		this._fileCabinetService = new FileCabinetService(path.join(options.projectFolder, FILE_CABINET));
 	}
@@ -57,7 +57,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 	_generateSelectFolderQuestion() {
 		const localFileCabinetSubFolders = this._fileCabinetService.getFileCabinetFolders();
 
-		const transformFoldersToChoicesFunc = folder => {
+		const transformFoldersToChoicesFunc = (folder) => {
 			const name = this._fileCabinetService.getFileCabinetRelativePath(folder);
 
 			let disabledMessage = '';
@@ -76,7 +76,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 
 		const localFileCabinetFoldersChoices = localFileCabinetSubFolders.map(transformFoldersToChoicesFunc);
 
-		if (!localFileCabinetFoldersChoices.some(choice => !choice.disabled)) {
+		if (!localFileCabinetFoldersChoices.some((choice) => !choice.disabled)) {
 			throw NodeTranslationService.getMessage(MESSAGES.NOTHING_TO_UPLOAD);
 		}
 
@@ -93,7 +93,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 	_generateSelectFilesQuestion(selectedFolder) {
 		const files = this._fileSystemService.getFilesFromDirectory(selectedFolder);
 
-		const transformFilesToChoicesFunc = file => {
+		const transformFilesToChoicesFunc = (file) => {
 			const path = this._fileCabinetService.getFileCabinetRelativePath(file);
 			return { name: path, value: path };
 		};
@@ -105,7 +105,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 				name: COMMAND_OPTIONS.PATHS,
 				choices: filesChoices,
-				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 		];
 	}

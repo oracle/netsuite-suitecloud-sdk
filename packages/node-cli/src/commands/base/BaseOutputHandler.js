@@ -3,21 +3,23 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const BaseOutputHandler = require('../base/BaseOutputHandler');
+
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 
-module.exports = class ListFilesOutputHandler extends BaseOutputHandler {
+module.exports = class BaseOutputHandler {
 	constructor(options) {
-		super(options);
+		this._log = options.log;
 	}
 
 	parse(actionResult) {
-		ActionResultUtils.logResultMessage(actionResult, this._log);
+		return actionResult;
+	}
 
-		if (Array.isArray(actionResult.data)) {
-			actionResult.data.forEach((fileName) => {
-				this.lo_logg.result(fileName);
-			});
+	parseError(actionResult) {
+		if (actionResult.errorMessages && actionResult.errorMessages.length > 0) {
+			for (let i =0; i<actionResult.errorMessages.length; i++) {
+				this._log.error(actionResult.errorMessages[i]);
+			}
 		}
 		return actionResult;
 	}

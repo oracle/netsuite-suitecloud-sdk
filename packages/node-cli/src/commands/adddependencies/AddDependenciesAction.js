@@ -5,7 +5,7 @@
 'use strict';
 
 const { ActionResult } = require('../../services/actionresult/ActionResult');
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const SDKExecutionContext = require('../../SDKExecutionContext');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const NodeTranslationService = require('../../services/NodeTranslationService');
@@ -18,7 +18,7 @@ const {
 module.exports = class AddDependenciesAction extends BaseAction {
 	constructor(options) {
 		super(options);
-    }
+	}
 
 	preExecute(params) {
 		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
@@ -46,4 +46,4 @@ module.exports = class AddDependenciesAction extends BaseAction {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
-}
+};

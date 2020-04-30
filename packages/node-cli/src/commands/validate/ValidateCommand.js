@@ -4,16 +4,17 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const ValidateAction = require('./ValidateAction');
 const ValidateInputHandler = require('./ValidateInputHandler');
 const ValidateOutputHandler = require('./ValidateOutputHandler');
 
-module.exports = class ValidateCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
-		this._action = new ValidateAction(options);
-		this._inputHandler = new ValidateInputHandler(options);
-		this._outputHandler = new ValidateOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(ValidateAction)
+			.withInput(ValidateInputHandler)
+			.withOutput(ValidateOutputHandler)
+			.build();
 	}
 };

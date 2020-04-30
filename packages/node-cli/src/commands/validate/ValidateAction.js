@@ -5,7 +5,7 @@
 
 'use strict';
 
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const DeployActionResult = require('../../services/actionresult/DeployActionResult');
 const SDKExecutionContext = require('../../SDKExecutionContext');
 const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
@@ -30,7 +30,7 @@ const COMMAND_OPTIONS = {
 
 module.exports = class ValidateAction extends BaseAction {
 	constructor(options) {
-        super(options);
+		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
 			projectInfoService: this._projectInfoService,

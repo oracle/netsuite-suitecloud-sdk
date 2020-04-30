@@ -10,7 +10,7 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const CommandUtils = require('../../utils/CommandUtils');
 const ApplicationConstants = require('../../ApplicationConstants');
 const FileSystemService = require('../../services/FileSystemService');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 
 const {
 	COMMAND_CREATEPROJECT: { QUESTIONS, MESSAGES },
@@ -53,7 +53,6 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		if (!this._runInInteractiveMode) {
-
 			const folderName = this._getProjectFolderName(params);
 			const absolutePath = path.join(this._executionPath, folderName);
 
@@ -165,9 +164,11 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	_getProjectFolderName(params) {
 		switch (params[COMMAND_OPTIONS.TYPE]) {
 			case ApplicationConstants.PROJECT_SUITEAPP:
-				return params[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + params[COMMAND_OPTIONS.PROJECT_ID];
+				return (params[COMMAND_OPTIONS.PUBLISHER_ID] && params[COMMAND_OPTIONS.PROJECT_ID])
+					? params[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + params[COMMAND_OPTIONS.PROJECT_ID]
+					: 'not_specified';
 			case ApplicationConstants.PROJECT_ACP:
-				return params[COMMAND_OPTIONS.PROJECT_NAME];
+				return params[COMMAND_OPTIONS.PROJECT_NAME] ? params[COMMAND_OPTIONS.PROJECT_NAME] : 'not_specified';
 			default:
 				// if --type parameter isn't correct, it doesn't matter the project folder name. It will throw a validation error later
 				return 'not_specified';

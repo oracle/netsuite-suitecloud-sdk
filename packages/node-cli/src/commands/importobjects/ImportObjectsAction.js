@@ -10,8 +10,10 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../../SDKExecutionContext');
-const BaseAction = require('../basecommand/BaseAction');
-const {	COMMAND_IMPORTOBJECTS: { MESSAGES }} = require('../../services/TranslationKeys');
+const BaseAction = require('../base/BaseAction');
+const {
+	COMMAND_IMPORTOBJECTS: { MESSAGES },
+} = require('../../services/TranslationKeys');
 
 const ANSWERS_NAMES = {
 	APP_ID: 'appid',
@@ -34,13 +36,7 @@ const COMMAND_FLAGS = {
 
 module.exports = class ImportObjectsAction extends BaseAction {
 	constructor(options) {
-        super(options);
-	}
-
-	preExecute(parms) {
-		parms[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
-
-		return parms;
+		super(options);
 	}
 
 	async execute(params) {
@@ -62,10 +58,10 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				}
 			}
 
-			const params = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 			const executionContextForImportObjects = new SDKExecutionContext({
 				command: this._commandMetadata.sdkCommand,
-				params,
+				sdkParams,
 				flags,
 				includeProjectDefaultAuthId: true,
 			});

@@ -4,17 +4,17 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const CreateProjectAction = require('./CreateProjectAction');
 const CreateProjectInputHandler = require('./CreateProjectInputHandler');
 const CreateProjectOutputHandler = require('./CreateProjectOutputHandler');
 
-module.exports = class CreateProjectCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
-
-		this._action = new CreateProjectAction(options);
-		this._inputHandler = new CreateProjectInputHandler(options);
-		this._outputHandler = new CreateProjectOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(CreateProjectAction)
+			.withInput(CreateProjectInputHandler)
+			.withOutput(CreateProjectOutputHandler)
+			.build();
 	}
 };

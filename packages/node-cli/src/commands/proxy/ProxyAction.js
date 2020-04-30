@@ -5,7 +5,7 @@
 'use strict';
 
 const ProxyActionResult = require('../../services/actionresult/ProxyActionResult');
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const {
 	COMMAND_PROXY: { ARGS_VALIDATION },

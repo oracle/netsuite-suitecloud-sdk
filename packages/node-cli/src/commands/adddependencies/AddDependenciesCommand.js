@@ -4,18 +4,15 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const AddDependenciesAction = require('./AddDependenciesAction');
 const AddDependenciesOutputHandler = require('./AddDependenciesOutputHandler');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
 
-module.exports = class AddDependenciesCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
-
-		this._action = new AddDependenciesAction(options);
-		this._inputHandler = new BaseInputHandler(options);
-		this._outputHandler = new AddDependenciesOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(AddDependenciesAction)
+			.withOutput(AddDependenciesOutputHandler)
+			.build();
 	}
-}
-
+};

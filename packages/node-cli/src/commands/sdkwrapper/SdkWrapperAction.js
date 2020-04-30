@@ -1,10 +1,10 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const CommandUtils = require('../../utils/CommandUtils');
 const SDKExecutionContext = require('../../SDKExecutionContext');
@@ -19,12 +19,12 @@ const PROJECT_OPTION = 'project';
 
 module.exports = class SdkWrapperAction extends BaseAction {
 	constructor(options) {
-        super(options);
+		super(options);
 	}
 
 	_setProjectFolderOptionsIfPresent(args) {
 		const projectOptions = [PROJECT_OPTION, PROJECT_DIRECTORY_OPTION];
-		projectOptions.forEach(projectOption => {
+		projectOptions.forEach((projectOption) => {
 			if (this._commandMetadata.options[projectOption]) {
 				args[projectOption] = CommandUtils.quoteString(this._projectFolder);
 			}
@@ -43,10 +43,7 @@ module.exports = class SdkWrapperAction extends BaseAction {
 		});
 
 		for (const optionId in this._commandMetadata.options) {
-			if (
-				this._commandMetadata.options.hasOwnProperty(optionId) &&
-				args.hasOwnProperty(optionId)
-			) {
+			if (this._commandMetadata.options.hasOwnProperty(optionId) && args.hasOwnProperty(optionId)) {
 				if (this._commandMetadata.options[optionId].type === FLAG_OPTION_TYPE) {
 					if (args[optionId]) {
 						executionContext.addFlag(optionId);
@@ -58,10 +55,7 @@ module.exports = class SdkWrapperAction extends BaseAction {
 		}
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
-			message: NodeTranslationService.getMessage(
-				MESSAGES.EXECUTING_COMMAND,
-				this._commandMetadata.name
-			),
+			message: NodeTranslationService.getMessage(MESSAGES.EXECUTING_COMMAND, this._commandMetadata.name),
 		});
 	}
 };

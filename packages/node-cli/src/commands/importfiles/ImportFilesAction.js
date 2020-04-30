@@ -12,7 +12,7 @@ const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../../SDKExecutionContext');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, MESSAGES },
 } = require('../../services/TranslationKeys');
@@ -26,9 +26,9 @@ const COMMAND_OPTIONS = {
 
 module.exports = class ImportFilesAction extends BaseAction {
 	constructor(options) {
-        super(options);
+		super(options);
 
-        this._projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
 	preExecute(params) {
@@ -67,9 +67,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 			});
 
 			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
-				? ActionResult.Builder.withData(operationResult.data)
-						.withResultMessage(operationResult.resultMessage)
-						.build()
+				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build;

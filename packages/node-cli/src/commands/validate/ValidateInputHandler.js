@@ -6,7 +6,7 @@
 'use strict';
 
 const { prompt } = require('inquirer');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');

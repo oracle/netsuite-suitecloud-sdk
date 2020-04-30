@@ -7,7 +7,7 @@
 const { prompt, Separator } = require('inquirer');
 const chalk = require('chalk');
 const path = require('path');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 const SDKExecutionContext = require('../../SDKExecutionContext');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
@@ -239,5 +239,4 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			throw NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder);
 		}
 	}
-
 };

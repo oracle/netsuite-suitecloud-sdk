@@ -7,18 +7,19 @@
 const { ActionResult } = require('../../services/actionresult/ActionResult');
 const CommandUtils = require('../../utils/CommandUtils');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../../SDKExecutionContext');
 
-const {	COMMAND_LISTOBJECTS: { LISTING_OBJECTS } } = require('../../services/TranslationKeys');
+const {
+	COMMAND_LISTOBJECTS: { LISTING_OBJECTS },
+} = require('../../services/TranslationKeys');
 
 module.exports = class ListObjectsAction extends BaseAction {
 	constructor(options) {
-        super(options);
+		super(options);
 	}
-
 
 	async execute(params) {
 		try {
@@ -40,9 +41,7 @@ module.exports = class ListObjectsAction extends BaseAction {
 			});
 
 			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
-				? ActionResult.Builder.withData(operationResult.data)
-						.withResultMessage(operationResult.resultMessage)
-						.build()
+				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();

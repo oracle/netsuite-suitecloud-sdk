@@ -8,7 +8,7 @@ const { prompt } = require('inquirer');
 const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 
@@ -39,16 +39,15 @@ const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
 
 module.exports = class DeployInputHandler extends BaseInputHandler {
 	constructor(options) {
-        super(options);
+		super(options);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._projectType = this._projectInfoService.getProjectType();
 	}
 
 	async getParameters(params) {
-
 		if (!this._runInInteractiveMode) {
-			return {[COMMAND.OPTIONS.PROJECT]: this._projectFolder};
+			return { [COMMAND.OPTIONS.PROJECT]: this._projectFolder };
 		}
 
 		const isSuiteAppProject = this._projectType === PROJECT_SUITEAPP;

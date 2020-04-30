@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const BaseOutputHandler = require('../base/BaseOutputHandler');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 
@@ -17,9 +17,9 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 		super(options);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
-			actionResult.data.forEach(resultLine => {
+			actionResult.data.forEach((resultLine) => {
 				this._log.result(resultLine);
 			});
 		} else if (!actionResult.isServerValidation) {
@@ -31,6 +31,7 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 			this._showLocalValidationResultData(actionResult.data);
 		}
 		ActionResultUtils.logResultMessage(actionResult, this._log);
+		return actionResult;
 	}
 
 	_showApplyContentProtectionOptionMessage(isAppliedContentProtection, projectType, projectFolder) {
@@ -50,7 +51,7 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 
 	_logValidationEntries(entries, headingLabel, log) {
 		const files = [];
-		entries.forEach(entry => {
+		entries.forEach((entry) => {
 			if (!files.includes(entry.filePath)) {
 				files.push(entry.filePath);
 			}
@@ -60,14 +61,14 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 			log(`${headingLabel}:`);
 		}
 
-		files.forEach(file => {
+		files.forEach((file) => {
 			const fileString = `    ${file}`;
 			log(fileString);
 			entries
-				.filter(entry => entry.filePath === file)
-				.forEach(entry => {
+				.filter((entry) => entry.filePath === file)
+				.forEach((entry) => {
 					log(NodeTranslationService.getMessage(OUTPUT.VALIDATION_OUTPUT_MESSAGE, entry.lineNumber, entry.message));
 				});
 		});
 	}
-}
+};

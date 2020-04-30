@@ -4,18 +4,19 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const DeployAction = require('./DeployAction');
 const DeployInputHandler = require('./DeployInputHandler');
 const DeployOutputHandler = require('./DeployOutputHandler');
 
 
-module.exports = class DeployCommand extends BaseCommand {
-	constructor(options) {
-        super(options);
 
-        this._action = new DeployAction(options);
-        this._inputHandler = new DeployInputHandler(options);
-        this._outputHandler = new DeployOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(DeployAction)
+			.withInput(DeployInputHandler)
+			.withOutput(DeployOutputHandler)
+			.build();
 	}
 };

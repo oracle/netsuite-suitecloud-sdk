@@ -4,7 +4,6 @@
  */
 'use strict';
 
-const { ERROR } = require('../services/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerConstants');
 
 module.exports = {
@@ -14,11 +13,7 @@ module.exports = {
 
 	logResultMessage: (actionResult, log) => {
 		if (actionResult.resultMessage) {
-			if (actionResult.status === ERROR) {
-				log.error(actionResult.resultMessage);
-			} else {
-				log.result(actionResult.resultMessage);
-			}
+			log.result(actionResult.resultMessage);
 		}
 	},
 };

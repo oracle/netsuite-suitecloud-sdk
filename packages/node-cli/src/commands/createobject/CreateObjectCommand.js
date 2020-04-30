@@ -4,17 +4,16 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const CreateObjectAction = require('./CreateObjectAction');
 const CreateObjectInputHandler = require('./CreateObjectInputHandler');
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
 
-module.exports = class CreateObjectCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
 
-		this._action = new CreateObjectAction(options);
-		this._inputHandler = new CreateObjectInputHandler(options);
-		this._outputHandler = new BaseOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(CreateObjectAction)
+			.withInput(CreateObjectInputHandler)
+			.build();
 	}
 };

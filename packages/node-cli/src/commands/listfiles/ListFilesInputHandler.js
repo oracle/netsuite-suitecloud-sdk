@@ -9,7 +9,7 @@ const CommandUtils = require('../../utils/CommandUtils');
 const SDKExecutionContext = require('../../SDKExecutionContext');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 const SDKExecutor = require('../../SDKExecutor');
 const AuthenticationService = require('../../core/authentication/AuthenticationService');
 const {

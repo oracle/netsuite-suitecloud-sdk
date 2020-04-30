@@ -4,16 +4,17 @@
  */
 'use strict';
 
-const BaseCommand = require('../basecommand/BaseCommand');
+const Command = require('../Command');
 const UploadFilesAction = require('./UploadFilesAction');
 const UploadFilesInputHandler = require('./UploadFilesInputHandler');
 const UploadFilesOutputHandler = require('./UploadFilesOutputHandler');
 
-module.exports = class UploadFilesCommand extends BaseCommand {
-	constructor(options) {
-		super(options);
-		this._action = new UploadFilesAction(options);
-		this._inputHandler = new UploadFilesInputHandler(options);
-		this._outputHandler = new UploadFilesOutputHandler(options);
+module.exports = {
+	create(options) {
+		return Command.Builder.withOptions(options)
+			.withAction(UploadFilesAction)
+			.withInput(UploadFilesInputHandler)
+			.withOutput(UploadFilesOutputHandler)
+			.build();
 	}
 };

@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const BaseOutputHandler = require('../base/BaseOutputHandler');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 
@@ -16,7 +16,7 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 		super(options);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		if (!actionResult.data) {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 			return actionResult;
@@ -24,15 +24,14 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 
 		this._logImportedObjects(actionResult.data.successfulImports);
 		this._logUnImportedObjects(actionResult.data.failedImports);
+		return actionResult;
 	}
 
 	_logImportedObjects(importedObjects) {
 		if (Array.isArray(importedObjects) && importedObjects.length) {
 			this._log.result(NodeTranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS));
-			importedObjects.forEach(objectImport => {
-				const importedObjectLogMessage = `${this._log.getPadding(1)}- ${objectImport.customObject.type}:${
-					objectImport.customObject.id
-				}`;
+			importedObjects.forEach((objectImport) => {
+				const importedObjectLogMessage = `${this._log.getPadding(1)}- ${objectImport.customObject.type}:${objectImport.customObject.id}`;
 				this._log.result(importedObjectLogMessage);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
@@ -46,14 +45,12 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 		const thereAreReferencedFiles =
 			(Array.isArray(importedFiles) && importedFiles.length) || (Array.isArray(unImportedFiles) && unImportedFiles.length);
 		if (thereAreReferencedFiles) {
-			const referencedFilesLogMessage = `${this._log.getPadding(2)}- ${NodeTranslationService.getMessage(
-				OUTPUT.REFERENCED_SUITESCRIPT_FILES
-			)}`;
+			const referencedFilesLogMessage = `${this._log.getPadding(2)}- ${NodeTranslationService.getMessage(OUTPUT.REFERENCED_SUITESCRIPT_FILES)}`;
 			this._log.result(referencedFilesLogMessage);
 		}
 
 		if (Array.isArray(importedFiles) && importedFiles.length) {
-			importedFiles.forEach(importedFile => {
+			importedFiles.forEach((importedFile) => {
 				const importedFileLogMessage = `${this._log.getPadding(3)}- ${NodeTranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
 					importedFile.path
@@ -63,7 +60,7 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 		}
 
 		if (Array.isArray(unImportedFiles) && unImportedFiles.length) {
-			unImportedFiles.forEach(unImportedFile => {
+			unImportedFiles.forEach((unImportedFile) => {
 				const unimportedFileLogMessage = `${this._log.getPadding(3)}- ${NodeTranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
 					unImportedFile.path,
@@ -77,7 +74,7 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 	_logUnImportedObjects(unImportedObjects) {
 		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
 			this._log.warning(NodeTranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS));
-			unImportedObjects.forEach(objectImport => {
+			unImportedObjects.forEach((objectImport) => {
 				const unimportedObjectLogMessage = `${this._log.getPadding(1)}- ${NodeTranslationService.getMessage(
 					OUTPUT.OBJECT_IMPORT_FAILED,
 					objectImport.customObject.type,
@@ -88,5 +85,4 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 			});
 		}
 	}
-}
-
+};

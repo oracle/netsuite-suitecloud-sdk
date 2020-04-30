@@ -5,7 +5,7 @@
 'use strict';
 
 const { prompt, Separator } = require('inquirer');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 const CommandUtils = require('../../utils/CommandUtils');
 const OBJECT_TYPES = require('../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../services/ProjectInfoService');
@@ -25,7 +25,12 @@ const {
 	NO,
 } = require('../../services/TranslationKeys');
 
-const { validateArrayIsNotEmpty, validateScriptId, validateSuiteApp, showValidationResults } = require('../../validation/InteractiveAnswersValidator');
+const {
+	validateArrayIsNotEmpty,
+	validateScriptId,
+	validateSuiteApp,
+	showValidationResults,
+} = require('../../validation/InteractiveAnswersValidator');
 const SDKExecutor = require('../../SDKExecutor');
 const AuthenticationService = require('../../core/authentication/AuthenticationService');
 
@@ -50,7 +55,7 @@ const CUSTOM_SCRIPT_PREFIX = 'customscript';
 
 module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	constructor(options) {
-        super(options);
+		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
 		this._sdkExecutor = new SDKExecutor(new AuthenticationService(this._executionPath));
@@ -109,7 +114,9 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 
 		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...answersAfterObjectSelection, ...overwriteConfirmationAnswer };
 
-		return this._arrangeAnswersForImportObjects(combinedAnswers);
+		const answers = this._arrangeAnswersForImportObjects(combinedAnswers);
+		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
+		return answers;
 	}
 
 	_generateListObjectQuestions() {

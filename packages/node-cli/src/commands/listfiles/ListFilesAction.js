@@ -9,13 +9,14 @@ const SDKExecutionContext = require('../../SDKExecutionContext');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
-const BaseAction = require('../basecommand/BaseAction');
-const {	COMMAND_LISTFILES: { LOADING_FILES } } = require('../../services/TranslationKeys');
-
+const BaseAction = require('../base/BaseAction');
+const {
+	COMMAND_LISTFILES: { LOADING_FILES },
+} = require('../../services/TranslationKeys');
 
 module.exports = class ListFilesAction extends BaseAction {
 	constructor(options) {
-        super(options);
+		super(options);
 	}
 
 	async execute(params) {

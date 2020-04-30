@@ -5,17 +5,13 @@
 'use strict';
 
 const TemplateKeys = require('../../templates/TemplateKeys');
-const BaseAction = require('../basecommand/BaseAction');
+const BaseAction = require('../base/BaseAction');
 const FileSystemService = require('../../services/FileSystemService');
 
 module.exports = class CreateObjectAction extends BaseAction {
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
-	}
-
-	async preExecute(params) {
-		return params
 	}
 
 	async execute(params) {
@@ -34,9 +30,5 @@ module.exports = class CreateObjectAction extends BaseAction {
 		});
 		await Promise.all([createFilePromise, createObjectPromise]);
 		console.log(`${params.objectfilename} & ${params.relatedfilename} were created successfully.`);
-	}
-
-	async postExecute(actionResult) {
-		return actionResult;
 	}
 };

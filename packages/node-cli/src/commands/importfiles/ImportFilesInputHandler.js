@@ -12,7 +12,7 @@ const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
 const SDKExecutionContext = require('../../SDKExecutionContext');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
-const BaseInputHandler = require ('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 const SDKExecutor = require('../../SDKExecutor');
 const AuthenticationService = require('../../core/authentication/AuthenticationService');
 const { validateArrayIsNotEmpty, showValidationResults } = require('../../validation/InteractiveAnswersValidator');
@@ -43,7 +43,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		super(options);
 		// TODO input handlers shouldn't execute actions. rework this
 		this._sdkExecutor = new SDKExecutor(new AuthenticationService(this._executionPath));
-		
+
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
@@ -103,7 +103,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
-		return listFoldersResponse.data.map(folder => ({
+		return listFoldersResponse.data.map((folder) => ({
 			name: folder.path,
 			value: folder.path,
 			disabled: folder.isRestricted ? NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',
@@ -131,8 +131,8 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 				name: COMMAND_OPTIONS.PATHS,
 				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FILES),
-				choices: listFilesResult.data.map(path => ({ name: path, value: path })),
-				validate: fieldValue => showValidationResults(fieldValue, validateArrayIsNotEmpty),
+				choices: listFilesResult.data.map((path) => ({ name: path, value: path })),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,

@@ -9,7 +9,7 @@ const { prompt } = require('inquirer');
 const chalk = require('chalk');
 const { join } = require('path');
 const { FOLDERS } = require('../../ApplicationConstants');
-const BaseInputHandler = require('../basecommand/BaseInputHandler');
+const BaseInputHandler = require('../base/BaseInputHandler');
 const FileSystemService = require('../../services/FileSystemService');
 
 module.exports = class CreateObjectInputHandler extends BaseInputHandler {

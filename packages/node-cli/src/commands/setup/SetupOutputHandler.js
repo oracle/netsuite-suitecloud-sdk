@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const BaseOutputHandler = require('../basecommand/BaseOutputHandler');
+const BaseOutputHandler = require('../base/BaseOutputHandler');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 
 const {
@@ -21,7 +21,7 @@ module.exports = class SetupOutputHandler extends BaseOutputHandler {
 		super(options);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		let resultMessage;
 		switch (actionResult.mode) {
 			case AUTH_MODE.OAUTH:
@@ -54,5 +54,6 @@ module.exports = class SetupOutputHandler extends BaseOutputHandler {
 
 		this._log.result(resultMessage);
 		this._log.result(NodeTranslationService.getMessage(OUTPUT.SUCCESSFUL));
+		return actionResult;
 	}
-}
+};
