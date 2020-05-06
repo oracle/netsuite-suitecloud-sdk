@@ -8,10 +8,8 @@ const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
-	FOLDERS,
 	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
-const SDKProperties = require('./core/sdksetup/SDKProperties');
 const path = require('path');
 const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
@@ -21,16 +19,18 @@ const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SDKErrorCodes = require('./SDKErrorCodes');
-const HOME_PATH = require('os').homedir();
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
 module.exports.SDKExecutor = class SDKExecutor {
-	constructor(authenticationService) {
-		this._CLISettingsService = new CLISettingsService();
+	constructor(authenticationService, sdkPath) {
+
 		this._authenticationService = authenticationService;
+		this._sdkPath = sdkPath;
+
+		this._CLISettingsService = new CLISettingsService();
 		this._environmentInformationService = new EnvironmentInformationService();
 	}
 
@@ -67,17 +67,13 @@ module.exports.SDKExecutor = class SDKExecutor {
 
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
-			const sdkJarPath = path.join(
-				HOME_PATH,
-				`${FOLDERS.SUITECLOUD_SDK}/${SDKProperties.getSDKFileName()}`
-			);
-			if (!FileUtils.exists(sdkJarPath)) {
+			if (!FileUtils.exists(this._sdkPath)) {
 				throw NodeTranslationService.getMessage(
 					ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND,
 					path.join(__dirname, '..')
 				);
 			}
-			const quotedSdkJarPath = `"${sdkJarPath}"`;
+			const quotedSdkJarPath = `"${this._sdkPath}"`;
 			
 			const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatformVersionOption}`;
 			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;

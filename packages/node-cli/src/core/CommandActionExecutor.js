@@ -31,6 +31,7 @@ module.exports = class CommandActionExecutor {
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._authenticationService = dependencies.authenticationService;
 		this._consoleLogger = dependencies.consoleLogger;
+		this._sdkPath = dependencies.sdkPath;
 	}
 
 	async executeAction(context) {
@@ -60,6 +61,7 @@ module.exports = class CommandActionExecutor {
 				projectFolder: projectFolder,
 				executionPath: this._executionPath,
 				consoleLogger: this._consoleLogger,
+				sdkPath: this._sdkPath,
 			});
 
 			const commandArguments = this._extractOptionValuesFromArguments(command.commandMetadata.options, args);

@@ -19,13 +19,13 @@ export default class Deploy extends BaseAction {
 		});
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(DEPLOY.COMMAND));
 		const statusBarMessage: string = this.translationService.getMessage(DEPLOY.DEPLOYING);
-		opts.messageService.showTriggeredActionInfo(commandMessage, commandActionPromise, statusBarMessage);
+		opts.messageService.showInformationMessage(commandMessage, commandActionPromise, statusBarMessage);
 
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {
-			opts.messageService.showCompletedActionInfo();
+			opts.messageService.showCommandInfo();
 		} else {
-			opts.messageService.showCompletedActionError();
+			opts.messageService.showCommandError();
 		}
 	}
 }

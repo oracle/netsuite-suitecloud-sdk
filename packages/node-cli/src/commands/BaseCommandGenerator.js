@@ -18,8 +18,9 @@ module.exports = class BaseCommandGenerator {
 		assert(options.projectFolder);
 		assert(typeof options.runInInteractiveMode === 'boolean');
 		assert(options.consoleLogger);
+		assert(options.sdkPath);
 
-		this._sdkExecutor = new SDKExecutor(new AuthenticationService(options.executionPath));
+		this._sdkExecutor = new SDKExecutor(new AuthenticationService(options.executionPath), options.sdkPath);
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;

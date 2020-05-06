@@ -1,5 +1,6 @@
 'use strict';
 const CommandActionExecutor = require('../../src/core/CommandActionExecutor');
+const sdkPath = require('../../src/core/sdksetup/SDKProperties').getSdkPath();
 const { ActionResult } = require('../../src/commands/actionresult/ActionResult');
 
 describe('CommandActionExecutor ExecuteAction():', function() {
@@ -88,6 +89,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
 			consoleLogger: mockConsoleLogger,
+			sdkPath: sdkPath,
 		});
 
 		mockCommandUserExtensionOnCompleted.mockClear();
@@ -170,6 +172,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
 			consoleLogger: mockConsoleLogger,
+			sdkPath: sdkPath,
 		});
 
 		await commandExecutorWithValidationErrors.executeAction({
@@ -196,6 +199,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceSetupRequired(),
 			consoleLogger: mockConsoleLogger,
+			sdkPath: sdkPath,
 		});
 
 		try {
@@ -226,6 +230,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceNotSupportInteractiveMode(),
 			consoleLogger: mockConsoleLogger,
+			sdkPath: sdkPath,
 		});
 
 		await commandExecutorWithoutAccountConf.executeAction({

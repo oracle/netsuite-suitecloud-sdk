@@ -30,6 +30,7 @@ module.exports = {
 		INSTALLATION_PREFERENCES: '/InstallationPreferences',
 		OBJECTS: '/Objects',
 		SUITECLOUD_SDK: '.suitecloud-sdk',
+		NODE_CLI: 'cli'
 	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',

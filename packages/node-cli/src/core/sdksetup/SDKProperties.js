@@ -6,10 +6,13 @@
 
 const path = require('path');
 const fs = require('fs');
+const { SDK_FILENAME, FOLDERS } = require('../../ApplicationConstants');
+const HOME_PATH = require('os').homedir();
+
 const ROOT_DIRECTORY = path.dirname(path.resolve(__dirname, '../../'));
-const CONFIG_FILE = './config.json';
 const PACKAGE_FILE = `${ROOT_DIRECTORY}/package.json`;
-const { SDK_FILENAME } = require('../../ApplicationConstants');
+const CONFIG_FILE = './config.json';
+
 
 let CONFIG_FILE_CACHE = null;
 
@@ -36,6 +39,10 @@ class SDKProperties {
 		if (fs.existsSync(path.resolve(__dirname, CONFIG_FILE))) {
 			CONFIG_FILE_CACHE = require(CONFIG_FILE);
 		}
+	}
+
+	getSdkPath() {
+		return path.join(HOME_PATH, `${FOLDERS.SUITECLOUD_SDK}/${FOLDERS.NODE_CLI}/${this.getSDKFileName()}`);
 	}
 }
 

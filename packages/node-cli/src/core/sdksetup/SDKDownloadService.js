@@ -35,7 +35,10 @@ class SDKDownloadService {
 	}
 
 	async download() {
-		const sdkDirectory = this._fileSystemService.createFolder(HOME_PATH, FOLDERS.SUITECLOUD_SDK);
+		const sdkParentDirectory = this._fileSystemService.createFolder(HOME_PATH, FOLDERS.SUITECLOUD_SDK);
+		// remove OLD jar files
+		this._removeJarFilesFrom(sdkParentDirectory);
+		const sdkDirectory = this._fileSystemService.createFolder(sdkParentDirectory, FOLDERS.NODE_CLI);
 
 		const fullURL = `${SDKProperties.getDownloadURL()}/${SDKProperties.getSDKFileName()}`;
 
@@ -53,8 +56,8 @@ class SDKDownloadService {
 
 	_downloadFile(url, sdkDirectory) {
 		const proxy = process.env.npm_config_https_proxy || process.env.npm_config_proxy;
-
 		const isProxyRequired = proxy && !SDKProperties.configFileExists();
+		const removeJarFilesFrom = this._removeJarFilesFrom;
 
 		const options = {
 			method: 'GET',
@@ -69,16 +72,21 @@ class SDKDownloadService {
 				throw NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE);
 			}
 
-			// remove all JAR files before writing response to file
-			fs.readdirSync(sdkDirectory)
-				.filter(file => /[.]jar$/.test(file))
-				.map(file => fs.unlinkSync(path.join(sdkDirectory, file)));
+			// remove all jar files before writing response to file
+			removeJarFilesFrom(sdkDirectory)
 
 			const sdkDestinationFile = path.join(sdkDirectory, SDKProperties.getSDKFileName());
 			const file = fs.createWriteStream(sdkDestinationFile);
 			file.write(response.body, 'binary');
 			file.end();
 		});
+	}
+
+	_removeJarFilesFrom(folder) {
+		// remove all JAR files before writing response to file
+		fs.readdirSync(folder)
+			.filter(file => /[.]jar$/.test(file))
+			.map(file => fs.unlinkSync(path.join(folder, file)));
 	}
 }
 
