@@ -67,6 +67,10 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
+		if (!this._runInInteractiveMode) {
+			params[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
+			return params;
+		}
 		const listObjectQuestions = this._generateListObjectQuestions();
 		const listObjectAnswers = await prompt(listObjectQuestions);
 

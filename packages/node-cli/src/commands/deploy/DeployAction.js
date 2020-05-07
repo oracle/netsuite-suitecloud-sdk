@@ -75,7 +75,7 @@ module.exports = class DeployAction extends BaseAction {
 				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
 				params: SDKParams,
-				flags,
+				flags: flags,
 			});
 
 			const operationResult = await executeWithSpinner({

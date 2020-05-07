@@ -61,8 +61,8 @@ module.exports = class ImportObjectsAction extends BaseAction {
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 			const executionContextForImportObjects = new SDKExecutionContext({
 				command: this._commandMetadata.sdkCommand,
-				sdkParams,
-				flags,
+				params: sdkParams,
+				flags: flags,
 				includeProjectDefaultAuthId: true,
 			});
 

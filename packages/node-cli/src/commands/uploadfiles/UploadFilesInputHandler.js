@@ -39,12 +39,17 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 		this._fileCabinetService = new FileCabinetService(path.join(options.projectFolder, FILE_CABINET));
 	}
 
-	async getParameters() {
+	async getParameters(params) {
+		if (!this._runInInteractiveMode) {
+			params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+			return params;
+		}
 		const selectFolderQuestion = this._generateSelectFolderQuestion();
 		const selectFolderAnswer = await prompt(selectFolderQuestion);
 
 		const selectFilesQuestion = this._generateSelectFilesQuestion(selectFolderAnswer.selectedFolder);
 		const selectFilesAnswer = await prompt(selectFilesQuestion);
+		selectFilesAnswer[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 
 		const overwriteAnswer = await prompt([this._generateOverwriteQuestion()]);
 		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {

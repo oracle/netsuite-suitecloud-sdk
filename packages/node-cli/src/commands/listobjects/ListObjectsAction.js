@@ -29,7 +29,7 @@ module.exports = class ListObjectsAction extends BaseAction {
 			}
 			const executionContext = new SDKExecutionContext({
 				command: this._commandMetadata.sdkCommand,
-				sdkParams,
+				params: sdkParams,
 				includeProjectDefaultAuthId: true,
 			});
 

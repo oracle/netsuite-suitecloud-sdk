@@ -27,8 +27,8 @@ module.exports = class UploadFilesAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		const { PROJECT, PATHS } = COMMAND_OPTIONS;
-		params[PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		const { PATHS } = COMMAND_OPTIONS;
+
 		if (params.hasOwnProperty(PATHS)) {
 			if (Array.isArray(params[PATHS])) {
 				params[PATHS] = params[PATHS].map(CommandUtils.quoteString).join(' ');
