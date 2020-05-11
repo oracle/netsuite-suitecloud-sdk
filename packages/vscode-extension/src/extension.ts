@@ -11,6 +11,7 @@ import AddDependencies from './commands/AddDependencies';
 import Deploy from './commands/Deploy';
 import ListObjects from './commands/ListObjects';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
+import UploadFile from './commands/UploadFile';
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'Netsuite SuiteCloud';
 
 export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
@@ -37,8 +38,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	let listobjectsDisposable = vscode.commands.registerCommand('extension.listobjects', () => {
 		actionExecutor.execute(new ListObjects());
 	});
-
 	context.subscriptions.push(listobjectsDisposable);
+
+	let uploadFile = vscode.commands.registerCommand('extension.uploadfile', () => {
+		actionExecutor.execute(new UploadFile());
+	});
+	context.subscriptions.push(uploadFile);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
