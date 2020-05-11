@@ -7,8 +7,8 @@
 
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
-const SDKExecutionContext = require('../SDKExecutionContext');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SdkExecutionContext = require('../SdkExecutionContext');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const CommandUtils = require('../utils/CommandUtils');
 const ProjectInfoService = require('../services/ProjectInfoService');
@@ -120,7 +120,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(answers) {
 		try {
-			const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+			const sdkParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 
 			let isServerValidation = false;
 			const flags = [];
@@ -128,12 +128,12 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			if (answers[COMMAND_OPTIONS.SERVER]) {
 				flags.push(COMMAND_OPTIONS.SERVER);
 				isServerValidation = true;
-				delete SDKParams[COMMAND_OPTIONS.SERVER];
+				delete sdkParams[COMMAND_OPTIONS.SERVER];
 			}
 
-			const executionContext = new SDKExecutionContext({
+			const executionContext = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
-				params: SDKParams,
+				params: sdkParams,
 				flags: flags,
 				includeProjectDefaultAuthId: true,
 			});
@@ -143,15 +143,15 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
-						.withAppliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+						.withAppliedContentProtection(sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
 						.withProjectType(this._projectInfoService.getProjectType)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: DeployActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: DeployActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}

@@ -14,5 +14,10 @@
 	"LIST_OBJECTS_COMMAND": "List objects",
 	"LIST_OBJECTS_LISTING": "Listing objects...",
 	"NOT_IN_VALID_PROJECT": "Not in a valid project",
-	"SEE_DETAILS": "See details"
+	"SEE_DETAILS": "See details",
+	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
+	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
+	"EXTENSION_INSTALLATION_ERROR_GENERAL_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
+	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
+	"EXTENSION_INSTALLATION_ERROR_SDK_INVALID": "Close and open the editor to try again."
 }

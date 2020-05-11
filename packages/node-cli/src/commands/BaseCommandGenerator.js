@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const SDKExecutor = require('../SDKExecutor').SDKExecutor;
+const SdkExecutor = require('../SdkExecutor').SdkExecutor;
 const Command = require('./Command');
 const assert = require('assert');
 const AuthenticationService = require('../core/authentication/AuthenticationService');
@@ -18,8 +18,9 @@ module.exports = class BaseCommandGenerator {
 		assert(options.projectFolder);
 		assert(typeof options.runInInteractiveMode === 'boolean');
 		assert(options.consoleLogger);
+		assert(options.sdkPath);
 
-		this._sdkExecutor = new SDKExecutor(new AuthenticationService(options.executionPath));
+		this._sdkExecutor = new SdkExecutor(new AuthenticationService(options.executionPath), options.sdkPath);
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;

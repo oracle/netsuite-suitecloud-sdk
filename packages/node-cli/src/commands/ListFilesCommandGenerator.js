@@ -7,10 +7,10 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const ListFilesOutputFormatter = require('./outputFormatters/ListFilesOutputFormatter');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
@@ -27,7 +27,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
-			const executionContext = new SDKExecutionContext({
+			const executionContext = new SdkExecutionContext({
 				command: LIST_FOLDERS_COMMAND,
 				includeProjectDefaultAuthId: true,
 			});
@@ -72,7 +72,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		try {
 			// quote folder path to preserve spaces
 			answers.folder = `\"${answers.folder}\"`;
-			const executionContext = new SDKExecutionContext({
+			const executionContext = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				params: answers,
 				includeProjectDefaultAuthId: true,
@@ -83,11 +83,11 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(LOADING_FILES),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

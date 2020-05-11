@@ -15,8 +15,8 @@ const FileSystemService = require('../services/FileSystemService');
 const { join } = require('path');
 const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const ImportObjectsOutputFormatter = require('./outputFormatters/ImportObjectsOutputFormatter');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const ANSWERS_NAMES = {
@@ -66,7 +66,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const listObjectAnswers = await prompt(listObjectQuestions);
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
-		const executionContextForListObjects = new SDKExecutionContext({
+		const executionContextForListObjects = new SdkExecutionContext({
 			command: this._listObjectsMetadata.sdkCommand,
 			params: paramsForListObjects,
 			includeProjectDefaultAuthId: true,
@@ -82,8 +82,8 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			throw NodeTranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, lineBreak, error);
 		}
 
-		if (listObjectsResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-			throw SDKOperationResultUtils.collectErrorMessages(listObjectsResult);
+		if (listObjectsResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.collectErrorMessages(listObjectsResult);
 		}
 		const { data } = listObjectsResult;
 
@@ -327,7 +327,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			}
 
 			const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-			const executionContextForImportObjects = new SDKExecutionContext({
+			const executionContextForImportObjects = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				params,
 				flags,
@@ -339,9 +339,9 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

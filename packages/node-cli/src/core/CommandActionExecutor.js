@@ -23,6 +23,7 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.commandsMetadataService);
 		assert(dependencies.authenticationService);
 		assert(dependencies.consoleLogger);
+		assert(dependencies.sdkPath);
 
 		this._executionPath = dependencies.executionPath;
 		this._commandOptionsValidator = dependencies.commandOptionsValidator;
@@ -31,6 +32,7 @@ module.exports = class CommandActionExecutor {
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._authenticationService = dependencies.authenticationService;
 		this._consoleLogger = dependencies.consoleLogger;
+		this._sdkPath = dependencies.sdkPath;
 	}
 
 	async executeAction(context) {
@@ -60,6 +62,7 @@ module.exports = class CommandActionExecutor {
 				projectFolder: projectFolder,
 				executionPath: this._executionPath,
 				consoleLogger: this._consoleLogger,
+				sdkPath: this._sdkPath,
 			});
 
 			const commandArguments = this._extractOptionValuesFromArguments(command.commandMetadata.options, args);

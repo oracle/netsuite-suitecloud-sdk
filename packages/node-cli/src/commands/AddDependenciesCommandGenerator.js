@@ -6,10 +6,10 @@
 
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const NodeTranslationService = require('../services/NodeTranslationService');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const AddDependenciesOutputFormatter = require('./outputFormatters/AddDependenciesOutputFormatter');
 
@@ -35,7 +35,7 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(answers) {
 		try {
-			const executionContext = new SDKExecutionContext({
+			const executionContext = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				params: answers,
 				flags: [COMMAND_OPTIONS.ALL],
@@ -47,11 +47,11 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

@@ -14,6 +14,7 @@ module.exports = class CommandInstanceFactory {
 		assert(options.executionPath);
 		assert(typeof options.runInInteractiveMode === 'boolean');
 		assert(options.consoleLogger);
+		assert(options.sdkPath);
 
 		const commandMetadata = options.commandMetadata;
 		const commandGeneratorPath = options.runInInteractiveMode ? commandMetadata.interactiveGenerator : commandMetadata.nonInteractiveGenerator;
@@ -25,6 +26,7 @@ module.exports = class CommandInstanceFactory {
 			executionPath: options.executionPath,
 			runInInteractiveMode: options.runInInteractiveMode,
 			consoleLogger: options.consoleLogger,
+			sdkPath: options.sdkPath,
 		});
 
 		return generatorInstance.create();

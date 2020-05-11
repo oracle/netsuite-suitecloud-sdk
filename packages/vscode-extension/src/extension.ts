@@ -10,7 +10,7 @@ import { ActionExecutor } from './ActionExecutor';
 import AddDependencies from './commands/AddDependencies';
 import Deploy from './commands/Deploy';
 import ListObjects from './commands/ListObjects';
-import { SDKDownloadService } from './util/ExtensionUtil';
+import { installIfNeeded } from './core/sdksetup/SdkServices';
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'Netsuite SuiteCloud';
 
 export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
@@ -19,7 +19,7 @@ export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SC
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
 
-	await SDKDownloadService.download();
+	await installIfNeeded();
 
 	const actionExecutor = new ActionExecutor();
 	// The command has been defined in the package.json file

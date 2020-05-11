@@ -7,7 +7,7 @@
 const path = require('path');
 const FileUtils = require('../utils/FileUtils');
 const { SDK_COMMANDS_METADATA_FILE, NODE_COMMANDS_METADATA_FILE, COMMAND_GENERATORS_METADATA_FILE } = require('../ApplicationConstants');
-const SDK_WRAPPER_GENERATOR = 'commands/SDKWrapperCommandGenerator';
+const SDK_WRAPPER_GENERATOR = 'commands/SdkWrapperCommandGenerator';
 let COMMANDS_METADATA_CACHE;
 
 function executeForEachCommandMetadata(commandsMetadata, func) {

@@ -27,4 +27,6 @@ export const NodeTranslationService = require('@oracle/suitecloud-cli/src/servic
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
 
-export const SDKDownloadService = require('@oracle/suitecloud-cli/src/core/sdksetup/SDKDownloadService');
+export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
+
+export const ApplicationConstants = require('@oracle/suitecloud-cli/src/ApplicationConstants');
