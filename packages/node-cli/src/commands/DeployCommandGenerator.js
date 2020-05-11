@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const DeployActionResult = require('../commands/actionresult/DeployActionResult');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const CommandUtils = require('../utils/CommandUtils');
@@ -13,7 +13,7 @@ const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesAr
 const ApplyContentProtectionArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const DeployOutputFormatter = require('./outputFormatters/DeployOutputFormatter');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
@@ -130,16 +130,16 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(answers) {
 		try {
-			const SDKParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+			const sdkParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 			const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
-			if (SDKParams[COMMAND.FLAGS.VALIDATE]) {
-				delete SDKParams[COMMAND.FLAGS.VALIDATE];
+			if (sdkParams[COMMAND.FLAGS.VALIDATE]) {
+				delete sdkParams[COMMAND.FLAGS.VALIDATE];
 				flags.push(COMMAND.FLAGS.VALIDATE);
 			}
-			const executionContextForDeploy = new SDKExecutionContext({
+			const executionContextForDeploy = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
-				params: SDKParams,
+				params: sdkParams,
 				flags,
 			});
 
@@ -148,10 +148,10 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING),
 			});
 
-			const isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
-			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
+			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
+			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && sdkParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
@@ -159,7 +159,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 						.withProjectType(this._projectType)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: DeployActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: DeployActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}

@@ -18,13 +18,13 @@ const EnvironmentInformationService = require('./services/EnvironmentInformation
 const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
-const SDKErrorCodes = require('./SDKErrorCodes');
+const SdkErrorCodes = require('./SdkErrorCodes');
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
-module.exports.SDKExecutor = class SDKExecutor {
+module.exports.SdkExecutor = class SdkExecutor {
 	constructor(authenticationService, sdkPath) {
 
 		this._authenticationService = authenticationService;
@@ -97,7 +97,7 @@ module.exports.SDKExecutor = class SDKExecutor {
 						if (
 							executionContext.isIntegrationMode &&
 							output.errorCode &&
-							output.errorCode === SDKErrorCodes.NO_TBA_SET_FOR_ACCOUNT
+							output.errorCode === SdkErrorCodes.NO_TBA_SET_FOR_ACCOUNT
 						) {
 							reject(
 								NodeTranslationService.getMessage(

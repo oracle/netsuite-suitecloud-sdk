@@ -12,8 +12,8 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const OBJECT_TYPES = require('../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const ListObjectsOutputFormatter = require('./outputFormatters/ListObjectsOutputFormatter');
 const {
 	validateArrayIsNotEmpty,
@@ -157,7 +157,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			if (Array.isArray(params.type)) {
 				params.type = params.type.join(' ');
 			}
-			const executionContext = new SDKExecutionContext({
+			const executionContext = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				params,
 				includeProjectDefaultAuthId: true,
@@ -170,11 +170,11 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 				message: NodeTranslationService.getMessage(LISTING_OBJECTS),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

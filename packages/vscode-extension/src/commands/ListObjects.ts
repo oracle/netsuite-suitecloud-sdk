@@ -37,7 +37,7 @@ export default class ListObjects extends BaseAction {
 		});
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(LIST_OBJECTS.COMMAND));
 		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
-		opts.messageService.showInformationMessage(commandMessage, commandActionPromise, statusBarMessage);
+		opts.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {

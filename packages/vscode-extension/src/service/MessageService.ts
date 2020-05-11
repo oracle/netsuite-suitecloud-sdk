@@ -19,11 +19,11 @@ export default class MessageService {
 		return this;
 	}
 
-	showInformationMessage(infoMessage: string, promise?: Promise<any>, statusBarMessage?: string) {
+	showInformationMessage(infoMessage: string, statusBarMessage?: string, promise?: Promise<any>, spin = true) {
 		window.showInformationMessage(infoMessage);
 
 		if (statusBarMessage && promise) {
-			this.showStatusBarMessage(statusBarMessage, promise);
+			this.showStatusBarMessage(statusBarMessage, spin, promise);
 		}
 	}
 
@@ -35,8 +35,8 @@ export default class MessageService {
 		window.showErrorMessage(errorMessage);
 	}
 
-	showStatusBarMessage(message: string, promise: Promise<any>) {
-		window.setStatusBarMessage(message, promise);
+	showStatusBarMessage(message: string, spin: boolean, promise: Promise<any>) {
+		window.setStatusBarMessage(spin ? `$(sync~spin) ${message}` : message, promise);
 	}
 
 	showCommandInfo(successMessage?: string) {

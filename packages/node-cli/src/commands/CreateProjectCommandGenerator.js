@@ -10,8 +10,8 @@ const TemplateKeys = require('../templates/TemplateKeys');
 const FileSystemService = require('../services/FileSystemService');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const ApplicationConstants = require('../ApplicationConstants');
 const NpmInstallRunner = require('../services/NpmInstallRunner');
 const CreateProjectOutputFormatter = require('./outputFormatters/CreateProjectOutputFormatter');
@@ -244,7 +244,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 			const projectName = answers[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = answers[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
-			return createProjectActionData.operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return createProjectActionData.operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
 						.withResultMessage(createProjectActionData.operationResult.resultMessage)
 						.withProjectType(projectType)
@@ -254,7 +254,7 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
 						.build()
 				: CreateProjectActionResult.Builder.withErrors(
-						SDKOperationResultUtils.collectErrorMessages(createProjectActionData.operationResult)
+						SdkOperationResultUtils.collectErrorMessages(createProjectActionData.operationResult)
 				  ).build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
@@ -268,14 +268,14 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
-				const executionContextCreateProject = new SDKExecutionContext({
+				const executionContextCreateProject = new SdkExecutionContext({
 					command: this._commandMetadata.sdkCommand,
 					params: params,
 				});
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
-				if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
+				if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 					resolve({
 						operationResult: operationResult,
 						projectType: answers[COMMAND_OPTIONS.TYPE],

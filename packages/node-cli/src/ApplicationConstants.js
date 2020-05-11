@@ -5,7 +5,7 @@
 'use strict';
 
 module.exports = {
-	SDK_COMMANDS_METADATA_FILE: 'metadata/SDKCommandsMetadata.json',
+	SDK_COMMANDS_METADATA_FILE: 'metadata/SdkCommandsMetadata.json',
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	SDK_FILENAME: 'cli-2020.1.0.jar',

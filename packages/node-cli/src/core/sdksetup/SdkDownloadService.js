@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('request-promise-native');
-const SDKProperties = require('./SDKProperties');
+const SdkProperties = require('./SdkProperties');
 
 const HOME_PATH = require('os').homedir();
 
@@ -29,7 +29,7 @@ const {
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
-class SDKDownloadService {
+class SdkDownloadService {
 	constructor() {
 		this._fileSystemService = new FileSystemService();
 	}
@@ -40,7 +40,7 @@ class SDKDownloadService {
 		this._removeJarFilesFrom(sdkParentDirectory);
 		const sdkDirectory = this._fileSystemService.createFolder(sdkParentDirectory, FOLDERS.NODE_CLI);
 
-		const fullURL = `${SDKProperties.getDownloadURL()}/${SDKProperties.getSDKFileName()}`;
+		const fullURL = `${SdkProperties.getDownloadURL()}/${SdkProperties.getSdkFileName()}`;
 
 		try {
 			await executeWithSpinner({
@@ -56,7 +56,7 @@ class SDKDownloadService {
 
 	_downloadFile(url, sdkDirectory) {
 		const proxy = process.env.npm_config_https_proxy || process.env.npm_config_proxy;
-		const isProxyRequired = proxy && !SDKProperties.configFileExists();
+		const isProxyRequired = proxy && !SdkProperties.configFileExists();
 		const removeJarFilesFrom = this._removeJarFilesFrom;
 
 		const options = {
@@ -75,7 +75,7 @@ class SDKDownloadService {
 			// remove all jar files before writing response to file
 			removeJarFilesFrom(sdkDirectory)
 
-			const sdkDestinationFile = path.join(sdkDirectory, SDKProperties.getSDKFileName());
+			const sdkDestinationFile = path.join(sdkDirectory, SdkProperties.getSdkFileName());
 			const file = fs.createWriteStream(sdkDestinationFile);
 			file.write(response.body, 'binary');
 			file.end();
@@ -90,4 +90,4 @@ class SDKDownloadService {
 	}
 }
 
-module.exports = new SDKDownloadService();
+module.exports = new SdkDownloadService();

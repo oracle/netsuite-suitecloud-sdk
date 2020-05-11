@@ -19,7 +19,7 @@ export default class Deploy extends BaseAction {
 		});
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(DEPLOY.COMMAND));
 		const statusBarMessage: string = this.translationService.getMessage(DEPLOY.DEPLOYING);
-		opts.messageService.showInformationMessage(commandMessage, commandActionPromise, statusBarMessage);
+		opts.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {

@@ -23,6 +23,7 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.commandsMetadataService);
 		assert(dependencies.authenticationService);
 		assert(dependencies.consoleLogger);
+		assert(dependencies.sdkPath);
 
 		this._executionPath = dependencies.executionPath;
 		this._commandOptionsValidator = dependencies.commandOptionsValidator;

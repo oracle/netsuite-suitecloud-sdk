@@ -1,10 +1,9 @@
 
 import { spawn } from 'child_process';
+import { ApplicationConstants } from '../../util/ExtensionUtil';
 
-const SDK_INTEGRATION_MODE_JVM_OPTION = '-DintegrationMode';
-const SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION = '-DclientPlatformVersion';
-const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
-const vmOptions = `${SDK_INTEGRATION_MODE_JVM_OPTION} ${clientPlatformVersionOption}`;
+const clientPlatformVersionOption = `${ApplicationConstants.SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
+const vmOptions = `${ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION} ${clientPlatformVersionOption}`;
 
 export function validateSdk(sdkPath: string) {
 

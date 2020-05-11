@@ -35,11 +35,11 @@ async function install() {
 	const fullURL = `${SDK_DOWNLOAD_URL}/${SDK_FILENAME}`;
 
 	try {
-		var downloadFilePromise = downloadFile(fullURL, sdkDirectory);
+		const downloadFilePromise = downloadFile(fullURL, sdkDirectory);
 		messageService.showInformationMessage(
 			translationService.getMessage(EXTENSION_INSTALLATION.IN_PROGRESS),
-			downloadFilePromise,
-			`$(sync~spin) ${translationService.getMessage(EXTENSION_INSTALLATION.IN_PROGRESS)}`
+			translationService.getMessage(EXTENSION_INSTALLATION.IN_PROGRESS),
+			downloadFilePromise
 		);
 		await downloadFilePromise;
 		messageService.showInformationMessage(translationService.getMessage(EXTENSION_INSTALLATION.SUCCESS.SDK_DOWNLOADED));

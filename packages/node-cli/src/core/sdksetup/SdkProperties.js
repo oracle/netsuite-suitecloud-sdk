@@ -16,7 +16,7 @@ const CONFIG_FILE = './config.json';
 
 let CONFIG_FILE_CACHE = null;
 
-class SDKProperties {
+class SdkProperties {
 	constructor() {
 		this._loadCache();
 	}
@@ -27,7 +27,7 @@ class SDKProperties {
 		return configFile.sdkDownloadUrl;
 	}
 
-	getSDKFileName() {
+	getSdkFileName() {
 		return this.configFileExists() ? CONFIG_FILE_CACHE.sdkFilename : SDK_FILENAME;
 	}
 
@@ -42,8 +42,8 @@ class SDKProperties {
 	}
 
 	getSdkPath() {
-		return path.join(HOME_PATH, `${FOLDERS.SUITECLOUD_SDK}/${FOLDERS.NODE_CLI}/${this.getSDKFileName()}`);
+		return path.join(HOME_PATH, `${FOLDERS.SUITECLOUD_SDK}/${FOLDERS.NODE_CLI}/${this.getSdkFileName()}`);
 	}
 }
 
-module.exports = new SDKProperties();
+module.exports = new SdkProperties();

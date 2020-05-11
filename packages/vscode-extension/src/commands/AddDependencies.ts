@@ -20,7 +20,7 @@ export default class AddDependencies extends BaseAction {
 		});
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(ADD_DEPENDENCIES.COMMAND));
 		const statusBarMessage: string = this.translationService.getMessage(ADD_DEPENDENCIES.ADDING);
-		opts.messageService.showInformationMessage(commandMessage, commandActionPromise, statusBarMessage);
+		opts.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult: ActionResult = await commandActionPromise;
 
