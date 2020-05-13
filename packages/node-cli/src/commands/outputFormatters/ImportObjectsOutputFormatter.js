@@ -17,7 +17,9 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 	}
 
 	formatActionResult(actionResult) {
-		if (!actionResult.data) {
+		if (!actionResult.data 
+				|| !((Array.isArray(actionResult.data.successfulImports) && actionResult.data.successfulImports.length) 
+					|| (Array.isArray(actionResult.data.failedImports) && actionResult.data.failedImports.length))) {
 			ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 			return;
 		}
@@ -29,10 +31,10 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 	_logImportedObjects(importedObjects) {
 		if (Array.isArray(importedObjects) && importedObjects.length) {
 			this.consoleLogger.result(NodeTranslationService.getMessage(OUTPUT.IMPORTED_OBJECTS));
-			importedObjects.forEach(objectImport => {
+			importedObjects.forEach((objectImport) => {
 				const importedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${objectImport.customObject.type}:${
 					objectImport.customObject.id
-				}`;
+					}`;
 				this.consoleLogger.result(importedObjectLogMessage);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
@@ -53,7 +55,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 		}
 
 		if (Array.isArray(importedFiles) && importedFiles.length) {
-			importedFiles.forEach(importedFile => {
+			importedFiles.forEach((importedFile) => {
 				const importedFileLogMessage = `${this.consoleLogger.getPadding(3)}- ${NodeTranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORTED,
 					importedFile.path
@@ -63,7 +65,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 		}
 
 		if (Array.isArray(unImportedFiles) && unImportedFiles.length) {
-			unImportedFiles.forEach(unImportedFile => {
+			unImportedFiles.forEach((unImportedFile) => {
 				const unimportedFileLogMessage = `${this.consoleLogger.getPadding(3)}- ${NodeTranslationService.getMessage(
 					OUTPUT.REFERENCED_SUITESCRIPT_FILE_IMPORT_FAILED,
 					unImportedFile.path,
@@ -77,7 +79,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 	_logUnImportedObjects(unImportedObjects) {
 		if (Array.isArray(unImportedObjects) && unImportedObjects.length) {
 			this.consoleLogger.warning(NodeTranslationService.getMessage(OUTPUT.UNIMPORTED_OBJECTS));
-			unImportedObjects.forEach(objectImport => {
+			unImportedObjects.forEach((objectImport) => {
 				const unimportedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${NodeTranslationService.getMessage(
 					OUTPUT.OBJECT_IMPORT_FAILED,
 					objectImport.customObject.type,
