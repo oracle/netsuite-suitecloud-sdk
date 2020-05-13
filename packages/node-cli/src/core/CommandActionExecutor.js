@@ -145,21 +145,6 @@ module.exports = class CommandActionExecutor {
 			});
 			const overriddenArguments = beforeExecutingOutput.arguments;
 
-			//const argumentsFromQuestions =
-			//	runInInteractiveMode || command._commandMetadata.forceInteractiveMode
-			//		? await command.getCommandQuestions(inquirer.prompt, commandArguments)
-			//		: {};
-
-			//const commandArgumentsWithQuestionArguments = {
-			//	...overriddenArguments,
-			//	...argumentsFromQuestions,
-			//};
-			//let commandArgumentsAfterPreActionFunc = command.preActionFunc
-			//	? command.preActionFunc(commandArgumentsWithQuestionArguments)
-			//	: commandArgumentsWithQuestionArguments;
-
-			//this._checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, command.commandMetadata, runInInteractiveMode);
-
 			return command.run(overriddenArguments);
 		} catch (error) {
 			throw error;

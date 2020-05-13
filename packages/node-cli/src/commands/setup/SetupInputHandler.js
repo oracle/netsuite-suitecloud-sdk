@@ -8,13 +8,13 @@ const { prompt, Separator } = require('inquirer');
 const chalk = require('chalk');
 const path = require('path');
 const BaseInputHandler = require('../base/BaseInputHandler');
-const SDKExecutionContext = require('../../SDKExecutionContext');
+const SdkExecutionContext = require('../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
-const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const FileUtils = require('../../utils/FileUtils');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const SDKExecutor = require('../../SDKExecutor');
+const SdkExecutor = require('../../SdkExecutor');
 const AuthenticationService = require('../../core/authentication/AuthenticationService');
 
 const {
@@ -67,7 +67,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SDKExecutor(new AuthenticationService(this._executionPath));
+		this._sdkExecutor = new SdkExecutor(new AuthenticationService(this._executionPath));
 	}
 
 	async getParameters(params) {

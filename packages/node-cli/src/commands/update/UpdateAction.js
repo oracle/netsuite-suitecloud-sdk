@@ -9,8 +9,8 @@ const { ActionResult } = require('../../services/actionresult/ActionResult');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
-const SDKExecutionContext = require('../../SDKExecutionContext');
-const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
+const SdkExecutionContext = require('../../SdkExecutionContext');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 
 const {
 	COMMAND_UPDATE: { MESSAGES },
@@ -45,12 +45,12 @@ module.exports = class UpdateAction extends BaseAction {
 			if (args.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !args[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
 				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
-			const SDKParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
+			const sdkParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
 
-			const executionContextForUpdate = new SDKExecutionContext({
+			const executionContextForUpdate = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
-				params: SDKParams,
+				params: sdkParams,
 			});
 
 			const operationResult = await executeWithSpinner({
@@ -58,9 +58,9 @@ module.exports = class UpdateAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

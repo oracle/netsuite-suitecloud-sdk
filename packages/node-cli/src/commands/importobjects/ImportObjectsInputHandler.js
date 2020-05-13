@@ -24,7 +24,7 @@ const {
 	validateSuiteApp,
 	showValidationResults,
 } = require('../../validation/InteractiveAnswersValidator');
-const SDKExecutor = require('../../SDKExecutor');
+const SdkExecutor = require('../../SdkExecutor');
 const AuthenticationService = require('../../core/authentication/AuthenticationService');
 
 const ANSWERS_NAMES = {
@@ -51,7 +51,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SDKExecutor(new AuthenticationService(this._executionPath));
+		this._sdkExecutor = new SdkExecutor(new AuthenticationService(this._executionPath));
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();

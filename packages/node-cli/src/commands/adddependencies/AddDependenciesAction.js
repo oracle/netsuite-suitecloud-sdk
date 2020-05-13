@@ -6,10 +6,10 @@
 
 const { ActionResult } = require('../../services/actionresult/ActionResult');
 const BaseAction = require('../base/BaseAction');
-const SDKExecutionContext = require('../../SDKExecutionContext');
+const SdkExecutionContext = require('../../SdkExecutionContext');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -27,7 +27,7 @@ module.exports = class AddDependenciesAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const executionContext = new SDKExecutionContext({
+			const executionContext = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				params: params,
 				flags: [COMMAND_OPTIONS.ALL],
@@ -39,9 +39,9 @@ module.exports = class AddDependenciesAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

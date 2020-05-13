@@ -7,8 +7,8 @@
 const BaseAction = require('../base/BaseAction');
 const CommandUtils = require('../../utils/CommandUtils');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
-const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
-const SDKExecutionContext = require('../../SDKExecutionContext');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../../SdkExecutionContext');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { ActionResult } = require('../../services/actionresult/ActionResult');
 
@@ -41,7 +41,7 @@ module.exports = class UploadFilesAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const executionContextUploadFiles = new SDKExecutionContext({
+			const executionContextUploadFiles = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
 				params: params,
@@ -51,12 +51,12 @@ module.exports = class UploadFilesAction extends BaseAction {
 				action: this._sdkExecutor.execute(executionContextUploadFiles),
 				message: NodeTranslationService.getMessage(MESSAGES.UPLOADING_FILES),
 			});
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

@@ -6,11 +6,11 @@
 
 const { prompt } = require('inquirer');
 const CommandUtils = require('../../utils/CommandUtils');
-const SDKExecutionContext = require('../../SDKExecutionContext');
+const SdkExecutionContext = require('../../SdkExecutionContext');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const BaseInputHandler = require('../base/BaseInputHandler');
-const SDKExecutor = require('../../SDKExecutor');
+const SdkExecutor = require('../../SdkExecutor');
 const AuthenticationService = require('../../core/authentication/AuthenticationService');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
@@ -24,11 +24,11 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SDKExecutor(new AuthenticationService(this._executionPath));
+		this._sdkExecutor = new SdkExecutor(new AuthenticationService(this._executionPath));
 	}
 
 	async getParameters(params) {
-		const executionContext = new SDKExecutionContext({
+		const executionContext = new SdkExecutionContext({
 			command: LIST_FOLDERS_COMMAND,
 			includeProjectDefaultAuthId: true,
 		});

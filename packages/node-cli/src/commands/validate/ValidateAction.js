@@ -7,8 +7,8 @@
 
 const BaseAction = require('../base/BaseAction');
 const DeployActionResult = require('../../services/actionresult/DeployActionResult');
-const SDKExecutionContext = require('../../SDKExecutionContext');
-const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
+const SdkExecutionContext = require('../../SdkExecutionContext');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
@@ -55,7 +55,7 @@ module.exports = class ValidateAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const SDKParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
 			let isServerValidation = false;
 			const flags = [];
@@ -63,12 +63,12 @@ module.exports = class ValidateAction extends BaseAction {
 			if (params[COMMAND_OPTIONS.SERVER]) {
 				flags.push(COMMAND_OPTIONS.SERVER);
 				isServerValidation = true;
-				delete SDKParams[COMMAND_OPTIONS.SERVER];
+				delete sdkParams[COMMAND_OPTIONS.SERVER];
 			}
 
-			const executionContext = new SDKExecutionContext({
+			const executionContext = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
-				params: SDKParams,
+				params: sdkParams,
 				flags: flags,
 				includeProjectDefaultAuthId: true,
 			});
@@ -78,15 +78,15 @@ module.exports = class ValidateAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
-						.withAppliedContentProtection(SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+						.withAppliedContentProtection(sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
 						.withProjectType(this._projectInfoService.getProjectType)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: DeployActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult))
+				: DeployActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult))
 						.withServerValidation(isServerValidation)
 						.build();
 		} catch (error) {

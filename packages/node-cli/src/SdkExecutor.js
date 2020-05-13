@@ -24,7 +24,7 @@ const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
-module.exports = class SDKExecutor {
+module.exports = class SdkExecutor {
 	constructor(authenticationService, sdkPath) {
 		this._authenticationService = authenticationService;
 		this._sdkPath = sdkPath;

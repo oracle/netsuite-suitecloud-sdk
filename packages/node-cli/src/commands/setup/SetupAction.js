@@ -6,9 +6,9 @@
 
 const BaseAction = require('../base/BaseAction');
 const SetupActionResult = require('../../services/actionresult/SetupActionResult');
-const SDKExecutionContext = require('../../SDKExecutionContext');
+const SdkExecutionContext = require('../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
-const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const AuthenticationService = require('../../core/authentication/AuthenticationService');
 
@@ -53,8 +53,8 @@ module.exports = class SetupAction extends BaseAction {
 				}
 
 				const operationResult = await this._performBrowserBasedAuthentication(commandParams, params.developmentMode);
-				if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-					return SetupActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+					return SetupActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 				}
 				authId = params.newAuthId;
 				accountInfo = operationResult.data.accountInfo;
@@ -71,8 +71,8 @@ module.exports = class SetupAction extends BaseAction {
 				}
 
 				const operationResult = await this._saveToken(commandParams, params.developmentMode);
-				if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-					return SetupActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+					return SetupActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 				}
 				authId = params.newAuthId;
 				accountInfo = operationResult.data.accountInfo;
@@ -98,10 +98,10 @@ module.exports = class SetupAction extends BaseAction {
 			executionContextOptions.flags = [FLAGS.DEVELOPMENTMODE];
 		}
 
-		const authenticateSDKExecutionContext = new SDKExecutionContext(executionContextOptions);
+		const authenticateSdkExecutionContext = new SdkExecutionContext(executionContextOptions);
 
 		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(authenticateSDKExecutionContext),
+			action: this._sdkExecutor.execute(authenticateSdkExecutionContext),
 			message: NodeTranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
@@ -120,7 +120,7 @@ module.exports = class SetupAction extends BaseAction {
 			executionContextOptions.flags.push(FLAGS.DEVELOPMENTMODE);
 		}
 
-		const executionContext = new SDKExecutionContext(executionContextOptions);
+		const executionContext = new SdkExecutionContext(executionContextOptions);
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -132,12 +132,12 @@ module.exports = class SetupAction extends BaseAction {
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {
-		if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-			const errorMessage = SDKOperationResultUtils.getResultMessage(operationResult);
+		if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			const errorMessage = SdkOperationResultUtils.getResultMessage(operationResult);
 			if (errorMessage) {
 				throw errorMessage;
 			}
-			throw SDKOperationResultUtils.collectErrorMessages(operationResult);
+			throw SdkOperationResultUtils.collectErrorMessages(operationResult);
 		}
 	}
 };
