@@ -4,18 +4,11 @@
  */
 'use strict';
 
-const { prompt, Separator } = require('inquirer');
-const BaseInputHandler = require('../base/BaseInputHandler');
-const CommandUtils = require('../../utils/CommandUtils');
-const OBJECT_TYPES = require('../../metadata/ObjectTypesMetadata');
-const ProjectInfoService = require('../../services/ProjectInfoService');
-const NodeTranslationService = require('../../services/NodeTranslationService');
-const FileSystemService = require('../../services/FileSystemService');
 const { join } = require('path');
 const CommandsMetadataService = require('../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
-const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
-const SDKExecutionContext = require('../../SDKExecutionContext');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../../SdkExecutionContext');
 const { lineBreak } = require('../../loggers/LoggerConstants');
 const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDERS } = require('../../ApplicationConstants');
 const {
@@ -75,7 +68,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const listObjectAnswers = await prompt(listObjectQuestions);
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
-		const executionContextForListObjects = new SDKExecutionContext({
+		const executionContextForListObjects = new SdkExecutionContext({
 			command: this._listObjectsMetadata.sdkCommand,
 			params: paramsForListObjects,
 			includeProjectDefaultAuthId: true,
@@ -91,8 +84,8 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			throw NodeTranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, lineBreak, error);
 		}
 
-		if (listObjectsResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-			throw SDKOperationResultUtils.collectErrorMessages(listObjectsResult);
+		if (listObjectsResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.collectErrorMessages(listObjectsResult);
 		}
 		const { data } = listObjectsResult;
 

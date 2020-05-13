@@ -1,4 +1,4 @@
-# suitecloud-vscode-extension README
+# suitecloud-vscode-extension
 
 ```
 TODO

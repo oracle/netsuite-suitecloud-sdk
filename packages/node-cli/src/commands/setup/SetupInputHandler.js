@@ -73,7 +73,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	async getParameters(params) {
 		this._checkWorkingDirectoryContainsValidProject();
 
-		const getAuthListContext = new SDKExecutionContext({
+		const getAuthListContext = new SdkExecutionContext({
 			command: COMMANDS.MANAGEAUTH,
 			flags: [FLAGS.LIST],
 		});
@@ -83,8 +83,8 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			message: NodeTranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
 		});
 
-		if (existingAuthIDsResponse.status === SDKOperationResultUtils.STATUS.ERROR) {
-			throw SDKOperationResultUtils.getResultMessage(existingAuthIDsResponse);
+		if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
 		}
 
 		let authIdAnswer;

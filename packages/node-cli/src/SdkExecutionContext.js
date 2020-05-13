@@ -6,7 +6,7 @@
 
 const assert = require('assert');
 
-module.exports = class SDKExecutionContext {
+module.exports = class SdkExecutionContext {
 	constructor(options) {
 		assert(options.command, 'Command is mandatory option');
 		this._command = options.command;

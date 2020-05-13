@@ -8,12 +8,12 @@ const { prompt } = require('inquirer');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
-const SDKOperationResultUtils = require('../../utils/SDKOperationResultUtils');
-const SDKExecutionContext = require('../../SDKExecutionContext');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../../SdkExecutionContext');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 const BaseInputHandler = require('../base/BaseInputHandler');
-const SDKExecutor = require('../../SDKExecutor');
+const SdkExecutor = require('../../SdkExecutor');
 const AuthenticationService = require('../../core/authentication/AuthenticationService');
 const { validateArrayIsNotEmpty, showValidationResults } = require('../../validation/InteractiveAnswersValidator');
 
@@ -54,19 +54,19 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 		const listFoldersResult = await this._listFolders();
 
-		if (listFoldersResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-			throw SDKOperationResultUtils.collectErrorMessages(listFoldersResult);
+		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.collectErrorMessages(listFoldersResult);
 		}
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
 		const listFilesResult = await this._listFiles(selectFolderAnswer);
 
-		if (listFilesResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-			throw SDKOperationResultUtils.collectErrorMessages(listFilesResult);
+		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.collectErrorMessages(listFilesResult);
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
-			throw SDKOperationResultUtils.getResultMessage(listFilesResult);
+			throw SdkOperationResultUtils.getResultMessage(listFilesResult);
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
@@ -81,7 +81,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	}
 
 	_listFolders() {
-		const executionContext = new SDKExecutionContext({
+		const executionContext = new SdkExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
 			includeProjectDefaultAuthId: true,
 		});
@@ -113,7 +113,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContext = new SDKExecutionContext({
+		const executionContext = new SdkExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFILES,
 			includeProjectDefaultAuthId: true,
 			params: selectFolderAnswer,

@@ -12,6 +12,7 @@ const CommandRegistrationService = require('./core/CommandRegistrationService');
 const CommandOptionsValidator = require('./core/CommandOptionsValidator');
 const CLIConfigurationService = require('./core/extensibility/CLIConfigurationService');
 const AuthenticationService = require('./core/authentication/AuthenticationService');
+const sdkPath = require('./core/sdksetup/SdkProperties').getSdkPath();
 const path = require('path');
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 
@@ -29,6 +30,7 @@ const cliInstance = new CLI({
 		authenticationService: new AuthenticationService(executionPath),
 		commandsMetadataService: commandsMetadataServiceSingleton,
 		log: NodeConsoleLogger,
+		sdkPath: sdkPath
 	}),
 });
 

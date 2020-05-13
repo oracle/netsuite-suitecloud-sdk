@@ -9,6 +9,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "test": "lerna run test --stream",
-    "postinstall": "lerna bootstrap"
+    "postinstall": "lerna bootstrap",
+    "compile": "lerna run compile --stream"
   }
 }

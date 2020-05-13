@@ -4,6 +4,7 @@
  */
 
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
+import { sdkPath } from './sdksetup/SdkProperties';
 
 const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
 const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
@@ -22,6 +23,7 @@ export default class SuiteCloudRunner {
 			authenticationService: new AuthenticationService(executionPath),
 			commandsMetadataService: commandsMetadataService,
 			log: new VSConsoleLogger(),
+			sdkPath: sdkPath,
 		});
 	}
 
