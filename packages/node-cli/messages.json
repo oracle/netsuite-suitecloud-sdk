@@ -169,6 +169,7 @@
 	"COMMAND_UPLOADFILES_MESSAGES_UPLOADING_FILES": "Uploading files...",
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_UPLOADED": "The following files were uploaded:",
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_NOT_UPLOADED": "The following files were not uploaded:",
+	"COMMAND_UPLOADFILES_ERROR_RESTRICTED_FOLDER": "The file is inside an invalid or restricted folder",
 
 	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any custom objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
 	"COMMAND_UPDATE_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your search?",

@@ -17,7 +17,7 @@ const { ActionResult } = require('../commands/actionresult/ActionResult');
 const UploadFilesOutputFormatter = require('./outputFormatters/UploadFilesOutputFormatter');
 
 const {
-	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES },
+	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, ERRORS },
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
@@ -136,6 +136,9 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 			if (Array.isArray(answers[PATHS])) {
 				answers[PATHS] = answers[PATHS].map(CommandUtils.quoteString).join(' ');
 			} else {
+				if (!this._fileCabinetService.isUnrestrictedPath(answers[PATHS])) {
+					throw NodeTranslationService.getMessage(ERRORS.RESTRICTED_FOLDER);
+				}
 				answers[PATHS] = CommandUtils.quoteString(answers[PATHS]);
 			}
 		}
