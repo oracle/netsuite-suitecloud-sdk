@@ -23,7 +23,8 @@
 		"onCommand:extension.adddependencies",
 		"onCommand:extension.deploy",
 		"onCommand:extension.listobjects",
-		"onCommand:extension.update"
+		"onCommand:extension.update",
+		"onCommand:extension.uploadfile"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -31,17 +32,22 @@
 			{
 				"command": "extension.adddependencies",
 				"title": "Add dependency references to the manifest",
-				"category": "suitecloud"
+				"category": "SuiteCloud"
 			},
 			{
 				"command": "extension.deploy",
-				"title": "Deploy project",
-				"category": "suitecloud"
+				"title": "Deploy Project",
+				"category": "SuiteCloud"
 			},
 			{
 				"command": "extension.listobjects",
-				"title": "List objects",
-				"category": "suitecloud"
+				"title": "List Objects...",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "extension.uploadfile",
+				"title": "Upload File",
+				"category": "SuiteCloud"
 			}
 		],
 		"keybindings": [
