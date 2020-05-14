@@ -34,7 +34,7 @@ class ImportObjectsOutputFormatter extends OutputFormatter {
 			importedObjects.forEach((objectImport) => {
 				const importedObjectLogMessage = `${this.consoleLogger.getPadding(1)}- ${objectImport.customObject.type}:${
 					objectImport.customObject.id
-					}`;
+				}`;
 				this.consoleLogger.result(importedObjectLogMessage);
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
