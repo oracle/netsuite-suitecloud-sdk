@@ -8,7 +8,7 @@ const path = require('path');
 const FileUtils = require('../utils/FileUtils');
 const { SDK_COMMANDS_METADATA_FILE, NODE_COMMANDS_METADATA_FILE, COMMAND_GENERATORS_METADATA_FILE } = require('../ApplicationConstants');
 const SDK_WRAPPER_GENERATOR = 'commands/SdkWrapperCommandGenerator';
-let COMMANDS_METADATA_CACHE;
+let COMMANDS_METADATA_CACHE = null;
 
 function executeForEachCommandMetadata(commandsMetadata, func) {
 	for (const commandMetadataId in commandsMetadata) {
@@ -20,20 +20,24 @@ function executeForEachCommandMetadata(commandsMetadata, func) {
 }
 
 module.exports = class CommandsMetadataService {
-	constructor(rootCLIPath) {
-		this._rootCLIPath = rootCLIPath;
+	constructor() {
+		this._rootCLIPath = path.dirname(__dirname, '../');
+		this._initializeCommandsMetadata();
 	}
-	initializeCommandsMetadata() {
-		const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
-		const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
-		const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
-		let combinedMetadata = {
-			...sdkCommandsMetadata,
-			...nodeCommandsMetadata,
-		};
-		combinedMetadata = this._transformCommandsOptionsToObject(combinedMetadata);
-		combinedMetadata = this._addCommandGeneratorMetadata(commandGeneratorsMetadata, combinedMetadata);
-		COMMANDS_METADATA_CACHE = combinedMetadata;
+
+	_initializeCommandsMetadata() {
+		if (!COMMANDS_METADATA_CACHE) {
+			const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
+			const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
+			const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
+			let combinedMetadata = {
+				...sdkCommandsMetadata,
+				...nodeCommandsMetadata,
+			};
+			combinedMetadata = this._transformCommandsOptionsToObject(combinedMetadata);
+			combinedMetadata = this._addCommandGeneratorMetadata(commandGeneratorsMetadata, combinedMetadata);
+			COMMANDS_METADATA_CACHE = combinedMetadata;
+		}
 	}
 
 	getCommandsMetadata() {

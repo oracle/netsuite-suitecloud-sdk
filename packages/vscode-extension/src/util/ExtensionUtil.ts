@@ -7,10 +7,10 @@ import * as vscode from 'vscode';
 
 // returns the root project folder of the active file in the editor
 // works fine with workspace with multiple project folders opened
-export function getRootProjectFolder(): string | null {
+export function getRootProjectFolder(): string | undefined {
 	const activeTextEditor = vscode.window.activeTextEditor;
-	const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : null;
-	return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : null;
+	const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
+	return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : undefined;
 }
 
 export const ConsoleLogger = require('@oracle/suitecloud-cli/src/loggers/ConsoleLogger');
@@ -33,6 +33,6 @@ export const ApplicationConstants = require('@oracle/suitecloud-cli/src/Applicat
 
 export const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
 export const CommandInstanceFactory = require('@oracle/suitecloud-cli/src/core/CommandInstanceFactory');
+export const CommandsMetadataService = require('@oracle/suitecloud-cli/src/core/CommandsMetadataService');
 export const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
 export const CLIConfigurationService = require('@oracle/suitecloud-cli/src/core/extensibility/CLIConfigurationService');
-export const AuthenticationService = require('@oracle/suitecloud-cli/src/core/authentication/AuthenticationService');

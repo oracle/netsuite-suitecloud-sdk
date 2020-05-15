@@ -15,6 +15,7 @@ const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
 const EnvironmentInformationService = require('./services/EnvironmentInformationService');
+const AuthenticationService = require('./services/AuthenticationService');
 const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
@@ -25,9 +26,9 @@ const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
 module.exports.SdkExecutor = class SdkExecutor {
-	constructor(authenticationService, sdkPath) {
+	constructor(sdkPath) {
 
-		this._authenticationService = authenticationService;
+		this._authenticationService = new AuthenticationService();
 		this._sdkPath = sdkPath;
 
 		this._CLISettingsService = new CLISettingsService();

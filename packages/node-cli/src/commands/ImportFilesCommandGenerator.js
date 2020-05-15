@@ -78,10 +78,10 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_listFolders() {
-		const executionContext = new SdkExecutionContext({
-			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
-			includeProjectDefaultAuthId: true,
-		});
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS)
+			.integration()
+			.withDefaultAuthId(this._executionPath)
+			.build();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -110,11 +110,12 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContext = new SdkExecutionContext({
-			command: INTERMEDIATE_COMMANDS.LISTFILES,
-			includeProjectDefaultAuthId: true,
-			params: selectFolderAnswer,
-		});
+
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES)
+			.integration()
+			.withDefaultAuthId(this._executionPath)
+			.addParams(selectFolderAnswer)
+			.build();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -180,11 +181,11 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 			}
 
-			const executionContextImportObjects = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: answers,
-			});
+			const executionContextImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.withDefaultAuthId(this._executionPath)
+				.addParams(answers)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextImportObjects),

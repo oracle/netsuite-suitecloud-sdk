@@ -7,7 +7,6 @@
 const SdkExecutor = require('../SdkExecutor').SdkExecutor;
 const Command = require('./Command');
 const assert = require('assert');
-const AuthenticationService = require('../core/authentication/AuthenticationService');
 const NodeConsoleLogger = require('../loggers/NodeConsoleLogger');
 const OutputFormatter = require('./outputFormatters/OutputFormatter');
 
@@ -20,7 +19,7 @@ module.exports = class BaseCommandGenerator {
 		assert(options.consoleLogger);
 		assert(options.sdkPath);
 
-		this._sdkExecutor = new SdkExecutor(new AuthenticationService(options.executionPath), options.sdkPath);
+		this._sdkExecutor = new SdkExecutor(options.sdkPath);
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;

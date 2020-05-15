@@ -138,11 +138,11 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			}
 			const sdkParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
 
-			const executionContextForUpdate = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: sdkParams,
-			});
+			const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.withDefaultAuthId(this._executionPath)
+				.addParams(sdkParams)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForUpdate),

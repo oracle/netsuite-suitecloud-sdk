@@ -35,12 +35,11 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(answers) {
 		try {
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: answers,
-				flags: [COMMAND_OPTIONS.ALL],
-				requiresContextParams: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(answers)
+				.addFlag(COMMAND_OPTIONS.ALL)
+				.build()
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

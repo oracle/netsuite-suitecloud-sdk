@@ -66,11 +66,11 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const listObjectAnswers = await prompt(listObjectQuestions);
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
-		const executionContextForListObjects = new SdkExecutionContext({
-			command: this._listObjectsMetadata.sdkCommand,
-			params: paramsForListObjects,
-			includeProjectDefaultAuthId: true,
-		});
+		const executionContextForListObjects = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
+			.integration()
+			.withDefaultAuthId(this._executionPath)
+			.addParams(paramsForListObjects)
+			.build();
 
 		let listObjectsResult;
 		try {
@@ -327,12 +327,12 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			}
 
 			const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-			const executionContextForImportObjects = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params,
-				flags,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.withDefaultAuthId(this._executionPath)
+				.addFlags(flags)
+				.addParams(params)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForImportObjects),

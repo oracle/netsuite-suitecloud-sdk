@@ -41,10 +41,7 @@ module.exports = class SdkWrapperCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_executeAction(args) {
-		const executionContext = new SdkExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			integrationMode: false,
-		});
+		let contextBuilder = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand);
 
 		for (const optionId in this._commandMetadata.options) {
 			if (
@@ -53,15 +50,15 @@ module.exports = class SdkWrapperCommandGenerator extends BaseCommandGenerator {
 			) {
 				if (this._commandMetadata.options[optionId].type === FLAG_OPTION_TYPE) {
 					if (args[optionId]) {
-						executionContext.addFlag(optionId);
+						contextBuilder.addFlag(optionId);
 					}
 				} else {
-					executionContext.addParam(optionId, args[optionId]);
+					contextBuilder.addParam(optionId, args[optionId]);
 				}
 			}
 		}
 		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
+			action: this._sdkExecutor.execute(contextBuilder.build()),
 			message: NodeTranslationService.getMessage(
 				MESSAGES.EXECUTING_COMMAND,
 				this._commandMetadata.name

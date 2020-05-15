@@ -157,11 +157,11 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 			if (Array.isArray(params.type)) {
 				params.type = params.type.join(' ');
 			}
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.withDefaultAuthId(this._executionPath)
+				.addParams(params)
+				.build();
 
 			const actionListObjects = this._sdkExecutor.execute(executionContext);
 

@@ -10,10 +10,11 @@ import MessageService from './service/MessageService';
 import { NOT_IN_VALID_PROJECT } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
 import { getRootProjectFolder } from './util/ExtensionUtil';
-
+import { ActionInterface } from './types/ActionInterface';
+/*
 // HANDLES EXECUTION OF ACTIONS - CENTRAL POINT
 export class ActionExecutor {
-	execute<T extends BaseAction>(action: T) {
+	execute(action: ActionInterface) {
 		const executionPath = getRootProjectFolder();
 		const messageService = new MessageService().forCommand(action.commandName);
 		const translationService = new VSTranslationService();
@@ -27,4 +28,4 @@ export class ActionExecutor {
 			});
 		}
 	}
-}
+}*/

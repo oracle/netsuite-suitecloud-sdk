@@ -6,13 +6,19 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { ActionExecutor } from './ActionExecutor';
 import AddDependencies from './commands/AddDependencies';
 import Deploy from './commands/Deploy';
 import ListObjects from './commands/ListObjects';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import UploadFile from './commands/UploadFile';
+import ManageAccounts from './commands/ManageAccounts';
+import { ActionInterface } from './types/ActionInterface';
+
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'Netsuite SuiteCloud';
+
+function register(command: string, action: ActionInterface) {
+	return vscode.commands.registerCommand(command, () => action.run());
+}
 
 export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
 
@@ -22,28 +28,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	await installIfNeeded();
 
-	const actionExecutor = new ActionExecutor();
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let addDependenciesDisposable = vscode.commands.registerCommand('extension.adddependencies', () => {
-		actionExecutor.execute(new AddDependencies());
-	});
-	context.subscriptions.push(addDependenciesDisposable);
-	let deployDisposable = vscode.commands.registerCommand('extension.deploy', () => {
-		actionExecutor.execute(new Deploy());
-	});
-	context.subscriptions.push(deployDisposable);
-
-	let listobjectsDisposable = vscode.commands.registerCommand('extension.listobjects', () => {
-		actionExecutor.execute(new ListObjects());
-	});
-	context.subscriptions.push(listobjectsDisposable);
-
-	let uploadFile = vscode.commands.registerCommand('extension.uploadfile', () => {
-		actionExecutor.execute(new UploadFile());
-	});
-	context.subscriptions.push(uploadFile);
+	context.subscriptions.push(
+		register('extension.adddependencies', new AddDependencies()),
+		register('extension.deploy', new Deploy()),
+		register('extension.listobjects', new ListObjects()),
+		register('extension.uploadfile', new UploadFile()),
+		register('extension.setupaccount', new ManageAccounts()),
+	)
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated

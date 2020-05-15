@@ -27,10 +27,10 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
-			const executionContext = new SdkExecutionContext({
-				command: LIST_FOLDERS_COMMAND,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS_COMMAND)
+				.integration()
+				.withDefaultAuthId(this._executionPath)
+				.build();
 
 			return (
 				executeWithSpinner({
@@ -72,11 +72,11 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		try {
 			// quote folder path to preserve spaces
 			answers.folder = `\"${answers.folder}\"`;
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: answers,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.withDefaultAuthId(this._executionPath)
+				.addParams(answers)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

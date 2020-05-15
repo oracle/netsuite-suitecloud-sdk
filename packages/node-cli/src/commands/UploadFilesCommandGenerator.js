@@ -147,11 +147,11 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 	async _executeAction(answers) {
 		try {
-			const executionContextUploadFiles = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: answers,
-			});
+			const executionContextUploadFiles = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.withDefaultAuthId(this._executionPath)
+				.addParams(answers)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextUploadFiles),

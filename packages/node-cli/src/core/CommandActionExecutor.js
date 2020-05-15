@@ -21,7 +21,6 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.cliConfigurationService);
 		assert(dependencies.commandInstanceFactory);
 		assert(dependencies.commandsMetadataService);
-		assert(dependencies.authenticationService);
 		assert(dependencies.consoleLogger);
 		assert(dependencies.sdkPath);
 
@@ -30,7 +29,6 @@ module.exports = class CommandActionExecutor {
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandInstanceFactory = dependencies.commandInstanceFactory;
 		this._commandsMetadataService = dependencies.commandsMetadataService;
-		this._authenticationService = dependencies.authenticationService;
 		this._consoleLogger = dependencies.consoleLogger;
 		this._sdkPath = dependencies.sdkPath;
 	}
@@ -42,7 +40,7 @@ module.exports = class CommandActionExecutor {
 		assert(typeof context.runInInteractiveMode === 'boolean');
 
 		let commandUserExtension;
-		try {
+		//try {
 			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(context.commandName);
 			const commandName = context.commandName;
 
@@ -92,13 +90,14 @@ module.exports = class CommandActionExecutor {
 			}
 
 			return actionResult;
-		} catch (error) {
+		/*} catch (error) {
+			console.trace(error);
 			let errorMessage = new OutputFormatter(this._consoleLogger).formatError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
-			return ActionResult.Builder.withErrors(errorMessage);
-		}
+			return ActionResult.Builder.withErrors(errorMessage);*/
+		//}
 	}
 
 	_checkCanExecute(context) {
@@ -137,7 +136,7 @@ module.exports = class CommandActionExecutor {
 			const overriddenCommandArguments = beforeExecutingOutput.arguments;
 
 			const argumentsFromQuestions =
-				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
+				runInInteractiveMode /*|| command._commandMetadata.forceInteractiveMode*/
 					? await command.getCommandQuestions(inquirer.prompt, commandArguments)
 					: {};
 
