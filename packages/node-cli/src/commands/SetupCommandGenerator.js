@@ -245,6 +245,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(executeActionContext) {
 
+		// TODO remove this
 		try {
 			const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH)
 				.integration()
@@ -262,7 +263,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			console.log(`response: ${JSON.stringify(existingAuthIDsResponse)}`);
 			return ActionResult.Builder.withData(existingAuthIDsResponse.data)
 				.withResultMessage(`available auth idssss`)
-				.build()
+				.build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

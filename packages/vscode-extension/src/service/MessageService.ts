@@ -12,11 +12,8 @@ export default class MessageService {
 	private commandName?: string;
 	private readonly translationService = new VSTranslationService();
 
-	constructor() {}
-
-	forCommand(commandName: string) {
+	constructor(commandName?: string) {
 		this.commandName = commandName;
-		return this;
 	}
 
 	showInformationMessage(infoMessage: string, statusBarMessage?: string, promise?: Promise<any>, spin = true) {

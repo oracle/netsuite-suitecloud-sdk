@@ -39,7 +39,7 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 				.integration()
 				.addParams(answers)
 				.addFlag(COMMAND_OPTIONS.ALL)
-				.build()
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

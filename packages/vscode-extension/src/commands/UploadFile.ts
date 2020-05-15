@@ -2,19 +2,19 @@
  ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-
 import * as path from 'path';
 import { window } from 'vscode';
-import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import MessageService from '../service/MessageService';
 import { COMMAND, UPLOAD_FILE, YES, NO } from '../service/TranslationKeys';
 import { actionResultStatus, CLIConfigurationService, ApplicationConstants, getRootProjectFolder } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 export default class UploadFile extends BaseAction {
-	readonly commandName: string = 'file:upload';
+	
+	constructor() {
+		super('file:upload');
+	}
 
-	async execute(opts: { suiteCloudRunner: SuiteCloudRunner; messageService: MessageService }) {
+	protected async execute() {
 		const activeFile = window.activeTextEditor?.document.uri;
 		const workspaceFolder = getRootProjectFolder();
 		if (!activeFile) {
@@ -39,26 +39,21 @@ export default class UploadFile extends BaseAction {
 		});
 
 		if (!override || override === NO) {
-			opts.messageService.showInformationMessage(this.translationService.getMessage(UPLOAD_FILE.PROCESS_CANCELED));
+			this.messageService.showInformationMessage(this.translationService.getMessage(UPLOAD_FILE.PROCESS_CANCELED));
 			return;
 		}
 
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(UPLOAD_FILE.COMMAND));
 		const statusBarMessage = this.translationService.getMessage(UPLOAD_FILE.UPLOADING);
 
-		const commandActionPromise = opts.suiteCloudRunner.run({
-			commandName: this.commandName,
-			arguments: {
-				paths: relativePath,
-			},
-		});
-		opts.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
+		const commandActionPromise = this.runSubCommand({ paths: relativePath });
+		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {
-			opts.messageService.showCommandInfo();
+			this.messageService.showCommandInfo();
 		} else {
-			opts.messageService.showCommandError();
+			this.messageService.showCommandError();
 		}
 		return;
 	}

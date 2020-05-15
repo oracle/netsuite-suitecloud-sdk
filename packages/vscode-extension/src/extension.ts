@@ -9,21 +9,21 @@ import * as vscode from 'vscode';
 import AddDependencies from './commands/AddDependencies';
 import Deploy from './commands/Deploy';
 import ListObjects from './commands/ListObjects';
-import { installIfNeeded } from './core/sdksetup/SdkServices';
 import UploadFile from './commands/UploadFile';
 import ManageAccounts from './commands/ManageAccounts';
-import { ActionInterface } from './types/ActionInterface';
+import { installIfNeeded } from './core/sdksetup/SdkServices';
+import BaseAction from './commands/BaseAction';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'Netsuite SuiteCloud';
 
-function register(command: string, action: ActionInterface) {
+function register<T extends BaseAction>(command: string, action: T) {
 	return vscode.commands.registerCommand(command, () => action.run());
 }
 
 export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+// this method is called when SuiteCloud extension is activated
+// the extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
 
 	await installIfNeeded();
@@ -41,5 +41,5 @@ export async function activate(context: vscode.ExtensionContext) {
 	console.log("Let's rock it, Netsuite SuiteCloud VSCode Extension has been activated!");
 }
 
-// this method is called when your extension is deactivated
+// this method is called when SuiteCloud extension is deactivated
 export function deactivate() {}

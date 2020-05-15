@@ -6,23 +6,58 @@
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
 import { VSTranslationService } from '../service/VSTranslationService';
-import { ActionInterface, ActionOptions } from '../types/ActionInterface';
 import { getRootProjectFolder } from '../util/ExtensionUtil';
+import { NOT_IN_VALID_PROJECT } from '../service/TranslationKeys';
 
-export default abstract class BaseAction implements ActionInterface {
-	protected translationService = new VSTranslationService();
+export default abstract class BaseAction {
+	protected readonly translationService: VSTranslationService;
+	protected executionPath?: string;
+	protected readonly messageService: MessageService;
+	protected readonly commandName: string;
 
-	protected abstract readonly commandName: string;
-	protected abstract async execute(opts: ActionOptions): Promise<void>;
+	protected abstract async execute(): Promise<void>;
 
-	public run() {
-		const executionPath = getRootProjectFolder();
-		const messageService = new MessageService().forCommand(this.commandName);
-		const translationService = new VSTranslationService();
-		const suiteCloudRunner = new SuiteCloudRunner(executionPath);
-		return this.execute({
-			suiteCloudRunner: suiteCloudRunner,
-			messageService: messageService,
+	constructor(commandName: string) {
+		this.commandName = commandName;
+		this.messageService = new MessageService(this.commandName);
+		this.translationService = new VSTranslationService();
+	}
+
+	protected init() {
+		this.executionPath = getRootProjectFolder();
+	}
+
+	protected validate(): { valid: boolean; message: string } {
+		if (!this.executionPath) {
+			return {
+				valid: false,
+				message: this.translationService.getMessage(NOT_IN_VALID_PROJECT)
+			}
+		}
+		else {
+			return {
+				valid: true,
+				message: '',
+			}
+		}
+	}
+
+	protected runSubCommand(args: {[key:string]: string}) {
+		return new SuiteCloudRunner(this.executionPath).run({
+			commandName: this.commandName,
+			arguments: args
 		});
+	}
+
+	public async run() {
+		this.init();
+		const validationStatus = this.validate();
+		if (validationStatus.valid) {
+			return this.execute();
+		}
+		else {
+			this.messageService.showErrorMessage(validationStatus.message);
+			return;
+		}
 	}
 }

@@ -16,7 +16,6 @@ const OutputFormatter = require('../commands/outputFormatters/OutputFormatter');
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
 		assert(dependencies);
-		assert(dependencies.executionPath);
 		assert(dependencies.commandOptionsValidator);
 		assert(dependencies.cliConfigurationService);
 		assert(dependencies.commandInstanceFactory);
@@ -24,7 +23,7 @@ module.exports = class CommandActionExecutor {
 		assert(dependencies.consoleLogger);
 		assert(dependencies.sdkPath);
 
-		this._executionPath = dependencies.executionPath;
+		this._executionPath = dependencies.executionPath ? dependencies.executionPath : process.cwd();
 		this._commandOptionsValidator = dependencies.commandOptionsValidator;
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandInstanceFactory = dependencies.commandInstanceFactory;
@@ -40,7 +39,7 @@ module.exports = class CommandActionExecutor {
 		assert(typeof context.runInInteractiveMode === 'boolean');
 
 		let commandUserExtension;
-		//try {
+		try {
 			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(context.commandName);
 			const commandName = context.commandName;
 
@@ -90,14 +89,13 @@ module.exports = class CommandActionExecutor {
 			}
 
 			return actionResult;
-		/*} catch (error) {
-			console.trace(error);
+		} catch (error) {
 			let errorMessage = new OutputFormatter(this._consoleLogger).formatError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
-			return ActionResult.Builder.withErrors(errorMessage);*/
-		//}
+			return ActionResult.Builder.withErrors(errorMessage);
+		}
 	}
 
 	_checkCanExecute(context) {
