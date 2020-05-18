@@ -73,7 +73,7 @@ class SdkExecutionContextBuilder {
 
 	addParams(params) {
 		Object.keys(params).forEach((key) => {
-			addParam(key, params[key]);
+			this.addParam(key, params[key]);
 		});
 		return this;
 	}
@@ -85,7 +85,7 @@ class SdkExecutionContextBuilder {
 
 	addFlags(flags) {
 		flags.forEach(flag => {
-			addFlag(flag);
+			this.addFlag(flag);
 		});
 		return this;
 	}

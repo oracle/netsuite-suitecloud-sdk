@@ -12,6 +12,7 @@ const { throwValidationException } = require('../utils/ExceptionUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const OutputFormatter = require('../commands/outputFormatters/OutputFormatter');
+const AuthenticationService = require('../services/AuthenticationService');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -50,7 +51,7 @@ module.exports = class CommandActionExecutor {
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
-			const projectConfiguration = commandMetadata.isSetupRequired ? this._authenticationService.getProjectDefaultAuthId() : null;
+			const projectConfiguration = commandMetadata.isSetupRequired ? new AuthenticationService().getProjectDefaultAuthId(this._executionPath) : null;
 			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
 
 			const command = this._commandInstanceFactory.create({

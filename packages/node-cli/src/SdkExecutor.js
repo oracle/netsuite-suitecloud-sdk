@@ -15,7 +15,6 @@ const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
 const EnvironmentInformationService = require('./services/EnvironmentInformationService');
-const AuthenticationService = require('./services/AuthenticationService');
 const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
@@ -28,7 +27,6 @@ const UTF8 = 'utf8';
 module.exports.SdkExecutor = class SdkExecutor {
 	constructor(sdkPath) {
 
-		this._authenticationService = new AuthenticationService();
 		this._sdkPath = sdkPath;
 
 		this._CLISettingsService = new CLISettingsService();
@@ -37,9 +35,6 @@ module.exports.SdkExecutor = class SdkExecutor {
 
 	execute(executionContext) {
 		const proxyOptions = this._getProxyOptions();
-		const authId = executionContext.includeProjectDefaultAuthId
-			? this._authenticationService.getProjectDefaultAuthId()
-			: null;
 
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
@@ -51,10 +46,6 @@ module.exports.SdkExecutor = class SdkExecutor {
 					reject(javaVersionError);
 					return;
 				}
-			}
-
-			if (executionContext.includeProjectDefaultAuthId) {
-				executionContext.addParam('authId', authId);
 			}
 
 			const cliParams = this._convertParamsObjToString(
