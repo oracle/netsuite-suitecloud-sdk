@@ -75,9 +75,11 @@ After you create a project, configure a NetSuite account, by running the followi
 suitecloud account:setup
 ```
 
-## Documentation
-Read all the documentation about CLI for Node.js in [NetSuite's Help Center](
-https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
+## Release Notes & Documentation
+To read the 2020.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the latest updates under SuiteCloud SDK in the [Weekly Update section](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_158955980607.html).
+- Read the release notes for NetSuite 2020.1 in [SuiteCloud CLI for Node.js Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html#subsect_157467836973).
+- Read the CLI for Node.js documentation in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
 
 ## [Contributing](/CONTRIBUTING.md)
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
