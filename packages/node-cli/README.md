@@ -24,7 +24,7 @@ Each version of CLI for Node.js in NPM works optimally with a specific NetSuite 
 
 | Version in NPM | Version in NetSuite |
 |:--------------:|:-------------------:|
-| 1.0.X | 20.1 |
+| 1.X.X | 2020.1 |
   
 ## Installation
 Since CLI for Node.js is a development tool, use a global instance to install it by running the following command:
@@ -51,7 +51,7 @@ suitecloud <command> <option> <argument>
 |[`object:import`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042181820.html)|Imports custom objects from an account to your SuiteCloud project.|
 |[`object:list`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043303237.html)|Lists the custom objects deployed in an account.|
 |[`object:update`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156050566547.html)|Overwrite the custom objects in the project with the custom objects in an account.|
-| [`project:adddependencies`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155981452469.html)| Adds missing dependencies to the manifest file.|
+|[`project:adddependencies`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155981452469.html)| Adds missing dependencies to the manifest file.|
 |[`project:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041348327.html)|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
 |[`project:deploy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044636320.html)|Deploys the folder containing the project.|
 |[`project:validate`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
@@ -75,9 +75,11 @@ After you create a project, configure a NetSuite account, by running the followi
 suitecloud account:setup
 ```
 
-## Documentation
-Read all the documentation about CLI for Node.js in [NetSuite's Help Center](
-https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
+## Release Notes & Documentation
+To read the 2020.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the latest updates under SuiteCloud SDK in the [Weekly Update section](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_158955980607.html).
+- Read the release notes for NetSuite 2020.1 in [SuiteCloud CLI for Node.js Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html#subsect_157467836973).
+- Read the CLI for Node.js documentation in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
 
 ## [Contributing](/CONTRIBUTING.md)
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
