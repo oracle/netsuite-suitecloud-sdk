@@ -16,7 +16,8 @@ module.exports = class CommandUserExtension {
 
 	async beforeExecuting(options) {
 		assert(options);
-		assert(options.command);
+		assert(options.commandName);
+		assert(options.projectFolder);
 		assert(options.arguments);
 
 		try {
@@ -24,8 +25,8 @@ module.exports = class CommandUserExtension {
 				return options;
 			}
 			const beforeExecutingContext = {
-				command: options.command.name,
-				projectPath: options.command.projectFolder,
+				command: options.commandName,
+				projectPath: options.projectFolder,
 				arguments: options.arguments,
 			};
 			const result = await this._cliConfig.beforeExecuting(beforeExecutingContext);
