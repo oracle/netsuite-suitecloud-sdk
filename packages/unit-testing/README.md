@@ -199,8 +199,6 @@ describe("Suitelet Test", () => {
 
 ```
 
-To read a comprehensive description of this example, visit [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_158436693543.html#subsect_158437822806).
-
 ### Custom Stub Example 
 
 This example follows the structure presented below:
@@ -321,8 +319,6 @@ describe('Sample test with user defined http module stub', () => {
     });
 });
 ```
-
-To read a comprehensive description of this example, visit [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_158436693543.html#subsect_158437820311).
 
 ## [Contributing](/CONTRIBUTING.md)
 Suitecloud Unit Testing is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.

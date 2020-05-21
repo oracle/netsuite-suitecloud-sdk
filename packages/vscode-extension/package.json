@@ -64,8 +64,13 @@
 			},
 			{
 				"command": "extension.deploy",
-				"key": "ctrl+d",
-				"mac": "cmd+d"
+				"key": "ctrl+alt+d",
+				"mac": "ctrl+alt+d"
+			},
+			{
+				"command": "extension.uploadfile",
+				"key": "ctrl+alt+u",
+				"mac": "ctrl+alt+u"
 			}
 		]
 	},
