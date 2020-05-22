@@ -64,13 +64,15 @@ module.exports = class CommandRegistrationService {
 			}
 			let mandatoryOptionString = '';
 			let optionString = '';
-			if (option.type !== OPTION_TYPE_FLAG) {
-				mandatoryOptionString = '<argument>';
-			}
 			if (option.alias) {
 				optionString = `-${option.alias}, `;
 			}
-			optionString += `--${option.name} ${mandatoryOptionString}`;
+			optionString += `--${option.name}`;
+
+			if (option.type !== OPTION_TYPE_FLAG) {
+				mandatoryOptionString = '<argument>';
+				optionString += ` ${mandatoryOptionString}`;
+			}
 			commandSetup.option(optionString, option.description);
 		});
 		return commandSetup;

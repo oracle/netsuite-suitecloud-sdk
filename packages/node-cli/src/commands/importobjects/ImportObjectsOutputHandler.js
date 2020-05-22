@@ -17,7 +17,9 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
-		if (!actionResult.data) {
+		if (!actionResult.data 
+				|| !((Array.isArray(actionResult.data.successfulImports) && actionResult.data.successfulImports.length) 
+					|| (Array.isArray(actionResult.data.failedImports) && actionResult.data.failedImports.length))) {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 			return actionResult;
 		}

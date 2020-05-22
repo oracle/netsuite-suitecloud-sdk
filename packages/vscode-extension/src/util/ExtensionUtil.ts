@@ -20,13 +20,19 @@ export const actionResultStatus: {
 	ERROR: string;
 } = require('@oracle/suitecloud-cli/src/services/actionResult/ActionResult').ActionResult.STATUS;
 
-export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
+
 
 //NodeTranslationService is needed in FileUtils
 export const NodeTranslationService = require('@oracle/suitecloud-cli/src/services/NodeTranslationService');
+export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
+export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
 
-export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
-
 export const ApplicationConstants = require('@oracle/suitecloud-cli/src/ApplicationConstants');
+
+export const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
+export const CommandInstanceFactory = require('@oracle/suitecloud-cli/src/core/CommandInstanceFactory');
+export const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
+export const CLIConfigurationService = require('@oracle/suitecloud-cli/src/core/extensibility/CLIConfigurationService');
+export const AuthenticationService = require('@oracle/suitecloud-cli/src/core/authentication/AuthenticationService');

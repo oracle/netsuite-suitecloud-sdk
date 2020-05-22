@@ -140,7 +140,8 @@ module.exports = class CommandActionExecutor {
 
 		try {
 			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
-				command: this,
+				commandName: options.command.commandMetadata.name,
+				projectFolder: this._executionPath,
 				arguments: isSetupRequired ? this._applyDefaultContextParams(commandArguments, projectConfiguration) : commandArguments,
 			});
 			const overriddenArguments = beforeExecutingOutput.arguments;

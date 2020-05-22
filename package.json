@@ -1,10 +1,10 @@
 {
   "name": "@oracle/suitecloud-sdk",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "license": "UPL-1.0",
   "private": true,
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "lerna": "^3.21.0"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",

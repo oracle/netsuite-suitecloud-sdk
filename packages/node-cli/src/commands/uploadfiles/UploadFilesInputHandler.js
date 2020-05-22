@@ -13,7 +13,7 @@ const path = require('path');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 
 const {
-	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES },
+	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, ERRORS },
 	NO,
 	YES,
 } = require('../../services/TranslationKeys');
