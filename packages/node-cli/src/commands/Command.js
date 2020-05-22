@@ -37,20 +37,26 @@ class Command {
 		assert(this._inputHandler, 'Commands must have an input handler');
 		assert(this._outputHandler, 'Commands must have an output handler');
 
+		console.log(`getParameters`);
 		const getParams = await this._inputHandler.getParameters(params);
 		const groupedParams = { ...params, ...getParams };
 
 		this._validateActionParameters(groupedParams, this._commandMetadata, this._runInInteractiveMode);
 
+		console.log(`preExec`);
 		const preExec = await this._action.preExecute(groupedParams);
+		console.log(`execute`);
 		const exec = await this._action.execute(preExec);
+		console.log(`postExecute`);
 		const actionResult = await this._action.postExecute(exec);
 
 		if (!(actionResult instanceof ActionResult)) {
 			throw 'INTERNAL ERROR: Command must return an ActionResult object.';
 		} else if (actionResult.status === ActionResult.STATUS.ERROR) {
+			console.log(`parseError`);
 			return this._outputHandler.parseError(actionResult);
 		} else {
+			console.log(`parse`);
 			return this._outputHandler.parse(actionResult);
 		}
 	}

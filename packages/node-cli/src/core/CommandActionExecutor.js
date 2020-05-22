@@ -73,11 +73,12 @@ module.exports = class CommandActionExecutor {
 			return actionResult;
 
 		} catch (error) {
-			let errorMessage = this._logGenericError(error);
+			console.trace(error);
+			/*let errorMessage = this._logGenericError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
-			return ActionResult.Builder.withErrors(errorMessage);
+			return ActionResult.Builder.withErrors(errorMessage);*/
 		}
 	}
 
@@ -138,9 +139,10 @@ module.exports = class CommandActionExecutor {
 		const commandUserExtension = options.commandUserExtension;
 		let commandArguments = options.arguments;
 
+		console.log(JSON.stringify(options));
 		try {
 			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
-				commandName: options.command.commandMetadata.name,
+				commandName: options.command._commandMetadata.name,
 				projectFolder: this._executionPath,
 				arguments: isSetupRequired ? this._applyDefaultContextParams(commandArguments, projectConfiguration) : commandArguments,
 			});
