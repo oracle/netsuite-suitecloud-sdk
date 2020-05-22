@@ -23,7 +23,7 @@ const {
 } = require("../services/TranslationKeys");
 
 const ACTION = {
-   NOTHING: "nothing",
+   EXIT: "exit",
    RENAME: "rename",
    REMOVE: "remove",
    REVOKE: "revoke",
@@ -48,7 +48,6 @@ const ANSWERS_NAMES = {
    SELECTED_AUTH_ID: "selected_auth_id",
    ACTION: "action",
    AUTHID: "authId",
-   CONTINUE: "continue",
    RENAMETO: "renameto",
    REMOVE: "remove",
 };
@@ -75,7 +74,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       let answers = await this.selectAuthID(authIDList, prompt);
       this.logAccountInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
       const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-      answers[ANSWERS_NAMES.CONTINUE] = await this.continueQuestion(prompt, selectedAuthID);
       answers[ANSWERS_NAMES.ACTION] = await this.selectAction(prompt);
       if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
          answers[ANSWERS_NAMES.RENAMETO] = await this.introduceNewName(prompt, authIDList, selectedAuthID);
@@ -92,7 +90,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
          throw Error(NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY));
       }
       const choices = [];
-      choices.push(new inquirer.Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
       authIDs.forEach((authIDArray) => {
          const authID = authIDArray[0];
          const authIDProperties = authIDArray[1];
@@ -102,7 +99,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
                  authIDProperties.urls.app
               )
             : "";
-         const accountInfo = `${authIDProperties.accountInfo.companyName} [${authIDProperties.accountInfo.roleName}]`;
+         const accountInfo = `${authIDProperties.accountInfo.roleName} @ ${authIDProperties.accountInfo.companyName}`;
          choices.push({
             name: NodeTranslationService.getMessage(
                QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
@@ -110,7 +107,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
                accountInfo,
                isDevLabel
             ),
-            value: { authId: authID, accountInfo: authIDProperties.accountInfo },
+            value: { authId: authID, accountInfo: authIDProperties.accountInfo, domain: authIDProperties.urls.app },
          });
       });
       choices.push(new inquirer.Separator());
@@ -118,7 +115,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
          {
             type: CommandUtils.INQUIRER_TYPES.LIST,
             name: ANSWERS_NAMES.SELECTED_AUTH_ID,
-            message: NodeTranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
+            message: NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID),
             choices: choices,
          },
       ]);
@@ -135,26 +132,10 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
          NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_ID, accountInfo.companyId)
       );
       this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ROLE, accountInfo.roleName));
-      this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.DOMAIN, accountInfo.roleName));
+      this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.DOMAIN, selectedAuthId.domain));
       this.consoleLogger.info(
-         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_TYPE, accountInfo.roleName)
+         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_TYPE, this._authenticationService.getAccountType(accountInfo.companyId))
       );
-   }
-
-   async continueQuestion(prompt, authId) {
-      let answer = await prompt({
-         type: CommandUtils.INQUIRER_TYPES.LIST,
-         name: ANSWERS_NAMES.CONTINUE,
-         message: NodeTranslationService.getMessage(QUESTIONS.CONTINUE, authId),
-         choices: [
-            { name: NodeTranslationService.getMessage(YES), value: true },
-            { name: NodeTranslationService.getMessage(NO), value: false },
-         ],
-      });
-      if (!answer[ANSWERS_NAMES.CONTINUE]) {
-         throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
-      }
-      return answer[ANSWERS_NAMES.CONTINUE];
    }
 
    async selectAction(prompt) {
@@ -175,8 +156,17 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
                name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
                value: ACTION.REVOKE,
             },
+            {
+               name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.EXIT),
+               value: ACTION.EXIT,
+            },
          ],
       });
+
+      if (answer[ANSWERS_NAMES.ACTION] == ACTION.EXIT) {
+         throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
+      }
+
       return answer[ANSWERS_NAMES.ACTION];
    }
 
@@ -184,7 +174,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       let answer = await prompt({
          type: CommandUtils.INQUIRER_TYPES.INPUT,
          name: ANSWERS_NAMES.RENAMETO,
-         message: NodeTranslationService.getMessage(QUESTIONS.NEW_TAG),
+         message: NodeTranslationService.getMessage(QUESTIONS.NEW_NAME),
          filter: (fieldValue) => fieldValue.trim(),
          validate: (fieldValue) =>
             showValidationResults(
@@ -242,9 +232,19 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
          params: sdkParams,
          flags,
       });
+
+      let message = "";
+      if (answers[COMMAND.OPTIONS.REMOVE]) {
+         message = NodeTranslationService.getMessage(MESSAGES.REMOVING);
+      } else if (answers[COMMAND.OPTIONS.RENAME]) {
+         message = NodeTranslationService.getMessage(MESSAGES.RENAMING);
+      } else if (answers[COMMAND.OPTIONS.REVOKE]) {
+         message = NodeTranslationService.getMessage(MESSAGES.REVOKING);
+      }
+
       const operationResult = await executeWithSpinner({
          action: this._sdkExecutor.execute(executionContext),
-         message: NodeTranslationService.getMessage(MESSAGES.UPDATING_CREDENTIALS),
+         message: message,
       });
 
       return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
