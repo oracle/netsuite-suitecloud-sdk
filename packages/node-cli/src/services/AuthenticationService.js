@@ -5,12 +5,24 @@
 'use strict';
 
 const FileUtils = require('../utils/FileUtils');
-const NodeTranslationService = require('./NodeTranslationService');
-const { ERRORS } = require('./TranslationKeys');
+const NodeTranslationService = require('../services/NodeTranslationService');
+const { ERRORS, COMMAND_SETUPACCOUNT } = require('../services/TranslationKeys');
 const { FILES } = require('../ApplicationConstants');
+const assert = require('assert');
+const { executeWithSpinner } = require('../ui/CliSpinner');
 const path = require('path');
+const SdkExecutionContext = require('../SdkExecutionContext');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
+
+const COMMANDS = {
+	MANAGEAUTH: 'manageauth',
+};
+
+const FLAGS = {
+	LIST: 'list',
+};
 
 module.exports = class AuthenticationService {
 	constructor() {
@@ -43,5 +55,21 @@ module.exports = class AuthenticationService {
 				throw NodeTranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error);
 			}
 		}
+	}
+
+	async getAuthIds(sdkExecutor) {
+		const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH)
+			.integration()
+			.addFlag(FLAGS.LIST)
+			.build();
+
+		const existingAuthIDsResponse = await executeWithSpinner({
+			action: sdkExecutor.execute(getAuthListContext),
+			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
+		});
+		if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
+		}
+		return existingAuthIDsResponse.data;
 	}
 };

@@ -123,7 +123,13 @@ class InteractiveAnswersValidator {
 	validateProjectType(value) {
 		return [ApplicationConstants.PROJECT_SUITEAPP, ApplicationConstants.PROJECT_ACP].includes(value)
 			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE));
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.CURRENT_AUTHID));
+	}
+
+	validateSameAuthID(newAuthID, authID) {
+		return (authID != newAuthID)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.CURRENT_AUTHID, newAuthID));
 	}
 
 	validateAuthIDNotInList(newAuthID, authIDs) {
