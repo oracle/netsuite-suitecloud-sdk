@@ -27,7 +27,6 @@ const {
 const COMMAND = {
 	OPTIONS: {
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 		LOG: 'log',
 		PROJECT: 'project',
 	},
@@ -35,6 +34,7 @@ const COMMAND = {
 		NO_PREVIEW: 'no_preview',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
+		APPLY_CONTENT_PROTECTION: 'applycontentprotection'
 	},
 };
 
@@ -66,7 +66,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			{
 				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION,
+				name: COMMAND.FLAGS.APPLY_CONTENT_PROTECTION,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
 				default: 1,
 				choices: [
@@ -103,7 +103,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
+		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION)) {
 			this.consoleLogger.info(
 				NodeTranslationService.getMessage(
 					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,
@@ -124,7 +124,6 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			...args,
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
-			...this._applyContentProtectionArgumentHandler.transformArgument(args),
 		};
 	}
 
@@ -136,6 +135,12 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				delete SDKParams[COMMAND.FLAGS.VALIDATE];
 				flags.push(COMMAND.FLAGS.VALIDATE);
 			}
+
+			if (SDKParams[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION]) {
+				delete SDKParams[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
+				flags.push(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
+			}
+
 			const executionContextForDeploy = new SDKExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
@@ -149,7 +154,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			});
 
 			const isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
-			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && SDKParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
+			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && flags[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
 
 			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)

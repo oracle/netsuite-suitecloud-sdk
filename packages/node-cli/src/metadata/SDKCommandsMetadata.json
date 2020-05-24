@@ -242,7 +242,7 @@
               "mandatory": false,
               "type": "FLAG",
               "alias": "c",
-              "usage": "T",
+              "usage": "",
               "defaultOption": false,
               "disableInIntegrationMode": false
           },
@@ -877,7 +877,7 @@
               "mandatory": false,
               "type": "FLAG",
               "alias": "c",
-              "usage": "T",
+              "usage": "",
               "defaultOption": false,
               "disableInIntegrationMode": false
           },
