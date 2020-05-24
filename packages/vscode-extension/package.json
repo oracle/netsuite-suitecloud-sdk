@@ -2,7 +2,17 @@
 	"name": "@oracle/suitecloud-vscode-extension",
 	"displayName": "suitecloud-vscode-extension",
 	"description": "netsuite suitecloud vscode extension based on nodejs-cli",
+	"publisher": "Oracle",
+	"private": true,
 	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/oracle/netsuite-suitecloud-sdk",
+		"directory": "packages/vscode-extension"
+	},
+	"files": [
+		"**/*.vsix"
+	],
 	"engines": {
 		"vscode": "^1.40.0"
 	},
@@ -13,25 +23,31 @@
 		"onCommand:extension.adddependencies",
 		"onCommand:extension.deploy",
 		"onCommand:extension.listobjects",
-		"onCommand:extension.update"
+		"onCommand:extension.update",
+		"onCommand:extension.uploadfile"
 	],
-	"main": "./out/extension.js",
+	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "extension.adddependencies",
 				"title": "Add dependency references to the manifest",
-				"category": "suitecloud"
+				"category": "SuiteCloud"
 			},
 			{
 				"command": "extension.deploy",
-				"title": "Deploy project",
-				"category": "suitecloud"
+				"title": "Deploy Project",
+				"category": "SuiteCloud"
 			},
 			{
 				"command": "extension.listobjects",
-				"title": "List objects",
-				"category": "suitecloud"
+				"title": "List Objects...",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "extension.uploadfile",
+				"title": "Upload File",
+				"category": "SuiteCloud"
 			}
 		],
 		"keybindings": [
@@ -42,8 +58,13 @@
 			},
 			{
 				"command": "extension.deploy",
-				"key": "ctrl+d",
-				"mac": "cmd+d"
+				"key": "ctrl+alt+d",
+				"mac": "ctrl+alt+d"
+			},
+			{
+				"command": "extension.uploadfile",
+				"key": "ctrl+alt+u",
+				"mac": "ctrl+alt+u"
 			}
 		]
 	},
@@ -53,7 +74,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.0.0"
+		"@oracle/suitecloud-cli": "^1.0.2"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
@@ -62,8 +83,8 @@
 		"@types/vscode": "^1.40.0",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
-		"typescript": "^3.6.4",
 		"tslint": "^5.20.0",
+		"typescript": "^3.6.4",
 		"vscode-test": "^1.2.2"
 	}
 }

@@ -9,42 +9,46 @@ import { COMMAND, SEE_DETAILS } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
 export default class MessageService {
-	private commandName: string;
-	private translationService: VSTranslationService;
+	private commandName?: string;
+	private readonly translationService = new VSTranslationService();
 
-	constructor(commandName: string) {
+	constructor() {}
+
+	forCommand(commandName: string) {
 		this.commandName = commandName;
-		this.translationService = new VSTranslationService();
+		return this;
 	}
 
-	showTriggeredActionInfo(informationMessage: string, actionPromise?: number, statusBarMessage?: string) {
-		window.showInformationMessage(informationMessage);
-		if (statusBarMessage && actionPromise) {
-			window.setStatusBarMessage(statusBarMessage, actionPromise);
-		}
-	}
-
-	showCompletedActionInfo(successMessage?: string) {
-		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.commandName);
-		window.showInformationMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
-	}
-
-	showCompletedActionError(errorMessage?: string) {
-		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.commandName);
-		window.showErrorMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
-	}
-
-	showInformationMessage(infoMessage: string) {
+	showInformationMessage(infoMessage: string, statusBarMessage?: string, promise?: Promise<any>, spin = true) {
 		window.showInformationMessage(infoMessage);
+
+		if (statusBarMessage && promise) {
+			this.showStatusBarMessage(statusBarMessage, spin, promise);
+		}
 	}
 
 	showWarningMessage(infoMessage: string) {
 		window.showWarningMessage(infoMessage);
 	}
 
-	showErrorMessage(errorMessage?: string) {
+	showErrorMessage(errorMessage: string) {
+		window.showErrorMessage(errorMessage);
+	}
+
+	showStatusBarMessage(message: string, spin: boolean, promise: Promise<any>) {
+		window.setStatusBarMessage(spin ? `$(sync~spin) ${message}` : message, promise);
+	}
+
+	showCommandInfo(successMessage?: string) {
+		if (!this.commandName) throw 'Command not defined';
+		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.commandName);
+		window.showInformationMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
+	}
+
+	showCommandError(errorMessage?: string) {
+		if (!this.commandName) throw 'Command not defined';
 		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.commandName);
-		window.showErrorMessage(message);
+		window.showErrorMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
 	}
 
 	private showOutputIfClicked(message?: string) {

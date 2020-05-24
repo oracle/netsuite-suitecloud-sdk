@@ -1,12 +1,12 @@
 {
-	"ANSWERS_VALIDATION_MESSAGES_ALPHANUMERIC_HYPEN_UNDERSCORE": "This field contains forbidden characters. Use only alphanumerical characters, hyphens, or underscores.",
+	"ANSWERS_VALIDATION_MESSAGES_ALPHANUMERIC_HYPHEN_UNDERSCORE": "This field contains forbidden characters. Use only alphanumerical characters, hyphens, or underscores.",
+	"ANSWERS_VALIDATION_MESSAGES_ALPHANUMERIC_HYPHEN_UNDERSCORE_EXTENDED": "This field contains forbidden characters. Use only alphanumerical characters, hyphens, underscores, spaces, or periods. The project name cannot begin or end with a period.",
 	"ANSWERS_VALIDATION_MESSAGES_APP_ID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as \"com.example.mysuiteapp\".",
 	"ANSWERS_VALIDATION_MESSAGES_AUTH_ID_ALREADY_USED": "This authentication ID (authID) already exists. Enter a new one.",
 	"ANSWERS_VALIDATION_MESSAGES_CHOOSE_OPTION": "Error: You should choose at least one option.",
 	"ANSWERS_VALIDATION_MESSAGES_EMPTY_FIELD": "This value cannot be empty.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_SPACES": "This field cannot contain spaces.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
-	"ANSWERS_VALIDATION_MESSAGES_FOLDER_HAS_INVALID_CHARACTERS": "The project name cannot contain any of the following characters: <>:\"\\/|?*",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "The {0} field contains forbidden characters. Use only lowercase letters and numbers.",
 	"ANSWERS_VALIDATION_MESSAGES_INVALID_EMAIL": "Invalid email address.",
 	"ANSWERS_VALIDATION_MESSAGES_MAX_LENGTH": "This field can only contain up to {0} characters.",
@@ -169,6 +169,7 @@
 	"COMMAND_UPLOADFILES_MESSAGES_UPLOADING_FILES": "Uploading files...",
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_UPLOADED": "The following files were uploaded:",
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_NOT_UPLOADED": "The following files were not uploaded:",
+	"COMMAND_UPLOADFILES_ERROR_RESTRICTED_FOLDER": "The file is inside an invalid or restricted folder",
 
 	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any custom objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
 	"COMMAND_UPDATE_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your search?",

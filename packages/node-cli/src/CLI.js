@@ -21,7 +21,7 @@ const INTERACTIVE_OPTION = '--interactive';
 const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 const configFile = require(PACKAGE_FILE);
 const CLI_VERSION = configFile ? configFile.version : 'unknown';
-const COMPATIBLE_NS_VERSION = '2020.1';
+const COMPATIBLE_NS_VERSION = '2020.2';
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -71,7 +71,7 @@ module.exports = class CLI {
 				program: program,
 				runInInteractiveMode: runInInteractiveMode,
 				executeCommandFunction: async options => {
-					await this._commandActionExecutor.executeAction({
+					return await this._commandActionExecutor.executeAction({
 						commandName: commandMetadata.name,
 						runInInteractiveMode: runInInteractiveMode,
 						arguments: options,

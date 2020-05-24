@@ -10,6 +10,7 @@ const INTERACTIVE_OPTION_NAME = 'interactive';
 const INTERACTIVE_OPTION_ALIAS = 'i';
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 
 module.exports = class CommandRegistrationService {
 	register(options) {
@@ -47,8 +48,9 @@ module.exports = class CommandRegistrationService {
 			);
 		}
 
-		commandSetup.description(commandMetadata.description).action(options => {
-			executeCommandFunction(options);
+		commandSetup.description(commandMetadata.description).action(async (options) => {
+			const actionResult = await executeCommandFunction(options);
+			process.exitCode = actionResult.status === ActionResult.STATUS.SUCCESS ? 0 : 1;
 		});
 	}
 
@@ -62,13 +64,15 @@ module.exports = class CommandRegistrationService {
 			}
 			let mandatoryOptionString = '';
 			let optionString = '';
-			if (option.type !== OPTION_TYPE_FLAG) {
-				mandatoryOptionString = '<argument>';
-			}
 			if (option.alias) {
 				optionString = `-${option.alias}, `;
 			}
-			optionString += `--${option.name} ${mandatoryOptionString}`;
+			optionString += `--${option.name}`;
+
+			if (option.type !== OPTION_TYPE_FLAG) {
+				mandatoryOptionString = '<argument>';
+				optionString += ` ${mandatoryOptionString}`;
+			}
 			commandSetup.option(optionString, option.description);
 		});
 		return commandSetup;

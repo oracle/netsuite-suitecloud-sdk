@@ -20,18 +20,18 @@ export default class AddDependencies extends BaseAction {
 		});
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(ADD_DEPENDENCIES.COMMAND));
 		const statusBarMessage: string = this.translationService.getMessage(ADD_DEPENDENCIES.ADDING);
-		opts.messageService.showTriggeredActionInfo(commandMessage, commandActionPromise, statusBarMessage);
+		opts.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult: ActionResult = await commandActionPromise;
 
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			if (actionResult.data.length > 0) {
-				opts.messageService.showCompletedActionInfo(this.translationService.getMessage(ADD_DEPENDENCIES.ADDED));
+				opts.messageService.showCommandInfo(this.translationService.getMessage(ADD_DEPENDENCIES.ADDED));
 			} else {
 				opts.messageService.showWarningMessage(this.translationService.getMessage(ADD_DEPENDENCIES.EMPTY));
 			}
 		} else {
-			opts.messageService.showCompletedActionError(this.translationService.getMessage(ADD_DEPENDENCIES.ERROR));
+			opts.messageService.showCommandError(this.translationService.getMessage(ADD_DEPENDENCIES.ERROR));
 		}
 	}
 }

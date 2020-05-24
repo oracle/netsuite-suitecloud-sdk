@@ -5,10 +5,10 @@
 'use strict';
 
 module.exports = {
-	SDK_COMMANDS_METADATA_FILE: 'metadata/SDKCommandsMetadata.json',
+	SDK_COMMANDS_METADATA_FILE: 'metadata/SdkCommandsMetadata.json',
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
-	SDK_FILENAME: 'cli-2020.1.0.jar',
+	SDK_FILENAME: 'cli-2020.1.1.jar',
 	SDK_REQUIRED_JAVA_VERSION: '11',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
@@ -30,6 +30,7 @@ module.exports = {
 		INSTALLATION_PREFERENCES: '/InstallationPreferences',
 		OBJECTS: '/Objects',
 		SUITECLOUD_SDK: '.suitecloud-sdk',
+		NODE_CLI: 'cli'
 	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',

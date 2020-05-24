@@ -9,8 +9,8 @@ const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const ImportFilesOutputFormatter = require('./outputFormatters/ImportFilesOutputFormatter');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
@@ -51,19 +51,19 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 		const listFoldersResult = await this._listFolders();
 
-		if (listFoldersResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-			throw SDKOperationResultUtils.collectErrorMessages(listFoldersResult);
+		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.collectErrorMessages(listFoldersResult);
 		}
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
 		const listFilesResult = await this._listFiles(selectFolderAnswer);
 
-		if (listFilesResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-			throw SDKOperationResultUtils.collectErrorMessages(listFilesResult);
+		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.collectErrorMessages(listFilesResult);
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
-			throw SDKOperationResultUtils.getResultMessage(listFilesResult);
+			throw SdkOperationResultUtils.getResultMessage(listFilesResult);
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
@@ -78,7 +78,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_listFolders() {
-		const executionContext = new SDKExecutionContext({
+		const executionContext = new SdkExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
 			includeProjectDefaultAuthId: true,
 		});
@@ -110,7 +110,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
 		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContext = new SDKExecutionContext({
+		const executionContext = new SdkExecutionContext({
 			command: INTERMEDIATE_COMMANDS.LISTFILES,
 			includeProjectDefaultAuthId: true,
 			params: selectFolderAnswer,
@@ -180,7 +180,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 			}
 
-			const executionContextImportObjects = new SDKExecutionContext({
+			const executionContextImportObjects = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
 				params: answers,
@@ -191,11 +191,11 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build;
 		}

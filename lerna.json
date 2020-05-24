@@ -1,13 +1,5 @@
 {
-  "version": "independent",
-  "npmClient": "npm",
-  "command": {
-    "bootstrap": {
-      "npmClientArgs": ["--no-package-lock"]
-    }
-  },
-  "packages": [
-    "packages/*",
-    "extensions/*"
-  ]
+	"version": "independent",
+	"npmClient": "npm",
+	"packages": ["packages/*", "extensions/*"]
 }

@@ -7,7 +7,7 @@
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const CommandUtils = require('../utils/CommandUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const {
 	COMMAND_SDK_WRAPPER: { MESSAGES },
@@ -17,7 +17,7 @@ const FLAG_OPTION_TYPE = 'FLAG';
 const PROJECT_DIRECTORY_OPTION = 'projectdirectory';
 const PROJECT_OPTION = 'project';
 
-module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
+module.exports = class SdkWrapperCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 	}
@@ -41,7 +41,7 @@ module.exports = class SDKWrapperCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_executeAction(args) {
-		const executionContext = new SDKExecutionContext({
+		const executionContext = new SdkExecutionContext({
 			command: this._commandMetadata.sdkCommand,
 			integrationMode: false,
 		});

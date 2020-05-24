@@ -2,10 +2,11 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "es6",
-		"outDir": "out",
+		"outDir": "dist",
 		"lib": [
 			"es6"
 		],
+		"resolveJsonModule": true,
 		"sourceMap": true,
 		"rootDir": "src",
 		"strict": true   /* enable all strict type-checking options */

@@ -10,14 +10,14 @@ const { executeWithSpinner } = require('../ui/CliSpinner');
 const FileCabinetService = require('../services/FileCabinetService');
 const FileSystemService = require('../services/FileSystemService');
 const path = require('path');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const UploadFilesOutputFormatter = require('./outputFormatters/UploadFilesOutputFormatter');
 
 const {
-	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES },
+	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, ERRORS },
 	NO,
 	YES,
 } = require('../services/TranslationKeys');
@@ -136,6 +136,9 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 			if (Array.isArray(answers[PATHS])) {
 				answers[PATHS] = answers[PATHS].map(CommandUtils.quoteString).join(' ');
 			} else {
+				if (!this._fileCabinetService.isUnrestrictedPath(answers[PATHS])) {
+					throw NodeTranslationService.getMessage(ERRORS.RESTRICTED_FOLDER);
+				}
 				answers[PATHS] = CommandUtils.quoteString(answers[PATHS]);
 			}
 		}
@@ -144,7 +147,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 	async _executeAction(answers) {
 		try {
-			const executionContextUploadFiles = new SDKExecutionContext({
+			const executionContextUploadFiles = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
 				params: answers,
@@ -154,12 +157,12 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 				action: this._sdkExecutor.execute(executionContextUploadFiles),
 				message: NodeTranslationService.getMessage(MESSAGES.UPLOADING_FILES),
 			});
-			return operationResult.status === SDKOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: ActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

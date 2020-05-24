@@ -1,6 +1,9 @@
-# suitecloud-vscode-extension README
+# suitecloud-vscode-extension
 
-This is the README for your extension "suitecloud-vscode-extension". After writing up a brief description, we recommend including the following sections.
+```
+TODO
+```
+recommended to include the following sections:
 
 ## Features
 

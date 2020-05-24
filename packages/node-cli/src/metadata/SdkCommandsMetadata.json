@@ -200,9 +200,10 @@
               "description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
               "mandatory": false,
               "type": "SINGLE",
+              "alias": "l",
               "usage": "d:\/path\/test.log",
               "defaultOption": false,
-              "disableInIntegrationMode": true
+              "disableInIntegrationMode": false
           },
           {
               "name": "validate",
@@ -460,7 +461,7 @@
         "description": "Indicates that the SuiteScript files referenced in custom objects are not imported. It can only be used in account customization projects (ACP).",
         "mandatory": false,
         "type": "FLAG",
-        "usage": "\/Objects",
+        "usage": "",
         "defaultOption": false,
         "disableInIntegrationMode": false
       },
@@ -855,9 +856,10 @@
               "description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
               "mandatory": false,
               "type": "SINGLE",
+              "alias": "l",
               "usage": "d:\/path\/test.log",
               "defaultOption": false,
-              "disableInIntegrationMode": true
+              "disableInIntegrationMode": false
           },
           {
               "name": "server",

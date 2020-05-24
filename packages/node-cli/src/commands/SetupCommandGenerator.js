@@ -8,9 +8,9 @@ const chalk = require('chalk');
 const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SetupActionResult = require('../commands/actionresult/SetupActionResult');
-const SDKExecutionContext = require('../SDKExecutionContext');
+const SdkExecutionContext = require('../SdkExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const SDKOperationResultUtils = require('../utils/SDKOperationResultUtils');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
@@ -75,7 +75,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	async _getCommandQuestions(prompt, commandArguments) {
 		this._checkWorkingDirectoryContainsValidProject();
 
-		const getAuthListContext = new SDKExecutionContext({
+		const getAuthListContext = new SdkExecutionContext({
 			command: COMMANDS.MANAGEAUTH,
 			flags: [FLAGS.LIST],
 		});
@@ -85,8 +85,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			message: NodeTranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
 		});
 
-		if (existingAuthIDsResponse.status === SDKOperationResultUtils.STATUS.ERROR) {
-			throw SDKOperationResultUtils.getResultMessage(existingAuthIDsResponse);
+		if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
 		}
 
 		let authIdAnswer;
@@ -256,8 +256,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				}
 
 				const operationResult = await this._performBrowserBasedAuthentication(commandParams, executeActionContext.developmentMode);
-				if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-					return SetupActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+					return SetupActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 				}
 				authId = executeActionContext.newAuthId;
 				accountInfo = operationResult.data.accountInfo;
@@ -274,8 +274,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				}
 
 				const operationResult = await this._saveToken(commandParams, executeActionContext.developmentMode);
-				if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-					return SetupActionResult.Builder.withErrors(SDKOperationResultUtils.collectErrorMessages(operationResult)).build();
+				if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+					return SetupActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 				}
 				authId = executeActionContext.newAuthId;
 				accountInfo = operationResult.data.accountInfo;
@@ -301,10 +301,10 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			executionContextOptions.flags = [FLAGS.DEVELOPMENTMODE];
 		}
 
-		const authenticateSDKExecutionContext = new SDKExecutionContext(executionContextOptions);
+		const authenticateSdkExecutionContext = new SdkExecutionContext(executionContextOptions);
 
 		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(authenticateSDKExecutionContext),
+			action: this._sdkExecutor.execute(authenticateSdkExecutionContext),
 			message: NodeTranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
@@ -323,7 +323,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			executionContextOptions.flags.push(FLAGS.DEVELOPMENTMODE);
 		}
 
-		const executionContext = new SDKExecutionContext(executionContextOptions);
+		const executionContext = new SdkExecutionContext(executionContextOptions);
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -335,12 +335,12 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	_checkOperationResultIsSuccessful(operationResult) {
-		if (operationResult.status === SDKOperationResultUtils.STATUS.ERROR) {
-			const errorMessage = SDKOperationResultUtils.getResultMessage(operationResult);
+		if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			const errorMessage = SdkOperationResultUtils.getResultMessage(operationResult);
 			if (errorMessage) {
 				throw errorMessage;
 			}
-			throw SDKOperationResultUtils.collectErrorMessages(operationResult);
+			throw SdkOperationResultUtils.collectErrorMessages(operationResult);
 		}
 	}
 };

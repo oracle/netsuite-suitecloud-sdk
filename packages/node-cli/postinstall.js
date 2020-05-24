@@ -4,4 +4,4 @@
  */
 'use strict';
 
-require('./src/core/sdksetup/SDKDownloadService').download();
+require('./src/core/sdksetup/SdkDownloadService').download();
