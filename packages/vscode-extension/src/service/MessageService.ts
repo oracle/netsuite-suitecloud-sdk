@@ -8,6 +8,8 @@ import { Output } from '../extension';
 import { COMMAND, SEE_DETAILS } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
+const DEFAULT_TIMEOUT = 5000;
+
 export default class MessageService {
 	private commandName?: string;
 	private readonly translationService = new VSTranslationService();
@@ -32,8 +34,14 @@ export default class MessageService {
 		window.showErrorMessage(errorMessage);
 	}
 
-	showStatusBarMessage(message: string, spin: boolean, promise: Promise<any>) {
-		window.setStatusBarMessage(spin ? `$(sync~spin) ${message}` : message, promise);
+	showStatusBarMessage(message: string, spin?: boolean, promise?: Promise<any>) {
+		const messageToShow = spin ? `$(sync~spin) ${message}` : message;
+		if (!promise) {
+			window.setStatusBarMessage(messageToShow, DEFAULT_TIMEOUT);
+		}
+		else {
+			window.setStatusBarMessage(messageToShow, promise);
+		}
 	}
 
 	showCommandInfo(successMessage?: string) {

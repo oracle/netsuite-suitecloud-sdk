@@ -12,24 +12,34 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const ListFilesOutputFormatter = require('./outputFormatters/ListFilesOutputFormatter');
+const AuthenticationService = require('../services/AuthenticationService');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../services/TranslationKeys');
 
-const LIST_FOLDERS_COMMAND = 'listfolders';
+const LIST_FOLDERS = {
+	COMMAND: 'listfolders',
+	OPTIONS: {
+		AUTH_ID: 'authid',
+	}
+}
+const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid'
+}
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 
 module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._outputFormatter = new ListFilesOutputFormatter(options.consoleLogger);
+		this._authId = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 	}
 
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
-			const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS_COMMAND)
+			const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
 				.integration()
-				.withDefaultAuthId(this._executionPath)
+				.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, this._authId)
 				.build();
 
 			return (
@@ -68,13 +78,17 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
+	_preExecuteAction(args) {
+		args[COMMAND_OPTIONS.AUTH_ID] = this._authId;
+		return args;
+	}
+
 	async _executeAction(answers) {
 		try {
 			// quote folder path to preserve spaces
 			answers.folder = `\"${answers.folder}\"`;
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
-				.withDefaultAuthId(this._executionPath)
 				.addParams(answers)
 				.build();
 

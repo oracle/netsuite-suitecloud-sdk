@@ -8,11 +8,12 @@ const FileUtils = require('../utils/FileUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { ERRORS, COMMAND_SETUPACCOUNT } = require('../services/TranslationKeys');
 const { FILES } = require('../ApplicationConstants');
-const assert = require('assert');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const path = require('path');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutor = require('../SdkExecutor').SdkExecutor;
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
@@ -24,9 +25,7 @@ const FLAGS = {
 	LIST: 'list',
 };
 
-module.exports = class AuthenticationService {
-	constructor() {
-	}
+module.exports = {
 
 	setDefaultAuthentication(projectFolder, authId) {
 		try {
@@ -39,7 +38,7 @@ module.exports = class AuthenticationService {
 			const errorMessage = error != null && error.message ? NodeTranslationService.getMessage(ERRORS.ADD_ERROR_LINE, error.message) : '';
 			throw NodeTranslationService.getMessage(ERRORS.WRITING_PROJECT_JSON, errorMessage);
 		}
-	}
+	},
 
 	getProjectDefaultAuthId(projectFolder) {
 
@@ -55,21 +54,29 @@ module.exports = class AuthenticationService {
 				throw NodeTranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error);
 			}
 		}
-	}
+	},
 
-	async getAuthIds(sdkExecutor) {
+	async getAuthIds(sdkPath) {
+
+		const sdkExecutor = new SdkExecutor(sdkPath);
+
 		const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH)
 			.integration()
 			.addFlag(FLAGS.LIST)
 			.build();
 
-		const existingAuthIDsResponse = await executeWithSpinner({
-			action: sdkExecutor.execute(getAuthListContext),
-			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
-		});
-		if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
+		try {
+			const existingAuthIDsResponse = await executeWithSpinner({
+				action: sdkExecutor.execute(getAuthListContext),
+				message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
+			});
+			if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
+				throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
+			}
+			return ActionResult.Builder.withData(existingAuthIDsResponse.data)
+				.build();
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build();
 		}
-		return existingAuthIDsResponse.data;
 	}
 };

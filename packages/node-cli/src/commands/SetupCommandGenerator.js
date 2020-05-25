@@ -67,7 +67,6 @@ const CREATE_NEW_AUTH = '******CREATE_NEW_AUTH*******!£$%&*';
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._authenticationService = new AuthenticationService();
 		this._outputFormatter = new SetupOutputFormatter(options.consoleLogger);
 	}
 
@@ -76,8 +75,11 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let authIdAnswer;
 		const choices = [];
 
-		const authIDList  = await this._authenticationService.getAuthIds(this._sdkExecutor);
-		let authIDs = Object.keys(authIDList);
+		const authIDList  = await AuthenticationService.getAuthIds(this._sdkPath);
+		if (authIDList.status === ActionResult.STATUS.ERROR) {
+			throw authIDList.errorMessages;
+		}
+		let authIDs = Object.keys(authIDList.data);
 		if (authIDs.length > 0) {
 			choices.push({
 				name: chalk.bold(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
@@ -87,7 +89,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			choices.push(new inquirer.Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
 			authIDs.forEach((authID) => {
-				const authentication = authIDList[authID];
+				const authentication = authIDList.data[authID];
 				const isDevLabel = authentication.developmentMode
 					? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
 					: '';
@@ -229,29 +231,6 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 
 	async _executeAction(executeActionContext) {
 
-		// TODO remove this
-		try {
-			const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH)
-				.integration()
-				.addFlag(FLAGS.LIST)
-				.build();
-
-			const existingAuthIDsResponse = await executeWithSpinner({
-				action: this._sdkExecutor.execute(getAuthListContext),
-				message: NodeTranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
-			});
-
-			if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
-				throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
-			}
-			console.log(`response: ${JSON.stringify(existingAuthIDsResponse)}`);
-			return ActionResult.Builder.withData(existingAuthIDsResponse.data)
-				.withResultMessage(`available auth idssss`)
-				.build();
-		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
-		}
-
 		try {
 			let authId;
 			let accountInfo;
@@ -292,7 +271,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				authId = executeActionContext.authentication.authId;
 				accountInfo = executeActionContext.authentication.accountInfo;
 			}
-			this._authenticationService.setDefaultAuthentication(this._executionPath, authId);
+			AuthenticationService.setDefaultAuthentication(this._executionPath, authId);
 
 			return SetupActionResult.Builder.success().withMode(executeActionContext.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
 		} catch (error) {

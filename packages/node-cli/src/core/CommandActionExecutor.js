@@ -51,7 +51,7 @@ module.exports = class CommandActionExecutor {
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
-			const projectConfiguration = commandMetadata.isSetupRequired ? new AuthenticationService().getProjectDefaultAuthId(this._executionPath) : null;
+			const projectConfiguration = commandMetadata.isSetupRequired ? AuthenticationService.getProjectDefaultAuthId(this._executionPath) : null;
 			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
 
 			const command = this._commandInstanceFactory.create({
@@ -167,7 +167,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_applyDefaultContextParams(args, projectConfiguration) {
-		args.authId = projectConfiguration.defaultAuthId;
+		args.authid = projectConfiguration.defaultAuthId;
 		return args;
 	}
 };

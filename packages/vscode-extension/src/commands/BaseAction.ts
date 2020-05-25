@@ -7,7 +7,7 @@ import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
 import { VSTranslationService } from '../service/VSTranslationService';
 import { getRootProjectFolder } from '../util/ExtensionUtil';
-import { NOT_IN_VALID_PROJECT } from '../service/TranslationKeys';
+import { ERRORS } from '../service/TranslationKeys';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
@@ -27,25 +27,23 @@ export default abstract class BaseAction {
 		this.executionPath = getRootProjectFolder();
 	}
 
-	protected validate(): { valid: boolean; message: string } {
+	protected validate(): { valid: false; message: string } | { valid: true } {
 		if (!this.executionPath) {
 			return {
 				valid: false,
-				message: this.translationService.getMessage(NOT_IN_VALID_PROJECT)
-			}
-		}
-		else {
+				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE_OR_WORKSPACE),
+			};
+		} else {
 			return {
 				valid: true,
-				message: '',
-			}
+			};
 		}
 	}
 
-	protected runSubCommand(args: {[key:string]: string}) {
+	protected runSubCommand(args: { [key: string]: string }) {
 		return new SuiteCloudRunner(this.executionPath).run({
 			commandName: this.commandName,
-			arguments: args
+			arguments: args,
 		});
 	}
 
@@ -54,8 +52,7 @@ export default abstract class BaseAction {
 		const validationStatus = this.validate();
 		if (validationStatus.valid) {
 			return this.execute();
-		}
-		else {
+		} else {
 			this.messageService.showErrorMessage(validationStatus.message);
 			return;
 		}

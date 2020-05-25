@@ -11,7 +11,7 @@ const SdkOperationResultUtils = require("../utils/SdkOperationResultUtils");
 const CommandUtils = require("../utils/CommandUtils");
 const NodeTranslationService = require("../services/NodeTranslationService");
 const ManageAccountOutputFormatter = require("./outputFormatters/ManageAccountOutputFormatter");
-const AuthenticationService = require("../core/authentication/AuthenticationService");
+const AuthenticationService = require("../services/AuthenticationService");
 const { ManageAccountActionResult } = require("./actionresult/ManageAccountActionResult");
 
 const inquirer = require("inquirer");
@@ -66,19 +66,19 @@ const {
 module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerator {
    constructor(options) {
       super(options);
-      this._authenticationService = new AuthenticationService(options.executionPath);
       this._outputFormatter = new ManageAccountOutputFormatter(options.consoleLogger);
    }
 
    async _getCommandQuestions(prompt) {
-      const authIDList = await this._authenticationService.getAuthIds(this._sdkExecutor);
-      let answers = await this.selectAuthID(authIDList, prompt);
+      const authIDList = await AuthenticationService.getAuthIds(this._sdkPath);
+      console.log(JSON.stringify(authIDList));
+      let answers = await this.selectAuthID(authIDList.data, prompt);
       this.logAccountInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
       const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
       answers[ANSWERS_NAMES.CONTINUE] = await this.continueQuestion(prompt, selectedAuthID);
       answers[ANSWERS_NAMES.ACTION] = await this.selectAction(prompt);
       if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
-         answers[ANSWERS_NAMES.RENAMETO] = await this.introduceNewName(prompt, authIDList, selectedAuthID);
+         answers[ANSWERS_NAMES.RENAMETO] = await this.introduceNewName(prompt, authIDList.data, selectedAuthID);
       } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
          answers[ANSWERS_NAMES.REMOVE] = await this.confirmRemove(prompt);
       }
@@ -236,12 +236,12 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 
    async _executeAction(answers) {
       const sdkParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
-      const flags = [];
-      const executionContext = new SdkExecutionContext({
-         command: this._commandMetadata.sdkCommand,
-         params: sdkParams,
-         flags,
-      });
+
+      const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+			.integration()
+         .addParams(sdkParams)
+         .build();
+
       const operationResult = await executeWithSpinner({
          action: this._sdkExecutor.execute(executionContext),
          message: NodeTranslationService.getMessage(MESSAGES.UPDATING_CREDENTIALS),

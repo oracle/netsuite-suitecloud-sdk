@@ -12,12 +12,14 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const AddDependenciesOutputFormatter = require('./outputFormatters/AddDependenciesOutputFormatter');
+const AuthenticationService = require('../services/AuthenticationService');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
 } = require('../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid',
 	ALL: 'all',
 	PROJECT: 'project',
 };
@@ -28,9 +30,10 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 		this._outputFormatter = new AddDependenciesOutputFormatter(options.consoleLogger);
 	}
 
-	_preExecuteAction(answers) {
-		answers[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		return answers;
+	_preExecuteAction(params) {
+		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		return params;
 	}
 
 	async _executeAction(answers) {
