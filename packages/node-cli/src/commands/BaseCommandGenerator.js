@@ -19,7 +19,8 @@ module.exports = class BaseCommandGenerator {
 		assert(options.consoleLogger);
 		assert(options.sdkPath);
 
-		this._sdkExecutor = new SdkExecutor(options.sdkPath);
+		this._sdkPath = options.sdkPath;
+		this._sdkExecutor = new SdkExecutor(this._sdkPath);
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;

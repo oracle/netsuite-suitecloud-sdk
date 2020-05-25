@@ -58,14 +58,6 @@ class SdkExecutionContextBuilder {
 		return this;
 	}
 
-	withDefaultAuthId(projectPath) {
-		return this.addParam('authId', new AuthenticationService().getProjectDefaultAuthId(projectPath));
-	}
-
-	withAuthId(authId) {
-		return this.addParam('authId', authId);
-	}
-
 	devMode() {
 		this._developmentMode = true;
 		return this;

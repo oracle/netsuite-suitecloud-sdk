@@ -4,30 +4,24 @@
  */
 import * as path from 'path';
 import { window } from 'vscode';
-import { COMMAND, UPLOAD_FILE, YES, NO } from '../service/TranslationKeys';
+import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKeys';
 import { actionResultStatus, CLIConfigurationService, ApplicationConstants, getRootProjectFolder } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 export default class UploadFile extends BaseAction {
-	
 	constructor() {
 		super('file:upload');
 	}
 
 	protected async execute() {
 		const activeFile = window.activeTextEditor?.document.uri;
-		const workspaceFolder = getRootProjectFolder();
 		if (!activeFile) {
-			// Already checked in ActionExecutor
-			return;
-		}
-		if (!workspaceFolder) {
-			// Already checked in ActionExecutor
+			// Already checked in validate
 			return;
 		}
 
 		const cliConfigurationService = new CLIConfigurationService();
-		cliConfigurationService.initialize(workspaceFolder);
+		cliConfigurationService.initialize(this.executionPath);
 		const projectFolder = cliConfigurationService.getProjectFolder(this.commandName);
 
 		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
@@ -56,5 +50,24 @@ export default class UploadFile extends BaseAction {
 			this.messageService.showCommandError();
 		}
 		return;
+	}
+
+	protected validate(): { valid: false; message: string } | { valid: true } {
+		const activeFile = window.activeTextEditor?.document.uri;
+		if (!activeFile) {
+			return {
+				valid: false,
+				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),
+			};
+		} else if (!this.executionPath) {
+			return {
+				valid: false,
+				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE),
+			};
+		} else {
+			return {
+				valid: true,
+			};
+		}
 	}
 }

@@ -19,7 +19,9 @@ const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const ImportObjectsOutputFormatter = require('./outputFormatters/ImportObjectsOutputFormatter');
 const { lineBreak } = require('../loggers/LoggerConstants');
+const AuthenticationService = require('../services/AuthenticationService');
 const ANSWERS_NAMES = {
+	AUTH_ID: 'authid',
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
 	SPECIFY_SCRIPT_ID: 'specifyscriptid',
@@ -59,6 +61,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 		this._outputFormatter = new ImportObjectsOutputFormatter(options.consoleLogger);
+		this._authId =  AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -68,7 +71,6 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
 		const executionContextForListObjects = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
 			.integration()
-			.withDefaultAuthId(this._executionPath)
 			.addParams(paramsForListObjects)
 			.build();
 
@@ -284,6 +286,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 	}
 
 	_arrangeAnswersForListObjects(answers) {
+		answers[ANSWERS_NAMES.AUTH_ID] = this._authId;
 		if (answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(' ');
 		}
@@ -303,6 +306,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 
 	_preExecuteAction(answers) {
 		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
+		answers[ANSWERS_NAMES.AUTH_ID] = this._authId;
 
 		return answers;
 	}
@@ -329,7 +333,6 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 			const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 			const executionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
-				.withDefaultAuthId(this._executionPath)
 				.addFlags(flags)
 				.addParams(params)
 				.build();

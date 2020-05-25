@@ -16,6 +16,7 @@ const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesAr
 const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const ValidateOutputFormatter = require('./outputFormatters/ValidateOutputFormatter');
 const { executeWithSpinner } = require('../ui/CliSpinner');
+const AuthenticationService = require('../services/AuthenticationService');
 
 const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -30,6 +31,7 @@ const COMMAND_OPTIONS = {
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	PROJECT: 'project',
+	AUTH_ID: 'authid',
 };
 
 const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
@@ -112,6 +114,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 		return {
 			...args,
+			[COMMAND_OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
 			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
 			...this._applyContentProtectionArgumentHandler.transformArgument(args),
@@ -133,7 +136,6 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
-				.withDefaultAuthId(this._executionPath)
 				.addParams(sdkParams)
 				.addFlags(flags)
 				.build();
