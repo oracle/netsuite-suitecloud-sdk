@@ -6,7 +6,7 @@
 
 const FileUtils = require('../../utils/FileUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const { ACCOUNT_TYPE, ERRORS, COMMAND_SETUPACCOUNT } = require('../../services/TranslationKeys');
+const { ERRORS, COMMAND_SETUPACCOUNT } = require('../../services/TranslationKeys');
 const { FILES } = require('../../ApplicationConstants');
 const assert = require('assert');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
@@ -15,8 +15,6 @@ const SdkExecutionContext = require('../../SdkExecutionContext');
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
-const SANDBOX_ACCOUNT_ID_REGEX_PATTERN = ".+_SB\\d*$";
-const RELEASE_PREVIEW_ACCOUNT_ID_REGEX_PATTERN = ".+_RP\\d*$";
 
 const COMMANDS = {
 	MANAGEAUTH: 'manageauth',
@@ -81,15 +79,4 @@ module.exports = class AuthenticationService {
 		}
 		return existingAuthIDsResponse.data;
 	}
-
-
-	getAccountType(accountId) {
-        if (accountId.match(SANDBOX_ACCOUNT_ID_REGEX_PATTERN)) {
-            return NodeTranslationService.getMessage(ACCOUNT_TYPE.SANDBOX); //Messages.lbl_sandbox;
-        } else if (accountId.match(RELEASE_PREVIEW_ACCOUNT_ID_REGEX_PATTERN)) {
-            return NodeTranslationService.getMessage(ACCOUNT_TYPE.RELEASE_PREVIEW); //Messages.lbl_release_preview;
-        }
-
-        return NodeTranslationService.getMessage(ACCOUNT_TYPE.PRODUCTION) //Messages.lbl_production;
-    }
 };

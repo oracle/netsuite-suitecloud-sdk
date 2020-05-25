@@ -13,6 +13,7 @@ const NodeTranslationService = require("../services/NodeTranslationService");
 const ManageAccountOutputFormatter = require("./outputFormatters/ManageAccountOutputFormatter");
 const AuthenticationService = require("../core/authentication/AuthenticationService");
 const { ManageAccountActionResult } = require("./actionresult/ManageAccountActionResult");
+const assert = require("assert");
 
 const inquirer = require("inquirer");
 
@@ -62,6 +63,13 @@ const {
    validateSameAuthID,
 } = require("../validation/InteractiveAnswersValidator");
 
+const PROPERTIES = {
+   INFO: "info",
+   ACCOUNT_INFO: "accountInfo",
+   URLS: "urls",
+};
+
+const DOMAIN = "domain";
 module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerator {
    constructor(options) {
       super(options);
@@ -71,20 +79,20 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 
    async _getCommandQuestions(prompt) {
       const authIDList = await this._authenticationService.getAuthIds(this._sdkExecutor);
-      let answers = await this.selectAuthID(authIDList, prompt);
-      this.logAccountInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
+      let answers = await this._selectAuthID(authIDList, prompt);
+      this._outputFormatter.logAccountInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
       const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-      answers[ANSWERS_NAMES.ACTION] = await this.selectAction(prompt);
+      answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
       if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
-         answers[ANSWERS_NAMES.RENAMETO] = await this.introduceNewName(prompt, authIDList, selectedAuthID);
+         answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDList, selectedAuthID);
       } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
-         answers[ANSWERS_NAMES.REMOVE] = await this.confirmRemove(prompt);
+         answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
       }
 
       return this._extractAnswers(answers);
    }
 
-   async selectAuthID(authIDList, prompt) {
+   async _selectAuthID(authIDList, prompt) {
       var authIDs = Object.entries(authIDList).sort();
       if (authIDs.length <= 0) {
          throw Error(NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY));
@@ -122,23 +130,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       return answers;
    }
 
-   logAccountInfo(selectedAuthId) {
-      const accountInfo = selectedAuthId.accountInfo;
-      this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.AUTHID, selectedAuthId.authId));
-      this.consoleLogger.info(
-         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_NAME, accountInfo.companyName)
-      );
-      this.consoleLogger.info(
-         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_ID, accountInfo.companyId)
-      );
-      this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ROLE, accountInfo.roleName));
-      this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.DOMAIN, selectedAuthId.domain));
-      this.consoleLogger.info(
-         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_TYPE, this._authenticationService.getAccountType(accountInfo.companyId))
-      );
-   }
-
-   async selectAction(prompt) {
+   async _selectAction(prompt) {
       let answer = await prompt({
          type: CommandUtils.INQUIRER_TYPES.LIST,
          name: ANSWERS_NAMES.ACTION,
@@ -152,10 +144,10 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
                name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REMOVE),
                value: ACTION.REMOVE,
             },
-            {
-               name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
-               value: ACTION.REVOKE,
-            },
+            // {
+            //    name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
+            //    value: ACTION.REVOKE,
+            // },
             {
                name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.EXIT),
                value: ACTION.EXIT,
@@ -170,7 +162,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       return answer[ANSWERS_NAMES.ACTION];
    }
 
-   async introduceNewName(prompt, authIDList, originalAuthId) {
+   async _introduceNewName(prompt, authIDList, originalAuthId) {
       let answer = await prompt({
          type: CommandUtils.INQUIRER_TYPES.INPUT,
          name: ANSWERS_NAMES.RENAMETO,
@@ -190,7 +182,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       return answer[ANSWERS_NAMES.RENAMETO];
    }
 
-   async confirmRemove(prompt) {
+   async _confirmRemove(prompt) {
       let answer = await prompt([
          {
             type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -216,10 +208,8 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
          commandAnswers[COMMAND.OPTIONS.RENAMETO] = answers[ANSWERS_NAMES.RENAMETO];
       } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
          commandAnswers[COMMAND.OPTIONS.REMOVE] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-      } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REVOKE) {
-         commandAnswers[COMMAND.OPTIONS.REVOKE] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-         //   } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.NOTHING) {
-         //      newAnswers[COMMAND.OPTIONS.NOTHING] = true;
+         // } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REVOKE) {
+         //    commandAnswers[COMMAND.OPTIONS.REVOKE] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
       }
       return commandAnswers;
    }
@@ -233,14 +223,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
          flags,
       });
 
-      let message = "";
-      if (answers[COMMAND.OPTIONS.REMOVE]) {
-         message = NodeTranslationService.getMessage(MESSAGES.REMOVING);
-      } else if (answers[COMMAND.OPTIONS.RENAME]) {
-         message = NodeTranslationService.getMessage(MESSAGES.RENAMING);
-      } else if (answers[COMMAND.OPTIONS.REVOKE]) {
-         message = NodeTranslationService.getMessage(MESSAGES.REVOKING);
-      }
+      let message = this._getSpinnerMessage(answers);
 
       const operationResult = await executeWithSpinner({
          action: this._sdkExecutor.execute(executionContext),
@@ -248,11 +231,41 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       });
 
       return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-         ? ManageAccountActionResult.Builder.withData(operationResult.data)
+         ? ManageAccountActionResult.Builder.withData(this.prepareData(answers, operationResult.data))
               .withResultMessage(operationResult.resultMessage)
               .build()
          : ManageAccountActionResult.Builder.withErrors(
               SdkOperationResultUtils.collectErrorMessages(operationResult)
            ).build();
+   }
+
+   _getSpinnerMessage(answers) {
+      let message = "";
+      if (answers[COMMAND.OPTIONS.REMOVE]) {
+         message = NodeTranslationService.getMessage(MESSAGES.REMOVING);
+      } else if (answers[COMMAND.OPTIONS.RENAME]) {
+         message = NodeTranslationService.getMessage(MESSAGES.RENAMING);
+      } else if (answers[COMMAND.OPTIONS.LIST]) {
+         message = NodeTranslationService.getMessage(MESSAGES.REMOVING);
+      // } else if (answers[COMMAND.OPTIONS.REVOKE]) {
+      //    message = NodeTranslationService.getMessage(MESSAGES.REVOKING);
+      } else if (answers[COMMAND.OPTIONS.INFO]) {
+         message = NodeTranslationService.getMessage(MESSAGES.INFO, answers.info);
+      }
+      return message;
+   }
+
+   prepareData(answers, data) {
+      let actionResultData;
+      if (!answers.hasOwnProperty(PROPERTIES.INFO)) {
+         return data;
+      }
+
+      assert(data.hasOwnProperty(PROPERTIES.ACCOUNT_INFO));
+      actionResultData = { authId: answers.info, accountInfo: data.accountInfo };
+      if (data.hasOwnProperty(PROPERTIES.URLS)) {
+         actionResultData[DOMAIN] = data.urls.app;
+      }
+      return actionResultData;
    }
 };

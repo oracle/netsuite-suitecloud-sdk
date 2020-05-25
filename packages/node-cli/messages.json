@@ -137,6 +137,7 @@
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_ACCOUNT_INFO_ROLE": "Role: {0}",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_CANCEL": "The manageauth process has been canceled.",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_INFO": "{0} authentication ID (authID) information:",
+	"COMMAND_MANAGE_ACCOUNT_MESSAGES_LISTING": "Loading the configured authentication IDs in this machine...",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_REMOVING": "Removing credentials...",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_RENAMING": "Renaming credentials...",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_REVOKING": "Revoking credentials...",
@@ -148,7 +149,7 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_CHOICES_ACTIONS_REVOKE": "Revoke Credentials.",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_NEW_NAME": "Enter a new name for the authentication ID (authID):",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_CREDENTIALS": "Select an authentication ID to see its details:",
-	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "What do you want to do with this account?",	
+	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",	
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",	
 	
 
@@ -206,7 +207,7 @@
 	"COMMAND_UPDATE_QUESTIONS_OVERWRITE_OBJECTS": "All the selected objects in the project will be overwritten with the objects from the account. Do you want to continue?",
 	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID": "Select the objects you want to update from your account:",
 	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID_FILTER": "Enter the full or partial script ID:",
-	"COMMAND_UPDATE_MESSAGES_CANCEL_UPDATE": "The updating process was cancelled. No objects were overwritten.",
+	"COMMAND_UPDATE_MESSAGES_CANCEL_UPDATE": "The updating process was canceled. No objects were overwritten.",
 	"COMMAND_UPDATE_MESSAGES_NO_OBJECTS_WITH_SCRIPT_ID_FILTER": "There are no objects matching your search criteria. Check the specified script ID, and try again.",
 	"COMMAND_UPDATE_MESSAGES_UPDATING_OBJECTS": "Updating objects...",
 	"COMMAND_UPDATE_OUTPUT_NO_UPDATED_OBJECTS": "The following objects were not updated from the account to your project:",
