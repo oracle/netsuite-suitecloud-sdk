@@ -47,10 +47,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		}),
 	}));
 
-	const AuthenticationService = jest.fn(() => ({
-		getProjectDefaultAuthId: jest.fn(),
-	}));
-
 	const CommandsMetadataService = jest.fn(() => ({
 		getCommandMetadataByName: jest.fn(() => {
 			return { isSetupRequired: false, supportsInteractiveMode: true };
@@ -86,7 +82,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			executionPath: 'myFakePath',
 			commandOptionsValidator: new CommandOptionsValidatorWithoutErrors(),
 			cliConfigurationService: new CliConfigurationService(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
 			log: mockConsoleLogger,
 			sdkPath: sdkPath,
@@ -189,7 +184,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			executionPath: 'myFakePath',
 			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
 			cliConfigurationService: new CliConfigurationService(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceSetupRequired(),
 			log: mockConsoleLogger,
 			sdkPath: sdkPath,
@@ -218,7 +212,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			executionPath: 'myFakePath',
 			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
 			cliConfigurationService: new CliConfigurationService(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceNotSupportInteractiveMode(),
 			log: mockConsoleLogger,
 			sdkPath: sdkPath,

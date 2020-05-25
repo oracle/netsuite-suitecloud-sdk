@@ -142,10 +142,10 @@ module.exports = class CreateProjectAction extends BaseAction {
 				if (params[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
-				const executionContextCreateProject = new SdkExecutionContext({
-					command: this._commandMetadata.sdkCommand,
-					params: createProjectParams,
-				});
+				const executionContextCreateProject = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+					.integration()
+					.addParams(createProjectParams)
+					.build();
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 

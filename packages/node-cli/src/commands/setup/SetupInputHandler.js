@@ -52,11 +52,9 @@ const AUTH_MODE = {
 
 const COMMANDS = {
 	AUTHENTICATE: 'authenticate',
-	MANAGEAUTH: 'manageauth',
 };
 
 const FLAGS = {
-	LIST: 'list',
 	SAVETOKEN: 'savetoken',
 	DEVELOPMENTMODE: 'developmentmode',
 };
@@ -72,25 +70,14 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		this._checkWorkingDirectoryContainsValidProject();
-
-		const getAuthListContext = new SdkExecutionContext({
-			command: COMMANDS.MANAGEAUTH,
-			flags: [FLAGS.LIST],
-		});
-
-		const existingAuthIDsResponse = await executeWithSpinner({
-			action: this._sdkExecutor.execute(getAuthListContext),
-			message: NodeTranslationService.getMessage(MESSAGES.GETTING_AVAILABLE_AUTHIDS),
-		});
-
-		if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
-		}
-
 		let authIdAnswer;
 		const choices = [];
-		const authIDs = Object.keys(existingAuthIDsResponse.data);
 
+		const authIDList  = await AuthenticationService.getAuthIds(this._sdkPath);
+		if (authIDList.status === ActionResult.STATUS.ERROR) {
+			throw authIDList.errorMessages;
+		}
+		let authIDs = Object.keys(authIDList.data);
 		if (authIDs.length > 0) {
 			choices.push({
 				name: chalk.bold(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
@@ -100,7 +87,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			choices.push(new Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
 			authIDs.forEach((authID) => {
-				const authentication = existingAuthIDsResponse.data[authID];
+				const authentication = authIDList.data[authID];
 				const isDevLabel = authentication.developmentMode
 					? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
 					: '';
@@ -180,7 +167,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 							fieldValue,
 							validateFieldIsNotEmpty,
 							validateFieldHasNoSpaces,
-							(fieldValue) => validateAuthIDNotInList(fieldValue, authIDs),
+							(fieldValue) => validateAuthIDNotInList(fieldValue, authIDList),
 							validateAlphanumericHyphenUnderscore,
 							validateMaximumLength
 						),

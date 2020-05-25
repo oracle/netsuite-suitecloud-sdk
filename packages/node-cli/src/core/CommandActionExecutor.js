@@ -16,17 +16,14 @@ const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/E
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
 		assert(dependencies);
-		assert(dependencies.executionPath);
 		assert(dependencies.cliConfigurationService);
 		assert(dependencies.commandsMetadataService);
-		assert(dependencies.authenticationService);
 		assert(dependencies.log);
 		assert(dependencies.sdkPath);
 
 		this._executionPath = dependencies.executionPath;
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandsMetadataService = dependencies.commandsMetadataService;
-		this._authenticationService = dependencies.authenticationService;
 		this._log = dependencies.log;
 		this._sdkPath = dependencies.sdkPath;
 	}
@@ -49,7 +46,7 @@ module.exports = class CommandActionExecutor {
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
-			const projectConfiguration = commandMetadata.isSetupRequired ? this._authenticationService.getProjectDefaultAuthId() : null;
+			const projectConfiguration = commandMetadata.isSetupRequired ? AuthenticationService.getProjectDefaultAuthId(this._executionPath) : null;
 			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
 
 			const command = this._getCommand(runInInteractiveMode, projectFolder, commandMetadata);
@@ -166,7 +163,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_applyDefaultContextParams(args, projectConfiguration) {
-		args.authId = projectConfiguration.defaultAuthId;
+		args.authid = projectConfiguration.defaultAuthId;
 		return args;
 	}
 };

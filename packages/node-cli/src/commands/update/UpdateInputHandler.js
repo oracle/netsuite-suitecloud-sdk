@@ -29,6 +29,7 @@ const ANSWERS_NAMES = {
 const COMMAND_OPTIONS = {
 	PROJECT: 'project',
 	SCRIPT_ID: 'scriptid',
+	AUTH_ID: 'authid',
 };
 
 const MAX_ENTRIES_BEFORE_FILTER = 30;

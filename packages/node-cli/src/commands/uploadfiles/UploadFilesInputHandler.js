@@ -23,6 +23,7 @@ const { FILE_CABINET } = require('../../ApplicationConstants').FOLDERS;
 const COMMAND_OPTIONS = {
 	PATHS: 'paths',
 	PROJECT: 'project',
+	AUTH_ID: 'authid',
 };
 
 const COMMAND_ANSWERS = {

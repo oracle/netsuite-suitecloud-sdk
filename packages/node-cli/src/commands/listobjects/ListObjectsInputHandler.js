@@ -24,6 +24,7 @@ const {
 } = require('../../services/TranslationKeys');
 
 const COMMAND_QUESTIONS_NAMES = {
+	AUTH_ID: 'authid',
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
 	SPECIFY_SCRIPT_ID: 'specifyscriptid',

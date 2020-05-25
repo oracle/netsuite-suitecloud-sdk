@@ -5,29 +5,15 @@
 'use strict';
 
 const { join } = require('path');
-const CommandsMetadataService = require('../../core/CommandsMetadataService');
-const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
-const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../SdkExecutionContext');
-const { lineBreak } = require('../../loggers/LoggerConstants');
-const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDERS } = require('../../ApplicationConstants');
-const {
-	COMMAND_IMPORTOBJECTS: { ERRORS, QUESTIONS, MESSAGES },
-	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED },
-	YES,
-	NO,
-} = require('../../services/TranslationKeys');
-
-const {
-	validateArrayIsNotEmpty,
-	validateScriptId,
-	validateSuiteApp,
-	showValidationResults,
-} = require('../../validation/InteractiveAnswersValidator');
-const SdkExecutor = require('../../SdkExecutor');
-const AuthenticationService = require('../../core/authentication/AuthenticationService');
-
+const CommandsMetadataService = require('../core/CommandsMetadataService');
+const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../SdkExecutionContext');
+const ImportObjectsOutputFormatter = require('./outputFormatters/ImportObjectsOutputFormatter');
+const { lineBreak } = require('../loggers/LoggerConstants');
+const AuthenticationService = require('../services/AuthenticationService');
 const ANSWERS_NAMES = {
+	AUTH_ID: 'authid',
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
 	SPECIFY_SCRIPT_ID: 'specifyscriptid',
@@ -57,6 +43,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
+		this._authId =  AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async getParameters(params) {
@@ -68,11 +55,10 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const listObjectAnswers = await prompt(listObjectQuestions);
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
-		const executionContextForListObjects = new SdkExecutionContext({
-			command: this._listObjectsMetadata.sdkCommand,
-			params: paramsForListObjects,
-			includeProjectDefaultAuthId: true,
-		});
+		const executionContextForListObjects = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
+			.integration()
+			.addParams(paramsForListObjects)
+			.build();
 
 		let listObjectsResult;
 		try {
@@ -288,6 +274,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	}
 
 	_arrangeAnswersForListObjects(answers) {
+		answers[ANSWERS_NAMES.AUTH_ID] = this._authId;
 		if (answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(' ');
 		}

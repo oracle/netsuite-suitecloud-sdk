@@ -14,14 +14,13 @@ const AuthenticationService = require('@oracle/suitecloud-cli/src/core/authentic
 export default class SuiteCloudRunner {
 	private commandActionExecutor: any;
 
-	constructor(executionPath: string, commandsMetadataService: any) {
+	constructor(executionPath?: string) {
 		this.commandActionExecutor = new CommandActionExecutor({
 			//THIS SHOULD BE A FACTORY METHOD INSIDE THE CLI CommandActionExecutorFactory.get({executionPath:executionPath})
-			executionPath,
+			executionPath: executionPath,
 			commandOptionsValidator: new CommandOptionsValidator(),
 			cliConfigurationService: new CLIConfigurationService(),
-			authenticationService: new AuthenticationService(executionPath),
-			commandsMetadataService: commandsMetadataService,
+			commandsMetadataService: CommandsMetadataSingleton.getInstance(),
 			log: new VSConsoleLogger(),
 			sdkPath: sdkPath,
 		});

@@ -58,6 +58,11 @@
         "nonInteractiveGenerator": "./commands/setup/SetupCommand"
     },
     {
+        "commandName": "account:manageauth",
+        "interactiveGenerator": "./commands/ManageAccountCommandGenerator",
+        "nonInteractiveGenerator": "./commands/ManageAccountCommandGenerator"
+    },
+    {
         "commandName": "object:update",
         "interactiveGenerator": "./commands/update/UpdateCommand",
         "nonInteractiveGenerator": "./commands/update/UpdateCommand"

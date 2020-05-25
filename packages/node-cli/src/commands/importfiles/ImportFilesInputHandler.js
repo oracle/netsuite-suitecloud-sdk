@@ -4,19 +4,17 @@
  */
 'use strict';
 
-const { prompt } = require('inquirer');
-const CommandUtils = require('../../utils/CommandUtils');
-const NodeTranslationService = require('../../services/NodeTranslationService');
-const { executeWithSpinner } = require('../../ui/CliSpinner');
-const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../SdkExecutionContext');
-const ProjectInfoService = require('../../services/ProjectInfoService');
-const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
-const BaseInputHandler = require('../base/BaseInputHandler');
-const SdkExecutor = require('../../SdkExecutor');
-const AuthenticationService = require('../../core/authentication/AuthenticationService');
-const { validateArrayIsNotEmpty, showValidationResults } = require('../../validation/InteractiveAnswersValidator');
-
+const BaseCommandGenerator = require('./BaseCommandGenerator');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
+const CommandUtils = require('../utils/CommandUtils');
+const NodeTranslationService = require('../services/NodeTranslationService');
+const { executeWithSpinner } = require('../ui/CliSpinner');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../SdkExecutionContext');
+const ProjectInfoService = require('../services/ProjectInfoService');
+const ImportFilesOutputFormatter = require('./outputFormatters/ImportFilesOutputFormatter');
+const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const AuthenticationService = require('../services/AuthenticationService');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
 	NO,
@@ -25,14 +23,26 @@ const {
 
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid',
 	FOLDER: 'folder',
 	PATHS: 'paths',
 	EXCLUDE_PROPERTIES: 'excludeproperties',
 	PROJECT: 'project',
 };
 const INTERMEDIATE_COMMANDS = {
-	LISTFILES: 'listfiles',
-	LISTFOLDERS: 'listfolders',
+	LISTFILES: {
+		COMMAND: 'listfiles',
+		OPTIONS: {
+			AUTH_ID: 'authid',
+			FOLDER: 'folder',
+		}
+	},
+	LISTFOLDERS: {
+		COMMAND: 'listfolders',
+		OPTIONS: {
+			AUTH_ID: 'authid',
+		}
+	}
 };
 const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',
@@ -45,6 +55,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		this._sdkExecutor = new SdkExecutor(new AuthenticationService(this._executionPath));
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._authId = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async getParameters(params) {
@@ -81,10 +92,10 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	}
 
 	_listFolders() {
-		const executionContext = new SdkExecutionContext({
-			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
-			includeProjectDefaultAuthId: true,
-		});
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS)
+			.integration()
+			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
+			.build();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -112,12 +123,13 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
-		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContext = new SdkExecutionContext({
-			command: INTERMEDIATE_COMMANDS.LISTFILES,
-			includeProjectDefaultAuthId: true,
-			params: selectFolderAnswer,
-		});
+		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
+		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = this._authId;
+
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES)
+			.integration()
+			.addParams(selectFolderAnswer)
+			.build();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),

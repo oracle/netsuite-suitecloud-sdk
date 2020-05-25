@@ -25,8 +25,8 @@ const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
 module.exports = class SdkExecutor {
-	constructor(authenticationService, sdkPath) {
-		this._authenticationService = authenticationService;
+	constructor(sdkPath) {
+
 		this._sdkPath = sdkPath;
 
 		this._CLISettingsService = new CLISettingsService();
@@ -35,9 +35,6 @@ module.exports = class SdkExecutor {
 
 	execute(executionContext) {
 		const proxyOptions = this._getProxyOptions();
-		const authId = executionContext.includeProjectDefaultAuthId
-			? this._authenticationService.getProjectDefaultAuthId()
-			: null;
 
 		return new Promise((resolve, reject) => {
 			let lastSdkOutput = '';
@@ -49,10 +46,6 @@ module.exports = class SdkExecutor {
 					reject(javaVersionError);
 					return;
 				}
-			}
-
-			if (executionContext.includeProjectDefaultAuthId) {
-				executionContext.addParam('authId', authId);
 			}
 
 			const cliParams = this._convertParamsObjToString(
