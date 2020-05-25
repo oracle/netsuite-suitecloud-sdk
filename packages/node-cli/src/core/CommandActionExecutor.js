@@ -12,6 +12,7 @@ const { ActionResult } = require('../services/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/ExceptionUtils');
+const AuthenticationService = require('../services/AuthenticationService');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -71,11 +72,11 @@ module.exports = class CommandActionExecutor {
 
 		} catch (error) {
 			console.trace(error);
-			/*let errorMessage = this._logGenericError(error);
+			let errorMessage = this._logGenericError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
-			return ActionResult.Builder.withErrors(errorMessage);*/
+			return ActionResult.Builder.withErrors(errorMessage);
 		}
 	}
 

@@ -10,10 +10,17 @@ const SdkExecutionContext = require('../../SdkExecutionContext');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
+const AuthenticationService = require('../../services/AuthenticationService');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
 } = require('../../services/TranslationKeys');
+
+const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid',
+	ALL: 'all',
+	PROJECT: 'project',
+};
 
 module.exports = class AddDependenciesAction extends BaseAction {
 	constructor(options) {
@@ -22,17 +29,17 @@ module.exports = class AddDependenciesAction extends BaseAction {
 
 	preExecute(params) {
 		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 		return params;
 	}
 
 	async execute(params) {
 		try {
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: params,
-				flags: [COMMAND_OPTIONS.ALL],
-				requiresContextParams: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(params)
+				.addFlag(COMMAND_OPTIONS.ALL)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

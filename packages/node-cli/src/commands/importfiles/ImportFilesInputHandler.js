@@ -4,17 +4,14 @@
  */
 'use strict';
 
-const BaseCommandGenerator = require('./BaseCommandGenerator');
-const { ActionResult } = require('../commands/actionresult/ActionResult');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
-const ImportFilesOutputFormatter = require('./outputFormatters/ImportFilesOutputFormatter');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
-const AuthenticationService = require('../services/AuthenticationService');
+const AuthenticationService = require('../../services/AuthenticationService');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
 	NO,

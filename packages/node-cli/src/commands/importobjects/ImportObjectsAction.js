@@ -10,12 +10,14 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../SdkExecutionContext');
+const AuthenticationService = require('../../services/AuthenticationService');
 const BaseAction = require('../base/BaseAction');
 const {
 	COMMAND_IMPORTOBJECTS: { MESSAGES },
 } = require('../../services/TranslationKeys');
 
 const ANSWERS_NAMES = {
+	AUTH_ID: 'authid',
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
 	SPECIFY_SCRIPT_ID: 'specifyscriptid',
@@ -39,6 +41,13 @@ module.exports = class ImportObjectsAction extends BaseAction {
 		super(options);
 	}
 
+	preExecute(answers) {
+		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
+		answers[ANSWERS_NAMES.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+
+		return answers;
+	}
+
 	async execute(params) {
 		if (params[ANSWERS_NAMES.OVERWRITE_OBJECTS] === false) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
@@ -59,12 +68,11 @@ module.exports = class ImportObjectsAction extends BaseAction {
 			}
 
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
-			const executionContextForImportObjects = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: sdkParams,
-				flags: flags,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addFlags(flags)
+				.addParams(sdkParams)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForImportObjects),

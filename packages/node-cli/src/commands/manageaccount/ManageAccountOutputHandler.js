@@ -3,22 +3,21 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 "use strict";
-const OutputFormatter = require("./OutputFormatter");
+const BaseOutputHandler = require("../base/BaseOutputHandler");
 const ActionResultUtils = require("../../utils/ActionResultUtils");
 
-class ManageAccountOutputFormatter extends OutputFormatter {
+module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler  {
    constructor(consoleLogger) {
       super(consoleLogger);
    }
 
-   formatActionResult(actionResult) {
+   parse(actionResult) {
       if (actionResult.resultMessage) {
          ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
       }
       if (Array.isArray(actionResult.data)) {
          actionResult.data.forEach((message) => this.consoleLogger.result(message));
       }
+      return actionResult;
    }
 }
-
-module.exports = ManageAccountOutputFormatter;

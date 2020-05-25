@@ -10,6 +10,7 @@ const OBJECT_TYPES = require('../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
+const AuthenticationService = require('../../services/AuthenticationService');
 const BaseInputHandler = require('../base/BaseInputHandler');
 const {
 	validateArrayIsNotEmpty,
@@ -144,6 +145,8 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 		};
 		questions.push(questionScriptId);
 
-		return prompt(questions);
+		let answers = await prompt(questions);
+		answers[COMMAND_QUESTIONS_NAMES.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		return answers;
 	}
 };

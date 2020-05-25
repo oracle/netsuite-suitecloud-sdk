@@ -9,25 +9,34 @@ const SdkExecutionContext = require('../../SdkExecutionContext');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
+const AuthenticationService = require('../../services/AuthenticationService');
 const BaseAction = require('../base/BaseAction');
 const {
 	COMMAND_LISTFILES: { LOADING_FILES },
 } = require('../../services/TranslationKeys');
+
+const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid'
+}
 
 module.exports = class ListFilesAction extends BaseAction {
 	constructor(options) {
 		super(options);
 	}
 
+	preExecute(args) {
+		args[COMMAND_OPTIONS.AUTH_ID] = this._authId;
+		return args;
+	}
+
 	async execute(params) {
 		try {
 			// quote folder path to preserve spaces
 			params.folder = `\"${params.folder}\"`;
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: params,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(params)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

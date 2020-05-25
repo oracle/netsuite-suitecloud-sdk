@@ -27,11 +27,11 @@ module.exports = class ListObjectsAction extends BaseAction {
 			if (Array.isArray(sdkParams.type)) {
 				sdkParams.type = sdkParams.type.join(' ');
 			}
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: sdkParams,
-				includeProjectDefaultAuthId: true,
-			});
+
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(sdkParams)
+				.build();
 
 			const actionListObjects = this._sdkExecutor.execute(executionContext);
 

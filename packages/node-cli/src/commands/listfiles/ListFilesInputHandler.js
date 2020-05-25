@@ -11,12 +11,17 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const BaseInputHandler = require('../base/BaseInputHandler');
 const SdkExecutor = require('../../SdkExecutor');
-const AuthenticationService = require('../../core/authentication/AuthenticationService');
+const AuthenticationService = require('../../services/AuthenticationService');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../../services/TranslationKeys');
 
-const LIST_FOLDERS_COMMAND = 'listfolders';
+const LIST_FOLDERS = {
+	COMMAND: 'listfolders',
+	OPTIONS: {
+		AUTH_ID: 'authid',
+	}
+}
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 
 module.exports = class ListFilesInputHandler extends BaseInputHandler {
@@ -24,14 +29,14 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(new AuthenticationService(this._executionPath));
+		this._sdkExecutor = new SdkExecutor(options.sdkPath);
 	}
 
 	async getParameters(params) {
-		const executionContext = new SdkExecutionContext({
-			command: LIST_FOLDERS_COMMAND,
-			includeProjectDefaultAuthId: true,
-		});
+		const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
+				.integration()
+				.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, AuthenticationService.getProjectDefaultAuthId(this._executionPath))
+				.build();
 		try {
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

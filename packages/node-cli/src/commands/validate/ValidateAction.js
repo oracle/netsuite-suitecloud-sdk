@@ -66,12 +66,12 @@ module.exports = class ValidateAction extends BaseAction {
 				delete sdkParams[COMMAND_OPTIONS.SERVER];
 			}
 
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: sdkParams,
-				flags: flags,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.withDefaultAuthId(this._executionPath)
+				.addParams(sdkParams)
+				.addFlags(flags)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

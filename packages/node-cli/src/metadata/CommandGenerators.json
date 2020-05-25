@@ -59,8 +59,8 @@
     },
     {
         "commandName": "account:manageauth",
-        "interactiveGenerator": "./commands/ManageAccountCommandGenerator",
-        "nonInteractiveGenerator": "./commands/ManageAccountCommandGenerator"
+        "interactiveGenerator": "./commands/manageaccount/ManageAccountCommand",
+        "nonInteractiveGenerator": "./commands/manageaccount/ManageAccountCommand"
     },
     {
         "commandName": "object:update",

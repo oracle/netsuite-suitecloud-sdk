@@ -9,7 +9,7 @@ import { sdkPath } from './sdksetup/SdkProperties';
 const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
 const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
 const CLIConfigurationService = require('@oracle/suitecloud-cli/src/core/extensibility/CLIConfigurationService');
-const AuthenticationService = require('@oracle/suitecloud-cli/src/core/authentication/AuthenticationService');
+const AuthenticationService = require('@oracle/suitecloud-cli/src/services/AuthenticationService');
 
 export default class SuiteCloudRunner {
 	private commandActionExecutor: any;

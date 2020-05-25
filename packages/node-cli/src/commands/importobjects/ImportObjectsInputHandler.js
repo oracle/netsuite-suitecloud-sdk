@@ -9,9 +9,8 @@ const CommandsMetadataService = require('../core/CommandsMetadataService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../SdkExecutionContext');
-const ImportObjectsOutputFormatter = require('./outputFormatters/ImportObjectsOutputFormatter');
 const { lineBreak } = require('../loggers/LoggerConstants');
-const AuthenticationService = require('../services/AuthenticationService');
+const AuthenticationService = require('../../services/AuthenticationService');
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
 	APP_ID: 'appid',
@@ -43,7 +42,6 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
-		this._authId =  AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async getParameters(params) {
@@ -274,7 +272,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	}
 
 	_arrangeAnswersForListObjects(answers) {
-		answers[ANSWERS_NAMES.AUTH_ID] = this._authId;
+		answers[ANSWERS_NAMES.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);;
 		if (answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(' ');
 		}

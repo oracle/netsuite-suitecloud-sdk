@@ -47,11 +47,10 @@ module.exports = class UpdateAction extends BaseAction {
 			}
 			const sdkParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
 
-			const executionContextForUpdate = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: sdkParams,
-			});
+			const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(sdkParams)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForUpdate),

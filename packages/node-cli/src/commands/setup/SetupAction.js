@@ -10,7 +10,7 @@ const SdkExecutionContext = require('../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const AuthenticationService = require('../../core/authentication/AuthenticationService');
+const AuthenticationService = require('../../services/AuthenticationService');
 
 const {
 	COMMAND_SETUPACCOUNT: { MESSAGES },
@@ -36,7 +36,6 @@ const FLAGS = {
 module.exports = class SetupAction extends BaseAction {
 	constructor(options) {
 		super(options);
-		this._authenticationService = new AuthenticationService(this._executionPath);
 	}
 
 	async execute(params) {
@@ -80,7 +79,7 @@ module.exports = class SetupAction extends BaseAction {
 				authId = params.authentication.authId;
 				accountInfo = params.authentication.accountInfo;
 			}
-			this._authenticationService.setDefaultAuthentication(authId);
+			AuthenticationService.setDefaultAuthentication(this._executionPath, authId);
 
 			return SetupActionResult.Builder.success().withMode(params.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
 		} catch (error) {
@@ -89,19 +88,16 @@ module.exports = class SetupAction extends BaseAction {
 	}
 
 	async _performBrowserBasedAuthentication(params, developmentMode) {
-		const executionContextOptions = {
-			command: COMMANDS.AUTHENTICATE,
-			params,
-		};
+		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE)
+			.integration()
+			.addParams(params)
 
 		if (developmentMode) {
-			executionContextOptions.flags = [FLAGS.DEVELOPMENTMODE];
+			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 		}
 
-		const authenticateSdkExecutionContext = new SdkExecutionContext(executionContextOptions);
-
 		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(authenticateSdkExecutionContext),
+			action: this._sdkExecutor.execute(contextBuilder.build()),
 			message: NodeTranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
@@ -110,20 +106,17 @@ module.exports = class SetupAction extends BaseAction {
 	}
 
 	async _saveToken(params, developmentMode) {
-		const executionContextOptions = {
-			command: COMMANDS.AUTHENTICATE,
-			params,
-			flags: [FLAGS.SAVETOKEN],
-		};
+		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE)
+			.integration()
+			.addParams(params)
+			.addFlag(FLAGS.SAVETOKEN);
 
 		if (developmentMode) {
-			executionContextOptions.flags.push(FLAGS.DEVELOPMENTMODE);
+			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 		}
 
-		const executionContext = new SdkExecutionContext(executionContextOptions);
-
 		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
+			action: this._sdkExecutor.execute(contextBuilder.build()),
 			message: NodeTranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);

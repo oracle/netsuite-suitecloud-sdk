@@ -59,6 +59,7 @@ module.exports = class SdkExecutor {
 
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
+			console.log(`SdkExecutor: sdkPath is ${JSON.stringify(this._sdkPath)}`);
 			if (!FileUtils.exists(this._sdkPath)) {
 				throw NodeTranslationService.getMessage(
 					ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND,

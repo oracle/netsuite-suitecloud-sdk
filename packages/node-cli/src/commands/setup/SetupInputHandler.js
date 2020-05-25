@@ -8,14 +8,12 @@ const { prompt, Separator } = require('inquirer');
 const chalk = require('chalk');
 const path = require('path');
 const BaseInputHandler = require('../base/BaseInputHandler');
-const SdkExecutionContext = require('../../SdkExecutionContext');
-const { executeWithSpinner } = require('../../ui/CliSpinner');
-const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const FileUtils = require('../../utils/FileUtils');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const SdkExecutor = require('../../SdkExecutor');
-const AuthenticationService = require('../../core/authentication/AuthenticationService');
+const AuthenticationService = require('../../services/AuthenticationService');
+const { ActionResult } = require('../../services/actionresult/ActionResult');
 
 const {
 	FILES: { MANIFEST_XML },
@@ -50,22 +48,14 @@ const AUTH_MODE = {
 	REUSE: 'REUSE',
 };
 
-const COMMANDS = {
-	AUTHENTICATE: 'authenticate',
-};
-
-const FLAGS = {
-	SAVETOKEN: 'savetoken',
-	DEVELOPMENTMODE: 'developmentmode',
-};
-
 const CREATE_NEW_AUTH = '******CREATE_NEW_AUTH*******!£$%&*';
 
 module.exports = class SetupInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(new AuthenticationService(this._executionPath));
+		this._sdkPath = options.sdkPath;
+		this._sdkExecutor = new SdkExecutor(this._sdkPath);
 	}
 
 	async getParameters(params) {

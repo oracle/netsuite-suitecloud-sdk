@@ -41,10 +41,12 @@ class Command {
 		const getParams = await this._inputHandler.getParameters(params);
 		const groupedParams = { ...params, ...getParams };
 
-		this._validateActionParameters(groupedParams, this._commandMetadata, this._runInInteractiveMode);
-
 		console.log(`preExec`);
 		const preExec = await this._action.preExecute(groupedParams);
+
+		console.log(`validate params`);
+		this._validateActionParameters(preExec);
+
 		console.log(`execute`);
 		const exec = await this._action.execute(preExec);
 		console.log(`postExecute`);

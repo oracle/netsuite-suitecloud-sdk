@@ -6,7 +6,6 @@
 
 const { ActionResult } = require('../../services/actionresult/ActionResult');
 const SdkExecutor = require('../../SdkExecutor');
-const AuthenticationService = require('../../core/authentication/AuthenticationService');
 
 module.exports = class BaseAction {
 	constructor(options) {
@@ -15,8 +14,9 @@ module.exports = class BaseAction {
 		this._executionPath = options.executionPath;
 		this._runInInteractiveMode = options.runInInteractiveMode;
 		this._log = options.log;
+		this._sdkPath = options.sdkPath;
 
-		this._sdkExecutor = new SdkExecutor(new AuthenticationService(options.executionPath));
+		this._sdkExecutor = new SdkExecutor(this._sdkPath);
 	}
 
 	async preExecute(params) {

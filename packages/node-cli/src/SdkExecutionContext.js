@@ -5,7 +5,6 @@
 'use strict';
 
 const assert = require('assert');
-const AuthenticationService = require('./services/AuthenticationService');
 
 class SdkExecutionContext {
 	constructor(options) {
@@ -36,11 +35,9 @@ class SdkExecutionContext {
 	static get Builder() {
 		return new SdkExecutionContextBuilder();
 	}
-	
-};
+}
 
 class SdkExecutionContextBuilder {
-
 	constructor() {
 		this._params = {};
 		this._flags = [];
@@ -76,7 +73,7 @@ class SdkExecutionContextBuilder {
 	}
 
 	addFlags(flags) {
-		flags.forEach(flag => {
+		flags.forEach((flag) => {
 			this.addFlag(flag);
 		});
 		return this;
@@ -94,7 +91,7 @@ class SdkExecutionContextBuilder {
 			flags: this._flags,
 			integrationMode: this._integrationMode,
 			developmentMode: this._developmentMode,
-		})
+		});
 	}
 }
 

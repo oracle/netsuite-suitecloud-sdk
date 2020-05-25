@@ -12,12 +12,14 @@ const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../SdkExecutionContext');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
+const AuthenticationService = require('../../services/AuthenticationService');
 const BaseAction = require('../base/BaseAction');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, MESSAGES },
 } = require('../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid',
 	FOLDER: 'folder',
 	PATHS: 'paths',
 	EXCLUDE_PROPERTIES: 'excludeproperties',
@@ -32,8 +34,9 @@ module.exports = class ImportFilesAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		const { PROJECT, PATHS, EXCLUDE_PROPERTIES } = COMMAND_OPTIONS;
+		const { PROJECT, PATHS, EXCLUDE_PROPERTIES, AUTH_ID } = COMMAND_OPTIONS;
 		params[PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 		if (params.hasOwnProperty(PATHS)) {
 			if (Array.isArray(params[PATHS])) {
 				params[PATHS] = params[PATHS].map(CommandUtils.quoteString).join(' ');
@@ -55,11 +58,10 @@ module.exports = class ImportFilesAction extends BaseAction {
 				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 			}
 
-			const executionContextImportObjects = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: params,
-			});
+			const executionContextImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(params)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextImportObjects),

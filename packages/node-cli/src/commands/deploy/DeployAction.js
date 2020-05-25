@@ -14,6 +14,7 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const SdkExecutionContext = require('../../SdkExecutionContext');
 const BaseAction = require('../base/BaseAction');
+const AuthenticationService = require('../../services/AuthenticationService');
 
 const { PROJECT_SUITEAPP, SDK_TRUE } = require('../../ApplicationConstants');
 
@@ -23,6 +24,7 @@ const {
 
 const COMMAND = {
 	OPTIONS: {
+		AUTH_ID: 'authid',
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 		LOG: 'log',
@@ -58,6 +60,7 @@ module.exports = class DeployAction extends BaseAction {
 		return {
 			...params,
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
+			[COMMAND.OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(params),
 			...this._applyContentProtectionArgumentHandler.transformArgument(params),
 		};
@@ -71,12 +74,11 @@ module.exports = class DeployAction extends BaseAction {
 				delete sdkParams[COMMAND.FLAGS.VALIDATE];
 				flags.push(COMMAND.FLAGS.VALIDATE);
 			}
-			const executionContextForDeploy = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: sdkParams,
-				flags: flags,
-			});
+			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(sdkParams)
+				.addFlag(flags)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForDeploy),
