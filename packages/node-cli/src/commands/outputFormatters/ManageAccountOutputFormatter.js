@@ -25,8 +25,8 @@ class ManageAccountOutputFormatter extends OutputFormatter {
          ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
       } else if (Array.isArray(actionResult.data)) {
          actionResult.data.forEach((message) => this.consoleLogger.result(message));
-      } else if (actionResult.data instanceof Object && actionResult.data.accountInfo) {
-         this.logAccountCredentials(actionResult.data);
+      } else if (actionResult.data && actionResult.data.accountInfo) {
+         this.logAccountCredentials(actionResult.data, true);
       } else if (actionResult.data) {
          Object.keys(actionResult.data).forEach((authId) =>
             this.consoleLogger.result(this.accountCredentialToString(authId, actionResult.data[authId]))
@@ -41,7 +41,7 @@ class ManageAccountOutputFormatter extends OutputFormatter {
               accountCredential.urls.app
            )
          : "";
-      const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`
+      const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`;
       const accountCredentialString = NodeTranslationService.getMessage(
          QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
          authID,
@@ -51,22 +51,16 @@ class ManageAccountOutputFormatter extends OutputFormatter {
       return accountCredentialString;
    }
 
-   logAccountCredentials(accountCredentials) {
+   logAccountCredentials(accountCredentials, isResult) {
+      const log = isResult ? this.consoleLogger.result.bind(this.consoleLogger) : this.consoleLogger.info.bind(this.consoleLogger);
       const accountInfo = accountCredentials.accountInfo;
-      this.consoleLogger.info(
-         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.AUTHID, accountCredentials.authId)
-      );
-      this.consoleLogger.info(
-         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_NAME, accountInfo.companyName)
-      );
-      this.consoleLogger.info(
-         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_ID, accountInfo.companyId)
-      );
-      this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ROLE, accountInfo.roleName));
-      this.consoleLogger.info(
-         NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.DOMAIN, accountCredentials.domain)
-      );
-      this.consoleLogger.info(
+
+      log(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.AUTHID, accountCredentials.authId));
+      log(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_NAME, accountInfo.companyName));
+      log(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_ID, accountInfo.companyId));
+      log(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ROLE, accountInfo.roleName));
+      log(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.DOMAIN, accountCredentials.domain));
+      log(
          NodeTranslationService.getMessage(
             MESSAGES.ACCOUNT_INFO.ACCOUNT_TYPE,
             this._getAccountType(accountInfo.companyId)

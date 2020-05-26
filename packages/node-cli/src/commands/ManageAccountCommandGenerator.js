@@ -95,7 +95,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
    async _selectAuthID(authIDList, prompt) {
       var authIDs = Object.entries(authIDList).sort();
       if (authIDs.length <= 0) {
-         throw Error(NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY));
+         throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY);
       }
       const choices = [];
       authIDs.forEach((authIDArray) => {
@@ -118,8 +118,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       ]);
       return answers;
    }
-
-   
 
    async _selectAction(prompt) {
       let answer = await prompt({
@@ -193,16 +191,20 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
    }
 
    _extractAnswers(answers) {
-      var commandAnswers = new Object();
       if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
-         commandAnswers[COMMAND.OPTIONS.RENAME] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-         commandAnswers[COMMAND.OPTIONS.RENAMETO] = answers[ANSWERS_NAMES.RENAMETO];
+         return {
+            [COMMAND.OPTIONS.RENAME]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
+            [COMMAND.OPTIONS.RENAMETO]: answers[ANSWERS_NAMES.RENAMETO],
+         };
       } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
-         commandAnswers[COMMAND.OPTIONS.REMOVE] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
+         return {
+            [COMMAND.OPTIONS.REMOVE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
+         };
          // } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REVOKE) {
-         //    commandAnswers[COMMAND.OPTIONS.REVOKE] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
+         //    return {
+         //    [COMMAND.OPTIONS.REVOKE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
+         // }
       }
-      return commandAnswers;
    }
 
    async _executeAction(answers) {
