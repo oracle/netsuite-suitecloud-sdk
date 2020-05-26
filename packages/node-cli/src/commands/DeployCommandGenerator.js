@@ -34,7 +34,7 @@ const COMMAND = {
 		NO_PREVIEW: 'no_preview',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection'
+		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	},
 };
 
@@ -136,12 +136,12 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				flags.push(COMMAND.FLAGS.VALIDATE);
 			}
 
-			if (SDKParams[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION]) {
-				delete SDKParams[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
+			if (sdkParams[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION]) {
+				delete sdkParams[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
 				flags.push(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 			}
 
-			const executionContextForDeploy = new SDKExecutionContext({
+			const executionContextForDeploy = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				includeProjectDefaultAuthId: true,
 				params: sdkParams,
@@ -153,8 +153,8 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING),
 			});
 
-			const isServerValidation = SDKParams[COMMAND.FLAGS.VALIDATE] ? true : false;
-			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && flags[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
+			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
+			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && flags.includes(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)

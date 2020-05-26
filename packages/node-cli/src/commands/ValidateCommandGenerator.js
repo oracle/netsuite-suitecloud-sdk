@@ -132,7 +132,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 			if (answers[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION]) {
 				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
-				delete SDKParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
+				delete sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
 			}
 
 			const executionContext = new SDKExecutionContext({
