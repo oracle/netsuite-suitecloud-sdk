@@ -38,11 +38,6 @@ const COMMAND = {
       RENAME: "rename",
       RENAMETO: "renameto",
    },
-   FLAGS: {
-      NO_PREVIEW: "no_preview",
-      SKIP_WARNING: "skip_warning",
-      VALIDATE: "validate",
-   },
 };
 
 const ANSWERS_NAMES = {
