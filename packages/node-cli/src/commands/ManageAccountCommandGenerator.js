@@ -80,7 +80,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
    async _getCommandQuestions(prompt) {
       const authIDList = await this._authenticationService.getAuthIds(this._sdkExecutor);
       let answers = await this._selectAuthID(authIDList, prompt);
-      this._outputFormatter.logAccountInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
+      this._outputFormatter.logAccountCredentials(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
       const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
       answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
       if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
@@ -100,22 +100,11 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       const choices = [];
       authIDs.forEach((authIDArray) => {
          const authID = authIDArray[0];
-         const authIDProperties = authIDArray[1];
-         const isDevLabel = authIDProperties.developmentMode
-            ? NodeTranslationService.getMessage(
-                 QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL,
-                 authIDProperties.urls.app
-              )
-            : "";
-         const accountInfo = `${authIDProperties.accountInfo.roleName} @ ${authIDProperties.accountInfo.companyName}`;
+         const accountCredential = authIDArray[1];
+         const accountCredentialString = this.outputFormatter.accountCredentialToString(authID, accountCredential);
          choices.push({
-            name: NodeTranslationService.getMessage(
-               QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
-               authID,
-               accountInfo,
-               isDevLabel
-            ),
-            value: { authId: authID, accountInfo: authIDProperties.accountInfo, domain: authIDProperties.urls.app },
+            name: accountCredentialString,
+            value: { authId: authID, accountInfo: accountCredential.accountInfo, domain: accountCredential.urls.app },
          });
       });
       choices.push(new inquirer.Separator());
@@ -129,6 +118,8 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
       ]);
       return answers;
    }
+
+   
 
    async _selectAction(prompt) {
       let answer = await prompt({
@@ -217,6 +208,10 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
    async _executeAction(answers) {
       const sdkParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
       const flags = [];
+      if (answers[COMMAND.OPTIONS.LIST]) {
+         flags.push(COMMAND.OPTIONS.LIST);
+         delete sdkParams[COMMAND.OPTIONS.LIST];
+      }
       const executionContext = new SdkExecutionContext({
          command: this._commandMetadata.sdkCommand,
          params: sdkParams,
@@ -241,15 +236,15 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 
    _getSpinnerMessage(answers) {
       let message = "";
-      if (answers[COMMAND.OPTIONS.REMOVE]) {
+      if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
          message = NodeTranslationService.getMessage(MESSAGES.REMOVING);
-      } else if (answers[COMMAND.OPTIONS.RENAME]) {
+      } else if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
          message = NodeTranslationService.getMessage(MESSAGES.RENAMING);
-      } else if (answers[COMMAND.OPTIONS.LIST]) {
-         message = NodeTranslationService.getMessage(MESSAGES.REMOVING);
-      // } else if (answers[COMMAND.OPTIONS.REVOKE]) {
-      //    message = NodeTranslationService.getMessage(MESSAGES.REVOKING);
-      } else if (answers[COMMAND.OPTIONS.INFO]) {
+      } else if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
+         message = NodeTranslationService.getMessage(MESSAGES.LISTING);
+         // } else if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
+         //    message = NodeTranslationService.getMessage(MESSAGES.REVOKING);
+      } else if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
          message = NodeTranslationService.getMessage(MESSAGES.INFO, answers.info);
       }
       return message;
