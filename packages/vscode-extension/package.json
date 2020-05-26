@@ -58,8 +58,13 @@
 			},
 			{
 				"command": "extension.deploy",
-				"key": "ctrl+d",
-				"mac": "cmd+d"
+				"key": "ctrl+alt+d",
+				"mac": "ctrl+alt+d"
+			},
+			{
+				"command": "extension.uploadfile",
+				"key": "ctrl+alt+u",
+				"mac": "ctrl+alt+u"
 			}
 		]
 	},
@@ -77,7 +82,7 @@
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.40.0",
 		"glob": "^7.1.5",
-		"mocha": "^6.2.2",
+		"mocha": "^6.2.3",
 		"tslint": "^5.20.0",
 		"typescript": "^3.6.4",
 		"vscode-test": "^1.2.2"
