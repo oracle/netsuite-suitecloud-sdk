@@ -135,7 +135,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				delete sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
 			}
 
-			const executionContext = new SDKExecutionContext({
+			const executionContext = new SdkExecutionContext({
 				command: this._commandMetadata.sdkCommand,
 				params: sdkParams,
 				flags: flags,
