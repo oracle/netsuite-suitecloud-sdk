@@ -71,6 +71,7 @@ module.exports = class SdkExecutor {
 			const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatformVersionOption}`;
 			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
+			console.log(jvmCommand);
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
 			childProcess.stderr.on(DATA_EVENT, data => {

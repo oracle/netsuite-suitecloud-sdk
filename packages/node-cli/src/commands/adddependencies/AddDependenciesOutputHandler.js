@@ -56,7 +56,7 @@ module.exports = class AddDependenciesOutputFormatter extends BaseOutputHandler 
 	parse(actionResult) {
 		if (actionResult.data.length === 0) {
 			this._log.result(NodeTranslationService.getMessage(MESSAGES.NO_UNRESOLVED_DEPENDENCIES));
-			return;
+			return actionResult;
 		}
 
 		this._log.result(NodeTranslationService.getMessage(MESSAGES.DEPENDENCIES_ADDED_TO_MANIFEST));

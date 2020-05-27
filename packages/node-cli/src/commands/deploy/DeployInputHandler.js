@@ -47,7 +47,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		if (!this._runInInteractiveMode) {
-			return { [COMMAND.OPTIONS.PROJECT]: this._projectFolder };
+			return params;
 		}
 
 		const isSuiteAppProject = this._projectType === PROJECT_SUITEAPP;

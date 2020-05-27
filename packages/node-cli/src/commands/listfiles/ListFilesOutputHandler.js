@@ -16,7 +16,7 @@ module.exports = class ListFilesOutputHandler extends BaseOutputHandler {
 
 		if (Array.isArray(actionResult.data)) {
 			actionResult.data.forEach((fileName) => {
-				this.lo_logg.result(fileName);
+				this._log.result(fileName);
 			});
 		}
 		return actionResult;

@@ -5,12 +5,34 @@
 'use strict';
 
 const { join } = require('path');
-const CommandsMetadataService = require('../core/CommandsMetadataService');
-const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../SdkExecutionContext');
-const { lineBreak } = require('../loggers/LoggerConstants');
+const { prompt, Separator } = require('inquirer');
+const CommandsMetadataService = require('../../core/CommandsMetadataService');
+const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../../SdkExecutionContext');
+const { lineBreak } = require('../../loggers/LoggerConstants');
 const AuthenticationService = require('../../services/AuthenticationService');
+const BaseInputHandler = require('../base/BaseInputHandler');
+const SdkExecutor = require('../../SdkExecutor');
+const ProjectInfoService = require('../../services/ProjectInfoService');
+const FileSystemService = require('../../services/FileSystemService');
+const CommandUtils = require('../../utils/CommandUtils');
+const NodeTranslationService = require('../../services/NodeTranslationService');
+const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDERS } = require('../../ApplicationConstants');
+const OBJECT_TYPES = require('../../metadata/ObjectTypesMetadata');
+const {
+	COMMAND_IMPORTOBJECTS: { MESSAGES, QUESTIONS, ERRORS },
+	YES,
+	NO,
+	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED }
+} = require('../../services/TranslationKeys');
+const { 
+	validateArrayIsNotEmpty, 
+	showValidationResults,
+	validateSuiteApp,
+	validateScriptId,
+} = require('../../validation/InteractiveAnswersValidator');
+
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
 	APP_ID: 'appid',
@@ -28,7 +50,6 @@ const ANSWERS_NAMES = {
 };
 
 const LIST_OBJECTS_COMMAND_NAME = 'object:list';
-
 const CUSTOM_SCRIPT_PREFIX = 'customscript';
 
 module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
@@ -36,7 +57,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(new AuthenticationService(this._executionPath));
+		this._sdkExecutor = new SdkExecutor(options.sdkPath);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
@@ -46,7 +67,6 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		if (!this._runInInteractiveMode) {
-			params[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
 			return params;
 		}
 		const listObjectQuestions = this._generateListObjectQuestions();
@@ -96,7 +116,6 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const combinedAnswers = { ...listObjectAnswers, ...selectionObjectAnswers, ...answersAfterObjectSelection, ...overwriteConfirmationAnswer };
 
 		const answers = this._arrangeAnswersForImportObjects(combinedAnswers);
-		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
 		return answers;
 	}
 

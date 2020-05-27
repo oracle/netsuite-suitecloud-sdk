@@ -9,8 +9,8 @@ const BaseAction = require('../base/BaseAction');
 const SdkExecutionContext = require('../../SdkExecutionContext');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const NodeTranslationService = require('../../services/NodeTranslationService');
+const CommandUtils = require('../../utils/CommandUtils');
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
-const AuthenticationService = require('../../services/AuthenticationService');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -29,7 +29,6 @@ module.exports = class AddDependenciesAction extends BaseAction {
 
 	preExecute(params) {
 		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		params[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 		return params;
 	}
 

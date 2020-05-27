@@ -8,7 +8,7 @@ const BaseInputHandler = require('../base/BaseInputHandler');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const AuthenticationService = require('../../services/AuthenticationService');
-const { prompt } = require('inquirer');
+const { prompt, Separator } = require('inquirer');
 const {
 	showValidationResults,
 	validateAuthIDNotInList,
@@ -64,7 +64,6 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		const authIDList = await AuthenticationService.getAuthIds(this._sdkPath);
-		console.log(JSON.stringify(authIDList));
 		let answers = await this._selectAuthID(authIDList.data, prompt);
 		this._logAccountInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
@@ -75,18 +74,35 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
 
-		return this._extractAnswers(answers);
+		return { ...params, ...this._extractAnswers(answers) };
 	}
 
 	_logAccountInfo(selectedAuthId) {
 		const accountInfo = selectedAuthId.accountInfo;
-		this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.AUTHID, selectedAuthId.authId));
-		this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_NAME, accountInfo.companyName));
-		this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_ID, accountInfo.companyId));
-		this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ROLE, accountInfo.roleName));
-		this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.DOMAIN, accountInfo.roleName));
-		this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_TYPE, accountInfo.roleName));
+		this._log.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.AUTHID, selectedAuthId.authId));
+		this._log.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_NAME, accountInfo.companyName));
+		this._log.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_ID, accountInfo.companyId));
+		this._log.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ROLE, accountInfo.roleName));
+		this._log.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.DOMAIN, accountInfo.roleName));
+		this._log.info(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.ACCOUNT_TYPE, accountInfo.roleName));
 	}
+
+	_accountCredentialToString(authID, accountCredential) {
+		const isDevLabel = accountCredential.developmentMode
+		   ? NodeTranslationService.getMessage(
+				QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL,
+				accountCredential.urls.app
+			 )
+		   : "";
+		const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`;
+		const accountCredentialString = NodeTranslationService.getMessage(
+		   QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
+		   authID,
+		   accountInfo,
+		   isDevLabel
+		);
+		return accountCredentialString;
+	 }
 
 	async _selectAuthID(authIDList, prompt) {
 		var authIDs = Object.entries(authIDList).sort();
@@ -97,13 +113,13 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		authIDs.forEach((authIDArray) => {
 			const authID = authIDArray[0];
 			const accountCredential = authIDArray[1];
-			const accountCredentialString = this.outputFormatter.accountCredentialToString(authID, accountCredential);
+			const accountCredentialString = this._accountCredentialToString(authID, accountCredential);
 			choices.push({
 				name: accountCredentialString,
 				value: { authId: authID, accountInfo: accountCredential.accountInfo, domain: accountCredential.urls.app },
 			});
 		});
-		choices.push(new inquirer.Separator());
+		choices.push(new Separator());
 		let answers = await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,

@@ -41,12 +41,13 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		params[COMMAND_OPTIONS.PROJECT] = this._projectFolder;
+		params[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+
 		if (!this._runInInteractiveMode) {
 			return params;
 		}
-		params[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
-		
-		const answers = prompt([
+
+		const answers = await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.SERVER,

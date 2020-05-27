@@ -11,7 +11,6 @@ const FileCabinetService = require('../../services/FileCabinetService');
 const FileSystemService = require('../../services/FileSystemService');
 const path = require('path');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const AuthenticationService = require('../../services/AuthenticationService');
 
 const {
 	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, ERRORS },
@@ -43,7 +42,6 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		if (!this._runInInteractiveMode) {
-			params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 			return params;
 		}
 		const selectFolderQuestion = this._generateSelectFolderQuestion();
@@ -51,8 +49,6 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 
 		const selectFilesQuestion = this._generateSelectFilesQuestion(selectFolderAnswer.selectedFolder);
 		const selectFilesAnswer = await prompt(selectFilesQuestion);
-		selectFilesAnswer[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		selectFilesAnswer[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._projectFolder);
 
 		const overwriteAnswer = await prompt([this._generateOverwriteQuestion()]);
 		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {

@@ -11,6 +11,7 @@ const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../SdkExecutionContext');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { ActionResult } = require('../../services/actionresult/ActionResult');
+const AuthenticationService = require('../../services/AuthenticationService');
 
 const {
 	COMMAND_UPLOADFILES: { MESSAGES },
@@ -19,6 +20,7 @@ const {
 const COMMAND_OPTIONS = {
 	PATHS: 'paths',
 	PROJECT: 'project',
+	AUTH_ID: 'authid',
 };
 
 module.exports = class UploadFilesAction extends BaseAction {
@@ -36,6 +38,9 @@ module.exports = class UploadFilesAction extends BaseAction {
 				params[PATHS] = CommandUtils.quoteString(params[PATHS]);
 			}
 		}
+		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		console.log(`UploadFilesAction: ${JSON.stringify([params])}`);
 		return params;
 	}
 

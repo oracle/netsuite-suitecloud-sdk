@@ -42,7 +42,10 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		this._fileSystemService = new FileSystemService();
 	}
 
-	async getParameters() {
+	async getParameters(params) {
+		if (!this._runInInteractiveMode) {
+			return params;
+		}
 		const pathToObjectsFolder = path.join(this._projectFolder, FOLDERS.OBJECTS);
 		const filesInObjectsFolder = this._fileSystemService.getFilesFromDirectory(pathToObjectsFolder);
 		const foundXMLFiles = filesInObjectsFolder

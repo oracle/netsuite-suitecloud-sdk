@@ -33,19 +33,17 @@ module.exports = class UpdateAction extends BaseAction {
 		super(options);
 	}
 
-	preExecute(args) {
-		return {
-			...args,
-			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
-		};
+	preExecute(params) {
+		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		return params;
 	}
 
-	async execute(args) {
+	async execute(params) {
 		try {
-			if (args.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !args[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
+			if (params.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !params[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
 				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
-			const sdkParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
 			const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()

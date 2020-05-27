@@ -14,14 +14,14 @@ module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler  {
 
    parse(actionResult) {
       if (actionResult.resultMessage) {
-         ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
+         ActionResultUtils.logResultMessage(actionResult, this._log);
       } else if (Array.isArray(actionResult.data)) {
-         actionResult.data.forEach((message) => this.consoleLogger.result(message));
+         actionResult.data.forEach((message) => this._log.result(message));
       } else if (actionResult.data && actionResult.data.accountInfo) {
          this.logAccountCredentials(actionResult.data, true);
       } else if (actionResult.data) {
          Object.keys(actionResult.data).forEach((authId) =>
-            this.consoleLogger.result(this.accountCredentialToString(authId, actionResult.data[authId]))
+            this._log.result(this.accountCredentialToString(authId, actionResult.data[authId]))
          );
       }
 		return actionResult;
@@ -45,7 +45,7 @@ module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler  {
    }
 
    logAccountCredentials(accountCredentials, isResult) {
-      const log = isResult ? this.consoleLogger.result.bind(this.consoleLogger) : this.consoleLogger.info.bind(this.consoleLogger);
+      const log = isResult ? this._log.result.bind(this._log) : this._log.info.bind(this._log);
       const accountInfo = accountCredentials.accountInfo;
 
       log(NodeTranslationService.getMessage(MESSAGES.ACCOUNT_INFO.AUTHID, accountCredentials.authId));

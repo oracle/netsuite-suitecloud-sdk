@@ -77,7 +77,7 @@ module.exports = class DeployAction extends BaseAction {
 			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(sdkParams)
-				.addFlag(flags)
+				.addFlags(flags)
 				.build();
 
 			const operationResult = await executeWithSpinner({

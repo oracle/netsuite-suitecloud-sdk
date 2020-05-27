@@ -4,14 +4,18 @@
  */
 'use strict';
 
-const CommandUtils = require('../utils/CommandUtils');
-const NodeTranslationService = require('../services/NodeTranslationService');
-const { executeWithSpinner } = require('../ui/CliSpinner');
-const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../SdkExecutionContext');
-const ProjectInfoService = require('../services/ProjectInfoService');
-const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const CommandUtils = require('../../utils/CommandUtils');
+const { prompt } = require('inquirer');
+const NodeTranslationService = require('../../services/NodeTranslationService');
+const { executeWithSpinner } = require('../../ui/CliSpinner');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
+const SdkExecutionContext = require('../../SdkExecutionContext');
+const ProjectInfoService = require('../../services/ProjectInfoService');
+const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 const AuthenticationService = require('../../services/AuthenticationService');
+const BaseInputHandler = require('../base/BaseInputHandler');
+const SdkExecutor = require('../../SdkExecutor');
+const { showValidationResults, validateArrayIsNotEmpty } = require('../../validation/InteractiveAnswersValidator');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
 	NO,
@@ -49,13 +53,16 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(new AuthenticationService(this._executionPath));
+		this._sdkExecutor = new SdkExecutor(options.sdkPath);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._authId = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async getParameters(params) {
+		if (!this._runInInteractiveMode) {
+			return params;
+		}
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
@@ -89,7 +96,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	}
 
 	_listFolders() {
-		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS)
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND)
 			.integration()
 			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
 			.build();
@@ -123,7 +130,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
 		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = this._authId;
 
-		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES)
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES.COMMAND)
 			.integration()
 			.addParams(selectFolderAnswer)
 			.build();

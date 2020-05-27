@@ -14,6 +14,7 @@ const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../../utils/AccountSpecificValuesArgumentHandler');
 const ApplyContentProtectinoArgumentHandler = require('../../utils/ApplyContentProtectionArgumentHandler');
+const AuthenticationService = require('../../services/AuthenticationService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const { SDK_TRUE } = require('../../ApplicationConstants');
 
@@ -47,7 +48,6 @@ module.exports = class ValidateAction extends BaseAction {
 
 		return {
 			...params,
-			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(params),
 			...this._applyContentProtectionArgumentHandler.transformArgument(params),
 		};
@@ -68,7 +68,6 @@ module.exports = class ValidateAction extends BaseAction {
 
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
-				.withDefaultAuthId(this._executionPath)
 				.addParams(sdkParams)
 				.addFlags(flags)
 				.build();

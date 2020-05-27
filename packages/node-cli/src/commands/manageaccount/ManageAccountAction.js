@@ -11,7 +11,30 @@ const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { ManageAccountActionResult } = require('../../services/actionresult/ManageAccountActionResult');
-const { COMMAND_MANAGE_ACCOUNT } = require('../../services/TranslationKeys');
+const {
+	COMMAND_MANAGE_ACCOUNT: { MESSAGES },
+} = require('../../services/TranslationKeys');
+
+const COMMAND = {
+	OPTIONS: {
+		INFO: 'info',
+		LIST: 'list',
+		REMOVE: 'remove',
+		RENAME: 'rename',
+		RENAMETO: 'renameto',
+	},
+	FLAGS: {
+		NO_PREVIEW: 'no_preview',
+		SKIP_WARNING: 'skip_warning',
+		VALIDATE: 'validate',
+	},
+};
+
+const PROPERTIES = {
+	INFO: "info",
+	ACCOUNT_INFO: "accountInfo",
+	URLS: "urls",
+ };
 
 module.exports = class ManageAccountAction extends BaseAction {
 	constructor(options) {
@@ -19,10 +42,10 @@ module.exports = class ManageAccountAction extends BaseAction {
 	}
 
 	async execute(params) {
-		const sdkParams = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
+		const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
 		const flags = [];
-		if (answers[COMMAND.OPTIONS.LIST]) {
+		if (params[COMMAND.OPTIONS.LIST]) {
 			flags.push(COMMAND.OPTIONS.LIST);
 			delete sdkParams[COMMAND.OPTIONS.LIST];
 		}
@@ -33,7 +56,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 			.addFlags(flags)
 			.build();
 
-		let message = this._getSpinnerMessage(answers);
+		let message = this._getSpinnerMessage(params);
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -41,36 +64,36 @@ module.exports = class ManageAccountAction extends BaseAction {
 		});
 
 		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-			? ManageAccountActionResult.Builder.withData(this._prepareData(answers, operationResult.data))
+			? ManageAccountActionResult.Builder.withData(this._prepareData(params, operationResult.data))
 					.withResultMessage(operationResult.resultMessage)
 					.build()
 			: ManageAccountActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 	}
 
-	_getSpinnerMessage(answers) {
+	_getSpinnerMessage(params) {
 		let message = '';
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
+		if (params.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
 			message = NodeTranslationService.getMessage(MESSAGES.REMOVING);
-		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
+		} else if (params.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
 			message = NodeTranslationService.getMessage(MESSAGES.RENAMING);
-		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
+		} else if (params.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
 			message = NodeTranslationService.getMessage(MESSAGES.LISTING);
-			// } else if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
+			// } else if (params.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
 			//    message = NodeTranslationService.getMessage(MESSAGES.REVOKING);
-		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
-			message = NodeTranslationService.getMessage(MESSAGES.INFO, answers.info);
+		} else if (params.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
+			message = NodeTranslationService.getMessage(MESSAGES.INFO, params.info);
 		}
 		return message;
 	}
 
-	_prepareData(answers, data) {
+	_prepareData(params, data) {
 		let actionResultData;
-		if (!answers.hasOwnProperty(PROPERTIES.INFO)) {
+		if (!params.hasOwnProperty(PROPERTIES.INFO)) {
 			return data;
 		}
 
 		assert(data.hasOwnProperty(PROPERTIES.ACCOUNT_INFO));
-		actionResultData = { authId: answers.info, accountInfo: data.accountInfo };
+		actionResultData = { authId: params.info, accountInfo: data.accountInfo };
 		if (data.hasOwnProperty(PROPERTIES.URLS)) {
 			actionResultData[DOMAIN] = data.urls.app;
 		}
