@@ -1,8 +1,7 @@
 const jest = require('jest');
 const UnitTestTranslationService = require('./UnitTestTranslationService');
 const TranslationKeys = require('./TranslationKeys');
-
-const projectFolderArg = "--projectFolder";
+const { PROJECT_FOLDER_ARG } = require('../ApplicationConstants');
 
 function getProjectFolder(args) {
 	if (args.projects && args.projects.length > 0) {
@@ -10,7 +9,7 @@ function getProjectFolder(args) {
 	} else if (process.argv && process.argv.length > 0) {
 		for (let i = 0; i < process.argv.length; i++) {
 			let argv = process.argv[i].split('=');
-			if (argv.length === 2 && argv[0] === projectFolderArg) {
+			if (argv.length === 2 && argv[0] === PROJECT_FOLDER_ARG) {
 				return [argv[1]];
 			}
 		}
