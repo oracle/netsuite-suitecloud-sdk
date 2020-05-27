@@ -68,7 +68,6 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		let answers = await this._selectAuthID(authIDList.data, prompt);
 		this._logAccountInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-		answers[ANSWERS_NAMES.CONTINUE] = await this._continueQuestion(prompt, selectedAuthID);
 		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
 		if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
 			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDList.data, selectedAuthID);
@@ -92,7 +91,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	async _selectAuthID(authIDList, prompt) {
 		var authIDs = Object.entries(authIDList).sort();
 		if (authIDs.length <= 0) {
-			throw Error(NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY));
+			throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY);
 		}
 		const choices = [];
 		authIDs.forEach((authIDArray) => {
@@ -116,22 +115,6 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		return answers;
 	}
 
-	async _continueQuestion(prompt, authId) {
-		let answer = await prompt({
-			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: ANSWERS_NAMES.CONTINUE,
-			message: NodeTranslationService.getMessage(QUESTIONS.CONTINUE, authId),
-			choices: [
-				{ name: NodeTranslationService.getMessage(YES), value: true },
-				{ name: NodeTranslationService.getMessage(NO), value: false },
-			],
-		});
-		if (!answer[ANSWERS_NAMES.CONTINUE]) {
-			throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
-		}
-		return answer[ANSWERS_NAMES.CONTINUE];
-	}
-
 	async _selectAction(prompt) {
 		let answer = await prompt({
 			type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -146,12 +129,21 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REMOVE),
 					value: ACTION.REMOVE,
 				},
+				// {
+				//    name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
+				//    value: ACTION.REVOKE,
+				// },
 				{
-					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
-					value: ACTION.REVOKE,
+					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.EXIT),
+					value: ACTION.EXIT,
 				},
 			],
 		});
+	
+		if (answer[ANSWERS_NAMES.ACTION] == ACTION.EXIT) {
+			throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
+		}
+	
 		return answer[ANSWERS_NAMES.ACTION];
 	}
 
@@ -159,7 +151,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		let answer = await prompt({
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.RENAMETO,
-			message: NodeTranslationService.getMessage(QUESTIONS.NEW_TAG),
+			message: NodeTranslationService.getMessage(QUESTIONS.NEW_NAME),
 			filter: (fieldValue) => fieldValue.trim(),
 			validate: (fieldValue) =>
 				showValidationResults(
@@ -195,17 +187,19 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	}
 
 	_extractAnswers(answers) {
-		var commandAnswers = new Object();
 		if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
-			commandAnswers[COMMAND.OPTIONS.RENAME] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-			commandAnswers[COMMAND.OPTIONS.RENAMETO] = answers[ANSWERS_NAMES.RENAMETO];
+			return {
+				[COMMAND.OPTIONS.RENAME]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
+				[COMMAND.OPTIONS.RENAMETO]: answers[ANSWERS_NAMES.RENAMETO],
+			};
 		} else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
-			commandAnswers[COMMAND.OPTIONS.REMOVE] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-		} else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REVOKE) {
-			commandAnswers[COMMAND.OPTIONS.REVOKE] = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-			//   } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.NOTHING) {
-			//      newAnswers[COMMAND.OPTIONS.NOTHING] = true;
+			return {
+				[COMMAND.OPTIONS.REMOVE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
+			};
+			// } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REVOKE) {
+			//    return {
+			//    [COMMAND.OPTIONS.REVOKE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
+			// }
 		}
-		return commandAnswers;
 	}
 };

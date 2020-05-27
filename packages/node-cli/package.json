@@ -23,12 +23,12 @@
 	},
 	"dependencies": {
 		"@oracle/suitecloud-cli-localserver-command": "^1.0.3",
-		"chalk": "^2.4.2",
+		"chalk": "^4.0.0",
 		"cli-spinner": "^0.2.10",
-		"commander": "^2.20.0",
-		"inquirer": "^6.3.1",
+		"commander": "^5.1.0",
+		"inquirer": "^7.1.0",
 		"request-promise-native": "^1.0.7",
-		"vm2": "^3.8.0",
+		"vm2": "^3.9.2",
 		"xml2js": "^0.4.19"
 	},
 	"devDependencies": {
