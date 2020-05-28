@@ -14,16 +14,24 @@ const STATUS = {
 class ManageAccountActionResult extends ActionResult {
    constructor(parameters) {
       super(parameters);
+      this._actionExecuted = parameters.actionExecuted;
    }
 
    validateParameters(parameters) {
       assert(parameters);
       assert(parameters.status, "status is required when creating an ActionResult object.");
+      if(parameters.status === STATUS.SUCCESS) {
+         assert(parameters.actionExecuted);
+      }
       if (parameters.status === STATUS.ERROR) {
          assert(parameters.errorMessages, "errorMessages is required when ActionResult is an error.");
          assert(Array.isArray(parameters.errorMessages), "errorMessages argument must be an array");
       }
    }
+
+   get actionExecuted() {
+		return this._actionExecuted;
+	}
 
    static get Builder() {
       return new ManageAccountActionResultBuilder();
@@ -35,12 +43,18 @@ class ManageAccountActionResultBuilder extends ActionResultBuilder {
       super();
    }
 
+   withActionExecuted(actionExecuted) {
+      this.actionExecuted = actionExecuted;
+      return this;
+   }
+
    build() {
       return new ManageAccountActionResult({
          status: this.status,
          ...(this.data && { data: this.data }),
          ...(this.resultMessage && { resultMessage: this.resultMessage }),
          ...(this.errorMessages && { errorMessages: this.errorMessages }),
+         ...(this.actionExecuted && { actionExecuted: this.actionExecuted}),
       });
    }
 }

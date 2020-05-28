@@ -75,7 +75,7 @@ module.exports = class AuthenticationService {
 			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
 		});
 		if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
+			throw SdkOperationResultUtils.collectErrorMessages(existingAuthIDsResponse);
 		}
 		return existingAuthIDsResponse.data;
 	}
