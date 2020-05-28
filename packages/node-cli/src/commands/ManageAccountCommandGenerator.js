@@ -235,7 +235,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			: ManageAccountActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 	}
 
-	_getSpinnerMessage(answers) {
+	_getSpinnerMessage(action) {
 		switch (action) {
 			case ACTION.REMOVE:
 				return NodeTranslationService.getMessage(MESSAGES.REMOVING);
@@ -246,17 +246,18 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			case ACTION.REVOKE:
 				return NodeTranslationService.getMessage(MESSAGES.REVOKING);
 			case ACTION.INFO:
-				return NodeTranslationService.getMessage(MESSAGES.INFO, answers.info);
+				return NodeTranslationService.getMessage(MESSAGES.INFO, this._authId);
 		}
-		throw 'Error, Action inexistent';
+		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
 	}
 
 	_prepareData(action, data) {
 		if (action != ACTION.INFO) {
 			return data;
 		}
+		assert(this._authId);
 		assert(data.hasOwnProperty(DATA_PROPERTIES.ACCOUNT_INFO));
-		let actionResultData = { authId: answers.info, accountInfo: data.accountInfo };
+		let actionResultData = { authId: this._authId, accountInfo: data.accountInfo };
 		if (data.hasOwnProperty(DATA_PROPERTIES.URLS)) {
 			actionResultData[DOMAIN] = data.urls.app;
 		}
@@ -264,7 +265,8 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 	}
 
 	_getActionExecuted(answers) {
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
+			this._authId = answers[COMMAND.OPTIONS.INFO];
 			return ACTION.INFO;
 		}
 		if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
@@ -279,6 +281,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		// if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
 		//    return ACTION.REVOKE;
 		// }
-		throw 'Error, Action inexistent';
+		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
 	}
 };

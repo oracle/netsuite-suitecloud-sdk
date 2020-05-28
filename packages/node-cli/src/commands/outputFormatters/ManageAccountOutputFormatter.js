@@ -28,7 +28,6 @@ class ManageAccountOutputFormatter extends OutputFormatter {
 		}
 
 		if (actionResult.actionExecuted == ACTION.INFO) {
-			// actionResult.data.forEach((message) => this.consoleLogger.result(message));
 			this.consoleLogger.result(this._accountCredentialsService.buildAccountCredentialsInfo(actionResult.data));
 		} else if (actionResult.actionExecuted == ACTION.LIST) {
 			Object.keys(actionResult.data).forEach((authId) =>
