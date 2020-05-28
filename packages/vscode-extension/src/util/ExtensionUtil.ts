@@ -18,7 +18,7 @@ export const ConsoleLogger = require('@oracle/suitecloud-cli/src/loggers/Console
 export const actionResultStatus: {
 	SUCCESS: string;
 	ERROR: string;
-} = require('@oracle/suitecloud-cli/src/commands/actionResult/ActionResult').ActionResult.STATUS;
+} = require('@oracle/suitecloud-cli/src/commands/actionresult/ActionResult').ActionResult.STATUS;
 
 
 
