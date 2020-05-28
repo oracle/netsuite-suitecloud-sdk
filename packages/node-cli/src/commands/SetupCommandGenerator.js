@@ -75,7 +75,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let authIdAnswer;
 		const choices = [];
 
-		const authIDList  = await AuthenticationService.getAuthIds(this._sdkPath);
+		const authIDList = await AuthenticationService.getAuthIds(this._sdkPath);
 		if (authIDList.status === ActionResult.STATUS.ERROR) {
 			throw authIDList.errorMessages;
 		}
