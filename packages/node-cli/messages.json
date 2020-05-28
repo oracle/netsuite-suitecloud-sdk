@@ -7,7 +7,7 @@
 	"ANSWERS_VALIDATION_MESSAGES_APP_ID_FORMAT": "The specified application ID is wrongly formatted. Ensure it follows a pattern such as \"com.example.mysuiteapp\".",
 	"ANSWERS_VALIDATION_MESSAGES_AUTH_ID_ALREADY_USED": "This authentication ID (authID) already exists. Enter a new one.",
 	"ANSWERS_VALIDATION_MESSAGES_CHOOSE_OPTION": "Error: You should choose at least one option.",
-	"ANSWERS_VALIDATION_MESSAGES_CURRENT_AUTHID":"\"{0}\"is the current authentication ID. Enter a new ID",
+	"ANSWERS_VALIDATION_MESSAGES_CURRENT_AUTHID": "\"{0}\"is the current authentication ID. Enter a new ID",
 	"ANSWERS_VALIDATION_MESSAGES_EMPTY_FIELD": "This value cannot be empty.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_SPACES": "This field cannot contain spaces.",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
@@ -126,7 +126,6 @@
 	"COMMAND_LOCAL_RESOURCE_NOT_FOUND": "The process failed. The {0} file was not found in the project.",
 	"COMMAND_LOCAL_INVALID_XML": "Invalid xml {0}",
 
-	
 	"COMMAND_MANAGE_ACCOUNT_ERROR_CREDENTIALS_EMPTY": "There is no authentication ID (authID) configured for this account-role combination. Run \"suitecloud account:setup\" to set up a NetSuite account to use with SuiteCloud CLI for Node.js.",
 	"COMMAND_MANAGE_ACCOUNT_ERROR_TAG": "The Authentication Tag/Label provided, is not valid, please review the data.",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_ACCOUNT_INFO_ACCOUNT_ID": "Account ID: {0}",
@@ -149,9 +148,8 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_CHOICES_ACTIONS_REVOKE": "Revoke Credentials.",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_NEW_NAME": "Enter a new name for the authentication ID (authID):",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_CREDENTIALS": "Select an authentication ID to see its details:",
-	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",	
-	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",	
-	
+	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",
+	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",
 
 	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
 	"COMMAND_OPTION_IS_MANDATORY": "\"{0}\" option is mandatory.",

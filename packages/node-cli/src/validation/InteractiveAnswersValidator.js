@@ -7,7 +7,7 @@
 const ApplicationConstants = require('../ApplicationConstants');
 const NodeTranslationService = require('../services/NodeTranslationService');
 
-const VALIDATION_RESULT_FAILURE = validationError => ({
+const VALIDATION_RESULT_FAILURE = (validationError) => ({
 	result: false,
 	validationMessage: validationError,
 });
@@ -127,7 +127,7 @@ class InteractiveAnswersValidator {
 	}
 
 	validateSameAuthID(newAuthID, authID) {
-		return (authID != newAuthID)
+		return authID != newAuthID
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.CURRENT_AUTHID, newAuthID));
 	}
