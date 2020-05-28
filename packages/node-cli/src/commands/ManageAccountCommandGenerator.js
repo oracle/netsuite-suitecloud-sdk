@@ -62,7 +62,6 @@ const {
 } = require('../validation/InteractiveAnswersValidator');
 
 const DATA_PROPERTIES = {
-	INFO: 'info',
 	ACCOUNT_INFO: 'accountInfo',
 	URLS: 'urls',
 };
@@ -220,7 +219,8 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			flags,
 		});
 
-		const message = this._getSpinnerMessage(answers);
+		const action = this._getActionExecuted(answers);
+		const message = this._getSpinnerMessage(action);
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -228,31 +228,31 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		});
 
 		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-			? ManageAccountActionResult.Builder.withData(this.prepareData(answers, operationResult.data))
+			? ManageAccountActionResult.Builder.withData(this._prepareData(action, operationResult.data))
 					.withResultMessage(operationResult.resultMessage)
-					.withActionExecuted(this.getActionExecuted(answers))
+					.withActionExecuted(action)
 					.build()
 			: ManageAccountActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 	}
 
 	_getSpinnerMessage(answers) {
-		let message = '';
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
-			message = NodeTranslationService.getMessage(MESSAGES.REMOVING);
-		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
-			message = NodeTranslationService.getMessage(MESSAGES.RENAMING);
-		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
-			message = NodeTranslationService.getMessage(MESSAGES.LISTING);
-			// } else if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
-			//    message = NodeTranslationService.getMessage(MESSAGES.REVOKING);
-		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
-			message = NodeTranslationService.getMessage(MESSAGES.INFO, answers.info);
+		switch (action) {
+			case ACTION.REMOVE:
+				return NodeTranslationService.getMessage(MESSAGES.REMOVING);
+			case ACTION.RENAME:
+				return NodeTranslationService.getMessage(MESSAGES.RENAMING);
+			case ACTION.LIST:
+				return NodeTranslationService.getMessage(MESSAGES.LISTING);
+			case ACTION.REVOKE:
+				return NodeTranslationService.getMessage(MESSAGES.REVOKING);
+			case ACTION.INFO:
+				return NodeTranslationService.getMessage(MESSAGES.INFO, answers.info);
 		}
-		return message;
+		throw 'Error, Action inexistent';
 	}
 
-	prepareData(answers, data) {
-		if (!answers.hasOwnProperty(DATA_PROPERTIES.INFO)) {
+	_prepareData(action, data) {
+		if (action != ACTION.INFO) {
 			return data;
 		}
 		assert(data.hasOwnProperty(DATA_PROPERTIES.ACCOUNT_INFO));
@@ -263,22 +263,22 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		return actionResultData;
 	}
 
-	getActionExecuted(answers) {
-		if (answers[COMMAND.OPTIONS.INFO]) {
+	_getActionExecuted(answers) {
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
 			return ACTION.INFO;
 		}
-		if (answers[COMMAND.OPTIONS.LIST]) {
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
 			return ACTION.LIST;
 		}
-		if (answers[COMMAND.OPTIONS.REMOVE]) {
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
 			return ACTION.REMOVE;
 		}
-		if (answers[COMMAND.OPTIONS.RENAME]) {
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
 			return ACTION.RENAME;
 		}
-		// if (answers[COMMAND.OPTIONS.REVOKE]) {
+		// if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
 		//    return ACTION.REVOKE;
 		// }
-		return '';
+		throw 'Error, Action inexistent';
 	}
 };
