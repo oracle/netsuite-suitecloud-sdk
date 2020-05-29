@@ -30,6 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		actionExecutor.execute(new AddDependencies());
 	});
 	context.subscriptions.push(addDependenciesDisposable);
+
 	let deployDisposable = vscode.commands.registerCommand('extension.deploy', () => {
 		actionExecutor.execute(new Deploy());
 	});

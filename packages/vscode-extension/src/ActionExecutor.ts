@@ -9,9 +9,7 @@ import CommandsMetadataSingleton from './service/CommandsMetadataSingleton';
 import MessageService from './service/MessageService';
 import { NOT_IN_VALID_PROJECT } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
-import { getRootProjectFolder } from './util/ExtensionUtil';
-
-const projectFolderArg = "--projectFolder";
+import { getRootProjectFolder, ApplicationConstants } from './util/ExtensionUtil';
 
 // HANDLES EXECUTION OF ACTIONS - CENTRAL POINT
 export class ActionExecutor {
@@ -23,7 +21,7 @@ export class ActionExecutor {
 			messageService.showErrorMessage(translationService.getMessage(NOT_IN_VALID_PROJECT));
 		} else {
 			const suiteCloudRunner = new SuiteCloudRunner(executionPath, CommandsMetadataSingleton.getInstance().getMetadata());
-			process.argv.push(`${projectFolderArg}=${executionPath}`);
+			process.argv.push(`${ApplicationConstants.PROJECT_FOLDER_ARG}=${executionPath}`);
 			action.execute({
 				suiteCloudRunner: suiteCloudRunner,
 				messageService,

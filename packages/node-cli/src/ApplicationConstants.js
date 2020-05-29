@@ -38,6 +38,7 @@ module.exports = {
 	PROD_ENVIRONMENT_ADDRESS: 'https://system.netsuite.com',
 	HTTP_PROTOCOL: 'http://',
 	REST_ROLES_URL: '/rest/roles',
+	PROJECT_FOLDER_ARG: '--projectFolder',
 	LINKS: {
 		HOW_TO: {
 			CREATE_HIDDING_XML:
@@ -48,6 +49,4 @@ module.exports = {
 				'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html',
 		},
 	},
-	SDK_FALSE: 'F',
-	SDK_TRUE: 'T',
 };

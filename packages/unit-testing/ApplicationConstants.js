@@ -9,5 +9,6 @@ module.exports = {
 	FILES: {
 		MANIFEST_XML: 'manifest.xml',
 	},
-	PROJECT_SUITEAPP: 'SUITEAPP'
+	PROJECT_SUITEAPP: 'SUITEAPP',
+	PROJECT_FOLDER_ARG: '--projectFolder',
 };
