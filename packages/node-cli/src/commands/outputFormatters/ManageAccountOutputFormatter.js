@@ -5,21 +5,13 @@
 'use strict';
 const OutputFormatter = require('./OutputFormatter');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
-const AccountCredentialsService = require('../../services/AccountCredentialsService');
-
-const ACTION = {
-	LIST: 'list',
-	EXIT: 'exit',
-	INFO: 'info',
-	RENAME: 'rename',
-	REMOVE: 'remove',
-	REVOKE: 'revoke',
-};
+const AccountCredentialsFormatter = require('../../utils/AccountCredentialsFormatter');
+const { MANAGE_ACTION } = require('../actionresult/ManageAccountActionResult');
 
 class ManageAccountOutputFormatter extends OutputFormatter {
 	constructor(consoleLogger) {
 		super(consoleLogger);
-		this._accountCredentialsService = new AccountCredentialsService();
+		this._accountCredentialsFormatter = new AccountCredentialsFormatter();
 	}
 
 	formatActionResult(actionResult) {
@@ -27,11 +19,11 @@ class ManageAccountOutputFormatter extends OutputFormatter {
 			ActionResultUtils.logResultMessage(actionResult, this.consoleLogger);
 		}
 
-		if (actionResult.actionExecuted == ACTION.INFO) {
-			this.consoleLogger.result(this._accountCredentialsService.buildAccountCredentialsInfo(actionResult.data));
-		} else if (actionResult.actionExecuted == ACTION.LIST) {
+		if (actionResult.actionExecuted == MANAGE_ACTION.INFO) {
+			this.consoleLogger.result(this._accountCredentialsFormatter.getInfoString(actionResult.data));
+		} else if (actionResult.actionExecuted == MANAGE_ACTION.LIST) {
 			Object.keys(actionResult.data).forEach((authId) =>
-				this.consoleLogger.result(this._accountCredentialsService.accountCredentialToString(authId, actionResult.data[authId]))
+				this.consoleLogger.result(this._accountCredentialsFormatter.getListItemString(authId, actionResult.data[authId]))
 			);
 		}
 	}

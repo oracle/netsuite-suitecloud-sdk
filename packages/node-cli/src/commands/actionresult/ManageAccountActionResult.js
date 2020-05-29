@@ -11,6 +11,15 @@ const STATUS = {
 	SUCCESS: 'SUCCESS',
 };
 
+const MANAGE_ACTION = {
+	LIST: 'list',
+	EXIT: 'exit',
+	INFO: 'info',
+	RENAME: 'rename',
+	REMOVE: 'remove',
+	REVOKE: 'revoke',
+};
+
 class ManageAccountActionResult extends ActionResult {
 	constructor(parameters) {
 		super(parameters);
@@ -43,7 +52,7 @@ class ManageAccountActionResultBuilder extends ActionResultBuilder {
 		super();
 	}
 
-	withActionExecuted(actionExecuted) {
+	withExecutedAction(actionExecuted) {
 		this.actionExecuted = actionExecuted;
 		return this;
 	}
@@ -61,3 +70,4 @@ class ManageAccountActionResultBuilder extends ActionResultBuilder {
 
 module.exports.ManageAccountActionResult = ManageAccountActionResult;
 module.exports.ManageAccountActionResultBuilder = ManageAccountActionResultBuilder;
+module.exports.MANAGE_ACTION = MANAGE_ACTION;
