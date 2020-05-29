@@ -7,7 +7,10 @@
 const BaseInputHandler = require('../base/BaseInputHandler');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
+const AccountCredentialsFormatter = require('../../utils/AccountCredentialsFormatter');
 const AuthenticationService = require('../../services/AuthenticationService');
+const { MANAGE_ACTION } = require('../../services/actionresult/ManageAccountActionResult');
+
 const { prompt, Separator } = require('inquirer');
 const {
 	showValidationResults,
@@ -25,13 +28,6 @@ const {
 	NO,
 } = require('../../services/TranslationKeys');
 
-const ACTION = {
-	NOTHING: 'nothing',
-	RENAME: 'rename',
-	REMOVE: 'remove',
-	REVOKE: 'revoke',
-};
-
 const COMMAND = {
 	OPTIONS: {
 		INFO: 'info',
@@ -40,18 +36,12 @@ const COMMAND = {
 		RENAME: 'rename',
 		RENAMETO: 'renameto',
 	},
-	FLAGS: {
-		NO_PREVIEW: 'no_preview',
-		SKIP_WARNING: 'skip_warning',
-		VALIDATE: 'validate',
-	},
 };
 
 const ANSWERS_NAMES = {
 	SELECTED_AUTH_ID: 'selected_auth_id',
 	ACTION: 'action',
 	AUTHID: 'authId',
-	CONTINUE: 'continue',
 	RENAMETO: 'renameto',
 	REMOVE: 'remove',
 };
@@ -65,12 +55,12 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	async getParameters(params) {
 		const authIDList = await AuthenticationService.getAuthIds(this._sdkPath);
 		let answers = await this._selectAuthID(authIDList.data, prompt);
-		this._logAccountInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]);
+		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
 		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
-		if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
+		if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.RENAME) {
 			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDList.data, selectedAuthID);
-		} else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
+		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
 
@@ -139,24 +129,24 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			choices: [
 				{
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.RENAME),
-					value: ACTION.RENAME,
+					value: MANAGE_ACTION.RENAME,
 				},
 				{
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REMOVE),
-					value: ACTION.REMOVE,
+					value: MANAGE_ACTION.REMOVE,
 				},
 				// {
 				//    name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
-				//    value: ACTION.REVOKE,
+				//    value: MANAGE_ACTION.REVOKE,
 				// },
 				{
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.EXIT),
-					value: ACTION.EXIT,
+					value: MANAGE_ACTION.EXIT,
 				},
 			],
 		});
 	
-		if (answer[ANSWERS_NAMES.ACTION] == ACTION.EXIT) {
+		if (answer[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.EXIT) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
 		}
 	
@@ -203,16 +193,16 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	}
 
 	_extractAnswers(answers) {
-		if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
+		if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.RENAME) {
 			return {
 				[COMMAND.OPTIONS.RENAME]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 				[COMMAND.OPTIONS.RENAMETO]: answers[ANSWERS_NAMES.RENAMETO],
 			};
-		} else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
+		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
 			return {
 				[COMMAND.OPTIONS.REMOVE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 			};
-			// } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REVOKE) {
+			// } else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REVOKE) {
 			//    return {
 			//    [COMMAND.OPTIONS.REVOKE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 			// }
