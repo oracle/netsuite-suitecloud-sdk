@@ -7,7 +7,7 @@ const OutputFormatter = require('./OutputFormatter');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const ActionResultUtils = require('../../utils/ActionResultUtils');
 
-const { PROJECT_SUITEAPP, SDK_TRUE } = require('../../ApplicationConstants');
+const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 
 const {
 	COMMAND_DEPLOY: { MESSAGES },
@@ -38,7 +38,7 @@ class DeployOutputFormatter extends OutputFormatter {
 
 	_showApplyContentProtectionOptionMessage(projectType, isApplyContentProtection, projectFolder) {
 		if (projectType === PROJECT_SUITEAPP) {
-			if (isApplyContentProtection === SDK_TRUE) {
+			if (isApplyContentProtection) {
 				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
 			} else {
 				this.consoleLogger.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));

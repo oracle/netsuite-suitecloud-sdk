@@ -114,7 +114,6 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			...args,
 			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
-			...this._applyContentProtectionArgumentHandler.transformArgument(args),
 		};
 	}
 
@@ -129,6 +128,11 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				flags.push(COMMAND_OPTIONS.SERVER);
 				isServerValidation = true;
 				delete sdkParams[COMMAND_OPTIONS.SERVER];
+			}
+
+			if (answers[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION]) {
+				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
+				delete sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
 			}
 
 			const executionContext = new SdkExecutionContext({
@@ -147,7 +151,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
-						.withAppliedContentProtection(sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+						.withAppliedContentProtection(flags[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION])
 						.withProjectType(this._projectInfoService.getProjectType)
 						.withProjectFolder(this._projectFolder)
 						.build()

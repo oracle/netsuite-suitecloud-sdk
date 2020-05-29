@@ -49,6 +49,4 @@ module.exports = {
 				'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html',
 		},
 	},
-	SDK_FALSE: 'F',
-	SDK_TRUE: 'T',
 };
