@@ -9,11 +9,11 @@ const SdkExecutionContext = require('../SdkExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
-const AccountCredentialsService = require('../services/AccountCredentialsService');
+const AccountCredentialsFormatter = require('../utils/AccountCredentialsFormatter');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const ManageAccountOutputFormatter = require('./outputFormatters/ManageAccountOutputFormatter');
 const AuthenticationService = require('../core/authentication/AuthenticationService');
-const { ManageAccountActionResult } = require('./actionresult/ManageAccountActionResult');
+const { ManageAccountActionResult, MANAGE_ACTION } = require('./actionresult/ManageAccountActionResult');
 const assert = require('assert');
 
 const inquirer = require('inquirer');
@@ -23,15 +23,6 @@ const {
 	YES,
 	NO,
 } = require('../services/TranslationKeys');
-
-const ACTION = {
-	LIST: 'list',
-	EXIT: 'exit',
-	INFO: 'info',
-	RENAME: 'rename',
-	REMOVE: 'remove',
-	REVOKE: 'revoke',
-};
 
 const COMMAND = {
 	OPTIONS: {
@@ -74,18 +65,18 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		this._authenticationService = new AuthenticationService(options.executionPath);
 		this._outputFormatter = new ManageAccountOutputFormatter(options.consoleLogger);
 		this._consoleLogger = options.consoleLogger;
-		this._accountCredentialsService = new AccountCredentialsService();
+		this._accountCredentialsFormatter = new AccountCredentialsFormatter();
 	}
 
 	async _getCommandQuestions(prompt) {
 		const authIDList = await this._authenticationService.getAuthIds(this._sdkExecutor);
 		const answers = await this._selectAuthID(authIDList, prompt);
-		this._consoleLogger.info(this._accountCredentialsService.buildAccountCredentialsInfo(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
+		this._consoleLogger.info(this._accountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
 		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
-		if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
+		if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.RENAME) {
 			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDList, selectedAuthID);
-		} else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
+		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
 
@@ -101,7 +92,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		authIDs.forEach((authIDArray) => {
 			const authID = authIDArray[0];
 			const accountCredential = authIDArray[1];
-			const accountCredentialString = this._accountCredentialsService.accountCredentialToString(authID, accountCredential);
+			const accountCredentialString = this._accountCredentialsFormatter.getListItemString(authID, accountCredential);
 			choices.push({
 				name: accountCredentialString,
 				value: { authId: authID, accountInfo: accountCredential.accountInfo, domain: accountCredential.urls.app },
@@ -126,11 +117,11 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			choices: [
 				{
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.RENAME),
-					value: ACTION.RENAME,
+					value: MANAGE_ACTION.RENAME,
 				},
 				{
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REMOVE),
-					value: ACTION.REMOVE,
+					value: MANAGE_ACTION.REMOVE,
 				},
 				// {
 				//    name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
@@ -138,12 +129,12 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 				// },
 				{
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.EXIT),
-					value: ACTION.EXIT,
+					value: MANAGE_ACTION.EXIT,
 				},
 			],
 		});
 
-		if (answer[ANSWERS_NAMES.ACTION] == ACTION.EXIT) {
+		if (answer[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.EXIT) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
 		}
 
@@ -190,12 +181,12 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 	}
 
 	_extractAnswers(answers) {
-		if (answers[ANSWERS_NAMES.ACTION] == ACTION.RENAME) {
+		if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.RENAME) {
 			return {
 				[COMMAND.OPTIONS.RENAME]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 				[COMMAND.OPTIONS.RENAMETO]: answers[ANSWERS_NAMES.RENAMETO],
 			};
-		} else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REMOVE) {
+		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
 			return {
 				[COMMAND.OPTIONS.REMOVE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 			};
@@ -219,8 +210,9 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			flags,
 		});
 
-		const action = this._getActionExecuted(answers);
-		const message = this._getSpinnerMessage(action);
+		const selectedAction = this._extractExecutedAction(answers);
+		const authId = this._extractAuthId(answers);
+		const message = this._getSpinnerMessage(selectedAction, authId);
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -228,31 +220,31 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		});
 
 		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-			? ManageAccountActionResult.Builder.withData(this._prepareData(action, operationResult.data))
+			? ManageAccountActionResult.Builder.withData(this._prepareData(selectedAction, operationResult.data))
 					.withResultMessage(operationResult.resultMessage)
-					.withActionExecuted(action)
+					.withExecutedAction(selectedAction)
 					.build()
 			: ManageAccountActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 	}
 
-	_getSpinnerMessage(action) {
+	_getSpinnerMessage(action, authId) {
 		switch (action) {
-			case ACTION.REMOVE:
+			case MANAGE_ACTION.REMOVE:
 				return NodeTranslationService.getMessage(MESSAGES.REMOVING);
-			case ACTION.RENAME:
+			case MANAGE_ACTION.RENAME:
 				return NodeTranslationService.getMessage(MESSAGES.RENAMING);
-			case ACTION.LIST:
+			case MANAGE_ACTION.LIST:
 				return NodeTranslationService.getMessage(MESSAGES.LISTING);
-			case ACTION.REVOKE:
+			case MANAGE_ACTION.REVOKE:
 				return NodeTranslationService.getMessage(MESSAGES.REVOKING);
-			case ACTION.INFO:
-				return NodeTranslationService.getMessage(MESSAGES.INFO, this._authId);
+			case MANAGE_ACTION.INFO:
+				return NodeTranslationService.getMessage(MESSAGES.INFO, authId);
 		}
 		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
 	}
 
 	_prepareData(action, data) {
-		if (action != ACTION.INFO) {
+		if (action != MANAGE_ACTION.INFO) {
 			return data;
 		}
 		assert(this._authId);
@@ -264,22 +256,41 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		return actionResultData;
 	}
 
-	_getActionExecuted(answers) {
+	_extractExecutedAction(answers) {
 		if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
 			this._authId = answers[COMMAND.OPTIONS.INFO];
-			return ACTION.INFO;
+			return MANAGE_ACTION.INFO;
 		}
 		if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
-			return ACTION.LIST;
+			return MANAGE_ACTION.LIST;
 		}
 		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
-			return ACTION.REMOVE;
+			return MANAGE_ACTION.REMOVE;
 		}
 		if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
-			return ACTION.RENAME;
+			return MANAGE_ACTION.RENAME;
 		}
 		// if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
 		//    return ACTION.REVOKE;
+		// }
+		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
+	}
+
+	_extractAuthId(answers) {
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
+			return answers[COMMAND.OPTIONS.INFO];
+		}
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
+			return;
+		}
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
+			return answers[COMMAND.OPTIONS.REMOVE];
+		}
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
+			return answers[COMMAND.OPTIONS.RENAME];
+		}
+		// if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
+		//    return answers[COMMAND.OPTIONS.REVOKE];
 		// }
 		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
 	}
