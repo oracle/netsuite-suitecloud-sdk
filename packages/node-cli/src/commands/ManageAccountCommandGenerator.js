@@ -7,15 +7,16 @@
 const assert = require('assert');
 const inquirer = require('inquirer');
 const AccountCredentialsFormatter = require('../utils/AccountCredentialsFormatter');
-const BaseCommandGenerator = require("./BaseCommandGenerator");
-const SdkExecutionContext = require("../SdkExecutionContext");
-const { executeWithSpinner } = require("../ui/CliSpinner");
-const SdkOperationResultUtils = require("../utils/SdkOperationResultUtils");
-const CommandUtils = require("../utils/CommandUtils");
-const NodeTranslationService = require("../services/NodeTranslationService");
-const ManageAccountOutputFormatter = require("./outputFormatters/ManageAccountOutputFormatter");
-const AuthenticationService = require("../services/AuthenticationService");
-const { ManageAccountActionResult, MANAGE_ACTION } = require("./actionresult/ManageAccountActionResult");
+const BaseCommandGenerator = require('./BaseCommandGenerator');
+const SdkExecutionContext = require('../SdkExecutionContext');
+const { executeWithSpinner } = require('../ui/CliSpinner');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const CommandUtils = require('../utils/CommandUtils');
+const NodeTranslationService = require('../services/NodeTranslationService');
+const ManageAccountOutputFormatter = require('./outputFormatters/ManageAccountOutputFormatter');
+const AuthenticationService = require('../services/AuthenticationService');
+const { ManageAccountActionResult, MANAGE_ACTION } = require('./actionresult/ManageAccountActionResult');
+const { throwValidationException } = require('../utils/ExceptionUtils');
 
 const {
 	COMMAND_MANAGE_ACCOUNT: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
@@ -77,7 +78,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
-         answers[ANSWERS_NAMES.RENAMETO] = await this.introduceNewName(prompt, authIDList.data, selectedAuthID);
+		answers[ANSWERS_NAMES.RENAMETO] = await this.introduceNewName(prompt, authIDList.data, selectedAuthID);
 
 		return this._extractAnswers(answers);
 	}
@@ -205,9 +206,9 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		}
 		const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 			.integration()
-         	.addParams(sdkParams)
+			.addParams(sdkParams)
 			.addFlags(flags)
-         	.build();
+			.build();
 
 		const selectedAction = this._extractExecutedAction(answers);
 		const authId = this._extractAuthId(answers);
@@ -272,7 +273,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		// if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
 		//    return ACTION.REVOKE;
 		// }
-		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
+		throwValidationException([NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION)], this._runInInteractiveMode, this._commandMetadata);
 	}
 
 	_extractAuthId(answers) {

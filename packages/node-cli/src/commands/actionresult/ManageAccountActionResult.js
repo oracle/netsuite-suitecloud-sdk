@@ -18,6 +18,7 @@ const MANAGE_ACTION = {
 	RENAME: 'rename',
 	REMOVE: 'remove',
 	REVOKE: 'revoke',
+	UNKNOWN: 'unknown',
 };
 
 class ManageAccountActionResult extends ActionResult {
