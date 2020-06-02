@@ -7,7 +7,7 @@
 const ApplicationConstants = require('../ApplicationConstants');
 const NodeTranslationService = require('../services/NodeTranslationService');
 
-const VALIDATION_RESULT_FAILURE = validationError => ({
+const VALIDATION_RESULT_FAILURE = (validationError) => ({
 	result: false,
 	validationMessage: validationError,
 });
@@ -124,6 +124,12 @@ class InteractiveAnswersValidator {
 		return [ApplicationConstants.PROJECT_SUITEAPP, ApplicationConstants.PROJECT_ACP].includes(value)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE));
+	}
+
+	validateSameAuthID(newAuthID, authID) {
+		return authID != newAuthID
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.CURRENT_AUTHID, newAuthID));
 	}
 
 	validateAuthIDNotInList(newAuthID, authIDs) {

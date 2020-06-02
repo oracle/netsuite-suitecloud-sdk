@@ -6,12 +6,23 @@
 
 const FileUtils = require('../../utils/FileUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const { ERRORS } = require('../../services/TranslationKeys');
+const { ERRORS, COMMAND_SETUPACCOUNT } = require('../../services/TranslationKeys');
 const { FILES } = require('../../ApplicationConstants');
 const assert = require('assert');
+const { executeWithSpinner } = require('../../ui/CliSpinner');
 const path = require('path');
+const SdkExecutionContext = require('../../SdkExecutionContext');
+const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
+
+const COMMANDS = {
+	MANAGEAUTH: 'manageauth',
+};
+
+const FLAGS = {
+	LIST: 'list',
+};
 
 module.exports = class AuthenticationService {
 	constructor(executionPath) {
@@ -52,5 +63,20 @@ module.exports = class AuthenticationService {
 				throw NodeTranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error);
 			}
 		}
+	}
+
+	async getAuthIds(sdkExecutor) {
+		const getAuthListContext = new SdkExecutionContext({
+			command: COMMANDS.MANAGEAUTH,
+			flags: [FLAGS.LIST],
+		});
+		const existingAuthIDsResponse = await executeWithSpinner({
+			action: sdkExecutor.execute(getAuthListContext),
+			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
+		});
+		if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw SdkOperationResultUtils.collectErrorMessages(existingAuthIDsResponse);
+		}
+		return existingAuthIDsResponse.data;
 	}
 };
