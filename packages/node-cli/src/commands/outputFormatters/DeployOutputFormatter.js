@@ -21,7 +21,7 @@ class DeployOutputFormatter extends OutputFormatter {
 	formatActionResult(actionResult) {
 		this._showApplyContentProtectionOptionMessage(
 			actionResult.projectType,
-			actionResult.withAppliedContentProtection,
+			actionResult.appliedContentProtection,
 			actionResult.projectFolder
 		);
 
