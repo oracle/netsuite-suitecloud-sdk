@@ -249,8 +249,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 				return NodeTranslationService.getMessage(MESSAGES.RENAMING);
 			case MANAGE_ACTION.LIST:
 				return NodeTranslationService.getMessage(MESSAGES.LISTING);
-			case MANAGE_ACTION.REVOKE:
-				return NodeTranslationService.getMessage(MESSAGES.REVOKING);
 			case MANAGE_ACTION.INFO:
 				return NodeTranslationService.getMessage(MESSAGES.INFO, selectedOptions.authId);
 		}

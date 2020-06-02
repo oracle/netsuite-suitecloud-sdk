@@ -127,8 +127,7 @@
 	"COMMAND_LOCAL_INVALID_XML": "Invalid xml {0}",
 
 	"COMMAND_MANAGE_ACCOUNT_ERROR_CREDENTIALS_EMPTY": "There is no authentication ID (authID) configured for this account-role combination. Run \"suitecloud account:setup\" to set up a NetSuite account to use with SuiteCloud CLI for Node.js.",
-	"COMMAND_MANAGE_ACCOUNT_ERROR_TAG": "The Authentication Tag/Label provided, is not valid, please review the data.",
-	"COMMAND_MANAGE_ACCOUNT_ERROR_UNKNOWN_ACTION": "Unknown selected account:manageauth action",
+	"COMMAND_MANAGE_ACCOUNT_ERROR_UNKNOWN_ACTION": "Unknown selected action for account:manageauth command",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_ACCOUNT_INFO_ACCOUNT_ID": "Account ID: {0}",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_ACCOUNT_INFO_ACCOUNT_NAME": "Account Name: {0}",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_ACCOUNT_INFO_ACCOUNT_TYPE": "Account Type: {0}",
