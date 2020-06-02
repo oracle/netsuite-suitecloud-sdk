@@ -29,7 +29,6 @@ const COMMAND = {
 	OPTIONS: {
 		AUTH_ID: 'authid',
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 		LOG: 'log',
 		PROJECT: 'project',
 	},
@@ -37,6 +36,7 @@ const COMMAND = {
 		NO_PREVIEW: 'no_preview',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
+		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	},
 };
 
@@ -68,7 +68,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			{
 				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION,
+				name: COMMAND.FLAGS.APPLY_CONTENT_PROTECTION,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
 				default: 1,
 				choices: [
@@ -105,7 +105,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			},
 		]);
 
-		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
+		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION)) {
 			this.consoleLogger.info(
 				NodeTranslationService.getMessage(
 					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,
@@ -127,7 +127,6 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			[COMMAND.OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
-			...this._applyContentProtectionArgumentHandler.transformArgument(args),
 		};
 	}
 
@@ -139,6 +138,12 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				delete sdkParams[COMMAND.FLAGS.VALIDATE];
 				flags.push(COMMAND.FLAGS.VALIDATE);
 			}
+
+			if (sdkParams[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION]) {
+				delete sdkParams[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
+				flags.push(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
+			}
+
 			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(sdkParams)
@@ -151,7 +156,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 			});
 
 			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
-			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && sdkParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
+			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && flags.includes(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)

@@ -123,10 +123,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REMOVE),
 					value: MANAGE_ACTION.REMOVE,
 				},
-				// {
-				//    name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
-				//    value: ACTION.REVOKE,
-				// },
 				{
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.EXIT),
 					value: MANAGE_ACTION.EXIT,
@@ -190,10 +186,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			return {
 				[COMMAND.OPTIONS.REMOVE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 			};
-			// } else if (answers[ANSWERS_NAMES.ACTION] == ACTION.REVOKE) {
-			//    return {
-			//    [COMMAND.OPTIONS.REVOKE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
-			// }
 		}
 	}
 
@@ -270,9 +262,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
 			return MANAGE_ACTION.RENAME;
 		}
-		// if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
-		//    return ACTION.REVOKE;
-		// }
 		throwValidationException([NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION)], this._runInInteractiveMode, this._commandMetadata);
 	}
 
@@ -289,9 +278,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
 			return answers[COMMAND.OPTIONS.RENAME];
 		}
-		// if (answers.hasOwnProperty(COMMAND.OPTIONS.REVOKE)) {
-		//    return answers[COMMAND.OPTIONS.REVOKE];
-		// }
 		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
 	}
 };

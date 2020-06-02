@@ -117,7 +117,6 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 			[COMMAND_OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
 			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
-			...this._applyContentProtectionArgumentHandler.transformArgument(args),
 		};
 	}
 
@@ -134,11 +133,17 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				delete sdkParams[COMMAND_OPTIONS.SERVER];
 			}
 
+			if (answers[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION]) {
+				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
+				delete sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
+			}
+
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(sdkParams)
 				.addFlags(flags)
 				.build();
+
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
@@ -149,7 +154,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
-						.withAppliedContentProtection(sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+						.withAppliedContentProtection(flags[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION])
 						.withProjectType(this._projectInfoService.getProjectType)
 						.withProjectFolder(this._projectFolder)
 						.build()

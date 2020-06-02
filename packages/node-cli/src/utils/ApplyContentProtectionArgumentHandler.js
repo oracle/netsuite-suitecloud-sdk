@@ -49,16 +49,4 @@ module.exports = class ApplyContentProtectionArgumentHandler {
 			);
 		}
 	}
-
-	transformArgument(args) {
-		const newArgs = {};
-
-		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-			newArgs[APPLY_CONTENT_PROTECTION] = args[APPLY_CONTENT_PROTECTION]
-				? SDK_TRUE
-				: SDK_FALSE;
-		}
-
-		return newArgs;
-	}
 };
