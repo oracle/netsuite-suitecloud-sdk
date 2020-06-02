@@ -202,9 +202,8 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			.addFlags(flags)
 			.build();
 
-		const selectedAction = this._extractExecutedAction(answers);
-		const authId = this._extractAuthId(answers);
-		const message = this._getSpinnerMessage(selectedAction, authId);
+		const selectedOptions = this._extractSelectedOptions(answers);
+		const message = this._getSpinnerMessage(selectedOptions);
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -212,72 +211,60 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		});
 
 		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-			? ManageAccountActionResult.Builder.withData(this._prepareData(selectedAction, operationResult.data))
+			? ManageAccountActionResult.Builder.withData(this._prepareData(selectedOptions, operationResult.data))
 					.withResultMessage(operationResult.resultMessage)
-					.withExecutedAction(selectedAction)
+					.withExecutedAction(selectedOptions.action)
 					.build()
 			: ManageAccountActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
 	}
 
-	_getSpinnerMessage(action, authId) {
-		switch (action) {
+	_extractSelectedOptions(answers) {
+		let action;
+		let authId;
+		if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
+			action = MANAGE_ACTION.INFO;
+			authId = answers[COMMAND.OPTIONS.INFO];
+		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
+			action = MANAGE_ACTION.LIST;
+		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
+			action = MANAGE_ACTION.REMOVE;
+			authId = answers[COMMAND.OPTIONS.REMOVE];
+		} else if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
+			action = MANAGE_ACTION.RENAME;
+			authId = answers[COMMAND.OPTIONS.RENAME];
+		} else {
+			throwValidationException([NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION)], this._runInInteractiveMode, this._commandMetadata);
+		}
+		return {
+			action: action,
+			...(authId && { authId: authId }),
+		};
+	}
+
+	_getSpinnerMessage(selectedOptions) {
+		switch (selectedOptions.action) {
 			case MANAGE_ACTION.REMOVE:
 				return NodeTranslationService.getMessage(MESSAGES.REMOVING);
 			case MANAGE_ACTION.RENAME:
 				return NodeTranslationService.getMessage(MESSAGES.RENAMING);
 			case MANAGE_ACTION.LIST:
 				return NodeTranslationService.getMessage(MESSAGES.LISTING);
-			case MANAGE_ACTION.REVOKE:
-				return NodeTranslationService.getMessage(MESSAGES.REVOKING);
 			case MANAGE_ACTION.INFO:
-				return NodeTranslationService.getMessage(MESSAGES.INFO, authId);
+				return NodeTranslationService.getMessage(MESSAGES.INFO, selectedOptions.authId);
 		}
 		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
 	}
 
-	_prepareData(action, data) {
-		if (action != MANAGE_ACTION.INFO) {
+	_prepareData(selectedOptions, data) {
+		if (selectedOptions.action != MANAGE_ACTION.INFO) {
 			return data;
 		}
-		assert(this._authId);
+		assert(selectedOptions.authId);
 		assert(data.hasOwnProperty(DATA_PROPERTIES.ACCOUNT_INFO));
-		let actionResultData = { authId: this._authId, accountInfo: data.accountInfo };
+		let actionResultData = { authId: selectedOptions.authId, accountInfo: data.accountInfo };
 		if (data.hasOwnProperty(DATA_PROPERTIES.URLS)) {
 			actionResultData[DOMAIN] = data.urls.app;
 		}
 		return actionResultData;
-	}
-
-	_extractExecutedAction(answers) {
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
-			this._authId = answers[COMMAND.OPTIONS.INFO];
-			return MANAGE_ACTION.INFO;
-		}
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
-			return MANAGE_ACTION.LIST;
-		}
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
-			return MANAGE_ACTION.REMOVE;
-		}
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
-			return MANAGE_ACTION.RENAME;
-		}
-		throwValidationException([NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION)], this._runInInteractiveMode, this._commandMetadata);
-	}
-
-	_extractAuthId(answers) {
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
-			return answers[COMMAND.OPTIONS.INFO];
-		}
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.LIST)) {
-			return;
-		}
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.REMOVE)) {
-			return answers[COMMAND.OPTIONS.REMOVE];
-		}
-		if (answers.hasOwnProperty(COMMAND.OPTIONS.RENAME)) {
-			return answers[COMMAND.OPTIONS.RENAME];
-		}
-		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
 	}
 };
