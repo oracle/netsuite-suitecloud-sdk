@@ -14,7 +14,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const UpdateOutputFormatter = require('./outputFormatters/UpdateOutputFormatter');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES },
@@ -129,7 +129,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	_preExecuteAction(args) {
 		return {
 			...args,
-			[COMMAND_OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
+			[COMMAND_OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 		};
 	}

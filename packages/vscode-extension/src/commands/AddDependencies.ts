@@ -7,10 +7,12 @@ import { ActionResult } from '../types/ActionResult';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
+const COMMAND_NAME = 'project:adddependencies';
+
 export default class AddDependencies extends BaseAction {
 
 	constructor() {
-		super('project:adddependencies');
+		super(COMMAND_NAME);
 	}
 
 	protected async execute() {

@@ -19,7 +19,7 @@ const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const ImportObjectsOutputFormatter = require('./outputFormatters/ImportObjectsOutputFormatter');
 const { lineBreak } = require('../loggers/LoggerConstants');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
 	APP_ID: 'appid',
@@ -61,7 +61,7 @@ module.exports = class ImportObjectsCommandGenerator extends BaseCommandGenerato
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 		this._outputFormatter = new ImportObjectsOutputFormatter(options.consoleLogger);
-		this._authId =  AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		this._authId =  getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async _getCommandQuestions(prompt) {

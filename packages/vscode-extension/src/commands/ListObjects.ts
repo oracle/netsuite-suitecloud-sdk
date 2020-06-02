@@ -12,10 +12,12 @@ const objectTypes: {
 	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
+const COMMAND_NAME = 'object:list';
+
 export default class ListObjects extends BaseAction {
-	
+
 	constructor() {
-		super('object:list');
+		super(COMMAND_NAME);
 	}
 
 	protected async execute() {

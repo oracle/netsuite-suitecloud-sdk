@@ -16,7 +16,7 @@ const AccountSpecificArgumentHandler = require('../utils/AccountSpecificValuesAr
 const ApplyContentProtectinoArgumentHandler = require('../utils/ApplyContentProtectionArgumentHandler');
 const ValidateOutputFormatter = require('./outputFormatters/ValidateOutputFormatter');
 const { executeWithSpinner } = require('../ui/CliSpinner');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 const { PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -114,7 +114,7 @@ module.exports = class ValidateCommandGenerator extends BaseCommandGenerator {
 
 		return {
 			...args,
-			[COMMAND_OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
+			[COMMAND_OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
 		};

@@ -15,7 +15,7 @@ const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getAuthIds, setDefaultAuthentication } = require('../utils/AuthenticationUtils');
 const SetupOutputFormatter = require('./outputFormatters/SetupOutputFormatter');
 
 const inquirer = require('inquirer');
@@ -75,7 +75,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let authIdAnswer;
 		const choices = [];
 
-		const authIDList = await AuthenticationService.getAuthIds(this._sdkPath);
+		const authIDList = await getAuthIds(this._sdkPath);
 		if (authIDList.status === ActionResult.STATUS.ERROR) {
 			throw authIDList.errorMessages;
 		}
@@ -271,7 +271,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				authId = executeActionContext.authentication.authId;
 				accountInfo = executeActionContext.authentication.accountInfo;
 			}
-			AuthenticationService.setDefaultAuthentication(this._executionPath, authId);
+			setDefaultAuthentication(this._executionPath, authId);
 
 			return SetupActionResult.Builder.success().withMode(executeActionContext.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
 		} catch (error) {

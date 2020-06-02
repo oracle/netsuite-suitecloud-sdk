@@ -5,7 +5,6 @@
 'use strict';
 
 const assert = require('assert');
-const AuthenticationService = require('./services/AuthenticationService');
 
 class SdkExecutionContext {
 	constructor(options) {

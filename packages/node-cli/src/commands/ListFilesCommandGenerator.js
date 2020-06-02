@@ -12,7 +12,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const ListFilesOutputFormatter = require('./outputFormatters/ListFilesOutputFormatter');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../services/TranslationKeys');
@@ -32,7 +32,7 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._outputFormatter = new ListFilesOutputFormatter(options.consoleLogger);
-		this._authId = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
 	_getCommandQuestions(prompt) {

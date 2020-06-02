@@ -14,7 +14,7 @@ const SdkExecutionContext = require('../SdkExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const ImportFilesOutputFormatter = require('./outputFormatters/ImportFilesOutputFormatter');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
 	NO,
@@ -55,7 +55,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._outputFormatter = new ImportFilesOutputFormatter(options.consoleLogger);
-		this._authId = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async _getCommandQuestions(prompt) {

@@ -14,7 +14,7 @@ const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const ManageAccountOutputFormatter = require('./outputFormatters/ManageAccountOutputFormatter');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getAuthIds } = require('../utils/AuthenticationUtils');
 const { ManageAccountActionResult, MANAGE_ACTION } = require('./actionresult/ManageAccountActionResult');
 const { throwValidationException } = require('../utils/ExceptionUtils');
 
@@ -68,7 +68,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 	}
 
 	async _getCommandQuestions(prompt) {
-		const authIDList = await AuthenticationService.getAuthIds(this._sdkPath);
+		const authIDList = await getAuthIds(this._sdkPath);
 		const answers = await this._selectAuthID(authIDList.data, prompt);
 		this._consoleLogger.info(this._accountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
@@ -78,7 +78,6 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
-		answers[ANSWERS_NAMES.RENAMETO] = await this.introduceNewName(prompt, authIDList.data, selectedAuthID);
 
 		return this._extractAnswers(answers);
 	}

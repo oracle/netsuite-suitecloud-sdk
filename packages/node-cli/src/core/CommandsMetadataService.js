@@ -8,7 +8,8 @@ const path = require('path');
 const FileUtils = require('../utils/FileUtils');
 const { SDK_COMMANDS_METADATA_FILE, NODE_COMMANDS_METADATA_FILE, COMMAND_GENERATORS_METADATA_FILE } = require('../ApplicationConstants');
 const SDK_WRAPPER_GENERATOR = 'commands/SdkWrapperCommandGenerator';
-let COMMANDS_METADATA_CACHE = null;
+
+let commandsMetadataCache;
 
 function executeForEachCommandMetadata(commandsMetadata, func) {
 	for (const commandMetadataId in commandsMetadata) {
@@ -26,7 +27,7 @@ module.exports = class CommandsMetadataService {
 	}
 
 	_initializeCommandsMetadata() {
-		if (!COMMANDS_METADATA_CACHE) {
+		if (!commandsMetadataCache) {
 			const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
 			const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
 			const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
@@ -36,16 +37,16 @@ module.exports = class CommandsMetadataService {
 			};
 			combinedMetadata = this._transformCommandsOptionsToObject(combinedMetadata);
 			combinedMetadata = this._addCommandGeneratorMetadata(commandGeneratorsMetadata, combinedMetadata);
-			COMMANDS_METADATA_CACHE = combinedMetadata;
+			commandsMetadataCache = combinedMetadata;
 		}
 	}
 
 	getCommandsMetadata() {
-		return COMMANDS_METADATA_CACHE;
+		return commandsMetadataCache;
 	}
 
 	getCommandMetadataByName(commandName) {
-		const commandMetadata = COMMANDS_METADATA_CACHE[commandName];
+		const commandMetadata = commandsMetadataCache[commandName];
 		if (!commandMetadata) {
 			throw `No metadata found or initialized for Command ${commandName}`;
 		}

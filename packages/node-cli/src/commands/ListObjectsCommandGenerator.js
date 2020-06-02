@@ -15,7 +15,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const ListObjectsOutputFormatter = require('./outputFormatters/ListObjectsOutputFormatter');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -154,7 +154,7 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_preExecuteAction(args) {
-		args[COMMAND_QUESTIONS_NAMES.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		args[COMMAND_QUESTIONS_NAMES.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		return args;
 	}
 

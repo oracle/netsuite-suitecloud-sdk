@@ -15,7 +15,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const DeployOutputFormatter = require('./outputFormatters/DeployOutputFormatter');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -125,7 +125,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		return {
 			...args,
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
-			[COMMAND.OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
+			[COMMAND.OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
 		};
 	}

@@ -15,7 +15,7 @@ const SdkExecutionContext = require('../SdkExecutionContext');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const UploadFilesOutputFormatter = require('./outputFormatters/UploadFilesOutputFormatter');
-const AuthenticationService = require('../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 const {
 	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, ERRORS },
@@ -134,7 +134,7 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	_preExecuteAction(answers) {
 		const { PROJECT, PATHS, AUTH_ID } = COMMAND_OPTIONS;
 		answers[PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		answers[AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		answers[AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		if (answers.hasOwnProperty(PATHS)) {
 			if (Array.isArray(answers[PATHS])) {
 				answers[PATHS] = answers[PATHS].map(CommandUtils.quoteString).join(' ');
