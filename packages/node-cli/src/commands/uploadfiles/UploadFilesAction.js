@@ -40,7 +40,6 @@ module.exports = class UploadFilesAction extends BaseAction {
 		}
 		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
-		console.log(`UploadFilesAction: ${JSON.stringify([params])}`);
 		return params;
 	}
 

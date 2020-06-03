@@ -59,7 +59,6 @@ module.exports = class SdkExecutor {
 
 			const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
-			console.log(`SdkExecutor: sdkPath is ${JSON.stringify(this._sdkPath)}`);
 			if (!FileUtils.exists(this._sdkPath)) {
 				throw NodeTranslationService.getMessage(
 					ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND,
@@ -71,7 +70,6 @@ module.exports = class SdkExecutor {
 			const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatformVersionOption}`;
 			const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
-			console.log(jvmCommand);
 			const childProcess = spawn(jvmCommand, [], { shell: true });
 
 			childProcess.stderr.on(DATA_EVENT, data => {

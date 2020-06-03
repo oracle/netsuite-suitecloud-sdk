@@ -71,7 +71,6 @@ module.exports = class CommandActionExecutor {
 			return actionResult;
 
 		} catch (error) {
-			console.trace(error);
 			let errorMessage = this._logGenericError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
@@ -137,7 +136,6 @@ module.exports = class CommandActionExecutor {
 		const commandUserExtension = options.commandUserExtension;
 		let commandArguments = options.arguments;
 
-		console.log(JSON.stringify(options));
 		try {
 			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
 				commandName: options.command._commandMetadata.name,

@@ -10,7 +10,7 @@ const OBJECT_TYPES = require('../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
-const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../base/BaseInputHandler');
 const {
 	validateArrayIsNotEmpty,

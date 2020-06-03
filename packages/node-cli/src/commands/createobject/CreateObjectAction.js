@@ -29,6 +29,5 @@ module.exports = class CreateObjectAction extends BaseAction {
 			bindings: [{ id: 'scriptid', value: params.type.prefix + params.objectfilename }],
 		});
 		await Promise.all([createFilePromise, createObjectPromise]);
-		console.log(`${params.objectfilename} & ${params.relatedfilename} were created successfully.`);
 	}
 };

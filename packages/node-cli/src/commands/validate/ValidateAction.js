@@ -48,7 +48,6 @@ module.exports = class ValidateAction extends BaseAction {
 		return {
 			...params,
 			...this._accountSpecificValuesArgumentHandler.transformArgument(params),
-			...this._applyContentProtectionArgumentHandler.transformArgument(params),
 		};
 	}
 

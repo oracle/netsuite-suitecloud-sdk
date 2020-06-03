@@ -49,9 +49,7 @@ module.exports = class CommandRegistrationService {
 		}
 
 		commandSetup.description(commandMetadata.description).action(async (options) => {
-			console.log(`CommandRegistrationService: ${JSON.stringify(Object.keys(options))}`);
 			const actionResult = await executeCommandFunction(options);
-			console.log(`CommandRegistrationService: actionResult = ${JSON.stringify(actionResult)}`);
 			process.exitCode = actionResult.status === ActionResult.STATUS.SUCCESS ? 0 : 1;
 		});
 	}

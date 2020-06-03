@@ -62,7 +62,6 @@ module.exports = class DeployAction extends BaseAction {
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			[COMMAND.OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(params),
-			...this._applyContentProtectionArgumentHandler.transformArgument(params),
 		};
 	}
 

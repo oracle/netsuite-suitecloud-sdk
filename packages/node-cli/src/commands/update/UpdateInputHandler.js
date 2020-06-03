@@ -9,7 +9,7 @@ const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 const BaseInputHandler = require('../base/BaseInputHandler');
-const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES },

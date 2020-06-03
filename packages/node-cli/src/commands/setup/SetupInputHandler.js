@@ -12,7 +12,7 @@ const FileUtils = require('../../utils/FileUtils');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const SdkExecutor = require('../../SdkExecutor');
-const { getAuthIds, setDefaultAuthentication } = require('../utils/AuthenticationUtils');
+const { getAuthIds } = require('../../utils/AuthenticationUtils');
 const { ActionResult } = require('../../services/actionresult/ActionResult');
 
 const {
