@@ -12,7 +12,7 @@ const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../SdkExecutionContext');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const BaseInputHandler = require('../base/BaseInputHandler');
 const SdkExecutor = require('../../SdkExecutor');
 const { showValidationResults, validateArrayIsNotEmpty } = require('../../validation/InteractiveAnswersValidator');
@@ -56,7 +56,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		this._sdkExecutor = new SdkExecutor(options.sdkPath);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
-		this._authId = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async getParameters(params) {

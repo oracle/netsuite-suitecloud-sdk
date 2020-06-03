@@ -10,7 +10,7 @@ const BaseInputHandler = require('../base/BaseInputHandler');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 
 const { PROJECT_ACP, PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 
@@ -41,7 +41,7 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		params[COMMAND_OPTIONS.PROJECT] = this._projectFolder;
-		params[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 
 		if (!this._runInInteractiveMode) {
 			return params;

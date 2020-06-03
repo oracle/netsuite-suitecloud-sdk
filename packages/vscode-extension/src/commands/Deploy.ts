@@ -6,10 +6,11 @@ import { COMMAND, DEPLOY } from '../service/TranslationKeys';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
+const COMMAND_NAME = 'project:deploy';
 export default class Deploy extends BaseAction {
 
 	constructor() {
-		super('project:deploy');
+		super(COMMAND_NAME);
 	}
 
 	protected async execute() {

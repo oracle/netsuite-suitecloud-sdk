@@ -12,7 +12,7 @@ const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../SdkExecutionContext');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 const BaseAction = require('../base/BaseAction');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, MESSAGES },
@@ -36,7 +36,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 	preExecute(params) {
 		const { PROJECT, PATHS, EXCLUDE_PROPERTIES, AUTH_ID } = COMMAND_OPTIONS;
 		params[PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		params[AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		params[AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		if (params.hasOwnProperty(PATHS)) {
 			if (Array.isArray(params[PATHS])) {
 				params[PATHS] = params[PATHS].map(CommandUtils.quoteString).join(' ');

@@ -37,7 +37,6 @@ module.exports = class CLI {
 
 	start(process) {
 		try {
-			//this._commandsMetadataService.initializeCommandsMetadata();
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
 
 			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();

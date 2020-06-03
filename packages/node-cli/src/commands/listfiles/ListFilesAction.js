@@ -9,7 +9,7 @@ const SdkExecutionContext = require('../../SdkExecutionContext');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 const BaseAction = require('../base/BaseAction');
 const {
 	COMMAND_LISTFILES: { LOADING_FILES },
@@ -25,7 +25,7 @@ module.exports = class ListFilesAction extends BaseAction {
 	}
 
 	preExecute(args) {
-		args[COMMAND_OPTIONS.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		args[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		return args;
 	}
 

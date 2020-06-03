@@ -6,10 +6,8 @@
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { sdkPath } from './sdksetup/SdkProperties';
 
-const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
-const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
-const CLIConfigurationService = require('@oracle/suitecloud-cli/src/core/extensibility/CLIConfigurationService');
-const AuthenticationService = require('@oracle/suitecloud-cli/src/services/AuthenticationService');
+import { CommandActionExecutor, CommandOptionsValidator, CLIConfigurationService } from '../util/ExtensionUtil';
+import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
 
 export default class SuiteCloudRunner {
 	private commandActionExecutor: any;

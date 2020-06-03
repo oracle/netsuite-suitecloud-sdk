@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const FileUtils = require('../utils/FileUtils');
+const FileUtils = require('./FileUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { ERRORS, COMMAND_SETUPACCOUNT } = require('../services/TranslationKeys');
 const { FILES } = require('../ApplicationConstants');

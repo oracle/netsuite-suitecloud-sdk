@@ -154,25 +154,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		expect(actionResult._status).toBe('SUCCESS');
 	});
 
-//	 TODO now is the command itself who throws the validation error, not the executor
-//	it('Should throw VALIDATION EXCEPTION when there are validation errors.', async () => {
-//		const commandExecutorWithValidationErrors = new CommandActionExecutorMock({
-//			executionPath: 'myFakePath',
-//			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
-//			cliConfigurationService: new CliConfigurationService(),
-//			authenticationService: new AuthenticationService(),
-//			commandsMetadataService: new CommandsMetadataService(),
-//			log: mockConsoleLogger,
-//		});
-//
-//		await commandExecutorWithValidationErrors.executeAction({
-//			commandName: 'object:import',
-//			runInInteractiveMode: true,
-//			arguments: {},
-//		});
-//		expect(mockConsoleLogger.error).toBeCalledTimes(1);
-//	});
-
 	it('Should throw EXCEPTION when setup is required and there is not any account configured.', async () => {
 		const CommandsMetadataServiceSetupRequired = jest.fn(() => ({
 			getCommandMetadataByName: jest.fn(() => {
@@ -231,7 +212,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			executionPath: 'myFakePath',
 			commandOptionsValidator: new CommandOptionsValidatorWithoutErrors(),
 			cliConfigurationService: new CliConfigurationService(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
 			log: mockConsoleLogger,
 		});

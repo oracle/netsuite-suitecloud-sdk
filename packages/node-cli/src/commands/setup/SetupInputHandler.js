@@ -12,7 +12,7 @@ const FileUtils = require('../../utils/FileUtils');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const SdkExecutor = require('../../SdkExecutor');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getAuthIds, setDefaultAuthentication } = require('../utils/AuthenticationUtils');
 const { ActionResult } = require('../../services/actionresult/ActionResult');
 
 const {
@@ -63,7 +63,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		let authIdAnswer;
 		const choices = [];
 
-		const authIDList  = await AuthenticationService.getAuthIds(this._sdkPath);
+		const authIDList  = await getAuthIds(this._sdkPath);
 		if (authIDList.status === ActionResult.STATUS.ERROR) {
 			throw authIDList.errorMessages;
 		}

@@ -11,7 +11,7 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const BaseInputHandler = require('../base/BaseInputHandler');
 const SdkExecutor = require('../../SdkExecutor');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../../services/TranslationKeys');
@@ -38,7 +38,7 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 		}
 		const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
 				.integration()
-				.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, AuthenticationService.getProjectDefaultAuthId(this._executionPath))
+				.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, getProjectDefaultAuthId(this._executionPath))
 				.build();
 		try {
 			const operationResult = await executeWithSpinner({

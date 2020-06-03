@@ -10,7 +10,7 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../SdkExecutionContext');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 const BaseAction = require('../base/BaseAction');
 const {
 	COMMAND_IMPORTOBJECTS: { MESSAGES },
@@ -43,7 +43,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 	preExecute(answers) {
 		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
-		answers[ANSWERS_NAMES.AUTH_ID] = AuthenticationService.getProjectDefaultAuthId(this._executionPath);
+		answers[ANSWERS_NAMES.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 
 		return answers;
 	}

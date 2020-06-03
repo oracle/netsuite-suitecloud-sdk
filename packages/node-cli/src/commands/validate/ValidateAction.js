@@ -14,7 +14,6 @@ const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const AccountSpecificArgumentHandler = require('../../utils/AccountSpecificValuesArgumentHandler');
 const ApplyContentProtectinoArgumentHandler = require('../../utils/ApplyContentProtectionArgumentHandler');
-const AuthenticationService = require('../../services/AuthenticationService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const { SDK_TRUE } = require('../../ApplicationConstants');
 

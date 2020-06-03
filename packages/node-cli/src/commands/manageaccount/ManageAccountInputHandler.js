@@ -8,7 +8,7 @@ const BaseInputHandler = require('../base/BaseInputHandler');
 const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const AccountCredentialsFormatter = require('../../utils/AccountCredentialsFormatter');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getAuthIds } = require('../../utils/AuthenticationUtils');
 const { MANAGE_ACTION } = require('../../services/actionresult/ManageAccountActionResult');
 
 const { prompt, Separator } = require('inquirer');
@@ -53,7 +53,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const authIDList = await AuthenticationService.getAuthIds(this._sdkPath);
+		const authIDList = await getAuthIds(this._sdkPath);
 		let answers = await this._selectAuthID(authIDList.data, prompt);
 		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;

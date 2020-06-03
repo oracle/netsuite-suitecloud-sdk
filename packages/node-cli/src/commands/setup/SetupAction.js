@@ -10,7 +10,7 @@ const SdkExecutionContext = require('../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { setDefaultAuthentication } = require('../../utils/AuthenticationUtils');
 
 const {
 	COMMAND_SETUPACCOUNT: { MESSAGES },
@@ -79,7 +79,7 @@ module.exports = class SetupAction extends BaseAction {
 				authId = params.authentication.authId;
 				accountInfo = params.authentication.accountInfo;
 			}
-			AuthenticationService.setDefaultAuthentication(this._executionPath, authId);
+			setDefaultAuthentication(this._executionPath, authId);
 
 			return SetupActionResult.Builder.success().withMode(params.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
 		} catch (error) {

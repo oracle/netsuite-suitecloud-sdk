@@ -14,7 +14,7 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const SdkExecutionContext = require('../../SdkExecutionContext');
 const BaseAction = require('../base/BaseAction');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 
 const { PROJECT_SUITEAPP, SDK_TRUE } = require('../../ApplicationConstants');
 
@@ -60,7 +60,7 @@ module.exports = class DeployAction extends BaseAction {
 		return {
 			...params,
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
-			[COMMAND.OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
+			[COMMAND.OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(params),
 			...this._applyContentProtectionArgumentHandler.transformArgument(params),
 		};

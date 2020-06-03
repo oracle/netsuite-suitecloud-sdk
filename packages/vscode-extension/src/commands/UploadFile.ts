@@ -8,9 +8,11 @@ import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKey
 import { actionResultStatus, CLIConfigurationService, ApplicationConstants, getRootProjectFolder } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
+const COMMAND_NAME = 'file:upload'
+
 export default class UploadFile extends BaseAction {
 	constructor() {
-		super('file:upload');
+		super(COMMAND_NAME);
 	}
 
 	protected async execute() {

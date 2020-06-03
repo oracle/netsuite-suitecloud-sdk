@@ -9,7 +9,7 @@ const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 const BaseInputHandler = require('../base/BaseInputHandler');
-const AuthenticationService = require('../../services/AuthenticationService');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES },
@@ -118,7 +118,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		]);
 
 		return {
-			[COMMAND_OPTIONS.AUTH_ID]: AuthenticationService.getProjectDefaultAuthId(this._executionPath),
+			[COMMAND_OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			[ANSWERS_NAMES.OVERWRITE_OBJECTS]: answers[ANSWERS_NAMES.OVERWRITE_OBJECTS],
 			[COMMAND_OPTIONS.SCRIPT_ID]: [...new Set(answers[ANSWERS_NAMES.SCRIPT_ID_LIST])].join(' '),
 		};

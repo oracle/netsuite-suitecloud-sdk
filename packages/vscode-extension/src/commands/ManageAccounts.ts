@@ -2,11 +2,14 @@
  ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import { actionResultStatus, AuthenticationService } from '../util/ExtensionUtil';
+import { actionResultStatus, AuthenticationUtils } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem } from 'vscode';
 import { AuthListData, ActionResult } from '../types/ActionResult';
 import { sdkPath } from '../core/sdksetup/SdkProperties';
+import { MANAGE_ACCOUNTS } from '../service/TranslationKeys';
+
+const COMMAND_NAME = 'account:manageauth';
 
 enum AuthIdListOption {
 	new,
@@ -26,7 +29,7 @@ type AuthIdItem = NewAuthIdItem | SelectAuthIdItem;
 
 export default class ManageAccounts extends BaseAction {
 	constructor() {
-		super('account:setup');
+		super(COMMAND_NAME);
 	}
 
 	protected validate(): { valid: true } {
@@ -38,8 +41,8 @@ export default class ManageAccounts extends BaseAction {
 
 	protected async execute() {
 
-		const accountsPromise = AuthenticationService.getAuthIds(sdkPath);
-		this.messageService.showStatusBarMessage(`Loading the configured authentication IDs in this machine...`, true, accountsPromise);
+		const accountsPromise = AuthenticationUtils.getAuthIds(sdkPath);
+		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
 		const actionResult: ActionResult<AuthListData> = await accountsPromise;
 
 		if (actionResult.status === actionResultStatus.SUCCESS) {
@@ -49,7 +52,7 @@ export default class ManageAccounts extends BaseAction {
 			} else if (selected.option === AuthIdListOption.new) {
 				this.handleNewAuth();
 			} else if (selected.option === AuthIdListOption.select) {
-				this.handleSelectAuth(selected.authId);
+				this.handleSelectedAuth(selected.authId);
 			}
 		} else {
 			this.messageService.showCommandError();
@@ -57,14 +60,14 @@ export default class ManageAccounts extends BaseAction {
 		return;
 	}
 
-	private handleSelectAuth(authId: string) {
+	private handleSelectedAuth(authId: string) {
 		if (!this.executionPath) {
-			this.messageService.showErrorMessage(`Can't set the default authId if not in a project`);
+			this.messageService.showErrorMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.NOT_IN_PROJECT));
 			return;
 		}
 		try {
-			AuthenticationService.setDefaultAuthentication(this.executionPath, authId);
-			this.messageService.showStatusBarMessage(`The default account for the current project was successfully set to ${authId}`);
+			AuthenticationUtils.setDefaultAuthentication(this.executionPath, authId);
+			this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.SUCCESS, authId));
 			return;
 		} catch (e) {
 			this.messageService.showErrorMessage(e);
@@ -77,7 +80,7 @@ export default class ManageAccounts extends BaseAction {
 
 	private async getAuthListOption(data: AuthListData) {
 		return await window.showQuickPick(this.getAuthOptions(data), {
-			placeHolder: this.translationService.getMessage('Available connections'),
+			placeHolder: this.translationService.getMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.AVAILABLE_CONNECTIONS)),
 			canPickMany: false,
 		});
 	}
