@@ -15,6 +15,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const DeployOutputFormatter = require('./outputFormatters/DeployOutputFormatter');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP, SDK_TRUE } = require('../ApplicationConstants');
 
@@ -26,6 +27,7 @@ const {
 
 const COMMAND = {
 	OPTIONS: {
+		AUTH_ID: 'authid',
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 		LOG: 'log',
 		PROJECT: 'project',
@@ -123,6 +125,7 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 		return {
 			...args,
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
+			[COMMAND.OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			...this._accountSpecificValuesArgumentHandler.transformArgument(args),
 		};
 	}
@@ -141,12 +144,11 @@ module.exports = class DeployCommandGenerator extends BaseCommandGenerator {
 				flags.push(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 			}
 
-			const executionContextForDeploy = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: sdkParams,
-				flags,
-			});
+			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(sdkParams)
+				.addFlags(flags)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForDeploy),

@@ -4,19 +4,19 @@
  */
 'use strict';
 
+const assert = require('assert');
+const inquirer = require('inquirer');
+const AccountCredentialsFormatter = require('../utils/AccountCredentialsFormatter');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const CommandUtils = require('../utils/CommandUtils');
-const AccountCredentialsFormatter = require('../utils/AccountCredentialsFormatter');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const ManageAccountOutputFormatter = require('./outputFormatters/ManageAccountOutputFormatter');
-const AuthenticationService = require('../core/authentication/AuthenticationService');
+const { getAuthIds } = require('../utils/AuthenticationUtils');
 const { ManageAccountActionResult, MANAGE_ACTION } = require('./actionresult/ManageAccountActionResult');
-const assert = require('assert');
-
-const inquirer = require('inquirer');
+const { throwValidationException } = require('../utils/ExceptionUtils');
 
 const {
 	COMMAND_MANAGE_ACCOUNT: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
@@ -62,20 +62,19 @@ const DOMAIN = 'domain';
 module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._authenticationService = new AuthenticationService(options.executionPath);
 		this._outputFormatter = new ManageAccountOutputFormatter(options.consoleLogger);
 		this._consoleLogger = options.consoleLogger;
 		this._accountCredentialsFormatter = new AccountCredentialsFormatter();
 	}
 
 	async _getCommandQuestions(prompt) {
-		const authIDList = await this._authenticationService.getAuthIds(this._sdkExecutor);
-		const answers = await this._selectAuthID(authIDList, prompt);
+		const authIDList = await getAuthIds(this._sdkPath);
+		const answers = await this._selectAuthID(authIDList.data, prompt);
 		this._consoleLogger.info(this._accountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
 		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
 		if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.RENAME) {
-			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDList, selectedAuthID);
+			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDList.data, selectedAuthID);
 		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
@@ -196,11 +195,11 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			flags.push(COMMAND.OPTIONS.LIST);
 			delete sdkParams[COMMAND.OPTIONS.LIST];
 		}
-		const executionContext = new SdkExecutionContext({
-			command: this._commandMetadata.sdkCommand,
-			params: sdkParams,
-			flags,
-		});
+		const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+			.integration()
+			.addParams(sdkParams)
+			.addFlags(flags)
+			.build();
 
 		const selectedOptions = this._extractSelectedOptions(answers);
 		const message = this._getSpinnerMessage(selectedOptions);
@@ -233,7 +232,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 			action = MANAGE_ACTION.RENAME;
 			authId = answers[COMMAND.OPTIONS.RENAME];
 		} else {
-			assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
+			throwValidationException([NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION)], this._runInInteractiveMode, this._commandMetadata);
 		}
 		return {
 			action: action,

@@ -12,14 +12,11 @@ const CommandInstanceFactory = require('./core/CommandInstanceFactory');
 const CommandRegistrationService = require('./core/CommandRegistrationService');
 const CommandOptionsValidator = require('./core/CommandOptionsValidator');
 const CLIConfigurationService = require('./core/extensibility/CLIConfigurationService');
-const AuthenticationService = require('./core/authentication/AuthenticationService');
 const sdkPath = require('./core/sdksetup/SdkProperties').getSdkPath();
-const path = require('path');
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 
 const executionPath = process.cwd();
-const rootCLIPath = path.dirname(require.main.filename);
-const commandsMetadataServiceSingleton = new CommandsMetadataService(rootCLIPath);
+const commandsMetadataServiceSingleton = new CommandsMetadataService();
 
 const cliInstance = new CLI({
 	commandsMetadataService: commandsMetadataServiceSingleton,
@@ -29,7 +26,6 @@ const cliInstance = new CLI({
 		commandOptionsValidator: new CommandOptionsValidator(),
 		cliConfigurationService: new CLIConfigurationService(),
 		commandInstanceFactory: new CommandInstanceFactory(),
-		authenticationService: new AuthenticationService(executionPath),
 		commandsMetadataService: commandsMetadataServiceSingleton,
 		consoleLogger: NodeConsoleLogger,
 		sdkPath: sdkPath

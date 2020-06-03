@@ -63,10 +63,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		}),
 	}));
 
-	const AuthenticationService = jest.fn(() => ({
-		getProjectDefaultAuthId: jest.fn(),
-	}));
-
 	const CommandsMetadataService = jest.fn(() => ({
 		getCommandMetadataByName: jest.fn(() => {
 			return { isSetupRequired: false, supportsInteractiveMode: true };
@@ -86,7 +82,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandOptionsValidator: new CommandOptionsValidatorWithoutErrors(),
 			cliConfigurationService: new CliConfigurationService(),
 			commandInstanceFactory: new CommandInstanceFactory(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
 			consoleLogger: mockConsoleLogger,
 			sdkPath: sdkPath,
@@ -169,7 +164,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
 			cliConfigurationService: new CliConfigurationService(),
 			commandInstanceFactory: new CommandInstanceFactory(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
 			consoleLogger: mockConsoleLogger,
 			sdkPath: sdkPath,
@@ -196,7 +190,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
 			cliConfigurationService: new CliConfigurationService(),
 			commandInstanceFactory: new CommandInstanceFactory(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceSetupRequired(),
 			consoleLogger: mockConsoleLogger,
 			sdkPath: sdkPath,
@@ -227,7 +220,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
 			cliConfigurationService: new CliConfigurationService(),
 			commandInstanceFactory: new CommandInstanceFactory(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceNotSupportInteractiveMode(),
 			consoleLogger: mockConsoleLogger,
 			sdkPath: sdkPath,

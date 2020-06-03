@@ -12,25 +12,23 @@ const { throwValidationException } = require('../utils/ExceptionUtils');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const OutputFormatter = require('../commands/outputFormatters/OutputFormatter');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
 		assert(dependencies);
-		assert(dependencies.executionPath);
 		assert(dependencies.commandOptionsValidator);
 		assert(dependencies.cliConfigurationService);
 		assert(dependencies.commandInstanceFactory);
 		assert(dependencies.commandsMetadataService);
-		assert(dependencies.authenticationService);
 		assert(dependencies.consoleLogger);
 		assert(dependencies.sdkPath);
 
-		this._executionPath = dependencies.executionPath;
+		this._executionPath = dependencies.executionPath ? dependencies.executionPath : process.cwd();
 		this._commandOptionsValidator = dependencies.commandOptionsValidator;
 		this._cliConfigurationService = dependencies.cliConfigurationService;
 		this._commandInstanceFactory = dependencies.commandInstanceFactory;
 		this._commandsMetadataService = dependencies.commandsMetadataService;
-		this._authenticationService = dependencies.authenticationService;
 		this._consoleLogger = dependencies.consoleLogger;
 		this._sdkPath = dependencies.sdkPath;
 	}
@@ -53,7 +51,7 @@ module.exports = class CommandActionExecutor {
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
-			const projectConfiguration = commandMetadata.isSetupRequired ? this._authenticationService.getProjectDefaultAuthId() : null;
+			const projectConfiguration = commandMetadata.isSetupRequired ? getProjectDefaultAuthId(this._executionPath) : null;
 			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
 
 			const command = this._commandInstanceFactory.create({
@@ -170,7 +168,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_applyDefaultContextParams(args, projectConfiguration) {
-		args.authId = projectConfiguration.defaultAuthId;
+		args.authid = projectConfiguration.defaultAuthId;
 		return args;
 	}
 };

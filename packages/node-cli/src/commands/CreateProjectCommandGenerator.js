@@ -268,10 +268,10 @@ module.exports = class CreateProjectCommandGenerator extends BaseCommandGenerato
 				if (answers[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
-				const executionContextCreateProject = new SdkExecutionContext({
-					command: this._commandMetadata.sdkCommand,
-					params: params,
-				});
+				const executionContextCreateProject = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+					.integration()
+					.addParams(params)
+					.build();
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 

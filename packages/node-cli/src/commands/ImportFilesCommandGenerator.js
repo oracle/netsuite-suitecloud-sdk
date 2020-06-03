@@ -14,6 +14,7 @@ const SdkExecutionContext = require('../SdkExecutionContext');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const ImportFilesOutputFormatter = require('./outputFormatters/ImportFilesOutputFormatter');
 const { PROJECT_SUITEAPP } = require('../ApplicationConstants');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
 	NO,
@@ -22,14 +23,26 @@ const {
 
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid',
 	FOLDER: 'folder',
 	PATHS: 'paths',
 	EXCLUDE_PROPERTIES: 'excludeproperties',
 	PROJECT: 'project',
 };
 const INTERMEDIATE_COMMANDS = {
-	LISTFILES: 'listfiles',
-	LISTFOLDERS: 'listfolders',
+	LISTFILES: {
+		COMMAND: 'listfiles',
+		OPTIONS: {
+			AUTH_ID: 'authid',
+			FOLDER: 'folder',
+		}
+	},
+	LISTFOLDERS: {
+		COMMAND: 'listfolders',
+		OPTIONS: {
+			AUTH_ID: 'authid',
+		}
+	}
 };
 const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',
@@ -42,6 +55,7 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._outputFormatter = new ImportFilesOutputFormatter(options.consoleLogger);
+		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async _getCommandQuestions(prompt) {
@@ -78,10 +92,10 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_listFolders() {
-		const executionContext = new SdkExecutionContext({
-			command: INTERMEDIATE_COMMANDS.LISTFOLDERS,
-			includeProjectDefaultAuthId: true,
-		});
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS)
+			.integration()
+			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
+			.build();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -109,12 +123,13 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
-		selectFolderAnswer.folder = CommandUtils.quoteString(selectFolderAnswer.folder);
-		const executionContext = new SdkExecutionContext({
-			command: INTERMEDIATE_COMMANDS.LISTFILES,
-			includeProjectDefaultAuthId: true,
-			params: selectFolderAnswer,
-		});
+		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
+		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = this._authId;
+
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES)
+			.integration()
+			.addParams(selectFolderAnswer)
+			.build();
 
 		return executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
@@ -157,8 +172,9 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_preExecuteAction(answers) {
-		const { PROJECT, PATHS, EXCLUDE_PROPERTIES } = COMMAND_OPTIONS;
+		const { PROJECT, PATHS, EXCLUDE_PROPERTIES, AUTH_ID } = COMMAND_OPTIONS;
 		answers[PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		answers[AUTH_ID] = this._authId;
 		if (answers.hasOwnProperty(PATHS)) {
 			if (Array.isArray(answers[PATHS])) {
 				answers[PATHS] = answers[PATHS].map(CommandUtils.quoteString).join(' ');
@@ -180,11 +196,10 @@ module.exports = class ImportFilesCommandGenerator extends BaseCommandGenerator 
 				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 			}
 
-			const executionContextImportObjects = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: answers,
-			});
+			const executionContextImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(answers)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextImportObjects),

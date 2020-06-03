@@ -12,25 +12,35 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const ListFilesOutputFormatter = require('./outputFormatters/ListFilesOutputFormatter');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, LOADING_FILES, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../services/TranslationKeys');
 
-const LIST_FOLDERS_COMMAND = 'listfolders';
+const LIST_FOLDERS = {
+	COMMAND: 'listfolders',
+	OPTIONS: {
+		AUTH_ID: 'authid',
+	}
+}
+const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid'
+}
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 
 module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
 		this._outputFormatter = new ListFilesOutputFormatter(options.consoleLogger);
+		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
 	_getCommandQuestions(prompt) {
 		return new Promise(resolve => {
-			const executionContext = new SdkExecutionContext({
-				command: LIST_FOLDERS_COMMAND,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
+				.integration()
+				.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, this._authId)
+				.build();
 
 			return (
 				executeWithSpinner({
@@ -68,15 +78,19 @@ module.exports = class ListFilesCommandGenerator extends BaseCommandGenerator {
 		});
 	}
 
+	_preExecuteAction(args) {
+		args[COMMAND_OPTIONS.AUTH_ID] = this._authId;
+		return args;
+	}
+
 	async _executeAction(answers) {
 		try {
 			// quote folder path to preserve spaces
 			answers.folder = `\"${answers.folder}\"`;
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: answers,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(answers)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

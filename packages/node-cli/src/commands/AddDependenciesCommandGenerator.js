@@ -18,6 +18,7 @@ const {
 } = require('../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid',
 	ALL: 'all',
 	PROJECT: 'project',
 };
@@ -28,19 +29,18 @@ class AddDependenciesCommandGenerator extends BaseCommandGenerator {
 		this._outputFormatter = new AddDependenciesOutputFormatter(options.consoleLogger);
 	}
 
-	_preExecuteAction(answers) {
-		answers[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		return answers;
+	_preExecuteAction(params) {
+		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		return params;
 	}
 
 	async _executeAction(answers) {
 		try {
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params: answers,
-				flags: [COMMAND_OPTIONS.ALL],
-				requiresContextParams: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(answers)
+				.addFlag(COMMAND_OPTIONS.ALL)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),

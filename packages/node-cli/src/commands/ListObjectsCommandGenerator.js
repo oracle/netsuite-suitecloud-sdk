@@ -15,6 +15,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const ListObjectsOutputFormatter = require('./outputFormatters/ListObjectsOutputFormatter');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const {
 	validateArrayIsNotEmpty,
 	validateFieldIsNotEmpty,
@@ -22,6 +23,7 @@ const {
 	showValidationResults,
 } = require('../validation/InteractiveAnswersValidator');
 const COMMAND_QUESTIONS_NAMES = {
+	AUTH_ID: 'authid',
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
 	SPECIFY_SCRIPT_ID: 'specifyscriptid',
@@ -151,17 +153,21 @@ module.exports = class ListObjectsCommandGenerator extends BaseCommandGenerator 
 		return prompt(questions);
 	}
 
+	_preExecuteAction(args) {
+		args[COMMAND_QUESTIONS_NAMES.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
+		return args;
+	}
+
 	async _executeAction(answers) {
 		try {
 			const params = CommandUtils.extractCommandOptions(answers, this._commandMetadata);
 			if (Array.isArray(params.type)) {
 				params.type = params.type.join(' ');
 			}
-			const executionContext = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				params,
-				includeProjectDefaultAuthId: true,
-			});
+			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(params)
+				.build();
 
 			const actionListObjects = this._sdkExecutor.execute(executionContext);
 

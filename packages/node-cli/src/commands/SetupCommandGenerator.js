@@ -8,13 +8,14 @@ const chalk = require('chalk');
 const path = require('path');
 const BaseCommandGenerator = require('./BaseCommandGenerator');
 const SetupActionResult = require('../commands/actionresult/SetupActionResult');
+const { ActionResult } = require('../commands/actionresult/ActionResult');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const FileUtils = require('../utils/FileUtils');
 const CommandUtils = require('../utils/CommandUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const AuthenticationService = require('./../core/authentication/AuthenticationService');
+const { getAuthIds, setDefaultAuthentication } = require('../utils/AuthenticationUtils');
 const SetupOutputFormatter = require('./outputFormatters/SetupOutputFormatter');
 
 const inquirer = require('inquirer');
@@ -66,7 +67,6 @@ const CREATE_NEW_AUTH = '******CREATE_NEW_AUTH*******!£$%&*';
 module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	constructor(options) {
 		super(options);
-		this._authenticationService = new AuthenticationService(options.executionPath);
 		this._outputFormatter = new SetupOutputFormatter(options.consoleLogger);
 	}
 
@@ -75,8 +75,11 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let authIdAnswer;
 		const choices = [];
 
-		const authIDList = await this._authenticationService.getAuthIds(this._sdkExecutor);
-		let authIDs = Object.keys(authIDList);
+		const authIDList = await getAuthIds(this._sdkPath);
+		if (authIDList.status === ActionResult.STATUS.ERROR) {
+			throw authIDList.errorMessages;
+		}
+		let authIDs = Object.keys(authIDList.data);
 		if (authIDs.length > 0) {
 			choices.push({
 				name: chalk.bold(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
@@ -86,7 +89,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			choices.push(new inquirer.Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
 			authIDs.forEach((authID) => {
-				const authentication = authIDList[authID];
+				const authentication = authIDList.data[authID];
 				const isDevLabel = authentication.developmentMode
 					? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
 					: '';
@@ -227,6 +230,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _executeAction(executeActionContext) {
+
 		try {
 			let authId;
 			let accountInfo;
@@ -267,7 +271,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 				authId = executeActionContext.authentication.authId;
 				accountInfo = executeActionContext.authentication.accountInfo;
 			}
-			this._authenticationService.setDefaultAuthentication(authId);
+			setDefaultAuthentication(this._executionPath, authId);
 
 			return SetupActionResult.Builder.success().withMode(executeActionContext.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
 		} catch (error) {
@@ -276,19 +280,16 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _performBrowserBasedAuthentication(params, developmentMode) {
-		const executionContextOptions = {
-			command: COMMANDS.AUTHENTICATE,
-			params,
-		};
+		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE)
+			.integration()
+			.addParams(params)
 
 		if (developmentMode) {
-			executionContextOptions.flags = [FLAGS.DEVELOPMENTMODE];
+			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 		}
 
-		const authenticateSdkExecutionContext = new SdkExecutionContext(executionContextOptions);
-
 		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(authenticateSdkExecutionContext),
+			action: this._sdkExecutor.execute(contextBuilder.build()),
 			message: NodeTranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);
@@ -297,20 +298,17 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 	}
 
 	async _saveToken(params, developmentMode) {
-		const executionContextOptions = {
-			command: COMMANDS.AUTHENTICATE,
-			params,
-			flags: [FLAGS.SAVETOKEN],
-		};
+		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE)
+			.integration()
+			.addParams(params)
+			.addFlag(FLAGS.SAVETOKEN);
 
 		if (developmentMode) {
-			executionContextOptions.flags.push(FLAGS.DEVELOPMENTMODE);
+			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 		}
 
-		const executionContext = new SdkExecutionContext(executionContextOptions);
-
 		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
+			action: this._sdkExecutor.execute(contextBuilder.build()),
 			message: NodeTranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
 		});
 		this._checkOperationResultIsSuccessful(operationResult);

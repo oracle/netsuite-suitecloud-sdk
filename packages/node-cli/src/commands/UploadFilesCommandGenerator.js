@@ -15,6 +15,7 @@ const SdkExecutionContext = require('../SdkExecutionContext');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { ActionResult } = require('../commands/actionresult/ActionResult');
 const UploadFilesOutputFormatter = require('./outputFormatters/UploadFilesOutputFormatter');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 const {
 	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, ERRORS },
@@ -27,6 +28,7 @@ const { FILE_CABINET } = require('../ApplicationConstants').FOLDERS;
 const COMMAND_OPTIONS = {
 	PATHS: 'paths',
 	PROJECT: 'project',
+	AUTH_ID: 'authid',
 };
 
 const COMMAND_ANSWERS = {
@@ -130,8 +132,9 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 	}
 
 	_preExecuteAction(answers) {
-		const { PROJECT, PATHS } = COMMAND_OPTIONS;
+		const { PROJECT, PATHS, AUTH_ID } = COMMAND_OPTIONS;
 		answers[PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		answers[AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		if (answers.hasOwnProperty(PATHS)) {
 			if (Array.isArray(answers[PATHS])) {
 				answers[PATHS] = answers[PATHS].map(CommandUtils.quoteString).join(' ');
@@ -147,11 +150,10 @@ module.exports = class UploadFilesCommandGenerator extends BaseCommandGenerator 
 
 	async _executeAction(answers) {
 		try {
-			const executionContextUploadFiles = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: answers,
-			});
+			const executionContextUploadFiles = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(answers)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextUploadFiles),

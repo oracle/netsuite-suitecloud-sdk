@@ -14,6 +14,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const UpdateOutputFormatter = require('./outputFormatters/UpdateOutputFormatter');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 const {
 	COMMAND_UPDATE: { ERRORS, QUESTIONS, MESSAGES },
@@ -34,6 +35,7 @@ const ANSWERS_NAMES = {
 const COMMAND_OPTIONS = {
 	PROJECT: 'project',
 	SCRIPT_ID: 'scriptid',
+	AUTH_ID: 'authid',
 };
 
 const MAX_ENTRIES_BEFORE_FILTER = 30;
@@ -127,6 +129,7 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 	_preExecuteAction(args) {
 		return {
 			...args,
+			[COMMAND_OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 		};
 	}
@@ -138,11 +141,10 @@ module.exports = class UpdateCommandGenerator extends BaseCommandGenerator {
 			}
 			const sdkParams = CommandUtils.extractCommandOptions(args, this._commandMetadata);
 
-			const executionContextForUpdate = new SdkExecutionContext({
-				command: this._commandMetadata.sdkCommand,
-				includeProjectDefaultAuthId: true,
-				params: sdkParams,
-			});
+			const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(sdkParams)
+				.build();
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForUpdate),

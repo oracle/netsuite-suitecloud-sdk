@@ -6,55 +6,22 @@
 
 const assert = require('assert');
 
-module.exports = class SdkExecutionContext {
+class SdkExecutionContext {
 	constructor(options) {
 		assert(options.command, 'Command is mandatory option');
 		this._command = options.command;
-		this._integrationMode =
-			typeof options.integrationMode === 'undefined' ? true : options.integrationMode;
-		this._includeProjectDefaultAuthId =
-			typeof options.includeProjectDefaultAuthId === 'undefined'
-				? false
-				: options.includeProjectDefaultAuthId;
-		this._developmentMode = typeof options.developmentMode === 'undefined' ? false : options.developmentMode;
-		this._params = {};
-		this._flags = [];
-
-		if (options.params) {
-			this._addParams(options.params);
-		}
-
-		if (options.flags) {
-			this._addFlags(options.flags);
-		}
-	}
-
-	_addParams(params) {
-		Object.keys(params).forEach(key => {
-			this.addParam(key, params[key]);
-		});
-	}
-
-	_addFlags(flags) {
-		flags.forEach(flag => {
-			this.addFlag(flag);
-		});
+		this._integrationMode = options.integrationMode;
+		this._developmentMode = options.developmentMode;
+		this._params = options.params;
+		this._flags = options.flags;
 	}
 
 	getCommand() {
 		return this._command;
 	}
 
-	addParam(name, value) {
-		this._params[`-${name}`] = value;
-	}
-
 	getParams() {
 		return this._params;
-	}
-
-	addFlag(flag) {
-		this._flags.push(`-${flag}`);
 	}
 
 	getFlags() {
@@ -65,11 +32,69 @@ module.exports = class SdkExecutionContext {
 		return this._integrationMode;
 	}
 
-	get includeProjectDefaultAuthId() {
-		return this._includeProjectDefaultAuthId;
+	static get Builder() {
+		return new SdkExecutionContextBuilder();
+	}
+	
+};
+
+class SdkExecutionContextBuilder {
+
+	constructor() {
+		this._params = {};
+		this._flags = [];
+		this._integrationMode = false;
+		this._developmentMode = false;
 	}
 
-	isDevelopmentMode() {
-		return this._developmentMode;
+	forCommand(command) {
+		this._command = command;
+		return this;
 	}
-};
+
+	integration() {
+		this._integrationMode = true;
+		return this;
+	}
+
+	devMode() {
+		this._developmentMode = true;
+		return this;
+	}
+
+	addParams(params) {
+		Object.keys(params).forEach((key) => {
+			this.addParam(key, params[key]);
+		});
+		return this;
+	}
+
+	addParam(param, value) {
+		this._params[`-${param}`] = value;
+		return this;
+	}
+
+	addFlags(flags) {
+		flags.forEach(flag => {
+			this.addFlag(flag);
+		});
+		return this;
+	}
+
+	addFlag(flag) {
+		this._flags.push(`-${flag}`);
+		return this;
+	}
+
+	build() {
+		return new SdkExecutionContext({
+			command: this._command,
+			params: this._params,
+			flags: this._flags,
+			integrationMode: this._integrationMode,
+			developmentMode: this._developmentMode,
+		})
+	}
+}
+
+module.exports = SdkExecutionContext;

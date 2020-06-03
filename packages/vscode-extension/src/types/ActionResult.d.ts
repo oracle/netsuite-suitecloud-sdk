@@ -3,9 +3,29 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-export default interface ActionResult {
+export interface ActionResult<T> {
 	status: string;
 	resultMessage: string;
 	errorMessages: string[];
-	data: any;
+	data: T;
+}
+
+export type AuthListData = {
+	[key: string]: {
+		accountInfo: {
+			companyName: string;
+			roleId: number;
+			roleName: string;
+			entityId: number;
+			companyId: string;
+		},
+		token:{
+			tokenId: string;
+			tokenSecret: string;
+		},
+		developmentMode: boolean;
+		urls:{
+			app: string;
+		}
+	},
 }
