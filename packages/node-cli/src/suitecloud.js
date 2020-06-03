@@ -8,7 +8,6 @@
 const CLI = require('./CLI');
 const CommandsMetadataService = require('./core/CommandsMetadataService');
 const CommandActionExecutor = require('./core/CommandActionExecutor');
-const CommandInstanceFactory = require('./core/CommandInstanceFactory');
 const CommandRegistrationService = require('./core/CommandRegistrationService');
 const CommandOptionsValidator = require('./core/CommandOptionsValidator');
 const CLIConfigurationService = require('./core/extensibility/CLIConfigurationService');
@@ -25,9 +24,8 @@ const cliInstance = new CLI({
 		executionPath,
 		commandOptionsValidator: new CommandOptionsValidator(),
 		cliConfigurationService: new CLIConfigurationService(),
-		commandInstanceFactory: new CommandInstanceFactory(),
 		commandsMetadataService: commandsMetadataServiceSingleton,
-		consoleLogger: NodeConsoleLogger,
+		log: NodeConsoleLogger,
 		sdkPath: sdkPath
 	}),
 });

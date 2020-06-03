@@ -24,7 +24,7 @@ const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
-module.exports.SdkExecutor = class SdkExecutor {
+module.exports = class SdkExecutor {
 	constructor(sdkPath) {
 
 		this._sdkPath = sdkPath;

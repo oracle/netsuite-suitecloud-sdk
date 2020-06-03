@@ -5,7 +5,8 @@
 
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { sdkPath } from './sdksetup/SdkProperties';
-import { CommandActionExecutor, CommandOptionsValidator, CLIConfigurationService, CommandInstanceFactory } from '../util/ExtensionUtil';
+
+import { CommandActionExecutor, CommandOptionsValidator, CLIConfigurationService } from '../util/ExtensionUtil';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
 
 export default class SuiteCloudRunner {
@@ -17,9 +18,8 @@ export default class SuiteCloudRunner {
 			executionPath: executionPath,
 			commandOptionsValidator: new CommandOptionsValidator(),
 			cliConfigurationService: new CLIConfigurationService(),
-			commandInstanceFactory: new CommandInstanceFactory(),
 			commandsMetadataService: CommandsMetadataSingleton.getInstance(),
-			consoleLogger: new VSConsoleLogger(),
+			log: new VSConsoleLogger(),
 			sdkPath: sdkPath,
 		});
 	}

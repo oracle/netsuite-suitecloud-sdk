@@ -8,12 +8,12 @@ const FileUtils = require('./FileUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { ERRORS, COMMAND_SETUPACCOUNT } = require('../services/TranslationKeys');
 const { FILES } = require('../ApplicationConstants');
-const { ActionResult } = require('../commands/actionresult/ActionResult');
+const { ActionResult } = require('../services/actionresult/ActionResult');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const path = require('path');
 const SdkExecutionContext = require('../SdkExecutionContext');
-const SdkOperationResultUtils = require('./SdkOperationResultUtils');
-const SdkExecutor = require('../SdkExecutor').SdkExecutor;
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const SdkExecutor = require('../SdkExecutor');
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
