@@ -21,7 +21,7 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 	parse(actionResult) {
 		this._showApplyContentProtectionOptionMessage(
 			actionResult.projectType,
-			actionResult.withAppliedContentProtection,
+			actionResult.appliedContentProtection,
 			actionResult.projectFolder
 		);
 
