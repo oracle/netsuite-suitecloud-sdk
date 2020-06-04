@@ -53,16 +53,23 @@ module.exports = class ValidateAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
-
 			let isServerValidation = false;
+			let contentProtectionApplied = false;
 			const flags = [];
 
 			if (params[COMMAND_OPTIONS.SERVER]) {
 				flags.push(COMMAND_OPTIONS.SERVER);
 				isServerValidation = true;
-				delete sdkParams[COMMAND_OPTIONS.SERVER];
+				delete params[COMMAND_OPTIONS.SERVER];
 			}
+
+			if (params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION]) {
+				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
+				contentProtectionApplied = true;
+				delete params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
+			}
+
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
@@ -79,7 +86,7 @@ module.exports = class ValidateAction extends BaseAction {
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
-						.withAppliedContentProtection(sdkParams[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE)
+						.withAppliedContentProtection(contentProtectionApplied)
 						.withProjectType(this._projectInfoService.getProjectType)
 						.withProjectFolder(this._projectFolder)
 						.build()

@@ -21,7 +21,6 @@ const {
 const COMMAND = {
 	OPTIONS: {
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 		LOG: 'log',
 		PROJECT: 'project',
 	},
@@ -29,6 +28,7 @@ const COMMAND = {
 		NO_PREVIEW: 'no_preview',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
+		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	},
 };
 
@@ -57,7 +57,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 			{
 				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION,
+				name: COMMAND.FLAGS.APPLY_CONTENT_PROTECTION,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
 				default: 1,
 				choices: [
@@ -94,7 +94,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 			},
 		]);
 
-		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION)) {
+		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION)) {
 			this._log.info(
 				NodeTranslationService.getMessage(
 					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,

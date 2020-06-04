@@ -57,7 +57,7 @@ module.exports = class CommandActionExecutor {
 				command: command,
 				arguments: commandArguments,
 				runInInteractiveMode: context.runInInteractiveMode,
-				isSetupRequired: commandMetadata.isSetupRequired,
+				metadata: commandMetadata,
 				commandUserExtension: commandUserExtension,
 				projectConfiguration: projectConfiguration,
 			});
@@ -131,14 +131,15 @@ module.exports = class CommandActionExecutor {
 	async _executeCommandAction(options) {
 		const command = options.command;
 		const projectConfiguration = options.projectConfiguration;
-		const isSetupRequired = options.isSetupRequired;
+		const isSetupRequired = options.metadata.isSetupRequired;
+		const commandName = options.metadata.name;
 		//const runInInteractiveMode = options.runInInteractiveMode;
 		const commandUserExtension = options.commandUserExtension;
 		let commandArguments = options.arguments;
 
 		try {
 			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
-				commandName: options.command._commandMetadata.name,
+				commandName: commandName,
 				projectFolder: this._executionPath,
 				arguments: isSetupRequired ? this._applyDefaultContextParams(commandArguments, projectConfiguration) : commandArguments,
 			});
