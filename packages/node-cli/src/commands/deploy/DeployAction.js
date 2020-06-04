@@ -16,7 +16,7 @@ const SdkExecutionContext = require('../../SdkExecutionContext');
 const BaseAction = require('../base/BaseAction');
 const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 
-const { PROJECT_SUITEAPP, SDK_TRUE } = require('../../ApplicationConstants');
+const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 
 const {
 	COMMAND_DEPLOY: { MESSAGES },
@@ -26,7 +26,6 @@ const COMMAND = {
 	OPTIONS: {
 		AUTH_ID: 'authid',
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 		LOG: 'log',
 		PROJECT: 'project',
 	},
@@ -34,6 +33,7 @@ const COMMAND = {
 		NO_PREVIEW: 'no_preview',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
+		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	},
 };
 
@@ -67,12 +67,19 @@ module.exports = class DeployAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 			const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
-			if (sdkParams[COMMAND.FLAGS.VALIDATE]) {
-				delete sdkParams[COMMAND.FLAGS.VALIDATE];
+			if (params[COMMAND.FLAGS.VALIDATE]) {
+				delete params[COMMAND.FLAGS.VALIDATE];
 				flags.push(COMMAND.FLAGS.VALIDATE);
 			}
+
+			if (params[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION]) {
+				delete params[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
+				flags.push(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
+			}
+
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+
 			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(sdkParams)
@@ -85,8 +92,7 @@ module.exports = class DeployAction extends BaseAction {
 			});
 
 			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
-			const isApplyContentProtection =
-				this._projectType === PROJECT_SUITEAPP && sdkParams[COMMAND.OPTIONS.APPLY_CONTENT_PROTECTION] === SDK_TRUE;
+			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && flags.includes(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)

@@ -214,6 +214,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			cliConfigurationService: new CliConfigurationService(),
 			commandsMetadataService: new CommandsMetadataService(),
 			log: mockConsoleLogger,
+			sdkPath: sdkPath,
 		});
 
 		await commandExecutorWithError.executeAction({
