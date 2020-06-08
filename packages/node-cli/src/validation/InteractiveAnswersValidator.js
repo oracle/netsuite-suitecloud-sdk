@@ -133,7 +133,7 @@ class InteractiveAnswersValidator {
 	}
 
 	validateAuthIDNotInList(newAuthID, authIDs) {
-		return !authIDs.includes(newAuthID)
+		return !authIDs.hasOwnProperty(newAuthID)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.AUTH_ID_ALREADY_USED));
 	}

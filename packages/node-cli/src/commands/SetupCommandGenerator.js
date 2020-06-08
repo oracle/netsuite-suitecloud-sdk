@@ -166,7 +166,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 							fieldValue,
 							validateFieldIsNotEmpty,
 							validateFieldHasNoSpaces,
-							(fieldValue) => validateAuthIDNotInList(fieldValue, authIDList),
+							(fieldValue) => validateAuthIDNotInList(fieldValue, authIDList.data),
 							validateAlphanumericHyphenUnderscore,
 							validateMaximumLength
 						),
