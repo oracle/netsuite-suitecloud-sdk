@@ -13,6 +13,7 @@ import UploadFile from './commands/UploadFile';
 import ManageAccounts from './commands/ManageAccounts';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import BaseAction from './commands/BaseAction';
+import UpdateObject from './commands/UpdateObject';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'NetSuite SuiteCloud';
 
@@ -25,17 +26,16 @@ export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SC
 // this method is called when SuiteCloud extension is activated
 // the extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-
 	await installIfNeeded();
 
 	context.subscriptions.push(
-		register('extension.adddependencies', new AddDependencies()),
-		register('extension.deploy', new Deploy()),
-		register('extension.listobjects', new ListObjects()),
-		register('extension.uploadfile', new UploadFile()),
-		register('extension.setupaccount', new ManageAccounts()),
-	)
-
+		register('suitecloud.adddependencies', new AddDependencies()),
+		register('suitecloud.deploy', new Deploy()),
+		register('suitecloud.listobjects', new ListObjects()),
+		register('suitecloud.uploadfile', new UploadFile()),
+		register('suitecloud.setupaccount', new ManageAccounts()),
+		register('suitecloud.updateobject', new UpdateObject())
+	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated

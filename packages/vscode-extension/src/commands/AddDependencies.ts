@@ -16,7 +16,7 @@ export default class AddDependencies extends BaseAction {
 	}
 
 	protected async execute() {
-		const commandActionPromise = this.runSubCommand({});
+		const commandActionPromise = this.runSuiteCloudCommand();
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(ADD_DEPENDENCIES.COMMAND));
 		const statusBarMessage: string = this.translationService.getMessage(ADD_DEPENDENCIES.ADDING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);

@@ -33,7 +33,7 @@ export default class ListObjects extends BaseAction {
 			return;
 		}
 
-		const commandActionPromise = this.runSubCommand({ type: selectedObjectTypes.join(' ')});
+		const commandActionPromise = this.runSuiteCloudCommand({ type: selectedObjectTypes.join(' ')});
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(LIST_OBJECTS.COMMAND));
 		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);

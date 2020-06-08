@@ -26,11 +26,15 @@ module.exports = class UpdateOutputHandler extends BaseOutputHandler {
 
 		if (updatedObjects.length > 0) {
 			this._log.result(NodeTranslationService.getMessage(OUTPUT.UPDATED_OBJECTS));
-			updatedObjects.sort(sortByKey).forEach((updatedObject) => this._log.result(updatedObject.key));
+			updatedObjects.sort(sortByKey).forEach((updatedObject) => {
+				this._log.result(`${this._log.getPadding(1)}- ${updatedObject.key}`);
+			});
 		}
 		if (noUpdatedObjects.length > 0) {
 			this._log.warning(NodeTranslationService.getMessage(OUTPUT.NO_UPDATED_OBJECTS));
-			noUpdatedObjects.sort(sortByKey).forEach((noUpdatedObject) => this._log.warning(noUpdatedObject.message));
+			noUpdatedObjects.sort(sortByKey).forEach((noUpdatedObject) => {
+				this._log.warning(`${this._log.getPadding(1)}- ${noUpdatedObject.key}: ${noUpdatedObject.message}`);
+			});
 		}
 		return actionResult;
 	}
