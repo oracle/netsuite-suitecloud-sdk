@@ -4,7 +4,6 @@
  */
 'use strict';
 
-const { ERROR } = require('../commands/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerConstants');
 
 module.exports = {
@@ -12,13 +11,9 @@ module.exports = {
 		return actionResult.errorMessages.join(lineBreak);
 	},
 
-	logResultMessage: (actionResult, consoleLogger) => {
+	logResultMessage: (actionResult, log) => {
 		if (actionResult.resultMessage) {
-			if (actionResult.status === ERROR) {
-				consoleLogger.error(actionResult.resultMessage);
-			} else {
-				consoleLogger.result(actionResult.resultMessage);
-			}
+			log.result(actionResult.resultMessage);
 		}
 	},
 };

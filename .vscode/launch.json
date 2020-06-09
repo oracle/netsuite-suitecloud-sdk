@@ -32,6 +32,16 @@
             "args": ["project:deploy"],
             "outputCapture": "std",
             "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest Tests",
+            "program": "${workspaceRoot}\\packages\\node-cli\\node_modules\\jest\\bin\\jest.js",
+            "args": [
+                "-i"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
         }
     ]
 }

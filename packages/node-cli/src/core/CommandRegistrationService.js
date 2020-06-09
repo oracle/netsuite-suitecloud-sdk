@@ -10,7 +10,7 @@ const INTERACTIVE_OPTION_NAME = 'interactive';
 const INTERACTIVE_OPTION_ALIAS = 'i';
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
-const { ActionResult } = require('../commands/actionresult/ActionResult');
+const { ActionResult } = require('../services/actionresult/ActionResult');
 
 module.exports = class CommandRegistrationService {
 	register(options) {

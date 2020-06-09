@@ -5,33 +5,27 @@
 'use strict';
 
 const assert = require('assert');
-const inquirer = require('inquirer');
 const NodeTranslationService = require('./../services/NodeTranslationService');
 const { ERRORS } = require('../services/TranslationKeys');
 const { throwValidationException } = require('../utils/ExceptionUtils');
+const { ActionResult } = require('../services/actionresult/ActionResult');
+const { lineBreak } = require('../loggers/LoggerConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
-const { ActionResult } = require('../commands/actionresult/ActionResult');
-const OutputFormatter = require('../commands/outputFormatters/OutputFormatter');
+const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/ExceptionUtils');
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
 		assert(dependencies);
-		assert(dependencies.executionPath);
-		assert(dependencies.commandOptionsValidator);
 		assert(dependencies.cliConfigurationService);
-		assert(dependencies.commandInstanceFactory);
 		assert(dependencies.commandsMetadataService);
-		assert(dependencies.authenticationService);
-		assert(dependencies.consoleLogger);
+		assert(dependencies.log);
 		assert(dependencies.sdkPath);
 
 		this._executionPath = dependencies.executionPath;
-		this._commandOptionsValidator = dependencies.commandOptionsValidator;
 		this._cliConfigurationService = dependencies.cliConfigurationService;
-		this._commandInstanceFactory = dependencies.commandInstanceFactory;
 		this._commandsMetadataService = dependencies.commandsMetadataService;
-		this._authenticationService = dependencies.authenticationService;
-		this._consoleLogger = dependencies.consoleLogger;
+		this._log = dependencies.log;
 		this._sdkPath = dependencies.sdkPath;
 	}
 
@@ -53,52 +47,48 @@ module.exports = class CommandActionExecutor {
 			const runInInteractiveMode = context.runInInteractiveMode;
 			const args = context.arguments;
 
-			const projectConfiguration = commandMetadata.isSetupRequired ? this._authenticationService.getProjectDefaultAuthId() : null;
+			const projectConfiguration = commandMetadata.isSetupRequired ? getProjectDefaultAuthId(this._executionPath) : null;
 			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
 
-			const command = this._commandInstanceFactory.create({
-				runInInteractiveMode: runInInteractiveMode,
-				commandMetadata: commandMetadata,
-				projectFolder: projectFolder,
-				executionPath: this._executionPath,
-				consoleLogger: this._consoleLogger,
-				sdkPath: this._sdkPath,
-			});
-
-			const commandArguments = this._extractOptionValuesFromArguments(command.commandMetadata.options, args);
+			const command = this._getCommand(runInInteractiveMode, projectFolder, commandMetadata);
+			const commandArguments = this._extractOptionValuesFromArguments(commandMetadata.options, args);
 
 			const actionResult = await this._executeCommandAction({
 				command: command,
 				arguments: commandArguments,
 				runInInteractiveMode: context.runInInteractiveMode,
-				isSetupRequired: commandMetadata.isSetupRequired,
+				metadata: commandMetadata,
 				commandUserExtension: commandUserExtension,
 				projectConfiguration: projectConfiguration,
 			});
 
-			if (!(actionResult instanceof ActionResult)) {
-				throw 'INTERNAL ERROR: Command must return an ActionResult object.';
-			}
-
-			if (actionResult.status === ActionResult.STATUS.ERROR) {
-				const error = ActionResultUtils.getErrorMessagesString(actionResult);
-				throw error;
-			}
-
-			command.outputFormatter.formatActionResult(actionResult);
-
-			if (commandUserExtension.onCompleted) {
+			if (actionResult.status === ActionResult.STATUS.SUCCESS && commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
 			}
-
+			else if (actionResult.status === ActionResult.STATUS.ERROR && commandUserExtension.onError) {
+				commandUserExtension.onError(ActionResultUtils.getErrorMessagesString(actionResult));
+			}
 			return actionResult;
+
 		} catch (error) {
-			let errorMessage = new OutputFormatter(this._consoleLogger).formatError(error);
+			let errorMessage = this._logGenericError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
 			return ActionResult.Builder.withErrors(errorMessage);
 		}
+	}
+
+	_logGenericError(error) {
+		let errorMessage = unwrapExceptionMessage(error);
+		this._log.error(errorMessage);
+		const informativeMessage = unwrapInformationMessage(error);
+
+		if (informativeMessage) {
+			this._log.info(`${lineBreak}${informativeMessage}`);
+			errorMessage += lineBreak + informativeMessage;
+		}
+		return errorMessage;
 	}
 
 	_checkCanExecute(context) {
@@ -121,38 +111,41 @@ module.exports = class CommandActionExecutor {
 		return optionValues;
 	}
 
+	_getCommand(runInInteractiveMode, projectFolder, commandMetadata) {
+
+		const commandPath = runInInteractiveMode ? commandMetadata.interactiveGenerator : commandMetadata.nonInteractiveGenerator;
+		const commandGenerator = require(commandPath);
+		if (!commandGenerator) {
+			throw `Path ${commandPath} doesn't contain any command`;
+		}
+		return commandGenerator.create({
+			commandMetadata: commandMetadata,
+			projectFolder: projectFolder,
+			executionPath: this._executionPath,
+			runInInteractiveMode: runInInteractiveMode,
+			log: this._log,
+			sdkPath: this._sdkPath,
+		});
+	}
+
 	async _executeCommandAction(options) {
 		const command = options.command;
 		const projectConfiguration = options.projectConfiguration;
-		const isSetupRequired = options.isSetupRequired;
-		const runInInteractiveMode = options.runInInteractiveMode;
+		const isSetupRequired = options.metadata.isSetupRequired;
+		const commandName = options.metadata.name;
+		//const runInInteractiveMode = options.runInInteractiveMode;
 		const commandUserExtension = options.commandUserExtension;
 		let commandArguments = options.arguments;
 
 		try {
 			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
-				commandName: options.command.commandMetadata.name,
+				commandName: commandName,
 				projectFolder: this._executionPath,
 				arguments: isSetupRequired ? this._applyDefaultContextParams(commandArguments, projectConfiguration) : commandArguments,
 			});
-			const overriddenCommandArguments = beforeExecutingOutput.arguments;
+			const overriddenArguments = beforeExecutingOutput.arguments;
 
-			const argumentsFromQuestions =
-				runInInteractiveMode || command._commandMetadata.forceInteractiveMode
-					? await command.getCommandQuestions(inquirer.prompt, commandArguments)
-					: {};
-
-			const commandArgumentsWithQuestionArguments = {
-				...overriddenCommandArguments,
-				...argumentsFromQuestions,
-			};
-			let commandArgumentsAfterPreActionFunc = command.preActionFunc
-				? command.preActionFunc(commandArgumentsWithQuestionArguments)
-				: commandArgumentsWithQuestionArguments;
-
-			this._checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, command.commandMetadata, runInInteractiveMode);
-
-			return await command.actionFunc(commandArgumentsAfterPreActionFunc);
+			return command.run(overriddenArguments);
 		} catch (error) {
 			throw error;
 		}
@@ -170,7 +163,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_applyDefaultContextParams(args, projectConfiguration) {
-		args.authId = projectConfiguration.defaultAuthId;
+		args.authid = projectConfiguration.defaultAuthId;
 		return args;
 	}
 };

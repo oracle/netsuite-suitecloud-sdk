@@ -37,7 +37,6 @@ module.exports = class CLI {
 
 	start(process) {
 		try {
-			this._commandsMetadataService.initializeCommandsMetadata();
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
 
 			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();
@@ -71,7 +70,7 @@ module.exports = class CLI {
 				program: program,
 				runInInteractiveMode: runInInteractiveMode,
 				executeCommandFunction: async options => {
-					return await this._commandActionExecutor.executeAction({
+					return this._commandActionExecutor.executeAction({
 						commandName: commandMetadata.name,
 						runInInteractiveMode: runInInteractiveMode,
 						arguments: options,

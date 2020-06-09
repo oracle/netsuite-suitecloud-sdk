@@ -24,7 +24,8 @@
 		"onCommand:extension.deploy",
 		"onCommand:extension.listobjects",
 		"onCommand:extension.update",
-		"onCommand:extension.uploadfile"
+		"onCommand:extension.uploadfile",
+		"onCommand:extension.setupaccount"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -47,6 +48,11 @@
 			{
 				"command": "extension.uploadfile",
 				"title": "Upload File",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "extension.setupaccount",
+				"title": "Setup Account",
 				"category": "SuiteCloud"
 			}
 		],
