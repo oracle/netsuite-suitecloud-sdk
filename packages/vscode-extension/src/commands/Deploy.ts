@@ -14,7 +14,7 @@ export default class Deploy extends BaseAction {
 	}
 
 	protected async execute() {
-		const commandActionPromise = this.runSubCommand({});
+		const commandActionPromise = this.runSuiteCloudCommand();
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(DEPLOY.COMMAND));
 		const statusBarMessage: string = this.translationService.getMessage(DEPLOY.DEPLOYING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);

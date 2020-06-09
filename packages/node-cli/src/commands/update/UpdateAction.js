@@ -11,6 +11,7 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const executeWithSpinner = require('../../ui/CliSpinner').executeWithSpinner;
 const SdkExecutionContext = require('../../SdkExecutionContext');
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 
 const {
 	COMMAND_UPDATE: { MESSAGES },
@@ -24,6 +25,7 @@ const ANSWERS_NAMES = {
 };
 
 const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid',
 	PROJECT: 'project',
 	SCRIPT_ID: 'scriptid',
 };
@@ -35,6 +37,7 @@ module.exports = class UpdateAction extends BaseAction {
 
 	preExecute(params) {
 		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		return params;
 	}
 
