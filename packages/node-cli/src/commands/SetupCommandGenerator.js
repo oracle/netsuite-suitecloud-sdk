@@ -75,8 +75,8 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 		let authIdAnswer;
 		const choices = [];
 
-		const authIDList = await this._authenticationService.getAuthIds(this._sdkExecutor);
-		let authIDs = Object.keys(authIDList);
+		const authIDMap = await this._authenticationService.getAuthIds(this._sdkExecutor);
+		let authIDs = Object.keys(authIDMap);
 		if (authIDs.length > 0) {
 			choices.push({
 				name: chalk.bold(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
@@ -86,7 +86,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 			choices.push(new inquirer.Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
 			authIDs.forEach((authID) => {
-				const authentication = authIDList[authID];
+				const authentication = authIDMap[authID];
 				const isDevLabel = authentication.developmentMode
 					? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
 					: '';
@@ -166,7 +166,7 @@ module.exports = class SetupCommandGenerator extends BaseCommandGenerator {
 							fieldValue,
 							validateFieldIsNotEmpty,
 							validateFieldHasNoSpaces,
-							(fieldValue) => validateAuthIDNotInList(fieldValue, authIDList),
+							(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDMap)),
 							validateAlphanumericHyphenUnderscore,
 							validateMaximumLength
 						),

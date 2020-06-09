@@ -137,7 +137,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 		return answer[ANSWERS_NAMES.ACTION];
 	}
 
-	async _introduceNewName(prompt, authIDList, originalAuthId) {
+	async _introduceNewName(prompt, authIDMap, originalAuthId) {
 		const answer = await prompt({
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.RENAMETO,
@@ -149,7 +149,7 @@ module.exports = class ManageAccountCommandGenerator extends BaseCommandGenerato
 					validateFieldIsNotEmpty,
 					validateFieldHasNoSpaces,
 					(fieldValue) => validateSameAuthID(fieldValue, originalAuthId),
-					(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDList)),
+					(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDMap)),
 					validateAlphanumericHyphenUnderscore,
 					validateMaximumLength
 				),
