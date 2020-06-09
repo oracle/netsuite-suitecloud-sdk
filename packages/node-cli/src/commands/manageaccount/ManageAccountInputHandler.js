@@ -153,7 +153,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		return answer[ANSWERS_NAMES.ACTION];
 	}
 
-	async _introduceNewName(prompt, authIDList, originalAuthId) {
+	async _introduceNewName(prompt, authIDMap, originalAuthId) {
 		let answer = await prompt({
 			type: CommandUtils.INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.RENAMETO,
@@ -165,7 +165,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 					validateFieldIsNotEmpty,
 					validateFieldHasNoSpaces,
 					(fieldValue) => validateSameAuthID(fieldValue, originalAuthId),
-					(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDList)),
+					(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDMap)),
 					validateAlphanumericHyphenUnderscore,
 					validateMaximumLength
 				),
