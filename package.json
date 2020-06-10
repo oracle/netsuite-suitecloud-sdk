@@ -10,6 +10,7 @@
     "bootstrap": "lerna bootstrap",
     "test": "lerna run test --stream",
     "postinstall": "lerna bootstrap",
-    "compile": "lerna run compile --stream"
+    "compile": "lerna run compile --stream",
+    "build": "lerna run build --stream"
   }
 }

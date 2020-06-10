@@ -1,0 +1,10 @@
+{
+	"extends": "./tsconfig.build.json",
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"@oracle/suitecloud-cli-localserver-command": ["extensions/localserver-cli-command"],
+			"@oracle/suitecloud-cli": ["packages/suitecloud-cli"]
+		}
+	}
+}

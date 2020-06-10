@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const CreateProjectActionResult = require('../../../services/actionresult/CreateProjectActionResult');
+const { CreateProjectActionResult } = require('../../../services/actionresult/CreateProjectActionResult');
 const BaseAction = require('../../base/BaseAction');
 const TemplateKeys = require('../../../templates/TemplateKeys');
 const CommandUtils = require('../../../utils/CommandUtils');

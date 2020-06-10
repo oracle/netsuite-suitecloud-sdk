@@ -6,3 +6,4 @@
 
 # transpiled .js files
 packages/**/dist
+extensions/**/dist

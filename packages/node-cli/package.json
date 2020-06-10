@@ -15,11 +15,11 @@
 		"url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"
 	},
 	"repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/node-cli",
-	"main": "./src/suitecloud.js",
+	"main": "./dist/suitecloud.js",
 	"preferGlobal": true,
 	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/cli/java/latest",
 	"bin": {
-		"suitecloud": "./src/suitecloud.js"
+		"suitecloud": "./dist/suitecloud.js"
 	},
 	"dependencies": {
 		"@oracle/suitecloud-cli-localserver-command": "^1.0.3",
@@ -32,9 +32,17 @@
 		"xml2js": "^0.4.19"
 	},
 	"devDependencies": {
+		"@types/inquirer": "^6.5.0",
+		"@types/jest": "^25.1.4",
+		"@types/node": "^12.11.7",
+		"copyfiles": "^2.2.0",
+		"typescript": "^3.6.4",
 		"jest": "^26.0.1"
 	},
 	"scripts": {
+		"clean": "rm -rf dist && rm -rf tsconfig.build.tsbuildinfo",
+		"copy-files": "copyfiles -u 1 \"src/**/*.{js,xml,template,json}\" dist",
+		"build": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json",
 		"test": "jest",
 		"postinstall": "node postinstall.js"
 	}

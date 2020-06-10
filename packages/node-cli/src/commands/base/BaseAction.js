@@ -24,7 +24,7 @@ module.exports = class BaseAction {
 	}
 
 	async execute(params) {
-		return ActionResult.Builder.withErrors(['BaseAction execute should never be called']);
+		return ActionResult.Builder.withErrors(['BaseAction execute should never be called']).build();
 	}
 
 	async postExecute(actionResult) {

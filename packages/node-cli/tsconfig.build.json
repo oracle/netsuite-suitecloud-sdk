@@ -1,0 +1,16 @@
+{
+	"extends": "../../tsconfig.build.json",
+	"compilerOptions": {
+		"composite": true,
+		"declaration": true,
+		"outDir": "./dist",
+		"rootDir": "./src"
+	},
+	"references": [{
+		"path": "../../extensions/localserver-cli-command/tsconfig.build.json"
+	}],
+	"include": [
+		"src/**/*", 
+		"types/**/*"
+	]
+}
