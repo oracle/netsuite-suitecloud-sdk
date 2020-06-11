@@ -6,13 +6,14 @@
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { sdkPath } from './sdksetup/SdkProperties';
 
-import { CommandActionExecutor, CommandOptionsValidator, CLIConfigurationService } from '../util/ExtensionUtil';
+import { CommandActionExecutor, CommandOptionsValidator, CLIConfigurationService, ApplicationConstants } from '../util/ExtensionUtil';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
 
 export default class SuiteCloudRunner {
 	private commandActionExecutor: any;
 
 	constructor(executionPath?: string) {
+		process.argv.push(`${ApplicationConstants.PROJECT_FOLDER_ARG}=${executionPath}`);
 		this.commandActionExecutor = new CommandActionExecutor({
 			//THIS SHOULD BE A FACTORY METHOD INSIDE THE CLI CommandActionExecutorFactory.get({executionPath:executionPath})
 			executionPath: executionPath,
