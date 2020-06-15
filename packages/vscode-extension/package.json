@@ -20,55 +20,56 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.adddependencies",
-		"onCommand:extension.deploy",
-		"onCommand:extension.listobjects",
-		"onCommand:extension.update",
-		"onCommand:extension.uploadfile",
-		"onCommand:extension.setupaccount"
+		"*"
 	],
-	"main": "./dist/extension.js",
+	"main": "./dist/suitecloud.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.adddependencies",
+				"command": "suitecloud.adddependencies",
 				"title": "Add dependency references to the manifest",
 				"category": "SuiteCloud"
 			},
 			{
-				"command": "extension.deploy",
+				"command": "suitecloud.deploy",
 				"title": "Deploy Project",
 				"category": "SuiteCloud"
 			},
 			{
-				"command": "extension.listobjects",
+				"command": "suitecloud.listobjects",
 				"title": "List Objects...",
 				"category": "SuiteCloud"
 			},
 			{
-				"command": "extension.uploadfile",
+				"command": "suitecloud.uploadfile",
 				"title": "Upload File",
 				"category": "SuiteCloud"
 			},
 			{
-				"command": "extension.setupaccount",
+				"command": "suitecloud.setupaccount",
 				"title": "Setup Account",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.updateobject",
+				"title": "Update Single Object with Account Object",
 				"category": "SuiteCloud"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "extension.adddependencies",
+				"command": "suitecloud.adddependencies",
 				"key": "ctrl+alt+shift+a",
 				"mac": "ctrl+alt+shift+a"
 			},
 			{
-				"command": "extension.deploy",
+				"command": "suitecloud.deploy",
 				"key": "ctrl+alt+d",
-				"mac": "ctrl+alt+d"
+				"mac": "ctrl+alt+d",
+				"linux": "meta+alt+d"
 			},
 			{
-				"command": "extension.uploadfile",
+				"command": "suitecloud.uploadfile",
 				"key": "ctrl+alt+u",
 				"mac": "ctrl+alt+u"
 			}

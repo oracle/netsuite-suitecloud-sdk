@@ -42,6 +42,11 @@ module.exports = class CLI {
 			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();
 			this._initializeCommands(commandMetadataList, runInInteractiveMode);
 
+			// If there are no arguments, we print SuiteCloud version header
+			if (!process.argv || process.argv.length <= 2) {
+				NodeConsoleLogger.info(NodeTranslationService.getMessage(TITLE, COMPATIBLE_NS_VERSION));
+			}
+
 			program
 				.version(CLI_VERSION, '--version')
 				.option(`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`, NodeTranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION))
@@ -51,9 +56,6 @@ module.exports = class CLI {
 				.usage(NodeTranslationService.getMessage(USAGE))
 				.parse(process.argv);
 
-			if (!program.args.length) {
-				this._printHelp();
-			}
 		} catch (exception) {
 			NodeConsoleLogger.error(unwrapExceptionMessage(exception));
 		}
@@ -82,10 +84,5 @@ module.exports = class CLI {
 
 	_isRunningInInteractiveMode() {
 		return process.argv[3] === INTERACTIVE_ALIAS || process.argv[3] === INTERACTIVE_OPTION;
-	}
-
-	_printHelp() {
-		NodeConsoleLogger.info(NodeTranslationService.getMessage(TITLE, COMPATIBLE_NS_VERSION));
-		program.help();
 	}
 };

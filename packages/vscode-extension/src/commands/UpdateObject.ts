@@ -4,13 +4,17 @@
  */
 import * as path from 'path';
 import { window } from 'vscode';
-import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKeys';
+import { COMMAND, ERRORS, YES, NO, UPDATE_OBJECT } from '../service/TranslationKeys';
 import { actionResultStatus, CLIConfigurationService, ApplicationConstants } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
-const COMMAND_NAME = 'file:upload'
+const COMMAND_NAME = 'object:update';
+const STATUS = {
+	SUCCESS: 'SUCCESS',
+	ERROR: 'ERROR',
+};
 
-export default class UploadFile extends BaseAction {
+export default class UpdateObject extends BaseAction {
 	constructor() {
 		super(COMMAND_NAME);
 	}
@@ -22,32 +26,26 @@ export default class UploadFile extends BaseAction {
 			return;
 		}
 
-		const cliConfigurationService = new CLIConfigurationService();
-		cliConfigurationService.initialize(this.executionPath);
-		const projectFolder = cliConfigurationService.getProjectFolder(this.commandName);
-
-		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
-		const relativePath = activeFile.fsPath.replace(fileCabinetFolder, '');
+		const scriptId = path.basename(activeFile.fsPath, '.xml');
 
 		const override = await window.showQuickPick([YES, NO], {
-			placeHolder: this.translationService.getMessage(UPLOAD_FILE.OVERWRITE_QUESTION, relativePath),
+			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERRIDE, scriptId),
 			canPickMany: false,
 		});
 
 		if (!override || override === NO) {
-			this.messageService.showInformationMessage(this.translationService.getMessage(UPLOAD_FILE.PROCESS_CANCELED));
+			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED));
 			return;
 		}
 
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(UPLOAD_FILE.COMMAND));
-		const statusBarMessage = this.translationService.getMessage(UPLOAD_FILE.UPLOADING);
+		const statusBarMessage = this.translationService.getMessage(UPDATE_OBJECT.UPDATING);
 
-		const commandActionPromise = this.runSuiteCloudCommand({ paths: relativePath });
-		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
+		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: scriptId });
+		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
-		if (actionResult.status === actionResultStatus.SUCCESS) {
-			this.messageService.showCommandInfo();
+		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data.length === 1 && actionResult.data[0].type === STATUS.SUCCESS) {
+			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.SUCCESS));
 		} else {
 			this.messageService.showCommandError();
 		}

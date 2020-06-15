@@ -40,7 +40,7 @@ export default abstract class BaseAction {
 		}
 	}
 
-	protected runSubCommand(args: { [key: string]: string }) {
+	protected async runSuiteCloudCommand(args: { [key: string]: string } = {} ) {
 		return new SuiteCloudRunner(this.executionPath).run({
 			commandName: this.commandName,
 			arguments: args,
