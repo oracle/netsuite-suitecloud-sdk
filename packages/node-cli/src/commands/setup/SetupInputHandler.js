@@ -63,11 +63,11 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		let authIdAnswer;
 		const choices = [];
 
-		const authIDMap  = await getAuthIds(this._sdkPath);
-		if (authIDMap.status === ActionResult.STATUS.ERROR) {
-			throw authIDMap.errorMessages;
+		const authIDActionResult  = await getAuthIds(this._sdkPath);
+		if (authIDActionResult.status === ActionResult.STATUS.ERROR) {
+			throw authIDActionResult.errorMessages;
 		}
-		let authIDs = Object.keys(authIDMap.data);
+		let authIDs = Object.keys(authIDActionResult.data);
 		if (authIDs.length > 0) {
 			choices.push({
 				name: chalk.bold(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
@@ -77,7 +77,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			choices.push(new Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
 			authIDs.forEach((authID) => {
-				const authentication = authIDMap.data[authID];
+				const authentication = authIDActionResult.data[authID];
 				const isDevLabel = authentication.developmentMode
 					? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
 					: '';
@@ -157,7 +157,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 							fieldValue,
 							validateFieldIsNotEmpty,
 							validateFieldHasNoSpaces,
-							(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDMap)),
+							(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDActionResult.data)),
 							validateAlphanumericHyphenUnderscore,
 							validateMaximumLength
 						),

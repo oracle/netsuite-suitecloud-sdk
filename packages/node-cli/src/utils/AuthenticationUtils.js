@@ -26,7 +26,6 @@ const FLAGS = {
 };
 
 module.exports = {
-
 	setDefaultAuthentication(projectFolder, authId) {
 		try {
 			// nest the values into a DEFAULT_AUTH_ID_PROPERTY property
@@ -41,7 +40,6 @@ module.exports = {
 	},
 
 	getProjectDefaultAuthId(projectFolder) {
-
 		const projectFilePath = path.join(projectFolder, FILES.PROJECT_JSON);
 		if (FileUtils.exists(projectFilePath)) {
 			try {
@@ -57,7 +55,6 @@ module.exports = {
 	},
 
 	async getAuthIds(sdkPath) {
-
 		const sdkExecutor = new SdkExecutor(sdkPath);
 
 		const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH)
@@ -73,10 +70,9 @@ module.exports = {
 			if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
 				throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
 			}
-			return ActionResult.Builder.withData(existingAuthIDsResponse.data)
-				.build();
+			return ActionResult.Builder.withData(existingAuthIDsResponse.data).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
-	}
+	},
 };

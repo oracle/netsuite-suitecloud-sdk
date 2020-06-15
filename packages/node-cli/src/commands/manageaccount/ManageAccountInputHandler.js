@@ -53,13 +53,13 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const authIDList = await getAuthIds(this._sdkPath);
-		let answers = await this._selectAuthID(authIDList.data, prompt);
+		const authIDActionResult = await getAuthIds(this._sdkPath);
+		let answers = await this._selectAuthID(authIDActionResult.data, prompt);
 		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
 		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
 		if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.RENAME) {
-			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDList.data, selectedAuthID);
+			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDActionResult.data, selectedAuthID);
 		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
@@ -135,10 +135,6 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REMOVE),
 					value: MANAGE_ACTION.REMOVE,
 				},
-				// {
-				//    name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.REVOKE),
-				//    value: MANAGE_ACTION.REVOKE,
-				// },
 				{
 					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACTIONS.EXIT),
 					value: MANAGE_ACTION.EXIT,
@@ -202,10 +198,6 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			return {
 				[COMMAND.OPTIONS.REMOVE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 			};
-			// } else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REVOKE) {
-			//    return {
-			//    [COMMAND.OPTIONS.REVOKE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
-			// }
 		}
 	}
 };
