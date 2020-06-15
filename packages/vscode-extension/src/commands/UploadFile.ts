@@ -5,7 +5,7 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKeys';
-import { actionResultStatus, CLIConfigurationService, ApplicationConstants, getRootProjectFolder } from '../util/ExtensionUtil';
+import { actionResultStatus, CLIConfigurationService, ApplicationConstants } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'file:upload'
