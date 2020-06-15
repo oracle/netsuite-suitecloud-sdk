@@ -132,8 +132,8 @@ class InteractiveAnswersValidator {
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.CURRENT_AUTHID, newAuthID));
 	}
 
-	validateAuthIDNotInList(newAuthID, authIDs) {
-		return !authIDs.includes(newAuthID)
+	validateAuthIDNotInList(newAuthID, authIDsList) {
+		return !authIDsList.includes(newAuthID)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.AUTH_ID_ALREADY_USED));
 	}
