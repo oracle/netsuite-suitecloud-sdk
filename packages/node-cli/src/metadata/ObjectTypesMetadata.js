@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 module.exports = [
@@ -56,10 +56,8 @@ module.exports = [
 			name: 'Commerce Extension',
 			type: 'commerceextension',
 			prefix: 'customextension_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -68,10 +66,8 @@ module.exports = [
 			name: 'Commerce Theme',
 			type: 'commercetheme',
 			prefix: 'custcommercetheme_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -206,10 +202,8 @@ module.exports = [
 			name: 'Plug-in - Advanced Revenue Recognition',
 			type: 'advancedrevrecplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -218,10 +212,8 @@ module.exports = [
 			name: 'Plug-in - Consolidated Rate Adjustor',
 			type: 'consolidatedrateadjustorplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -230,10 +222,8 @@ module.exports = [
 			name: 'Plug-in - Custom GL Lines',
 			type: 'customglplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -242,10 +232,8 @@ module.exports = [
 			name: 'Plug-in - Custom Plug-in Type',
 			type: 'plugintype',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -254,10 +242,8 @@ module.exports = [
 			name: 'Plug-in - Custom Plug-in Implementation',
 			type: 'pluginimplementation',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -266,10 +252,8 @@ module.exports = [
 			name: 'Plug-in - Email Capture',
 			type: 'emailcaptureplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -278,10 +262,8 @@ module.exports = [
 			name: 'Plug-in - Financial Institution Connectivity',
 			type: 'ficonnectivityplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -290,10 +272,8 @@ module.exports = [
 			name: 'Plug-in - Parser',
 			type: 'bankstatementparserplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -302,10 +282,8 @@ module.exports = [
 			name: 'Plug-in - Payment Gateway',
 			type: 'paymentgatewayplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -314,10 +292,8 @@ module.exports = [
 			name: 'Plug-in - Platform Extension',
 			type: 'platformextensionplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -326,10 +302,8 @@ module.exports = [
 			name: 'Plug-in - Promotions',
 			type: 'promotionsplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -338,10 +312,8 @@ module.exports = [
 			name: 'Plug-in - Shipping Partners',
 			type: 'shippingpartnersplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -350,16 +322,14 @@ module.exports = [
 			name: 'Plug-in - Tax Calculation',
 			type: 'taxcalculationplugin',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Published Dashboard',
 		value: {
-            name: 'Published Dashboard',
+			name: 'Published Dashboard',
 			type: 'publisheddashboard',
 			prefix: 'custpubdashboard_',
 			hasRelatedFiles: false,
@@ -368,7 +338,7 @@ module.exports = [
 	{
 		name: 'Record Type',
 		value: {
-            name: 'Record Type',
+			name: 'Record Type',
 			type: 'customrecordtype',
 			prefix: 'customrecord_',
 			hasRelatedFiles: false,
@@ -377,7 +347,7 @@ module.exports = [
 	{
 		name: 'Role',
 		value: {
-            name: 'Role',
+			name: 'Role',
 			type: 'role',
 			prefix: 'customrole_',
 			hasRelatedFiles: false,
@@ -386,7 +356,7 @@ module.exports = [
 	{
 		name: 'Saved CSV',
 		value: {
-            name: 'Saved CSV',
+			name: 'Saved CSV',
 			type: 'savedcsvimport',
 			prefix: 'custimport_',
 			hasRelatedFiles: false,
@@ -401,125 +371,115 @@ module.exports = [
 			hasRelatedFiles: false,
 		},
 	},
-	
+
 	{
 		name: 'Script - Bundle Installation',
 		value: {
-            name: 'Script - Bundle Installation',
+			name: 'Script - Bundle Installation',
 			type: 'bundleinstallationscript',
-            prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			prefix: 'customscript_',
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - Client',
 		value: {
-            name: 'Script - Client',
+			name: 'Script - Client',
 			type: 'clientscript',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
+		},
+	},
+	{
+		name: 'Script - Custom Record Action',
+		value: {
+			name: 'Script - Custom Record Action',
+			type: 'clientscript',
+			prefix: 'customscript_',
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - Map/Reduce',
 		value: {
-            name: 'Script - Map/Reduce',
+			name: 'Script - Map/Reduce',
 			type: 'mapreducescript',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - Mass Update',
 		value: {
-            name: 'Script - Mass Update',
+			name: 'Script - Mass Update',
 			type: 'massupdatescript',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - Portlet',
 		value: {
-            name: 'Script - Portlet',
+			name: 'Script - Portlet',
 			type: 'portlet',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - RESTlet',
 		value: {
-            name: 'Script - RESTlet',
+			name: 'Script - RESTlet',
 			type: 'restlet',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - Scheduled',
 		value: {
-            name: 'Script - Scheduled',
+			name: 'Script - Scheduled',
 			type: 'scheduledscript',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - Suitelet',
 		value: {
-            name: 'Script - Suitelet',
+			name: 'Script - Suitelet',
 			type: 'suitelet',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - User Event',
 		value: {
-            name: 'Script - User Event',
+			name: 'Script - User Event',
 			type: 'usereventscript',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Script - Workflow Action',
 		value: {
-            name: 'Script - Workflow Action',
+			name: 'Script - Workflow Action',
 			type: 'workflowactionscript',
 			prefix: 'customscript_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
@@ -529,27 +489,23 @@ module.exports = [
 			type: 'sdfinstallationscript',
 			prefix: 'customscript_',
 			hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'SSP Application',
 		value: {
-            name: 'SSP Application',
+			name: 'SSP Application',
 			type: 'sspapplication',
 			prefix: 'webapp_',
-            hasRelatedFiles: true,
-            relatedFiles: [
-                { type:'blankscript' }
-            ]
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
 		},
 	},
 	{
 		name: 'Sublist',
 		value: {
-            name: 'Sublist',
+			name: 'Sublist',
 			type: 'sublist',
 			prefix: 'custsublist_',
 			hasRelatedFiles: false,
@@ -558,7 +514,7 @@ module.exports = [
 	{
 		name: 'Subtab',
 		value: {
-            name: 'Subtab',
+			name: 'Subtab',
 			type: 'subtab',
 			prefix: 'custtab_',
 			hasRelatedFiles: false,
@@ -567,7 +523,7 @@ module.exports = [
 	{
 		name: 'Transaction Body Field',
 		value: {
-            name: 'Transaction Body Field',
+			name: 'Transaction Body Field',
 			type: 'transactionbodycustomfield',
 			prefix: 'custbody_',
 			hasRelatedFiles: false,
@@ -576,7 +532,7 @@ module.exports = [
 	{
 		name: 'Transaction Column Field',
 		value: {
-            name: 'Transaction Column Field',
+			name: 'Transaction Column Field',
 			type: 'transactioncolumncustomfield',
 			prefix: 'custcol_',
 			hasRelatedFiles: false,
@@ -603,7 +559,7 @@ module.exports = [
 	{
 		name: 'Workbook',
 		value: {
-            name: 'Workbook',
+			name: 'Workbook',
 			type: 'workbook',
 			prefix: 'custworkbook_',
 			hasRelatedFiles: false,
@@ -612,7 +568,7 @@ module.exports = [
 	{
 		name: 'Workflow',
 		value: {
-            name: 'Workflow',
+			name: 'Workflow',
 			type: 'workflow',
 			prefix: 'customworkflow_',
 			hasRelatedFiles: false,
