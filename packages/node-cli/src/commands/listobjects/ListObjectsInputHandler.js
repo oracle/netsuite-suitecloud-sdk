@@ -10,7 +10,6 @@ const OBJECT_TYPES = require('../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { PROJECT_SUITEAPP } = require('../../ApplicationConstants');
-const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../base/BaseInputHandler');
 const {
 	validateArrayIsNotEmpty,
@@ -25,7 +24,6 @@ const {
 } = require('../../services/TranslationKeys');
 
 const COMMAND_QUESTIONS_NAMES = {
-	AUTH_ID: 'authid',
 	APP_ID: 'appid',
 	SCRIPT_ID: 'scriptid',
 	SPECIFY_SCRIPT_ID: 'specifyscriptid',
@@ -147,9 +145,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 			validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 		};
 		questions.push(questionScriptId);
-
 		let answers = await prompt(questions);
-		answers[COMMAND_QUESTIONS_NAMES.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		return answers;
 	}
 };
