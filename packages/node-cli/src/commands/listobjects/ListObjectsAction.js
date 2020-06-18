@@ -11,14 +11,24 @@ const BaseAction = require('../base/BaseAction');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../SdkExecutionContext');
+const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
 
 const {
 	COMMAND_LISTOBJECTS: { LISTING_OBJECTS },
 } = require('../../services/TranslationKeys');
 
+const COMMAND_PARAMETERS = {
+	AUTH_ID: 'authid',
+};
+
 module.exports = class ListObjectsAction extends BaseAction {
 	constructor(options) {
 		super(options);
+	}
+
+	preExecute(params) {
+		params[COMMAND_PARAMETERS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
+		return params;
 	}
 
 	async execute(params) {
