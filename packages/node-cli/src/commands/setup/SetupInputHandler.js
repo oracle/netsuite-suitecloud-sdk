@@ -167,7 +167,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
-					filter: (fieldValue) => fieldValue.trim(),
+					filter: (fieldValue) => fieldValue.trim().toUpperCase(),
 					validate: (fieldValue) =>
 						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
 				},
