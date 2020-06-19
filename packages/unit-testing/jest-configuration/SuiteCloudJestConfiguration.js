@@ -15,19 +15,51 @@ const PROJECT_TYPE = {
 const CORE_STUBS = [
 	{
 		module: 'N/record',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/record.js`,
 	},
 	{
 		module: 'N/record/instance',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstance.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/RecordInstance.js`,
 	},
 	{
 		module: 'N/record/line',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstanceLine.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/RecordInstanceLine.js`,
 	},
 	{
 		module: 'N/record/sublist',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstanceSublist.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/RecordInstanceSublist.js`,
+	},
+	{
+		module: 'N/search',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/search.js`,
+	},
+	{
+		module: 'N/search/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchInstance.js`,
+	},
+	{
+		module: 'N/search/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Column.js`,
+	},
+	{
+		module: 'N/search/result',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Result.js`,
+	},
+	{
+		module: 'N/search/resultset',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/ResultSet.js`,
+	},
+	{
+		module: 'N/search/pageddata',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchPagedData.js`,
+	},
+	{
+		module: 'N/search/pagerange',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchPageRange.js`,
+	},
+	{
+		module: 'N/search/setting',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Setting.js`,
 	},
 ];
 
