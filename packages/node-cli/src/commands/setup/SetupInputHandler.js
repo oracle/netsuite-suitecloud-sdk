@@ -126,7 +126,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 						type: CommandUtils.INQUIRER_TYPES.INPUT,
 						name: ANSWERS.DEVELOPMENT_MODE_URL,
 						message: NodeTranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
-						filter: (answer) => answer.trim(),
+						filter: (fieldValue) => fieldValue.trim(),
 						validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
 					},
 				]);
@@ -151,7 +151,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS.NEW_AUTH_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
-					filter: (answer) => answer.trim(),
+					filter: (fieldValue) => fieldValue.trim(),
 					validate: (fieldValue) =>
 						showValidationResults(
 							fieldValue,
@@ -167,7 +167,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
 					name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
-					transformer: (answer) => answer.toUpperCase(),
+					transformer: (fieldValue) => fieldValue.toUpperCase(),
 					filter: (fieldValue) => fieldValue.trim().toUpperCase(),
 					validate: (fieldValue) =>
 						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
