@@ -1,4 +1,4 @@
-define([], function() {
+define(['./SearchPageRange'], function(SearchPageRange) {
     /**
      * @class SearchPagedData
      * @classdesc Holds metadata for a paginated query.
@@ -35,5 +35,5 @@ define([], function() {
          */        
         this.pageRanges = undefined;  
       }
-      return new SearchPageddata();
+      return new SearchPagedData();
     });    
