@@ -23,7 +23,7 @@ const {
 } = require('../../validation/InteractiveAnswersValidator');
 
 const {
-	COMMAND_MANAGE_ACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES , ERRORS},
+	COMMAND_MANAGE_ACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES, ERRORS },
 	YES,
 	NO,
 } = require('../../services/TranslationKeys');
@@ -48,20 +48,19 @@ const ANSWERS_NAMES = {
 
 module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	constructor(options) {
-        super(options);
-        this._sdkPath = options.sdkPath;
+		super(options);
+		this._sdkPath = options.sdkPath;
 	}
 
 	async getParameters(params) {
-		if (!this._runInInteractiveMode ) {
+		if (!this._runInInteractiveMode) {
 			return params;
 		}
 		let answers;
 		const authIDActionResult = await getAuthIds(this._sdkPath);
-		if(params.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
+		if (params.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
 			answers = this._extractAuthIDInfo(authIDActionResult.data, params[COMMAND.OPTIONS.INFO]);
-		}
-		else {
+		} else {
 			answers = await this._selectAuthID(authIDActionResult.data, prompt);
 		}
 		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
@@ -88,31 +87,27 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 
 	_accountCredentialToString(authID, accountCredential) {
 		const isDevLabel = accountCredential.developmentMode
-		   ? NodeTranslationService.getMessage(
-				QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL,
-				accountCredential.urls.app
-			 )
-		   : "";
+			? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, accountCredential.urls.app)
+			: '';
 		const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`;
 		const accountCredentialString = NodeTranslationService.getMessage(
-		   QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
-		   authID,
-		   accountInfo,
-		   isDevLabel
+			QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
+			authID,
+			accountInfo,
+			isDevLabel
 		);
 		return accountCredentialString;
-	 }
+	}
 
-	 _extractAuthIDInfo(authIDList, authID) {
+	_extractAuthIDInfo(authIDList, authID) {
 		var authIDs = Object.entries(authIDList).sort();
 		if (authIDs.length <= 0) {
 			throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY);
-		}
-		else if (!authIDList.hasOwnProperty(authID)) {
+		} else if (!authIDList.hasOwnProperty(authID)) {
 			throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_NOT_FOUND);
 		}
 
-		return { selected_auth_id: {authId: authID, accountInfo: authIDList[authID].accountInfo, domain: authIDList[authID].urls.app }};
+		return { selected_auth_id: { authId: authID, accountInfo: authIDList[authID].accountInfo, domain: authIDList[authID].urls.app } };
 	}
 
 	async _selectAuthID(authIDList, prompt) {
@@ -162,11 +157,11 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 				},
 			],
 		});
-	
+
 		if (answer[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.EXIT) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
 		}
-	
+
 		return answer[ANSWERS_NAMES.ACTION];
 	}
 

@@ -33,12 +33,12 @@ const COMMAND = {
 };
 
 const DATA_PROPERTIES = {
-	INFO: "info",
-	ACCOUNT_INFO: "accountInfo",
-	URLS: "urls",
- };
+	INFO: 'info',
+	ACCOUNT_INFO: 'accountInfo',
+	URLS: 'urls',
+};
 
-const DOMAIN = "domain";
+const DOMAIN = 'domain';
 
 module.exports = class ManageAccountAction extends BaseAction {
 	constructor(options) {
