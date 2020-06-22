@@ -130,7 +130,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SELECTED_AUTH_ID,
-				message: NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID),
+				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_CREDENTIALS),
 				choices: choices,
 			},
 		]);
