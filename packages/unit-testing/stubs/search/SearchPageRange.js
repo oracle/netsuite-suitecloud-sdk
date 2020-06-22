@@ -33,5 +33,5 @@ define([], function() {
          */        
         this.getCompoundLabel = function() {};        
     }    
-    return new PageRange();
+    return new SearchPageRange();
 });

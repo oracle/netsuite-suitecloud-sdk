@@ -6,7 +6,7 @@
  * @suiteScriptVersion 2.x
  *
  */
-define(['./SearchInstance'], function(Search) {
+define(['./SearchInstance', './Column', './Filter', './Result'], function(Search, Column, Filter, Result) {
     
     /**
      * @namespace search
@@ -560,17 +560,7 @@ define(['./SearchInstance'], function(Search) {
     }    
     
     search.Type = new searchType();    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-   
-    
+        
     N.search = search;
     
     /**
