@@ -13,17 +13,18 @@ module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler  {
 		super(consoleLogger);
 	}
 
-	formatActionResult(actionResult) {
+	parse(actionResult) {
 		if (actionResult.resultMessage) {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 		}
 
 		if (actionResult.actionExecuted == MANAGE_ACTION.INFO) {
-			this._log.result(AccountCredentialsFormatter.getInfoString(actionResult.data));
+			 this._log.result(AccountCredentialsFormatter.getInfoString(actionResult.data));
 		} else if (actionResult.actionExecuted == MANAGE_ACTION.LIST) {
 			Object.keys(actionResult.data).forEach((authId) =>
 				this._log.result(AccountCredentialsFormatter.getListItemString(authId, actionResult.data[authId]))
 			);
 		}
+		return actionResult;
 	}
 }
