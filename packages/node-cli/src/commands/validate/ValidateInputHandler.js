@@ -11,7 +11,7 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const { getProjectDefaultAuthId } = require('../../utils/AuthenticationUtils');
-
+const { ACCOUNT_SPECIFIC_VALUES_OPTIONS } = require('../../utils/AccountSpecificValuesUtils');
 const { PROJECT_ACP, PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 
 const {
@@ -26,11 +26,6 @@ const COMMAND_OPTIONS = {
 	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	PROJECT: 'project',
 	AUTH_ID: 'authid',
-};
-
-const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
-	ERROR: 'ERROR',
-	WARNING: 'WARNING',
 };
 
 module.exports = class ValidateInputHandler extends BaseInputHandler {
