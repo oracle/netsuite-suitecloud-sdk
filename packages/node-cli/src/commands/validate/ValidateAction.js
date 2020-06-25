@@ -12,10 +12,9 @@ const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
-const AccountSpecificArgumentHandler = require('../../utils/AccountSpecificValuesArgumentHandler');
-const ApplyContentProtectinoArgumentHandler = require('../../utils/ApplyContentProtectionArgumentHandler');
+const AccountSpecificValuesUtils = require('../../utils/AccountSpecificValuesUtils');
+const ApplyContentProtectionUtils = require('../../utils/ApplyContentProtectionUtils');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
-const { SDK_TRUE } = require('../../ApplicationConstants');
 
 const {
 	COMMAND_VALIDATE: { MESSAGES },
@@ -31,23 +30,16 @@ const COMMAND_OPTIONS = {
 module.exports = class ValidateAction extends BaseAction {
 	constructor(options) {
 		super(options);
-		this._projectInfoService = new ProjectInfoService(this._projectFolder);
-		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
-			projectInfoService: this._projectInfoService,
-		});
-		this._applyContentProtectionArgumentHandler = new ApplyContentProtectinoArgumentHandler({
-			projectInfoService: this._projectInfoService,
-			commandName: this._commandMetadata.sdkCommand,
-		});
+		this._projectType = new ProjectInfoService(this._projectFolder).getProjectType()
 	}
 
 	preExecute(params) {
-		this._accountSpecificValuesArgumentHandler.validate(params);
-		this._applyContentProtectionArgumentHandler.validate(params);
+		AccountSpecificValuesUtils.validate(params, this._projectFolder);
+		ApplyContentProtectionUtils.validate(params, this._projectFolder, this._commandMetadata.sdkCommand);
 
 		return {
 			...params,
-			...this._accountSpecificValuesArgumentHandler.transformArgument(params),
+			...AccountSpecificValuesUtils.transformArgument(params),
 		};
 	}
 
@@ -87,7 +79,7 @@ module.exports = class ValidateAction extends BaseAction {
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
 						.withAppliedContentProtection(contentProtectionApplied)
-						.withProjectType(this._projectInfoService.getProjectType)
+						.withProjectType(this._projectType)
 						.withProjectFolder(this._projectFolder)
 						.build()
 				: DeployActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult))

@@ -8,8 +8,8 @@ const SdkOperationResultUtils = require('../../utils/SdkOperationResultUtils');
 const DeployActionResult = require('../../services/actionresult/DeployActionResult');
 const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
-const AccountSpecificArgumentHandler = require('../../utils/AccountSpecificValuesArgumentHandler');
-const ApplyContentProtectionArgumentHandler = require('../../utils/ApplyContentProtectionArgumentHandler');
+const AccountSpecificValuesUtils = require('../../utils/AccountSpecificValuesUtils');
+const ApplyContentProtectionUtils = require('../../utils/ApplyContentProtectionUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 const SdkExecutionContext = require('../../SdkExecutionContext');
@@ -40,28 +40,18 @@ const COMMAND = {
 module.exports = class DeployAction extends BaseAction {
 	constructor(options) {
 		super(options);
-
-		this._projectInfoService = new ProjectInfoService(this._projectFolder);
-		this._projectType = this._projectInfoService.getProjectType();
-
-		this._accountSpecificValuesArgumentHandler = new AccountSpecificArgumentHandler({
-			projectInfoService: this._projectInfoService,
-		});
-		this._applyContentProtectionArgumentHandler = new ApplyContentProtectionArgumentHandler({
-			projectInfoService: this._projectInfoService,
-			commandName: this._commandMetadata.sdkCommand,
-		});
+		this._projectType = new ProjectInfoService(this._projectFolder).getProjectType();
 	}
 
 	preExecute(params) {
-		this._accountSpecificValuesArgumentHandler.validate(params);
-		this._applyContentProtectionArgumentHandler.validate(params);
+		AccountSpecificValuesUtils.validate(params, this._projectFolder);
+		ApplyContentProtectionUtils.validate(params, this._projectFolder, this._commandMetadata.sdkCommand);
 
 		return {
 			...params,
 			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			[COMMAND.OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
-			...this._accountSpecificValuesArgumentHandler.transformArgument(params),
+			...AccountSpecificValuesUtils.transformArgument(params),
 		};
 	}
 
