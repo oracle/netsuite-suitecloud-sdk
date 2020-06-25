@@ -9,7 +9,7 @@ const CommandUtils = require('../../utils/CommandUtils');
 const ProjectInfoService = require('../../services/ProjectInfoService');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const BaseInputHandler = require('../base/BaseInputHandler');
-
+const { ACCOUNT_SPECIFIC_VALUES_OPTIONS } = require('../../utils/AccountSpecificValuesUtils');
 const { LINKS, PROJECT_ACP, PROJECT_SUITEAPP } = require('../../ApplicationConstants');
 
 const {
@@ -30,11 +30,6 @@ const COMMAND = {
 		VALIDATE: 'validate',
 		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	},
-};
-
-const ACCOUNT_SPECIFIC_VALUES_OPTIONS = {
-	ERROR: 'ERROR',
-	WARNING: 'WARNING',
 };
 
 module.exports = class DeployInputHandler extends BaseInputHandler {

@@ -71,5 +71,10 @@
         "commandName": "project:validate",
         "interactiveGenerator": "commands/validate/ValidateCommand",
         "nonInteractiveGenerator": "commands/validate/ValidateCommand"
+    },
+    {
+        "commandName": "project:package",
+        "interactiveGenerator": "commands/package/PackageCommand",
+        "nonInteractiveGenerator": "commands/package/PackageCommand"
     }
 ]
