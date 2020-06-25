@@ -1,47 +1,71 @@
 [
     {
-        "commandName": "project:adddependencies",
-        "nonInteractiveGenerator": "commands/adddependencies/AddDependenciesCommand"
+        "commandName": "account:manageauth",
+        "interactiveGenerator": "./commands/account/manageauth/ManageAccountCommand",
+        "nonInteractiveGenerator": "./commands/account/manageauth/ManageAccountCommand"
     },
     {
-        "commandName": "object:create",
-        "interactiveGenerator": "commands/createobject/CreateObjectCommand",
-        "nonInteractiveGenerator": "commands/createobject/CreateObjectCommand"
+        "commandName": "account:setup",
+        "interactiveGenerator": "./commands/account/setup/SetupCommand",
+        "nonInteractiveGenerator": "./commands/account/setup/SetupCommand"
     },
     {
-        "commandName": "project:create",
-        "interactiveGenerator": "commands/createproject/CreateProjectCommand",
-        "nonInteractiveGenerator": "commands/createproject/CreateProjectCommand"
-    },
-    {
-        "commandName": "project:deploy",
-        "interactiveGenerator": "commands/deploy/DeployCommand",
-        "nonInteractiveGenerator": "commands/deploy/DeployCommand"
+        "commandName": "config:proxy",
+        "nonInteractiveGenerator": "commands/config/proxy/ProxyCommand"
     },
     {
         "commandName": "file:import",
-        "interactiveGenerator": "commands/importfiles/ImportFilesCommand",
-        "nonInteractiveGenerator": "commands/importfiles/ImportFilesCommand"
-    },
-    {
-        "commandName": "object:import",
-        "interactiveGenerator": "commands/importobjects/ImportObjectsCommand",
-        "nonInteractiveGenerator": "commands/importobjects/ImportObjectsCommand"
+        "interactiveGenerator": "commands/file/import/ImportFilesCommand",
+        "nonInteractiveGenerator": "commands/file/import/ImportFilesCommand"
     },
     {
         "commandName": "file:list",
-        "interactiveGenerator": "commands/listfiles/ListFilesCommand",
-        "nonInteractiveGenerator": "commands/listfiles/ListFilesCommand"
+        "interactiveGenerator": "commands/file/import/ListFilesCommand",
+        "nonInteractiveGenerator": "commands/file/import/ListFilesCommand"
     },
     {
         "commandName": "file:upload",
-        "interactiveGenerator": "commands/uploadfiles/UploadFilesCommand",
-        "nonInteractiveGenerator": "commands/uploadfiles/UploadFilesCommand"
+        "interactiveGenerator": "commands/file/upload/UploadFilesCommand",
+        "nonInteractiveGenerator": "commands/file/upload/UploadFilesCommand"
+    },
+    {
+        "commandName": "object:import",
+        "interactiveGenerator": "commands/object/import/ImportObjectsCommand",
+        "nonInteractiveGenerator": "commands/object/import/ImportObjectsCommand"
     },
     {
         "commandName": "object:list",
-        "interactiveGenerator": "commands/listobjects/ListObjectsCommand",
-        "nonInteractiveGenerator": "commands/listobjects/ListObjectsCommand"
+        "interactiveGenerator": "commands/object/list/ListObjectsCommand",
+        "nonInteractiveGenerator": "commands/object/list/ListObjectsCommand"
+    },
+    {
+        "commandName": "object:update",
+        "interactiveGenerator": "./commands/object/update/UpdateCommand",
+        "nonInteractiveGenerator": "./commands/object/update/UpdateCommand"
+    },
+    {
+        "commandName": "project:adddependencies",
+        "nonInteractiveGenerator": "commands/project/adddependencies/AddDependenciesCommand"
+    },
+    {
+        "commandName": "project:create",
+        "interactiveGenerator": "commands/project/create/CreateProjectCommand",
+        "nonInteractiveGenerator": "commands/project/create/CreateProjectCommand"
+    },
+    {
+        "commandName": "project:deploy",
+        "interactiveGenerator": "commands/project/deploy/DeployCommand",
+        "nonInteractiveGenerator": "commands/project/deploy/DeployCommand"
+    },
+    {
+        "commandName": "project:package",
+        "interactiveGenerator": "commands/project/package/PackageCommand",
+        "nonInteractiveGenerator": "commands/project/package/PackageCommand"
+    },
+    {
+        "commandName": "project:validate",
+        "interactiveGenerator": "commands/project/validate/ValidateCommand",
+        "nonInteractiveGenerator": "commands/project/validate/ValidateCommand"
     },
     {
         "commandName": "suitecommerce:localserver",
@@ -49,32 +73,8 @@
         "nonInteractiveGenerator": "commands/localserver/LocalServerCommand"
     },
     {
-        "commandName": "config:proxy",
-        "nonInteractiveGenerator": "commands/proxy/ProxyCommand"
-    },
-    {
-        "commandName": "account:setup",
-        "interactiveGenerator": "./commands/setup/SetupCommand",
-        "nonInteractiveGenerator": "./commands/setup/SetupCommand"
-    },
-    {
-        "commandName": "account:manageauth",
-        "interactiveGenerator": "./commands/manageaccount/ManageAccountCommand",
-        "nonInteractiveGenerator": "./commands/manageaccount/ManageAccountCommand"
-    },
-    {
-        "commandName": "object:update",
-        "interactiveGenerator": "./commands/update/UpdateCommand",
-        "nonInteractiveGenerator": "./commands/update/UpdateCommand"
-    },
-    {
-        "commandName": "project:validate",
-        "interactiveGenerator": "commands/validate/ValidateCommand",
-        "nonInteractiveGenerator": "commands/validate/ValidateCommand"
-    },
-    {
-        "commandName": "project:package",
-        "interactiveGenerator": "commands/package/PackageCommand",
-        "nonInteractiveGenerator": "commands/package/PackageCommand"
+        "commandName": "object:create",
+        "interactiveGenerator": "commands/object/create/CreateObjectCommand",
+        "nonInteractiveGenerator": "commands/object/create/CreateObjectCommand"
     }
 ]

@@ -13,18 +13,30 @@ const BaseAction = require('./base/BaseAction');
 const BaseInputHandler = require('./base/BaseInputHandler');
 const BaseOutputHandler = require('./base/BaseOutputHandler');
 
+const INTERATIVE_MODE = {
+	NEVER: 'NEVER',
+	ALWAYS: 'ALWAYS',
+	DEFAULT: 'DEFAULT',
+};
+
 class Command {
 	constructor(options, action, inputHandler, outputHandler) {
 		assert(options);
 		assert(options.commandMetadata);
 		assert(options.projectFolder);
 		assert(options.log);
+		assert(options.interactiveSupport);
 		assert(typeof options.runInInteractiveMode === 'boolean');
+
+		assert(action, 'Commands must have an action');
+		assert(inputHandler, 'Commands must have an input handler');
+		assert(outputHandler, 'Commands must have an output handler');
 
 		this._commandMetadata = options.commandMetadata;
 		this._projectFolder = options.projectFolder;
 		this._executionPath = options.executionPath;
 		this._runInInteractiveMode = options.runInInteractiveMode;
+		this._interactiveSupport = options.interactiveSupport;
 		this._log = options.log;
 
 		this._action = new action(options);
@@ -33,14 +45,12 @@ class Command {
 	}
 
 	async run(inputParams) {
-		assert(this._action, 'Commands must have an action');
-		assert(this._inputHandler, 'Commands must have an input handler');
-		assert(this._outputHandler, 'Commands must have an output handler');
+		const execParams =
+			this._interactiveSupport === INTERATIVE_MODE.ALWAYS || (this._interactiveSupport !== INTERATIVE_MODE.NEVER && this._runInInteractiveMode)
+				? await this._inputHandler.getParameters(params)
+				: params;
 
-		const actionParams = await this._inputHandler.getParameters(inputParams);
-		const groupedParams = { ...inputParams, ...actionParams };
-
-		const preExec = await this._action.preExecute(groupedParams);
+		const preExec = await this._action.preExecute(execParams);
 
 		this._validateActionParameters(preExec);
 
@@ -70,19 +80,33 @@ class Command {
 	static get Builder() {
 		return new CommandBuilder();
 	}
-
-};
+}
 
 class CommandBuilder {
 	constructor() {
-		this._options = {};
+		this._options = {
+			interactiveSupport: INTERATIVE_MODE.DEFAULT,
+		};
 		this._action = BaseAction;
 		this._input = BaseInputHandler;
 		this._output = BaseOutputHandler;
-	};
+	}
 
 	withOptions(options) {
-		this._options = options;
+		this._options = {
+			...this._options,
+			...options,
+		};
+		return this;
+	}
+
+	neverInteractive() {
+		this._options.interactiveSupport = INTERATIVE_MODE.NEVER;
+		return this;
+	}
+
+	alwaysInteractive() {
+		this._options.interactiveSupport = INTERATIVE_MODE.ALWAYS;
 		return this;
 	}
 
