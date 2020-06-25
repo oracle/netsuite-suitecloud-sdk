@@ -24,10 +24,10 @@ const {
 	COMMAND_IMPORTOBJECTS: { MESSAGES, QUESTIONS, ERRORS },
 	YES,
 	NO,
-	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED }
+	ERRORS: { PROMPTING_INTERACTIVE_QUESTIONS_FAILED },
 } = require('../../services/TranslationKeys');
-const { 
-	validateArrayIsNotEmpty, 
+const {
+	validateArrayIsNotEmpty,
 	showValidationResults,
 	validateSuiteApp,
 	validateScriptId,
@@ -63,7 +63,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
-		this._authId =  getProjectDefaultAuthId(this._executionPath);
+		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
 	async getParameters(params) {

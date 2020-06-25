@@ -23,7 +23,7 @@ const {
 } = require('../../validation/InteractiveAnswersValidator');
 
 const {
-	COMMAND_MANAGE_ACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
+	COMMAND_MANAGE_ACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES, ERRORS },
 	YES,
 	NO,
 } = require('../../services/TranslationKeys');
@@ -48,13 +48,17 @@ const ANSWERS_NAMES = {
 
 module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	constructor(options) {
-        super(options);
-        this._sdkPath = options.sdkPath;
+		super(options);
+		this._sdkPath = options.sdkPath;
 	}
 
 	async getParameters(params) {
+		if (!this._runInInteractiveMode) {
+			return params;
+		}
+		let answers;
 		const authIDActionResult = await getAuthIds(this._sdkPath);
-		let answers = await this._selectAuthID(authIDActionResult.data, prompt);
+		answers = await this._selectAuthID(authIDActionResult.data, prompt);
 		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
 		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
@@ -64,7 +68,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
 
-		return { ...params, ...this._extractAnswers(answers) };
+		return this._extractAnswers(answers);
 	}
 
 	_logAccountInfo(selectedAuthId) {
@@ -79,20 +83,17 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 
 	_accountCredentialToString(authID, accountCredential) {
 		const isDevLabel = accountCredential.developmentMode
-		   ? NodeTranslationService.getMessage(
-				QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL,
-				accountCredential.urls.app
-			 )
-		   : "";
+			? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, accountCredential.urls.app)
+			: '';
 		const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`;
 		const accountCredentialString = NodeTranslationService.getMessage(
-		   QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
-		   authID,
-		   accountInfo,
-		   isDevLabel
+			QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
+			authID,
+			accountInfo,
+			isDevLabel
 		);
 		return accountCredentialString;
-	 }
+	}
 
 	async _selectAuthID(authIDList, prompt) {
 		var authIDs = Object.entries(authIDList).sort();
@@ -114,7 +115,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SELECTED_AUTH_ID,
-				message: NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID),
+				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_CREDENTIALS),
 				choices: choices,
 			},
 		]);
@@ -141,11 +142,11 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 				},
 			],
 		});
-	
+
 		if (answer[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.EXIT) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
 		}
-	
+
 		return answer[ANSWERS_NAMES.ACTION];
 	}
 

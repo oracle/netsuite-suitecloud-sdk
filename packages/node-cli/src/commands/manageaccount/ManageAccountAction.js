@@ -12,6 +12,7 @@ const CommandUtils = require('../../utils/CommandUtils');
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const { ManageAccountActionResult, MANAGE_ACTION } = require('../../services/actionresult/ManageAccountActionResult');
 const { throwValidationException } = require('../../utils/ExceptionUtils');
+const assert = require('assert');
 const {
 	COMMAND_MANAGE_ACCOUNT: { MESSAGES },
 } = require('../../services/TranslationKeys');
@@ -32,10 +33,12 @@ const COMMAND = {
 };
 
 const DATA_PROPERTIES = {
-	INFO: "info",
-	ACCOUNT_INFO: "accountInfo",
-	URLS: "urls",
- };
+	INFO: 'info',
+	ACCOUNT_INFO: 'accountInfo',
+	URLS: 'urls',
+};
+
+const DOMAIN = 'domain';
 
 module.exports = class ManageAccountAction extends BaseAction {
 	constructor(options) {
@@ -57,7 +60,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 			.addFlags(flags)
 			.build();
 
-		const selectedOptions = this._extractSelectedOptions(answers);
+		const selectedOptions = this._extractSelectedOptions(params);
 		const message = this._getSpinnerMessage(selectedOptions);
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),

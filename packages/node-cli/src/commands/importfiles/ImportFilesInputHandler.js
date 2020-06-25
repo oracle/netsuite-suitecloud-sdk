@@ -36,14 +36,14 @@ const INTERMEDIATE_COMMANDS = {
 		OPTIONS: {
 			AUTH_ID: 'authid',
 			FOLDER: 'folder',
-		}
+		},
 	},
 	LISTFOLDERS: {
 		COMMAND: 'listfolders',
 		OPTIONS: {
 			AUTH_ID: 'authid',
-		}
-	}
+		},
+	},
 };
 const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',

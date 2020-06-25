@@ -63,7 +63,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		let authIdAnswer;
 		const choices = [];
 
-		const authIDActionResult  = await getAuthIds(this._sdkPath);
+		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (authIDActionResult.status === ActionResult.STATUS.ERROR) {
 			throw authIDActionResult.errorMessages;
 		}
@@ -107,7 +107,6 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		const selectedAuth = authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
 
 		if (selectedAuth !== CREATE_NEW_AUTH) {
-			// reuse existing authID
 			return {
 				createNewAuthentication: false,
 				authentication: selectedAuth,
@@ -117,8 +116,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 
 		// creating a new authID
 		let developmentModeUrlAnswer;
-		if (selectedAuth === CREATE_NEW_AUTH) {
-			const developmentMode = params && params.dev !== undefined && params.dev;
+		const developmentMode = params && params.dev !== undefined && params.dev;
 
 			if (developmentMode) {
 				developmentModeUrlAnswer = await prompt([
@@ -191,25 +189,85 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 				},
 			]);
-
-			const executeActionContext = {
-				developmentMode: developmentMode,
-				createNewAuthentication: true,
-				newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
-				mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
-				saveToken: {
-					account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
-					tokenId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
-					tokenSecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
-				},
-			};
-
-			if (developmentModeUrlAnswer) {
-				executeActionContext.url = developmentModeUrlAnswer[ANSWERS.DEVELOPMENT_MODE_URL];
-			}
-
-			return executeActionContext;
 		}
+		const newAuthenticationAnswers = await prompt([
+			{
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: ANSWERS.AUTH_MODE,
+				message: NodeTranslationService.getMessage(QUESTIONS.AUTH_MODE),
+				choices: [
+					{
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.OAUTH),
+						value: AUTH_MODE.OAUTH,
+					},
+					{
+						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN),
+						value: AUTH_MODE.SAVE_TOKEN,
+					},
+				],
+			},
+			{
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: ANSWERS.NEW_AUTH_ID,
+				message: NodeTranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
+				filter: (answer) => answer.trim(),
+				validate: (fieldValue) =>
+					showValidationResults(
+						fieldValue,
+						validateFieldIsNotEmpty,
+						validateFieldHasNoSpaces,
+						(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDActionResult.data)),
+						validateAlphanumericHyphenUnderscore,
+						validateMaximumLength
+					),
+			},
+			{
+				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
+				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
+				transformer: (answer) => answer.toUpperCase(),
+				filter: (fieldValue) => fieldValue.trim().toUpperCase(),
+				validate: (fieldValue) =>
+					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
+			},
+			{
+				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
+				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
+				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
+				name: ANSWERS.SAVE_TOKEN_ID,
+				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
+				filter: (fieldValue) => fieldValue.trim(),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+			},
+			{
+				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
+				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
+				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
+				name: ANSWERS.SAVE_TOKEN_SECRET,
+				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
+				filter: (fieldValue) => fieldValue.trim(),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+			},
+		]);
+
+		const executeActionContext = {
+			developmentMode: developmentMode,
+			createNewAuthentication: true,
+			newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
+			mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
+			saveToken: {
+				account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
+				tokenId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
+				tokenSecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
+			},
+		};
+
+		if (developmentModeUrlAnswer) {
+			executeActionContext.url = developmentModeUrlAnswer[ANSWERS.DEVELOPMENT_MODE_URL];
+		}
+
+		return executeActionContext;
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {

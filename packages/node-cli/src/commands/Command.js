@@ -32,13 +32,13 @@ class Command {
 		this._outputHandler = new outputHandler(options);
 	}
 
-	async run(params) {
+	async run(inputParams) {
 		assert(this._action, 'Commands must have an action');
 		assert(this._inputHandler, 'Commands must have an input handler');
 		assert(this._outputHandler, 'Commands must have an output handler');
 
-		const getParams = await this._inputHandler.getParameters(params);
-		const groupedParams = { ...params, ...getParams };
+		const actionParams = await this._inputHandler.getParameters(inputParams);
+		const groupedParams = { ...inputParams, ...actionParams };
 
 		const preExec = await this._action.preExecute(groupedParams);
 

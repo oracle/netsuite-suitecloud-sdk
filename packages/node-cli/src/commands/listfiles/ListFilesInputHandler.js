@@ -20,8 +20,8 @@ const LIST_FOLDERS = {
 	COMMAND: 'listfolders',
 	OPTIONS: {
 		AUTH_ID: 'authid',
-	}
-}
+	},
+};
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 
 module.exports = class ListFilesInputHandler extends BaseInputHandler {
@@ -37,9 +37,9 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 			return params;
 		}
 		const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
-				.integration()
-				.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, getProjectDefaultAuthId(this._executionPath))
-				.build();
+			.integration()
+			.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, getProjectDefaultAuthId(this._executionPath))
+			.build();
 		try {
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
