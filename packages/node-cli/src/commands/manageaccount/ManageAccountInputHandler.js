@@ -60,6 +60,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (params.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
 			answers = this._extractAuthIDInfo(authIDActionResult.data, params[COMMAND.OPTIONS.INFO]);
+			delete params[COMMAND.OPTIONS.INFO];
 		} else {
 			answers = await this._selectAuthID(authIDActionResult.data, prompt);
 		}
@@ -72,7 +73,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
 
-		return { ...params, ...this._extractAnswers(answers) };
+		return this._extractAnswers(answers);
 	}
 
 	_logAccountInfo(selectedAuthId) {
@@ -104,7 +105,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		if (authIDs.length <= 0) {
 			throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY);
 		} else if (!authIDList.hasOwnProperty(authID)) {
-			throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_NOT_FOUND);
+			throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_NOT_FOUND, authID);
 		}
 
 		return { selected_auth_id: { authId: authID, accountInfo: authIDList[authID].accountInfo, domain: authIDList[authID].urls.app } };

@@ -136,7 +136,7 @@
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_ACCOUNT_INFO_DOMAIN": "Domain: {0}",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_ACCOUNT_INFO_ROLE": "Role: {0}",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_CANCEL": "The manageauth process has been canceled.",
-	"COMMAND_MANAGE_ACCOUNT_MESSAGES_INFO": "Loading \"{0}\" authentication ID (authID) information:",
+	"COMMAND_MANAGE_ACCOUNT_MESSAGES_INFO": "Loading \"{0}\" authentication ID (authID) information...",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_LISTING": "Loading the configured authentication IDs in this machine...",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_REMOVING": "Removing credentials...",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_RENAMING": "Renaming credentials...",
