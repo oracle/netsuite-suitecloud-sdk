@@ -58,12 +58,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		}
 		let answers;
 		const authIDActionResult = await getAuthIds(this._sdkPath);
-		if (params.hasOwnProperty(COMMAND.OPTIONS.INFO)) {
-			answers = this._extractAuthIDInfo(authIDActionResult.data, params[COMMAND.OPTIONS.INFO]);
-			delete params[COMMAND.OPTIONS.INFO];
-		} else {
-			answers = await this._selectAuthID(authIDActionResult.data, prompt);
-		}
+		answers = await this._selectAuthID(authIDActionResult.data, prompt);
 		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
 		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
@@ -98,17 +93,6 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			isDevLabel
 		);
 		return accountCredentialString;
-	}
-
-	_extractAuthIDInfo(authIDList, authID) {
-		var authIDs = Object.entries(authIDList).sort();
-		if (authIDs.length <= 0) {
-			throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_EMPTY);
-		} else if (!authIDList.hasOwnProperty(authID)) {
-			throw NodeTranslationService.getMessage(ERRORS.CREDENTIALS_NOT_FOUND, authID);
-		}
-
-		return { selected_auth_id: { authId: authID, accountInfo: authIDList[authID].accountInfo, domain: authIDList[authID].urls.app } };
 	}
 
 	async _selectAuthID(authIDList, prompt) {
