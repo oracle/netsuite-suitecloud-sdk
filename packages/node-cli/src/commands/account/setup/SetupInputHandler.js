@@ -60,13 +60,28 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		this._checkWorkingDirectoryContainsValidProject();
-		let authIdAnswer;
-		const choices = [];
 
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (authIDActionResult.status === ActionResult.STATUS.ERROR) {
 			throw authIDActionResult.errorMessages;
 		}
+		const selectedAuth = await this.selectAuthIdOption(authIDActionResult);
+
+		if (selectedAuth !== CREATE_NEW_AUTH) {
+			return {
+				createNewAuthentication: false,
+				authentication: selectedAuth,
+				mode: AUTH_MODE.REUSE,
+			};
+		}
+
+		// creating a new authID
+		return await this.getParamsCreateNewAuthId(params, authIDActionResult);
+	}
+
+	async selectAuthIdOption(authIDActionResult) {
+		const choices = [];
+		let authIdAnswer;
 		let authIDs = Object.keys(authIDActionResult.data);
 		if (authIDs.length > 0) {
 			choices.push({
@@ -75,7 +90,6 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			});
 			choices.push(new Separator());
 			choices.push(new Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
-
 			authIDs.forEach((authID) => {
 				const authentication = authIDActionResult.data[authID];
 				const isDevLabel = authentication.developmentMode
@@ -88,7 +102,6 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 				});
 			});
 			choices.push(new Separator());
-
 			authIdAnswer = await prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -103,90 +116,20 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 				[ANSWERS.SELECTED_AUTH_ID]: CREATE_NEW_AUTH,
 			};
 		}
+		return authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
+	}
 
-		const selectedAuth = authIdAnswer[ANSWERS.SELECTED_AUTH_ID];
-
-		if (selectedAuth !== CREATE_NEW_AUTH) {
-			return {
-				createNewAuthentication: false,
-				authentication: selectedAuth,
-				mode: AUTH_MODE.REUSE,
-			};
-		}
-
-		// creating a new authID
+	async getParamsCreateNewAuthId(params, authIDActionResult) {
 		let developmentModeUrlAnswer;
 		const developmentMode = params && params.dev !== undefined && params.dev;
-
-			if (developmentMode) {
-				developmentModeUrlAnswer = await prompt([
-					{
-						type: CommandUtils.INQUIRER_TYPES.INPUT,
-						name: ANSWERS.DEVELOPMENT_MODE_URL,
-						message: NodeTranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
-						filter: (fieldValue) => fieldValue.trim(),
-						validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
-					},
-				]);
-			}
-			const newAuthenticationAnswers = await prompt([
-				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
-					name: ANSWERS.AUTH_MODE,
-					message: NodeTranslationService.getMessage(QUESTIONS.AUTH_MODE),
-					choices: [
-						{
-							name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.OAUTH),
-							value: AUTH_MODE.OAUTH,
-						},
-						{
-							name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN),
-							value: AUTH_MODE.SAVE_TOKEN,
-						},
-					],
-				},
+		if (developmentMode) {
+			developmentModeUrlAnswer = await prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
-					name: ANSWERS.NEW_AUTH_ID,
-					message: NodeTranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
+					name: ANSWERS.DEVELOPMENT_MODE_URL,
+					message: NodeTranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
 					filter: (fieldValue) => fieldValue.trim(),
-					validate: (fieldValue) =>
-						showValidationResults(
-							fieldValue,
-							validateFieldIsNotEmpty,
-							validateFieldHasNoSpaces,
-							(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDActionResult.data)),
-							validateAlphanumericHyphenUnderscore,
-							validateMaximumLength
-						),
-				},
-				{
-					when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-					type: CommandUtils.INQUIRER_TYPES.INPUT,
-					name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
-					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
-					transformer: (fieldValue) => fieldValue.toUpperCase(),
-					filter: (fieldValue) => fieldValue.trim().toUpperCase(),
-					validate: (fieldValue) =>
-						showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
-				},
-				{
-					when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
-					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
-					name: ANSWERS.SAVE_TOKEN_ID,
-					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
-					filter: (fieldValue) => fieldValue.trim(),
-					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
-				},
-				{
-					when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-					type: CommandUtils.INQUIRER_TYPES.PASSWORD,
-					mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
-					name: ANSWERS.SAVE_TOKEN_SECRET,
-					message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
-					filter: (fieldValue) => fieldValue.trim(),
-					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
+					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
 				},
 			]);
 		}
@@ -262,11 +205,9 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 				tokenSecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
 			},
 		};
-
 		if (developmentModeUrlAnswer) {
 			executeActionContext.url = developmentModeUrlAnswer[ANSWERS.DEVELOPMENT_MODE_URL];
 		}
-
 		return executeActionContext;
 	}
 

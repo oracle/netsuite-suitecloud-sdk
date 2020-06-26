@@ -9,6 +9,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const { ERRORS, COMMAND_SETUPACCOUNT } = require('../services/TranslationKeys');
 const { FILES } = require('../ApplicationConstants');
 const { ActionResult } = require('../services/actionresult/ActionResult');
+const AuthenticateActionResult = require('../services/actionresult/AuthenticateActionResult');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const path = require('path');
 const SdkExecutionContext = require('../SdkExecutionContext');
@@ -18,8 +19,8 @@ const SdkExecutor = require('../SdkExecutor');
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
 const COMMANDS = {
-	MANAGEAUTH: 'manageauth',
 	AUTHENTICATE: 'authenticate',
+	MANAGEAUTH: 'manageauth',
 };
 
 const FLAGS = {
@@ -59,31 +60,71 @@ module.exports = {
 
 	async getAuthIds(sdkPath) {
 		const sdkExecutor = new SdkExecutor(sdkPath);
+
 		const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH).integration().addFlag(FLAGS.LIST).build();
 
 		const operationResult = await executeWithSpinner({
-			action: sdkExecutor.execute(getAuthListContext),
-			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
-		});
+				action: sdkExecutor.execute(getAuthListContext),
+				message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
+			});
 		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 			? ActionResult.Builder.withData(operationResult.data).build()
 			: ActionResult.Builder.withErrors(operationResult.errorMessages);
 	},
 
-	async saveToken(sdkPath, params, developmentMode) {
-		const sdkExecutor = new SdkExecutor(sdkPath);
-		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE).integration().addParams(params).addFlag(FLAGS.SAVETOKEN);
+	async saveToken(params, sdkPath) {
+		const commandParams = {
+			authid: params.newAuthId,
+			account: params.saveToken.account,
+			tokenid: params.saveToken.tokenId,
+			tokensecret: params.saveToken.tokenSecret,
+		};
 
-		if (developmentMode) {
+		if (params.url) {
+			commandParams.url = params.url;
+		}
+		const sdkExecutor = new SdkExecutor(sdkPath);
+		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE).integration().addParams(commandParams).addFlag(FLAGS.SAVETOKEN);
+
+		if (params.dev === true) {
+			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
+		}
+		const operationResult = await executeWithSpinner({
+			action: sdkExecutor.execute(contextBuilder.build()),
+			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.SAVING_TBA_TOKEN),
+		});
+		if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
+		}
+		this.setDefaultAuthentication(sdkPath, commandParams.authid);
+		return AuthenticateActionResult.Builder.success().withMode('SAVE_TOKEN').withAuthId(commandParams.authid).withAccountInfo(operationResult.data.accountInfo).build();
+
+	},
+	async oauth(params, sdkPath) {
+		const sdkExecutor = new SdkExecutor(sdkPath);
+		let authId = params.newAuthId;
+		const commandParams = {
+			authId: authId,
+		};
+		if (params.url) {
+			commandParams.url = params.url;
+		}
+		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE).integration().addParams(commandParams);
+
+		if (params.developmentMode) {
 			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 		}
 
 		const operationResult = await executeWithSpinner({
 			action: sdkExecutor.execute(contextBuilder.build()),
-			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.SAVING_TBA_TOKEN),
+			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.STARTING_OAUTH_FLOW),
 		});
-		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-			? ActionResult.Builder.withData(operationResult.data).build()
-			: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
+		if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			return SetupActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
+		}
+
+		accountInfo = operationResult.data.accountInfo;
+		this.setDefaultAuthentication(sdkPath, authId);
+		return AuthenticateActionResult.Builder.success().withMode(params.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
 	},
 };

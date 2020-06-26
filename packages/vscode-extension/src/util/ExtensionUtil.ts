@@ -31,3 +31,10 @@ export const FileSystemService = require('@oracle/suitecloud-cli/src/services/Fi
 export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
+
+export const showValidationResults = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
+export const validateAuthIDNotInList = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
+export const validateFieldIsNotEmpty = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
+export const validateFieldHasNoSpaces = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
+export const validateAlphanumericHyphenUnderscore = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
+export const validateMaximumLength = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
