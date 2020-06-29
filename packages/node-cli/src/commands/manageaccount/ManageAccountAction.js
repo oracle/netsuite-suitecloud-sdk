@@ -14,7 +14,7 @@ const { ManageAccountActionResult, MANAGE_ACTION } = require('../../services/act
 const { throwValidationException } = require('../../utils/ExceptionUtils');
 const assert = require('assert');
 const {
-	COMMAND_MANAGE_ACCOUNT: { MESSAGES },
+	COMMAND_MANAGE_ACCOUNT: { MESSAGES, ERRORS },
 } = require('../../services/TranslationKeys');
 
 const COMMAND = {
