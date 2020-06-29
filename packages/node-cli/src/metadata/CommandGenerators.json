@@ -1,8 +1,11 @@
 [
     {
+        "commandName": "account:ci",
+        "nonInteractiveGenerator": "./commands/account/ci/AccountCiCommand"
+    },
+    {
         "commandName": "account:manageauth",
-        "interactiveGenerator": "./commands/account/manageauth/ManageAccountCommand",
-        "nonInteractiveGenerator": "./commands/account/manageauth/ManageAccountCommand"
+        "interactiveGenerator": "./commands/account/manageauth/ManageAccountCommand"
     },
     {
         "commandName": "account:setup",

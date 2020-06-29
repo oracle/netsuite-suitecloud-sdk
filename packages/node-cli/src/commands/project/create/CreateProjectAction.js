@@ -134,9 +134,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 						.withUnitTesting(includeUnitTesting)
 						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
 						.build()
-				: CreateProjectActionResult.Builder.withErrors(
-						SdkOperationResultUtils.collectErrorMessages(createProjectActionData.operationResult)
-				  ).build();
+				: CreateProjectActionResult.Builder.withErrors(createProjectActionData.operationResult.errorMessages).build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}

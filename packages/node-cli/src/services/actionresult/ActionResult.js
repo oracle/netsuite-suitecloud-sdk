@@ -32,6 +32,10 @@ class ActionResult {
 		}
 	}
 
+	isSuccess() {
+		return this._status === STATUS.SUCCESS;
+	}
+
 	get status() {
 		return this._status;
 	}

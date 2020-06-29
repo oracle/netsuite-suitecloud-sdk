@@ -86,7 +86,7 @@ module.exports = class ValidateAction extends BaseAction {
 						.withProjectType(this._projectType)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: DeployActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult))
+				: DeployActionResult.Builder.withErrors(operationResult.errorMessages)
 						.withServerValidation(isServerValidation)
 						.build();
 		} catch (error) {

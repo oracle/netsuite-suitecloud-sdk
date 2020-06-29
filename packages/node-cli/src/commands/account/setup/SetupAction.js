@@ -5,12 +5,12 @@
 'use strict';
 
 const BaseAction = require('../../base/BaseAction');
-const SetupActionResult = require('../../../services/actionresult/SetupActionResult');
+const AuthenticateActionResult = require('../../../services/actionresult/AuthenticateActionResult');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const { setDefaultAuthentication } = require('../../../utils/AuthenticationUtils');
+const { setDefaultAuthentication, saveToken } = require('../../../utils/AuthenticationUtils');
 
 const {
 	COMMAND_SETUPACCOUNT: { MESSAGES },
@@ -53,7 +53,7 @@ module.exports = class SetupAction extends BaseAction {
 
 				const operationResult = await this._performBrowserBasedAuthentication(commandParams, params.developmentMode);
 				if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-					return SetupActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
+					return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
 				}
 				authId = params.newAuthId;
 				accountInfo = operationResult.data.accountInfo;
@@ -69,21 +69,21 @@ module.exports = class SetupAction extends BaseAction {
 					commandParams.url = params.url;
 				}
 
-				const operationResult = await this._saveToken(commandParams, params.developmentMode);
-				if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-					return SetupActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
+				const saveTokenResult = await saveToken(this._sdkPath, commandParams, params.developmentMode);
+				if (!saveTokenResult.isSuccess()) {
+					return AuthenticateActionResult.Builder.withErrors(saveTokenResult.errorMessages).build();
 				}
 				authId = params.newAuthId;
-				accountInfo = operationResult.data.accountInfo;
+				accountInfo = saveTokenResult.data.accountInfo;
 			} else if (params.mode === AUTH_MODE.REUSE) {
 				authId = params.authentication.authId;
 				accountInfo = params.authentication.accountInfo;
 			}
 			setDefaultAuthentication(this._executionPath, authId);
 
-			return SetupActionResult.Builder.success().withMode(params.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
+			return AuthenticateActionResult.Builder.success().withMode(params.mode).withAuthId(authId).withAccountInfo(accountInfo).build();
 		} catch (error) {
-			return SetupActionResult.Builder.withErrors([error]).build();
+			return AuthenticateActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
@@ -96,41 +96,9 @@ module.exports = class SetupAction extends BaseAction {
 			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 		}
 
-		const operationResult = await executeWithSpinner({
+		return executeWithSpinner({
 			action: this._sdkExecutor.execute(contextBuilder.build()),
 			message: NodeTranslationService.getMessage(MESSAGES.STARTING_OAUTH_FLOW),
 		});
-		this._checkOperationResultIsSuccessful(operationResult);
-
-		return operationResult;
-	}
-
-	async _saveToken(params, developmentMode) {
-		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE)
-			.integration()
-			.addParams(params)
-			.addFlag(FLAGS.SAVETOKEN);
-
-		if (developmentMode) {
-			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
-		}
-
-		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(contextBuilder.build()),
-			message: NodeTranslationService.getMessage(MESSAGES.SAVING_TBA_TOKEN),
-		});
-		this._checkOperationResultIsSuccessful(operationResult);
-
-		return operationResult;
-	}
-
-	_checkOperationResultIsSuccessful(operationResult) {
-		if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-			const errorMessage = SdkOperationResultUtils.getResultMessage(operationResult);
-			if (errorMessage) {
-				throw errorMessage;
-			}
-			throw SdkOperationResultUtils.collectErrorMessages(operationResult);
-		}
 	}
 };

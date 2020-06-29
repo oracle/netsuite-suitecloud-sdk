@@ -133,7 +133,6 @@ module.exports = class CommandActionExecutor {
 		const projectConfiguration = options.projectConfiguration;
 		const isSetupRequired = options.metadata.isSetupRequired;
 		const commandName = options.metadata.name;
-		//const runInInteractiveMode = options.runInInteractiveMode;
 		const commandUserExtension = options.commandUserExtension;
 		let commandArguments = options.arguments;
 

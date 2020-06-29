@@ -35,9 +35,7 @@ module.exports = {
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
-	PROD_ENVIRONMENT_ADDRESS: 'https://system.netsuite.com',
-	HTTP_PROTOCOL: 'http://',
-	REST_ROLES_URL: '/rest/roles',
+	PROD_ENVIRONMENT_ADDRESS: 'system.netsuite.com',
 	PROJECT_FOLDER_ARG: '--projectFolder',
 	LINKS: {
 		HOW_TO: {
@@ -45,8 +43,6 @@ module.exports = {
 				'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html',
 			CREATE_LOCKING_XML:
 				'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html',
-			ISSUE_A_TOKEN:
-				'https://system.netsuite.com/app/help/helpcenter.nl?fid=bridgehead_4254083671.html',
 		},
 	},
 };

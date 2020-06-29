@@ -87,7 +87,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		}
 
 		if (listObjectsResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw SdkOperationResultUtils.collectErrorMessages(listObjectsResult);
+			throw listObjectsResult.errorMessages;
 		}
 		const { data } = listObjectsResult;
 

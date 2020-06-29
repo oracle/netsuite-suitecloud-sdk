@@ -151,4 +151,18 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 
 		return answers;
 	}
+
+	_getProjectFolderName(params) {
+		switch (params[COMMAND_OPTIONS.TYPE]) {
+			case ApplicationConstants.PROJECT_SUITEAPP:
+				return (params[COMMAND_OPTIONS.PUBLISHER_ID] && params[COMMAND_OPTIONS.PROJECT_ID])
+					? params[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + params[COMMAND_OPTIONS.PROJECT_ID]
+					: 'not_specified';
+			case ApplicationConstants.PROJECT_ACP:
+				return params[COMMAND_OPTIONS.PROJECT_NAME] ? params[COMMAND_OPTIONS.PROJECT_NAME] : 'not_specified';
+			default:
+				// if --type parameter isn't correct, it doesn't matter the project folder name. It will throw a validation error later
+				return 'not_specified';
+		}
+	}
 };

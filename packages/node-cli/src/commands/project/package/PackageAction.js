@@ -55,6 +55,6 @@ module.exports = class PackageAction extends BaseAction {
 			? ActionResult.Builder.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.build()
-			: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
+			: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 	}
 };

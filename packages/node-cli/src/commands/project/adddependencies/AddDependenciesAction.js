@@ -47,7 +47,7 @@ module.exports = class AddDependenciesAction extends BaseAction {
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
-				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

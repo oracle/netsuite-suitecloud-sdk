@@ -60,5 +60,43 @@
                 "mandatory": false
             }
         ]
+    },
+    "account:ci": {
+        "name": "account:ci",
+        "description": "Sets up an account in a non-interactive way, oriented for Continuos Integration scenarios.",
+        "isSetupRequired": false,
+        "options": [
+            {
+                "name": "savetoken",
+                "description": "Save a token",
+                "type": "FLAG",
+                "mandatory": false
+            },
+            {
+                "name": "authid",
+                "description": "auth id",
+                "mandatory": false
+            },
+            {
+                "name": "tokenid",
+                "description": "tokenid",
+                "mandatory": false
+            },
+            {
+                "name": "tokensecret",
+                "description": "tokensecret",
+                "mandatory": false
+            },
+            {
+                "name": "accountid",
+                "description": "accountid",
+                "mandatory": false
+            },
+            {
+                "name": "url",
+                "description": "url",
+                "mandatory": false
+            }
+        ]
     }
 }

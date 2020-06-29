@@ -6,7 +6,7 @@
 const assert = require('assert');
 const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 
-class SetupCommandActionResult extends ActionResult {
+class AuthenticateActionResult extends ActionResult {
 	constructor(parameters) {
 		super(parameters);
 		this._mode = parameters.mode;
@@ -41,11 +41,11 @@ class SetupCommandActionResult extends ActionResult {
 	}
 
 	static get Builder() {
-		return new SetupActionResultBuilder();
+		return new AuthenticateActionResultBuilder();
 	}
 }
 
-class SetupActionResultBuilder extends ActionResultBuilder {
+class AuthenticateActionResultBuilder extends ActionResultBuilder {
 	constructor() {
 		super();
 	}
@@ -71,7 +71,7 @@ class SetupActionResultBuilder extends ActionResultBuilder {
 	}
 
 	build() {
-		return new SetupCommandActionResult({
+		return new AuthenticateActionResult({
 			status: this.status,
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.mode && { mode: this.mode }),
@@ -82,4 +82,4 @@ class SetupActionResultBuilder extends ActionResultBuilder {
 	}
 }
 
-module.exports = SetupCommandActionResult;
+module.exports = AuthenticateActionResult;

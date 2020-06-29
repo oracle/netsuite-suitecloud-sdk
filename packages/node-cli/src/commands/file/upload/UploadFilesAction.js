@@ -59,7 +59,7 @@ module.exports = class UploadFilesAction extends BaseAction {
 						.withResultMessage(operationResult.resultMessage)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: ActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

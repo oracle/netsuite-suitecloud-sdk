@@ -19,10 +19,13 @@ const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
 const COMMANDS = {
 	MANAGEAUTH: 'manageauth',
+	AUTHENTICATE: 'authenticate',
 };
 
 const FLAGS = {
 	LIST: 'list',
+	SAVETOKEN: 'savetoken',
+	DEVELOPMENTMODE: 'developmentmode',
 };
 
 module.exports = {
@@ -56,23 +59,31 @@ module.exports = {
 
 	async getAuthIds(sdkPath) {
 		const sdkExecutor = new SdkExecutor(sdkPath);
+		const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH).integration().addFlag(FLAGS.LIST).build();
 
-		const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH)
-			.integration()
-			.addFlag(FLAGS.LIST)
-			.build();
+		const operationResult = await executeWithSpinner({
+			action: sdkExecutor.execute(getAuthListContext),
+			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
+		});
+		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			? ActionResult.Builder.withData(operationResult.data).build()
+			: ActionResult.Builder.withErrors(operationResult.errorMessages);
+	},
 
-		try {
-			const existingAuthIDsResponse = await executeWithSpinner({
-				action: sdkExecutor.execute(getAuthListContext),
-				message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.GETTING_AVAILABLE_AUTHIDS),
-			});
-			if (existingAuthIDsResponse.status === SdkOperationResultUtils.STATUS.ERROR) {
-				throw SdkOperationResultUtils.getResultMessage(existingAuthIDsResponse);
-			}
-			return ActionResult.Builder.withData(existingAuthIDsResponse.data).build();
-		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+	async saveToken(sdkPath, params, developmentMode) {
+		const sdkExecutor = new SdkExecutor(sdkPath);
+		const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE).integration().addParams(params).addFlag(FLAGS.SAVETOKEN);
+
+		if (developmentMode) {
+			contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 		}
+
+		const operationResult = await executeWithSpinner({
+			action: sdkExecutor.execute(contextBuilder.build()),
+			message: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.SAVING_TBA_TOKEN),
+		});
+		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			? ActionResult.Builder.withData(operationResult.data).build()
+			: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 	},
 };

@@ -191,6 +191,9 @@
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID {0} as default for the following company and role: {1} [{2}]. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_SUCCESSFUL": "The account has been successfully set up.",
 
+	"COMMAND_ACCOUNTCI_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID {2} as default.",
+	"COMMAND_ACCOUNTCI_OUTPUT_SUCCESS": "The account has been successfully set up.",
+
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
 	"COMMAND_UPLOADFILES_QUESTIONS_OVERWRITE_FILES": "The selected files will be overwritten in the File Cabinet. Do you want to continue?",

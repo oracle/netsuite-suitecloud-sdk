@@ -67,7 +67,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		const listFoldersResult = await this._listFolders();
 
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw SdkOperationResultUtils.collectErrorMessages(listFoldersResult);
+			throw listFoldersResult.errorMessages;
 		}
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
@@ -75,7 +75,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		const listFilesResult = await this._listFiles(selectFolderAnswer);
 
 		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw SdkOperationResultUtils.collectErrorMessages(listFilesResult);
+			throw listFilesResult.errorMessages;
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
 			throw SdkOperationResultUtils.getResultMessage(listFilesResult);

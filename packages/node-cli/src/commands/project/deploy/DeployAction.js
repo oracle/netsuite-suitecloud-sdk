@@ -92,7 +92,7 @@ module.exports = class DeployAction extends BaseAction {
 						.withProjectType(this._projectType)
 						.withProjectFolder(this._projectFolder)
 						.build()
-				: DeployActionResult.Builder.withErrors(SdkOperationResultUtils.collectErrorMessages(operationResult)).build();
+				: DeployActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}
