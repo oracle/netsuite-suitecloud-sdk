@@ -59,10 +59,6 @@ class ActionResult {
 	static get Builder() {
 		return new ActionResultBuilder();
 	}
-
-	static get STATUS() {
-		return STATUS;
-	}
 }
 
 class ActionResultBuilder {
@@ -102,5 +98,4 @@ class ActionResultBuilder {
 	}
 }
 
-module.exports.ActionResult = ActionResult;
-module.exports.ActionResultBuilder = ActionResultBuilder;
+module.exports = { ActionResult, ActionResultBuilder, STATUS }

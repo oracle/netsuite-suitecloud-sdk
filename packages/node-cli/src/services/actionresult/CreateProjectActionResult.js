@@ -18,7 +18,7 @@ class CreateProjectActionResult extends ActionResult {
 
 	validateParameters(parameters) {
 		super.validateParameters(parameters);
-		if (parameters.status === ActionResult.STATUS.SUCCESS) {
+		if (this.isSuccess()) {
 			assert(parameters.projectDirectory, 'projectDirectory is required when ActionResult is a success.');
 			assert(parameters.projectType, 'projectType is required when ActionResult is a success.');
 		}

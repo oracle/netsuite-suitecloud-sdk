@@ -182,17 +182,13 @@
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_EXISTING_AUTH_ID": "{0} | {1} {2}",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_EXISTING_AUTH_ID_DEV_URL": "| {0}",
 	"COMMAND_SETUPACCOUNT_MESSAGES_CANCEL_SETUP": "The setupaccount process has been canceled.",
-	"COMMAND_SETUPACCOUNT_MESSAGES_GETTING_AVAILABLE_AUTHIDS": "Loading the configured authentication IDs in this machine...",
-	"COMMAND_SETUPACCOUNT_MESSAGES_SAVING_TBA_TOKEN": "Saving the TBA token...",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SELECT_CONFIGURED_AUTHID": "Select a configured authentication ID (authID):",
-	"COMMAND_SETUPACCOUNT_MESSAGES_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_OAUTH": "The account has been authenticated for the following company and role: {0} [{1}]. This project will use the authentication ID {2} as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID {2} as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID {0} as default for the following company and role: {1} [{2}]. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
-	"COMMAND_SETUPACCOUNT_OUTPUT_SUCCESSFUL": "The account has been successfully set up.",
 
+	"COMMAND_ACCOUNTCI_SAVETOKEN_MANDATORY": "There are validation errors:\n\"savetoken\" flag is mandatory.",
 	"COMMAND_ACCOUNTCI_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID {2} as default.",
-	"COMMAND_ACCOUNTCI_OUTPUT_SUCCESS": "The account has been successfully set up.",
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
@@ -280,6 +276,10 @@
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
 	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection cannot be applied to account customization projects.",
 	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITHOUT_HIDING_AND_LOCKING": "There was an error with the {0} command. Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {1}.\nTo learn how to create a locking.xml file, see {2}.",
+	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
+	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs in this machine...",
+	"UTILS_AUTHENTICATION_SAVING_TBA_TOKEN": "Saving the TBA token...",
+	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 
 	"YES": "Yes"
 }

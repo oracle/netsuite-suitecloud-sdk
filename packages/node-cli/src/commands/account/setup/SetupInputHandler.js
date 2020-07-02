@@ -13,7 +13,6 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
-const { ActionResult } = require('../../../services/actionresult/ActionResult');
 
 const {
 	FILES: { MANIFEST_XML },
@@ -62,7 +61,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		this._checkWorkingDirectoryContainsValidProject();
 
 		const authIDActionResult = await getAuthIds(this._sdkPath);
-		if (authIDActionResult.status === ActionResult.STATUS.ERROR) {
+		if (!authIDActionResult.isSuccess()) {
 			throw authIDActionResult.errorMessages;
 		}
 		const selectedAuth = await this.selectAuthIdOption(authIDActionResult);
@@ -195,15 +194,13 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		]);
 
 		const executeActionContext = {
-			developmentMode: developmentMode,
+			dev: developmentMode,
 			createNewAuthentication: true,
-			newAuthId: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
+			authid: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
 			mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
-			saveToken: {
-				account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
-				tokenId: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
-				tokenSecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
-			},
+			accountid: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
+			tokenid: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
+			tokensecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
 		};
 		if (developmentModeUrlAnswer) {
 			executeActionContext.url = developmentModeUrlAnswer[ANSWERS.DEVELOPMENT_MODE_URL];

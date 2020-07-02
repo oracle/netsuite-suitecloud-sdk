@@ -6,23 +6,23 @@
 const BaseOutputHandler = require('../../base/BaseOutputHandler');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 
-const { COMMAND_ACCOUNTCI } = require('../../../services/TranslationKeys');
+const { COMMAND_ACCOUNTCI, UTILS } = require('../../../services/TranslationKeys');
 
-module.exports = class SetupOutputHandler extends BaseOutputHandler {
+module.exports = class AccountCiOutputHandler extends BaseOutputHandler {
 	constructor(options) {
 		super(options);
 	}
 
 	parse(actionResult) {
 		const resultMessage = NodeTranslationService.getMessage(
-            COMMAND_ACCOUNTCI.OUTPUT.NEW_SAVED_TOKEN,
-            actionResult.accountInfo.companyName,
-            actionResult.accountInfo.roleName,
-            actionResult.authId
-        );
+			COMMAND_ACCOUNTCI.OUTPUT.NEW_SAVED_TOKEN,
+			actionResult.accountInfo.companyName,
+			actionResult.accountInfo.roleName,
+			actionResult.authId
+		);
 
 		this._log.result(resultMessage);
-		this._log.result(NodeTranslationService.getMessage(COMMAND_ACCOUNTCI.OUTPUT.SUCCESS));
+		this._log.result(NodeTranslationService.getMessage(UTILS.AUTHENTICATION.SUCCESS_SETUP));
 		return actionResult;
 	}
 };

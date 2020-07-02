@@ -10,10 +10,6 @@ const AccountCiOutputHandler = require('./AccountCiOutputHandler');
 
 module.exports = {
 	create(options) {
-		return Command.Builder.withOptions(options)
-			.withAction(AccountCiAction)
-			.withOutput(AccountCiOutputHandler)
-			.neverInteractive()
-			.build();
-	}
+		return Command.Builder.withOptions(options).withAction(AccountCiAction).withOutput(AccountCiOutputHandler).neverInteractive().build();
+	},
 };

@@ -4,12 +4,7 @@
  */
 'use strict';
 const assert = require('assert');
-const { ActionResult, ActionResultBuilder } = require('./ActionResult');
-
-const STATUS = {
-	ERROR: 'ERROR',
-	SUCCESS: 'SUCCESS',
-};
+const { ActionResult, ActionResultBuilder, STATUS } = require('./ActionResult');
 
 const MANAGE_ACTION = {
 	LIST: 'list',

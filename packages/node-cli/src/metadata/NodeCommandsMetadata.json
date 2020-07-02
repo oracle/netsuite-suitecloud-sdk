@@ -63,38 +63,38 @@
     },
     "account:ci": {
         "name": "account:ci",
-        "description": "Sets up an account in a non-interactive way, oriented for Continuos Integration scenarios.",
+        "description": "Set up an account to use with the SuiteCloud CLI for Node.js. This command only supports non-interactive mode.",
         "isSetupRequired": false,
         "options": [
             {
                 "name": "savetoken",
-                "description": "Save a token",
+                "description": "Enter a TBA token that you issued previously in NetSuite.",
                 "type": "FLAG",
                 "mandatory": false
             },
             {
                 "name": "authid",
-                "description": "auth id",
+                "description": "References the custom name you gave to a specific account-role combination.",
                 "mandatory": false
             },
             {
                 "name": "tokenid",
-                "description": "tokenid",
+                "description": "Enter the token ID of a TBA token you issued previously in NetSuite.",
                 "mandatory": false
             },
             {
                 "name": "tokensecret",
-                "description": "tokensecret",
+                "description": "Enter the token secret of a TBA token you issued previously in NetSuite.",
                 "mandatory": false
             },
             {
                 "name": "accountid",
-                "description": "accountid",
+                "description": "References the ID of the account to log in to.",
                 "mandatory": false
             },
             {
                 "name": "url",
-                "description": "url",
+                "description": "Specify the domain URL of a virtual machine.",
                 "mandatory": false
             }
         ]

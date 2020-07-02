@@ -13,7 +13,7 @@ const BaseAction = require('./base/BaseAction');
 const BaseInputHandler = require('./base/BaseInputHandler');
 const BaseOutputHandler = require('./base/BaseOutputHandler');
 
-const INTERATIVE_MODE = {
+const INTERACTIVE_MODE = {
 	NEVER: 'NEVER',
 	ALWAYS: 'ALWAYS',
 	DEFAULT: 'DEFAULT',
@@ -46,9 +46,9 @@ class Command {
 
 	async run(inputParams) {
 		const execParams =
-			this._interactiveSupport === INTERATIVE_MODE.ALWAYS || (this._interactiveSupport !== INTERATIVE_MODE.NEVER && this._runInInteractiveMode)
-				? await this._inputHandler.getParameters(params)
-				: params;
+			this._interactiveSupport === INTERACTIVE_MODE.ALWAYS || (this._interactiveSupport !== INTERACTIVE_MODE.NEVER && this._runInInteractiveMode)
+				? await this._inputHandler.getParameters(inputParams)
+				: inputParams;
 
 		const preExec = await this._action.preExecute(execParams);
 
@@ -59,7 +59,7 @@ class Command {
 
 		if (!(actionResult instanceof ActionResult)) {
 			throw 'INTERNAL ERROR: Command must return an ActionResult object.';
-		} else if (actionResult.status === ActionResult.STATUS.ERROR) {
+		} else if (!actionResult.isSuccess()) {
 			return this._outputHandler.parseError(actionResult);
 		} else {
 			return this._outputHandler.parse(actionResult);
@@ -85,7 +85,7 @@ class Command {
 class CommandBuilder {
 	constructor() {
 		this._options = {
-			interactiveSupport: INTERATIVE_MODE.DEFAULT,
+			interactiveSupport: INTERACTIVE_MODE.DEFAULT,
 		};
 		this._action = BaseAction;
 		this._input = BaseInputHandler;
@@ -101,12 +101,12 @@ class CommandBuilder {
 	}
 
 	neverInteractive() {
-		this._options.interactiveSupport = INTERATIVE_MODE.NEVER;
+		this._options.interactiveSupport = INTERACTIVE_MODE.NEVER;
 		return this;
 	}
 
 	alwaysInteractive() {
-		this._options.interactiveSupport = INTERATIVE_MODE.ALWAYS;
+		this._options.interactiveSupport = INTERACTIVE_MODE.ALWAYS;
 		return this;
 	}
 

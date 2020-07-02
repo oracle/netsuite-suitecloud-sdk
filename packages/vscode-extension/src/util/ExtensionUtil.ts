@@ -17,7 +17,7 @@ export const ApplicationConstants = require('@oracle/suitecloud-cli/src/Applicat
 export const actionResultStatus: {
 	SUCCESS: string;
 	ERROR: string;
-} = require('@oracle/suitecloud-cli/src/services/actionresult/ActionResult').ActionResult.STATUS;
+} = require('@oracle/suitecloud-cli/src/services/actionresult/ActionResult').STATUS;
 
 export const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
 export const CommandsMetadataService = require('@oracle/suitecloud-cli/src/core/CommandsMetadataService');
@@ -32,9 +32,22 @@ export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/Aut
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
 
-export const showValidationResults = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
-export const validateAuthIDNotInList = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
-export const validateFieldIsNotEmpty = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
-export const validateFieldHasNoSpaces = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
-export const validateAlphanumericHyphenUnderscore = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
-export const validateMaximumLength = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
+export const InteractiveAnswersValidator: {
+	showValidationResults(value: string, ...funcs: Function[]): string | boolean;
+	validateFieldIsNotEmpty(fieldValue: string): boolean;
+	validateAlphanumericHyphenUnderscoreExtended(fieldValue: string): boolean;
+	validateFieldHasNoSpaces(fieldValue: string): boolean;
+	validateFieldIsLowerCase(fieldOptionId: string, fieldValue: string): boolean;
+	validatePublisherId(fieldValue: string): boolean;
+	validateProjectVersion(fieldValue: string): boolean;
+	validateArrayIsNotEmpty(array: any[]): boolean;
+	validateSuiteApp(fieldValue: string): boolean;
+	validateScriptId(fieldValue: string): boolean;
+	validateXMLCharacters(fieldValue: string): boolean;
+	validateNotUndefined(value: string, optionName: string): boolean;
+	validateProjectType(value: string): boolean;
+	validateSameAuthID(newAuthID: string, authID: string): boolean;
+	validateAuthIDNotInList(newAuthID: string, authIDsList: string[]): boolean;
+	validateAlphanumericHyphenUnderscore(fieldValue: string): boolean;
+	validateMaximumLength(fieldValue: string, maxLength: number): boolean;
+} = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');

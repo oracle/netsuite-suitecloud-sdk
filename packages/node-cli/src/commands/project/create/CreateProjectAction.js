@@ -204,7 +204,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 	_getProjectFolderName(params) {
 		switch (params[COMMAND_OPTIONS.TYPE]) {
 			case ApplicationConstants.PROJECT_SUITEAPP:
-				return (params[COMMAND_OPTIONS.PUBLISHER_ID] && params[COMMAND_OPTIONS.PROJECT_ID])
+				return params[COMMAND_OPTIONS.PUBLISHER_ID] && params[COMMAND_OPTIONS.PROJECT_ID]
 					? params[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + params[COMMAND_OPTIONS.PROJECT_ID]
 					: 'not_specified';
 			case ApplicationConstants.PROJECT_ACP:

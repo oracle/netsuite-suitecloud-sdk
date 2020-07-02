@@ -8,6 +8,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 
 const {
 	COMMAND_SETUPACCOUNT: { OUTPUT },
+	UTILS: { AUTHENTICATION },
 } = require('../../../services/TranslationKeys');
 
 const AUTH_MODE = {
@@ -53,7 +54,7 @@ module.exports = class SetupOutputHandler extends BaseOutputHandler {
 		}
 
 		this._log.result(resultMessage);
-		this._log.result(NodeTranslationService.getMessage(OUTPUT.SUCCESSFUL));
+		this._log.result(NodeTranslationService.getMessage(AUTHENTICATION.SUCCESS_SETUP));
 		return actionResult;
 	}
 };

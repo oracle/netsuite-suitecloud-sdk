@@ -36,29 +36,6 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch suitecloud account:setup",
-            "program": "${workspaceFolder}\\packages\\node-cli\\src\\suitecloud.js",
-            "cwd": "${workspaceFolder}\\..\\..\\test",
-            "args": ["account:setup", "--dev"],
-            "outputCapture": "std",
-            "console": "integratedTerminal"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch suitecloud account:ci",
-            "program": "${workspaceFolder}\\packages\\node-cli\\src\\suitecloud.js",
-            "cwd": "${workspaceFolder}\\..\\..\\test",
-            "args": ["account:ci", "--savetoken", "--accountid", "MSTRWLFCANADA", "--authid", "holii5",
-                "--tokensecret", "b5fc24f0025097ec397371b606dbd9b3753ab05d5754bc7597452219d18a1446",
-                "--tokenid", "4aa8bd30f2bf67cccef1ed729af29fe34a9747ca7b8a012c222d21fe75e2a530",
-                "--url", "jbalbas-restricted-ci-euf1-001.eng.netsuite.com"],
-            "outputCapture": "std",
-            "console": "integratedTerminal"
-        },
-        {
-            "type": "node",
-            "request": "launch",
             "name": "Jest Tests",
             "program": "${workspaceRoot}\\packages\\node-cli\\node_modules\\jest\\bin\\jest.js",
             "args": [

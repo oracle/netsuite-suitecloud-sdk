@@ -10,7 +10,11 @@ const INTERACTIVE_OPTION_NAME = 'interactive';
 const INTERACTIVE_OPTION_ALIAS = 'i';
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
-const { ActionResult } = require('../services/actionresult/ActionResult');
+
+const EXIT_CODE = {
+	SUCCESS: 0,
+	ERROR: 1,
+}
 
 module.exports = class CommandRegistrationService {
 	register(options) {
@@ -50,7 +54,7 @@ module.exports = class CommandRegistrationService {
 
 		commandSetup.description(commandMetadata.description).action(async (options) => {
 			const actionResult = await executeCommandFunction(options);
-			process.exitCode = actionResult.status === ActionResult.STATUS.SUCCESS ? 0 : 1;
+			process.exitCode = actionResult.isSuccess() ? EXIT_CODE.SUCCESS : EXIT_CODE.ERROR;
 		});
 	}
 

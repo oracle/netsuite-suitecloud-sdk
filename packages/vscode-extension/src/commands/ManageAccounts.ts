@@ -2,57 +2,52 @@
  ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import {
-	actionResultStatus,
-	AuthenticationUtils,
-	showValidationResults,
-	validateAuthIDNotInList,
-	validateFieldIsNotEmpty,
-	validateFieldHasNoSpaces,
-	validateAlphanumericHyphenUnderscore,
-	validateMaximumLength,
-} from '../util/ExtensionUtil';
+import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator, ApplicationConstants } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import { window, QuickPickItem } from 'vscode';
-import { AuthListData, ActionResult } from '../types/ActionResult';
+import { window, QuickPickItem, MessageItem } from 'vscode';
+import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { sdkPath } from '../core/sdksetup/SdkProperties';
-import { MANAGE_ACCOUNTS, COMMAND } from '../service/TranslationKeys';
+import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
+import VSConsoleLogger from '../loggers/VSConsoleLogger';
 
 const COMMAND_NAME = 'account:setup';
 
-enum AuthIdListOption {
-	new,
-	select,
+enum UiOption {
+	new_authid,
+	select_authid,
+	new_authid_browser,
+	new_authid_save_token,
+	cancel_process,
+	dismiss,
 }
-
-enum NewAuthIdOption {
-	browser,
-	savetoken,
-}
-
 interface NewAuthIdItem extends QuickPickItem {
-	option: AuthIdListOption.new;
+	option: UiOption.new_authid;
 }
 
 interface SelectAuthIdItem extends QuickPickItem {
-	option: AuthIdListOption.select;
+	option: UiOption.select_authid;
 	authId: string;
+}
+
+interface MessageItemWithCode extends MessageItem {
+	code: UiOption.cancel_process | UiOption.dismiss;
 }
 
 type AuthIdItem = NewAuthIdItem | SelectAuthIdItem;
 
-interface NewAuthIDBrowser extends QuickPickItem {
-	option: NewAuthIdOption.browser;
-}
-interface NewAuthIDSaveToken extends QuickPickItem {
-	option: NewAuthIdOption.savetoken;
+interface NewAuthID extends QuickPickItem {
+	option: UiOption.new_authid_browser | UiOption.new_authid_save_token;
 }
 
-type SelectNewAuthIdItems = NewAuthIDBrowser | NewAuthIDSaveToken;
+interface CancellationToken {
+	cancel?: (x: string) => void;
+}
 
 export default class ManageAccounts extends BaseAction {
+	private log: VSConsoleLogger;
 	constructor() {
 		super(COMMAND_NAME);
+		this.log = new VSConsoleLogger();
 	}
 
 	protected validate(): { valid: true } {
@@ -71,9 +66,9 @@ export default class ManageAccounts extends BaseAction {
 			const selected = await this.getAuthListOption(actionResult.data);
 			if (!selected) {
 				return;
-			} else if (selected.option === AuthIdListOption.new) {
+			} else if (selected.option === UiOption.new_authid) {
 				this.handleNewAuth(actionResult.data);
-			} else if (selected.option === AuthIdListOption.select) {
+			} else if (selected.option === UiOption.select_authid) {
 				this.handleSelectedAuth(selected.authId);
 			}
 		} else {
@@ -92,13 +87,13 @@ export default class ManageAccounts extends BaseAction {
 	private getAuthOptions(authData: AuthListData): AuthIdItem[] {
 		let options: AuthIdItem[] = [
 			{
-				option: AuthIdListOption.new,
-				label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE_NEW_AUTHID),
+				option: UiOption.new_authid,
+				label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE_NEW),
 			},
 		];
 		Object.keys(authData).forEach((authId) => {
 			options.push({
-				option: AuthIdListOption.select,
+				option: UiOption.select_authid,
 				label: `${authId} | ${authData[authId].accountInfo.roleName} @ ${authData[authId].accountInfo.companyName}`,
 				authId: authId,
 			});
@@ -110,9 +105,9 @@ export default class ManageAccounts extends BaseAction {
 		const selected = await this.getNewAuthIdOption();
 		if (!selected) {
 			return;
-		} else if (selected.option === NewAuthIdOption.browser) {
+		} else if (selected.option === UiOption.new_authid_browser) {
 			this.handleBrowserAuth(accountCredentialsList);
-		} else if (selected.option === NewAuthIdOption.savetoken) {
+		} else if (selected.option === UiOption.new_authid_save_token) {
 			this.handleSaveToken();
 		}
 	}
@@ -123,18 +118,18 @@ export default class ManageAccounts extends BaseAction {
 			return;
 		}
 		try {
-			let options: SelectNewAuthIdItems[] = [
+			let options: NewAuthID[] = [
 				{
-					option: NewAuthIdOption.browser,
+					option: UiOption.new_authid_browser,
 					label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.BROWSER),
 				},
 				{
-					option: NewAuthIdOption.savetoken,
-					label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN),
+					option: UiOption.new_authid_save_token,
+					label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.OPTION),
 				},
 			];
 			return await window.showQuickPick(options, {
-				placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CREATE_NEW_AUTHID),
+				placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.NEW_AUTHID),
 				canPickMany: false,
 			});
 		} catch (e) {
@@ -143,44 +138,99 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
-		let authID = await window.showInputBox({
-			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_AUTH_ID), //Enter an authentication ID (authID provided by you to identify the credentials for your convenience)
-			validateInput: (fieldValue) =>
-				showValidationResults(
-					fieldValue,
-					validateFieldIsNotEmpty,
-					validateFieldHasNoSpaces,
-					validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
-					validateAlphanumericHyphenUnderscore,
-					validateMaximumLength
-				),
-		});
-
-		const commandActionPromise = this.runSuiteCloudCommand();
-		const commandMessage = this.translationService.getMessage(
-			COMMAND.TRIGGERED,
-			this.translationService.getMessage(MANAGE_ACCOUNTS.AUTHENTICATING)
-		);
-		const statusBarMessage: string = this.translationService.getMessage(MANAGE_ACCOUNTS.AUTHENTICATING);
-		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
-
-		const commandParams = {
-			authId: authID,
+		const authId = await this.getNewAuthId(accountCredentialsList);
+		const url = await this.getUrl();
+		if (!authId) {
+			return;
+		}
+		const commandParams: { authid: string; dev: boolean; url?: string } = {
+			authid: authId,
+			dev: false,
 		};
-		// if (params.url) {
-		// 	commandParams.url = params.url;
-		// }
+		if (url) {
+			commandParams.url = url;
+			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
+		}
 
-		const actionResult: ActionResult<any> = await AuthenticationUtils.oauth(commandParams, sdkPath);
+		let cancellationToken: CancellationToken = {};
+		const dismissButton: MessageItemWithCode = {
+			code: UiOption.dismiss,
+			title: this.translationService.getMessage(DISMISS),
+		};
+		const cancelButton: MessageItemWithCode = {
+			code: UiOption.cancel_process,
+			title: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.BROWSER_CANCEL),
+		};
+
+		// This will start the execution in the background and initialize cancellationToken.cancel method
+		const authenticatePromise: Promise<AuthenticateActionResult> = AuthenticationUtils.authenticateWithOauth(
+			commandParams,
+			sdkPath,
+			this.executionPath,
+			cancellationToken
+		);
+		window
+			.showInformationMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), dismissButton, cancelButton)
+			.then((x) => {
+				if (x?.code === UiOption.cancel_process) {
+					if (cancellationToken.cancel) {
+						cancellationToken.cancel(this.translationService.getMessage(MANAGE_ACCOUNTS.CANCELED));
+					}
+				}
+			});
+
+		const actionResult = await authenticatePromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {
-			this.messageService.showCommandInfo();
+			this.log.result(
+				this.translationService.getMessage(
+					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
+					actionResult.accountInfo.companyName,
+					actionResult.accountInfo.roleName,
+					actionResult.authId
+				)
+			);
+			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS));
 		} else {
+			actionResult.errorMessages.forEach((e) => this.log.error(e));
 			this.messageService.showCommandError();
 		}
 	}
 
+	private async getNewAuthId(accountCredentialsList: AuthListData) {
+		return window.showInputBox({
+			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_AUTH_ID), //Enter an authentication ID (authID provided by you to identify the credentials for your convenience)
+			ignoreFocusOut: true,
+			validateInput: (fieldValue) => {
+				let validationResult = InteractiveAnswersValidator.showValidationResults(
+					fieldValue,
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
+					InteractiveAnswersValidator.validateFieldHasNoSpaces,
+					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
+					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
+					InteractiveAnswersValidator.validateMaximumLength
+				);
+				return typeof validationResult === 'string' ? validationResult : null;
+			},
+		});
+	}
+
+	private async getUrl() {
+		return await window.showInputBox({
+			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL), //Enter an authentication ID (authID provided by you to identify the credentials for your convenience)
+			ignoreFocusOut: true,
+			validateInput: (fieldValue) => {
+				let validationResult = InteractiveAnswersValidator.showValidationResults(
+					fieldValue,
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
+					InteractiveAnswersValidator.validateFieldHasNoSpaces
+				);
+				return typeof validationResult === 'string' ? validationResult : null;
+			},
+		});
+	}
+
 	private async handleSaveToken() {
-		this.messageService.showStatusBarMessage(`action not implemented`);
+		this.messageService.showStatusBarMessage(`Action not implemented`);
 	}
 
 	private handleSelectedAuth(authId: string) {
@@ -190,7 +240,7 @@ export default class ManageAccounts extends BaseAction {
 		}
 		try {
 			AuthenticationUtils.setDefaultAuthentication(this.executionPath, authId);
-			this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.SUCCESS, authId));
+			this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 			return;
 		} catch (e) {
 			this.messageService.showErrorMessage(e);
