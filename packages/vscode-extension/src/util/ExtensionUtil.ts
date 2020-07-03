@@ -12,25 +12,25 @@ export function getRootProjectFolder(): string | undefined {
 	return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : undefined;
 }
 
-export const ApplicationConstants = require('@oracle/suitecloud-cli/src/ApplicationConstants');
+export const ApplicationConstants = require('@oracle/suitecloud-cli/dist/ApplicationConstants');
 
 export const actionResultStatus: {
 	SUCCESS: string;
 	ERROR: string;
-} = require('@oracle/suitecloud-cli/src/services/actionresult/ActionResult').STATUS;
+} = require('@oracle/suitecloud-cli/dist/services/actionresult/ActionResult').STATUS;
 
-export const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
-export const CommandsMetadataService = require('@oracle/suitecloud-cli/src/core/CommandsMetadataService');
-export const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
-export const CLIConfigurationService = require('@oracle/suitecloud-cli/src/core/extensibility/CLIConfigurationService');
+export const CommandActionExecutor = require('@oracle/suitecloud-cli/dist/core/CommandActionExecutor');
+export const CommandsMetadataService = require('@oracle/suitecloud-cli/dist/core/CommandsMetadataService');
+export const CommandOptionsValidator = require('@oracle/suitecloud-cli/dist/core/CommandOptionsValidator');
+export const CLIConfigurationService = require('@oracle/suitecloud-cli/dist/core/extensibility/CLIConfigurationService');
 
-export const ConsoleLogger = require('@oracle/suitecloud-cli/src/loggers/ConsoleLogger');
+export const ConsoleLogger = require('@oracle/suitecloud-cli/dist/loggers/ConsoleLogger');
 
-export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
-export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
-export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
+export const TranslationService = require('@oracle/suitecloud-cli/dist/services/TranslationService');
+export const FileSystemService = require('@oracle/suitecloud-cli/dist/services/FileSystemService');
+export const AuthenticationUtils = require('@oracle/suitecloud-cli/dist/utils/AuthenticationUtils');
 
-export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
+export const FileUtils = require('@oracle/suitecloud-cli/dist/utils/FileUtils');
 
 export const InteractiveAnswersValidator: {
 	showValidationResults(value: string, ...funcs: Function[]): string | boolean;
@@ -50,4 +50,4 @@ export const InteractiveAnswersValidator: {
 	validateAuthIDNotInList(newAuthID: string, authIDsList: string[]): boolean;
 	validateAlphanumericHyphenUnderscore(fieldValue: string): boolean;
 	validateMaximumLength(fieldValue: string, maxLength: number): boolean;
-} = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
+} = require('@oracle/suitecloud-cli/dist/validation/InteractiveAnswersValidator');

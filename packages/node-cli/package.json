@@ -44,6 +44,6 @@
 		"copy-files": "copyfiles -u 1 \"src/**/*.{js,xml,template,json}\" dist",
 		"build": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json",
 		"test": "jest",
-		"postinstall": "node postinstall.js"
+		"postinstall": "node dist/postinstall.js"
 	}
 }

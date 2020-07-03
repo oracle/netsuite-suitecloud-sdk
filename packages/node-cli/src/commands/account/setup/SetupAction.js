@@ -5,7 +5,7 @@
 'use strict';
 
 const BaseAction = require('../../base/BaseAction');
-const AuthenticateActionResult = require('../../../services/actionresult/AuthenticateActionResult');
+const { AuthenticateActionResult } = require('../../../services/actionresult/AuthenticateActionResult');
 const { setDefaultAuthentication, authenticateWithOauth, saveToken } = require('../../../utils/AuthenticationUtils');
 
 const AUTH_MODE = {

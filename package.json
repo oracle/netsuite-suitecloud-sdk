@@ -7,9 +7,8 @@
     "lerna": "^3.21.0"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
     "test": "lerna run test --stream",
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap --ignore-scripts && lerna run build",
     "compile": "lerna run compile --stream",
     "build": "lerna run build --stream"
   }
