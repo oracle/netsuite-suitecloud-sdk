@@ -62,10 +62,10 @@ module.exports = class CommandActionExecutor {
 				projectConfiguration: projectConfiguration,
 			});
 
-			if (actionResult.status === ActionResult.STATUS.SUCCESS && commandUserExtension.onCompleted) {
+			if (actionResult.isSuccess() && commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
 			}
-			else if (actionResult.status === ActionResult.STATUS.ERROR && commandUserExtension.onError) {
+			else if (!actionResult.isSuccess() && commandUserExtension.onError) {
 				commandUserExtension.onError(ActionResultUtils.getErrorMessagesString(actionResult));
 			}
 			return actionResult;
@@ -133,7 +133,6 @@ module.exports = class CommandActionExecutor {
 		const projectConfiguration = options.projectConfiguration;
 		const isSetupRequired = options.metadata.isSetupRequired;
 		const commandName = options.metadata.name;
-		//const runInInteractiveMode = options.runInInteractiveMode;
 		const commandUserExtension = options.commandUserExtension;
 		let commandArguments = options.arguments;
 

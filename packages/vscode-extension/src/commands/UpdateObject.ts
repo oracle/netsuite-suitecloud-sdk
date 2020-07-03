@@ -4,8 +4,8 @@
  */
 import * as path from 'path';
 import { window } from 'vscode';
-import { COMMAND, ERRORS, YES, NO, UPDATE_OBJECT } from '../service/TranslationKeys';
-import { actionResultStatus, CLIConfigurationService, ApplicationConstants } from '../util/ExtensionUtil';
+import { ERRORS, YES, NO, UPDATE_OBJECT } from '../service/TranslationKeys';
+import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'object:update';

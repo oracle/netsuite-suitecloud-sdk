@@ -60,5 +60,43 @@
                 "mandatory": false
             }
         ]
+    },
+    "account:ci": {
+        "name": "account:ci",
+        "description": "Set up an account to use with the SuiteCloud CLI for Node.js. This command only supports non-interactive mode.",
+        "isSetupRequired": false,
+        "options": [
+            {
+                "name": "savetoken",
+                "description": "Enter a TBA token that you issued previously in NetSuite.",
+                "type": "FLAG",
+                "mandatory": false
+            },
+            {
+                "name": "authid",
+                "description": "References the custom name you gave to a specific account-role combination.",
+                "mandatory": false
+            },
+            {
+                "name": "tokenid",
+                "description": "Enter the token ID of a TBA token you issued previously in NetSuite.",
+                "mandatory": false
+            },
+            {
+                "name": "tokensecret",
+                "description": "Enter the token secret of a TBA token you issued previously in NetSuite.",
+                "mandatory": false
+            },
+            {
+                "name": "accountid",
+                "description": "References the ID of the account to log in to.",
+                "mandatory": false
+            },
+            {
+                "name": "url",
+                "description": "Specify the domain URL of a virtual machine.",
+                "mandatory": false
+            }
+        ]
     }
 }

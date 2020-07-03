@@ -27,7 +27,7 @@ const PROJECT_VERSION_FORMAT_REGEX = '^\\d+(\\.\\d+){2}$';
 const SUITEAPP_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '(\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '){2}$';
 const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
 
-class InteractiveAnswersValidator {
+module.exports = {
 	showValidationResults(value, ...funcs) {
 		for (const func of funcs) {
 			const validationOutput = func(value);
@@ -36,49 +36,49 @@ class InteractiveAnswersValidator {
 			}
 		}
 		return true;
-	}
+	},
 
 	validateFieldIsNotEmpty(fieldValue) {
 		return fieldValue !== ''
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.EMPTY_FIELD));
-	}
+	},
 
 	validateAlphanumericHyphenUnderscoreExtended(fieldValue) {
 		return ALPHANUMERIC_HYPHEN_UNDERSCORE_EXTENDED.test(fieldValue)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.ALPHANUMERIC_HYPHEN_UNDERSCORE_EXTENDED));
-	}
+	},
 
 	validateFieldHasNoSpaces(fieldValue) {
 		return !STRING_WITH_SPACES_REGEX.test(fieldValue)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FIELD_HAS_SPACES));
-	}
+	},
 
 	validateFieldIsLowerCase(fieldOptionId, fieldValue) {
 		return fieldValue.match(ALPHANUMERIC_LOWERCASE_WHOLE_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FIELD_NOT_LOWER_CASE, fieldOptionId));
-	}
+	},
 
 	validatePublisherId(fieldValue) {
 		return fieldValue.match(SUITEAPP_PUBLISHER_ID_FORMAT_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PUBLISHER_ID_FORMAT));
-	}
+	},
 
 	validateProjectVersion(fieldValue) {
 		return fieldValue.match(PROJECT_VERSION_FORMAT_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PROJECT_VERSION_FORMAT));
-	}
+	},
 
 	validateArrayIsNotEmpty(array) {
 		return array.length > 0
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.CHOOSE_OPTION));
-	}
+	},
 
 	validateSuiteApp(fieldValue) {
 		let notEmpty =
@@ -92,7 +92,7 @@ class InteractiveAnswersValidator {
 			return VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.APP_ID_FORMAT));
 		}
 		return VALIDATION_RESULT_SUCCESS;
-	}
+	},
 
 	validateScriptId(fieldValue) {
 		let notEmpty =
@@ -106,49 +106,47 @@ class InteractiveAnswersValidator {
 			return VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.SCRIPT_ID_FORMAT));
 		}
 		return VALIDATION_RESULT_SUCCESS;
-	}
+	},
 
 	validateXMLCharacters(fieldValue) {
 		return !XML_FORBIDDEN_CHARACTERS_REGEX.test(fieldValue)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FIELD_HAS_XML_FORBIDDEN_CHARACTERS));
-	}
+	},
 
 	validateNotUndefined(value, optionName) {
 		return value !== undefined
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(COMMAND_OPTION_IS_MANDATORY, optionName));
-	}
+	},
 
 	validateProjectType(value) {
 		return [ApplicationConstants.PROJECT_SUITEAPP, ApplicationConstants.PROJECT_ACP].includes(value)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.WRONG_PROJECT_TYPE));
-	}
+	},
 
 	validateSameAuthID(newAuthID, authID) {
 		return authID != newAuthID
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.CURRENT_AUTHID, newAuthID));
-	}
+	},
 
 	validateAuthIDNotInList(newAuthID, authIDsList) {
 		return !authIDsList.includes(newAuthID)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.AUTH_ID_ALREADY_USED));
-	}
+	},
 
 	validateAlphanumericHyphenUnderscore(fieldValue) {
 		return ALPHANUMERIC_HYPHEN_UNDERSCORE.test(fieldValue)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.ALPHANUMERIC_HYPHEN_UNDERSCORE));
-	}
+	},
 
 	validateMaximumLength(fieldValue, maxLength = 40) {
 		return fieldValue.length <= maxLength
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.MAX_LENGTH, maxLength));
-	}
-}
-
-module.exports = new InteractiveAnswersValidator();
+	},
+};

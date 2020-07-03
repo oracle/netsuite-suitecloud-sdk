@@ -10,6 +10,15 @@ export interface ActionResult<T> {
 	data: T;
 }
 
+export interface AuthenticateActionResult extends ActionResult<undefined> {
+	mode: string;
+	authId: string;
+	accountInfo: {
+		companyName: string;
+		roleName: string;
+	};
+}
+
 export type AuthListData = {
 	[key: string]: {
 		accountInfo: {

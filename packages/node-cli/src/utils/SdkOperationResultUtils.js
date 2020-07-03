@@ -14,17 +14,4 @@ module.exports = {
 		const { resultMessage } = operationResult;
 		return resultMessage ? resultMessage : '';
 	},
-
-	// TODO: fix operationResult in SDK to always return errors in errorMessage and never in resultMessage
-	collectErrorMessages: (operationResult) => {
-		const { errorMessages, resultMessage } = operationResult;
-		if (Array.isArray(errorMessages)) {
-			if (resultMessage) {
-				errorMessages.unshift(resultMessage);
-			}
-			return errorMessages;
-		} else {
-			return [resultMessage];
-		}
-	},
 };

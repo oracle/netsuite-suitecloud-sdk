@@ -32,6 +32,10 @@ class ActionResult {
 		}
 	}
 
+	isSuccess() {
+		return this._status === STATUS.SUCCESS;
+	}
+
 	get status() {
 		return this._status;
 	}
@@ -54,10 +58,6 @@ class ActionResult {
 
 	static get Builder() {
 		return new ActionResultBuilder();
-	}
-
-	static get STATUS() {
-		return STATUS;
 	}
 }
 
@@ -98,5 +98,4 @@ class ActionResultBuilder {
 	}
 }
 
-module.exports.ActionResult = ActionResult;
-module.exports.ActionResultBuilder = ActionResultBuilder;
+module.exports = { ActionResult, ActionResultBuilder, STATUS }

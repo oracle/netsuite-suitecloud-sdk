@@ -10,8 +10,6 @@ const {
 	validateSuiteApp,
 	validateScriptId,
 	validateXMLCharacters,
-	validateNotProductionUrl,
-	validateEmail,
 } = require('../../src/validation/InteractiveAnswersValidator');
 
 const positiveResponse = {

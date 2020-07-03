@@ -4,7 +4,7 @@
  */
 'use strict';
 const assert = require('assert');
-const { ActionResult, ActionResultBuilder } = require('./ActionResult');
+const { ActionResult, ActionResultBuilder, STATUS } = require('./ActionResult');
 
 class ProxyActionResult extends ActionResult {
 	constructor(parameters) {
@@ -17,12 +17,11 @@ class ProxyActionResult extends ActionResult {
 	validateParameters(parameters) {
 		assert(parameters);
 		assert(parameters.status, 'status is required when creating an ActionResult object.');
-		if (parameters.status === ActionResult.STATUS.SUCCESS) {
+		if (this.isSuccess()) {
 			if (parameters.isSettingProxy) {
 				assert(parameters.proxyUrl, 'proxyUrl is required when ActionResult is a success.');
 			}
-		}
-		if (parameters.status === ActionResult.STATUS.ERROR) {
+		} else {
 			assert(parameters.errorMessages, 'errorMessages is required when ActionResult is an error.');
 			assert(Array.isArray(parameters.errorMessages), 'errorMessages argument must be an array');
 		}
@@ -51,7 +50,7 @@ class ProxyActionResultBuilder extends ActionResultBuilder {
 	}
 
 	success() {
-		this.status = ActionResult.STATUS.SUCCESS;
+		this.status = STATUS.SUCCESS;
 		return this;
 	}
 
