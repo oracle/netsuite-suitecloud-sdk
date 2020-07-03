@@ -75,7 +75,7 @@ module.exports = class CommandActionExecutor {
 			if (commandUserExtension && commandUserExtension.onError) {
 				commandUserExtension.onError(error);
 			}
-			return ActionResult.Builder.withErrors(errorMessage);
+			return ActionResult.Builder.withErrors(Array.isArray(errorMessage) ? errorMessage : [errorMessage]).build();
 		}
 	}
 

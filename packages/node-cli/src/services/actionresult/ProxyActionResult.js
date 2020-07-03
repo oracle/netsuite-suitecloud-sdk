@@ -17,7 +17,7 @@ class ProxyActionResult extends ActionResult {
 	validateParameters(parameters) {
 		assert(parameters);
 		assert(parameters.status, 'status is required when creating an ActionResult object.');
-		if (this.isSuccess()) {
+		if (parameters.status === STATUS.SUCCESS) {
 			if (parameters.isSettingProxy) {
 				assert(parameters.proxyUrl, 'proxyUrl is required when ActionResult is a success.');
 			}

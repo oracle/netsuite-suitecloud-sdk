@@ -17,7 +17,7 @@ class AuthenticateActionResult extends ActionResult {
 	validateParameters(parameters) {
 		assert(parameters);
 		assert(parameters.status, 'status is required when creating an ActionResult object.');
-		if (this.isSuccess()) {
+		if (parameters.status === STATUS.SUCCESS) {
 			assert(parameters.mode, 'mode is required when ActionResult is a success.');
 			assert(parameters.authId, 'authId is required when ActionResult is a success.');
 			assert(parameters.accountInfo, 'accountInfo is required when ActionResult is a success.');
