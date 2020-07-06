@@ -6,14 +6,12 @@
 
 const Command = require('../../Command');
 const PackageAction = require('./PackageAction');
-const PackageInputHandler = require('./PackageInputHandler');
 const PackageOutputHandler = require('./PackageOutputHandler');
 
 module.exports = {
 	create(options) {
 		return Command.Builder.withOptions(options)
 			.withAction(PackageAction)
-			.withInput(PackageInputHandler)
 			.withOutput(PackageOutputHandler)
 			.build();
 	}

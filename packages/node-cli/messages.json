@@ -151,9 +151,6 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",
 
-	"COMMAND_PACKAGE_QUESTIONS_ACP_VALUES": "How do you want to react to the Account Specific Values?",
-	"COMMAND_PACKAGE_QUESTIONS_CHOICES_ERROR": "Cancel the process",
-	"COMMAND_PACKAGE_QUESTIONS_CHOICES_WARNING": "Display a warning",
 	"COMMAND_PACKAGE_PACKAGING": "Packaging...",
 
 	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
