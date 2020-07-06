@@ -10,6 +10,7 @@
     "test": "lerna run test --stream",
     "postinstall": "lerna bootstrap --ignore-scripts && lerna run build",
     "compile": "lerna run compile --stream",
-    "build": "lerna run build --stream"
+    "build": "lerna run build --stream",
+    "build-prod": "lerna run build-prod --stream"
   }
 }

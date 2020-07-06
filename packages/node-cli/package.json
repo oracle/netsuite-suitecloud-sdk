@@ -43,6 +43,7 @@
 		"clean": "rm -rf dist && rm -rf tsconfig.build.tsbuildinfo",
 		"copy-files": "copyfiles -u 1 \"src/**/*.{js,xml,template,json}\" dist",
 		"build": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json",
+		"build-prod": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json",
 		"test": "jest",
 		"postinstall": "node dist/postinstall.js"
 	}

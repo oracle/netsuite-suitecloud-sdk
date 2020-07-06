@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const TemplatesCompiler = require('@oracle/suitecloud-cli-localserver-command/src/compilers/TemplatesCompiler');
+const TemplatesCompiler = require('@oracle/suitecloud-cli-localserver-command/dist/compilers/TemplatesCompiler');
 
 const { SERVERPATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 

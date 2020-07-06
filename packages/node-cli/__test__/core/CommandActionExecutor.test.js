@@ -1,7 +1,7 @@
 'use strict';
-const CommandActionExecutor = require('../../src/core/CommandActionExecutor');
-const sdkPath = require('../../src/core/sdksetup/SdkProperties').getSdkPath();
-const { ActionResult } = require('../../src/services/actionresult/ActionResult');
+const CommandActionExecutor = require('../../dist/core/CommandActionExecutor');
+const sdkPath = require('../../dist/core/sdksetup/SdkProperties').getSdkPath();
+const { ActionResult } = require('../../dist/services/actionresult/ActionResult');
 
 describe('CommandActionExecutor ExecuteAction():', function() {
 	// STARTING MOCKS.
@@ -151,7 +151,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			arguments: {},
 		});
 		expect(mockConsoleLogger.error).toBeCalledTimes(0);
-		expect(actionResult._status).toBe('SUCCESS');
+		expect(actionResult.isSuccess()).toBe(true);
 	});
 
 	it('Should throw EXCEPTION when setup is required and there is not any account configured.', async () => {

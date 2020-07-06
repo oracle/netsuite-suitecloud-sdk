@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const SassCompiler = require('@oracle/suitecloud-cli-localserver-command/src/compilers/SassCompiler');
+const SassCompiler = require('@oracle/suitecloud-cli-localserver-command/dist/compilers/SassCompiler');
 
 const { ROOT, SERVERPATH, removeFolder, mockClearConsoleLog, createLocalserverFolder } = require('./helpers');
 

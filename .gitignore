@@ -7,3 +7,7 @@
 # transpiled .js files
 packages/**/dist
 extensions/**/dist
+
+# compilation files
+packages/**/*.tsbuildinfo
+extensions/**/*.tsbuildinfo
