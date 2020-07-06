@@ -151,9 +151,6 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",
 
-	"COMMAND_PACKAGE_QUESTIONS_ACP_VALUES": "How do you want to react to the Account Specific Values?",
-	"COMMAND_PACKAGE_QUESTIONS_CHOICES_ERROR": "Cancel the process",
-	"COMMAND_PACKAGE_QUESTIONS_CHOICES_WARNING": "Display a warning",
 	"COMMAND_PACKAGE_PACKAGING": "Packaging...",
 
 	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
@@ -168,7 +165,6 @@
 	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_CLEARED": "The proxy server URL has been cleared.",
 	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_SETUP": "The {0} proxy server URL has been set.",
 
-	"COMMAND_SETUPACCOUNT_ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"suitecloud account:setup\" in a valid project folder.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_AUTH_MODE": "Select an authentication method:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_DEVELOPMENT_MODE_URL": "Enter your domain URL:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID (authID):",
@@ -234,6 +230,7 @@
 	"DOWNLOADING_SUITECLOUD_SDK_SUCCESS": "SuiteCloud SDK dependencies downloaded successfully.",
 	"DOWNLOADING_SUITECLOUD_SDK_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
 	"DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE": "The JAR file is not available from this URL.",
+	"ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"{2}\" in a valid project folder.",
 	"ERRORS_ADD_ERROR_LINE": "\nError: {0}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"suitecloud.config.js\" module defined in the project. Details:{0}{1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE": "The return value of the function should be an object with the property \"arguments\" of type \"object\".",
@@ -256,7 +253,6 @@
 	"ERRORS_SDKEXECUTOR_RUNNING_COMMAND": "There was an internal error while running the command. Details: {0}",
 	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}\n{1}",
 	"ERRORS_SETUP_REQUIRED": "No account has been set up for this project. Run \"suitecloud account:setup\" to link your project with your account.",
-	"ERRORS_SETUP_VALID_FOLDER": "Please run setupaccount in a valid folder. Could not find a {0} file in the project folder {1}.",
 	"ERRORS_TIMED_OUT_CONNECTION": "The connection has timed out. If you are behind a proxy, you must configure the same proxy server in CLI for Node.js. Run \"suitecloud config:proxy -h\" to learn how to set up a proxy server.",
 	"ERRORS_XML_MANIFEST_TAG_MISSING": "The manifest.xml file does not contain the manifest tag.",
 	"ERRORS_XML_PROJECTTYPE_ATTRIBUTE_MISSING": "The manifest field does not contain the projecttype attribute in the manifest.xml file.",
