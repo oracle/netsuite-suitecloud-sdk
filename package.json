@@ -8,9 +8,9 @@
   },
   "scripts": {
     "test": "lerna run test --stream",
-    "postinstall": "lerna bootstrap --ignore-scripts && lerna run build",
+    "postinstall": "lerna run lerna-init --stream && lerna bootstrap",
     "compile": "lerna run compile --stream",
     "build": "lerna run build --stream",
-    "build-prod": "lerna run build-prod --stream"
+    "tc-preinstall": "lerna run tc-build --stream"
   }
 }

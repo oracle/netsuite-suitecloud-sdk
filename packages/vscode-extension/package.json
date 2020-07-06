@@ -78,7 +78,7 @@
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
-		"build": "tsc -p ./",
+		"build": "npm run compile",
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {

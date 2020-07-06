@@ -4,4 +4,4 @@
 */
 'use strict';
 
-module.exports.LocalCommand = require('./src/LocalCommand');
+module.exports.LocalCommand = require('./dist/LocalCommand');

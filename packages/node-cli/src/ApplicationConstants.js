@@ -32,7 +32,7 @@ module.exports = {
 		SUITECLOUD_SDK: '.suitecloud-sdk',
 		NODE_CLI: 'cli'
 	},
-	DEFAULT_MESSAGES_FILE: '../../messages.json',
+	DEFAULT_MESSAGES_FILE: '../../dist/messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	PROD_ENVIRONMENT_ADDRESS: 'system.netsuite.com',

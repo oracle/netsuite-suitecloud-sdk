@@ -37,11 +37,12 @@
 		"@types/cors": "^2.8.6",
 		"@types/express": "^4.17.3",
 		"@types/node-sass": "^4.11.0",
-		"typescript": "^3.7.5",
+		"typescript": "^3.8.3",
 		"copyfiles": "^2.2.0"
 	},
 	"scripts": {
 		"clean": "rm -rf dist && rm -rf tsconfig.build.tsbuildinfo",
+		"lerna-init": "npm install && npm run build",
 		"copy-files": "copyfiles -u 1 \"src/**/*.{js},\" dist",
 		"build": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json"
 	}

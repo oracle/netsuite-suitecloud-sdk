@@ -10,7 +10,7 @@ const {
 	validateSuiteApp,
 	validateScriptId,
 	validateXMLCharacters,
-} = require('../../src/validation/InteractiveAnswersValidator');
+} = require('../../dist/validation/InteractiveAnswersValidator');
 
 const positiveResponse = {
 	result: true,

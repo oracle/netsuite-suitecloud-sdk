@@ -15,6 +15,9 @@
 		"url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"
 	},
 	"repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/node-cli",
+	"files": [
+		"dist"
+	],
 	"main": "./dist/suitecloud.js",
 	"preferGlobal": true,
 	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/cli/java/latest",
@@ -33,17 +36,18 @@
 	},
 	"devDependencies": {
 		"@types/inquirer": "^6.5.0",
-		"@types/jest": "^25.1.4",
+		"@types/jest": "^26.0.4",
 		"@types/node": "^12.11.7",
 		"copyfiles": "^2.2.0",
-		"typescript": "^3.6.4",
+		"typescript": "^3.8.3",
 		"jest": "^26.0.1"
 	},
 	"scripts": {
+		"tc-preinstall": "npm install --ignore-scripts && npm run build",
 		"clean": "rm -rf dist && rm -rf tsconfig.build.tsbuildinfo",
 		"copy-files": "copyfiles -u 1 \"src/**/*.{js,xml,template,json}\" dist",
-		"build": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json",
-		"build-prod": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json",
+		"lerna-init": "npm install --ignore-scripts && npm run build",
+		"build": "npm run clean && npm run copy-files && tsc --version && npx tsc -b tsconfig.build.json",
 		"test": "jest",
 		"postinstall": "node dist/postinstall.js"
 	}

@@ -10,7 +10,7 @@ import BaseAction from './BaseAction';
 const objectTypes: {
 	name: string;
 	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
-}[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
+}[] = require('@oracle/suitecloud-cli/dist/metadata/ObjectTypesMetadata');
 
 const COMMAND_NAME = 'object:list';
 
