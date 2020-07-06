@@ -19,7 +19,8 @@ const {
 } = require('../../../ApplicationConstants');
 
 const {
-	COMMAND_SETUPACCOUNT: { ERRORS, QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
+	COMMAND_SETUPACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
+	ERRORS,
 } = require('../../../services/TranslationKeys');
 
 const {
@@ -210,7 +211,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			throw NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder);
+			throw NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name);
 		}
 	}
 };
