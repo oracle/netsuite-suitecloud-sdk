@@ -92,7 +92,7 @@ async function saveToken(params, sdkPath, projectFolder) {
 	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE.SDK_COMMAND)
 		.integration()
 		.addParam(COMMANDS.AUTHENTICATE.PARAMS.AUTH_ID, authId)
-		.addParam(COMMANDS.AUTHENTICATE.PARAMS.ACCOUNT, params.accountid)
+		.addParam(COMMANDS.AUTHENTICATE.PARAMS.ACCOUNT, params.account)
 		.addParam(COMMANDS.AUTHENTICATE.PARAMS.TOKEN_ID, params.tokenid)
 		.addParam(COMMANDS.AUTHENTICATE.PARAMS.TOKEN_SECRET, params.tokensecret)
 		.addFlag(FLAGS.SAVETOKEN);
