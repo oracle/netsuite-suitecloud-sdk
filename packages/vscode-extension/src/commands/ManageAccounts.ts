@@ -80,6 +80,7 @@ export default class ManageAccounts extends BaseAction {
 	private async getAuthListOption(data: AuthListData) {
 		return await window.showQuickPick(this.getAuthOptions(data), {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_CREATE),
+			ignoreFocusOut: true,
 			canPickMany: false,
 		});
 	}
@@ -108,7 +109,7 @@ export default class ManageAccounts extends BaseAction {
 		} else if (selected.option === UiOption.new_authid_browser) {
 			this.handleBrowserAuth(accountCredentialsList);
 		} else if (selected.option === UiOption.new_authid_save_token) {
-			this.handleSaveToken();
+			this.handleSaveToken(accountCredentialsList);
 		}
 	}
 
@@ -129,6 +130,7 @@ export default class ManageAccounts extends BaseAction {
 				},
 			];
 			return await window.showQuickPick(options, {
+				ignoreFocusOut: true,
 				placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.NEW_AUTHID),
 				canPickMany: false,
 			});
@@ -189,7 +191,7 @@ export default class ManageAccounts extends BaseAction {
 					actionResult.authId
 				)
 			);
-			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS));
+			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
 		} else {
 			actionResult.errorMessages.forEach((e) => this.log.error(e));
 			this.messageService.showCommandError();
@@ -198,7 +200,7 @@ export default class ManageAccounts extends BaseAction {
 
 	private async getNewAuthId(accountCredentialsList: AuthListData) {
 		return window.showInputBox({
-			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_AUTH_ID), //Enter an authentication ID (authID provided by you to identify the credentials for your convenience)
+			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_AUTH_ID),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
@@ -216,7 +218,7 @@ export default class ManageAccounts extends BaseAction {
 
 	private async getUrl() {
 		return await window.showInputBox({
-			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL), //Enter an authentication ID (authID provided by you to identify the credentials for your convenience)
+			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
@@ -229,8 +231,87 @@ export default class ManageAccounts extends BaseAction {
 		});
 	}
 
-	private async handleSaveToken() {
-		this.messageService.showStatusBarMessage(`Action not implemented`);
+	private async getAccountId() {
+		return await window.showInputBox({
+			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_ACCOUNT_ID),
+			ignoreFocusOut: true,
+			validateInput: (fieldValue) => {
+				let validationResult = InteractiveAnswersValidator.showValidationResults(
+					fieldValue, 
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
+					InteractiveAnswersValidator.validateFieldHasNoSpaces,
+					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore
+				);
+				return typeof validationResult === 'string' ? validationResult : null;
+			},
+		});
+	}
+
+	private async getTokenId() {
+		return await window.showInputBox({
+			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_TOKEN_ID),
+			ignoreFocusOut: true,
+			password: true,
+			validateInput: (fieldValue) => {
+				let validationResult = InteractiveAnswersValidator.showValidationResults(
+					fieldValue, 
+					InteractiveAnswersValidator.validateFieldIsNotEmpty
+				);
+				return typeof validationResult === 'string' ? validationResult : null;
+			},
+		});
+	}
+
+	private async getTokenSecret() {
+		return await window.showInputBox({
+			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_TOKEN_SECRET),
+			ignoreFocusOut: true,
+			password: true,
+			validateInput: (fieldValue) => {
+				let validationResult = InteractiveAnswersValidator.showValidationResults(
+					fieldValue, 
+					InteractiveAnswersValidator.validateFieldIsNotEmpty
+				);
+				return typeof validationResult === 'string' ? validationResult : null;
+			},
+		});
+	}
+
+	private async handleSaveToken(accountCredentialsList: AuthListData) {
+		const authId = await this.getNewAuthId(accountCredentialsList);
+		const url = await this.getUrl();
+		const accountId = await this.getAccountId();
+		const tokenId = await this.getTokenId();
+		const tokenSecret = await this.getTokenSecret();
+		if (!authId || !accountId || !tokenId || !tokenSecret) {
+			return;
+		}
+		const commandParams: { authid: string; accountid: string; tokenid: string; tokensecret: string; dev: boolean; url?: string } = {
+			authid: authId,
+			dev: false,
+			accountid: accountId,
+			tokenid: tokenId,
+			tokensecret: tokenSecret
+		};
+		if (url) {
+			commandParams.url = url;
+			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
+		}
+		const actionResult: AuthenticateActionResult = await AuthenticationUtils.saveToken(commandParams, sdkPath, this.executionPath);
+		if (actionResult.status === actionResultStatus.SUCCESS) {
+			this.log.result(
+				this.translationService.getMessage(
+					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
+					actionResult.accountInfo.companyName,
+					actionResult.accountInfo.roleName,
+					actionResult.authId
+				)
+			);
+			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
+		} else {
+			actionResult.errorMessages.forEach((e) => this.log.error(e));
+			this.messageService.showCommandError();
+		}
 	}
 
 	private handleSelectedAuth(authId: string) {

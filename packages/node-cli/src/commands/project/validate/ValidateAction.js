@@ -26,6 +26,7 @@ const COMMAND_OPTIONS = {
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	PROJECT: 'project',
+	AUTH_ID: 'authid',
 };
 
 module.exports = class ValidateAction extends BaseAction {
