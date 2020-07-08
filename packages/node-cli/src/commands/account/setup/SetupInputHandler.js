@@ -37,7 +37,7 @@ const ANSWERS = {
 	SELECTED_AUTH_ID: 'selected_auth_id',
 	AUTH_MODE: 'AUTH_MODE',
 	NEW_AUTH_ID: 'NEW_AUTH_ID',
-	SAVE_TOKEN_ACCOUNT_ID: 'accountId',
+	SAVE_TOKEN_ACCOUNT_ID: 'account',
 	SAVE_TOKEN_ID: 'saveTokenId',
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 };
@@ -199,7 +199,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			createNewAuthentication: true,
 			authid: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
 			mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
-			accountid: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
+			account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
 			tokenid: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
 			tokensecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
 		};

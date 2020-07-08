@@ -88,7 +88,7 @@
                 "mandatory": false
             },
             {
-                "name": "accountid",
+                "name": "account",
                 "description": "References the ID of the account to log in to.",
                 "mandatory": false
             },

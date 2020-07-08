@@ -43,8 +43,8 @@ const COMMAND = {
 					name: 'tokensecret',
 					mandatory: true,
 				},
-				accountid: {
-					name: 'accountid',
+				account: {
+					name: 'account',
 					mandatory: true,
 				},
 			},
@@ -67,10 +67,13 @@ module.exports = class AccountCiAction extends BaseAction {
 			if (validationErrors.length > 0) {
 				throw new CLIException(-10, ValidationErrorsFormatter.formatErrors(validationErrors));
 			}
-			if (params[COMMAND.OPTIONS.URL]) {
-				params[COMMAND.OPTIONS.DEV] = params[COMMAND.OPTIONS.URL] !== PROD_ENVIRONMENT_ADDRESS;
+			// If url is system.netsuite.com, we must not pass it to the sdk. If it's anything else, we must add developmentMode flag
+			if (params[COMMAND.OPTIONS.URL] === PROD_ENVIRONMENT_ADDRESS) {
+				delete params[COMMAND.OPTIONS.URL];
+			} else if (params[COMMAND.OPTIONS.URL]) {
+				params[COMMAND.OPTIONS.DEV] = true;
 			}
-			return await saveToken(params, this._sdkPath), this._projectFolder;
+			return await saveToken(params, this._sdkPath, this._projectFolder);
 		} else {
 			throw new CLIException(-10, COMMAND_ACCOUNTCI.SAVETOKEN_MANDATORY);
 		}

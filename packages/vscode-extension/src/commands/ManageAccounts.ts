@@ -181,6 +181,8 @@ export default class ManageAccounts extends BaseAction {
 				}
 			});
 
+		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), true, authenticatePromise);
+
 		const actionResult = await authenticatePromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			this.log.result(
@@ -286,10 +288,10 @@ export default class ManageAccounts extends BaseAction {
 		if (!authId || !accountId || !tokenId || !tokenSecret) {
 			return;
 		}
-		const commandParams: { authid: string; accountid: string; tokenid: string; tokensecret: string; dev: boolean; url?: string } = {
+		const commandParams: { authid: string; account: string; tokenid: string; tokensecret: string; dev: boolean; url?: string } = {
 			authid: authId,
 			dev: false,
-			accountid: accountId,
+			account: accountId,
 			tokenid: tokenId,
 			tokensecret: tokenSecret
 		};
@@ -297,7 +299,12 @@ export default class ManageAccounts extends BaseAction {
 			commandParams.url = url;
 			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
 		}
-		const actionResult: AuthenticateActionResult = await AuthenticationUtils.saveToken(commandParams, sdkPath, this.executionPath);
+
+		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, sdkPath, this.executionPath);
+
+		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA), true, saveTokenPromise);
+
+		const actionResult: AuthenticateActionResult = await saveTokenPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			this.log.result(
 				this.translationService.getMessage(
