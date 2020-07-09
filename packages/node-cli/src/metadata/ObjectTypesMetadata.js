@@ -396,7 +396,7 @@ module.exports = [
 		name: 'Script - Custom Record Action',
 		value: {
 			name: 'Script - Custom Record Action',
-			type: 'clientscript',
+			type: 'customrecordactionscript',
 			prefix: 'customscript_',
 			hasRelatedFiles: true,
 			relatedFiles: [{ type: 'blankscript' }],
