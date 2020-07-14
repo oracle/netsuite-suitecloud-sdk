@@ -1,83 +1,87 @@
 [
     {
         "commandName": "account:ci",
-        "nonInteractiveGenerator": "./commands/account/ci/AccountCiCommand"
+        "supportsInteractiveMode": false,
+        "generator": "./commands/account/ci/AccountCiCommand"
     },
     {
         "commandName": "account:manageauth",
-        "interactiveGenerator": "./commands/account/manageauth/ManageAccountCommand"
+        "supportsInteractiveMode": true,
+        "generator": "./commands/account/manageauth/ManageAccountCommand"
     },
     {
         "commandName": "account:setup",
-        "interactiveGenerator": "./commands/account/setup/SetupCommand",
-        "nonInteractiveGenerator": "./commands/account/setup/SetupCommand"
+        "supportsInteractiveMode": true,
+        "generator": "./commands/account/setup/SetupCommand"
     },
     {
         "commandName": "config:proxy",
-        "nonInteractiveGenerator": "commands/config/proxy/ProxyCommand"
+        "supportsInteractiveMode": false,
+        "generator": "commands/config/proxy/ProxyCommand"
     },
     {
         "commandName": "file:import",
-        "interactiveGenerator": "commands/file/import/ImportFilesCommand",
-        "nonInteractiveGenerator": "commands/file/import/ImportFilesCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/file/import/ImportFilesCommand"
     },
     {
         "commandName": "file:list",
-        "interactiveGenerator": "commands/file/import/ListFilesCommand",
-        "nonInteractiveGenerator": "commands/file/import/ListFilesCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/file/import/ListFilesCommand"
     },
     {
         "commandName": "file:upload",
-        "interactiveGenerator": "commands/file/upload/UploadFilesCommand",
-        "nonInteractiveGenerator": "commands/file/upload/UploadFilesCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/file/upload/UploadFilesCommand"
     },
     {
         "commandName": "object:import",
-        "interactiveGenerator": "commands/object/import/ImportObjectsCommand",
-        "nonInteractiveGenerator": "commands/object/import/ImportObjectsCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/object/import/ImportObjectsCommand"
     },
     {
         "commandName": "object:list",
-        "interactiveGenerator": "commands/object/list/ListObjectsCommand",
-        "nonInteractiveGenerator": "commands/object/list/ListObjectsCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/object/list/ListObjectsCommand"
     },
     {
         "commandName": "object:update",
-        "interactiveGenerator": "./commands/object/update/UpdateCommand",
-        "nonInteractiveGenerator": "./commands/object/update/UpdateCommand"
+        "supportsInteractiveMode": true,
+        "generator": "./commands/object/update/UpdateCommand"
     },
     {
         "commandName": "project:adddependencies",
-        "nonInteractiveGenerator": "commands/project/adddependencies/AddDependenciesCommand"
+        "supportsInteractiveMode": false,
+        "generator": "commands/project/adddependencies/AddDependenciesCommand"
     },
     {
         "commandName": "project:create",
-        "interactiveGenerator": "commands/project/create/CreateProjectCommand",
-        "nonInteractiveGenerator": "commands/project/create/CreateProjectCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/project/create/CreateProjectCommand"
     },
     {
         "commandName": "project:deploy",
-        "interactiveGenerator": "commands/project/deploy/DeployCommand",
-        "nonInteractiveGenerator": "commands/project/deploy/DeployCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/project/deploy/DeployCommand"
     },
     {
         "commandName": "project:package",
-        "interactiveGenerator": "commands/project/package/PackageCommand",
-        "nonInteractiveGenerator": "commands/project/package/PackageCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/project/package/PackageCommand"
     },
     {
         "commandName": "project:validate",
-        "interactiveGenerator": "commands/project/validate/ValidateCommand",
-        "nonInteractiveGenerator": "commands/project/validate/ValidateCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/project/validate/ValidateCommand"
     },
     {
         "commandName": "suitecommerce:localserver",
-        "interactiveGenerator": "commands/localserver/LocalServerCommand",
-        "nonInteractiveGenerator": "commands/localserver/LocalServerCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/localserver/LocalServerCommand"
     },
     {
         "commandName": "object:create",
-        "interactiveGenerator": "commands/object/create/CreateObjectCommand",
-        "nonInteractiveGenerator": "commands/object/create/CreateObjectCommand"
+        "supportsInteractiveMode": true,
+        "generator": "commands/object/create/CreateObjectCommand"
     }
 ]
