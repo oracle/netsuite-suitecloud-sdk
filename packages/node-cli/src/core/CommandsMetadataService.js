@@ -83,17 +83,8 @@ module.exports = class CommandsMetadataService {
 			const generatorMetadata = commandGeneratorsMetadata.find(generatorMetadata => {
 				return generatorMetadata.commandName === commandMetadata.name;
 			});
-
-			const defaultGenerator = generatorMetadata && generatorMetadata.nonInteractiveGenerator
-				? generatorMetadata.nonInteractiveGenerator
-				: SDK_WRAPPER_GENERATOR;
-			commandMetadata.nonInteractiveGenerator = path.join(this._rootCLIPath, defaultGenerator);
-			commandMetadata.supportsInteractiveMode = false;
-
-			if (generatorMetadata && generatorMetadata.interactiveGenerator) {
-				commandMetadata.interactiveGenerator = path.join(this._rootCLIPath, generatorMetadata.interactiveGenerator);
-				commandMetadata.supportsInteractiveMode = true;
-			}
+			commandMetadata.generator = path.join(this._rootCLIPath, generatorMetadata.generator);
+			commandMetadata.supportsInteractiveMode = generatorMetadata.supportsInteractiveMode;
 		});
 		return commandsMetadata;
 	}
