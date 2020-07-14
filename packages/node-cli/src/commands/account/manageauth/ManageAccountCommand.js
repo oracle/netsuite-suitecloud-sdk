@@ -15,7 +15,6 @@ module.exports = {
 			.withAction(ManageAccountAction)
 			.withInput(ManageAccountInputHandler)
 			.withOutput(ManageAccountOutputHandler)
-			.neverInteractive()
 			.build();
 	}
 };
