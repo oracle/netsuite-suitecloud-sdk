@@ -96,7 +96,7 @@ module.exports = class FileSystemService {
 				mkdirSync(path.join(targetFolder));
 			}
 		} catch (e) {
-			throw new CLIException(e.errno,TranslationService.getMessage(CANT_CREATE_FOLDER, e.path, e.code));
+			throw new CLIException(TranslationService.getMessage(CANT_CREATE_FOLDER, e.path, e.code));
 		}
 
 		return targetFolder;

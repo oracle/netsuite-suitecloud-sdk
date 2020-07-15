@@ -4,15 +4,18 @@
  */
 'use strict';
 
+const path = require('path');
 const BaseAction = require('../../base/BaseAction');
 const { saveToken } = require('../../../utils/AuthenticationUtils');
 const { PROD_ENVIRONMENT_ADDRESS } = require('../../../ApplicationConstants');
 const CommandOptionsValidator = require('../../../core/CommandOptionsValidator');
 const ValidationErrorsFormatter = require('../../../utils/ValidationErrorsFormatter');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-
-const { COMMAND_ACCOUNTCI } = require('../../../services/TranslationKeys');
-
+const FileUtils = require('../../../utils/FileUtils');
+const { COMMAND_ACCOUNTCI, ERRORS } = require('../../../services/TranslationKeys');
+const {
+	FILES: { MANIFEST_XML },
+} = require('../../../ApplicationConstants');
 const CLIException = require('../../../CLIException');
 
 const COMMAND = {
@@ -57,6 +60,11 @@ module.exports = class AccountCiAction extends BaseAction {
 		super(options);
 	}
 
+	preExecute(params) {
+		this._checkWorkingDirectoryContainsValidProject();
+		return params;
+	}
+
 	async execute(params) {
 		if (params[COMMAND.FLAGS.SAVETOKEN]) {
 			const commandOptionsValidator = new CommandOptionsValidator();
@@ -65,7 +73,7 @@ module.exports = class AccountCiAction extends BaseAction {
 				arguments: params,
 			});
 			if (validationErrors.length > 0) {
-				throw new CLIException(-10, ValidationErrorsFormatter.formatErrors(validationErrors));
+				throw new CLIException(ValidationErrorsFormatter.formatErrors(validationErrors));
 			}
 			// If url is system.netsuite.com, we must not pass it to the sdk. If it's anything else, we must add developmentMode flag
 			if (params[COMMAND.OPTIONS.URL] === PROD_ENVIRONMENT_ADDRESS) {
@@ -75,7 +83,13 @@ module.exports = class AccountCiAction extends BaseAction {
 			}
 			return await saveToken(params, this._sdkPath, this._projectFolder);
 		} else {
-			throw new CLIException(-10, COMMAND_ACCOUNTCI.SAVETOKEN_MANDATORY);
+			throw new CLIException(NodeTranslationService.getMessage(COMMAND_ACCOUNTCI.SAVETOKEN_MANDATORY));
+		}
+	}
+
+	_checkWorkingDirectoryContainsValidProject() {
+		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
+			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name));
 		}
 	}
 };
