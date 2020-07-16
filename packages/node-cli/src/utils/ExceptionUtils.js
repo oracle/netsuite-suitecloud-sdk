@@ -21,10 +21,10 @@ function throwValidationException(errorMessages, runInInteractiveMode, commandMe
 	const formattedError = ValidationErrorsFormatter.formatErrors(errorMessages);
 	if (!runInInteractiveMode && commandMetadata.supportsInteractiveMode) {
 		const suggestedCommandMessage = NodeTranslationService.getMessage(COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION, commandMetadata.name);
-		throw new CLIException(-10, formattedError, suggestedCommandMessage);
+		throw new CLIException(formattedError, suggestedCommandMessage);
 	}
 
-	throw new CLIException(-10, formattedError);
+	throw new CLIException(formattedError);
 }
 
 module.exports = { unwrapExceptionMessage, unwrapInformationMessage, throwValidationException };

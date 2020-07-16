@@ -71,7 +71,7 @@ module.exports = class ProjectInfoService {
 				NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
 				' ' +
 				NodeTranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath);
-			throw new CLIException(-10, errorMessage);
+			throw new CLIException(errorMessage);
 		}
 
 		const manifestString = FileUtils.readAsString(manifestPath);
@@ -81,7 +81,7 @@ module.exports = class ProjectInfoService {
 				NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
 				' ' +
 				NodeTranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
-			throw new CLIException(-10, errorMessage);
+			throw new CLIException(errorMessage);
 		}
 		let projectType;
 		let validationError;
@@ -105,7 +105,7 @@ module.exports = class ProjectInfoService {
 		//TODO CHECK XML IS VALID
 
 		if (validationError) {
-			throw new CLIException(-10, validationError);
+			throw new CLIException(validationError);
 		}
 
 		this._CACHED_PROJECT_TYPE = projectType;

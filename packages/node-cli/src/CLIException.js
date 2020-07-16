@@ -5,8 +5,7 @@
 'use strict';
 
 module.exports = class CLIException {
-	constructor(code, defaultMessage, infoMessage, translationKey) {
-		this._code = code;
+	constructor(defaultMessage, infoMessage, translationKey) {
 		this._defaultMessage = defaultMessage;
 		this._infoMessage = infoMessage;
 		this._translationKey = translationKey;
