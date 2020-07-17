@@ -36,6 +36,26 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch suitecloud object:import",
+            "program": "${workspaceFolder}\\packages\\node-cli\\src\\suitecloud.js",
+            "cwd": "${workspaceFolder}\\..\\..\\com.netsuite.testing",
+            "args": ["object:import", "-i"],
+            "outputCapture": "std",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch suitecloud object:import2",
+            "program": "${workspaceFolder}\\packages\\node-cli\\src\\suitecloud.js",
+            "cwd": "${workspaceFolder}\\..\\..\\com.netsuite.test3",
+            "args": ["object:import", "-i"],
+            "outputCapture": "std",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Jest Tests",
             "program": "${workspaceRoot}\\packages\\node-cli\\node_modules\\jest\\bin\\jest.js",
             "args": [

@@ -17,15 +17,20 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
-		if (!actionResult.data 
-				|| !((Array.isArray(actionResult.data.successfulImports) && actionResult.data.successfulImports.length) 
-					|| (Array.isArray(actionResult.data.failedImports) && actionResult.data.failedImports.length))) {
+		if (
+			!actionResult.data ||
+			!(
+				(Array.isArray(actionResult.data.successfulImports) && actionResult.data.successfulImports.length) ||
+				(Array.isArray(actionResult.data.failedImports) && actionResult.data.failedImports.length)
+			)
+		) {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 			return actionResult;
 		}
 
 		this._logImportedObjects(actionResult.data.successfulImports);
 		this._logUnImportedObjects(actionResult.data.failedImports);
+		this._logErrorImportedObjects(actionResult.data.errorImports);
 		return actionResult;
 	}
 
@@ -38,6 +43,19 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 				this._logReferencedFileImportResult(objectImport.referencedFileImportResult);
 			});
 		}
+	}
+
+	_logErrorImportedObjects(errorImports) {
+		const reasons = errorImports.map((errorImport) => errorImport.reason);
+		reasons.forEach((reason) => {
+			let scriptsOutput = errorImports
+				.reduce((output, errorImport) => {
+					return errorImport.reason === reason ? `${output}, ${errorImport.scriptIds.join(', ')}` : output;
+				}, '')
+				.substr(2);
+			this._log.error(`The following scripts failed with reason "${reason}":`);
+			this._log.error(scriptsOutput);
+		});
 	}
 
 	_logReferencedFileImportResult(referencedFileImportResult) {
