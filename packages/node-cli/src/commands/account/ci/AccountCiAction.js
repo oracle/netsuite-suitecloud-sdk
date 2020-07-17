@@ -22,6 +22,7 @@ const COMMAND = {
 	OPTIONS: {
 		URL: 'url',
 		DEV: 'dev',
+		ACCOUNT: 'account',
 	},
 	FLAGS: {
 		SAVETOKEN: 'savetoken',
@@ -62,6 +63,9 @@ module.exports = class AccountCiAction extends BaseAction {
 
 	preExecute(params) {
 		this._checkWorkingDirectoryContainsValidProject();
+		if (params[COMMAND.OPTIONS.ACCOUNT]) {
+			params[COMMAND.OPTIONS.ACCOUNT] = params[COMMAND.OPTIONS.ACCOUNT].toUpperCase();
+		}
 		return params;
 	}
 
