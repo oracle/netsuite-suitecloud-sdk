@@ -46,15 +46,20 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 	}
 
 	_logErrorImportedObjects(errorImports) {
-		const reasons = errorImports.map((errorImport) => errorImport.reason);
+		const reasons = errorImports
+			.map((errorImport) => errorImport.reason)
+			.reduce((totalReasons, reason) => {
+				return totalReasons.includes(reason) ? totalReasons : totalReasons.concat(reason);
+			}, []);
 		reasons.forEach((reason) => {
-			let scriptsOutput = errorImports
-				.reduce((output, errorImport) => {
-					return errorImport.reason === reason ? `${output}, ${errorImport.scriptIds.join(', ')}` : output;
-				}, '')
-				.substr(2);
-			this._log.error(`The following scripts failed with reason "${reason}":`);
-			this._log.error(scriptsOutput);
+			this._log.error(NodeTranslationService.getMessage(OUTPUT.OBJECT_ERROR, reason));
+			errorImports
+				.filter((errorImport) => errorImport.reason === reason)
+				.forEach((errorImport) => {
+					errorImport.scriptIds.forEach((scriptId) => {
+						this._log.error(`${this._log.getPadding(1)}- ${scriptId}`);
+					});
+				});
 		});
 	}
 

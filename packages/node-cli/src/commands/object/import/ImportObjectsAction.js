@@ -15,6 +15,7 @@ const BaseAction = require('../../base/BaseAction');
 const {
 	COMMAND_IMPORTOBJECTS: { MESSAGES },
 } = require('../../../services/TranslationKeys');
+const SdkExecutor = require('../../../SdkExecutor');
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
@@ -37,6 +38,7 @@ const COMMAND_FLAGS = {
 };
 
 const NUMBER_OF_SCRIPTS = 35;
+const MAX_PARALLEL_EXECUTIONS = 5;
 
 module.exports = class ImportObjectsAction extends BaseAction {
 	constructor(options) {
@@ -69,56 +71,70 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				}
 			}
 
-			let scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
+			const scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
 			delete params[ANSWERS_NAMES.SCRIPT_ID];
-			let operationResultData = {
+			const operationResultData = {
 				failedImports: [],
 				successfulImports: [],
-				errorImports: []
+				errorImports: [],
 			};
-			let operationResultStatus = SdkOperationResultUtils.STATUS.SUCCESS;
+			const arrayOfPromises = [];
+			const numberOfSdkCalls = Math.ceil(scriptIdArray.length / NUMBER_OF_SCRIPTS);
+			const numberOfSteps = Math.ceil(numberOfSdkCalls / MAX_PARALLEL_EXECUTIONS);
 
-			for (let i = 0; i<scriptIdArray.length; i = i+NUMBER_OF_SCRIPTS) {
-				let partialScriptIds = scriptIdArray.slice(i, i+NUMBER_OF_SCRIPTS)
-				let partialScriptIdsString = partialScriptIds.join(' ');
-				let sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
-				let partialExecutionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+			for (let i = 0; i < numberOfSdkCalls; i++) {
+				const partialScriptIds = scriptIdArray.slice(i * NUMBER_OF_SCRIPTS, (i + 1) * NUMBER_OF_SCRIPTS);
+				const partialScriptIdsString = partialScriptIds.join(' ');
+				const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+				const partialExecutionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 					.integration()
 					.addFlags(flags)
 					.addParams(sdkParams)
 					.addParam(ANSWERS_NAMES.SCRIPT_ID, partialScriptIdsString)
 					.build();
-				const partialOperationResult = await executeWithSpinner({
-					action: this._sdkExecutor.execute(partialExecutionContextForImportObjects),
-					message: NodeTranslationService.getMessage(
-						MESSAGES.IMPORTING_OBJECTS,
-						(i/NUMBER_OF_SCRIPTS)+1,
-						Math.ceil(scriptIdArray.length/NUMBER_OF_SCRIPTS)
-					)
-				});
-				if (partialOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-					operationResultData.errorImports = operationResultData.errorImports.concat({
-						scriptIds: partialScriptIds,
-						reason: partialOperationResult.errorMessages[0]
-					})
+
+				const sdkExecutor = new SdkExecutor(this._sdkPath);
+				arrayOfPromises.push(
+					sdkExecutor
+						.execute(partialExecutionContextForImportObjects)
+						.then(this._parsePartialResult.bind({ partialScriptIds, operationResultData }))
+				);
+				if (i % MAX_PARALLEL_EXECUTIONS === (MAX_PARALLEL_EXECUTIONS - 1)) {
+					await executeWithSpinner({
+						action: Promise.all(arrayOfPromises),
+						message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS, (i + 1) / MAX_PARALLEL_EXECUTIONS, numberOfSteps),
+					});
 				}
-				else {
-					if (partialOperationResult.data.failedImports.length > 0) {
-						operationResultData.failedImports = operationResultData.failedImports.concat(partialOperationResult.data.failedImports);
-					}
-					if (partialOperationResult.data.successfulImports.length > 0) {
-						operationResultData.successfulImports = operationResultData.successfulImports.concat(partialOperationResult.data.successfulImports);
-					}
-				}
-				
 			}
 
-			return operationResultStatus === SdkOperationResultUtils.STATUS.SUCCESS
-				? ActionResult.Builder.withData(operationResultData).build()
-				// This will never happen. It will throw exception and enter in the catch block
-				: ActionResult.Builder.withErrors(errorMessages).build();
+			await executeWithSpinner({
+				action: Promise.all(arrayOfPromises),
+				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS, numberOfSteps, numberOfSteps),
+			});
+			// At this point, the OperationResult will never be an error. It's handled before
+			return ActionResult.Builder.withData(operationResultData).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
+		}
+	}
+
+	_parsePartialResult(partialOperationResult) {
+		if (partialOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			this.operationResultData.errorImports = this.operationResultData.errorImports.concat({
+				scriptIds: this.partialScriptIds,
+				reason: partialOperationResult.errorMessages[0],
+			});
+		} else {
+			if (partialOperationResult.data.failedImports.length > 0) {
+				this.operationResultData.failedImports = this.operationResultData.failedImports.concat(
+					partialOperationResult.data.failedImports
+				);
+			}
+			if (partialOperationResult.data.successfulImports.length > 0) {
+				this.operationResultData.successfulImports = this.operationResultData.successfulImports.concat(
+					partialOperationResult.data.successfulImports
+				);
+			}
 		}
 	}
 };
