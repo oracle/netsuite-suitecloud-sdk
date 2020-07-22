@@ -10,7 +10,7 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const FileCabinetService = require('../../../services/FileCabinetService');
 const FileSystemService = require('../../../services/FileSystemService');
 const path = require('path');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 
 const {
 	COMMAND_UPLOADFILES: { QUESTIONS, MESSAGES, ERRORS },

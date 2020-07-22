@@ -4,8 +4,8 @@
  */
 'use strict';
 
-const FileUtils = require('./FileUtils');
-const NodeTranslationService = require('../services/NodeTranslationService');
+const { create, exists, readAsJson} = require('./FileUtils');
+const { NodeTranslationService } = require('../services/NodeTranslationService');
 const { ERRORS, UTILS } = require('../services/TranslationKeys');
 const { FILES } = require('../ApplicationConstants');
 const { ActionResult } = require('../services/actionresult/ActionResult');
@@ -51,7 +51,7 @@ function setDefaultAuthentication(projectFolder, authId) {
 		const projectConfiguration = {
 			[DEFAULT_AUTH_ID_PROPERTY]: authId,
 		};
-		FileUtils.create(path.join(projectFolder, FILES.PROJECT_JSON), projectConfiguration);
+		create(path.join(projectFolder, FILES.PROJECT_JSON), projectConfiguration);
 	} catch (error) {
 		const errorMessage = error != null && error.message ? NodeTranslationService.getMessage(ERRORS.ADD_ERROR_LINE, error.message) : '';
 		throw NodeTranslationService.getMessage(ERRORS.WRITING_PROJECT_JSON, errorMessage);
@@ -60,9 +60,9 @@ function setDefaultAuthentication(projectFolder, authId) {
 
 function getProjectDefaultAuthId(projectFolder) {
 	const projectFilePath = path.join(projectFolder, FILES.PROJECT_JSON);
-	if (FileUtils.exists(projectFilePath)) {
+	if (exists(projectFilePath)) {
 		try {
-			const fileContentJson = FileUtils.readAsJson(projectFilePath);
+			const fileContentJson = readAsJson(projectFilePath);
 			if (!fileContentJson.hasOwnProperty(DEFAULT_AUTH_ID_PROPERTY)) {
 				throw NodeTranslationService.getMessage(ERRORS.MISSING_DEFAULT_AUTH_ID, DEFAULT_AUTH_ID_PROPERTY);
 			}

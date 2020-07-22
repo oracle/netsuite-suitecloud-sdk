@@ -39,15 +39,15 @@
 		"@types/jest": "^26.0.4",
 		"@types/node": "^12.11.7",
 		"copyfiles": "^2.2.0",
-		"typescript": "^3.8.3",
-		"jest": "^26.0.1"
+		"jest": "^26.0.1",
+		"typescript": "^3.8.3"
 	},
 	"scripts": {
 		"tc-preinstall": "npm install --ignore-scripts && npm run build",
 		"clean": "rm -rf dist && rm -rf tsconfig.build.tsbuildinfo",
 		"copy-files": "copyfiles -u 1 \"src/**/*.{js,xml,template,json}\" dist",
 		"lerna-init": "npm install --ignore-scripts && npm run build",
-		"build": "npm run clean && npm run copy-files && tsc --version && npx tsc -b tsconfig.build.json",
+		"build": "npm run clean && npm run copy-files && npx tsc -b tsconfig.build.json",
 		"test": "jest",
 		"postinstall": "node dist/postinstall.js"
 	}

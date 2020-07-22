@@ -7,7 +7,7 @@
 const request = require('request-promise-native');
 const assert = require('assert');
 const CLISettingsService = require('./settings/CLISettingsService');
-const NodeTranslationService = require('./NodeTranslationService');
+const { NodeTranslationService } = require('./NodeTranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
 const ENOTFOUND = 'ENOTFOUND';

@@ -30,8 +30,6 @@ export const TranslationService = require('@oracle/suitecloud-cli/dist/services/
 export const FileSystemService = require('@oracle/suitecloud-cli/dist/services/FileSystemService');
 export const AuthenticationUtils = require('@oracle/suitecloud-cli/dist/utils/AuthenticationUtils');
 
-export const FileUtils = require('@oracle/suitecloud-cli/dist/utils/FileUtils');
-
 export const InteractiveAnswersValidator: {
 	showValidationResults(value: string, ...funcs: Function[]): string | boolean;
 	validateFieldIsNotEmpty(fieldValue: string): boolean;

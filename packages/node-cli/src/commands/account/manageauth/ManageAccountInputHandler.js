@@ -6,7 +6,7 @@
 
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const AccountCredentialsFormatter = require('../../../utils/AccountCredentialsFormatter');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { MANAGE_ACTION } = require('../../../services/actionresult/ManageAccountActionResult');

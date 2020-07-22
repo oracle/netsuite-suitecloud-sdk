@@ -6,7 +6,7 @@
 
 const { prompt } = require('inquirer');
 const path = require('path');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ApplicationConstants = require('../../../ApplicationConstants');
 const FileSystemService = require('../../../services/FileSystemService');

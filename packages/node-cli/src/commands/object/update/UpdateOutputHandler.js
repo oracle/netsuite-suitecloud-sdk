@@ -4,7 +4,7 @@
  */
 'use strict';
 const BaseOutputHandler = require('../../base/BaseOutputHandler');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 
 const {
 	COMMAND_UPDATE: { OUTPUT },

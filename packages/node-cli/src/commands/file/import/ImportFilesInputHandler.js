@@ -6,7 +6,7 @@
 
 const CommandUtils = require('../../../utils/CommandUtils');
 const { prompt } = require('inquirer');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');

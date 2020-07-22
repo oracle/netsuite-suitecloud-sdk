@@ -8,9 +8,9 @@ const { prompt, Separator } = require('inquirer');
 const chalk = require('chalk');
 const path = require('path');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const FileUtils = require('../../../utils/FileUtils');
+const { exists } = require('../../../utils/FileUtils');
 const CommandUtils = require('../../../utils/CommandUtils');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const CLIException = require('../../../CLIException');
@@ -211,7 +211,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {
-		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
+		if (!exists(path.join(this._projectFolder, MANIFEST_XML))) {
 			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name));
 		}
 	}

@@ -10,7 +10,7 @@ const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const CommandUtils = require('../../../utils/CommandUtils');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { ManageAccountActionResult, MANAGE_ACTION } = require('../../../services/actionresult/ManageAccountActionResult');
 const { throwValidationException } = require('../../../utils/ExceptionUtils');
 const {

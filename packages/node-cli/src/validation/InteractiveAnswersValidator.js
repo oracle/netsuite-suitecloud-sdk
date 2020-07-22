@@ -5,7 +5,7 @@
 'use strict';
 
 const ApplicationConstants = require('../ApplicationConstants');
-const NodeTranslationService = require('../services/NodeTranslationService');
+const { NodeTranslationService } = require('../services/NodeTranslationService');
 
 const VALIDATION_RESULT_FAILURE = (validationError) => ({
 	result: false,

@@ -6,9 +6,9 @@
 
 const { NodeVM } = require('vm2');
 const { lineBreak } = require('../../loggers/LoggerConstants');
-const FileUtils = require('../../utils/FileUtils');
+const { exists, readAsString } = require('../../utils/FileUtils');
 const path = require('path');
-const NodeTranslationService = require('./../../services/NodeTranslationService');
+const { NodeTranslationService } = require('./../../services/NodeTranslationService');
 const { ERRORS } = require('./../../services/TranslationKeys');
 const CommandUserExtension = require('./CommandUserExtension');
 const CLI_CONFIG_JS_FILE = 'suitecloud.config.js';
@@ -27,7 +27,7 @@ module.exports = class CLIConfigurationService {
 	initialize(executionPath) {
 		this._executionPath = executionPath;
 		const cliConfigFile = path.join(this._executionPath, CLI_CONFIG_JS_FILE);
-		if (!FileUtils.exists(cliConfigFile)) {
+		if (!exists(cliConfigFile)) {
 			return;
 		}
 
@@ -41,7 +41,7 @@ module.exports = class CLIConfigurationService {
 					root: this._executionPath,
 				},
 			});
-			const cliConfigFileContent = FileUtils.readAsString(cliConfigFile);
+			const cliConfigFileContent = readAsString(cliConfigFile);
 			this._cliConfig = nodeVm.run(cliConfigFileContent, cliConfigFile);
 		} catch (error) {
 			throw NodeTranslationService.getMessage(ERRORS.CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE, cliConfigFile, lineBreak, error);

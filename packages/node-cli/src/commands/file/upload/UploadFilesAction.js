@@ -9,7 +9,7 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 

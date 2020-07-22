@@ -7,7 +7,7 @@
 const { prompt } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');

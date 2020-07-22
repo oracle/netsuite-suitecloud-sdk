@@ -8,7 +8,7 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const BaseAction = require('../../base/BaseAction');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 

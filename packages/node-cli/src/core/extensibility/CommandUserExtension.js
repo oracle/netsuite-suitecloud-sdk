@@ -5,7 +5,7 @@
 'use strict';
 
 const assert = require('assert');
-const NodeTranslationService = require('../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../services/NodeTranslationService');
 const { lineBreak } = require('../../loggers/LoggerConstants');
 const { ERRORS } = require('../../services/TranslationKeys');
 

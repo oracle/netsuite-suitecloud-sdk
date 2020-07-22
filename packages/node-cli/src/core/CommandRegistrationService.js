@@ -8,7 +8,7 @@ const assert = require('assert');
 const OPTION_TYPE_FLAG = 'FLAG';
 const INTERACTIVE_OPTION_NAME = 'interactive';
 const INTERACTIVE_OPTION_ALIAS = 'i';
-const NodeTranslationService = require('../services/NodeTranslationService');
+const { NodeTranslationService } = require('../services/NodeTranslationService');
 const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
 
 const EXIT_CODE = {

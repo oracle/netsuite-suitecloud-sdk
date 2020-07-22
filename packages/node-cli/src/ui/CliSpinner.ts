@@ -4,13 +4,13 @@
  */
 'use strict';
 
-const assert = require('assert');
-const Spinner = require('cli-spinner').Spinner;
+import assert from 'assert';
+import { Spinner } from 'cli-spinner';
 
 const SPINNER_STRING = '⠋⠙⠹⠸⠼⠴⠦⠧⠏';
 
-module.exports = {
-	async executeWithSpinner(context) {
+
+export async function executeWithSpinner<T>(context: { action: Promise<T>; message: string}): Promise<T> {
 		assert(context.action instanceof Promise, 'Promise is expected');
 		assert(context.message, 'Message is mandatory when spinner is enabled');
 
@@ -30,5 +30,4 @@ module.exports = {
 			spinner.stop(true);
 			throw error;
 		}
-	},
-};
+	}

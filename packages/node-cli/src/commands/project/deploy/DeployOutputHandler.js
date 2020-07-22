@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const ActionResultUtils = require('../../../utils/ActionResultUtils');
 const BaseOutputHandler = require('../../base/BaseOutputHandler');
 

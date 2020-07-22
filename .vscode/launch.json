@@ -12,7 +12,6 @@
             "runtimeExecutable": "${execPath}",
             "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-extension"],
             "outFiles": ["${workspaceFolder}/packages/vscode-extension/dist/**/*.js"],
-            "preLaunchTask": "${defaultBuildTask}"
         },
         {
             "name": "Extension Tests for SuiteCloud Extension",
@@ -30,6 +29,16 @@
             "program": "${workspaceFolder}\\packages\\node-cli\\src\\suitecloud.js",
             "cwd": "C:\\NetSuiteProjects\\SuiteCloudProjectPath",
             "args": ["project:deploy"],
+            "outputCapture": "std",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch suitecloud account:setup",
+            "program": "${workspaceFolder}\\packages\\node-cli\\dist\\suitecloud.js",
+            "cwd": "${workspaceFolder}\\..\\..\\test",
+            "args": ["account:setup", "-i"],
             "outputCapture": "std",
             "console": "integratedTerminal"
         },

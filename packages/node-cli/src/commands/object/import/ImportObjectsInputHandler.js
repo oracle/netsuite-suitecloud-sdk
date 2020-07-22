@@ -17,7 +17,7 @@ const SdkExecutor = require('../../../SdkExecutor');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const FileSystemService = require('../../../services/FileSystemService');
 const CommandUtils = require('../../../utils/CommandUtils');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDERS } = require('../../../ApplicationConstants');
 const OBJECT_TYPES = require('../../../metadata/ObjectTypesMetadata');
 const {

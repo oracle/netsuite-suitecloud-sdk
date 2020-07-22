@@ -10,8 +10,8 @@ const { saveToken } = require('../../../utils/AuthenticationUtils');
 const { PROD_ENVIRONMENT_ADDRESS } = require('../../../ApplicationConstants');
 const CommandOptionsValidator = require('../../../core/CommandOptionsValidator');
 const ValidationErrorsFormatter = require('../../../utils/ValidationErrorsFormatter');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
-const FileUtils = require('../../../utils/FileUtils');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
+const { exists } = require('../../../utils/FileUtils');
 const { COMMAND_ACCOUNTCI, ERRORS } = require('../../../services/TranslationKeys');
 const {
 	FILES: { MANIFEST_XML },
@@ -92,7 +92,7 @@ module.exports = class AccountCiAction extends BaseAction {
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {
-		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
+		if (!exists(path.join(this._projectFolder, MANIFEST_XML))) {
 			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name));
 		}
 	}

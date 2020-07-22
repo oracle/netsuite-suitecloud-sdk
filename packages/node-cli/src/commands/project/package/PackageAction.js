@@ -11,9 +11,9 @@ const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const CommandUtils = require('../../../utils/CommandUtils');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
-const FileUtils = require('../../../utils/FileUtils');
+const { exists } = require('../../../utils/FileUtils');
 const { ERRORS, COMMAND_PACKAGE } = require('../../../services/TranslationKeys');
 
 const {
@@ -58,7 +58,7 @@ module.exports = class PackageAction extends BaseAction {
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {
-		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
+		if (!exists(path.join(this._projectFolder, MANIFEST_XML))) {
 			throw NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name);
 		}
 	}

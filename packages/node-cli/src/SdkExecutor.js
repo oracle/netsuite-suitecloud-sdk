@@ -11,12 +11,12 @@ const {
 	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
 const path = require('path');
-const FileUtils = require('./utils/FileUtils');
+const { exists } = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
 const EnvironmentInformationService = require('./services/EnvironmentInformationService');
 const url = require('url');
-const NodeTranslationService = require('./services/NodeTranslationService');
+const { NodeTranslationService } = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SdkErrorCodes = require('./SdkErrorCodes');
 
@@ -94,7 +94,7 @@ module.exports = class SdkExecutor {
 
 		const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
 
-		if (!FileUtils.exists(this._sdkPath)) {
+		if (!exists(this._sdkPath)) {
 			throw NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND, path.join(__dirname, '..'));
 		}
 		const quotedSdkJarPath = `"${this._sdkPath}"`;

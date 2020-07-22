@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const NodeTranslationService = require('../services/NodeTranslationService');
+const { NodeTranslationService } = require('../services/NodeTranslationService');
 const CLIException = require('../CLIException');
 const { COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION } = require('../services/TranslationKeys');
 const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');

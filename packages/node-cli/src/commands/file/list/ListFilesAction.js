@@ -6,7 +6,7 @@
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');

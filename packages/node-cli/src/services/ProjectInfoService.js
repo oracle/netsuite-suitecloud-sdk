@@ -12,9 +12,9 @@ const {
 	FOLDERS,
 } = require('../ApplicationConstants');
 const CLIException = require('../CLIException');
-const FileUtils = require('../utils/FileUtils');
+const { exists, readAsString } = require('../utils/FileUtils');
 const path = require('path');
-const NodeTranslationService = require('./NodeTranslationService');
+const { NodeTranslationService } = require('./NodeTranslationService');
 const xml2js = require('xml2js');
 const assert = require('assert');
 
@@ -66,7 +66,7 @@ module.exports = class ProjectInfoService {
 
 		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
 
-		if (!FileUtils.exists(manifestPath)) {
+		if (!exists(manifestPath)) {
 			const errorMessage =
 				NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
 				' ' +
@@ -74,7 +74,7 @@ module.exports = class ProjectInfoService {
 			throw new CLIException(errorMessage);
 		}
 
-		const manifestString = FileUtils.readAsString(manifestPath);
+		const manifestString = readAsString(manifestPath);
 
 		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
 			const errorMessage =
@@ -118,10 +118,10 @@ module.exports = class ProjectInfoService {
 			FOLDERS.INSTALLATION_PREFERENCES
 		);
 		return (
-			FileUtils.exists(
+			exists(
 				path.join(pathToInstallationPreferences, FILES.HIDING_PREFERENCE)
 			) &&
-			FileUtils.exists(
+			exists(
 				path.join(pathToInstallationPreferences, FILES.LOCKING_PREFERENCE)
 			)
 		);

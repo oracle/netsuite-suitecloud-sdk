@@ -5,10 +5,10 @@
 'use strict';
 
 const FileSystemService = require('../FileSystemService');
-const FileUtils = require('../../utils/FileUtils');
+const { create, exists, readAsJson } = require('../../utils/FileUtils');
 const CLISettings = require('./CLISettings');
 const path = require('path');
-const NodeTranslationService = require('../NodeTranslationService');
+const { NodeTranslationService } = require('../NodeTranslationService');
 const { ERRORS } = require('../TranslationKeys');
 
 const HOME_PATH = require('os').homedir();
@@ -36,16 +36,16 @@ module.exports = class CLISettingsService {
 
 	_saveSettings(cliSettings) {
 		this._fileSystemService.createFolder(HOME_PATH, FOLDERS.SUITECLOUD_SDK);
-		FileUtils.create(CLI_SETTINGS_FILEPATH, cliSettings);
+		create(CLI_SETTINGS_FILEPATH, cliSettings);
 	}
 
 	_getSettings() {
 		if (CACHED_CLI_SETTINGS) {
 			return CACHED_CLI_SETTINGS;
 		}
-		if (FileUtils.exists(CLI_SETTINGS_FILEPATH)) {
+		if (exists(CLI_SETTINGS_FILEPATH)) {
 			try {
-				const cliSettingsJson = FileUtils.readAsJson(CLI_SETTINGS_FILEPATH);
+				const cliSettingsJson = readAsJson(CLI_SETTINGS_FILEPATH);
 				this._validateCLISettingsProperties(cliSettingsJson);
 				CACHED_CLI_SETTINGS = CLISettings.fromJson(cliSettingsJson);
 				return CLISettings.fromJson(cliSettingsJson);

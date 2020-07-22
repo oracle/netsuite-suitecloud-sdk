@@ -4,7 +4,7 @@
  */
 'use strict';
 const os = require('os');
-const NodeTranslationService = require('../services/NodeTranslationService');
+const { NodeTranslationService } = require('../services/NodeTranslationService');
 
 const {
 	ACCOUNT_CREDENTIALS: { AUTHID, ACCOUNT_INFO, DOMAIN },

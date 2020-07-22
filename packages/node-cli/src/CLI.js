@@ -8,7 +8,7 @@ const path = require('path');
 const assert = require('assert');
 const program = require('commander');
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
-const NodeTranslationService = require('./services/NodeTranslationService');
+const { NodeTranslationService } = require('./services/NodeTranslationService');
 const {
 	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE },
 	ERRORS,

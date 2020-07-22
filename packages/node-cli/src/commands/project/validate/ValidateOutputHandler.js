@@ -4,7 +4,7 @@
  */
 'use strict';
 const BaseOutputHandler = require('../../base/BaseOutputHandler');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const ActionResultUtils = require('../../../utils/ActionResultUtils');
 
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');

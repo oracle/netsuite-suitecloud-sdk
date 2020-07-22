@@ -8,7 +8,7 @@ const { prompt, Separator } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
 const OBJECT_TYPES = require('../../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const {

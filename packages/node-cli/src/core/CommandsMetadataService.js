@@ -5,7 +5,7 @@
 'use strict';
 
 const path = require('path');
-const FileUtils = require('../utils/FileUtils');
+const { exists, readAsJson} = require('../utils/FileUtils');
 const { SDK_COMMANDS_METADATA_FILE, NODE_COMMANDS_METADATA_FILE, COMMAND_GENERATORS_METADATA_FILE } = require('../ApplicationConstants');
 const SDK_WRAPPER_GENERATOR = 'commands/SdkWrapperCommandGenerator';
 
@@ -54,11 +54,11 @@ module.exports = class CommandsMetadataService {
 	}
 
 	_getMetadataFromFile(filepath) {
-		if (!FileUtils.exists(filepath)) {
+		if (!exists(filepath)) {
 			throw `Commands Metadata in filepath ${filepath} not found`;
 		}
 		try {
-			return FileUtils.readAsJson(filepath);
+			return readAsJson(filepath);
 		} catch (error) {
 			throw `Error parsing Commands Metadata from ${filepath}`;
 		}
