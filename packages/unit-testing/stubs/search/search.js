@@ -35,8 +35,8 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 	 * @since 2015.2
 	 */
 
-	search.create = function (options) {};
-	search.create.promise = function (options) {};
+	search.prototype.create = function (options) {};
+	search.prototype.create.promise = function (options) {};
 
 	/**
 	 * Loads an existing saved search and returns it as a search.Search. The saved search could have been created using the UI or created with search.create(options) and Search.save().
@@ -51,8 +51,8 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 	 * @since 2015.2
 	 */
 
-	search.load = function (options) {};
-	search.load.promise = function (options) {};
+	search.prototype.load = function (options) {};
+	search.prototype.load.promise = function (options) {};
 
 	/**
 	 * Deletes an existing saved search. The saved search could have been created using the UI or created with search.create(options) and Search.save().
@@ -82,8 +82,8 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 	 * @since 2015.2
 	 */
 
-	search.duplicates = function (options) {};
-	search.duplicates.promise = function (options) {};
+	search.prototype.duplicates = function (options) {};
+	search.prototype.duplicates.promise = function (options) {};
 
 	/**
 	 * Performs a global search against a single keyword or multiple keywords.
@@ -96,8 +96,8 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 	 * @since 2015.2
 	 */
 
-	search.global = function (options) {};
-	search.global.promise = function (options) {};
+	search.prototype.global = function (options) {};
+	search.prototype.global.promise = function (options) {};
 
 	/**
 	 * Performs a search for one or more body fields on a record.
@@ -113,8 +113,8 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 	 * @since 2015.2
 	 */
 
-	search.lookupFields = function (options) {};
-	search.lookupFields.promise = function (options) {};
+	search.prototype.lookupFields = function (options) {};
+	search.prototype.lookupFields.promise = function (options) {};
 
 	/**
 	 * Creates a new search column as a search.Column object.
@@ -135,7 +135,7 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 	 * @since 2015.2
 	 */
 
-	search.createColumn = function (options) {};
+	search.prototype.createColumn = function (options) {};
 
 	/**
 	 * Creates a new search filter as a search.Filter object.
@@ -155,7 +155,7 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 	 * @since 2015.2
 	 */
 
-	search.createFilter = function (options) {};
+	search.prototype.createFilter = function (options) {};
 
 	/**
 	 * Creates a new search setting and returns it as a search.Setting object.
@@ -171,7 +171,7 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 	 * @since 2015.2
 	 */
 
-	search.createSetting = function (options) {};
+	search.prototype.createSetting = function (options) {};
 
 	/**
 	 * Enumeration that holds the values for search operators to use with the search.Filter.
@@ -220,7 +220,7 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 		this.WITHIN = 'within';
 	}
 
-	search.Operator = new searchOperator();
+	search.prototype.Operator = new searchOperator();
 
 	/**
 	 * Enumeration that holds the values for summary types used by the Column.summary or Filter.summary properties.
@@ -237,7 +237,7 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 		this.MAX = 'MAX';
 	}
 
-	search.Summary = new searchSummary();
+	search.prototype.Summary = new searchSummary();
 
 	/**
 	 * Enumeration that holds the values for supported sorting directions used with search.createColumn(options).
@@ -251,7 +251,7 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 		this.NONE = 'NONE';
 	}
 
-	search.Sort = new searchSort();
+	search.prototype.Sort = new searchSort();
 
 	function searchType() {
 		this.ACCOUNT = 'account';
@@ -568,12 +568,11 @@ define(['./SearchInstance', './Column', './Filter', './Result'], function (Searc
 		this.CHALLENGE_SHOPPER_INPUT = 'ChallengeShopperInput';
 	}
 
-	search.Type = new searchType();
-
-	N.search = search;
+	search.prototype.Type = new searchType();
 
 	/**
 	 * @exports N/search
+	 * @namespace search
 	 */
 	return new search();
 });

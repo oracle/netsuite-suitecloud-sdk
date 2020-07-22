@@ -1,4 +1,4 @@
-define(['SearchPagedData', './ResultSet'], function (SearchPagedData, ResultSet) {
+define(['./SearchPagedData', './ResultSet'], function (SearchPagedData, ResultSet) {
 	/**
 	 * Return a new instance of search.Search object.
 	 *
