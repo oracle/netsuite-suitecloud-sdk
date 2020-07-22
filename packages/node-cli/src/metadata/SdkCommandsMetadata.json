@@ -498,7 +498,7 @@
 				"type": "SINGLE",
 				"usage": "",
 				"defaultOption": false,
-				"disableInIntegrationMode": false
+				"disableInIntegrationMode": true
 			}
 		]
 	},
