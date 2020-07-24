@@ -23,11 +23,11 @@ const CORE_STUBS = [
 	},
 	{
 		module: 'N/record/line',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/RecordInstanceLine.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Line.js`,
 	},
 	{
 		module: 'N/record/sublist',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/RecordInstanceSublist.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
 	},
 	{
 		module: 'N/search',
