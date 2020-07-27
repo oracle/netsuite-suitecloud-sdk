@@ -14,6 +14,7 @@ export default abstract class BaseAction {
 	protected executionPath?: string;
 	protected readonly messageService: MessageService;
 	protected readonly commandName: string;
+	protected filePath?: string;
 
 	protected abstract async execute(): Promise<void>;
 
@@ -47,8 +48,9 @@ export default abstract class BaseAction {
 		});
 	}
 
-	public async run() {
+	public async run(fsPath: string) {
 		this.init();
+		this.filePath = fsPath;
 		const validationStatus = this.validate();
 		if (validationStatus.valid) {
 			return this.execute();

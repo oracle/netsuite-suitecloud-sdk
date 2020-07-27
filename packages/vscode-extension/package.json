@@ -54,6 +54,11 @@
 				"command": "suitecloud.updateobject",
 				"title": "Update Single Object with Account Object",
 				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.importobject",
+				"title": "Import Single Object to Account",
+				"category": "SuiteCloud"
 			}
 		],
 		"keybindings": [
@@ -73,7 +78,16 @@
 				"key": "ctrl+alt+u",
 				"mac": "ctrl+alt+u"
 			}
-		]
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "resourceLangId == xml",
+					"command": "suitecloud.importobject",
+					"group": "suitecloud@1"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

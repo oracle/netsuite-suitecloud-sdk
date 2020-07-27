@@ -14,11 +14,12 @@ import ManageAccounts from './commands/ManageAccounts';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import BaseAction from './commands/BaseAction';
 import UpdateObject from './commands/UpdateObject';
+import ImportObject from './commands/ImportObject';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'NetSuite SuiteCloud';
 
 function register<T extends BaseAction>(command: string, action: T) {
-	return vscode.commands.registerCommand(command, () => action.run());
+	return vscode.commands.registerCommand(command, (uri:vscode.Uri) => action.run(uri.fsPath));
 }
 
 export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
@@ -34,7 +35,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.listobjects', new ListObjects()),
 		register('suitecloud.uploadfile', new UploadFile()),
 		register('suitecloud.setupaccount', new ManageAccounts()),
-		register('suitecloud.updateobject', new UpdateObject())
+		register('suitecloud.updateobject', new UpdateObject()),
+		register('suitecloud.importobject', new ImportObject())
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
