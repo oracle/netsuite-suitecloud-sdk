@@ -27,7 +27,7 @@
     {
         "commandName": "file:list",
         "supportsInteractiveMode": true,
-        "generator": "commands/file/import/ListFilesCommand"
+        "generator": "commands/file/list/ListFilesCommand"
     },
     {
         "commandName": "file:upload",
