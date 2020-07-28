@@ -9,7 +9,7 @@
             {
                 "name": "dev",
                 "alias": "d",
-                "description": "Specify the domain URL of the account you want to use. You only need to specify the domain URL if you are not using a production account.",
+                "description": "Specify the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
                 "type": "FLAG",
                 "mandatory": false
             }
@@ -94,7 +94,7 @@
             },
             {
                 "name": "url",
-                "description": "Specify the domain URL of a virtual machine.",
+                "description": "Specify the NetSuite domain of a virtual machine.",
                 "mandatory": false
             }
         ]
