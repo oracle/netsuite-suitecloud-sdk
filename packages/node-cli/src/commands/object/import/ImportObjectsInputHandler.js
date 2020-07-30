@@ -16,7 +16,7 @@ const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { FileSystemService } = require('../../../services/FileSystemService');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES, extractCommandOptions } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDERS } = require('../../../ApplicationConstants');
 const OBJECT_TYPES = require('../../../metadata/ObjectTypesMetadata');
@@ -121,7 +121,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const questions = [];
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			const specifySuiteApp = {
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SPECIFY_SUITEAPP,
 				message: NodeTranslationService.getMessage(QUESTIONS.SPECIFIC_APPID),
 				default: 0,
@@ -137,7 +137,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 				when: function (response) {
 					return response[ANSWERS_NAMES.SPECIFY_SUITEAPP];
 				},
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: INQUIRER_TYPES.INPUT,
 				name: ANSWERS_NAMES.APP_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPID),
 				validate: (fieldValue) => showValidationResults(fieldValue, validateSuiteApp),
@@ -146,7 +146,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		}
 
 		const showAllObjects = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_OBJECT_TYPE,
 			message: NodeTranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
 			default: 0,
@@ -161,7 +161,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			when: function (answers) {
 				return answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE];
 			},
-			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+			type: INQUIRER_TYPES.CHECKBOX,
 			name: ANSWERS_NAMES.TYPE_CHOICES_ARRAY,
 			message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
@@ -177,7 +177,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		questions.push(selectObjectType);
 
 		const filterByScriptId = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_SCRIPT_ID,
 			message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 			default: false,
@@ -192,7 +192,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			when: function (response) {
 				return response[ANSWERS_NAMES.SPECIFY_SCRIPT_ID];
 			},
-			type: CommandUtils.INQUIRER_TYPES.INPUT,
+			type: INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.SCRIPT_ID,
 			message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: (fieldValue) => showValidationResults(fieldValue, validateScriptId),
@@ -212,7 +212,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		}));
 
 		const questionListObjectsSelection = {
-			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+			type: INQUIRER_TYPES.CHECKBOX,
 			name: ANSWERS_NAMES.OBJECTS_SELECTED,
 			message: NodeTranslationService.getMessage(QUESTIONS.SELECT_OBJECTS),
 			choices: choicesToShow,
@@ -228,7 +228,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const hasCustomScript = selectionObjectAnswers.objects_selected.some((element) => element.scriptId.startsWith(CUSTOM_SCRIPT_PREFIX));
 		if (this._projectInfoService.getProjectType() === PROJECT_ACP && hasCustomScript) {
 			const questionImportReferencedSuiteScripts = {
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS,
 				message: NodeTranslationService.getMessage(QUESTIONS.IMPORT_REFERENCED_SUITESCRIPTS),
 				default: 0,
@@ -252,7 +252,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const objectDirectoryChoices = [objectsFolder, ...objectsSubFolders].map(transformFoldersToChoicesFunc);
 
 		const questionDestinationFolder = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.DESTINATION_FOLDER,
 			message: NodeTranslationService.getMessage(QUESTIONS.DESTINATION_FOLDER),
 			choices: objectDirectoryChoices,
@@ -275,7 +275,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		}
 
 		const questionOverwriteConfirmation = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
 			message: NodeTranslationService.getMessage(overwriteConfirmationMessageKey),
 			default: 0,
@@ -293,7 +293,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		if (answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(' ');
 		}
-		return CommandUtils.extractCommandOptions(answers, this._listObjectsMetadata);
+		return extractCommandOptions(answers, this._listObjectsMetadata);
 	}
 
 	_arrangeAnswersForImportObjects(answers) {

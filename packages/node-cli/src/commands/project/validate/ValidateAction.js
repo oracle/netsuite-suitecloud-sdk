@@ -10,7 +10,7 @@ const { DeployActionResult } = require('../../../services/actionresult/DeployAct
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString, extractCommandOptions } = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
 const ApplyContentProtectionUtils = require('../../../utils/ApplyContentProtectionUtils');
@@ -36,7 +36,7 @@ module.exports = class ValidateAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[COMMAND_OPTIONS.PROJECT] = quoteString(this._projectFolder);
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 
 		AccountSpecificValuesUtils.validate(params, this._projectFolder);
@@ -66,7 +66,7 @@ module.exports = class ValidateAction extends BaseAction {
 				delete params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
 			}
 
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+			const sdkParams = extractCommandOptions(params, this._commandMetadata);
 
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()

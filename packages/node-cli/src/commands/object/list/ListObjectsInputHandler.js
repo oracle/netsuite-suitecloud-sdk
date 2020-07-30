@@ -5,7 +5,7 @@
 'use strict';
 
 const { prompt, Separator } = require('inquirer');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const OBJECT_TYPES = require('../../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
@@ -45,7 +45,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 			let message = NodeTranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
 
 			const questionSpecificSuiteApp = {
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: COMMAND_QUESTIONS_NAMES.SPECIFY_SUITEAPP,
 				message,
 				default: 0,
@@ -67,7 +67,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 				when: function (response) {
 					return response.specifysuiteapp;
 				},
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: INQUIRER_TYPES.INPUT,
 				name: COMMAND_QUESTIONS_NAMES.APP_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPID),
 				validate: (fieldValue) => showValidationResults(fieldValue, validateSuiteApp),
@@ -76,7 +76,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 		}
 
 		const questionFilterByCustomObjects = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: COMMAND_QUESTIONS_NAMES.TYPE_ALL,
 			message: NodeTranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
 			default: 0,
@@ -97,7 +97,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 			when: function (answers) {
 				return !answers.typeall;
 			},
-			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+			type: INQUIRER_TYPES.CHECKBOX,
 			name: COMMAND_QUESTIONS_NAMES.TYPE,
 			message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_CUSTOM_OBJECTS),
 			pageSize: 15,
@@ -115,7 +115,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 		questions.push(questionCustomObjects);
 
 		const questionSpecificScriptId = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: COMMAND_QUESTIONS_NAMES.SPECIFY_SCRIPT_ID,
 			message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 			default: false,
@@ -136,7 +136,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 			when: function (response) {
 				return response.specifyscriptid;
 			},
-			type: CommandUtils.INQUIRER_TYPES.INPUT,
+			type: INQUIRER_TYPES.INPUT,
 			name: COMMAND_QUESTIONS_NAMES.SCRIPT_ID,
 			message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 			validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),

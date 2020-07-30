@@ -9,7 +9,7 @@ const BaseAction = require('../../base/BaseAction');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString, extractCommandOptions } = require('../../../utils/CommandUtils');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
@@ -38,13 +38,13 @@ module.exports = class PackageAction extends BaseAction {
 
 		return {
 			[COMMAND_OPTIONS.DESTINATION]: path.join(this._executionPath, DEFAULT_DESTINATION_FOLDER),
-			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
+			[COMMAND_OPTIONS.PROJECT]: quoteString(this._projectFolder),
 			...AccountSpecificValuesUtils.transformArgument(params),
 		};
 	}
 
 	async execute(params) {
-		const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+		const sdkParams = extractCommandOptions(params, this._commandMetadata);
 
 		const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand).integration().addParams(sdkParams).build();
 

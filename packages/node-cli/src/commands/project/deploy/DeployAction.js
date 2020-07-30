@@ -6,7 +6,7 @@
 
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const { DeployActionResult } = require('../../../services/actionresult/DeployActionResult');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString, extractCommandOptions } = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
 const ApplyContentProtectionUtils = require('../../../utils/ApplyContentProtectionUtils');
@@ -49,7 +49,7 @@ module.exports = class DeployAction extends BaseAction {
 
 		return {
 			...params,
-			[COMMAND.OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
+			[COMMAND.OPTIONS.PROJECT]: quoteString(this._projectFolder),
 			[COMMAND.OPTIONS.AUTH_ID]: getProjectDefaultAuthId(this._executionPath),
 			...AccountSpecificValuesUtils.transformArgument(params),
 		};
@@ -68,7 +68,7 @@ module.exports = class DeployAction extends BaseAction {
 				flags.push(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 			}
 
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+			const sdkParams = extractCommandOptions(params, this._commandMetadata);
 
 			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()

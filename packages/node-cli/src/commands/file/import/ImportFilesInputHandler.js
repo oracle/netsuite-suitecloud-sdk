@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString, INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const { prompt } = require('inquirer');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
@@ -106,7 +106,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 	_generateSelectFolderQuestion(listFoldersResult) {
 		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: COMMAND_OPTIONS.FOLDER,
 			message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
 			default: SUITE_SCRIPTS_FOLDER,
@@ -124,7 +124,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 	_listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
-		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
+		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = quoteString(selectFolderAnswer.folder);
 		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = this._authId;
 
 		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES.COMMAND)
@@ -141,14 +141,14 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	_generateSelectFilesQuestions(listFilesResult) {
 		return [
 			{
-				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+				type: INQUIRER_TYPES.CHECKBOX,
 				name: COMMAND_OPTIONS.PATHS,
 				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FILES),
 				choices: listFilesResult.data.map((path) => ({ name: path, value: path })),
 				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.EXCLUDE_PROPERTIES,
 				message: NodeTranslationService.getMessage(QUESTIONS.EXCLUDE_PROPERTIES),
 				choices: [
@@ -161,7 +161,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 	_generateOverwriteQuestion() {
 		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
 			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
 			default: 0,

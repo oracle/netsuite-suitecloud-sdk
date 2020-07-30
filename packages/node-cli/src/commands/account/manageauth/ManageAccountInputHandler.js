@@ -5,7 +5,7 @@
 'use strict';
 
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const AccountCredentialsFormatter = require('../../../utils/AccountCredentialsFormatter');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
@@ -113,7 +113,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		choices.push(new Separator());
 		let answers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SELECTED_AUTH_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_CREDENTIALS),
 				choices: choices,
@@ -124,7 +124,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 
 	async _selectAction(prompt) {
 		let answer = await prompt({
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.ACTION,
 			message: NodeTranslationService.getMessage(QUESTIONS.SELECT_ACTION),
 			choices: [
@@ -152,7 +152,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 
 	async _introduceNewName(prompt, authIDMap, originalAuthId) {
 		let answer = await prompt({
-			type: CommandUtils.INQUIRER_TYPES.INPUT,
+			type: INQUIRER_TYPES.INPUT,
 			name: ANSWERS_NAMES.RENAMETO,
 			message: NodeTranslationService.getMessage(QUESTIONS.NEW_NAME),
 			filter: (fieldValue) => fieldValue.trim(),
@@ -173,7 +173,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	async _confirmRemove(prompt) {
 		let answer = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.REMOVE,
 				message: NodeTranslationService.getMessage(QUESTIONS.VERIFY_REMOVE),
 				default: false,

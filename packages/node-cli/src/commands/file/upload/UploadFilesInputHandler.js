@@ -6,7 +6,7 @@
 
 const { prompt } = require('inquirer');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const FileCabinetService = require('../../../services/FileCabinetService');
 const { FileSystemService } = require('../../../services/FileSystemService');
 const path = require('path');
@@ -83,7 +83,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 		return [
 			{
 				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: COMMAND_ANSWERS.SELECTED_FOLDER,
 				choices: localFileCabinetFoldersChoices,
 			},
@@ -102,7 +102,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 		return [
 			{
 				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FILES),
-				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+				type: INQUIRER_TYPES.CHECKBOX,
 				name: COMMAND_OPTIONS.PATHS,
 				choices: filesChoices,
 				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
@@ -112,7 +112,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 
 	_generateOverwriteQuestion() {
 		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: INQUIRER_TYPES.LIST,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
 			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
 			default: 0,

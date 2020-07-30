@@ -6,7 +6,7 @@
 
 const BaseAction = require('../../base/BaseAction');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString, extractCommandOptions } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkExecutionContext = require('../../../SdkExecutionContext');
@@ -36,7 +36,7 @@ module.exports = class UpdateAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[COMMAND_OPTIONS.PROJECT] = quoteString(this._projectFolder);
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		return params;
 	}
@@ -46,7 +46,7 @@ module.exports = class UpdateAction extends BaseAction {
 			if (params.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !params[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
 				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+			const sdkParams = extractCommandOptions(params, this._commandMetadata);
 
 			const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()

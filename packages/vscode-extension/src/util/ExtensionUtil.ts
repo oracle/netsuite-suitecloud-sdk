@@ -20,23 +20,3 @@ export const CLIConfigurationService = require('@oracle/suitecloud-cli/dist/core
 export const ConsoleLogger = require('@oracle/suitecloud-cli/dist/loggers/ConsoleLogger');
 
 export const AuthenticationUtils = require('@oracle/suitecloud-cli/dist/utils/AuthenticationUtils');
-
-export const InteractiveAnswersValidator: {
-	showValidationResults(value: string, ...funcs: Function[]): string | boolean;
-	validateFieldIsNotEmpty(fieldValue: string): boolean;
-	validateAlphanumericHyphenUnderscoreExtended(fieldValue: string): boolean;
-	validateFieldHasNoSpaces(fieldValue: string): boolean;
-	validateFieldIsLowerCase(fieldOptionId: string, fieldValue: string): boolean;
-	validatePublisherId(fieldValue: string): boolean;
-	validateProjectVersion(fieldValue: string): boolean;
-	validateArrayIsNotEmpty(array: any[]): boolean;
-	validateSuiteApp(fieldValue: string): boolean;
-	validateScriptId(fieldValue: string): boolean;
-	validateXMLCharacters(fieldValue: string): boolean;
-	validateNotUndefined(value: string, optionName: string): boolean;
-	validateProjectType(value: string): boolean;
-	validateSameAuthID(newAuthID: string, authID: string): boolean;
-	validateAuthIDNotInList(newAuthID: string, authIDsList: string[]): boolean;
-	validateAlphanumericHyphenUnderscore(fieldValue: string): boolean;
-	validateMaximumLength(fieldValue: string, maxLength: number): boolean;
-} = require('@oracle/suitecloud-cli/dist/validation/InteractiveAnswersValidator');

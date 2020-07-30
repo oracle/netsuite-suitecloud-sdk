@@ -5,7 +5,7 @@
 'use strict';
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString, extractCommandOptions } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
@@ -46,7 +46,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 	}
 
 	preExecute(answers) {
-		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
+		answers[ANSWERS_NAMES.PROJECT_FOLDER] = quoteString(this._projectFolder);
 		answers[ANSWERS_NAMES.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 
 		return answers;
@@ -85,7 +85,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 			for (let i = 0; i < numberOfSdkCalls; i++) {
 				const partialScriptIds = scriptIdArray.slice(i * NUMBER_OF_SCRIPTS, (i + 1) * NUMBER_OF_SCRIPTS);
 				const partialScriptIdsString = partialScriptIds.join(' ');
-				const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+				const sdkParams = extractCommandOptions(params, this._commandMetadata);
 				const partialExecutionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 					.integration()
 					.addFlags(flags)

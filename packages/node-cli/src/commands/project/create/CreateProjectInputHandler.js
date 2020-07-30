@@ -7,7 +7,7 @@
 const { prompt } = require('inquirer');
 const path = require('path');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const ApplicationConstants = require('../../../ApplicationConstants');
 const { FileSystemService } = require('../../../services/FileSystemService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
@@ -54,7 +54,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	async getParameters(params) {
 		const answers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.TYPE,
 				message: NodeTranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
 				default: 0,
@@ -70,7 +70,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				],
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_NAME,
 				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
 				filter: (fieldValue) => fieldValue.trim(),
@@ -80,7 +80,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				when: function (response) {
 					return response[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP;
 				},
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PUBLISHER_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
 				validate: (fieldValue) => showValidationResults(fieldValue, validatePublisherId),
@@ -89,7 +89,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				when: function (response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_ID),
 				validate: (fieldValue) =>
@@ -101,14 +101,14 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				when: function (response) {
 					return response.type === ApplicationConstants.PROJECT_SUITEAPP;
 				},
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PROJECT_VERSION,
 				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_VERSION),
 				default: DEFAULT_PROJECT_VERSION,
 				validate: (fieldValue) => showValidationResults(fieldValue, validateProjectVersion),
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.INCLUDE_UNIT_TESTING,
 				message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_UNIT_TESTING),
 				default: 0,
@@ -125,7 +125,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 		if (this._fileSystemService.folderExists(projectAbsolutePath) && !this._fileSystemService.isFolderEmpty(projectAbsolutePath)) {
 			const overwriteAnswer = await prompt([
 				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
+					type: INQUIRER_TYPES.LIST,
 					name: COMMAND_OPTIONS.OVERWRITE,
 					message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_PROJECT, projectAbsolutePath),
 					default: 0,

@@ -7,12 +7,12 @@
 const { CreateProjectActionResult } = require('../../../services/actionresult/CreateProjectActionResult');
 const BaseAction = require('../../base/BaseAction');
 const TemplateKeys = require('../../../templates/TemplateKeys');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const ApplicationConstants = require('../../../ApplicationConstants');
-const NpmInstallRunner = require('../../../services/NpmInstallRunner');
+const { npmInstall } = require('../../../utils/NpmInstallUtils');
 const { FileSystemService } = require('../../../services/FileSystemService');
 const { throwValidationException, unwrapExceptionMessage } = require('../../../utils/ExceptionUtils');
 const {
@@ -103,7 +103,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 
 			const createProjectParams = {
 				//Enclose in double quotes to also support project names with spaces
-				parentdirectory: CommandUtils.quoteString(projectAbsolutePath),
+				parentdirectory: quoteString(projectAbsolutePath),
 				type: projectType,
 				projectname: SOURCE_FOLDER,
 				...(params[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
@@ -276,7 +276,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 
 	async _runNpmInstall(projectAbsolutePath) {
 		try {
-			await NpmInstallRunner.run(projectAbsolutePath);
+			await npmInstall(projectAbsolutePath);
 			return true;
 		} catch (error) {
 			return false;

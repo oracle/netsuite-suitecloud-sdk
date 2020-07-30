@@ -5,7 +5,7 @@
 'use strict';
 const path = require('path');
 const { prompt, Separator } = require('inquirer');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { FileSystemService } = require('../../../services/FileSystemService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
@@ -60,7 +60,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		if (foundXMLFiles.length > MAX_ENTRIES_BEFORE_FILTER) {
 			const filterAnswers = await prompt([
 				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
+					type: INQUIRER_TYPES.LIST,
 					name: ANSWERS_NAMES.FILTER_BY_SCRIPT_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 					default: false,
@@ -73,7 +73,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 					when: (response) => {
 						return response[ANSWERS_NAMES.FILTER_BY_SCRIPT_ID];
 					},
-					type: CommandUtils.INQUIRER_TYPES.INPUT,
+					type: INQUIRER_TYPES.INPUT,
 					name: ANSWERS_NAMES.SCRIPT_ID_FILTER,
 					message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID_FILTER),
 					validate: (fieldValue) => showValidationResults(fieldValue, validateScriptId),
@@ -94,7 +94,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		const answers = await prompt([
 			{
 				when: foundXMLFiles.length > 1,
-				type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
+				type: INQUIRER_TYPES.CHECKBOX,
 				name: ANSWERS_NAMES.SCRIPT_ID_LIST,
 				message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
 				default: 1,
@@ -102,7 +102,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
 				message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS),
 				default: 0,

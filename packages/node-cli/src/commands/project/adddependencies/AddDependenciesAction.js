@@ -9,7 +9,7 @@ const BaseAction = require('../../base/BaseAction');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString } = require('../../../utils/CommandUtils');
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 
 const {
@@ -28,7 +28,7 @@ module.exports = class AddDependenciesAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[COMMAND_OPTIONS.PROJECT] = quoteString(this._projectFolder);
 		return params;
 	}
 

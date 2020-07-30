@@ -5,7 +5,7 @@
 'use strict';
 
 const { prompt } = require('inquirer');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
@@ -44,7 +44,7 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 			});
 			return prompt([
 				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
+					type: INQUIRER_TYPES.LIST,
 					name: this._commandMetadata.options.folder.name,
 					message: NodeTranslationService.getMessage(SELECT_FOLDER),
 					default: SUITE_SCRIPTS_FOLDER,

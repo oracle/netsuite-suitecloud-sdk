@@ -9,7 +9,7 @@ const chalk = require('chalk');
 const path = require('path');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const { exists } = require('../../../utils/FileUtils');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
@@ -105,7 +105,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			choices.push(new Separator());
 			authIdAnswer = await prompt([
 				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
+					type: INQUIRER_TYPES.LIST,
 					name: ANSWERS.SELECTED_AUTH_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
 					choices: choices,
@@ -126,7 +126,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		if (developmentMode) {
 			developmentModeUrlAnswer = await prompt([
 				{
-					type: CommandUtils.INQUIRER_TYPES.INPUT,
+					type: INQUIRER_TYPES.INPUT,
 					name: ANSWERS.DEVELOPMENT_MODE_URL,
 					message: NodeTranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
 					filter: (fieldValue) => fieldValue.trim(),
@@ -136,7 +136,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		}
 		const newAuthenticationAnswers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: ANSWERS.AUTH_MODE,
 				message: NodeTranslationService.getMessage(QUESTIONS.AUTH_MODE),
 				choices: [
@@ -151,7 +151,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 				],
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: INQUIRER_TYPES.INPUT,
 				name: ANSWERS.NEW_AUTH_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.NEW_AUTH_ID),
 				filter: (answer) => answer.trim(),
@@ -167,7 +167,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			},
 			{
 				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				type: INQUIRER_TYPES.INPUT,
 				name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
 				transformer: (answer) => answer.toUpperCase(),
@@ -177,8 +177,8 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			},
 			{
 				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
-				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
+				type: INQUIRER_TYPES.PASSWORD,
+				mask: INQUIRER_TYPES.PASSWORD_MASK,
 				name: ANSWERS.SAVE_TOKEN_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
 				filter: (fieldValue) => fieldValue.trim(),
@@ -186,8 +186,8 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			},
 			{
 				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
-				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
+				type: INQUIRER_TYPES.PASSWORD,
+				mask: INQUIRER_TYPES.PASSWORD_MASK,
 				name: ANSWERS.SAVE_TOKEN_SECRET,
 				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
 				filter: (fieldValue) => fieldValue.trim(),

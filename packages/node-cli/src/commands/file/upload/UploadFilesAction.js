@@ -5,7 +5,7 @@
 'use strict';
 
 const BaseAction = require('../../base/BaseAction');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString } = require('../../../utils/CommandUtils');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
@@ -33,12 +33,12 @@ module.exports = class UploadFilesAction extends BaseAction {
 
 		if (params.hasOwnProperty(PATHS)) {
 			if (Array.isArray(params[PATHS])) {
-				params[PATHS] = params[PATHS].map(CommandUtils.quoteString).join(' ');
+				params[PATHS] = params[PATHS].map(quoteString).join(' ');
 			} else {
-				params[PATHS] = CommandUtils.quoteString(params[PATHS]);
+				params[PATHS] = quoteString(params[PATHS]);
 			}
 		}
-		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[COMMAND_OPTIONS.PROJECT] = quoteString(this._projectFolder);
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		return params;
 	}

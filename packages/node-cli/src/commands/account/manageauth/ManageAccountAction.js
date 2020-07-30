@@ -9,7 +9,7 @@ const BaseAction = require('../../base/BaseAction');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { extractCommandOptions } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { ManageAccountActionResult, MANAGE_ACTION } = require('../../../services/actionresult/ManageAccountActionResult');
 const { throwValidationException } = require('../../../utils/ExceptionUtils');
@@ -46,7 +46,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 	}
 
 	async execute(params) {
-		const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+		const sdkParams = extractCommandOptions(params, this._commandMetadata);
 
 		const flags = [];
 		if (params[COMMAND.OPTIONS.LIST]) {

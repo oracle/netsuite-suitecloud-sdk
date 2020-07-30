@@ -5,7 +5,7 @@
 'use strict';
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { quoteString } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { STATUS } = require('../../../utils/SdkOperationResultUtils');
@@ -35,13 +35,13 @@ module.exports = class ImportFilesAction extends BaseAction {
 
 	preExecute(params) {
 		const { PROJECT, PATHS, EXCLUDE_PROPERTIES, AUTH_ID } = COMMAND_OPTIONS;
-		params[PROJECT] = CommandUtils.quoteString(this._projectFolder);
+		params[PROJECT] = quoteString(this._projectFolder);
 		params[AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 		if (params.hasOwnProperty(PATHS)) {
 			if (Array.isArray(params[PATHS])) {
-				params[PATHS] = params[PATHS].map(CommandUtils.quoteString).join(' ');
+				params[PATHS] = params[PATHS].map(quoteString).join(' ');
 			} else {
-				params[PATHS] = CommandUtils.quoteString(params[PATHS]);
+				params[PATHS] = quoteString(params[PATHS]);
 			}
 		}
 		if (params[EXCLUDE_PROPERTIES]) {

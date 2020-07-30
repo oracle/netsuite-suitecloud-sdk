@@ -5,7 +5,7 @@
 'use strict';
 
 const { prompt } = require('inquirer');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
@@ -47,7 +47,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 		const answers = await prompt([
 			{
 				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: COMMAND.FLAGS.APPLY_CONTENT_PROTECTION,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
 				default: 1,
@@ -58,7 +58,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 			},
 			{
 				when: isACProject,
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
 				default: 1,
@@ -74,7 +74,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 				],
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: INQUIRER_TYPES.LIST,
 				name: COMMAND.FLAGS.VALIDATE,
 				message: NodeTranslationService.getMessage(QUESTIONS.PERFORM_LOCAL_VALIDATION),
 				default: 0,

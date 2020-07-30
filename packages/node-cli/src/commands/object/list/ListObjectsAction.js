@@ -5,7 +5,7 @@
 'use strict';
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const CommandUtils = require('../../../utils/CommandUtils');
+const { extractCommandOptions } = require('../../../utils/CommandUtils');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const BaseAction = require('../../base/BaseAction');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
@@ -33,7 +33,7 @@ module.exports = class ListObjectsAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+			const sdkParams = extractCommandOptions(params, this._commandMetadata);
 			if (Array.isArray(sdkParams.type)) {
 				sdkParams.type = sdkParams.type.join(' ');
 			}

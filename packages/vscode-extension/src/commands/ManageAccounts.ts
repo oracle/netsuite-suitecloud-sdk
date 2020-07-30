@@ -2,8 +2,16 @@
  ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import { AuthenticationUtils, InteractiveAnswersValidator } from '../util/ExtensionUtil';
+import { AuthenticationUtils } from '../util/ExtensionUtil';
 import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
+import { 
+	showValidationResults,
+	validateFieldIsNotEmpty,
+	validateFieldHasNoSpaces,
+	validateAuthIDNotInList,
+	validateAlphanumericHyphenUnderscore,
+	validateMaximumLength,
+} from '@oracle/suitecloud-cli/dist/validation/InteractiveAnswersValidator';
 import { PROD_ENVIRONMENT_ADDRESS } from '@oracle/suitecloud-cli/dist/ApplicationConstants';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
@@ -207,13 +215,13 @@ export default class ManageAccounts extends BaseAction {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_AUTH_ID),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(
+				let validationResult = showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty,
-					InteractiveAnswersValidator.validateFieldHasNoSpaces,
-					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
-					InteractiveAnswersValidator.validateMaximumLength
+					validateFieldIsNotEmpty,
+					validateFieldHasNoSpaces,
+					(fieldValue: string) => validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
+					validateAlphanumericHyphenUnderscore,
+					validateMaximumLength
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -225,10 +233,10 @@ export default class ManageAccounts extends BaseAction {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(
+				let validationResult = showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty,
-					InteractiveAnswersValidator.validateFieldHasNoSpaces
+					validateFieldIsNotEmpty,
+					validateFieldHasNoSpaces
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -240,11 +248,11 @@ export default class ManageAccounts extends BaseAction {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_ACCOUNT_ID),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(
+				let validationResult = showValidationResults(
 					fieldValue, 
-					InteractiveAnswersValidator.validateFieldIsNotEmpty,
-					InteractiveAnswersValidator.validateFieldHasNoSpaces,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore
+					validateFieldIsNotEmpty,
+					validateFieldHasNoSpaces,
+					validateAlphanumericHyphenUnderscore
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -257,9 +265,9 @@ export default class ManageAccounts extends BaseAction {
 			ignoreFocusOut: true,
 			password: true,
 			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(
+				let validationResult = showValidationResults(
 					fieldValue, 
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					validateFieldIsNotEmpty
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -272,9 +280,9 @@ export default class ManageAccounts extends BaseAction {
 			ignoreFocusOut: true,
 			password: true,
 			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(
+				let validationResult = showValidationResults(
 					fieldValue, 
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					validateFieldIsNotEmpty
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
