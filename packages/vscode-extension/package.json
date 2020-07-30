@@ -77,9 +77,10 @@
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
+		"compile": "tsc -b tsconfig.build.json",
 		"build": "npm run compile",
-		"watch": "tsc -watch -p ./"
+		"build:prod": "tsc -b tsconfig.prod.json",
+		"watch": "tsc -watch -b tsconfig.build.json"
 	},
 	"dependencies": {
 		"@oracle/suitecloud-cli": "^1.0.2"

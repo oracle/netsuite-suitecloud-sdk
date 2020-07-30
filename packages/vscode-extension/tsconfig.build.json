@@ -1,0 +1,24 @@
+{
+	"extends": "../../tsconfig.build.json",
+	"compilerOptions": {
+		"module": "CommonJS",
+		"composite": true,
+		"declaration": true,
+		"target": "ES6",
+		"outDir": "./dist",
+		"resolveJsonModule": true,
+		"rootDir": "./src",
+	},
+	"references": [{
+		"path": "../node-cli/tsconfig.build.json"
+	}],
+	"include": [
+		"src/**/*",
+		"src/**/*.json",
+		"types/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		".vscode-test"
+	]
+}

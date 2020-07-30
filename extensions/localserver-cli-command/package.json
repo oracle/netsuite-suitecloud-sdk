@@ -44,6 +44,7 @@
 		"clean": "rm -rf dist && rm -rf tsconfig.build.tsbuildinfo",
 		"lerna-init": "npm install && npm run build",
 		"copy-files": "copyfiles -u 1 \"src/**/*.{js},\" dist",
-		"build": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json"
+		"build": "npm run clean && npm run copy-files && tsc -b tsconfig.build.json",
+		"build:prod": "npm run clean && npm run copy-files && tsc -b tsconfig.prod.json"
 	}
 }

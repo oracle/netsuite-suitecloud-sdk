@@ -1,16 +1,17 @@
 {
-  "name": "@oracle/suitecloud-sdk",
-  "version": "1.0.4",
-  "license": "UPL-1.0",
-  "private": true,
-  "devDependencies": {
-    "lerna": "^3.21.0"
-  },
-  "scripts": {
-    "test": "lerna run test --stream",
-    "postinstall": "lerna run lerna-init --stream && lerna bootstrap",
-    "compile": "lerna run compile --stream",
-    "build": "lerna run build --stream",
-    "tc-preinstall": "lerna run tc-build --stream"
-  }
+	"name": "@oracle/suitecloud-sdk",
+	"version": "1.0.4",
+	"license": "UPL-1.0",
+	"private": true,
+	"devDependencies": {
+		"lerna": "^3.21.0"
+	},
+	"scripts": {
+		"test": "lerna run test --stream",
+		"postinstall": "lerna run lerna-init --stream && lerna bootstrap",
+		"compile": "lerna run compile --stream",
+		"build": "lerna run build --stream",
+		"build:prod": "lerna run build:prod --stream",
+		"tc-preinstall": "lerna run tc-build --stream"
+	}
 }
