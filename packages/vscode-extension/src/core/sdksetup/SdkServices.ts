@@ -14,7 +14,7 @@ import { VSTranslationService } from '../../service/VSTranslationService';
 import { EXTENSION_INSTALLATION } from '../../service/TranslationKeys';
 import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
-import { FileSystemService } from '../../util/ExtensionUtil';
+import { FileSystemService } from '@oracle/suitecloud-cli/dist/services/FileSystemService';
 import { SDK_DOWNLOAD_URL, SDK_FILENAME, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER, sdkPath } from './SdkProperties';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];

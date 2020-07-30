@@ -6,7 +6,7 @@
 
 const TemplateKeys = require('../../../templates/TemplateKeys');
 const BaseAction = require('../../base/BaseAction');
-const FileSystemService = require('../../../services/FileSystemService');
+const { FileSystemService } = require('../../../services/FileSystemService');
 
 module.exports = class CreateObjectAction extends BaseAction {
 	constructor(options) {

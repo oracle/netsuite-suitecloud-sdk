@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const ProxyActionResult = require('../../../services/actionresult/ProxyActionResult');
+const { ProxyActionResult } = require('../../../services/actionresult/ProxyActionResult');
 const BaseAction = require('../../base/BaseAction');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const {

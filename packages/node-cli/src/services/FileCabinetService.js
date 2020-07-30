@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const FileSystemService = require('./FileSystemService');
+const { FileSystemService } = require('./FileSystemService');
 const path = require('path');
 
 const SUITESCRIPTS_PATH = '/SuiteScripts';

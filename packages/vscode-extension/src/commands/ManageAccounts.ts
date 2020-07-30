@@ -2,7 +2,9 @@
  ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator, ApplicationConstants } from '../util/ExtensionUtil';
+import { AuthenticationUtils, InteractiveAnswersValidator } from '../util/ExtensionUtil';
+import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
+import { PROD_ENVIRONMENT_ADDRESS } from '@oracle/suitecloud-cli/dist/ApplicationConstants';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
@@ -62,7 +64,7 @@ export default class ManageAccounts extends BaseAction {
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
 		const actionResult: ActionResult<AuthListData> = await accountsPromise;
 
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.status === STATUS.SUCCESS) {
 			const selected = await this.getAuthListOption(actionResult.data);
 			if (!selected) {
 				return;
@@ -151,7 +153,7 @@ export default class ManageAccounts extends BaseAction {
 		};
 		if (url) {
 			commandParams.url = url;
-			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
+			commandParams.dev = url !== PROD_ENVIRONMENT_ADDRESS;
 		}
 
 		let cancellationToken: CancellationToken = {};
@@ -184,7 +186,7 @@ export default class ManageAccounts extends BaseAction {
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), true, authenticatePromise);
 
 		const actionResult = await authenticatePromise;
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.status === STATUS.SUCCESS) {
 			this.log.result(
 				this.translationService.getMessage(
 					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
@@ -297,7 +299,7 @@ export default class ManageAccounts extends BaseAction {
 		};
 		if (url) {
 			commandParams.url = url;
-			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
+			commandParams.dev = url !== PROD_ENVIRONMENT_ADDRESS;
 		}
 
 		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, sdkPath, this.executionPath);
@@ -305,7 +307,7 @@ export default class ManageAccounts extends BaseAction {
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA), true, saveTokenPromise);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.status === STATUS.SUCCESS) {
 			this.log.result(
 				this.translationService.getMessage(
 					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,

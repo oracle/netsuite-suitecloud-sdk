@@ -8,14 +8,14 @@ const { join } = require('path');
 const { prompt, Separator } = require('inquirer');
 const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { lineBreak } = require('../../../loggers/LoggerConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
-const FileSystemService = require('../../../services/FileSystemService');
+const { FileSystemService } = require('../../../services/FileSystemService');
 const CommandUtils = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDERS } = require('../../../ApplicationConstants');
@@ -86,7 +86,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			throw NodeTranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, lineBreak, error);
 		}
 
-		if (listObjectsResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		if (listObjectsResult.status === STATUS.ERROR) {
 			throw listObjectsResult.errorMessages;
 		}
 		const { data } = listObjectsResult;

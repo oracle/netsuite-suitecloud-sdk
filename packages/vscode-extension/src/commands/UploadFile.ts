@@ -5,7 +5,9 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKeys';
-import { actionResultStatus, CLIConfigurationService, ApplicationConstants } from '../util/ExtensionUtil';
+import { CLIConfigurationService } from '../util/ExtensionUtil';
+import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
+import { FOLDERS } from '@oracle/suitecloud-cli/dist/ApplicationConstants';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'file:upload'
@@ -26,7 +28,7 @@ export default class UploadFile extends BaseAction {
 		cliConfigurationService.initialize(this.executionPath);
 		const projectFolder = cliConfigurationService.getProjectFolder(this.commandName);
 
-		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
+		const fileCabinetFolder = path.join(projectFolder, FOLDERS.FILE_CABINET);
 		const relativePath = activeFile.fsPath.replace(fileCabinetFolder, '');
 
 		const override = await window.showQuickPick([YES, NO], {
@@ -46,7 +48,7 @@ export default class UploadFile extends BaseAction {
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.status === STATUS.SUCCESS) {
 			this.messageService.showCommandInfo();
 		} else {
 			this.messageService.showCommandError();

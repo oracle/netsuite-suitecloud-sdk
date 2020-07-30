@@ -11,7 +11,7 @@ const {
 	FILES,
 	FOLDERS,
 } = require('../ApplicationConstants');
-const CLIException = require('../CLIException');
+const { CLIException } = require('../CLIException');
 const { exists, readAsString } = require('../utils/FileUtils');
 const path = require('path');
 const { NodeTranslationService } = require('./NodeTranslationService');

@@ -4,7 +4,7 @@
  */
 import { window } from 'vscode';
 import { COMMAND, LIST_OBJECTS } from '../service/TranslationKeys';
-import { actionResultStatus } from '../util/ExtensionUtil';
+import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
 import BaseAction from './BaseAction';
 
 const objectTypes: {
@@ -39,7 +39,7 @@ export default class ListObjects extends BaseAction {
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.status === STATUS.SUCCESS) {
 			this.messageService.showCommandInfo();
 		} else {
 			this.messageService.showCommandError();

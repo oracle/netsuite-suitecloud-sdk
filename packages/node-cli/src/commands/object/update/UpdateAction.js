@@ -10,7 +10,7 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkExecutionContext = require('../../../SdkExecutionContext');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 
 const {
@@ -58,7 +58,7 @@ module.exports = class UpdateAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 			});
 
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {

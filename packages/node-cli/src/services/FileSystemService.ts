@@ -4,19 +4,20 @@
  */
 'use strict';
 
-const { lstatSync, readdirSync, readFile, writeFile, mkdirSync, renameSync, existsSync, unlinkSync, rmdirSync } = require('fs');
-const CLIException = require('../CLIException');
-const assert = require('assert');
-const path = require('path');
-const TranslationService = require('../services/TranslationService');
-const { CANT_CREATE_FOLDER } = require('../services/TranslationKeys').ERRORS;
+import { lstatSync, readdirSync, readFile, writeFile, mkdirSync, renameSync, existsSync, unlinkSync, rmdirSync } from 'fs';
+import { CLIException } from '../CLIException';
+import assert from 'assert';
+import path from 'path';
+import { NodeTranslationService } from './NodeTranslationService';
+import { ERRORS } from './TranslationKeys';
 
 const CHAR_ENCODING_UTF8 = 'utf-8';
 
-module.exports = class FileSystemService {
-	getFoldersFromDirectory(parentFolder) {
+// TODO this should be an utility with all methods exported, not a class
+export class FileSystemService {
+	getFoldersFromDirectory(parentFolder: string) {
 		assert(parentFolder);
-		const getDirectories = source =>
+		const getDirectories = (source: string) =>
 			readdirSync(source)
 				.map(name => path.join(source, name))
 				.filter(source => lstatSync(source).isDirectory());
@@ -26,10 +27,10 @@ module.exports = class FileSystemService {
 		return availableDirectories;
 	}
 
-	getFoldersFromDirectoryRecursively(parentFolder) {
+	getFoldersFromDirectoryRecursively(parentFolder: string) {
 		assert(parentFolder);
-		const folders = [];
-		const getFoldersRecursively = source =>
+		const folders: string[] = [];
+		const getFoldersRecursively = (source: string) =>
 				this.getFoldersFromDirectory(source).forEach(folder => {
 				folders.push(folder);
 				getFoldersRecursively(folder);
@@ -39,10 +40,10 @@ module.exports = class FileSystemService {
 		return folders;
 	}
 
-	getFilesFromDirectory(parentFolder) {
+	getFilesFromDirectory(parentFolder: string) {
 		assert(parentFolder);
-		const fullPathFiles = [];
-		const getFilesRecursively = source =>
+		const fullPathFiles: string[] = [];
+		const getFilesRecursively = (source: string) =>
 			readdirSync(source).forEach(file => {
 				const fullPath = path.join(source, file);
 				if (lstatSync(fullPath).isDirectory()) {
@@ -56,7 +57,7 @@ module.exports = class FileSystemService {
 		return fullPathFiles;
 	}
 
-	createFileFromTemplate(options) {
+	createFileFromTemplate(options: {template: string; destinationFolder: string; fileName: string; fileExtension: string; bindings?: {id: string; value: string}[]}) {
 		assert(options.template);
 		assert(options.destinationFolder);
 		assert(options.fileName);
@@ -74,7 +75,7 @@ module.exports = class FileSystemService {
 				writeFile(
 					path.join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
 					content.toString(),
-					(writingError, data) => {
+					(writingError) => {
 						if (writingError) {
 							reject(writingError);
 						}
@@ -85,7 +86,7 @@ module.exports = class FileSystemService {
 		});
 	}
 
-	createFolder(parentFolderPath, folderName) {
+	createFolder(parentFolderPath: string, folderName: string) {
 		assert(parentFolderPath);
 		assert(folderName);
 
@@ -96,13 +97,13 @@ module.exports = class FileSystemService {
 				mkdirSync(path.join(targetFolder));
 			}
 		} catch (e) {
-			throw new CLIException(TranslationService.getMessage(CANT_CREATE_FOLDER, e.path, e.code));
+			throw new CLIException(NodeTranslationService.getMessage(ERRORS.CANT_CREATE_FOLDER, e.path, e.code));
 		}
 
 		return targetFolder;
 	}
 
-	renameFolder(oldPath, newPath) {
+	renameFolder(oldPath: string, newPath: string) {
 		assert(oldPath);
 		assert(newPath);
 
@@ -111,7 +112,7 @@ module.exports = class FileSystemService {
 		}
 	}
 
-	deleteFolderRecursive(folderPath) {
+	deleteFolderRecursive(folderPath: string) {
 		assert(folderPath);
 
 		let self = this;
@@ -128,7 +129,7 @@ module.exports = class FileSystemService {
 		}
 	}
 
-	emptyFolderRecursive(folderPath) {
+	emptyFolderRecursive(folderPath: string) {
 		assert(folderPath);
 		let self = this;
 		if (existsSync(folderPath)) {
@@ -143,7 +144,7 @@ module.exports = class FileSystemService {
 		}
 	}
 
-	replaceStringInFile(filePath, fromString, toString) {
+	replaceStringInFile(filePath: string, fromString: string, toString: string) {
 		assert(filePath);
 		assert(fromString);
 		assert(toString);
@@ -167,17 +168,17 @@ module.exports = class FileSystemService {
 		});
 	}
 
-	folderExists(path) {
+	folderExists(path: string) {
 		assert(path);
 		return existsSync(path);
 	}
 
-	isFolderEmpty(path) {
+	isFolderEmpty(path: string) {
 		assert(path);
 		readdirSync(path).length !== 0;
 	}
 
-	_processTemplateBindings(content, bindings) {
+	_processTemplateBindings(content: string, bindings: {id: string; value: string}[]) {
 		let processedContent = content;
 		bindings.forEach(binding => {
 			processedContent = content.replace(`{{${binding.id}}}`, binding.value);

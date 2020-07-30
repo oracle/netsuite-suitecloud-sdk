@@ -10,7 +10,7 @@ const SdkExecutionContext = require('../../../SdkExecutionContext');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -45,7 +45,7 @@ module.exports = class AddDependenciesAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {

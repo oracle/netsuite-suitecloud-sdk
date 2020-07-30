@@ -7,7 +7,7 @@ const path = require('path');
 const { prompt, Separator } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
-const FileSystemService = require('../../../services/FileSystemService');
+const { FileSystemService } = require('../../../services/FileSystemService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 
 const {

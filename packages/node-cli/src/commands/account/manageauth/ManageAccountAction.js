@@ -8,7 +8,7 @@ const assert = require('assert');
 const BaseAction = require('../../base/BaseAction');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const CommandUtils = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { ManageAccountActionResult, MANAGE_ACTION } = require('../../../services/actionresult/ManageAccountActionResult');
@@ -66,7 +66,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 			action: this._sdkExecutor.execute(executionContext),
 			message: message,
 		});
-		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+		return operationResult.status === STATUS.SUCCESS
 			? ManageAccountActionResult.Builder.withData(this._prepareData(selectedOptions, operationResult.data))
 					.withResultMessage(operationResult.resultMessage)
 					.withExecutedAction(selectedOptions.action)

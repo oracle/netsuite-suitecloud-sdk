@@ -1,9 +1,10 @@
 
 import { spawn } from 'child_process';
-import { ApplicationConstants } from '../../util/ExtensionUtil';
 
-const clientPlatformVersionOption = `${ApplicationConstants.SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
-const vmOptions = `${ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION} ${clientPlatformVersionOption}`;
+import { SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION, SDK_INTEGRATION_MODE_JVM_OPTION } from '@oracle/suitecloud-cli/dist/ApplicationConstants';
+
+const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
+const vmOptions = `${SDK_INTEGRATION_MODE_JVM_OPTION} ${clientPlatformVersionOption}`;
 
 export function validateSdk(sdkPath: string) {
 

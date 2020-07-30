@@ -4,7 +4,7 @@
  */
 import { ADD_DEPENDENCIES, COMMAND } from '../service/TranslationKeys';
 import { ActionResult } from '../types/ActionResult';
-import { actionResultStatus } from '../util/ExtensionUtil';
+import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'project:adddependencies';
@@ -23,7 +23,7 @@ export default class AddDependencies extends BaseAction {
 
 		const actionResult: ActionResult<any> = await commandActionPromise;
 
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.status === STATUS.SUCCESS) {
 			if (actionResult.data.length > 0) {
 				this.messageService.showCommandInfo(this.translationService.getMessage(ADD_DEPENDENCIES.ADDED));
 			} else {

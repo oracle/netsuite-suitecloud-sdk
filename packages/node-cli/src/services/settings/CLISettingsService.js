@@ -4,9 +4,9 @@
  */
 'use strict';
 
-const FileSystemService = require('../FileSystemService');
+const { FileSystemService } = require('../FileSystemService');
 const { create, exists, readAsJson } = require('../../utils/FileUtils');
-const CLISettings = require('./CLISettings');
+const { CLISettings } = require('./CLISettings');
 const path = require('path');
 const { NodeTranslationService } = require('../NodeTranslationService');
 const { ERRORS } = require('../TranslationKeys');

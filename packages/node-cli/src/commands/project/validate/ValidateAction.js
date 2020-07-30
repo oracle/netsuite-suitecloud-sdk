@@ -6,9 +6,9 @@
 'use strict';
 
 const BaseAction = require('../../base/BaseAction');
-const DeployActionResult = require('../../../services/actionresult/DeployActionResult');
+const { DeployActionResult } = require('../../../services/actionresult/DeployActionResult');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
@@ -79,7 +79,7 @@ module.exports = class ValidateAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)

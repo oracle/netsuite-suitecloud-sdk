@@ -17,7 +17,7 @@ const NodeConsoleLogger = require('../../loggers/NodeConsoleLogger');
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
 
 const { NodeTranslationService } = require('../../services/NodeTranslationService');
-const FileSystemService = require('../../services/FileSystemService');
+const { FileSystemService } = require('../../services/FileSystemService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 
 const {

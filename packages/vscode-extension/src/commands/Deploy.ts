@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import { COMMAND, DEPLOY } from '../service/TranslationKeys';
-import { actionResultStatus } from '../util/ExtensionUtil';
+import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'project:deploy';
@@ -20,7 +20,7 @@ export default class Deploy extends BaseAction {
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.status === STATUS.SUCCESS) {
 			this.messageService.showCommandInfo();
 		} else {
 			this.messageService.showCommandError();

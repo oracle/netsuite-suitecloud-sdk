@@ -14,7 +14,7 @@ const path = require('path');
 const { exists } = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
-const EnvironmentInformationService = require('./services/EnvironmentInformationService');
+const { getInstalledJavaVersionString } = require('./utils/EnvironmentInformationUtils');
 const url = require('url');
 const { NodeTranslationService } = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
@@ -29,7 +29,6 @@ module.exports = class SdkExecutor {
 		this._sdkPath = sdkPath;
 
 		this._CLISettingsService = new CLISettingsService();
-		this._environmentInformationService = new EnvironmentInformationService();
 		this.childProcess = null;
 	}
 
@@ -140,7 +139,7 @@ module.exports = class SdkExecutor {
 	}
 
 	_checkIfJavaVersionIssue() {
-		const javaVersionInstalled = this._environmentInformationService.getInstalledJavaVersionString();
+		const javaVersionInstalled = getInstalledJavaVersionString();
 		if (javaVersionInstalled.startsWith(SDK_REQUIRED_JAVA_VERSION)) {
 			this._CLISettingsService.setJavaVersionValid(true);
 			return;

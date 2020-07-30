@@ -9,14 +9,14 @@ const BaseAction = require('../../base/BaseAction');
 const { saveToken } = require('../../../utils/AuthenticationUtils');
 const { PROD_ENVIRONMENT_ADDRESS } = require('../../../ApplicationConstants');
 const CommandOptionsValidator = require('../../../core/CommandOptionsValidator');
-const ValidationErrorsFormatter = require('../../../utils/ValidationErrorsFormatter');
+const { formatErrors } = require('../../../utils/ValidationErrorsFormatter');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { exists } = require('../../../utils/FileUtils');
 const { COMMAND_ACCOUNTCI, ERRORS } = require('../../../services/TranslationKeys');
 const {
 	FILES: { MANIFEST_XML },
 } = require('../../../ApplicationConstants');
-const CLIException = require('../../../CLIException');
+const { CLIException } = require('../../../CLIException');
 
 const COMMAND = {
 	OPTIONS: {
@@ -77,7 +77,7 @@ module.exports = class AccountCiAction extends BaseAction {
 				arguments: params,
 			});
 			if (validationErrors.length > 0) {
-				throw new CLIException(ValidationErrorsFormatter.formatErrors(validationErrors));
+				throw new CLIException(formatErrors(validationErrors));
 			}
 			// If url is system.netsuite.com, we must not pass it to the sdk. If it's anything else, we must add developmentMode flag
 			if (params[COMMAND.OPTIONS.URL] === PROD_ENVIRONMENT_ADDRESS) {

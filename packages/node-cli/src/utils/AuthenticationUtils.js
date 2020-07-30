@@ -13,7 +13,7 @@ const { AuthenticateActionResult } = require('../services/actionresult/Authentic
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const path = require('path');
 const SdkExecutionContext = require('../SdkExecutionContext');
-const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const { STATUS } = require('../utils/SdkOperationResultUtils');
 const SdkExecutor = require('../SdkExecutor');
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
@@ -81,7 +81,7 @@ async function getAuthIds(sdkPath) {
 		action: sdkExecutor.execute(getAuthListContext),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.LOADING_AUTHIDS),
 	});
-	return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+	return operationResult.status === STATUS.SUCCESS
 		? ActionResult.Builder.withData(operationResult.data).build()
 		: ActionResult.Builder.withErrors(operationResult.errorMessages);
 }
@@ -108,7 +108,7 @@ async function saveToken(params, sdkPath, projectFolder) {
 		action: sdkExecutor.execute(contextBuilder.build()),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.SAVING_TBA_TOKEN),
 	});
-	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+	if (operationResult.status === STATUS.ERROR) {
 		return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
 	}
 	setDefaultAuthentication(projectFolder, authId);
@@ -138,7 +138,7 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.STARTING_OAUTH_FLOW),
 	})
 		.then((operationResult) => {
-			if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			if (operationResult.status === STATUS.ERROR) {
 				return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
 			}
 			setDefaultAuthentication(projectFolder, authId);

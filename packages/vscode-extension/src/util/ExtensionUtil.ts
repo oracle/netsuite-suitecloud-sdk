@@ -12,13 +12,6 @@ export function getRootProjectFolder(): string | undefined {
 	return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : undefined;
 }
 
-export const ApplicationConstants = require('@oracle/suitecloud-cli/dist/ApplicationConstants');
-
-export const actionResultStatus: {
-	SUCCESS: string;
-	ERROR: string;
-} = require('@oracle/suitecloud-cli/dist/services/actionresult/ActionResult').STATUS;
-
 export const CommandActionExecutor = require('@oracle/suitecloud-cli/dist/core/CommandActionExecutor');
 export const CommandsMetadataService = require('@oracle/suitecloud-cli/dist/core/CommandsMetadataService');
 export const CommandOptionsValidator = require('@oracle/suitecloud-cli/dist/core/CommandOptionsValidator');
@@ -26,8 +19,6 @@ export const CLIConfigurationService = require('@oracle/suitecloud-cli/dist/core
 
 export const ConsoleLogger = require('@oracle/suitecloud-cli/dist/loggers/ConsoleLogger');
 
-export const TranslationService = require('@oracle/suitecloud-cli/dist/services/TranslationService');
-export const FileSystemService = require('@oracle/suitecloud-cli/dist/services/FileSystemService');
 export const AuthenticationUtils = require('@oracle/suitecloud-cli/dist/utils/AuthenticationUtils');
 
 export const InteractiveAnswersValidator: {

@@ -8,7 +8,7 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const { prompt } = require('inquirer');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS, getResultMessage } = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
@@ -66,7 +66,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 		const listFoldersResult = await this._listFolders();
 
-		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		if (listFoldersResult.status === STATUS.ERROR) {
 			throw listFoldersResult.errorMessages;
 		}
 
@@ -74,11 +74,11 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
 		const listFilesResult = await this._listFiles(selectFolderAnswer);
 
-		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		if (listFilesResult.status === STATUS.ERROR) {
 			throw listFilesResult.errorMessages;
 		}
 		if (Array.isArray(listFilesResult.data) && listFilesResult.data.length === 0) {
-			throw SdkOperationResultUtils.getResultMessage(listFilesResult);
+			throw getResultMessage(listFilesResult);
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);

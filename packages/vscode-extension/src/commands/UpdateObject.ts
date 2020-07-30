@@ -5,11 +5,11 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { ERRORS, YES, NO, UPDATE_OBJECT } from '../service/TranslationKeys';
-import { actionResultStatus } from '../util/ExtensionUtil';
+import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'object:update';
-const STATUS = {
+const PARTIAL_STATUS = {
 	SUCCESS: 'SUCCESS',
 	ERROR: 'ERROR',
 };
@@ -44,7 +44,7 @@ export default class UpdateObject extends BaseAction {
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
-		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data.length === 1 && actionResult.data[0].type === STATUS.SUCCESS) {
+		if (actionResult.status === STATUS.SUCCESS && actionResult.data.length === 1 && actionResult.data[0].type === PARTIAL_STATUS.SUCCESS) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.SUCCESS));
 		} else {
 			this.messageService.showCommandError();

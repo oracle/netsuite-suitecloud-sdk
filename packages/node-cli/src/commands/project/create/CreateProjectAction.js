@@ -9,11 +9,11 @@ const BaseAction = require('../../base/BaseAction');
 const TemplateKeys = require('../../../templates/TemplateKeys');
 const CommandUtils = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const ApplicationConstants = require('../../../ApplicationConstants');
 const NpmInstallRunner = require('../../../services/NpmInstallRunner');
-const FileSystemService = require('../../../services/FileSystemService');
+const { FileSystemService } = require('../../../services/FileSystemService');
 const { throwValidationException, unwrapExceptionMessage } = require('../../../utils/ExceptionUtils');
 const {
 	COMMAND_CREATEPROJECT: { MESSAGES },
@@ -125,7 +125,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 			const projectName = params[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
-			return createProjectActionData.operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return createProjectActionData.operationResult.status === STATUS.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
 						.withResultMessage(createProjectActionData.operationResult.resultMessage)
 						.withProjectType(projectType)
@@ -154,7 +154,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
-				if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+				if (operationResult.status === STATUS.ERROR) {
 					resolve({
 						operationResult: operationResult,
 						projectType: params[COMMAND_OPTIONS.TYPE],

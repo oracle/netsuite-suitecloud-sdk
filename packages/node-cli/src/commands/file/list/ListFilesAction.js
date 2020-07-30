@@ -8,7 +8,7 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseAction = require('../../base/BaseAction');
 const {
@@ -43,7 +43,7 @@ module.exports = class ListFilesAction extends BaseAction {
 				message: NodeTranslationService.getMessage(LOADING_FILES),
 			});
 
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {

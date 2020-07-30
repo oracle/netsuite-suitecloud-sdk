@@ -8,7 +8,7 @@ const path = require('path');
 const BaseAction = require('../../base/BaseAction');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const CommandUtils = require('../../../utils/CommandUtils');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
@@ -52,7 +52,7 @@ module.exports = class PackageAction extends BaseAction {
 			action: this._sdkExecutor.execute(executionContext),
 			message: NodeTranslationService.getMessage(COMMAND_PACKAGE.PACKAGING),
 		});
-		return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+		return operationResult.status === STATUS.SUCCESS
 			? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 			: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 	}

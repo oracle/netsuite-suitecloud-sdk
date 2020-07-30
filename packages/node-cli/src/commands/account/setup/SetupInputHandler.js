@@ -13,7 +13,7 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
-const CLIException = require('../../../CLIException');
+const { CLIException } = require('../../../CLIException');
 
 const {
 	FILES: { MANIFEST_XML },

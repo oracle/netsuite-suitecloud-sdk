@@ -9,7 +9,7 @@ const path = require('path');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ApplicationConstants = require('../../../ApplicationConstants');
-const FileSystemService = require('../../../services/FileSystemService');
+const { FileSystemService } = require('../../../services/FileSystemService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 
 const {

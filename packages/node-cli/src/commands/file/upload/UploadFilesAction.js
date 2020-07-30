@@ -7,7 +7,7 @@
 const BaseAction = require('../../base/BaseAction');
 const CommandUtils = require('../../../utils/CommandUtils');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
@@ -54,7 +54,7 @@ module.exports = class UploadFilesAction extends BaseAction {
 				action: this._sdkExecutor.execute(executionContextUploadFiles),
 				message: NodeTranslationService.getMessage(MESSAGES.UPLOADING_FILES),
 			});
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withProjectFolder(this._projectFolder)

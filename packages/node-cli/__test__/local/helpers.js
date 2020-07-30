@@ -10,7 +10,8 @@ const fs = require('fs');
 
 // normally this is called only when localserver command is executed
 const FileSystem = require('@oracle/suitecloud-cli-localserver-command/dist/services/FileSystem');
-FileSystem.start(require('../../dist/services/FileSystemService'));
+const { FileSystemService } = require('../../dist/services/FileSystemService');
+FileSystem.start(FileSystemService);
 
 const ROOT = './__test__/local';
 const CUSTOM_ASSETS_PATH = path.resolve(ROOT, 'custom_assets');

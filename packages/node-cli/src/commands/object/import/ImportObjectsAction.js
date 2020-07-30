@@ -8,7 +8,7 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const CommandUtils = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseAction = require('../../base/BaseAction');
@@ -119,7 +119,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 	}
 
 	_parsePartialResult(partialOperationResult) {
-		if (partialOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		if (partialOperationResult.status === STATUS.ERROR) {
 			this.operationResultData.errorImports = this.operationResultData.errorImports.concat({
 				scriptIds: this.partialScriptIds,
 				reason: partialOperationResult.errorMessages[0],
