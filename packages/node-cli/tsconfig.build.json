@@ -10,7 +10,8 @@
 		"path": "../../extensions/localserver-cli-command/tsconfig.build.json"
 	}],
 	"include": [
-		"src/**/*", 
+		"src/**/*",
+		"src/**/*.json",
 		"types/**/*"
 	]
 }

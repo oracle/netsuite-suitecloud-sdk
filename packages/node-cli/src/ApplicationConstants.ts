@@ -31,7 +31,6 @@ export const FOLDERS = {
 	SUITECLOUD_SDK: '.suitecloud-sdk',
 	NODE_CLI: 'cli',
 };
-export const DEFAULT_MESSAGES_FILE = '../../dist/messages.json';
 export const PROJECT_ACP = 'ACCOUNTCUSTOMIZATION';
 export const PROJECT_SUITEAPP = 'SUITEAPP';
 export const PROD_ENVIRONMENT_ADDRESS = 'system.netsuite.com';

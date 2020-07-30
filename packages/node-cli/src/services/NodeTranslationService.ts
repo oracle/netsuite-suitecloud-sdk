@@ -4,14 +4,12 @@
  */
 'use strict';
 
-import * as path from 'path';
 import TranslationService from './TranslationService';
-import { DEFAULT_MESSAGES_FILE } from '../ApplicationConstants';
-import { readAsJson } from '../utils/FileUtils';
+import * as messages from '../messages.json'
 
 class NodeTranslationServiceClass extends TranslationService {
 
-	_MESSAGES = readAsJson(path.join(__dirname, DEFAULT_MESSAGES_FILE));
+	_MESSAGES = messages;
 
 	constructor() {
 		super();

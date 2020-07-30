@@ -6,7 +6,6 @@
 		"declaration": true,
 		"target": "ES6",
 		"outDir": "./dist",
-		"resolveJsonModule": true,
 		"rootDir": "./src",
 	},
 	"references": [{
@@ -16,9 +15,5 @@
 		"src/**/*",
 		"src/**/*.json",
 		"types/**/*"
-	],
-	"exclude": [
-		"node_modules",
-		".vscode-test"
 	]
 }
