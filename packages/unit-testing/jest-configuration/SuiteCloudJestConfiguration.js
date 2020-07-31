@@ -14,6 +14,30 @@ const PROJECT_TYPE = {
 
 const CORE_STUBS = [
 	{
+		module: 'N/http',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/http.js`,
+	},
+	{
+		module: 'N/http/clientresponse',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/ClientResponse.js`,
+	},
+	{
+		module: 'N/https',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/https.js`,
+	},
+	{
+		module: 'N/https/clientresponse',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/ClientResponse.js`,
+	},
+	{
+		module: 'N/https/secretkey',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecretKey.js`,
+	},
+	{
+		module: 'N/https/securestring',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecureString.js`,
+	},
+	{
 		module: 'N/record',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/record.js`,
 	},
