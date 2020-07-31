@@ -4,18 +4,18 @@
  */
 'use strict';
 
-const { FileSystemService } = require('../FileSystemService');
-const { create, exists, readAsJson } = require('../../utils/FileUtils');
-const { CLISettings } = require('./CLISettings');
-const path = require('path');
-const { NodeTranslationService } = require('../NodeTranslationService');
-const { ERRORS } = require('../TranslationKeys');
+import { createFolder } from '../FileSystemService';
+import { create, exists, readAsJson } from '../../utils/FileUtils';
+import { CLISettings } from './CLISettings';
+import path from 'path';
+import { NodeTranslationService } from '../NodeTranslationService';
+import { ERRORS } from '../TranslationKeys';
 
-const HOME_PATH = require('os').homedir();
-const { FILES, FOLDERS } = require('../../ApplicationConstants');
+import { homedir } from 'os';
+import { FILES, FOLDERS } from '../../ApplicationConstants';
 
 const CLI_SETTINGS_FILEPATH = path.join(
-	HOME_PATH,
+	homedir(),
 	FOLDERS.SUITECLOUD_SDK,
 	FILES.CLI_SETTINGS
 );
@@ -27,15 +27,14 @@ const DEFAULT_CLI_SETTINGS = new CLISettings({
 	isJavaVersionValid: false
 });
 
-let CACHED_CLI_SETTINGS;
+let CACHED_CLI_SETTINGS: CLISettings;
 
-module.exports = class CLISettingsService {
+export class CLISettingsService {
 	constructor() {
-		this._fileSystemService = new FileSystemService();
 	}
 
-	_saveSettings(cliSettings) {
-		this._fileSystemService.createFolder(HOME_PATH, FOLDERS.SUITECLOUD_SDK);
+	_saveSettings(cliSettings: CLISettings) {
+		createFolder(homedir(), FOLDERS.SUITECLOUD_SDK);
 		create(CLI_SETTINGS_FILEPATH, cliSettings);
 	}
 
@@ -61,7 +60,7 @@ module.exports = class CLISettingsService {
 		return this._getSettings().isJavaVersionValid;
 	}
 
-	setJavaVersionValid(value) {
+	setJavaVersionValid(value: boolean) {
 		const newSettings = this._getSettings().toJSON();
 		if (newSettings.isJavaVersionValid === value) {
 			return;
@@ -75,7 +74,7 @@ module.exports = class CLISettingsService {
 		return this._getSettings().proxyUrl;
 	}
 
-	setProxyUrl(url) {
+	setProxyUrl(url: string) {
 		const newSettings = this._getSettings().toJSON();
 		if (newSettings.proxyUrl === url && newSettings.useProxy === true) {
 			return;
@@ -102,7 +101,7 @@ module.exports = class CLISettingsService {
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}
 
-	_validateCLISettingsProperties(CLISettingsJson) {
+	_validateCLISettingsProperties(CLISettingsJson: CLISettings) {
 		CLI_SETTINGS_PROPERTIES_KEYS.forEach(propertyKey => {
 			if (!CLISettingsJson.hasOwnProperty(propertyKey)) {
 				throw Error(

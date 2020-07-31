@@ -4,7 +4,7 @@
  */
 'use strict';
 const BaseOutputHandler = require('../../base/BaseOutputHandler');
-const FileCabinetService = require('../../../services/FileCabinetService');
+const { FileCabinetService } = require('../../../services/FileCabinetService');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { FILE_CABINET } = require('../../../ApplicationConstants').FOLDERS;
 const path = require('path');

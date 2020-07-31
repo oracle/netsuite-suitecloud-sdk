@@ -5,7 +5,7 @@
 'use strict';
 
 const { ActionResult } = require('../../services/actionresult/ActionResult');
-const SdkExecutor = require('../../SdkExecutor');
+const { SdkExecutor } = require('../../SdkExecutor');
 
 module.exports = class BaseAction {
 	constructor(options) {

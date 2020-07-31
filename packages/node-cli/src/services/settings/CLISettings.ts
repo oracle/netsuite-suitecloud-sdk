@@ -6,7 +6,7 @@
 
 export class CLISettings {
 
-	readonly useProxy: Boolean;
+	readonly useProxy: boolean;
 	readonly proxyUrl: string;
 	readonly isJavaVersionValid: boolean;
 

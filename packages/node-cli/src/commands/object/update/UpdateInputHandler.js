@@ -7,7 +7,7 @@ const path = require('path');
 const { prompt, Separator } = require('inquirer');
 const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
-const { FileSystemService } = require('../../../services/FileSystemService');
+const { getFilesFromDirectory } = require('../../../services/FileSystemService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 
 const {
@@ -38,12 +38,11 @@ const XML_EXTENSION = '.xml';
 module.exports = class UpdateInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		this._fileSystemService = new FileSystemService();
 	}
 
 	async getParameters(params) {
 		const pathToObjectsFolder = path.join(this._projectFolder, FOLDERS.OBJECTS);
-		const filesInObjectsFolder = this._fileSystemService.getFilesFromDirectory(pathToObjectsFolder);
+		const filesInObjectsFolder = getFilesFromDirectory(pathToObjectsFolder);
 		const foundXMLFiles = filesInObjectsFolder
 			.filter((filename) => filename.endsWith(XML_EXTENSION))
 			.map((file) => ({

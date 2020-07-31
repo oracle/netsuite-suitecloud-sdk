@@ -9,7 +9,7 @@ const { prompt } = require('inquirer');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
-const ProjectInfoService = require('../../../services/ProjectInfoService');
+const { ProjectInfoService } = require('../../../services/ProjectInfoService');
 const { ACCOUNT_SPECIFIC_VALUES_OPTIONS } = require('../../../utils/AccountSpecificValuesUtils');
 const { PROJECT_ACP, PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 

@@ -4,7 +4,7 @@
  */
 
 import { Output } from '../suitecloud';
-import { ConsoleLogger } from '../util/ExtensionUtil';
+import ConsoleLogger from '@oracle/suitecloud-cli/dist/loggers/ConsoleLogger';
 
 export default class VSConsoleLogger extends ConsoleLogger {
 	VSConsoleLogger() {}

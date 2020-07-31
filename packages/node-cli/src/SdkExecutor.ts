@@ -4,39 +4,47 @@
  */
 'use strict';
 
-const {
+import {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDK_REQUIRED_JAVA_VERSION,
-} = require('./ApplicationConstants');
-const path = require('path');
-const { exists } = require('./utils/FileUtils');
-const spawn = require('child_process').spawn;
-const CLISettingsService = require('./services/settings/CLISettingsService');
-const { getInstalledJavaVersionString } = require('./utils/EnvironmentInformationUtils');
-const url = require('url');
-const { NodeTranslationService } = require('./services/NodeTranslationService');
-const { ERRORS } = require('./services/TranslationKeys');
-const SdkErrorCodes = require('./SdkErrorCodes');
+} from './ApplicationConstants';
+import path from 'path';
+import { exists } from './utils/FileUtils';
+import { spawn, ChildProcess } from 'child_process';
+import { CLISettingsService } from './services/settings/CLISettingsService';
+import { getInstalledJavaVersionString } from './utils/EnvironmentInformationUtils';
+import url from 'url';
+import { NodeTranslationService } from './services/NodeTranslationService';
+import { ERRORS } from './services/TranslationKeys';
+import * as SdkErrorCodes from './SdkErrorCodes';
+import { SdkExecutionContext } from './SdkExecutionContext';
+import { OperationResult } from './utils/SdkOperationResultUtils';
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
-module.exports = class SdkExecutor {
-	constructor(sdkPath) {
+export class SdkExecutor {
+	private _sdkPath: string;
+	private _CLISettingsService: CLISettingsService;
+	private childProcess?: ChildProcess;
+
+	constructor(sdkPath: string) {
 		this._sdkPath = sdkPath;
 
 		this._CLISettingsService = new CLISettingsService();
-		this.childProcess = null;
+		this.childProcess = undefined;
 	}
 
-	execute(executionContext, token) {
+	execute(executionContext: SdkExecutionContext, token?: {cancel?: (x: string) => void}): Promise<OperationResult<any>> {
 		return new Promise((resolve, reject) => {
 			if (token !== undefined && token !== null) {
 				token.cancel = (reason) => {
-					this.childProcess.kill('SIGKILL');
+					if (this.childProcess) {
+						this.childProcess.kill('SIGKILL');
+					}
 					reject(reason);
 				};
 			}
@@ -49,9 +57,12 @@ module.exports = class SdkExecutor {
 		});
 	}
 
-	_addChildProcessListeners(isIntegrationMode, resolve, reject) {
+	_addChildProcessListeners(isIntegrationMode: boolean, resolve: (value?: any) => void, reject: (reason?: any) => void) {
 		let lastSdkOutput = '';
 		let lastSdkError = '';
+		if (!this.childProcess || !this.childProcess.stderr || !this.childProcess.stdout) {
+			return;
+		}
 
 		this.childProcess.stderr.on(DATA_EVENT, (data) => {
 			lastSdkError += data.toString(UTF8);
@@ -78,7 +89,7 @@ module.exports = class SdkExecutor {
 		});
 	}
 
-	_launchJvmCommand(executionContext) {
+	_launchJvmCommand(executionContext: SdkExecutionContext) {
 		if (!this._CLISettingsService.isJavaVersionValid()) {
 			const javaVersionError = this._checkIfJavaVersionIssue();
 			if (javaVersionError) {
@@ -120,7 +131,7 @@ module.exports = class SdkExecutor {
 		return `${PROTOCOL}=${protocolWithoutColon} ${HOST}=${hostName} ${PORT}=${port}`;
 	}
 
-	_convertParamsObjToString(cliParams, flags) {
+	_convertParamsObjToString(cliParams: {[x: string]: string}, flags: string[]) {
 		let cliParamsAsString = '';
 		for (const param in cliParams) {
 			if (cliParams.hasOwnProperty(param)) {

@@ -16,7 +16,3 @@ export const CommandActionExecutor = require('@oracle/suitecloud-cli/dist/core/C
 export const CommandsMetadataService = require('@oracle/suitecloud-cli/dist/core/CommandsMetadataService');
 export const CommandOptionsValidator = require('@oracle/suitecloud-cli/dist/core/CommandOptionsValidator');
 export const CLIConfigurationService = require('@oracle/suitecloud-cli/dist/core/extensibility/CLIConfigurationService');
-
-export const ConsoleLogger = require('@oracle/suitecloud-cli/dist/loggers/ConsoleLogger');
-
-export const AuthenticationUtils = require('@oracle/suitecloud-cli/dist/utils/AuthenticationUtils');

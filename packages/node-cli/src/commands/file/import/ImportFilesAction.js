@@ -8,9 +8,9 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { quoteString } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
-const ProjectInfoService = require('../../../services/ProjectInfoService');
+const { isSuccess } = require('../../../utils/SdkOperationResultUtils');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
+const { ProjectInfoService } = require('../../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseAction = require('../../base/BaseAction');
@@ -68,7 +68,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
-			return operationResult.status === STATUS.SUCCESS
+			return isSuccess(operationResult)
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {

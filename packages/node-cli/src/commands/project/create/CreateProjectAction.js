@@ -9,11 +9,18 @@ const BaseAction = require('../../base/BaseAction');
 const TemplateKeys = require('../../../templates/TemplateKeys');
 const { quoteString } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const { isSuccess } = require('../../../utils/SdkOperationResultUtils');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
 const ApplicationConstants = require('../../../ApplicationConstants');
 const { npmInstall } = require('../../../utils/NpmInstallUtils');
-const { FileSystemService } = require('../../../services/FileSystemService');
+const {
+	createFolder,
+	emptyFolderRecursive,
+	deleteFolderRecursive,
+	renameFolder,
+	replaceStringInFile,
+	createFileFromTemplate
+} = require('../../../services/FileSystemService');
 const { throwValidationException, unwrapExceptionMessage } = require('../../../utils/ExceptionUtils');
 const {
 	COMMAND_CREATEPROJECT: { MESSAGES },
@@ -74,7 +81,6 @@ const COMMAND_OPTIONS = {
 module.exports = class CreateProjectAction extends BaseAction {
 	constructor(options) {
 		super(options);
-		this._fileSystemService = new FileSystemService();
 	}
 
 	preExecute(params) {
@@ -114,7 +120,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 				}),
 			};
 
-			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
+			createFolder(this._executionPath, projectFolderName);
 
 			const createProjectAction = new Promise(
 				this.createProject(createProjectParams, params, projectAbsolutePath, projectFolderName, manifestFilePath)
@@ -125,7 +131,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 			const projectName = params[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 
-			return createProjectActionData.operationResult.status === STATUS.SUCCESS
+			return isSuccess(createProjectActionData.operationResult)
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
 						.withResultMessage(createProjectActionData.operationResult.resultMessage)
 						.withProjectType(projectType)
@@ -145,7 +151,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 			try {
 				this._log.info(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE));
 				if (params[COMMAND_OPTIONS.OVERWRITE]) {
-					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
+					emptyFolderRecursive(projectAbsolutePath);
 				}
 				const executionContextCreateProject = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 					.integration()
@@ -154,7 +160,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
-				if (operationResult.status === STATUS.ERROR) {
+				if (!isSuccess(operationResult)) {
 					resolve({
 						operationResult: operationResult,
 						projectType: params[COMMAND_OPTIONS.TYPE],
@@ -165,10 +171,10 @@ module.exports = class CreateProjectAction extends BaseAction {
 				if (params[COMMAND_OPTIONS.TYPE] === ApplicationConstants.PROJECT_SUITEAPP) {
 					const oldPath = path.join(projectAbsolutePath, projectFolderName);
 					const newPath = path.join(projectAbsolutePath, SOURCE_FOLDER);
-					this._fileSystemService.deleteFolderRecursive(newPath);
-					this._fileSystemService.renameFolder(oldPath, newPath);
+					deleteFolderRecursive(newPath);
+					renameFolder(oldPath, newPath);
 				}
-				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, params[COMMAND_OPTIONS.PROJECT_NAME]);
+				replaceStringInFile(manifestFilePath, SOURCE_FOLDER, params[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
 				if (params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
 					this._log.info(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV));
@@ -182,7 +188,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 					this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
 				} else {
-					await this._fileSystemService.createFileFromTemplate({
+					await createFileFromTemplate({
 						template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
 						destinationFolder: projectAbsolutePath,
 						fileName: CLI_CONFIG_FILENAME,
@@ -195,7 +201,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 					npmInstallSuccess: npmInstallSuccess,
 				});
 			} catch (error) {
-				this._fileSystemService.deleteFolderRecursive(path.join(this._executionPath, projectFolderName));
+				deleteFolderRecursive(path.join(this._executionPath, projectFolderName));
 				reject(error);
 			}
 		};
@@ -223,7 +229,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 	}
 
 	async _createUnitTestCliConfigFile(projectAbsolutePath) {
-		await this._fileSystemService.createFileFromTemplate({
+		await createFileFromTemplate({
 			template: TemplateKeys.UNIT_TEST[UNIT_TEST_CLI_CONFIG_TEMPLATE_KEY],
 			destinationFolder: projectAbsolutePath,
 			fileName: UNIT_TEST_CLI_CONFIG_FILENAME,
@@ -232,7 +238,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 	}
 
 	async _createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath) {
-		await this._fileSystemService.createFileFromTemplate({
+		await createFileFromTemplate({
 			template: TemplateKeys.UNIT_TEST[UNIT_TEST_PACKAGE_TEMPLATE_KEY],
 			destinationFolder: projectAbsolutePath,
 			fileName: UNIT_TEST_PACKAGE_FILENAME,
@@ -245,11 +251,11 @@ module.exports = class CreateProjectAction extends BaseAction {
 		if (type === ApplicationConstants.PROJECT_SUITEAPP) {
 			version = projectVersion;
 		}
-		await this._fileSystemService.replaceStringInFile(packageJsonAbsolutePath, PACKAGE_JSON_REPLACE_STRING_VERSION, version);
+		await replaceStringInFile(packageJsonAbsolutePath, PACKAGE_JSON_REPLACE_STRING_VERSION, version);
 	}
 
 	async _createJestConfigFile(type, projectAbsolutePath) {
-		await this._fileSystemService.createFileFromTemplate({
+		await createFileFromTemplate({
 			template: TemplateKeys.UNIT_TEST[UNIT_TEST_JEST_CONFIG_TEMPLATE_KEY],
 			destinationFolder: projectAbsolutePath,
 			fileName: UNIT_TEST_JEST_CONFIG_FILENAME,
@@ -261,12 +267,12 @@ module.exports = class CreateProjectAction extends BaseAction {
 			jestConfigProjectType = JEST_CONFIG_PROJECT_TYPE_SUITEAPP;
 		}
 		let jestConfigAbsolutePath = path.join(projectAbsolutePath, JEST_CONFIG_FILENAME);
-		await this._fileSystemService.replaceStringInFile(jestConfigAbsolutePath, JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE, jestConfigProjectType);
+		await replaceStringInFile(jestConfigAbsolutePath, JEST_CONFIG_REPLACE_STRING_PROJECT_TYPE, jestConfigProjectType);
 	}
 
 	async _createSampleUnitTestFile(projectAbsolutePath) {
-		let testsFolderAbsolutePath = this._fileSystemService.createFolder(projectAbsolutePath, UNIT_TEST_TEST_FOLDER);
-		await this._fileSystemService.createFileFromTemplate({
+		let testsFolderAbsolutePath = createFolder(projectAbsolutePath, UNIT_TEST_TEST_FOLDER);
+		await createFileFromTemplate({
 			template: TemplateKeys.UNIT_TEST[UNIT_TEST_SAMPLE_TEST_KEY],
 			destinationFolder: testsFolderAbsolutePath,
 			fileName: UNIT_TEST_SAMPLE_TEST_FILENAME,

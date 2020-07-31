@@ -5,19 +5,19 @@
  */
 'use strict';
 
-const CLI = require('./CLI');
+const { Cli } = require('./Cli');
 const CommandsMetadataService = require('./core/CommandsMetadataService');
 const CommandActionExecutor = require('./core/CommandActionExecutor');
 const CommandRegistrationService = require('./core/CommandRegistrationService');
 const CommandOptionsValidator = require('./core/CommandOptionsValidator');
 const CLIConfigurationService = require('./core/extensibility/CLIConfigurationService');
 const sdkPath = require('./core/sdksetup/SdkProperties').getSdkPath();
-const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
+const { NodeConsoleLogger } = require('./loggers/NodeConsoleLogger');
 
 const executionPath = process.cwd();
 const commandsMetadataServiceSingleton = new CommandsMetadataService();
 
-const cliInstance = new CLI({
+const cliInstance = new Cli({
 	commandsMetadataService: commandsMetadataServiceSingleton,
 	commandRegistrationService: new CommandRegistrationService(),
 	commandActionExecutor: new CommandActionExecutor({

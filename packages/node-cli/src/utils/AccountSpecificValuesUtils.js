@@ -7,7 +7,7 @@
 
 const assert = require('assert');
 const { NodeTranslationService } = require('../services/NodeTranslationService');
-const ProjectInfoService = require('../services/ProjectInfoService');
+const { ProjectInfoService } = require('../services/ProjectInfoService');
 const {
 	UTILS: {
 		ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER: { ERRORS },

@@ -8,14 +8,14 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { quoteString, extractCommandOptions } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const { isSuccess } = require('../../../utils/SdkOperationResultUtils');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseAction = require('../../base/BaseAction');
 const {
 	COMMAND_IMPORTOBJECTS: { MESSAGES },
 } = require('../../../services/TranslationKeys');
-const SdkExecutor = require('../../../SdkExecutor');
+const { SdkExecutor } = require('../../../SdkExecutor');
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
@@ -119,7 +119,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 	}
 
 	_parsePartialResult(partialOperationResult) {
-		if (partialOperationResult.status === STATUS.ERROR) {
+		if (!isSuccess(partialOperationResult)) {
 			this.operationResultData.errorImports = this.operationResultData.errorImports.concat({
 				scriptIds: this.partialScriptIds,
 				reason: partialOperationResult.errorMessages[0],

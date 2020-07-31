@@ -7,8 +7,8 @@
 const { prompt } = require('inquirer');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
-const FileCabinetService = require('../../../services/FileCabinetService');
-const { FileSystemService } = require('../../../services/FileSystemService');
+const { FileCabinetService } = require('../../../services/FileCabinetService');
+const { getFilesFromDirectory } = require('../../../services/FileSystemService');
 const path = require('path');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 
@@ -35,7 +35,6 @@ const COMMAND_ANSWERS = {
 module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		this._fileSystemService = new FileSystemService();
 		this._fileCabinetService = new FileCabinetService(path.join(options.projectFolder, FILE_CABINET));
 	}
 
@@ -63,7 +62,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 			let disabledMessage = '';
 			if (!this._fileCabinetService.isUnrestrictedPath(name)) {
 				disabledMessage = NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER);
-			} else if (!this._fileSystemService.getFilesFromDirectory(folder).length) {
+			} else if (!getFilesFromDirectory(folder).length) {
 				disabledMessage = NodeTranslationService.getMessage(MESSAGES.EMPTY_FOLDER);
 			}
 
@@ -91,7 +90,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 	}
 
 	_generateSelectFilesQuestion(selectedFolder) {
-		const files = this._fileSystemService.getFilesFromDirectory(selectedFolder);
+		const files = getFilesFromDirectory(selectedFolder);
 
 		const transformFilesToChoicesFunc = (file) => {
 			const path = this._fileCabinetService.getFileCabinetRelativePath(file);

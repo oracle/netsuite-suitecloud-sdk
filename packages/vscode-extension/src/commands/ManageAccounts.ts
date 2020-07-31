@@ -2,9 +2,14 @@
  ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import { AuthenticationUtils } from '../util/ExtensionUtil';
-import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
-import { 
+import { authenticateWithOauth,
+	getAuthIds,
+	saveToken,
+	setDefaultAuthentication
+} from '@oracle/suitecloud-cli/dist/utils/AuthenticationUtils';
+import { STATUS, ActionResult } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
+import { AuthListData } from '@oracle/suitecloud-cli/dist/services/actionresult/AuthenticateActionResult';
+import {
 	showValidationResults,
 	validateFieldIsNotEmpty,
 	validateFieldHasNoSpaces,
@@ -15,7 +20,6 @@ import {
 import { PROD_ENVIRONMENT_ADDRESS } from '@oracle/suitecloud-cli/dist/ApplicationConstants';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
-import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { sdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
@@ -68,7 +72,7 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	protected async execute() {
-		const accountsPromise = AuthenticationUtils.getAuthIds(sdkPath);
+		const accountsPromise = getAuthIds(sdkPath);
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
 		const actionResult: ActionResult<AuthListData> = await accountsPromise;
 
@@ -152,7 +156,7 @@ export default class ManageAccounts extends BaseAction {
 	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
 		const authId = await this.getNewAuthId(accountCredentialsList);
 		const url = await this.getUrl();
-		if (!authId) {
+		if (!authId || !this.executionPath) {
 			return;
 		}
 		const commandParams: { authid: string; dev: boolean; url?: string } = {
@@ -175,7 +179,7 @@ export default class ManageAccounts extends BaseAction {
 		};
 
 		// This will start the execution in the background and initialize cancellationToken.cancel method
-		const authenticatePromise: Promise<AuthenticateActionResult> = AuthenticationUtils.authenticateWithOauth(
+		const authenticatePromise = authenticateWithOauth(
 			commandParams,
 			sdkPath,
 			this.executionPath,
@@ -295,7 +299,7 @@ export default class ManageAccounts extends BaseAction {
 		const accountId = await this.getAccountId();
 		const tokenId = await this.getTokenId();
 		const tokenSecret = await this.getTokenSecret();
-		if (!authId || !accountId || !tokenId || !tokenSecret) {
+		if (!authId || !accountId || !tokenId || !tokenSecret || !this.executionPath) {
 			return;
 		}
 		const commandParams: { authid: string; account: string; tokenid: string; tokensecret: string; dev: boolean; url?: string } = {
@@ -310,11 +314,11 @@ export default class ManageAccounts extends BaseAction {
 			commandParams.dev = url !== PROD_ENVIRONMENT_ADDRESS;
 		}
 
-		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, sdkPath, this.executionPath);
+		const saveTokenPromise = saveToken(commandParams, sdkPath, this.executionPath);
 
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA), true, saveTokenPromise);
 
-		const actionResult: AuthenticateActionResult = await saveTokenPromise;
+		const actionResult = await saveTokenPromise;
 		if (actionResult.status === STATUS.SUCCESS) {
 			this.log.result(
 				this.translationService.getMessage(
@@ -337,7 +341,7 @@ export default class ManageAccounts extends BaseAction {
 			return;
 		}
 		try {
-			AuthenticationUtils.setDefaultAuthentication(this.executionPath, authId);
+			setDefaultAuthentication(this.executionPath, authId);
 			this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 			return;
 		} catch (e) {

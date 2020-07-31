@@ -6,7 +6,7 @@
 'use strict';
 
 const { NodeTranslationService } = require('../services/NodeTranslationService');
-const ProjectInfoService = require('../services/ProjectInfoService');
+const { ProjectInfoService } = require('../services/ProjectInfoService');
 const { LINKS, PROJECT_ACP } = require('../ApplicationConstants');
 
 const APPLY_CONTENT_PROTECTION = 'applycontentprotection';

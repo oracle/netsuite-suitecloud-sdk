@@ -6,22 +6,21 @@
 
 const TemplateKeys = require('../../../templates/TemplateKeys');
 const BaseAction = require('../../base/BaseAction');
-const { FileSystemService } = require('../../../services/FileSystemService');
+const { createFileFromTemplate } = require('../../../services/FileSystemService');
 
 module.exports = class CreateObjectAction extends BaseAction {
 	constructor(options) {
 		super(options);
-		this._fileSystemService = new FileSystemService();
 	}
 
 	async execute(params) {
-		const createFilePromise = this._fileSystemService.createFileFromTemplate({
+		const createFilePromise = createFileFromTemplate({
 			template: TemplateKeys.SCRIPTS['blankscript'],
 			destinationFolder: params.relatedfiledestinationfolder,
 			fileName: params.relatedfilename,
 			fileExtension: 'js',
 		});
-		const createObjectPromise = this._fileSystemService.createFileFromTemplate({
+		const createObjectPromise = createFileFromTemplate({
 			template: TemplateKeys.OBJECTS['commerceextension'],
 			destinationFolder: params.folder,
 			fileName: params.objectfilename,

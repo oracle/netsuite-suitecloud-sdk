@@ -4,15 +4,15 @@
  */
 'use strict';
 
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
+const { isSuccess } = require('../../../utils/SdkOperationResultUtils');
 const { DeployActionResult } = require('../../../services/actionresult/DeployActionResult');
 const { quoteString, extractCommandOptions } = require('../../../utils/CommandUtils');
-const ProjectInfoService = require('../../../services/ProjectInfoService');
+const { ProjectInfoService } = require('../../../services/ProjectInfoService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
 const ApplyContentProtectionUtils = require('../../../utils/ApplyContentProtectionUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
 const BaseAction = require('../../base/BaseAction');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 
@@ -84,7 +84,7 @@ module.exports = class DeployAction extends BaseAction {
 			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
 			const isApplyContentProtection = this._projectType === PROJECT_SUITEAPP && flags.includes(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 
-			return operationResult.status === STATUS.SUCCESS
+			return isSuccess(operationResult)
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)

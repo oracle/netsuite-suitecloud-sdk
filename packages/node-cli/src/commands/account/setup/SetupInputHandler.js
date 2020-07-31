@@ -11,7 +11,7 @@ const BaseInputHandler = require('../../base/BaseInputHandler');
 const { exists } = require('../../../utils/FileUtils');
 const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
-const SdkExecutor = require('../../../SdkExecutor');
+const { SdkExecutor } = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { CLIException } = require('../../../CLIException');
 

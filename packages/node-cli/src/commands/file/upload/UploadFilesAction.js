@@ -7,8 +7,8 @@
 const BaseAction = require('../../base/BaseAction');
 const { quoteString } = require('../../../utils/CommandUtils');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const { isSuccess } = require('../../../utils/SdkOperationResultUtils');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
@@ -54,7 +54,7 @@ module.exports = class UploadFilesAction extends BaseAction {
 				action: this._sdkExecutor.execute(executionContextUploadFiles),
 				message: NodeTranslationService.getMessage(MESSAGES.UPLOADING_FILES),
 			});
-			return operationResult.status === STATUS.SUCCESS
+			return isSuccess(operationResult)
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withProjectFolder(this._projectFolder)

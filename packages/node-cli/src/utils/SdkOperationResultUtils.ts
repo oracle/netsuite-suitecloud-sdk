@@ -4,10 +4,28 @@
  */
 'use strict';
 
-export const STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
+
+enum STATUS {
+	SUCCESS = 'SUCCESS',
+	ERROR = 'ERROR',
 };
+
+interface SuccessOperationResult<T> {
+	status: STATUS.SUCCESS,
+	resultMessage?: string;
+	data: T;
+}
+
+interface ErrorOperationResult {
+	status: STATUS.ERROR,
+	errorMessages: string[];
+}
+
+export type OperationResult<T> = SuccessOperationResult<T> | ErrorOperationResult;
+
+export function isSuccess<T>(operationResult: OperationResult<T>): operationResult is SuccessOperationResult<T> {
+	return operationResult.status === STATUS.SUCCESS;
+}
 
 export function getResultMessage(operationResult: { resultMessage: string }) {
 	const { resultMessage } = operationResult;

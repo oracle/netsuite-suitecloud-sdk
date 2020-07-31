@@ -4,7 +4,5 @@
  */
 'use strict';
 
-module.exports = {
-  TWO_FA_REQUIRED: "SAS0024",
-  NO_TBA_SET_FOR_ACCOUNT: "SAS0025"
-};
+export const TWO_FA_REQUIRED = "SAS0024";
+export const NO_TBA_SET_FOR_ACCOUNT = "SAS0025";

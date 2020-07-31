@@ -7,11 +7,11 @@
 
 const BaseAction = require('../../base/BaseAction');
 const { DeployActionResult } = require('../../../services/actionresult/DeployActionResult');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
+const { isSuccess } = require('../../../utils/SdkOperationResultUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { quoteString, extractCommandOptions } = require('../../../utils/CommandUtils');
-const ProjectInfoService = require('../../../services/ProjectInfoService');
+const { ProjectInfoService } = require('../../../services/ProjectInfoService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
 const ApplyContentProtectionUtils = require('../../../utils/ApplyContentProtectionUtils');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
@@ -79,7 +79,7 @@ module.exports = class ValidateAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING),
 			});
 
-			return operationResult.status === STATUS.SUCCESS
+			return isSuccess(operationResult)
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)

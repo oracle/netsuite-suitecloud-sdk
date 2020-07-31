@@ -9,8 +9,8 @@ const fs = require('fs');
 
 const { promisify } = require('util');
 class FileSystem {
-	start(Service) {
-		this.service = new Service();
+	start(FileSystemUtils) {
+		this.service = FileSystemUtils;
 	}
 
 	forwardDashes(dir) {

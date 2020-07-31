@@ -6,7 +6,27 @@
 import assert from 'assert';
 import { ActionResult, ActionResultBuilder, STATUS } from './ActionResult';
 
-export class AuthenticateActionResult extends ActionResult<undefined> {
+export type AuthListData = {
+	[key: string]: {
+		accountInfo: {
+			companyName: string;
+			roleId: number;
+			roleName: string;
+			entityId: number;
+			companyId: string;
+		},
+		token:{
+			tokenId: string;
+			tokenSecret: string;
+		},
+		developmentMode: boolean;
+		urls:{
+			app: string;
+		}
+	}
+}
+
+export class AuthenticateActionResult extends ActionResult<AuthListData> {
 	readonly mode: string;
 	readonly authId: string;
 	readonly accountInfo: any;
@@ -22,7 +42,7 @@ export class AuthenticateActionResult extends ActionResult<undefined> {
 	}
 }
 
-export class AuthenticateActionResultBuilder extends ActionResultBuilder<undefined> {
+export class AuthenticateActionResultBuilder extends ActionResultBuilder<AuthListData> {
 	mode!: string;
 	authId!: string;
 	accountInfo!: string;

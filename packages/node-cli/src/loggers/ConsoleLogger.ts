@@ -4,20 +4,20 @@
  */
 'use strict';
 
-const { padding } = require('./LoggerConstants');
+import { padding } from './LoggerConstants';
 
-class ConsoleLogger {
+export default abstract class ConsoleLogger {
 	constructor() {}
 
-	info(message) {}
+	abstract info(message: string): void;
 
-	result(message) {}
+	abstract result(message: string): void;
 
-	warning(message) {}
+	abstract warning(message: string): void;
 
-	error(message) {}
+	abstract error(message: string): void;
 
-	getPadding(padCount) {
+	getPadding(padCount: number) {
 		if (padCount) {
 			let paddings = '';
 			for (let i = 0; i < padCount; i++) {
@@ -28,5 +28,3 @@ class ConsoleLogger {
 		return padding;
 	}
 }
-
-module.exports = ConsoleLogger;

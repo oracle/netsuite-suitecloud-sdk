@@ -9,7 +9,7 @@ const path = require('path');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
 const ApplicationConstants = require('../../../ApplicationConstants');
-const { FileSystemService } = require('../../../services/FileSystemService');
+const { folderExists, isFolderEmpty } = require('../../../services/FileSystemService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 
 const {
@@ -48,7 +48,6 @@ const DEFAULT_PROJECT_VERSION = '1.0.0';
 module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		this._fileSystemService = new FileSystemService();
 	}
 
 	async getParameters(params) {
@@ -122,7 +121,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 		const projectFolderName = this._getProjectFolderName(answers);
 		const projectAbsolutePath = path.join(this._executionPath, projectFolderName);
 
-		if (this._fileSystemService.folderExists(projectAbsolutePath) && !this._fileSystemService.isFolderEmpty(projectAbsolutePath)) {
+		if (folderExists(projectAbsolutePath) && !isFolderEmpty(projectAbsolutePath)) {
 			const overwriteAnswer = await prompt([
 				{
 					type: INQUIRER_TYPES.LIST,

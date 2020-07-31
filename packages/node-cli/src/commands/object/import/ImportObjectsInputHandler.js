@@ -8,14 +8,14 @@ const { join } = require('path');
 const { prompt, Separator } = require('inquirer');
 const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const { isSuccess } = require('../../../utils/SdkOperationResultUtils');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
 const { lineBreak } = require('../../../loggers/LoggerConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const SdkExecutor = require('../../../SdkExecutor');
-const ProjectInfoService = require('../../../services/ProjectInfoService');
-const { FileSystemService } = require('../../../services/FileSystemService');
+const { SdkExecutor } = require('../../../SdkExecutor');
+const { ProjectInfoService } = require('../../../services/ProjectInfoService');
+const { getFoldersFromDirectory } = require('../../../services/FileSystemService');
 const { INQUIRER_TYPES, extractCommandOptions } = require('../../../utils/CommandUtils');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { PROJECT_SUITEAPP, PROJECT_ACP, FOLDERS } = require('../../../ApplicationConstants');
@@ -60,7 +60,6 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		this._sdkExecutor = new SdkExecutor(options.sdkPath);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
-		this._fileSystemService = new FileSystemService();
 		const commandsMetadataService = new CommandsMetadataService();
 		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 		this._authId = getProjectDefaultAuthId(this._executionPath);
@@ -86,7 +85,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			throw NodeTranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, lineBreak, error);
 		}
 
-		if (listObjectsResult.status === STATUS.ERROR) {
+		if (!isSuccess(listObjectsResult)) {
 			throw listObjectsResult.errorMessages;
 		}
 		const { data } = listObjectsResult;
@@ -248,7 +247,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
 		const objectsFolder = join(this._projectFolder, FOLDERS.OBJECTS);
-		const objectsSubFolders = this._fileSystemService.getFoldersFromDirectory(objectsFolder);
+		const objectsSubFolders = getFoldersFromDirectory(objectsFolder);
 		const objectDirectoryChoices = [objectsFolder, ...objectsSubFolders].map(transformFoldersToChoicesFunc);
 
 		const questionDestinationFolder = {

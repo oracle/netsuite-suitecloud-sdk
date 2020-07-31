@@ -5,3 +5,5 @@ declare module "cli-spinner" {
         stop(clean: boolean): void;
     }
 }
+
+declare module "xml2js"

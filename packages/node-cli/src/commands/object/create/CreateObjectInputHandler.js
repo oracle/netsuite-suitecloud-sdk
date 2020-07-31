@@ -10,19 +10,17 @@ const chalk = require('chalk');
 const { join } = require('path');
 const { FOLDERS } = require('../../../ApplicationConstants');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const { FileSystemService } = require('../../../services/FileSystemService');
+const { getFoldersFromDirectory } = require('../../../services/FileSystemService');
 
 module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	constructor(options) {
-		this._fileSystemService = new FileSystemService();
 	}
 
 	async getParameters(params) {
 		const transformFoldersToChoicesFunc = (folder) => {
 			return { name: folder.replace(this._projectFolder, ''), value: folder };
 		};
-		const objectDirectoryChoices = this._fileSystemService
-			.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.OBJECTS))
+		const objectDirectoryChoices = getFoldersFromDirectory(join(this._projectFolder, FOLDERS.OBJECTS))
 			.map(transformFoldersToChoicesFunc);
 
 		const mainAnswers = await prompt([
@@ -53,8 +51,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 			},
 		]);
 		if (mainAnswers.createrelatedfiles) {
-			const fileCabinetDirectoryChoices = this._fileSystemService
-				.getFoldersFromDirectory(join(this._projectFolder, FOLDERS.FILE_CABINET))
+			const fileCabinetDirectoryChoices = getFoldersFromDirectory(join(this._projectFolder, FOLDERS.FILE_CABINET))
 				.map(transformFoldersToChoicesFunc);
 			const answers_10 = await prompt([
 				{

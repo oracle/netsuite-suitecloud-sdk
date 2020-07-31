@@ -6,7 +6,7 @@
 
 const { prompt } = require('inquirer');
 const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
-const ProjectInfoService = require('../../../services/ProjectInfoService');
+const { ProjectInfoService } = require('../../../services/ProjectInfoService');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const { ACCOUNT_SPECIFIC_VALUES_OPTIONS } = require('../../../utils/AccountSpecificValuesUtils');

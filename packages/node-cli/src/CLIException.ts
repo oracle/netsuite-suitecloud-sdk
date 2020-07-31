@@ -4,6 +4,9 @@
 */
 'use strict';
 
+/**
+ * @deprecated use CliException interface instead the class
+ */
 export class CLIException {
 
 	readonly defaultMessage: string;

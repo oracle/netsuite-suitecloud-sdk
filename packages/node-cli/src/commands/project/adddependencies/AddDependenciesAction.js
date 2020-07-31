@@ -6,11 +6,11 @@
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const BaseAction = require('../../base/BaseAction');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const { quoteString } = require('../../../utils/CommandUtils');
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
+const { isSuccess } = require('../../../utils/SdkOperationResultUtils');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
@@ -45,7 +45,7 @@ module.exports = class AddDependenciesAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.ADDING_DEPENDENCIES),
 			});
 
-			return operationResult.status === STATUS.SUCCESS
+			return isSuccess(operationResult)
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {

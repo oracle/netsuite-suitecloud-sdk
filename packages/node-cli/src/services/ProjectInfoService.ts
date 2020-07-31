@@ -4,26 +4,28 @@
  */
 'use strict';
 
-const { ERRORS } = require('./TranslationKeys');
-const {
+import { ERRORS } from './TranslationKeys';
+import {
 	PROJECT_SUITEAPP,
 	PROJECT_ACP,
 	FILES,
 	FOLDERS,
-} = require('../ApplicationConstants');
-const { CLIException } = require('../CLIException');
-const { exists, readAsString } = require('../utils/FileUtils');
-const path = require('path');
-const { NodeTranslationService } = require('./NodeTranslationService');
-const xml2js = require('xml2js');
-const assert = require('assert');
+} from '../ApplicationConstants';
+import { CLIException } from '../CLIException';
+import { exists, readAsString } from '../utils/FileUtils';
+import path from 'path';
+import { NodeTranslationService } from './NodeTranslationService';
+import xml2js from 'xml2js';
+import assert from 'assert';
 
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
 const MANIFEST_TAG_REGEX = '[\\s\\n]*<manifest.*>[^]*</manifest>[\\s\\n]*$';
 
-module.exports = class ProjectInfoService {
-	constructor(projectFolder) {
+export class ProjectInfoService {
+	private _CACHED_PROJECT_TYPE: string | null;
+	private _projectFolder: string;
+	constructor(projectFolder: string) {
 		assert(projectFolder);
 		this._CACHED_PROJECT_TYPE = null;
 		this._projectFolder = projectFolder;
@@ -39,7 +41,7 @@ module.exports = class ProjectInfoService {
 	 * @param {Object} newValue Value of the tag that it's being evaluated at the current moment.
 	 * @throws ValidationError if the validation fails
 	 */
-	_validateXml(xmlPath, previousValue, newValue) {
+	_validateXml(xmlPath: string, previousValue: any, newValue: any) {
 		//TODO Add more cases
 		if (xmlPath === MANIFEST_TAG_XML_PATH) {
 			let manifestTagAttributes = newValue['$'];
@@ -83,12 +85,12 @@ module.exports = class ProjectInfoService {
 				NodeTranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
 			throw new CLIException(errorMessage);
 		}
-		let projectType;
+		let projectType!: string;
 		let validationError;
 
 		let parser = new xml2js.Parser({ validator: this._validateXml });
 
-		parser.parseString(manifestString, function(err, result) {
+		parser.parseString(manifestString, (err: string, result: { manifest: { $: {projecttype: string}}}) => {
 			if (err) {
 				const errorMessage =
 					NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +

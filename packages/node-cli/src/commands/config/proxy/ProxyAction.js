@@ -10,7 +10,7 @@ const { NodeTranslationService } = require('../../../services/NodeTranslationSer
 const {
 	COMMAND_PROXY: { ARGS_VALIDATION },
 } = require('../../../services/TranslationKeys');
-const CLISettingsService = require('../../../services/settings/CLISettingsService');
+const { CLISettingsService } = require('../../../services/settings/CLISettingsService');
 const url = require('url');
 
 const SET_OPTION = 'set';

@@ -4,17 +4,17 @@
  */
 'use strict';
 
-const { create, exists, readAsJson} = require('./FileUtils');
-const { NodeTranslationService } = require('../services/NodeTranslationService');
-const { ERRORS, UTILS } = require('../services/TranslationKeys');
-const { FILES } = require('../ApplicationConstants');
-const { ActionResult } = require('../services/actionresult/ActionResult');
-const { AuthenticateActionResult } = require('../services/actionresult/AuthenticateActionResult');
-const { executeWithSpinner } = require('../ui/CliSpinner');
-const path = require('path');
-const SdkExecutionContext = require('../SdkExecutionContext');
-const { STATUS } = require('../utils/SdkOperationResultUtils');
-const SdkExecutor = require('../SdkExecutor');
+import { create, exists, readAsJson} from './FileUtils';
+import { NodeTranslationService } from '../services/NodeTranslationService';
+import { ERRORS, UTILS } from '../services/TranslationKeys';
+import { FILES } from '../ApplicationConstants';
+import { ActionResult } from '../services/actionresult/ActionResult';
+import { AuthenticateActionResult, AuthListData } from '../services/actionresult/AuthenticateActionResult';
+import { executeWithSpinner } from '../ui/CliSpinner';
+import path from 'path';
+import { SdkExecutionContext } from '../SdkExecutionContext';
+import { isSuccess, OperationResult } from '../utils/SdkOperationResultUtils';
+import { SdkExecutor } from '../SdkExecutor';
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
@@ -45,7 +45,7 @@ const FLAGS = {
 	DEVELOPMENTMODE: 'developmentmode',
 };
 
-function setDefaultAuthentication(projectFolder, authId) {
+export function setDefaultAuthentication(projectFolder: string, authId: string) {
 	try {
 		// nest the values into a DEFAULT_AUTH_ID_PROPERTY property
 		const projectConfiguration = {
@@ -58,7 +58,7 @@ function setDefaultAuthentication(projectFolder, authId) {
 	}
 }
 
-function getProjectDefaultAuthId(projectFolder) {
+export function getProjectDefaultAuthId(projectFolder: string) {
 	const projectFilePath = path.join(projectFolder, FILES.PROJECT_JSON);
 	if (exists(projectFilePath)) {
 		try {
@@ -73,20 +73,21 @@ function getProjectDefaultAuthId(projectFolder) {
 	}
 }
 
-async function getAuthIds(sdkPath) {
+export async function getAuthIds(sdkPath: string): Promise<ActionResult<any>> {
 	const sdkExecutor = new SdkExecutor(sdkPath);
 	const getAuthListContext = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH.SDK_COMMAND).integration().addFlag(FLAGS.LIST).build();
 
-	const operationResult = await executeWithSpinner({
+	const operationResult: OperationResult<AuthListData> = await executeWithSpinner({
 		action: sdkExecutor.execute(getAuthListContext),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.LOADING_AUTHIDS),
 	});
-	return operationResult.status === STATUS.SUCCESS
+
+	return isSuccess(operationResult)
 		? ActionResult.Builder.withData(operationResult.data).build()
-		: ActionResult.Builder.withErrors(operationResult.errorMessages);
+		: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 }
 
-async function saveToken(params, sdkPath, projectFolder) {
+export async function saveToken(params: {authid: string; account: string; tokenid: string; tokensecret: string; url?: string; dev?: boolean}, sdkPath: string, projectFolder: string) {
 	const authId = params.authid;
 	const sdkExecutor = new SdkExecutor(sdkPath);
 	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE.SDK_COMMAND)
@@ -108,7 +109,7 @@ async function saveToken(params, sdkPath, projectFolder) {
 		action: sdkExecutor.execute(contextBuilder.build()),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.SAVING_TBA_TOKEN),
 	});
-	if (operationResult.status === STATUS.ERROR) {
+	if (!isSuccess(operationResult)) {
 		return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
 	}
 	setDefaultAuthentication(projectFolder, authId);
@@ -119,7 +120,7 @@ async function saveToken(params, sdkPath, projectFolder) {
 		.build();
 }
 
-async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken) {
+export async function authenticateWithOauth(params: {authid: string; url?: string; dev?: boolean}, sdkPath: string, projectFolder: string, cancelToken: {cancel?: (x: string) => void}) {
 	let authId = params.authid;
 	const sdkExecutor = new SdkExecutor(sdkPath);
 	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE.SDK_COMMAND)
@@ -138,7 +139,7 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.STARTING_OAUTH_FLOW),
 	})
 		.then((operationResult) => {
-			if (operationResult.status === STATUS.ERROR) {
+			if (!isSuccess(operationResult)) {
 				return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
 			}
 			setDefaultAuthentication(projectFolder, authId);
@@ -148,7 +149,5 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 				.withAccountInfo(operationResult.data.accountInfo)
 				.build();
 		})
-		.catch((error) => AuthenticateActionResult.Builder.withErrors([error]));
+		.catch((error) => AuthenticateActionResult.Builder.withErrors([error]).build());
 }
-
-module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, saveToken, authenticateWithOauth };

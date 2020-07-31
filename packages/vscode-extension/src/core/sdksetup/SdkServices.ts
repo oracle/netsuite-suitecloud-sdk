@@ -14,14 +14,13 @@ import { VSTranslationService } from '../../service/VSTranslationService';
 import { EXTENSION_INSTALLATION } from '../../service/TranslationKeys';
 import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
-import { FileSystemService } from '@oracle/suitecloud-cli/dist/services/FileSystemService';
+import { createFolder } from '@oracle/suitecloud-cli/dist/services/FileSystemService';
 import { SDK_DOWNLOAD_URL, SDK_FILENAME, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER, sdkPath } from './SdkProperties';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
 const messageService = new MessageService();
 const translationService = new VSTranslationService();
-const fileSystemService = new FileSystemService();
 
 export async function installIfNeeded() {
 	if (!fs.existsSync(path.join(sdkPath)) || !(await validateSdk(path.join(sdkPath)))) {
@@ -30,8 +29,8 @@ export async function installIfNeeded() {
 }
 
 async function install() {
-	const sdkParentDirectory = fileSystemService.createFolder(homedir(), SUITECLOUD_FOLDER);
-	const sdkDirectory = fileSystemService.createFolder(sdkParentDirectory, VSCODE_SDK_FOLDER);
+	const sdkParentDirectory = createFolder(homedir(), SUITECLOUD_FOLDER);
+	const sdkDirectory = createFolder(sdkParentDirectory, VSCODE_SDK_FOLDER);
 	const fullURL = `${SDK_DOWNLOAD_URL}/${SDK_FILENAME}`;
 
 	try {

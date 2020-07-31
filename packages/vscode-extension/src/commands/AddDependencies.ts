@@ -3,7 +3,6 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import { ADD_DEPENDENCIES, COMMAND } from '../service/TranslationKeys';
-import { ActionResult } from '../types/ActionResult';
 import { STATUS } from '@oracle/suitecloud-cli/dist/services/actionresult/ActionResult';
 import BaseAction from './BaseAction';
 
@@ -21,7 +20,7 @@ export default class AddDependencies extends BaseAction {
 		const statusBarMessage: string = this.translationService.getMessage(ADD_DEPENDENCIES.ADDING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
-		const actionResult: ActionResult<any> = await commandActionPromise;
+		const actionResult = await commandActionPromise;
 
 		if (actionResult.status === STATUS.SUCCESS) {
 			if (actionResult.data.length > 0) {

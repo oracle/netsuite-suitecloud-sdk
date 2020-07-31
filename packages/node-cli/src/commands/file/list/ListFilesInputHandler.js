@@ -6,11 +6,11 @@
 
 const { prompt } = require('inquirer');
 const { INQUIRER_TYPES } = require('../../../utils/CommandUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const { SdkExecutionContext } = require('../../../SdkExecutionContext');
 const { NodeTranslationService } = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const SdkExecutor = require('../../../SdkExecutor');
+const { SdkExecutor } = require('../../../SdkExecutor');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
