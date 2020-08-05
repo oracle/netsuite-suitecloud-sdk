@@ -22,14 +22,8 @@ define(['./RecordInstance'], function(Record) {
    *
    * @since 2015.2
    */
-  record.prototype.create = function(options) {
-    return Record;
-  };
-  record.prototype.create.promise = function(options) {
-    return new Promise(resolve => {
-      resolve(Record);
-    });
-  };
+  record.prototype.create = function(options) {};
+  record.prototype.create.promise = function(options) {};
 
   /**
    * Load an existing nlobjRecord from the database based on provided type, id

@@ -53,7 +53,7 @@ define(['./ClientResponse'], function(ClientResponse){
      *
      * @since 2015.2
      */
-    http.prototype['get'] = function(options) { return ClientResponse;};
+    http.prototype['get'] = function(options) {};
     http.prototype['get'].promise = function(options) {};
 
     /**
