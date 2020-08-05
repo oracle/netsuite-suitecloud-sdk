@@ -46,6 +46,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/RecordInstance.js`,
 	},
 	{
+		module: 'N/record/field',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Field.js`,
+	},
+	{
 		module: 'N/record/line',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Line.js`,
 	},
