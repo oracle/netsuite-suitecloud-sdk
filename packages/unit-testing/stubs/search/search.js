@@ -1,4 +1,4 @@
-define(['./SearchInstance', './Column', './Filter', './Result'], function (Search, Column, Filter, Result) {
+define(['./SearchInstance', './Column', './Filter', './Result, ./Setting'], function (Search, Column, Filter, Result, Setting) {
 	/**
 	 * SuiteScript search common module
 	 * Load the search module to create and run on-demand or saved searches and analyze and iterate through the search results.
