@@ -8,7 +8,7 @@ define(['./ClientResponse','./SecretKey','./SecureString'], function(ClientRespo
  *
  */
     
-    var https = {};
+    var https = function() {};
     
     /**
      * Enum for HTTP methods.
