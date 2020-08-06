@@ -1,4 +1,4 @@
-define(['./RecordInstanceLine', './RecordInstanceSublist'], function(Line, Sublist) {
+define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
 
     /**
      * Primary object used to encapsulate a record object.

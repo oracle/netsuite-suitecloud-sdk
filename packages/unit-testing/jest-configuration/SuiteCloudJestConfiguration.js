@@ -14,20 +14,80 @@ const PROJECT_TYPE = {
 
 const CORE_STUBS = [
 	{
+		module: 'N/http',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/http.js`,
+	},
+	{
+		module: 'N/http/clientresponse',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/ClientResponse.js`,
+	},
+	{
+		module: 'N/https',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/https.js`,
+	},
+	{
+		module: 'N/https/clientresponse',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/ClientResponse.js`,
+	},
+	{
+		module: 'N/https/secretkey',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecretKey.js`,
+	},
+	{
+		module: 'N/https/securestring',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecureString.js`,
+	},
+	{
 		module: 'N/record',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/record.js`,
 	},
 	{
 		module: 'N/record/instance',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstance.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/RecordInstance.js`,
+	},
+	{
+		module: 'N/record/field',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Field.js`,
 	},
 	{
 		module: 'N/record/line',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstanceLine.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Line.js`,
 	},
 	{
 		module: 'N/record/sublist',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/RecordInstanceSublist.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
+	},
+	{
+		module: 'N/search',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/search.js`,
+	},
+	{
+		module: 'N/search/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchInstance.js`,
+	},
+	{
+		module: 'N/search/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Column.js`,
+	},
+	{
+		module: 'N/search/result',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Result.js`,
+	},
+	{
+		module: 'N/search/resultset',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/ResultSet.js`,
+	},
+	{
+		module: 'N/search/pageddata',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchPagedData.js`,
+	},
+	{
+		module: 'N/search/pagerange',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchPageRange.js`,
+	},
+	{
+		module: 'N/search/setting',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Setting.js`,
 	},
 ];
 
