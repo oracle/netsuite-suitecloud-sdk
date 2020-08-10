@@ -78,7 +78,7 @@ module.exports = class DeployAction extends BaseAction {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForDeploy),
-				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING),
+				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING, getProjectDefaultAuthId(this._executionPath)),
 			});
 
 			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
