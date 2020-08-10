@@ -52,7 +52,7 @@
 	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning",
 	"COMMAND_DEPLOY_QUESTIONS_PERFORM_LOCAL_VALIDATION": "Do you want to validate locally before deploying?",
 	"COMMAND_DEPLOY_MESSAGES_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed applying content protection.",
-	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying using authentication ID (authID) {0}",
+	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying using authentication ID (authID) {0}.",
 	"COMMAND_DEPLOY_MESSAGES_LOCALLY_VALIDATED": "The \"{0}\" project has been locally validated.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_CONTENT_PROTECTION": "The \"{0}\" project has been deployed without applying content protection.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_CONTENT_PROTECTION_REASON": "Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {0}.\nTo learn how to create a locking.xml file, see {1}.",
