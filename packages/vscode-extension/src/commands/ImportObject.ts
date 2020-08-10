@@ -4,7 +4,7 @@
  */
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { ERRORS, YES, NO, UPDATE_OBJECT } from '../service/TranslationKeys';
+import { ERRORS, YES, NO, IMPORT_OBJECT } from '../service/TranslationKeys';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
@@ -20,10 +20,8 @@ export default class ImportObject extends BaseAction {
 	}
 
 	protected async execute() {
-		//const activeFile = vscode.window.activeTextEditor?.document.uri;
 		const activeFile = this.filePath;
-		this.
-		
+
 		if (!activeFile) {
 			// Already checked in validate
 			return;
@@ -32,23 +30,31 @@ export default class ImportObject extends BaseAction {
 		const scriptId = path.basename(activeFile, '.xml');
 
 		const override = await vscode.window.showQuickPick([YES, NO], {
-			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERRIDE, scriptId),
+			placeHolder: this.translationService.getMessage(IMPORT_OBJECT.OVERRIDE, scriptId),
 			canPickMany: false,
 		});
 
 		if (!override || override === NO) {
-			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED));
+			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECT.PROCESS_CANCELED));
 			return;
 		}
 
-		const statusBarMessage = this.translationService.getMessage(UPDATE_OBJECT.UPDATING);
+		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECT.UPDATING);
 
-		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: scriptId, type: "ALL", destinationfolder: activeFile });
+		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: scriptId, type: 'ALL', destinationfolder: activeFile });
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
-		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data.length === 1 && actionResult.data[0].type === STATUS.SUCCESS) {
-			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.SUCCESS));
+		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
+			const importResults = actionResult.data;
+			if (
+				(importResults.errorImports && importResults.errorImports.length > 0) ||
+				(importResults.failedImports && importResults.failedImports.length > 0)
+			) {
+				this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECT.ERROR));
+			} else {
+				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECT.SUCCESS));
+			}
 		} else {
 			this.messageService.showCommandError();
 		}
@@ -56,7 +62,7 @@ export default class ImportObject extends BaseAction {
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
-		const activeFile = vscode.window.activeTextEditor?.document.uri;
+		const activeFile = this.filePath
 		if (!activeFile) {
 			return {
 				valid: false,

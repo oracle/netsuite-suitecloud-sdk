@@ -24,8 +24,8 @@ export default abstract class BaseAction {
 		this.translationService = new VSTranslationService();
 	}
 
-	protected init() {
-		this.executionPath = getRootProjectFolder();
+	protected init(fsPath?: string) {
+		this.executionPath = getRootProjectFolder(fsPath);
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
@@ -48,9 +48,11 @@ export default abstract class BaseAction {
 		});
 	}
 
-	public async run(fsPath: string) {
-		this.init();
-		this.filePath = fsPath;
+	public async run(fsPath?: string) {
+		this.init(fsPath);
+		if(fsPath) {
+			this.filePath = fsPath;
+		}
 		const validationStatus = this.validate();
 		if (validationStatus.valid) {
 			return this.execute();

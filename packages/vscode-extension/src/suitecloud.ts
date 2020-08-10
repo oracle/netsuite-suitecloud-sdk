@@ -19,7 +19,14 @@ import ImportObject from './commands/ImportObject';
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'NetSuite SuiteCloud';
 
 function register<T extends BaseAction>(command: string, action: T) {
-	return vscode.commands.registerCommand(command, (uri:vscode.Uri) => action.run(uri.fsPath));
+	return vscode.commands.registerCommand(command, (uri?:vscode.Uri) => {
+		if(uri && uri.fsPath) {
+		action.run(uri.fsPath);
+	}
+	else {
+		action.run();
+	}
+	});
 }
 
 export const Output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
@@ -41,7 +48,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log("Let's rock it, NetSuite SuiteCloud VSCode Extension has been activated!");
+	console.log("NetSuite SuiteCloud VSCode Extension has been activated.");
 }
 
 // this method is called when SuiteCloud extension is deactivated

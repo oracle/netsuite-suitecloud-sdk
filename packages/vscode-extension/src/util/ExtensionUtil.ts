@@ -6,7 +6,10 @@ import * as vscode from 'vscode';
 
 // returns the root project folder of the active file in the editor
 // works fine with workspace with multiple project folders opened
-export function getRootProjectFolder(): string | undefined {
+export function getRootProjectFolder(fsPath?: string): string | undefined {
+	// if(fsPath) {
+	// 	return vscode.workspace.getWorkspaceFolder(fsPath);
+	// }
 	const activeTextEditor = vscode.window.activeTextEditor;
 	const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
 	return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : undefined;
