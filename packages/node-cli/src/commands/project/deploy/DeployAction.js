@@ -40,7 +40,9 @@ const COMMAND = {
 module.exports = class DeployAction extends BaseAction {
 	constructor(options) {
 		super(options);
-		this._projectType = new ProjectInfoService(this._projectFolder).getProjectType();
+		const projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._projectType = projectInfoService.getProjectType();
+		this._projectName = projectInfoService.getProjectName();
 	}
 
 	preExecute(params) {
@@ -78,7 +80,7 @@ module.exports = class DeployAction extends BaseAction {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForDeploy),
-				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING, getProjectDefaultAuthId(this._executionPath)),
+				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
 			});
 
 			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
