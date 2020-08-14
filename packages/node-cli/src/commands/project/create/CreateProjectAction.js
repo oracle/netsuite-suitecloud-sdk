@@ -44,7 +44,9 @@ const SOURCE_FOLDER = 'src';
 const UNIT_TEST_TEST_FOLDER = '__tests__';
 
 const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
+const GITIGNORE_TEMPLATE_KEY = 'gitignore';
 const CLI_CONFIG_FILENAME = 'suitecloud.config';
+const GITIGNORE_FILENAME = 'gitignore';
 const CLI_CONFIG_EXTENSION = 'js';
 const UNIT_TEST_CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const UNIT_TEST_CLI_CONFIG_FILENAME = 'suitecloud.config';
@@ -182,13 +184,11 @@ module.exports = class CreateProjectAction extends BaseAction {
 					this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
 				} else {
-					await this._fileSystemService.createFileFromTemplate({
-						template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
-						destinationFolder: projectAbsolutePath,
-						fileName: CLI_CONFIG_FILENAME,
-						fileExtension: CLI_CONFIG_EXTENSION,
-					});
+					await this._createDefaultSuiteCloudConfigFile(projectAbsolutePath);
 				}
+
+				await this._createGitignoreFile(projectAbsolutePath);
+
 				return resolve({
 					operationResult: operationResult,
 					projectDirectory: projectAbsolutePath,
@@ -220,6 +220,23 @@ module.exports = class CreateProjectAction extends BaseAction {
 		await this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
 		await this._createJestConfigFile(type, projectAbsolutePath);
 		await this._createSampleUnitTestFile(projectAbsolutePath);
+	}
+
+	async _createGitignoreFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.PROJECTCONFIGS[GITIGNORE_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: GITIGNORE_FILENAME
+		});
+	}
+
+	async _createDefaultSuiteCloudConfigFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.PROJECTCONFIGS[CLI_CONFIG_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: CLI_CONFIG_FILENAME,
+			fileExtension: CLI_CONFIG_EXTENSION,
+		});
 	}
 
 	async _createUnitTestCliConfigFile(projectAbsolutePath) {
