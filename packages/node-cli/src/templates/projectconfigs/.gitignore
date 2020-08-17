@@ -7,6 +7,7 @@
 *.launch
 .settings
 *.sublime-workspace
+.vscode
 
 # Dependency directories
 node_modules
