@@ -66,8 +66,8 @@ define(['./SearchInstance', './Column', './Filter', './Result', './Setting'], fu
 	 * @since 2015.2
 	 */
 
-	search['delete'] = function (options) {};
-	search['delete'].promise = function (options) {};
+	search.prototype['delete'] = function (options) {};
+	search.prototype['delete'].promise = function (options) {};
 
 	/**
 	 * Performs a search for duplicate records based on the account's duplicate detection configuration.
