@@ -29,7 +29,7 @@ define([], function () {
          * @readonly
          */
         
-        this.prototype.getType = function(options) {};
+        this.getType = function(options) {};
         
         /**
          * The sublist is changed
@@ -38,7 +38,7 @@ define([], function () {
          * @readonly
          */
         
-        this.prototype.isChanged = function(options) {};
+        this.isChanged = function(options) {};
         
         /**
          * The sublist is hidden
@@ -47,7 +47,7 @@ define([], function () {
          * @readonly
          */
         
-        this.prototype.isHidden = function(options) {};
+        this.isHidden = function(options) {};
         
         /**
          * The sublist is display
@@ -56,7 +56,7 @@ define([], function () {
          * @readonly
          */
         
-        this.prototype.isDisplay = function(options) {};
+        this.isDisplay = function(options) {};
         
         /**
          * A flag to indicate whether or not the sublist supports multi-line buffer feature.
@@ -65,21 +65,21 @@ define([], function () {
          * @readonly
          */
         
-        this.prototype.isMultilineEditable = function(options) {};
+        this.isMultilineEditable = function(options) {};
         
         /**
          * Returns the object type name (sublist.Sublist)
          * @returns {string}
          */
         
-        this.prototype.toString = function(options) {};
+        this.toString = function(options) {};
         
         /**
          * JSON.stringify() implementation.
          * @returns {{id: string, type: string, isChanged: boolean, isDisplay: boolean}}
          */
         
-        this.prototype.toJSON = function(options) {};
+        this.toJSON = function(options) {};
     }
 
     return new Sublist();
