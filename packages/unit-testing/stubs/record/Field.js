@@ -12,7 +12,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.label = undefined;
+		this.label = undefined;
 		/**
 		 * Return id of the field
 		 * @name Field#id
@@ -21,7 +21,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.id = undefined;
+		this.id = undefined;
 		/**
 		 * Disabled state of the field
 		 * @name Field#isDisabled
@@ -29,7 +29,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.isDisabled = undefined;
+		this.isDisabled = undefined;
 		/**
 		 * Display state of the field
 		 * @name Field#isDisplay
@@ -37,7 +37,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.isDisplay = undefined;
+		this.isDisplay = undefined;
 		/**
 		 * Mandatory state of the field
 		 * @name Field#isMandatory
@@ -45,7 +45,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.isMandatory = undefined;
+		this.isMandatory = undefined;
 		/**
 		 * Read Only state of the field
 		 * @name Field#isReadOnly
@@ -53,7 +53,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.isReadOnly = undefined;
+		this.isReadOnly = undefined;
 		/**
 		 * Visible state of the field
 		 * @name Field#isVisible
@@ -61,7 +61,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.isVisible = undefined;
+		this.isVisible = undefined;
 		/**
 		 * Return type of the field
 		 * @name Field#type
@@ -70,7 +70,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.type = undefined;
+		this.type = undefined;
 		/**
 		 * Return the sublistId of the field
 		 * @name Field#sublistId
@@ -79,7 +79,7 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.sublistId = undefined;
+		this.sublistId = undefined;
 		/**
 		 * Returns if the field is a popup
 		 * @name Field#isPopup
@@ -88,21 +88,21 @@ define([], function () {
 		 * @since 2015.2
 		 */
 
-		this.prototype.isPopup = undefined;
+		this.isPopup = undefined;
 		/**
 		 * get JSON format of the object
 		 * @return {{id: *, label: *, type: *}}
 		 *
 		 */
 
-		this.prototype.toJSON = function (options) {};
+		this.toJSON = function (options) {};
 
 		/**
 		 * @return {string}
 		 *
 		 */
 
-		this.prototype.toString = function (options) {};
+		this.toString = function (options) {};
 	}
 
 	return new Field();
