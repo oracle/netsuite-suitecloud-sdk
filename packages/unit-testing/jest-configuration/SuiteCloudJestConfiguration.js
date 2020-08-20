@@ -70,6 +70,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Column.js`,
 	},
 	{
+		module: 'N/search/filter',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Filter.js`,
+	},
+	{
 		module: 'N/search/result',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Result.js`,
 	},
