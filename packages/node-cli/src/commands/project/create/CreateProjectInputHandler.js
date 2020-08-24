@@ -26,6 +26,7 @@ const {
 	validatePublisherId,
 	validateProjectVersion,
 	validateAlphanumericHyphenUnderscoreExtended,
+	validateMaximumLength,
 } = require('../../../validation/InteractiveAnswersValidator');
 
 const COMMAND_OPTIONS = {
@@ -83,7 +84,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND_OPTIONS.PUBLISHER_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PUBLISHER_ID),
-				validate: (fieldValue) => showValidationResults(fieldValue, validatePublisherId),
+				validate: (fieldValue) => showValidationResults(fieldValue, validatePublisherId, validateMaximumLength),
 			},
 			{
 				when: function (response) {
