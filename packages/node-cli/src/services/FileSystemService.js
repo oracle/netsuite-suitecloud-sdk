@@ -60,7 +60,6 @@ module.exports = class FileSystemService {
 		assert(options.template);
 		assert(options.destinationFolder);
 		assert(options.fileName);
-		assert(options.fileExtension);
 
 		return new Promise((resolve, reject) => {
 			readFile(options.template, CHAR_ENCODING_UTF8, (readingError, content) => {
@@ -71,8 +70,10 @@ module.exports = class FileSystemService {
 					content = this._processTemplateBindings(content, options.bindings);
 				}
 
+				const fullFileName = options.fileExtension ? `${options.fileName}.${options.fileExtension}` : `${options.fileName}`;
+
 				writeFile(
-					path.join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
+					path.join(options.destinationFolder, fullFileName),
 					content.toString(),
 					(writingError, data) => {
 						if (writingError) {

@@ -143,6 +143,15 @@ module.exports = [
 		},
 	},
 	{
+		name: 'Integration',
+		value: {
+			name: 'Integration',
+			type: 'integration',
+			prefix: 'custinteg_',
+			hasRelatedFiles: false,
+		},
+	},
+	{
 		name: 'Item Field',
 		value: {
 			name: 'Item Field',

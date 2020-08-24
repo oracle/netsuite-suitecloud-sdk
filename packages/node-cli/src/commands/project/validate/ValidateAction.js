@@ -32,11 +32,13 @@ const COMMAND_OPTIONS = {
 module.exports = class ValidateAction extends BaseAction {
 	constructor(options) {
 		super(options);
-		this._projectType = new ProjectInfoService(this._projectFolder).getProjectType()
+		const projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._projectType = projectInfoService.getProjectType()
+		this._projectName = projectInfoService.getProjectName()
 	}
 
 	preExecute(params) {
-		params[COMMAND_OPTIONS.PROJECT] = this._projectFolder;
+		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 
 		AccountSpecificValuesUtils.validate(params, this._projectFolder);
@@ -76,7 +78,7 @@ module.exports = class ValidateAction extends BaseAction {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
-				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING),
+				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
 			});
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS

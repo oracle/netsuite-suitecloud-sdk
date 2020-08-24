@@ -26,6 +26,7 @@ module.exports = class ProjectInfoService {
 	constructor(projectFolder) {
 		assert(projectFolder);
 		this._CACHED_PROJECT_TYPE = null;
+		this._CACHES_PROJECT_NAME = null;
 		this._projectFolder = projectFolder;
 	}
 
@@ -60,38 +61,35 @@ module.exports = class ProjectInfoService {
 	}
 
 	getProjectType() {
-		if (this._CACHED_PROJECT_TYPE) {
-			return this._CACHED_PROJECT_TYPE;
+		if (!this._CACHED_PROJECT_TYPE) {
+			this.parseManifest();
 		}
+		
+		return this._CACHED_PROJECT_TYPE;
+	}
 
-		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
 
-		if (!FileUtils.exists(manifestPath)) {
-			const errorMessage =
-				NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
-				' ' +
-				NodeTranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath);
-			throw new CLIException(errorMessage);
+	getProjectName() {
+		if (!this._CACHED_PROJECT_NAME) {
+			this.parseManifest();
 		}
+		return this._CACHED_PROJECT_NAME;
+	}
 
-		const manifestString = FileUtils.readAsString(manifestPath);
 
-		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
-			const errorMessage =
-				NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
-				' ' +
-				NodeTranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
-			throw new CLIException(errorMessage);
-		}
+	parseManifest() {
+		const manifestPath = this.getManifestPath();
+		const manifestString = this.getManifestString(manifestPath);
+
+		let projectName;
 		let projectType;
 		let validationError;
 
 		let parser = new xml2js.Parser({ validator: this._validateXml });
 
-		parser.parseString(manifestString, function(err, result) {
+		parser.parseString(manifestString, function (err, result) {
 			if (err) {
-				const errorMessage =
-					NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+				const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
 					' ' +
 					NodeTranslationService.getMessage(ERRORS.FILE, manifestPath);
 				validationError = errorMessage + ' ' + err;
@@ -99,18 +97,42 @@ module.exports = class ProjectInfoService {
 
 			if (result) {
 				projectType = result.manifest.$.projecttype;
+				projectName = result.manifest.projectname;
 			}
 		});
 
 		//TODO CHECK XML IS VALID
-
 		if (validationError) {
 			throw new CLIException(validationError);
 		}
-
 		this._CACHED_PROJECT_TYPE = projectType;
-		return this._CACHED_PROJECT_TYPE;
+		this._CACHED_PROJECT_NAME = projectName;
 	}
+
+	getManifestPath() {
+		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
+
+		if (!FileUtils.exists(manifestPath)) {
+			const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+				' ' +
+				NodeTranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath);
+			throw new CLIException(errorMessage);
+		}
+		return manifestPath;
+	}
+
+	getManifestString(manifestPath) {
+		const manifestString = FileUtils.readAsString(manifestPath);
+
+		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
+			const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+				' ' +
+				NodeTranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
+			throw new CLIException(errorMessage);
+		}
+		return manifestString;
+	}
+
 
 	hasLockAndHideFiles() {
 		const pathToInstallationPreferences = path.join(

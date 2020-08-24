@@ -45,8 +45,8 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 	}
 
 	_showLocalValidationResultData(data) {
-		this._logValidationEntries(data.warnings, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), this._log.warning);
-		this._logValidationEntries(data.errors, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), this._log.error);
+		this._logValidationEntries(data.warnings, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), this._log.warning.bind(this._log));
+		this._logValidationEntries(data.errors, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), this._log.error.bind(this._log));
 	}
 
 	_logValidationEntries(entries, headingLabel, log) {

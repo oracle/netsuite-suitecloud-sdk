@@ -150,7 +150,6 @@
 				"description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"alias": "l",
 				"usage": "d:/path/test.log",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
@@ -218,7 +217,7 @@
 			{
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"description": "References the custom alias you gave to a specific account-role combination.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -267,7 +266,7 @@
 			{
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"description": "References the custom alias you gave to a specific account-role combination.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -346,7 +345,7 @@
 			{
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"description": "References the custom alias you gave to a specific account-role combination.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -375,7 +374,7 @@
 			{
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"description": "References the custom alias you gave to a specific account-role combination.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -424,7 +423,7 @@
 			{
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"description": "References the custom alias you gave to a specific account-role combination.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -437,7 +436,7 @@
 		"name": "account:manageauth",
 		"sdkCommand": "manageauth",
 		"usage": "",
-		"description": "Manages authentication IDs (authid) for all your projects.",
+		"description": "Manages authentication IDs (authid) for all your projects. An authentication ID is a custom alias you give to a specific account-role combination.",
 		"isSetupRequired": false,
 		"options": [
 			{
@@ -483,7 +482,7 @@
 			{
 				"name": "remove",
 				"option": "remove",
-				"description": "Remove an authentication ID (authID. Usage: manageauth -remove {authID}.",
+				"description": "Remove an authentication ID (authID). Usage: manageauth -remove {authID}.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "",
@@ -561,7 +560,7 @@
 			{
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"description": "References the custom alias you gave to a specific account-role combination.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -600,7 +599,7 @@
 			{
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"description": "References the custom alias you gave to a specific account-role combination.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -669,7 +668,7 @@
 			{
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom name you gave to a specific account-role combination. When you use this option in a command execution, you should not specify any of the following options: -email, -account, -url, or -role.",
+				"description": "References the custom alias you gave to a specific account-role combination.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
