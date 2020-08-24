@@ -12,6 +12,8 @@ const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
+const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { lineBreak } = require('../../../loggers/LoggerConstants');
 const {
 	COMMAND_LISTFILES: { LOADING_FOLDERS, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
 } = require('../../../services/TranslationKeys');
@@ -37,22 +39,33 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 			.integration()
 			.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, getProjectDefaultAuthId(this._executionPath))
 			.build();
+
+		let listFoldersResult;
 		try {
-			const operationResult = await executeWithSpinner({
+			listFoldersResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContext),
 				message: NodeTranslationService.getMessage(LOADING_FOLDERS),
 			});
+		} catch (error) {
+			throw NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, lineBreak, error);
+		}
+
+		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw listFoldersResult.errorMessages;
+		}
+
+		try {
 			return prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: this._commandMetadata.options.folder.name,
 					message: NodeTranslationService.getMessage(SELECT_FOLDER),
 					default: SUITE_SCRIPTS_FOLDER,
-					choices: this._getFileCabinetFolders(operationResult),
+					choices: this._getFileCabinetFolders(listFoldersResult),
 				},
 			]);
 		} catch (error) {
-			this._log.error(NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, error));
+			throw NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, lineBreak, error);
 		}
 	}
 
