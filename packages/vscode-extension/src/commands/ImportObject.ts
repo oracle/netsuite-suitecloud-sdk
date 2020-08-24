@@ -41,7 +41,10 @@ export default class ImportObject extends BaseAction {
 
 		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECT.UPDATING);
 
-		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: scriptId, type: 'ALL', destinationfolder: activeFile });
+		//TODO Prototype of import...Fix the way we look for destinationFolder
+		// It should take the path in reference to the project that could be java or nodejs (with src) types
+		const destinationFolder = this.executionPath ? path.dirname(activeFile).split(this.executionPath + "\\src")[1].replace("\\", "/") : path.dirname(activeFile);
+		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: scriptId, type: 'ALL', destinationfolder: destinationFolder });
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
@@ -52,7 +55,12 @@ export default class ImportObject extends BaseAction {
 				(importResults.failedImports && importResults.failedImports.length > 0)
 			) {
 				this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECT.ERROR));
-			} else {
+			} else if ((importResults.errorImports || importResults.errorImports.length == 0)
+				&& (importResults.failedImports || importResults.failedImports.length == 0)
+				&& (importResults.successfulImports || importResults.successfulImports.length == 0)) {
+				this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECT.ERROR))
+			}
+			else {
 				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECT.SUCCESS));
 			}
 		} else {

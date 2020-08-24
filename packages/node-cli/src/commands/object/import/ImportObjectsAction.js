@@ -120,20 +120,26 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 	_parsePartialResult(partialOperationResult) {
 		if (partialOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			let errorMessage = partialOperationResult.errorMessages[0] ? partialOperationResult.errorMessages[0] : '';
+			if (partialOperationResult.resultMessage && partialOperationResult.resultMessage.length > 0) {
+				errorMessage = partialOperationResult.resultMessage + "\n" + errorMessage;
+			}
 			this.operationResultData.errorImports = this.operationResultData.errorImports.concat({
 				scriptIds: this.partialScriptIds,
-				reason: partialOperationResult.errorMessages[0],
+				reason: errorMessage,
 			});
 		} else {
-			if (partialOperationResult.data.failedImports.length > 0) {
-				this.operationResultData.failedImports = this.operationResultData.failedImports.concat(
-					partialOperationResult.data.failedImports
-				);
-			}
-			if (partialOperationResult.data.successfulImports.length > 0) {
-				this.operationResultData.successfulImports = this.operationResultData.successfulImports.concat(
-					partialOperationResult.data.successfulImports
-				);
+			if (partialOperationResult.data) {
+				if (partialOperationResult.data.failedImports.length > 0) {
+					this.operationResultData.failedImports = this.operationResultData.failedImports.concat(
+						partialOperationResult.data.failedImports
+					);
+				}
+				if (partialOperationResult.data.successfulImports.length > 0) {
+					this.operationResultData.successfulImports = this.operationResultData.successfulImports.concat(
+						partialOperationResult.data.successfulImports
+					);
+				}
 			}
 		}
 	}
