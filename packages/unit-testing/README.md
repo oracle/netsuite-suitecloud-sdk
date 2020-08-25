@@ -12,8 +12,11 @@ Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestj
 ## Features
 - Provides a default configuration to run unit tests with Jest in SDF projects.
 - Supports unit testing for SuiteScript 2.X files.
-- Provides SuiteScript 2.X stubs.
->💡 For SuiteCloud Unit Testing 1.X.X, only the **N/record** module is supported.
+- Provides SuiteScript 2.X stubs for the following SuiteScript modules:
+  - **N/http**
+  - **N/https**
+  - **N/record**
+  - **N/search**
 - Allows you to create custom stubs for SuiteScript 2.X or custom modules.
 - Supports code coverage capabilities through Jest.
 
@@ -22,9 +25,11 @@ Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestj
 - An SDF project
 
 ## Getting Started
+If you use SuiteCloud CLI for Node.js, you can install SuiteCloud Unit Testing when running the `project:create` command by following the questions prompted. This way, your project is initialized with SuiteCloud Unit Testing, and all the dependencies are being taken care of.
+
 > ⚠ SuiteCloud Unit Testing is installed as a `devDependency`.
 
-To get started with SuiteCloud Unit Testing, do the following:
+However, if you want to configure SuiteCloud Unit Testing manually, do the following:
 
 1. Inside of your SDF project folder, create a `src` folder.
 2. Move your project files inside of the `src` folder.
@@ -63,8 +68,6 @@ PASS  __tests__/sample-test.js
 >💡 If you want to run tests with coverage, from the root of your SDF project folder, run `npm test --coverage`.
 
 **You successfully ran your first test for an SDF project!**
-
-➡ If you use SuiteCloud CLI for Node.js, you can install SuiteCloud Unit Testing when running the [`project:create`](../../packages/node-cli/README.md/##Commands) command by following the questions prompted.
 
 ## Additional Configuration
 To properly run your tests against the SuiteScript 2.X files of your SDF project, create a `jest.config.js` file inside of the root of your SDF project folder.
