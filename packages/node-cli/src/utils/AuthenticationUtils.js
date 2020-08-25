@@ -83,7 +83,7 @@ async function getAuthIds(sdkPath) {
 	});
 	return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 		? ActionResult.Builder.withData(operationResult.data).build()
-		: ActionResult.Builder.withErrors(operationResult.errorMessages);
+		: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 }
 
 async function saveToken(params, sdkPath, projectFolder) {
