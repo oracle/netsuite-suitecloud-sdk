@@ -17,6 +17,7 @@ const {
 	FILES: { MANIFEST_XML },
 } = require('../../../ApplicationConstants');
 const CLIException = require('../../../CLIException');
+const { lineBreak } = require('../../../loggers/LoggerConstants');
 
 const COMMAND = {
 	OPTIONS: {
@@ -93,7 +94,7 @@ module.exports = class AccountCiAction extends BaseAction {
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name));
+			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name, lineBreak));
 		}
 	}
 };

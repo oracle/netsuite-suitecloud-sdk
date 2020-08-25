@@ -32,6 +32,7 @@ const {
 	validateMaximumLength,
 	showValidationResults,
 } = require('../../../validation/InteractiveAnswersValidator');
+const { lineBreak } = require('../../../loggers/LoggerConstants');
 
 const ANSWERS = {
 	DEVELOPMENT_MODE_URL: 'developmentModeUrl',
@@ -212,7 +213,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name));
+			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name, lineBreak));
 		}
 	}
 };
