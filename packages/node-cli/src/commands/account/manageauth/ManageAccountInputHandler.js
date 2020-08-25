@@ -58,6 +58,9 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		}
 		let answers;
 		const authIDActionResult = await getAuthIds(this._sdkPath);
+		if (!authIDActionResult.isSuccess()) {
+			throw authIDActionResult.errorMessages;
+		}
 		answers = await this._selectAuthID(authIDActionResult.data, prompt);
 		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
