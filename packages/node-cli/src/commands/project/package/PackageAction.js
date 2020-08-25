@@ -15,6 +15,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
 const FileUtils = require('../../../utils/FileUtils');
 const { ERRORS, COMMAND_PACKAGE } = require('../../../services/TranslationKeys');
+const { LINKS: { INFO } } = require('../../../ApplicationConstants');
 
 const {
 	FILES: { MANIFEST_XML },
@@ -60,7 +61,8 @@ module.exports = class PackageAction extends BaseAction {
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			throw NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name, lineBreak);
+			throw NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name)
+			+ lineBreak + NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
 		}
 	}
 };

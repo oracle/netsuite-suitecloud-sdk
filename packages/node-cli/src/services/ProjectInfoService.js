@@ -18,6 +18,7 @@ const NodeTranslationService = require('./NodeTranslationService');
 const xml2js = require('xml2js');
 const assert = require('assert');
 const { lineBreak } = require('../loggers/LoggerConstants');
+const { LINKS: { INFO } } = require('../ApplicationConstants');
 
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
@@ -118,7 +119,7 @@ module.exports = class ProjectInfoService {
 				' ' +
 				NodeTranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath) +
 				lineBreak +
-				NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, manifestPath);
+				NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
 
 			throw new CLIException(errorMessage);
 		}

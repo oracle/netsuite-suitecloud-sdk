@@ -38,6 +38,9 @@ module.exports = {
 	PROD_ENVIRONMENT_ADDRESS: 'system.netsuite.com',
 	PROJECT_FOLDER_ARG: '--projectFolder',
 	LINKS: {
+		INFO: {
+			PROJECT_STRUCTURE: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155931221634.html'
+		},
 		HOW_TO: {
 			CREATE_HIDDING_XML:
 				'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html',
