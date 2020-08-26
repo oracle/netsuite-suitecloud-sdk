@@ -24,7 +24,7 @@ Each version of CLI for Node.js in NPM works optimally with a specific NetSuite 
 
 | Version in NPM | Version in NetSuite |
 |:--------------:|:-------------------:|
-| 1.X.X | 2020.1 |
+| 1.0.X | 2020.1 |
 | 1.1.X | 2020.2 |
   
 ## Installation
