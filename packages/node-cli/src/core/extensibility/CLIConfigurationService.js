@@ -17,7 +17,7 @@ const DEFAULT_CONFIG = {
 	commands: {},
 };
 
-const isString = str => typeof str === 'string' || str instanceof String;
+const isString = (str) => typeof str === 'string' || str instanceof String;
 
 module.exports = class CLIConfigurationService {
 	constructor() {
@@ -49,14 +49,15 @@ module.exports = class CLIConfigurationService {
 	}
 
 	getCommandUserExtension(commandName) {
-		const commandExtension = this._cliConfig && this._cliConfig.commands[commandName] ? this._cliConfig.commands[commandName] : {};
+		const commandExtension =
+			this._cliConfig && this._cliConfig.commands && this._cliConfig.commands[commandName] ? this._cliConfig.commands[commandName] : {};
 		return new CommandUserExtension(commandExtension);
 	}
 
 	getProjectFolder(command) {
 		const defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder) ? this._cliConfig.defaultProjectFolder : '';
 
-		const commandConfig = this._cliConfig && this._cliConfig.commands[command];
+		const commandConfig = this._cliConfig && this._cliConfig.commands && this._cliConfig.commands[command];
 		let commandOverridenProjectFolder;
 		if (commandConfig && isString(commandConfig.projectFolder)) {
 			commandOverridenProjectFolder = commandConfig.projectFolder;

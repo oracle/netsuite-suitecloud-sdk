@@ -32,6 +32,7 @@ const {
 	validateSuiteApp,
 	validateScriptId,
 } = require('../../../validation/InteractiveAnswersValidator');
+const FileUtils = require('../../../utils/FileUtils');
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
@@ -248,6 +249,9 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
 		const objectsFolder = join(this._projectFolder, FOLDERS.OBJECTS);
+		if (!FileUtils.exists(objectsFolder)) {
+			FileUtils.createDirectory(objectsFolder);
+		}
 		const objectsSubFolders = this._fileSystemService.getFoldersFromDirectory(objectsFolder);
 		const objectDirectoryChoices = [objectsFolder, ...objectsSubFolders].map(transformFoldersToChoicesFunc);
 

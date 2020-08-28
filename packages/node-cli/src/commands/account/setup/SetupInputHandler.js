@@ -14,6 +14,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const CLIException = require('../../../CLIException');
+const { LINKS: { INFO } } = require('../../../ApplicationConstants');
 
 const {
 	FILES: { MANIFEST_XML },
@@ -32,6 +33,7 @@ const {
 	validateMaximumLength,
 	showValidationResults,
 } = require('../../../validation/InteractiveAnswersValidator');
+const { lineBreak } = require('../../../loggers/LoggerConstants');
 
 const ANSWERS = {
 	DEVELOPMENT_MODE_URL: 'developmentModeUrl',
@@ -212,7 +214,9 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name));
+			const errorMessage = NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name)
+				+ lineBreak + NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
+			throw new CLIException(errorMessage);
 		}
 	}
 };

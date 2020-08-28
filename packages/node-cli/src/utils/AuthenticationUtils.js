@@ -15,6 +15,7 @@ const path = require('path');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutor = require('../SdkExecutor');
+const {lineBreak} = require('../loggers/LoggerConstants')
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
@@ -68,7 +69,8 @@ function getProjectDefaultAuthId(projectFolder) {
 			}
 			return fileContentJson[DEFAULT_AUTH_ID_PROPERTY];
 		} catch (error) {
-			throw NodeTranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error);
+			throw NodeTranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error) + 
+			lineBreak + NodeTranslationService.getMessage(ERRORS.RUN_SETUP_ACCOUNT);
 		}
 	}
 }
@@ -83,7 +85,7 @@ async function getAuthIds(sdkPath) {
 	});
 	return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 		? ActionResult.Builder.withData(operationResult.data).build()
-		: ActionResult.Builder.withErrors(operationResult.errorMessages);
+		: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 }
 
 async function saveToken(params, sdkPath, projectFolder) {
