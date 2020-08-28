@@ -1,4 +1,4 @@
-<p align="center"><a href="#"><img width="250" src="./media/oracle_netsuite_logo.png"></a></p>
+<p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo.png"></a></p>
 
 # suitecommerce:localserver Command for SuiteCloud CLI for Node.js
 <p>

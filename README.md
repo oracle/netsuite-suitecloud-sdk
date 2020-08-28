@@ -1,4 +1,4 @@
-<p align="center"><a href="#"><img width="250" src="./media/oracle_netsuite_logo.png"></a></p>
+<p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo.png"></a></p>
 
 # SuiteCloud SDK
 SuiteCloud Software Development Kit (SuiteCloud SDK) are the set of tools that allow you to customize accounts and create SuiteApps through SuiteCloud Development Framework (SDF).
