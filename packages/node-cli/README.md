@@ -1,4 +1,4 @@
-<p align="center"><a href="#"><img width="250" src="https://cdn.app.compendium.com/uploads/user/8cae7864-8129-4f90-831f-58f1a01c3e5e/60b3624a-ca2d-4418-ac2b-a3997bb708a0/File/d87530554fbd39ba90fcbb144d8df218/oraclenetsuite_horiz.svg"></a></p>
+<p align="center"><a href="#"><img width="250" src="./media/oracle_netsuite_logo.png"></a></p>
 
 # SuiteCloud CLI for Node.js
 <p>
@@ -72,7 +72,7 @@ Read the detailed documentation for all the commands in [NetSuite's Help Center]
 ## Getting Started
 🎞 To see how to install and set up CLI for Node.js, watch the following video:
 
-<a href="https://videohub.oracle.com/media/Setting+Up+CLI+for+Nodej.s/0_091fc2ca"><img src="../../images/video_settingUpNodejsCli.png" alt="Setting up CLI for Node.js video" width="400"></a>
+<a href="https://videohub.oracle.com/media/Setting+Up+CLI+for+Nodej.s/0_091fc2ca"><img src="./media/video_setting_up_nodejs_cli.png" alt="Setting up CLI for Node.js video" width="400"></a>
 
 
 Create a new project in an empty folder by running the following command:
