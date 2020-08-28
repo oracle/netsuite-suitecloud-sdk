@@ -15,7 +15,7 @@ const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseAction = require('../../base/BaseAction');
 const {
-	COMMAND_IMPORTFILES: { ERRORS, MESSAGES },
+	COMMAND_IMPORTFILES: { ERRORS, MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
@@ -56,6 +56,10 @@ module.exports = class ImportFilesAction extends BaseAction {
 		try {
 			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
+			}
+
+			if(this._runInInteractiveMode == false) {
+				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 			}
 
 			const executionContextImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)

@@ -13,7 +13,7 @@ const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseAction = require('../../base/BaseAction');
 const {
-	COMMAND_IMPORTOBJECTS: { MESSAGES },
+	COMMAND_IMPORTOBJECTS: { MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');
 const SdkExecutor = require('../../../SdkExecutor');
 
@@ -65,6 +65,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 					delete params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
 				}
 			} else {
+				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 				if (params[COMMAND_FLAGS.EXCLUDE_FILES]) {
 					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
 					delete params[COMMAND_FLAGS.EXCLUDE_FILES];
