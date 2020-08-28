@@ -58,7 +58,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 			}
 
-			if(this._runInInteractiveMode == false) {
+			if(this._runInInteractiveMode === false) {
 				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 			}
 
