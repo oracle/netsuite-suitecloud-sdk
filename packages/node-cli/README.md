@@ -70,7 +70,9 @@ suitecloud {command} -h
 Read the detailed documentation for all the commands in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_155931263126.html).
 
 ## Getting Started
->🎞 To see how to install and set up CLI for Node.js, [watch this video.](https://videohub.oracle.com/media/Setting+Up+CLI+for+Nodej.s/0_091fc2ca)
+>🎞 To see how to install and set up CLI for Node.js, watch the following video:
+<a href="https://videohub.oracle.com/media/Setting+Up+CLI+for+Nodej.s/0_091fc2ca"><img src="../../images/video_settingUpNodejsCli.png" alt="Setting up CLI for Node.js video" width="400" style="margin-top: 10px"></a>
+
 
 Create a new project in an empty folder by running the following command:
 ```
