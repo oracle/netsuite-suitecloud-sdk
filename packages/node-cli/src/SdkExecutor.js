@@ -57,7 +57,6 @@ module.exports = class SdkExecutor {
 		this.childProcess.stderr.on(DATA_EVENT, (data) => {
 			lastSdkError += data.toString(UTF8);
 		});
-
 		this.childProcess.stdout.on(DATA_EVENT, (data) => {
 			lastSdkOutput += data.toString(UTF8);
 		});
@@ -74,6 +73,10 @@ module.exports = class SdkExecutor {
 					reject(NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error));
 				}
 			} else {
+				const javaVersionError = this._checkIfJavaVersionIssue();
+				if (javaVersionError) {
+					reject(javaVersionError);
+				}
 				reject(NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.SDK_ERROR, code, lastSdkError));
 			}
 		});
