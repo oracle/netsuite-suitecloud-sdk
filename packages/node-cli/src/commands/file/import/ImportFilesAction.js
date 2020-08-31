@@ -76,7 +76,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build;
+			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 };
