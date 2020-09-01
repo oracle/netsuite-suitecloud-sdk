@@ -6,6 +6,7 @@
 
 module.exports = {
 	SDK_COMMANDS_METADATA_FILE: 'metadata/SdkCommandsMetadata.json',
+	MODIFIED_SDK_DESCRIPTIONS_FOR_NODECLI_METADATA_FILE: 'metadata/ModifiedSdkDescriptionsForNodeCLIMetadata.json',
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	SDK_FILENAME: 'cli-2020.2.0.jar',
