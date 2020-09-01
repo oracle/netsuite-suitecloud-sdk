@@ -5,8 +5,8 @@
 		"usage": "",
 		"description": "Adds the missing dependencies to the manifest file.",
 		"isSetupRequired": false,
-		"options": [
-			{
+		"options": {
+			"all": {
 				"name": "all",
 				"option": "all",
 				"description": "Add all missing dependencies to the SuiteCloud project. When specified, ensure that you do not use the -feature, -file, and -object options.",
@@ -16,7 +16,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			{
+			"feature": {
 				"name": "feature",
 				"option": "feature",
 				"description": "Specify the feature dependency references to add to the project. Each reference is a name:value pair that is delimited by a space. For example, CUSTOMRECORD:required. When specified, ensure that you do not use the -all option.",
@@ -26,7 +26,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			{
+			"file": {
 				"name": "file",
 				"option": "file",
 				"description": "Specify the files to add to the project. When specified, ensure that you do not use the -all option.",
@@ -36,7 +36,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			{
+			"object": {
 				"name": "object",
 				"option": "object",
 				"description": "Specify the object script IDs to add to the project. When specified, ensure that you do not use the -all option.",
@@ -46,7 +46,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			{
+			"project": {
 				"name": "project",
 				"option": "project",
 				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
@@ -56,7 +56,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"project:create": {
 		"name": "project:create",
@@ -64,18 +64,8 @@
 		"usage": "",
 		"description": "Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).",
 		"isSetupRequired": false,
-		"options": [
-			{
-				"name": "parentdirectory",
-				"option": "parentdirectory",
-				"description": "Set the parent folder where to create the project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "d:/foo/bar",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
+		"options": {
+			"overwrite": {
 				"name": "overwrite",
 				"option": "overwrite",
 				"description": "Overwrite the existing project.",
@@ -85,37 +75,17 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
-				"name": "type",
-				"option": "type",
-				"description": "Specify the project type.",
+			"parentdirectory": {
+				"name": "parentdirectory",
+				"option": "parentdirectory",
+				"description": "Set the parent folder where to create the project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "ACCOUNTCUSTOMIZATION",
+				"usage": "d:/foo/bar",
 				"defaultOption": false,
-				"disableInIntegrationMode": false
+				"disableInIntegrationMode": true
 			},
-			{
-				"name": "projectname",
-				"option": "projectname",
-				"description": "Specify the project name.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "FooBar",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "publisherid",
-				"option": "publisherid",
-				"description": "Specify the publisher ID. It is mandatory for SuiteApps.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "com.netsuite",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
+			"projectid": {
 				"name": "projectid",
 				"option": "projectid",
 				"description": "Specify the project ID. It is mandatory for SuiteApps.",
@@ -125,7 +95,17 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"projectname": {
+				"name": "projectname",
+				"option": "projectname",
+				"description": "Specify the project name.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "FooBar",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"projectversion": {
 				"name": "projectversion",
 				"option": "projectversion",
 				"description": "Specify the project version. It is mandatory for SuiteApps.",
@@ -134,8 +114,28 @@
 				"usage": "1.0.0",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
+			},
+			"publisherid": {
+				"name": "publisherid",
+				"option": "publisherid",
+				"description": "Specify the publisher ID. It is mandatory for SuiteApps.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "com.netsuite",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"type": {
+				"name": "type",
+				"option": "type",
+				"description": "Specify the project type.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "ACCOUNTCUSTOMIZATION",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
 			}
-		]
+		}
 	},
 	"project:deploy": {
 		"name": "project:deploy",
@@ -143,8 +143,38 @@
 		"usage": "",
 		"description": "Deploys the folder containing the project. The project folder is zipped before deployment, only including the files and folders referenced in the deploy.xml file.",
 		"isSetupRequired": true,
-		"options": [
-			{
+		"options": {
+			"accountspecificvalues": {
+				"name": "accountspecificvalues",
+				"option": "accountspecificvalues",
+				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "WARNING",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"authid": {
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom alias you gave to a specific account-role combination.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"applycontentprotection": {
+				"name": "applycontentprotection",
+				"option": "applycontentprotection",
+				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"log": {
 				"name": "log",
 				"option": "log",
 				"description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
@@ -154,17 +184,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
-				"name": "validate",
-				"option": "validate",
-				"description": "Validate the project before deploying. If an error ocurrs during the deployment, the process is stopped.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
+			"no_preview": {
 				"name": "no_preview",
 				"option": "no_preview",
 				"description": "Skip the preview step.",
@@ -174,7 +194,17 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			{
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:/project/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"skip_warning": {
 				"name": "skip_warning",
 				"option": "skip_warning",
 				"description": "Indicates that the warning before deployment to production account will be skipped.",
@@ -184,47 +214,17 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			{
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
+			"validate": {
+				"name": "validate",
+				"option": "validate",
+				"description": "Validate the project before deploying. If an error ocurrs during the deployment, the process is stopped.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
-			},
-			{
-				"name": "accountspecificvalues",
-				"option": "accountspecificvalues",
-				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "WARNING",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"file:import": {
 		"name": "file:import",
@@ -232,8 +232,8 @@
 		"usage": "",
 		"description": "Imports files from an account to your account customization project. You cannot import files from a SuiteApp.",
 		"isSetupRequired": true,
-		"options": [
-			{
+		"options": {
+			"paths": {
 				"name": "paths",
 				"option": "paths",
 				"description": "Specify the File Cabinet paths of the files to import. For example, \"/SuiteScripts\".",
@@ -243,7 +243,7 @@
 				"defaultOption": true,
 				"disableInIntegrationMode": false
 			},
-			{
+			"excludeproperties": {
 				"name": "excludeproperties",
 				"option": "excludeproperties",
 				"description": "Exclude all file properties within the .attributes folder.",
@@ -253,17 +253,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
+			"authid": {
 				"name": "authid",
 				"option": "authid",
 				"description": "References the custom alias you gave to a specific account-role combination.",
@@ -272,8 +262,18 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
+			},
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:/project/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"object:import": {
 		"name": "object:import",
@@ -281,8 +281,8 @@
 		"usage": "",
 		"description": "Imports custom objects from your NetSuite account to the SDF project. In account customization projects (ACP), if SuiteScript files are referenced in the custom objects you import, these files get imported by default.",
 		"isSetupRequired": true,
-		"options": [
-			{
+		"options": {
+			"appid": {
 				"name": "appid",
 				"option": "appid",
 				"description": "Specify your application ID. If specified, only custom objects with that application ID are imported. Otherwise, only custom objects with no application ID are imported.",
@@ -292,7 +292,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"scriptid": {
 				"name": "scriptid",
 				"option": "scriptid",
 				"description": "Specify the script ID. To specify multiple IDs, enter the IDs separated by spaces. Enter \"ALL\" to import all custom objects of the specified type.",
@@ -302,7 +302,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"type": {
 				"name": "type",
 				"option": "type",
 				"description": "Specify the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https://system.netsuite.com/app/help/helpcenter.nl?fid=sdfxml.html.",
@@ -312,7 +312,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"destinationfolder": {
 				"name": "destinationfolder",
 				"option": "destinationfolder",
 				"description": "Specify the project folder where objects will be stored. It must be within the Objects folder of your project. For example, /Objects/MyObjects.",
@@ -322,7 +322,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"excludefiles": {
 				"name": "excludefiles",
 				"option": "excludefiles",
 				"description": "Indicates that the SuiteScript files referenced in custom objects are not imported. It can only be used in account customization projects (ACP).",
@@ -332,17 +332,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
+			"authid": {
 				"name": "authid",
 				"option": "authid",
 				"description": "References the custom alias you gave to a specific account-role combination.",
@@ -351,8 +341,18 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
+			},
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:/project/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"file:list": {
 		"name": "file:list",
@@ -360,8 +360,8 @@
 		"usage": "",
 		"description": "Lists the files in the File Cabinet of your account.",
 		"isSetupRequired": true,
-		"options": [
-			{
+		"options": {
+			"folder": {
 				"name": "folder",
 				"option": "folder",
 				"description": "Specify the File Cabinet path, for example, \"/SuiteScripts\". All files within subfolders are included.",
@@ -371,7 +371,7 @@
 				"defaultOption": true,
 				"disableInIntegrationMode": false
 			},
-			{
+			"authid": {
 				"name": "authid",
 				"option": "authid",
 				"description": "References the custom alias you gave to a specific account-role combination.",
@@ -381,7 +381,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"object:list": {
 		"name": "object:list",
@@ -389,8 +389,8 @@
 		"usage": "",
 		"description": "Lists the custom objects deployed in an account.",
 		"isSetupRequired": true,
-		"options": [
-			{
+		"options": {
+			"appid": {
 				"name": "appid",
 				"option": "appid",
 				"description": "Specify your application ID. If specified, only custom objects with that application ID are listed. Otherwise, only custom objects with no application ID are listed.",
@@ -400,7 +400,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"scriptid": {
 				"name": "scriptid",
 				"option": "scriptid",
 				"description": "Specify the script ID. If you specify it, only objects containing that script ID will be listed. Otherwise, all objects are listed.",
@@ -410,7 +410,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"type": {
 				"name": "type",
 				"option": "type",
 				"description": "Specify the type of custom objects to list. To specify multiple types, enter the types separated by spaces. Otherwise, all types are listed. To see what custom objects are supported by SDF, see https://system.netsuite.com/app/help/helpcenter.nl?fid=sdfxml.html.",
@@ -420,7 +420,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"authid": {
 				"name": "authid",
 				"option": "authid",
 				"description": "References the custom alias you gave to a specific account-role combination.",
@@ -430,7 +430,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"account:manageauth": {
 		"name": "account:manageauth",
@@ -438,8 +438,8 @@
 		"usage": "",
 		"description": "Manages authentication IDs (authID) for all your projects. An authentication ID is a custom alias you gave to a specific account-role combination.",
 		"isSetupRequired": false,
-		"options": [
-			{
+		"options": {
+			"list": {
 				"name": "list",
 				"option": "list",
 				"description": "Prints a list of all the configured authentication IDs (authID). Usage: manageauth -list.",
@@ -449,7 +449,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"info": {
 				"name": "info",
 				"option": "info",
 				"description": "Prints the following information for the specified authentication ID (authID): account ID, role ID, and url. Usage: manageauth -info {authID}.",
@@ -459,7 +459,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"rename": {
 				"name": "rename",
 				"option": "rename",
 				"description": "Rename an authentication ID (authID). You must specify it together with the renameto option. Usage: manageauth -rename {authID} -renameto {newauthID}.",
@@ -469,7 +469,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"renameto": {
 				"name": "renameto",
 				"option": "renameto",
 				"description": "Enter the new ID for an authentication ID (authID). You must specify it together with the rename option. Usage: manageauth -rename {authID} -renameto {newauthID}.",
@@ -479,7 +479,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"remove": {
 				"name": "remove",
 				"option": "remove",
 				"description": "Remove an authentication ID (authID). Usage: manageauth -remove {authID}.",
@@ -489,7 +489,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"revoke": {
 				"name": "revoke",
 				"option": "revoke",
 				"description": "Revokes the TBA token that was issued to your account and is linked to the specified authentication ID (authID).",
@@ -499,7 +499,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"project:package": {
 		"name": "project:package",
@@ -507,8 +507,8 @@
 		"usage": "",
 		"description": "Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file, and applying local validation.",
 		"isSetupRequired": false,
-		"options": [
-			{
+		"options": {
+			"destination": {
 				"name": "destination",
 				"option": "destination",
 				"description": "Specify a path to store the ZIP file containing your project.",
@@ -518,7 +518,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			{
+			"project": {
 				"name": "project",
 				"option": "project",
 				"description": "Specify the path of your project folder.",
@@ -528,7 +528,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"object:update": {
 		"name": "object:update",
@@ -536,8 +536,8 @@
 		"usage": "",
 		"description": "Overwrites the custom objects in the project with the custom objects in an account.",
 		"isSetupRequired": true,
-		"options": [
-			{
+		"options": {
+			"scriptid": {
 				"name": "scriptid",
 				"option": "scriptid",
 				"description": "Specify the script ID of the objects you want to overwrite.",
@@ -547,17 +547,7 @@
 				"defaultOption": true,
 				"disableInIntegrationMode": false
 			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
+			"authid": {
 				"name": "authid",
 				"option": "authid",
 				"description": "References the custom alias you gave to a specific account-role combination.",
@@ -566,8 +556,18 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
+			},
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:/project/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"file:upload": {
 		"name": "file:upload",
@@ -575,8 +575,8 @@
 		"usage": "",
 		"description": "Uploads files from your project to an account.",
 		"isSetupRequired": true,
-		"options": [
-			{
+		"options": {
+			"paths": {
 				"name": "paths",
 				"option": "paths",
 				"description": "Specify the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"/SuiteScripts/File.js\" \"/SuiteScripts/NewFile.js\".",
@@ -586,17 +586,7 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
-				"name": "project",
-				"option": "project",
-				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"usage": "c:/project/",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
-			},
-			{
+			"authid": {
 				"name": "authid",
 				"option": "authid",
 				"description": "References the custom alias you gave to a specific account-role combination.",
@@ -605,8 +595,18 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
+			},
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:/project/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
 			}
-		]
+		}
 	},
 	"project:validate": {
 		"name": "project:validate",
@@ -614,38 +614,8 @@
 		"usage": "",
 		"description": "Validates the folder containing the SuiteCloud project.",
 		"isSetupRequired": true,
-		"options": [
-			{
-				"name": "log",
-				"option": "log",
-				"description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "d:/path/test.log",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "server",
-				"option": "server",
-				"description": "Indicates that the server will perform the validation.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
-			{
+		"options": {
+			"accountspecificvalues": {
 				"name": "accountspecificvalues",
 				"option": "accountspecificvalues",
 				"description": "Indicate how to handle the presence of account-specific values in an account customization project. If there are account-specific values in the project, enter WARNING to continue with the deployment process, or ERROR to stop it. If the option is not specified, the default value is ERROR. It only applies to account customization projects.",
@@ -655,7 +625,37 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
-			{
+			"authid": {
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom alias you gave to a specific account-role combination.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"applycontentprotection": {
+				"name": "applycontentprotection",
+				"option": "applycontentprotection",
+				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"log": {
+				"name": "log",
+				"option": "log",
+				"description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "d:/path/test.log",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"project": {
 				"name": "project",
 				"option": "project",
 				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
@@ -665,16 +665,16 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			{
-				"name": "authid",
-				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
-				"mandatory": true,
-				"type": "SINGLE",
+			"server": {
+				"name": "server",
+				"option": "server",
+				"description": "Indicates that the server will perform the validation.",
+				"mandatory": false,
+				"type": "FLAG",
 				"usage": "",
 				"defaultOption": false,
-				"disableInIntegrationMode": true
+				"disableInIntegrationMode": false
 			}
-		]
+		}
 	}
 }
