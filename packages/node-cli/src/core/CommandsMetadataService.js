@@ -49,16 +49,16 @@ module.exports = class CommandsMetadataService {
 	}
 
 	_combineMetadata(sdkCommandsMetadata, modifiedSdkCommandsMetadata) {
-		return this._replacePropertyValue(sdkCommandsMetadata,modifiedSdkCommandsMetadata);
+		return this._replaceObjectProperties(sdkCommandsMetadata,modifiedSdkCommandsMetadata);
 	}
 
-	_replaceObjectProperties(originalObject, properties) {
-		const newObject = originalObject;
-		Object.entries(properties).forEach((entry) => {
-			const [property, newPropertyValue] = entry;
-			newObject[property] = this._replacePropertyValue(originalObject[property], newPropertyValue);
+	_replaceObjectProperties(originalObject, newObject) {
+		const resultObject = originalObject;
+		Object.entries(newObject).forEach((entry) => {
+			const [propertyKey, propertyValue] = entry;
+			resultObject[propertyKey] = this._replacePropertyValue(originalObject[propertyKey], propertyValue);
 		});
-		return newObject;
+		return resultObject;
 	}
 
 	_replacePropertyValue(originalPropertyValue, newPropertyValue) {
