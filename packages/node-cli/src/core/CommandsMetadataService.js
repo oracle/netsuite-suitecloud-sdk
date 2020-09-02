@@ -8,7 +8,7 @@ const path = require('path');
 const FileUtils = require('../utils/FileUtils');
 const {
 	SDK_COMMANDS_METADATA_FILE,
-	MODIFIED_SDK_DESCRIPTIONS_FOR_NODECLI_METADATA_FILE: SDK_COMMANDS_MODIFIED_METADATA_FILE,
+	SDK_COMMANDS_METADATA_PATCH_FILE,
 	NODE_COMMANDS_METADATA_FILE,
 	COMMAND_GENERATORS_METADATA_FILE,
 } = require('../ApplicationConstants');
@@ -34,11 +34,11 @@ module.exports = class CommandsMetadataService {
 	_initializeCommandsMetadata() {
 		if (!commandsMetadataCache) {
 			const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
-			const modifiedSdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_MODIFIED_METADATA_FILE));
+			const SdkCommandsMetadataPatch = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_PATCH_FILE));
 			const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
 			const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
 
-			let combinedSdkCommandMetadata = this._combineMetadata(sdkCommandsMetadata, modifiedSdkCommandsMetadata);
+			let combinedSdkCommandMetadata = this._combineMetadata(sdkCommandsMetadata, SdkCommandsMetadataPatch);
 			let combinedMetadata = {
 				...combinedSdkCommandMetadata,
 				...nodeCommandsMetadata,
