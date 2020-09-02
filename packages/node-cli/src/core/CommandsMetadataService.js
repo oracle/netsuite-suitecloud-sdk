@@ -53,7 +53,7 @@ module.exports = class CommandsMetadataService {
 	}
 
 	_replaceObjectProperties(originalObject, properties) {
-		let newObject = originalObject;
+		const newObject = originalObject;
 		Object.entries(properties).forEach((entry) => {
 			const [property, newPropertyValue] = entry;
 			newObject[property] = this._replacePropertyValue(originalObject[property], newPropertyValue);
