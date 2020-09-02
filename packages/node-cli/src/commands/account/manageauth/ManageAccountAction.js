@@ -89,7 +89,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 			action = MANAGE_ACTION.RENAME;
 			authId = answers[COMMAND.OPTIONS.RENAME];
 		} else {
-			throwValidationException([NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION)], this._runInInteractiveMode, this._commandMetadata);
+			throwValidationException([NodeTranslationService.getMessage(ERRORS.OPTION_NOT_SPECIFIED)], this._runInInteractiveMode, this._commandMetadata);
 		}
 		return {
 			action: action,
