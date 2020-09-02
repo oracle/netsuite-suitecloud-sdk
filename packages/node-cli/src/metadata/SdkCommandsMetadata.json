@@ -436,7 +436,7 @@
 		"name": "account:manageauth",
 		"sdkCommand": "manageauth",
 		"usage": "",
-		"description": "Manages authentication IDs (authid) for all your projects. An authentication ID is a custom alias you give to a specific account-role combination.",
+		"description": "Manages authentication IDs (authID) for all your projects. An authentication ID is a custom alias you gave to a specific account-role combination.",
 		"isSetupRequired": false,
 		"options": [
 			{
@@ -516,7 +516,7 @@
 				"type": "SINGLE",
 				"usage": "c:/project/",
 				"defaultOption": false,
-				"disableInIntegrationMode": false
+				"disableInIntegrationMode": true
 			},
 			{
 				"name": "project",
@@ -526,7 +526,7 @@
 				"type": "SINGLE",
 				"usage": "c:/project/",
 				"defaultOption": false,
-				"disableInIntegrationMode": false
+				"disableInIntegrationMode": true
 			}
 		]
 	},

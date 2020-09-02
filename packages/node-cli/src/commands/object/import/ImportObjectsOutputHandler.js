@@ -20,9 +20,9 @@ module.exports = class ImportObjectsOutputHandler extends BaseOutputHandler {
 		if (
 			!actionResult.data ||
 			!(
-				(Array.isArray(actionResult.data.successfulImports) && actionResult.data.successfulImports.length > 0) ||
-				(Array.isArray(actionResult.data.failedImports) && actionResult.data.failedImports.length > 0) ||
-				(Array.isArray(actionResult.data.errorImports) && actionResult.data.errorImports.length > 0)
+				(Array.isArray(actionResult.data.successfulImports) && actionResult.data.successfulImports.length) ||
+				(Array.isArray(actionResult.data.failedImports) && actionResult.data.failedImports.length) ||
+				(Array.isArray(actionResult.data.errorImports) && actionResult.data.errorImports.length)
 			)
 		) {
 			ActionResultUtils.logResultMessage(actionResult, this._log);

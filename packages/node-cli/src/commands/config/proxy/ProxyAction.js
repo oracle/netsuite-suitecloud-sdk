@@ -70,8 +70,9 @@ module.exports = class ProxyCommandGenerator extends BaseAction {
 	}
 
 	_setProxy(proxyUrl) {
-		const proxyUrlIsDifferent = this._CLISettingsService.getProxyUrl() !== proxyUrl;
+		const originalProxy = this._CLISettingsService.getProxyUrl();
+		const proxyUrlIsDifferent = originalProxy !== proxyUrl;
 		this._CLISettingsService.setProxyUrl(proxyUrl);
-		return { isProxyOverridden: proxyUrlIsDifferent };
+		return { isProxyOverridden: originalProxy && originalProxy.length > 0 && proxyUrlIsDifferent };
 	}
 };

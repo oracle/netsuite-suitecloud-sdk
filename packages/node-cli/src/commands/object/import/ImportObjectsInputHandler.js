@@ -32,6 +32,7 @@ const {
 	validateSuiteApp,
 	validateScriptId,
 } = require('../../../validation/InteractiveAnswersValidator');
+const FileUtils = require('../../../utils/FileUtils');
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
@@ -244,10 +245,13 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		// replacing '\' for '/', this is done because destinationfolder option in java-sdf works only with '/'
 		// sourroundig "" to the folder string so it will handle blank spaces case
 		const transformFoldersToChoicesFunc = (folder) => ({
-			name: folder.replace(this._projectFolder, ''),
+			name: folder.replace(this._projectFolder, '').replace(/\\/g, '/'),
 			value: `\"${folder.replace(this._projectFolder, '').replace(/\\/g, '/')}\"`,
 		});
 		const objectsFolder = join(this._projectFolder, FOLDERS.OBJECTS);
+		if (!FileUtils.exists(objectsFolder)) {
+			FileUtils.createDirectory(objectsFolder);
+		}
 		const objectsSubFolders = this._fileSystemService.getFoldersFromDirectory(objectsFolder);
 		const objectDirectoryChoices = [objectsFolder, ...objectsSubFolders].map(transformFoldersToChoicesFunc);
 
