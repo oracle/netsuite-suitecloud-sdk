@@ -49,7 +49,7 @@ module.exports = class CommandsMetadataService {
 	}
 
 	_combineMetadata(sdkCommandsMetadata, modifiedSdkCommandsMetadata) {
-		return this._replaceObjectProperties(sdkCommandsMetadata,modifiedSdkCommandsMetadata);
+		return this._replaceObjectProperties(sdkCommandsMetadata, modifiedSdkCommandsMetadata);
 	}
 
 	_replaceObjectProperties(originalObject, newObject) {
