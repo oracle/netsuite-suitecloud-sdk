@@ -49,33 +49,21 @@ module.exports = class CommandsMetadataService {
 	}
 
 	_combineMetadata(sdkCommandsMetadata, modifiedSdkCommandsMetadata) {
-		let combinedMetadata = sdkCommandsMetadata;
-		Object.entries(modifiedSdkCommandsMetadata).forEach((entry) => {
-			const [command, properties] = entry;
-			let originalCommand = sdkCommandsMetadata[command];
-			let newCommand;
-			if (originalCommand) {
-				newCommand = this._replaceCommandProperties(originalCommand, properties);
-			} else {
-				newCommand = properties;
-			}
-			combinedMetadata[command] = newCommand;
-		});
-		return combinedMetadata;
+		return this._replacePropertyValue(sdkCommandsMetadata,modifiedSdkCommandsMetadata);
 	}
 
-	_replaceCommandProperties(originalCommand, properties) {
-		let newCommand = originalCommand;
+	_replaceObjectProperties(originalObject, properties) {
+		let newObject = originalObject;
 		Object.entries(properties).forEach((entry) => {
 			const [property, newPropertyValue] = entry;
-			newCommand[property] = this._replaceProperty(originalCommand[property], newPropertyValue);
+			newObject[property] = this._replacePropertyValue(originalObject[property], newPropertyValue);
 		});
-		return newCommand;
+		return newObject;
 	}
 
-	_replaceProperty(originalPropertyValue, newPropertyValue) {
-		if (typeof newPropertyValue === 'object') {
-			return this._replaceCommandProperties(originalPropertyValue, newPropertyValue);
+	_replacePropertyValue(originalPropertyValue, newPropertyValue) {
+		if (originalPropertyValue && typeof newPropertyValue === 'object') {
+			return this._replaceObjectProperties(originalPropertyValue, newPropertyValue);
 		} else {
 			return newPropertyValue;
 		}
