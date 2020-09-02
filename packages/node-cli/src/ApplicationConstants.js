@@ -6,6 +6,7 @@
 
 module.exports = {
 	SDK_COMMANDS_METADATA_FILE: 'metadata/SdkCommandsMetadata.json',
+	SDK_COMMANDS_METADATA_PATCH_FILE: 'metadata/SdkCommandsMetadataPatch.json', //Overwrites selected properties in SdkCommandsMetadata.json file that are specific for SuiteCloud CLI for Node.js
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	SDK_FILENAME: 'cli-2020.2.0.jar',
@@ -23,14 +24,14 @@ module.exports = {
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
 		MANIFEST_XML: 'manifest.xml',
-		CLI_SETTINGS: 'nodejs-cli-settings.json'
+		CLI_SETTINGS: 'nodejs-cli-settings.json',
 	},
 	FOLDERS: {
 		FILE_CABINET: '/FileCabinet',
 		INSTALLATION_PREFERENCES: '/InstallationPreferences',
 		OBJECTS: '/Objects',
 		SUITECLOUD_SDK: '.suitecloud-sdk',
-		NODE_CLI: 'cli'
+		NODE_CLI: 'cli',
 	},
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
@@ -39,13 +40,11 @@ module.exports = {
 	PROJECT_FOLDER_ARG: '--projectFolder',
 	LINKS: {
 		INFO: {
-			PROJECT_STRUCTURE: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155931221634.html'
+			PROJECT_STRUCTURE: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155931221634.html',
 		},
 		HOW_TO: {
-			CREATE_HIDDING_XML:
-				'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html',
-			CREATE_LOCKING_XML:
-				'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html',
+			CREATE_HIDDING_XML: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html',
+			CREATE_LOCKING_XML: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html',
 		},
 	},
 };
