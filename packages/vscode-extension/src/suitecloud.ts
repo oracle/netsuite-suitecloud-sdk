@@ -15,6 +15,7 @@ import { installIfNeeded } from './core/sdksetup/SdkServices';
 import BaseAction from './commands/BaseAction';
 import UpdateObject from './commands/UpdateObject';
 import ImportObject from './commands/ImportObject';
+import CompareObject from './commands/CompareObject';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'NetSuite SuiteCloud';
 
@@ -43,7 +44,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.uploadfile', new UploadFile()),
 		register('suitecloud.setupaccount', new ManageAccounts()),
 		register('suitecloud.updateobject', new UpdateObject()),
-		register('suitecloud.importobject', new ImportObject())
+		register('suitecloud.importobject', new ImportObject()),
+		register('suitecloud.compareobject', new CompareObject()),
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)

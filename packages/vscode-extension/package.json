@@ -59,6 +59,11 @@
 				"command": "suitecloud.importobject",
 				"title": "Import Single Object to Account",
 				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.compareobject",
+				"title": "Compare Custom Object with Account copy",
+				"category": "SuiteCloud"
 			}
 		],
 		"keybindings": [
@@ -77,6 +82,11 @@
 				"command": "suitecloud.uploadfile",
 				"key": "ctrl+alt+u",
 				"mac": "ctrl+alt+u"
+			},
+			{
+				"command": "suitecloud.compareobject",
+				"key": "ctrl+alt+c",
+				"mac": "ctrl+alt+c"
 			}
 		],
 		"menus": {
@@ -84,6 +94,11 @@
 				{
 					"when": "resourceLangId == xml",
 					"command": "suitecloud.importobject",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "resourceLangId == xml",
+					"command": "suitecloud.compareobject",
 					"group": "suitecloud@1"
 				}
 			]

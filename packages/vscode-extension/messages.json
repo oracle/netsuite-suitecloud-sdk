@@ -15,7 +15,7 @@
 
 	"COMPARE_OBJECT_ERROR": "The comparing process has encountered an error.",
 	"COMPARE_OBJECT_SUCCESS": "The comparing process has finished successfully.",
-	"COMPARE_OBJECT_UPDATING": "Importing object...",
+	"COMPARE_OBJECT_COMPARING": "Comparing custom object with account copy...",
 
 	"DEPLOY_COMMAND": "Deploy",
 	"DEPLOY_DEPLOYING": "Deploying project...",
