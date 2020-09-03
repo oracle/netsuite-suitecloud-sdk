@@ -20,5 +20,12 @@
 				"description": "Revokes the TBA token that was issued to your account and is linked to the specified authentication ID (authID). Usage: account:manageauth --revoke {authID}."
 			}
 		}
+	},
+	"file:upload": {
+		"options": {
+			"paths": {
+				"description": "Specify the file cabinet path of the file to upload. For example, \"/SuiteScripts/file.js\"."
+			}
+		}
 	}
 }
