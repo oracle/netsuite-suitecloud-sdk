@@ -6,7 +6,12 @@
 
 const path = require('path');
 const FileUtils = require('../utils/FileUtils');
-const { SDK_COMMANDS_METADATA_FILE, NODE_COMMANDS_METADATA_FILE, COMMAND_GENERATORS_METADATA_FILE } = require('../ApplicationConstants');
+const {
+	SDK_COMMANDS_METADATA_FILE,
+	SDK_COMMANDS_METADATA_PATCH_FILE,
+	NODE_COMMANDS_METADATA_FILE,
+	COMMAND_GENERATORS_METADATA_FILE,
+} = require('../ApplicationConstants');
 const SDK_WRAPPER_GENERATOR = 'commands/SdkWrapperCommandGenerator';
 
 let commandsMetadataCache;
@@ -29,15 +34,38 @@ module.exports = class CommandsMetadataService {
 	_initializeCommandsMetadata() {
 		if (!commandsMetadataCache) {
 			const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
+			const SdkCommandsMetadataPatch = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_PATCH_FILE));
 			const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
 			const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
+
+			let combinedSdkCommandMetadata = this._combineMetadata(sdkCommandsMetadata, SdkCommandsMetadataPatch);
 			let combinedMetadata = {
-				...sdkCommandsMetadata,
+				...combinedSdkCommandMetadata,
 				...nodeCommandsMetadata,
 			};
-			combinedMetadata = this._transformCommandsOptionsToObject(combinedMetadata);
 			combinedMetadata = this._addCommandGeneratorMetadata(commandGeneratorsMetadata, combinedMetadata);
 			commandsMetadataCache = combinedMetadata;
+		}
+	}
+
+	_combineMetadata(sdkCommandsMetadata, modifiedSdkCommandsMetadata) {
+		return this._replaceObjectProperties(sdkCommandsMetadata, modifiedSdkCommandsMetadata);
+	}
+
+	_replaceObjectProperties(originalObject, newObject) {
+		const resultObject = originalObject;
+		Object.entries(newObject).forEach((entry) => {
+			const [propertyKey, propertyValue] = entry;
+			resultObject[propertyKey] = this._replacePropertyValue(originalObject[propertyKey], propertyValue);
+		});
+		return resultObject;
+	}
+
+	_replacePropertyValue(originalPropertyValue, newPropertyValue) {
+		if (originalPropertyValue && typeof newPropertyValue === 'object') {
+			return this._replaceObjectProperties(originalPropertyValue, newPropertyValue);
+		} else {
+			return newPropertyValue;
 		}
 	}
 
@@ -64,23 +92,9 @@ module.exports = class CommandsMetadataService {
 		}
 	}
 
-	_transformCommandsOptionsToObject(commandsMetadata) {
-		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
-			const optionsTransformedIntoObject = commandMetadata.options.reduce((result, item) => {
-				if (item.name == null) {
-					throw 'Invalid Metadata, missing "name" property in command options';
-				}
-				result[item.name] = item;
-				return result;
-			}, {});
-			commandMetadata.options = optionsTransformedIntoObject;
-		});
-		return commandsMetadata;
-	}
-
 	_addCommandGeneratorMetadata(commandGeneratorsMetadata, commandsMetadata) {
-		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
-			const generatorMetadata = commandGeneratorsMetadata.find(generatorMetadata => {
+		executeForEachCommandMetadata(commandsMetadata, (commandMetadata) => {
+			const generatorMetadata = commandGeneratorsMetadata.find((generatorMetadata) => {
 				return generatorMetadata.commandName === commandMetadata.name;
 			});
 			commandMetadata.generator = path.join(this._rootCLIPath, generatorMetadata.generator);
