@@ -27,12 +27,12 @@ class FileUtils {
 		}
 	}
 
-	deleteDir(path) {
+	deleteDirandFilesRecursively(path) {
 		if (fs.existsSync(path)) {
 			fs.readdirSync(path).forEach((file) => {
 				const filePath = Path.join(path, file);
 				if (fs.lstatSync(filePath).isDirectory()) {
-					deleteDir(filePath);
+					deleteDirandFilesRecursively(filePath);
 				} else {
 					fs.unlinkSync(filePath);
 				}

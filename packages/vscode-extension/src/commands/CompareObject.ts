@@ -9,13 +9,7 @@ import { actionResultStatus, FileUtils } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 const fs = require('fs');
 
-
 const COMMAND_NAME = 'object:import';
-const STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-};
-
 const TMP_DIR = '\\tmp';
 
 export default class CompareObject extends BaseAction {
@@ -31,9 +25,6 @@ export default class CompareObject extends BaseAction {
 		}
 		const tempDir = path.dirname(activeFile) + TMP_DIR;
 		try {
-			// const parentDir = this.executionPath ? path.dirname(activeFile).split(this.executionPath + "\\src")[1].replace("\\", "/") : path.dirname(activeFile);
-
-			
 			if (!fs.existsSync(path)) {
 				FileUtils.createTempDir(tempDir);
 			}
@@ -67,7 +58,7 @@ export default class CompareObject extends BaseAction {
 		} catch (e) {
 			this.messageService.showErrorMessage(e.message);
 		} finally {
-			FileUtils.deleteDir(tempDir);
+			FileUtils.deleteDirandFilesRecursively(tempDir);
 		}
 	}
 

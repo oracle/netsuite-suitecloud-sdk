@@ -79,9 +79,14 @@
 				"linux": "meta+alt+d"
 			},
 			{
-				"command": "suitecloud.uploadfile",
-				"key": "ctrl+alt+u",
-				"mac": "ctrl+alt+u"
+				"command": "suitecloud.importobject",
+				"key": "ctrl+alt+i",
+				"mac": "ctrl+alt+i"
+			},
+			{
+				"command": "suitecloud.compareobject",
+				"key": "ctrl+alt+c",
+				"mac": "ctrl+alt+c"
 			},
 			{
 				"command": "suitecloud.compareobject",
@@ -92,12 +97,12 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "resourceLangId == xml",
+					"when": "resource =~ //Objects/.*\\.xml$|^file$/",
 					"command": "suitecloud.importobject",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "resourceLangId == xml",
+					"when": "resource =~ //Objects/.*\\.xml$|^file$/",
 					"command": "suitecloud.compareobject",
 					"group": "suitecloud@1"
 				}
