@@ -29,5 +29,5 @@ const cliInstance = new CLI({
 		sdkPath: sdkPath
 	}),
 });
-
+ 
 cliInstance.start(process);
