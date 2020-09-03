@@ -13,7 +13,7 @@ class CreateProjectActionResult extends ActionResult {
 		this._projectName = parameters.projectName;
 		this._projectDirectory = parameters.projectDirectory;
 		this._includeUnitTesting = parameters.includeUnitTesting;
-		this._npmPackageInitialized = parameters.npmPackageIntitialized;
+		this._npmPackageInitialized = parameters.npmPackageInitialized;
 	}
 
 	validateParameters(parameters) {
@@ -75,7 +75,7 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 	}
 
 	withNpmPackageInitialized(npmPackageInitialized) {
-		this.npmPackageIntitialized = npmPackageInitialized;
+		this.npmPackageInitialized = npmPackageInitialized;
 		return this;
 	}
 
@@ -89,7 +89,7 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 			...(this.projectName && { projectName: this.projectName }),
 			...(this.projectDirectory && { projectDirectory: this.projectDirectory }),
 			...(this.includeUnitTesting && { includeUnitTesting: this.includeUnitTesting }),
-			...(this.npmPackageIntitialized && { npmPackageIntitialized: this.npmPackageIntitialized }),
+			...(this.npmPackageInitialized && { npmPackageInitialized: this.npmPackageInitialized }),
 			...(this.projectFolder && { projectFolder: this.projectFolder }),
 		});
 	}
