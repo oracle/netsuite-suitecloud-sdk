@@ -24,7 +24,7 @@ module.exports = class CreateProjectOutputHandler extends BaseOutputHandler {
 		if (actionResult.includeUnitTesting) {
 			const sampleUnitTestMessage = NodeTranslationService.getMessage(MESSAGES.SAMPLE_UNIT_TEST_ADDED);
 			this._log.result(sampleUnitTestMessage);
-			if (!actionResult.npmPackageIntitialized) {
+			if (!actionResult.npmPackageInitialized) {
 				this._log.error(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES_FAILED));
 			}
 		}
