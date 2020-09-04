@@ -77,7 +77,7 @@
     {
         "commandName": "suitecommerce:localserver",
         "supportsInteractiveMode": true,
-        "generator": "commands/localserver/LocalServerCommand"
+        "generator": "commands/suitecommerce/localserver/LocalServerCommand"
     },
     {
         "commandName": "object:create",
