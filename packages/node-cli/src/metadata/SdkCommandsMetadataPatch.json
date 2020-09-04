@@ -21,6 +21,13 @@
 			}
 		}
 	},
+	"object:import": {
+		"options": {
+			"scriptid": {
+				"description": "Specify the script ID. You can import one custom object or all custom objects. For example, \"--scriptid customrecord_1\" imports only one object, and \"--scriptid ALL\" imports all custom objects of the specified type."
+			}
+		}
+	},
 	"file:import": {
 		"description": "Imports files from an account to your account customization project. You cannot import files from a SuiteApp.",
 		"options": {
