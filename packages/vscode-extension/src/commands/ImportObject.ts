@@ -7,16 +7,17 @@ import * as vscode from 'vscode';
 import { ERRORS, YES, NO, IMPORT_OBJECT } from '../service/TranslationKeys';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import ImportObjectService from '../service/ImportObjectService';
 
 const COMMAND_NAME = 'object:import';
-const STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-};
 
 export default class ImportObject extends BaseAction {
+	protected filePath: string | undefined;
+	private importObjectService: ImportObjectService;
+
 	constructor() {
 		super(COMMAND_NAME);
+		this.importObjectService = new ImportObjectService(this.messageService, this.translationService, this.filePath);
 	}
 
 	protected async execute() {
@@ -39,20 +40,20 @@ export default class ImportObject extends BaseAction {
 			return;
 		}
 
-		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECT.UPDATING);
-
-		//TODO Prototype of import...Fix the way we look for destinationFolder
-		// It should take the path in reference to the project that could be java or nodejs (with src) types
 		const destinationFolder = this.executionPath
 			? path
 					.dirname(activeFile)
 					.split(this.executionPath + '\\src')[1]
 					.replace('\\', '/')
 			: path.dirname(activeFile);
-		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: scriptId, type: 'ALL', destinationfolder: destinationFolder });
-		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
+		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECT.IMPORTING);
+		const actionResult = await this.importObjectService.importObject(activeFile, destinationFolder, statusBarMessage, this.executionPath);
 
-		const actionResult = await commandActionPromise;
+		this.showOutput(actionResult);
+		return;
+	}
+
+	private showOutput(actionResult: any) {
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
 			const importResults = actionResult.data;
 			if (
@@ -72,7 +73,6 @@ export default class ImportObject extends BaseAction {
 		} else {
 			this.messageService.showCommandError();
 		}
-		return;
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {

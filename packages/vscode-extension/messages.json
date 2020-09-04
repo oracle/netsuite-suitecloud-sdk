@@ -16,6 +16,7 @@
 	"COMPARE_OBJECT_ERROR": "The comparing process has encountered an error.",
 	"COMPARE_OBJECT_SUCCESS": "The comparing process has finished successfully.",
 	"COMPARE_OBJECT_COMPARING": "Comparing custom object with account copy...",
+	"COMPARE_OBJECT_EDITOR_TITLE":"Comparison of {0} with account copy",
 
 	"DEPLOY_COMMAND": "Deploy",
 	"DEPLOY_DEPLOYING": "Deploying project...",
@@ -31,10 +32,10 @@
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
 	
 	"IMPORT_OBJECT_ERROR": "The importing process has encountered an error.",
+	"IMPORT_OBJECT_IMPORTING": "Importing object...",
 	"IMPORT_OBJECT_OVERRIDE": "The {0} object will be overwritten with the object from the account. Do you want to continue?",
 	"IMPORT_OBJECT_PROCESS_CANCELED": "The file import process has been canceled. No custom objects have been overwritten.",
 	"IMPORT_OBJECT_SUCCESS": "The importing process has finished successfully.",
-	"IMPORT_OBJECT_UPDATING": "Importing object...",
 
 	"LIST_OBJECTS_COMMAND": "List objects",
 	"LIST_OBJECTS_LISTING": "Listing objects...",
