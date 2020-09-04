@@ -32,7 +32,7 @@
             },
             "url": {
                 "name": "url",
-                "description": "Specify the NetSuite domain of a virtual machine.",
+                "description": "Specify the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
                 "mandatory": false
             }
         }
