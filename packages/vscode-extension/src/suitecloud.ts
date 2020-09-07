@@ -16,6 +16,8 @@ import BaseAction from './commands/BaseAction';
 import UpdateObject from './commands/UpdateObject';
 import ImportObject from './commands/ImportObject';
 import CompareObject from './commands/CompareObject';
+import ImportFile from './commands/ImportFile';
+import CompareFile from './commands/CompareFile';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'NetSuite SuiteCloud';
 
@@ -46,6 +48,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.updateobject', new UpdateObject()),
 		register('suitecloud.importobject', new ImportObject()),
 		register('suitecloud.compareobject', new CompareObject()),
+		register('suitecloud.importfile', new ImportFile()),
+		register('suitecloud.comparefile', new CompareFile()),
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
