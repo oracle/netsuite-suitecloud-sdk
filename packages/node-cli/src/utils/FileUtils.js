@@ -21,9 +21,22 @@ class FileUtils {
 		});
 	}
 
+	createDirectory(dirPath) {
+		fs.mkdirSync(dirPath, { recursive: true });
+	}
+
 	createTempDir(directory) {
 		if (!fs.existsSync(directory)) {
-			fs.mkdirSync(directory);
+			this.createDirectory(directory);
+		}
+	}
+
+	copyFile(originalFile, newFile) {
+		if(this.exists(originalFile)){
+			fs.copyFileSync(originalFile,newFile);
+		}
+		else {
+			throw NodeTranslationService.getMessage(ERRORS.FILE_NOT_EXIST, originalFile);
 		}
 	}
 
@@ -41,6 +54,10 @@ class FileUtils {
 		}
 	}
 
+	exists(fileName) {
+		return fs.existsSync(fileName);
+	}
+
 	readAsJson(filePath) {
 		const content = fs.readFileSync(filePath, UTF8);
 		return JSON.parse(content);
@@ -50,13 +67,6 @@ class FileUtils {
 		return fs.readFileSync(fileName, UTF8);
 	}
 
-	exists(fileName) {
-		return fs.existsSync(fileName);
-	}
-
-	createDirectory(dirPath) {
-		fs.mkdirSync(dirPath, { recursive: true });
-	}
 }
 
 module.exports = new FileUtils();

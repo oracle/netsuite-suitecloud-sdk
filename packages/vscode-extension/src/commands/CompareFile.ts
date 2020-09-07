@@ -8,6 +8,7 @@ import { ERRORS, COMPARE_FILE } from '../service/TranslationKeys';
 import { actionResultStatus, FileUtils, TranslationService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import ImportFileService from '../service/ImportFileService';
+import { tmpdir } from 'os';
 
 const fs = require('fs');
 
@@ -28,19 +29,25 @@ export default class CompareFile extends BaseAction {
 			// Already checked in validate
 			return;
 		}
+		const fileName = path.basename(activeFile);
 		const tempDir = path.dirname(activeFile) + TMP_DIR;
+		const tmpFile = (tempDir + '\\' + fileName);
 		try {
-			if (!fs.existsSync(path)) {
+			
+			if (!fs.existsSync(tempDir)) {
 				FileUtils.createTempDir(tempDir);
 			}
+			FileUtils.copyFile(activeFile, tmpFile);
 
-			const dir = tempDir.split(this.executionPath + '\\src')[1].replace(/\\/g, '/');
-			const fileName = path.basename(activeFile);
+			// const dir = tempDir.split(this.executionPath + '\\src')[1].replace(/\\/g, '/');
+			
 			const statusBarMessage = this.translationService.getMessage(COMPARE_FILE.COMPARING);
-			const actionResult = await this.importFileService.importFile(activeFile, dir, statusBarMessage, this.executionPath, false);
+			const actionResult = await this.importFileService.importFile(activeFile, tempDir, statusBarMessage, this.executionPath, false);
 			await this.showOutput(actionResult);
 			if (actionResult.status === actionResultStatus.SUCCESS) {
-				await this.showFileDiff(activeFile, tempDir, fileName);
+				FileUtils.copyFile(activeFile, tmpFile + '.tmp');
+				FileUtils.copyFile(tmpFile, activeFile);
+				await this.showFileDiff(activeFile, tempDir, fileName  + '.tmp');
 			}
 		} catch (e) {
 			this.messageService.showErrorMessage(e.message);
