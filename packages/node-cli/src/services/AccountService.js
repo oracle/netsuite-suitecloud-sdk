@@ -7,7 +7,7 @@
 const request = require('request-promise-native');
 const assert = require('assert');
 const CLISettingsService = require('./settings/CLISettingsService');
-const TranslationService = require('./TranslationService');
+const NodeTranslationService = require('./NodeTranslationService');
 const { ERRORS } = require('./TranslationKeys');
 const ERROR_TIMED_OUT = 'ETIMEDOUT';
 const ENOTFOUND = 'ENOTFOUND';
@@ -67,20 +67,20 @@ module.exports = class AccountService {
 			}
 			// timedout response
 			if (errorResponse.cause && errorResponse.cause.code === ERROR_TIMED_OUT) {
-				return TranslationService.getMessage(ERRORS.TIMED_OUT_CONNECTION);
+				return NodeTranslationService.getMessage(ERRORS.TIMED_OUT_CONNECTION);
 			}
 			// unable to reach a scrumbox url
 			if (errorResponse.cause && errorResponse.cause.code === ENOTFOUND) {
-				return TranslationService.getMessage(ERRORS.SCRUMBOX_URL_NOT_FOUND, errorResponse.cause.host, errorResponse.message);
+				return NodeTranslationService.getMessage(ERRORS.SCRUMBOX_URL_NOT_FOUND, errorResponse.cause.host, errorResponse.message);
 			}
 			// other responses - just forward the message
 			if (errorResponse.message) {
 				return errorResponse.message;
 			}
 			// this should not be reached
-			TranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
+			NodeTranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
 		} catch (error) {
-			return TranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
+			return NodeTranslationService.getMessage(ERRORS.GENERAL_CONNECTION_PROBLEM);
 		}
 	}
 

@@ -8,8 +8,13 @@ const assert = require('assert');
 const OPTION_TYPE_FLAG = 'FLAG';
 const INTERACTIVE_OPTION_NAME = 'interactive';
 const INTERACTIVE_OPTION_ALIAS = 'i';
-const TranslationService = require('../services/TranslationService');
+const NodeTranslationService = require('../services/NodeTranslationService');
 const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
+
+const EXIT_CODE = {
+	SUCCESS: 0,
+	ERROR: 1,
+}
 
 module.exports = class CommandRegistrationService {
 	register(options) {
@@ -29,7 +34,7 @@ module.exports = class CommandRegistrationService {
 
 		if (!runInInteractiveMode) {
 			if (commandMetadata.supportsInteractiveMode) {
-				const interactiveOptionHelp = TranslationService.getMessage(
+				const interactiveOptionHelp = NodeTranslationService.getMessage(
 					COMMAND_OPTION_INTERACTIVE_HELP,
 					commandMetadata.name
 				);
@@ -47,8 +52,9 @@ module.exports = class CommandRegistrationService {
 			);
 		}
 
-		commandSetup.description(commandMetadata.description).action(options => {
-			executeCommandFunction(options);
+		commandSetup.description(commandMetadata.description).action(async (options) => {
+			const actionResult = await executeCommandFunction(options);
+			process.exitCode = actionResult.isSuccess() ? EXIT_CODE.SUCCESS : EXIT_CODE.ERROR;
 		});
 	}
 
@@ -62,13 +68,15 @@ module.exports = class CommandRegistrationService {
 			}
 			let mandatoryOptionString = '';
 			let optionString = '';
-			if (option.type !== OPTION_TYPE_FLAG) {
-				mandatoryOptionString = '<argument>';
-			}
 			if (option.alias) {
 				optionString = `-${option.alias}, `;
 			}
-			optionString += `--${option.name} ${mandatoryOptionString}`;
+			optionString += `--${option.name}`;
+
+			if (option.type !== OPTION_TYPE_FLAG) {
+				mandatoryOptionString = '<argument>';
+				optionString += ` ${mandatoryOptionString}`;
+			}
 			commandSetup.option(optionString, option.description);
 		});
 		return commandSetup;

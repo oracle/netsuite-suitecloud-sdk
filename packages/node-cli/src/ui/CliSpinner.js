@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const assert = require('assert');
@@ -21,14 +21,14 @@ module.exports = {
 		// TODO: set spinner string conditionally based on the terminal cli is executed in
 		// spinner.setSpinnerString(SPINNER_STRING);
 
-        try {
-            spinner.start();
-            const result = await promise;
-            spinner.stop(true);
-            return result;
-        } catch (error) {
-            spinner.stop(true);
-            throw error;
-        }
-	}
+		try {
+			spinner.start();
+			const result = await promise;
+			spinner.stop(true);
+			return result;
+		} catch (error) {
+			spinner.stop(true);
+			throw error;
+		}
+	},
 };

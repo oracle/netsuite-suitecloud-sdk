@@ -6,9 +6,15 @@
 
 const path = require('path');
 const FileUtils = require('../utils/FileUtils');
-const { SDK_COMMANDS_METADATA_FILE, NODE_COMMANDS_METADATA_FILE, COMMAND_GENERATORS_METADATA_FILE } = require('../ApplicationConstants');
-const SDK_WRAPPER_GENERATOR = 'commands/SDKWrapperCommandGenerator';
-let COMMANDS_METADATA_CACHE;
+const {
+	SDK_COMMANDS_METADATA_FILE,
+	SDK_COMMANDS_METADATA_PATCH_FILE,
+	NODE_COMMANDS_METADATA_FILE,
+	COMMAND_GENERATORS_METADATA_FILE,
+} = require('../ApplicationConstants');
+const SDK_WRAPPER_GENERATOR = 'commands/SdkWrapperCommandGenerator';
+
+let commandsMetadataCache;
 
 function executeForEachCommandMetadata(commandsMetadata, func) {
 	for (const commandMetadataId in commandsMetadata) {
@@ -20,28 +26,55 @@ function executeForEachCommandMetadata(commandsMetadata, func) {
 }
 
 module.exports = class CommandsMetadataService {
-	constructor(rootCLIPath) {
-		this._rootCLIPath = rootCLIPath;
+	constructor() {
+		this._rootCLIPath = path.dirname(__dirname, '../');
+		this._initializeCommandsMetadata();
 	}
-	initializeCommandsMetadata() {
-		const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
-		const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
-		const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
-		let combinedMetadata = {
-			...sdkCommandsMetadata,
-			...nodeCommandsMetadata,
-		};
-		combinedMetadata = this._transformCommandsOptionsToObject(combinedMetadata);
-		combinedMetadata = this._addCommandGeneratorMetadata(commandGeneratorsMetadata, combinedMetadata);
-		COMMANDS_METADATA_CACHE = combinedMetadata;
+
+	_initializeCommandsMetadata() {
+		if (!commandsMetadataCache) {
+			const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
+			const SdkCommandsMetadataPatch = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_PATCH_FILE));
+			const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
+			const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
+
+			let combinedSdkCommandMetadata = this._combineMetadata(sdkCommandsMetadata, SdkCommandsMetadataPatch);
+			let combinedMetadata = {
+				...combinedSdkCommandMetadata,
+				...nodeCommandsMetadata,
+			};
+			combinedMetadata = this._addCommandGeneratorMetadata(commandGeneratorsMetadata, combinedMetadata);
+			commandsMetadataCache = combinedMetadata;
+		}
+	}
+
+	_combineMetadata(sdkCommandsMetadata, modifiedSdkCommandsMetadata) {
+		return this._replaceObjectProperties(sdkCommandsMetadata, modifiedSdkCommandsMetadata);
+	}
+
+	_replaceObjectProperties(originalObject, newObject) {
+		const resultObject = originalObject;
+		Object.entries(newObject).forEach((entry) => {
+			const [propertyKey, propertyValue] = entry;
+			resultObject[propertyKey] = this._replacePropertyValue(originalObject[propertyKey], propertyValue);
+		});
+		return resultObject;
+	}
+
+	_replacePropertyValue(originalPropertyValue, newPropertyValue) {
+		if (originalPropertyValue && typeof newPropertyValue === 'object') {
+			return this._replaceObjectProperties(originalPropertyValue, newPropertyValue);
+		} else {
+			return newPropertyValue;
+		}
 	}
 
 	getCommandsMetadata() {
-		return COMMANDS_METADATA_CACHE;
+		return commandsMetadataCache;
 	}
 
 	getCommandMetadataByName(commandName) {
-		const commandMetadata = COMMANDS_METADATA_CACHE[commandName];
+		const commandMetadata = commandsMetadataCache[commandName];
 		if (!commandMetadata) {
 			throw `No metadata found or initialized for Command ${commandName}`;
 		}
@@ -59,36 +92,13 @@ module.exports = class CommandsMetadataService {
 		}
 	}
 
-	_transformCommandsOptionsToObject(commandsMetadata) {
-		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
-			const optionsTransformedIntoObject = commandMetadata.options.reduce((result, item) => {
-				if (item.name == null) {
-					throw 'Invalid Metadata, missing "name" property in command options';
-				}
-				result[item.name] = item;
-				return result;
-			}, {});
-			commandMetadata.options = optionsTransformedIntoObject;
-		});
-		return commandsMetadata;
-	}
-
 	_addCommandGeneratorMetadata(commandGeneratorsMetadata, commandsMetadata) {
-		executeForEachCommandMetadata(commandsMetadata, commandMetadata => {
-			const generatorMetadata = commandGeneratorsMetadata.find(generatorMetadata => {
+		executeForEachCommandMetadata(commandsMetadata, (commandMetadata) => {
+			const generatorMetadata = commandGeneratorsMetadata.find((generatorMetadata) => {
 				return generatorMetadata.commandName === commandMetadata.name;
 			});
-
-			const defaultGenerator = generatorMetadata && generatorMetadata.nonInteractiveGenerator
-				? generatorMetadata.nonInteractiveGenerator
-				: SDK_WRAPPER_GENERATOR;
-			commandMetadata.nonInteractiveGenerator = path.join(this._rootCLIPath, defaultGenerator);
-			commandMetadata.supportsInteractiveMode = false;
-
-			if (generatorMetadata && generatorMetadata.interactiveGenerator) {
-				commandMetadata.interactiveGenerator = path.join(this._rootCLIPath, generatorMetadata.interactiveGenerator);
-				commandMetadata.supportsInteractiveMode = true;
-			}
+			commandMetadata.generator = path.join(this._rootCLIPath, generatorMetadata.generator);
+			commandMetadata.supportsInteractiveMode = generatorMetadata.supportsInteractiveMode;
 		});
 		return commandsMetadata;
 	}

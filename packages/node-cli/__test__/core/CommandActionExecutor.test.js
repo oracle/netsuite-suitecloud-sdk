@@ -1,19 +1,22 @@
 'use strict';
 const CommandActionExecutor = require('../../src/core/CommandActionExecutor');
+const sdkPath = require('../../src/core/sdksetup/SdkProperties').getSdkPath();
+const { ActionResult } = require('../../src/services/actionresult/ActionResult');
 
 describe('CommandActionExecutor ExecuteAction():', function() {
 	// STARTING MOCKS.
-	const mockShowErrorResult = jest.fn();
-	const mockShowSuccessResult = jest.fn();
 	const mockCommandUserExtensionOnCompleted = jest.fn();
 	const mockCommandUserExtensionOnError = jest.fn();
+	const mockResult = jest.fn();
 
-	const CommandOutputHandler = jest.fn(() => ({
-		showErrorResult: mockShowErrorResult,
-		showSuccessResult: mockShowSuccessResult,
+	const ConsoleLogger = jest.fn(() => ({
+		result: mockResult,
+		error: jest.fn(),
+		info: jest.fn(),
+		warning: jest.fn(),
 	}));
 
-	const mockCommandOutputHandler = new CommandOutputHandler();
+	const mockConsoleLogger = new ConsoleLogger();
 
 	const CommandOptionsValidatorWithoutErrors = jest.fn(() => ({
 		validate: jest.fn(() => {
@@ -44,42 +47,46 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		}),
 	}));
 
-	const CommandInstanceFactory = jest.fn(() => ({
-		create: jest.fn(() => {
-			return {
-				commandMetadata: { options: {} },
-				getCommandQuestions: jest.fn(),
-				actionFunc: jest.fn(),
-				formatOutputFunc: jest.fn(),
-			};
-		}),
-	}));
-
-	const AuthenticationService = jest.fn(() => ({
-		getProjectDefaultAuthId: jest.fn()
-	}));
-
 	const CommandsMetadataService = jest.fn(() => ({
 		getCommandMetadataByName: jest.fn(() => {
 			return { isSetupRequired: false, supportsInteractiveMode: true };
 		}),
 	}));
 
+	class CommandActionExecutorMock extends CommandActionExecutor {
+		constructor(opts) {
+			super(opts)
+		}
+		_getCommand() {
+			return {
+				run: jest.fn(() => ActionResult.Builder.withData([]).withResultMessage('').build()),
+			}
+		}
+	}
+
+	class CommandActionExecutorErrorMock extends CommandActionExecutor {
+		constructor(opts) {
+			super(opts)
+		}
+		_getCommand() {
+			return {
+				run: jest.fn(() => ActionResult.Builder.withErrors([]).build()),
+			}
+		}
+	}
+
 	let commandExecutor;
 	beforeEach(() => {
 		// Clear all instances and calls to constructor and all methods:
-		commandExecutor = new CommandActionExecutor({
+		commandExecutor = new CommandActionExecutorMock({
 			executionPath: 'myFakePath',
-			commandOutputHandler: mockCommandOutputHandler,
 			commandOptionsValidator: new CommandOptionsValidatorWithoutErrors(),
 			cliConfigurationService: new CliConfigurationService(),
-			commandInstanceFactory: new CommandInstanceFactory(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataService(),
+			log: mockConsoleLogger,
+			sdkPath: sdkPath,
 		});
 
-		mockShowErrorResult.mockClear();
-		mockShowSuccessResult.mockClear();
 		mockCommandUserExtensionOnCompleted.mockClear();
 		mockCommandUserExtensionOnError.mockClear();
 	});
@@ -99,7 +106,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		error = null;
 		try {
 			await commandExecutor.executeAction({
-				executionPath: 'C:/',
 				commandName: undefined,
 				runInInteractiveMode: true,
 				arguments: {},
@@ -114,8 +120,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		error = null;
 		try {
 			await commandExecutor.executeAction({
-				executionPath: 'C:/',
-				commandName: 'importobjects',
+				commandName: 'object:import',
 				runInInteractiveMode: true,
 				arguments: undefined,
 			});
@@ -129,8 +134,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		error = null;
 		try {
 			await commandExecutor.executeAction({
-				executionPath: 'C:/',
-				commandName: 'importobjects',
+				commandName: 'object:import',
 				runInInteractiveMode: 'true',
 				arguments: {},
 			});
@@ -141,35 +145,13 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 	});
 
 	it('Should execute action (Happy Path).', async () => {
-		await commandExecutor.executeAction({
-			executionPath: 'C:/',
-			commandName: 'importobjects',
+		let actionResult = await commandExecutor.executeAction({
+			commandName: 'object:import',
 			runInInteractiveMode: true,
 			arguments: {},
 		});
-		expect(mockCommandOutputHandler.showErrorResult).toBeCalledTimes(0);
-		expect(mockCommandOutputHandler.showSuccessResult).toBeCalledTimes(1);
-	});
-
-	it('Should throw VALIDATION EXCEPTION when there are validation errors.', async () => {
-		const commandExecutorWithValidationErrors = new CommandActionExecutor({
-			executionPath: 'myFakePath',
-			commandOutputHandler: mockCommandOutputHandler,
-			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
-			cliConfigurationService: new CliConfigurationService(),
-			commandInstanceFactory: new CommandInstanceFactory(),
-			authenticationService: new AuthenticationService(),
-			commandsMetadataService: new CommandsMetadataService(),
-		});
-
-		await commandExecutorWithValidationErrors.executeAction({
-			executionPath: 'C:/',
-			commandName: 'importobjects',
-			runInInteractiveMode: true,
-			arguments: {},
-		});
-		expect(mockCommandOutputHandler.showErrorResult).toBeCalledTimes(1);
-		expect(mockCommandOutputHandler.showSuccessResult).toBeCalledTimes(0);
+		expect(mockConsoleLogger.error).toBeCalledTimes(0);
+		expect(actionResult._status).toBe('SUCCESS');
 	});
 
 	it('Should throw EXCEPTION when setup is required and there is not any account configured.', async () => {
@@ -179,24 +161,25 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			}),
 		}));
 
-		const commandExecutorWithoutAccountConf = new CommandActionExecutor({
+		const commandExecutorWithoutAccountConf = new CommandActionExecutorMock({
 			executionPath: 'myFakePath',
-			commandOutputHandler: mockCommandOutputHandler,
 			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
 			cliConfigurationService: new CliConfigurationService(),
-			commandInstanceFactory: new CommandInstanceFactory(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceSetupRequired(),
+			log: mockConsoleLogger,
+			sdkPath: sdkPath,
 		});
 
-		await commandExecutorWithoutAccountConf.executeAction({
-			executionPath: 'C:/',
-			commandName: 'importobjects',
-			runInInteractiveMode: true,
-			arguments: {},
-		});
-		expect(mockCommandOutputHandler.showErrorResult).toBeCalledTimes(1);
-		expect(mockCommandOutputHandler.showSuccessResult).toBeCalledTimes(0);
+		try {
+			await commandExecutorWithoutAccountConf.executeAction({
+				commandName: 'object:import',
+				runInInteractiveMode: true,
+				arguments: {},
+			});
+		} catch (error) {
+			expect(error).toBe('No account has been set up for this project. Run "suitecloud account:setup" to link your project with your account.');
+		}
+		expect(mockConsoleLogger.error).toHaveBeenCalled();
 	});
 
 	it('Should throw EXCEPTION when running as interactive and current command does not support it.', async () => {
@@ -206,43 +189,36 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			}),
 		}));
 
-		const commandExecutorWithoutAccountConf = new CommandActionExecutor({
+		const commandExecutorWithoutAccountConf = new CommandActionExecutorMock({
 			executionPath: 'myFakePath',
-			commandOutputHandler: mockCommandOutputHandler,
 			commandOptionsValidator: new CommandOptionsValidatorWithErrors(),
 			cliConfigurationService: new CliConfigurationService(),
-			commandInstanceFactory: new CommandInstanceFactory(),
-			authenticationService: new AuthenticationService(),
 			commandsMetadataService: new CommandsMetadataServiceNotSupportInteractiveMode(),
+			log: mockConsoleLogger,
+			sdkPath: sdkPath,
 		});
 
 		await commandExecutorWithoutAccountConf.executeAction({
-			executionPath: 'C:/',
-			commandName: 'importobjects',
+			commandName: 'object:import',
 			runInInteractiveMode: true,
 			arguments: {},
 		});
-		expect(mockCommandOutputHandler.showErrorResult).toBeCalledTimes(1);
-		expect(mockCommandOutputHandler.showSuccessResult).toBeCalledTimes(0);
+		expect(mockConsoleLogger.error).toHaveBeenCalled();
 	});
 
 	it('Should trigger CommandUserExtension.onError.', async () => {
-		const CommandInstanceFactory = jest.fn(() => ({
-			create: jest.fn(() => {
-				return {
-					commandMetadata: { options: {} },
-					_commandMetadata: {},
-					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() => ({ operationResult: { status: 'ERROR', resultMessage: '' } })),
-					formatOutputFunc: jest.fn(),
-				};
-			}),
-		}));
-		commandExecutor._commandInstanceFactory = new CommandInstanceFactory();
 
-		await commandExecutor.executeAction({
-			executionPath: 'C:/',
-			commandName: 'deploy',
+		const commandExecutorWithError = new CommandActionExecutorErrorMock({
+			executionPath: 'myFakePath',
+			commandOptionsValidator: new CommandOptionsValidatorWithoutErrors(),
+			cliConfigurationService: new CliConfigurationService(),
+			commandsMetadataService: new CommandsMetadataService(),
+			log: mockConsoleLogger,
+			sdkPath: sdkPath,
+		});
+
+		await commandExecutorWithError.executeAction({
+			commandName: 'project:deploy',
 			runInInteractiveMode: false,
 			arguments: {},
 		});
@@ -250,22 +226,8 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 	});
 
 	it('Should trigger CommandUserExtension.onCompleted.', async () => {
-		const CommandInstanceFactory = jest.fn(() => ({
-			create: jest.fn(() => {
-				return {
-					commandMetadata: { options: {} },
-					_commandMetadata: {},
-					getCommandQuestions: jest.fn(),
-					actionFunc: jest.fn(() => ({ operationResult: { status: 'SUCCESS', resultMessage: '' } })),
-					formatOutputFunc: jest.fn(),
-				};
-			}),
-		}));
-		commandExecutor._commandInstanceFactory = new CommandInstanceFactory();
-
 		await commandExecutor.executeAction({
-			executionPath: 'C:/',
-			commandName: 'deploy',
+			commandName: 'project:deploy',
 			runInInteractiveMode: false,
 			arguments: {},
 		});

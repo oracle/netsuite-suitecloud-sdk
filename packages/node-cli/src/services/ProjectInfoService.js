@@ -14,20 +14,21 @@ const {
 const CLIException = require('../CLIException');
 const FileUtils = require('../utils/FileUtils');
 const path = require('path');
-const TranslationService = require('./TranslationService');
+const NodeTranslationService = require('./NodeTranslationService');
 const xml2js = require('xml2js');
 const assert = require('assert');
+const { lineBreak } = require('../loggers/LoggerConstants');
+const { LINKS: { INFO } } = require('../ApplicationConstants');
 
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
 const MANIFEST_TAG_REGEX = '[\\s\\n]*<manifest.*>[^]*</manifest>[\\s\\n]*$';
 
-
-let CACHED_PROJECT_TYPE;
-
 module.exports = class ProjectInfoService {
 	constructor(projectFolder) {
 		assert(projectFolder);
+		this._CACHED_PROJECT_TYPE = null;
+		this._CACHES_PROJECT_NAME = null;
 		this._projectFolder = projectFolder;
 	}
 
@@ -47,14 +48,14 @@ module.exports = class ProjectInfoService {
 			let manifestTagAttributes = newValue['$'];
 			if (!manifestTagAttributes || !manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE]) {
 				throw new xml2js.ValidationError(
-					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
+					NodeTranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
 				);
 			} else if (
 				manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE] !== PROJECT_SUITEAPP &&
 				manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE] !== PROJECT_ACP
 			) {
 				throw new xml2js.ValidationError(
-					TranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT)
+					NodeTranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT)
 				);
 			}
 		}
@@ -62,57 +63,81 @@ module.exports = class ProjectInfoService {
 	}
 
 	getProjectType() {
-		if (CACHED_PROJECT_TYPE) {
-			return CACHED_PROJECT_TYPE;
+		if (!this._CACHED_PROJECT_TYPE) {
+			this.parseManifest();
 		}
 
-		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
+		return this._CACHED_PROJECT_TYPE;
+	}
 
-		if (!FileUtils.exists(manifestPath)) {
-			const errorMessage =
-				TranslationService.getMessage(ERRORS.PROCESS_FAILED) +
-				' ' +
-				TranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath);
-			throw new CLIException(-10, errorMessage);
+
+	getProjectName() {
+		if (!this._CACHED_PROJECT_NAME) {
+			this.parseManifest();
 		}
+		return this._CACHED_PROJECT_NAME;
+	}
 
-		const manifestString = FileUtils.readAsString(manifestPath);
 
-		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
-			const errorMessage =
-				TranslationService.getMessage(ERRORS.PROCESS_FAILED) +
-				' ' +
-				TranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
-			throw new CLIException(-10, errorMessage);
-		}
+	parseManifest() {
+		const manifestPath = this.getManifestPath();
+		const manifestString = this.getManifestString(manifestPath);
+
+		let projectName;
 		let projectType;
 		let validationError;
 
 		let parser = new xml2js.Parser({ validator: this._validateXml });
 
-		parser.parseString(manifestString, function(err, result) {
+		parser.parseString(manifestString, function (err, result) {
 			if (err) {
-				const errorMessage =
-					TranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+				const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
 					' ' +
-					TranslationService.getMessage(ERRORS.FILE, manifestPath);
+					NodeTranslationService.getMessage(ERRORS.FILE, manifestPath);
 				validationError = errorMessage + ' ' + err;
 			}
 
 			if (result) {
 				projectType = result.manifest.$.projecttype;
+				projectName = result.manifest.projectname;
 			}
 		});
 
 		//TODO CHECK XML IS VALID
-
 		if (validationError) {
-			throw new CLIException(-10, validationError);
+			throw new CLIException(validationError);
 		}
-
-		CACHED_PROJECT_TYPE = projectType;
-		return CACHED_PROJECT_TYPE;
+		this._CACHED_PROJECT_TYPE = projectType;
+		this._CACHED_PROJECT_NAME = projectName;
 	}
+
+	getManifestPath() {
+		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
+
+		if (!FileUtils.exists(manifestPath)) {
+			const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+				' ' +
+				NodeTranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath) +
+				lineBreak +
+				NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
+
+			throw new CLIException(errorMessage);
+		}
+		return manifestPath;
+	}
+
+	getManifestString(manifestPath) {
+		const manifestString = FileUtils.readAsString(manifestPath);
+
+		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
+			const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
+				' ' +
+				NodeTranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
+			throw new CLIException(errorMessage);
+		}
+		return manifestString;
+	}
+
 
 	hasLockAndHideFiles() {
 		const pathToInstallationPreferences = path.join(

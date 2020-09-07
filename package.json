@@ -4,11 +4,12 @@
   "license": "UPL-1.0",
   "private": true,
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "lerna": "^3.21.0"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "test": "lerna run test --stream",
-    "postinstall": "lerna bootstrap"
+    "postinstall": "lerna bootstrap",
+    "compile": "lerna run compile --stream"
   }
 }

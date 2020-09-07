@@ -5,8 +5,11 @@
 'use strict';
 
 const { lstatSync, readdirSync, readFile, writeFile, mkdirSync, renameSync, existsSync, unlinkSync, rmdirSync } = require('fs');
+const CLIException = require('../CLIException');
 const assert = require('assert');
 const path = require('path');
+const TranslationService = require('../services/TranslationService');
+const { CANT_CREATE_FOLDER } = require('../services/TranslationKeys').ERRORS;
 
 const CHAR_ENCODING_UTF8 = 'utf-8';
 
@@ -20,7 +23,20 @@ module.exports = class FileSystemService {
 
 		const availableDirectories = getDirectories(parentFolder);
 
-		return [parentFolder, ...availableDirectories];
+		return availableDirectories;
+	}
+
+	getFoldersFromDirectoryRecursively(parentFolder) {
+		assert(parentFolder);
+		const folders = [];
+		const getFoldersRecursively = source =>
+				this.getFoldersFromDirectory(source).forEach(folder => {
+				folders.push(folder);
+				getFoldersRecursively(folder);
+			});
+		getFoldersRecursively(parentFolder);
+
+		return folders;
 	}
 
 	getFilesFromDirectory(parentFolder) {
@@ -44,7 +60,6 @@ module.exports = class FileSystemService {
 		assert(options.template);
 		assert(options.destinationFolder);
 		assert(options.fileName);
-		assert(options.fileExtension);
 
 		return new Promise((resolve, reject) => {
 			readFile(options.template, CHAR_ENCODING_UTF8, (readingError, content) => {
@@ -55,8 +70,10 @@ module.exports = class FileSystemService {
 					content = this._processTemplateBindings(content, options.bindings);
 				}
 
+				const fullFileName = options.fileExtension ? `${options.fileName}.${options.fileExtension}` : `${options.fileName}`;
+
 				writeFile(
-					path.join(options.destinationFolder, `${options.fileName}.${options.fileExtension}`),
+					path.join(options.destinationFolder, fullFileName),
 					content.toString(),
 					(writingError, data) => {
 						if (writingError) {
@@ -75,8 +92,12 @@ module.exports = class FileSystemService {
 
 		let targetFolder = path.join(parentFolderPath, folderName);
 
-		if (!existsSync(targetFolder)) {
-			mkdirSync(path.join(targetFolder));
+		try {
+			if (!existsSync(targetFolder)) {
+				mkdirSync(path.join(targetFolder));
+			}
+		} catch (e) {
+			throw new CLIException(TranslationService.getMessage(CANT_CREATE_FOLDER, e.path, e.code));
 		}
 
 		return targetFolder;
