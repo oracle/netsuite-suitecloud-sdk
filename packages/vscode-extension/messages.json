@@ -13,6 +13,11 @@
 	"ADD_DEPENDENCIES_EMPTY": "There are no dependencies to add to the manifest file.",
 	"ADD_DEPENDENCIES_ERROR": "There was an error when adding missing dependencies to the manifest file.",
 
+	"COMPARE_FILE_ERROR": "The comparing process has encountered an error.",
+	"COMPARE_FILE_SUCCESS": "The comparing process has finished successfully.",
+	"COMPARE_FILE_COMPARING": "Comparing custom file with account copy...",
+	"COMPARE_FILE_EDITOR_TITLE":"Comparison of {0} with account copy",
+
 	"COMPARE_OBJECT_ERROR": "The comparing process has encountered an error.",
 	"COMPARE_OBJECT_SUCCESS": "The comparing process has finished successfully.",
 	"COMPARE_OBJECT_COMPARING": "Comparing custom object with account copy...",
@@ -31,6 +36,14 @@
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
 	
+
+	"IMPORT_FILE_ERROR": "The importing process has encountered an error.",
+	"IMPORT_FILE_FINISHED": "The importing process has finished.",
+	"IMPORT_FILE_IMPORTING": "Importing file...",
+	"IMPORT_FILE_INCLUDE_PROPERTIES": "Do you want to include all file properties within the .attributes folder?",
+	"IMPORT_FILE_OVERRIDE": "The {0} file will be overwritten with the file from the account. Do you want to continue?",
+	"IMPORT_FILE_PROCESS_CANCELED": "The file import process has been canceled. No custom files have been overwritten.",
+
 	"IMPORT_OBJECT_ERROR": "The importing process has encountered an error.",
 	"IMPORT_OBJECT_IMPORTING": "Importing object...",
 	"IMPORT_OBJECT_OVERRIDE": "The {0} object will be overwritten with the object from the account. Do you want to continue?",

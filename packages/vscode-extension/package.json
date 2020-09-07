@@ -64,6 +64,16 @@
 				"command": "suitecloud.compareobject",
 				"title": "Compare Custom Object with Account copy",
 				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.importfile",
+				"title": "Import Single File to Account",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.comparefile",
+				"title": "Compare Custom File with Account copy",
+				"category": "SuiteCloud"
 			}
 		],
 		"keybindings": [
@@ -104,6 +114,16 @@
 				{
 					"when": "resource =~ //Objects/.*\\.xml$|^file$/",
 					"command": "suitecloud.compareobject",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "resource =~ //FileCabinet/SuiteScripts/.*\\.js$|^file$/",
+					"command": "suitecloud.importfile",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "resource =~ /FileCabinet/SuiteScripts/.*\\.js$|^file$/",
+					"command": "suitecloud.comparefile",
 					"group": "suitecloud@1"
 				}
 			]
