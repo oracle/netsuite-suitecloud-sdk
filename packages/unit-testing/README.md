@@ -36,35 +36,35 @@ However, if you want to configure SuiteCloud Unit Testing manually, do the follo
 3. To initialize the NPM package, from the root of your SDF project folder, run `npm init`.
 >💡 A `package.json` file is created in your SDF project folder.
 4. In your `package.json` file, add the following code:
-```json
-{
-  "scripts": {
-    "test": "jest"
-  }
-}
-```
+    ```json
+    {
+    "scripts": {
+        "test": "jest"
+    }
+    }
+    ```
 5. From the root of your SDF project folder, run the followig command:
-```
-npm install --save-dev @oracle/suitecloud-unit-testing jest
-```
+    ```
+    npm install --save-dev @oracle/suitecloud-unit-testing jest
+    ```
 6. Create a `__tests__` folder, inside of the root of your SDF project folder.
 7. Create a `sample-test.js` file, inside of the `__tests__` folder, with the following content:
-```javascript
-describe('Basic jest test with simple assert', () => {
-    it('should assert stings are equal', () => {
-        const a = 'foobar';
-        const b = 'foobar';
-        expect(a).toMatch(b);
+    ```javascript
+    describe('Basic jest test with simple assert', () => {
+        it('should assert stings are equal', () => {
+            const a = 'foobar';
+            const b = 'foobar';
+            expect(a).toMatch(b);
+        });
     });
-});
-```
+    ```
 8. From the root of your SDF project folder, run `npm test`
 to run your test. You should see an output similar to following:
-```
-PASS  __tests__/sample-test.js
-  Basic jest test with simple assert
-    √ should assert stings are equal (2ms)
-```
+    ```
+    PASS  __tests__/sample-test.js
+    Basic jest test with simple assert
+        √ should assert stings are equal (2ms)
+    ```
 >💡 If you want to run tests with coverage, from the root of your SDF project folder, run `npm test --coverage`.
 
 **You successfully ran your first test for an SDF project!**
