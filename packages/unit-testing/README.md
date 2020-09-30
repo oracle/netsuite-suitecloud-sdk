@@ -38,9 +38,9 @@ However, if you want to configure SuiteCloud Unit Testing manually, do the follo
 4. In your `package.json` file, add the following code:
     ```json
     {
-    "scripts": {
-        "test": "jest"
-    }
+        "scripts": {
+            "test": "jest"
+        }
     }
     ```
 5. From the root of your SDF project folder, run the followig command:
