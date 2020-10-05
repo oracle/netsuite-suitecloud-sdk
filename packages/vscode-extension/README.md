@@ -4,7 +4,6 @@
 The SuiteCloud extension allows you to customize your SuiteCloud Development Framework (SDF) projects for NetSuite.
 
 <img src="./resources/acpMain.png" alt="Account customization project">
-<br><br>
 
 SuiteCloud extension for Visual Studio Code is part of SuiteCloud SDK, a set of tools to customize NetSuite accounts.
 
@@ -15,22 +14,21 @@ The following software is required to work with SuiteCloud extension for Visual 
 - Node.js version 12.14.0 LTS or greater
 - Oracle JDK version 11
 
-Read the detailed list of prerequisites in [NetSuite's Help Center.](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html)
+Read the detailed list of prerequisites in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html).
 
 
 ## SuiteCloud Extension commands
 The following commands are available through the Command Palette:
 
 <img src="./resources/suitecloudCommandList.png" alt="List of SuiteCloud commands"> 
-<br><br>
 
-💡 To read more about what you can do with SuiteCloud extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" target="_blank">NetSuite's Help Center</a>.
+💡 To read more about what you can do with SuiteCloud extension for Visual Studio Code, visit [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html).
 
 ## SuiteCloud Extension combined with SuiteCloud CLI for Node.js
 SuiteCloud CLI for Node.js is another open-source SuiteCloud SDK tool. This tool has more available commands that you can use in combination with the ones available in SuiteCloud extension for Visual Studio Code.
 
 To work with both tools at the same time, do the following:
-1. Install SuiteCloud CLI for Node.js by following the instructions <a href="../node-cli/README.md" target="_blank">here</a>.
+1. Install SuiteCloud CLI for Node.js by following the instructions [here](../node-cli/README.md).
 2. Open a terminal inside of your SDF project, and enter:
    ```javascript
    suitecloud -h
