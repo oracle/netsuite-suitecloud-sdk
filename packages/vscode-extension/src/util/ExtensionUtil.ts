@@ -29,6 +29,7 @@ export const ConsoleLogger = require('@oracle/suitecloud-cli/src/loggers/Console
 export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
 export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
 export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
+export const EnvironmentInformationService = require('@oracle/suitecloud-cli/src/services/EnvironmentInformationService');
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
 
