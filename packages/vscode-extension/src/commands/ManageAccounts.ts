@@ -7,7 +7,7 @@ import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { sdkPath } from '../core/sdksetup/SdkProperties';
-import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
+import { MANAGE_ACCOUNTS, DISMISS, PRODUCTION_DOMAIN } from '../service/TranslationKeys';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 
 const COMMAND_NAME = 'account:setup';
@@ -64,7 +64,7 @@ export default class ManageAccounts extends BaseAction {
 
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			const selected = await this.getAuthListOption(actionResult.data);
-			if (!selected) {
+			if (!selected || selected === undefined) {
 				return;
 			} else if (selected.option === UiOption.new_authid) {
 				this.handleNewAuth(actionResult.data);
@@ -141,14 +141,17 @@ export default class ManageAccounts extends BaseAction {
 
 	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
 		const authId = await this.getNewAuthId(accountCredentialsList);
-		const url = await this.getUrl();
-		if (!authId) {
+		if (!authId || authId === undefined) {
 			return;
 		}
+		const url = await this.getUrl();
 		const commandParams: { authid: string; dev: boolean; url?: string } = {
 			authid: authId,
 			dev: false,
 		};
+		if (url === undefined) {
+			return;
+		}
 		if (url) {
 			commandParams.url = url;
 			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
@@ -223,9 +226,11 @@ export default class ManageAccounts extends BaseAction {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
+				if(!fieldValue) {
+					fieldValue = this.translationService.getMessage(PRODUCTION_DOMAIN)
+				} 
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
@@ -281,11 +286,27 @@ export default class ManageAccounts extends BaseAction {
 
 	private async handleSaveToken(accountCredentialsList: AuthListData) {
 		const authId = await this.getNewAuthId(accountCredentialsList);
+		if(!authId || authId === undefined) {
+			return;
+		}
+
 		const url = await this.getUrl();
+		if(url === undefined) {
+			return;
+		}
+
 		const accountId = await this.getAccountId();
+		if(!accountId || accountId === undefined) {
+			return;
+		}
+
 		const tokenId = await this.getTokenId();
+		if(!tokenId || tokenId === undefined) {
+			return;
+		}
+
 		const tokenSecret = await this.getTokenSecret();
-		if (!authId || !accountId || !tokenId || !tokenSecret) {
+		if(!tokenSecret || tokenSecret === undefined) {
 			return;
 		}
 		const commandParams: { authid: string; account: string; tokenid: string; tokensecret: string; dev: boolean; url?: string } = {
