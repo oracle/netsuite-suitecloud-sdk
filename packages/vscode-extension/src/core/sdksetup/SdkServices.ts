@@ -24,14 +24,14 @@ const translationService = new VSTranslationService();
 const fileSystemService = new FileSystemService();
 
 export async function installIfNeeded() {
-    await validateJavaVersion();
+    validateJavaVersion();
 
     if (!fs.existsSync(path.join(sdkPath)) || !(await validateSdk(path.join(sdkPath)))) {
         await install();
     }
 }
 
-async function validateJavaVersion() {
+function validateJavaVersion() {
     const environmentInformationService = new EnvironmentInformationService();
     const installedJavaVersion = environmentInformationService.getInstalledJavaVersionString();
     const requiredJavaVersion = `${ApplicationConstants.SDK_REQUIRED_JAVA_VERSION}`;
