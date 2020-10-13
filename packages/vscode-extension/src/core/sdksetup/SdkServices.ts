@@ -39,16 +39,13 @@ function validateJavaVersion() {
         return;
     }
 
-    let messageKey;
     let errorMessage;
     if (installedJavaVersion === '') {
-        messageKey = `${ERRORS.SDK_JAVA_VERSION_NOT_INSTALLED}`;
-        errorMessage = translationService.getMessage(messageKey, requiredJavaVersion);
+        errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_INSTALLED}`, requiredJavaVersion);
         messageService.showErrorMessage(errorMessage);
         throw errorMessage;
     }
-    messageKey = `${ERRORS.SDK_JAVA_VERSION_NOT_COMPATIBLE}`;
-    errorMessage = translationService.getMessage(messageKey, installedJavaVersion, requiredJavaVersion);
+    errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_COMPATIBLE}`, installedJavaVersion, requiredJavaVersion);
     messageService.showErrorMessage(errorMessage);
     throw errorMessage;
 }
