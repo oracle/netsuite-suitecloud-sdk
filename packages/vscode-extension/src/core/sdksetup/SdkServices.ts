@@ -11,11 +11,11 @@ import * as http from 'http';
 import { homedir } from 'os';
 import { parse } from 'url';
 import { VSTranslationService } from '../../service/VSTranslationService';
-import { EXTENSION_INSTALLATION } from '../../service/TranslationKeys';
+import { ERRORS, EXTENSION_INSTALLATION } from '../../service/TranslationKeys';
 import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
-import { FileSystemService } from '../../util/ExtensionUtil';
-import { SDK_DOWNLOAD_URL, SDK_FILENAME, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER, sdkPath } from './SdkProperties';
+import { ApplicationConstants, EnvironmentInformationService, FileSystemService } from '../../util/ExtensionUtil';
+import { SDK_DOWNLOAD_URL, SDK_FILENAME, sdkPath, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER } from './SdkProperties';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
@@ -24,9 +24,30 @@ const translationService = new VSTranslationService();
 const fileSystemService = new FileSystemService();
 
 export async function installIfNeeded() {
-	if (!fs.existsSync(path.join(sdkPath)) || !(await validateSdk(path.join(sdkPath)))) {
-		await install();
-	}
+    validateJavaVersion();
+
+    if (!fs.existsSync(path.join(sdkPath)) || !(await validateSdk(path.join(sdkPath)))) {
+        await install();
+    }
+}
+
+function validateJavaVersion() {
+    const environmentInformationService = new EnvironmentInformationService();
+    const installedJavaVersion = environmentInformationService.getInstalledJavaVersionString();
+    const requiredJavaVersion = `${ApplicationConstants.SDK_REQUIRED_JAVA_VERSION}`;
+    if (installedJavaVersion.startsWith(requiredJavaVersion)) {
+        return;
+    }
+
+    let errorMessage;
+    if (installedJavaVersion === '') {
+        errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_INSTALLED}`, requiredJavaVersion);
+        messageService.showErrorMessage(errorMessage);
+        throw errorMessage;
+    }
+    errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_COMPATIBLE}`, installedJavaVersion, requiredJavaVersion);
+    messageService.showErrorMessage(errorMessage);
+    throw errorMessage;
 }
 
 async function install() {

@@ -50,9 +50,11 @@
 	"UPDATE_OBJECT_UPDATING": "Updating object...",
 	"UPDATE_OBJECT_SUCCESS": "The custom object in the project has been successfully updated with the account object.",
 
-	"ERROR_NO_ACTIVE_FILE": "There was an error. You must have an active file to perform this action.",
-	"ERROR_NO_ACTIVE_WORKSPACE": "There was an error. The current file does not belong to any workspace.",
-	"ERROR_NO_ACTIVE_FILE_OR_WORKSPACE": "There is no active file or the active file is not in a workspace.",
+	"ERRORS_NO_ACTIVE_FILE": "There was an error. You must have an active file to perform this action.",
+	"ERRORS_NO_ACTIVE_WORKSPACE": "There was an error. The current file does not belong to any workspace.",
+	"ERRORS_NO_ACTIVE_FILE_OR_WORKSPACE": "There is no active file or the active file is not in a workspace.",
+	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install Oracle JDK version {1}.",
+	"ERRORS_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install Oracle JDK version {0} to run CLI for Node.js.",
 
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
 	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
