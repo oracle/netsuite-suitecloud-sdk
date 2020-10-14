@@ -64,7 +64,7 @@ export default class ManageAccounts extends BaseAction {
 
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			const selected = await this.getAuthListOption(actionResult.data);
-			if (!selected || selected === undefined) {
+			if (!selected) {
 				return;
 			} else if (selected.option === UiOption.new_authid) {
 				this.handleNewAuth(actionResult.data);
