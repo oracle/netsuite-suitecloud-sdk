@@ -7,7 +7,7 @@ import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { sdkPath } from '../core/sdksetup/SdkProperties';
-import { MANAGE_ACCOUNTS, DISMISS, PRODUCTION_DOMAIN } from '../service/TranslationKeys';
+import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 
 const COMMAND_NAME = 'account:setup';
@@ -141,7 +141,7 @@ export default class ManageAccounts extends BaseAction {
 
 	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
 		const authId = await this.getNewAuthId(accountCredentialsList);
-		if (!authId || authId === undefined) {
+		if (!authId) {
 			return;
 		}
 		const url = await this.getUrl();
@@ -226,8 +226,8 @@ export default class ManageAccounts extends BaseAction {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
-				if(!fieldValue) {
-					fieldValue = this.translationService.getMessage(PRODUCTION_DOMAIN)
+				if (!fieldValue) {
+					fieldValue = ApplicationConstants.PROD_ENVIRONMENT_ADDRESS
 				} 
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
@@ -286,29 +286,30 @@ export default class ManageAccounts extends BaseAction {
 
 	private async handleSaveToken(accountCredentialsList: AuthListData) {
 		const authId = await this.getNewAuthId(accountCredentialsList);
-		if(!authId || authId === undefined) {
+		if (!authId) {
 			return;
 		}
 
 		const url = await this.getUrl();
-		if(url === undefined) {
+		if (url === undefined) {
 			return;
 		}
 
 		const accountId = await this.getAccountId();
-		if(!accountId || accountId === undefined) {
+		if (!accountId) {
 			return;
 		}
 
 		const tokenId = await this.getTokenId();
-		if(!tokenId || tokenId === undefined) {
+		if (!tokenId) {
 			return;
 		}
 
 		const tokenSecret = await this.getTokenSecret();
-		if(!tokenSecret || tokenSecret === undefined) {
+		if (!tokenSecret) {
 			return;
 		}
+
 		const commandParams: { authid: string; account: string; tokenid: string; tokensecret: string; dev: boolean; url?: string } = {
 			authid: authId,
 			dev: false,

@@ -97,4 +97,3 @@ export const DISMISS = 'DISMISS';
 export const SEE_DETAILS = 'SEE_DETAILS';
 export const YES = 'YES';
 export const NO = 'NO';
-export const PRODUCTION_DOMAIN = 'PRODUCTION_DOMAIN';
