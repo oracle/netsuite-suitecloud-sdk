@@ -330,7 +330,6 @@ export default class ManageAccounts extends BaseAction {
 			AuthenticationUtils.setDefaultAuthentication(this.executionPath, authId);
 			this.log.result(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
-			return;
 		} catch (e) {
 			this.messageService.showErrorMessage(e);
 		}
