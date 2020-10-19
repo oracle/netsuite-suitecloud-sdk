@@ -41,7 +41,7 @@
 	"MANAGE_ACCOUNTS_LOADING": "Loading the configured authentication IDs (authID) in this machine...",
 	"MANAGE_ACCOUNTS_CANCELED": "The creation of a new authentication ID (authID) has been canceled.",
 	"MANAGE_ACCOUNTS_SELECT_CREATE": "Select or create an authentication ID (authID). It will be set up as default:",
-	"MANAGE_ACCOUNTS_SELECT_AUTH_ID_SUCCESS": "The default account for the current project was successfully set to {0}",
+	"MANAGE_ACCOUNTS_SELECT_AUTH_ID_SUCCESS": "The default account for the current project was successfully set to {0}.",
 	"MANAGE_ACCOUNTS_CREATE_SAVE_TOKEN_NEW_TBA": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID {2} as default.",
 
 	"UPDATE_OBJECT_OVERRIDE": "The {0} object will be overwritten with the object from the account. Do you want to continue?",
