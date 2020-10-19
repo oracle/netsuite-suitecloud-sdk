@@ -31,7 +31,7 @@
 	"MANAGE_ACCOUNTS_CREATE_BROWSER_CANCEL": "Cancel the process",
 	"MANAGE_ACCOUNTS_CREATE_NEW_AUTHID": "Select an option:",
 	"MANAGE_ACCOUNTS_ENTER_AUTH_ID": "Enter an authentication ID (authID):",
-	"MANAGE_ACCOUNTS_ENTER_URL": "Enter your NetSuite domain or cancel to work with system.netsuite.com:",
+	"MANAGE_ACCOUNTS_ENTER_URL": "Press Enter to select the production domain 'system.netsuite.com', or provide your custom domain.",
 	"MANAGE_ACCOUNTS_SAVE_TOKEN_ENTER_ACCOUNT_ID": "Enter the account ID:",
 	"MANAGE_ACCOUNTS_SAVE_TOKEN_ENTER_TOKEN_ID": "Enter the Token ID:",
 	"MANAGE_ACCOUNTS_SAVE_TOKEN_ENTER_TOKEN_SECRET": "Enter the Token Secret:",

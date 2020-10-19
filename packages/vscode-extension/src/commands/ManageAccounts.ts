@@ -141,14 +141,17 @@ export default class ManageAccounts extends BaseAction {
 
 	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
 		const authId = await this.getNewAuthId(accountCredentialsList);
-		const url = await this.getUrl();
 		if (!authId) {
 			return;
 		}
+		const url = await this.getUrl();
 		const commandParams: { authid: string; dev: boolean; url?: string } = {
 			authid: authId,
 			dev: false,
 		};
+		if (url === undefined) {
+			return;
+		}
 		if (url) {
 			commandParams.url = url;
 			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
@@ -223,9 +226,11 @@ export default class ManageAccounts extends BaseAction {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
+				if (!fieldValue) {
+					fieldValue = ApplicationConstants.PROD_ENVIRONMENT_ADDRESS
+				} 
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
@@ -281,13 +286,30 @@ export default class ManageAccounts extends BaseAction {
 
 	private async handleSaveToken(accountCredentialsList: AuthListData) {
 		const authId = await this.getNewAuthId(accountCredentialsList);
-		const url = await this.getUrl();
-		const accountId = await this.getAccountId();
-		const tokenId = await this.getTokenId();
-		const tokenSecret = await this.getTokenSecret();
-		if (!authId || !accountId || !tokenId || !tokenSecret) {
+		if (!authId) {
 			return;
 		}
+
+		const url = await this.getUrl();
+		if (url === undefined) {
+			return;
+		}
+
+		const accountId = await this.getAccountId();
+		if (!accountId) {
+			return;
+		}
+
+		const tokenId = await this.getTokenId();
+		if (!tokenId) {
+			return;
+		}
+
+		const tokenSecret = await this.getTokenSecret();
+		if (!tokenSecret) {
+			return;
+		}
+
 		const commandParams: { authid: string; account: string; tokenid: string; tokensecret: string; dev: boolean; url?: string } = {
 			authid: authId,
 			dev: false,
