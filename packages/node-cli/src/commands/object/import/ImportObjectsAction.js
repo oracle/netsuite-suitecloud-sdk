@@ -83,9 +83,10 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 				if (params[ANSWERS_NAMES.OBJECT_TYPE] === IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL) {
 					scriptIdArray = (await this._getAllScriptIds(params)).map((el) => el.scriptId).join(' ').split(' ');
-				} else if (params[ANSWERS_NAMES.OBJECT_TYPE] !== IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL
-					&& params[ANSWERS_NAMES.SCRIPT_ID] === IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL) {
+				} else if (params[ANSWERS_NAMES.SCRIPT_ID] === IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL) {
 					scriptIdArray = (await this._getAllScriptIdsForObjectType(params)).map((el) => el.scriptId).join(' ').split(' ');
+				} else {
+					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ')
 				}
 			}
 
