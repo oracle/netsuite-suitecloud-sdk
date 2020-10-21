@@ -79,6 +79,7 @@
 	"COMMAND_IMPORTOBJECTS_MESSAGES_IMPORTING_OBJECTS": "Importing objects: running step {0} of {1}...",
 	"COMMAND_IMPORTOBJECTS_MESSAGES_LOADING_LIST_OF_OBJECTS": "Loading list of objects...",
 	"COMMAND_IMPORTOBJECTS_MESSAGES_LOADING_OBJECTS": "Loading objects...",
+	"COMMAND_IMPORTOBJECTS_MESSAGES_NO_OBJECTS_IMPORTED": "No objects imported.",
 	"COMMAND_IMPORTOBJECTS_MESSAGES_NO_OBJECTS_TO_LIST": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID or script ID.",
 	"COMMAND_IMPORTOBJECTS_OUTPUT_IMPORTED_OBJECTS": "The following objects have been imported:",
 	"COMMAND_IMPORTOBJECTS_OUTPUT_OBJECT_IMPORT_FAILED": "{0}:{1} Failed: {2}",

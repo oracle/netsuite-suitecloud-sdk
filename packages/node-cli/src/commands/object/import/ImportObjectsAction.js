@@ -83,7 +83,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 				if (params[ANSWERS_NAMES.OBJECT_TYPE] === IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL) {
 					scriptIdArray = (await this._getAllScriptIds(params)).map((el) => el.scriptId).join(' ').split(' ');
-				} if (params[ANSWERS_NAMES.OBJECT_TYPE] !== IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL
+				} else if (params[ANSWERS_NAMES.OBJECT_TYPE] !== IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL
 					&& params[ANSWERS_NAMES.SCRIPT_ID] === IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL) {
 					scriptIdArray = (await this._getAllScriptIdsForObjectType(params)).map((el) => el.scriptId).join(' ').split(' ');
 				}
@@ -168,6 +168,10 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 	async _callListObjects(params, sdkParams) {
 		sdkParams.authid = params[ANSWERS_NAMES.AUTH_ID];
+		const appId = params[ANSWERS_NAMES.APP_ID];
+		if (appId) {
+			sdkParams.appid = appId;
+		}
 
 		const executionContext = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
 			.integration()
@@ -185,7 +189,13 @@ module.exports = class ImportObjectsAction extends BaseAction {
 			throw listObjectsOperationResult.errorMessages;
 		}
 
-		return listObjectsOperationResult.data;
+		const listObjectsOperationResultData = listObjectsOperationResult.data;
+
+		if (listObjectsOperationResultData == null || (Array.isArray(listObjectsOperationResultData) && listObjectsOperationResultData.length === 0)) {
+			throw NodeTranslationService.getMessage(MESSAGES.NO_OBJECTS_IMPORTED);
+		}
+
+		return listObjectsOperationResultData;
 	}
 
 };
