@@ -83,11 +83,12 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 				if (params[ANSWERS_NAMES.OBJECT_TYPE] === IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL) {
 					scriptIdArray = (await this._getAllScriptIds(params)).map((el) => el.scriptId);
-				} else if (params[ANSWERS_NAMES.OBJECT_TYPE] !== IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL
-					&& params[ANSWERS_NAMES.SCRIPT_ID] === IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL) {
-					scriptIdArray = (await this._getAllScriptIdsForObjectType(params)).map((el) => el.scriptId);
-				} else {
-					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ')
+				} else if (params[ANSWERS_NAMES.OBJECT_TYPE] !== IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL) {
+					if (params[ANSWERS_NAMES.SCRIPT_ID] === IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL) {
+						scriptIdArray = (await this._getAllScriptIdsForObjectType(params)).map((el) => el.scriptId);
+					} else {
+						scriptIdArray = (await this._getScriptIdsForObjectTypeFilteredByScriptId(params)).map((el) => el.scriptId);
+					}
 				}
 			}
 
@@ -155,6 +156,14 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				);
 			}
 		}
+	}
+
+	async _getScriptIdsForObjectTypeFilteredByScriptId(params) {
+		const sdkParams = {};
+		sdkParams.type = params[ANSWERS_NAMES.OBJECT_TYPE];
+		sdkParams.scriptid = params[ANSWERS_NAMES.SCRIPT_ID];
+
+		return this._callListObjects(params, sdkParams);
 	}
 
 	async _getAllScriptIdsForObjectType(params) {
