@@ -7,6 +7,7 @@
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
+const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
@@ -37,12 +38,18 @@ const COMMAND_FLAGS = {
 	EXCLUDE_FILES: 'excludefiles',
 };
 
+const LIST_OBJECTS_COMMAND_NAME = 'object:list';
+const IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL = 'ALL';
+const IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL = 'ALL';
 const NUMBER_OF_SCRIPTS = 35;
 const MAX_PARALLEL_EXECUTIONS = 5;
 
 module.exports = class ImportObjectsAction extends BaseAction {
 	constructor(options) {
 		super(options);
+
+		const commandsMetadataService = new CommandsMetadataService();
+		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 	}
 
 	preExecute(answers) {
@@ -59,20 +66,33 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 		try {
 			const flags = [];
+			let scriptIdArray;
 			if (this._runInInteractiveMode) {
 				if (params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
 					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
 					delete params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
 				}
+
+				scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
 			} else {
-				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 				if (params[COMMAND_FLAGS.EXCLUDE_FILES]) {
 					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
 					delete params[COMMAND_FLAGS.EXCLUDE_FILES];
 				}
+
+				if (params[ANSWERS_NAMES.SCRIPT_ID] === IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL) {
+					if (params[ANSWERS_NAMES.OBJECT_TYPE] === IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL) {
+						scriptIdArray = (await this._getAllScriptIds(params)).map((el) => el.scriptId);
+					} else {
+						scriptIdArray = (await this._getAllScriptIdsForObjectType(params)).map((el) => el.scriptId);
+					}
+				} else {
+					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
+				}
+
+				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 			}
 
-			const scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
 			delete params[ANSWERS_NAMES.SCRIPT_ID];
 			const operationResultData = {
 				failedImports: [],
@@ -138,4 +158,48 @@ module.exports = class ImportObjectsAction extends BaseAction {
 			}
 		}
 	}
+
+	async _getAllScriptIdsForObjectType(params) {
+		const sdkParams = {};
+		sdkParams.type = params[ANSWERS_NAMES.OBJECT_TYPE];
+
+		return this._callListObjects(params, sdkParams);
+	}
+
+	async _getAllScriptIds(params) {
+		return this._callListObjects(params, {});
+	}
+
+	async _callListObjects(params, sdkParams) {
+		sdkParams.authid = params[ANSWERS_NAMES.AUTH_ID];
+		const appId = params[ANSWERS_NAMES.APP_ID];
+		if (appId) {
+			sdkParams.appid = appId;
+		}
+
+		const executionContext = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
+			.integration()
+			.addParams(sdkParams)
+			.build();
+
+		const actionListObjects = this._sdkExecutor.execute(executionContext);
+
+		const listObjectsOperationResult = await executeWithSpinner({
+			action: actionListObjects,
+			message: NodeTranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
+		});
+
+		if (listObjectsOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+			throw listObjectsOperationResult.errorMessages;
+		}
+
+		const listObjectsOperationResultData = listObjectsOperationResult.data;
+
+		if (listObjectsOperationResultData == null || (Array.isArray(listObjectsOperationResultData) && listObjectsOperationResultData.length === 0)) {
+			throw NodeTranslationService.getMessage(MESSAGES.NO_OBJECTS_IMPORTED);
+		}
+
+		return listObjectsOperationResultData;
+	}
+
 };
