@@ -81,7 +81,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		try {
 			listObjectsResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForListObjects),
-				message: NodeTranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
+				message: NodeTranslationService.getMessage(MESSAGES.LOADING_LIST_OF_OBJECTS),
 			});
 		} catch (error) {
 			throw NodeTranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, lineBreak, error);
