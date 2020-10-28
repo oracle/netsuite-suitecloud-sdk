@@ -319,7 +319,7 @@ export default class ManageAccounts extends BaseAction {
 		};
 		if (url) {
 			commandParams.url = url;
-			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
+			commandParams.dev = true;
 		}
 
 		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, sdkPath, this.executionPath);
