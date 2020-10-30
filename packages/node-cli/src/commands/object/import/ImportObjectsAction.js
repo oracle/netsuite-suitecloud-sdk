@@ -41,8 +41,8 @@ const COMMAND_FLAGS = {
 const LIST_OBJECTS_COMMAND_NAME = 'object:list';
 const IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL = 'ALL';
 const IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL = 'ALL';
-const NUMBER_OF_SCRIPTS = 35;
-const MAX_PARALLEL_EXECUTIONS = 5;
+const NUMBER_OF_SCRIPTS = 8;
+const MAX_PARALLEL_EXECUTIONS = 4;
 
 module.exports = class ImportObjectsAction extends BaseAction {
 	constructor(options) {
@@ -99,7 +99,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				successfulImports: [],
 				errorImports: [],
 			};
-			const arrayOfPromises = [];
+			let arrayOfPromises = [];
 			const numberOfSdkCalls = Math.ceil(scriptIdArray.length / NUMBER_OF_SCRIPTS);
 			const numberOfSteps = Math.ceil(numberOfSdkCalls / MAX_PARALLEL_EXECUTIONS);
 
@@ -125,6 +125,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 						action: Promise.all(arrayOfPromises),
 						message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS, (i + 1) / MAX_PARALLEL_EXECUTIONS, numberOfSteps),
 					});
+					arrayOfPromises = [];
 				}
 			}
 
