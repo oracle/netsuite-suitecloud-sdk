@@ -225,14 +225,16 @@ export default class ManageAccounts extends BaseAction {
 		return await window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
-			validateInput: (fieldValue) => {
-				if (!fieldValue) {
-					fieldValue = ApplicationConstants.PROD_ENVIRONMENT_ADDRESS
-				} 
+			validateInput: (fieldValue) => { 
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldHasNoSpaces
+					InteractiveAnswersValidator.validateFieldHasNoSpaces,
+					InteractiveAnswersValidator.validateNonProductionDomain,
+					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain
 				);
+				if (!fieldValue) {
+					fieldValue = ApplicationConstants.PROD_ENVIRONMENT_ADDRESS
+				}
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
@@ -319,7 +321,7 @@ export default class ManageAccounts extends BaseAction {
 		};
 		if (url) {
 			commandParams.url = url;
-			commandParams.dev = true;
+			commandParams.dev = url !== ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
 		}
 
 		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, sdkPath, this.executionPath);

@@ -26,6 +26,8 @@ const XML_FORBIDDEN_CHARACTERS_REGEX = /[<>&'"]/;
 const PROJECT_VERSION_FORMAT_REGEX = '^\\d+(\\.\\d+){2}$';
 const SUITEAPP_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '(\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '){2}$';
 const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
+const PRODUCTION_DOMAIN_REGEX = '^system\\.(\\w+\\.)*netsuite\\.com$';
+const PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX = '^(\\w+)\\.app\\.netsuite\\.com$';
 
 module.exports = {
 	showValidationResults(value, ...funcs) {
@@ -149,4 +151,16 @@ module.exports = {
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.MAX_LENGTH, maxLength));
 	},
+
+	validateNonProductionDomain(fieldValue) {
+		return !fieldValue.match(PRODUCTION_DOMAIN_REGEX)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
+	},
+
+	validateNonProductionAccountSpecificDomain(fieldValue) {
+		return !fieldValue.match(PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
+	}
 };

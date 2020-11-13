@@ -51,4 +51,6 @@ export const InteractiveAnswersValidator: {
 	validateAuthIDNotInList(newAuthID: string, authIDsList: string[]): boolean;
 	validateAlphanumericHyphenUnderscore(fieldValue: string): boolean;
 	validateMaximumLength(fieldValue: string, maxLength: number): boolean;
+	validateNonProductionAccountSpecificDomain(fieldValue: string): boolean;
+	validateNonProductionDomain(fieldValue: string): boolean;
 } = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
