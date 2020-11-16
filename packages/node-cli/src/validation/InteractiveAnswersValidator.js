@@ -6,7 +6,7 @@
 
 const ApplicationConstants = require('../ApplicationConstants');
 const NodeTranslationService = require('../services/NodeTranslationService');
-import {PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX} from '../ApplicationConstants'
+const {PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX} = require('../ApplicationConstants')
 
 const VALIDATION_RESULT_FAILURE = (validationError) => ({
 	result: false,
