@@ -31,6 +31,7 @@ const COMMAND = {
 	},
 	FLAGS: {
 		NO_PREVIEW: 'no_preview',
+		PREVIEW: 'dryrun',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
 		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
@@ -43,6 +44,7 @@ module.exports = class DeployAction extends BaseAction {
 		const projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._projectType = projectInfoService.getProjectType();
 		this._projectName = projectInfoService.getProjectName();
+
 	}
 
 	preExecute(params) {
@@ -70,7 +72,13 @@ module.exports = class DeployAction extends BaseAction {
 				flags.push(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 			}
 
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+			if (params[COMMAND.FLAGS.PREVIEW]) {
+				console.log("Dry-run option passed")
+			}
+
+			console.log(params)
+
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);			
 
 			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()

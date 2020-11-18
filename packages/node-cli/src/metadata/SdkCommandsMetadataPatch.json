@@ -21,13 +21,6 @@
 			}
 		}
 	},
-	"object:import": {
-		"options": {
-			"scriptid": {
-				"description": "Specify the script ID. You can import one custom object or all custom objects. For example, \"--scriptid customrecord_1\" imports only one object, and \"--scriptid ALL\" imports all custom objects of the specified type."
-			}
-		}
-	},
 	"file:import": {
 		"description": "Imports files from an account to your account customization project. You cannot import files from a SuiteApp.",
 		"options": {
@@ -42,5 +35,26 @@
 				"description": "Specify the file cabinet path of the file to upload. For example, \"/SuiteScripts/file.js\"."
 			}
 		}
-	}
+	},
+	"project:deploy": {
+		"options": {
+			"dryrun": {
+				"name": "dryrun",
+				"option": "dryrun",
+				"description": "Run a preview of your deploy process. Your project is not deployed.",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			}
+		}
+	},
+	"object:import": {
+		"options": {
+			"scriptid": {
+				"description": "Specify the script ID. You can import one custom object or all custom objects. For example, \"--scriptid customrecord_1\" imports only one object, and \"--scriptid ALL\" imports all custom objects of the specified type."
+			}
+		}
+	}	
 }
