@@ -5,8 +5,8 @@
 'use strict';
 
 const ApplicationConstants = require('../ApplicationConstants');
+const { PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX } = require('../ApplicationConstants');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const {PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX} = require('../ApplicationConstants')
 
 const VALIDATION_RESULT_FAILURE = (validationError) => ({
 	result: false,

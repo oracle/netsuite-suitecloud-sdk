@@ -9,7 +9,7 @@ import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/A
 import { sdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
-import {PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX} from '../ApplicationConstants'
+import { PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX } from '../ApplicationConstants'
 
 const COMMAND_NAME = 'account:setup';
 

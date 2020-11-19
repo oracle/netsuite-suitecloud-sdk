@@ -38,6 +38,8 @@ module.exports = {
 	PROJECT_SUITEAPP: 'SUITEAPP',
 	PROD_ENVIRONMENT_ADDRESS: 'system.netsuite.com',
 	PROJECT_FOLDER_ARG: '--projectFolder',
+	PRODUCTION_DOMAIN_REGEX: '^system\\.(\\w+\\.)*netsuite\\.com$',
+	PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX: '^(\\w+)\\.app\\.netsuite\\.com$',
 	LINKS: {
 		INFO: {
 			PROJECT_STRUCTURE: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155931221634.html',
