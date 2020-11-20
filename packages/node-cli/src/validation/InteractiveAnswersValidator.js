@@ -6,7 +6,6 @@
 
 const ApplicationConstants = require('../ApplicationConstants');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const {PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX} = require('../ApplicationConstants')
 
 const VALIDATION_RESULT_FAILURE = (validationError) => ({
 	result: false,
@@ -152,13 +151,13 @@ module.exports = {
 	},
 
 	validateNonProductionDomain(fieldValue) {
-		return !fieldValue.match(PRODUCTION_DOMAIN_REGEX)
+		return !fieldValue.match(ApplicationConstants.PRODUCTION_DOMAIN_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	},
 
 	validateNonProductionAccountSpecificDomain(fieldValue) {
-		return !fieldValue.match(PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
+		return !fieldValue.match(ApplicationConstants.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	}
