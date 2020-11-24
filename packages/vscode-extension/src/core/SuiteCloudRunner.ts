@@ -4,7 +4,7 @@
  */
 
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
-import { sdkPath } from './sdksetup/SdkProperties';
+import { getSdkPath } from './sdksetup/SdkProperties';
 
 import { CommandActionExecutor, CommandOptionsValidator, CLIConfigurationService, ApplicationConstants } from '../util/ExtensionUtil';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
@@ -21,7 +21,7 @@ export default class SuiteCloudRunner {
 			cliConfigurationService: new CLIConfigurationService(),
 			commandsMetadataService: CommandsMetadataSingleton.getInstance(),
 			log: new VSConsoleLogger(),
-			sdkPath: sdkPath,
+			sdkPath: getSdkPath(),
 		});
 	}
 

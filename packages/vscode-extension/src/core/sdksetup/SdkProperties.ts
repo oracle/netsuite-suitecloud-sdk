@@ -5,12 +5,44 @@
 'use strict';
 
 import { homedir } from 'os';
-import { join } from 'path';
-import { sdkDownloadUrl, sdkFilename } from './extension.config.json';
-
-export const SDK_DOWNLOAD_URL = sdkDownloadUrl;
-export const SDK_FILENAME = sdkFilename;
+import * as path from 'path';
+import * as fs from 'fs';
+import { ApplicationConstants } from '../../util/ExtensionUtil';
 
 export const SUITECLOUD_FOLDER = '.suitecloud-sdk';
 export const VSCODE_SDK_FOLDER = 'vscode';
-export const sdkPath = join(homedir(), SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER, SDK_FILENAME);
+
+const SUITECLOUD_CLI_PACKAGE_JSON = '@oracle/suitecloud-cli/package.json';
+const EXTENSION_CONFIG_JSON_FILENAME = "extension.config.json"
+const EXTENSION_CONFIG_JSON_FILE = "./" + EXTENSION_CONFIG_JSON_FILENAME;
+
+function getSdkDownloadUrl(): string {
+	if (extensionConfigJsonFileExists()) {
+		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
+		return extensionConfigJsonFile.sdkDownloadUrl
+	}
+
+	const suiteCloudCliModulePackageJsonPath = require.resolve(SUITECLOUD_CLI_PACKAGE_JSON);
+	return require(suiteCloudCliModulePackageJsonPath).sdkDownloadUrl;
+}
+
+function extensionConfigJsonFileExists() {
+	return fs.existsSync(path.resolve(__dirname, EXTENSION_CONFIG_JSON_FILENAME));
+}
+
+export function getSdkPath(): string {
+	return path.join(homedir(), SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER, getSdkDownloadUrl());
+}
+
+export function getSdkFilename(): string {
+	if (extensionConfigJsonFileExists()) {
+		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
+		return extensionConfigJsonFile.sdkFilename;
+	}
+
+	return ApplicationConstants.SDK_FILENAME;
+}
+
+export function getSdkDownloadFullUrl() {
+	return getSdkDownloadUrl() + '/' + getSdkFilename();
+}
