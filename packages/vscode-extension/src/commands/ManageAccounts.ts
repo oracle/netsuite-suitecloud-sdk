@@ -6,7 +6,7 @@ import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator, A
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
-import { sdkPath } from '../core/sdksetup/SdkProperties';
+import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX } from '../ApplicationConstants'
@@ -59,7 +59,7 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	protected async execute() {
-		const accountsPromise = AuthenticationUtils.getAuthIds(sdkPath);
+		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
 		const actionResult: ActionResult<AuthListData> = await accountsPromise;
 
@@ -171,7 +171,7 @@ export default class ManageAccounts extends BaseAction {
 		// This will start the execution in the background and initialize cancellationToken.cancel method
 		const authenticatePromise: Promise<AuthenticateActionResult> = AuthenticationUtils.authenticateWithOauth(
 			commandParams,
-			sdkPath,
+			getSdkPath(),
 			this.executionPath,
 			cancellationToken
 		);
@@ -226,7 +226,7 @@ export default class ManageAccounts extends BaseAction {
 		return await window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
-			validateInput: (fieldValue) => { 
+			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
@@ -247,7 +247,7 @@ export default class ManageAccounts extends BaseAction {
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
-					fieldValue, 
+					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore
@@ -264,7 +264,7 @@ export default class ManageAccounts extends BaseAction {
 			password: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
-					fieldValue, 
+					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
@@ -279,7 +279,7 @@ export default class ManageAccounts extends BaseAction {
 			password: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
-					fieldValue, 
+					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
@@ -325,7 +325,7 @@ export default class ManageAccounts extends BaseAction {
 			commandParams.dev = !url.match(PRODUCTION_DOMAIN_REGEX) && !url.match(PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
 		}
 
-		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, sdkPath, this.executionPath);
+		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.executionPath);
 
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA), true, saveTokenPromise);
 
