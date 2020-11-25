@@ -5,8 +5,8 @@
 'use strict';
 
 import { homedir } from 'os';
-import * as path from 'path';
-import * as fs from 'fs';
+import { join, resolve } from 'path';
+import { existsSync } from 'fs';
 import { ApplicationConstants } from '../../util/ExtensionUtil';
 
 export const SUITECLOUD_FOLDER = '.suitecloud-sdk';
@@ -26,12 +26,12 @@ function getSdkDownloadUrl(): string {
 	return require(suiteCloudCliModulePackageJsonPath).sdkDownloadUrl;
 }
 
-function extensionConfigJsonFileExists() {
-	return fs.existsSync(path.resolve(__dirname, EXTENSION_CONFIG_JSON_FILENAME));
+function extensionConfigJsonFileExists(): boolean {
+	return existsSync(resolve(__dirname, EXTENSION_CONFIG_JSON_FILENAME));
 }
 
 export function getSdkPath(): string {
-	return path.join(homedir(), SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER, getSdkDownloadUrl());
+	return join(homedir(), SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER, getSdkFilename());
 }
 
 export function getSdkFilename(): string {
@@ -43,6 +43,6 @@ export function getSdkFilename(): string {
 	return ApplicationConstants.SDK_FILENAME;
 }
 
-export function getSdkDownloadFullUrl() {
+export function getSdkDownloadFullUrl(): string {
 	return getSdkDownloadUrl() + '/' + getSdkFilename();
 }
