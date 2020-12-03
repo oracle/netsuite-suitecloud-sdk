@@ -8,5 +8,5 @@ export function getTimestamp(): string {
     const datePartsArray = [dateNow.getFullYear(), dateNow.getMonth() + 1, dateNow.getDate()].map(date => date.toString().length === 1 ? "0" + date : date);
     const timePartsArray = [dateNow.getHours(), dateNow.getMinutes(), dateNow.getSeconds()].map(time => time.toString().length === 1 ? "0" + time : time);
 
-    return datePartsArray.join("/") + " " + timePartsArray.join(":");
+    return datePartsArray.join("-") + " " + timePartsArray.join(":");
 }
