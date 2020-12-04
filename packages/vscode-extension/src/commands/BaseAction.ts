@@ -13,74 +13,74 @@ import { getTimestamp } from '../util/DateUtils';
 
 export default abstract class BaseAction {
 
-    private vsConsoleLogger = new VSConsoleLogger();
+	private vsConsoleLogger = new VSConsoleLogger();
 
-    protected readonly translationService: VSTranslationService;
-    protected executionPath?: string;
-    protected readonly messageService: MessageService;
-    protected readonly commandName: string;
+	protected readonly translationService: VSTranslationService;
+	protected executionPath?: string;
+	protected readonly messageService: MessageService;
+	protected readonly commandName: string;
 
-    protected abstract async execute(): Promise<void>;
+	protected abstract async execute(): Promise<void>;
 
-    constructor(commandName: string) {
-        this.commandName = commandName;
-        this.messageService = new MessageService(this.commandName);
-        this.translationService = new VSTranslationService();
-    }
+	constructor(commandName: string) {
+		this.commandName = commandName;
+		this.messageService = new MessageService(this.commandName);
+		this.translationService = new VSTranslationService();
+	}
 
-    private logToOutputExecutionDetails(): void {
-        if (this.executionPath) {
-            this.vsConsoleLogger.info(getTimestamp() + " - " + BaseAction.getProjectFolderName(this.executionPath));
-        } else {
-            this.vsConsoleLogger.info(getTimestamp());
-        }
-    }
+	private logToOutputExecutionDetails(): void {
+		if (this.executionPath) {
+			this.vsConsoleLogger.info(getTimestamp() + " - " + this.getProjectFolderName(this.executionPath));
+		} else {
+			this.vsConsoleLogger.info(getTimestamp());
+		}
+	}
 
-    private static getProjectFolderName(executionPath: string): string {
-        const executionPathParts = executionPath.replace(/\\/g, "/").split("/");
+	private getProjectFolderName(executionPath: string): string {
+		const executionPathParts = executionPath.replace(/\\/g, "/").split("/");
 
-        return executionPathParts[executionPathParts.length - 1];
-    }
+		return executionPathParts[executionPathParts.length - 1];
+	}
 
-    protected init() {
-        this.executionPath = getRootProjectFolder();
-    }
+	protected init() {
+		this.executionPath = getRootProjectFolder();
+	}
 
-    protected validate(): { valid: false; message: string } | { valid: true } {
-        if (!this.executionPath) {
-            return {
-                valid: false,
-                message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE_OR_WORKSPACE),
-            };
-        } else {
-            return {
-                valid: true,
-            };
-        }
-    }
+	protected validate(): { valid: false; message: string } | { valid: true } {
+		if (!this.executionPath) {
+			return {
+				valid: false,
+				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE_OR_WORKSPACE),
+			};
+		} else {
+			return {
+				valid: true,
+			};
+		}
+	}
 
-    protected async runSuiteCloudCommand(args: { [key: string]: string } = {} ) {
-        this.logToOutputExecutionDetails();
+	protected async runSuiteCloudCommand(args: { [key: string]: string } = {} ) {
+		this.logToOutputExecutionDetails();
 
-        const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.executionPath).run({
-            commandName: this.commandName,
-            arguments: args,
-        });
+		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.executionPath).run({
+			commandName: this.commandName,
+			arguments: args,
+		});
 
-        this.vsConsoleLogger.info("");
+		this.vsConsoleLogger.info("");
 
-        return suiteCloudRunnerRunResult;
-    }
+		return suiteCloudRunnerRunResult;
+	}
 
-    public async run() {
-        this.init();
-        const validationStatus = this.validate();
-        if (validationStatus.valid) {
-            return this.execute();
-        } else {
-            this.messageService.showErrorMessage(validationStatus.message);
-            return;
-        }
-    }
+	public async run() {
+		this.init();
+		const validationStatus = this.validate();
+		if (validationStatus.valid) {
+			return this.execute();
+		} else {
+			this.messageService.showErrorMessage(validationStatus.message);
+			return;
+		}
+	}
 
 }
