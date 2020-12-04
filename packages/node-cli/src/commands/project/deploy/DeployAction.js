@@ -44,7 +44,6 @@ module.exports = class DeployAction extends BaseAction {
 		const projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._projectType = projectInfoService.getProjectType();
 		this._projectName = projectInfoService.getProjectName();
-
 	}
 
 	preExecute(params) {
@@ -61,7 +60,8 @@ module.exports = class DeployAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
+			let flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
+
 			if (params[COMMAND.FLAGS.VALIDATE]) {
 				delete params[COMMAND.FLAGS.VALIDATE];
 				flags.push(COMMAND.FLAGS.VALIDATE);
@@ -73,14 +73,33 @@ module.exports = class DeployAction extends BaseAction {
 			}
 
 			if (params[COMMAND.FLAGS.PREVIEW]) {
-				console.log("Dry-run option passed")
+				delete params[COMMAND.FLAGS.PREVIEW];
+				flags = flags.slice((0, 2));
+				console.log(flags)
+
+				const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+
+				const executionContextForDryrun = SdkExecutionContext.Builder.forCommand("preview")
+				.integration()
+				.addParams(sdkParams)
+				.addFlags(flags)
+				.build();
+
+				const DryrunOperationResult = await executeWithSpinner({
+					action: this._sdkExecutor.execute(executionContextForDryrun),
+					message: NodeTranslationService.getMessage(MESSAGES.PREVIEWING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
+				});
+
+				if (DryrunOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+					throw DryrunOperationResult.errorMessages;
+				}
+				console.log(DryrunOperationResult)
+				return DryrunOperationResult.data;
 			}
 
-			console.log(params)
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);		
 
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);			
-
-			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand )
 				.integration()
 				.addParams(sdkParams)
 				.addFlags(flags)
