@@ -5,6 +5,7 @@
 'use strict';
 
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const DeployActionResult = require('../../../services/actionresult/DeployActionResult');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
@@ -19,7 +20,7 @@ const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils'
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 
 const {
-	COMMAND_DEPLOY: { MESSAGES },
+	COMMAND_DEPLOY, ERRORS,
 } = require('../../../services/TranslationKeys');
 
 const COMMAND = {
@@ -73,28 +74,37 @@ module.exports = class DeployAction extends BaseAction {
 			}
 
 			if (params[COMMAND.FLAGS.PREVIEW]) {
-				delete params[COMMAND.FLAGS.PREVIEW];
-				flags = flags.slice((0, 2));
-				console.log(flags)
+				try {
+					delete params[COMMAND.FLAGS.PREVIEW];
+					flags = flags.slice((0, 2));
 
-				const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+					if (flags.includes(COMMAND.FLAGS.VALIDATE)) {
+						throw NodeTranslationService.getMessage(COMMAND_DEPLOY.ERRORS.VALIDATE_AND_DRYRUN_OPTIONS_PASSED);
+					}
 
-				const executionContextForDryrun = SdkExecutionContext.Builder.forCommand("preview")
-				.integration()
-				.addParams(sdkParams)
-				.addFlags(flags)
-				.build();
+					const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
-				const DryrunOperationResult = await executeWithSpinner({
-					action: this._sdkExecutor.execute(executionContextForDryrun),
-					message: NodeTranslationService.getMessage(MESSAGES.PREVIEWING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
-				});
+					const executionContextForDryrun = SdkExecutionContext.Builder.forCommand('preview')
+						.integration()
+						.addParams(sdkParams)
+						.addFlags(flags)
+						.build();
 
-				if (DryrunOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-					throw DryrunOperationResult.errorMessages;
+					const DryrunOperationResult = await executeWithSpinner({
+						action: this._sdkExecutor.execute(executionContextForDryrun),
+						message: NodeTranslationService.getMessage(
+							COMMAND_DEPLOY.MESSAGES.PREVIEWING,
+							this._projectName,
+							getProjectDefaultAuthId(this._executionPath)
+						),
+					});
+
+					return DryrunOperationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+						? ActionResult.Builder.withData(DryrunOperationResult.data).withResultMessage(DryrunOperationResult.resultMessage).build()
+						: ActionResult.Builder.withErrors(DryrunOperationResult.errorMessages).build();
+				} catch (error) {
+					return ActionResult.Builder.withErrors([error]).build();
 				}
-				console.log(DryrunOperationResult)
-				return DryrunOperationResult.data;
 			}
 
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);		
@@ -107,7 +117,7 @@ module.exports = class DeployAction extends BaseAction {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForDeploy),
-				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
+				message: NodeTranslationService.getMessage(COMMAND_DEPLOY.MESSAGES.DEPLOYING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
 			});
 
 			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
