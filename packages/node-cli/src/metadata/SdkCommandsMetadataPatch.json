@@ -36,6 +36,13 @@
 			}
 		}
 	},
+	"object:import": {
+		"options": {
+			"scriptid": {
+				"description": "Specify the script ID. You can import one custom object or all custom objects. For example, \"--scriptid customrecord_1\" imports only one object, and \"--scriptid ALL\" imports all custom objects of the specified type."
+			}
+		}
+	},
 	"project:deploy": {
 		"options": {
 			"dryrun": {
@@ -47,13 +54,6 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
-			}
-		}
-	},
-	"object:import": {
-		"options": {
-			"scriptid": {
-				"description": "Specify the script ID. You can import one custom object or all custom objects. For example, \"--scriptid customrecord_1\" imports only one object, and \"--scriptid ALL\" imports all custom objects of the specified type."
 			}
 		}
 	}	
