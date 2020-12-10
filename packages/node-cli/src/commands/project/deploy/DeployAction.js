@@ -91,7 +91,8 @@ module.exports = class DeployAction extends (
 	async _preview(params, flags) {
 		try {
 			delete params[COMMAND.FLAGS.PREVIEW];
-			flags = flags.slice((0, 2));
+			flags.splice(flags.indexOf(COMMAND.FLAGS.NO_PREVIEW), 1); 
+			flags.splice(flags.indexOf(COMMAND.FLAGS.SKIP_WARNING), 1);
 
 			if (flags.includes(COMMAND.FLAGS.VALIDATE)) {
 				throw NodeTranslationService.getMessage(COMMAND_DEPLOY.ERRORS.VALIDATE_AND_DRYRUN_OPTIONS_PASSED);
