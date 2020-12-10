@@ -39,6 +39,8 @@ const COMMAND = {
 	},
 };
 
+const previewCommand = 'preview';
+
 module.exports = class DeployAction extends BaseAction {
 	constructor(options) {
 		super(options);
@@ -84,7 +86,7 @@ module.exports = class DeployAction extends BaseAction {
 
 					const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
-					const executionContextForDryrun = SdkExecutionContext.Builder.forCommand('preview')
+					const executionContextForDryrun = SdkExecutionContext.Builder.forCommand(previewCommand)
 						.integration()
 						.addParams(sdkParams)
 						.addFlags(flags)
