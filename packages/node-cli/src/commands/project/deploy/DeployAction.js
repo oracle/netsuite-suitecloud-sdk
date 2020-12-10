@@ -39,9 +39,11 @@ const COMMAND = {
 	},
 };
 
-const previewCommand = 'preview';
+const PREVIEW_COMMAND = 'preview';
 
-module.exports = class DeployAction extends BaseAction {
+module.exports = class DeployAction extends (
+	BaseAction
+) {
 	constructor(options) {
 		super(options);
 		const projectInfoService = new ProjectInfoService(this._projectFolder);
@@ -76,42 +78,55 @@ module.exports = class DeployAction extends BaseAction {
 			}
 
 			if (params[COMMAND.FLAGS.PREVIEW]) {
-				try {
-					delete params[COMMAND.FLAGS.PREVIEW];
-					flags = flags.slice((0, 2));
-
-					if (flags.includes(COMMAND.FLAGS.VALIDATE)) {
-						throw NodeTranslationService.getMessage(COMMAND_DEPLOY.ERRORS.VALIDATE_AND_DRYRUN_OPTIONS_PASSED);
-					}
-
-					const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
-
-					const executionContextForDryrun = SdkExecutionContext.Builder.forCommand(previewCommand)
-						.integration()
-						.addParams(sdkParams)
-						.addFlags(flags)
-						.build();
-
-					const DryrunOperationResult = await executeWithSpinner({
-						action: this._sdkExecutor.execute(executionContextForDryrun),
-						message: NodeTranslationService.getMessage(
-							COMMAND_DEPLOY.MESSAGES.PREVIEWING,
-							this._projectName,
-							getProjectDefaultAuthId(this._executionPath)
-						),
-					});
-
-					return DryrunOperationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-						? ActionResult.Builder.withData(DryrunOperationResult.data).withResultMessage(DryrunOperationResult.resultMessage).build()
-						: ActionResult.Builder.withErrors(DryrunOperationResult.errorMessages).build();
-				} catch (error) {
-					return ActionResult.Builder.withErrors([error]).build();
-				}
+				return await this._preview(params, flags);
 			}
 
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);		
+			return await this._deploy(params, flags);
 
-			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand )
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build();
+		}
+	}
+
+	async _preview(params, flags) {
+		try {
+			delete params[COMMAND.FLAGS.PREVIEW];
+			flags = flags.slice((0, 2));
+
+			if (flags.includes(COMMAND.FLAGS.VALIDATE)) {
+				throw NodeTranslationService.getMessage(COMMAND_DEPLOY.ERRORS.VALIDATE_AND_DRYRUN_OPTIONS_PASSED);
+			}
+
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+
+			const executionContextForDryrun = SdkExecutionContext.Builder.forCommand(PREVIEW_COMMAND)
+				.integration()
+				.addParams(sdkParams)
+				.addFlags(flags)
+				.build();
+
+			const dryrunOperationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForDryrun),
+				message: NodeTranslationService.getMessage(
+					COMMAND_DEPLOY.MESSAGES.PREVIEWING,
+					this._projectName,
+					getProjectDefaultAuthId(this._executionPath)
+				),
+			});
+
+			return dryrunOperationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+				? ActionResult.Builder.withData(dryrunOperationResult.data).withResultMessage(dryrunOperationResult.resultMessage).build()
+				: ActionResult.Builder.withErrors(dryrunOperationResult.errorMessages).build();
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build();
+		}
+	}
+
+	async _deploy(params, flags) {
+		try {
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+
+			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(sdkParams)
 				.addFlags(flags)
@@ -119,7 +134,11 @@ module.exports = class DeployAction extends BaseAction {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForDeploy),
-				message: NodeTranslationService.getMessage(COMMAND_DEPLOY.MESSAGES.DEPLOYING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
+				message: NodeTranslationService.getMessage(
+					COMMAND_DEPLOY.MESSAGES.DEPLOYING,
+					this._projectName,
+					getProjectDefaultAuthId(this._executionPath)
+				),
 			});
 
 			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
