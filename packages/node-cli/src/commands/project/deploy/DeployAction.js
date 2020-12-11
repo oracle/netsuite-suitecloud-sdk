@@ -5,6 +5,7 @@
 'use strict';
 
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const DeployActionResult = require('../../../services/actionresult/DeployActionResult');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
@@ -19,7 +20,7 @@ const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils'
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 
 const {
-	COMMAND_DEPLOY: { MESSAGES },
+	COMMAND_DEPLOY, ERRORS,
 } = require('../../../services/TranslationKeys');
 
 const COMMAND = {
@@ -31,13 +32,18 @@ const COMMAND = {
 	},
 	FLAGS: {
 		NO_PREVIEW: 'no_preview',
+		PREVIEW: 'dryrun',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
 		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	},
 };
 
-module.exports = class DeployAction extends BaseAction {
+const PREVIEW_COMMAND = 'preview';
+
+module.exports = class DeployAction extends (
+	BaseAction
+) {
 	constructor(options) {
 		super(options);
 		const projectInfoService = new ProjectInfoService(this._projectFolder);
@@ -59,7 +65,8 @@ module.exports = class DeployAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
+			let flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
+
 			if (params[COMMAND.FLAGS.VALIDATE]) {
 				delete params[COMMAND.FLAGS.VALIDATE];
 				flags.push(COMMAND.FLAGS.VALIDATE);
@@ -70,6 +77,54 @@ module.exports = class DeployAction extends BaseAction {
 				flags.push(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION);
 			}
 
+			if (params[COMMAND.FLAGS.PREVIEW]) {
+				return await this._preview(params, flags);
+			}
+
+			return await this._deploy(params, flags);
+
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build();
+		}
+	}
+
+	async _preview(params, flags) {
+		try {
+			delete params[COMMAND.FLAGS.PREVIEW];
+			flags.splice(flags.indexOf(COMMAND.FLAGS.NO_PREVIEW), 1); 
+			flags.splice(flags.indexOf(COMMAND.FLAGS.SKIP_WARNING), 1);
+
+			if (flags.includes(COMMAND.FLAGS.VALIDATE)) {
+				throw NodeTranslationService.getMessage(COMMAND_DEPLOY.ERRORS.VALIDATE_AND_DRYRUN_OPTIONS_PASSED);
+			}
+
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+
+			const executionContextForDryrun = SdkExecutionContext.Builder.forCommand(PREVIEW_COMMAND)
+				.integration()
+				.addParams(sdkParams)
+				.addFlags(flags)
+				.build();
+
+			const dryrunOperationResult = await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContextForDryrun),
+				message: NodeTranslationService.getMessage(
+					COMMAND_DEPLOY.MESSAGES.PREVIEWING,
+					this._projectName,
+					getProjectDefaultAuthId(this._executionPath)
+				),
+			});
+
+			return dryrunOperationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+				? ActionResult.Builder.withData(dryrunOperationResult.data).withResultMessage(dryrunOperationResult.resultMessage).build()
+				: ActionResult.Builder.withErrors(dryrunOperationResult.errorMessages).build();
+		} catch (error) {
+			return ActionResult.Builder.withErrors([error]).build();
+		}
+	}
+
+	async _deploy(params, flags) {
+		try {
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
 			const executionContextForDeploy = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
@@ -80,7 +135,11 @@ module.exports = class DeployAction extends BaseAction {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextForDeploy),
-				message: NodeTranslationService.getMessage(MESSAGES.DEPLOYING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
+				message: NodeTranslationService.getMessage(
+					COMMAND_DEPLOY.MESSAGES.DEPLOYING,
+					this._projectName,
+					getProjectDefaultAuthId(this._executionPath)
+				),
 			});
 
 			const isServerValidation = sdkParams[COMMAND.FLAGS.VALIDATE] ? true : false;
