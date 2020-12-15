@@ -8,7 +8,6 @@ import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
-import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX } from '../ApplicationConstants'
 
 const COMMAND_NAME = 'account:setup';
@@ -45,10 +44,9 @@ interface CancellationToken {
 }
 
 export default class ManageAccounts extends BaseAction {
-	private log: VSConsoleLogger;
+
 	constructor() {
 		super(COMMAND_NAME);
-		this.log = new VSConsoleLogger();
 	}
 
 	protected validate(): { valid: true } {
@@ -185,23 +183,11 @@ export default class ManageAccounts extends BaseAction {
 				}
 			});
 
+		this.logToOutputExecutionDetails();
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), true, authenticatePromise);
 
 		const actionResult = await authenticatePromise;
-		if (actionResult.status === actionResultStatus.SUCCESS) {
-			this.log.result(
-				this.translationService.getMessage(
-					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
-					actionResult.accountInfo.companyName,
-					actionResult.accountInfo.roleName,
-					actionResult.authId
-				)
-			);
-			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
-		} else {
-			actionResult.errorMessages.forEach((e) => this.log.error(e));
-			this.messageService.showCommandError();
-		}
+		this.handleAuthenticateActionResult(actionResult);
 	}
 
 	private async getNewAuthId(accountCredentialsList: AuthListData) {
@@ -326,12 +312,16 @@ export default class ManageAccounts extends BaseAction {
 		}
 
 		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.executionPath);
-
+		this.logToOutputExecutionDetails();
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA), true, saveTokenPromise);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
+		this.handleAuthenticateActionResult(actionResult);
+	}
+
+	private handleAuthenticateActionResult(actionResult: AuthenticateActionResult): void {
 		if (actionResult.status === actionResultStatus.SUCCESS) {
-			this.log.result(
+			this.vsConsoleLogger.result(
 				this.translationService.getMessage(
 					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
 					actionResult.accountInfo.companyName,
@@ -341,22 +331,29 @@ export default class ManageAccounts extends BaseAction {
 			);
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
 		} else {
-			actionResult.errorMessages.forEach((e) => this.log.error(e));
+			actionResult.errorMessages.forEach((e) => this.vsConsoleLogger.error(e));
 			this.messageService.showCommandError();
 		}
+
+		this.vsConsoleLogger.info("");
 	}
 
 	private handleSelectedAuth(authId: string) {
+		this.logToOutputExecutionDetails();
+
 		if (!this.executionPath) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.NOT_IN_PROJECT));
 			return;
 		}
+
 		try {
 			AuthenticationUtils.setDefaultAuthentication(this.executionPath, authId);
-			this.log.result(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
+			this.vsConsoleLogger.result(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 		} catch (e) {
 			this.messageService.showErrorMessage(e);
 		}
+
+		this.vsConsoleLogger.info("");
 	}
 }
