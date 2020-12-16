@@ -1,7 +1,7 @@
 {
-    "account:ci": {
-        "name": "account:ci",
-        "description": "Set up an account to use with the SuiteCloud CLI for Node.js. This command only supports non-interactive mode.",
+    "account:savetoken": {
+        "name": "account:savetoken",
+        "description": "Saves a TBA token that you issued previously in NetSuite.",
         "isSetupRequired": false,
         "options": {
             "account": {
@@ -12,12 +12,6 @@
             "authid": {
                 "name": "authid",
                 "description": "References the custom name you gave to a specific account-role combination.",
-                "mandatory": false
-            },
-            "savetoken" :{
-                "name": "savetoken",
-                "description": "Enter a TBA token that you issued previously in NetSuite.",
-                "type": "FLAG",
                 "mandatory": false
             },
             "tokenid": {
