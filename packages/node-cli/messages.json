@@ -192,8 +192,7 @@
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID \"{0}\" as default for the following company and role: {1} [{2}]. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 
-	"COMMAND_ACCOUNTCI_SAVETOKEN_MANDATORY": "There are validation errors:\n\"savetoken\" flag is mandatory.",
-	"COMMAND_ACCOUNTCI_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default.",
+	"COMMAND_ACCOUNTSAVETOKEN_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default.",
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 

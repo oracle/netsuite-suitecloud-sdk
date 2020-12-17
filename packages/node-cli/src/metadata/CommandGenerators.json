@@ -1,8 +1,8 @@
 [
     {
-        "commandName": "account:ci",
+        "commandName": "account:savetoken",
         "supportsInteractiveMode": false,
-        "generator": "./commands/account/ci/AccountCiCommand"
+        "generator": "./commands/account/savetoken/AccountSaveTokenCommand"
     },
     {
         "commandName": "account:manageauth",
