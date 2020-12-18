@@ -13,12 +13,11 @@ import { getTimestamp } from '../util/DateUtils';
 
 export default abstract class BaseAction {
 
-	private vsConsoleLogger = new VSConsoleLogger();
-
 	protected readonly translationService: VSTranslationService;
 	protected executionPath?: string;
 	protected readonly messageService: MessageService;
 	protected readonly commandName: string;
+	protected readonly vsConsoleLogger = new VSConsoleLogger();
 
 	protected abstract async execute(): Promise<void>;
 
@@ -26,14 +25,6 @@ export default abstract class BaseAction {
 		this.commandName = commandName;
 		this.messageService = new MessageService(this.commandName);
 		this.translationService = new VSTranslationService();
-	}
-
-	private logToOutputExecutionDetails(): void {
-		if (this.executionPath) {
-			this.vsConsoleLogger.info(getTimestamp() + " - " + this.getProjectFolderName(this.executionPath));
-		} else {
-			this.vsConsoleLogger.info(getTimestamp());
-		}
 	}
 
 	private getProjectFolderName(executionPath: string): string {
@@ -70,6 +61,14 @@ export default abstract class BaseAction {
 		this.vsConsoleLogger.info("");
 
 		return suiteCloudRunnerRunResult;
+	}
+
+	protected logToOutputExecutionDetails(): void {
+		if (this.executionPath) {
+			this.vsConsoleLogger.info(getTimestamp() + " - " + this.getProjectFolderName(this.executionPath));
+		} else {
+			this.vsConsoleLogger.info(getTimestamp());
+		}
 	}
 
 	public async run() {
