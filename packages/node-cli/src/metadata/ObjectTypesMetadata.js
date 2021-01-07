@@ -515,7 +515,7 @@ module.exports = [
 		value: {
 			name: 'Secret',
 			type: 'secret',
-			prefix: 'custsecret',
+			prefix: 'custsecret_',
 			hasRelatedFiles: true,
 			relatedFiles: false,
 		},
