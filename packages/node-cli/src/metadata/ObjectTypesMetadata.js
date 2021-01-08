@@ -42,6 +42,15 @@ module.exports = [
 		},
 	},
 	{
+		name: 'Center Link',
+		value: {
+			name: 'Center Link',
+			type: 'centerlink',
+			prefix: 'custcenterlink_',
+			hasRelatedFiles: false,
+		},
+	},
+	{
 		name: 'Center Tab',
 		value: {
 			name: 'Center Tab',
@@ -499,6 +508,16 @@ module.exports = [
 			prefix: 'customscript_',
 			hasRelatedFiles: true,
 			relatedFiles: [{ type: 'blankscript' }],
+		},
+	},
+	{
+		name: 'Secret',
+		value: {
+			name: 'Secret',
+			type: 'secret',
+			prefix: 'custsecret_',
+			hasRelatedFiles: true,
+			relatedFiles: false,
 		},
 	},
 	{
