@@ -29,6 +29,7 @@ const COMMAND = {
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
 		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
+		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	},
 };
 

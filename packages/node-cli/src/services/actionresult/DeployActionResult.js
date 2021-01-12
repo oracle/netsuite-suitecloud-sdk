@@ -40,7 +40,7 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
-	withAppliedContentProtection(appliedContentProtection) {
+	withAppliedInstallationPreferences(appliedContentProtection) {
 		this.appliedContentProtection = appliedContentProtection;
 		return this;
 	}
