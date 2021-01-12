@@ -60,7 +60,7 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	protected async execute() {
-        this.vsConsoleLogger.addExecutionDetailsToLog();
+		this.vsConsoleLogger.addExecutionDetailsToLog();
 
 		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
