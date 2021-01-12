@@ -10,6 +10,7 @@ import { CommandActionExecutor, CommandOptionsValidator, CLIConfigurationService
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
 
 export default class SuiteCloudRunner {
+
 	private commandActionExecutor: any;
 
 	constructor(executionPath?: string) {
@@ -20,7 +21,7 @@ export default class SuiteCloudRunner {
 			commandOptionsValidator: new CommandOptionsValidator(),
 			cliConfigurationService: new CLIConfigurationService(),
 			commandsMetadataService: CommandsMetadataSingleton.getInstance(),
-			log: new VSConsoleLogger(),
+			log: new VSConsoleLogger(true, executionPath),
 			sdkPath: getSdkPath(),
 		});
 	}
@@ -29,4 +30,5 @@ export default class SuiteCloudRunner {
 		options.runInInteractiveMode = false;
 		return this.commandActionExecutor.executeAction(options);
 	}
+
 }
