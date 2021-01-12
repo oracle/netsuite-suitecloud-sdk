@@ -60,6 +60,10 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	protected async execute() {
+		//We need to add addExecutionDetailsToLog() call here because commands are cached in vscode-extension.
+		//ManageAccount will only be initialized on the first call.
+		//On the subsequent calls, the initialized ManageAccount will be re-used and not re-initialized.
+		//In order for every execution to have the execution details, we will need to call addExecutionDetailsToLog() here.
 		this.vsConsoleLogger.addExecutionDetailsToLog();
 
 		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
