@@ -16,7 +16,7 @@ export default abstract class BaseAction {
 	protected readonly messageService: MessageService;
 	protected readonly commandName: string;
 	protected executionPath?: string;
-	protected vsConsoleLogger: VSConsoleLogger;
+	protected vsConsoleLogger: VSConsoleLogger = new VSConsoleLogger();
 
 	protected abstract async execute(): Promise<void>;
 
@@ -24,7 +24,6 @@ export default abstract class BaseAction {
 		this.commandName = commandName;
 		this.messageService = new MessageService(this.commandName);
 		this.translationService = new VSTranslationService();
-		this.vsConsoleLogger = new VSConsoleLogger();
 	}
 
 	protected init() {
