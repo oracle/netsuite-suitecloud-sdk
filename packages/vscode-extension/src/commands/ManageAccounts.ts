@@ -4,6 +4,7 @@
  */
 import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator, ApplicationConstants } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
@@ -47,6 +48,8 @@ export default class ManageAccounts extends BaseAction {
 
 	constructor() {
 		super(COMMAND_NAME);
+
+		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 	}
 
 	protected validate(): { valid: true } {
@@ -57,6 +60,8 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	protected async execute() {
+        this.vsConsoleLogger.addExecutionDetailsToLog();
+
 		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
 		const actionResult: ActionResult<AuthListData> = await accountsPromise;
@@ -183,7 +188,6 @@ export default class ManageAccounts extends BaseAction {
 				}
 			});
 
-		this.logToOutputExecutionDetails();
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), true, authenticatePromise);
 
 		const actionResult = await authenticatePromise;
@@ -312,7 +316,6 @@ export default class ManageAccounts extends BaseAction {
 		}
 
 		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.executionPath);
-		this.logToOutputExecutionDetails();
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA), true, saveTokenPromise);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
@@ -339,8 +342,6 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	private handleSelectedAuth(authId: string) {
-		this.logToOutputExecutionDetails();
-
 		if (!this.executionPath) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.NOT_IN_PROJECT));
 			return;
