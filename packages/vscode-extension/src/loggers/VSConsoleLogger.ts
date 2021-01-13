@@ -55,9 +55,5 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	error(message: string): void {
 		this.println(message);
 	}
-	
-	addExecutionDetailsToLog(): void {
-		this._addExecutionDetailsToLog = true;
-	}
 
 }

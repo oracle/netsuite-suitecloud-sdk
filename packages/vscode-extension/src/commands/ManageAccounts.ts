@@ -4,7 +4,6 @@
  */
 import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator, ApplicationConstants } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
@@ -48,8 +47,6 @@ export default class ManageAccounts extends BaseAction {
 
 	constructor() {
 		super(COMMAND_NAME);
-
-		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 	}
 
 	protected validate(): { valid: true } {
@@ -60,12 +57,6 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	protected async execute() {
-		//We need to add addExecutionDetailsToLog() call here because commands are cached in vscode-extension.
-		//ManageAccount will only be initialized on the first call.
-		//On the subsequent calls, the initialized ManageAccount will be re-used and not re-initialized.
-		//In order for every execution to have the execution details, we will need to call addExecutionDetailsToLog() here.
-		this.vsConsoleLogger.addExecutionDetailsToLog();
-
 		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
 		const actionResult: ActionResult<AuthListData> = await accountsPromise;

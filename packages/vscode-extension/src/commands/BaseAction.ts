@@ -16,7 +16,7 @@ export default abstract class BaseAction {
 	protected readonly messageService: MessageService;
 	protected readonly commandName: string;
 	protected executionPath?: string;
-	protected vsConsoleLogger: VSConsoleLogger = new VSConsoleLogger();
+	protected vsConsoleLogger!: VSConsoleLogger;
 
 	protected abstract async execute(): Promise<void>;
 
@@ -27,7 +27,8 @@ export default abstract class BaseAction {
 	}
 
 	protected init() {
-		this.executionPath = getRootProjectFolder();
+        this.executionPath = getRootProjectFolder();
+        this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
