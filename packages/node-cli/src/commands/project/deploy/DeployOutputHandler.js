@@ -19,9 +19,9 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
-		this._showApplyContentProtectionOptionMessage(
+		this._showApplyInstallationPreferencesOptionMessage(
 			actionResult.projectType,
-			actionResult.appliedContentProtection,
+			actionResult.appliedInstallationPreferences,
 			actionResult.projectFolder
 		);
 
@@ -37,9 +37,9 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 		return actionResult;
 	}
 
-	_showApplyContentProtectionOptionMessage(projectType, isApplyContentProtection, projectFolder) {
+	_showApplyInstallationPreferencesOptionMessage(projectType, isApplyInstallationPreferences, projectFolder) {
 		if (projectType === PROJECT_SUITEAPP) {
-			if (isApplyContentProtection) {
+			if (isApplyInstallationPreferences) {
 				this._log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
 			} else {
 				this._log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));

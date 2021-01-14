@@ -22,7 +22,6 @@ const {
 const COMMAND_OPTIONS = {
 	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
-	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	PROJECT: 'project',
 	AUTH_ID: 'authid',
@@ -73,8 +72,8 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 			{
 				when: this._projectInfoService.getProjectType() === PROJECT_SUITEAPP && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION,
-				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
+				name: COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES,
+				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_INSTALLATION_PREFERENCES),
 				default: 0,
 				choices: [
 					{
