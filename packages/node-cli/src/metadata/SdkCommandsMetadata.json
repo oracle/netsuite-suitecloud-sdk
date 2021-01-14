@@ -177,6 +177,7 @@
 			"applyinstallprefs": {
 				"name": "applyinstallprefs",
 				"option": "applyinstallprefs",
+				"alias": "a",
 				"description": "Apply the settings from the hiding.xml, locking.xml, and overwriting.xml files. It only applies to SuiteApps.",
 				"mandatory": false,
 				"type": "FLAG",
@@ -658,6 +659,7 @@
 			"applyinstallprefs": {
 				"name": "applyinstallprefs",
 				"option": "applyinstallprefs",
+				"alias": "a",
 				"description": "Apply the settings from the hiding.xml, locking.xml, and overwriting.xml files. It only applies to SuiteApps.",
 				"mandatory": false,
 				"type": "FLAG",
