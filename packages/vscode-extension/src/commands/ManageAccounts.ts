@@ -183,7 +183,6 @@ export default class ManageAccounts extends BaseAction {
 				}
 			});
 
-		this.logToOutputExecutionDetails();
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), true, authenticatePromise);
 
 		const actionResult = await authenticatePromise;
@@ -312,7 +311,6 @@ export default class ManageAccounts extends BaseAction {
 		}
 
 		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.executionPath);
-		this.logToOutputExecutionDetails();
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA), true, saveTokenPromise);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
@@ -339,8 +337,6 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	private handleSelectedAuth(authId: string) {
-		this.logToOutputExecutionDetails();
-
 		if (!this.executionPath) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.NOT_IN_PROJECT));
 			return;

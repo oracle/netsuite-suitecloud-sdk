@@ -9,15 +9,14 @@ import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { VSTranslationService } from '../service/VSTranslationService';
 import { getRootProjectFolder } from '../util/ExtensionUtil';
 import { ERRORS } from '../service/TranslationKeys';
-import { getTimestamp } from '../util/DateUtils';
 
 export default abstract class BaseAction {
 
 	protected readonly translationService: VSTranslationService;
-	protected executionPath?: string;
 	protected readonly messageService: MessageService;
 	protected readonly commandName: string;
-	protected readonly vsConsoleLogger = new VSConsoleLogger();
+	protected executionPath?: string;
+	protected vsConsoleLogger!: VSConsoleLogger;
 
 	protected abstract async execute(): Promise<void>;
 
@@ -27,14 +26,9 @@ export default abstract class BaseAction {
 		this.translationService = new VSTranslationService();
 	}
 
-	private getProjectFolderName(executionPath: string): string {
-		const executionPathParts = executionPath.replace(/\\/g, "/").split("/");
-
-		return executionPathParts[executionPathParts.length - 1];
-	}
-
 	protected init() {
-		this.executionPath = getRootProjectFolder();
+        this.executionPath = getRootProjectFolder();
+        this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
@@ -51,8 +45,6 @@ export default abstract class BaseAction {
 	}
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string } = {} ) {
-		this.logToOutputExecutionDetails();
-
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.executionPath).run({
 			commandName: this.commandName,
 			arguments: args,
@@ -61,14 +53,6 @@ export default abstract class BaseAction {
 		this.vsConsoleLogger.info("");
 
 		return suiteCloudRunnerRunResult;
-	}
-
-	protected logToOutputExecutionDetails(): void {
-		if (this.executionPath) {
-			this.vsConsoleLogger.info(getTimestamp() + " - " + this.getProjectFolderName(this.executionPath));
-		} else {
-			this.vsConsoleLogger.info(getTimestamp());
-		}
 	}
 
 	public async run() {

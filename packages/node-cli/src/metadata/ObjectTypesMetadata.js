@@ -521,6 +521,16 @@ module.exports = [
 		},
 	},
 	{
+		name: 'Single Page Application',
+		value: {
+			name: 'Single Page Application',
+			type: 'singlepageapp',
+			prefix: 'custspa_',
+			hasRelatedFiles: true,
+			relatedFiles: [{ type: 'blankscript' }],
+		},
+	},
+	{
 		name: 'SSP Application',
 		value: {
 			name: 'SSP Application',
