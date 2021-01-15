@@ -6,7 +6,7 @@ import { window, QuickPickItem } from 'vscode';
 import { COMMAND, DEPLOY, YES, NO } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants, ProjectInfoServive, CLIConfigurationService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import { EOL } from 'os'
+import { EOL } from 'os';
 
 const DEPLOY_COMMAND = {
 	NAME: 'project:deploy',
@@ -21,8 +21,8 @@ const DEPLOY_COMMAND = {
 
 const ACCOUNT_SPECIFIC_VALUES = {
 	ERROR: 'ERROR',
-	WARNING: 'WARNING'
-}
+	WARNING: 'WARNING',
+};
 
 interface commandOption extends QuickPickItem {
 	value: string;
@@ -34,16 +34,16 @@ export default class Deploy extends BaseAction {
 	}
 
 	protected async execute() {
-		let projectType : string;
-		
+		let projectType: string;
+
 		try {
 			projectType = this.getProjectType();
-		} catch(error) {
+		} catch (error) {
 			// if error is of "type" CLIException it will have getErrorMessage(), if not just use toString()
 			const errorMessage = typeof error.getErrorMessage === 'function' ? error.getErrorMessage() : error.toString();
 			this.vsConsoleLogger.error(errorMessage + EOL);
 			this.messageService.showCommandError();
-			return
+			return;
 		}
 
 		const deployOptions: { [key: string]: string } = {};
@@ -75,14 +75,12 @@ export default class Deploy extends BaseAction {
 	}
 
 	private getProjectType(): string {
-		
-			const cliConfigurationService = new CLIConfigurationService();
-			cliConfigurationService.initialize(this.executionPath);
-			const projectFolder: string = cliConfigurationService.getProjectFolder(DEPLOY_COMMAND.NAME);
-			const projectInfoService = new ProjectInfoServive(projectFolder);
+		const cliConfigurationService = new CLIConfigurationService();
+		cliConfigurationService.initialize(this.executionPath);
+		const projectFolder: string = cliConfigurationService.getProjectFolder(DEPLOY_COMMAND.NAME);
+		const projectInfoService = new ProjectInfoServive(projectFolder);
 
-			return projectInfoService.getProjectType();
-		
+		return projectInfoService.getProjectType();
 	}
 
 	private async getAccountSpecificValuesOption(): Promise<string | undefined> {

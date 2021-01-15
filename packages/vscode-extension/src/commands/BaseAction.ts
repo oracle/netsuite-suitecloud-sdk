@@ -11,7 +11,6 @@ import { getRootProjectFolder } from '../util/ExtensionUtil';
 import { ERRORS } from '../service/TranslationKeys';
 
 export default abstract class BaseAction {
-
 	protected readonly translationService: VSTranslationService;
 	protected readonly messageService: MessageService;
 	protected readonly commandName: string;
@@ -27,7 +26,7 @@ export default abstract class BaseAction {
 	}
 
 	protected init() {
-        this.executionPath = getRootProjectFolder();
+		this.executionPath = getRootProjectFolder();
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 	}
 
@@ -44,13 +43,13 @@ export default abstract class BaseAction {
 		}
 	}
 
-	protected async runSuiteCloudCommand(args: { [key: string]: string } = {} ) {
+	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}) {
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
 			commandName: this.commandName,
 			arguments: args,
 		});
 
-		this.vsConsoleLogger.info("");
+		this.vsConsoleLogger.info('');
 
 		return suiteCloudRunnerRunResult;
 	}
@@ -65,5 +64,4 @@ export default abstract class BaseAction {
 			return;
 		}
 	}
-
 }

@@ -10,7 +10,6 @@ import { CommandActionExecutor, CommandOptionsValidator, CLIConfigurationService
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
 
 export default class SuiteCloudRunner {
-
 	private commandActionExecutor: any;
 
 	constructor(vsConsoleLogger: VSConsoleLogger, executionPath?: string) {
@@ -30,5 +29,4 @@ export default class SuiteCloudRunner {
 		options.runInInteractiveMode = false;
 		return this.commandActionExecutor.executeAction(options);
 	}
-
 }
