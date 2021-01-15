@@ -13,7 +13,7 @@ export default class SuiteCloudRunner {
 
 	private commandActionExecutor: any;
 
-	constructor(executionPath?: string) {
+	constructor(vsConsoleLogger: VSConsoleLogger, executionPath?: string) {
 		process.argv.push(`${ApplicationConstants.PROJECT_FOLDER_ARG}=${executionPath}`);
 		this.commandActionExecutor = new CommandActionExecutor({
 			//THIS SHOULD BE A FACTORY METHOD INSIDE THE CLI CommandActionExecutorFactory.get({executionPath:executionPath})
@@ -21,7 +21,7 @@ export default class SuiteCloudRunner {
 			commandOptionsValidator: new CommandOptionsValidator(),
 			cliConfigurationService: new CLIConfigurationService(),
 			commandsMetadataService: CommandsMetadataSingleton.getInstance(),
-			log: new VSConsoleLogger(true, executionPath),
+			log: vsConsoleLogger,
 			sdkPath: getSdkPath(),
 		});
 	}

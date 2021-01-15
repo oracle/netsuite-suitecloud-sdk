@@ -15,6 +15,11 @@
 
 	"DEPLOY_COMMAND": "Deploy",
 	"DEPLOY_DEPLOYING": "Deploying project...",
+	"DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
+	"DEPLOY_QUESTIONS_APPLY_INSTALLATION_PREFERENCES": "Do you want to apply installation preferences?",
+	"DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning and continue the deployment process",
+	"DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the deployment process",
+
 	"LIST_OBJECTS_COMMAND": "List objects",
 	"LIST_OBJECTS_LISTING": "Listing objects...",
 	"SEE_DETAILS": "See details",

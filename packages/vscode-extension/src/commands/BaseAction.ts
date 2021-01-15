@@ -18,7 +18,7 @@ export default abstract class BaseAction {
 	protected executionPath?: string;
 	protected vsConsoleLogger!: VSConsoleLogger;
 
-	protected abstract async execute(): Promise<void>;
+	protected abstract execute(): Promise<void>;
 
 	constructor(commandName: string) {
 		this.commandName = commandName;
@@ -28,7 +28,7 @@ export default abstract class BaseAction {
 
 	protected init() {
         this.executionPath = getRootProjectFolder();
-        this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
+		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
@@ -45,7 +45,7 @@ export default abstract class BaseAction {
 	}
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string } = {} ) {
-		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.executionPath).run({
+		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
 			commandName: this.commandName,
 			arguments: args,
 		});
