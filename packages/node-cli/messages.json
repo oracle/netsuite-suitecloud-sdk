@@ -45,7 +45,7 @@
 	"COMMAND_CREATEPROJECT_OVERWRITE_PROJECT": "Do you want to overwrite the {0} project? All the files and folders from the former project will be deleted and replaced by the new project.",
 	"COMMAND_CREATEPROJECT_WRONG_PROJECT_TYPE": "Invalid \"type\" specified. The expected values are the following - \"ACCOUNTCUSTOMIZATION, SUITEAPP\".",
 
-	"COMMAND_DEPLOY_ERRORS_APPLY_INSTALLATION_PREFERENCES_IN_ACP": "Installation preferences can not be applied in an Account Customizaton Project.",
+	"COMMAND_DEPLOY_ERRORS_APPLY_INSTALLATION_PREFERENCES_IN_ACP": "Installation preferences cannot be applied in an Account Customizaton Project.",
 	"COMMAND_DEPLOY_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalue option. Enter either WARNING or ERROR.",
 	"COMMAND_DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
 	"COMMAND_DEPLOY_QUESTIONS_APPLY_INSTALLATION_PREFERENCES": "Do you want to apply installation preferences?",
@@ -56,7 +56,7 @@
 	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying project \"{0}\" with authID \"{1}\"...",
 	"COMMAND_DEPLOY_MESSAGES_LOCALLY_VALIDATED": "The \"{0}\" project has been locally validated.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_INSTALLATION_PREFERENCES": "The \"{0}\" project has been deployed without applying installation preferences.",
-	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_INSTALLATION_PREFERENCES_REASON": "Installation preferences were not applied because the hiding.xml, locking.xml and overwriting.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create the three files in order to apply installation preferences.\nFor more information about installation preferences, see {0}",
+	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_INSTALLATION_PREFERENCES_REASON": "Installation preferences were not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create the two files in order to apply installation preferences.\nFor more information about installation preferences, see {0}",
 	"COMMAND_DEPLOY_MESSAGES_PREVIEWING": "Previewing project \"{0}\" with authID \"{1}\"...",
 	"COMMAND_DEPLOY_ERRORS_VALIDATE_AND_DRYRUN_OPTIONS_PASSED": "The \"--validate\" and \"-–dryrun\" options are mutually exclusive. Use one of the two at a time.",
 
@@ -284,8 +284,7 @@
 	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITHOUT_HIDING_AND_LOCKING": "There was an error with the {0} command. Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {1}.\nTo learn how to create a locking.xml file, see {2}.",
 	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITH_APPLY_INSTALLATION_PREFERENCES": "The \"--applycontentprotection\" and \"--applyinstallprefs\" options are mutually exclusive. Use one of the two at a time.",
 	"UTILS_APPLY_CONTENT_PROTECTION_IS_DEPRECATED": "The \"--applycontentprotection\" option will be removed in NetSuite 2021.2. You should use the \"--applyinstallprefs\" option starting from NetSuite 2021.1.",
-	"UTILS_APPLY_INSTALLATION_PREFERENCES_ARGUMENT_HANDLER_ERRORS_APPLY_INSTALLATION_PREFERENCES_IN_ACP": "Installation preferences cannot be applied to account customization projects.",
-	"UTILS_APPLY_INSTALLATION_PREFERENCES_ARGUMENT_HANDLER_ERRORS_APPLY_INSTALLATION_PREFERENCES_WITHOUT_HIDING_LOCKING_AND_OVERWRITING": "There was an error with the {0} command. Installation preferences were not applied because the hiding.xml, locking.xml, and overwriting.xml files were not found in the \\\"InstallationPreferences\\\" folder of the project. You need to create the three files to apply installation preferences.\\nFor more information about installation preferences, see {1}",
+	"UTILS_APPLY_INSTALLATION_PREFERENCES_ARGUMENT_HANDLER_ERRORS_APPLY_INSTALLATION_PREFERENCES_WITHOUT_HIDING_LOCKING_AND_OVERWRITING": "There was an error with the {0} command. Installation preferences were not applied because the hiding.xml and locking.xml files were not found in the \\\"InstallationPreferences\\\" folder of the project. You need to create the two files to apply installation preferences.\\nFor more information about installation preferences, see {1}",
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs (authid) in this machine...",
 	"UTILS_AUTHENTICATION_SAVING_TBA_TOKEN": "Saving the TBA token...",
