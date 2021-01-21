@@ -8,7 +8,6 @@
 const NodeTranslationService = require('../services/NodeTranslationService');
 const ProjectInfoService = require('../services/ProjectInfoService');
 const { LINKS, PROJECT_ACP } = require('../ApplicationConstants');
-const NodeConsoleLogger = require('../loggers/NodeConsoleLogger');
 
 const APPLY_CONTENT_PROTECTION = 'applycontentprotection';
 const APPLY_INSTALLATION_PREFERENCES = 'applyinstallprefs';
@@ -20,11 +19,11 @@ const {
 	},
 } = require('../services/TranslationKeys');
 
-function validate(args, projectFolder, commandName) {
+function validate(args, projectFolder, commandName, logger) {
 	const projectInfoService = new ProjectInfoService(projectFolder);
 
 	if (args[APPLY_CONTENT_PROTECTION]) {
-		NodeConsoleLogger.warning(NodeTranslationService.getMessage(WARNINGS.APPLY_CONTENT_PROTECTION_IS_DEPRECATED));
+		logger.warning(NodeTranslationService.getMessage(WARNINGS.APPLY_CONTENT_PROTECTION_IS_DEPRECATED));
 	}
 
 	if (args[APPLY_CONTENT_PROTECTION] && args[APPLY_INSTALLATION_PREFERENCES]) {

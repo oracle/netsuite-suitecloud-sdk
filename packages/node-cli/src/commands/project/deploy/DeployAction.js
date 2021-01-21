@@ -54,7 +54,7 @@ module.exports = class DeployAction extends (
 
 	preExecute(params) {
 		AccountSpecificValuesUtils.validate(params, this._projectFolder);
-		ApplyInstallationPreferencesUtils.validate(params, this._projectFolder, this._commandMetadata.sdkCommand);
+		ApplyInstallationPreferencesUtils.validate(params, this._projectFolder, this._commandMetadata.sdkCommand, this._log);
 
 		return {
 			...params,
