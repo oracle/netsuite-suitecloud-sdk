@@ -13,7 +13,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const CommandUtils = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
-const ApplyContentProtectionUtils = require('../../../utils/ApplyContentProtectionUtils');
+const ApplyInstallationPreferencesUtils = require('../../../utils/ApplyInstallationPreferencesUtils');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 
@@ -25,6 +25,7 @@ const COMMAND_OPTIONS = {
 	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
+	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	PROJECT: 'project',
 	AUTH_ID: 'authid',
 };
@@ -42,7 +43,7 @@ module.exports = class ValidateAction extends BaseAction {
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 
 		AccountSpecificValuesUtils.validate(params, this._projectFolder);
-		ApplyContentProtectionUtils.validate(params, this._projectFolder, this._commandMetadata.sdkCommand);
+		ApplyInstallationPreferencesUtils.validate(params, this._projectFolder, this._commandMetadata.sdkCommand, this._log);
 
 		return {
 			...params,
@@ -53,7 +54,7 @@ module.exports = class ValidateAction extends BaseAction {
 	async execute(params) {
 		try {
 			let isServerValidation = false;
-			let contentProtectionApplied = false;
+			let installationPreferencesApplied = false;
 			const flags = [];
 
 			if (params[COMMAND_OPTIONS.SERVER]) {
@@ -63,9 +64,15 @@ module.exports = class ValidateAction extends BaseAction {
 			}
 
 			if (params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION]) {
-				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
-				contentProtectionApplied = true;
 				delete params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
+				flags.push(COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES);
+				installationPreferencesApplied = true;
+			}
+
+			if (params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES]) {
+				delete params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES];
+				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
+				installationPreferencesApplied = true;
 			}
 
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
@@ -85,7 +92,7 @@ module.exports = class ValidateAction extends BaseAction {
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
-						.withAppliedContentProtection(contentProtectionApplied)
+						.withAppliedInstallationPreferences(installationPreferencesApplied)
 						.withProjectType(this._projectType)
 						.withProjectFolder(this._projectFolder)
 						.build()

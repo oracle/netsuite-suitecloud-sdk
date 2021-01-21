@@ -8,8 +8,8 @@ const { ActionResult, ActionResultBuilder } = require('./ActionResult');
 class DeployActionResult extends ActionResult {
 	constructor(parameters) {
 		super(parameters);
-		this._isServerValidation = parameters.isServerValidation ? true : false;
-		this._appliedContentProtection = parameters.appliedContentProtection ? true : false;
+		this._isServerValidation = !!parameters.isServerValidation;
+		this._appliedInstallationPreferences = !!parameters.appliedInstallationPreferences;
 		this._projectType = parameters.projectType;
 	}
 
@@ -17,8 +17,8 @@ class DeployActionResult extends ActionResult {
 		return this._isServerValidation;
 	}
 
-	get appliedContentProtection() {
-		return this._appliedContentProtection;
+	get appliedInstallationPreferences() {
+		return this._appliedInstallationPreferences;
 	}
 
 	get projectType() {
@@ -40,8 +40,8 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
-	withAppliedContentProtection(appliedContentProtection) {
-		this.appliedContentProtection = appliedContentProtection;
+	withAppliedInstallationPreferences(appliedInstallationPreferences) {
+		this.appliedInstallationPreferences = appliedInstallationPreferences;
 		return this;
 	}
 
@@ -57,7 +57,7 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 			...(this.resultMessage && { resultMessage: this.resultMessage }),
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.isServerValidation && { isServerValidation: this.isServerValidation }),
-			...(this.appliedContentProtection && { appliedContentProtection: this.appliedContentProtection }),
+			...(this.appliedInstallationPreferences && { appliedInstallationPreferences: this.appliedInstallationPreferences }),
 			...(this.projectType && { projectType: this.projectType }),
 			...(this.projectFolder && { projectFolder: this.projectFolder }),
 		});

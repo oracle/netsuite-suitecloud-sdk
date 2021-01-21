@@ -28,7 +28,7 @@ const COMMAND = {
 		NO_PREVIEW: 'no_preview',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
+		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	},
 };
 
@@ -48,8 +48,8 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 			{
 				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND.FLAGS.APPLY_CONTENT_PROTECTION,
-				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_CONTENT_PROTECTION),
+				name: COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES,
+				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_INSTALLATION_PREFERENCES),
 				default: 1,
 				choices: [
 					{ name: NodeTranslationService.getMessage(YES), value: true },
@@ -85,12 +85,11 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 			},
 		]);
 
-		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.FLAGS.APPLY_CONTENT_PROTECTION)) {
+		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES)) {
 			this._log.info(
 				NodeTranslationService.getMessage(
-					MESSAGES.NOT_ASKING_CONTENT_PROTECTION_REASON,
-					LINKS.HOW_TO.CREATE_HIDDING_XML,
-					LINKS.HOW_TO.CREATE_LOCKING_XML
+					MESSAGES.NOT_ASKING_INSTALLATION_PREFERENCES_REASON,
+					LINKS.HOW_TO.CREATE_INSTALLATION_PREFERENCES,
 				)
 			);
 		}

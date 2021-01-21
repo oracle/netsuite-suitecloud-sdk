@@ -54,7 +54,17 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
+			},
+			"applyinstallprefs": {
+				"alias": "a"
 			}
 		}
-	}	
+	},
+	"project:validate": {
+		"options": {
+			"applyinstallprefs": {
+				"alias": "a"
+			}
+		}
+	}
 }

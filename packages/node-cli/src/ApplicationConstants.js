@@ -47,6 +47,7 @@ module.exports = {
 		HOW_TO: {
 			CREATE_HIDDING_XML: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html',
 			CREATE_LOCKING_XML: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html',
+			CREATE_INSTALLATION_PREFERENCES: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515948480.html',
 		},
 	},
 };

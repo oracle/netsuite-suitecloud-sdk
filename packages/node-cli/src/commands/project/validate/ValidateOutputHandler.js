@@ -23,8 +23,8 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 				this._log.result(resultLine);
 			});
 		} else if (!actionResult.isServerValidation) {
-			this._showApplyContentProtectionOptionMessage(
-				actionResult.appliedContentProtection,
+			this._showApplyInstallationPreferencesOptionMessage(
+				actionResult.appliedInstallationPreferences,
 				actionResult.projectType,
 				actionResult.projectFolder
 			);
@@ -34,12 +34,12 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 		return actionResult;
 	}
 
-	_showApplyContentProtectionOptionMessage(isAppliedContentProtection, projectType, projectFolder) {
+	_showApplyInstallationPreferencesOptionMessage(isAppliedInstallationPreferences, projectType, projectFolder) {
 		if (projectType === PROJECT_SUITEAPP) {
-			if (isAppliedContentProtection) {
-				this._log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
+			if (isAppliedInstallationPreferences) {
+				this._log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_INSTALLATION_PREFERENCES, projectFolder));
 			} else {
-				this._log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));
+				this._log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_INSTALLATION_PREFERENCES, projectFolder));
 			}
 		}
 	}
