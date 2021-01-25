@@ -8,7 +8,7 @@ import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKey
 import { actionResultStatus, CLIConfigurationService, ApplicationConstants } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
-const COMMAND_NAME = 'file:upload'
+const COMMAND_NAME = 'uploadfile'
 
 export default class UploadFile extends BaseAction {
 	constructor() {
@@ -24,7 +24,7 @@ export default class UploadFile extends BaseAction {
 
 		const cliConfigurationService = new CLIConfigurationService();
 		cliConfigurationService.initialize(this.executionPath);
-		const projectFolder = cliConfigurationService.getProjectFolder(this.commandName);
+		const projectFolder = cliConfigurationService.getProjectFolder(this.cliCommandName);
 
 		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
 		const relativePath = activeFile.fsPath.replace(fileCabinetFolder, '');
@@ -39,7 +39,7 @@ export default class UploadFile extends BaseAction {
 			return;
 		}
 
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(UPLOAD_FILE.COMMAND));
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(UPLOAD_FILE.UPLOADING);
 
 		const commandActionPromise = this.runSuiteCloudCommand({ paths: relativePath });

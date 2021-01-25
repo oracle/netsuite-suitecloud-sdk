@@ -9,25 +9,31 @@ import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { VSTranslationService } from '../service/VSTranslationService';
 import { getRootProjectFolder } from '../util/ExtensionUtil';
 import { ERRORS } from '../service/TranslationKeys';
+import { commandsInfoMap } from '../commandsMap';
+import { assert } from 'console';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
 	protected readonly messageService: MessageService;
-	protected readonly commandName: string;
+	protected readonly vscodeCommandName: string;
+	protected readonly cliCommandName: string;
 	protected executionPath?: string;
 	protected vsConsoleLogger!: VSConsoleLogger;
 
 	protected abstract execute(): Promise<void>;
 
 	constructor(commandName: string) {
-		this.commandName = commandName;
-		this.messageService = new MessageService(this.commandName);
+		assert(commandsInfoMap.hasOwnProperty(commandName), `Command name ${commandName} is not present in commandsMap`);
+		this.vscodeCommandName = commandsInfoMap[commandName].vscodeCommandName;
+		this.cliCommandName = commandsInfoMap[commandName].cliCommandName;
+		this.messageService = new MessageService(commandsInfoMap[commandName].vscodeCommandName);
 		this.translationService = new VSTranslationService();
 	}
 
 	protected init() {
 		this.executionPath = getRootProjectFolder();
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
+		this.messageService.executionPath = this.executionPath;
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
@@ -45,7 +51,7 @@ export default abstract class BaseAction {
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}) {
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-			commandName: this.commandName,
+			commandName: this.cliCommandName,
 			arguments: args,
 		});
 

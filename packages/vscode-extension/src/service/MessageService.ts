@@ -7,19 +7,35 @@ import { window } from 'vscode';
 import { Output } from '../suitecloud';
 import { COMMAND, SEE_DETAILS } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
+import { EOL } from 'os';
 
 const DEFAULT_TIMEOUT = 5000;
 
 export default class MessageService {
-	private commandName?: string;
+	private vscodeCommandName?: string;
 	private readonly translationService = new VSTranslationService();
+	private _executionPath?: string;
 
 	constructor(commandName?: string) {
-		this.commandName = commandName;
+		this.vscodeCommandName = commandName;
+	}
+
+	set executionPath(excutionPath: string|undefined) {
+		this._executionPath = excutionPath;
+	}
+
+	private addProjectNameToMessage(message: string): string {
+		if (this._executionPath) {
+			const executionPathParts = this._executionPath.replace(/\\/g, "/").split("/")
+			const projectFolderName: string = executionPathParts[executionPathParts.length - 1];
+			// window.showInformationMessage removes new line characters do not try to add them here
+			message = `${projectFolderName}: ${message}`
+		}
+		return message;
 	}
 
 	showInformationMessage(infoMessage: string, statusBarMessage?: string, promise?: Promise<any>, spin = true) {
-		window.showInformationMessage(infoMessage);
+		window.showInformationMessage(this.addProjectNameToMessage(infoMessage));
 
 		if (statusBarMessage && promise) {
 			this.showStatusBarMessage(statusBarMessage, spin, promise);
@@ -27,11 +43,11 @@ export default class MessageService {
 	}
 
 	showWarningMessage(infoMessage: string) {
-		window.showWarningMessage(infoMessage);
+		window.showWarningMessage(this.addProjectNameToMessage(infoMessage));
 	}
 
 	showErrorMessage(errorMessage: string) {
-		window.showErrorMessage(errorMessage);
+		window.showErrorMessage(this.addProjectNameToMessage(errorMessage));
 	}
 
 	showStatusBarMessage(message: string, spin?: boolean, promise?: Promise<any>) {
@@ -45,15 +61,15 @@ export default class MessageService {
 	}
 
 	showCommandInfo(successMessage?: string) {
-		if (!this.commandName) throw 'Command not defined';
-		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.commandName);
-		window.showInformationMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
+		if (!this.vscodeCommandName) throw 'Command not defined';
+		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.vscodeCommandName);
+		window.showInformationMessage(this.addProjectNameToMessage(message), this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
 	}
 
 	showCommandError(errorMessage?: string) {
-		if (!this.commandName) throw 'Command not defined';
-		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.commandName);
-		window.showErrorMessage(message, this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
+		if (!this.vscodeCommandName) throw 'Command not defined';
+		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.vscodeCommandName);
+		window.showErrorMessage(this.addProjectNameToMessage(message), this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
 	}
 
 	private showOutputIfClicked(message?: string) {
