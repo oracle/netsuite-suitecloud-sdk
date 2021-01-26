@@ -11,13 +11,11 @@ import { EOL } from 'os';
 const COMMAND_NAME = 'deploy';
 
 const DEPLOY_COMMAND = {
-	NAME: 'project:deploy',
 	OPTIONS: {
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	},
 	FLAGS: {
-		// TODO: change value when new applyinstallationpreferences is integrated in cli
-		APPLY_INSTALLATION_PREFS: 'applycontentprotection',
+		APPLY_INSTALLATION_PREFS: 'applyinstallprefs',
 	},
 };
 

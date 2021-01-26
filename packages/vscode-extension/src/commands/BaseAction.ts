@@ -24,9 +24,9 @@ export default abstract class BaseAction {
 
 	constructor(commandName: string) {
 		assert(commandsInfoMap.hasOwnProperty(commandName), `Command name ${commandName} is not present in commandsMap`);
-		this.vscodeCommandName = commandsInfoMap[commandName].vscodeCommandName;
 		this.cliCommandName = commandsInfoMap[commandName].cliCommandName;
-		this.messageService = new MessageService(commandsInfoMap[commandName].vscodeCommandName);
+		this.vscodeCommandName = commandsInfoMap[commandName].vscodeCommandName;
+		this.messageService = new MessageService(this.vscodeCommandName);
 		this.translationService = new VSTranslationService();
 	}
 
