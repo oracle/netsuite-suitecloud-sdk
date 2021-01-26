@@ -12,7 +12,7 @@ const objectTypes: {
 	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
-const COMMAND_NAME = 'object:list';
+const COMMAND_NAME = 'listobjects';
 
 export default class ListObjects extends BaseAction {
 
@@ -34,7 +34,7 @@ export default class ListObjects extends BaseAction {
 		}
 
 		const commandActionPromise = this.runSuiteCloudCommand({ type: selectedObjectTypes.join(' ')});
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(LIST_OBJECTS.COMMAND));
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
