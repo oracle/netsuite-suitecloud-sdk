@@ -10,7 +10,7 @@ import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
 import { PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX } from '../ApplicationConstants'
 
-const COMMAND_NAME = 'account:setup';
+const COMMAND_NAME = 'manageaccounts';
 
 enum UiOption {
 	new_authid,

@@ -5,12 +5,17 @@
 
 import * as assert from 'assert';
 import * as vscode from 'vscode';
+import { commandsInfoMap } from '../../commandsMap';
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	test('Sample test', () => {
-		assert.equal(-1, [1, 2, 3].indexOf(5));
-		assert.equal(-1, [1, 2, 3].indexOf(0));
+	test('Command Names should match the ones defined in the package.json', () => {
+		const packagejson = require('../../../package.json');
+		const vscodeCommandTitles: string[] = packagejson.contributes.commands.map((packageCommnand: any) => packageCommnand.title);
+		const vscodeCommandNames: string[] = Object.values(commandsInfoMap).map((el) => el.vscodeCommandName);
+
+		vscodeCommandTitles.forEach((title) => assert(vscodeCommandNames.includes(title)));
+		vscodeCommandNames.forEach((vscodeName) => assert(vscodeCommandTitles.includes(vscodeName)));
 	});
 });

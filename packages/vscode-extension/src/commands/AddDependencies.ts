@@ -7,7 +7,7 @@ import { ActionResult } from '../types/ActionResult';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
-const COMMAND_NAME = 'project:adddependencies';
+const COMMAND_NAME = 'adddependencies';
 
 export default class AddDependencies extends BaseAction {
 
@@ -17,7 +17,7 @@ export default class AddDependencies extends BaseAction {
 
 	protected async execute() {
 		const commandActionPromise = this.runSuiteCloudCommand();
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(ADD_DEPENDENCIES.COMMAND));
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage: string = this.translationService.getMessage(ADD_DEPENDENCIES.ADDING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 

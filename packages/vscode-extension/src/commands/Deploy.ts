@@ -8,14 +8,14 @@ import { actionResultStatus, ApplicationConstants, ProjectInfoServive, CLIConfig
 import BaseAction from './BaseAction';
 import { EOL } from 'os';
 
+const COMMAND_NAME = 'deploy';
+
 const DEPLOY_COMMAND = {
-	NAME: 'project:deploy',
 	OPTIONS: {
 		ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	},
 	FLAGS: {
-		// TODO: change value when new applyinstallationpreferences is integrated in cli
-		APPLY_INSTALLATION_PREFS: 'applycontentprotection',
+		APPLY_INSTALLATION_PREFS: 'applyinstallprefs',
 	},
 };
 
@@ -30,7 +30,7 @@ interface commandOption extends QuickPickItem {
 
 export default class Deploy extends BaseAction {
 	constructor() {
-		super(DEPLOY_COMMAND.NAME);
+		super(COMMAND_NAME);
 	}
 
 	protected async execute() {
@@ -62,7 +62,7 @@ export default class Deploy extends BaseAction {
 		}
 
 		const commandActionPromise = this.runSuiteCloudCommand(deployOptions);
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.translationService.getMessage(DEPLOY.COMMAND));
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage: string = this.translationService.getMessage(DEPLOY.DEPLOYING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
@@ -77,7 +77,7 @@ export default class Deploy extends BaseAction {
 	private getProjectType(): string {
 		const cliConfigurationService = new CLIConfigurationService();
 		cliConfigurationService.initialize(this.executionPath);
-		const projectFolder: string = cliConfigurationService.getProjectFolder(DEPLOY_COMMAND.NAME);
+		const projectFolder: string = cliConfigurationService.getProjectFolder(this.cliCommandName);
 		const projectInfoService = new ProjectInfoServive(projectFolder);
 
 		return projectInfoService.getProjectType();

@@ -1,30 +1,26 @@
 {
 	"YES": "Yes",
 	"NO": "No",
-	"COMMAND_ERROR": "Something went wrong with the {0} command.",
-	"COMMAND_SUCCESS": "The {0} command has been successfully executed.",
-	"COMMAND_TRIGGERED": "{0} has been triggered.",
+	"COMMAND_ERROR": "Something went wrong with '{0}'.",
+	"COMMAND_SUCCESS": "'{0}' has been successfully executed.",
+	"COMMAND_TRIGGERED": "'{0}' has been triggered.",
 	"DISMISS": "Dismiss",
 
 	"ADD_DEPENDENCIES_ADDED": "Dependencies added to the manifest file.",
 	"ADD_DEPENDENCIES_ADDED_LOG": "The following dependencies have been added to the manifest file:",
 	"ADD_DEPENDENCIES_ADDING": "Adding dependencies...",
-	"ADD_DEPENDENCIES_COMMAND": "Add dependencies",
 	"ADD_DEPENDENCIES_EMPTY": "There are no dependencies to add to the manifest file.",
 	"ADD_DEPENDENCIES_ERROR": "There was an error when adding missing dependencies to the manifest file.",
 
-	"DEPLOY_COMMAND": "Deploy",
 	"DEPLOY_DEPLOYING": "Deploying project...",
 	"DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
 	"DEPLOY_QUESTIONS_APPLY_INSTALLATION_PREFERENCES": "Do you want to apply installation preferences?",
 	"DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning and continue the deployment process",
 	"DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the deployment process",
 
-	"LIST_OBJECTS_COMMAND": "List objects",
 	"LIST_OBJECTS_LISTING": "Listing objects...",
 	"SEE_DETAILS": "See details",
 
-	"UPLOAD_FILE_COMMAND": "Upload file",
 	"UPLOAD_FILE_UPLOADING": "Uploading files...",
 	"UPLOAD_FILE_OVERWRITE_FILE": "The {0} file will be overwritten in the File Cabinet. Do you want to continue?",
 	"UPLOAD_FILE_PROCESS_CANCELED": "The file upload process has been canceled. No files have been overwritten.",
