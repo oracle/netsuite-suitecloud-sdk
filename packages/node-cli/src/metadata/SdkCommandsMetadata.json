@@ -177,7 +177,7 @@
 			"applyinstallprefs": {
 				"name": "applyinstallprefs",
 				"option": "applyinstallprefs",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
+				"description": "Apply the settings from the hiding.xml, locking.xml, and overwriting.xml files. It only applies to SuiteApps.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",
@@ -658,7 +658,7 @@
 			"applyinstallprefs": {
 				"name": "applyinstallprefs",
 				"option": "applyinstallprefs",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps.",
+				"description": "Apply the settings from the hiding.xml, locking.xml, and overwriting.xml files. It only applies to SuiteApps.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",
