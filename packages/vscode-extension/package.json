@@ -27,7 +27,7 @@
 		"commands": [
 			{
 				"command": "suitecloud.adddependencies",
-				"title": "Add dependency references to the manifest",
+				"title": "Add Dependency References to the Manifest",
 				"category": "SuiteCloud"
 			},
 			{

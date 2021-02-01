@@ -15,7 +15,7 @@ export const commandsInfoMap: {
 } = {
 	adddependencies: {
 		cliCommandName: 'project:adddependencies',
-		vscodeCommandName: 'Add dependency references to the manifest',
+		vscodeCommandName: 'Add Dependency References to the Manifest',
 		vscodeShortName: 'Add Dependencies',
 	},
 	deploy: {
@@ -25,7 +25,7 @@ export const commandsInfoMap: {
 	},
 	listobjects: {
 		cliCommandName: 'object:list',
-		vscodeCommandName: 'List objects',
+		vscodeCommandName: 'List Objects',
 	},
 	uploadfile: {
 		cliCommandName: 'file:upload',
