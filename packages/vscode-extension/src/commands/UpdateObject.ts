@@ -45,7 +45,7 @@ export default class UpdateObject extends BaseAction {
 
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data.length === 1 && actionResult.data[0].type === STATUS.SUCCESS) {
-			this.messageService.showCommandInfo(this.translationService.getMessage(UPDATE_OBJECT.SUCCESS));
+			this.messageService.showCommandInfo();
 		} else {
 			this.messageService.showCommandError();
 		}
