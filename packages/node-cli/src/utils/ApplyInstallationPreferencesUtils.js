@@ -13,9 +13,13 @@ const APPLY_CONTENT_PROTECTION = 'applycontentprotection';
 const APPLY_INSTALLATION_PREFERENCES = 'applyinstallprefs';
 
 const {
+	COMMAND_DEPLOY: {
+		MESSAGES: { NOT_ASKING_INSTALLATION_PREFERENCES_REASON },
+	},
 	UTILS: {
 		APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER: { ERRORS, WARNINGS },
 		APPLY_INSTALLATION_PREFERENCES_ARGUMENT_HANDLER: { INSTALLATION_PREFERENCES_ERRORS },
+		ERRORS: { COMMAND },
 	},
 } = require('../services/TranslationKeys');
 
@@ -48,11 +52,12 @@ function validate(args, projectFolder, commandName, logger) {
 	}
 
 	if (args[APPLY_INSTALLATION_PREFERENCES] && !projectInfoService.hasLockAndHideFiles()) {
-		throw NodeTranslationService.getMessage(
-			INSTALLATION_PREFERENCES_ERRORS.APPLY_INSTALLATION_PREFERENCES_WITHOUT_HIDING_LOCKING_AND_OVERWRITING,
-			commandName,
-			LINKS.HOW_TO.CREATE_INSTALLATION_PREFERENCES,
+		const errorMessage = NodeTranslationService.getMessage(
+			NOT_ASKING_INSTALLATION_PREFERENCES_REASON,
+			LINKS.HOW_TO.CREATE_INSTALLATION_PREFERENCES
 		);
+
+		throw NodeTranslationService.getMessage(COMMAND, errorMessage);
 	}
 }
 
