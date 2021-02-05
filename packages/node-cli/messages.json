@@ -284,11 +284,11 @@
 	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITHOUT_HIDING_AND_LOCKING": "There was an error with the {0} command. Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {1}.\nTo learn how to create a locking.xml file, see {2}.",
 	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITH_APPLY_INSTALLATION_PREFERENCES": "The \"--applycontentprotection\" and \"--applyinstallprefs\" options are mutually exclusive. Use one of the two at a time.",
 	"UTILS_APPLY_CONTENT_PROTECTION_IS_DEPRECATED": "The \"--applycontentprotection\" option will be removed in NetSuite 2021.2. You should use the \"--applyinstallprefs\" option starting from NetSuite 2021.1.",
-	"UTILS_APPLY_INSTALLATION_PREFERENCES_ARGUMENT_HANDLER_ERRORS_APPLY_INSTALLATION_PREFERENCES_WITHOUT_HIDING_LOCKING_AND_OVERWRITING": "There was an error with the {0} command. Installation preferences were not applied because the hiding.xml and locking.xml files were not found in the \\\"InstallationPreferences\\\" folder of the project. You need to create the two files to apply installation preferences.\\nFor more information about installation preferences, see {1}",
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs (authid) in this machine...",
 	"UTILS_AUTHENTICATION_SAVING_TBA_TOKEN": "Saving the TBA token...",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
+	"UTILS_ERRORS_COMMAND": "There was an error with the {0} command. {1}",
 
 	"YES": "Yes"
 }
