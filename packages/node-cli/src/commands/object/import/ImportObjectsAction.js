@@ -55,6 +55,9 @@ module.exports = class ImportObjectsAction extends BaseAction {
 	preExecute(answers) {
 		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
 		answers[ANSWERS_NAMES.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
+		if (!this._runInInteractiveMode && answers.hasOwnProperty(ANSWERS_NAMES.DESTINATION_FOLDER)) {
+			answers.destinationfolder = CommandUtils.quoteString(answers.destinationfolder);
+		}
 
 		return answers;
 	}
