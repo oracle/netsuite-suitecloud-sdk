@@ -14,7 +14,7 @@
 		"**/*.vsix"
 	],
 	"engines": {
-		"vscode": "^1.40.0"
+		"vscode": "^1.52.0"
 	},
 	"categories": [
 		"Other"
