@@ -69,7 +69,7 @@ export default class UploadFile extends BaseAction {
 		} else {
 			const projectFolderPath = this.getProjectFolderPath();
 			const projectInfoService = new ProjectInfoServive(projectFolderPath);
-			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject) {
+			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
 				const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
 				if (!fileCabinetService.isUnrestrictedPath(fileCabinetService.getFileCabinetRelativePath(activeFile.fsPath))) {
 					return {
