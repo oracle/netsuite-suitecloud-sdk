@@ -66,9 +66,10 @@ export default class UpdateObject extends BaseAction {
 				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE),
 			};
 		} else {
-			const projectInfoService = new ProjectInfoServive(this.executionPath);
-			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject) {
-				const relativePath = path.relative(this.executionPath, activeFile.fsPath);
+			const projectFolderPath = this.getProjectFolderPath();
+			const projectInfoService = new ProjectInfoServive(projectFolderPath);
+			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
+				const relativePath = path.relative(projectFolderPath, activeFile.fsPath);
 				if (!relativePath.startsWith(OBJECTS_FOLDER + path.sep)) {
 					return {
 						valid: false,
