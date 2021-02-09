@@ -5,8 +5,9 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { ERRORS, YES, NO, UPDATE_OBJECT, COMMAND } from '../service/TranslationKeys';
-import { actionResultStatus } from '../util/ExtensionUtil';
+import { ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import { OBJECTS_FOLDER } from '../ApplicationConstants';
 
 const COMMAND_NAME = 'updateobject';
 const STATUS = {
@@ -65,6 +66,17 @@ export default class UpdateObject extends BaseAction {
 				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE),
 			};
 		} else {
+			const projectInfoService = new ProjectInfoServive(this.executionPath);
+			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject) {
+				const relativePath = path.relative(this.executionPath, activeFile.fsPath);
+				if (!relativePath.startsWith(OBJECTS_FOLDER + path.sep)) {
+					return {
+						valid: false,
+						message: this.translationService.getMessage(ERRORS.SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER),
+					}
+				}
+			}
+
 			return {
 				valid: true,
 			};
