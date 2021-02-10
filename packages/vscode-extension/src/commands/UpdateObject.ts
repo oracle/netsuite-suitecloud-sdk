@@ -74,7 +74,7 @@ export default class UpdateObject extends BaseAction {
 					if (!relativePath.startsWith(OBJECTS_FOLDER + path.sep)) {
 						return {
 							valid: false,
-							message: this.translationService.getMessage(ERRORS.SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER),
+							message: this.translationService.getMessage(UPDATE_OBJECT.ERROR.SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER),
 						}
 					}
 				}

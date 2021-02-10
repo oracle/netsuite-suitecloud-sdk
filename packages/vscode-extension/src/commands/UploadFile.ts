@@ -75,7 +75,7 @@ export default class UploadFile extends BaseAction {
 					if (!fileCabinetService.isUnrestrictedPath(fileCabinetService.getFileCabinetRelativePath(activeFile.fsPath))) {
 						return {
 							valid: false,
-							message: this.translationService.getMessage(ERRORS.UPDATE_FILE_FOLDER_RESTRICTION),
+							message: this.translationService.getMessage(UPLOAD_FILE.ERROR.UPLOAD_FILE_FOLDER_RESTRICTION),
 						}
 					}
 				}

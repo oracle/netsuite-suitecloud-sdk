@@ -21,9 +21,10 @@
 	"LIST_OBJECTS_LISTING": "Listing objects...",
 	"SEE_DETAILS": "See details",
 
-	"UPLOAD_FILE_UPLOADING": "Uploading files...",
+	"UPLOAD_FILE_ERROR_UPLOAD_FILE_FOLDER_RESTRICTION": "The file should be in a supported folder inside the FileCabinet folder. For information about the supported folders, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4724963992.html.",
 	"UPLOAD_FILE_OVERWRITE_FILE": "The {0} file will be overwritten in the File Cabinet. Do you want to continue?",
 	"UPLOAD_FILE_PROCESS_CANCELED": "The file upload process has been canceled. No files have been overwritten.",
+	"UPLOAD_FILE_UPLOADING": "Uploading files...",
 
 	"MANAGE_ACCOUNTS_AVAILABLE_CONNECTIONS": "Available connections",
 	"MANAGE_ACCOUNTS_CREATE_NEW": "New authentication ID (authID, custom alias you give to a specific account-role combination)",
@@ -45,6 +46,7 @@
 	"MANAGE_ACCOUNTS_SELECT_AUTH_ID_SUCCESS": "The default account for the current project was successfully set to {0}.",
 	"MANAGE_ACCOUNTS_CREATE_SAVE_TOKEN_NEW_TBA": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID {2} as default.",
 
+	"UPDATE_OBJECT_ERROR_SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER": "The SDF object file to update should be in the Objects folder.",
 	"UPDATE_OBJECT_OVERRIDE": "The {0} object will be overwritten with the object from the account. Do you want to continue?",
 	"UPDATE_OBJECT_PROCESS_CANCELED": "The custom object update process has been canceled. No custom objects have been overwritten.",
 	"UPDATE_OBJECT_UPDATING": "Updating object...",
@@ -54,8 +56,6 @@
 	"ERRORS_NO_ACTIVE_FILE_OR_WORKSPACE": "There is no active file or the active file is not in a workspace.",
 	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install Oracle JDK version {1}.",
 	"ERRORS_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install Oracle JDK version {0} to run SuiteCloud Extension for Visual Studio Code.",
-	"ERRORS_SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER": "The SDF object file should be in the Objects folder.",
-	"ERRORS_UPDATE_FILE_FOLDER_RESTRICTION": "The file should be in a supported folder inside the FileCabinet folder. For information about the supported folders, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4724963992.html.",
 
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
 	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
