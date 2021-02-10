@@ -69,19 +69,26 @@ export default class UploadFile extends BaseAction {
 		} else {
 			const projectFolderPath = this.getProjectFolderPath();
 			const projectInfoService = new ProjectInfoServive(projectFolderPath);
-			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
-				const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
-				if (!fileCabinetService.isUnrestrictedPath(fileCabinetService.getFileCabinetRelativePath(activeFile.fsPath))) {
-					return {
-						valid: false,
-						message: this.translationService.getMessage(ERRORS.UPDATE_FILE_FOLDER_RESTRICTION),
+			try {
+				if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
+					const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
+					if (!fileCabinetService.isUnrestrictedPath(fileCabinetService.getFileCabinetRelativePath(activeFile.fsPath))) {
+						return {
+							valid: false,
+							message: this.translationService.getMessage(ERRORS.UPDATE_FILE_FOLDER_RESTRICTION),
+						}
 					}
 				}
-			}
 
-			return {
-				valid: true,
-			};
+				return {
+					valid: true,
+				};
+			} catch (e) {
+				return {
+					valid: false,
+					message: e.getErrorMessage(),
+				}
+			}
 		}
 	}
 

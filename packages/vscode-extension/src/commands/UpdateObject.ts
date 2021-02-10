@@ -68,19 +68,26 @@ export default class UpdateObject extends BaseAction {
 		} else {
 			const projectFolderPath = this.getProjectFolderPath();
 			const projectInfoService = new ProjectInfoServive(projectFolderPath);
-			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
-				const relativePath = path.relative(projectFolderPath, activeFile.fsPath);
-				if (!relativePath.startsWith(OBJECTS_FOLDER + path.sep)) {
-					return {
-						valid: false,
-						message: this.translationService.getMessage(ERRORS.SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER),
+			try {
+				if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
+					const relativePath = path.relative(projectFolderPath, activeFile.fsPath);
+					if (!relativePath.startsWith(OBJECTS_FOLDER + path.sep)) {
+						return {
+							valid: false,
+							message: this.translationService.getMessage(ERRORS.SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER),
+						}
 					}
 				}
-			}
 
-			return {
-				valid: true,
-			};
+				return {
+					valid: true,
+				};
+			} catch (e) {
+				return {
+					valid: false,
+					message: e.getErrorMessage(),
+				}
+			}
 		}
 	}
 }
