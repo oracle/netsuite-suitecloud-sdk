@@ -5,7 +5,7 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKeys';
-import { actionResultStatus, CLIConfigurationService, ApplicationConstants } from '../util/ExtensionUtil';
+import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'uploadfile'
@@ -67,9 +67,29 @@ export default class UploadFile extends BaseAction {
 				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE),
 			};
 		} else {
-			return {
-				valid: true,
-			};
+			const projectFolderPath = this.getProjectFolderPath();
+			const projectInfoService = new ProjectInfoServive(projectFolderPath);
+			try {
+				if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
+					const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
+					if (!fileCabinetService.isUnrestrictedPath(fileCabinetService.getFileCabinetRelativePath(activeFile.fsPath))) {
+						return {
+							valid: false,
+							message: this.translationService.getMessage(UPLOAD_FILE.ERROR.UPLOAD_FILE_FOLDER_RESTRICTION),
+						}
+					}
+				}
+
+				return {
+					valid: true,
+				};
+			} catch (e) {
+				return {
+					valid: false,
+					message: e.getErrorMessage(),
+				}
+			}
 		}
 	}
+
 }

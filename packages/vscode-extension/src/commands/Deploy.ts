@@ -4,7 +4,7 @@
  */
 import { window, QuickPickItem } from 'vscode';
 import { COMMAND, DEPLOY, YES, NO } from '../service/TranslationKeys';
-import { actionResultStatus, ApplicationConstants, ProjectInfoServive, CLIConfigurationService } from '../util/ExtensionUtil';
+import { ApplicationConstants, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { EOL } from 'os';
 
@@ -75,10 +75,7 @@ export default class Deploy extends BaseAction {
 	}
 
 	private getProjectType(): string {
-		const cliConfigurationService = new CLIConfigurationService();
-		cliConfigurationService.initialize(this.executionPath);
-		const projectFolder: string = cliConfigurationService.getProjectFolder(this.cliCommandName);
-		const projectInfoService = new ProjectInfoServive(projectFolder);
+		const projectInfoService = new ProjectInfoServive(this.getProjectFolderPath());
 
 		return projectInfoService.getProjectType();
 	}
