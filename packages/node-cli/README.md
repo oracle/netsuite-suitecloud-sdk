@@ -95,4 +95,4 @@ To read the 2020.2 NetSuite's release notes and documentation, check the followi
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
-Copyright (c) 2020 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
