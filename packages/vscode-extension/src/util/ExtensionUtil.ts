@@ -31,6 +31,7 @@ export const FileSystemService = require('@oracle/suitecloud-cli/src/services/Fi
 export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
 export const EnvironmentInformationService = require('@oracle/suitecloud-cli/src/services/EnvironmentInformationService');
 export const ProjectInfoServive = require('@oracle/suitecloud-cli/src/services/ProjectInfoService');
+export const FileCabinetService = require('@oracle/suitecloud-cli/src/services/FileCabinetService');
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
 

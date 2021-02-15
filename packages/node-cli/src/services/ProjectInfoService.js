@@ -153,4 +153,13 @@ module.exports = class ProjectInfoService {
 			)
 		);
 	}
+
+	isAccountCustomizationProject() {
+		return this.getProjectType() === PROJECT_ACP;
+	}
+
+	isSuiteAppProject() {
+		return this.getProjectType() === PROJECT_SUITEAPP;
+	}
+
 };

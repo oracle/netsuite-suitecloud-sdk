@@ -7,7 +7,7 @@ import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import MessageService from '../service/MessageService';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { VSTranslationService } from '../service/VSTranslationService';
-import { getRootProjectFolder } from '../util/ExtensionUtil';
+import { CLIConfigurationService, getRootProjectFolder } from '../util/ExtensionUtil';
 import { ERRORS } from '../service/TranslationKeys';
 import { commandsInfoMap } from '../commandsMap';
 import { assert } from 'console';
@@ -58,6 +58,18 @@ export default abstract class BaseAction {
 		this.vsConsoleLogger.info('');
 
 		return suiteCloudRunnerRunResult;
+	}
+
+	/**
+	 * To get the projectFolderPath, the action must have been triggered within a project context.
+	 *
+	 * @returns {string} the projectFolderPath or undefined if the action was not triggered within a project context
+	 */
+	protected getProjectFolderPath(): string {
+		const cliConfigurationService = new CLIConfigurationService();
+		cliConfigurationService.initialize(this.executionPath);
+
+		return cliConfigurationService.getProjectFolder(this.cliCommandName);
 	}
 
 	public async run() {
