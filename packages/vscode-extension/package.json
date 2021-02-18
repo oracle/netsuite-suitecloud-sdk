@@ -71,12 +71,14 @@
 			{
 				"command": "suitecloud.uploadfile",
 				"key": "ctrl+alt+u",
-				"mac": "ctrl+alt+u"
+				"mac": "ctrl+alt+u",
+				"when": "resource =~ //FileCabinet/SuiteScripts/.*\\.js$|^file$/"
 			},
 			{
 				"command": "suitecloud.updateobject",
-				"key": "ctrl+alt+shift+u",
-				"mac": "ctrl+alt+shift+u"
+				"key": "ctrl+alt+u",
+				"mac": "ctrl+alt+u",
+				"when": "resource =~ //Objects/.*\\.xml$|^file$/"
 			}
 		]
 	},
