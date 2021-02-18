@@ -72,6 +72,11 @@
 				"command": "suitecloud.uploadfile",
 				"key": "ctrl+alt+u",
 				"mac": "ctrl+alt+u"
+			},
+			{
+				"command": "suitecloud.updateobject",
+				"key": "ctrl+alt+shift+u",
+				"mac": "ctrl+alt+shift+u"
 			}
 		]
 	},
