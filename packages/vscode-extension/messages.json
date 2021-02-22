@@ -39,6 +39,7 @@
 	"MANAGE_ACCOUNTS_SAVE_TOKEN_ENTER_TOKEN_SECRET": "Enter the Token Secret:",
 	"MANAGE_ACCOUNTS_CREATE_SAVE_TOKEN_OPTION": "Save a TBA token issued in NetSuite",
 	"MANAGE_ACCOUNTS_CREATE_SAVE_TOKEN_SAVING_TBA": "Saving the TBA token...",
+	"MANAGE_ACCOUNTS_ERROR_MISSING_MANIFEST": "No manifest.xml file was found in {0}. Use '{1}' from an active file in a valid project folder. For more information about the project structure, see {2}",
 	"MANAGE_ACCOUNTS_ERROR_NOT_IN_PROJECT": "Can't set the default authentication ID (authID) if not in a project.",
 	"MANAGE_ACCOUNTS_LOADING": "Loading the configured authentication IDs (authID) in this machine...",
 	"MANAGE_ACCOUNTS_CANCELED": "The creation of a new authentication ID (authID) has been canceled.",
