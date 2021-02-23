@@ -8,7 +8,7 @@ import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKey
 import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
-const COMMAND_NAME = 'uploadfile'
+const COMMAND_NAME = 'uploadfile';
 
 export default class UploadFile extends BaseAction {
 	constructor() {
@@ -76,7 +76,7 @@ export default class UploadFile extends BaseAction {
 						return {
 							valid: false,
 							message: this.translationService.getMessage(UPLOAD_FILE.ERROR.UPLOAD_FILE_FOLDER_RESTRICTION),
-						}
+						};
 					}
 				}
 
@@ -87,9 +87,8 @@ export default class UploadFile extends BaseAction {
 				return {
 					valid: false,
 					message: e.getErrorMessage(),
-				}
+				};
 			}
 		}
 	}
-
 }
