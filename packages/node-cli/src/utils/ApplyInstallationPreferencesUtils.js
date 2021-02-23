@@ -57,7 +57,7 @@ function validate(args, projectFolder, commandName, logger) {
 			LINKS.HOW_TO.CREATE_INSTALLATION_PREFERENCES
 		);
 
-		throw NodeTranslationService.getMessage(COMMAND, errorMessage);
+		throw NodeTranslationService.getMessage(COMMAND, commandName, errorMessage);
 	}
 }
 
