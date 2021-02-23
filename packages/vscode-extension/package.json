@@ -72,13 +72,13 @@
 				"command": "suitecloud.uploadfile",
 				"key": "ctrl+alt+u",
 				"mac": "ctrl+alt+u",
-				"when": "resource =~ //FileCabinet/SuiteScripts/.*$/ || resource =~ //FileCabinet/Templates/.*$/ || resource =~ //FileCabinet/Templates/E-mail Templates/.*$/ || resource =~ //FileCabinet/Templates/Marketing Templates.*$/ || resource =~ //FileCabinet/Web Site Hosting Files/.*$/ || resource =~ //FileCabinet/SuiteScripts/.*$/ || resource =~ //FileCabinet/Templates/.*$/ || resource =~ //FileCabinet/Templates/E-mail Templates/.*$/ || resource =~ //FileCabinet/Templates/Marketing Templates.*$/ || resource =~ //FileCabinet/SuiteApps/.*$/"
+				"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/"
 			},
 			{
 				"command": "suitecloud.updateobject",
 				"key": "ctrl+alt+u",
 				"mac": "ctrl+alt+u",
-				"when": "resource =~ //Objects/.*\\.xml$/"
+				"when": "resource =~ //Objects/.+\\.xml$/"
 			}
 		]
 	},
