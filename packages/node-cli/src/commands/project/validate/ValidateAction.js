@@ -43,7 +43,7 @@ module.exports = class ValidateAction extends BaseAction {
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 
 		AccountSpecificValuesUtils.validate(params, this._projectFolder);
-		ApplyInstallationPreferencesUtils.validate(params, this._projectFolder, this._commandMetadata.sdkCommand, this._log);
+		ApplyInstallationPreferencesUtils.validate(params, this._projectFolder, this._commandMetadata.name, this._log);
 
 		return {
 			...params,
