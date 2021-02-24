@@ -1,14 +1,9 @@
-<div style="text-align: center;"> 
-
-![resources/oracle_netsuite_logo.png](resources/oracle_netsuite_logo.png)
-
-</div>
+![NetSuite Logo](resources/oracle_netsuite_logo.png)
 
 # SuiteCloud Extension for Visual Studio Code
 The SuiteCloud extension allows you to customize your SuiteCloud Development Framework (SDF) projects for NetSuite.
 
-![resources/acpMain.png](resources/acpMain.png)
-
+![Account customization project](resources/acpMain.png)
 
 SuiteCloud extension for Visual Studio Code is part of SuiteCloud SDK, a set of tools to customize NetSuite accounts.
 
@@ -25,8 +20,7 @@ Read the detailed list of prerequisites in [NetSuite's Help Center](https://syst
 ## SuiteCloud Extension commands
 The following commands are available through the Command Palette:
 
-![resources/suitecloudCommandList.png](resources/suitecloudCommandList.png)
-
+![List of SuiteCloud commands](resources/suitecloudCommandList.png)
 
 💡 To read more about what you can do with SuiteCloud extension for Visual Studio Code, visit [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html).
 
@@ -41,7 +35,7 @@ To work with both tools at the same time, do the following:
    ```
 3. You can now use SuiteCloud CLI for Node.js in your SDF projects while working in SuiteCloud extension for Visual Studio Code.
 
-![resources/cliForNodejsDemo.gif](resources/cliForNodejsDemo.gif)
+![SuiteCloud CLI for Node.js combined with SuiteCloud extension for Visual Studio Code](resources/cliForNodejsDemo.gif)
 
 ## [Contributing](/CONTRIBUTING.md)
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
