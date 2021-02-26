@@ -20,7 +20,7 @@
 	"dependencies": {
 		"async": "3.2.0",
 		"express": "4.17.1",
-		"glob": "7.1.4",
+		"glob": "7.1.6",
 		"handlebars": "4.7.6",
 		"module-loader": "file:./src/module-loader",
 		"node-sass": "5.0.0",
