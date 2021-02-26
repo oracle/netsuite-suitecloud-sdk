@@ -67,7 +67,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
-	async getParameters(params) {
+	async getParameters(params, executionEnvironmentContext) {
 		const listObjectQuestions = this._generateListObjectQuestions();
 		const listObjectAnswers = await prompt(listObjectQuestions);
 
@@ -75,6 +75,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const executionContextForListObjects = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
 			.integration()
 			.addParams(paramsForListObjects)
+			.setExecutionEnvironmentContext(executionEnvironmentContext)
 			.build();
 
 		let listObjectsResult;

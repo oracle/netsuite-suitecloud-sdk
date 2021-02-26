@@ -43,11 +43,12 @@ module.exports = class UploadFilesAction extends BaseAction {
 		return params;
 	}
 
-	async execute(params) {
+	async execute(params, executionEnvironmentContext) {
 		try {
 			const executionContextUploadFiles = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(params)
+				.setExecutionEnvironmentContext(executionEnvironmentContext)
 				.build();
 
 			const operationResult = await executeWithSpinner({

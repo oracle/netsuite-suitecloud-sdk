@@ -29,13 +29,14 @@ module.exports = class ListFilesAction extends BaseAction {
 		return args;
 	}
 
-	async execute(params) {
+	async execute(params, executionEnvironmentContext) {
 		try {
 			// quote folder path to preserve spaces
 			params.folder = `\"${params.folder}\"`;
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(params)
+				.setExecutionEnvironmentContext(executionEnvironmentContext)
 				.build();
 
 			const operationResult = await executeWithSpinner({

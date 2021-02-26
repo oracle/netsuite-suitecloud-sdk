@@ -6,3 +6,4 @@
 export const OBJECTS_FOLDER = "Objects";
 export const PRODUCTION_DOMAIN_REGEX = '^system\\.(\\w+\\.)*netsuite\\.com$';
 export const PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX = '^(\\w+)\\.app\\.netsuite\\.com$';
+export const VSCODE_PLATFORM = "VSCode";

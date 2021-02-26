@@ -13,7 +13,7 @@ module.exports = class BaseInputHandler {
 		this._runInInteractiveMode = options.runInInteractiveMode;
 	}
 
-	async getParameters(params) {
+	async getParameters(params, executionEnvironmentContext) {
 		return params;
 	}
 };

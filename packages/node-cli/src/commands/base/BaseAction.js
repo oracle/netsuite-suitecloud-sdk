@@ -23,7 +23,7 @@ module.exports = class BaseAction {
 		return params;
 	}
 
-	async execute(params) {
+	async execute(params, executionEnvironmentContext) {
 		return ActionResult.Builder.withErrors(['BaseAction execute should never be called']);
 	}
 

@@ -6,6 +6,7 @@
 
 const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
+	SDK_CLIENT_PLATFORM_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_PROXY_JVM_OPTIONS,
 	SDK_REQUIRED_JAVA_VERSION,
@@ -29,7 +30,6 @@ module.exports = class SdkExecutor {
 		this._sdkPath = sdkPath;
 
 		this._CLISettingsService = new CLISettingsService();
-		this._environmentInformationService = new EnvironmentInformationService();
 		this.childProcess = null;
 	}
 
@@ -95,14 +95,15 @@ module.exports = class SdkExecutor {
 
 		const integrationModeOption = executionContext.isIntegrationMode() ? SDK_INTEGRATION_MODE_JVM_OPTION : '';
 
-		const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
+		const clientPlatform = `${SDK_CLIENT_PLATFORM_JVM_OPTION}=${executionContext.getExecutionEnvironmentContext().getPlatform()}`;
+		const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${executionContext.getExecutionEnvironmentContext().getPlatformVersion()}`;
 
 		if (!FileUtils.exists(this._sdkPath)) {
 			throw NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND, path.join(__dirname, '..'));
 		}
 		const quotedSdkJarPath = `"${this._sdkPath}"`;
 
-		const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatformVersionOption}`;
+		const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatform} ${clientPlatformVersionOption}`;
 		const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 		return spawn(jvmCommand, [], { shell: true });

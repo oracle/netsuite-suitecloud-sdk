@@ -44,17 +44,17 @@ class Command {
 		this._outputHandler = new outputHandler(options);
 	}
 
-	async run(inputParams) {
+	async run(inputParams, executionEnvironmentContext) {
 		const execParams =
 			this._interactiveSupport === INTERACTIVE_MODE.ALWAYS || (this._interactiveSupport !== INTERACTIVE_MODE.NEVER && this._runInInteractiveMode)
-				? await this._inputHandler.getParameters(inputParams)
+				? await this._inputHandler.getParameters(inputParams, executionEnvironmentContext)
 				: inputParams;
 
 		const preExec = await this._action.preExecute(execParams);
 
 		this._validateActionParameters(preExec);
 
-		const exec = await this._action.execute(preExec);
+		const exec = await this._action.execute(preExec, executionEnvironmentContext);
 		const actionResult = await this._action.postExecute(exec);
 
 		if (!(actionResult instanceof ActionResult)) {

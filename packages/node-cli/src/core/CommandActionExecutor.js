@@ -13,6 +13,7 @@ const { lineBreak } = require('../loggers/LoggerConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/ExceptionUtils');
 const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
+const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -27,6 +28,12 @@ module.exports = class CommandActionExecutor {
 		this._commandsMetadataService = dependencies.commandsMetadataService;
 		this._log = dependencies.log;
 		this._sdkPath = dependencies.sdkPath;
+
+		if (!dependencies.executionEnvironmentContext) {
+			this._executionEnvironmentContext = new ExecutionEnvironmentContext();
+		} else {
+			this._executionEnvironmentContext = dependencies.executionEnvironmentContext;
+		}
 	}
 
 	async executeAction(context) {
@@ -144,7 +151,7 @@ module.exports = class CommandActionExecutor {
 			});
 			const overriddenArguments = beforeExecutingOutput.arguments;
 
-			return command.run(overriddenArguments);
+			return command.run(overriddenArguments, this._executionEnvironmentContext);
 		} catch (error) {
 			throw error;
 		}

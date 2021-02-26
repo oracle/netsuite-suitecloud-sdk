@@ -64,7 +64,7 @@ module.exports = class DeployAction extends (
 		};
 	}
 
-	async execute(params) {
+	async execute(params, executionEnvironmentContext) {
 		try {
 			let flags = [COMMAND.FLAGS.NO_PREVIEW, COMMAND.FLAGS.SKIP_WARNING];
 
@@ -84,17 +84,17 @@ module.exports = class DeployAction extends (
 			}
 
 			if (params[COMMAND.FLAGS.PREVIEW]) {
-				return await this._preview(params, flags);
+				return await this._preview(params, flags, executionEnvironmentContext);
 			}
 
-			return await this._deploy(params, flags);
+			return await this._deploy(params, flags, executionEnvironmentContext);
 
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 
-	async _preview(params, flags) {
+	async _preview(params, flags, executionEnvironmentContext) {
 		try {
 			delete params[COMMAND.FLAGS.PREVIEW];
 			flags.splice(flags.indexOf(COMMAND.FLAGS.NO_PREVIEW), 1); 
@@ -110,6 +110,7 @@ module.exports = class DeployAction extends (
 				.integration()
 				.addParams(sdkParams)
 				.addFlags(flags)
+				.setExecutionEnvironmentContext(executionEnvironmentContext)
 				.build();
 
 			const dryrunOperationResult = await executeWithSpinner({
@@ -129,7 +130,7 @@ module.exports = class DeployAction extends (
 		}
 	}
 
-	async _deploy(params, flags) {
+	async _deploy(params, flags, executionEnvironmentContext) {
 		try {
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
@@ -137,6 +138,7 @@ module.exports = class DeployAction extends (
 				.integration()
 				.addParams(sdkParams)
 				.addFlags(flags)
+				.setExecutionEnvironmentContext(executionEnvironmentContext)
 				.build();
 
 			const operationResult = await executeWithSpinner({

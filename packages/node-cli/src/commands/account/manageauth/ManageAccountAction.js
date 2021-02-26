@@ -45,7 +45,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 		super(options);
 	}
 
-	async execute(params) {
+	async execute(params, executionEnvironmentContext) {
 		const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
 		const flags = [];
@@ -58,6 +58,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 			.integration()
 			.addParams(sdkParams)
 			.addFlags(flags)
+			.setExecutionEnvironmentContext(executionEnvironmentContext)
 			.build();
 
 		const selectedOptions = this._extractSelectedOptions(params);

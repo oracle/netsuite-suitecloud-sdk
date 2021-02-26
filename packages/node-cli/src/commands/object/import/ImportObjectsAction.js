@@ -62,7 +62,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 		return answers;
 	}
 
-	async execute(params) {
+	async execute(params, executionEnvironmentContext) {
 		if (params[ANSWERS_NAMES.OVERWRITE_OBJECTS] === false) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
@@ -87,7 +87,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 					if (params[ANSWERS_NAMES.OBJECT_TYPE] === IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL) {
 						scriptIdArray = (await this._getAllScriptIds(params)).map((el) => el.scriptId);
 					} else {
-						scriptIdArray = (await this._getAllScriptIdsForObjectType(params)).map((el) => el.scriptId);
+						scriptIdArray = (await this._getAllScriptIdsForObjectType(params, executionEnvironmentContext)).map((el) => el.scriptId);
 					}
 				} else {
 					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
@@ -115,6 +115,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 					.addFlags(flags)
 					.addParams(sdkParams)
 					.addParam(ANSWERS_NAMES.SCRIPT_ID, partialScriptIdsString)
+					.setExecutionEnvironmentContext(executionEnvironmentContext)
 					.build();
 
 				const sdkExecutor = new SdkExecutor(this._sdkPath);
@@ -163,18 +164,18 @@ module.exports = class ImportObjectsAction extends BaseAction {
 		}
 	}
 
-	async _getAllScriptIdsForObjectType(params) {
+	async _getAllScriptIdsForObjectType(params, executionEnvironmentContext) {
 		const sdkParams = {};
 		sdkParams.type = params[ANSWERS_NAMES.OBJECT_TYPE];
 
-		return this._callListObjects(params, sdkParams);
+		return this._callListObjects(params, sdkParams, executionEnvironmentContext);
 	}
 
 	async _getAllScriptIds(params) {
 		return this._callListObjects(params, {});
 	}
 
-	async _callListObjects(params, sdkParams) {
+	async _callListObjects(params, sdkParams, executionEnvironmentContext) {
 		sdkParams.authid = params[ANSWERS_NAMES.AUTH_ID];
 		const appId = params[ANSWERS_NAMES.APP_ID];
 		if (appId) {
@@ -184,6 +185,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 		const executionContext = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
 			.integration()
 			.addParams(sdkParams)
+			.setExecutionEnvironmentContext(executionEnvironmentContext)
 			.build();
 
 		const actionListObjects = this._sdkExecutor.execute(executionContext);

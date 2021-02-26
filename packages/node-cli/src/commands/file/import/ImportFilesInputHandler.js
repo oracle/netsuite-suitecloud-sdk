@@ -59,12 +59,12 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
-	async getParameters(params) {
+	async getParameters(params, executionEnvironmentContext) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
-		const listFoldersResult = await this._listFolders();
+		const listFoldersResult = await this._listFolders(executionEnvironmentContext);
 
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 			throw listFoldersResult.errorMessages;
@@ -92,10 +92,11 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		return selectFilesAnswer;
 	}
 
-	_listFolders() {
+	_listFolders(executionEnvironmentContext) {
 		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND)
 			.integration()
 			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
+			.setExecutionEnvironmentContext(executionEnvironmentContext)
 			.build();
 
 		return executeWithSpinner({
