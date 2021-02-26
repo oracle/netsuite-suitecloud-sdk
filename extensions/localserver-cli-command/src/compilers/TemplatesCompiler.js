@@ -109,7 +109,7 @@ module.exports = class TemplatesCompiler {
 	_writeJavascriptLibsFile() {
 		// create javascript-libs.js
 		let content = '';
-		['LoadTemplateSafe', 'Handlebars.CompilerNameLookup'].map(filename => {
+		['Handlebars.CompilerNameLookup'].forEach(filename => {
 			content += fs
 				.readFileSync(path.join(__dirname, '../../src/client-scripts', filename + '.js'))
 				.toString();
