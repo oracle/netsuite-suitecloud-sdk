@@ -29,10 +29,10 @@ class LocalServer {
 
 		const app = express();
 		app.use((req, res, next) => {
-            res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Headers', '*');
-            next();
-        });
+			res.header('Access-Control-Allow-Origin', '*');
+			res.header('Access-Control-Allow-Headers', '*');
+			next();
+		});
 
 		app.use('/', express.static(localPath));
 
