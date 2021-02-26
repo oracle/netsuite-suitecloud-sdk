@@ -8,7 +8,6 @@ const Log = require('./services/Log');
 const whoService = require('./services/Who');
 
 const express = require('express');
-const cors = require('cors');
 
 class LocalServer {
 	constructor() {
@@ -29,7 +28,11 @@ class LocalServer {
 	startServer(localPath) {
 
 		const app = express();
-		app.use(cors({ origin: true }));
+		app.use((req, res, next) => {
+			res.header('Access-Control-Allow-Origin', '*');
+			res.header('Access-Control-Allow-Headers', '*');
+			next();
+		});
 
 		app.use('/', express.static(localPath));
 

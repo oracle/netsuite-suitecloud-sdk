@@ -45,7 +45,7 @@ module.exports = class Compiler {
 	}
 
 	_createRequireJSFile(localFolder) {
-		const src = require.resolve('requirejs');
+		const src = require.resolve('module-loader');
 		const dst = path.join(localFolder, 'require.js');
 
 		let content = fs.readFileSync(src).toString();
