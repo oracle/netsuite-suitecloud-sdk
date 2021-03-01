@@ -38,23 +38,24 @@ class Command {
 		this._runInInteractiveMode = options.runInInteractiveMode;
 		this._interactiveSupport = options.interactiveSupport;
 		this._log = options.log;
+		this._executionEnvironmentContext = options.executionEnvironmentContext;
 
-		this._action = new action(options);
-		this._inputHandler = new inputHandler(options);
+		this._action = new action(options, this._executionEnvironmentContext);
+		this._inputHandler = new inputHandler(options, this._executionEnvironmentContext);
 		this._outputHandler = new outputHandler(options);
 	}
 
-	async run(inputParams, executionEnvironmentContext) {
+	async run(inputParams) {
 		const execParams =
 			this._interactiveSupport === INTERACTIVE_MODE.ALWAYS || (this._interactiveSupport !== INTERACTIVE_MODE.NEVER && this._runInInteractiveMode)
-				? await this._inputHandler.getParameters(inputParams, executionEnvironmentContext)
+				? await this._inputHandler.getParameters(inputParams)
 				: inputParams;
 
 		const preExec = await this._action.preExecute(execParams);
 
 		this._validateActionParameters(preExec);
 
-		const exec = await this._action.execute(preExec, executionEnvironmentContext);
+		const exec = await this._action.execute(preExec);
 		const actionResult = await this._action.postExecute(exec);
 
 		if (!(actionResult instanceof ActionResult)) {

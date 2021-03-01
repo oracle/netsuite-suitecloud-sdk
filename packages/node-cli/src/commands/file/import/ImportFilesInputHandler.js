@@ -53,18 +53,18 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(options.sdkPath);
+		this._sdkExecutor = new SdkExecutor(options.sdkPath, this._executionEnvironmentContext);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
-	async getParameters(params, executionEnvironmentContext) {
+	async getParameters(params) {
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
-		const listFoldersResult = await this._listFolders(executionEnvironmentContext);
+		const listFoldersResult = await this._listFolders(this._executionEnvironmentContext);
 
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 			throw listFoldersResult.errorMessages;
@@ -92,11 +92,10 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		return selectFilesAnswer;
 	}
 
-	_listFolders(executionEnvironmentContext) {
+	_listFolders() {
 		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND)
 			.integration()
 			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
-			.setExecutionEnvironmentContext(executionEnvironmentContext)
 			.build();
 
 		return executeWithSpinner({

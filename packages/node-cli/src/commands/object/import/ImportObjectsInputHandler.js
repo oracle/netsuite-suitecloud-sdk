@@ -58,7 +58,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(options.sdkPath);
+		this._sdkExecutor = new SdkExecutor(options.sdkPath, this._executionEnvironmentContext);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
@@ -67,7 +67,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
-	async getParameters(params, executionEnvironmentContext) {
+	async getParameters(params) {
 		const listObjectQuestions = this._generateListObjectQuestions();
 		const listObjectAnswers = await prompt(listObjectQuestions);
 
@@ -75,7 +75,6 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const executionContextForListObjects = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
 			.integration()
 			.addParams(paramsForListObjects)
-			.setExecutionEnvironmentContext(executionEnvironmentContext)
 			.build();
 
 		let listObjectsResult;

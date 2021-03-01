@@ -119,7 +119,6 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_getCommand(runInInteractiveMode, projectFolder, commandMetadata) {
-
 		const commandPath = commandMetadata.generator;
 		const commandGenerator = require(commandPath);
 		if (!commandGenerator) {
@@ -132,6 +131,7 @@ module.exports = class CommandActionExecutor {
 			runInInteractiveMode: runInInteractiveMode,
 			log: this._log,
 			sdkPath: this._sdkPath,
+			executionEnvironmentContext: this._executionEnvironmentContext,
 		});
 	}
 
@@ -151,7 +151,7 @@ module.exports = class CommandActionExecutor {
 			});
 			const overriddenArguments = beforeExecutingOutput.arguments;
 
-			return command.run(overriddenArguments, this._executionEnvironmentContext);
+			return command.run(overriddenArguments);
 		} catch (error) {
 			throw error;
 		}

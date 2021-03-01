@@ -52,7 +52,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 		return params;
 	}
 
-	async execute(params, executionEnvironmentContext) {
+	async execute(params) {
 		try {
 			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
@@ -65,7 +65,6 @@ module.exports = class ImportFilesAction extends BaseAction {
 			const executionContextImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(params)
-				.setExecutionEnvironmentContext(executionEnvironmentContext)
 				.build();
 
 			const operationResult = await executeWithSpinner({

@@ -31,14 +31,13 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(options.sdkPath);
+		this._sdkExecutor = new SdkExecutor(options.sdkPath, this._executionEnvironmentContext);
 	}
 
-	async getParameters(params, executionEnvironmentContext) {
+	async getParameters(params) {
 		const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
 			.integration()
 			.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, getProjectDefaultAuthId(this._executionPath))
-			.setExecutionEnvironmentContext(executionEnvironmentContext)
 			.build();
 
 		let listFoldersResult;

@@ -5,7 +5,6 @@
 'use strict';
 
 const assert = require('assert');
-const ExecutionEnvironmentContext = require('./ExecutionEnvironmentContext');
 
 class SdkExecutionContext {
 	constructor(options) {
@@ -15,12 +14,6 @@ class SdkExecutionContext {
 		this._developmentMode = options.developmentMode;
 		this._params = options.params;
 		this._flags = options.flags;
-
-		if (!options.executionEnvironmentContext) {
-			this._executionEnvironmentContext = new ExecutionEnvironmentContext();
-		} else {
-			this._executionEnvironmentContext = options.executionEnvironmentContext;
-		}
 	}
 
 	getCommand() {
@@ -37,10 +30,6 @@ class SdkExecutionContext {
 
 	isIntegrationMode() {
 		return this._integrationMode;
-	}
-
-	getExecutionEnvironmentContext() {
-		return this._executionEnvironmentContext;
 	}
 
 	static get Builder() {
@@ -95,11 +84,6 @@ class SdkExecutionContextBuilder {
 		return this;
 	}
 
-	setExecutionEnvironmentContext(executionEnvironmentContext) {
-		this._executionEnvironmentContext = executionEnvironmentContext;
-		return this;
-	}
-
 	build() {
 		return new SdkExecutionContext({
 			command: this._command,
@@ -107,7 +91,6 @@ class SdkExecutionContextBuilder {
 			flags: this._flags,
 			integrationMode: this._integrationMode,
 			developmentMode: this._developmentMode,
-			executionEnvironmentContext: this._executionEnvironmentContext,
 		});
 	}
 }

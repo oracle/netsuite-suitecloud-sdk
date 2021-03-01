@@ -51,7 +51,7 @@ module.exports = class ValidateAction extends BaseAction {
 		};
 	}
 
-	async execute(params, executionEnvironmentContext) {
+	async execute(params) {
 		try {
 			let isServerValidation = false;
 			let installationPreferencesApplied = false;
@@ -81,7 +81,6 @@ module.exports = class ValidateAction extends BaseAction {
 				.integration()
 				.addParams(sdkParams)
 				.addFlags(flags)
-				.setExecutionEnvironmentContext(executionEnvironmentContext)
 				.build();
 
 			const operationResult = await executeWithSpinner({

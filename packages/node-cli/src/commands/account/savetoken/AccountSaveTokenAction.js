@@ -64,7 +64,7 @@ module.exports = class AccountSaveTokenAction extends BaseAction {
 		return params;
 	}
 
-	async execute(params, executionEnvironmentContext) {
+	async execute(params) {
 		const commandOptionsValidator = new CommandOptionsValidator();
 		const validationErrors = commandOptionsValidator.validate({
 			commandOptions: COMMAND.VALIDATION.SAVE_TOKEN.MANDATORY_OPTIONS,
@@ -79,7 +79,7 @@ module.exports = class AccountSaveTokenAction extends BaseAction {
 		} else if (params[COMMAND.OPTIONS.URL]) {
 			params[COMMAND.OPTIONS.DEV] = true;
 		}
-		return await saveToken(params, this._sdkPath, this._executionPath, executionEnvironmentContext);
+		return await saveToken(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
 
 	}
 

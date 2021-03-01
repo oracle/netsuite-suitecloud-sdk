@@ -16,14 +16,15 @@ module.exports = class BaseAction {
 		this._log = options.log;
 		this._sdkPath = options.sdkPath;
 
-		this._sdkExecutor = new SdkExecutor(this._sdkPath);
+		this._executionEnvironmentContext = options.executionEnvironmentContext;
+		this._sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
 	}
 
 	async preExecute(params) {
 		return params;
 	}
 
-	async execute(params, executionEnvironmentContext) {
+	async execute(params) {
 		return ActionResult.Builder.withErrors(['BaseAction execute should never be called']);
 	}
 

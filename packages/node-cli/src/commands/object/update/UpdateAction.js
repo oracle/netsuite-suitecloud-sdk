@@ -41,7 +41,7 @@ module.exports = class UpdateAction extends BaseAction {
 		return params;
 	}
 
-	async execute(params, executionEnvironmentContext) {
+	async execute(params) {
 		try {
 			if (params.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !params[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
 				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
@@ -51,7 +51,6 @@ module.exports = class UpdateAction extends BaseAction {
 			const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(sdkParams)
-				.setExecutionEnvironmentContext(executionEnvironmentContext)
 				.build();
 
 			const operationResult = await executeWithSpinner({

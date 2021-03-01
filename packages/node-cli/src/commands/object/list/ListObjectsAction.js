@@ -31,7 +31,7 @@ module.exports = class ListObjectsAction extends BaseAction {
 		return params;
 	}
 
-	async execute(params, executionEnvironmentContext) {
+	async execute(params) {
 		try {
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 			if (Array.isArray(sdkParams.type)) {
@@ -41,7 +41,6 @@ module.exports = class ListObjectsAction extends BaseAction {
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
 				.addParams(sdkParams)
-				.setExecutionEnvironmentContext(executionEnvironmentContext)
 				.build();
 
 			const actionListObjects = this._sdkExecutor.execute(executionContext);
