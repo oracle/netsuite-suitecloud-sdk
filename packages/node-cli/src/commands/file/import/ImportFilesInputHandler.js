@@ -64,7 +64,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
-		const listFoldersResult = await this._listFolders(this._executionEnvironmentContext);
+		const listFoldersResult = await this._listFolders();
 
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 			throw listFoldersResult.errorMessages;
