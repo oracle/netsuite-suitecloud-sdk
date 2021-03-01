@@ -89,7 +89,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.1.1"
+		"@oracle/suitecloud-cli": "oracle/netsuite-suitecloud-sdk#dev"
 	},
 	"devDependencies": {
 		"@types/glob": "7.1.3",
