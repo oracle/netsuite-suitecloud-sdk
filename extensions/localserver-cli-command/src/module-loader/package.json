@@ -1,0 +1,15 @@
+{
+    "name": "@oracle/module-loader",
+    "version": "1.0.0",
+    "description": "NS module-loader",
+    "scripts": {
+        "test": "jest --config module-loader.jest.config.js module-loaderTest.js",
+        "test:debug": "node --inspect node_modules/jest/bin/jest --config module-loader.jest.config.js module-loaderTest.js --runInBand"
+    },
+    "main": "module-loader.js",
+    "author": "",
+    "dependencies": {},
+    "devDependencies": {
+        "jest": "26.6.3"
+    }
+}
