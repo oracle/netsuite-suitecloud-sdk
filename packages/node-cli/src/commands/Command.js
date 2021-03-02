@@ -38,10 +38,9 @@ class Command {
 		this._runInInteractiveMode = options.runInInteractiveMode;
 		this._interactiveSupport = options.interactiveSupport;
 		this._log = options.log;
-		this._executionEnvironmentContext = options.executionEnvironmentContext;
 
-		this._action = new action(options, this._executionEnvironmentContext);
-		this._inputHandler = new inputHandler(options, this._executionEnvironmentContext);
+		this._action = new action(options);
+		this._inputHandler = new inputHandler(options);
 		this._outputHandler = new outputHandler(options);
 	}
 

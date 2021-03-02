@@ -14,6 +14,8 @@ const FileSystemService = require('../../../services/FileSystemService');
 
 module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	constructor(options) {
+		super(options);
+
 		this._fileSystemService = new FileSystemService();
 	}
 

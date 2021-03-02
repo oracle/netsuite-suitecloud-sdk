@@ -12,6 +12,7 @@ module.exports = class BaseInputHandler {
 		this._log = options.log;
 		this._runInInteractiveMode = options.runInInteractiveMode;
 		this._executionEnvironmentContext = options.executionEnvironmentContext;
+		this._sdkPath = options.sdkPath;
 	}
 
 	async getParameters(params) {
