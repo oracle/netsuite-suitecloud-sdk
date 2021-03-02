@@ -117,7 +117,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 					.addParam(ANSWERS_NAMES.SCRIPT_ID, partialScriptIdsString)
 					.build();
 
-				const sdkExecutor = new SdkExecutor(this._sdkPath);
+				const sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
 				arrayOfPromises.push(
 					sdkExecutor
 						.execute(partialExecutionContextForImportObjects)

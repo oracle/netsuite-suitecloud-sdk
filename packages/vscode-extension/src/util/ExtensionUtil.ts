@@ -13,6 +13,7 @@ export function getRootProjectFolder(): string | undefined {
 }
 
 export const ApplicationConstants = require('@oracle/suitecloud-cli/src/ApplicationConstants');
+export const ExecutionEnvironmentContext = require('@oracle/suitecloud-cli/src/ExecutionEnvironmentContext');
 
 export const actionResultStatus: {
 	SUCCESS: string;

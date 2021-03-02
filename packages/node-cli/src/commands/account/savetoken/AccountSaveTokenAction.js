@@ -79,7 +79,7 @@ module.exports = class AccountSaveTokenAction extends BaseAction {
 		} else if (params[COMMAND.OPTIONS.URL]) {
 			params[COMMAND.OPTIONS.DEV] = true;
 		}
-		return await saveToken(params, this._sdkPath, this._executionPath);
+		return await saveToken(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
 
 	}
 

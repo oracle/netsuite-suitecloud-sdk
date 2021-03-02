@@ -88,9 +88,9 @@ async function getAuthIds(sdkPath) {
 		: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 }
 
-async function saveToken(params, sdkPath, projectFolder) {
+async function saveToken(params, sdkPath, projectFolder, executionEnvironmentContext) {
 	const authId = params.authid;
-	const sdkExecutor = new SdkExecutor(sdkPath);
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
 	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE.SDK_COMMAND)
 		.integration()
 		.addParam(COMMANDS.AUTHENTICATE.PARAMS.AUTH_ID, authId)
@@ -121,9 +121,9 @@ async function saveToken(params, sdkPath, projectFolder) {
 		.build();
 }
 
-async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken) {
+async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken, executionEnvironmentContext) {
 	let authId = params.authid;
-	const sdkExecutor = new SdkExecutor(sdkPath);
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
 	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE.SDK_COMMAND)
 		.integration()
 		.addParam(COMMANDS.AUTHENTICATE.PARAMS.AUTH_ID, authId);

@@ -49,7 +49,6 @@ const ANSWERS_NAMES = {
 module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		this._sdkPath = options.sdkPath;
 	}
 
 	async getParameters(params) {

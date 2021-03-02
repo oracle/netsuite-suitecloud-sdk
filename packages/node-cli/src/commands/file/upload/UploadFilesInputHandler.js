@@ -36,7 +36,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 		this._fileSystemService = new FileSystemService();
-		this._fileCabinetService = new FileCabinetService(path.join(options.projectFolder, FILE_CABINET));
+		this._fileCabinetService = new FileCabinetService(path.join(this._projectFolder, FILE_CABINET));
 	}
 
 	async getParameters(params) {

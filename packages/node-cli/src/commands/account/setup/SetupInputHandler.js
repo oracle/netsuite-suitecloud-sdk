@@ -57,7 +57,6 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkPath = options.sdkPath;
 		this._sdkExecutor = new SdkExecutor(this._sdkPath);
 	}
 
