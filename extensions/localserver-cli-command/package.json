@@ -22,7 +22,6 @@
 		"express": "4.17.1",
 		"glob": "7.1.6",
 		"handlebars": "4.7.6",
-		"module-loader": "file:./src/module-loader",
 		"node-sass": "5.0.0",
 		"node-watch": "0.7.1",
 		"xml2js": "0.4.23"
