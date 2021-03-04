@@ -71,8 +71,8 @@
 			},
 			{
 				"command": "suitecloud.uploadfile",
-				"key": "ctrl+alt+u",
-				"mac": "ctrl+alt+u",
+				"key": "alt+shift+u",
+				"mac": "alt+shift+u",
 				"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/"
 			},
 			{
