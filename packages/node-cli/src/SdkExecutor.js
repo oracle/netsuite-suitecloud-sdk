@@ -20,6 +20,7 @@ const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SdkErrorCodes = require('./SdkErrorCodes');
+const ExecutionEnvironmentContext = require('./ExecutionEnvironmentContext');
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
