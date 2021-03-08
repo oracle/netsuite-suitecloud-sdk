@@ -137,7 +137,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS, numberOfSteps, numberOfSteps),
 			});
 			// At this point, the OperationResult will never be an error. It's handled before
-			return ActionResult.Builder.withData(operationResultData).build();
+			return ActionResult.Builder.withData(operationResultData).withResultMessage(operationResultData.resultMessage).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
@@ -159,6 +159,9 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				this.operationResultData.successfulImports = this.operationResultData.successfulImports.concat(
 					partialOperationResult.data.successfulImports
 				);
+			}
+			if (partialOperationResult.resultMessage){
+				this.operationResultData.resultMessage = partialOperationResult.resultMessage;
 			}
 		}
 	}
