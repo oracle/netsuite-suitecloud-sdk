@@ -4,6 +4,7 @@
 <p>
     <a href="https://www.npmjs.com/package/@oracle/suitecloud-cli-localserver-command">
         <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-cli-localserver-command.svg" alt="suitecloud-cli-localserver-command"/>
+        <img src="https://img.shields.io/npm/v/@oracle/suitecloud-cli-localserver-command.svg" alt="suitecloud-cli-localserver-command"/>
     </a>
 </p>
 
