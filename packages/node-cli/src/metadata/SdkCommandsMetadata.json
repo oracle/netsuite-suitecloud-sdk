@@ -128,7 +128,7 @@
 			"type": {
 				"name": "type",
 				"option": "type",
-				"description": "Specify the project type.",
+				"description": "Specify the project type. Enter one of the following options: ACCOUNTCUSTOMIZATION or SUITEAPP.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "ACCOUNTCUSTOMIZATION",
@@ -246,7 +246,7 @@
 			"paths": {
 				"name": "paths",
 				"option": "paths",
-				"description": "Specify the File Cabinet paths of the files to import. For example, \"/SuiteScripts\".",
+				"description": "Specify the File Cabinet paths of the files to import. For example, \"/SuiteScripts/file.js\".",
 				"mandatory": true,
 				"type": "MULTIPLE",
 				"usage": "\"/SuiteScripts/test.js\"",
@@ -589,7 +589,7 @@
 			"paths": {
 				"name": "paths",
 				"option": "paths",
-				"description": "Specify the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"/SuiteScripts/File.js\" \"/SuiteScripts/NewFile.js\".",
+				"description": "Specify the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"/SuiteScripts/file.js\" \"/SuiteScripts/newFile.js\".",
 				"mandatory": true,
 				"type": "MULTIPLE",
 				"usage": "\"/SuiteScripts/test.js\"",
