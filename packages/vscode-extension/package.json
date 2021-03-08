@@ -61,25 +61,24 @@
 			{
 				"command": "suitecloud.adddependencies",
 				"key": "ctrl+alt+shift+a",
-				"mac": "ctrl+alt+shift+a"
+				"mac": "ctrl+alt+cmd+a"
 			},
 			{
 				"command": "suitecloud.deploy",
 				"key": "ctrl+alt+d",
-				"mac": "ctrl+alt+d",
-				"linux": "meta+alt+d"
-			},
-			{
-				"command": "suitecloud.uploadfile",
-				"key": "alt+shift+u",
-				"mac": "alt+shift+u",
-				"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/"
+				"mac": "ctrl+alt+cmd+d",
+				"linux": "alt+d"
 			},
 			{
 				"command": "suitecloud.updateobject",
 				"key": "ctrl+alt+u",
-				"mac": "ctrl+alt+u",
+				"mac": "cmd+alt+u",
 				"when": "resource =~ //Objects/.+\\.xml$/"
+			},
+			{
+				"command": "suitecloud.uploadfile",
+				"key": "alt+shift+u",
+				"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/"
 			}
 		]
 	},
