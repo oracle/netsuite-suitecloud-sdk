@@ -32,7 +32,7 @@
 	"file:upload": {
 		"options": {
 			"paths": {
-				"description": "Specify the file cabinet path of the file to upload. For example, \"/SuiteScripts/file.js\"."
+				"description": "Specify the file cabinet path of the file to upload. For example, \"/SuiteScripts/file.js\" for account customization projects, and \"/SuiteApps/com.project.example/script.js\" for SuiteApp projects."
 			}
 		}
 	},

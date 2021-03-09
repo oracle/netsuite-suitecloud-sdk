@@ -589,7 +589,7 @@
 			"paths": {
 				"name": "paths",
 				"option": "paths",
-				"description": "Specify the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"/SuiteScripts/file.js\" \"/SuiteScripts/newFile.js\".",
+				"description": "Specify the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"/SuiteScripts/file.js\" for account customization projects, and \"/SuiteApps/com.project.example/script.js\" for SuiteApp projects.",
 				"mandatory": true,
 				"type": "MULTIPLE",
 				"usage": "\"/SuiteScripts/test.js\"",
