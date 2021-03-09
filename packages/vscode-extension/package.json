@@ -3,6 +3,7 @@
 	"displayName": "suitecloud-vscode-extension",
 	"description": "netsuite suitecloud vscode extension based on nodejs-cli",
 	"publisher": "Oracle",
+	"license": "UPL-1.0",
 	"private": true,
 	"version": "0.0.1",
 	"icon": "resources/pluginIcon_dark.png",
