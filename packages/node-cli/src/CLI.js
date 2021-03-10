@@ -83,6 +83,12 @@ module.exports = class CLI {
 	}
 
 	_isRunningInInteractiveMode() {
-		return process.argv[3] === INTERACTIVE_ALIAS || process.argv[3] === INTERACTIVE_OPTION;
+		if (process.argv.includes(INTERACTIVE_ALIAS) || process.argv.includes(INTERACTIVE_OPTION)) {
+			if (process.argv.length > 4) { //There are more options apart from -i or --interactive
+				throw NodeTranslationService.getMessage(ERRORS.INTERACTIVE_MODE_MORE_OPTIONS);
+			}
+			return true;
+		}
+		return false;
 	}
 };
