@@ -12,7 +12,7 @@ const UTF8 = 'utf8';
 
 class FileUtils {
 	create(fileName, object) {
-		const content = JSON.stringify(object);
+		const content = JSON.stringify(object, null,'\t');
 
 		fs.writeFileSync(fileName, content, UTF8, function (error) {
 			if (error) {

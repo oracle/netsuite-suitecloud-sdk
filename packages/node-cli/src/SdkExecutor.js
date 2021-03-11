@@ -91,7 +91,7 @@ module.exports = class SdkExecutor {
 	}
 
 	_launchJvmCommand(executionContext) {
-		if (!this._CLISettingsService.isJavaVersionValid()) {
+		if (this._CLISettingsService.isJavaVersionValid() !== true) {
 			const javaVersionError = this._checkIfJavaVersionIssue();
 			if (javaVersionError) {
 				throw javaVersionError;
@@ -105,13 +105,14 @@ module.exports = class SdkExecutor {
 
 		const clientPlatform = `${SDK_CLIENT_PLATFORM_JVM_OPTION}=${this._executionEnvironmentContext.getPlatform()}`;
 		const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${this._executionEnvironmentContext.getPlatformVersion()}`;
+		const customVmOptions = this._getCustomVmOptionsString();
 
 		if (!FileUtils.exists(this._sdkPath)) {
 			throw NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND, path.join(__dirname, '..'));
 		}
 		const quotedSdkJarPath = `"${this._sdkPath}"`;
 
-		const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatform} ${clientPlatformVersionOption}`;
+		const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatform} ${clientPlatformVersionOption} ${customVmOptions}`;
 		const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 		return spawn(jvmCommand, [], { shell: true });
@@ -149,6 +150,17 @@ module.exports = class SdkExecutor {
 		}
 
 		return cliParamsAsString;
+	}
+
+	_getCustomVmOptionsString() {
+		const customVmOptions = this._CLISettingsService.getCustomVmOptions();
+		if (!customVmOptions) {
+			return '';
+		}
+		// customVmOptions are already validated at CLISettingsService 
+		return Object.keys(customVmOptions).reduce((acc, currentKey) =>
+			acc+= customVmOptions[currentKey] === '' ? ` ${currentKey}` : ` ${currentKey}="${customVmOptions[currentKey].trim()}"`
+		, '').trim();
 	}
 
 	_checkIfJavaVersionIssue() {

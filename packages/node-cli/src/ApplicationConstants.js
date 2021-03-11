@@ -26,7 +26,7 @@ module.exports = {
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
 		MANIFEST_XML: 'manifest.xml',
-		CLI_SETTINGS: 'nodejs-cli-settings.json',
+		SDK_SETTINGS: 'suitecloud-sdk-settings.json',
 	},
 	FOLDERS: {
 		FILE_CABINET: '/FileCabinet',
