@@ -19,7 +19,7 @@ SuiteCloud extension for Visual Studio Code is part of SuiteCloud Software Devel
 
 ## Installation prerequisites
 The following software is required to work with SuiteCloud extension for Visual Studio Code:
-- Node.js version 14 LTS
+- Node.js version 14.16.0 LTS
 - Oracle JDK version 11
 
 Read the detailed list of prerequisites in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html).
