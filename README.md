@@ -13,8 +13,8 @@ In this GitHub repository, the following SuiteCloud SDK tools are available:
 </a>
 
 ## Release Notes & Documentation
-To read the 2020.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2020.2 in [SuiteCloud SDK Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html).
+To read the 2021.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2021.1 in [SuiteCloud SDK Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html).
 - Read the CLI for Node.js documentation in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
 
 ## [Contributing](./CONTRIBUTING.md)
