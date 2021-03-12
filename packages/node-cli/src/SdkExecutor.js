@@ -91,7 +91,7 @@ module.exports = class SdkExecutor {
 	}
 
 	_launchJvmCommand(executionContext) {
-		if (this._CLISettingsService.isJavaVersionValid() !== true) {
+		if (this._CLISettingsService.isJavaVersionValid()) {
 			const javaVersionError = this._checkIfJavaVersionIssue();
 			if (javaVersionError) {
 				throw javaVersionError;
@@ -157,10 +157,11 @@ module.exports = class SdkExecutor {
 		if (!customVmOptions) {
 			return '';
 		}
-		// customVmOptions are already validated at CLISettingsService 
-		return Object.keys(customVmOptions).reduce((acc, currentKey) =>
-			acc+= customVmOptions[currentKey] === '' ? ` ${currentKey}` : ` ${currentKey}="${customVmOptions[currentKey].trim()}"`
-		, '').trim();
+
+		const addVmOptionToString = (prevString, vmOptionKey) =>
+			(prevString += customVmOptions[vmOptionKey] === '' ? ` ${vmOptionKey}` : ` ${vmOptionKey}="${customVmOptions[vmOptionKey].trim()}"`);
+		// customVmOptions are already validated at CLISettingsService, it will be an object at this point
+		return Object.keys(customVmOptions).reduce(addVmOptionToString, '').trim();
 	}
 
 	_checkIfJavaVersionIssue() {

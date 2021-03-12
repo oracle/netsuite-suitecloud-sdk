@@ -83,7 +83,7 @@ module.exports = class CLISettingsService {
 	}
 
 	isJavaVersionValid() {
-		return this._getSettings().isJavaVersionValid;
+		return this._getSettings().isJavaVersionValid === true;
 	}
 
 	setJavaVersionValid(value) {
