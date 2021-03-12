@@ -238,7 +238,9 @@
 	"DOWNLOADING_SUITECLOUD_SDK_SUCCESS": "SuiteCloud SDK dependencies downloaded successfully.",
 	"DOWNLOADING_SUITECLOUD_SDK_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
 	"DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE": "The JAR file is not available from this URL.",
+	
 	"ERRORS_ADD_ERROR_LINE": "\nError: {0}",
+	"ERRORS_CANT_CREATE_FOLDER": "There was an error when creating the {0} folder. Verify that the path is correct.\nError code: {1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"suitecloud.config.js\" module defined in the project. Details:{0}{1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE": "The return value of the function should be an object with the property \"arguments\" of type \"object\".",
 	"ERRORS_CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE": "There was an error while loading configuration file {0}. Please review the file and try again. Details:{1}{2}",
@@ -249,6 +251,7 @@
 	"ERRORS_FILE": "There was an error in the file {0}: \n",
 	"ERRORS_FILE_NOT_EXIST": "The file {0} was not found in the project.",
 	"ERRORS_GENERAL_CONNECTION_PROBLEM": "There was an error when communicating with the server. Try again later.",
+	"ERRORS_INTERACTIVE_MODE_MORE_OPTIONS": "The '-i' option cannot be used in combination with other options. Use either the '-i' option, or the other options you specified.",
 	"ERRORS_MISSING_DEFAULT_AUTH_ID": "The {0} property is missing.",
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 	"ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"{2}\" in a valid project folder.",
@@ -273,7 +276,6 @@
 	"ERRORS_WRITING_FILE": "There was a problem while creating the file {0}.\n  Error: {1}",
 	"ERRORS_WRONG_JSON_FILE": "There was a problem when reading the {0} file.\n{1}",
 	"ERRORS_WRONG_PROXY_SETTING": "You are using an invalid proxy URL server. Run \"suitecloud config:proxy -h\" to check how to manage your suitecloud proxy settings.",
-	"ERRORS_CANT_CREATE_FOLDER": "There was an error when creating the {0} folder. Verify that the path is correct.\nError code: {1}",
 
 	"NO": "No",
 

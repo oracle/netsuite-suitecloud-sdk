@@ -21,7 +21,7 @@ const INTERACTIVE_OPTION = '--interactive';
 const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 const configFile = require(PACKAGE_FILE);
 const CLI_VERSION = configFile ? configFile.version : 'unknown';
-const COMPATIBLE_NS_VERSION = '2020.2';
+const COMPATIBLE_NS_VERSION = '2021.1';
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -83,6 +83,12 @@ module.exports = class CLI {
 	}
 
 	_isRunningInInteractiveMode() {
-		return process.argv[3] === INTERACTIVE_ALIAS || process.argv[3] === INTERACTIVE_OPTION;
+		if (process.argv.includes(INTERACTIVE_ALIAS) || process.argv.includes(INTERACTIVE_OPTION)) {
+			if (process.argv.length > 4) { //There are more options apart from -i or --interactive
+				throw NodeTranslationService.getMessage(ERRORS.INTERACTIVE_MODE_MORE_OPTIONS);
+			}
+			return true;
+		}
+		return false;
 	}
 };
