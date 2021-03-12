@@ -4,6 +4,7 @@
 <p>
   <a href="https://www.npmjs.com/package/@oracle/suitecloud-cli">
     <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-cli.svg" alt="npm-cli"/>
+    <img src="https://img.shields.io/npm/v/@oracle/suitecloud-cli.svg" alt="npm-cli"/>
   </a>
 </p>
 
@@ -24,7 +25,7 @@ Each version of CLI for Node.js in NPM works optimally with a specific NetSuite 
 
 | Version in NPM | Version in NetSuite |
 |:--------------:|:-------------------:|
-| 2.0.X | 2021.1 |
+| 1.2.X | 2021.1 |
 | 1.1.X | 2020.2 |
 | 1.0.X | 2020.1 |
   
