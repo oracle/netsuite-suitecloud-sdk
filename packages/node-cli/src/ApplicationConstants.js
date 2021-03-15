@@ -9,7 +9,7 @@ module.exports = {
 	SDK_COMMANDS_METADATA_PATCH_FILE: 'metadata/SdkCommandsMetadataPatch.json', //Overwrites selected properties in SdkCommandsMetadata.json file that are specific for SuiteCloud CLI for Node.js
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
-	SDK_FILENAME: 'cli-2020.2.0.jar',
+	SDK_FILENAME: 'cli-2021.1.0.jar',
 	SDK_REQUIRED_JAVA_VERSION: '11',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
@@ -26,7 +26,7 @@ module.exports = {
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
 		MANIFEST_XML: 'manifest.xml',
-		CLI_SETTINGS: 'nodejs-cli-settings.json',
+		SDK_SETTINGS: 'suitecloud-sdk-settings.json',
 	},
 	FOLDERS: {
 		FILE_CABINET: '/FileCabinet',

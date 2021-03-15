@@ -22,7 +22,7 @@ Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestj
 - Supports code coverage capabilities through Jest.
 
 ## Prerequisites
-- Node.js version 12.14.0 LTS or greater
+- Node.js version 14.16.0 LTS
 - An SDF project
 
 ## Getting Started
