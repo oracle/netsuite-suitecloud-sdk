@@ -24,6 +24,7 @@ const CLI_VERSION = configFile ? configFile.version : 'unknown';
 const COMPATIBLE_NS_VERSION = '2021.1';
 const HELP_ALIAS = '-h';
 const HELP_OPTION = '--help';
+const VERSION_OPTION = '--version';
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -41,8 +42,8 @@ module.exports = class CLI {
 		try {
 			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();
 			this._validateCommandExists(commandMetadataList, process.argv[2]);
-			
-			process.argv = this._takeOutUnnecesaryArgumentsWhenHelpIsCalled();
+
+			process.argv = this._takeOutUnnecessaryArgumentsWhenHelpIsCalled();
 
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
 			this._initializeCommands(commandMetadataList, runInInteractiveMode);
@@ -70,18 +71,20 @@ module.exports = class CLI {
 	}
 
 	_validateCommandExists(commandMetadataList, commandName) {
-		if (commandName && !commandMetadataList.hasOwnProperty(commandName) && commandName !== HELP_ALIAS && commandName !== HELP_OPTION) {
+		if (
+			commandName &&
+			!commandMetadataList.hasOwnProperty(commandName) &&
+			commandName !== HELP_ALIAS &&
+			commandName !== HELP_OPTION &&
+			commandName !== VERSION_OPTION
+		) {
 			throw NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, commandName);
 		}
 	}
 
-	_takeOutUnnecesaryArgumentsWhenHelpIsCalled() {
-		if (process.argv.includes(HELP_ALIAS) || process.argv.includes(HELP_OPTION)) {
-			if (process.argv.length > 3) {
-				// In case there is a command
-				return process.argv.slice(0, 3).concat(HELP_ALIAS);
-			}
-			return process.argv.slice(0, 2);
+	_takeOutUnnecessaryArgumentsWhenHelpIsCalled() {
+		if (process.argv.length > 3 && (process.argv.includes(HELP_ALIAS) || process.argv.includes(HELP_OPTION))) {
+			return process.argv.slice(0, 3).concat(HELP_ALIAS); //We only leave commandName and help argument
 		}
 		return process.argv;
 	}
