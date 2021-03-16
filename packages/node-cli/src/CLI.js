@@ -41,9 +41,15 @@ module.exports = class CLI {
 	start(process) {
 		try {
 			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();
-			this._validateCommandExists(commandMetadataList, process.argv[2]);
 
-			process.argv = this._takeOutUnnecessaryArgumentsWhenHelpIsCalled();
+			const thirdArgument = process.argv[2];
+			if (thirdArgument && thirdArgument !== HELP_ALIAS && thirdArgument !== HELP_OPTION && thirdArgument !== VERSION_OPTION) {
+				this._validateCommandExists(commandMetadataList, thirdArgument);
+			}
+
+			if (process.argv.length > 3 && (process.argv.includes(HELP_ALIAS) || process.argv.includes(HELP_OPTION))) {
+				process.argv = this._leaveOnlyHelpArguments();
+			}
 
 			const runInInteractiveMode = this._isRunningInInteractiveMode();
 			this._initializeCommands(commandMetadataList, runInInteractiveMode);
@@ -54,7 +60,7 @@ module.exports = class CLI {
 			}
 
 			program
-				.version(CLI_VERSION, '--version')
+				.version(CLI_VERSION, VERSION_OPTION)
 				.option(
 					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
 					NodeTranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION),
@@ -70,23 +76,14 @@ module.exports = class CLI {
 		}
 	}
 
-	_validateCommandExists(commandMetadataList, commandName) {
-		if (
-			commandName &&
-			!commandMetadataList.hasOwnProperty(commandName) &&
-			commandName !== HELP_ALIAS &&
-			commandName !== HELP_OPTION &&
-			commandName !== VERSION_OPTION
-		) {
-			throw NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, commandName);
+	_validateCommandExists(commandMetadataList, possibleCommand) {
+		if (!commandMetadataList.hasOwnProperty(possibleCommand)) {
+			throw NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, possibleCommand);
 		}
 	}
 
-	_takeOutUnnecessaryArgumentsWhenHelpIsCalled() {
-		if (process.argv.length > 3 && (process.argv.includes(HELP_ALIAS) || process.argv.includes(HELP_OPTION))) {
-			return process.argv.slice(0, 3).concat(HELP_ALIAS); //We only leave commandName and help argument
-		}
-		return process.argv;
+	_leaveOnlyHelpArguments() {
+		return process.argv.slice(0, 3).concat(HELP_ALIAS); //We only leave commandName and help argument
 	}
 
 	_isRunningInInteractiveMode() {
@@ -105,12 +102,12 @@ module.exports = class CLI {
 			command1.name.localeCompare(command2.name)
 		);
 
-		commandsMetadataArraySortedByCommandName.forEach(commandMetadata => {
+		commandsMetadataArraySortedByCommandName.forEach((commandMetadata) => {
 			this._commandRegistrationService.register({
 				commandMetadata: commandMetadata,
 				program: program,
 				runInInteractiveMode: runInInteractiveMode,
-				executeCommandFunction: async options => {
+				executeCommandFunction: async (options) => {
 					return this._commandActionExecutor.executeAction({
 						commandName: commandMetadata.name,
 						runInInteractiveMode: runInInteractiveMode,
