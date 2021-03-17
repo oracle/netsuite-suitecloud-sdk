@@ -24,6 +24,7 @@ const CLI_VERSION = configFile ? configFile.version : 'unknown';
 const COMPATIBLE_NS_VERSION = '2021.1';
 const HELP_ALIAS = '-h';
 const HELP_OPTION = '--help';
+const HELP_COMMAND = 'help';
 const VERSION_OPTION = '--version';
 
 module.exports = class CLI {
@@ -43,7 +44,13 @@ module.exports = class CLI {
 			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();
 
 			const thirdArgument = process.argv[2];
-			if (thirdArgument && thirdArgument !== HELP_ALIAS && thirdArgument !== HELP_OPTION && thirdArgument !== VERSION_OPTION) {
+			if (
+				thirdArgument &&
+				thirdArgument !== HELP_ALIAS &&
+				thirdArgument !== HELP_OPTION &&
+				thirdArgument !== HELP_COMMAND &&
+				thirdArgument !== VERSION_OPTION
+			) {
 				this._validateCommandExists(commandMetadataList, thirdArgument);
 			}
 
