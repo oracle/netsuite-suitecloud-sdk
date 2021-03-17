@@ -22,8 +22,9 @@ const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 const configFile = require(PACKAGE_FILE);
 const CLI_VERSION = configFile ? configFile.version : 'unknown';
 const COMPATIBLE_NS_VERSION = '2021.1';
-const HELP_ALIAS = '-h';
+const HELP_COMMAND = 'help';
 const HELP_OPTION = '--help';
+const HELP_OPTION_ALIAS = '-h';
 const VERSION_OPTION = '--version';
 
 module.exports = class CLI {
@@ -43,11 +44,19 @@ module.exports = class CLI {
 			const commandMetadataList = this._commandsMetadataService.getCommandsMetadata();
 
 			const thirdArgument = process.argv[2];
-			if (thirdArgument && thirdArgument !== HELP_ALIAS && thirdArgument !== HELP_OPTION && thirdArgument !== VERSION_OPTION) {
+			if (
+				thirdArgument &&
+				thirdArgument !== HELP_OPTION_ALIAS &&
+				thirdArgument !== HELP_OPTION &&
+				thirdArgument !== HELP_COMMAND &&
+				thirdArgument !== VERSION_OPTION
+			) {
 				this._validateCommandExists(commandMetadataList, thirdArgument);
+			} else if (thirdArgument == HELP_COMMAND && process.argv[3]) {
+				this._validateCommandExists(commandMetadataList, process.argv[3]);
 			}
 
-			if (process.argv.length > 3 && (process.argv.includes(HELP_ALIAS) || process.argv.includes(HELP_OPTION))) {
+			if (process.argv.length > 3 && (process.argv.includes(HELP_OPTION_ALIAS) || process.argv.includes(HELP_OPTION))) {
 				process.argv = this._leaveOnlyHelpArguments();
 			}
 
@@ -83,7 +92,7 @@ module.exports = class CLI {
 	}
 
 	_leaveOnlyHelpArguments() {
-		return process.argv.slice(0, 3).concat(HELP_ALIAS); //We only leave commandName and help argument
+		return process.argv.slice(0, 3).concat(HELP_OPTION_ALIAS); //We only leave commandName and help argument
 	}
 
 	_isRunningInInteractiveMode() {
