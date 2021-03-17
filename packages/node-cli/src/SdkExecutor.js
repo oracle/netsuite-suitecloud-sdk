@@ -91,7 +91,7 @@ module.exports = class SdkExecutor {
 	}
 
 	_launchJvmCommand(executionContext) {
-		if (this._CLISettingsService.isJavaVersionValid()) {
+		if (!this._CLISettingsService.isJavaVersionValid()) {
 			const javaVersionError = this._checkIfJavaVersionIssue();
 			if (javaVersionError) {
 				throw javaVersionError;
