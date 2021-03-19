@@ -76,7 +76,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 					delete params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
 				}
 
-				scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
+				scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID];
 			} else {
 				if (params[COMMAND_FLAGS.EXCLUDE_FILES]) {
 					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
@@ -90,7 +90,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 						scriptIdArray = (await this._getAllScriptIdsForObjectType(params)).map((el) => el.scriptId);
 					}
 				} else {
-					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
+					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID];
 				}
 
 				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
