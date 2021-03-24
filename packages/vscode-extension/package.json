@@ -1,7 +1,12 @@
 {
 	"name": "suitecloud-vscode-extension",
-	"displayName": "suitecloud-vscode-extension",
-	"description": "netsuite suitecloud vscode extension based on nodejs-cli",
+	"displayName": "SuiteCloud Extension for Visual Studio Code",
+	"description": "Develop SuiteCloud Development Framework (SDF) custom objects in projects and deploy them to target NetSuite accounts.",
+	"keywords": [
+		"suitecloud",
+		"netsuite",
+		"suitescript"
+	],
 	"publisher": "Oracle",
 	"license": "UPL-1.0",
 	"private": true,
