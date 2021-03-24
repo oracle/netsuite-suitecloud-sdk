@@ -21,28 +21,6 @@
 			}
 		}
 	},
-	"file:import": {
-		"description": "Imports files from an account to your account customization project. You cannot import files from a SuiteApp.",
-		"options": {
-			"paths": {
-				"description": "Specify the file cabinet path of the file to import. For example, \"/SuiteScripts/file.js\"."
-			}
-		}
-	},
-	"file:upload": {
-		"options": {
-			"paths": {
-				"description": "Specify the file cabinet path of the file to upload. For example, \"/SuiteScripts/file.js\" for account customization projects, and \"/SuiteApps/com.project.example/script.js\" for SuiteApp projects."
-			}
-		}
-	},
-	"object:import": {
-		"options": {
-			"scriptid": {
-				"description": "Specify the script ID. You can import one custom object or all custom objects. For example, \"--scriptid customrecord_1\" imports only one object, and \"--scriptid ALL\" imports all custom objects of the specified type."
-			}
-		}
-	},
 	"project:deploy": {
 		"options": {
 			"dryrun": {

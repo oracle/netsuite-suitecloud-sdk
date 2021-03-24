@@ -7,27 +7,32 @@
             "account": {
                 "name": "account",
                 "description": "References the ID of the account to log in to.",
-                "mandatory": false
+                "mandatory": true,
+                "type": "SINGLE"
             },
             "authid": {
                 "name": "authid",
                 "description": "References the custom name you gave to a specific account-role combination.",
-                "mandatory": false
+                "mandatory": true,
+                "type": "SINGLE"
             },
             "tokenid": {
                 "name": "tokenid",
                 "description": "Enter the token ID of a TBA token you issued previously in NetSuite.",
-                "mandatory": false
+                "mandatory": true,
+                "type": "SINGLE"
             },
             "tokensecret": {
                 "name": "tokensecret",
                 "description": "Enter the token secret of a TBA token you issued previously in NetSuite.",
-                "mandatory": false
+                "mandatory": true,
+                "type": "SINGLE"
             },
             "url": {
                 "name": "url",
                 "description": "Specify the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
-                "mandatory": false
+                "mandatory": false,
+                "type": "SINGLE"
             }
         }
     },
