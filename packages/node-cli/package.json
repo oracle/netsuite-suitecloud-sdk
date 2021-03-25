@@ -5,8 +5,10 @@
 	"description": "SuiteCloud CLI for Node.js",
 	"keywords": [
 		"NetSuite",
+		"SDF",
+		"SuiteApp",
 		"SuiteCloud",
-		"SDF"
+		"SuiteScripts"
 	],
 	"publishConfig": {
 		"access": "public"
