@@ -15,7 +15,7 @@ import { installIfNeeded } from './core/sdksetup/SdkServices';
 import BaseAction from './commands/BaseAction';
 import UpdateObject from './commands/UpdateObject';
 
-const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud Extension';
+const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 
 function register<T extends BaseAction>(command: string, action: T) {
 	return vscode.commands.registerCommand(command, () => action.run());
