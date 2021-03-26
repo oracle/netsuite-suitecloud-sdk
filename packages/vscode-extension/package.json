@@ -3,9 +3,11 @@
 	"displayName": "SuiteCloud Extension for Visual Studio Code",
 	"description": "Develop and deploy SuiteCloud Projects with SuiteCloud Development Framework (SDF).",
 	"keywords": [
-		"suitecloud",
-		"netsuite",
-		"suitescript"
+		"NetSuite",
+		"SDF",
+		"SuiteApp",
+		"SuiteCloud",
+		"SuiteScripts"
 	],
 	"publisher": "Oracle",
 	"license": "UPL-1.0",
