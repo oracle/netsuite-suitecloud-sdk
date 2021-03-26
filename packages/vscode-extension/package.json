@@ -1,7 +1,7 @@
 {
 	"name": "suitecloud-vscode-extension",
 	"displayName": "SuiteCloud Extension for Visual Studio Code",
-	"description": "Develop SuiteCloud Development Framework (SDF) custom objects in projects and deploy them to target NetSuite accounts.",
+	"description": "Develop and deploy SuiteCloud Projects with SuiteCloud Development Framework (SDF).",
 	"keywords": [
 		"suitecloud",
 		"netsuite",
