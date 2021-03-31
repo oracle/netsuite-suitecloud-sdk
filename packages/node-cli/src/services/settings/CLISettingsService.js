@@ -18,10 +18,8 @@ const { FILES, FOLDERS } = require('../../ApplicationConstants');
 
 const SDK_SETTINGS_FILEPATH = path.join(HOME_PATH, FOLDERS.SUITECLOUD_SDK, FILES.SDK_SETTINGS);
 
-const CLI_SETTINGS_PROPERTIES_KEYS = ['proxyUrl', 'useProxy', 'isJavaVersionValid'];
+const CLI_SETTINGS_PROPERTIES_KEYS = ['isJavaVersionValid'];
 const DEFAULT_CLI_SETTINGS = CLISettings.fromJson({
-	useProxy: false,
-	proxyUrl: '',
 	isJavaVersionValid: false,
 });
 
@@ -92,37 +90,6 @@ module.exports = class CLISettingsService {
 			return;
 		}
 		newSettings.isJavaVersionValid = value;
-		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
-		this._saveSettings(CACHED_CLI_SETTINGS);
-	}
-
-	getProxyUrl() {
-		return this._getSettings().proxyUrl;
-	}
-
-	setProxyUrl(url) {
-		const newSettings = this._getSettings().toJSON();
-		if (newSettings.proxyUrl === url && newSettings.useProxy === true) {
-			return;
-		}
-		newSettings.useProxy = true;
-		newSettings.proxyUrl = url;
-		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
-		this._saveSettings(CACHED_CLI_SETTINGS);
-	}
-
-	useProxy() {
-		return this._getSettings().useProxy;
-	}
-
-	clearProxy() {
-		const newSettings = this._getSettings().toJSON();
-		if (newSettings.useProxy === false) {
-			return;
-		}
-		newSettings.useProxy = false;
-		newSettings.proxyUrl = '';
-
 		CACHED_CLI_SETTINGS = CLISettings.fromJson(newSettings);
 		this._saveSettings(CACHED_CLI_SETTINGS);
 	}

@@ -167,13 +167,6 @@
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION": "You can use the interactive mode by running \"suitecloud {0} -i\"",
 
-	"COMMAND_PROXY_ARGS_VALIDATION_SET_CLEAR_BOTH_SPECIFIED": "You can only specify one option for the command, either \"--set\" or \"-–clear\".",
-	"COMMAND_PROXY_ARGS_VALIDATION_SET_CLEAR_NEITHER_SPECIFIED": "You must specify one option for the command, either \"--set\" or \"–-clear\".",
-	"COMMAND_PROXY_ARGS_VALIDATION_PROXY_URL": "The proxy URL server must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80.",
-	"COMMAND_PROXY_MESSAGES_PROXY_OVERRIDDEN": "The proxy server URL has been overwritten and changed to {0}.",
-	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_CLEARED": "The proxy server URL has been cleared.",
-	"COMMAND_PROXY_MESSAGES_SUCCESFULLY_SETUP": "The {0} proxy server URL has been set.",
-
 	"COMMAND_SETUPACCOUNT_QUESTIONS_AUTH_MODE": "Select an authentication method:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_DEVELOPMENT_MODE_URL": "Enter your NetSuite domain:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID (authID):",
@@ -275,7 +268,6 @@
 	"ERRORS_WRITING_PROJECT_JSON": "There was an error when editing the project.json file.{0}",
 	"ERRORS_WRITING_FILE": "There was a problem while creating the file {0}.\n  Error: {1}",
 	"ERRORS_WRONG_JSON_FILE": "There was a problem when reading the {0} file.\n{1}",
-	"ERRORS_WRONG_PROXY_SETTING": "You are using an invalid proxy URL server. Run \"suitecloud config:proxy -h\" to check how to manage your suitecloud proxy settings.",
 
 	"NO": "No",
 
