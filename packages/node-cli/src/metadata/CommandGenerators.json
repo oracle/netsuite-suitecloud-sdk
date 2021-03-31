@@ -15,11 +15,6 @@
         "generator": "./commands/account/setup/SetupCommand"
     },
     {
-        "commandName": "config:proxy",
-        "supportsInteractiveMode": false,
-        "generator": "commands/config/proxy/ProxyCommand"
-    },
-    {
         "commandName": "file:import",
         "supportsInteractiveMode": true,
         "generator": "commands/file/import/ImportFilesCommand"

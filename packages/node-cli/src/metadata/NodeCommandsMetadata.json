@@ -52,27 +52,6 @@
             }
         }
     },
-    "config:proxy": {
-        "name": "config:proxy",
-        "description": "Configures a proxy server.",
-        "isSetupRequired": false,
-        "options": {
-            "clear": {
-                "name": "clear",
-                "alias": "c",
-                "description": "Remove the last proxy server you set.",
-                "type": "FLAG",
-                "mandatory": false
-            },
-            "set": {
-                "name": "set",
-                "alias": "s",
-                "description": "Enter the URL of the server you want to use as your proxy. For example, http://my-proxy-domain:80",
-                "type": "SINGLE",
-                "mandatory": false
-            }
-        }
-    },
     "suitecommerce:localserver": {
         "name": "suitecommerce:localserver",
         "description": "Generates a local server of your SuiteCommerce extensions and themes. This set of compiled files is stored in your SuiteApp project folder and the server is located on port 7777. You can use this server to run and test the SuiteCommerce themes and extensions that you are developing.",

@@ -8,7 +8,6 @@ const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
-	SDK_PROXY_JVM_OPTIONS,
 	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
 const path = require('path');
@@ -98,7 +97,6 @@ module.exports = class SdkExecutor {
 			}
 		}
 
-		const proxyOptions = this._getProxyOptions();
 		const cliParams = this._convertParamsObjToString(executionContext.getParams(), executionContext.getFlags());
 
 		const integrationModeOption = executionContext.isIntegrationMode() ? SDK_INTEGRATION_MODE_JVM_OPTION : '';
@@ -112,26 +110,10 @@ module.exports = class SdkExecutor {
 		}
 		const quotedSdkJarPath = `"${this._sdkPath}"`;
 
-		const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatform} ${clientPlatformVersionOption} ${customVmOptions}`;
+		const vmOptions = `${integrationModeOption} ${clientPlatform} ${clientPlatformVersionOption} ${customVmOptions}`;
 		const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 		return spawn(jvmCommand, [], { shell: true });
-	}
-
-	_getProxyOptions() {
-		if (!this._CLISettingsService.useProxy()) {
-			return '';
-		}
-		const proxyUrl = url.parse(this._CLISettingsService.getProxyUrl());
-		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
-			throw NodeTranslationService.getMessage(ERRORS.WRONG_PROXY_SETTING, proxyUrl);
-		}
-		const protocolWithoutColon = proxyUrl.protocol.slice(0, -1);
-		const hostName = proxyUrl.hostname;
-		const port = proxyUrl.port;
-		const { PROTOCOL, HOST, PORT } = SDK_PROXY_JVM_OPTIONS;
-
-		return `${PROTOCOL}=${protocolWithoutColon} ${HOST}=${hostName} ${PORT}=${port}`;
 	}
 
 	_convertParamsObjToString(cliParams, flags) {
