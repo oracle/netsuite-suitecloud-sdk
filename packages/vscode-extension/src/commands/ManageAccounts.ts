@@ -8,7 +8,6 @@ import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
-import { PRODUCTION_DOMAIN_REGEX, PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX } from '../ApplicationConstants';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -174,7 +173,7 @@ export default class ManageAccounts extends BaseAction {
 		}
 		if (url) {
 			commandParams.url = url;
-			commandParams.dev = !url.match(PRODUCTION_DOMAIN_REGEX) && !url.match(PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+			commandParams.dev = !url.match(`^${ApplicationConstants.DOMAIN.PRODUCTION.GENERIC_NETSUITE_DOMAIN}$`);
 		}
 
 		let cancellationToken: CancellationToken = {};
@@ -240,7 +239,7 @@ export default class ManageAccounts extends BaseAction {
 					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain
 				);
 				if (!fieldValue) {
-					fieldValue = ApplicationConstants.PROD_ENVIRONMENT_ADDRESS;
+					fieldValue = ApplicationConstants.DOMAIN.PRODUCTION.GENERIC_NETSUITE_DOMAIN;
 				}
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -328,7 +327,7 @@ export default class ManageAccounts extends BaseAction {
 		};
 		if (url) {
 			commandParams.url = url;
-			commandParams.dev = !url.match(PRODUCTION_DOMAIN_REGEX) && !url.match(PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+			commandParams.dev = !url.match(`^${ApplicationConstants.DOMAIN.PRODUCTION.GENERIC_NETSUITE_DOMAIN}$`);
 		}
 
 		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.executionPath);
