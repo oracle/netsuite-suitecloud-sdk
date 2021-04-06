@@ -33,10 +33,20 @@ module.exports = {
 	DEFAULT_MESSAGES_FILE: '../../messages.json',
 	PROJECT_ACP: 'ACCOUNTCUSTOMIZATION',
 	PROJECT_SUITEAPP: 'SUITEAPP',
-	PROD_ENVIRONMENT_ADDRESS: 'system.netsuite.com',
 	PROJECT_FOLDER_ARG: '--projectFolder',
-	PRODUCTION_DOMAIN_REGEX: '^system\\.(\\w+\\.)*netsuite\\.com$',
-	PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX: '^(\\w+)\\.app\\.netsuite\\.com$',
+	DOMAIN: {
+		PRODUCTION: {
+			GENERIC_NETSUITE_DOMAIN: 'system.netsuite.com',
+			PRODUCTION_DOMAIN_REGEX: '^system\\.(\\w+\\.)*netsuite\\.com$',
+			PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX: '^(\\w+)\\.app\\.netsuite\\.com$',
+		},
+		NON_PRODUCTION: {
+			F_DOMAIN_REGEX: '^system\\.f\\.netsuite\\.com$',
+			F_ACCOUNT_SPECIFIC_DOMAIN_REGEX: '^(\\w+)\\.app\\.f\\.netsuite\\.com$',
+			SNAP_DOMAIN_REGEX: '^system\\.snap\\.netsuite\\.com$',
+			SNAP_ACCOUNT_SPECIFIC_DOMAIN_REGEX: '^(\\w+)\\.app\\.snap\\.netsuite\\.com$',
+		}
+	},
 	LINKS: {
 		INFO: {
 			PROJECT_STRUCTURE: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155931221634.html',
