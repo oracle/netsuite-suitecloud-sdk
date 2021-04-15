@@ -49,7 +49,7 @@ export default abstract class BaseAction {
 		}
 	}
 
-	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}) {
+	protected async runSuiteCloudCommand(args: { [key: string]: string | string[] } = {}) {
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
 			commandName: this.cliCommandName,
 			arguments: args,
