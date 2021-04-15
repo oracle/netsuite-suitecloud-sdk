@@ -15,14 +15,13 @@ const objectTypes: {
 const COMMAND_NAME = 'listobjects';
 
 export default class ListObjects extends BaseAction {
-
 	constructor() {
 		super(COMMAND_NAME);
 	}
 
 	protected async execute() {
 		const selectedObjectTypes = await window.showQuickPick(
-			objectTypes.map(objectType => objectType.value.type),
+			objectTypes.map((objectType) => objectType.value.type),
 			{
 				placeHolder: 'select your object type or nothing to list them all',
 				canPickMany: true,
@@ -33,7 +32,7 @@ export default class ListObjects extends BaseAction {
 			return;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand({ type: selectedObjectTypes.join(' ')});
+		const commandActionPromise = this.runSuiteCloudCommand({ type: selectedObjectTypes });
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);

@@ -42,7 +42,7 @@ export default class UploadFile extends BaseAction {
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(UPLOAD_FILE.UPLOADING);
 
-		const commandActionPromise = this.runSuiteCloudCommand({ paths: relativePath });
+		const commandActionPromise = this.runSuiteCloudCommand({ paths: [relativePath] });
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
