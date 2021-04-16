@@ -95,6 +95,8 @@ module.exports = class ValidateAction extends BaseAction {
 						.withAppliedInstallationPreferences(installationPreferencesApplied)
 						.withProjectType(this._projectType)
 						.withProjectFolder(this._projectFolder)
+						.withCommandParameters(executionContext.getParams())
+						.withCommandFlags(executionContext.getFlags())
 						.build()
 				: DeployActionResult.Builder.withErrors(operationResult.errorMessages)
 						.withServerValidation(isServerValidation)

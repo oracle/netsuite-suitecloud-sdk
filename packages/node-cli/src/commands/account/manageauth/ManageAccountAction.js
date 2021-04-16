@@ -70,6 +70,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 			? ManageAccountActionResult.Builder.withData(this._prepareData(selectedOptions, operationResult.data))
 					.withResultMessage(operationResult.resultMessage)
 					.withExecutedAction(selectedOptions.action)
+				    .withCommandParameters(executionContext.getParams())
 					.build()
 			: ManageAccountActionResult.Builder.withErrors(operationResult.errorMessages).build();
 	}

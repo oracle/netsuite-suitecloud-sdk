@@ -8,31 +8,36 @@
                 "name": "account",
                 "description": "References the ID of the account to log in to.",
                 "mandatory": true,
-                "type": "SINGLE"
+                "type": "SINGLE",
+                "disableInIntegrationMode": false
             },
             "authid": {
                 "name": "authid",
                 "description": "References the custom name you gave to a specific account-role combination.",
                 "mandatory": true,
-                "type": "SINGLE"
+                "type": "SINGLE",
+                "disableInIntegrationMode": false
             },
             "tokenid": {
                 "name": "tokenid",
                 "description": "Enter the token ID of a TBA token you issued previously in NetSuite.",
                 "mandatory": true,
-                "type": "SINGLE"
+                "type": "SINGLE",
+                "disableInIntegrationMode": false
             },
             "tokensecret": {
                 "name": "tokensecret",
                 "description": "Enter the token secret of a TBA token you issued previously in NetSuite.",
                 "mandatory": true,
-                "type": "SINGLE"
+                "type": "SINGLE",
+                "disableInIntegrationMode": false
             },
             "url": {
                 "name": "url",
                 "description": "Specify the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
                 "mandatory": false,
-                "type": "SINGLE"
+                "type": "SINGLE",
+                "disableInIntegrationMode": false
             }
         }
     },
@@ -48,7 +53,8 @@
                 "alias": "d",
                 "description": "Specify the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
                 "type": "FLAG",
-                "mandatory": false
+                "mandatory": false,
+                "disableInIntegrationMode": false
             }
         }
     },
@@ -61,19 +67,22 @@
                 "name": "extensions",
                 "alias": "e",
                 "description": "Specify the SuiteCommerce extension you want to include in your local build. To specify multiple extensions, enter the names of the objects separated by commas. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project.",
-                "mandatory": false
+                "mandatory": false,
+                "disableInIntegrationMode": false
             },
             "port": {
                 "name": "port",
                 "alias": "p",
                 "description": "Specify the port number where the server is located.",
-                "mandatory": false
+                "mandatory": false,
+                "disableInIntegrationMode": false
             },
             "theme": {
                 "name": "theme",
                 "alias": "t",
                 "description": "Specify the SuiteCommerce theme you want to include in your local build. You can only specify one theme. The XML object must be added in the objects tag within the deploy.xml file, and in the Objects folder of your project.",
-                "mandatory": true
+                "mandatory": true,
+                "disableInIntegrationMode": false
             }
         }
     }
