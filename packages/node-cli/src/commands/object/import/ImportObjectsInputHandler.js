@@ -301,9 +301,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	}
 
 	_arrangeAnswersForImportObjects(answers) {
-		if (!answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
-			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
-		} else if (answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].length > 1) {
+		if (!answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE] || answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].length > 1) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
 		}
 		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map((el) => el.scriptId);

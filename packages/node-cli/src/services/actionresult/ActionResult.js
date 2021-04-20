@@ -38,12 +38,6 @@ class ActionResult {
 		return this._status === STATUS.SUCCESS;
 	}
 
-	extractCommandParameters() {
-		const output = this._commandFlags ? this._commandFlags.join(' ') : ' ';
-		const reducer = (accumulator, key) => key !== '-authid' ? `${accumulator} -${key} ${this._commandParameters[key]}` : accumulator;
-		return this._commandParameters ? Object.keys(this._commandParameters).reduce(reducer, output).trim() : '';
-	}
-
 	get status() {
 		return this._status;
 	}

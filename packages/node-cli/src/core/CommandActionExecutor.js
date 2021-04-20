@@ -101,9 +101,11 @@ module.exports = class CommandActionExecutor {
 
 	_hasToBeShown(options, key) {
 		const keyWithoutDash = key.substring(1);
-		return options.hasOwnProperty(keyWithoutDash) &&
-			options[keyWithoutDash].hasOwnProperty('disableInIntegrationMode')
-			&& options[keyWithoutDash].disableInIntegrationMode === false;
+		const disableInIntegrationMode = 'disableInIntegrationMode';
+
+		return options.hasOwnProperty(keyWithoutDash)
+			&& options[keyWithoutDash].hasOwnProperty(disableInIntegrationMode)
+			&& options[keyWithoutDash][disableInIntegrationMode] === false;
 	}
 
 	_logGenericError(error) {
@@ -174,17 +176,6 @@ module.exports = class CommandActionExecutor {
 			return command.run(overriddenArguments);
 		} catch (error) {
 			throw error;
-		}
-	}
-
-	_checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, commandMetadata, runInInteractiveMode) {
-		const validationErrors = this._commandOptionsValidator.validate({
-			commandOptions: commandMetadata.options,
-			arguments: commandArgumentsAfterPreActionFunc,
-		});
-
-		if (validationErrors.length > 0) {
-			throwValidationException(validationErrors, runInInteractiveMode, commandMetadata);
 		}
 	}
 
