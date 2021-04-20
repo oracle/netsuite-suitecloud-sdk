@@ -6,16 +6,13 @@
 
 const { prompt } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const FolderUtils = require("../../../utils/FolderUtils")
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
-const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const { lineBreak } = require('../../../loggers/LoggerConstants');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
+	COMMAND_LISTFILES: { SELECT_FOLDER, ERROR_INTERNAL },
 } = require('../../../services/TranslationKeys');
 
 const LIST_FOLDERS = {
@@ -35,24 +32,7 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
-			.integration()
-			.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, getProjectDefaultAuthId(this._executionPath))
-			.build();
-
-		let listFoldersResult;
-		try {
-			listFoldersResult = await executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContext),
-				message: NodeTranslationService.getMessage(LOADING_FOLDERS),
-			});
-		} catch (error) {
-			throw NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, lineBreak, error);
-		}
-
-		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw listFoldersResult.errorMessages;
-		}
+		const fileCabinetFolders = await FolderUtils.getFileCabinetFolders(this._executionPath, this._commandMetadata.name);
 
 		try {
 			return prompt([
@@ -61,7 +41,7 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 					name: this._commandMetadata.options.folder.name,
 					message: NodeTranslationService.getMessage(SELECT_FOLDER),
 					default: SUITE_SCRIPTS_FOLDER,
-					choices: this._getFileCabinetFolders(listFoldersResult),
+					choices: fileCabinetFolders,
 				},
 			]);
 		} catch (error) {
@@ -69,13 +49,4 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 		}
 	}
 
-	_getFileCabinetFolders(listFoldersResponse) {
-		return listFoldersResponse.data.map((folder) => {
-			return {
-				name: folder.path,
-				value: folder.path,
-				disabled: folder.isRestricted ? NodeTranslationService.getMessage(RESTRICTED_FOLDER) : '',
-			};
-		});
-	}
 };

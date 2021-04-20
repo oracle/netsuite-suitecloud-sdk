@@ -35,6 +35,7 @@ export const ProjectInfoServive = require('@oracle/suitecloud-cli/src/services/P
 export const FileCabinetService = require('@oracle/suitecloud-cli/src/services/FileCabinetService');
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
+export const FolderUtils = require('@oracle/suitecloud-cli/src/utils/FolderUtils');
 
 export const InteractiveAnswersValidator: {
 	showValidationResults(value: string, ...funcs: Function[]): string | boolean;
