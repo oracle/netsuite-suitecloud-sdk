@@ -112,8 +112,7 @@ class SdkDownloadService {
 			clientReq
 				.once('timeout', () => {
 					clientReq.destroy();
-					console.log('--- request timeout');
-					reject(new Error(`${downloadUrlProtocol} GET request timeout. It could be that you are behind a proxy.`));
+					reject(new Error(`GET request timeout.`));
 				})
 				.once('error', (err) => reject(err))
 				.end();

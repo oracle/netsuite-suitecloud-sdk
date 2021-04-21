@@ -11,7 +11,7 @@ class ProxyAgent{
 	}
 
 	initProxyURL() {
-		// throws error if proxyString is not correct
+		// throws error if proxyString is invalid
 		const proxy = new URL(this.proxyString);
 
 		proxy.host = proxy.hostname || proxy.host;
@@ -67,7 +67,6 @@ class ProxyAgent{
 				});
 
 				req.once('error', (err) => {
-					console.log('Error in ProxyAgent COONECT')
 					reject(err);
 				});
 
