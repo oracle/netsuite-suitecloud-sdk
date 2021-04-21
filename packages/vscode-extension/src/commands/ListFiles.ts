@@ -11,6 +11,12 @@ import { FolderType } from './FolderType';
 
 const COMMAND_NAME = 'listfiles';
 
+const LIST_FILES_COMMAND = {
+	OPTIONS: {
+		FOLDER: 'folder',
+	},
+};
+
 export default class ListFiles extends BaseAction {
 	constructor() {
 		super(COMMAND_NAME);
@@ -20,7 +26,7 @@ export default class ListFiles extends BaseAction {
 		const fileCabinetFolders = await FolderUtils.getFileCabinetFolders(this.executionPath, COMMAND_NAME);
 
 		const selectedFolder = await window.showQuickPick(
-			fileCabinetFolders.map((folder: FolderType) => folder.value),
+			fileCabinetFolders.filter((folder: FolderType) => folder.disabled === '').map((folder: FolderType) => folder.value),
 			{
 				ignoreFocusOut: true,
 				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),
@@ -32,7 +38,10 @@ export default class ListFiles extends BaseAction {
 			return;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand({ folder: selectedFolder });
+		const listfilesOptions: { [key: string]: string } = {};
+		listfilesOptions[LIST_FILES_COMMAND.OPTIONS.FOLDER] = selectedFolder;
+
+		const commandActionPromise = this.runSuiteCloudCommand(listfilesOptions);
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LISTING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);

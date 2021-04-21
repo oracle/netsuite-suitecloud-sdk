@@ -45,13 +45,13 @@
 				"category": "SuiteCloud"
 			},
 			{
-				"command": "suitecloud.listobjects",
-				"title": "List Objects",
+				"command": "suitecloud.listfiles",
+				"title": "List Files",
 				"category": "SuiteCloud"
 			},
 			{
-				"command": "suitecloud.uploadfile",
-				"title": "Upload File",
+				"command": "suitecloud.listobjects",
+				"title": "List Objects",
 				"category": "SuiteCloud"
 			},
 			{
@@ -62,6 +62,11 @@
 			{
 				"command": "suitecloud.updateobject",
 				"title": "Update Single Object with Account Object",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.uploadfile",
+				"title": "Upload File",
 				"category": "SuiteCloud"
 			}
 		],
