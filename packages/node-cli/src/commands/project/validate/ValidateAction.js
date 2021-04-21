@@ -71,7 +71,7 @@ module.exports = class ValidateAction extends BaseAction {
 
 			if (params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES]) {
 				delete params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES];
-				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
+				flags.push(COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES);
 				installationPreferencesApplied = true;
 			}
 

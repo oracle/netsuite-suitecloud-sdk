@@ -6,8 +6,7 @@
 
 const assert = require('assert');
 const NodeTranslationService = require('./../services/NodeTranslationService');
-const { ERRORS, CLI} = require('../services/TranslationKeys');
-const { throwValidationException } = require('../utils/ExceptionUtils');
+const { ERRORS, CLI } = require('../services/TranslationKeys');
 const { ActionResult } = require('../services/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
@@ -89,12 +88,12 @@ module.exports = class CommandActionExecutor {
 
 	_showNonInteractiveCommand(commandName, commandMetadata, actionResult) {
 		const options = this._generateOptionsString(commandMetadata, actionResult);
-		const command = `${commandName}  ${options}`;
+		const command = `${commandName} ${options}`;
 		this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE, command.trim()));
 	}
 
 	_generateOptionsString(commandMetadata, actionResult) {
-		const flags = actionResult.commandFlags ? actionResult.commandFlags.join(' ') : ' ';
+		const flags = actionResult.commandFlags && actionResult.commandFlags.length > 0 ? `-${actionResult.commandFlags.join(' -')}` : ' ';
 		const reducer = (accumulator, key) => this._hasToBeShown(commandMetadata.options, key) ? `${accumulator} -${key} ${actionResult.commandParameters[key]}` : accumulator;
 		return actionResult.commandParameters ? Object.keys(actionResult.commandParameters).reduce(reducer, flags).trim() : '';
 	}
