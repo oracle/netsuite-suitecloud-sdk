@@ -1,9 +1,13 @@
+/*
+ ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 const http = require('http');
 const { URL } = require('url');
 const tls = require('tls');
 const net = require('net');
 
-class ProxyAgent{
+class ProxyAgent {
 	constructor(proxyString, options) {
 		this.proxyString = proxyString;
 		this.options = options;
@@ -76,7 +80,7 @@ class ProxyAgent{
 			} else {
 				const socket = net.connect({
 					host: this.proxyURL.host,
-					port: this.proxyURL.port === '' ? 80 : + this.proxyURL.port,
+					port: this.proxyURL.port === '' ? 80 : +this.proxyURL.port,
 					auth: this.proxyURL.auth,
 				});
 				resolve(socket);
