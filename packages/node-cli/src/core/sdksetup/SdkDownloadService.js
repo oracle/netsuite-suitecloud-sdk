@@ -45,39 +45,33 @@ class SdkDownloadService {
 		const sdkDirectory = this._fileSystemService.createFolder(sdkParentDirectory, FOLDERS.NODE_CLI);
 
 		const fullURL = `${SdkProperties.getDownloadURL()}/${SdkProperties.getSdkFileName()}`;
-		const fullProxyUrl = 'http://www-proxy-lon.uk.oracle.com:80';
-		const proxy = process.env.npm_config_https_proxy || process.env.npm_config_proxy;
+		const destinationFilePath = path.join(sdkDirectory, SdkProperties.getSdkFileName());
+		const proxy = process.env.SUITECLOUD_PROXY || process.env.npm_config_https_proxy || process.env.npm_config_proxy;
+		const skipProxy = SdkProperties.configFileExists();
 
 		try {
 			await executeWithSpinner({
-				action: this._downloadFile(fullURL, sdkDirectory, proxy),
+				action: this.downloadJarFilePromise(fullURL, destinationFilePath, proxy, skipProxy),
 				message: NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
 			});
 			NodeConsoleLogger.info(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS));
 		} catch (error) {
-			console.log('async download catch block');
-			console.log(error);
 			NodeConsoleLogger.error(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)));
 		}
 	}
 
-	_downloadFile(downloadUrl, sdkDirectory, proxy) {
-		const removeJarFilesFrom = this._removeJarFilesFrom;
-		const isProxyRequired = proxy && !SdkProperties.configFileExists();
-		this._logParameters(downloadUrl, sdkDirectory, proxy);
-
+	downloadJarFilePromise(downloadUrl, destinationFilePath, proxy, skipProxy) {
+		const isProxyRequired = proxy && !skipProxy;
 		const downloadUrlObject = new URL(downloadUrl);
 		const downloadUrlProtocol = downloadUrlObject.protocol;
 
 		const requestOptions = {
-			resolveWithFullResponse: true,
 			encoding: 'binary',
-			timeout: 15000,
-			...(isProxyRequired && { agent: new ProxyAgent(proxy, { tunnel: false, timeout: 10000 }) }),
+			...(isProxyRequired && { agent: new ProxyAgent(proxy, { tunnel: true, timeout: 15000 }) }),
 		};
 
 		if (!/^http:$|^https:$/.test(downloadUrlProtocol)) {
-			throw new Error('Invalid SDK jar file download url protocol. Only http: or https: are allowed');
+			throw new Error('Invalid SDK jar file download url protocol. Only http: or https: are allowed.');
 		}
 
 		const httpx = 'http:'.match(downloadUrlObject.protocol) ? http : https;
@@ -92,19 +86,13 @@ class SdkDownloadService {
 						reject(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE));
 					}
 
-					// remove all jar files before writing response to file
-					removeJarFilesFrom(sdkDirectory);
-
-					const jarFilePath = path.join(sdkDirectory, SdkProperties.getSdkFileName());
-					const jarFile = fs.createWriteStream(jarFilePath);
+					const jarFile = fs.createWriteStream(destinationFilePath);
 					jarFile.write(Buffer.concat(chunks), 'binary');
 					jarFile.end();
 					resolve();
 				});
 
 				response.on('error', (error) => {
-					console.log('response.onError');
-					console.log(error);
 					reject(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE));
 				});
 			});
@@ -117,14 +105,6 @@ class SdkDownloadService {
 				.once('error', (err) => reject(err))
 				.end();
 		});
-	}
-
-	_logParameters(url, sdkDirectory, proxy) {
-		console.log('------- _downloadFile parmeters -------');
-		console.log(`url: ${url}`);
-		console.log(`sdkDirectory: ${sdkDirectory}`);
-		console.log(`proxy: ${proxy}`);
-		console.log('------- _downloadFile parmeters -------');
 	}
 
 	_removeJarFilesFrom(folder) {

@@ -32,8 +32,6 @@ class ProxyAgent{
 	}
 
 	createConnection(options) {
-		console.log('HttpsProxyAgent.createConnection options parameter');
-		console.log(options);
 		return new Promise((resolve, reject) => {
 			const ssl = options.protocol ? options.protocol.toLowerCase() === 'https:' : false;
 			if (ssl && this.options.tunnel === true) {
