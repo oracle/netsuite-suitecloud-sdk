@@ -25,13 +25,13 @@ export default class ListFiles extends BaseAction {
 	protected async execute(): Promise<void> {
 		const fileCabinetFolders = await this._getListFolders();
 		const filteredFolders = this.filterDisabledFolders(fileCabinetFolders);
-		if (filteredFolders === undefined) {
+		if (filteredFolders === null || filteredFolders === undefined) {
 			return;
 		}
 
 		const selectedFolder = await this._selectFolder(filteredFolders);
 
-		if (selectedFolder === undefined) {
+		if (selectedFolder === null || selectedFolder === undefined) {
 			return;
 		}
 
@@ -50,10 +50,7 @@ export default class ListFiles extends BaseAction {
 		return fileCabinetFolders.filter((folder: FolderType) => folder.disabled === '');
 	}
 
-	// protected async _selectFolder(filteredFolders: { map: (key: (folder: FolderType) => string | undefined) => string[] }): Promise<string | undefined> {
-	protected async _selectFolder(filteredFolders: {
-		map: (arg0: (folder: FolderType) => string | undefined) => string[];
-	}): Promise<string | undefined> {
+	protected async _selectFolder(filteredFolders: { map: (arg0: (folder: FolderType) => string) => string[] }): Promise<string | undefined> {
 		return window.showQuickPick(
 			filteredFolders.map((folder: FolderType) => folder.value),
 			{

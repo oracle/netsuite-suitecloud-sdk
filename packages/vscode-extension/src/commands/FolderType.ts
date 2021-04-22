@@ -1,5 +1,5 @@
 export interface FolderType {
-	name: string | undefined;
-	value: string | undefined;
-	disabled: string | undefined;
+	name: string;
+	value: string ;
+	disabled: string;
 }
