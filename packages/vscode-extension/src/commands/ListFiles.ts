@@ -22,22 +22,49 @@ export default class ListFiles extends BaseAction {
 		super(COMMAND_NAME);
 	}
 
-	protected async execute() {
-		const fileCabinetFolders = await FolderUtils.getFileCabinetFolders(this.executionPath, COMMAND_NAME);
+	protected async execute(): Promise<void> {
+		const fileCabinetFolders = await this._getListFolders();
+		const filteredFolders = this.filterDisabledFolders(fileCabinetFolders);
+		if (filteredFolders === undefined) {
+			return;
+		}
 
-		const selectedFolder = await window.showQuickPick(
-			fileCabinetFolders.filter((folder: FolderType) => folder.disabled === '').map((folder: FolderType) => folder.value),
+		const selectedFolder = await this._selectFolder(filteredFolders);
+
+		if (selectedFolder === undefined) {
+			return;
+		}
+
+		await this._listFiles(selectedFolder);
+	}
+
+	protected async _getListFolders() {
+		const listFoldersPromise = FolderUtils.getFileCabinetFolders(this.executionPath, COMMAND_NAME);
+		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
+		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
+
+		return listFoldersPromise;
+	}
+
+	private filterDisabledFolders(fileCabinetFolders: any) {
+		return fileCabinetFolders.filter((folder: FolderType) => folder.disabled === '');
+	}
+
+	// protected async _selectFolder(filteredFolders: { map: (key: (folder: FolderType) => string | undefined) => string[] }): Promise<string | undefined> {
+	protected async _selectFolder(filteredFolders: {
+		map: (arg0: (folder: FolderType) => string | undefined) => string[];
+	}): Promise<string | undefined> {
+		return window.showQuickPick(
+			filteredFolders.map((folder: FolderType) => folder.value),
 			{
 				ignoreFocusOut: true,
 				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),
 				canPickMany: false,
 			}
 		);
+	}
 
-		if (selectedFolder === undefined) {
-			return;
-		}
-
+	private async _listFiles(selectedFolder: string) {
 		const listfilesOptions: { [key: string]: string } = {};
 		listfilesOptions[LIST_FILES_COMMAND.OPTIONS.FOLDER] = selectedFolder;
 
