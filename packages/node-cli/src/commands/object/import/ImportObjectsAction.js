@@ -138,19 +138,14 @@ module.exports = class ImportObjectsAction extends BaseAction {
 			});
 
 
-			//rebuilding the context for having all the scripts in the list as parameters or ALL
-			const contextBuilder = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-				.addParams(sdkParams)
-				.addParam(ANSWERS_NAMES.SCRIPT_ID, scriptIdArray.join(' '));
-
-			const context =	flags.length !== 0 ? contextBuilder.addFlags(flags).build() : contextBuilder.build();
-
+			//adding all the scripts id to the params
+			const commandParams = {...sdkParams, [ANSWERS_NAMES.SCRIPT_ID]: scriptIdArray.join(' ')}
 
 			// At this point, the OperationResult will never be an error. It's handled before
 			return ActionResult.Builder.withData(operationResultData)
 				.withResultMessage(operationResultData.resultMessage)
-				.withCommandParameters(context.getParams())
-				.withCommandFlags(context.getFlags())
+				.withCommandParameters(commandParams)
+				.withCommandFlags(flags)
 				.build();
 
 		} catch (error) {

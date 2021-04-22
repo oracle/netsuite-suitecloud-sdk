@@ -62,7 +62,7 @@ module.exports = class UpdateAction extends BaseAction {
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.withCommandParameters(executionContextForUpdate.getParams())
+					.withCommandParameters(sdkParams)
 					.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {

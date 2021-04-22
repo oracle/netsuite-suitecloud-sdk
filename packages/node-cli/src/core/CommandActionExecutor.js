@@ -93,8 +93,8 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_generateOptionsString(commandMetadata, actionResult) {
-		const flagsReducer = (accumulator, key) => `${accumulator} -${key} `;
-		const commandReducer = (accumulator, key) => `${accumulator} -${key} ${actionResult.commandParameters[key]}`;
+		const flagsReducer = (accumulator, key) => `${accumulator}--${key} `;
+		const commandReducer = (accumulator, key) => `${accumulator} --${key} ${actionResult.commandParameters[key]}`;
 
 		const flags = actionResult.commandFlags && actionResult.commandFlags.length > 0
 			? `${actionResult.commandFlags.filter(key => this._hasToBeShown(key, commandMetadata.options)).reduce(flagsReducer, '')}`
@@ -108,12 +108,11 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_hasToBeShown(key, options) {
-		const keyWithoutDash = key.substring(1);
 		const disableInIntegrationMode = 'disableInIntegrationMode';
 
-		return options.hasOwnProperty(keyWithoutDash)
-			&& options[keyWithoutDash].hasOwnProperty(disableInIntegrationMode)
-			&& options[keyWithoutDash][disableInIntegrationMode] === false;
+		return options.hasOwnProperty(key)
+			&& options[key].hasOwnProperty(disableInIntegrationMode)
+			&& options[key][disableInIntegrationMode] === false;
 	}
 
 	_logGenericError(error) {

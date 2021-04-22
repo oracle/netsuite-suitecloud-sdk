@@ -158,8 +158,8 @@ module.exports = class DeployAction extends (
 					.withAppliedInstallationPreferences(isApplyInstallationPreferences)
 					.withProjectType(this._projectType)
 					.withProjectFolder(this._projectFolder)
-					.withCommandParameters(executionContextForDeploy.getParams())
-					.withCommandFlags(executionContextForDeploy.getFlags())
+					.withCommandParameters(sdkParams)
+					.withCommandFlags(flags)
 					.build()
 				: DeployActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {

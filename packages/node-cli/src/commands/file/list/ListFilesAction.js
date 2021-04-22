@@ -46,7 +46,7 @@ module.exports = class ListFilesAction extends BaseAction {
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.withCommandParameters(executionContext.getParams())
+					.withCommandParameters(params)
 					.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {

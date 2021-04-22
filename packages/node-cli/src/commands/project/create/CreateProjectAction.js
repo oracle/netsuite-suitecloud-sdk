@@ -132,7 +132,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 			const projectName = params[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
 			//fixing project name for not interactive output before building results
-			const commandParameters = {...executionContextCreateProject.getParams(), [`-${COMMAND_OPTIONS.PROJECT_NAME}`]: params[COMMAND_OPTIONS.PROJECT_NAME] };
+			const commandParameters = {...createProjectParams, [`${COMMAND_OPTIONS.PROJECT_NAME}`]: params[COMMAND_OPTIONS.PROJECT_NAME] };
 
 			return createProjectActionData.operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
