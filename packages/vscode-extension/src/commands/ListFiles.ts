@@ -4,7 +4,7 @@
  */
 import { window } from 'vscode';
 import { COMMAND, LIST_FILES } from '../service/TranslationKeys';
-import { actionResultStatus, FolderUtils } from '../util/ExtensionUtil';
+import { actionResultStatus, AccountFileCabinetService } from '../util/ExtensionUtil';
 
 import BaseAction from './BaseAction';
 import { FolderType } from './FolderType';
@@ -39,7 +39,7 @@ export default class ListFiles extends BaseAction {
 	}
 
 	protected async _getListFolders() {
-		const listFoldersPromise = FolderUtils.getFileCabinetFolders(this.executionPath, COMMAND_NAME);
+		const listFoldersPromise = AccountFileCabinetService.getFileCabinetFolders(this.executionPath, COMMAND_NAME);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
 		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
 

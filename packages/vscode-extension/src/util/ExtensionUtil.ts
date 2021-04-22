@@ -24,18 +24,16 @@ export const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/Co
 export const CommandsMetadataService = require('@oracle/suitecloud-cli/src/core/CommandsMetadataService');
 export const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
 export const CLIConfigurationService = require('@oracle/suitecloud-cli/src/core/extensibility/CLIConfigurationService');
-
 export const ConsoleLogger = require('@oracle/suitecloud-cli/src/loggers/ConsoleLogger');
-
-export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
-export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
-export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
+export const AccountFileCabinetService = require('@oracle/suitecloud-cli/src/services/AccountFileCabinetService');
 export const EnvironmentInformationService = require('@oracle/suitecloud-cli/src/services/EnvironmentInformationService');
-export const ProjectInfoServive = require('@oracle/suitecloud-cli/src/services/ProjectInfoService');
 export const FileCabinetService = require('@oracle/suitecloud-cli/src/services/FileCabinetService');
+export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
+export const ProjectInfoServive = require('@oracle/suitecloud-cli/src/services/ProjectInfoService');
+export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
+export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
-export const FolderUtils = require('@oracle/suitecloud-cli/src/utils/FolderUtils');
 
 export const InteractiveAnswersValidator: {
 	showValidationResults(value: string, ...funcs: Function[]): string | boolean;

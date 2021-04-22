@@ -6,7 +6,7 @@
 
 const { prompt } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
-const FolderUtils = require("../../../utils/FolderUtils")
+const AccountFileCabinetService = require("../../../services/AccountFileCabinetService")
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
@@ -32,7 +32,7 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const fileCabinetFolders = await FolderUtils.getFileCabinetFolders(this._executionPath, this._commandMetadata.name);
+		const fileCabinetFolders = await AccountFileCabinetService.getFileCabinetFolders(this._executionPath, this._commandMetadata.name);
 
 		try {
 			return prompt([
