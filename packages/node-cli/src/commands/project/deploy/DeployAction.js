@@ -97,7 +97,7 @@ module.exports = class DeployAction extends (
 	async _preview(params, flags) {
 		try {
 			delete params[COMMAND.FLAGS.PREVIEW];
-			flags.splice(flags.indexOf(COMMAND.FLAGS.NO_PREVIEW), 1); 
+			flags.splice(flags.indexOf(COMMAND.FLAGS.NO_PREVIEW), 1);
 			flags.splice(flags.indexOf(COMMAND.FLAGS.SKIP_WARNING), 1);
 
 			if (flags.includes(COMMAND.FLAGS.VALIDATE)) {
@@ -117,7 +117,7 @@ module.exports = class DeployAction extends (
 				message: NodeTranslationService.getMessage(
 					COMMAND_DEPLOY.MESSAGES.PREVIEWING,
 					this._projectName,
-					getProjectDefaultAuthId(this._executionPath)
+					getProjectDefaultAuthId(this._executionPath),
 				),
 			});
 
@@ -144,7 +144,7 @@ module.exports = class DeployAction extends (
 				message: NodeTranslationService.getMessage(
 					COMMAND_DEPLOY.MESSAGES.DEPLOYING,
 					this._projectName,
-					getProjectDefaultAuthId(this._executionPath)
+					getProjectDefaultAuthId(this._executionPath),
 				),
 			});
 
@@ -153,12 +153,14 @@ module.exports = class DeployAction extends (
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
-						.withResultMessage(operationResult.resultMessage)
-						.withServerValidation(isServerValidation)
-						.withAppliedInstallationPreferences(isApplyInstallationPreferences)
-						.withProjectType(this._projectType)
-						.withProjectFolder(this._projectFolder)
-						.build()
+					.withResultMessage(operationResult.resultMessage)
+					.withServerValidation(isServerValidation)
+					.withAppliedInstallationPreferences(isApplyInstallationPreferences)
+					.withProjectType(this._projectType)
+					.withProjectFolder(this._projectFolder)
+					.withCommandParameters(executionContextForDeploy.getParams())
+					.withCommandFlags(executionContextForDeploy.getFlags())
+					.build()
 				: DeployActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();

@@ -93,12 +93,21 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_generateOptionsString(commandMetadata, actionResult) {
-		const flags = actionResult.commandFlags && actionResult.commandFlags.length > 0 ? `-${actionResult.commandFlags.join(' -')}` : ' ';
-		const reducer = (accumulator, key) => this._hasToBeShown(commandMetadata.options, key) ? `${accumulator} -${key} ${actionResult.commandParameters[key]}` : accumulator;
-		return actionResult.commandParameters ? Object.keys(actionResult.commandParameters).reduce(reducer, flags).trim() : '';
+		const flagsReducer = (accumulator, key) => `${accumulator} -${key} `;
+		const commandReducer = (accumulator, key) => `${accumulator} -${key} ${actionResult.commandParameters[key]}`;
+
+		const flags = actionResult.commandFlags && actionResult.commandFlags.length > 0
+			? `${actionResult.commandFlags.filter(key => this._hasToBeShown(key, commandMetadata.options)).reduce(flagsReducer, '')}`
+			: ' ';
+
+		return actionResult.commandParameters
+			? Object.keys(actionResult.commandParameters)
+				.filter(key => this._hasToBeShown(key, commandMetadata.options))
+				.reduce(commandReducer, flags).trim()
+			: '';
 	}
 
-	_hasToBeShown(options, key) {
+	_hasToBeShown(key, options) {
 		const keyWithoutDash = key.substring(1);
 		const disableInIntegrationMode = 'disableInIntegrationMode';
 
