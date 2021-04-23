@@ -13,13 +13,13 @@ export const SUITECLOUD_FOLDER = '.suitecloud-sdk';
 export const VSCODE_SDK_FOLDER = 'vscode';
 
 const SUITECLOUD_CLI_PACKAGE_JSON = '@oracle/suitecloud-cli/package.json';
-const EXTENSION_CONFIG_JSON_FILENAME = "extension.config.json"
-const EXTENSION_CONFIG_JSON_FILE = "./" + EXTENSION_CONFIG_JSON_FILENAME;
+const EXTENSION_CONFIG_JSON_FILENAME = 'extension.config.json';
+const EXTENSION_CONFIG_JSON_FILE = './' + EXTENSION_CONFIG_JSON_FILENAME;
 
 function getSdkDownloadUrl(): string {
 	if (extensionConfigJsonFileExists()) {
 		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
-		return extensionConfigJsonFile.sdkDownloadUrl
+		return extensionConfigJsonFile.sdkDownloadUrl;
 	}
 
 	const suiteCloudCliModulePackageJsonPath = require.resolve(SUITECLOUD_CLI_PACKAGE_JSON);
