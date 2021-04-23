@@ -226,11 +226,6 @@
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "The following warnings were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_VALIDATION_OUTPUT_MESSAGE": "        - Line No. {0} - {1}",
-
-	"DOWNLOADING_SUITECLOUD_SDK": "Downloading SuiteCloud SDK dependencies...",
-	"DOWNLOADING_SUITECLOUD_SDK_SUCCESS": "SuiteCloud SDK dependencies downloaded successfully.",
-	"DOWNLOADING_SUITECLOUD_SDK_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
-	"DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE": "The JAR file is not available from this URL.",
 	
 	"ERRORS_ADD_ERROR_LINE": "\nError: {0}",
 	"ERRORS_CANT_CREATE_FOLDER": "There was an error when creating the {0} folder. Verify that the path is correct.\nError code: {1}",
@@ -270,6 +265,13 @@
 	"ERRORS_WRONG_JSON_FILE": "There was a problem when reading the {0} file.\n{1}",
 
 	"NO": "No",
+
+
+	"SDK_DOWNLOAD_SERVICE_DOWNLOADING": "Downloading SuiteCloud SDK dependencies...",
+	"SDK_DOWNLOAD_SERVICE_SUCCESS": "SuiteCloud SDK dependencies downloaded successfully.",
+	"SDK_DOWNLOAD_SERVICE_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
+	"SDK_DOWNLOAD_SERVICE_FILE_NOT_AVAILABLE_ERROR": "The JAR file is not available from this URL.",
+	"SDK_DOWNLOAD_SERVICE_WRONG_DOWNLOAD_URL_PROTOCOL": "Invalid SDK jar file download url protocol. Only http: or https: are allowed.",
 
 	"UNIT_TEST_TEST_FAILED": "The tests failed.",
 	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures, The Deployment will not continue.",

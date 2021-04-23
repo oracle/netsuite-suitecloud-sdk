@@ -11,7 +11,8 @@ const SdkProperties = require('./SdkProperties');
 const https = require('https');
 const http = require('http');
 const { URL } = require('url');
-const ProxyAgent = require('./ProxyAgent');
+const ProxyAgent = require('../../utils/http/ProxyAgent');
+const { ENCODING, EVENT, HEADER, PROTOCOL } = require('../../utils/http/HttpConstants');
 
 const HOME_PATH = require('os').homedir();
 
@@ -24,12 +25,7 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 const { executeWithSpinner } = require('../../ui/CliSpinner');
 
-const {
-	DOWNLOADING_SUITECLOUD_SDK,
-	DOWNLOADING_SUITECLOUD_SDK_SUCCESS,
-	DOWNLOADING_SUITECLOUD_SDK_ERROR,
-	DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE,
-} = require('../../services/TranslationKeys');
+const { SDK_DOWNLOAD_SERVICE } = require('../../services/TranslationKeys');
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
@@ -51,58 +47,57 @@ class SdkDownloadService {
 
 		try {
 			await executeWithSpinner({
-				action: this.downloadJarFilePromise(fullURL, destinationFilePath, proxy, skipProxy),
-				message: NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK, fullURL),
+				action: this._downloadJarFilePromise(fullURL, destinationFilePath, proxy, skipProxy),
+				message: NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.DOWNLOADING, fullURL),
 			});
-			NodeConsoleLogger.info(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_SUCCESS));
+			NodeConsoleLogger.info(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.SUCCESS));
 		} catch (error) {
-			NodeConsoleLogger.error(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR, fullURL, unwrapExceptionMessage(error)));
+			NodeConsoleLogger.error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.ERROR, fullURL, unwrapExceptionMessage(error)));
 		}
 	}
 
-	downloadJarFilePromise(downloadUrl, destinationFilePath, proxy, skipProxy) {
-		const isProxyRequired = proxy && !skipProxy;
+	_downloadJarFilePromise(downloadUrl, destinationFilePath, proxy, skipProxy) {
 		const downloadUrlObject = new URL(downloadUrl);
 		const downloadUrlProtocol = downloadUrlObject.protocol;
 
 		const requestOptions = {
-			encoding: 'binary',
-			...(isProxyRequired && { agent: new ProxyAgent(proxy, { tunnel: true, timeout: 15000 }) }),
+			encoding: ENCODING.BINARY,
+			...(proxy && !skipProxy && { agent: new ProxyAgent(proxy, { tunnel: true, timeout: 15000 }) }),
 		};
 
 		if (!/^http:$|^https:$/.test(downloadUrlProtocol)) {
-			throw new Error('Invalid SDK jar file download url protocol. Only http: or https: are allowed.');
+			throw new Error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.WRONG_DOWNLOAD_URL_PROTOCOL));
 		}
 
-		const httpx = 'http:'.match(downloadUrlObject.protocol) ? http : https;
+		const httpxModule = PROTOCOL.HTTP.match(downloadUrlObject.protocol) ? http : https;
 
 		return new Promise((resolve, reject) => {
-			const clientReq = httpx.get(downloadUrlObject, requestOptions, (response) => {
+			const clientReq = httpxModule.get(downloadUrlObject, requestOptions, (response) => {
 				const chunks = [];
-				response.on('data', (chunk) => chunks.push(Buffer.from(chunk, 'binary')));
+				response.on(EVENT.DATA, (chunk) => chunks.push(Buffer.from(chunk, ENCODING.BINARY)));
 
-				response.on('end', () => {
-					if (!VALID_JAR_CONTENT_TYPES.includes(response.headers['content-type'])) {
-						reject(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE));
+				response.on(EVENT.END, () => {
+					if (!VALID_JAR_CONTENT_TYPES.includes(response.headers[HEADER.CONTENT_TYPE])) {
+						reject(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.FILE_NOT_AVAILABLE_ERROR));
 					}
 
 					const jarFile = fs.createWriteStream(destinationFilePath);
-					jarFile.write(Buffer.concat(chunks), 'binary');
+					jarFile.write(Buffer.concat(chunks), ENCODING.BINARY);
 					jarFile.end();
 					resolve();
 				});
 
-				response.on('error', (error) => {
-					reject(NodeTranslationService.getMessage(DOWNLOADING_SUITECLOUD_SDK_ERROR_FILE_NOT_AVAILABLE));
+				response.on(EVENT.ERROR, (error) => {
+					reject(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.FILE_NOT_AVAILABLE_ERROR));
 				});
 			});
 
 			clientReq
-				.once('timeout', () => {
+				.once(EVENT.TIMEOUT, () => {
 					clientReq.destroy();
 					reject(new Error(`GET request timeout.`));
 				})
-				.once('error', (err) => reject(err))
+				.once(EVENT.ERROR, (err) => reject(err))
 				.end();
 		});
 	}
