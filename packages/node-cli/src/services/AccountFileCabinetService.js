@@ -2,29 +2,27 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
- 'use strict';
+'use strict';
 
- const SdkExecutionContext = require('../SdkExecutionContext');
- const SdkExecutor = require('../SdkExecutor');
- const NodeTranslationService = require('../services/NodeTranslationService');
- const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
- const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
- const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
- const { lineBreak } = require('../loggers/LoggerConstants');
- const SdkProperties = require('../core/sdksetup/SdkProperties');
- const {
-	 COMMAND_LISTFILES: { LOADING_FOLDERS,ERROR_INTERNAL, RESTRICTED_FOLDER },
- } = require('./TranslationKeys');
- 
- const LIST_FOLDERS = {
-	 COMMAND: 'listfolders',
-	 OPTIONS: {
-		 AUTH_ID: 'authid',
-	 },
- };
- 
+const SdkExecutionContext = require('../SdkExecutionContext');
+const SdkExecutor = require('../SdkExecutor');
+const NodeTranslationService = require('../services/NodeTranslationService');
+const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
+const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
+const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const { lineBreak } = require('../loggers/LoggerConstants');
+const {
+	COMMAND_LISTFILES: { LOADING_FOLDERS, ERROR_INTERNAL, RESTRICTED_FOLDER },
+} = require('./TranslationKeys');
+
+const LIST_FOLDERS = {
+	COMMAND: 'listfolders',
+	OPTIONS: {
+		AUTH_ID: 'authid',
+	},
+};
+
 class AccountFileCabinetService {
-
 	async _listFolders(sdkExecutor, path, commandName) {
 		const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
 			.integration()
@@ -47,10 +45,9 @@ class AccountFileCabinetService {
 		return listFoldersResult;
 	}
 
-	async getFileCabinetFolders(executionPath, commandName) {
-		const sdkPath = SdkProperties.getSdkPath();
-		const sdkExecutor = new SdkExecutor(sdkPath);
-		let listFoldersResult = await this._listFolders(sdkExecutor, executionPath, commandName)
+	async getFileCabinetFolders(sdkPath, executionEnvironmentContext, executionPath, commandName) {
+		const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+		let listFoldersResult = await this._listFolders(sdkExecutor, executionPath, commandName);
 		return listFoldersResult.data.map((folder) => {
 			return {
 				name: folder.path,
@@ -59,6 +56,6 @@ class AccountFileCabinetService {
 			};
 		});
 	}
-};
+}
 
 module.exports = new AccountFileCabinetService();
