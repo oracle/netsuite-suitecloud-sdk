@@ -54,11 +54,11 @@ export default class ListFiles extends BaseAction {
 		return listFoldersPromise;
 	}
 
-	protected async _selectFolder(filteredFolders: {
+	protected async _selectFolder(folders: {
 		map: (arg0: (folder: FolderType) => QuickPickItem) => QuickPickItem[];
 	}): Promise<QuickPickItem | undefined> {
 		return window.showQuickPick(
-			filteredFolders.map((folder: FolderType) => ({ label: folder.value, description: folder.disabled })),
+			folders.map((folder: FolderType) => ({ label: folder.value, description: folder.disabled })),
 			{
 				ignoreFocusOut: true,
 				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),
