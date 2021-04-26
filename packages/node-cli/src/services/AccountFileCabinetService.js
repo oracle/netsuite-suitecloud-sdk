@@ -49,13 +49,6 @@ class AccountFileCabinetService {
 		const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
 		let listFoldersResult = await this._listFolders(sdkExecutor, executionPath, commandName);
 		return listFoldersResult.data;
-		// return listFoldersResult.data.map((folder) => {
-		// 	return {
-		// 		name: folder.path,
-		// 		value: folder.path,
-		// 		disabled: folder.isRestricted ? NodeTranslationService.getMessage(RESTRICTED_FOLDER) : '',
-		// 	};
-		// });
 	}
 }
 
