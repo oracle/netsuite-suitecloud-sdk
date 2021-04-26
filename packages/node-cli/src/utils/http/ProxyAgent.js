@@ -2,13 +2,13 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
- 'use strict';
- 
+'use strict';
+
 const http = require('http');
 const { URL } = require('url');
 const tls = require('tls');
 const net = require('net');
-const { PROTOCOL, EVENT, METHOD } = require("./HttpConstants");
+const { PROTOCOL, EVENT, METHOD } = require('./HttpConstants');
 
 class ProxyAgent {
 	constructor(proxyString, agentOptions) {
@@ -68,7 +68,7 @@ class ProxyAgent {
 
 				req.once(EVENT.TIMEOUT, () => {
 					req.destroy();
-					reject(new ProxyAgentError('CONNECT request timeout.'));
+					reject(new ProxyAgentError(ERROR_MESSAGES.CONNECT_TIMEOUT));
 				});
 
 				req.once(EVENT.ERROR, (err) => {
@@ -76,7 +76,7 @@ class ProxyAgent {
 				});
 
 				req.once(EVENT.CLOSE, () => {
-					reject(new ProxyAgentError('Tunnel failed. Socket closed prematurely.'));
+					reject(new ProxyAgentError(ERROR_MESSAGES.SERVER_CLOSE_EVENT));
 				});
 
 				req.end();
@@ -94,9 +94,14 @@ class ProxyAgent {
 
 class ProxyAgentError extends Error {
 	constructor(message) {
-	  super(message); 
-	  this.name = "ProxyAgentError"; 
+		super(message);
+		this.name = 'ProxyAgentError';
 	}
-  }
+}
+
+const ERROR_MESSAGES = {
+	CONNECT_TIMEOUT: 'CONNECT request timeout.',
+	SERVER_CLOSE_EVENT: 'Tunnel failed. Socket closed prematurely.'
+}
 
 module.exports = ProxyAgent;

@@ -95,7 +95,7 @@ class SdkDownloadService {
 			clientReq
 				.once(EVENT.TIMEOUT, () => {
 					clientReq.destroy();
-					reject(new Error(`GET request timeout.`));
+					reject(new Error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.GET_TIMEOUT)));
 				})
 				.once(EVENT.ERROR, (err) => reject(err))
 				.end();
