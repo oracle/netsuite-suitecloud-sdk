@@ -7,7 +7,7 @@ import { COMMAND, LIST_FILES } from '../service/TranslationKeys';
 import { actionResultStatus, AccountFileCabinetService, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 
 import BaseAction from './BaseAction';
-import { FolderType } from './FolderType';
+import { FolderItem } from './FolderItem';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
@@ -26,14 +26,16 @@ export default class ListFiles extends BaseAction {
 	}
 
 	protected async execute(): Promise<void> {
-		const fileCabinetFolders = await this._getListFolders();
-		const selectedFolder = await this._selectFolder(fileCabinetFolders);
-
-		if (selectedFolder === null || selectedFolder === undefined) {
-			return;
+		try {
+			let fileCabinetFolders = await this._getListFolders();
+			const selectedFolder = await this._selectFolder(fileCabinetFolders);
+			if (selectedFolder) {
+				await this._listFiles(selectedFolder.label);
+			}
+		} catch (e) {
+			this.vsConsoleLogger.error(e);
+			this.messageService.showCommandError();
 		}
-
-		await this._listFiles(selectedFolder.label);
 	}
 
 	protected async _getListFolders() {
@@ -54,11 +56,12 @@ export default class ListFiles extends BaseAction {
 		return listFoldersPromise;
 	}
 
-	protected async _selectFolder(folders: {
-		map: (arg0: (folder: FolderType) => QuickPickItem) => QuickPickItem[];
-	}): Promise<QuickPickItem | undefined> {
+	protected async _selectFolder(folders: FolderItem[]): Promise<QuickPickItem | undefined> {
 		return window.showQuickPick(
-			folders.map((folder: FolderType) => ({ label: folder.value, description: folder.disabled })),
+			folders.map((folder: FolderItem) => {
+				const description = folder.isRestricted ? this.translationService.getMessage(LIST_FILES.RESTRICTED_FOLDER) : '';
+				return { label: folder.path, description };
+			}),
 			{
 				ignoreFocusOut: true,
 				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),

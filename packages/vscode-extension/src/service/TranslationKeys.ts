@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /*
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
@@ -34,6 +35,7 @@ export const DEPLOY = {
 export const LIST_FILES = {
 	LISTING: 'LIST_FILES_LISTING',
 	LOADING_FOLDERS: 'LIST_FILES_LOADING_FOLDERS',
+	RESTRICTED_FOLDER: 'LIST_FILES_RESTRICTED_FOLDER',
 	SELECT_FOLDER: 'LIST_FILES_SELECT_FOLDER',
 };
 

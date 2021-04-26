@@ -12,7 +12,7 @@ const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, ERROR_INTERNAL, RESTRICTED_FOLDER },
+	COMMAND_LISTFILES: { LOADING_FOLDERS, ERROR_INTERNAL },
 } = require('./TranslationKeys');
 
 const LIST_FOLDERS = {
@@ -48,13 +48,14 @@ class AccountFileCabinetService {
 	async getFileCabinetFolders(sdkPath, executionEnvironmentContext, executionPath, commandName) {
 		const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
 		let listFoldersResult = await this._listFolders(sdkExecutor, executionPath, commandName);
-		return listFoldersResult.data.map((folder) => {
-			return {
-				name: folder.path,
-				value: folder.path,
-				disabled: folder.isRestricted ? NodeTranslationService.getMessage(RESTRICTED_FOLDER) : '',
-			};
-		});
+		return listFoldersResult.data;
+		// return listFoldersResult.data.map((folder) => {
+		// 	return {
+		// 		name: folder.path,
+		// 		value: folder.path,
+		// 		disabled: folder.isRestricted ? NodeTranslationService.getMessage(RESTRICTED_FOLDER) : '',
+		// 	};
+		// });
 	}
 }
 

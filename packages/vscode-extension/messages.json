@@ -32,6 +32,7 @@
 
 	"LIST_FILES_LISTING": "Listing files...",
 	"LIST_FILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
+	"LIST_FILES_RESTRICTED_FOLDER": "Restricted Folder",
 	"LIST_FILES_SELECT_FOLDER": "Select the path from where you want to list the files",
 	"LIST_OBJECTS_LISTING": "Listing objects...",
 	"SEE_DETAILS": "See details",

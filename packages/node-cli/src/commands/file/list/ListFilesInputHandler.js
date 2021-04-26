@@ -12,7 +12,7 @@ const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
 const { lineBreak } = require('../../../loggers/LoggerConstants');
 const {
-	COMMAND_LISTFILES: { SELECT_FOLDER, ERROR_INTERNAL },
+	COMMAND_LISTFILES: { SELECT_FOLDER, ERROR_INTERNAL, RESTRICTED_FOLDER },
 } = require('../../../services/TranslationKeys');
 
 const LIST_FOLDERS = {
@@ -32,12 +32,20 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const fileCabinetFolders = await AccountFileCabinetService.getFileCabinetFolders(
+		const listFoldersResult = await AccountFileCabinetService.getFileCabinetFolders(
 			this._sdkPath,
 			this._executionEnvironmentContext,
 			this._executionPath,
 			this._commandMetadata.name
 		);
+
+		const fileCabinetFolders = listFoldersResult.map((folder) => {
+			return {
+				name: folder.path,
+				value: folder.path,
+				disabled: folder.isRestricted ? NodeTranslationService.getMessage(RESTRICTED_FOLDER) : '',
+			};
+		});
 
 		try {
 			return prompt([
