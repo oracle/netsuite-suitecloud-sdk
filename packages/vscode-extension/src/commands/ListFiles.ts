@@ -7,7 +7,7 @@ import { COMMAND, LIST_FILES } from '../service/TranslationKeys';
 import { actionResultStatus, AccountFileCabinetService, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 
 import BaseAction from './BaseAction';
-import { FolderItem } from './FolderItem';
+import { FolderItem } from '../types/FolderItem';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
