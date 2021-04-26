@@ -33,7 +33,6 @@ module.exports = class SetupAction extends BaseAction {
 					.withMode(AUTH_MODE.REUSE)
 					.withAuthId(authId)
 					.withAccountInfo(accountInfo)
-					.withCommandParameters()
 					.build();
 			}
 		} catch (error) {
