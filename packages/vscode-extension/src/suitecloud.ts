@@ -7,13 +7,14 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import AddDependencies from './commands/AddDependencies';
-import Deploy from './commands/Deploy';
-import ListObjects from './commands/ListObjects';
-import UploadFile from './commands/UploadFile';
-import ManageAccounts from './commands/ManageAccounts';
-import { installIfNeeded } from './core/sdksetup/SdkServices';
 import BaseAction from './commands/BaseAction';
+import Deploy from './commands/Deploy';
+import ListFiles from './commands/ListFiles';
+import ListObjects from './commands/ListObjects';
+import ManageAccounts from './commands/ManageAccounts';
+import UploadFile from './commands/UploadFile';
 import UpdateObject from './commands/UpdateObject';
+import { installIfNeeded } from './core/sdksetup/SdkServices';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 
@@ -31,15 +32,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		register('suitecloud.adddependencies', new AddDependencies()),
 		register('suitecloud.deploy', new Deploy()),
+		register('suitecloud.listfiles', new ListFiles()),
 		register('suitecloud.listobjects', new ListObjects()),
-		register('suitecloud.uploadfile', new UploadFile()),
 		register('suitecloud.setupaccount', new ManageAccounts()),
-		register('suitecloud.updateobject', new UpdateObject())
+		register('suitecloud.updateobject', new UpdateObject()),
+		register('suitecloud.uploadfile', new UploadFile())
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log("SuiteCloud Extension for Visual Studio Code has been activated.");
+	console.log('SuiteCloud Extension for Visual Studio Code has been activated.');
 }
 
 // this method is called when SuiteCloud extension is deactivated

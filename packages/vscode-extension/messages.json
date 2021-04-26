@@ -18,13 +18,24 @@
 	"DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning and continue the deployment process",
 	"DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the deployment process",
 
+	"ERRORS_NO_ACTIVE_FILE": "There was an error. You must have an active file to perform this action.",
+	"ERRORS_NO_ACTIVE_WORKSPACE": "There was an error. The current file does not belong to any workspace.",
+	"ERRORS_NO_ACTIVE_FILE_OR_WORKSPACE": "There is no active file or the active file is not in a workspace.",
+	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install Oracle JDK version {1}.",
+	"ERRORS_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install Oracle JDK version {0} to run SuiteCloud Extension for Visual Studio Code.",
+
+	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
+	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
+	"EXTENSION_INSTALLATION_ERROR_GENERAL_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
+	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
+	"EXTENSION_INSTALLATION_ERROR_SDK_INVALID": "Close and open the editor to try again.",
+
+	"LIST_FILES_LISTING": "Listing files...",
+	"LIST_FILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
+	"LIST_FILES_RESTRICTED_FOLDER": "Restricted Folder",
+	"LIST_FILES_SELECT_FOLDER": "Select the path from where you want to list the files",
 	"LIST_OBJECTS_LISTING": "Listing objects...",
 	"SEE_DETAILS": "See details",
-
-	"UPLOAD_FILE_ERROR_UPLOAD_FILE_FOLDER_RESTRICTION": "The file to upload should be in a supported folder inside the FileCabinet folder. For information about the supported folders, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4724963992.html.",
-	"UPLOAD_FILE_OVERWRITE_FILE": "The {0} file will be overwritten in the File Cabinet. Do you want to continue?",
-	"UPLOAD_FILE_PROCESS_CANCELED": "The file upload process has been canceled. No files have been overwritten.",
-	"UPLOAD_FILE_UPLOADING": "Uploading files...",
 
 	"MANAGE_ACCOUNTS_AVAILABLE_CONNECTIONS": "Available connections",
 	"MANAGE_ACCOUNTS_CREATE_NEW": "New authentication ID (authID, custom alias you give to a specific account-role combination)",
@@ -52,15 +63,8 @@
 	"UPDATE_OBJECT_PROCESS_CANCELED": "The custom object update process has been canceled. No custom objects have been overwritten.",
 	"UPDATE_OBJECT_UPDATING": "Updating object...",
 
-	"ERRORS_NO_ACTIVE_FILE": "There was an error. You must have an active file to perform this action.",
-	"ERRORS_NO_ACTIVE_WORKSPACE": "There was an error. The current file does not belong to any workspace.",
-	"ERRORS_NO_ACTIVE_FILE_OR_WORKSPACE": "There is no active file or the active file is not in a workspace.",
-	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install Oracle JDK version {1}.",
-	"ERRORS_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install Oracle JDK version {0} to run SuiteCloud Extension for Visual Studio Code.",
-
-	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
-	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
-	"EXTENSION_INSTALLATION_ERROR_GENERAL_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
-	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
-	"EXTENSION_INSTALLATION_ERROR_SDK_INVALID": "Close and open the editor to try again."
+	"UPLOAD_FILE_ERROR_UPLOAD_FILE_FOLDER_RESTRICTION": "The file to upload should be in a supported folder inside the FileCabinet folder. For information about the supported folders, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4724963992.html.",
+	"UPLOAD_FILE_OVERWRITE_FILE": "The {0} file will be overwritten in the File Cabinet. Do you want to continue?",
+	"UPLOAD_FILE_PROCESS_CANCELED": "The file upload process has been canceled. No files have been overwritten.",
+	"UPLOAD_FILE_UPLOADING": "Uploading files..."
 }
