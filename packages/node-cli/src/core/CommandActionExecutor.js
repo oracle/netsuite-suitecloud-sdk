@@ -69,11 +69,11 @@ module.exports = class CommandActionExecutor {
 			});
 			if (actionResult.isSuccess() && commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
-				if (context.runInInteractiveMode) {
-					this._showNonInteractiveCommand(commandName, commandMetadata, actionResult);
-				}
 			} else if (!actionResult.isSuccess() && commandUserExtension.onError) {
 				commandUserExtension.onError(ActionResultUtils.getErrorMessagesString(actionResult));
+			}
+			if (context.runInInteractiveMode) {
+				this._showNonInteractiveCommand(commandName, commandMetadata, actionResult);
 			}
 			return actionResult;
 
