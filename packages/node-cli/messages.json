@@ -22,7 +22,7 @@
 	"CLI_INTERACTIVE_OPTION_DESCRIPTION": "run the command in interactive mode",
 	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite {0})",
 	"CLI_USAGE": "command [option]",
-	"CLI_SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE" : "To execute this command in a non-interactive mode, type: \"suitecloud {0}\"",
+	"CLI_SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE" : "To execute this command in non-interactive mode, type: \"suitecloud {0}\"",
 
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_ADDING_DEPENDENCIES": "Adding dependencies...",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_DEPENDENCIES_ADDED_TO_MANIFEST": "The following dependencies were added to the manifest:",
