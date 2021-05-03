@@ -118,41 +118,45 @@ module.exports = class CreateProjectAction extends BaseAction {
 
 			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
 
+			const executionContextCreateProject = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+				.integration()
+				.addParams(createProjectParams)
+				.build();
+
 			const createProjectAction = new Promise(
-				this.createProject(createProjectParams, params, projectAbsolutePath, projectFolderName, manifestFilePath)
+				this.createProject(executionContextCreateProject, params, projectAbsolutePath, projectFolderName, manifestFilePath),
 			);
 
 			const createProjectActionData = await createProjectAction;
 
 			const projectName = params[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
+			//fixing project name for not interactive output before building results
+			const commandParameters = {...createProjectParams, [`${COMMAND_OPTIONS.PROJECT_NAME}`]: params[COMMAND_OPTIONS.PROJECT_NAME] };
 
 			return createProjectActionData.operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
-						.withResultMessage(createProjectActionData.operationResult.resultMessage)
-						.withProjectType(projectType)
-						.withProjectName(projectName)
-						.withProjectDirectory(createProjectActionData.projectDirectory)
-						.withUnitTesting(includeUnitTesting)
-						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
-						.build()
+					.withResultMessage(createProjectActionData.operationResult.resultMessage)
+					.withProjectType(projectType)
+					.withProjectName(projectName)
+					.withProjectDirectory(createProjectActionData.projectDirectory)
+					.withUnitTesting(includeUnitTesting)
+					.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
+					.withCommandParameters(commandParameters)
+					.build()
 				: CreateProjectActionResult.Builder.withErrors(createProjectActionData.operationResult.errorMessages).build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}
 	}
 
-	createProject(createProjectParams, params, projectAbsolutePath, projectFolderName, manifestFilePath) {
+	createProject(executionContextCreateProject, params, projectAbsolutePath, projectFolderName, manifestFilePath) {
 		return async (resolve, reject) => {
 			try {
 				this._log.info(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE));
 				if (params[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
-				const executionContextCreateProject = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-					.integration()
-					.addParams(createProjectParams)
-					.build();
 
 				const operationResult = await this._sdkExecutor.execute(executionContextCreateProject);
 
@@ -178,7 +182,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 						params[COMMAND_OPTIONS.TYPE],
 						params[COMMAND_OPTIONS.PROJECT_NAME],
 						params[COMMAND_OPTIONS.PROJECT_VERSION],
-						projectAbsolutePath
+						projectAbsolutePath,
 					);
 
 					this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
@@ -226,7 +230,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 		await this._fileSystemService.createFileFromTemplate({
 			template: TemplateKeys.PROJECTCONFIGS[GITIGNORE_TEMPLATE_KEY],
 			destinationFolder: projectAbsolutePath,
-			fileName: GITIGNORE_FILENAME
+			fileName: GITIGNORE_FILENAME,
 		});
 	}
 
@@ -309,16 +313,16 @@ module.exports = class CreateProjectAction extends BaseAction {
 				showValidationResults(
 					answers[COMMAND_OPTIONS.PUBLISHER_ID],
 					(optionValue) => validateNotUndefined(optionValue, COMMAND_OPTIONS.PUBLISHER_ID),
-					validatePublisherId
-				)
+					validatePublisherId,
+				),
 			);
 
 			validationErrors.push(
 				showValidationResults(
 					answers[COMMAND_OPTIONS.PROJECT_VERSION],
 					(optionValue) => validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION),
-					validateProjectVersion
-				)
+					validateProjectVersion,
+				),
 			);
 
 			validationErrors.push(
@@ -327,8 +331,8 @@ module.exports = class CreateProjectAction extends BaseAction {
 					(optionValue) => validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_ID),
 					validateFieldIsNotEmpty,
 					validateFieldHasNoSpaces,
-					(optionValue) => validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, optionValue)
-				)
+					(optionValue) => validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, optionValue),
+				),
 			);
 		}
 

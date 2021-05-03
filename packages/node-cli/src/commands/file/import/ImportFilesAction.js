@@ -55,7 +55,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 	async execute(params) {
 		try {
 			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-				throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
+				return ActionResult.Builder.withErrors(NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP)).build();
 			}
 
 			if(this._runInInteractiveMode === false) {
@@ -73,7 +73,10 @@ module.exports = class ImportFilesAction extends BaseAction {
 			});
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
+				? ActionResult.Builder.withData(operationResult.data)
+					.withResultMessage(operationResult.resultMessage)
+					.withCommandParameters(params)
+					.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();

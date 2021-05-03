@@ -103,13 +103,13 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				errorImports: [],
 			};
 			let arrayOfPromises = [];
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 			const numberOfSdkCalls = Math.ceil(scriptIdArray.length / NUMBER_OF_SCRIPTS);
 			const numberOfSteps = Math.ceil(numberOfSdkCalls / MAX_PARALLEL_EXECUTIONS);
 
 			for (let i = 0; i < numberOfSdkCalls; i++) {
 				const partialScriptIds = scriptIdArray.slice(i * NUMBER_OF_SCRIPTS, (i + 1) * NUMBER_OF_SCRIPTS);
 				const partialScriptIdsString = partialScriptIds.join(' ');
-				const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 				const partialExecutionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 					.integration()
 					.addFlags(flags)
@@ -136,8 +136,18 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				action: Promise.all(arrayOfPromises),
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS, numberOfSteps, numberOfSteps),
 			});
+
+
+			//adding all the scripts id to the params
+			const commandParams = {...sdkParams, [ANSWERS_NAMES.SCRIPT_ID]: scriptIdArray.join(' ')}
+
 			// At this point, the OperationResult will never be an error. It's handled before
-			return ActionResult.Builder.withData(operationResultData).withResultMessage(operationResultData.resultMessage).build();
+			return ActionResult.Builder.withData(operationResultData)
+				.withResultMessage(operationResultData.resultMessage)
+				.withCommandParameters(commandParams)
+				.withCommandFlags(flags)
+				.build();
+
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

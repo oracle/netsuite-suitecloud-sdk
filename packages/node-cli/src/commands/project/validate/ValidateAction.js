@@ -71,7 +71,7 @@ module.exports = class ValidateAction extends BaseAction {
 
 			if (params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES]) {
 				delete params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES];
-				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
+				flags.push(COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES);
 				installationPreferencesApplied = true;
 			}
 
@@ -95,6 +95,8 @@ module.exports = class ValidateAction extends BaseAction {
 						.withAppliedInstallationPreferences(installationPreferencesApplied)
 						.withProjectType(this._projectType)
 						.withProjectFolder(this._projectFolder)
+						.withCommandParameters(sdkParams)
+						.withCommandFlags(flags)
 						.build()
 				: DeployActionResult.Builder.withErrors(operationResult.errorMessages)
 						.withServerValidation(isServerValidation)

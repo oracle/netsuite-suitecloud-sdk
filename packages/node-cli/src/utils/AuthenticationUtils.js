@@ -105,9 +105,9 @@ async function saveToken(params, sdkPath, projectFolder, executionEnvironmentCon
 	if (params.dev === true) {
 		contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 	}
-
+	const tokenExecutionContext = contextBuilder.build();
 	const operationResult = await executeWithSpinner({
-		action: sdkExecutor.execute(contextBuilder.build()),
+		action: sdkExecutor.execute(tokenExecutionContext),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.SAVING_TBA_TOKEN),
 	});
 	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
@@ -118,6 +118,7 @@ async function saveToken(params, sdkPath, projectFolder, executionEnvironmentCon
 		.withMode(COMMANDS.AUTHENTICATE.MODES.SAVE_TOKEN)
 		.withAuthId(authId)
 		.withAccountInfo(operationResult.data.accountInfo)
+		.withCommandParameters(tokenExecutionContext.getParams())
 		.build();
 }
 
@@ -134,9 +135,9 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 	if (params.dev === true) {
 		contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 	}
-
+	const oauthContext = contextBuilder.build();
 	return executeWithSpinner({
-		action: sdkExecutor.execute(contextBuilder.build(), cancelToken),
+		action: sdkExecutor.execute(oauthContext, cancelToken),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.STARTING_OAUTH_FLOW),
 	})
 		.then((operationResult) => {
@@ -148,6 +149,7 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 				.withMode(COMMANDS.AUTHENTICATE.MODES.OAUTH)
 				.withAuthId(authId)
 				.withAccountInfo(operationResult.data.accountInfo)
+				.withCommandParameters(oauthContext.getParams())
 				.build();
 		})
 		.catch((error) => AuthenticateActionResult.Builder.withErrors([error]));

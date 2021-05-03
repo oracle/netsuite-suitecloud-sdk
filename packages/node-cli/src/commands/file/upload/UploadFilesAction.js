@@ -56,9 +56,10 @@ module.exports = class UploadFilesAction extends BaseAction {
 			});
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
-						.withResultMessage(operationResult.resultMessage)
-						.withProjectFolder(this._projectFolder)
-						.build()
+					.withResultMessage(operationResult.resultMessage)
+					.withProjectFolder(this._projectFolder)
+					.withCommandParameters(params)
+					.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
