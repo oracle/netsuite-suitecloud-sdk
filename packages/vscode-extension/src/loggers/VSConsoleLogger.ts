@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { Output } from '../suitecloud';
+import { output } from '../suitecloud';
 import { ConsoleLogger } from '../util/ExtensionUtil';
 import { getTimestamp } from '../util/DateUtils';
 
@@ -33,11 +33,11 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	// We could explore some workarounds in future like creating a Terminal, importing a new library or just implment it ourselves
 	println(message: string): void {
 		if (this._addExecutionDetailsToLog) {
-			Output.appendLine(this.getExecutionDetails());
+			output.appendLine(this.getExecutionDetails());
 			this._addExecutionDetailsToLog = false;
 		}
 
-		Output.appendLine(message);
+		output.appendLine(message);
 	}
 
 	info(message: string): void {

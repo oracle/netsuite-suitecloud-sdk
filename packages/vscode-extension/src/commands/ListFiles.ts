@@ -11,6 +11,7 @@ import { FolderItem } from '../types/FolderItem';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
+import ListFilesService from '../service/ListFilesService';
 
 const COMMAND_NAME = 'listfiles';
 
@@ -21,13 +22,17 @@ const LIST_FILES_COMMAND = {
 };
 
 export default class ListFiles extends BaseAction {
+
+	private listFilesService: ListFilesService;
+
 	constructor() {
 		super(COMMAND_NAME);
+		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
 	}
 
 	protected async execute(): Promise<void> {
 		try {
-			let fileCabinetFolders = await this._getListFolders();
+			let fileCabinetFolders = await this.listFilesService.getListFolders(COMMAND_NAME);
 			const selectedFolder = await this._selectFolder(fileCabinetFolders);
 			if (selectedFolder) {
 				await this._listFiles(selectedFolder.label);
@@ -38,23 +43,6 @@ export default class ListFiles extends BaseAction {
 		}
 	}
 
-	protected async _getListFolders() {
-		const executionEnvironmentContext = new ExecutionEnvironmentContext({
-			platform: VSCODE_PLATFORM,
-			platformVersion: vscode.version,
-		});
-
-		const listFoldersPromise = AccountFileCabinetService.getFileCabinetFolders(
-			getSdkPath(),
-			executionEnvironmentContext,
-			this.executionPath,
-			COMMAND_NAME
-		);
-		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
-		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
-
-		return listFoldersPromise;
-	}
 
 	protected async _selectFolder(folders: FolderItem[]): Promise<QuickPickItem | undefined> {
 		return window.showQuickPick(

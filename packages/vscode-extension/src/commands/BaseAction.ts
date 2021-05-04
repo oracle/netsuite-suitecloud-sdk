@@ -14,6 +14,7 @@ import { assert } from 'console';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
+	protected filePath?: string;
 	protected readonly messageService: MessageService;
 	protected readonly vscodeCommandName: string;
 	protected readonly cliCommandName: string;
@@ -30,7 +31,7 @@ export default abstract class BaseAction {
 		this.translationService = new VSTranslationService();
 	}
 
-	protected init() {
+	protected init(fsPath?: string)  {
 		this.executionPath = getRootProjectFolder();
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 		this.messageService.executionPath = this.executionPath;
@@ -72,8 +73,11 @@ export default abstract class BaseAction {
 		return cliConfigurationService.getProjectFolder(this.cliCommandName);
 	}
 
-	public async run() {
-		this.init();
+	public async run(fsPath?: string) {
+		this.init(fsPath);
+		if(fsPath) {
+			this.filePath = fsPath;
+		}
 		const validationStatus = this.validate();
 		if (validationStatus.valid) {
 			return this.execute();

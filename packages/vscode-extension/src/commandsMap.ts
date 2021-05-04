@@ -23,6 +23,14 @@ export const commandsInfoMap: {
 		vscodeCommandName: 'Deploy Project',
 		vscodeShortName: 'Deploy',
 	},
+	importfiles: {
+		cliCommandName: 'file:import',
+		vscodeCommandName: 'Import Files',
+	},
+	importfile: {
+		cliCommandName: 'file:import',
+		vscodeCommandName: 'Import File',
+	},
 	listfiles: {
 		cliCommandName: 'file:list',
 		vscodeCommandName: 'List Files',

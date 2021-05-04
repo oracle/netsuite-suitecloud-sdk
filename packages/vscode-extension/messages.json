@@ -30,6 +30,13 @@
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
 	"EXTENSION_INSTALLATION_ERROR_SDK_INVALID": "Close and open the editor to try again.",
 
+	"IMPORT_FILE_ERROR": "The importing process has encountered an error.",
+	"IMPORT_FILE_FINISHED": "The importing process has finished.",
+	"IMPORT_FILE_IMPORTING": "Importing file...",
+	"IMPORT_FILE_INCLUDE_PROPERTIES": "Do you want to include all file properties within the .attributes folder?",
+	"IMPORT_FILE_OVERRIDE": "The {0} file will be overwritten with the file from the account. Do you want to continue?",
+	"IMPORT_FILE_PROCESS_CANCELED": "The file import process has been canceled. No custom files have been overwritten.",
+
 	"LIST_FILES_LISTING": "Listing files...",
 	"LIST_FILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
 	"LIST_FILES_RESTRICTED_FOLDER": "Restricted Folder",
