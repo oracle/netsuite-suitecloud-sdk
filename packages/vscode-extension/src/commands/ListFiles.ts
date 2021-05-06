@@ -27,7 +27,8 @@ export default class ListFiles extends BaseAction {
 
 	protected async execute(): Promise<void> {
 		try {
-			let fileCabinetFolders = await this._getListFolders();
+			let fileCabinetFolders: FolderItem[] = await this._getListFolders();
+			fileCabinetFolders = this.sortFolders(fileCabinetFolders);
 			const selectedFolder = await this._selectFolder(fileCabinetFolders);
 			if (selectedFolder) {
 				await this._listFiles(selectedFolder.label);
@@ -36,6 +37,21 @@ export default class ListFiles extends BaseAction {
 			this.vsConsoleLogger.error(e);
 			this.messageService.showCommandError();
 		}
+	}
+
+	private sortFolders(fileCabinetFolders: FolderItem[]) {
+		fileCabinetFolders = fileCabinetFolders.sort((folder1, folder2) => {
+			if (folder1.isRestricted && !folder2.isRestricted) {
+				return 1;
+			}
+
+			if (!folder1.isRestricted && folder2.isRestricted) {
+				return -1;
+			}
+
+			return 0;
+		});
+		return fileCabinetFolders;
 	}
 
 	protected async _getListFolders() {
