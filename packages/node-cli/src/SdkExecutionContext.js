@@ -11,7 +11,6 @@ class SdkExecutionContext {
 		assert(options.command, 'Command is mandatory option');
 		this._command = options.command;
 		this._integrationMode = options.integrationMode;
-		this._developmentMode = options.developmentMode;
 		this._params = options.params;
 		this._flags = options.flags;
 	}
@@ -42,7 +41,6 @@ class SdkExecutionContextBuilder {
 		this._params = {};
 		this._flags = [];
 		this._integrationMode = false;
-		this._developmentMode = false;
 	}
 
 	forCommand(command) {
@@ -52,11 +50,6 @@ class SdkExecutionContextBuilder {
 
 	integration() {
 		this._integrationMode = true;
-		return this;
-	}
-
-	devMode() {
-		this._developmentMode = true;
 		return this;
 	}
 
@@ -90,7 +83,6 @@ class SdkExecutionContextBuilder {
 			params: this._params,
 			flags: this._flags,
 			integrationMode: this._integrationMode,
-			developmentMode: this._developmentMode,
 		});
 	}
 }

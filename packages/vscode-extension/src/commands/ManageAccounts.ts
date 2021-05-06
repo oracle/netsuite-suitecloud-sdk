@@ -164,16 +164,14 @@ export default class ManageAccounts extends BaseAction {
 			return;
 		}
 		const url = await this.getUrl();
-		const commandParams: { authid: string; dev: boolean; url?: string } = {
+		const commandParams: { authid: string; url?: string } = {
 			authid: authId,
-			dev: false,
 		};
 		if (url === undefined) {
 			return;
 		}
 		if (url) {
 			commandParams.url = url;
-			commandParams.dev = !url.match(`^${ApplicationConstants.DOMAIN.PRODUCTION.GENERIC_NETSUITE_DOMAIN}$`);
 		}
 
 		let cancellationToken: CancellationToken = {};
@@ -203,7 +201,11 @@ export default class ManageAccounts extends BaseAction {
 				}
 			});
 
-		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), true, authenticatePromise);
+		this.messageService.showStatusBarMessage(
+			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER),
+			true,
+			authenticatePromise
+		);
 
 		const actionResult = await authenticatePromise;
 		this.handleAuthenticateActionResult(actionResult);
@@ -318,20 +320,22 @@ export default class ManageAccounts extends BaseAction {
 			return;
 		}
 
-		const commandParams: { authid: string; account: string; tokenid: string; tokensecret: string; dev: boolean; url?: string } = {
+		const commandParams: { authid: string; account: string; tokenid: string; tokensecret: string; url?: string } = {
 			authid: authId,
-			dev: false,
 			account: accountId,
 			tokenid: tokenId,
 			tokensecret: tokenSecret,
 		};
 		if (url) {
 			commandParams.url = url;
-			commandParams.dev = !url.match(`^${ApplicationConstants.DOMAIN.PRODUCTION.GENERIC_NETSUITE_DOMAIN}$`);
 		}
 
 		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.executionPath);
-		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA), true, saveTokenPromise);
+		this.messageService.showStatusBarMessage(
+			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA),
+			true,
+			saveTokenPromise
+		);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
 		this.handleAuthenticateActionResult(actionResult);

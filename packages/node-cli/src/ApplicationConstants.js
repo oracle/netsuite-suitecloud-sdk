@@ -12,7 +12,6 @@ module.exports = {
 	SDK_FILENAME: 'cli-2021.1.1.jar',
 	SDK_REQUIRED_JAVA_VERSION: '11',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
-	SDK_DEVELOPMENT_MODE_JVM_OPTION: '-DdevelopmentMode',
 	SDK_CLIENT_PLATFORM: 'SuiteCloudCLIforNode.js',
 	SDK_CLIENT_PLATFORM_JVM_OPTION: '-DclientPlatform',
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION: '-DclientPlatformVersion',

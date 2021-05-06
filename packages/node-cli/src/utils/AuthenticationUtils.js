@@ -43,7 +43,6 @@ const COMMANDS = {
 const FLAGS = {
 	LIST: 'list',
 	SAVETOKEN: 'savetoken',
-	DEVELOPMENTMODE: 'developmentmode',
 };
 
 function setDefaultAuthentication(projectFolder, authId) {
@@ -102,9 +101,7 @@ async function saveToken(params, sdkPath, projectFolder, executionEnvironmentCon
 	if (params.url) {
 		contextBuilder.addParam(COMMANDS.AUTHENTICATE.PARAMS.URL, params.url);
 	}
-	if (params.dev === true) {
-		contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
-	}
+
 	const tokenExecutionContext = contextBuilder.build();
 	const operationResult = await executeWithSpinner({
 		action: sdkExecutor.execute(tokenExecutionContext),
@@ -131,9 +128,6 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 
 	if (params.url) {
 		contextBuilder.addParam(COMMANDS.AUTHENTICATE.PARAMS.URL, params.url);
-	}
-	if (params.dev === true) {
-		contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
 	}
 	const oauthContext = contextBuilder.build();
 	return executeWithSpinner({
