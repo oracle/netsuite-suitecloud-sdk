@@ -1,5 +1,5 @@
 # Change Log
 
-## 0.1.0 (Developer Preview)
+## 1.0.0
 
 - Initial release
