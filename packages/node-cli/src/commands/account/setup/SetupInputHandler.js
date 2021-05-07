@@ -96,15 +96,24 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			choices.push(new Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 			authIDs.forEach((authID) => {
 				const accountCredentials = authIDActionResult.data[authID];
-				const isNotProductionLabel =
+				const isNotProductionUrl =
 					!accountCredentials.urls &&
 					!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
-					!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
-						? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION, accountCredentials.urls.app)
-						: '';
+					!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+				const notProductionLabel = isNotProductionUrl
+					? NodeTranslationService.getMessage(
+							QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION,
+							accountCredentials.urls.app
+					  )
+					: '';
 				const accountInfo = `${accountCredentials.accountInfo.companyName} [${accountCredentials.accountInfo.roleName}]`;
 				choices.push({
-					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID, authID, accountInfo, isNotProductionLabel),
+					name: NodeTranslationService.getMessage(
+						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
+						authID,
+						accountInfo,
+						notProductionLabel
+					),
 					value: { authId: authID, accountInfo: accountCredentials.accountInfo },
 				});
 			});
