@@ -32,7 +32,6 @@ export type AuthListData = {
 			tokenId: string;
 			tokenSecret: string;
 		},
-		developmentMode: boolean;
 		urls:{
 			app: string;
 		}
