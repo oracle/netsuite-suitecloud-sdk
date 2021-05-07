@@ -40,7 +40,7 @@ export default abstract class BaseAction {
 		if (!this.executionPath) {
 			return {
 				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE_OR_WORKSPACE),
+				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),
 			};
 		} else {
 			return {
