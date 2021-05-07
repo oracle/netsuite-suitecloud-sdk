@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import { window, QuickPickItem } from 'vscode';
-import { COMMAND, DEPLOY, YES, NO } from '../service/TranslationKeys';
+import { COMMAND, DEPLOY, ANSWERS } from '../service/TranslationKeys';
 import { ApplicationConstants, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { EOL } from 'os';
@@ -103,12 +103,12 @@ export default class Deploy extends BaseAction {
 	private async getApplyInstallationPrefsOption(): Promise<string | undefined> {
 		const applyInstallPrefsOptions: commandOption[] = [
 			{
-				label: this.translationService.getMessage(NO),
+				label: this.translationService.getMessage(ANSWERS.NO),
 				value: '',
 				picked: true,
 			},
 			{
-				label: this.translationService.getMessage(YES),
+				label: this.translationService.getMessage(ANSWERS.YES),
 				value: 'any non falsy string',
 			},
 		];
