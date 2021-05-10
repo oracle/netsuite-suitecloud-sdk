@@ -29,7 +29,7 @@ function _generateOptionsString(commandMetadata, actionResult) {
 	const commandReducer = (accumulator, key) => `${accumulator} --${key} ${actionResult.commandParameters[key]}`;
 
 	const flags = actionResult.commandFlags && actionResult.commandFlags.length > 0
-		? `${actionResult.commandFlags.filter(key => _hasToBeShown(key, commandMetadata.options)).reduce(flagsReducer, '')}`
+		? `${actionResult.commandFlags.filter(key => _hasToBeShown(key, commandMetadata.options)).reduce(flagsReducer, '')}`.trim()
 		: ' ';
 
 	return actionResult.commandParameters
