@@ -14,6 +14,8 @@ In this GitHub repository, the following SuiteCloud SDK tools are available:
     <img src="https://img.shields.io/npm/v/@oracle/suitecloud-unit-testing.svg" alt="npm-unit-testing"/>
 </a>
 
+- [SuiteCloud Extension for Visual Studio Code](./packages/vscode-extension)
+
 ## Release Notes & Documentation
 To read the 2021.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
 - Read the release notes for NetSuite 2021.1 in [SuiteCloud SDK Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html).
