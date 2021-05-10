@@ -28,7 +28,9 @@ export default class UploadFile extends BaseAction {
 		const relativePath = activeFile.path;
 		const fileName = path.basename(activeFile.fsPath, '.xml');
 
-		const override = await window.showQuickPick([ANSWERS.CONTINUE, ANSWERS.CANCEL], {
+		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
+		const cancelMessage = this.translationService.getMessage(ANSWERS.CANCEL);
+		const override = await window.showQuickPick([continueMessage, cancelMessage], {
 			placeHolder: this.translationService.getMessage(UPLOAD_FILE.OVERWRITE_QUESTION, fileName),
 			canPickMany: false,
 		});
