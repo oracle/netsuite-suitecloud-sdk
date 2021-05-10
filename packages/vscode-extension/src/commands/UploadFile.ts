@@ -4,7 +4,7 @@
  */
 import * as path from 'path';
 import { window } from 'vscode';
-import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKeys';
+import { COMMAND, UPLOAD_FILE, ERRORS, ANSWERS } from '../service/TranslationKeys';
 import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
@@ -29,12 +29,12 @@ export default class UploadFile extends BaseAction {
 		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
 		const relativePath = activeFile.fsPath.replace(fileCabinetFolder, '');
 
-		const override = await window.showQuickPick([YES, NO], {
+		const override = await window.showQuickPick([ANSWERS.CONTINUE, ANSWERS.CANCEL], {
 			placeHolder: this.translationService.getMessage(UPLOAD_FILE.OVERWRITE_QUESTION, relativePath),
 			canPickMany: false,
 		});
 
-		if (!override || override === NO) {
+		if (!override || override === ANSWERS.CANCEL) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(UPLOAD_FILE.PROCESS_CANCELED));
 			return;
 		}
