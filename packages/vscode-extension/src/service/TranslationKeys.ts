@@ -13,10 +13,10 @@ export const ADD_DEPENDENCIES = {
 };
 
 export const ANSWERS = {
-	CANCEL: 'CANCEL',
-	CONTINUE: 'CONTINUE',
-	NO: 'NO',
-	YES: 'YES'
+	CANCEL: 'ANSWERS_CANCEL',
+	CONTINUE: 'ANSWERS_CONTINUE',
+	NO: 'ANSWERS_NO',
+	YES: 'ANSWERS_YES'
 };
 
 export const COMMAND = {

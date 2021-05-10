@@ -24,13 +24,12 @@ export default class UploadFile extends BaseAction {
 
 		const cliConfigurationService = new CLIConfigurationService();
 		cliConfigurationService.initialize(this.executionPath);
-		const projectFolder = cliConfigurationService.getProjectFolder(this.cliCommandName);
 
-		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
-		const relativePath = activeFile.fsPath.replace(fileCabinetFolder, '');
+		const relativePath = activeFile.path;
+		const fileName = path.basename(activeFile.fsPath, '.xml');
 
 		const override = await window.showQuickPick([ANSWERS.CONTINUE, ANSWERS.CANCEL], {
-			placeHolder: this.translationService.getMessage(UPLOAD_FILE.OVERWRITE_QUESTION, relativePath),
+			placeHolder: this.translationService.getMessage(UPLOAD_FILE.OVERWRITE_QUESTION, fileName),
 			canPickMany: false,
 		});
 
