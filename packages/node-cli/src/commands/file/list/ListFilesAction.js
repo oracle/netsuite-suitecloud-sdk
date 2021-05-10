@@ -48,7 +48,7 @@ module.exports = class ListFilesAction extends BaseAction {
 					.withResultMessage(operationResult.resultMessage)
 					.withCommandParameters(params)
 					.build()
-				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
+				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(params).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

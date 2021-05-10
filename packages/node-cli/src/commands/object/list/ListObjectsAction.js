@@ -55,7 +55,7 @@ module.exports = class ListObjectsAction extends BaseAction {
 					.withResultMessage(operationResult.resultMessage)
 					.withCommandParameters(sdkParams)
 					.build()
-				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
+				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(sdkParams).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}

@@ -161,7 +161,8 @@ module.exports = class DeployAction extends (
 					.withCommandParameters(sdkParams)
 					.withCommandFlags(flags)
 					.build()
-				: DeployActionResult.Builder.withErrors(operationResult.errorMessages).build();
+				: DeployActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(sdkParams)
+					.withCommandFlags(flags).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}

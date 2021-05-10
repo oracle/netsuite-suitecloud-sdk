@@ -67,13 +67,14 @@ module.exports = class CommandActionExecutor {
 				commandUserExtension: commandUserExtension,
 				projectConfiguration: projectConfiguration,
 			});
+			if (context.runInInteractiveMode) {
+				const notInteractiveCommand = ActionResultUtils.extractNotInteractiveCommand(commandName, commandMetadata, actionResult);
+				this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE, notInteractiveCommand));
+			}
 			if (actionResult.isSuccess() && commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
 			} else if (!actionResult.isSuccess() && commandUserExtension.onError) {
 				commandUserExtension.onError(ActionResultUtils.getErrorMessagesString(actionResult));
-			}
-			if (context.runInInteractiveMode) {
-				this._showNonInteractiveCommand(commandName, commandMetadata, actionResult);
 			}
 			return actionResult;
 
@@ -84,35 +85,6 @@ module.exports = class CommandActionExecutor {
 			}
 			return ActionResult.Builder.withErrors(Array.isArray(errorMessage) ? errorMessage : [errorMessage]).build();
 		}
-	}
-
-	_showNonInteractiveCommand(commandName, commandMetadata, actionResult) {
-		const options = this._generateOptionsString(commandMetadata, actionResult);
-		const command = `${commandName} ${options}`;
-		this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE, command.trim()));
-	}
-
-	_generateOptionsString(commandMetadata, actionResult) {
-		const flagsReducer = (accumulator, key) => `${accumulator}--${key} `;
-		const commandReducer = (accumulator, key) => `${accumulator} --${key} ${actionResult.commandParameters[key]}`;
-
-		const flags = actionResult.commandFlags && actionResult.commandFlags.length > 0
-			? `${actionResult.commandFlags.filter(key => this._hasToBeShown(key, commandMetadata.options)).reduce(flagsReducer, '')}`
-			: ' ';
-
-		return actionResult.commandParameters
-			? Object.keys(actionResult.commandParameters)
-				.filter(key => this._hasToBeShown(key, commandMetadata.options))
-				.reduce(commandReducer, flags).trim()
-			: '';
-	}
-
-	_hasToBeShown(key, options) {
-		const disableInIntegrationMode = 'disableInIntegrationMode';
-
-		return options.hasOwnProperty(key)
-			&& options[key].hasOwnProperty(disableInIntegrationMode)
-			&& options[key][disableInIntegrationMode] === false;
 	}
 
 	_logGenericError(error) {

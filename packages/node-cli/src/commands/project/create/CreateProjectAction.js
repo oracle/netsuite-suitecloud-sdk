@@ -144,7 +144,9 @@ module.exports = class CreateProjectAction extends BaseAction {
 					.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
 					.withCommandParameters(commandParameters)
 					.build()
-				: CreateProjectActionResult.Builder.withErrors(createProjectActionData.operationResult.errorMessages).build();
+				: CreateProjectActionResult.Builder.withErrors(createProjectActionData.operationResult.errorMessages)
+					.withCommandParameters(commandParameters)
+					.build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}
