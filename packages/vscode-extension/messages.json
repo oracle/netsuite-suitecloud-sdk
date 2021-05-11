@@ -5,8 +5,8 @@
 	"ADD_DEPENDENCIES_EMPTY": "There are no dependencies to add to the manifest file.",
 	"ADD_DEPENDENCIES_ERROR": "There was an error when adding missing dependencies to the manifest file.",
 
-	"ANSWER_CANCEL": "Cancel",
-	"ANSWER_CONTINUE": "Continue",
+	"ANSWERS_CANCEL": "Cancel",
+	"ANSWERS_CONTINUE": "Continue",
 	"ANSWERS_NO": "No",
 	"ANSWERS_YES": "Yes",
 
