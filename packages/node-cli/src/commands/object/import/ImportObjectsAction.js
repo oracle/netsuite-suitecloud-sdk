@@ -67,8 +67,9 @@ module.exports = class ImportObjectsAction extends BaseAction {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
 
+		const flags = [];
+		let commandParams = {};
 		try {
-			const flags = [];
 			let scriptIdArray;
 			if (this._runInInteractiveMode) {
 				if (params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
@@ -139,7 +140,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 
 			//adding all the scripts id to the params
-			const commandParams = {...sdkParams, [ANSWERS_NAMES.SCRIPT_ID]: scriptIdArray.join(' ')}
+			commandParams = {...sdkParams, [ANSWERS_NAMES.SCRIPT_ID]: scriptIdArray.join(' ')}
 
 			// At this point, the OperationResult will never be an error. It's handled before
 			return ActionResult.Builder.withData(operationResultData)
@@ -149,7 +150,10 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				.build();
 
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			return ActionResult.Builder.withErrors([error])
+				.withCommandParameters(commandParams)
+				.withCommandFlags(flags)
+				.build();
 		}
 	}
 

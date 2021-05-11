@@ -100,6 +100,8 @@ module.exports = class ValidateAction extends BaseAction {
 						.build()
 				: DeployActionResult.Builder.withErrors(operationResult.errorMessages)
 						.withServerValidation(isServerValidation)
+						.withCommandParameters(sdkParams)
+						.withCommandFlags(flags)
 						.build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();

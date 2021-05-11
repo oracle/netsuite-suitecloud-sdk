@@ -136,7 +136,9 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 	})
 		.then((operationResult) => {
 			if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-				return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
+				return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages)
+					.withCommandParameters(oauthContext.getParams())
+					.build();
 			}
 			setDefaultAuthentication(projectFolder, authId);
 			return AuthenticateActionResult.Builder.success()

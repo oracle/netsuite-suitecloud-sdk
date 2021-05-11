@@ -72,7 +72,7 @@ module.exports = class ManageAccountAction extends BaseAction {
 					.withExecutedAction(selectedOptions.action)
 					.withCommandParameters(sdkParams)
 					.build()
-			: ManageAccountActionResult.Builder.withErrors(operationResult.errorMessages).build();
+			: ManageAccountActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(sdkParams).build();
 	}
 
 	_extractSelectedOptions(answers) {
