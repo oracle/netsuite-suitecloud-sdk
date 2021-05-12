@@ -35,7 +35,7 @@ export default class UploadFile extends BaseAction {
 			canPickMany: false,
 		});
 
-		if (!override || override === ANSWERS.CANCEL) {
+		if (!override || override ===  this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(UPLOAD_FILE.PROCESS_CANCELED));
 			return;
 		}

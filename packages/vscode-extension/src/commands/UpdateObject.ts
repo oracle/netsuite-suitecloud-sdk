@@ -36,7 +36,7 @@ export default class UpdateObject extends BaseAction {
 			canPickMany: false,
 		});
 
-		if (!override || override === ANSWERS.CANCEL) {
+		if (!override || override ===  this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED));
 			return;
 		}
