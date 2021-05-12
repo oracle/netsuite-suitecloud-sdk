@@ -15,11 +15,9 @@ const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const CLIException = require('../../../CLIException');
 const {
-	LINKS: { INFO },
-} = require('../../../ApplicationConstants');
-
-const {
+	DOMAIN,
 	FILES: { MANIFEST_XML },
+	LINKS: { INFO },
 } = require('../../../ApplicationConstants');
 
 const {
@@ -98,8 +96,8 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 				const accountCredentials = authIDActionResult.data[authID];
 				const isNotProductionUrl =
 					!accountCredentials.urls &&
-					!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
-					!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+					!accountCredentials.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+					!accountCredentials.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
 				const notProductionLabel = isNotProductionUrl
 					? NodeTranslationService.getMessage(
 							QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION,
