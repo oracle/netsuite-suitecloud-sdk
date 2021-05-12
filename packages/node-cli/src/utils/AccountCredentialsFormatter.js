@@ -11,6 +11,7 @@ const {
 	ACCOUNT_TYPE,
 	COMMAND_MANAGE_ACCOUNT: { QUESTIONS_CHOICES },
 } = require('../services/TranslationKeys');
+const { DOMAIN } = require('../ApplicationConstants');
 
 const SANDBOX_ACCOUNT_ID_REGEX_PATTERN = '.+_SB\\d*$';
 const RELEASE_PREVIEW_ACCOUNT_ID_REGEX_PATTERN = '.+_RP\\d*$';
@@ -44,8 +45,8 @@ function _getAccountType(accountId) {
 function getListItemString(authID, accountCredential) {
 	const isNotProductionUrl =
 		accountCredential.urls &&
-		!accountCredential.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
-		!accountCredential.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+		!accountCredential.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+		!accountCredential.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
 	const notProductionLabel = isNotProductionUrl
 		? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION, accountCredential.urls.app)
 		: '';
