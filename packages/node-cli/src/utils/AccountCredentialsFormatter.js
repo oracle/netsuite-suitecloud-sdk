@@ -11,7 +11,7 @@ const {
 	ACCOUNT_TYPE,
 	COMMAND_MANAGE_ACCOUNT: { QUESTIONS_CHOICES },
 } = require('../services/TranslationKeys');
-const { DOMAIN } = require('../ApplicationConstants');
+const ApplicationConstants = require('../ApplicationConstants');
 
 const SANDBOX_ACCOUNT_ID_REGEX_PATTERN = '.+_SB\\d*$';
 const RELEASE_PREVIEW_ACCOUNT_ID_REGEX_PATTERN = '.+_RP\\d*$';
@@ -27,7 +27,7 @@ function getInfoString(accountCredentials) {
 		os.EOL +
 		NodeTranslationService.getMessage(ACCOUNT_INFO.ROLE, accountInfo.roleName) +
 		os.EOL +
-		NodeTranslationService.getMessage(DOMAIN, accountCredentials.domain) +
+		NodeTranslationService.getMessage(ApplicationConstants.DOMAIN, accountCredentials.domain) +
 		os.EOL +
 		NodeTranslationService.getMessage(ACCOUNT_INFO.ACCOUNT_TYPE, _getAccountType(accountInfo.companyId))
 	);
