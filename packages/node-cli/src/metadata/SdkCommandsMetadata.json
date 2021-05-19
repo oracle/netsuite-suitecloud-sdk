@@ -164,16 +164,6 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			"applycontentprotection": {
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps. ***This option will be removed in NetSuite 2021.2. Use the \"applyinstallprefs\" option starting from NetSuite 2021.1.***",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
 			"applyinstallprefs": {
 				"name": "applyinstallprefs",
 				"option": "applyinstallprefs",
@@ -644,16 +634,6 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
-			},
-			"applycontentprotection": {
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps. ***This option will be removed in NetSuite 2021.2. Use the \"applyinstallprefs\" option starting from NetSuite 2021.1.***",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
 			},
 			"applyinstallprefs": {
 				"name": "applyinstallprefs",

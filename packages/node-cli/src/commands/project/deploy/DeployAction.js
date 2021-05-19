@@ -19,9 +19,7 @@ const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils'
 
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 
-const {
-	COMMAND_DEPLOY, ERRORS,
-} = require('../../../services/TranslationKeys');
+const { COMMAND_DEPLOY } = require('../../../services/TranslationKeys');
 
 const COMMAND = {
 	OPTIONS: {
@@ -35,7 +33,6 @@ const COMMAND = {
 		PREVIEW: 'dryrun',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	},
 };
@@ -71,11 +68,6 @@ module.exports = class DeployAction extends (
 			if (params[COMMAND.FLAGS.VALIDATE]) {
 				delete params[COMMAND.FLAGS.VALIDATE];
 				flags.push(COMMAND.FLAGS.VALIDATE);
-			}
-
-			if (params[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION]) {
-				delete params[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
-				flags.push(COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES); //I replaced the flag here so it's not needed to test for both afterwards
 			}
 
 			if (params[COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES]) {
