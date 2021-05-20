@@ -24,7 +24,6 @@ const {
 const COMMAND_OPTIONS = {
 	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
-	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	PROJECT: 'project',
 	AUTH_ID: 'authid',
@@ -61,12 +60,6 @@ module.exports = class ValidateAction extends BaseAction {
 				flags.push(COMMAND_OPTIONS.SERVER);
 				isServerValidation = true;
 				delete params[COMMAND_OPTIONS.SERVER];
-			}
-
-			if (params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION]) {
-				delete params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
-				flags.push(COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES);
-				installationPreferencesApplied = true;
 			}
 
 			if (params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES]) {
