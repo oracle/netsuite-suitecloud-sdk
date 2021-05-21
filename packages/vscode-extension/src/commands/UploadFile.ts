@@ -25,8 +25,10 @@ export default class UploadFile extends BaseAction {
 		const cliConfigurationService = new CLIConfigurationService();
 		cliConfigurationService.initialize(this.executionPath);
 
-		const relativePath = activeFile.path;
-		const fileName = path.basename(activeFile.fsPath, '.xml');
+		const projectFolder = cliConfigurationService.getProjectFolder(this.cliCommandName);
+		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
+		const relativePath = activeFile.fsPath.replace(fileCabinetFolder, '');
+		const fileName = path.basename(activeFile.fsPath);
 
 		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
 		const cancelMessage = this.translationService.getMessage(ANSWERS.CANCEL);
@@ -35,7 +37,7 @@ export default class UploadFile extends BaseAction {
 			canPickMany: false,
 		});
 
-		if (!override || override ===  this.translationService.getMessage(ANSWERS.CANCEL)) {
+		if (!override || override === this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(UPLOAD_FILE.PROCESS_CANCELED));
 			return;
 		}
