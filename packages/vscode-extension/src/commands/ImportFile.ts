@@ -4,7 +4,7 @@
  */
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { ERRORS, YES, NO, IMPORT_FILE } from '../service/TranslationKeys';
+import { ERRORS, ANSWERS, IMPORT_FILE } from '../service/TranslationKeys';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import ImportFileService from '../service/ImportFileService';
@@ -30,17 +30,17 @@ export default class ImportFile extends BaseAction {
 
 		const fileName = path.basename(activeFile, '.xml');
 
-		const override = await vscode.window.showQuickPick([YES, NO], {
+		const override = await vscode.window.showQuickPick([ANSWERS.YES, ANSWERS.NO], {
 			placeHolder: this.translationService.getMessage(IMPORT_FILE.OVERRIDE, fileName),
 			canPickMany: false,
 		});
 
-		if (!override || override === NO) {
+		if (!override || override === ANSWERS.NO) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILE.PROCESS_CANCELED));
 			return;
 		}
 
-		const includeProperties = await vscode.window.showQuickPick([YES, NO], {
+		const includeProperties = await vscode.window.showQuickPick([ANSWERS.YES, ANSWERS.NO], {
 			placeHolder: this.translationService.getMessage(IMPORT_FILE.INCLUDE_PROPERTIES, fileName),
 			canPickMany: false,
 		});
@@ -57,7 +57,7 @@ export default class ImportFile extends BaseAction {
 			destinationFolder,
 			statusBarMessage,
 			this.executionPath,
-			includeProperties === YES
+			includeProperties === ANSWERS.YES
 		);
 
 		this.showOutput(actionResult);
