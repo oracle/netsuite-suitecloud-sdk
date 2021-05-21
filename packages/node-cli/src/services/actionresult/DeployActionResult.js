@@ -60,6 +60,8 @@ class DeployActionResultBuilder extends ActionResultBuilder {
 			...(this.appliedInstallationPreferences && { appliedInstallationPreferences: this.appliedInstallationPreferences }),
 			...(this.projectType && { projectType: this.projectType }),
 			...(this.projectFolder && { projectFolder: this.projectFolder }),
+			...(this.commandParameters && { commandParameters: this.commandParameters }),
+			...(this.commandFlags && { commandFlags: this.commandFlags }),
 		});
 	}
 }

@@ -22,6 +22,7 @@
 	"CLI_INTERACTIVE_OPTION_DESCRIPTION": "run the command in interactive mode",
 	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite {0})",
 	"CLI_USAGE": "command [option]",
+	"CLI_SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE" : "Non-interactive execution:\nsuitecloud {0}",
 
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_ADDING_DEPENDENCIES": "Adding dependencies...",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_DEPENDENCIES_ADDED_TO_MANIFEST": "The following dependencies were added to the manifest:",
@@ -168,8 +169,7 @@
 	"COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION": "You can use the interactive mode by running \"suitecloud {0} -i\"",
 
 	"COMMAND_SETUPACCOUNT_QUESTIONS_AUTH_MODE": "Select an authentication method:",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_DEVELOPMENT_MODE_URL": "Enter your NetSuite domain:",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID (authID):",
+ 	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID (authID):",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ACCOUNT_ID": "Enter the account ID:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ID": "Enter the Token ID:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_SECRET": "Enter the Token Secret:",
@@ -178,7 +178,8 @@
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_AUTH_MODE_SAVE_TOKEN": "Save a TBA token issued in NetSuite.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_NEW_AUTH_ID": "Create a new authentication ID (authID).",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_EXISTING_AUTH_ID": "{0} | {1} {2}",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_EXISTING_AUTH_ID_DEV_URL": "| {0}",
+	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_EXISTING_AUTH_ID_URL_NOT_PRODUCTION": "| {0}",
+	"COMMAND_SETUPACCOUNT_QUESTIONS_URL": "Enter your NetSuite domain:",
 	"COMMAND_SETUPACCOUNT_MESSAGES_CANCEL_SETUP": "The setupaccount process has been canceled.",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SELECT_CONFIGURED_AUTHID": "Select a configured authentication ID (authID):",
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_OAUTH": "The account has been authenticated for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
@@ -279,10 +280,6 @@
 
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP": "Account-specific values cannot be applied to SuiteApps.",
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
-	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_IN_ACP": "Content protection cannot be applied to account customization projects.",
-	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITHOUT_HIDING_AND_LOCKING": "There was an error with the {0} command. Content protection was not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create both files in order to apply content protection.\nTo learn how to create a hiding.xml file, see {1}.\nTo learn how to create a locking.xml file, see {2}.",
-	"UTILS_APPLY_CONTENT_PROTECTION_ARGUMENT_HANDLER_ERRORS_APPLY_CONTENT_PROTECTION_WITH_APPLY_INSTALLATION_PREFERENCES": "The \"--applycontentprotection\" and \"--applyinstallprefs\" options are mutually exclusive. Use one of the two at a time.",
-	"UTILS_APPLY_CONTENT_PROTECTION_IS_DEPRECATED": "The \"--applycontentprotection\" option will be removed in NetSuite 2021.2. You should use the \"--applyinstallprefs\" option starting from NetSuite 2021.1.",
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs (authid) in this machine...",
 	"UTILS_AUTHENTICATION_SAVING_TBA_TOKEN": "Saving the TBA token...",

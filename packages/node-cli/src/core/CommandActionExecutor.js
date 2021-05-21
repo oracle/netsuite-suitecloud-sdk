@@ -6,8 +6,7 @@
 
 const assert = require('assert');
 const NodeTranslationService = require('./../services/NodeTranslationService');
-const { ERRORS } = require('../services/TranslationKeys');
-const { throwValidationException } = require('../utils/ExceptionUtils');
+const { ERRORS, CLI } = require('../services/TranslationKeys');
 const { ActionResult } = require('../services/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
@@ -68,11 +67,13 @@ module.exports = class CommandActionExecutor {
 				commandUserExtension: commandUserExtension,
 				projectConfiguration: projectConfiguration,
 			});
-
+			if (context.runInInteractiveMode) {
+				const notInteractiveCommand = ActionResultUtils.extractNotInteractiveCommand(commandName, commandMetadata, actionResult);
+				this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE, notInteractiveCommand));
+			}
 			if (actionResult.isSuccess() && commandUserExtension.onCompleted) {
 				commandUserExtension.onCompleted(actionResult);
-			}
-			else if (!actionResult.isSuccess() && commandUserExtension.onError) {
+			} else if (!actionResult.isSuccess() && commandUserExtension.onError) {
 				commandUserExtension.onError(ActionResultUtils.getErrorMessagesString(actionResult));
 			}
 			return actionResult;
@@ -154,17 +155,6 @@ module.exports = class CommandActionExecutor {
 			return command.run(overriddenArguments);
 		} catch (error) {
 			throw error;
-		}
-	}
-
-	_checkCommandValidationErrors(commandArgumentsAfterPreActionFunc, commandMetadata, runInInteractiveMode) {
-		const validationErrors = this._commandOptionsValidator.validate({
-			commandOptions: commandMetadata.options,
-			arguments: commandArgumentsAfterPreActionFunc,
-		});
-
-		if (validationErrors.length > 0) {
-			throwValidationException(validationErrors, runInInteractiveMode, commandMetadata);
 		}
 	}
 

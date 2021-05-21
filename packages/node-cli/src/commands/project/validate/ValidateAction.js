@@ -24,7 +24,6 @@ const {
 const COMMAND_OPTIONS = {
 	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
-	APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	PROJECT: 'project',
 	AUTH_ID: 'authid',
@@ -63,15 +62,9 @@ module.exports = class ValidateAction extends BaseAction {
 				delete params[COMMAND_OPTIONS.SERVER];
 			}
 
-			if (params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION]) {
-				delete params[COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION];
-				flags.push(COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES);
-				installationPreferencesApplied = true;
-			}
-
 			if (params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES]) {
 				delete params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES];
-				flags.push(COMMAND_OPTIONS.APPLY_CONTENT_PROTECTION);
+				flags.push(COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES);
 				installationPreferencesApplied = true;
 			}
 
@@ -95,9 +88,13 @@ module.exports = class ValidateAction extends BaseAction {
 						.withAppliedInstallationPreferences(installationPreferencesApplied)
 						.withProjectType(this._projectType)
 						.withProjectFolder(this._projectFolder)
+						.withCommandParameters(sdkParams)
+						.withCommandFlags(flags)
 						.build()
 				: DeployActionResult.Builder.withErrors(operationResult.errorMessages)
 						.withServerValidation(isServerValidation)
+						.withCommandParameters(sdkParams)
+						.withCommandFlags(flags)
 						.build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();

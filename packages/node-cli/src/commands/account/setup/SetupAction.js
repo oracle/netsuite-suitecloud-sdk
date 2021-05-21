@@ -29,7 +29,11 @@ module.exports = class SetupAction extends BaseAction {
 				const authId = params.authentication.authId;
 				const accountInfo = params.authentication.accountInfo;
 				setDefaultAuthentication(this._executionPath, authId);
-				return AuthenticateActionResult.Builder.success().withMode(AUTH_MODE.REUSE).withAuthId(authId).withAccountInfo(accountInfo).build();
+				return AuthenticateActionResult.Builder.success()
+					.withMode(AUTH_MODE.REUSE)
+					.withAuthId(authId)
+					.withAccountInfo(accountInfo)
+					.build();
 			}
 		} catch (error) {
 			return AuthenticateActionResult.Builder.withErrors([error]).build();

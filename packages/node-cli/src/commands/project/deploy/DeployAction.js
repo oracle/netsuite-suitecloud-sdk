@@ -19,9 +19,7 @@ const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils'
 
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 
-const {
-	COMMAND_DEPLOY, ERRORS,
-} = require('../../../services/TranslationKeys');
+const { COMMAND_DEPLOY } = require('../../../services/TranslationKeys');
 
 const COMMAND = {
 	OPTIONS: {
@@ -35,7 +33,6 @@ const COMMAND = {
 		PREVIEW: 'dryrun',
 		SKIP_WARNING: 'skip_warning',
 		VALIDATE: 'validate',
-		APPLY_CONTENT_PROTECTION: 'applycontentprotection',
 		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	},
 };
@@ -73,11 +70,6 @@ module.exports = class DeployAction extends (
 				flags.push(COMMAND.FLAGS.VALIDATE);
 			}
 
-			if (params[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION]) {
-				delete params[COMMAND.FLAGS.APPLY_CONTENT_PROTECTION];
-				flags.push(COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES); //I replaced the flag here so it's not needed to test for both afterwards
-			}
-
 			if (params[COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES]) {
 				delete params[COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES];
 				flags.push(COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES);
@@ -97,7 +89,7 @@ module.exports = class DeployAction extends (
 	async _preview(params, flags) {
 		try {
 			delete params[COMMAND.FLAGS.PREVIEW];
-			flags.splice(flags.indexOf(COMMAND.FLAGS.NO_PREVIEW), 1); 
+			flags.splice(flags.indexOf(COMMAND.FLAGS.NO_PREVIEW), 1);
 			flags.splice(flags.indexOf(COMMAND.FLAGS.SKIP_WARNING), 1);
 
 			if (flags.includes(COMMAND.FLAGS.VALIDATE)) {
@@ -117,7 +109,7 @@ module.exports = class DeployAction extends (
 				message: NodeTranslationService.getMessage(
 					COMMAND_DEPLOY.MESSAGES.PREVIEWING,
 					this._projectName,
-					getProjectDefaultAuthId(this._executionPath)
+					getProjectDefaultAuthId(this._executionPath),
 				),
 			});
 
@@ -144,7 +136,7 @@ module.exports = class DeployAction extends (
 				message: NodeTranslationService.getMessage(
 					COMMAND_DEPLOY.MESSAGES.DEPLOYING,
 					this._projectName,
-					getProjectDefaultAuthId(this._executionPath)
+					getProjectDefaultAuthId(this._executionPath),
 				),
 			});
 
@@ -153,13 +145,16 @@ module.exports = class DeployAction extends (
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
-						.withResultMessage(operationResult.resultMessage)
-						.withServerValidation(isServerValidation)
-						.withAppliedInstallationPreferences(isApplyInstallationPreferences)
-						.withProjectType(this._projectType)
-						.withProjectFolder(this._projectFolder)
-						.build()
-				: DeployActionResult.Builder.withErrors(operationResult.errorMessages).build();
+					.withResultMessage(operationResult.resultMessage)
+					.withServerValidation(isServerValidation)
+					.withAppliedInstallationPreferences(isApplyInstallationPreferences)
+					.withProjectType(this._projectType)
+					.withProjectFolder(this._projectFolder)
+					.withCommandParameters(sdkParams)
+					.withCommandFlags(flags)
+					.build()
+				: DeployActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(sdkParams)
+					.withCommandFlags(flags).build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors([error]).build();
 		}

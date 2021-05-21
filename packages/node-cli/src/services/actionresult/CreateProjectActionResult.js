@@ -91,6 +91,8 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 			...(this.includeUnitTesting && { includeUnitTesting: this.includeUnitTesting }),
 			...(this.npmPackageInitialized && { npmPackageInitialized: this.npmPackageInitialized }),
 			...(this.projectFolder && { projectFolder: this.projectFolder }),
+			...(this.commandParameters && { commandParameters: this.commandParameters }),
+			...(this.commandFlags && { commandFlags: this.commandFlags }),
 		});
 	}
 }

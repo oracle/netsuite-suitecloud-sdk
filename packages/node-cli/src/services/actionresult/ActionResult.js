@@ -18,6 +18,8 @@ class ActionResult {
 		this._resultMessage = parameters.resultMessage;
 		this._errorMessages = parameters.errorMessages;
 		this._projectFolder = parameters.projectFolder;
+		this._commandParameters = parameters.commandParameters;
+		this._commandFlags = parameters.commandFlags;
 	}
 
 	validateParameters(parameters) {
@@ -56,13 +58,22 @@ class ActionResult {
 		return this._projectFolder;
 	}
 
+	get commandParameters() {
+		return this._commandParameters;
+	}
+
+	get commandFlags() {
+		return this._commandFlags;
+	}
+
 	static get Builder() {
 		return new ActionResultBuilder();
 	}
 }
 
 class ActionResultBuilder {
-	constructor() {}
+	constructor() {
+	}
 
 	// Used to add message on success only, error messages must never be passed
 	withResultMessage(resultMessage) {
@@ -87,6 +98,16 @@ class ActionResultBuilder {
 		return this;
 	}
 
+	withCommandParameters(commandParameters) {
+		this.commandParameters = commandParameters;
+		return this;
+	}
+
+	withCommandFlags(commandFlags) {
+		this.commandFlags = commandFlags;
+		return this;
+	}
+
 	build() {
 		return new ActionResult({
 			status: this.status,
@@ -94,8 +115,10 @@ class ActionResultBuilder {
 			...(this.resultMessage && { resultMessage: this.resultMessage }),
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.projectFolder && { projectFolder: this.projectFolder }),
+			...(this.commandParameters && { commandParameters: this.commandParameters }),
+			...(this.commandFlags && { commandFlags: this.commandFlags }),
 		});
 	}
 }
 
-module.exports = { ActionResult, ActionResultBuilder, STATUS }
+module.exports = { ActionResult, ActionResultBuilder, STATUS };

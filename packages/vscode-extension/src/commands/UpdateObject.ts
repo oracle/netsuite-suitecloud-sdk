@@ -4,7 +4,7 @@
  */
 import * as path from 'path';
 import { window } from 'vscode';
-import { ERRORS, YES, NO, UPDATE_OBJECT, COMMAND } from '../service/TranslationKeys';
+import { ERRORS, ANSWERS, UPDATE_OBJECT, COMMAND } from '../service/TranslationKeys';
 import { ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { OBJECTS_FOLDER } from '../ApplicationConstants';
@@ -29,12 +29,14 @@ export default class UpdateObject extends BaseAction {
 
 		const scriptId = path.basename(activeFile.fsPath, '.xml');
 
-		const override = await window.showQuickPick([YES, NO], {
+		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
+		const cancelMessage = this.translationService.getMessage(ANSWERS.CANCEL);
+		const override = await window.showQuickPick([continueMessage, cancelMessage], {
 			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERRIDE, scriptId),
 			canPickMany: false,
 		});
 
-		if (!override || override === NO) {
+		if (!override || override ===  this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED));
 			return;
 		}

@@ -60,6 +60,7 @@ class ManageAccountActionResultBuilder extends ActionResultBuilder {
 			...(this.resultMessage && { resultMessage: this.resultMessage }),
 			...(this.errorMessages && { errorMessages: this.errorMessages }),
 			...(this.actionExecuted && { actionExecuted: this.actionExecuted }),
+			...(this.commandParameters && { commandParameters: this.commandParameters }),
 		});
 	}
 }

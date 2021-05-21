@@ -4,7 +4,7 @@
  */
 import * as path from 'path';
 import { window } from 'vscode';
-import { COMMAND, UPLOAD_FILE, ERRORS, YES, NO } from '../service/TranslationKeys';
+import { COMMAND, UPLOAD_FILE, ERRORS, ANSWERS } from '../service/TranslationKeys';
 import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
@@ -24,17 +24,18 @@ export default class UploadFile extends BaseAction {
 
 		const cliConfigurationService = new CLIConfigurationService();
 		cliConfigurationService.initialize(this.executionPath);
-		const projectFolder = cliConfigurationService.getProjectFolder(this.cliCommandName);
 
-		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
-		const relativePath = activeFile.fsPath.replace(fileCabinetFolder, '');
+		const relativePath = activeFile.path;
+		const fileName = path.basename(activeFile.fsPath, '.xml');
 
-		const override = await window.showQuickPick([YES, NO], {
-			placeHolder: this.translationService.getMessage(UPLOAD_FILE.OVERWRITE_QUESTION, relativePath),
+		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
+		const cancelMessage = this.translationService.getMessage(ANSWERS.CANCEL);
+		const override = await window.showQuickPick([continueMessage, cancelMessage], {
+			placeHolder: this.translationService.getMessage(UPLOAD_FILE.OVERWRITE_QUESTION, fileName),
 			canPickMany: false,
 		});
 
-		if (!override || override === NO) {
+		if (!override || override ===  this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(UPLOAD_FILE.PROCESS_CANCELED));
 			return;
 		}
