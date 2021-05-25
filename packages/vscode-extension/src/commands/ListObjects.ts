@@ -32,7 +32,12 @@ export default class ListObjects extends BaseAction {
 			return;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand({ type: selectedObjectTypes });
+		let typeParam = {};
+		if (selectedObjectTypes.length !== 0) {
+			typeParam = { type: selectedObjectTypes };
+		}
+
+		const commandActionPromise = this.runSuiteCloudCommand(typeParam);
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
