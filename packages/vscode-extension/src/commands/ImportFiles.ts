@@ -33,23 +33,28 @@ export default class ImportFile extends BaseAction {
 
 		const fileName = path.basename(activeFile, '.xml');
 
-
 		let fileCabinetFolders = await this.listFilesService.getListFolders(COMMAND_NAME);
 
-		const override = await vscode.window.showQuickPick([this.translationService.getMessage(ANSWERS.YES),  this.translationService.getMessage(ANSWERS.NO)], {
-			placeHolder: this.translationService.getMessage(IMPORT_FILE.OVERRIDE, fileName),
-			canPickMany: false,
-		});
+		const override = await vscode.window.showQuickPick(
+			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
+			{
+				placeHolder: this.translationService.getMessage(IMPORT_FILE.OVERRIDE, fileName),
+				canPickMany: false,
+			}
+		);
 
-		if (!override || override === ANSWERS.NO) {
+		if (!override || override === this.translationService.getMessage(ANSWERS.NO)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILE.PROCESS_CANCELED));
 			return;
 		}
 
-		const includeProperties = await vscode.window.showQuickPick([this.translationService.getMessage(ANSWERS.YES),  this.translationService.getMessage(ANSWERS.NO)], {
-			placeHolder: this.translationService.getMessage(IMPORT_FILE.INCLUDE_PROPERTIES, fileName),
-			canPickMany: false,
-		});
+		const includeProperties = await vscode.window.showQuickPick(
+			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
+			{
+				placeHolder: this.translationService.getMessage(IMPORT_FILE.INCLUDE_PROPERTIES, fileName),
+				canPickMany: false,
+			}
+		);
 
 		const destinationFolder = this.executionPath
 			? path
