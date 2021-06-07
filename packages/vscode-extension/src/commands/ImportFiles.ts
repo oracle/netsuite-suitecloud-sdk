@@ -36,7 +36,7 @@ export default class ImportFile extends BaseAction {
 
 		let fileCabinetFolders = await this.listFilesService.getListFolders(COMMAND_NAME);
 
-		const override = await vscode.window.showQuickPick([ANSWERS.YES, ANSWERS.NO], {
+		const override = await vscode.window.showQuickPick([this.translationService.getMessage(ANSWERS.YES),  this.translationService.getMessage(ANSWERS.NO)], {
 			placeHolder: this.translationService.getMessage(IMPORT_FILE.OVERRIDE, fileName),
 			canPickMany: false,
 		});
@@ -46,7 +46,7 @@ export default class ImportFile extends BaseAction {
 			return;
 		}
 
-		const includeProperties = await vscode.window.showQuickPick([ANSWERS.YES, ANSWERS.NO], {
+		const includeProperties = await vscode.window.showQuickPick([this.translationService.getMessage(ANSWERS.YES),  this.translationService.getMessage(ANSWERS.NO)], {
 			placeHolder: this.translationService.getMessage(IMPORT_FILE.INCLUDE_PROPERTIES, fileName),
 			canPickMany: false,
 		});
