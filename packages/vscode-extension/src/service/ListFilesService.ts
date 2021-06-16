@@ -1,11 +1,11 @@
-import { VSCODE_PLATFORM } from "../ApplicationConstants";
+import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { AccountFileCabinetService, ExecutionEnvironmentContext, getRootProjectFolder, TranslationService } from '../util/ExtensionUtil';
 import * as vscode from 'vscode';
-import { LIST_FILES } from "./TranslationKeys";
-import { getSdkPath } from "../core/sdksetup/SdkProperties";
-import MessageService from "./MessageService";
-import { VSTranslationService } from "./VSTranslationService";
-
+import { LIST_FILES } from './TranslationKeys';
+import { getSdkPath } from '../core/sdksetup/SdkProperties';
+import MessageService from './MessageService';
+import { VSTranslationService } from './VSTranslationService';
+import { FolderItem } from '../types/FolderItem';
 
 export default class ListFilesService {
 	protected readonly translationService: VSTranslationService;
@@ -16,7 +16,7 @@ export default class ListFilesService {
 
 	constructor(
 		messageService: MessageService,
-		translationService: VSTranslationService,
+		translationService: VSTranslationService
 		// vSConsoleLogger: VSConsoleLogger,
 		// fsPath: string | undefined
 	) {
@@ -27,7 +27,6 @@ export default class ListFilesService {
 		this.executionPath = getRootProjectFolder();
 	}
 
-	
 	public async getListFolders(commandName: string) {
 		const executionEnvironmentContext = new ExecutionEnvironmentContext({
 			platform: VSCODE_PLATFORM,
@@ -43,9 +42,40 @@ export default class ListFilesService {
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
 		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
 
-		return listFoldersPromise;
+		let fileCabinetFolders: FolderItem[] = await listFoldersPromise;
+
+
+		return this._sortFolders(fileCabinetFolders);
 	}
 
+	private _sortFolders(fileCabinetFolders: FolderItem[]) {
+		fileCabinetFolders = fileCabinetFolders.sort((folder1, folder2) => {
+			if (folder1.isRestricted && !folder2.isRestricted) {
+				return 1;
+			}
+
+			if (!folder1.isRestricted && folder2.isRestricted) {
+				return -1;
+			}
+
+			return 0;
+		});
+		return fileCabinetFolders;
+	}
+
+	public async selectFolder(folders: FolderItem[]): Promise<vscode.QuickPickItem | undefined> {
+		return vscode.window.showQuickPick(
+			folders.map((folder: FolderItem) => {
+				const description = folder.isRestricted ? this.translationService.getMessage(LIST_FILES.RESTRICTED_FOLDER) : '';
+				return { label: folder.path, description };
+			}),
+			{
+				ignoreFocusOut: true,
+				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),
+				canPickMany: false,
+			}
+		);
+	}
 
 	// protected async runSuiteCloudCommand(args: { [key: string]: string } = {}) {
 	// 	return new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
