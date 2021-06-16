@@ -50,6 +50,11 @@
         "generator": "commands/project/adddependencies/AddDependenciesCommand"
     },
     {
+        "commandName": "project:createfile",
+        "supportsInteractiveMode": true,
+        "generator": "commands/project/createfile/CreateFileCommand"
+    },
+    {
         "commandName": "project:create",
         "supportsInteractiveMode": true,
         "generator": "commands/project/create/CreateProjectCommand"

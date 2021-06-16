@@ -28,7 +28,9 @@ module.exports = class ProjectInfoService {
 	constructor(projectFolder) {
 		assert(projectFolder);
 		this._CACHED_PROJECT_TYPE = null;
-		this._CACHES_PROJECT_NAME = null;
+		this._CACHED_PROJECT_NAME = null;
+		this._CACHED_PUBLISHER_ID = null;
+		this._CACHED_PROJECT_ID = null;
 		this._projectFolder = projectFolder;
 	}
 
@@ -70,7 +72,6 @@ module.exports = class ProjectInfoService {
 		return this._CACHED_PROJECT_TYPE;
 	}
 
-
 	getProjectName() {
 		if (!this._CACHED_PROJECT_NAME) {
 			this.parseManifest();
@@ -78,6 +79,25 @@ module.exports = class ProjectInfoService {
 		return this._CACHED_PROJECT_NAME;
 	}
 
+	getPublisherId() {
+		if (!this._CACHED_PUBLISHER_ID) {
+			this.parseManifest();
+		}
+
+		return this._CACHED_PUBLISHER_ID;
+	}
+
+	getProjectId() {
+		if (!this._CACHED_PROJECT_ID) {
+			this.parseManifest();
+		}
+
+		return this._CACHED_PROJECT_ID;
+	}
+
+	getApplicationId() {
+		return this.getPublisherId() + "." + this.getProjectId();
+	}
 
 	parseManifest() {
 		const manifestPath = this.getManifestPath();
@@ -85,6 +105,8 @@ module.exports = class ProjectInfoService {
 
 		let projectName;
 		let projectType;
+		let publisherId;
+		let projectId;
 		let validationError;
 
 		let parser = new xml2js.Parser({ validator: this._validateXml });
@@ -100,6 +122,8 @@ module.exports = class ProjectInfoService {
 			if (result) {
 				projectType = result.manifest.$.projecttype;
 				projectName = result.manifest.projectname;
+				publisherId = result.manifest.publisherid;
+				projectId = result.manifest.projectid;
 			}
 		});
 
@@ -109,6 +133,8 @@ module.exports = class ProjectInfoService {
 		}
 		this._CACHED_PROJECT_TYPE = projectType;
 		this._CACHED_PROJECT_NAME = projectName;
+		this._CACHED_PUBLISHER_ID = publisherId;
+		this._CACHED_PROJECT_ID = projectId;
 	}
 
 	getManifestPath() {
@@ -137,7 +163,6 @@ module.exports = class ProjectInfoService {
 		}
 		return manifestString;
 	}
-
 
 	hasLockAndHideFiles() {
 		const pathToInstallationPreferences = path.join(
