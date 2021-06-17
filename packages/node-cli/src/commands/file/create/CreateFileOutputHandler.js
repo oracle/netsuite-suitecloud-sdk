@@ -19,4 +19,4 @@ module.exports = class CreateProjectOutputHandler extends BaseOutputHandler {
         return actionResult;
     }
 
-}
+};
