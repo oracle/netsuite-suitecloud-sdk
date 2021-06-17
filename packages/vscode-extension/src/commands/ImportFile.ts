@@ -4,7 +4,7 @@
  */
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { ERRORS, ANSWERS, IMPORT_FILE } from '../service/TranslationKeys';
+import { ERRORS, ANSWERS, IMPORT_FILES } from '../service/TranslationKeys';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import ImportFileService from '../service/ImportFileService';
@@ -33,20 +33,20 @@ export default class ImportFile extends BaseAction {
 		const override = await vscode.window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
 			{
-				placeHolder: this.translationService.getMessage(IMPORT_FILE.OVERRIDE, fileName),
+				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE_SINGLE, fileName),
 				canPickMany: false,
 			}
 		);
 
 		if (!override || override === this.translationService.getMessage(ANSWERS.NO)) {
-			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILE.PROCESS_CANCELED));
+			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
 			return;
 		}
 
 		const includeProperties = await vscode.window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
 			{
-				placeHolder: this.translationService.getMessage(IMPORT_FILE.INCLUDE_PROPERTIES, fileName),
+				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
 				canPickMany: false,
 			}
 		);
@@ -57,13 +57,13 @@ export default class ImportFile extends BaseAction {
 					.split(this.executionPath + '\\src')[1]
 					.replace('\\', '/')
 			: path.dirname(activeFile);
-		const statusBarMessage = this.translationService.getMessage(IMPORT_FILE.IMPORTING);
+		const statusBarMessage = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE);
 		const actionResult = await this.importFileService.importFile(
 			activeFile,
 			destinationFolder,
 			statusBarMessage,
 			this.executionPath,
-			includeProperties === ANSWERS.YES
+			includeProperties === ANSWERS.NO
 		);
 
 		this.showOutput(actionResult);
@@ -72,7 +72,7 @@ export default class ImportFile extends BaseAction {
 
 	private showOutput(actionResult: any) {
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
-			this.messageService.showCommandInfo(this.translationService.getMessage(IMPORT_FILE.FINISHED));
+			this.messageService.showCommandInfo(this.translationService.getMessage(IMPORT_FILES.FINISHED));
 		} else {
 			this.messageService.showCommandError();
 		}

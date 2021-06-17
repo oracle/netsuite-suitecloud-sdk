@@ -1,29 +1,20 @@
-import { VSCODE_PLATFORM } from '../ApplicationConstants';
-import { AccountFileCabinetService, ExecutionEnvironmentContext, getRootProjectFolder, TranslationService } from '../util/ExtensionUtil';
 import * as vscode from 'vscode';
-import { LIST_FILES } from './TranslationKeys';
+import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
-import MessageService from './MessageService';
-import { VSTranslationService } from './VSTranslationService';
 import { FolderItem } from '../types/FolderItem';
+import { AccountFileCabinetService, ExecutionEnvironmentContext, getRootProjectFolder } from '../util/ExtensionUtil';
+import MessageService from './MessageService';
+import { LIST_FILES } from './TranslationKeys';
+import { VSTranslationService } from './VSTranslationService';
 
 export default class ListFilesService {
 	protected readonly translationService: VSTranslationService;
 	protected executionPath?: string;
 	protected readonly messageService: MessageService;
-	// protected filePath?: string;
-	// protected vsConsoleLogger: VSConsoleLogger;
 
-	constructor(
-		messageService: MessageService,
-		translationService: VSTranslationService
-		// vSConsoleLogger: VSConsoleLogger,
-		// fsPath: string | undefined
-	) {
+	constructor(messageService: MessageService, translationService: VSTranslationService) {
 		this.messageService = messageService;
 		this.translationService = translationService;
-		// this.vsConsoleLogger = vSConsoleLogger;
-		// this.executionPath = getRootProjectFolder(fsPath);
 		this.executionPath = getRootProjectFolder();
 	}
 
@@ -43,7 +34,6 @@ export default class ListFilesService {
 		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
 
 		let fileCabinetFolders: FolderItem[] = await listFoldersPromise;
-
 
 		return this._sortFolders(fileCabinetFolders);
 	}
@@ -77,10 +67,17 @@ export default class ListFilesService {
 		);
 	}
 
-	// protected async runSuiteCloudCommand(args: { [key: string]: string } = {}) {
-	// 	return new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-	// 		commandName: COMMAND_NAME,
-	// 		arguments: args,
-	// 	});
-	// }
+	public async selectFiles(files: string[]): Promise<vscode.QuickPickItem[] | undefined> {
+		return vscode.window.showQuickPick(
+			files.map((file: string) => {
+				const description = file ? this.translationService.getMessage(LIST_FILES.RESTRICTED_FOLDER) : '';
+				return { label: file, description };
+			}),
+			{
+				ignoreFocusOut: true,
+				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),
+				canPickMany: true,
+			}
+		);
+	}
 }
