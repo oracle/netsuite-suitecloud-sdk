@@ -226,6 +226,55 @@
 			}
 		}
 	},
+	"file:create": {
+		"name": "file:create",
+		"sdkCommand": "createfile",
+		"usage": "",
+		"description": "Creates a SuiteScript file.",
+		"isSetupRequired": false,
+		"options": {
+			"type": {
+				"name": "type",
+				"option": "type",
+				"description": "Specifies the type of the SuiteScript file that you want to create.",
+				"mandatory": false,
+				"type": "MULTIPLE",
+				"usage": "N/record [...]",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"module": {
+				"name": "module",
+				"option": "module",
+				"description": "Specifies the SuiteScript modules you want to add to the SuiteScript file.",
+				"mandatory": false,
+				"type": "MULTIPLE",
+				"usage": "N/record [...]",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"path": {
+				"name": "path",
+				"option": "path",
+				"description": "References the folder or zip file that contains the SDF project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "foo/bar/CliensScript.js",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:/project/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			}
+		}
+	},
 	"file:import": {
 		"name": "file:import",
 		"sdkCommand": "importfiles",
