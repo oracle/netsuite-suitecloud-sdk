@@ -1,16 +1,25 @@
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
+import SuiteCloudRunner from '../core/SuiteCloudRunner';
+import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { FolderItem } from '../types/FolderItem';
-import { AccountFileCabinetService, ExecutionEnvironmentContext, getRootProjectFolder } from '../util/ExtensionUtil';
+import { AccountFileCabinetService, actionResultStatus, ExecutionEnvironmentContext, getRootProjectFolder } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
-import { LIST_FILES } from './TranslationKeys';
+import { COMMAND, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
+
+const LIST_FILES_COMMAND = {
+	OPTIONS: {
+		FOLDER: 'folder',
+	},
+};
 
 export default class ListFilesService {
 	protected readonly translationService: VSTranslationService;
 	protected executionPath?: string;
 	protected readonly messageService: MessageService;
+	protected vsConsoleLogger: VSConsoleLogger | undefined;
 
 	constructor(messageService: MessageService, translationService: VSTranslationService) {
 		this.messageService = messageService;
@@ -79,5 +88,40 @@ export default class ListFilesService {
 				canPickMany: true,
 			}
 		);
+	}
+
+	public async listFiles(selectedFolder: string, commandName: string) {
+		const listfilesOptions: { [key: string]: string } = {};
+		listfilesOptions[LIST_FILES_COMMAND.OPTIONS.FOLDER] = selectedFolder;
+
+		const commandActionPromise = this.listFilesCommand(listfilesOptions);
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, commandName);
+		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LISTING);
+		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
+
+		const actionResult = await commandActionPromise;
+		if (actionResult.status === actionResultStatus.SUCCESS) {
+			return actionResult.data;
+		} else {
+			throw actionResult.errorMessages;
+		}
+	}
+
+	private async listFilesCommand(listFilesOption: { [key: string]: string }) {
+		if (!this.vsConsoleLogger) {
+			throw Error('Logger not initialized');
+		}
+		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
+			commandName: 'file:list',
+			arguments: listFilesOption,
+		});
+
+		this.vsConsoleLogger.info('');
+
+		return suiteCloudRunnerRunResult;
+	}
+
+	setVsConsoleLogger(vsConsoleLogger: VSConsoleLogger) {
+		this.vsConsoleLogger = vsConsoleLogger;
 	}
 }

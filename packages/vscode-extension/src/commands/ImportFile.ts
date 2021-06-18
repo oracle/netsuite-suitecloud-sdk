@@ -20,7 +20,7 @@ export default class ImportFile extends BaseAction {
 		this.importFileService = new ImportFileService(this.messageService, this.translationService, this.filePath);
 	}
 
-	protected init(fsPath?: string)  {
+	protected init(fsPath?: string) {
 		super.init(fsPath);
 		this.importFileService.setVsConsoleLogger(this.vsConsoleLogger);
 	}
@@ -35,6 +35,14 @@ export default class ImportFile extends BaseAction {
 
 		const fileName = path.basename(activeFile, '.xml');
 
+		const excludeProperties = await vscode.window.showQuickPick(
+			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
+			{
+				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
+				canPickMany: false,
+			}
+		);
+
 		const override = await vscode.window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
 			{
@@ -48,14 +56,6 @@ export default class ImportFile extends BaseAction {
 			return;
 		}
 
-		const includeProperties = await vscode.window.showQuickPick(
-			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
-			{
-				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
-				canPickMany: false,
-			}
-		);
-
 		const destinationFolder = this.executionPath
 			? path
 					.dirname(activeFile)
@@ -68,7 +68,7 @@ export default class ImportFile extends BaseAction {
 			destinationFolder,
 			statusBarMessage,
 			this.executionPath,
-			includeProperties === ANSWERS.NO
+			excludeProperties === this.translationService.getMessage(ANSWERS.YES)
 		);
 
 		this.showOutput(actionResult);

@@ -19,7 +19,7 @@ export default class ImportFileService {
 		// this.executionPath = getRootProjectFolder(fsPath)
 	}
 
-	async importFile(activeFile: string, directory: string, statusBarMessage: string, executionPath: string | undefined, includeProperties: boolean) {
+	async importFile(activeFile: string, directory: string, statusBarMessage: string, executionPath: string | undefined, excludeProperties: boolean) {
 		this.executionPath = executionPath;
 
 		//TODO Prototype of import...Fix the way we look for destinationFolder
@@ -27,7 +27,8 @@ export default class ImportFileService {
 
 		const filePath = this.executionPath ? activeFile.split(this.executionPath + '\\src\\FileCabinet')[1].replace(/\\/g, '/') : activeFile;
 		let commandArgs: any = { project: directory, paths: filePath };
-		if (!includeProperties) {
+		
+		if (excludeProperties) {
 			commandArgs.excludeproperties = true;
 		}
 

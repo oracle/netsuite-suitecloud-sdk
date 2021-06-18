@@ -5,22 +5,14 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { QuickPickItem, window } from 'vscode';
-import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import ImportFileService from '../service/ImportFileService';
 import ListFilesService from '../service/ListFilesService';
-import { ANSWERS, COMMAND, ERRORS, IMPORT_FILES, LIST_FILES } from '../service/TranslationKeys';
+import { ANSWERS, COMMAND, ERRORS, IMPORT_FILES } from '../service/TranslationKeys';
 import { FolderItem } from '../types/FolderItem';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'importfiles';
-
-const LIST_FILES_COMMAND = {
-	OPTIONS: {
-		FOLDER: 'folder',
-		PATHS: 'paths',
-	},
-};
 
 export default class ImportFiles extends BaseAction {
 	protected filePath: string | undefined;
@@ -31,6 +23,12 @@ export default class ImportFiles extends BaseAction {
 		super(COMMAND_NAME);
 		this.importFileService = new ImportFileService(this.messageService, this.translationService, this.filePath);
 		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
+	}
+
+	protected init(fsPath?: string) {
+		super.init(fsPath);
+		this.importFileService.setVsConsoleLogger(this.vsConsoleLogger);
+		this.listFilesService.setVsConsoleLogger(this.vsConsoleLogger);
 	}
 
 	protected async execute() {
@@ -49,7 +47,7 @@ export default class ImportFiles extends BaseAction {
 			if (!selectedFolder) {
 				return;
 			}
-			const files = await this.listFiles(selectedFolder.label, COMMAND_NAME);
+			const files = await this.listFilesService.listFiles(selectedFolder.label, COMMAND_NAME);
 			const selectedFiles: QuickPickItem[] | undefined = await this.listFilesService.selectFiles(files);
 
 			if (!selectedFiles) {
@@ -57,21 +55,13 @@ export default class ImportFiles extends BaseAction {
 				return;
 			}
 
-			const excludePropertiesOptions = [
+			const excludeProperties = await vscode.window.showQuickPick(
+				[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
 				{
-					label: this.translationService.getMessage(ANSWERS.YES),
-					value: true,
-				},
-				{
-					label: this.translationService.getMessage(ANSWERS.NO),
-					value: false,
-				},
-			];
-
-			const excludeProperties = await vscode.window.showQuickPick(excludePropertiesOptions, {
-				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
-				canPickMany: false,
-			});
+					placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
+					canPickMany: false,
+				}
+			);
 
 			const override = await vscode.window.showQuickPick(
 				[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
@@ -96,7 +86,7 @@ export default class ImportFiles extends BaseAction {
 			const selectedFilesPaths: string[] = selectedFiles.map((file) => file.label.replace(/\\/g, '/'));
 
 			let commandArgs: any = { project: destinationFolder, paths: selectedFilesPaths };
-			if (excludeProperties &&  excludeProperties.value) {
+			if (excludeProperties && excludeProperties === this.translationService.getMessage(ANSWERS.YES)) {
 				commandArgs.excludeproperties = true;
 			}
 
@@ -106,11 +96,7 @@ export default class ImportFiles extends BaseAction {
 			this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 			const actionResult = await commandActionPromise;
-			if (actionResult.status === actionResultStatus.SUCCESS) {
-				this.messageService.showCommandInfo();
-			} else {
-				this.messageService.showCommandError();
-			}
+			this.showOutput(actionResult);
 		} catch (e) {
 			this.vsConsoleLogger.error(e);
 			this.messageService.showCommandError();
@@ -143,33 +129,5 @@ export default class ImportFiles extends BaseAction {
 				valid: true,
 			};
 		}
-	}
-
-	public async listFiles(selectedFolder: string, commandName: string) {
-		const listfilesOptions: { [key: string]: string } = {};
-		listfilesOptions[LIST_FILES_COMMAND.OPTIONS.FOLDER] = selectedFolder;
-
-		const commandActionPromise = this.listFilesCommand(listfilesOptions);
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, commandName);
-		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LISTING);
-		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
-
-		const actionResult = await commandActionPromise;
-		if (actionResult.status === actionResultStatus.SUCCESS) {
-			return actionResult.data;
-		} else {
-			throw actionResult.errorMessages;
-		}
-	}
-
-	private async listFilesCommand(listFilesOption: { [key: string]: string }) {
-		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-			commandName: 'file:list',
-			arguments: listFilesOption,
-		});
-
-		this.vsConsoleLogger.info('');
-
-		return suiteCloudRunnerRunResult;
 	}
 }
