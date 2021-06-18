@@ -57,13 +57,21 @@ export default class ImportFiles extends BaseAction {
 				return;
 			}
 
-			const includeProperties = await vscode.window.showQuickPick(
-				[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
+			const excludePropertiesOptions = [
 				{
-					placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
-					canPickMany: false,
-				}
-			);
+					label: this.translationService.getMessage(ANSWERS.YES),
+					value: true,
+				},
+				{
+					label: this.translationService.getMessage(ANSWERS.NO),
+					value: false,
+				},
+			];
+
+			const excludeProperties = await vscode.window.showQuickPick(excludePropertiesOptions, {
+				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
+				canPickMany: false,
+			});
 
 			const override = await vscode.window.showQuickPick(
 				[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
@@ -88,7 +96,7 @@ export default class ImportFiles extends BaseAction {
 			const selectedFilesPaths: string[] = selectedFiles.map((file) => file.label.replace(/\\/g, '/'));
 
 			let commandArgs: any = { project: destinationFolder, paths: selectedFilesPaths };
-			if (!includeProperties) {
+			if (excludeProperties &&  excludeProperties.value) {
 				commandArgs.excludeproperties = true;
 			}
 
