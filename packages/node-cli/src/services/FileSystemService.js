@@ -173,6 +173,10 @@ module.exports = class FileSystemService {
 		return existsSync(path);
 	}
 
+	fileExists(path) {
+		return this.folderExists(path);
+	}
+
 	isFolderEmpty(path) {
 		assert(path);
 		readdirSync(path).length !== 0;

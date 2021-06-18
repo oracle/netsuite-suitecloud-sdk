@@ -15,6 +15,11 @@
         "generator": "./commands/account/setup/SetupCommand"
     },
     {
+        "commandName": "file:create",
+        "supportsInteractiveMode": true,
+        "generator": "commands/file/create/CreateFileCommand"
+    },
+    {
         "commandName": "file:import",
         "supportsInteractiveMode": true,
         "generator": "commands/file/import/ImportFilesCommand"

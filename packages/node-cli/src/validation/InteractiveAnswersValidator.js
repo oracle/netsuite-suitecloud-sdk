@@ -5,6 +5,7 @@
 'use strict';
 
 const ApplicationConstants = require('../ApplicationConstants');
+const FileSystemService = require('../services/FileSystemService');
 const NodeTranslationService = require('../services/NodeTranslationService');
 
 const VALIDATION_RESULT_FAILURE = (validationError) => ({
@@ -165,4 +166,12 @@ module.exports = {
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	},
+
+	validateFileAlreadyExists(parentFolderPath, filename) {
+		const fileSystemService = new FileSystemService();
+		return !fileSystemService.fileExists(parentFolderPath + filename)
+			? VALIDATION_RESULT_SUCCESS
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILE_ALREADY_EXISTS, parentFolderPath));
+	}
+
 };
