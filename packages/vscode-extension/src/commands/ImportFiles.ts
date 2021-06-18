@@ -13,7 +13,7 @@ import { FolderItem } from '../types/FolderItem';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
-const COMMAND_NAME = 'importfile';
+const COMMAND_NAME = 'importfiles';
 
 const LIST_FILES_COMMAND = {
 	OPTIONS: {
@@ -29,7 +29,7 @@ export default class ImportFiles extends BaseAction {
 
 	constructor() {
 		super(COMMAND_NAME);
-		this.importFileService = new ImportFileService(this.messageService, this.translationService, this.vsConsoleLogger, this.filePath);
+		this.importFileService = new ImportFileService(this.messageService, this.translationService, this.filePath);
 		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
 	}
 

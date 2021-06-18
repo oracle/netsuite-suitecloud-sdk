@@ -6,16 +6,16 @@ import VSConsoleLogger from '../loggers/VSConsoleLogger';
 const COMMAND_NAME = 'file:import';
 
 export default class ImportFileService {
+	
 	protected readonly translationService: VSTranslationService;
 	protected executionPath?: string;
 	protected readonly messageService: MessageService;
 	protected filePath?: string;
-	protected vsConsoleLogger: VSConsoleLogger;
+	protected vsConsoleLogger: VSConsoleLogger | undefined;
 
-	constructor(messageService: MessageService, translationService: VSTranslationService, vSConsoleLogger: VSConsoleLogger, fsPath: string | undefined) {
+	constructor(messageService: MessageService, translationService: VSTranslationService, fsPath: string | undefined) {
 		this.messageService = messageService;
 		this.translationService = translationService;
-		this.vsConsoleLogger = vSConsoleLogger;
 		// this.executionPath = getRootProjectFolder(fsPath)
 	}
 
@@ -37,9 +37,16 @@ export default class ImportFileService {
 	}
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}) {
+		if(!this.vsConsoleLogger) {
+			throw Error("Logger not initialized");
+		}
 		return new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
 			commandName: COMMAND_NAME,
 			arguments: args,
 		});
+	}
+
+	setVsConsoleLogger(vsConsoleLogger: VSConsoleLogger) {
+		this.vsConsoleLogger = vsConsoleLogger;
 	}
 }

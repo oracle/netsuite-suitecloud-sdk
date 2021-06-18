@@ -17,7 +17,12 @@ export default class ImportFile extends BaseAction {
 
 	constructor() {
 		super(COMMAND_NAME);
-		this.importFileService = new ImportFileService(this.messageService, this.translationService, this.vsConsoleLogger, this.filePath);
+		this.importFileService = new ImportFileService(this.messageService, this.translationService, this.filePath);
+	}
+
+	protected init(fsPath?: string)  {
+		super.init(fsPath);
+		this.importFileService.setVsConsoleLogger(this.vsConsoleLogger);
 	}
 
 	protected async execute() {
