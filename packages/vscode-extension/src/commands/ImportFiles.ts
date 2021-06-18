@@ -32,14 +32,12 @@ export default class ImportFiles extends BaseAction {
 	}
 
 	protected async execute() {
-		const activeFile = window.activeTextEditor?.document.uri.fsPath;
-
-		if (!activeFile) {
+		if (!this.activeFile) {
 			// Already checked in validate
 			return;
 		}
 
-		const fileName = path.basename(activeFile, '.xml');
+		const fileName = path.basename(this.activeFile, '.xml');
 
 		try {
 			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders(COMMAND_NAME);
@@ -78,10 +76,10 @@ export default class ImportFiles extends BaseAction {
 
 			const destinationFolder = this.executionPath
 				? path
-						.dirname(activeFile)
+						.dirname(this.activeFile)
 						.split(this.executionPath + '\\src')[1]
 						.replace('\\', '/')
-				: path.dirname(activeFile);
+				: path.dirname(this.activeFile);
 
 			const selectedFilesPaths: string[] = selectedFiles.map((file) => file.label.replace(/\\/g, '/'));
 

@@ -11,6 +11,7 @@ import { CLIConfigurationService, getRootProjectFolder } from '../util/Extension
 import { ERRORS } from '../service/TranslationKeys';
 import { commandsInfoMap } from '../commandsMap';
 import { assert } from 'console';
+import { window } from 'vscode';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
@@ -20,6 +21,7 @@ export default abstract class BaseAction {
 	protected readonly cliCommandName: string;
 	protected executionPath?: string;
 	protected vsConsoleLogger!: VSConsoleLogger;
+	protected activeFile: string | undefined;
 
 	protected abstract execute(): Promise<void>;
 
@@ -31,10 +33,11 @@ export default abstract class BaseAction {
 		this.translationService = new VSTranslationService();
 	}
 
-	protected init(fsPath?: string)  {
+	protected init(activeFile?: string)  {
 		this.executionPath = getRootProjectFolder();
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 		this.messageService.executionPath = this.executionPath;
+		this.activeFile = activeFile ? activeFile : window.activeTextEditor?.document.uri.fsPath;
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {

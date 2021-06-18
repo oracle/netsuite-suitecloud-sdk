@@ -26,14 +26,12 @@ export default class ImportFile extends BaseAction {
 	}
 
 	protected async execute() {
-		const activeFile = this.filePath;
-
-		if (!activeFile) {
+		if (!this.activeFile) {
 			// Already checked in validate
 			return;
 		}
 
-		const fileName = path.basename(activeFile, '.xml');
+		const fileName = path.basename(this.activeFile, '.xml');
 
 		const excludeProperties = await vscode.window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
@@ -58,13 +56,13 @@ export default class ImportFile extends BaseAction {
 
 		const destinationFolder = this.executionPath
 			? path
-					.dirname(activeFile)
+					.dirname(this.activeFile)
 					.split(this.executionPath + '\\src')[1]
 					.replace('\\', '/')
-			: path.dirname(activeFile);
+			: path.dirname(this.activeFile);
 		const statusBarMessage = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE);
 		const actionResult = await this.importFileService.importFile(
-			activeFile,
+			this.activeFile,
 			destinationFolder,
 			statusBarMessage,
 			this.executionPath,
