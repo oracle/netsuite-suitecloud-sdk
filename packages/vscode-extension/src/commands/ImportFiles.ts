@@ -39,7 +39,55 @@ export default class ImportFiles extends BaseAction {
 
 		const fileName = path.basename(this.activeFile, '.xml');
 
-		try {
+		const selectedFilesPaths: string[] | undefined = await this.getSelectedFiles();
+		if (!selectedFilesPaths){
+			return;
+		}
+
+		const excludeProperties = await vscode.window.showQuickPick(
+			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
+			{
+				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
+				canPickMany: false,
+			}
+		);
+
+		const override = await vscode.window.showQuickPick(
+			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
+			{
+				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE, fileName),
+				canPickMany: false,
+			}
+		);
+
+		if (!override || override === this.translationService.getMessage(ANSWERS.NO)) {
+			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
+			return;
+		}
+
+		const destinationFolder = this.executionPath
+			? path
+					.dirname(this.activeFile)
+					.split(this.executionPath + '\\src')[1]
+					.replace('\\', '/')
+			: path.dirname(this.activeFile);
+
+		let commandArgs: any = { project: destinationFolder, paths: selectedFilesPaths };
+		if (excludeProperties && excludeProperties === this.translationService.getMessage(ANSWERS.YES)) {
+			commandArgs.excludeproperties = true;
+		}
+
+		const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
+		const statusBarMessage: string = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE);
+		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
+
+		const actionResult = await commandActionPromise;
+		this.showOutput(actionResult);
+	}
+
+	private async getSelectedFiles(): Promise<string[] | undefined> {
+		if (!this.filePath) {
 			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders(COMMAND_NAME);
 			const selectedFolder: QuickPickItem | undefined = await this.listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {
@@ -52,52 +100,11 @@ export default class ImportFiles extends BaseAction {
 				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
 				return;
 			}
-
-			const excludeProperties = await vscode.window.showQuickPick(
-				[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
-				{
-					placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
-					canPickMany: false,
-				}
-			);
-
-			const override = await vscode.window.showQuickPick(
-				[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
-				{
-					placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE, fileName),
-					canPickMany: false,
-				}
-			);
-
-			if (!override || override === this.translationService.getMessage(ANSWERS.NO)) {
-				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
-				return;
+			return selectedFiles.map((file) => file.label.replace(/\\/g, '/'));
+		} else {
+			if(this.activeFile){
+				return [this.activeFile];
 			}
-
-			const destinationFolder = this.executionPath
-				? path
-						.dirname(this.activeFile)
-						.split(this.executionPath + '\\src')[1]
-						.replace('\\', '/')
-				: path.dirname(this.activeFile);
-
-			const selectedFilesPaths: string[] = selectedFiles.map((file) => file.label.replace(/\\/g, '/'));
-
-			let commandArgs: any = { project: destinationFolder, paths: selectedFilesPaths };
-			if (excludeProperties && excludeProperties === this.translationService.getMessage(ANSWERS.YES)) {
-				commandArgs.excludeproperties = true;
-			}
-
-			const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
-			const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
-			const statusBarMessage: string = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE);
-			this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
-
-			const actionResult = await commandActionPromise;
-			this.showOutput(actionResult);
-		} catch (e) {
-			this.vsConsoleLogger.error(e);
-			this.messageService.showCommandError();
 			return;
 		}
 	}
@@ -111,8 +118,7 @@ export default class ImportFiles extends BaseAction {
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
-		const activeFile = window.activeTextEditor?.document.uri;
-		if (!activeFile) {
+		if (!this.activeFile) {
 			return {
 				valid: false,
 				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),

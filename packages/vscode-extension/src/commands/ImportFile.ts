@@ -82,8 +82,7 @@ export default class ImportFile extends BaseAction {
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
-		const activeFile = this.filePath;
-		if (!activeFile) {
+		if (!this.activeFile) {
 			return {
 				valid: false,
 				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),
