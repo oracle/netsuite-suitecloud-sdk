@@ -40,7 +40,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		register('suitecloud.adddependencies', new AddDependencies()),
 		register('suitecloud.deploy', new Deploy()),
-		register('suitecloud.importfile', new ImportFile()),
+		register('suitecloud.importfile', new ImportFiles()),
 		register('suitecloud.importfiles', new ImportFiles()),
 		register('suitecloud.listfiles', new ListFiles()),
 		register('suitecloud.listobjects', new ListObjects()),

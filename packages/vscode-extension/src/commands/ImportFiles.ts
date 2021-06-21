@@ -40,7 +40,7 @@ export default class ImportFiles extends BaseAction {
 		const fileName = path.basename(this.activeFile, '.xml');
 
 		const selectedFilesPaths: string[] | undefined = await this.getSelectedFiles();
-		if (!selectedFilesPaths){
+		if (!selectedFilesPaths) {
 			return;
 		}
 
@@ -55,7 +55,10 @@ export default class ImportFiles extends BaseAction {
 		const override = await vscode.window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
 			{
-				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE, fileName),
+				placeHolder:
+					selectedFilesPaths.length > 1
+						? this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE)
+						: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE_SINGLE, selectedFilesPaths[0]),
 				canPickMany: false,
 			}
 		);
@@ -72,17 +75,15 @@ export default class ImportFiles extends BaseAction {
 					.replace('\\', '/')
 			: path.dirname(this.activeFile);
 
-		let commandArgs: any = { project: destinationFolder, paths: selectedFilesPaths };
-		if (excludeProperties && excludeProperties === this.translationService.getMessage(ANSWERS.YES)) {
-			commandArgs.excludeproperties = true;
-		}
+		const statusBarMessage = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE);
+		const actionResult = await this.importFileService.importFiles(
+			selectedFilesPaths,
+			destinationFolder,
+			statusBarMessage,
+			this.executionPath,
+			excludeProperties === this.translationService.getMessage(ANSWERS.YES)
+		);
 
-		const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
-		const statusBarMessage: string = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE);
-		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
-
-		const actionResult = await commandActionPromise;
 		this.showOutput(actionResult);
 	}
 
@@ -102,8 +103,11 @@ export default class ImportFiles extends BaseAction {
 			}
 			return selectedFiles.map((file) => file.label.replace(/\\/g, '/'));
 		} else {
-			if(this.activeFile){
-				return [this.activeFile];
+			if (this.activeFile) {
+				const filePath = this.executionPath
+					? this.activeFile.split(this.executionPath + '\\src\\FileCabinet')[1].replace(/\\/g, '/')
+					: this.activeFile;
+				return [filePath];
 			}
 			return;
 		}
