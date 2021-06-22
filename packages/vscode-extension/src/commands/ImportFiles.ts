@@ -19,7 +19,7 @@ export default class ImportFiles extends BaseAction {
 
 	constructor() {
 		super(COMMAND_NAME);
-		this.importFileService = new ImportFileService(this.messageService, this.translationService);
+		this.importFileService = new ImportFileService(this.messageService);
 		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
 	}
 
@@ -87,12 +87,12 @@ export default class ImportFiles extends BaseAction {
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
 		if (!this.isFileSelected) {
-			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders(COMMAND_NAME);
+			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders();
 			const selectedFolder: QuickPickItem | undefined = await this.listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {
 				return;
 			}
-			const files = await this.listFilesService.listFiles(selectedFolder.label, COMMAND_NAME);
+			const files = await this.listFilesService.listFiles(selectedFolder.label);
 			const selectedFiles: QuickPickItem[] | undefined = await this.listFilesService.selectFiles(files);
 
 			if (!selectedFiles) {

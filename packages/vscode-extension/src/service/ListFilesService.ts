@@ -19,6 +19,9 @@ const LIST_FILES_COMMAND = {
 	},
 };
 
+const SUITECLOUD_COMMAND_NAME = 'file:list';
+const COMMAND_NAME_LIST_FILES = 'listfiles';
+const COMMAND_NAME_LIST_FOLDERS = 'listfolders';
 const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class ListFilesService {
@@ -33,7 +36,7 @@ export default class ListFilesService {
 		this.executionPath = getRootProjectFolder();
 	}
 
-	public async getListFolders(commandName: string) {
+	public async getListFolders() {
 		const executionEnvironmentContext = new ExecutionEnvironmentContext({
 			platform: VSCODE_PLATFORM,
 			platformVersion: vscode.version,
@@ -43,7 +46,7 @@ export default class ListFilesService {
 			getSdkPath(),
 			executionEnvironmentContext,
 			this.executionPath,
-			commandName
+			COMMAND_NAME_LIST_FOLDERS
 		);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
 		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
@@ -96,12 +99,12 @@ export default class ListFilesService {
 		);
 	}
 
-	public async listFiles(selectedFolder: string, commandName: string) {
+	public async listFiles(selectedFolder: string) {
 		const listfilesOptions: { [key: string]: string } = {};
 		listfilesOptions[LIST_FILES_COMMAND.OPTIONS.FOLDER] = selectedFolder;
 
 		const commandActionPromise = this.listFilesCommand(listfilesOptions);
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, commandName);
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, COMMAND_NAME_LIST_FILES);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LISTING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
@@ -118,7 +121,7 @@ export default class ListFilesService {
 			throw Error(CONSOLE_LOGGER_ERROR);
 		}
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-			commandName: 'file:list',
+			commandName: SUITECLOUD_COMMAND_NAME,
 			arguments: listFilesOption,
 		});
 

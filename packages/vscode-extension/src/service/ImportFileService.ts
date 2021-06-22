@@ -5,21 +5,17 @@
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import MessageService from './MessageService';
-import { VSTranslationService } from './VSTranslationService';
 
-const COMMAND_NAME = 'file:import';
+const SUITECLOUD_COMMAND_NAME = 'file:import';
 const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class ImportFileService {
-	private readonly translationService: VSTranslationService;
 	private executionPath?: string;
 	private readonly messageService: MessageService;
-	private filePath?: string;
 	private vsConsoleLogger: VSConsoleLogger | undefined;
 
-	constructor(messageService: MessageService, translationService: VSTranslationService) {
+	constructor(messageService: MessageService) {
 		this.messageService = messageService;
-		this.translationService = translationService;
 	}
 
 	async importFiles(
@@ -46,7 +42,7 @@ export default class ImportFileService {
 			throw Error(CONSOLE_LOGGER_ERROR);
 		}
 		return new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-			commandName: COMMAND_NAME,
+			commandName: SUITECLOUD_COMMAND_NAME,
 			arguments: args,
 		});
 	}
