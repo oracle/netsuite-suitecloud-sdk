@@ -51,7 +51,7 @@
 			},
 			{
 				"command": "suitecloud.importfile",
-				"title": "Import Single File from Account",
+				"title": "Import File from Account",
 				"category": "SuiteCloud"
 			},
 			{
