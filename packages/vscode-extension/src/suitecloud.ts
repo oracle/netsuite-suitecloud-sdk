@@ -9,7 +9,6 @@ import * as vscode from 'vscode';
 import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
 import Deploy from './commands/Deploy';
-import ImportFile from './commands/ImportFile';
 import ImportFiles from './commands/ImportFiles';
 import ListFiles from './commands/ListFiles';
 import ListObjects from './commands/ListObjects';
