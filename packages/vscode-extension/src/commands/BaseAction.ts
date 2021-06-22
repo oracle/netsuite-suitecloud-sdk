@@ -15,7 +15,7 @@ import { window } from 'vscode';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
-	protected filePath?: string;
+	protected isFileSelected: boolean | undefined;
 	protected readonly messageService: MessageService;
 	protected readonly vscodeCommandName: string;
 	protected readonly cliCommandName: string;
@@ -33,11 +33,12 @@ export default abstract class BaseAction {
 		this.translationService = new VSTranslationService();
 	}
 
-	protected init(activeFile?: string)  {
+	protected init(fsPath?: string) {
 		this.executionPath = getRootProjectFolder();
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 		this.messageService.executionPath = this.executionPath;
-		this.activeFile = activeFile ? activeFile : window.activeTextEditor?.document.uri.fsPath;
+		this.isFileSelected = fsPath ? true : false;
+		this.activeFile = fsPath ? fsPath : window.activeTextEditor?.document.uri.fsPath;
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
@@ -78,9 +79,6 @@ export default abstract class BaseAction {
 
 	public async run(fsPath?: string) {
 		this.init(fsPath);
-		if(fsPath) {
-			this.filePath = fsPath;
-		}
 		const validationStatus = this.validate();
 		if (validationStatus.valid) {
 			return this.execute();

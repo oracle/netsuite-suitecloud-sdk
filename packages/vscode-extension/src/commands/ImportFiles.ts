@@ -1,13 +1,12 @@
 /*
- ** Copyright (c) 2020 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import * as path from 'path';
-import * as vscode from 'vscode';
 import { QuickPickItem, window } from 'vscode';
 import ImportFileService from '../service/ImportFileService';
 import ListFilesService from '../service/ListFilesService';
-import { ANSWERS, COMMAND, ERRORS, IMPORT_FILES } from '../service/TranslationKeys';
+import { ANSWERS, ERRORS, IMPORT_FILES } from '../service/TranslationKeys';
 import { FolderItem } from '../types/FolderItem';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
@@ -15,13 +14,12 @@ import BaseAction from './BaseAction';
 const COMMAND_NAME = 'importfiles';
 
 export default class ImportFiles extends BaseAction {
-	protected filePath: string | undefined;
 	private importFileService: ImportFileService;
 	private listFilesService: ListFilesService;
 
 	constructor() {
 		super(COMMAND_NAME);
-		this.importFileService = new ImportFileService(this.messageService, this.translationService, this.filePath);
+		this.importFileService = new ImportFileService(this.messageService, this.translationService);
 		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
 	}
 
@@ -44,7 +42,7 @@ export default class ImportFiles extends BaseAction {
 			return;
 		}
 
-		const excludeProperties = await vscode.window.showQuickPick(
+		const excludeProperties = await window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
 			{
 				placeHolder: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.EXCLUDE_PROPERTIES, fileName),
@@ -52,7 +50,7 @@ export default class ImportFiles extends BaseAction {
 			}
 		);
 
-		const override = await vscode.window.showQuickPick(
+		const override = await window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
 			{
 				placeHolder:
@@ -88,7 +86,7 @@ export default class ImportFiles extends BaseAction {
 	}
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
-		if (!this.filePath) {
+		if (!this.isFileSelected) {
 			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders(COMMAND_NAME);
 			const selectedFolder: QuickPickItem | undefined = await this.listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {

@@ -1,3 +1,7 @@
+/*
+ ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
@@ -15,11 +19,13 @@ const LIST_FILES_COMMAND = {
 	},
 };
 
+const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
+
 export default class ListFilesService {
-	protected readonly translationService: VSTranslationService;
-	protected executionPath?: string;
-	protected readonly messageService: MessageService;
-	protected vsConsoleLogger: VSConsoleLogger | undefined;
+	private readonly translationService: VSTranslationService;
+	private executionPath?: string;
+	private readonly messageService: MessageService;
+	private vsConsoleLogger: VSConsoleLogger | undefined;
 
 	constructor(messageService: MessageService, translationService: VSTranslationService) {
 		this.messageService = messageService;
@@ -109,7 +115,7 @@ export default class ListFilesService {
 
 	private async listFilesCommand(listFilesOption: { [key: string]: string }) {
 		if (!this.vsConsoleLogger) {
-			throw Error('Logger not initialized');
+			throw Error(CONSOLE_LOGGER_ERROR);
 		}
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
 			commandName: 'file:list',
