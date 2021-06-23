@@ -107,7 +107,7 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
 					"command": "suitecloud.importfile",
 					"group": "suitecloud@1"
 				}
