@@ -66,12 +66,7 @@ export default class ImportFiles extends BaseAction {
 			return;
 		}
 
-		const destinationFolder = this.executionPath
-			? path
-					.dirname(this.activeFile)
-					.split(this.executionPath + '\\src')[1]
-					.replace('\\', '/')
-			: path.dirname(this.activeFile);
+		const destinationFolder = this.executionPath ? this.getProjectFolderPath() : path.dirname(this.activeFile);
 
 		const statusBarMessage = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE);
 		const actionResult = await this.importFileService.importFiles(
@@ -103,7 +98,7 @@ export default class ImportFiles extends BaseAction {
 		} else {
 			if (this.activeFile) {
 				const filePath = this.executionPath
-					? this.activeFile.split(this.executionPath + '\\src\\FileCabinet')[1].replace(/\\/g, '/')
+					? this.activeFile.split(this.getProjectFolderPath() + "\\FileCabinet")[1].replace(/\\/g, '/')
 					: this.activeFile;
 				return [filePath];
 			}
