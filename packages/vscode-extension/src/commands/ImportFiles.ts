@@ -6,7 +6,7 @@ import * as path from 'path';
 import { QuickPickItem, window } from 'vscode';
 import ImportFileService from '../service/ImportFileService';
 import ListFilesService from '../service/ListFilesService';
-import { ANSWERS, ERRORS, IMPORT_FILES } from '../service/TranslationKeys';
+import { ANSWERS, ERRORS, IMPORT_FILES, LIST_FILES } from '../service/TranslationKeys';
 import { FolderItem } from '../types/FolderItem';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
@@ -39,8 +39,8 @@ export default class ImportFiles extends BaseAction {
 		let selectedFilesPaths: string[] | undefined;
 		try {
 			selectedFilesPaths = await this.getSelectedFiles();
-		} catch(e) {
-			this.messageService.showErrorMessage(e);
+		} catch (error) {
+			this.messageService.showErrorMessage(error);
 		}
 
 		if (!selectedFilesPaths) {
@@ -94,7 +94,7 @@ export default class ImportFiles extends BaseAction {
 			}
 			const files = await this.listFilesService.listFiles(selectedFolder.label);
 			if (!files || files.length === 0) {
-				throw Error('Empty folder');
+				throw Error(this.translationService.getMessage(LIST_FILES.ERROR.NO_FILES_FOUND));
 			}
 			const selectedFiles: QuickPickItem[] | undefined = await this.listFilesService.selectFiles(files);
 

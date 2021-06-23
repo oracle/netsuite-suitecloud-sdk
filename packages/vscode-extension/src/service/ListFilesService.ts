@@ -10,7 +10,7 @@ import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { FolderItem } from '../types/FolderItem';
 import { AccountFileCabinetService, actionResultStatus, ExecutionEnvironmentContext, getRootProjectFolder } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
-import { COMMAND, LIST_FILES, IMPORT_FILES } from './TranslationKeys';
+import { COMMAND, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
 const LIST_FILES_COMMAND = {
@@ -86,17 +86,28 @@ export default class ListFilesService {
 	}
 
 	public async selectFiles(files: string[]): Promise<vscode.QuickPickItem[] | undefined> {
-		return vscode.window.showQuickPick(
-			files.map((file: string) => {
-				const description = file ? this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FILES) : '';
-				return { label: file, description };
-			}),
-			{
-				ignoreFocusOut: true,
-				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),
-				canPickMany: true,
+		let finish: boolean = false;
+		let message = this.translationService.getMessage(LIST_FILES.SELECT_FOLDER);
+		while (!finish) {
+			const selectedFiles = await vscode.window.showQuickPick(
+				files.map((file: string) => {
+					const description = file ? this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FILES) : '';
+					return { label: file, description };
+				}),
+				{
+					ignoreFocusOut: true,
+					placeHolder: message,
+					canPickMany: true,
+				}
+			);
+			if (!selectedFiles || selectedFiles.length > 0) {
+				finish = true;
+				return selectedFiles;
 			}
-		);
+			message = this.translationService.getMessage(IMPORT_FILES.QUESTIONS.CHOOSE_OPTION);
+		}
+
+		return;
 	}
 
 	public async listFiles(selectedFolder: string) {
