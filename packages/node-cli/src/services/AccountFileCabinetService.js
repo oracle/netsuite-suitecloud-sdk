@@ -8,25 +8,35 @@ const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkExecutor = require('../SdkExecutor');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
+const CommandUtils = require('../utils/CommandUtils');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const {
+	COMMAND_IMPORTFILES: { MESSAGES },
 	COMMAND_LISTFILES: { LOADING_FOLDERS, ERROR_INTERNAL },
 } = require('./TranslationKeys');
 
-const LIST_FOLDERS = {
-	COMMAND: 'listfolders',
-	OPTIONS: {
-		AUTH_ID: 'authid',
+const INTERMEDIATE_COMMANDS = {
+	LISTFILES: {
+		COMMAND: 'listfiles',
+		OPTIONS: {
+			AUTH_ID: 'authid',
+			FOLDER: 'folder',
+		},
+	},
+	LISTFOLDERS: {
+		COMMAND: 'listfolders',
+		OPTIONS: {
+			AUTH_ID: 'authid',
+		},
 	},
 };
 
 class AccountFileCabinetService {
-	async _listFolders(sdkExecutor, path, commandName) {
-		const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
+	async _listFolders(sdkExecutor, authId) {
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND)
 			.integration()
-			.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, getProjectDefaultAuthId(path))
+			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, authId)
 			.build();
 
 		let listFoldersResult;
@@ -36,7 +46,7 @@ class AccountFileCabinetService {
 				message: NodeTranslationService.getMessage(LOADING_FOLDERS),
 			});
 		} catch (error) {
-			throw NodeTranslationService.getMessage(ERROR_INTERNAL, commandName, lineBreak, error);
+			throw NodeTranslationService.getMessage(ERROR_INTERNAL, INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND, lineBreak, error);
 		}
 
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
@@ -45,10 +55,25 @@ class AccountFileCabinetService {
 		return listFoldersResult;
 	}
 
-	async getFileCabinetFolders(sdkPath, executionEnvironmentContext, executionPath, commandName) {
+	async getFileCabinetFolders(sdkPath, executionEnvironmentContext, authId) {
 		const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
-		let listFoldersResult = await this._listFolders(sdkExecutor, executionPath, commandName);
-		return listFoldersResult.data;
+		return await this._listFolders(sdkExecutor, authId);
+	}
+
+	listFiles(selectFolderAnswer, sdkExecutor, authId) {
+		// quote folder path to preserve spaces
+		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
+		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = authId;
+
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES.COMMAND)
+			.integration()
+			.addParams(selectFolderAnswer)
+			.build();
+
+		return executeWithSpinner({
+			action: sdkExecutor.execute(executionContext),
+			message: NodeTranslationService.getMessage(MESSAGES.LOADING_FILES),
+		});
 	}
 }
 

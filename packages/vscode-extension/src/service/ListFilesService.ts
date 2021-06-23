@@ -7,8 +7,15 @@ import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
+import { ActionResult } from '../types/ActionResult';
 import { FolderItem } from '../types/FolderItem';
-import { AccountFileCabinetService, actionResultStatus, ExecutionEnvironmentContext, getRootProjectFolder } from '../util/ExtensionUtil';
+import {
+	AccountFileCabinetService,
+	actionResultStatus,
+	AuthenticationUtils,
+	ExecutionEnvironmentContext,
+	getRootProjectFolder
+} from '../util/ExtensionUtil';
 import MessageService from './MessageService';
 import { COMMAND, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
@@ -21,7 +28,6 @@ const LIST_FILES_COMMAND = {
 
 const SUITECLOUD_COMMAND_NAME = 'file:list';
 const COMMAND_NAME_LIST_FILES = 'listfiles';
-const COMMAND_NAME_LIST_FOLDERS = 'listfolders';
 const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class ListFilesService {
@@ -45,13 +51,13 @@ export default class ListFilesService {
 		const listFoldersPromise = AccountFileCabinetService.getFileCabinetFolders(
 			getSdkPath(),
 			executionEnvironmentContext,
-			this.executionPath,
-			COMMAND_NAME_LIST_FOLDERS
+			AuthenticationUtils.getProjectDefaultAuthId(this.executionPath)
 		);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
 		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
 
-		let fileCabinetFolders: FolderItem[] = await listFoldersPromise;
+		const result: ActionResult<FolderItem[]> = await listFoldersPromise;
+		const fileCabinetFolders = result.data;
 
 		return this._sortFolders(fileCabinetFolders);
 	}

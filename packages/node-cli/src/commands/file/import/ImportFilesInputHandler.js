@@ -7,9 +7,8 @@
 const CommandUtils = require('../../../utils/CommandUtils');
 const { prompt } = require('inquirer');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const AccountFileCabinetService = require('../../../services/AccountFileCabinetService');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
@@ -30,21 +29,7 @@ const COMMAND_OPTIONS = {
 	EXCLUDE_PROPERTIES: 'excludeproperties',
 	PROJECT: 'project',
 };
-const INTERMEDIATE_COMMANDS = {
-	LISTFILES: {
-		COMMAND: 'listfiles',
-		OPTIONS: {
-			AUTH_ID: 'authid',
-			FOLDER: 'folder',
-		},
-	},
-	LISTFOLDERS: {
-		COMMAND: 'listfolders',
-		OPTIONS: {
-			AUTH_ID: 'authid',
-		},
-	},
-};
+
 const COMMAND_ANSWERS = {
 	OVERWRITE_FILES: 'overwrite',
 };
@@ -64,7 +49,11 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
-		const listFoldersResult = await this._listFolders();
+		const listFoldersResult = await AccountFileCabinetService.getFileCabinetFolders(
+			this._sdkPath,
+			this._executionEnvironmentContext,
+			this._authId
+		);
 
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 			throw listFoldersResult.errorMessages;
@@ -72,7 +61,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
-		const listFilesResult = await this._listFiles(selectFolderAnswer);
+		const listFilesResult = await AccountFileCabinetService.listFiles(selectFolderAnswer, this._sdkExecutor, this._authId);
 
 		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 			throw listFilesResult.errorMessages;
@@ -92,18 +81,6 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		return selectFilesAnswer;
 	}
 
-	_listFolders() {
-		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND)
-			.integration()
-			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
-			.build();
-
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: NodeTranslationService.getMessage(MESSAGES.LOADING_FOLDERS),
-		});
-	}
-
 	_generateSelectFolderQuestion(listFoldersResult) {
 		return {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
@@ -120,22 +97,6 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 			value: folder.path,
 			disabled: folder.isRestricted ? NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',
 		}));
-	}
-
-	_listFiles(selectFolderAnswer) {
-		// quote folder path to preserve spaces
-		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
-		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = this._authId;
-
-		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES.COMMAND)
-			.integration()
-			.addParams(selectFolderAnswer)
-			.build();
-
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: NodeTranslationService.getMessage(MESSAGES.LOADING_FILES),
-		});
 	}
 
 	_generateSelectFilesQuestions(listFilesResult) {
