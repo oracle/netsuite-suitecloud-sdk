@@ -10,7 +10,7 @@ import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { FolderItem } from '../types/FolderItem';
 import { AccountFileCabinetService, actionResultStatus, ExecutionEnvironmentContext, getRootProjectFolder } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
-import { COMMAND, LIST_FILES } from './TranslationKeys';
+import { COMMAND, LIST_FILES, IMPORT_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
 const LIST_FILES_COMMAND = {
@@ -88,7 +88,7 @@ export default class ListFilesService {
 	public async selectFiles(files: string[]): Promise<vscode.QuickPickItem[] | undefined> {
 		return vscode.window.showQuickPick(
 			files.map((file: string) => {
-				const description = file ? this.translationService.getMessage(LIST_FILES.RESTRICTED_FOLDER) : '';
+				const description = file ? this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FILES) : '';
 				return { label: file, description };
 			}),
 			{

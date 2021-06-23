@@ -36,8 +36,13 @@ export default class ImportFiles extends BaseAction {
 		}
 
 		const fileName = path.basename(this.activeFile, '.xml');
+		let selectedFilesPaths: string[] | undefined;
+		try {
+			selectedFilesPaths = await this.getSelectedFiles();
+		} catch(e) {
+			this.messageService.showErrorMessage(e);
+		}
 
-		const selectedFilesPaths: string[] | undefined = await this.getSelectedFiles();
 		if (!selectedFilesPaths) {
 			return;
 		}
@@ -88,6 +93,9 @@ export default class ImportFiles extends BaseAction {
 				return;
 			}
 			const files = await this.listFilesService.listFiles(selectedFolder.label);
+			if (!files || files.length === 0) {
+				throw Error('Empty folder');
+			}
 			const selectedFiles: QuickPickItem[] | undefined = await this.listFilesService.selectFiles(files);
 
 			if (!selectedFiles) {
@@ -98,7 +106,7 @@ export default class ImportFiles extends BaseAction {
 		} else {
 			if (this.activeFile) {
 				const filePath = this.executionPath
-					? this.activeFile.split(this.getProjectFolderPath() + "\\FileCabinet")[1].replace(/\\/g, '/')
+					? this.activeFile.split(this.getProjectFolderPath() + '\\FileCabinet')[1].replace(/\\/g, '/')
 					: this.activeFile;
 				return [filePath];
 			}
