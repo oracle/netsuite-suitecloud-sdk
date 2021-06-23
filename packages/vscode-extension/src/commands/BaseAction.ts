@@ -3,25 +3,25 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import MessageService from '../service/MessageService';
-import VSConsoleLogger from '../loggers/VSConsoleLogger';
-import { VSTranslationService } from '../service/VSTranslationService';
-import { CLIConfigurationService, getRootProjectFolder } from '../util/ExtensionUtil';
-import { ERRORS } from '../service/TranslationKeys';
-import { commandsInfoMap } from '../commandsMap';
 import { assert } from 'console';
 import { window } from 'vscode';
+import { commandsInfoMap } from '../commandsMap';
+import SuiteCloudRunner from '../core/SuiteCloudRunner';
+import VSConsoleLogger from '../loggers/VSConsoleLogger';
+import MessageService from '../service/MessageService';
+import { ERRORS } from '../service/TranslationKeys';
+import { VSTranslationService } from '../service/VSTranslationService';
+import { CLIConfigurationService, getRootProjectFolder } from '../util/ExtensionUtil';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
-	protected isFileSelected: boolean | undefined;
+	protected isFileSelected?: boolean;
 	protected readonly messageService: MessageService;
 	protected readonly vscodeCommandName: string;
 	protected readonly cliCommandName: string;
 	protected executionPath?: string;
 	protected vsConsoleLogger!: VSConsoleLogger;
-	protected activeFile: string | undefined;
+	protected activeFile?: string;
 
 	protected abstract execute(): Promise<void>;
 
