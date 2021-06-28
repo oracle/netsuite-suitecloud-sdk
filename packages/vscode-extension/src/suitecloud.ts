@@ -8,6 +8,7 @@
 import * as vscode from 'vscode';
 import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
+import CreateProject from './commands/CreateProject';
 import Deploy from './commands/Deploy';
 import ListFiles from './commands/ListFiles';
 import ListObjects from './commands/ListObjects';
@@ -31,6 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		register('suitecloud.adddependencies', new AddDependencies()),
+		register('suitecloud.createproject', new CreateProject()),
 		register('suitecloud.deploy', new Deploy()),
 		register('suitecloud.listfiles', new ListFiles()),
 		register('suitecloud.listobjects', new ListObjects()),

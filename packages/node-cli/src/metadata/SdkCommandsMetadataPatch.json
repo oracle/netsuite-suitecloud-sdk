@@ -21,6 +21,15 @@
 			}
 		}
 	},
+	"project:create": {
+		"options": {
+			"includeunittesting": {
+				"name": "includeunittesting",
+				"type": "FLAG",
+				"disableInIntegrationMode": true
+			}
+		}
+	},
 	"project:deploy": {
 		"options": {
 			"dryrun": {

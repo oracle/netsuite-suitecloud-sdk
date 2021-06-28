@@ -116,7 +116,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 				}),
 			};
 
-			this._fileSystemService.createFolder(this._executionPath, projectFolderName);
+			this._fileSystemService.createFolderFromAbsolutePath(projectAbsolutePath);
 
 			const executionContextCreateProject = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
@@ -130,7 +130,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 			const createProjectActionData = await createProjectAction;
 
 			const projectName = params[COMMAND_OPTIONS.PROJECT_NAME];
-			const includeUnitTesting = params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING];
+			const includeUnitTesting = this._getIncludeUnitTestingBoolean(params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]);
 			//fixing project name for not interactive output before building results
 			const commandParameters = {...createProjectParams, [`${COMMAND_OPTIONS.PROJECT_NAME}`]: params[COMMAND_OPTIONS.PROJECT_NAME] };
 
@@ -178,7 +178,8 @@ module.exports = class CreateProjectAction extends BaseAction {
 				}
 				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, params[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
-				if (params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]) {
+				let includeUnitTesting = this._getIncludeUnitTestingBoolean(params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]);
+				if (includeUnitTesting) {
 					this._log.info(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV));
 					await this._createUnitTestFiles(
 						params[COMMAND_OPTIONS.TYPE],
@@ -201,10 +202,19 @@ module.exports = class CreateProjectAction extends BaseAction {
 					npmInstallSuccess: npmInstallSuccess,
 				});
 			} catch (error) {
-				this._fileSystemService.deleteFolderRecursive(path.join(this._executionPath, projectFolderName));
+				this._fileSystemService.deleteFolderRecursive(path.join(projectAbsolutePath, projectFolderName));
 				reject(error);
 			}
 		};
+	}
+
+	_getIncludeUnitTestingBoolean(includeUnitTestingParam) {
+		let includeUnitTesting = includeUnitTestingParam;
+		if (typeof includeUnitTesting === 'string') {
+			includeUnitTesting = (includeUnitTesting === 'true');
+		}
+
+		return includeUnitTesting;
 	}
 
 	_getProjectFolderName(params) {

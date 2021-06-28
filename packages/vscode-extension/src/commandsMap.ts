@@ -3,8 +3,6 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-const CATEGORY = 'SuiteCloud';
-
 export const commandsInfoMap: {
 	[commandName: string]: {
 		cliCommandName: string;
@@ -17,6 +15,11 @@ export const commandsInfoMap: {
 		cliCommandName: 'project:adddependencies',
 		vscodeCommandName: 'Add Dependency References to the Manifest',
 		vscodeShortName: 'Add Dependencies',
+	},
+	createproject: {
+		cliCommandName: 'project:create',
+		vscodeCommandName: 'Create SuiteCloud Project',
+		vscodeShortName: 'Create Project',
 	},
 	deploy: {
 		cliCommandName: 'project:deploy',

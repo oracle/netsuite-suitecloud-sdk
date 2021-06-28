@@ -14,6 +14,17 @@
 	"COMMAND_SUCCESS": "'{0}' has been successfully executed.",
 	"COMMAND_TRIGGERED": "'{0}' has been triggered.",
 
+	"CREATE_PROJECT_SELECT_PARENT_FOLDER": "Select the parent folder to create your new SuiteCloud Project",
+	"CREATE_PROJECT_PROJECT_TYPE_ACP": "Account Customization Project",
+	"CREATE_PROJECT_PROJECT_TYPE_SUITEAPP": "SuiteApp Project",
+	"CREATE_PROJECT_QUESTION_CHOOSE_PROJECT_TYPE": "Select the project type you want to create",
+	"CREATE_PROJECT_QUESTION_ENTER_PROJECT_ID": "Enter the project ID",
+	"CREATE_PROJECT_QUESTION_ENTER_PROJECT_NAME": "Enter the project name",
+	"CREATE_PROJECT_QUESTION_ENTER_PROJECT_VERSION": "Enter the project version",
+	"CREATE_PROJECT_QUESTION_ENTER_PUBLISHER_ID": "Enter the publisher ID",
+	"CREATE_PROJECT_QUESTION_INCLUDE_UNIT_TESTING": "Do you want to include unit testing with the Jest testing framework?",
+	"CREATE_PROJECT_QUESTION_OVERWRITE_PROJECT": "Do you want to overwrite the {0} project?",
+
 	"DEPLOY_DEPLOYING": "Deploying project...",
 	"DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
 	"DEPLOY_QUESTIONS_APPLY_INSTALLATION_PREFERENCES": "Do you want to apply installation preferences?",
