@@ -45,6 +45,16 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.importfiles",
+				"title": "Import Files",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.importfile",
+				"title": "Import File from Account",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.listfiles",
 				"title": "List Files",
 				"category": "SuiteCloud"
@@ -93,7 +103,16 @@
 				"key": "alt+shift+u",
 				"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/"
 			}
-		]
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
+					"command": "suitecloud.importfile",
+					"group": "suitecloud@1"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

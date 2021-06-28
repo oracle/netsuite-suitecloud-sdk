@@ -3,22 +3,25 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
+import { assert } from 'console';
+import { window } from 'vscode';
+import { commandsInfoMap } from '../commandsMap';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import MessageService from '../service/MessageService';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
+import MessageService from '../service/MessageService';
+import { ERRORS } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 import { CLIConfigurationService, getRootProjectFolder } from '../util/ExtensionUtil';
-import { ERRORS } from '../service/TranslationKeys';
-import { commandsInfoMap } from '../commandsMap';
-import { assert } from 'console';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
+	protected isFileSelected?: boolean;
 	protected readonly messageService: MessageService;
 	protected readonly vscodeCommandName: string;
 	protected readonly cliCommandName: string;
 	protected executionPath?: string;
 	protected vsConsoleLogger!: VSConsoleLogger;
+	protected activeFile?: string;
 
 	protected abstract execute(): Promise<void>;
 
@@ -30,10 +33,12 @@ export default abstract class BaseAction {
 		this.translationService = new VSTranslationService();
 	}
 
-	protected init() {
+	protected init(fsPath?: string) {
 		this.executionPath = getRootProjectFolder();
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 		this.messageService.executionPath = this.executionPath;
+		this.isFileSelected = fsPath ? true : false;
+		this.activeFile = fsPath ? fsPath : window.activeTextEditor?.document.uri.fsPath;
 	}
 
 	protected validate(): { valid: false; message: string } | { valid: true } {
@@ -72,8 +77,8 @@ export default abstract class BaseAction {
 		return cliConfigurationService.getProjectFolder(this.cliCommandName);
 	}
 
-	public async run() {
-		this.init();
+	public async run(fsPath?: string) {
+		this.init(fsPath);
 		const validationStatus = this.validate();
 		if (validationStatus.valid) {
 			return this.execute();

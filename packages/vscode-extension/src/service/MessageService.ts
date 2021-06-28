@@ -4,7 +4,7 @@
  */
 
 import { window } from 'vscode';
-import { Output } from '../suitecloud';
+import { output } from '../suitecloud';
 import { COMMAND, SEE_DETAILS } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
@@ -73,7 +73,7 @@ export default class MessageService {
 
 	private showOutputIfClicked(message?: string) {
 		if (message) {
-			Output.show();
+			output.show();
 		}
 	}
 }

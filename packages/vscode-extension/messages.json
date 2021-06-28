@@ -33,6 +33,18 @@
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
 
+	"IMPORT_FILES_QUESTIONS_CHOOSE_OPTION": "You should choose at least one option.",
+	"IMPORT_FILES_ERROR": "The importing process has encountered an error.",
+	"IMPORT_FILES_FINISHED": "The importing process has finished.",
+	"IMPORT_FILES_IMPORTING_FILE": "Importing file...",
+	"IMPORT_FILES_IMPORTING_FILES": "Importing files...",
+	"IMPORT_FILES_PROCESS_CANCELED": "The file import process has been canceled. No custom files have been overwritten.",
+	"IMPORT_FILES_QUESTIONS_EXCLUDE_PROPERTIES": "Do you want to exclude all file properties within the .attributes folder?",
+	"IMPORT_FILES_QUESTIONS_SELECT_FILES": "Select the files you want to import to your project.",
+	"IMPORT_FILES_QUESTIONS_OVERRIDE": "All the files in the project will be overwritten with the files from the account. Do you want to continue?",
+	"IMPORT_FILES_QUESTIONS_OVERRIDE_SINGLE": "The {0} file will be overwritten with the file from the account. Do you want to continue?",
+
+	"LIST_FILES_ERROR_NO_FILES_FOUND": "No files found.",
 	"LIST_FILES_LISTING": "Listing files...",
 	"LIST_FILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
 	"LIST_FILES_RESTRICTED_FOLDER": "Restricted Folder",
@@ -41,7 +53,7 @@
 
 	"MANAGE_ACCOUNTS_AVAILABLE_CONNECTIONS": "Available connections",
 	"MANAGE_ACCOUNTS_CANCELED": "The creation of a new authentication ID (authID) has been canceled.",
-	
+
 	"MANAGE_ACCOUNTS_CREATE_BROWSER": "Browser-based authentication",
 	"MANAGE_ACCOUNTS_CREATE_BROWSER_CANCEL": "Cancel the process",
 	"MANAGE_ACCOUNTS_CREATE_CONTINUE_IN_BROWSER": "Continue the authentication process in the prompted browser.",
