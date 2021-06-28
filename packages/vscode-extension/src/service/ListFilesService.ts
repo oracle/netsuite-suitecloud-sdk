@@ -6,14 +6,12 @@ import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { ActionResult } from '../types/ActionResult';
 import { FolderItem } from '../types/FolderItem';
 import {
 	AccountFileCabinetService,
 	actionResultStatus,
-	AuthenticationUtils,
-	ExecutionEnvironmentContext,
+	AuthenticationUtils, ConsoleLogger, ExecutionEnvironmentContext,
 	getRootProjectFolder
 } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
@@ -34,12 +32,13 @@ export default class ListFilesService {
 	private readonly translationService: VSTranslationService;
 	private executionPath?: string;
 	private readonly messageService: MessageService;
-	private vsConsoleLogger: VSConsoleLogger | undefined;
+	private vsConsoleLogger: typeof ConsoleLogger | undefined;
 
 	constructor(messageService: MessageService, translationService: VSTranslationService) {
 		this.messageService = messageService;
 		this.translationService = translationService;
 		this.executionPath = getRootProjectFolder();
+		
 	}
 
 	public async getListFolders() {
@@ -147,7 +146,7 @@ export default class ListFilesService {
 		return suiteCloudRunnerRunResult;
 	}
 
-	setVsConsoleLogger(vsConsoleLogger: VSConsoleLogger) {
+	setVsConsoleLogger(vsConsoleLogger: typeof ConsoleLogger) {
 		this.vsConsoleLogger = vsConsoleLogger;
 	}
 }

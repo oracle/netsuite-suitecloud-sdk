@@ -10,6 +10,7 @@ import { ANSWERS, ERRORS, IMPORT_FILES, LIST_FILES } from '../service/Translatio
 import { FolderItem } from '../types/FolderItem';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import DummyConsoleLogger from '../loggers/DummyConsoleLogger';
 
 const COMMAND_NAME = 'importfiles';
 
@@ -26,7 +27,7 @@ export default class ImportFiles extends BaseAction {
 	protected init(fsPath?: string) {
 		super.init(fsPath);
 		this.importFileService.setVsConsoleLogger(this.vsConsoleLogger);
-		this.listFilesService.setVsConsoleLogger(this.vsConsoleLogger);
+		this.listFilesService.setVsConsoleLogger(new DummyConsoleLogger());
 	}
 
 	protected async execute() {
