@@ -40,6 +40,11 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.createproject",
+				"title": "Create Project...",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.deploy",
 				"title": "Deploy Project...",
 				"category": "SuiteCloud"

@@ -180,11 +180,23 @@ module.exports = class ProjectInfoService {
 	}
 
 	isAccountCustomizationProject() {
-		return this.getProjectType() === PROJECT_ACP;
+		try {
+			return this.getProjectType() === PROJECT_ACP;
+		} catch (error) {
+			return false;
+		}
 	}
 
 	isSuiteAppProject() {
-		return this.getProjectType() === PROJECT_SUITEAPP;
+		try {
+			return this.getProjectType() === PROJECT_SUITEAPP;
+		} catch (error) {
+			return false;
+		}
+	}
+
+	isSuiteCloudProject() {
+		return this.isAccountCustomizationProject() || this.isSuiteAppProject();
 	}
 
 };
