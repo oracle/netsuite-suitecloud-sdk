@@ -8,7 +8,6 @@ import { ConsoleLogger } from '../util/ExtensionUtil';
 import { getTimestamp } from '../util/DateUtils';
 
 export default class VSConsoleLogger extends ConsoleLogger {
-
 	private _executionPath?: string;
 	private _addExecutionDetailsToLog: boolean = false;
 
@@ -21,9 +20,9 @@ export default class VSConsoleLogger extends ConsoleLogger {
 
 	private getExecutionDetails(): string {
 		if (this._executionPath) {
-			const executionPathParts = this._executionPath.replace(/\\/g, "/").split("/")
+			const executionPathParts = this._executionPath.replace(/\\/g, '/').split('/');
 			const projectFolderName = executionPathParts[executionPathParts.length - 1];
-			return getTimestamp() + " - " + projectFolderName;
+			return getTimestamp() + ' - ' + projectFolderName;
 		} else {
 			return getTimestamp();
 		}
@@ -51,9 +50,8 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	warning(message: string): void {
 		this.println(message);
 	}
-	
+
 	error(message: string): void {
 		this.println(message);
 	}
-
 }
