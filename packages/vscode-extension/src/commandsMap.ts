@@ -20,7 +20,7 @@ export const commandsInfoMap: {
 	},
 	deploy: {
 		cliCommandName: 'project:deploy',
-		vscodeCommandName: 'Deploy Project',
+		vscodeCommandName: 'Deploy Project...',
 		vscodeShortName: 'Deploy',
 	},
 	importfiles: {
@@ -37,7 +37,7 @@ export const commandsInfoMap: {
 	},
 	listobjects: {
 		cliCommandName: 'object:list',
-		vscodeCommandName: 'List Objects',
+		vscodeCommandName: 'List Objects...',
 	},
 	uploadfile: {
 		cliCommandName: 'file:upload',
@@ -45,7 +45,7 @@ export const commandsInfoMap: {
 	},
 	manageaccounts: {
 		cliCommandName: 'account:setup',
-		vscodeCommandName: 'Set Up Account',
+		vscodeCommandName: 'Set Up Account...',
 	},
 	updateobject: {
 		cliCommandName: 'object:update',
