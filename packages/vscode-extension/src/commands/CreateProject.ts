@@ -22,6 +22,7 @@ const COMMAND_ARGUMENTS = {
     PUBLISHER_ID: 'publisherid',
     TYPE: 'type',
 };
+const VSCODE_OPEN_FOLDER_COMMAND = 'vscode.openFolder';
 
 export default class CreateProject extends BaseAction {
 
@@ -37,16 +38,22 @@ export default class CreateProject extends BaseAction {
 
         const actionResult = await this.runSuiteCloudCommand(commandArgs);
         if (actionResult.isSuccess()) {
-            await CreateProject.openProjectInNewWindow(actionResult.projectDirectory);
+            await this.openProjectInNewWindow(actionResult.projectDirectory);
         }
     }
 
-    private static async openProjectInNewWindow(projectAbsolutePath: string) {
+    private async openProjectInNewWindow(projectAbsolutePath: string): Promise<void> {
+        const openProjectInNewWindow = await window.showInformationMessage(
+            this.translationService.getMessage(CREATE_PROJECT.MESSAGES.OPEN_PROJECT),
+            this.translationService.getMessage(CREATE_PROJECT.BUTTONS.THIS_WINDOW),
+            this.translationService.getMessage(CREATE_PROJECT.BUTTONS.NEW_WINDOW),
+        );
+
         commands.executeCommand(
-            'vscode.openFolder',
+            VSCODE_OPEN_FOLDER_COMMAND,
              Uri.file(projectAbsolutePath),
             {
-                forcenewwindow: true,
+                forcenewwindow: openProjectInNewWindow ? CREATE_PROJECT.BUTTONS.NEW_WINDOW : false,
             }
         );
     }
@@ -65,7 +72,7 @@ export default class CreateProject extends BaseAction {
             return {};
         }
 
-        let projectType = await this.showSelectProjectTypeQuestion();
+        let projectType = await this.promptSelectProjectTypeQuestion();
         if (!projectType) {
             return {};
         }
@@ -73,7 +80,7 @@ export default class CreateProject extends BaseAction {
             ? ApplicationConstants.PROJECT_ACP
             : ApplicationConstants.PROJECT_SUITEAPP;
 
-        const projectName = await this.showProjectNameQuestion();
+        const projectName = await this.promptProjectNameQuestion();
         if (!projectName) {
             return {};
         }
@@ -81,19 +88,19 @@ export default class CreateProject extends BaseAction {
 
         let publisherId, projectId, projectVersion;
         if (projectType === this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.SUITEAPP)) {
-            publisherId = await this.showPublisherIdQuestion();
+            publisherId = await this.promptPublisherIdQuestion();
             if (publisherId === undefined) {
                 return {};
             }
             commandArgs[COMMAND_ARGUMENTS.PUBLISHER_ID] = publisherId;
 
-            projectId = await this.showProjectIdQuestion();
+            projectId = await this.promptProjectIdQuestion();
             if (!projectId) {
                 return {};
             }
             commandArgs[COMMAND_ARGUMENTS.PROJECT_ID] = projectId;
 
-            projectVersion = await this.showProjectVersionQuestion();
+            projectVersion = await this.promptProjectVersionQuestion();
             if (!projectVersion) {
                 return {};
             }
@@ -105,7 +112,7 @@ export default class CreateProject extends BaseAction {
         }
         commandArgs[COMMAND_ARGUMENTS.PARENT_DIRECTORY] = path.join(selectedFolder[0].fsPath, commandArgs[COMMAND_ARGUMENTS.PROJECT_FOLDER_NAME]);
 
-        const includeUnitTesting = await this.showIncludeUnitTestingQuestion();
+        const includeUnitTesting = await this.promptIncludeUnitTestingQuestion();
         if (!includeUnitTesting) {
             return {};
         }
@@ -114,7 +121,7 @@ export default class CreateProject extends BaseAction {
         const projectAbsolutePath = commandArgs[COMMAND_ARGUMENTS.PARENT_DIRECTORY];
         const fileSystemService = new FileSystemService();
         if (fileSystemService.folderExists(projectAbsolutePath) && !fileSystemService.isFolderEmpty(projectAbsolutePath)) {
-            const overwriteProject = await this.showOverwriteFilesQuestion(projectAbsolutePath);
+            const overwriteProject = await this.promptOverwriteFilesQuestion(projectAbsolutePath);
             if (!overwriteProject) {
                 return {};
             }
@@ -124,7 +131,7 @@ export default class CreateProject extends BaseAction {
         return commandArgs;
     }
 
-    private showOverwriteFilesQuestion(projectAbsolutePath: string): Thenable<string | undefined> {
+    private promptOverwriteFilesQuestion(projectAbsolutePath: string): Thenable<string | undefined> {
         return window.showQuickPick(
             [this.translationService.getMessage(ANSWERS.NO), this.translationService.getMessage(ANSWERS.YES)],
             {
@@ -134,7 +141,7 @@ export default class CreateProject extends BaseAction {
         );
     }
 
-    private showIncludeUnitTestingQuestion(): Thenable<string | undefined> {
+    private promptIncludeUnitTestingQuestion(): Thenable<string | undefined> {
         return window.showQuickPick(
             [this.translationService.getMessage(ANSWERS.NO), this.translationService.getMessage(ANSWERS.YES)],
             {
@@ -144,7 +151,7 @@ export default class CreateProject extends BaseAction {
         );
     }
 
-    private showProjectVersionQuestion(): Thenable<string | undefined> {
+    private promptProjectVersionQuestion(): Thenable<string | undefined> {
         return window.showInputBox(
             {
                 ignoreFocusOut: true,
@@ -161,7 +168,7 @@ export default class CreateProject extends BaseAction {
         );
     }
 
-    private showProjectIdQuestion(): Thenable<string | undefined> {
+    private promptProjectIdQuestion(): Thenable<string | undefined> {
         return window.showInputBox(
             {
                 ignoreFocusOut: true,
@@ -182,7 +189,7 @@ export default class CreateProject extends BaseAction {
         );
     }
 
-    private showPublisherIdQuestion(): Thenable<string | undefined> {
+    private promptPublisherIdQuestion(): Thenable<string | undefined> {
         return window.showInputBox(
             {
                 ignoreFocusOut: true,
@@ -199,7 +206,7 @@ export default class CreateProject extends BaseAction {
         );
     }
 
-    private showProjectNameQuestion(): Thenable<string | undefined> {
+    private promptProjectNameQuestion(): Thenable<string | undefined> {
         return window.showInputBox(
             {
                 ignoreFocusOut: true,
@@ -216,7 +223,7 @@ export default class CreateProject extends BaseAction {
         );
     }
 
-    private showSelectProjectTypeQuestion(): Thenable<string | undefined> {
+    private promptSelectProjectTypeQuestion(): Thenable<string | undefined> {
         return window.showQuickPick(
             [this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.ACP), this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.SUITEAPP)],
             {

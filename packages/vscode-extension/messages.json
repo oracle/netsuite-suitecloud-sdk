@@ -14,7 +14,9 @@
 	"COMMAND_SUCCESS": "'{0}' has been successfully executed.",
 	"COMMAND_TRIGGERED": "'{0}' has been triggered.",
 
-	"CREATE_PROJECT_SELECT_PARENT_FOLDER": "Select the parent folder to create your new SuiteCloud Project",
+	"CREATE_PROJECT_BUTTON_NEW_WINDOW": "New Window",
+	"CREATE_PROJECT_BUTTON_THIS_WINDOW": "This Window",
+	"CREATE_PROJECT_MESSAGE_OPEN_PROJECT": "Projects can be opened in a new window or replace the project in the existing window. How would you like to open the project?",
 	"CREATE_PROJECT_PROJECT_TYPE_ACP": "Account Customization Project",
 	"CREATE_PROJECT_PROJECT_TYPE_SUITEAPP": "SuiteApp Project",
 	"CREATE_PROJECT_QUESTION_CHOOSE_PROJECT_TYPE": "Select the project type you want to create",
@@ -24,6 +26,7 @@
 	"CREATE_PROJECT_QUESTION_ENTER_PUBLISHER_ID": "Enter the publisher ID",
 	"CREATE_PROJECT_QUESTION_INCLUDE_UNIT_TESTING": "Do you want to include unit testing with the Jest testing framework?",
 	"CREATE_PROJECT_QUESTION_OVERWRITE_PROJECT": "Do you want to overwrite the {0} project?",
+	"CREATE_PROJECT_SELECT_PARENT_FOLDER": "Select the parent folder to create your new SuiteCloud Project",
 
 	"DEPLOY_DEPLOYING": "Deploying project...",
 	"DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
@@ -43,6 +46,8 @@
 	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
+	"EXTENSION_PROJECT_STARTUP_BUTTON_RUN_SUITECLOUD_SETUP_ACCOUNT": "SuiteCloud: Setup Account",
+	"EXTENSION_PROJECT_STARTUP_MESSAGE_PROJECT_NEEDS_SETUP_ACCOUNT": "No account has been set up for this project. Click \"SuiteCloud: Setup Account\" to link your project with your account.",
 
 	"LIST_FILES_LISTING": "Listing files...",
 	"LIST_FILES_LOADING_FOLDERS": "Loading File Cabinet folders...",

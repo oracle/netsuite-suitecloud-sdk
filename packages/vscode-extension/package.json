@@ -41,7 +41,7 @@
 			},
 			{
 				"command": "suitecloud.createproject",
-				"title": "Create Project",
+				"title": "Create Project...",
 				"category": "SuiteCloud"
 			},
 			{

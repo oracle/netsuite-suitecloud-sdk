@@ -18,7 +18,7 @@ export const commandsInfoMap: {
 	},
 	createproject: {
 		cliCommandName: 'project:create',
-		vscodeCommandName: 'Create SuiteCloud Project',
+		vscodeCommandName: 'Create SuiteCloud Project...',
 		vscodeShortName: 'Create Project',
 	},
 	deploy: {
