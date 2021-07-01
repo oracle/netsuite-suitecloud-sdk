@@ -41,7 +41,7 @@
 			},
 			{
 				"command": "suitecloud.deploy",
-				"title": "Deploy Project",
+				"title": "Deploy Project...",
 				"category": "SuiteCloud"
 			},
 			{
@@ -61,12 +61,12 @@
 			},
 			{
 				"command": "suitecloud.listobjects",
-				"title": "List Objects",
+				"title": "List Objects...",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.setupaccount",
-				"title": "Setup Account",
+				"title": "Setup Account...",
 				"category": "SuiteCloud"
 			},
 			{
@@ -120,7 +120,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.2.1"
+		"@oracle/suitecloud-cli": "file:../node-cli"
 	},
 	"devDependencies": {
 		"@types/glob": "7.1.3",
