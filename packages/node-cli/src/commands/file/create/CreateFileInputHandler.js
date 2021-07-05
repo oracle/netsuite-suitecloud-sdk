@@ -11,7 +11,7 @@ const {
     showValidationResults,
     validateArrayIsNotEmpty,
     validateFieldIsNotEmpty,
-    validateFileAlreadyExists,
+    validateSuiteScriptFileAlreadyExists,
 } = require('../../../validation/InteractiveAnswersValidator');
 const {
     COMMAND_CREATEFILE: { QUESTIONS },
@@ -137,7 +137,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             validate: (fieldValue) => showValidationResults(
                 fieldValue,
                 validateFieldIsNotEmpty,
-                (fieldValue) => validateFileAlreadyExists(parentAbsolutePath, fieldValue)
+                (fieldValue) => validateSuiteScriptFileAlreadyExists(parentAbsolutePath, fieldValue)
             ),
         };
     }
