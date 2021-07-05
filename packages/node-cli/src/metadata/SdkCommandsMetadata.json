@@ -239,7 +239,7 @@
 				"description": "Specifies the type of the SuiteScript file that you want to create.",
 				"mandatory": false,
 				"type": "MULTIPLE",
-				"usage": "N/record [...]",
+				"usage": "ClientScript",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -256,10 +256,10 @@
 			"path": {
 				"name": "path",
 				"option": "path",
-				"description": "References the folder or zip file that contains the SDF project.",
+				"description": "Specify the File Cabinet path of the SuiteScript file to create. For example, \"/SuiteScripts/ClientScipt.js\".",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "foo/bar/CliensScript.js",
+				"usage": "\"/SuiteScripts/ClientScript.js\"",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
