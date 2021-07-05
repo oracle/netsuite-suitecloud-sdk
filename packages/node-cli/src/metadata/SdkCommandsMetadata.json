@@ -241,7 +241,7 @@
 				"type": "MULTIPLE",
 				"usage": "ClientScript",
 				"defaultOption": false,
-				"disableInIntegrationMode": true
+				"disableInIntegrationMode": false
 			},
 			"module": {
 				"name": "module",
@@ -251,7 +251,7 @@
 				"type": "MULTIPLE",
 				"usage": "N/record [...]",
 				"defaultOption": false,
-				"disableInIntegrationMode": true
+				"disableInIntegrationMode": false
 			},
 			"path": {
 				"name": "path",
@@ -261,7 +261,7 @@
 				"type": "SINGLE",
 				"usage": "\"/SuiteScripts/ClientScript.js\"",
 				"defaultOption": false,
-				"disableInIntegrationMode": true
+				"disableInIntegrationMode": false
 			},
 			"project": {
 				"name": "project",
