@@ -49,6 +49,10 @@ To work with both tools at the same time, do the following:
 
 ![SuiteCloud CLI for Node.js combined with SuiteCloud extension for Visual Studio Code](resources/cliForNodejsDemo.gif)
 
+4. Setup a new account or select one already configured to use in your project
+
+![SuiteCloud CLI for Node.js combined with SuiteCloud extension for Visual Studio Code](resources/setupAccountDemo.gif)
+
 ## [Contributing](/CONTRIBUTING.md)
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
 
