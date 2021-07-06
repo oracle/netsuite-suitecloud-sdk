@@ -180,7 +180,7 @@ module.exports = {
 		const fileSystemService = new FileSystemService();
 		return !fileSystemService.fileExists(path.join(parentFolderPath, filenameWithExtension))
 			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILE_ALREADY_EXISTS, parentFolderPath));
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILE_ALREADY_EXISTS));
 	}
 
 };
