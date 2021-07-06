@@ -27,7 +27,7 @@ function getInfoString(accountCredentials) {
 		os.EOL +
 		NodeTranslationService.getMessage(ACCOUNT_INFO.ROLE, accountInfo.roleName) +
 		os.EOL +
-		NodeTranslationService.getMessage(ApplicationConstants.DOMAIN, accountCredentials.domain) +
+		NodeTranslationService.getMessage(DOMAIN, accountCredentials.domain) +
 		os.EOL +
 		NodeTranslationService.getMessage(ACCOUNT_INFO.ACCOUNT_TYPE, _getAccountType(accountInfo.companyId))
 	);
@@ -42,22 +42,21 @@ function _getAccountType(accountId) {
 	return NodeTranslationService.getMessage(ACCOUNT_TYPE.PRODUCTION);
 }
 
-function getListItemString(authID, accountCredential) {
+function getListItemString(authID, accountCredentials) {
 	const isNotProductionUrl =
-		accountCredential.urls &&
-		!accountCredential.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
-		!accountCredential.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+		accountCredentials.urls &&
+		!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+		!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
 	const notProductionLabel = isNotProductionUrl
-		? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION, accountCredential.urls.app)
+		? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION, accountCredentials.urls.app)
 		: '';
-	const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`;
-	const accountCredentialString = NodeTranslationService.getMessage(
+	const accountInfo = `${accountCredentials.accountInfo.roleName} @ ${accountCredentials.accountInfo.companyName}`;
+	return NodeTranslationService.getMessage(
 		QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
 		authID,
 		accountInfo,
 		notProductionLabel
 	);
-	return accountCredentialString;
 }
 
 module.exports = { getInfoString, getListItemString };
