@@ -39,7 +39,7 @@ module.exports = [
     },
     {
         id: "Restlet",
-        name: "Portlet",
+        name: "RESTlet",
     },
     {
         id: "ScheduledScript",
