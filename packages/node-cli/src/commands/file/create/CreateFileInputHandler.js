@@ -5,10 +5,11 @@
 'use strict';
 
 const { prompt, Separator } = require('inquirer');
-const { join } = require('path');
+const path = require('path');
 const { FOLDERS } = require('../../../ApplicationConstants');
 const {
     showValidationResults,
+    validateFieldHasNoSpaces,
     validateArrayIsNotEmpty,
     validateFieldIsNotEmpty,
     validateSuiteScriptFileAlreadyExists,
@@ -44,7 +45,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
         super(options);
 
         this._fileSystemService = new FileSystemService();
-        this._fileCabinetService = new FileCabinetService(join(this._projectFolder, FOLDERS.FILE_CABINET));
+        this._fileCabinetService = new FileCabinetService(path.join(this._projectFolder, FOLDERS.FILE_CABINET));
         this._projectInfoService = new ProjectInfoService(this._projectFolder);
 
         this._accountCustomizationProject = this._projectInfoService.isAccountCustomizationProject();
@@ -127,8 +128,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
     }
 
     _questionEnterName(parentRelativePath) {
-        const parentAbsolutePath = (this._projectFolder + ApplicationConstants.FOLDERS.FILE_CABINET + parentRelativePath)
-            .replace(/\\/g, "/");
+        const parentAbsolutePath = path.join(this._projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET, parentRelativePath);
 
         return {
             type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -137,6 +137,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             validate: (fieldValue) => showValidationResults(
                 fieldValue,
                 validateFieldIsNotEmpty,
+                validateFieldHasNoSpaces,
                 (fieldValue) => validateSuiteScriptFileAlreadyExists(parentAbsolutePath, fieldValue)
             ),
         };
@@ -152,7 +153,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
                 folderRestricted = !folderRelativePath.startsWith(SUITESCRIPTS_PATH);
             } else {
                 const applicationId = this._projectInfoService.getApplicationId();
-                const applicationSuiteAppFolderAbsolutePath = join(this._projectFolder, FOLDERS.FILE_CABINET, SUITEAPPS_PATH, '/', applicationId, '/');
+                const applicationSuiteAppFolderAbsolutePath = path.join(this._projectFolder, FOLDERS.FILE_CABINET, SUITEAPPS_PATH, '/', applicationId, '/');
                 const applicationSuiteAppFolderRelativePath = this._fileCabinetService.getFileCabinetRelativePath(applicationSuiteAppFolderAbsolutePath);
                 folderRestricted = !folderRelativePath.startsWith(applicationSuiteAppFolderRelativePath);
             }
@@ -165,7 +166,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
         }
 
         return this._fileSystemService
-            .getFoldersFromDirectoryRecursively(join(this._projectFolder, FOLDERS.FILE_CABINET))
+            .getFoldersFromDirectoryRecursively(path.join(this._projectFolder, FOLDERS.FILE_CABINET))
             .map(transformFolderToChoicesObjectFuntion);
     }
 

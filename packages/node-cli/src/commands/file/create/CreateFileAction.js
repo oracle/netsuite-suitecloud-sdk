@@ -4,6 +4,7 @@
  */
 'use strict';
 
+const path = require('path');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { FOLDERS } = require('../../../ApplicationConstants');
@@ -61,8 +62,7 @@ module.exports = class CreateFileAction extends BaseAction {
         });
 
         if (operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS) {
-            const suiteScriptFileAbsolutePath = (this._projectFolder + FOLDERS.FILE_CABINET + params[COMMAND_OPTIONS.PATH])
-                .replace(/\\/g, "/");
+            const suiteScriptFileAbsolutePath = path.join(this._projectFolder, FOLDERS.FILE_CABINET, params[COMMAND_OPTIONS.PATH]);
 
             let resultMessage = NodeTranslationService.getMessage(MESSAGES.SUITESCRIPT_FILE_CREATED, suiteScriptFileAbsolutePath);
             if (params.hasOwnProperty(COMMAND_OPTIONS.MODULE)) {
