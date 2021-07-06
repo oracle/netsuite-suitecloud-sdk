@@ -10,6 +10,7 @@ import { EXTENSION_INSTALLATION } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 
 const COMMAND_SETUP_ACCOUNT = 'suitecloud.setupaccount';
+const MANIFEST_FILE_FILENAME = "manifest.xml";
 const SRC_FOLDER_NAME = 'src';
 
 export default async function showSetupAccountWarningMessageIfNeeded(): Promise<void> {
@@ -23,6 +24,16 @@ export default async function showSetupAccountWarningMessageIfNeeded(): Promise<
 
 		const projectJsonAbsolutePath = path.join(projectAbsolutePath, ApplicationConstants.FILES.PROJECT_JSON);
 		if (!FileUtils.exists(projectJsonAbsolutePath)) {
+			await vscode.window.showTextDocument(
+				vscode.Uri.file(
+					path.join(
+						workspaceFolders[0].uri.fsPath,
+						SRC_FOLDER_NAME,
+						MANIFEST_FILE_FILENAME
+					)
+				)
+			);
+
 			const translationService = new VSTranslationService();
 			const runSetupAccount = await vscode.window.showWarningMessage(
 				translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
