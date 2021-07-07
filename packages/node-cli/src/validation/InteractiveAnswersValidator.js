@@ -4,6 +4,7 @@
  */
 'use strict';
 
+const path = require('path');
 const ApplicationConstants = require('../ApplicationConstants');
 const FileSystemService = require('../services/FileSystemService');
 const NodeTranslationService = require('../services/NodeTranslationService');
@@ -23,10 +24,11 @@ const ALPHANUMERIC_HYPHEN_UNDERSCORE_EXTENDED = /^[a-zA-Z0-9-_ ]+([.]*[a-zA-Z0-9
 const SCRIPT_ID_REGEX = /^[a-z0-9_]+$/;
 const STRING_WITH_SPACES_REGEX = /\s/;
 const XML_FORBIDDEN_CHARACTERS_REGEX = /[<>&'"]/;
-
 const PROJECT_VERSION_FORMAT_REGEX = '^\\d+(\\.\\d+){2}$';
 const SUITEAPP_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '(\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '){2}$';
 const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
+
+const FILE_EXTENSION_JS = '.js';
 
 module.exports = {
 	showValidationResults(value, ...funcs) {
@@ -167,11 +169,18 @@ module.exports = {
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	},
 
-	validateFileAlreadyExists(parentFolderPath, filename) {
+	validateSuiteScriptFileAlreadyExists(parentFolderPath, filename) {
+		const filenameParts = path.parse(filename);
+		const filenameExtension = filenameParts.ext;
+		let filenameWithExtension = filename;
+		if (!filenameExtension) {
+			filenameWithExtension = filenameWithExtension + FILE_EXTENSION_JS;
+		}
+
 		const fileSystemService = new FileSystemService();
-		return !fileSystemService.fileExists(parentFolderPath + filename)
+		return !fileSystemService.fileExists(path.join(parentFolderPath, filenameWithExtension))
 			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILE_ALREADY_EXISTS, parentFolderPath));
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILE_ALREADY_EXISTS));
 	}
 
 };
