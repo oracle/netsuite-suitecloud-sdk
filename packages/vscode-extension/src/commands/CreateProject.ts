@@ -42,6 +42,12 @@ export default class CreateProject extends BaseAction {
         }
     }
 
+    protected validate(): { valid: false; message: string } | { valid: true } {
+        return {
+            valid: true,
+        };
+	}
+
     private async openProjectInNewWindow(projectAbsolutePath: string): Promise<void> {
         const openProjectInNewWindow = await window.showInformationMessage(
             this.translationService.getMessage(CREATE_PROJECT.MESSAGES.OPEN_PROJECT),
@@ -51,7 +57,7 @@ export default class CreateProject extends BaseAction {
 
         commands.executeCommand(
             VSCODE_OPEN_FOLDER_COMMAND,
-             Uri.file(projectAbsolutePath),
+            Uri.file(projectAbsolutePath),
             {
                 forcenewwindow: openProjectInNewWindow ? CREATE_PROJECT.BUTTONS.NEW_WINDOW : false,
             }
