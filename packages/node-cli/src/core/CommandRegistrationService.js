@@ -33,7 +33,7 @@ module.exports = class CommandRegistrationService {
 		const executeCommandFunction = options.executeCommandFunction;
 		const runInInteractiveMode = options.runInInteractiveMode;
 
-		let commandSetup = program.command(`${commandMetadata.name} folder>`);
+		let commandSetup = program.command(commandMetadata.name);
 		//program.alias(this._alias)
 
 		if (!runInInteractiveMode) {
