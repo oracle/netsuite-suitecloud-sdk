@@ -49,7 +49,7 @@ To work with both tools at the same time, do the following:
 
 ![SuiteCloud CLI for Node.js combined with SuiteCloud extension for Visual Studio Code](resources/cliForNodejsDemo.gif)
 
-4. Setup a new account or select one already configured to use in your project
+4. Set up a new account, or select an account that is already configured to use for your project.
 
 ![SuiteCloud CLI for Node.js combined with SuiteCloud extension for Visual Studio Code](resources/setupAccountDemo.gif)
 
