@@ -60,6 +60,13 @@
 	"IMPORT_FILES_QUESTIONS_OVERRIDE": "All the files in the project will be overwritten with the files from the account. Do you want to continue?",
 	"IMPORT_FILES_QUESTIONS_OVERRIDE_SINGLE": "The {0} file will be overwritten with the file from the account. Do you want to continue?",
 
+
+	"IMPORT_OBJECTS_QUESTIONS_OVERWRITE": "All the selected objects in the project will be overwritten with the objects from the account. Do you want to continue?",
+	"IMPORT_OBJECTS_QUESTIONS_OVERWRITE_WITH_REFERENCED": "All the selected objects and their referenced SuiteScript files in the project will be overwritten with the objects and files from the account. Do you want to continue?",
+	"IMPORT_OBJECTS_QUESTIONS_REFERENCED_FILES": "Do you want to import the SuiteScript files referenced in the objects?",
+	"IMPORT_OBJECTS_QUESTIONS_SCRIPT_ID": "Enter the full or partial script ID to filter your list.",
+	"IMPORT_OBJECTS_QUESTIONS_SELECT_TYPES": "Select the object types you want to import or select none to list them all.",
+
 	"LIST_FILES_ERROR_NO_FILES_FOUND": "No files found.",
 	"LIST_FILES_LISTING": "Listing files...",
 	"LIST_FILES_LOADING_FOLDERS": "Loading File Cabinet folders...",

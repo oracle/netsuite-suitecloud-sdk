@@ -60,6 +60,11 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.importobjects",
+				"title": "Import Objects",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.listfiles",
 				"title": "List Files",
 				"category": "SuiteCloud"
@@ -96,6 +101,18 @@
 				"key": "ctrl+alt+d",
 				"mac": "ctrl+alt+cmd+d",
 				"linux": "alt+d"
+			},
+			{
+				"command": "suitecloud.importfiles",
+				"key": "ctrl+alt+f",
+				"mac": "ctrl+alt+f",
+				"linux": "ctrl+alt+f"
+			},
+			{
+				"command": "suitecloud.importobjects",
+				"key": "ctrl+alt+o",
+				"mac": "ctrl+alt+cmd+o",
+				"linux": "ctrl+alt+o"
 			},
 			{
 				"command": "suitecloud.updateobject",
