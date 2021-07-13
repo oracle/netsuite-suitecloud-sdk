@@ -238,7 +238,7 @@
 				"option": "type",
 				"description": "Specifies the type of the SuiteScript file that you want to create. For example, \"ClientScript\"",
 				"mandatory": false,
-				"type": "MULTIPLE",
+				"type": "SINGLE",
 				"usage": "ClientScript",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
@@ -246,7 +246,7 @@
 			"module": {
 				"name": "module",
 				"option": "module",
-				"description": "Specifies the SuiteScript modules you want to add to the SuiteScript file. For example, \"N/record\"",
+				"description": "Specifies the SuiteScript modules you want to add to the SuiteScript file. For example, \"N\/record\"",
 				"mandatory": false,
 				"type": "MULTIPLE",
 				"usage": "N/record [...]",

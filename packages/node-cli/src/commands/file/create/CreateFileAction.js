@@ -34,7 +34,7 @@ module.exports = class CreateFileAction extends BaseAction {
         if (this._runInInteractiveMode) {
             params[COMMAND_OPTIONS.PATH] = params.parentPath + params.name;
         }
-        if (!params[COMMAND_OPTIONS.PATH].endsWith(JS_EXTENSION)) {
+        if (params[COMMAND_OPTIONS.PATH] !== undefined && !params[COMMAND_OPTIONS.PATH].endsWith(JS_EXTENSION)) {
             params[COMMAND_OPTIONS.PATH] = params[COMMAND_OPTIONS.PATH] + JS_EXTENSION;
         }
 
