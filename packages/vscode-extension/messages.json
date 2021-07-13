@@ -16,6 +16,7 @@
 
 	"CREATE_PROJECT_BUTTON_NEW_WINDOW": "New Window",
 	"CREATE_PROJECT_BUTTON_THIS_WINDOW": "This Window",
+	"CREATE_PROJECT_MESSAGE_CREATING_PROJECT": "Creating project...",
 	"CREATE_PROJECT_MESSAGE_OPEN_PROJECT": "Projects can be opened in a new window or replace the project in the existing window. How would you like to open the project?",
 	"CREATE_PROJECT_PROJECT_TYPE_ACP": "Account Customization Project",
 	"CREATE_PROJECT_PROJECT_TYPE_SUITEAPP": "SuiteApp Project",
