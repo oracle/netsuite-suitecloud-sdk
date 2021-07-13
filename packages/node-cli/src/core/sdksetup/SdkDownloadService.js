@@ -43,11 +43,11 @@ class SdkDownloadService {
 		const fullURL = `${SdkProperties.getDownloadURL()}/${SdkProperties.getSdkFileName()}`;
 		const destinationFilePath = path.join(sdkDirectory, SdkProperties.getSdkFileName());
 		const proxy = process.env.SUITECLOUD_PROXY || process.env.npm_config_https_proxy || process.env.npm_config_proxy;
-		const skipProxy = SdkProperties.configFileExists();
+		const isCustomUrl = SdkProperties.configFileExists();
 
 		try {
 			await executeWithSpinner({
-				action: this._downloadJarFilePromise(fullURL, destinationFilePath, proxy, skipProxy),
+				action: this._downloadJarFilePromise(fullURL, destinationFilePath, proxy, isCustomUrl),
 				message: NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.DOWNLOADING, fullURL),
 			});
 			NodeConsoleLogger.info(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.SUCCESS));
@@ -56,13 +56,18 @@ class SdkDownloadService {
 		}
 	}
 
-	_downloadJarFilePromise(downloadUrl, destinationFilePath, proxy, skipProxy) {
+	_downloadJarFilePromise(downloadUrl, destinationFilePath, proxy, isCustomUrl) {
 		const downloadUrlObject = new URL(downloadUrl);
 		const downloadUrlProtocol = downloadUrlObject.protocol;
 
+		if (isCustomUrl && !process.env.NEXUS_AUTH) {
+			throw "Missing NEXUS_AUTH env variable."
+		}
+
 		const requestOptions = {
 			encoding: ENCODING.BINARY,
-			...(proxy && !skipProxy && { agent: new ProxyAgent(proxy, { tunnel: true, timeout: 15000 }) }),
+			...(proxy && !isCustomUrl && { agent: new ProxyAgent(proxy, { tunnel: true, timeout: 15000 }) }),
+			...(isCustomUrl && { headers: { Authorization: `Basic ${process.env.NEXUS_AUTH}` } }),
 		};
 
 		if (!/^http:$|^https:$/.test(downloadUrlProtocol)) {
@@ -79,6 +84,9 @@ class SdkDownloadService {
 				response.on(EVENT.END, () => {
 					if (!VALID_JAR_CONTENT_TYPES.includes(response.headers[HEADER.CONTENT_TYPE])) {
 						reject(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.FILE_NOT_AVAILABLE_ERROR));
+					}
+					if (response.statusCode != 200) {
+						reject(`StatusCode: ${response.statusCode}, statusMessage: ${response.statusMessage}`);
 					}
 
 					const jarFile = fs.createWriteStream(destinationFilePath);
