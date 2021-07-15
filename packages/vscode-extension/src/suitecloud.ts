@@ -15,6 +15,7 @@ import ListFiles from './commands/ListFiles';
 import ListObjects from './commands/ListObjects';
 import ManageAccounts from './commands/ManageAccounts';
 import UploadFile from './commands/UploadFile';
+import CreateFile from './commands/CreateFile';
 import UpdateObject from './commands/UpdateObject';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import showSetupAccountWarningMessageIfNeeded from './startup/ShowSetupAccountWarning';
@@ -50,7 +51,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.listobjects', new ListObjects()),
 		register('suitecloud.setupaccount', new ManageAccounts()),
 		register('suitecloud.updateobject', new UpdateObject()),
-		register('suitecloud.uploadfile', new UploadFile())
+		register('suitecloud.uploadfile', new UploadFile()),
+		register('suitecloud.createfile', new CreateFile())
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)

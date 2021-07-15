@@ -99,5 +99,14 @@
 	"UPLOAD_FILE_ERROR_UPLOAD_FILE_FOLDER_RESTRICTION": "The file to upload should be in a supported folder inside the FileCabinet folder. For information about the supported folders, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4724963992.html.",
 	"UPLOAD_FILE_OVERWRITE_FILE": "The file in your account will be overwritten: {0}",
 	"UPLOAD_FILE_PROCESS_CANCELED": "The file upload process has been canceled. No files have been overwritten.",
-	"UPLOAD_FILE_UPLOADING": "Uploading files..."
+	"UPLOAD_FILE_UPLOADING": "Uploading files...",
+	
+	"CREATE_FILE_CHOOSE_SUITESCRIPT_TYPE": "What type of SuiteScript do you want to create?",
+	"CREATE_FILE_ADD_SUITESCRIPT_MODULES": "Do you want to add SuiteScript modules to the file?",
+	"CREATE_FILE_ENTER_NAME": "Enter a name for the SuiteScript file.",
+	"CREATE_FILE_CREATING_FILE": "Creating SuiteScript file...",
+	"CREATE_FILE_SUITESCRIPT_FILE_CREATED": "The SuiteScript file was created successfully in {0}",
+	"CREATE_FILE_SUITESCRIPT_FILE_CREATED_WITH_MODULES": "The SuiteScript file was created successfully in {0}\nThe following modules were added to the script: {1}",
+	"CREATE_FILE_SELECT_FOLDER": "Select the folder where you want to create the SuiteScript file",
+	"CREATE_FILE_SELECT_SUITESCRIPT_MODULES": "Select the SuiteScript modules you want to add to the SuiteScript file"
 }
