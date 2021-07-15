@@ -18,6 +18,7 @@ import UploadFile from './commands/UploadFile';
 import UpdateObject from './commands/UpdateObject';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import showSetupAccountWarningMessageIfNeeded from './startup/ShowSetupAccountWarning';
+import ImportObjects from './commands/ImportObjects';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 
@@ -46,6 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.deploy', new Deploy()),
 		register('suitecloud.importfile', new ImportFiles()),
 		register('suitecloud.importfiles', new ImportFiles()),
+		register('suitecloud.importobjects', new ImportObjects()),
 		register('suitecloud.listfiles', new ListFiles()),
 		register('suitecloud.listobjects', new ListObjects()),
 		register('suitecloud.setupaccount', new ManageAccounts()),

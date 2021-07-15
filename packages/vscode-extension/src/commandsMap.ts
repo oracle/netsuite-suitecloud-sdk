@@ -34,6 +34,10 @@ export const commandsInfoMap: {
 		cliCommandName: 'file:import',
 		vscodeCommandName: 'Import File',
 	},
+	importobjects: {
+		cliCommandName: 'object:import',
+		vscodeCommandName: 'Import Objects',
+	},
 	listfiles: {
 		cliCommandName: 'file:list',
 		vscodeCommandName: 'List Files',
