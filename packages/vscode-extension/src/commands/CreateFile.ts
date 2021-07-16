@@ -24,51 +24,101 @@ export default class CreateFile extends BaseAction {
 		super(COMMAND_NAME);
 	}
 
-	protected async execute() {
+	protected async execute(): Promise<void> {
 		const activeFile = window.activeTextEditor?.document.uri;
 		if (!activeFile) {
 			// Already checked in validate
 			return;
 		}
 
+		const commandArgs = await this.getCommandArgs();
+		if (Object.keys(commandArgs).length === 0) {
+			return;
+		}
+
 		const cliConfigurationService = new CLIConfigurationService();
 		cliConfigurationService.initialize(this.executionPath);
 
-		const scriptType = await window.showQuickPick(SUITESCRIPT_TYPES.map((scriptType: { name: string; }) => scriptType.name),
+
+		const actionResult = await this.runSuiteCloudCommand(commandArgs);
+
+		if (actionResult.isSuccess()) {
+			const createdFileUri: Uri = Uri.file(actionResult.data.path);
+			workspace.openTextDocument(createdFileUri).then((createdFile: TextDocument) => {
+				window.showTextDocument(createdFile);
+			}, (error: any) => {
+				console.error(error);
+				debugger;
+			});
+		}
+	}
+
+	private async getCommandArgs(): Promise<{ [key: string]: any }> {
+		const args: { [k: string]: string | string[] } = {
+			'project': this.getProjectFolderPath(),
+		};
+
+		const selectedScriptType = await this.promptScriptTypeQuestion();
+		const selectedModules = await this.promptAddModulesQuestion();
+		const selectedFolder = await this.promptFolderSelection();
+		const fileName = await this.promptFileNameInputBox();
+
+		args.type = selectedScriptType ? SUITESCRIPT_TYPES.find((type: { name: string; }) => type.name === selectedScriptType).id : '';
+
+		if (selectedModules) {
+			args.modules = selectedModules.map(module => `"${module}"`);
+		}
+
+		if (selectedFolder && fileName) {
+			args.path = selectedFolder + fileName;
+		}
+
+		return args;
+	}
+
+	private promptScriptTypeQuestion(): Thenable<string | undefined> {
+		return window.showQuickPick(
+			SUITESCRIPT_TYPES.map((scriptType: { name: string; }) => scriptType.name),
 			{
 				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.CHOOSE_SUITESCRIPT_TYPE),
 				canPickMany: false,
 			},
 		);
+	}
 
+	private async promptAddModulesQuestion(): Promise<string[] | undefined> {
 		const yes = this.translationService.getMessage(ANSWERS.YES);
 		const no = this.translationService.getMessage(ANSWERS.NO);
-
-		const answerAddModules = await window.showQuickPick([yes, no],
+		const _this = this;
+		const answer = await window.showQuickPick(
+			[yes, no],
 			{
 				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.ADD_SUITESCRIPT_MODULES),
 				canPickMany: false,
 			},
 		);
-
-		let modules: string[] | undefined = [];
-		if (answerAddModules === yes) {
-			modules = await window.showQuickPick(SUITESCRIPT_MODULES.map((module: { id: string; }) => module.id),
+		if (answer === yes) {
+			return window.showQuickPick(
+				SUITESCRIPT_MODULES.map((module: { id: string; }) => module.id),
 				{
-					placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_SUITESCRIPT_MODULES),
+					placeHolder: _this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_SUITESCRIPT_MODULES),
 					canPickMany: true,
 				},
 			);
 		}
+	}
 
-		const selectedFolder = await window.showQuickPick(this._getFolderChoices(),
+	private promptFolderSelection(): Thenable<string | undefined> {
+		return window.showQuickPick(this.getFolderChoices(),
 			{
 				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
 				canPickMany: false,
 			},
 		);
+	}
 
-		const fileName = await window.showInputBox(
+	private promptFileNameInputBox(): Thenable<string | undefined> {
+		return window.showInputBox(
 			{
 				ignoreFocusOut: true,
 				title: this.translationService.getMessage(CREATE_FILE.QUESTIONS.ENTER_NAME),
@@ -83,33 +133,9 @@ export default class CreateFile extends BaseAction {
 				},
 			},
 		);
-
-		const args: { [k: string]: string } = {
-			'type': scriptType ? SUITESCRIPT_TYPES.find((type: { name: string; }) => type.name === scriptType).id : '',
-			'project': this.getProjectFolderPath(),
-		};
-		if (modules) {
-			args.modules = modules?.join(' ');
-		}
-		if (selectedFolder && fileName) {
-			args.path = selectedFolder + fileName;
-		}
-
-		const actionResult = await this.runSuiteCloudCommand(args);
-
-		if (actionResult.isSuccess()) {
-			const setting: Uri = Uri.file(actionResult.data.path);
-			workspace.openTextDocument(setting).then((a: TextDocument) => {
-				window.showTextDocument(a);
-			}, (error: any) => {
-				console.error(error);
-				debugger;
-			});
-		}
-
 	}
 
-	_getFolderChoices() {
+	private getFolderChoices(): string[] {
 		const projectFolderPath = this.getProjectFolderPath();
 		const projectInfoService = new ProjectInfoServive(projectFolderPath);
 		const fileSystemService = new FileSystemService();
@@ -125,10 +151,8 @@ export default class CreateFile extends BaseAction {
 			}
 		};
 
-		const allowedPath = getAllowedPath();
-
 		const isFolderNotRestricted = function(folderRelativePath: string): boolean {
-			return folderRelativePath.startsWith(allowedPath);
+			return folderRelativePath.startsWith(getAllowedPath());
 		};
 
 		const getRelativePath = function(absolutePath: string): string {
