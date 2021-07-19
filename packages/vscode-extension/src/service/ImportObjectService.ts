@@ -6,7 +6,8 @@ import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import MessageService from './MessageService';
 
-const SUITECLOUD_COMMAND_NAME = 'object:import';
+const IMPORT_OBJECT_COMMAND_NAME = 'object:import';
+const LIST_OBJECT_COMMAND_NAME = "object:list";
 const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class ImportObjectService {
@@ -20,31 +21,51 @@ export default class ImportObjectService {
 
 	async importObjects(
 		destinationFolder: string,
-		types: string,
+		types: string[],
 		scriptId: string | undefined,
-		referencedFiles: boolean,
+		includeReferencedFiles: boolean,
 		statusBarMessage: string,
-		executionPath: string | undefined,
-		
+		executionPath: string | undefined
 	) {
 		this.executionPath = executionPath;
 		let commandArgs: any = { type: types, destinationfolder: destinationFolder, scriptid: scriptId };
 
-		if (!referencedFiles) {
+		if (!includeReferencedFiles) {
 			commandArgs.excludefiles = true;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
+		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, IMPORT_OBJECT_COMMAND_NAME);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return await commandActionPromise;
 	}
 
-	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}) {
+	async listObjects(
+		destinationFolder: string,
+		types: string[],
+		scriptId: string | undefined,
+		includeReferencedFiles: boolean,
+		statusBarMessage: any,
+		executionPath: string | undefined
+	) {
+		this.executionPath = executionPath;
+		let commandArgs: any = { type: types, destinationfolder: destinationFolder, scriptid: scriptId };
+
+		if (!includeReferencedFiles) {
+			commandArgs.excludefiles = true;
+		}
+
+		
+		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, LIST_OBJECT_COMMAND_NAME);
+		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
+		return await commandActionPromise;
+	}
+
+	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}, command: string) {
 		if (!this.vsConsoleLogger) {
 			throw Error(CONSOLE_LOGGER_ERROR);
 		}
 		return new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-			commandName: SUITECLOUD_COMMAND_NAME,
+			commandName: command,
 			arguments: args,
 		});
 	}

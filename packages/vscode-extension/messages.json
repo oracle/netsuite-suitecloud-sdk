@@ -61,6 +61,11 @@
 	"IMPORT_FILES_QUESTIONS_OVERRIDE_SINGLE": "The {0} file will be overwritten with the file from the account. Do you want to continue?",
 
 
+	"IMPORT_OBJECTS_ERROR_EMPTY_LIST": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID or script ID.",
+	"IMPORT_OBJECTS_FINISHED": "The importing process has finished.",
+	"IMPORT_OBJECTS_IMPORTING_OBJECTS": "Importing objects...",
+	"IMPORT_OBJECTS_PROCESS_CANCELED": "The object import process has been canceled. No custom files have been overwritten.",
+	"IMPORT_OBJECTS_QUESTIONS_APP_ID": "Enter the application ID.",
 	"IMPORT_OBJECTS_QUESTIONS_OVERWRITE": "All the selected objects in the project will be overwritten with the objects from the account. Do you want to continue?",
 	"IMPORT_OBJECTS_QUESTIONS_OVERWRITE_WITH_REFERENCED": "All the selected objects and their referenced SuiteScript files in the project will be overwritten with the objects and files from the account. Do you want to continue?",
 	"IMPORT_OBJECTS_QUESTIONS_REFERENCED_FILES": "Do you want to import the SuiteScript files referenced in the objects?",

@@ -35,8 +35,6 @@ export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/Aut
 
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
 
-export const OBJECT_TYPES = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
-
 export const InteractiveAnswersValidator: {
 	showValidationResults(value: string, ...funcs: Function[]): string | boolean;
 	validateFieldIsNotEmpty(fieldValue: string): boolean;
