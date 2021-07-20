@@ -132,6 +132,11 @@
 					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
 					"command": "suitecloud.importfile",
 					"group": "suitecloud@1"
+				},
+				{
+					"when": "resource =~ //Objects/.+$/",
+					"command": "suitecloud.importobjects",
+					"group": "suitecloud@2"
 				}
 			]
 		}

@@ -8,6 +8,7 @@ import ImportObjectService from '../service/ImportObjectService';
 import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
 import { actionResultStatus, InteractiveAnswersValidator, ProjectInfoService, ApplicationConstants } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import * as fs from 'fs';
 
 const objectTypes: {
 	name: string;
@@ -35,7 +36,8 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
-		const destinationFolder = path.dirname(this.activeFile).split(this.getProjectFolderPath())[1].replace('\\', '/');
+
+		const destinationFolder = this.getDestinationFolder(this.activeFile);
 		if (!destinationFolder.startsWith(ApplicationConstants.FOLDERS.OBJECTS)) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.INCORRECT_FOLDER));
 			return;
@@ -89,6 +91,13 @@ export default class ImportObjects extends BaseAction {
 
 		this.showOutput(actionResult);
 		return actionResult;
+	}
+
+	private getDestinationFolder(pathDir: string) {
+		const isDirectory = fs.lstatSync(pathDir).isDirectory();
+		const directoryName = isDirectory ? pathDir : path.dirname(pathDir);
+		const destinationFolder = directoryName.split(this.getProjectFolderPath())[1].replace(/\\/gi, '/');
+		return destinationFolder;
 	}
 
 	private async promptAppId(projectInfoService: { getPublisherId: () => string }) {
