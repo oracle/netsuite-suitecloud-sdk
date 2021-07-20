@@ -2,13 +2,13 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
+import * as fs from 'fs';
 import * as path from 'path';
 import { window } from 'vscode';
-import ImportObjectService from '../service/ImportObjectService';
+import CustomObjectService from '../service/ImportObjectService';
 import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
-import { actionResultStatus, InteractiveAnswersValidator, ProjectInfoService, ApplicationConstants } from '../util/ExtensionUtil';
+import { actionResultStatus, ApplicationConstants, InteractiveAnswersValidator, ProjectInfoService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import * as fs from 'fs';
 
 const objectTypes: {
 	name: string;
@@ -18,16 +18,16 @@ const objectTypes: {
 const COMMAND_NAME = 'importobjects';
 
 export default class ImportObjects extends BaseAction {
-	private importObjectService: ImportObjectService;
+	private customObjectService: CustomObjectService;
 
 	constructor() {
 		super(COMMAND_NAME);
-		this.importObjectService = new ImportObjectService(this.messageService);
+		this.customObjectService = new CustomObjectService(this.messageService);
 	}
 
 	protected init(fsPath?: string) {
 		super.init(fsPath);
-		this.importObjectService.setVsConsoleLogger(this.vsConsoleLogger);
+		this.customObjectService.setVsConsoleLogger(this.vsConsoleLogger);
 	}
 
 	protected async execute() {
@@ -62,9 +62,7 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-		// const destinationFolder = this.executionPath ? this.getProjectFolderPath() : path.dirname(this.activeFile);
-
-		const listObjectsResult = await this.listObjects(destinationFolder, selectedObjectTypes, scriptId, includeReferencedFiles);
+		const listObjectsResult = await this.listObjects(appId, selectedObjectTypes, scriptId, includeReferencedFiles);
 		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length == 0) {
 			this.showOutput(listObjectsResult);
 			return;
@@ -78,11 +76,9 @@ export default class ImportObjects extends BaseAction {
 		}
 
 		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
-		const actionResult = await this.importObjectService.importObjects(
-			// selectedObjectsPaths,
+		const actionResult = await this.customObjectService.importObjects(
 			destinationFolder,
 			appId,
-			selectedObjectTypes,
 			selectedScriptIds,
 			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
 			statusBarMessage,
@@ -144,9 +140,6 @@ export default class ImportObjects extends BaseAction {
 			},
 		});
 
-		if (scriptId == '') {
-			scriptId = 'ALL';
-		}
 		return scriptId;
 	}
 
@@ -179,15 +172,14 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	private async listObjects(
-		destinationFolder: string,
+		appId: string | undefined,
 		selectedObjectTypes: string[],
 		scriptId: string | undefined,
 		includeReferencedFiles: string | undefined
 	) {
 		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
-		const actionResult = await this.importObjectService.listObjects(
-			// selectedObjectsPaths,
-			destinationFolder,
+		const actionResult = await this.customObjectService.listObjects(
+			appId,
 			selectedObjectTypes,
 			scriptId,
 			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
