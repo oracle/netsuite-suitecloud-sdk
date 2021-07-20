@@ -6,7 +6,7 @@ import * as path from 'path';
 import { window } from 'vscode';
 import ImportObjectService from '../service/ImportObjectService';
 import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
-import { actionResultStatus, InteractiveAnswersValidator } from '../util/ExtensionUtil';
+import { actionResultStatus, InteractiveAnswersValidator, ProjectInfoService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const objectTypes: {
@@ -34,95 +34,98 @@ export default class ImportObjects extends BaseAction {
 			// Already checked in validate
 			return;
 		}
+		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
+		let appId: string | undefined;
 
-		const appId = await window.showInputBox({
-			ignoreFocusOut: true,
-			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.APP_ID),
-			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(
-					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended
-				);
-				return typeof validationResult === 'string' ? validationResult : null;
-			},
-		});
-
-		// const objectTypes = path.basename(this.activeFile, '.xml');
-		let selectedObjectTypes: string[] | undefined;
-		try {
-			selectedObjectTypes = await this.getSelectedObjectTypes();
-		} catch (error) {
-			this.messageService.showErrorMessage(error);
+		if (projectInfoService.isSuiteAppProject()) {
+			appId = await this.promptAppId(projectInfoService);
 		}
+
+		const selectedObjectTypes = await this.getSelectedObjectTypes();
 
 		if (!selectedObjectTypes) {
 			return;
 		}
 
-		const scriptId = await this.getSelectedScriptId();
-
-		const includeReferencedFiles = await window.showQuickPick(
-			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
-			{
-				placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.REFERENCED_FILES),
-				canPickMany: false,
-			}
-		);
-
-		const overwrite = await window.showQuickPick(
-			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
-			{
-				placeHolder:
-					includeReferencedFiles === this.translationService.getMessage(ANSWERS.NO)
-						? this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE_WITH_REFERENCED)
-						: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE),
-				canPickMany: false,
-			}
-		);
-
+		const scriptId = await this.promptSelectedScriptId();
+		const includeReferencedFiles = await this.promptIncludeReferencedFiles();
+		const overwrite = await this.promptOverwrite(includeReferencedFiles);
 		if (!overwrite || overwrite === this.translationService.getMessage(ANSWERS.NO)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
 		}
 
-		const destinationFolder = this.executionPath ? this.getProjectFolderPath() : path.dirname(this.activeFile);
+		// const destinationFolder = this.executionPath ? this.getProjectFolderPath() : path.dirname(this.activeFile);
+		const destinationFolder = path.dirname(this.activeFile).split(this.getProjectFolderPath())[1].replace('\\', '/');
+
+		const listObjectsResult = await this.listObjects(destinationFolder, selectedObjectTypes, scriptId, includeReferencedFiles);
+		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length == 0) {
+			this.showOutput(listObjectsResult);
+			return;
+		}
+
+		const selectedScriptIds = await this.promptSelectedObjects(listObjectsResult.data);
+
+		if (!selectedScriptIds || selectedScriptIds.length == 0) {
+			this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST));
+			return;
+		}
 
 		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
-		const actionResult = await this.importObjectService.listObjects(
+		const actionResult = await this.importObjectService.importObjects(
 			// selectedObjectsPaths,
 			destinationFolder,
+			appId,
 			selectedObjectTypes,
-			scriptId,
+			selectedScriptIds,
 			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
 			statusBarMessage,
 			this.executionPath
 		);
 
-		if (actionResult.status !== 'SUCCESS') {
-			this.showOutput(actionResult);
+		this.showOutput(actionResult);
+		return actionResult;
+	}
+
+	private async promptAppId(projectInfoService: { getPublisherId: () => string }) {
+		const filterAppId = await window.showQuickPick(
+			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
+			{
+				placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.FILTER_APP_ID),
+				canPickMany: false,
+			}
+		);
+
+		if (filterAppId && filterAppId == this.translationService.getMessage(ANSWERS.NO)) {
 			return;
 		}
 
-		const listObjects = actionResult.data;
-		if (listObjects.length == 0) {
+		const defaultAppId = projectInfoService.getPublisherId();
+		let appId = await window.showInputBox({
+			ignoreFocusOut: true,
+			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.APP_ID, defaultAppId),
+			validateInput: (fieldValue) => {
+				let validationResult = InteractiveAnswersValidator.showValidationResults(fieldValue, InteractiveAnswersValidator.validatePublisherId);
+				return typeof validationResult === 'string' ? validationResult : null;
+			},
+		});
+
+		if (appId == undefined || appId.length == 0) {
+			appId = defaultAppId;
 		}
-
-		const selectedObjects = this.getSelectedObjects(listObjects);
-
-		this.showOutput(actionResult);
+		return appId;
 	}
 
-	private async getSelectedScriptId() {
+	private async promptSelectedScriptId() {
 		let scriptId = await window.showInputBox({
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SCRIPT_ID),
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
-					fieldValue,
+					fieldValue
 					// InteractiveAnswersValidator.validateFieldIsNotEmpty,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
-					InteractiveAnswersValidator.validateScriptId
+					// InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
+					// InteractiveAnswersValidator.validateScriptId
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -145,15 +148,51 @@ export default class ImportObjects extends BaseAction {
 		return selectedObjectTypes;
 	}
 
-	private async getSelectedObjects(objectList: string[]): Promise<string[] | undefined> {
-		const selectedObjectTypes = await window.showQuickPick(
-			objectList.map((objectType) => objectType),
+	private async promptIncludeReferencedFiles() {
+		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.REFERENCED_FILES),
+			canPickMany: false,
+		});
+	}
+
+	private async promptOverwrite(includeReferencedFiles: string | undefined) {
+		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+			placeHolder:
+				includeReferencedFiles === this.translationService.getMessage(ANSWERS.NO)
+					? this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE_WITH_REFERENCED)
+					: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE),
+			canPickMany: false,
+		});
+	}
+
+	private async listObjects(
+		destinationFolder: string,
+		selectedObjectTypes: string[],
+		scriptId: string | undefined,
+		includeReferencedFiles: string | undefined
+	) {
+		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
+		const actionResult = await this.importObjectService.listObjects(
+			// selectedObjectsPaths,
+			destinationFolder,
+			selectedObjectTypes,
+			scriptId,
+			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
+			statusBarMessage,
+			this.executionPath
+		);
+		return actionResult;
+	}
+
+	private async promptSelectedObjects(objectList: any[]): Promise<string[] | undefined> {
+		const selectedObjects = await window.showQuickPick(
+			objectList.map((object) => object.scriptId),
 			{
 				placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_TYPES),
 				canPickMany: true,
 			}
 		);
-		return selectedObjectTypes;
+		return selectedObjects;
 	}
 
 	private showOutput(actionResult: any) {

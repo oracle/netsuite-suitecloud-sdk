@@ -7,7 +7,7 @@ import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import MessageService from './MessageService';
 
 const IMPORT_OBJECT_COMMAND_NAME = 'object:import';
-const LIST_OBJECT_COMMAND_NAME = "object:list";
+const LIST_OBJECT_COMMAND_NAME = 'object:list';
 const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class ImportObjectService {
@@ -21,14 +21,20 @@ export default class ImportObjectService {
 
 	async importObjects(
 		destinationFolder: string,
+		appId: string | undefined,
 		types: string[],
-		scriptId: string | undefined,
+		scriptIds: string[] | undefined,
 		includeReferencedFiles: boolean,
 		statusBarMessage: string,
 		executionPath: string | undefined
 	) {
 		this.executionPath = executionPath;
-		let commandArgs: any = { type: types, destinationfolder: destinationFolder, scriptid: scriptId };
+		// let commandArgs: any = { type: types, destinationfolder: destinationFolder, scriptid: scriptIds };
+		let commandArgs: any = { type: "ALL", destinationfolder: destinationFolder, scriptid: scriptIds };
+
+		if (appId == undefined || appId.length != 0) {
+			commandArgs.appid = appId;
+		}
 
 		if (!includeReferencedFiles) {
 			commandArgs.excludefiles = true;
@@ -54,7 +60,6 @@ export default class ImportObjectService {
 			commandArgs.excludefiles = true;
 		}
 
-		
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, LIST_OBJECT_COMMAND_NAME);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return await commandActionPromise;

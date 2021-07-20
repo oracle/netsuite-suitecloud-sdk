@@ -5,7 +5,7 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { COMMAND, UPLOAD_FILE, ERRORS, ANSWERS } from '../service/TranslationKeys';
-import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
+import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoService, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'uploadfile';
@@ -71,7 +71,7 @@ export default class UploadFile extends BaseAction {
 			};
 		} else {
 			const projectFolderPath = this.getProjectFolderPath();
-			const projectInfoService = new ProjectInfoServive(projectFolderPath);
+			const projectInfoService = new ProjectInfoService(projectFolderPath);
 			try {
 				if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
 					const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));

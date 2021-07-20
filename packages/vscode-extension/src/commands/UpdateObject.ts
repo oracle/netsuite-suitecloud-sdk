@@ -5,7 +5,7 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { ERRORS, ANSWERS, UPDATE_OBJECT, COMMAND } from '../service/TranslationKeys';
-import { ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
+import { ProjectInfoService, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { OBJECTS_FOLDER } from '../ApplicationConstants';
 
@@ -69,7 +69,7 @@ export default class UpdateObject extends BaseAction {
 			};
 		} else {
 			const projectFolderPath = this.getProjectFolderPath();
-			const projectInfoService = new ProjectInfoServive(projectFolderPath);
+			const projectInfoService = new ProjectInfoService(projectFolderPath);
 			try {
 				if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
 					const relativePath = path.relative(projectFolderPath, activeFile.fsPath);
