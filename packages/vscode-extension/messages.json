@@ -62,6 +62,7 @@
 
 
 	"IMPORT_OBJECTS_ERROR_EMPTY_LIST": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID or script ID.",
+	"IMPORT_OBJECTS_ERROR_INCORRECT_FOLDER": "To Import an Object, please select a valid location inside the Object Folder",
 	"IMPORT_OBJECTS_FINISHED": "The importing process has finished.",
 	"IMPORT_OBJECTS_IMPORTING_OBJECTS": "Importing objects...",
 	"IMPORT_OBJECTS_PROCESS_CANCELED": "The object import process has been canceled. No custom files have been overwritten.",

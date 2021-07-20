@@ -6,7 +6,7 @@ import * as path from 'path';
 import { window } from 'vscode';
 import ImportObjectService from '../service/ImportObjectService';
 import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
-import { actionResultStatus, InteractiveAnswersValidator, ProjectInfoService } from '../util/ExtensionUtil';
+import { actionResultStatus, InteractiveAnswersValidator, ProjectInfoService, ApplicationConstants } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 const objectTypes: {
@@ -35,8 +35,13 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
-		let appId: string | undefined;
+		const destinationFolder = path.dirname(this.activeFile).split(this.getProjectFolderPath())[1].replace('\\', '/');
+		if (!destinationFolder.startsWith(ApplicationConstants.FOLDERS.OBJECTS)) {
+			this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.INCORRECT_FOLDER));
+			return;
+		}
 
+		let appId: string | undefined;
 		if (projectInfoService.isSuiteAppProject()) {
 			appId = await this.promptAppId(projectInfoService);
 		}
@@ -56,7 +61,6 @@ export default class ImportObjects extends BaseAction {
 		}
 
 		// const destinationFolder = this.executionPath ? this.getProjectFolderPath() : path.dirname(this.activeFile);
-		const destinationFolder = path.dirname(this.activeFile).split(this.getProjectFolderPath())[1].replace('\\', '/');
 
 		const listObjectsResult = await this.listObjects(destinationFolder, selectedObjectTypes, scriptId, includeReferencedFiles);
 		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length == 0) {
@@ -224,7 +228,4 @@ export default class ImportObjects extends BaseAction {
 			};
 		}
 	}
-}
-function print(OBJECT_TYPES: any) {
-	throw new Error('Function not implemented.');
 }
