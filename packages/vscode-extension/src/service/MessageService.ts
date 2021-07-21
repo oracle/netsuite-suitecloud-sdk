@@ -23,35 +23,35 @@ export default class MessageService {
 		this._executionPath = excutionPath;
 	}
 
-	private addProjectNameToMessage(message: string, includeProjectFolderName: boolean = true): string {
+	private addProjectNameToMessage(message: string): string {
 		if (this._executionPath) {
-			if (includeProjectFolderName) {
-				const executionPathParts = this._executionPath.replace(/\\/g, "/").split("/")
-				const projectFolderName: string = executionPathParts[executionPathParts.length - 1];
-				// window.showInformationMessage removes new line characters do not try to add them here
-				message = `${projectFolderName}: ${message}`;
-			} else {
-				message = `${message}`;
-			}
-			
+			const executionPathParts = this._executionPath.replace(/\\/g, "/").split("/")
+			const projectFolderName: string = executionPathParts[executionPathParts.length - 1];
+			// window.showInformationMessage removes new line characters do not try to add them here
+			message = `${projectFolderName}: ${message}`;
 		}
 		return message;
 	}
 
 	showInformationMessage(infoMessage: string, statusBarMessage?: string, promise?: Promise<any>, spin = true, includeProjectName: boolean = true) {
-		window.showInformationMessage(this.addProjectNameToMessage(infoMessage, includeProjectName));
+		if (includeProjectName) {
+			window.showInformationMessage(this.addProjectNameToMessage(infoMessage));
+		} else {
+			window.showInformationMessage(infoMessage);
+		}
+		
 
 		if (statusBarMessage && promise) {
 			this.showStatusBarMessage(statusBarMessage, spin, promise);
 		}
 	}
 
-	showWarningMessage(infoMessage: string, includeProjectName: boolean = true) {
-		window.showWarningMessage(this.addProjectNameToMessage(infoMessage, includeProjectName));
+	showWarningMessage(infoMessage: string) {
+		window.showWarningMessage(this.addProjectNameToMessage(infoMessage));
 	}
 
-	showErrorMessage(errorMessage: string, includeProjectName: boolean = true) {
-		window.showErrorMessage(this.addProjectNameToMessage(errorMessage, includeProjectName));
+	showErrorMessage(errorMessage: string) {
+		window.showErrorMessage(this.addProjectNameToMessage(errorMessage));
 	}
 
 	showStatusBarMessage(message: string, spin?: boolean, promise?: Promise<any>) {
@@ -64,11 +64,11 @@ export default class MessageService {
 		}
 	}
 
-	showCommandInfo(successMessage?: string, includeProjectName: boolean = true) {
+	showCommandInfo(successMessage?: string) {
 		if (!this.vscodeCommandName) throw 'Command not defined';
 		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.vscodeCommandName);
 		window.showInformationMessage(
-			this.addProjectNameToMessage(message, includeProjectName),
+			this.addProjectNameToMessage(message),
 			this.translationService.getMessage(SEE_DETAILS)
 		).then(this.showOutputIfClicked);
 	}
@@ -77,7 +77,7 @@ export default class MessageService {
 		if (!this.vscodeCommandName) throw 'Command not defined';
 		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.vscodeCommandName);
 		window.showErrorMessage(
-			this.addProjectNameToMessage(message, includeProjectName),
+			includeProjectName ? this.addProjectNameToMessage(message) : message,
 			this.translationService.getMessage(SEE_DETAILS)
 			)
 		.then(this.showOutputIfClicked);
