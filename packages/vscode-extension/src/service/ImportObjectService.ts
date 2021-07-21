@@ -5,6 +5,8 @@
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import MessageService from './MessageService';
+import { IMPORT_OBJECTS, LIST_OBJECTS } from './TranslationKeys';
+import { VSTranslationService } from './VSTranslationService';
 
 const IMPORT_OBJECT_COMMAND_NAME = 'object:import';
 const LIST_OBJECT_COMMAND_NAME = 'object:list';
@@ -14,9 +16,11 @@ export default class CustomObjectService {
 	private executionPath?: string;
 	private readonly messageService: MessageService;
 	private vsConsoleLogger: VSConsoleLogger | undefined;
+	private translationService: VSTranslationService;
 
-	constructor(messageService: MessageService) {
+	constructor(messageService: MessageService, translationService: VSTranslationService) {
 		this.messageService = messageService;
+		this.translationService = translationService;
 	}
 
 	async importObjects(
@@ -24,7 +28,6 @@ export default class CustomObjectService {
 		appId: string | undefined,
 		scriptIds: string[] | undefined,
 		includeReferencedFiles: boolean,
-		statusBarMessage: string,
 		executionPath: string | undefined
 	) {
 		this.executionPath = executionPath;
@@ -41,6 +44,7 @@ export default class CustomObjectService {
 		}
 
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, IMPORT_OBJECT_COMMAND_NAME);
+		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return await commandActionPromise;
 	}
@@ -50,7 +54,6 @@ export default class CustomObjectService {
 		types: string[],
 		scriptId: string | undefined,
 		includeReferencedFiles: boolean,
-		statusBarMessage: any,
 		executionPath: string | undefined
 	) {
 		this.executionPath = executionPath;
@@ -67,6 +70,7 @@ export default class CustomObjectService {
 		}
 
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, LIST_OBJECT_COMMAND_NAME);
+		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return await commandActionPromise;
 	}

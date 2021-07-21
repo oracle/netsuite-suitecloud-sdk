@@ -22,7 +22,7 @@ export default class ImportObjects extends BaseAction {
 
 	constructor() {
 		super(COMMAND_NAME);
-		this.customObjectService = new CustomObjectService(this.messageService);
+		this.customObjectService = new CustomObjectService(this.messageService, this.translationService);
 	}
 
 	protected init(uri?: Uri) {
@@ -75,13 +75,11 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
 		const actionResult = await this.customObjectService.importObjects(
 			destinationFolder,
 			appId,
 			selectedScriptIds,
 			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
-			statusBarMessage,
 			this.executionPath
 		);
 
@@ -96,7 +94,7 @@ export default class ImportObjects extends BaseAction {
 		return destinationFolder;
 	}
 
-	private async promptAppId(projectInfoService: { getPublisherId: () => string }) {
+	private async promptAppId(projectInfoService: { getApplicationId: () => string }) {
 		const filterAppId = await window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
 			{
@@ -109,12 +107,12 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-		const defaultAppId = projectInfoService.getPublisherId();
+		const defaultAppId = projectInfoService.getApplicationId();
 		let appId = await window.showInputBox({
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.APP_ID, defaultAppId),
 			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(fieldValue, InteractiveAnswersValidator.validatePublisherId);
+				let validationResult = InteractiveAnswersValidator.showValidationResults(fieldValue, InteractiveAnswersValidator.validateSuiteApp);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
@@ -177,13 +175,11 @@ export default class ImportObjects extends BaseAction {
 		scriptId: string | undefined,
 		includeReferencedFiles: string | undefined
 	) {
-		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
 		const actionResult = await this.customObjectService.listObjects(
 			appId,
 			selectedObjectTypes,
 			scriptId,
 			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
-			statusBarMessage,
 			this.executionPath
 		);
 		return actionResult;
