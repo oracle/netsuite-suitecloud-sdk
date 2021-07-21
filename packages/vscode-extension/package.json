@@ -134,7 +134,7 @@
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "resource =~ //Objects/.+$/",
+					"when": "resource =~ //Objects(/.+)*$/",
 					"command": "suitecloud.importobjects",
 					"group": "suitecloud@2"
 				}
