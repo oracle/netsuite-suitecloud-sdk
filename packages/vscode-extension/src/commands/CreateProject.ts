@@ -39,15 +39,18 @@
  
          output.show(true);
  
-         const runSuiteCloudCommandPromise = this.runSuiteCloudCommand(commandArgs);
+         const runSuiteCloudCommandPromise = this.runSuiteCloudCommand(commandArgs, commandArgs.parentdirectory);
          this.messageService.showInformationMessage(
              this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName),
              this.translationService.getMessage(CREATE_PROJECT.MESSAGES.CREATING_PROJECT),
-             runSuiteCloudCommandPromise
+             runSuiteCloudCommandPromise,
+             false
          );
          const actionResult = await runSuiteCloudCommandPromise;
          if (actionResult.isSuccess()) {
              await this.openProjectInNewWindow(actionResult.projectDirectory);
+         } else {
+             this.messageService.showCommandError(undefined, false);
          }
      }
  

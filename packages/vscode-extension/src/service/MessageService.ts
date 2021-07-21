@@ -28,13 +28,18 @@ export default class MessageService {
 			const executionPathParts = this._executionPath.replace(/\\/g, "/").split("/")
 			const projectFolderName: string = executionPathParts[executionPathParts.length - 1];
 			// window.showInformationMessage removes new line characters do not try to add them here
-			message = `${projectFolderName}: ${message}`
+			message = `${projectFolderName}: ${message}`;
 		}
 		return message;
 	}
 
-	showInformationMessage(infoMessage: string, statusBarMessage?: string, promise?: Promise<any>, spin = true) {
-		window.showInformationMessage(this.addProjectNameToMessage(infoMessage));
+	showInformationMessage(infoMessage: string, statusBarMessage?: string, promise?: Promise<any>, spin = true, includeProjectName: boolean = true) {
+		if (includeProjectName) {
+		    window.showInformationMessage(this.addProjectNameToMessage(infoMessage));
+		} else {
+			window.showInformationMessage(infoMessage);
+		}
+
 
 		if (statusBarMessage && promise) {
 			this.showStatusBarMessage(statusBarMessage, spin, promise);
@@ -62,13 +67,20 @@ export default class MessageService {
 	showCommandInfo(successMessage?: string) {
 		if (!this.vscodeCommandName) throw 'Command not defined';
 		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.vscodeCommandName);
-		window.showInformationMessage(this.addProjectNameToMessage(message), this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
+		window.showInformationMessage(
+			this.addProjectNameToMessage(message),
+			this.translationService.getMessage(SEE_DETAILS)
+		).then(this.showOutputIfClicked);
 	}
 
-	showCommandError(errorMessage?: string) {
+	showCommandError(errorMessage?: string, includeProjectName: boolean = true) {
 		if (!this.vscodeCommandName) throw 'Command not defined';
 		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.vscodeCommandName);
-		window.showErrorMessage(this.addProjectNameToMessage(message), this.translationService.getMessage(SEE_DETAILS)).then(this.showOutputIfClicked);
+		window.showErrorMessage(
+			includeProjectName ? this.addProjectNameToMessage(message) : message,
+			this.translationService.getMessage(SEE_DETAILS)
+			)
+		.then(this.showOutputIfClicked);
 	}
 
 	private showOutputIfClicked(message?: string) {
