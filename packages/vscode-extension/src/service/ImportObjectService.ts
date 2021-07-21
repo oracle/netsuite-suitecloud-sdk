@@ -53,7 +53,6 @@ export default class CustomObjectService {
 		appId: string | undefined,
 		types: string[],
 		scriptId: string | undefined,
-		includeReferencedFiles: boolean,
 		executionPath: string | undefined
 	) {
 		this.executionPath = executionPath;
@@ -64,9 +63,6 @@ export default class CustomObjectService {
 		}
 		if (scriptId) {
 			commandArgs.scriptid = scriptId;
-		}
-		if (!includeReferencedFiles) {
-			commandArgs.excludefiles = true;
 		}
 
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, LIST_OBJECT_COMMAND_NAME);

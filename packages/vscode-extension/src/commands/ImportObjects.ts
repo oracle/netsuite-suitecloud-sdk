@@ -48,30 +48,30 @@ export default class ImportObjects extends BaseAction {
 			appId = await this.promptAppId(projectInfoService);
 		}
 
-		const selectedObjectTypes = await this.getSelectedObjectTypes();
+		const selectedObjectTypes = await this.promptObjectTypes();
 
 		if (!selectedObjectTypes) {
 			return;
 		}
 
 		const scriptId = await this.promptSelectedScriptId();
-		const includeReferencedFiles = await this.promptIncludeReferencedFiles();
-		const overwrite = await this.promptOverwrite(includeReferencedFiles);
-		if (!overwrite || overwrite === this.translationService.getMessage(ANSWERS.NO)) {
-			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
-			return;
-		}
 
-		const listObjectsResult = await this.listObjects(appId, selectedObjectTypes, scriptId, includeReferencedFiles);
+		const listObjectsResult = await this.listObjects(appId, selectedObjectTypes, scriptId);
 		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length == 0) {
 			this.showOutput(listObjectsResult);
 			return;
 		}
 
-		const selectedScriptIds = await this.promptSelectedObjects(listObjectsResult.data);
+		const selectedScriptIds = await this.promptObjects(listObjectsResult.data);
 
 		if (!selectedScriptIds || selectedScriptIds.length == 0) {
 			this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST));
+			return;
+		}
+		const includeReferencedFiles = await this.promptIncludeReferencedFiles();
+		const overwrite = await this.promptOverwrite(includeReferencedFiles);
+		if (!overwrite || overwrite === this.translationService.getMessage(ANSWERS.NO)) {
+			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
 		}
 
@@ -112,6 +112,9 @@ export default class ImportObjects extends BaseAction {
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.APP_ID, defaultAppId),
 			validateInput: (fieldValue) => {
+				if (fieldValue === '') {
+					return null; //In this case empty field is valid
+				}
 				let validationResult = InteractiveAnswersValidator.showValidationResults(fieldValue, InteractiveAnswersValidator.validateSuiteApp);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -128,12 +131,10 @@ export default class ImportObjects extends BaseAction {
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SCRIPT_ID),
 			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(
-					fieldValue
-					// InteractiveAnswersValidator.validateFieldIsNotEmpty,
-					// InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
-					// InteractiveAnswersValidator.validateScriptId
-				);
+				if (fieldValue === '') {
+					return null; //In this case empty field is valid
+				}
+				let validationResult = InteractiveAnswersValidator.showValidationResults(fieldValue, InteractiveAnswersValidator.validateScriptId);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
@@ -141,7 +142,7 @@ export default class ImportObjects extends BaseAction {
 		return scriptId;
 	}
 
-	private async getSelectedObjectTypes(): Promise<string[] | undefined> {
+	private async promptObjectTypes(): Promise<string[] | undefined> {
 		const selectedObjectTypes = await window.showQuickPick(
 			objectTypes.map((objectType) => objectType.value.type),
 			{
@@ -150,6 +151,31 @@ export default class ImportObjects extends BaseAction {
 			}
 		);
 		return selectedObjectTypes;
+	}
+
+	private async listObjects(
+		appId: string | undefined,
+		selectedObjectTypes: string[],
+		scriptId: string | undefined,
+	) {
+		const actionResult = await this.customObjectService.listObjects(
+			appId,
+			selectedObjectTypes,
+			scriptId,
+			this.executionPath
+		);
+		return actionResult;
+	}
+
+	private async promptObjects(objectList: any[]): Promise<string[] | undefined> {
+		const selectedObjects = await window.showQuickPick(
+			objectList.map((object) => object.scriptId),
+			{
+				placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_OBJECTS),
+				canPickMany: true,
+			}
+		);
+		return selectedObjects;
 	}
 
 	private async promptIncludeReferencedFiles() {
@@ -167,33 +193,6 @@ export default class ImportObjects extends BaseAction {
 					: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE),
 			canPickMany: false,
 		});
-	}
-
-	private async listObjects(
-		appId: string | undefined,
-		selectedObjectTypes: string[],
-		scriptId: string | undefined,
-		includeReferencedFiles: string | undefined
-	) {
-		const actionResult = await this.customObjectService.listObjects(
-			appId,
-			selectedObjectTypes,
-			scriptId,
-			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
-			this.executionPath
-		);
-		return actionResult;
-	}
-
-	private async promptSelectedObjects(objectList: any[]): Promise<string[] | undefined> {
-		const selectedObjects = await window.showQuickPick(
-			objectList.map((object) => object.scriptId),
-			{
-				placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_TYPES),
-				canPickMany: true,
-			}
-		);
-		return selectedObjects;
 	}
 
 	private showOutput(actionResult: any) {
