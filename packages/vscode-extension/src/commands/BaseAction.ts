@@ -55,8 +55,11 @@ export default abstract class BaseAction {
 		}
 	}
 
-	protected async runSuiteCloudCommand(args: { [key: string]: string | string[] } = {}) {
-		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
+	protected async runSuiteCloudCommand(args: { [key: string]: string | string[] } = {}, otherExecutionPath?: string) {
+		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(
+			this.vsConsoleLogger,
+			otherExecutionPath !== undefined ? otherExecutionPath : this.executionPath
+		).run({
 			commandName: this.cliCommandName,
 			arguments: args,
 		});
