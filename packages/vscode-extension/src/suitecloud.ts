@@ -11,14 +11,14 @@ import BaseAction from './commands/BaseAction';
 import CreateProject from './commands/CreateProject';
 import Deploy from './commands/Deploy';
 import ImportFiles from './commands/ImportFiles';
+import ImportObjects from './commands/ImportObjects';
 import ListFiles from './commands/ListFiles';
 import ListObjects from './commands/ListObjects';
 import ManageAccounts from './commands/ManageAccounts';
-import UploadFile from './commands/UploadFile';
 import UpdateObject from './commands/UpdateObject';
+import UploadFile from './commands/UploadFile';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import showSetupAccountWarningMessageIfNeeded from './startup/ShowSetupAccountWarning';
-import ImportObjects from './commands/ImportObjects';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 

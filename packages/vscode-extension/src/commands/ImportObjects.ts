@@ -4,7 +4,7 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { window } from 'vscode';
+import { Uri, window } from 'vscode';
 import CustomObjectService from '../service/ImportObjectService';
 import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants, InteractiveAnswersValidator, ProjectInfoService } from '../util/ExtensionUtil';
@@ -25,8 +25,8 @@ export default class ImportObjects extends BaseAction {
 		this.customObjectService = new CustomObjectService(this.messageService);
 	}
 
-	protected init(fsPath?: string) {
-		super.init(fsPath);
+	protected init(uri?: Uri) {
+		super.init(uri);
 		this.customObjectService.setVsConsoleLogger(this.vsConsoleLogger);
 	}
 
