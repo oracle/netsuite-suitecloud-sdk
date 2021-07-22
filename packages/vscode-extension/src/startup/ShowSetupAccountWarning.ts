@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { ApplicationConstants, FileUtils, ProjectInfoServive } from '../util/ExtensionUtil';
+import { ApplicationConstants, FileUtils, ProjectInfoService } from '../util/ExtensionUtil';
 import { EXTENSION_INSTALLATION } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 
@@ -17,7 +17,7 @@ export default async function showSetupAccountWarningMessageIfNeeded(): Promise<
     const workspaceFolders = vscode.workspace.workspaceFolders;
 	if (workspaceFolders) {
 		const projectAbsolutePath = workspaceFolders[0].uri.fsPath;
-		const projectInfoService = new ProjectInfoServive(path.join(projectAbsolutePath, SRC_FOLDER_NAME));
+		const projectInfoService = new ProjectInfoService(path.join(projectAbsolutePath, SRC_FOLDER_NAME));
 		if (!projectInfoService.isSuiteCloudProject()) {
 			return;
 		}

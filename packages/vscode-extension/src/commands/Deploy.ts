@@ -4,7 +4,7 @@
  */
 import { window, QuickPickItem } from 'vscode';
 import { COMMAND, DEPLOY, ANSWERS } from '../service/TranslationKeys';
-import { ApplicationConstants, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
+import { ApplicationConstants, ProjectInfoService, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { EOL } from 'os';
 
@@ -75,7 +75,7 @@ export default class Deploy extends BaseAction {
 	}
 
 	private getProjectType(): string {
-		const projectInfoService = new ProjectInfoServive(this.getProjectFolderPath());
+		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
 
 		return projectInfoService.getProjectType();
 	}

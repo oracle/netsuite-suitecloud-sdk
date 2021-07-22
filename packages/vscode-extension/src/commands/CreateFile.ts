@@ -1,165 +1,187 @@
 import BaseAction from './BaseAction';
-import { TextDocument, Uri, window, workspace } from 'vscode';
-import { ANSWERS, CREATE_FILE } from '../service/TranslationKeys';
+import { TextDocument, Uri, window, workspace, QuickPickItem } from 'vscode';
+import * as fs from 'fs';
+import { COMMAND, CREATE_FILE } from '../service/TranslationKeys';
 import {
 	ApplicationConstants,
 	CLIConfigurationService,
 	FileCabinetService,
 	FileSystemService,
 	InteractiveAnswersValidator,
-	ProjectInfoServive,
+	ProjectInfoService,
+	SUITESCRIPT_TYPES,
+	SUITESCRIPT_MODULES,
 } from '../util/ExtensionUtil';
 import * as path from 'path';
+import { FOLDERS } from '../ApplicationConstants';
 
-const SUITESCRIPT_TYPES = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptTypesMetadata');
-const SUITESCRIPT_MODULES = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptModulesMetadata');
+interface SuiteScriptTypeItem extends QuickPickItem {
+	id: string;
+	name: string;
+}
 
 const COMMAND_NAME = 'createfile';
-const SUITEAPPS_PATH = '/SuiteApps';
-const SUITESCRIPTS_PATH = '/SuiteScripts';
 
 export default class CreateFile extends BaseAction {
-
 	constructor() {
 		super(COMMAND_NAME);
 	}
 
 	protected async execute(): Promise<void> {
-		const activeFile = window.activeTextEditor?.document.uri;
-		if (!activeFile) {
-			// Already checked in validate
-			return;
-		}
-
 		const commandArgs = await this.getCommandArgs();
-		if (Object.keys(commandArgs).length === 0) {
+		if (commandArgs === undefined) {
 			return;
 		}
 
-		const cliConfigurationService = new CLIConfigurationService();
-		cliConfigurationService.initialize(this.executionPath);
+		const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
+		const statusBarMessage: string = this.translationService.getMessage(CREATE_FILE.MESSAGES.CREATING_FILE);
+		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
-
-		const actionResult = await this.runSuiteCloudCommand(commandArgs);
-
+		const actionResult = await commandActionPromise;
 		if (actionResult.isSuccess()) {
 			const createdFileUri: Uri = Uri.file(actionResult.data.path);
-			workspace.openTextDocument(createdFileUri).then((createdFile: TextDocument) => {
-				window.showTextDocument(createdFile);
-			}, (error: any) => {
-				console.error(error);
-				debugger;
-			});
+			workspace.openTextDocument(createdFileUri).then(
+				(createdFile: TextDocument) => {
+					window.showTextDocument(createdFile);
+				},
+				(error: any) => {
+					this.messageService.showCommandError(error);
+				}
+			);
+		} else {
+			this.messageService.showCommandError();
 		}
 	}
 
-	private async getCommandArgs(): Promise<{ [key: string]: any }> {
-		const args: { [k: string]: string | string[] } = {
-			'project': this.getProjectFolderPath(),
+	private async getCommandArgs(): Promise<{ [key: string]: string | string[] } | undefined> {
+		const args: { [key: string]: string | string[] } = {
+			project: this.getProjectFolderPath(),
 		};
 
 		const selectedScriptType = await this.promptScriptTypeQuestion();
+		if (selectedScriptType === undefined) {
+			return;
+		} else {
+			args.type = selectedScriptType.id;
+		}
+
 		const selectedModules = await this.promptAddModulesQuestion();
+		if (selectedModules === undefined) {
+			return;
+		} else if (Array.isArray(selectedModules) && selectedModules.length > 0) {
+			args.module = selectedModules;
+		}
+
 		const selectedFolder = await this.promptFolderSelection();
-		const fileName = await this.promptFileNameInputBox();
-
-		args.type = selectedScriptType ? SUITESCRIPT_TYPES.find((type: { name: string; }) => type.name === selectedScriptType).id : '';
-
-		if (selectedModules) {
-			args.modules = selectedModules.map(module => `"${module}"`);
+		if (selectedFolder === undefined) {
+			return;
+		}
+		const fileName = await this.promptFileNameInputBox(selectedFolder);
+		if (fileName === undefined) {
+			return;
 		}
 
-		if (selectedFolder && fileName) {
-			args.path = selectedFolder + fileName;
-		}
+		args.path = path.join(selectedFolder, fileName);
 
 		return args;
 	}
 
-	private promptScriptTypeQuestion(): Thenable<string | undefined> {
+	private promptScriptTypeQuestion(): Thenable<SuiteScriptTypeItem | undefined> {
 		return window.showQuickPick(
-			SUITESCRIPT_TYPES.map((scriptType: { name: string; }) => scriptType.name),
+			SUITESCRIPT_TYPES.map((el) => <SuiteScriptTypeItem>{ label: el.name, id: el.id, name: el.name }),
 			{
 				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.CHOOSE_SUITESCRIPT_TYPE),
 				canPickMany: false,
-			},
+			}
 		);
 	}
 
 	private async promptAddModulesQuestion(): Promise<string[] | undefined> {
-		const yes = this.translationService.getMessage(ANSWERS.YES);
-		const no = this.translationService.getMessage(ANSWERS.NO);
-		const _this = this;
-		const answer = await window.showQuickPick(
-			[yes, no],
+		return window.showQuickPick(
+			SUITESCRIPT_MODULES.map((module) => module.id),
 			{
-				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.ADD_SUITESCRIPT_MODULES),
-				canPickMany: false,
-			},
+				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_SUITESCRIPT_MODULES),
+				canPickMany: true,
+			}
 		);
-		if (answer === yes) {
-			return window.showQuickPick(
-				SUITESCRIPT_MODULES.map((module: { id: string; }) => module.id),
-				{
-					placeHolder: _this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_SUITESCRIPT_MODULES),
-					canPickMany: true,
-				},
-			);
-		}
 	}
 
-	private promptFolderSelection(): Thenable<string | undefined> {
-		return window.showQuickPick(this.getFolderChoices(),
-			{
+	private async promptFolderSelection(): Promise<string | undefined> {
+		const folderChoices = this.getFolderChoices();
+
+		let fileToCheck = this.activeFile;
+
+		// action orignated from context menu
+		if (this.isFileSelected && fileToCheck && fs.existsSync(fileToCheck)) {
+			const fileCabinetService = new FileCabinetService(path.join(this.getProjectFolderPath(), ApplicationConstants.FOLDERS.FILE_CABINET));
+			if (!fs.lstatSync(fileToCheck).isDirectory()) {
+				fileToCheck = path.dirname(fileToCheck);
+			}
+			// filter folderChoices by the selected folder in the treeview
+			const filteredFolderChoices = folderChoices.filter((folder) =>
+				folder.startsWith(fileCabinetService.getFileCabinetRelativePath(fileToCheck))
+			);
+			// Autoselect folder when no subfolders in the tree
+			if (filteredFolderChoices.length === 1) {
+				return filteredFolderChoices[0];
+			}
+			return window.showQuickPick(filteredFolderChoices, {
 				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
 				canPickMany: false,
-			},
-		);
+			});
+		}
+
+		// action not originated from context menu
+		return window.showQuickPick(folderChoices, {
+			placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
+			canPickMany: false,
+		});
 	}
 
-	private promptFileNameInputBox(): Thenable<string | undefined> {
-		return window.showInputBox(
-			{
-				ignoreFocusOut: true,
-				title: this.translationService.getMessage(CREATE_FILE.QUESTIONS.ENTER_NAME),
-				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.ENTER_NAME),
-				validateInput: (fieldValue: string) => {
-					let validationResult = InteractiveAnswersValidator.showValidationResults(
-						fieldValue,
-						InteractiveAnswersValidator.validateFieldIsNotEmpty,
-						InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
-					);
-					return typeof validationResult === 'string' ? validationResult : null;
-				},
+	private promptFileNameInputBox(parentFolder: string): Thenable<string | undefined> {
+		const absoluteParentFolder = path.join(this.getProjectFolderPath(), ApplicationConstants.FOLDERS.FILE_CABINET, parentFolder);
+		return window.showInputBox({
+			ignoreFocusOut: true,
+			placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.ENTER_NAME),
+			validateInput: (fieldValue: string) => {
+				let validationResult = InteractiveAnswersValidator.showValidationResults(
+					fieldValue,
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
+					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
+					(filename: string) => InteractiveAnswersValidator.validateSuiteScriptFileAlreadyExists(absoluteParentFolder, filename)
+				);
+				return typeof validationResult === 'string' ? validationResult : null;
 			},
-		);
+		});
 	}
 
 	private getFolderChoices(): string[] {
 		const projectFolderPath = this.getProjectFolderPath();
-		const projectInfoService = new ProjectInfoServive(projectFolderPath);
+		const projectInfoService = new ProjectInfoService(projectFolderPath);
 		const fileSystemService = new FileSystemService();
 		const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
 
-		const getAllowedPath = function(): string {
+		const getAllowedPath = ((): string => {
 			if (projectInfoService.isAccountCustomizationProject()) {
-				return SUITESCRIPTS_PATH;
+				return FOLDERS.SUITESCRIPTS;
 			} else {
-				const applicationId = projectInfoService.getApplicationId();
-				const applicationSuiteAppFolderAbsolutePath = path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET, SUITEAPPS_PATH, '/', applicationId, '/');
+				const applicationSuiteAppFolderAbsolutePath = path.join(
+					projectFolderPath,
+					ApplicationConstants.FOLDERS.FILE_CABINET,
+					FOLDERS.SUITEAPPS,
+					projectInfoService.getApplicationId()
+				);
 				return fileCabinetService.getFileCabinetRelativePath(applicationSuiteAppFolderAbsolutePath);
 			}
-		};
+		})();
 
-		const isFolderNotRestricted = function(folderRelativePath: string): boolean {
-			return folderRelativePath.startsWith(getAllowedPath());
-		};
+		const isFolderNotRestricted = (folderRelativePath: string): boolean => folderRelativePath.startsWith(getAllowedPath);
+		const getRelativePath = (absolutePath: string): string => fileCabinetService.getFileCabinetRelativePath(absolutePath);
 
-		const getRelativePath = function(absolutePath: string): string {
-			return fileCabinetService.getFileCabinetRelativePath(absolutePath) + '/';
-		};
-
-		const allFolders = fileSystemService.getFoldersFromDirectoryRecursively(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
+		const allFolders = fileSystemService.getFoldersFromDirectoryRecursively(
+			path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET)
+		);
 		return allFolders.map(getRelativePath).filter(isFolderNotRestricted);
 	}
 }

@@ -24,13 +24,8 @@ const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 
 function register<T extends BaseAction>(command: string, action: T) {
 	return vscode.commands.registerCommand(command, (uri?: vscode.Uri) => {
-		if (uri && uri.fsPath) {
-			//Called from a context menu, we recieve uri info related to the selected file.
-			action.run(uri);
-		} else {
-			//Called from console palette
-			action.run();
-		}
+		//Called from a context menu, we recieve uri info related to the selected file.
+		action.run(uri);
 	});
 }
 

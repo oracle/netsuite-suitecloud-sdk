@@ -86,7 +86,7 @@
 			},
 			{
 				"command": "suitecloud.createfile",
-				"title": "Create File...",
+				"title": "Create SuiteScript File",
 				"category": "SuiteCloud"
 			}
 		],
@@ -122,7 +122,7 @@
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "resource =~ //FileCabinet/SuiteApps/.+$/",
+					"when": "resource =~ //FileCabinet/(SuiteApps/.+|SuiteScripts(/.*)*)$/",
 					"command": "suitecloud.createfile",
 					"group": "suitecloud@1"
 				}

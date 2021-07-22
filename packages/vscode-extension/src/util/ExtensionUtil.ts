@@ -37,7 +37,7 @@ export const AccountFileCabinetService = require('@oracle/suitecloud-cli/src/ser
 export const EnvironmentInformationService = require('@oracle/suitecloud-cli/src/services/EnvironmentInformationService');
 export const FileCabinetService = require('@oracle/suitecloud-cli/src/services/FileCabinetService');
 export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
-export const ProjectInfoServive = require('@oracle/suitecloud-cli/src/services/ProjectInfoService');
+export const ProjectInfoService = require('@oracle/suitecloud-cli/src/services/ProjectInfoService');
 export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
 export const AuthenticationUtils = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
 export const FileUtils = require('@oracle/suitecloud-cli/src/utils/FileUtils');
@@ -62,4 +62,5 @@ export const InteractiveAnswersValidator: {
 	validateMaximumLength(fieldValue: string, maxLength: number): boolean;
 	validateNonProductionAccountSpecificDomain(fieldValue: string): boolean;
 	validateNonProductionDomain(fieldValue: string): boolean;
+	validateSuiteScriptFileAlreadyExists(parentFolderPath: string, filename:string): string|boolean;
 } = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');

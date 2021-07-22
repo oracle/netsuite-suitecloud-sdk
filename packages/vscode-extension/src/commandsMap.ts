@@ -48,7 +48,7 @@ export const commandsInfoMap: {
 	},
 	createfile: {
 		cliCommandName: 'file:create',
-		vscodeCommandName: 'Create File...',
+		vscodeCommandName: 'Create SuiteScript File',
 	},
 	manageaccounts: {
 		cliCommandName: 'account:setup',

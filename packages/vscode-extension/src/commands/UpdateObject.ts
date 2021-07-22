@@ -5,9 +5,9 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { ERRORS, ANSWERS, UPDATE_OBJECT, COMMAND } from '../service/TranslationKeys';
-import { ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
+import { ProjectInfoService, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import { OBJECTS_FOLDER } from '../ApplicationConstants';
+import { FOLDERS } from '../ApplicationConstants';
 
 const COMMAND_NAME = 'updateobject';
 const STATUS = {
@@ -69,11 +69,11 @@ export default class UpdateObject extends BaseAction {
 			};
 		} else {
 			const projectFolderPath = this.getProjectFolderPath();
-			const projectInfoService = new ProjectInfoServive(projectFolderPath);
+			const projectInfoService = new ProjectInfoService(projectFolderPath);
 			try {
 				if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
 					const relativePath = path.relative(projectFolderPath, activeFile.fsPath);
-					if (!relativePath.startsWith(OBJECTS_FOLDER + path.sep)) {
+					if (!relativePath.startsWith(FOLDERS.OBJECTS + path.sep)) {
 						return {
 							valid: false,
 							message: this.translationService.getMessage(UPDATE_OBJECT.ERROR.SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER),
