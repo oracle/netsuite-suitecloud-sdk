@@ -46,15 +46,28 @@ export default class ImportObjects extends BaseAction {
 		let appId: string | undefined;
 		if (projectInfoService.isSuiteAppProject()) {
 			appId = await this.promptAppId(projectInfoService);
+			if (appId == undefined) {
+				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
+				return;
+			}
+			if (appId == '') {
+				appId = undefined;
+			}
 		}
 
 		const selectedObjectTypes = await this.promptObjectTypes();
 
 		if (!selectedObjectTypes) {
+			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
 		}
 
 		const scriptId = await this.promptSelectedScriptId();
+
+		if(scriptId == undefined) {
+			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
+			return;
+		}
 
 		const listObjectsResult = await this.listObjects(appId, selectedObjectTypes, scriptId);
 		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length == 0) {
@@ -103,8 +116,12 @@ export default class ImportObjects extends BaseAction {
 			}
 		);
 
-		if (filterAppId && filterAppId == this.translationService.getMessage(ANSWERS.NO)) {
+		if (!filterAppId) {
 			return;
+		}
+
+		if (filterAppId && filterAppId == this.translationService.getMessage(ANSWERS.NO)) {
+			return '';
 		}
 
 		const defaultAppId = projectInfoService.getApplicationId();
@@ -119,8 +136,11 @@ export default class ImportObjects extends BaseAction {
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
+		if (appId == undefined) {
+			return;
+		}
 
-		if (appId == undefined || appId.length == 0) {
+		if (appId.length == 0) {
 			appId = defaultAppId;
 		}
 		return appId;
@@ -153,17 +173,8 @@ export default class ImportObjects extends BaseAction {
 		return selectedObjectTypes;
 	}
 
-	private async listObjects(
-		appId: string | undefined,
-		selectedObjectTypes: string[],
-		scriptId: string | undefined,
-	) {
-		const actionResult = await this.customObjectService.listObjects(
-			appId,
-			selectedObjectTypes,
-			scriptId,
-			this.executionPath
-		);
+	private async listObjects(appId: string | undefined, selectedObjectTypes: string[], scriptId: string | undefined) {
+		const actionResult = await this.customObjectService.listObjects(appId, selectedObjectTypes, scriptId, this.executionPath);
 		return actionResult;
 	}
 
@@ -198,7 +209,7 @@ export default class ImportObjects extends BaseAction {
 	private showOutput(actionResult: any) {
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
 			if (actionResult.data.length == 0) {
-				this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST));
+				this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST_SEARCH));
 				return;
 			}
 			this.messageService.showCommandInfo(this.translationService.getMessage(IMPORT_OBJECTS.FINISHED));
