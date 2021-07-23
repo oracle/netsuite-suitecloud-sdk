@@ -3,12 +3,12 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
+import DummyConsoleLogger from '../loggers/DummyConsoleLogger';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
+import { ConsoleLogger } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
 import { IMPORT_OBJECTS, LIST_OBJECTS } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
-import DummyConsoleLogger from '../loggers/DummyConsoleLogger';
-import { ConsoleLogger } from '../util/ExtensionUtil';
 
 const IMPORT_OBJECT_COMMAND_NAME = 'object:import';
 const LIST_OBJECT_COMMAND_NAME = 'object:list';

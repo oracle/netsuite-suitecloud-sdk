@@ -64,7 +64,7 @@ export default class ImportObjects extends BaseAction {
 
 		const scriptId = await this.promptSelectedScriptId();
 
-		if(scriptId == undefined) {
+		if (scriptId == undefined) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
 		}
