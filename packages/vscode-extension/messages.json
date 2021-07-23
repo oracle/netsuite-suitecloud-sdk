@@ -14,6 +14,7 @@
 	"COMMAND_SUCCESS": "'{0}' has been successfully executed.",
 	"COMMAND_TRIGGERED": "'{0}' has been triggered.",
 
+	"CREATE_FILE_ERRORS_MISSING_VALID_FOLDER_FOR_SUITECRIPT_FILE": "No valid folder found to create a SuiteScript file. Use '{0}' from a valid SuiteCloud project structure. For more information about the project structure, see {1}",
 	"CREATE_FILE_QUESTIONS_CHOOSE_SUITESCRIPT_TYPE": "What type of SuiteScript do you want to create?",
 	"CREATE_FILE_QUESTIONS_ENTER_NAME": "Enter a name for the SuiteScript file.",
 	"CREATE_FILE_QUESTIONS_SELECT_FOLDER": "Select the folder where you want to create the SuiteScript file",

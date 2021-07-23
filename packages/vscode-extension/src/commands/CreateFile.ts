@@ -27,6 +27,31 @@ export default class CreateFile extends BaseAction {
 		super(COMMAND_NAME);
 	}
 
+	protected validate(): { valid: false; message: string } | { valid: true } {
+		const superValidation = super.validate();
+		if (!superValidation.valid) {
+			return superValidation;
+		}
+
+		const folderChoices = this.getFolderChoices();
+		if (folderChoices.length === 0) {
+			return {
+				valid: false,
+				message: this.translationService.getMessage(
+					CREATE_FILE.ERRORS.MISSING_VALID_FOLDER_FOR_SUITECRIPT_FILE,
+					this.vscodeCommandName,
+					ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
+				),
+			};
+		}
+
+		return {
+			valid: true,
+		};
+
+	}
+
+
 	protected async execute(): Promise<void> {
 		const commandArgs = await this.getCommandArgs();
 		if (commandArgs === undefined) {
