@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import { COMMAND, CREATE_FILE } from '../service/TranslationKeys';
 import {
 	ApplicationConstants,
-	CLIConfigurationService,
 	FileCabinetService,
 	FileSystemService,
 	InteractiveAnswersValidator,
