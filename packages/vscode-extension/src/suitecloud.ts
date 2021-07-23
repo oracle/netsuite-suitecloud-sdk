@@ -38,6 +38,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		register('suitecloud.adddependencies', new AddDependencies()),
+		register('suitecloud.createfile', new CreateFile()),
 		register('suitecloud.createproject', new CreateProject()),
 		register('suitecloud.deploy', new Deploy()),
 		register('suitecloud.importfile', new ImportFiles()),
@@ -46,8 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.listobjects', new ListObjects()),
 		register('suitecloud.setupaccount', new ManageAccounts()),
 		register('suitecloud.updateobject', new UpdateObject()),
-		register('suitecloud.uploadfile', new UploadFile()),
-		register('suitecloud.createfile', new CreateFile())
+		register('suitecloud.uploadfile', new UploadFile())
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)

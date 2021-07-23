@@ -47,9 +47,7 @@ export default class CreateFile extends BaseAction {
 		return {
 			valid: true,
 		};
-
 	}
-
 
 	protected async execute(): Promise<void> {
 		const commandArgs = await this.getCommandArgs();
