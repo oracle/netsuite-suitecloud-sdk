@@ -47,10 +47,9 @@ export default class ImportObjects extends BaseAction {
 
 			if (filterAppId === this.translationService.getMessage(ANSWERS.YES)) {
 				appId = await this.promptAppId(projectInfoService);
-			}
-
-			if (!appId) {
-				return;
+				if (!appId) {
+					return;
+				}
 			}
 		}
 
