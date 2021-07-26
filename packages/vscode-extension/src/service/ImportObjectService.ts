@@ -52,7 +52,7 @@ export default class CustomObjectService {
 		return await commandActionPromise;
 	}
 
-	async listObjects(appId: string | undefined, types: string[], scriptId: string | undefined, executionPath: string | undefined) {
+	async listObjects(appId: string | undefined, types: string[], scriptId: string | undefined, executionPath: string) {
 		this.executionPath = executionPath;
 		let commandArgs: any = { type: types.join(' ') };
 

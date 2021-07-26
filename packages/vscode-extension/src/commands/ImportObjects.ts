@@ -163,6 +163,10 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	private async listObjects(appId: string | undefined, selectedObjectTypes: string[], scriptId: string) {
+		if (!this.executionPath) {
+			//already  checked in validate. Should not throw
+			throw 'Unexpected error at list objects';
+		}
 		const actionResult = await this.customObjectService.listObjects(appId, selectedObjectTypes, scriptId, this.executionPath);
 		return actionResult;
 	}
