@@ -111,7 +111,7 @@ export default class CreateFile extends BaseAction {
 
 	private promptScriptTypeQuestion(): Thenable<SuiteScriptTypeItem | undefined> {
 		return window.showQuickPick(
-			SUITESCRIPT_TYPES.map((el) => <SuiteScriptTypeItem>{ label: el.name, id: el.id, name: el.name }),
+			SUITESCRIPT_TYPES.map((element) => <SuiteScriptTypeItem>{ label: element.name, id: element.id, name: element.name }),
 			{
 				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.CHOOSE_SUITESCRIPT_TYPE),
 				canPickMany: false,
