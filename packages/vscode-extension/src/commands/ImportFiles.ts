@@ -45,7 +45,6 @@ export default class ImportFiles extends BaseAction {
 		}
 
 		if (!selectedFilesPaths) {
-			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
 			return;
 		}
 
@@ -92,7 +91,6 @@ export default class ImportFiles extends BaseAction {
 			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders();
 			const selectedFolder: QuickPickItem | undefined = await this.listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {
-				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
 				return;
 			}
 			const files = await this.listFilesService.listFiles(selectedFolder.label);
@@ -102,7 +100,6 @@ export default class ImportFiles extends BaseAction {
 			const selectedFiles: QuickPickItem[] | undefined = await this.listFilesService.selectFiles(files);
 
 			if (!selectedFiles) {
-				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
 				return;
 			}
 			return selectedFiles.map((file) => file.label.replace(/\\/g, '/'));
