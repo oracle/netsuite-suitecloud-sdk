@@ -61,7 +61,6 @@
 	"IMPORT_FILES_QUESTIONS_OVERRIDE": "All the files in the project will be overwritten with the files from the account. Do you want to continue?",
 	"IMPORT_FILES_QUESTIONS_OVERRIDE_SINGLE": "The {0} file will be overwritten with the file from the account. Do you want to continue?",
 
-	"IMPORT_OBJECTS_ERROR_EMPTY_LIST": "No objects have been selected.",
 	"IMPORT_OBJECTS_ERROR_EMPTY_LIST_SEARCH": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID or script ID.",
 	"IMPORT_OBJECTS_ERROR_INCORRECT_FOLDER": "To import a custom object from an account, first select a valid location inside the Objects folder",
 	"IMPORT_OBJECTS_FINISHED": "The importing process has finished.",

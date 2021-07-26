@@ -70,8 +70,7 @@ export default class ImportObjects extends BaseAction {
 		}
 
 		const selectedScriptIds = await this.promptObjects(listObjectsResult.data);
-		if (!selectedScriptIds || selectedScriptIds.length === 0) {
-			this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST));
+		if (!selectedScriptIds) {
 			return;
 		}
 		const includeReferencedFiles = await this.promptIncludeReferencedFiles();
