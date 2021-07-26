@@ -54,30 +54,31 @@ export default class ImportObjects extends BaseAction {
 		}
 
 		const selectedObjectTypes = await this.promptObjectTypes();
-
 		if (!selectedObjectTypes) {
 			return;
 		}
 
-		const scriptId = await this.promptSelectedScriptId();
-
-		if (scriptId === undefined) {
+		const scriptIdFilter = await this.promptScriptIdFilter();
+		if (scriptIdFilter === undefined) {
 			return;
 		}
 
-		const listObjectsResult = await this.listObjects(appId, selectedObjectTypes, scriptId);
+		const listObjectsResult = await this.listObjects(appId, selectedObjectTypes, scriptIdFilter);
 		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length === 0) {
 			this.showOutput(listObjectsResult);
 			return;
 		}
 
 		const selectedScriptIds = await this.promptObjects(listObjectsResult.data);
-
 		if (!selectedScriptIds || selectedScriptIds.length === 0) {
 			this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST));
 			return;
 		}
 		const includeReferencedFiles = await this.promptIncludeReferencedFiles();
+		if (!includeReferencedFiles) {
+			return;
+		}
+
 		const overwrite = await this.promptOverwrite(includeReferencedFiles);
 		if (!overwrite || overwrite === this.translationService.getMessage(ANSWERS.NO)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
@@ -133,7 +134,7 @@ export default class ImportObjects extends BaseAction {
 		return appId;
 	}
 
-	private async promptSelectedScriptId() {
+	private async promptScriptIdFilter() {
 		let scriptId = await window.showInputBox({
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SCRIPT_ID),
@@ -159,7 +160,7 @@ export default class ImportObjects extends BaseAction {
 		);
 	}
 
-	private async listObjects(appId: string | undefined, selectedObjectTypes: string[], scriptId: string | undefined) {
+	private async listObjects(appId: string | undefined, selectedObjectTypes: string[], scriptId: string) {
 		const actionResult = await this.customObjectService.listObjects(appId, selectedObjectTypes, scriptId, this.executionPath);
 		return actionResult;
 	}
