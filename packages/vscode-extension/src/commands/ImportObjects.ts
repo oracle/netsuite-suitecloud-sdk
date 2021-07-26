@@ -80,7 +80,10 @@ export default class ImportObjects extends BaseAction {
 		}
 
 		const overwrite = await this.promptOverwrite(includeReferencedFiles);
-		if (!overwrite || overwrite === this.translationService.getMessage(ANSWERS.NO)) {
+		if (!overwrite) {
+			return;
+		}
+		if (overwrite === this.translationService.getMessage(ANSWERS.NO)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
 		}
@@ -166,13 +169,20 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	private async promptObjects(objectList: any[]): Promise<string[] | undefined> {
-		const selectedObjects = await window.showQuickPick(
-			objectList.map((object) => object.scriptId),
-			{
-				placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_OBJECTS),
-				canPickMany: true,
+		let selectedObjects: string[] | undefined = [];
+
+		while (selectedObjects.length < 1) {
+			selectedObjects = await window.showQuickPick(
+				objectList.map((object: { scriptId: string }) => object.scriptId),
+				{
+					placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_OBJECTS),
+					canPickMany: true,
+				}
+			);
+			if (selectedObjects === undefined) {
+				return;
 			}
-		);
+		}
 		return selectedObjects;
 	}
 
@@ -183,7 +193,7 @@ export default class ImportObjects extends BaseAction {
 		});
 	}
 
-	private async promptOverwrite(includeReferencedFiles: string | undefined) {
+	private async promptOverwrite(includeReferencedFiles: string) {
 		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
 			placeHolder:
 				includeReferencedFiles === this.translationService.getMessage(ANSWERS.NO)
@@ -196,7 +206,7 @@ export default class ImportObjects extends BaseAction {
 	private showOutput(actionResult: any) {
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
 			if (actionResult.data.length === 0) {
-				this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST_SEARCH));
+				this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST_SEARCH));
 				return;
 			}
 			this.messageService.showCommandInfo(this.translationService.getMessage(IMPORT_OBJECTS.FINISHED));
