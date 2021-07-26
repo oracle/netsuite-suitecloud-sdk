@@ -16,18 +16,17 @@ const COMMAND_NAME = 'importfiles';
 
 export default class ImportFiles extends BaseAction {
 	private importFileService: ImportFileService;
-	private listFilesService: ListFilesService;
 
 	constructor() {
 		super(COMMAND_NAME);
 		this.importFileService = new ImportFileService(this.messageService);
-		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
+		
 	}
 
 	protected init(uri?: Uri) {
 		super.init(uri);
 		this.importFileService.setVsConsoleLogger(this.vsConsoleLogger);
-		this.listFilesService.setVsConsoleLogger(new DummyConsoleLogger());
+		
 	}
 
 	protected async execute() {
@@ -87,17 +86,19 @@ export default class ImportFiles extends BaseAction {
 	}
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
+		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.getRootProjectFolder());
+		listFilesService.setVsConsoleLogger(new DummyConsoleLogger());
 		if (!this.isFileSelected) {
-			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders();
-			const selectedFolder: QuickPickItem | undefined = await this.listFilesService.selectFolder(fileCabinetFolders);
+			const fileCabinetFolders: FolderItem[] = await listFilesService.getListFolders();
+			const selectedFolder: QuickPickItem | undefined = await listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {
 				return;
 			}
-			const files = await this.listFilesService.listFiles(selectedFolder.label);
+			const files = await listFilesService.listFiles(selectedFolder.label);
 			if (!files || files.length === 0) {
 				throw Error(this.translationService.getMessage(LIST_FILES.ERROR.NO_FILES_FOUND));
 			}
-			const selectedFiles: QuickPickItem[] | undefined = await this.listFilesService.selectFiles(files);
+			const selectedFiles: QuickPickItem[] | undefined = await listFilesService.selectFiles(files);
 
 			if (!selectedFiles) {
 				return;

@@ -11,8 +11,9 @@ import { FolderItem } from '../types/FolderItem';
 import {
 	AccountFileCabinetService,
 	actionResultStatus,
-	AuthenticationUtils, ConsoleLogger, ExecutionEnvironmentContext,
-	getRootProjectFolder
+	AuthenticationUtils,
+	ConsoleLogger,
+	ExecutionEnvironmentContext,
 } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
 import { COMMAND, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
@@ -34,11 +35,10 @@ export default class ListFilesService {
 	private readonly messageService: MessageService;
 	private vsConsoleLogger: typeof ConsoleLogger | undefined;
 
-	constructor(messageService: MessageService, translationService: VSTranslationService) {
+	constructor(messageService: MessageService, translationService: VSTranslationService, projectFolder: string | undefined) {
 		this.messageService = messageService;
 		this.translationService = translationService;
-		this.executionPath = getRootProjectFolder();
-		
+		this.executionPath = projectFolder;
 	}
 
 	public async getListFolders() {

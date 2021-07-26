@@ -2,22 +2,6 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import * as vscode from 'vscode';
-
-// returns the root project folder of the active file in the editor if uri not defined
-// uri is present when action originated from a contextMenu of the treeView
-// works fine with workspace with multiple project folders opened
-export function getRootProjectFolder(uri?: vscode.Uri): string | undefined {
-	if (!uri?.fsPath) {
-		const activeTextEditor = vscode.window.activeTextEditor;
-		const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
-		return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : undefined;
-	} else {
-		const activeWorkspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-		return activeWorkspaceFolder?.uri.fsPath;
-	}
-}
-
 export const ApplicationConstants = require('@oracle/suitecloud-cli/src/ApplicationConstants');
 export const ExecutionEnvironmentContext = require('@oracle/suitecloud-cli/src/ExecutionEnvironmentContext');
 export const SUITESCRIPT_TYPES: { id: string; name: string }[] = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptTypesMetadata');
