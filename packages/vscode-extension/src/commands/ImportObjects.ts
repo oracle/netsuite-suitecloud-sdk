@@ -7,13 +7,8 @@ import * as path from 'path';
 import { Uri, window } from 'vscode';
 import CustomObjectService from '../service/ImportObjectService';
 import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
-import { actionResultStatus, ApplicationConstants, InteractiveAnswersValidator, ProjectInfoService } from '../util/ExtensionUtil';
+import { actionResultStatus, ApplicationConstants, InteractiveAnswersValidator, objectTypes, ProjectInfoService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-
-const objectTypes: {
-	name: string;
-	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
-}[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 const COMMAND_NAME = 'importobjects';
 
@@ -37,8 +32,8 @@ export default class ImportObjects extends BaseAction {
 		}
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
 
-		const destinationFolder = this.getDestinationFolder(this.activeFile);
-		if (!destinationFolder.startsWith(ApplicationConstants.FOLDERS.OBJECTS)) {
+		const relativeDestinationFolder  = this.getDestinationFolder(this.activeFile);
+		if (!relativeDestinationFolder .startsWith(ApplicationConstants.FOLDERS.OBJECTS)) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.INCORRECT_FOLDER));
 			return;
 		}
@@ -46,11 +41,11 @@ export default class ImportObjects extends BaseAction {
 		let appId: string | undefined;
 		if (projectInfoService.isSuiteAppProject()) {
 			appId = await this.promptAppId(projectInfoService);
-			if (appId == undefined) {
+			if (appId === undefined) {
 				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 				return;
 			}
-			if (appId == '') {
+			if (appId === '') {
 				appId = undefined;
 			}
 		}
@@ -64,20 +59,20 @@ export default class ImportObjects extends BaseAction {
 
 		const scriptId = await this.promptSelectedScriptId();
 
-		if (scriptId == undefined) {
+		if (scriptId === undefined) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
 		}
 
 		const listObjectsResult = await this.listObjects(appId, selectedObjectTypes, scriptId);
-		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length == 0) {
+		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length === 0) {
 			this.showOutput(listObjectsResult);
 			return;
 		}
 
 		const selectedScriptIds = await this.promptObjects(listObjectsResult.data);
 
-		if (!selectedScriptIds || selectedScriptIds.length == 0) {
+		if (!selectedScriptIds || selectedScriptIds.length === 0) {
 			this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST));
 			return;
 		}
@@ -89,7 +84,7 @@ export default class ImportObjects extends BaseAction {
 		}
 
 		const actionResult = await this.customObjectService.importObjects(
-			destinationFolder,
+			relativeDestinationFolder ,
 			appId,
 			selectedScriptIds,
 			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
@@ -120,7 +115,7 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-		if (filterAppId && filterAppId == this.translationService.getMessage(ANSWERS.NO)) {
+		if (filterAppId && filterAppId === this.translationService.getMessage(ANSWERS.NO)) {
 			return '';
 		}
 
@@ -136,11 +131,11 @@ export default class ImportObjects extends BaseAction {
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
-		if (appId == undefined) {
+		if (appId === undefined) {
 			return;
 		}
 
-		if (appId.length == 0) {
+		if (appId.length === 0) {
 			appId = defaultAppId;
 		}
 		return appId;
@@ -208,7 +203,7 @@ export default class ImportObjects extends BaseAction {
 
 	private showOutput(actionResult: any) {
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
-			if (actionResult.data.length == 0) {
+			if (actionResult.data.length === 0) {
 				this.messageService.showCommandError(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST_SEARCH));
 				return;
 			}

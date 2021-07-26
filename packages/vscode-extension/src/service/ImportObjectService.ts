@@ -38,7 +38,7 @@ export default class CustomObjectService {
 
 		commandArgs.scriptid = scriptIds && scriptIds.length > 0 ? scriptIds : 'ALL';
 
-		if (appId == undefined || appId.length != 0) {
+		if (appId === undefined || appId.length != 0) {
 			commandArgs.appid = appId;
 		}
 

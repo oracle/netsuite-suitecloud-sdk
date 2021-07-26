@@ -4,13 +4,8 @@
  */
 import { window } from 'vscode';
 import { COMMAND, LIST_OBJECTS } from '../service/TranslationKeys';
-import { actionResultStatus } from '../util/ExtensionUtil';
+import { actionResultStatus, objectTypes } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-
-const objectTypes: {
-	name: string;
-	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
-}[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 const COMMAND_NAME = 'listobjects';
 
