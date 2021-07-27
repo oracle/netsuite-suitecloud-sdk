@@ -3,8 +3,6 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import DummyConsoleLogger from '../loggers/DummyConsoleLogger';
-import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import { ConsoleLogger } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
 import { IMPORT_OBJECTS, LIST_OBJECTS } from './TranslationKeys';
@@ -12,12 +10,10 @@ import { VSTranslationService } from './VSTranslationService';
 
 const IMPORT_OBJECT_COMMAND_NAME = 'object:import';
 const LIST_OBJECT_COMMAND_NAME = 'object:list';
-const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class CustomObjectService {
 	private executionPath?: string;
 	private readonly messageService: MessageService;
-	private vsConsoleLogger: VSConsoleLogger | undefined;
 	private translationService: VSTranslationService;
 
 	constructor(messageService: MessageService, translationService: VSTranslationService) {
@@ -30,7 +26,8 @@ export default class CustomObjectService {
 		appId: string,
 		scriptIds: string[],
 		includeReferencedFiles: boolean,
-		executionPath: string
+		executionPath: string,
+		consoleLogger: typeof ConsoleLogger
 	) {
 		this.executionPath = executionPath;
 		//We choose 'ALL' types because it is chosen before which scriptIds should be imported and not by type
@@ -46,13 +43,13 @@ export default class CustomObjectService {
 			commandArgs.excludefiles = true;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, IMPORT_OBJECT_COMMAND_NAME);
+		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, IMPORT_OBJECT_COMMAND_NAME, consoleLogger);
 		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return await commandActionPromise;
 	}
 
-	async listObjects(appId: string, types: string[], scriptId: string, executionPath: string) {
+	async listObjects(appId: string, types: string[], scriptId: string, executionPath: string, consoleLogger: typeof ConsoleLogger) {
 		this.executionPath = executionPath;
 		let commandArgs: any = { type: types.join(' ') };
 
@@ -63,24 +60,16 @@ export default class CustomObjectService {
 			commandArgs.scriptid = scriptId;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, LIST_OBJECT_COMMAND_NAME, new DummyConsoleLogger());
+		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, LIST_OBJECT_COMMAND_NAME, consoleLogger);
 		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return await commandActionPromise;
 	}
 
-	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}, command: string, consoleLogger?: typeof ConsoleLogger) {
-		const logger = consoleLogger ? consoleLogger : this.vsConsoleLogger;
-		if (!logger) {
-			throw Error(CONSOLE_LOGGER_ERROR);
-		}
-		return new SuiteCloudRunner(logger, this.executionPath).run({
+	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}, command: string, consoleLogger: typeof ConsoleLogger) {
+		return new SuiteCloudRunner(consoleLogger, this.executionPath).run({
 			commandName: command,
 			arguments: args,
 		});
-	}
-
-	setVsConsoleLogger(vsConsoleLogger: typeof ConsoleLogger) {
-		this.vsConsoleLogger = vsConsoleLogger;
 	}
 }

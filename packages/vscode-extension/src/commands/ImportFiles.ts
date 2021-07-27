@@ -3,14 +3,14 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import * as path from 'path';
-import { QuickPickItem, Uri, window } from 'vscode';
+import { QuickPickItem, window } from 'vscode';
+import VsErrorConsoleLogger from '../loggers/VsErrorConsoleLogger';
 import ImportFileService from '../service/ImportFileService';
 import ListFilesService from '../service/ListFilesService';
 import { ANSWERS, ERRORS, IMPORT_FILES, LIST_FILES } from '../service/TranslationKeys';
 import { FolderItem } from '../types/FolderItem';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import DummyConsoleLogger from '../loggers/DummyConsoleLogger';
 
 const COMMAND_NAME = 'importfiles';
 
@@ -20,13 +20,6 @@ export default class ImportFiles extends BaseAction {
 	constructor() {
 		super(COMMAND_NAME);
 		this.importFileService = new ImportFileService(this.messageService);
-		
-	}
-
-	protected init(uri?: Uri) {
-		super.init(uri);
-		this.importFileService.setVsConsoleLogger(this.vsConsoleLogger);
-		
 	}
 
 	protected async execute() {
@@ -79,7 +72,8 @@ export default class ImportFiles extends BaseAction {
 			destinationFolder,
 			statusBarMessage,
 			this.executionPath,
-			excludeProperties === this.translationService.getMessage(ANSWERS.YES)
+			excludeProperties === this.translationService.getMessage(ANSWERS.YES),
+			this.vsConsoleLogger
 		);
 
 		this.showOutput(actionResult);
@@ -87,7 +81,7 @@ export default class ImportFiles extends BaseAction {
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
 		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.getRootProjectFolder());
-		listFilesService.setVsConsoleLogger(new DummyConsoleLogger());
+		listFilesService.setVsConsoleLogger(new VsErrorConsoleLogger(true, this.executionPath));
 		if (!this.isFileSelected) {
 			const fileCabinetFolders: FolderItem[] = await listFilesService.getListFolders();
 			const selectedFolder: QuickPickItem | undefined = await listFilesService.selectFolder(fileCabinetFolders);

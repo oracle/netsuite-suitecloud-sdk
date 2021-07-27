@@ -5,6 +5,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Uri, window } from 'vscode';
+import VsErrorConsoleLogger from '../loggers/VsErrorConsoleLogger';
 import CustomObjectService from '../service/ImportObjectService';
 import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants, InteractiveAnswersValidator, objectTypes, ProjectInfoService } from '../util/ExtensionUtil';
@@ -18,11 +19,6 @@ export default class ImportObjects extends BaseAction {
 	constructor() {
 		super(COMMAND_NAME);
 		this.customObjectService = new CustomObjectService(this.messageService, this.translationService);
-	}
-
-	protected init(uri?: Uri) {
-		super.init(uri);
-		this.customObjectService.setVsConsoleLogger(this.vsConsoleLogger);
 	}
 
 	protected async execute() {
@@ -88,7 +84,6 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-
 		if (!this.executionPath) {
 			//already  checked in validate. Should not throw
 			throw 'Unexpected error at list objects';
@@ -99,7 +94,8 @@ export default class ImportObjects extends BaseAction {
 			appId,
 			selectedScriptIds,
 			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
-			this.executionPath
+			this.executionPath,
+			this.vsConsoleLogger
 		);
 
 		this.showOutput(actionResult);
@@ -174,7 +170,13 @@ export default class ImportObjects extends BaseAction {
 			//already  checked in validate. Should not throw
 			throw 'Unexpected error at list objects';
 		}
-		const actionResult = await this.customObjectService.listObjects(appId, selectedObjectTypes, scriptId, this.executionPath);
+		const actionResult = await this.customObjectService.listObjects(
+			appId,
+			selectedObjectTypes,
+			scriptId,
+			this.executionPath,
+			new VsErrorConsoleLogger(true, this.executionPath)
+		);
 		return actionResult;
 	}
 
