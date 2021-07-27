@@ -26,6 +26,10 @@ export default class ImportObjects extends BaseAction {
 			// Already checked in validate
 			return;
 		}
+		if (!this.executionPath) {
+			//already  checked in validate. Should not throw
+			throw 'Unexpected error at list objects';
+		}
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
 
 		const relativeDestinationFolder = this.getDestinationFolder(this.activeFile);
@@ -60,7 +64,13 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-		const listObjectsResult = await this.listObjects(appId, selectedObjectTypes, scriptIdFilter);
+		const listObjectsResult = await this.customObjectService.listObjects(
+			appId,
+			selectedObjectTypes,
+			scriptIdFilter,
+			this.executionPath,
+			new VsErrorConsoleLogger(true, this.executionPath)
+		);
 		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length === 0) {
 			this.showOutput(listObjectsResult);
 			return;
@@ -82,11 +92,6 @@ export default class ImportObjects extends BaseAction {
 		if (overwrite === this.translationService.getMessage(ANSWERS.NO)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
-		}
-
-		if (!this.executionPath) {
-			//already  checked in validate. Should not throw
-			throw 'Unexpected error at list objects';
 		}
 
 		const actionResult = await this.customObjectService.importObjects(
@@ -163,21 +168,6 @@ export default class ImportObjects extends BaseAction {
 				canPickMany: true,
 			}
 		);
-	}
-
-	private async listObjects(appId: string, selectedObjectTypes: string[], scriptId: string) {
-		if (!this.executionPath) {
-			//already  checked in validate. Should not throw
-			throw 'Unexpected error at list objects';
-		}
-		const actionResult = await this.customObjectService.listObjects(
-			appId,
-			selectedObjectTypes,
-			scriptId,
-			this.executionPath,
-			new VsErrorConsoleLogger(true, this.executionPath)
-		);
-		return actionResult;
 	}
 
 	private async promptObjects(objectList: any[]): Promise<string[] | undefined> {
