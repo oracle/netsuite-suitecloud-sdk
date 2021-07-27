@@ -7,12 +7,10 @@ import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import MessageService from './MessageService';
 
 const SUITECLOUD_COMMAND_NAME = 'file:import';
-const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class ImportFileService {
 	private executionPath?: string;
 	private readonly messageService: MessageService;
-	private vsConsoleLogger: VSConsoleLogger | undefined;
 
 	constructor(messageService: MessageService) {
 		this.messageService = messageService;
@@ -23,7 +21,8 @@ export default class ImportFileService {
 		directory: string,
 		statusBarMessage: string,
 		executionPath: string | undefined,
-		excludeProperties: boolean
+		excludeProperties: boolean,
+		consoleLogger: VSConsoleLogger
 	) {
 		this.executionPath = executionPath;
 		let commandArgs: any = { project: directory, paths: selectedFilesPaths };
@@ -32,22 +31,15 @@ export default class ImportFileService {
 			commandArgs.excludeproperties = true;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
+		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, consoleLogger);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return await commandActionPromise;
 	}
 
-	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}) {
-		if (!this.vsConsoleLogger) {
-			throw Error(CONSOLE_LOGGER_ERROR);
-		}
-		return new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
+	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}, consoleLogger: VSConsoleLogger) {
+		return new SuiteCloudRunner(consoleLogger, this.executionPath).run({
 			commandName: SUITECLOUD_COMMAND_NAME,
 			arguments: args,
 		});
-	}
-
-	setVsConsoleLogger(vsConsoleLogger: VSConsoleLogger) {
-		this.vsConsoleLogger = vsConsoleLogger;
 	}
 }

@@ -4,6 +4,7 @@
  */
 
 import { assert } from 'console';
+import * as vscode from 'vscode';
 import { Uri, window } from 'vscode';
 import { commandsInfoMap } from '../commandsMap';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
@@ -11,7 +12,8 @@ import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import MessageService from '../service/MessageService';
 import { ERRORS } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
-import { CLIConfigurationService, getRootProjectFolder } from '../util/ExtensionUtil';
+import { CLIConfigurationService } from '../util/ExtensionUtil';
+
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
@@ -34,7 +36,7 @@ export default abstract class BaseAction {
 	}
 
 	protected init(uri?: Uri) {
-		this.executionPath = getRootProjectFolder(uri);
+		this.executionPath = this.getRootProjectFolder(uri);
 		const fsPath = uri?.fsPath;
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 		this.messageService.executionPath = this.executionPath;
@@ -79,6 +81,20 @@ export default abstract class BaseAction {
 		cliConfigurationService.initialize(this.executionPath);
 
 		return cliConfigurationService.getProjectFolder(this.cliCommandName);
+	}
+
+	// returns the root project folder of the active file in the editor if uri not defined
+	// uri is present when action originated from a contextMenu of the treeView
+	// works fine with workspace with multiple project folders opened
+	public getRootProjectFolder(uri?: vscode.Uri): string | undefined {
+		if (!uri?.fsPath) {
+			const activeTextEditor = vscode.window.activeTextEditor;
+			const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
+			return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : undefined;
+		} else {
+			const activeWorkspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+			return activeWorkspaceFolder?.uri.fsPath;
+		}
 	}
 
 	public async run(uri?: Uri) {

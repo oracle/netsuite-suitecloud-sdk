@@ -3,31 +3,23 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import * as path from 'path';
-import { QuickPickItem, Uri, window } from 'vscode';
+import { QuickPickItem, window } from 'vscode';
+import VsErrorConsoleLogger from '../loggers/VsErrorConsoleLogger';
 import ImportFileService from '../service/ImportFileService';
 import ListFilesService from '../service/ListFilesService';
 import { ANSWERS, ERRORS, IMPORT_FILES, LIST_FILES } from '../service/TranslationKeys';
 import { FolderItem } from '../types/FolderItem';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
-import DummyConsoleLogger from '../loggers/DummyConsoleLogger';
 
 const COMMAND_NAME = 'importfiles';
 
 export default class ImportFiles extends BaseAction {
 	private importFileService: ImportFileService;
-	private listFilesService: ListFilesService;
 
 	constructor() {
 		super(COMMAND_NAME);
 		this.importFileService = new ImportFileService(this.messageService);
-		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
-	}
-
-	protected init(uri?: Uri) {
-		super.init(uri);
-		this.importFileService.setVsConsoleLogger(this.vsConsoleLogger);
-		this.listFilesService.setVsConsoleLogger(new DummyConsoleLogger());
 	}
 
 	protected async execute() {
@@ -80,27 +72,29 @@ export default class ImportFiles extends BaseAction {
 			destinationFolder,
 			statusBarMessage,
 			this.executionPath,
-			excludeProperties === this.translationService.getMessage(ANSWERS.YES)
+			excludeProperties === this.translationService.getMessage(ANSWERS.YES),
+			this.vsConsoleLogger
 		);
 
 		this.showOutput(actionResult);
 	}
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
+		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.getRootProjectFolder());
+		listFilesService.setVsConsoleLogger(new VsErrorConsoleLogger(true, this.executionPath));
 		if (!this.isSelectedFromContextMenu) {
-			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders();
-			const selectedFolder: QuickPickItem | undefined = await this.listFilesService.selectFolder(fileCabinetFolders);
+			const fileCabinetFolders: FolderItem[] = await listFilesService.getListFolders();
+			const selectedFolder: QuickPickItem | undefined = await listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {
 				return;
 			}
-			const files = await this.listFilesService.listFiles(selectedFolder.label);
+			const files = await listFilesService.listFiles(selectedFolder.label);
 			if (!files || files.length === 0) {
 				throw Error(this.translationService.getMessage(LIST_FILES.ERROR.NO_FILES_FOUND));
 			}
-			const selectedFiles: QuickPickItem[] | undefined = await this.listFilesService.selectFiles(files);
+			const selectedFiles: QuickPickItem[] | undefined = await listFilesService.selectFiles(files);
 
 			if (!selectedFiles) {
-				this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
 				return;
 			}
 			return selectedFiles.map((file) => file.label.replace(/\\/g, '/'));

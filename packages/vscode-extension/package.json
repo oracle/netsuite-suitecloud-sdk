@@ -60,6 +60,11 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.importobjects",
+				"title": "Import Objects",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.listfiles",
 				"title": "List Files",
 				"category": "SuiteCloud"
@@ -103,6 +108,18 @@
 				"linux": "alt+d"
 			},
 			{
+				"command": "suitecloud.importfiles",
+				"key": "ctrl+alt+f",
+				"mac": "ctrl+alt+f",
+				"linux": "ctrl+alt+f"
+			},
+			{
+				"command": "suitecloud.importobjects",
+				"key": "ctrl+alt+o",
+				"mac": "ctrl+alt+cmd+o",
+				"linux": "ctrl+alt+o"
+			},
+			{
 				"command": "suitecloud.updateobject",
 				"key": "ctrl+alt+u",
 				"mac": "cmd+alt+u",
@@ -120,6 +137,11 @@
 					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
 					"command": "suitecloud.importfile",
 					"group": "suitecloud@1"
+				},
+				{
+					"when": "resource =~ //Objects(/.+)*$/",
+					"command": "suitecloud.importobjects",
+					"group": "suitecloud@2"
 				},
 				{
 					"when": "resource =~ //FileCabinet/(SuiteApps/.+|SuiteScripts(/.*)*)$/",

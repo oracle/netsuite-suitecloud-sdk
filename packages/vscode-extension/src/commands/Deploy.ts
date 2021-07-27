@@ -76,7 +76,6 @@ export default class Deploy extends BaseAction {
 
 	private getProjectType(): string {
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
-
 		return projectInfoService.getProjectType();
 	}
 

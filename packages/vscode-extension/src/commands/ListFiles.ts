@@ -18,17 +18,15 @@ const LIST_FILES_COMMAND = {
 };
 
 export default class ListFiles extends BaseAction {
-	private listFilesService: ListFilesService;
-
 	constructor() {
 		super(COMMAND_NAME);
-		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
 	}
 
 	protected async execute(): Promise<void> {
+		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.getRootProjectFolder());
 		try {
-			let fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders();
-			const selectedFolder = await this.listFilesService.selectFolder(fileCabinetFolders);
+			let fileCabinetFolders: FolderItem[] = await listFilesService.getListFolders();
+			const selectedFolder = await listFilesService.selectFolder(fileCabinetFolders);
 			if (selectedFolder) {
 				await this._listFiles(selectedFolder.label);
 			}
