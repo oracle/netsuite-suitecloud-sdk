@@ -4,7 +4,7 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { Uri, window } from 'vscode';
+import { window } from 'vscode';
 import VsErrorConsoleLogger from '../loggers/VsErrorConsoleLogger';
 import CustomObjectService from '../service/ImportObjectService';
 import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
@@ -22,11 +22,7 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	protected async execute() {
-		if (!this.activeFile) {
-			// Already checked in validate
-			return;
-		}
-		if (!this.executionPath) {
+		if (!this.activeFile || !this.executionPath) {
 			//already  checked in validate. Should not throw
 			throw 'Unexpected error at list objects';
 		}
