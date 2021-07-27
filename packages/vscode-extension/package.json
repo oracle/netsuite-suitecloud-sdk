@@ -83,6 +83,11 @@
 				"command": "suitecloud.uploadfile",
 				"title": "Upload File",
 				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.createfile",
+				"title": "Create SuiteScript File",
+				"category": "SuiteCloud"
 			}
 		],
 		"keybindings": [
@@ -114,6 +119,11 @@
 				{
 					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
 					"command": "suitecloud.importfile",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "resource =~ //FileCabinet/(SuiteApps/.+|SuiteScripts(/.*)*)$/",
+					"command": "suitecloud.createfile",
 					"group": "suitecloud@1"
 				}
 			]

@@ -28,6 +28,9 @@ module.exports = class FileSystemService {
 
 	getFoldersFromDirectoryRecursively(parentFolder) {
 		assert(parentFolder);
+		if (!existsSync(parentFolder)) {
+			return [];
+		}
 		const folders = [];
 		const getFoldersRecursively = source =>
 				this.getFoldersFromDirectory(source).forEach(folder => {

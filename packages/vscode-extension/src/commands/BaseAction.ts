@@ -4,7 +4,7 @@
  */
 
 import { assert } from 'console';
-import { window } from 'vscode';
+import { Uri, window } from 'vscode';
 import { commandsInfoMap } from '../commandsMap';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
@@ -15,7 +15,7 @@ import { CLIConfigurationService, getRootProjectFolder } from '../util/Extension
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
-	protected isFileSelected?: boolean;
+	protected isSelectedFromContextMenu?: boolean;
 	protected readonly messageService: MessageService;
 	protected readonly vscodeCommandName: string;
 	protected readonly cliCommandName: string;
@@ -33,11 +33,12 @@ export default abstract class BaseAction {
 		this.translationService = new VSTranslationService();
 	}
 
-	protected init(fsPath?: string) {
-		this.executionPath = getRootProjectFolder();
+	protected init(uri?: Uri) {
+		this.executionPath = getRootProjectFolder(uri);
+		const fsPath = uri?.fsPath;
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 		this.messageService.executionPath = this.executionPath;
-		this.isFileSelected = fsPath ? true : false;
+		this.isSelectedFromContextMenu = fsPath ? true : false;
 		this.activeFile = fsPath ? fsPath : window.activeTextEditor?.document.uri.fsPath;
 	}
 
@@ -80,8 +81,8 @@ export default abstract class BaseAction {
 		return cliConfigurationService.getProjectFolder(this.cliCommandName);
 	}
 
-	public async run(fsPath?: string) {
-		this.init(fsPath);
+	public async run(uri?: Uri) {
+		this.init(uri);
 		const validationStatus = this.validate();
 		if (validationStatus.valid) {
 			return this.execute();

@@ -46,6 +46,10 @@ export const commandsInfoMap: {
 		cliCommandName: 'file:upload',
 		vscodeCommandName: 'Upload File',
 	},
+	createfile: {
+		cliCommandName: 'file:create',
+		vscodeCommandName: 'Create SuiteScript File',
+	},
 	manageaccounts: {
 		cliCommandName: 'account:setup',
 		vscodeCommandName: 'Set Up Account...',

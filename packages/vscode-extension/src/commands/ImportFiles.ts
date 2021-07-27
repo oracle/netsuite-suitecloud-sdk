@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import * as path from 'path';
-import { QuickPickItem, window } from 'vscode';
+import { QuickPickItem, Uri, window } from 'vscode';
 import ImportFileService from '../service/ImportFileService';
 import ListFilesService from '../service/ListFilesService';
 import { ANSWERS, ERRORS, IMPORT_FILES, LIST_FILES } from '../service/TranslationKeys';
@@ -24,8 +24,8 @@ export default class ImportFiles extends BaseAction {
 		this.listFilesService = new ListFilesService(this.messageService, this.translationService);
 	}
 
-	protected init(fsPath?: string) {
-		super.init(fsPath);
+	protected init(uri?: Uri) {
+		super.init(uri);
 		this.importFileService.setVsConsoleLogger(this.vsConsoleLogger);
 		this.listFilesService.setVsConsoleLogger(new DummyConsoleLogger());
 	}
@@ -87,7 +87,7 @@ export default class ImportFiles extends BaseAction {
 	}
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
-		if (!this.isFileSelected) {
+		if (!this.isSelectedFromContextMenu) {
 			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders();
 			const selectedFolder: QuickPickItem | undefined = await this.listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {
