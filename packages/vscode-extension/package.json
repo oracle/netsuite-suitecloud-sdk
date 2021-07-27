@@ -88,6 +88,11 @@
 				"command": "suitecloud.uploadfile",
 				"title": "Upload File",
 				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.createfile",
+				"title": "Create SuiteScript File",
+				"category": "SuiteCloud"
 			}
 		],
 		"keybindings": [
@@ -137,6 +142,11 @@
 					"when": "resource =~ //Objects(/.+)*$/",
 					"command": "suitecloud.importobjects",
 					"group": "suitecloud@2"
+				},
+				{
+					"when": "resource =~ //FileCabinet/(SuiteApps/.+|SuiteScripts(/.*)*)$/",
+					"command": "suitecloud.createfile",
+					"group": "suitecloud@1"
 				}
 			]
 		}

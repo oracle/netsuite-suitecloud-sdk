@@ -3,5 +3,9 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-export const OBJECTS_FOLDER = "Objects";
 export const VSCODE_PLATFORM = "VSCode";
+export const FOLDERS = {
+	OBJECTS: "Objects",
+	SUITEAPPS: "/SuiteApps",
+	SUITESCRIPTS: "/SuiteScripts"
+};

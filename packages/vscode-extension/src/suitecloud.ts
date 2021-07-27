@@ -8,6 +8,7 @@
 import * as vscode from 'vscode';
 import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
+import CreateFile from './commands/CreateFile';
 import CreateProject from './commands/CreateProject';
 import Deploy from './commands/Deploy';
 import ImportFiles from './commands/ImportFiles';
@@ -24,13 +25,8 @@ const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 
 function register<T extends BaseAction>(command: string, action: T) {
 	return vscode.commands.registerCommand(command, (uri?: vscode.Uri) => {
-		if (uri && uri.fsPath) {
-			//Called from a context menu, we recieve uri info related to the selected file.
-			action.run(uri);
-		} else {
-			//Called from console palette
-			action.run();
-		}
+		//Called from a context menu, we recieve uri info related to the selected file.
+		action.run(uri);
 	});
 }
 
@@ -43,6 +39,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		register('suitecloud.adddependencies', new AddDependencies()),
+		register('suitecloud.createfile', new CreateFile()),
 		register('suitecloud.createproject', new CreateProject()),
 		register('suitecloud.deploy', new Deploy()),
 		register('suitecloud.importfile', new ImportFiles()),
