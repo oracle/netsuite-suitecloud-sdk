@@ -15,7 +15,7 @@ import { CLIConfigurationService, getRootProjectFolder } from '../util/Extension
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
-	protected isFileSelected?: boolean;
+	protected isSelectedFromContextMenu?: boolean;
 	protected readonly messageService: MessageService;
 	protected readonly vscodeCommandName: string;
 	protected readonly cliCommandName: string;
@@ -38,7 +38,7 @@ export default abstract class BaseAction {
 		const fsPath = uri?.fsPath;
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
 		this.messageService.executionPath = this.executionPath;
-		this.isFileSelected = fsPath ? true : false;
+		this.isSelectedFromContextMenu = fsPath ? true : false;
 		this.activeFile = fsPath ? fsPath : window.activeTextEditor?.document.uri.fsPath;
 	}
 

@@ -87,7 +87,7 @@ export default class ImportFiles extends BaseAction {
 	}
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
-		if (!this.isFileSelected) {
+		if (!this.isSelectedFromContextMenu) {
 			const fileCabinetFolders: FolderItem[] = await this.listFilesService.getListFolders();
 			const selectedFolder: QuickPickItem | undefined = await this.listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {
