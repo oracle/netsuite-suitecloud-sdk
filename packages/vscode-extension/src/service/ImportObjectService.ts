@@ -27,10 +27,10 @@ export default class CustomObjectService {
 
 	async importObjects(
 		destinationFolder: string,
-		appId: string | undefined,
-		scriptIds: string[] | undefined,
+		appId: string,
+		scriptIds: string[],
 		includeReferencedFiles: boolean,
-		executionPath: string | undefined
+		executionPath: string
 	) {
 		this.executionPath = executionPath;
 		//We choose 'ALL' types because it is chosen before which scriptIds should be imported and not by type
@@ -38,7 +38,7 @@ export default class CustomObjectService {
 
 		commandArgs.scriptid = scriptIds && scriptIds.length > 0 ? scriptIds : 'ALL';
 
-		if (appId === undefined || appId.length != 0) {
+		if (appId !== '') {
 			commandArgs.appid = appId;
 		}
 
@@ -52,11 +52,11 @@ export default class CustomObjectService {
 		return await commandActionPromise;
 	}
 
-	async listObjects(appId: string | undefined, types: string[], scriptId: string | undefined, executionPath: string) {
+	async listObjects(appId: string, types: string[], scriptId: string, executionPath: string) {
 		this.executionPath = executionPath;
 		let commandArgs: any = { type: types.join(' ') };
 
-		if (appId) {
+		if (appId !== '') {
 			commandArgs.appid = appId;
 		}
 		if (scriptId) {

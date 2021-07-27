@@ -38,7 +38,7 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-		let appId: string | undefined;
+		let appId: string = '';
 		if (projectInfoService.isSuiteAppProject()) {
 			const filterAppId = await this.promptFilterAppId();
 			if (!filterAppId) {
@@ -46,10 +46,11 @@ export default class ImportObjects extends BaseAction {
 			}
 
 			if (filterAppId === this.translationService.getMessage(ANSWERS.YES)) {
-				appId = await this.promptAppId(projectInfoService);
-				if (!appId) {
+				let questionAppId = await this.promptAppId(projectInfoService);
+				if (questionAppId === undefined) {
 					return;
 				}
+				appId = questionAppId;
 			}
 		}
 
@@ -87,6 +88,12 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
+
+		if (!this.executionPath) {
+			//already  checked in validate. Should not throw
+			throw 'Unexpected error at list objects';
+		}
+
 		const actionResult = await this.customObjectService.importObjects(
 			relativeDestinationFolder,
 			appId,
@@ -113,7 +120,7 @@ export default class ImportObjects extends BaseAction {
 		});
 	}
 
-	private async promptAppId(projectInfoService: { getApplicationId: () => string }) {
+	private async promptAppId(projectInfoService: { getApplicationId: () => string }): Promise<string | undefined> {
 		const defaultAppId = projectInfoService.getApplicationId();
 		let appId = await window.showInputBox({
 			ignoreFocusOut: true,
@@ -130,7 +137,7 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-		if (appId.length === 0) {
+		if (appId === '') {
 			appId = defaultAppId;
 		}
 		return appId;
@@ -162,7 +169,7 @@ export default class ImportObjects extends BaseAction {
 		);
 	}
 
-	private async listObjects(appId: string | undefined, selectedObjectTypes: string[], scriptId: string) {
+	private async listObjects(appId: string, selectedObjectTypes: string[], scriptId: string) {
 		if (!this.executionPath) {
 			//already  checked in validate. Should not throw
 			throw 'Unexpected error at list objects';
@@ -174,7 +181,7 @@ export default class ImportObjects extends BaseAction {
 	private async promptObjects(objectList: any[]): Promise<string[] | undefined> {
 		let selectedObjects: string[] | undefined = [];
 
-		while (selectedObjects.length < 1) {
+		while (selectedObjects.length === 0) {
 			selectedObjects = await window.showQuickPick(
 				objectList.map((object: { scriptId: string }) => object.scriptId),
 				{
