@@ -41,7 +41,7 @@ module.exports = class PackageAction extends BaseAction {
 		AccountSpecificValuesUtils.validate(params, this._projectFolder);
 
 		return {
-			[COMMAND_OPTIONS.DESTINATION]: path.join(this._executionPath, DEFAULT_DESTINATION_FOLDER),
+			[COMMAND_OPTIONS.DESTINATION]: CommandUtils.quoteString(path.join(this._executionPath, DEFAULT_DESTINATION_FOLDER)),
 			[COMMAND_OPTIONS.PROJECT]: CommandUtils.quoteString(this._projectFolder),
 			...AccountSpecificValuesUtils.transformArgument(params),
 		};
