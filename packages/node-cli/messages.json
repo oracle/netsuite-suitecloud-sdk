@@ -156,6 +156,7 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",
 
+	"COMMAND_PACKAGE_LOCAL_VALIDATION_NOT_EXECUTED": "The project is being packaged without validation. Make sure the project is validated.",
 	"COMMAND_PACKAGE_PACKAGING": "Packaging...",
 
 	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",

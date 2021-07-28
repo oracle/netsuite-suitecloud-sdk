@@ -14,7 +14,7 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
 const FileUtils = require('../../../utils/FileUtils');
-const { ERRORS, COMMAND_PACKAGE } = require('../../../services/TranslationKeys');
+const { ERRORS, COMMAND_PACKAGE, WARNINGS } = require('../../../services/TranslationKeys');
 const { LINKS: { INFO } } = require('../../../ApplicationConstants');
 
 const {
@@ -49,6 +49,8 @@ module.exports = class PackageAction extends BaseAction {
 		const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
 		const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand).integration().addParams(sdkParams).build();
+
+		this._log.warning(NodeTranslationService.getMessage(COMMAND_PACKAGE.LOCAL_VALIDATION_NOT_EXECUTED))
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),
