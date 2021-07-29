@@ -23,7 +23,9 @@
 	"CLI_INTERACTIVE_OPTION_DESCRIPTION": "run the command in interactive mode",
 	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite {0})",
 	"CLI_USAGE": "command [option]",
-	"CLI_SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE" : "Non-interactive execution:\nsuitecloud {0}",
+	"CLI_SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE": "Non-interactive execution:\nsuitecloud {0}",
+
+	"COMMAND_ACCOUNTSAVETOKEN_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default.",
 
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_ADDING_DEPENDENCIES": "Adding dependencies...",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_DEPENDENCIES_ADDED_TO_MANIFEST": "The following dependencies were added to the manifest:",
@@ -73,7 +75,7 @@
 
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Something went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
-	
+
 	"COMMAND_IMPORTFILES_MESSAGES_CANCEL_IMPORT": "The importing process has been canceled.",
 	"COMMAND_IMPORTFILES_MESSAGES_IMPORTING_FILES": "Importing files...",
 	"COMMAND_IMPORTFILES_MESSAGES_LOADING_FILES": "Loading files...",
@@ -156,15 +158,18 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",
 
-	"COMMAND_PACKAGE_PACKAGING": "Packaging...",
-
 	"COMMAND_OPTION_INTERACTIVE_HELP": "Run the {0} command in interactive mode.",
 	"COMMAND_OPTION_IS_MANDATORY": "\"{0}\" option is mandatory.",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION": "You can use the interactive mode by running \"suitecloud {0} -i\"",
 
+	"COMMAND_PACKAGE_LOCAL_VALIDATION_NOT_EXECUTED": "The project is being packaged without validation. Make sure the project is validated.",
+	"COMMAND_PACKAGE_PACKAGING": "Packaging...",
+
+	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
+
 	"COMMAND_SETUPACCOUNT_QUESTIONS_AUTH_MODE": "Select an authentication method:",
- 	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID (authID):",
+	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID (authID):",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ACCOUNT_ID": "Enter the account ID:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ID": "Enter the Token ID:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_SECRET": "Enter the Token Secret:",
@@ -181,9 +186,16 @@
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID \"{0}\" as default for the following company and role: {1} [{2}]. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 
-	"COMMAND_ACCOUNTSAVETOKEN_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default.",
-
-	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
+	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any custom objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
+	"COMMAND_UPDATE_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your search?",
+	"COMMAND_UPDATE_QUESTIONS_OVERWRITE_OBJECTS": "All the selected objects in the project will be overwritten with the objects from the account. Do you want to continue?",
+	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID": "Select the objects you want to update from your account:",
+	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID_FILTER": "Enter the full or partial script ID:",
+	"COMMAND_UPDATE_MESSAGES_CANCEL_UPDATE": "The updating process was canceled. No objects were overwritten.",
+	"COMMAND_UPDATE_MESSAGES_NO_OBJECTS_WITH_SCRIPT_ID_FILTER": "There are no objects matching your search criteria. Check the specified script ID, and try again.",
+	"COMMAND_UPDATE_MESSAGES_UPDATING_OBJECTS": "Updating objects...",
+	"COMMAND_UPDATE_OUTPUT_NO_UPDATED_OBJECTS": "The following objects were not updated from the account to your project:",
+	"COMMAND_UPDATE_OUTPUT_UPDATED_OBJECTS": "The following objects were updated from the account to your project:",
 
 	"COMMAND_UPLOADFILES_QUESTIONS_OVERWRITE_FILES": "The selected files will be overwritten in the File Cabinet. Do you want to continue?",
 	"COMMAND_UPLOADFILES_QUESTIONS_SELECT_FILES": "Select the files you want to upload to the File Cabinet.",
@@ -196,17 +208,6 @@
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_UPLOADED": "The following files were uploaded:",
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_NOT_UPLOADED": "The following files were not uploaded:",
 	"COMMAND_UPLOADFILES_ERROR_RESTRICTED_FOLDER": "The file is inside an invalid or restricted folder",
-
-	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any custom objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
-	"COMMAND_UPDATE_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your search?",
-	"COMMAND_UPDATE_QUESTIONS_OVERWRITE_OBJECTS": "All the selected objects in the project will be overwritten with the objects from the account. Do you want to continue?",
-	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID": "Select the objects you want to update from your account:",
-	"COMMAND_UPDATE_QUESTIONS_SCRIPT_ID_FILTER": "Enter the full or partial script ID:",
-	"COMMAND_UPDATE_MESSAGES_CANCEL_UPDATE": "The updating process was canceled. No objects were overwritten.",
-	"COMMAND_UPDATE_MESSAGES_NO_OBJECTS_WITH_SCRIPT_ID_FILTER": "There are no objects matching your search criteria. Check the specified script ID, and try again.",
-	"COMMAND_UPDATE_MESSAGES_UPDATING_OBJECTS": "Updating objects...",
-	"COMMAND_UPDATE_OUTPUT_NO_UPDATED_OBJECTS": "The following objects were not updated from the account to your project:",
-	"COMMAND_UPDATE_OUTPUT_UPDATED_OBJECTS": "The following objects were updated from the account to your project:",
 
 	"COMMAND_VALIDATE_MESSAGES_APPLYING_INSTALLATION_PREFERENCES": "The \"{0}\" project has been validated locally applying installation preferences.",
 	"COMMAND_VALIDATE_MESSAGES_NOT_APPLYING_INSTALLATION_PREFERENCES": "The \"{0}\" project has been validated locally without applying installation preferences.",
@@ -222,7 +223,7 @@
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "The following warnings were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_VALIDATION_OUTPUT_MESSAGE": "        - Line No. {0} - {1}",
-	
+
 	"ERRORS_ADD_ERROR_LINE": "\nError: {0}",
 	"ERRORS_CANT_CREATE_FOLDER": "There was an error when creating the {0} folder. Verify that the path is correct.\nError code: {1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"suitecloud.config.js\" module defined in the project. Details:{0}{1}",
@@ -249,7 +250,7 @@
 	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}\n{1}",
 	"ERRORS_SDK_SETTINGS_FILE_WRONG_JSON_SYNTAX": "Your {0} file is not valid. Ensure the content of the file is correct, or delete the file.\n{1}",
 	"ERRORS_SDK_SETTINGS_FILE_INVALID_CUSTOM_VM_OPTION": "There is an error with the \"vmOptions\" you set up in {0}.\n{1}",
-	"ERRORS_SDK_SETTINGS_FILE_GENERIC_PROBLEM":"There is an error with the {0} file.\n{1}",
+	"ERRORS_SDK_SETTINGS_FILE_GENERIC_PROBLEM": "There is an error with the {0} file.\n{1}",
 	"ERRORS_SEE_PROJECT_STRUCTURE": "For more information about the project structure, see {0}",
 	"ERRORS_SETUP_REQUIRED": "No account has been set up for this project. Run \"suitecloud account:setup\" to link your project with your account.",
 	"ERRORS_TIMED_OUT_CONNECTION": "The connection has timed out. If you are behind a proxy, you must configure the same proxy server in CLI for Node.js. Run \"suitecloud config:proxy -h\" to learn how to set up a proxy server.",
@@ -261,7 +262,6 @@
 	"ERRORS_WRONG_JSON_FILE": "There was a problem when reading the {0} file.\n{1}",
 
 	"NO": "No",
-
 
 	"SDK_DOWNLOAD_SERVICE_DOWNLOADING": "Downloading SuiteCloud SDK dependencies...",
 	"SDK_DOWNLOAD_SERVICE_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
