@@ -554,7 +554,7 @@
 		"name": "project:package",
 		"sdkCommand": "package",
 		"usage": "",
-		"description": "Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file, and applying local validation.",
+		"description": "Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file.",
 		"isSetupRequired": false,
 		"options": {
 			"destination": {
