@@ -59,7 +59,7 @@ suitecloud <command> <option> <argument>
 |[`project:adddependencies`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155981452469.html)| Adds missing dependencies to the manifest file.|
 |[`project:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041348327.html)|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
 |[`project:deploy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044636320.html)|Deploys the folder containing the project.|
-|[`project:package`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159550971388.html)|Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file, and applying local validation.|
+|[`project:package`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159550971388.html)|Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file.|
 |[`project:validate`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
 
 To check the help for a specific command, run the following command:
