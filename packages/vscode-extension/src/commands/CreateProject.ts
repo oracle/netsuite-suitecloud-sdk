@@ -19,7 +19,7 @@
      PROJECT_ID: 'projectid',
      PROJECT_FOLDER_NAME: 'projectfoldername',
      PROJECT_NAME: 'projectname',
-     PROJECT_VERSION: 'projectVersion',
+     PROJECT_VERSION: 'projectversion',
      PUBLISHER_ID: 'publisherid',
      TYPE: 'type',
  };
@@ -96,7 +96,7 @@
          if (!projectType) {
              return {};
          }
-         commandArgs[COMMAND_ARGUMENTS.TYPE] = this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.SUITEAPP)
+         commandArgs[COMMAND_ARGUMENTS.TYPE] = this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.ACP) === projectType
              ? ApplicationConstants.PROJECT_ACP
              : ApplicationConstants.PROJECT_SUITEAPP;
  
