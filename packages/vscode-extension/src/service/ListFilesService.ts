@@ -27,8 +27,6 @@ const LIST_FILES_COMMAND = {
 	},
 };
 
-const SUITECLOUD_COMMAND_NAME = 'file:list';
-const COMMAND_NAME_LIST_FILES = 'listfiles';
 const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class ListFilesService {
@@ -137,7 +135,7 @@ export default class ListFilesService {
 		listfilesOptions[LIST_FILES_COMMAND.OPTIONS.FOLDER] = selectedFolder;
 
 		const commandActionPromise = this.listFilesCommand(listfilesOptions);
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, COMMAND_NAME_LIST_FILES);
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, commandsInfoMap.listfiles.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LISTING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
@@ -154,7 +152,7 @@ export default class ListFilesService {
 			throw Error(CONSOLE_LOGGER_ERROR);
 		}
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-			commandName: SUITECLOUD_COMMAND_NAME,
+			commandName: commandsInfoMap.listfiles.cliCommandName,
 			arguments: listFilesOption,
 		});
 

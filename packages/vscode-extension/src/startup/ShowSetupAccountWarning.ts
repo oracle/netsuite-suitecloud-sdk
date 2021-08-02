@@ -8,8 +8,8 @@ import * as vscode from 'vscode';
 import { ApplicationConstants, FileUtils, ProjectInfoService } from '../util/ExtensionUtil';
 import { EXTENSION_INSTALLATION } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
+import { commandsInfoMap } from '../commandsMap';
 
-const COMMAND_SETUP_ACCOUNT = 'suitecloud.setupaccount';
 const MANIFEST_FILE_FILENAME = "manifest.xml";
 const SRC_FOLDER_NAME = 'src';
 
@@ -40,7 +40,7 @@ export default async function showSetupAccountWarningMessageIfNeeded(): Promise<
 				translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT),
 			);
 			if (runSetupAccount) {
-				vscode.commands.executeCommand(COMMAND_SETUP_ACCOUNT);
+				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeContributedCommand);
 			}
 		}
 	}
