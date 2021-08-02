@@ -40,6 +40,11 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.createfile",
+				"title": "Create SuiteScript File",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.createproject",
 				"title": "Create Project...",
 				"category": "SuiteCloud"
@@ -87,11 +92,6 @@
 			{
 				"command": "suitecloud.uploadfile",
 				"title": "Upload File",
-				"category": "SuiteCloud"
-			},
-			{
-				"command": "suitecloud.createfile",
-				"title": "Create SuiteScript File",
 				"category": "SuiteCloud"
 			}
 		],

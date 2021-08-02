@@ -83,7 +83,10 @@ export default class ImportFiles extends BaseAction {
 		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.getRootProjectFolder());
 		listFilesService.setVsConsoleLogger(new VsErrorConsoleLogger(true, this.executionPath));
 		if (!this.isSelectedFromContextMenu) {
-			const fileCabinetFolders: FolderItem[] = await listFilesService.getListFolders();
+			const fileCabinetFolders: FolderItem[] | undefined = await listFilesService.getListFolders();
+			if (!fileCabinetFolders) {
+				return;
+			}
 			const selectedFolder: QuickPickItem | undefined = await listFilesService.selectFolder(fileCabinetFolders);
 			if (!selectedFolder) {
 				return;

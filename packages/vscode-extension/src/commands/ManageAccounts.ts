@@ -11,7 +11,7 @@ import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const COMMAND_NAME = 'manageaccounts';
+const COMMAND_NAME = 'setupaccount';
 
 enum UiOption {
 	new_authid,

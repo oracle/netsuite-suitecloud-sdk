@@ -25,7 +25,10 @@ export default class ListFiles extends BaseAction {
 	protected async execute(): Promise<void> {
 		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.getRootProjectFolder());
 		try {
-			let fileCabinetFolders: FolderItem[] = await listFilesService.getListFolders();
+			let fileCabinetFolders: FolderItem[] | undefined= await listFilesService.getListFolders();
+			if (!fileCabinetFolders) {
+				return;
+			}
 			const selectedFolder = await listFilesService.selectFolder(fileCabinetFolders);
 			if (selectedFolder) {
 				await this._listFiles(selectedFolder.label);
