@@ -11,7 +11,7 @@ import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const COMMAND_NAME = 'manageaccounts';
+const COMMAND_NAME = 'setupaccount';
 
 enum UiOption {
 	new_authid,
@@ -44,7 +44,7 @@ interface CancellationToken {
 	cancel?: (x: string) => void;
 }
 
-export default class ManageAccounts extends BaseAction {
+export default class SetupAccount extends BaseAction {
 	constructor() {
 		super(COMMAND_NAME);
 	}

@@ -2,6 +2,7 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
@@ -16,8 +17,9 @@ import {
 	ExecutionEnvironmentContext,
 } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
-import { COMMAND, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
+import { COMMAND, EXTENSION_INSTALLATION, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
+import { commandsInfoMap} from '../commandsMap';
 
 const LIST_FILES_COMMAND = {
 	OPTIONS: {
@@ -25,8 +27,6 @@ const LIST_FILES_COMMAND = {
 	},
 };
 
-const SUITECLOUD_COMMAND_NAME = 'file:list';
-const COMMAND_NAME_LIST_FILES = 'listfiles';
 const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
 
 export default class ListFilesService {
@@ -41,17 +41,31 @@ export default class ListFilesService {
 		this.executionPath = projectFolder;
 	}
 
-	public async getListFolders() {
+	public async getListFolders(): Promise<FolderItem[] | undefined> {
 		const executionEnvironmentContext = new ExecutionEnvironmentContext({
 			platform: VSCODE_PLATFORM,
 			platformVersion: vscode.version,
 		});
 
-		const listFoldersPromise = AccountFileCabinetService.getFileCabinetFolders(
-			getSdkPath(),
-			executionEnvironmentContext,
-			AuthenticationUtils.getProjectDefaultAuthId(this.executionPath)
-		);
+		let defaultAuthId: string | undefined;
+		try {
+			defaultAuthId = AuthenticationUtils.getProjectDefaultAuthId(this.executionPath);
+		} catch (error) {
+			defaultAuthId = undefined;
+		}
+
+		if (!defaultAuthId) {
+			const runSetupAccount = await vscode.window.showWarningMessage(
+				this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
+				this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT)
+			);
+			if (runSetupAccount) {
+				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
+			}
+			return;
+		}
+
+		const listFoldersPromise = AccountFileCabinetService.getFileCabinetFolders(getSdkPath(), executionEnvironmentContext, defaultAuthId);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
 		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
 
@@ -80,12 +94,13 @@ export default class ListFilesService {
 		return vscode.window.showQuickPick(
 			folders.map((folder: FolderItem) => {
 				const description = folder.isRestricted ? this.translationService.getMessage(LIST_FILES.RESTRICTED_FOLDER) : '';
-				return { label: folder.path, description };
+				return { label: folder.path, description, detail: path.basename(folder.path) };
 			}),
 			{
 				ignoreFocusOut: true,
 				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),
 				canPickMany: false,
+				onDidSelectItem: (item: vscode.QuickPickItem) => vscode.window.setStatusBarMessage(item.label, 5000),
 			}
 		);
 	}
@@ -120,7 +135,7 @@ export default class ListFilesService {
 		listfilesOptions[LIST_FILES_COMMAND.OPTIONS.FOLDER] = selectedFolder;
 
 		const commandActionPromise = this.listFilesCommand(listfilesOptions);
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, COMMAND_NAME_LIST_FILES);
+		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, commandsInfoMap.listfiles.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LISTING);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
@@ -137,7 +152,7 @@ export default class ListFilesService {
 			throw Error(CONSOLE_LOGGER_ERROR);
 		}
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-			commandName: SUITECLOUD_COMMAND_NAME,
+			commandName: commandsInfoMap.listfiles.cliCommandName,
 			arguments: listFilesOption,
 		});
 

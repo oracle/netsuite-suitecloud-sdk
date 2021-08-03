@@ -6,13 +6,13 @@
 import { assert } from 'console';
 import * as vscode from 'vscode';
 import { Uri, window } from 'vscode';
-import { commandsInfoMap } from '../commandsMap';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import MessageService from '../service/MessageService';
 import { ERRORS } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 import { CLIConfigurationService } from '../util/ExtensionUtil';
+import {commandsInfoMap, CommandsInfoMapType} from '../commandsMap';
 
 
 export default abstract class BaseAction {
@@ -27,8 +27,7 @@ export default abstract class BaseAction {
 
 	protected abstract execute(): Promise<void>;
 
-	constructor(commandName: string) {
-		assert(commandsInfoMap.hasOwnProperty(commandName), `Command name ${commandName} is not present in commandsMap`);
+	constructor(commandName: keyof CommandsInfoMapType) {
 		this.cliCommandName = commandsInfoMap[commandName].cliCommandName;
 		this.vscodeCommandName = commandsInfoMap[commandName].vscodeCommandName;
 		this.messageService = new MessageService(this.vscodeCommandName);
