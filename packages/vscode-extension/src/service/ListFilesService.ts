@@ -60,7 +60,7 @@ export default class ListFilesService {
 				this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT)
 			);
 			if (runSetupAccount) {
-				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeContributedCommand);
+				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
 			}
 			return;
 		}

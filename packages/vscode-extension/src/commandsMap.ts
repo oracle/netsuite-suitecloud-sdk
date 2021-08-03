@@ -4,7 +4,7 @@
  */
 
 export type CommandInfo = {
-	vscodeContributedCommand: string;
+	vscodeCommandId: string;
 	cliCommandName: string;
 	vscodeCommandName: string;
 	// not really needed, just left here as an idea
@@ -28,66 +28,66 @@ export type CommandsInfoMapType = {
 
 export const commandsInfoMap: CommandsInfoMapType = {
 	adddependencies: {
-		vscodeContributedCommand: 'suitecloud.adddependencies',
+		vscodeCommandId: 'suitecloud.adddependencies',
 		cliCommandName: 'project:adddependencies',
 		vscodeCommandName: 'Add Dependency References to the Manifest',
 		vscodeShortName: 'Add Dependencies',
 	},
 	createfile: {
-		vscodeContributedCommand: 'suitecloud.createfile',
+		vscodeCommandId: 'suitecloud.createfile',
 		cliCommandName: 'file:create',
 		vscodeCommandName: 'Create SuiteScript File',
 	},
 	createproject: {
-		vscodeContributedCommand: 'suitecloud.createproject',
+		vscodeCommandId: 'suitecloud.createproject',
 		cliCommandName: 'project:create',
 		vscodeCommandName: 'Create SuiteCloud Project...',
 		vscodeShortName: 'Create Project',
 	},
 	deploy: {
-		vscodeContributedCommand: 'suitecloud.deploy',
+		vscodeCommandId: 'suitecloud.deploy',
 		cliCommandName: 'project:deploy',
 		vscodeCommandName: 'Deploy Project...',
 		vscodeShortName: 'Deploy',
 	},
 	importfiles: {
-		vscodeContributedCommand: 'suitecloud.importfiles',
+		vscodeCommandId: 'suitecloud.importfiles',
 		cliCommandName: 'file:import',
 		vscodeCommandName: 'Import Files',
 	},
 	importfile: {
-		vscodeContributedCommand: 'suitecloud.importfile',
+		vscodeCommandId: 'suitecloud.importfile',
 		cliCommandName: 'file:import',
 		vscodeCommandName: 'Import File',
 	},
 	importobjects: {
-		vscodeContributedCommand: 'suitecloud.importobjects',
+		vscodeCommandId: 'suitecloud.importobjects',
 		cliCommandName: 'object:import',
 		vscodeCommandName: 'Import Objects',
 	},
 	listfiles: {
-		vscodeContributedCommand: 'suitecloud.listfiles',
+		vscodeCommandId: 'suitecloud.listfiles',
 		cliCommandName: 'file:list',
 		vscodeCommandName: 'List Files',
 	},
 	listobjects: {
-		vscodeContributedCommand: 'suitecloud.listobjects',
+		vscodeCommandId: 'suitecloud.listobjects',
 		cliCommandName: 'object:list',
 		vscodeCommandName: 'List Objects...',
 	},
 	setupaccount: {
-		vscodeContributedCommand: 'suitecloud.setupaccount',
+		vscodeCommandId: 'suitecloud.setupaccount',
 		cliCommandName: 'account:setup',
 		vscodeCommandName: 'Set Up Account...',
 	},
 	updateobject: {
-		vscodeContributedCommand: 'suitecloud.updateobject',
+		vscodeCommandId: 'suitecloud.updateobject',
 		cliCommandName: 'object:update',
 		vscodeCommandName: 'Update Single Object with Account Object',
 		vscodeShortName: 'Update Object',
 	},
 	uploadfile: {
-		vscodeContributedCommand: 'suitecloud.uploadfile',
+		vscodeCommandId: 'suitecloud.uploadfile',
 		cliCommandName: 'file:upload',
 		vscodeCommandName: 'Upload File',
 	},

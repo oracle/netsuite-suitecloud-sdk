@@ -40,7 +40,7 @@ export default async function showSetupAccountWarningMessageIfNeeded(): Promise<
 				translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT),
 			);
 			if (runSetupAccount) {
-				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeContributedCommand);
+				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
 			}
 		}
 	}

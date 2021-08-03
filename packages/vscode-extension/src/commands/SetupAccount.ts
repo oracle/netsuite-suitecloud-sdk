@@ -44,7 +44,7 @@ interface CancellationToken {
 	cancel?: (x: string) => void;
 }
 
-export default class ManageAccounts extends BaseAction {
+export default class SetupAccount extends BaseAction {
 	constructor() {
 		super(COMMAND_NAME);
 	}
