@@ -33,6 +33,10 @@ The following commands are available through the Command Palette:
 - [Setup Account](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147609118.html)
 - [Deploy Project](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html)
 - [Add Dependency References to the Manifest](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147339580.html)
+- [Import Objects]
+- [Import Files]
+- [Create Project]
+- [Create Files]
 
 💡 To read more about what you can do with SuiteCloud extension for Visual Studio Code, visit [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html).
 
