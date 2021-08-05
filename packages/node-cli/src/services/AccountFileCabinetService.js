@@ -13,19 +13,21 @@ const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const {
 	COMMAND_IMPORTFILES: { MESSAGES },
-	COMMAND_LISTFILES: { LOADING_FOLDERS, ERROR_INTERNAL },
+	COMMAND_LISTFILES: { LOADING_FOLDERS, GETTING_INERNAL_ERROR },
 } = require('./TranslationKeys');
 
 const INTERMEDIATE_COMMANDS = {
 	LISTFILES: {
-		COMMAND: 'listfiles',
+		SDK_COMMAND: 'listfiles',
+		FILES_REFERENCE: 'File Cabinet files',
 		OPTIONS: {
 			AUTH_ID: 'authid',
 			FOLDER: 'folder',
 		},
 	},
 	LISTFOLDERS: {
-		COMMAND: 'listfolders',
+		SDK_COMMAND: 'listfolders',
+		FOLDERS_REFERENCE: 'File Cabinet folders',
 		OPTIONS: {
 			AUTH_ID: 'authid',
 		},
@@ -39,7 +41,7 @@ module.exports = class AccountFileCabinetService {
 	}
 
 	async getAccountFileCabinetFolders() {
-		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND)
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.SDK_COMMAND)
 			.integration()
 			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
 			.build();
@@ -51,7 +53,7 @@ module.exports = class AccountFileCabinetService {
 				message: NodeTranslationService.getMessage(LOADING_FOLDERS),
 			});
 		} catch (error) {
-			throw NodeTranslationService.getMessage(ERROR_INTERNAL, INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND, lineBreak, error);
+			throw NodeTranslationService.getMessage(GETTING_INERNAL_ERROR, INTERMEDIATE_COMMANDS.LISTFOLDERS.FOLDERS_REFERENCE, lineBreak, error);
 		}
 
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
@@ -60,20 +62,25 @@ module.exports = class AccountFileCabinetService {
 		return listFoldersResult.data;
 	}
 
-	listFiles(selectFolderAnswer) {
+	async listFiles(selectedFolder) {
 		// quote folder path to preserve spaces
 		const listFilesParams = {};
-		listFilesParams[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
+		listFilesParams[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectedFolder);
 		listFilesParams[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = this._authId;
 
-		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES.COMMAND)
+		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES.SDK_COMMAND)
 			.integration()
 			.addParams(listFilesParams)
 			.build();
+		
+		try {
+			return await executeWithSpinner({
+				action: this._sdkExecutor.execute(executionContext),
+				message: NodeTranslationService.getMessage(MESSAGES.LOADING_FILES),
+			});
+		} catch (error) {
+			throw NodeTranslationService.getMessage(GETTING_INERNAL_ERROR, INTERMEDIATE_COMMANDS.LISTFILES.FILES_REFERENCE, lineBreak, error);
+		}
 
-		return executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: NodeTranslationService.getMessage(MESSAGES.LOADING_FILES),
-		});
 	}
 };

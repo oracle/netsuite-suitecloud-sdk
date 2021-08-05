@@ -113,7 +113,7 @@
 	"MANAGE_ACCOUNTS_SELECT_AUTH_ID_SUCCESS": "The default account for the current project was successfully set to {0}.",
 	"MANAGE_ACCOUNTS_SELECT_CREATE": "Select or create an authentication ID (authID). It will be set up as default:",
 
-	"SEE_DETAILS": "See details",
+	"SEE_DETAILS": "See Details",
 
 	"UPDATE_OBJECT_ERROR_SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER": "The SDF object file to update should be in the Objects folder.",
 	"UPDATE_OBJECT_OVERRIDE": "Account object will overwrite project object: {0}",

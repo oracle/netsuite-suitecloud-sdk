@@ -55,7 +55,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
-		const listFilesResult = await accountFileCabinetService.listFiles(selectFolderAnswer);
+		const listFilesResult = await accountFileCabinetService.listFiles(selectFolderAnswer.folder);
 
 		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 			throw listFilesResult.errorMessages;

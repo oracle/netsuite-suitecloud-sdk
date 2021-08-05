@@ -13,7 +13,7 @@ const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
 const { lineBreak } = require('../../../loggers/LoggerConstants');
 const {
-	COMMAND_LISTFILES: { SELECT_FOLDER, ERROR_INTERNAL, RESTRICTED_FOLDER },
+	COMMAND_LISTFILES: { SELECT_FOLDER, RESTRICTED_FOLDER },
 } = require('../../../services/TranslationKeys');
 
 const LIST_FOLDERS = {
@@ -47,18 +47,14 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 			};
 		});
 
-		try {
-			return prompt([
-				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
-					name: this._commandMetadata.options.folder.name,
-					message: NodeTranslationService.getMessage(SELECT_FOLDER),
-					default: SUITE_SCRIPTS_FOLDER,
-					choices: fileCabinetFolders,
-				},
-			]);
-		} catch (error) {
-			throw NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, lineBreak, error);
-		}
+		return prompt([
+			{
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: this._commandMetadata.options.folder.name,
+				message: NodeTranslationService.getMessage(SELECT_FOLDER),
+				default: SUITE_SCRIPTS_FOLDER,
+				choices: fileCabinetFolders,
+			},
+		]);
 	}
 };
