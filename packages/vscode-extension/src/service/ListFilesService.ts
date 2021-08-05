@@ -7,7 +7,6 @@ import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import { ActionResult } from '../types/ActionResult';
 import { FolderItem } from '../types/FolderItem';
 import {
 	AccountFileCabinetService,
@@ -19,7 +18,7 @@ import {
 import MessageService from './MessageService';
 import { COMMAND, EXTENSION_INSTALLATION, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
-import { commandsInfoMap} from '../commandsMap';
+import { commandsInfoMap } from '../commandsMap';
 
 const LIST_FILES_COMMAND = {
 	OPTIONS: {
@@ -55,22 +54,30 @@ export default class ListFilesService {
 		}
 
 		if (!defaultAuthId) {
-			const runSetupAccount = await vscode.window.showWarningMessage(
-				this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
-				this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT)
+			const runSetupAccountMessage = this.translationService.getMessage(
+				EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT
 			);
-			if (runSetupAccount) {
-				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
-			}
+
+			vscode.window
+				.showWarningMessage(
+					this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
+					runSetupAccountMessage
+				)
+				.then((result) => {
+					if (result === runSetupAccountMessage) {
+						vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
+					}
+				});
+
 			return;
 		}
 
-		const listFoldersPromise = AccountFileCabinetService.getFileCabinetFolders(getSdkPath(), executionEnvironmentContext, defaultAuthId);
+		const accountFileCabinetService = new AccountFileCabinetService(getSdkPath(), executionEnvironmentContext, defaultAuthId);
+		const listFoldersPromise = accountFileCabinetService.getAccountFileCabinetFolders();
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
 		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
 
-		const result: ActionResult<FolderItem[]> = await listFoldersPromise;
-		const fileCabinetFolders = result.data;
+		const fileCabinetFolders = await listFoldersPromise;
 
 		return this._sortFolders(fileCabinetFolders);
 	}

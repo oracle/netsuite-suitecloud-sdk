@@ -32,17 +32,22 @@ const INTERMEDIATE_COMMANDS = {
 	},
 };
 
-class AccountFileCabinetService {
-	async _listFolders(sdkExecutor, authId) {
+module.exports = class AccountFileCabinetService {
+	constructor(sdkPath, executionEnvironmentContext, authId) {
+		this._sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+		this._authId = authId;
+	}
+
+	async getAccountFileCabinetFolders() {
 		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.COMMAND)
 			.integration()
-			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, authId)
+			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
 			.build();
 
 		let listFoldersResult;
 		try {
 			listFoldersResult = await executeWithSpinner({
-				action: sdkExecutor.execute(executionContext),
+				action: this._sdkExecutor.execute(executionContext),
 				message: NodeTranslationService.getMessage(LOADING_FOLDERS),
 			});
 		} catch (error) {
@@ -52,29 +57,23 @@ class AccountFileCabinetService {
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 			throw listFoldersResult.errorMessages;
 		}
-		return listFoldersResult;
+		return listFoldersResult.data;
 	}
 
-	async getFileCabinetFolders(sdkPath, executionEnvironmentContext, authId) {
-		const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
-		return await this._listFolders(sdkExecutor, authId);
-	}
-
-	listFiles(selectFolderAnswer, sdkExecutor, authId) {
+	listFiles(selectFolderAnswer) {
 		// quote folder path to preserve spaces
-		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
-		selectFolderAnswer[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = authId;
+		const listFilesParams = {};
+		listFilesParams[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectFolderAnswer.folder);
+		listFilesParams[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = this._authId;
 
 		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES.COMMAND)
 			.integration()
-			.addParams(selectFolderAnswer)
+			.addParams(listFilesParams)
 			.build();
 
 		return executeWithSpinner({
-			action: sdkExecutor.execute(executionContext),
+			action: this._sdkExecutor.execute(executionContext),
 			message: NodeTranslationService.getMessage(MESSAGES.LOADING_FILES),
 		});
 	}
-}
-
-module.exports = new AccountFileCabinetService();
+};

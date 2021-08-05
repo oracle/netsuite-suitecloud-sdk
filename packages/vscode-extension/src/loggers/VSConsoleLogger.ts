@@ -6,7 +6,7 @@
 import { output } from '../suitecloud';
 import { ConsoleLogger } from '../util/ExtensionUtil';
 import { getTimestamp } from '../util/DateUtils';
-
+import * as vscode from 'vscode';
 export default class VSConsoleLogger extends ConsoleLogger {
 	private _executionPath?: string;
 	private _addExecutionDetailsToLog: boolean = false;
@@ -35,7 +35,7 @@ export default class VSConsoleLogger extends ConsoleLogger {
 			output.appendLine(this.getExecutionDetails());
 			this._addExecutionDetailsToLog = false;
 		}
-
+		this.checkForCorruptedJar(message);
 		output.appendLine(message);
 	}
 
@@ -53,5 +53,22 @@ export default class VSConsoleLogger extends ConsoleLogger {
 
 	error(message: string): void {
 		this.println(message);
+	}
+
+	private checkForCorruptedJar(message: string) {
+		const invalidJarFileMessage = 'Invalid or corrupt jarfile';
+		if (message.includes(invalidJarFileMessage)) {
+			const restartAction = 'Restart Now';
+
+			vscode.window.showErrorMessage(
+				'There was a problem with SuiteCloud Extension dependencies. Restart your Visual Studio Code instance.',
+				restartAction
+			).then(result => {
+				if(result === restartAction) {
+					vscode.commands.executeCommand('workbench.action.reloadWindow');
+				}
+			});
+		}
+
 	}
 }
