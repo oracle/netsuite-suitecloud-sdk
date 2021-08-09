@@ -19,7 +19,7 @@ import SetupAccount from './commands/SetupAccount';
 import UpdateObject from './commands/UpdateObject';
 import UploadFile from './commands/UploadFile';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
-import showSetupAccountWarningMessageIfNeeded from './startup/ShowSetupAccountWarning';
+import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 

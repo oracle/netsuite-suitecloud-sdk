@@ -13,6 +13,7 @@ import { ERRORS } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 import { CLIConfigurationService } from '../util/ExtensionUtil';
 import {commandsInfoMap, CommandsInfoMapType} from '../commandsMap';
+import { ActionResult } from '../types/ActionResult';
 
 
 export default abstract class BaseAction {
@@ -25,7 +26,7 @@ export default abstract class BaseAction {
 	protected vsConsoleLogger!: VSConsoleLogger;
 	protected activeFile?: string;
 
-	protected abstract execute(): Promise<void>;
+	protected abstract execute(): Promise<void | ActionResult<any>>;
 
 	constructor(commandName: keyof CommandsInfoMapType) {
 		this.cliCommandName = commandsInfoMap[commandName].cliCommandName;

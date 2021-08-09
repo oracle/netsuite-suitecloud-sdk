@@ -49,19 +49,13 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
-		const listFoldersResult = await AccountFileCabinetService.getFileCabinetFolders(
-			this._sdkPath,
-			this._executionEnvironmentContext,
-			this._authId
-		);
-
-		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw listFoldersResult.errorMessages;
-		}
+		const accountFileCabinetService = new AccountFileCabinetService(this._sdkPath, this._executionEnvironmentContext, this._authId);
+		
+		const listFoldersResult = await accountFileCabinetService.getAccountFileCabinetFolders();
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
-		const listFilesResult = await AccountFileCabinetService.listFiles(selectFolderAnswer, this._sdkExecutor, this._authId);
+		const listFilesResult = await accountFileCabinetService.listFiles(selectFolderAnswer.folder);
 
 		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
 			throw listFilesResult.errorMessages;
@@ -92,7 +86,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
-		return listFoldersResponse.data.map((folder) => ({
+		return listFoldersResponse.map((folder) => ({
 			name: folder.path,
 			value: folder.path,
 			disabled: folder.isRestricted ? NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',

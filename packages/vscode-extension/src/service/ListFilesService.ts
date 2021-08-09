@@ -6,71 +6,41 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
-import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import { ActionResult } from '../types/ActionResult';
 import { FolderItem } from '../types/FolderItem';
-import {
-	AccountFileCabinetService,
-	actionResultStatus,
-	AuthenticationUtils,
-	ConsoleLogger,
-	ExecutionEnvironmentContext,
-} from '../util/ExtensionUtil';
+import { AccountFileCabinetService, actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
-import { COMMAND, EXTENSION_INSTALLATION, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
+import { EXTENSION_INSTALLATION, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
-import { commandsInfoMap} from '../commandsMap';
-
-const LIST_FILES_COMMAND = {
-	OPTIONS: {
-		FOLDER: 'folder',
-	},
-};
-
-const CONSOLE_LOGGER_ERROR = 'vsConsole Logger not initialized';
-
+import { commandsInfoMap } from '../commandsMap';
+import { showSetupAccountWarningMessage } from '../startup/ShowSetupAccountWarning';
 export default class ListFilesService {
 	private readonly translationService: VSTranslationService;
-	private executionPath?: string;
+	private rootProjectFolder?: string;
 	private readonly messageService: MessageService;
-	private vsConsoleLogger: typeof ConsoleLogger | undefined;
+	private readonly executionEnvironmentContext = new ExecutionEnvironmentContext({
+		platform: VSCODE_PLATFORM,
+		platformVersion: vscode.version,
+	});
 
-	constructor(messageService: MessageService, translationService: VSTranslationService, projectFolder: string | undefined) {
+	constructor(messageService: MessageService, translationService: VSTranslationService, rootProjectFolder: string | undefined) {
 		this.messageService = messageService;
 		this.translationService = translationService;
-		this.executionPath = projectFolder;
+		this.rootProjectFolder = rootProjectFolder;
 	}
 
-	public async getListFolders(): Promise<FolderItem[] | undefined> {
-		const executionEnvironmentContext = new ExecutionEnvironmentContext({
-			platform: VSCODE_PLATFORM,
-			platformVersion: vscode.version,
-		});
-
-		let defaultAuthId: string | undefined;
-		try {
-			defaultAuthId = AuthenticationUtils.getProjectDefaultAuthId(this.executionPath);
-		} catch (error) {
-			defaultAuthId = undefined;
-		}
-
+	public async getAccountFileCabinetFolders(): Promise<FolderItem[] | undefined> {
+		const defaultAuthId = this.getDefaultAuthId();
 		if (!defaultAuthId) {
-			const runSetupAccount = await vscode.window.showWarningMessage(
-				this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
-				this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT)
-			);
-			if (runSetupAccount) {
-				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
-			}
+			showSetupAccountWarningMessage();
 			return;
 		}
 
-		const listFoldersPromise = AccountFileCabinetService.getFileCabinetFolders(getSdkPath(), executionEnvironmentContext, defaultAuthId);
+		const accountFileCabinetService = new AccountFileCabinetService(getSdkPath(), this.executionEnvironmentContext, defaultAuthId);
+		const listFoldersPromise = accountFileCabinetService.getAccountFileCabinetFolders();
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
 		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
 
-		const result: ActionResult<FolderItem[]> = await listFoldersPromise;
-		const fileCabinetFolders = result.data;
+		const fileCabinetFolders = await listFoldersPromise;
 
 		return this._sortFolders(fileCabinetFolders);
 	}
@@ -130,16 +100,19 @@ export default class ListFilesService {
 		return;
 	}
 
-	public async listFiles(selectedFolder: string) {
-		const listfilesOptions: { [key: string]: string } = {};
-		listfilesOptions[LIST_FILES_COMMAND.OPTIONS.FOLDER] = selectedFolder;
+	public async getFilesFromSelectedAccountFileCabinetFolder(selectedFolder: string) {
+		const defaultAuthId = this.getDefaultAuthId();
+		if (!defaultAuthId) {
+			showSetupAccountWarningMessage();
+			return;
+		}
 
-		const commandActionPromise = this.listFilesCommand(listfilesOptions);
-		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, commandsInfoMap.listfiles.vscodeCommandName);
+		const accountFileCabinetService = new AccountFileCabinetService(getSdkPath(), this.executionEnvironmentContext, defaultAuthId);
+		const listFilesPromise = accountFileCabinetService.listFiles(selectedFolder);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LISTING);
-		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
+		this.messageService.showStatusBarMessage(statusBarMessage, listFilesPromise);
 
-		const actionResult = await commandActionPromise;
+		const actionResult = await listFilesPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			return actionResult.data;
 		} else {
@@ -147,21 +120,14 @@ export default class ListFilesService {
 		}
 	}
 
-	private async listFilesCommand(listFilesOption: { [key: string]: string }) {
-		if (!this.vsConsoleLogger) {
-			throw Error(CONSOLE_LOGGER_ERROR);
+	private getDefaultAuthId(): string | undefined {
+		let defaultAuthId: string | undefined;
+		try {
+			defaultAuthId = AuthenticationUtils.getProjectDefaultAuthId(this.rootProjectFolder);
+		} catch (error) {
+			defaultAuthId = undefined;
 		}
-		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(this.vsConsoleLogger, this.executionPath).run({
-			commandName: commandsInfoMap.listfiles.cliCommandName,
-			arguments: listFilesOption,
-		});
 
-		this.vsConsoleLogger.info('');
-
-		return suiteCloudRunnerRunResult;
-	}
-
-	setVsConsoleLogger(vsConsoleLogger: typeof ConsoleLogger) {
-		this.vsConsoleLogger = vsConsoleLogger;
+		return defaultAuthId;
 	}
 }

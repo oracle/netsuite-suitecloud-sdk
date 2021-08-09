@@ -13,7 +13,7 @@ import { commandsInfoMap } from '../commandsMap';
 const MANIFEST_FILE_FILENAME = "manifest.xml";
 const SRC_FOLDER_NAME = 'src';
 
-export default async function showSetupAccountWarningMessageIfNeeded(): Promise<void> {
+export async function showSetupAccountWarningMessageIfNeeded(): Promise<void> {
     const workspaceFolders = vscode.workspace.workspaceFolders;
 	if (workspaceFolders) {
 		const projectAbsolutePath = workspaceFolders[0].uri.fsPath;
@@ -34,14 +34,25 @@ export default async function showSetupAccountWarningMessageIfNeeded(): Promise<
 				)
 			);
 
-			const translationService = new VSTranslationService();
-			const runSetupAccount = await vscode.window.showWarningMessage(
-				translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
-				translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT),
-			);
-			if (runSetupAccount) {
-				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
-			}
+			showSetupAccountWarningMessage();
 		}
 	}
 }
+
+export function showSetupAccountWarningMessage() {
+	const translationService = new VSTranslationService();
+	const runSetupAccountMessage = translationService.getMessage(
+		EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT
+	);
+
+	vscode.window
+		.showWarningMessage(
+			translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
+			runSetupAccountMessage
+		)
+		.then((result) => {
+			if (result === runSetupAccountMessage) {
+				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
+			}
+		});
+};

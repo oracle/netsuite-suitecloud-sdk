@@ -10,6 +10,9 @@
 	"ANSWERS_NO": "No",
 	"ANSWERS_YES": "Yes",
 
+	"BUTTONS_RESTART_NOW": "Restart Now",
+	"BUTTONS_SEE_DETAILS": "See Details",
+
 	"COMMAND_ERROR": "Something went wrong with '{0}'.",
 	"COMMAND_SUCCESS": "'{0}' has been successfully executed.",
 	"COMMAND_TRIGGERED": "'{0}' has been triggered.",
@@ -46,6 +49,7 @@
 
 	"DISMISS": "Dismiss",
 
+	"ERRORS_COURRUPTED_SDK_JAR_DEPENDENCY": "There was a problem with SuiteCloud Extension dependencies. Restart your Visual Studio Code instance.",
 	"ERRORS_NO_ACTIVE_FILE": "To run this command, first select a file in a SuiteCloud project to make it active in the editor.",
 	"ERRORS_NO_ACTIVE_WORKSPACE": "There was an error. The current file does not belong to any workspace.",
 	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install Oracle JDK version {1}.",
@@ -112,8 +116,6 @@
 	"MANAGE_ACCOUNTS_SAVE_TOKEN_ENTER_TOKEN_SECRET": "Enter the Token Secret:",
 	"MANAGE_ACCOUNTS_SELECT_AUTH_ID_SUCCESS": "The default account for the current project was successfully set to {0}.",
 	"MANAGE_ACCOUNTS_SELECT_CREATE": "Select or create an authentication ID (authID). It will be set up as default:",
-
-	"SEE_DETAILS": "See details",
 
 	"UPDATE_OBJECT_ERROR_SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER": "The SDF object file to update should be in the Objects folder.",
 	"UPDATE_OBJECT_OVERRIDE": "Account object will overwrite project object: {0}",

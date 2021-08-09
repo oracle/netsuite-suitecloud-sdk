@@ -14,6 +14,7 @@ import { ApplicationConstants,
 	ExecutionEnvironmentContext
 } from '../util/ExtensionUtil';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
+import { ActionResult } from '../types/ActionResult';
 
 export default class SuiteCloudRunner {
 	private commandActionExecutor: any;
@@ -35,7 +36,7 @@ export default class SuiteCloudRunner {
 		});
 	}
 
-	run(options: any) {
+	run(options: any) : Promise<ActionResult<any>>{
 		options.runInInteractiveMode = false;
 		return this.commandActionExecutor.executeAction(options);
 	}

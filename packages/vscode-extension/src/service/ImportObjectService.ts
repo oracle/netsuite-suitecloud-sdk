@@ -46,7 +46,7 @@ export default class CustomObjectService {
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, IMPORT_OBJECT_COMMAND_NAME, consoleLogger);
 		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
-		return await commandActionPromise;
+		return commandActionPromise;
 	}
 
 	async listObjects(appId: string, types: string[], scriptId: string, executionPath: string, consoleLogger: typeof ConsoleLogger) {
@@ -63,7 +63,7 @@ export default class CustomObjectService {
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, LIST_OBJECT_COMMAND_NAME, consoleLogger);
 		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
-		return await commandActionPromise;
+		return commandActionPromise;
 	}
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}, command: string, consoleLogger: typeof ConsoleLogger) {

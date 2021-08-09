@@ -5,7 +5,7 @@
 
 import { window } from 'vscode';
 import { output } from '../suitecloud';
-import { COMMAND, SEE_DETAILS } from './TranslationKeys';
+import { BUTTONS, COMMAND } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
 const DEFAULT_TIMEOUT = 5000;
@@ -69,7 +69,7 @@ export default class MessageService {
 		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.vscodeCommandName);
 		window.showInformationMessage(
 			this.addProjectNameToMessage(message),
-			this.translationService.getMessage(SEE_DETAILS)
+			this.translationService.getMessage(BUTTONS.SEE_DETAILS)
 		).then(this.showOutputIfClicked);
 	}
 
@@ -78,7 +78,7 @@ export default class MessageService {
 		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.vscodeCommandName);
 		window.showErrorMessage(
 			includeProjectName ? this.addProjectNameToMessage(message) : message,
-			this.translationService.getMessage(SEE_DETAILS)
+			this.translationService.getMessage(BUTTONS.SEE_DETAILS)
 			)
 		.then(this.showOutputIfClicked);
 	}

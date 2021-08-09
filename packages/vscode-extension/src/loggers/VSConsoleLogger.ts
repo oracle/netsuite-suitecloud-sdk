@@ -6,10 +6,15 @@
 import { output } from '../suitecloud';
 import { ConsoleLogger } from '../util/ExtensionUtil';
 import { getTimestamp } from '../util/DateUtils';
+import { BUTTONS, ERRORS } from '../service/TranslationKeys';
+import { VSTranslationService } from '../service/VSTranslationService';
+import * as vscode from 'vscode';
 
+const INVALID_JAR_FILE_MESSAGE = 'Invalid or corrupt jarfile';
 export default class VSConsoleLogger extends ConsoleLogger {
 	private _executionPath?: string;
 	private _addExecutionDetailsToLog: boolean = false;
+	private readonly translationService = new VSTranslationService();
 
 	constructor(addExecutionDetailsToLog: boolean = false, executionPath?: string) {
 		super();
@@ -35,7 +40,7 @@ export default class VSConsoleLogger extends ConsoleLogger {
 			output.appendLine(this.getExecutionDetails());
 			this._addExecutionDetailsToLog = false;
 		}
-
+		this.checkForCorruptedJar(message);
 		output.appendLine(message);
 	}
 
@@ -53,5 +58,24 @@ export default class VSConsoleLogger extends ConsoleLogger {
 
 	error(message: string): void {
 		this.println(message);
+	}
+
+	// TODO: SdkExecutor.js should reject in a structured way that contains error codes
+	// This logic could be moved to the catch block receiving that reject object
+	private checkForCorruptedJar(message: string) {
+		
+		if (message.includes(INVALID_JAR_FILE_MESSAGE)) {
+			const restartAction = this.translationService.getMessage(BUTTONS.RESTART_NOW);
+
+			vscode.window.showErrorMessage(
+				this.translationService.getMessage(ERRORS.COURRUPTED_SDK_JAR_DEPENDENCY),
+				restartAction
+			).then(result => {
+				if(result === restartAction) {
+					vscode.commands.executeCommand('workbench.action.reloadWindow');
+				}
+			});
+		}
+
 	}
 }
