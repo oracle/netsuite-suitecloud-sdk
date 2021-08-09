@@ -7,17 +7,12 @@ import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { FolderItem } from '../types/FolderItem';
-import {
-	AccountFileCabinetService,
-	actionResultStatus,
-	AuthenticationUtils,
-	ExecutionEnvironmentContext,
-} from '../util/ExtensionUtil';
+import { AccountFileCabinetService, actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
 import { EXTENSION_INSTALLATION, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 import { commandsInfoMap } from '../commandsMap';
-
+import { showSetupAccountWarningMessage } from '../startup/ShowSetupAccountWarning';
 export default class ListFilesService {
 	private readonly translationService: VSTranslationService;
 	private rootProjectFolder?: string;
@@ -36,6 +31,7 @@ export default class ListFilesService {
 	public async getAccountFileCabinetFolders(): Promise<FolderItem[] | undefined> {
 		const defaultAuthId = this.getDefaultAuthId();
 		if (!defaultAuthId) {
+			showSetupAccountWarningMessage();
 			return;
 		}
 
@@ -107,6 +103,7 @@ export default class ListFilesService {
 	public async getFilesFromSelectedAccountFileCabinetFolder(selectedFolder: string) {
 		const defaultAuthId = this.getDefaultAuthId();
 		if (!defaultAuthId) {
+			showSetupAccountWarningMessage();
 			return;
 		}
 
@@ -129,25 +126,6 @@ export default class ListFilesService {
 			defaultAuthId = AuthenticationUtils.getProjectDefaultAuthId(this.rootProjectFolder);
 		} catch (error) {
 			defaultAuthId = undefined;
-		}
-
-		if (!defaultAuthId) {
-			const runSetupAccountMessage = this.translationService.getMessage(
-				EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT
-			);
-
-			vscode.window
-				.showWarningMessage(
-					this.translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
-					runSetupAccountMessage
-				)
-				.then((result) => {
-					if (result === runSetupAccountMessage) {
-						vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
-					}
-				});
-
-			return;
 		}
 
 		return defaultAuthId;

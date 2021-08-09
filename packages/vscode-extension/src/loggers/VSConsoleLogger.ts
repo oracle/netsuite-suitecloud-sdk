@@ -60,6 +60,8 @@ export default class VSConsoleLogger extends ConsoleLogger {
 		this.println(message);
 	}
 
+	// TODO: SdkExecutor.js should reject in a structured way that contains error codes
+	// This logic could be moved to the catch block receiving that reject object
 	private checkForCorruptedJar(message: string) {
 		
 		if (message.includes(INVALID_JAR_FILE_MESSAGE)) {
