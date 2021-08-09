@@ -4,8 +4,6 @@
  */
 import * as path from 'path';
 import { QuickPickItem, window } from 'vscode';
-import VsErrorConsoleLogger from '../loggers/VsErrorConsoleLogger';
-import ImportFileService from '../service/ImportFileService';
 import ListFilesService from '../service/ListFilesService';
 import { ANSWERS, ERRORS, IMPORT_FILES, LIST_FILES } from '../service/TranslationKeys';
 import { FolderItem } from '../types/FolderItem';
@@ -15,11 +13,9 @@ import BaseAction from './BaseAction';
 const COMMAND_NAME = 'importfiles';
 
 export default class ImportFiles extends BaseAction {
-	private importFileService: ImportFileService;
 
 	constructor() {
 		super(COMMAND_NAME);
-		this.importFileService = new ImportFileService(this.messageService);
 	}
 
 	protected async execute() {
@@ -33,7 +29,8 @@ export default class ImportFiles extends BaseAction {
 		try {
 			selectedFilesPaths = await this.getSelectedFiles();
 		} catch (error) {
-			this.messageService.showErrorMessage(error);
+			this.vsConsoleLogger.error(error);
+			this.messageService.showCommandError();
 		}
 
 		if (!selectedFilesPaths) {
@@ -47,6 +44,9 @@ export default class ImportFiles extends BaseAction {
 				canPickMany: false,
 			}
 		);
+		if (!excludeProperties) {
+			return;
+		}
 
 		const override = await window.showQuickPick(
 			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
@@ -64,26 +64,22 @@ export default class ImportFiles extends BaseAction {
 			return;
 		}
 
-		const destinationFolder = this.executionPath ? this.getProjectFolderPath() : path.dirname(this.activeFile);
+		const commandArgs = {
+			paths: selectedFilesPaths,
+			...(excludeProperties === this.translationService.getMessage(ANSWERS.YES) && { excludeProperties: 'true' }),
+		};
 
-		const statusBarMessage = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE);
-		const actionResult = await this.importFileService.importFiles(
-			selectedFilesPaths,
-			destinationFolder,
-			statusBarMessage,
-			this.executionPath,
-			excludeProperties === this.translationService.getMessage(ANSWERS.YES),
-			this.vsConsoleLogger
-		);
+		const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
+		this.messageService.showStatusBarMessage(this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE), true, commandActionPromise);
+		const actionResult = await commandActionPromise;
 
 		this.showOutput(actionResult);
 	}
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
 		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.getRootProjectFolder());
-		listFilesService.setVsConsoleLogger(new VsErrorConsoleLogger(true, this.executionPath));
 		if (!this.isSelectedFromContextMenu) {
-			const fileCabinetFolders: FolderItem[] | undefined = await listFilesService.getListFolders();
+			const fileCabinetFolders: FolderItem[] | undefined = await listFilesService.getAccountFileCabinetFolders();
 			if (!fileCabinetFolders) {
 				return;
 			}
@@ -91,9 +87,9 @@ export default class ImportFiles extends BaseAction {
 			if (!selectedFolder) {
 				return;
 			}
-			const files = await listFilesService.listFiles(selectedFolder.label);
+			const files = await listFilesService.getFilesFromSelectedAccountFileCabinetFolder(selectedFolder.label);
 			if (!files || files.length === 0) {
-				throw Error(this.translationService.getMessage(LIST_FILES.ERROR.NO_FILES_FOUND));
+				throw this.translationService.getMessage(LIST_FILES.ERROR.NO_FILES_FOUND);
 			}
 			const selectedFiles: QuickPickItem[] | undefined = await listFilesService.selectFiles(files);
 
