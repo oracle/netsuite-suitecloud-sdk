@@ -26,7 +26,10 @@ Each version of CLI for Node.js in NPM works optimally with a specific NetSuite 
 | Version in NPM | Version in NetSuite |
 |:--------------:|:-------------------:|
 | 1.3.X  | 2021.2   |
-  
+| 1.2.X  | 2021.1   |
+| 1.1.X  | 2020.2   |
+| 1.0.X  | 2020.1   |
+
 ## Installation
 Since CLI for Node.js is a development tool, use a global instance to install it by running the following command:
 
