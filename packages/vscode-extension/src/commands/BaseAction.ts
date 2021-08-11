@@ -41,10 +41,10 @@ export default abstract class BaseAction {
 
 	public async run(uri?: Uri) {
 		this.init(uri);
-		const validationStatus = this.validateBeforeExecute();
+		const validationResult = this.validateBeforeExecute();
 
-		if (!validationStatus.valid) {
-			this.messageService.showErrorMessage(validationStatus.message);
+		if (!validationResult.valid) {
+			this.messageService.showErrorMessage(validationResult.message);
 			return;
 		}
 
