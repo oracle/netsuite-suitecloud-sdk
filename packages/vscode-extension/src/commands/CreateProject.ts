@@ -10,7 +10,7 @@
  import { output } from '../suitecloud';
  import { ApplicationConstants, FileSystemService, InteractiveAnswersValidator } from '../util/ExtensionUtil';
  import BaseAction from './BaseAction';
- 
+  
  const COMMAND_NAME = 'createproject';
  const COMMAND_ARGUMENTS = {
      INCLUDE_UNIT_TESTING: 'includeunittesting',
@@ -19,7 +19,7 @@
      PROJECT_ID: 'projectid',
      PROJECT_FOLDER_NAME: 'projectfoldername',
      PROJECT_NAME: 'projectname',
-     PROJECT_VERSION: 'projectversion',
+      PROJECT_VERSION: 'projectversion',
      PUBLISHER_ID: 'publisherid',
      TYPE: 'type',
  };
@@ -96,11 +96,11 @@
          if (!projectType) {
              return {};
          }
-         commandArgs[COMMAND_ARGUMENTS.TYPE] = this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.ACP) === projectType
+          commandArgs[COMMAND_ARGUMENTS.TYPE] = this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.ACP) === projectType
              ? ApplicationConstants.PROJECT_ACP
              : ApplicationConstants.PROJECT_SUITEAPP;
  
-         const projectName = await this.promptProjectNameQuestion();
+         const projectName = await this.promptProjectNameQuestion(selectedFolder[0].fsPath, projectType);
          if (!projectName) {
              return {};
          }
@@ -114,7 +114,7 @@
              }
              commandArgs[COMMAND_ARGUMENTS.PUBLISHER_ID] = publisherId;
  
-             projectId = await this.promptProjectIdQuestion();
+             projectId = await this.promptProjectIdQuestion(selectedFolder[0].fsPath, publisherId);
              if (!projectId) {
                  return {};
              }
@@ -188,7 +188,7 @@
          );
      }
  
-     private promptProjectIdQuestion(): Thenable<string | undefined> {
+     private promptProjectIdQuestion(parentFolderFsPath: string, publisherId: string): Thenable<string | undefined> {
          return window.showInputBox(
              {
                  ignoreFocusOut: true,
@@ -203,6 +203,14 @@
                              fieldValue
                          ),
                      );
+ 
+                     if (validationResult === true) {
+                         const applicationId = publisherId + '.' + fieldValue;
+                         validationResult = InteractiveAnswersValidator.validateFolderAlreadyExists(
+                             path.join(parentFolderFsPath, applicationId)
+                         );
+                     }
+                     
                      return typeof validationResult === 'string' ? validationResult : null;
                  },
              }
@@ -226,21 +234,26 @@
          );
      }
  
-     private promptProjectNameQuestion(): Thenable<string | undefined> {
-         return window.showInputBox(
-             {
-                 ignoreFocusOut: true,
-                 placeHolder: this.translationService.getMessage(CREATE_PROJECT.QUESTIONS.ENTER_PROJECT_NAME),
-                 validateInput: (fieldValue) => {
-                     let validationResult = InteractiveAnswersValidator.showValidationResults(
-                         fieldValue,
-                         InteractiveAnswersValidator.validateFieldIsNotEmpty,
-                         InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
-                     );
-                     return typeof validationResult === 'string' ? validationResult : null;
-                 },
-             }
-         );
+     private promptProjectNameQuestion(parentFolderFsPath: string, projectType: string): Thenable<string | undefined> {
+        return window.showInputBox(
+            {
+                ignoreFocusOut: true,
+                placeHolder: this.translationService.getMessage(CREATE_PROJECT.QUESTIONS.ENTER_PROJECT_NAME),
+                validateInput: (fieldValue) => {
+                    let validationResult = InteractiveAnswersValidator.showValidationResults(
+                        fieldValue,
+                        InteractiveAnswersValidator.validateFieldIsNotEmpty,
+                        InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
+                    );
+ 
+                     if (this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.ACP) === projectType && validationResult === true) {
+                         validationResult = InteractiveAnswersValidator.validateFolderAlreadyExists(path.join(parentFolderFsPath, fieldValue));
+                     }
+ 
+                    return typeof validationResult === 'string' ? validationResult : null;
+                },
+            }
+        );
      }
  
      private promptSelectProjectTypeQuestion(): Thenable<string | undefined> {
