@@ -9,11 +9,11 @@ import { ANSWERS, ERRORS, IMPORT_FILES, LIST_FILES } from '../service/Translatio
 import { FolderItem } from '../types/FolderItem';
 import { actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import { ValidationResult } from '../types/ActionResult';
 
 const COMMAND_NAME = 'importfiles';
 
 export default class ImportFiles extends BaseAction {
-
 	constructor() {
 		super(COMMAND_NAME);
 	}
@@ -77,7 +77,7 @@ export default class ImportFiles extends BaseAction {
 	}
 
 	private async getSelectedFiles(): Promise<string[] | undefined> {
-		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.getRootProjectFolder());
+		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.executionPath);
 		if (!this.isSelectedFromContextMenu) {
 			const fileCabinetFolders: FolderItem[] | undefined = await listFilesService.getAccountFileCabinetFolders();
 			if (!fileCabinetFolders) {
@@ -116,21 +116,4 @@ export default class ImportFiles extends BaseAction {
 		}
 	}
 
-	protected validate(): { valid: false; message: string } | { valid: true } {
-		if (!this.activeFile) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),
-			};
-		} else if (!this.executionPath) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE),
-			};
-		} else {
-			return {
-				valid: true,
-			};
-		}
-	}
 }

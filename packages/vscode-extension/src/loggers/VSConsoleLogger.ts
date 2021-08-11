@@ -63,8 +63,7 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	// TODO: SdkExecutor.js should reject in a structured way that contains error codes
 	// This logic could be moved to the catch block receiving that reject object
 	private checkForCorruptedJar(message: string) {
-		
-		if (message.includes(INVALID_JAR_FILE_MESSAGE)) {
+		if (typeof message?.includes === 'function' && message.includes(INVALID_JAR_FILE_MESSAGE)) {
 			const restartAction = this.translationService.getMessage(BUTTONS.RESTART_NOW);
 
 			vscode.window.showErrorMessage(
@@ -76,6 +75,5 @@ export default class VSConsoleLogger extends ConsoleLogger {
 				}
 			});
 		}
-
 	}
 }

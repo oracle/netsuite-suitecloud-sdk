@@ -213,21 +213,4 @@ export default class ImportObjects extends BaseAction {
 		}
 	}
 
-	protected validate(): { valid: false; message: string } | { valid: true } {
-		if (!this.activeFile) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),
-			};
-		} else if (!this.executionPath) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE),
-			};
-		} else {
-			return {
-				valid: true,
-			};
-		}
-	}
 }

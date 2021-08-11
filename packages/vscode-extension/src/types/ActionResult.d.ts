@@ -39,3 +39,5 @@ export type AuthListData = {
 		};
 	};
 };
+
+export type ValidationResult = { valid: false; message: string } | { valid: true };

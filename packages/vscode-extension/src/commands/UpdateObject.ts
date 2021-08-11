@@ -7,6 +7,7 @@ import { window } from 'vscode';
 import { ERRORS, ANSWERS, UPDATE_OBJECT, COMMAND } from '../service/TranslationKeys';
 import { ProjectInfoService, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import { ValidationResult } from '../types/ActionResult';
 import { FOLDERS } from '../ApplicationConstants';
 
 const COMMAND_NAME = 'updateobject';
@@ -21,13 +22,12 @@ export default class UpdateObject extends BaseAction {
 	}
 
 	protected async execute() {
-		const activeFile = window.activeTextEditor?.document.uri;
-		if (!activeFile) {
-			// Already checked in validate
+		if (!this.activeFile) {
+			// Already checked in validateBeforeExecute
 			return;
 		}
 
-		const scriptId = path.basename(activeFile.fsPath, '.xml');
+		const scriptId = path.basename(this.activeFile, '.xml');
 
 		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
 		const cancelMessage = this.translationService.getMessage(ANSWERS.CANCEL);
@@ -36,7 +36,7 @@ export default class UpdateObject extends BaseAction {
 			canPickMany: false,
 		});
 
-		if (!override || override ===  this.translationService.getMessage(ANSWERS.CANCEL)) {
+		if (!override || override === this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED));
 			return;
 		}
@@ -55,41 +55,28 @@ export default class UpdateObject extends BaseAction {
 		return;
 	}
 
-	protected validate(): { valid: false; message: string } | { valid: true } {
-		const activeFile = window.activeTextEditor?.document.uri;
-		if (!activeFile) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),
-			};
-		} else if (!this.executionPath) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE),
-			};
-		} else {
-			const projectFolderPath = this.getProjectFolderPath();
-			const projectInfoService = new ProjectInfoService(projectFolderPath);
-			try {
-				if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
-					const relativePath = path.relative(projectFolderPath, activeFile.fsPath);
-					if (!relativePath.startsWith(FOLDERS.OBJECTS + path.sep)) {
-						return {
-							valid: false,
-							message: this.translationService.getMessage(UPDATE_OBJECT.ERROR.SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER),
-						};
-					}
+	protected validateBeforeExecute(): ValidationResult {
+		const superValidation = super.validateBeforeExecute();
+		if (!superValidation.valid) {
+			return superValidation;
+		}
+		if (!this.activeFile) {
+			// Already performed at super.validateBeforeExecute(), needed to avoid TypeScript
+			return this.unsuccessfulValidation(this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE));
+		}
+		const projectFolderPath = this.getProjectFolderPath();
+		const projectInfoService = new ProjectInfoService(projectFolderPath);
+		try {
+			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
+				const relativePath = path.relative(projectFolderPath, this.activeFile);
+				if (!relativePath.startsWith(FOLDERS.OBJECTS + path.sep)) {
+					return this.unsuccessfulValidation(this.translationService.getMessage(UPDATE_OBJECT.ERROR.SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER));
 				}
-
-				return {
-					valid: true,
-				};
-			} catch (e) {
-				return {
-					valid: false,
-					message: e.getErrorMessage(),
-				};
 			}
+
+			return this.successfulValidation();
+		} catch (e) {
+			return this.unsuccessfulValidation(e.getErrorMessage());
 		}
 	}
 }

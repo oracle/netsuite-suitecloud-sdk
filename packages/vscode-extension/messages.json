@@ -50,6 +50,7 @@
 	"DISMISS": "Dismiss",
 
 	"ERRORS_COURRUPTED_SDK_JAR_DEPENDENCY": "There was a problem with SuiteCloud Extension dependencies. Restart your Visual Studio Code instance.",
+	"ERRORS_MISSING_MANIFEST_FILE": "No manifest.xml file was found in {0}. Use '{1}' from an active file in a valid project folder. For more information about the project structure, see {2}",
 	"ERRORS_NO_ACTIVE_FILE": "To run this command, first select a file in a SuiteCloud project to make it active in the editor.",
 	"ERRORS_NO_ACTIVE_WORKSPACE": "There was an error. The current file does not belong to any workspace.",
 	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install Oracle JDK version {1}.",
@@ -108,7 +109,6 @@
 	"MANAGE_ACCOUNTS_CREATE_SAVE_TOKEN_SAVING_TBA": "Saving the TBA token...",
 	"MANAGE_ACCOUNTS_ENTER_AUTH_ID": "Enter an authentication ID (authID):",
 	"MANAGE_ACCOUNTS_ENTER_URL": "Press Enter to use the production domain 'system.netsuite.com', or enter your custom domain.",
-	"MANAGE_ACCOUNTS_ERROR_MISSING_MANIFEST": "No manifest.xml file was found in {0}. Use '{1}' from an active file in a valid project folder. For more information about the project structure, see {2}",
 	"MANAGE_ACCOUNTS_ERROR_NOT_IN_PROJECT": "Can't set the default authentication ID (authID) if not in a project.",
 	"MANAGE_ACCOUNTS_LOADING": "Loading the configured authentication IDs (authID) in this machine...",
 	"MANAGE_ACCOUNTS_SAVE_TOKEN_ENTER_ACCOUNT_ID": "Enter the account ID:",
