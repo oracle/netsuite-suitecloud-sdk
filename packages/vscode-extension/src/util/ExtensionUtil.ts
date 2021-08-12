@@ -13,10 +13,10 @@ export const objectTypes: {
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
 
 export const actionResultStatus: {
-	SUCCESS: string;
-	ERROR: string;
+	 SUCCESS: string;
+	 ERROR: string;
 } = require('@oracle/suitecloud-cli/src/services/actionresult/ActionResult').STATUS;
-
+ 
 export const CommandActionExecutor = require('@oracle/suitecloud-cli/src/core/CommandActionExecutor');
 export const CommandsMetadataService = require('@oracle/suitecloud-cli/src/core/CommandsMetadataService');
 export const CommandOptionsValidator = require('@oracle/suitecloud-cli/src/core/CommandOptionsValidator');
@@ -51,5 +51,6 @@ export const InteractiveAnswersValidator: {
 	validateMaximumLength(fieldValue: string, maxLength: number): boolean;
 	validateNonProductionAccountSpecificDomain(fieldValue: string): boolean;
 	validateNonProductionDomain(fieldValue: string): boolean;
-	validateSuiteScriptFileAlreadyExists(parentFolderPath: string, filename:string): string|boolean;
+	validateSuiteScriptFileDoesNotExists(parentFolderPath: string, filename:string): string|boolean;
+	validateFolderDoesNotExists(path: string): boolean;
 } = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');

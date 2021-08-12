@@ -155,8 +155,8 @@ module.exports = {
 
 	validateNonProductionDomain(fieldValue) {
 		return !fieldValue.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) ||
-			fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.F_DOMAIN_REGEX) ||
-			fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.SNAP_DOMAIN_REGEX)
+		fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.F_DOMAIN_REGEX) ||
+		fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.SNAP_DOMAIN_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	},
@@ -169,7 +169,7 @@ module.exports = {
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	},
 
-	validateSuiteScriptFileAlreadyExists(parentFolderPath, filename) {
+	validateSuiteScriptFileDoesNotExists(parentFolderPath, filename) {
 		const filenameParts = path.parse(filename);
 		const filenameExtension = filenameParts.ext;
 		let filenameWithExtension = filename;
@@ -181,6 +181,14 @@ module.exports = {
 		return !fileSystemService.fileExists(path.join(parentFolderPath, filenameWithExtension))
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILE_ALREADY_EXISTS));
+	},
+
+	validateFolderDoesNotExists(path) {
+		const fileSystemService = new FileSystemService();
+
+		return !fileSystemService.folderExists(path)
+			? VALIDATION_RESULT_SUCCESS
+			: NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FOLDER_ALREADY_EXISTS, path);
 	}
 
 };

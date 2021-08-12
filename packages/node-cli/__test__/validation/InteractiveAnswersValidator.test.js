@@ -10,6 +10,7 @@ const {
 	validateSuiteApp,
 	validateScriptId,
 	validateXMLCharacters,
+	validateFolderDoesNotExists,
 } = require('../../src/validation/InteractiveAnswersValidator');
 
 const positiveResponse = {
@@ -182,5 +183,24 @@ describe('validateXMLCharacters', () => {
 		expect(validateXMLCharacters('using and ampersand & to check it fails')).toEqual(failureResponse);
 		expect(validateXMLCharacters('using " some quotes \' characters')).toEqual(failureResponse);
 		expect(validateXMLCharacters("mixing_Some > of them < all 'in' the &same string \"")).toEqual(failureResponse);
+	});
+});
+
+describe('validateFolderDoesNotExists', () => {
+	it('should return true when folder does not exists', () => {
+		expect(validateFolderAlreadyExists('/InteractiveAnswersValidator-validateFolderDoesNotExists')).toEqual(positiveResponse);
+	});
+
+	it('should return false when folder already exists', () => {
+		const fs = require('fs');
+		const os = require('os');
+		const path = require('path');
+		const tmpDir = path.join(os.tmpdir(), '/InteractiveAnswersValidator-validateFolderDoesNotExists');
+		try {
+			fs.mkdirSync(tmpDir);
+			expect(validateFolderDoesNotExists(tmpDir)).toEqual('The folder ' + tmpDir + ' already exists.');
+		} finally {
+			fs.rmdirSync(tmpDir);
+		}
 	});
 });

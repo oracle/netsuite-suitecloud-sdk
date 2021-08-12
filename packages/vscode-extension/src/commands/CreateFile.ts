@@ -171,7 +171,7 @@ export default class CreateFile extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
-					(filename: string) => InteractiveAnswersValidator.validateSuiteScriptFileAlreadyExists(absoluteParentFolder, filename)
+					(filename: string) => InteractiveAnswersValidator.validateSuiteScriptFileDoesNotExists(absoluteParentFolder, filename)
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
