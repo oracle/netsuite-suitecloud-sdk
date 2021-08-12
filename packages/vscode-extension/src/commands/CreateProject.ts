@@ -19,7 +19,7 @@ const COMMAND_ARGUMENTS = {
     PROJECT_ID: 'projectid',
     PROJECT_FOLDER_NAME: 'projectfoldername',
     PROJECT_NAME: 'projectname',
-     PROJECT_VERSION: 'projectversion',
+    PROJECT_VERSION: 'projectversion',
     PUBLISHER_ID: 'publisherid',
     TYPE: 'type',
 };
@@ -72,7 +72,7 @@ export default class CreateProject extends BaseAction {
                 VSCODE_OPEN_FOLDER_COMMAND,
                 Uri.file(projectAbsolutePath),
                 {
-                    forcenewwindow: openProjectInNewWindow ? this.translationService.getMessage(CREATE_PROJECT.BUTTONS.NEW_WINDOW) : false,
+                    forceNewWindow: openProjectInNewWindow === this.translationService.getMessage(CREATE_PROJECT.BUTTONS.NEW_WINDOW),
                 }
             );
         }
@@ -206,7 +206,7 @@ export default class CreateProject extends BaseAction {
 
                     if (validationResult === true) {
                         const applicationId = publisherId + '.' + fieldValue;
-                        validationResult = InteractiveAnswersValidator.validateFolderDoesNotExists(
+                        validationResult = InteractiveAnswersValidator.validateFolderDoesNotExist(
                             path.join(parentFolderFsPath, applicationId)
                         );
                     }
@@ -247,7 +247,7 @@ export default class CreateProject extends BaseAction {
                    );
 
                     if (this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.ACP) === projectType && validationResult === true) {
-                        validationResult = InteractiveAnswersValidator.validateFolderDoesNotExists(path.join(parentFolderFsPath, fieldValue));
+                        validationResult = InteractiveAnswersValidator.validateFolderDoesNotExist(path.join(parentFolderFsPath, fieldValue));
                     }
 
                    return typeof validationResult === 'string' ? validationResult : null;

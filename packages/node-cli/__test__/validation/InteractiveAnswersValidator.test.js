@@ -10,7 +10,7 @@ const {
 	validateSuiteApp,
 	validateScriptId,
 	validateXMLCharacters,
-	validateFolderDoesNotExists,
+	validateFolderDoesNotExist,
 } = require('../../src/validation/InteractiveAnswersValidator');
 
 const positiveResponse = {
@@ -186,19 +186,19 @@ describe('validateXMLCharacters', () => {
 	});
 });
 
-describe('validateFolderDoesNotExists', () => {
+describe('validateFolderDoesNotExist', () => {
 	it('should return true when folder does not exists', () => {
-		expect(validateFolderAlreadyExists('/InteractiveAnswersValidator-validateFolderDoesNotExists')).toEqual(positiveResponse);
+		expect(validateFolderDoesNotExist('/InteractiveAnswersValidator-validateFolderDoesNotExist')).toEqual(positiveResponse);
 	});
 
 	it('should return false when folder already exists', () => {
 		const fs = require('fs');
 		const os = require('os');
 		const path = require('path');
-		const tmpDir = path.join(os.tmpdir(), '/InteractiveAnswersValidator-validateFolderDoesNotExists');
+		const tmpDir = path.join(os.tmpdir(), '/InteractiveAnswersValidator-validateFolderDoesNotExist');
 		try {
 			fs.mkdirSync(tmpDir);
-			expect(validateFolderDoesNotExists(tmpDir)).toEqual('The folder ' + tmpDir + ' already exists.');
+			expect(validateFolderDoesNotExist(tmpDir)).toEqual('The folder ' + tmpDir + ' already exists.');
 		} finally {
 			fs.rmdirSync(tmpDir);
 		}

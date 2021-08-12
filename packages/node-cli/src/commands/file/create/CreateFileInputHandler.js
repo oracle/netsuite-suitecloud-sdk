@@ -12,7 +12,7 @@ const {
     validateFieldHasNoSpaces,
     validateArrayIsNotEmpty,
     validateFieldIsNotEmpty,
-    validateSuiteScriptFileDoesNotExists,
+    validateSuiteScriptFileDoesNotExist,
 } = require('../../../validation/InteractiveAnswersValidator');
 const {
     COMMAND_CREATEFILE: { QUESTIONS },
@@ -138,7 +138,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
                 fieldValue,
                 validateFieldIsNotEmpty,
                 validateFieldHasNoSpaces,
-                (fieldValue) => validateSuiteScriptFileDoesNotExists(parentAbsolutePath, fieldValue)
+                (fieldValue) => validateSuiteScriptFileDoesNotExist(parentAbsolutePath, fieldValue)
             ),
         };
     }

@@ -51,6 +51,6 @@ export const InteractiveAnswersValidator: {
 	validateMaximumLength(fieldValue: string, maxLength: number): boolean;
 	validateNonProductionAccountSpecificDomain(fieldValue: string): boolean;
 	validateNonProductionDomain(fieldValue: string): boolean;
-	validateSuiteScriptFileDoesNotExists(parentFolderPath: string, filename:string): string|boolean;
-	validateFolderDoesNotExists(path: string): boolean;
+	validateSuiteScriptFileDoesNotExist(parentFolderPath: string, filename:string): string|boolean;
+	validateFolderDoesNotExist(path: string): boolean;
 } = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');

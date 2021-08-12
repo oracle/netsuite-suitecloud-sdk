@@ -169,7 +169,7 @@ module.exports = {
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	},
 
-	validateSuiteScriptFileDoesNotExists(parentFolderPath, filename) {
+	validateSuiteScriptFileDoesNotExist(parentFolderPath, filename) {
 		const filenameParts = path.parse(filename);
 		const filenameExtension = filenameParts.ext;
 		let filenameWithExtension = filename;
@@ -183,7 +183,7 @@ module.exports = {
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILE_ALREADY_EXISTS));
 	},
 
-	validateFolderDoesNotExists(path) {
+	validateFolderDoesNotExist(path) {
 		const fileSystemService = new FileSystemService();
 
 		return !fileSystemService.folderExists(path)
