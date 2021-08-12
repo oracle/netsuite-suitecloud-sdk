@@ -72,7 +72,7 @@ export default class CreateProject extends BaseAction {
                 VSCODE_OPEN_FOLDER_COMMAND,
                 Uri.file(projectAbsolutePath),
                 {
-                    forcenewwindow: openProjectInNewWindow ? CREATE_PROJECT.BUTTONS.NEW_WINDOW : false,
+                    forcenewwindow: openProjectInNewWindow ? this.translationService.getMessage(CREATE_PROJECT.BUTTONS.NEW_WINDOW) : false,
                 }
             );
         }
