@@ -69,7 +69,7 @@ export default class CreateProject extends BaseAction {
 
 		if (openProjectInNewWindow !== undefined) {
 			commands.executeCommand(VSCODE_OPEN_FOLDER_COMMAND, Uri.file(projectAbsolutePath), {
-				forcenewwindow: openProjectInNewWindow ? CREATE_PROJECT.BUTTONS.NEW_WINDOW : false,
+				forceNewWindow: openProjectInNewWindow === this.translationService.getMessage(CREATE_PROJECT.BUTTONS.NEW_WINDOW),
 			});
 		}
 	}
@@ -97,7 +97,7 @@ export default class CreateProject extends BaseAction {
 				? ApplicationConstants.PROJECT_ACP
 				: ApplicationConstants.PROJECT_SUITEAPP;
 
-		const projectName = await this.promptProjectNameQuestion();
+		const projectName = await this.promptProjectNameQuestion(selectedFolder[0].fsPath, projectType);
 		if (!projectName) {
 			return {};
 		}
@@ -111,7 +111,7 @@ export default class CreateProject extends BaseAction {
 			}
 			commandArgs[COMMAND_ARGUMENTS.PUBLISHER_ID] = publisherId;
 
-			projectId = await this.promptProjectIdQuestion();
+			projectId = await this.promptProjectIdQuestion(selectedFolder[0].fsPath, publisherId);
 			if (!projectId) {
 				return {};
 			}
@@ -178,7 +178,7 @@ export default class CreateProject extends BaseAction {
 		});
 	}
 
-	private promptProjectIdQuestion(): Thenable<string | undefined> {
+	private promptProjectIdQuestion(parentFolderFsPath: string, publisherId: string): Thenable<string | undefined> {
 		return window.showInputBox({
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(CREATE_PROJECT.QUESTIONS.ENTER_PROJECT_ID),
@@ -193,6 +193,12 @@ export default class CreateProject extends BaseAction {
 							fieldValue
 						)
 				);
+
+				if (validationResult === true) {
+					const applicationId = publisherId + '.' + fieldValue;
+					validationResult = InteractiveAnswersValidator.validateFolderDoesNotExist(path.join(parentFolderFsPath, applicationId));
+				}
+
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
@@ -213,7 +219,7 @@ export default class CreateProject extends BaseAction {
 		});
 	}
 
-	private promptProjectNameQuestion(): Thenable<string | undefined> {
+	private promptProjectNameQuestion(parentFolderFsPath: string, projectType: string): Thenable<string | undefined> {
 		return window.showInputBox({
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(CREATE_PROJECT.QUESTIONS.ENTER_PROJECT_NAME),
@@ -223,6 +229,11 @@ export default class CreateProject extends BaseAction {
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended
 				);
+
+				if (this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.ACP) === projectType && validationResult === true) {
+					validationResult = InteractiveAnswersValidator.validateFolderDoesNotExist(path.join(parentFolderFsPath, fieldValue));
+				}
+
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
