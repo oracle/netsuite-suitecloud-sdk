@@ -13,6 +13,7 @@ import {
 } from '../util/ExtensionUtil';
 import * as path from 'path';
 import { FOLDERS } from '../ApplicationConstants';
+import { ValidationResult } from '../types/ActionResult';
 
 interface SuiteScriptTypeItem extends QuickPickItem {
 	id: string;
@@ -26,8 +27,8 @@ export default class CreateFile extends BaseAction {
 		super(COMMAND_NAME);
 	}
 
-	protected validate(): { valid: false; message: string } | { valid: true } {
-		const superValidation = super.validate();
+	protected validateBeforeExecute(): ValidationResult {
+		const superValidation = super.validateBeforeExecute();
 		if (!superValidation.valid) {
 			return superValidation;
 		}

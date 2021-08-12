@@ -9,9 +9,8 @@ import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { FolderItem } from '../types/FolderItem';
 import { AccountFileCabinetService, actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
-import { EXTENSION_INSTALLATION, IMPORT_FILES, LIST_FILES } from './TranslationKeys';
+import { IMPORT_FILES, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
-import { commandsInfoMap } from '../commandsMap';
 import { showSetupAccountWarningMessage } from '../startup/ShowSetupAccountWarning';
 export default class ListFilesService {
 	private readonly translationService: VSTranslationService;

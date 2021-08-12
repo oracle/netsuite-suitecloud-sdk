@@ -8,8 +8,6 @@ import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
-import * as fs from 'fs';
-import * as path from 'path';
 
 const COMMAND_NAME = 'setupaccount';
 
@@ -47,33 +45,6 @@ interface CancellationToken {
 export default class SetupAccount extends BaseAction {
 	constructor() {
 		super(COMMAND_NAME);
-	}
-
-	protected validate(): { valid: false; message: string } | { valid: true } {
-		const superValidation = super.validate();
-		if (!superValidation.valid) {
-			return superValidation;
-		}
-
-		const projectFolder: string = this.getProjectFolderPath();
-		const manifestFileLocation: string = path.join(projectFolder, ApplicationConstants.FILES.MANIFEST_XML);
-		const manifestFileExists: boolean = fs.existsSync(manifestFileLocation);
-
-		if (manifestFileExists) {
-			return {
-				valid: true,
-			};
-		}
-
-		return {
-			valid: false,
-			message: this.translationService.getMessage(
-				MANAGE_ACCOUNTS.ERROR.MISSING_MANIFEST,
-				manifestFileLocation,
-				this.vscodeCommandName,
-				ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
-			),
-		};
 	}
 
 	protected async execute() {

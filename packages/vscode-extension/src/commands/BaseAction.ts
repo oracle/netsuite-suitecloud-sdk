@@ -2,19 +2,21 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-
-import { assert } from 'console';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { Uri, window } from 'vscode';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
+import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
 import MessageService from '../service/MessageService';
 import { ERRORS } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
-import { CLIConfigurationService } from '../util/ExtensionUtil';
-import {commandsInfoMap, CommandsInfoMapType} from '../commandsMap';
-import { ActionResult } from '../types/ActionResult';
-
+import { ApplicationConstants, AuthenticationUtils, CLIConfigurationService } from '../util/ExtensionUtil';
+import { commandsInfoMap, CommandsInfoMapType } from '../commandsMap';
+import { ActionResult, ValidationResult } from '../types/ActionResult';
+import { CommandMetadata } from '../types/Metadata';
+import { showSetupAccountWarningMessage } from '../startup/ShowSetupAccountWarning';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
@@ -22,20 +24,39 @@ export default abstract class BaseAction {
 	protected readonly messageService: MessageService;
 	protected readonly vscodeCommandName: string;
 	protected readonly cliCommandName: string;
+	protected readonly commandMetadata: CommandMetadata;
 	protected executionPath?: string;
 	protected vsConsoleLogger!: VSConsoleLogger;
 	protected activeFile?: string;
 
-	protected abstract execute(): Promise<void | ActionResult<any>>;
-
 	constructor(commandName: keyof CommandsInfoMapType) {
 		this.cliCommandName = commandsInfoMap[commandName].cliCommandName;
 		this.vscodeCommandName = commandsInfoMap[commandName].vscodeCommandName;
+		this.commandMetadata = CommandsMetadataSingleton.getInstance().getCommandMetadataByName(this.cliCommandName);
 		this.messageService = new MessageService(this.vscodeCommandName);
 		this.translationService = new VSTranslationService();
 	}
 
-	protected init(uri?: Uri) {
+	protected abstract execute(): Promise<void | ActionResult<any>>;
+
+	public async run(uri?: Uri) {
+		this.init(uri);
+		const validationResult = this.validateBeforeExecute();
+
+		if (!validationResult.valid) {
+			this.messageService.showErrorMessage(validationResult.message);
+			return;
+		}
+
+		if (this.commandMetadata.isSetupRequired && !this.projectHasDefaultAuthId()) {
+			showSetupAccountWarningMessage();
+			return;
+		}
+
+		return this.execute();
+	}
+
+	private init(uri?: Uri) {
 		this.executionPath = this.getRootProjectFolder(uri);
 		const fsPath = uri?.fsPath;
 		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
@@ -44,17 +65,61 @@ export default abstract class BaseAction {
 		this.activeFile = fsPath ? fsPath : window.activeTextEditor?.document.uri.fsPath;
 	}
 
-	protected validate(): { valid: false; message: string } | { valid: true } {
-		if (!this.executionPath) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),
-			};
-		} else {
-			return {
-				valid: true,
-			};
+	protected validateBeforeExecute(): ValidationResult {
+		if (!this.activeFile) {
+			return this.unsuccessfulValidation(this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE));
 		}
+		if (!this.executionPath) {
+			return this.unsuccessfulValidation(this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE));
+		}
+		const validProjectResult = this.validateIsValidSuiteCloudProject();
+		if (!validProjectResult.valid) {
+			return validProjectResult;
+		}
+
+		return this.successfulValidation();
+	}
+
+	protected successfulValidation(): { valid: true } {
+		return { valid: true };
+	}
+	protected unsuccessfulValidation(message: string): { valid: false; message: string } {
+		return {
+			valid: false,
+			message,
+		};
+	}
+
+	protected validateIsValidSuiteCloudProject(): ValidationResult {
+		const projectFolder: string = this.getProjectFolderPath();
+
+		const manifestFileLocation: string = path.join(projectFolder, ApplicationConstants.FILES.MANIFEST_XML);
+		const manifestFileExists: boolean = fs.existsSync(manifestFileLocation);
+
+		if (!manifestFileExists) {
+			return this.unsuccessfulValidation(
+				this.translationService.getMessage(
+					ERRORS.MISSING_MANIFEST_FILE,
+					manifestFileLocation,
+					this.vscodeCommandName,
+					ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
+				)
+			);
+		}
+
+		return this.successfulValidation();
+	}
+
+	// uri is present when action originated from a contextMenu of the treeView
+	private getRootProjectFolder(uri?: vscode.Uri): string | undefined {
+		if (uri) {
+			const activeWorkspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+			return activeWorkspaceFolder?.uri.fsPath;
+		}
+
+		const activeTextEditor = vscode.window.activeTextEditor;
+		const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
+		return activeWorkspaceFolder?.uri.fsPath;
 	}
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string | string[] } = {}, otherExecutionPath?: string) {
@@ -83,28 +148,14 @@ export default abstract class BaseAction {
 		return cliConfigurationService.getProjectFolder(this.cliCommandName);
 	}
 
-	// returns the root project folder of the active file in the editor if uri not defined
-	// uri is present when action originated from a contextMenu of the treeView
-	// works fine with workspace with multiple project folders opened
-	public getRootProjectFolder(uri?: vscode.Uri): string | undefined {
-		if (!uri?.fsPath) {
-			const activeTextEditor = vscode.window.activeTextEditor;
-			const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
-			return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : undefined;
-		} else {
-			const activeWorkspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-			return activeWorkspaceFolder?.uri.fsPath;
+	private projectHasDefaultAuthId(): boolean {
+		let defaultAuthId: string;
+		try {
+			defaultAuthId = AuthenticationUtils.getProjectDefaultAuthId(this.executionPath);
+		} catch (error) {
+			return false;
 		}
-	}
 
-	public async run(uri?: Uri) {
-		this.init(uri);
-		const validationStatus = this.validate();
-		if (validationStatus.valid) {
-			return this.execute();
-		} else {
-			this.messageService.showErrorMessage(validationStatus.message);
-			return;
-		}
+		return defaultAuthId !== undefined && defaultAuthId !== '';
 	}
 }
