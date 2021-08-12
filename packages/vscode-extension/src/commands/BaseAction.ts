@@ -110,18 +110,16 @@ export default abstract class BaseAction {
 		return this.successfulValidation();
 	}
 
-	// returns the root project folder of the active file in the editor if uri not defined
 	// uri is present when action originated from a contextMenu of the treeView
-	// works fine with workspace with multiple project folders opened
 	private getRootProjectFolder(uri?: vscode.Uri): string | undefined {
-		if (!uri?.fsPath) {
-			const activeTextEditor = vscode.window.activeTextEditor;
-			const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
-			return activeWorkspaceFolder ? activeWorkspaceFolder.uri.fsPath : undefined;
-		} else {
+		if (uri) {
 			const activeWorkspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
 			return activeWorkspaceFolder?.uri.fsPath;
 		}
+
+		const activeTextEditor = vscode.window.activeTextEditor;
+		const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
+		return activeWorkspaceFolder?.uri.fsPath;
 	}
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string | string[] } = {}, otherExecutionPath?: string) {
