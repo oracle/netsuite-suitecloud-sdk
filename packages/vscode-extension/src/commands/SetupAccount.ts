@@ -104,7 +104,7 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async getNewAuthIdOption() {
-		if (!this.executionPath) {
+		if (!this.rootWorkspaceFolder) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.NOT_IN_PROJECT));
 			return;
 		}
@@ -159,7 +159,7 @@ export default class SetupAccount extends BaseAction {
 		const authenticatePromise: Promise<AuthenticateActionResult> = AuthenticationUtils.authenticateWithOauth(
 			commandParams,
 			getSdkPath(),
-			this.executionPath,
+			this.rootWorkspaceFolder,
 			cancellationToken
 		);
 		window
@@ -301,7 +301,7 @@ export default class SetupAccount extends BaseAction {
 			commandParams.url = url;
 		}
 
-		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.executionPath);
+		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.rootWorkspaceFolder);
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA),
 			true,
@@ -332,13 +332,13 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private handleSelectedAuth(authId: string) {
-		if (!this.executionPath) {
+		if (!this.rootWorkspaceFolder) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.NOT_IN_PROJECT));
 			return;
 		}
 
 		try {
-			AuthenticationUtils.setDefaultAuthentication(this.executionPath, authId);
+			AuthenticationUtils.setDefaultAuthentication(this.rootWorkspaceFolder, authId);
 			this.vsConsoleLogger.result(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 		} catch (e) {

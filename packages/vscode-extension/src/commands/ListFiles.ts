@@ -23,7 +23,7 @@ export default class ListFiles extends BaseAction {
 	}
 
 	protected async execute(): Promise<void> {
-		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.executionPath);
+		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.rootWorkspaceFolder);
 		try {
 			let fileCabinetFolders: FolderItem[] | undefined = await listFilesService.getAccountFileCabinetFolders();
 			if (!fileCabinetFolders) {

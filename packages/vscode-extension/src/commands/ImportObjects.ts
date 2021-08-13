@@ -22,7 +22,7 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	protected async execute() {
-		if (!this.activeFile || !this.executionPath) {
+		if (!this.activeFile || !this.rootWorkspaceFolder) {
 			//already  checked in validate. Should not throw
 			throw 'Unexpected error at list objects';
 		}
@@ -64,8 +64,8 @@ export default class ImportObjects extends BaseAction {
 			appId,
 			selectedObjectTypes,
 			scriptIdFilter,
-			this.executionPath,
-			new VsErrorConsoleLogger(true, this.executionPath)
+			this.rootWorkspaceFolder,
+			new VsErrorConsoleLogger(true, this.rootWorkspaceFolder)
 		);
 		if (listObjectsResult.status !== 'SUCCESS' || !listObjectsResult.data || listObjectsResult.data.length === 0) {
 			this.showOutput(listObjectsResult);
@@ -95,7 +95,7 @@ export default class ImportObjects extends BaseAction {
 			appId,
 			selectedScriptIds,
 			includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES),
-			this.executionPath,
+			this.rootWorkspaceFolder,
 			this.vsConsoleLogger
 		);
 
