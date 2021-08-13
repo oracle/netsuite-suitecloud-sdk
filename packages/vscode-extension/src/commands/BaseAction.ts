@@ -100,8 +100,7 @@ export default abstract class BaseAction {
 			return this.unsuccessfulValidation(
 				this.translationService.getMessage(
 					ERRORS.MISSING_MANIFEST_FILE,
-					manifestFileLocation,
-					this.vscodeCommandName,
+					projectFolder,
 					ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
 				)
 			);

@@ -50,9 +50,9 @@
 	"DISMISS": "Dismiss",
 
 	"ERRORS_COURRUPTED_SDK_JAR_DEPENDENCY": "There was a problem with SuiteCloud Extension dependencies. Restart your Visual Studio Code instance.",
-	"ERRORS_MISSING_MANIFEST_FILE": "No manifest.xml file was found in {0}. Use '{1}' from an active file in a valid project folder. For more information about the project structure, see {2}",
-	"ERRORS_NO_ACTIVE_FILE": "To run this command, first select a file in a SuiteCloud project to make it active in the editor.",
-	"ERRORS_NO_ACTIVE_WORKSPACE": "There was an error. The current file does not belong to any workspace.",
+	"ERRORS_MISSING_MANIFEST_FILE": "No manifest.xml file was found in \"{0}\". To run this command make sure your project structure is valid. For more information about the project structure, see {1}",
+	"ERRORS_NO_ACTIVE_FILE": "Before running this command, select a file from the current workspace and make it active in the editor.",
+	"ERRORS_NO_ACTIVE_WORKSPACE": "The active file in the editor does not belong to the current workspace. Before running this command, select a file from the current workspace and make it active in the editor.",
 	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install Oracle JDK version {1}.",
 	"ERRORS_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install Oracle JDK version {0} to run SuiteCloud Extension for Visual Studio Code.",
 
