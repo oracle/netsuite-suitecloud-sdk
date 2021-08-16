@@ -25,7 +25,7 @@ export default abstract class BaseAction {
 	protected readonly vscodeCommandName: string;
 	protected readonly cliCommandName: string;
 	protected readonly commandMetadata: CommandMetadata;
-	protected executionPath?: string;
+	protected rootWorkspaceFolder?: string;
 	protected vsConsoleLogger!: VSConsoleLogger;
 	protected activeFile?: string;
 
@@ -39,8 +39,8 @@ export default abstract class BaseAction {
 
 	protected abstract execute(): Promise<void | ActionResult<any>>;
 
-	public async run(uri?: Uri) {
-		this.init(uri);
+	public async run(treeViewUri?: Uri) {
+		this.init(treeViewUri);
 		const validationResult = this.validateBeforeExecute();
 
 		if (!validationResult.valid) {
@@ -56,20 +56,19 @@ export default abstract class BaseAction {
 		return this.execute();
 	}
 
-	private init(uri?: Uri) {
-		this.executionPath = this.getRootProjectFolder(uri);
-		const fsPath = uri?.fsPath;
-		this.vsConsoleLogger = new VSConsoleLogger(true, this.executionPath);
-		this.messageService.executionPath = this.executionPath;
-		this.isSelectedFromContextMenu = fsPath ? true : false;
-		this.activeFile = fsPath ? fsPath : window.activeTextEditor?.document.uri.fsPath;
+	private init(treeViewUri?: Uri) {
+		this.rootWorkspaceFolder = this.getRootProjectFolder(treeViewUri);
+		this.vsConsoleLogger = new VSConsoleLogger(true, this.rootWorkspaceFolder);
+		this.messageService.executionPath = this.rootWorkspaceFolder;
+		this.isSelectedFromContextMenu = treeViewUri ? true : false;
+		this.activeFile = treeViewUri ? treeViewUri.fsPath : window.activeTextEditor?.document.uri.fsPath;
 	}
 
 	protected validateBeforeExecute(): ValidationResult {
 		if (!this.activeFile) {
 			return this.unsuccessfulValidation(this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE));
 		}
-		if (!this.executionPath) {
+		if (!this.rootWorkspaceFolder) {
 			return this.unsuccessfulValidation(this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE));
 		}
 		const validProjectResult = this.validateIsValidSuiteCloudProject();
@@ -125,7 +124,7 @@ export default abstract class BaseAction {
 	protected async runSuiteCloudCommand(args: { [key: string]: string | string[] } = {}, otherExecutionPath?: string) {
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(
 			this.vsConsoleLogger,
-			otherExecutionPath !== undefined ? otherExecutionPath : this.executionPath
+			otherExecutionPath !== undefined ? otherExecutionPath : this.rootWorkspaceFolder
 		).run({
 			commandName: this.cliCommandName,
 			arguments: args,
@@ -143,7 +142,7 @@ export default abstract class BaseAction {
 	 */
 	protected getProjectFolderPath(): string {
 		const cliConfigurationService = new CLIConfigurationService();
-		cliConfigurationService.initialize(this.executionPath);
+		cliConfigurationService.initialize(this.rootWorkspaceFolder);
 
 		return cliConfigurationService.getProjectFolder(this.cliCommandName);
 	}
@@ -151,7 +150,7 @@ export default abstract class BaseAction {
 	private projectHasDefaultAuthId(): boolean {
 		let defaultAuthId: string;
 		try {
-			defaultAuthId = AuthenticationUtils.getProjectDefaultAuthId(this.executionPath);
+			defaultAuthId = AuthenticationUtils.getProjectDefaultAuthId(this.rootWorkspaceFolder);
 		} catch (error) {
 			return false;
 		}

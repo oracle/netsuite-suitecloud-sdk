@@ -23,7 +23,7 @@ export default class UploadFile extends BaseAction {
 		}
 
 		const cliConfigurationService = new CLIConfigurationService();
-		cliConfigurationService.initialize(this.executionPath);
+		cliConfigurationService.initialize(this.rootWorkspaceFolder);
 
 		const projectFolder = cliConfigurationService.getProjectFolder(this.cliCommandName);
 		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
