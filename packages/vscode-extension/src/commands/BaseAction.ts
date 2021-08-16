@@ -96,14 +96,21 @@ export default abstract class BaseAction {
 		const manifestFileExists: boolean = fs.existsSync(manifestFileLocation);
 
 		if (!manifestFileExists) {
-			return this.unsuccessfulValidation(
-				this.translationService.getMessage(
-					ERRORS.MISSING_MANIFEST_FILE,
-					manifestFileLocation,
-					this.vscodeCommandName,
-					ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
-				)
-			);
+			return this.isSelectedFromContextMenu
+				? this.unsuccessfulValidation(
+						this.translationService.getMessage(
+							ERRORS.MISSING_MANIFEST_FILE_CONTEXT_MENU_FILE,
+							projectFolder,
+							ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
+						)
+				  )
+				: this.unsuccessfulValidation(
+						this.translationService.getMessage(
+							ERRORS.MISSING_MANIFEST_FILE_COMMAND_PALETTE,
+							projectFolder,
+							ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
+						)
+				  );
 		}
 
 		return this.successfulValidation();
