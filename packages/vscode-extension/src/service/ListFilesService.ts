@@ -59,7 +59,7 @@ export default class ListFilesService {
 		return fileCabinetFolders;
 	}
 
-	public async selectFolder(folders: FolderItem[]): Promise<vscode.QuickPickItem | undefined> {
+	public async selectFolder(folders: FolderItem[], placeHolderMessage: string): Promise<vscode.QuickPickItem | undefined> {
 		return vscode.window.showQuickPick(
 			folders.map((folder: FolderItem) => {
 				const description = folder.isRestricted ? this.translationService.getMessage(LIST_FILES.RESTRICTED_FOLDER) : '';
@@ -67,7 +67,7 @@ export default class ListFilesService {
 			}),
 			{
 				ignoreFocusOut: true,
-				placeHolder: this.translationService.getMessage(LIST_FILES.SELECT_FOLDER),
+				placeHolder: placeHolderMessage,
 				canPickMany: false,
 				onDidSelectItem: (item: vscode.QuickPickItem) => vscode.window.setStatusBarMessage(item.label, 5000),
 			}
@@ -76,13 +76,10 @@ export default class ListFilesService {
 
 	public async selectFiles(files: string[]): Promise<vscode.QuickPickItem[] | undefined> {
 		let finish: boolean = false;
-		let message = this.translationService.getMessage(LIST_FILES.SELECT_FOLDER);
+		let message = this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FILES);
 		while (!finish) {
 			const selectedFiles = await vscode.window.showQuickPick(
-				files.map((file: string) => {
-					const description = file ? this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FILES) : '';
-					return { label: file, description };
-				}),
+				files.map((file) => ({ label: file })),
 				{
 					ignoreFocusOut: true,
 					placeHolder: message,

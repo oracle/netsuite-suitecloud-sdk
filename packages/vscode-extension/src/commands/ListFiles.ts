@@ -29,7 +29,10 @@ export default class ListFiles extends BaseAction {
 			if (!fileCabinetFolders) {
 				return;
 			}
-			const selectedFolder = await listFilesService.selectFolder(fileCabinetFolders);
+			const selectedFolder = await listFilesService.selectFolder(
+				fileCabinetFolders,
+				this.translationService.getMessage(LIST_FILES.SELECT_FOLDER)
+			);
 			if (selectedFolder) {
 				await this._listFiles(selectedFolder.label);
 			}

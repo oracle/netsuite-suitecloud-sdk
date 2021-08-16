@@ -27,7 +27,7 @@ export default class ImportFiles extends BaseAction {
 		if (projectInfoService.isSuiteAppProject()) {
 			return this.unsuccessfulValidation(this.translationService.getMessage(IMPORT_FILES.ERROR.IMPORT_TO_SUITEAPP_NOT_ALLOWED));
 		}
-		
+
 		return this.successfulValidation();
 	}
 
@@ -89,11 +89,11 @@ export default class ImportFiles extends BaseAction {
 
 		const commandArgs = {
 			paths: selectedFilesPaths,
-			...(excludeProperties === this.translationService.getMessage(ANSWERS.YES) && { excludeProperties: 'true' }),
+			...(excludeProperties === this.translationService.getMessage(ANSWERS.YES) && { excludeproperties: 'true' }),
 		};
 
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
-		this.messageService.showStatusBarMessage(this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILE), true, commandActionPromise);
+		this.messageService.showStatusBarMessage(this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILES), true, commandActionPromise);
 		const actionResult = await commandActionPromise;
 
 		this.showOutput(actionResult);
@@ -105,7 +105,10 @@ export default class ImportFiles extends BaseAction {
 		if (!fileCabinetFolders) {
 			return;
 		}
-		const selectedFolder: QuickPickItem | undefined = await listFilesService.selectFolder(fileCabinetFolders);
+		const selectedFolder: QuickPickItem | undefined = await listFilesService.selectFolder(
+			fileCabinetFolders,
+			this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FOLDER)
+		);
 		if (!selectedFolder) {
 			return;
 		}
@@ -123,7 +126,12 @@ export default class ImportFiles extends BaseAction {
 
 	private showOutput(actionResult: any) {
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
-			this.messageService.showCommandInfo(this.translationService.getMessage(IMPORT_FILES.FINISHED));
+			const dataResults: {loaded: boolean; message: string; path: string}[] = actionResult.data.results;
+			if (dataResults.some(importResult => !importResult.loaded)) {
+				this.messageService.showCommandWarning();
+			} else {
+				this.messageService.showCommandInfo();
+			}
 		} else {
 			this.messageService.showCommandError();
 		}
