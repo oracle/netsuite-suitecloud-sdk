@@ -60,11 +60,6 @@
 				"category": "SuiteCloud"
 			},
 			{
-				"command": "suitecloud.importfile",
-				"title": "Import File from Account",
-				"category": "SuiteCloud"
-			},
-			{
 				"command": "suitecloud.importobjects",
 				"title": "Import Objects",
 				"category": "SuiteCloud"
@@ -85,8 +80,13 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.updatefile",
+				"title": "Update File from Account",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.updateobject",
-				"title": "Update Single Object with Account Object",
+				"title": "Update Object from Account",
 				"category": "SuiteCloud"
 			},
 			{
@@ -134,8 +134,8 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
-					"command": "suitecloud.importfile",
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"command": "suitecloud.updatefile",
 					"group": "suitecloud@1"
 				},
 				{

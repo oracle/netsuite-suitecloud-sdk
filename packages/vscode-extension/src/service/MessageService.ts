@@ -9,6 +9,7 @@ import { BUTTONS, COMMAND } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
 const DEFAULT_TIMEOUT = 5000;
+const COMMAND_NOT_DEFINED = 'Command not defined';
 
 export default class MessageService {
 	private vscodeCommandName?: string;
@@ -19,13 +20,13 @@ export default class MessageService {
 		this.vscodeCommandName = commandName;
 	}
 
-	set executionPath(excutionPath: string|undefined) {
+	set executionPath(excutionPath: string | undefined) {
 		this._executionPath = excutionPath;
 	}
 
 	private addProjectNameToMessage(message: string): string {
 		if (this._executionPath) {
-			const executionPathParts = this._executionPath.replace(/\\/g, "/").split("/")
+			const executionPathParts = this._executionPath.replace(/\\/g, '/').split('/');
 			const projectFolderName: string = executionPathParts[executionPathParts.length - 1];
 			// window.showInformationMessage removes new line characters do not try to add them here
 			message = `${projectFolderName}: ${message}`;
@@ -39,7 +40,6 @@ export default class MessageService {
 		} else {
 			window.showInformationMessage(infoMessage);
 		}
-		
 
 		if (statusBarMessage && promise) {
 			this.showStatusBarMessage(statusBarMessage, spin, promise);
@@ -58,29 +58,42 @@ export default class MessageService {
 		const messageToShow = spin ? `$(sync~spin) ${message}` : message;
 		if (!promise) {
 			window.setStatusBarMessage(messageToShow, DEFAULT_TIMEOUT);
-		}
-		else {
+		} else {
 			window.setStatusBarMessage(messageToShow, promise);
 		}
 	}
 
 	showCommandInfo(successMessage?: string) {
-		if (!this.vscodeCommandName) throw 'Command not defined';
+		if (!this.vscodeCommandName) {
+			throw COMMAND_NOT_DEFINED;
+		}
 		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.vscodeCommandName);
-		window.showInformationMessage(
-			this.addProjectNameToMessage(message),
-			this.translationService.getMessage(BUTTONS.SEE_DETAILS)
-		).then(this.showOutputIfClicked);
+		window
+			.showInformationMessage(this.addProjectNameToMessage(message), this.translationService.getMessage(BUTTONS.SEE_DETAILS))
+			.then(this.showOutputIfClicked);
+	}
+
+	showCommandWarning(warningMessage?: string) {
+		if (!this.vscodeCommandName) {
+			throw COMMAND_NOT_DEFINED;
+		}
+		const message = warningMessage ? warningMessage : this.translationService.getMessage(COMMAND.WARNING, this.vscodeCommandName);
+		window
+			.showWarningMessage(this.addProjectNameToMessage(message), this.translationService.getMessage(BUTTONS.SEE_DETAILS))
+			.then(this.showOutputIfClicked);
 	}
 
 	showCommandError(errorMessage?: string, includeProjectName: boolean = true) {
-		if (!this.vscodeCommandName) throw 'Command not defined';
+		if (!this.vscodeCommandName) {
+			throw COMMAND_NOT_DEFINED;
+		}
 		const message = errorMessage ? errorMessage : this.translationService.getMessage(COMMAND.ERROR, this.vscodeCommandName);
-		window.showErrorMessage(
-			includeProjectName ? this.addProjectNameToMessage(message) : message,
-			this.translationService.getMessage(BUTTONS.SEE_DETAILS)
+		window
+			.showErrorMessage(
+				includeProjectName ? this.addProjectNameToMessage(message) : message,
+				this.translationService.getMessage(BUTTONS.SEE_DETAILS)
 			)
-		.then(this.showOutputIfClicked);
+			.then(this.showOutputIfClicked);
 	}
 
 	private showOutputIfClicked(message?: string) {

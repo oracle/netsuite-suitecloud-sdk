@@ -17,11 +17,11 @@ export type CommandsInfoMapType = {
 	createproject: CommandInfo;
 	deploy: CommandInfo;
 	importfiles: CommandInfo;
-	importfile: CommandInfo;
 	importobjects: CommandInfo;
 	listfiles: CommandInfo;
 	listobjects: CommandInfo;
 	setupaccount: CommandInfo;
+	updatefile: CommandInfo;
 	updateobject: CommandInfo;
 	uploadfile: CommandInfo;
 };
@@ -55,11 +55,6 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		cliCommandName: 'file:import',
 		vscodeCommandName: 'Import Files',
 	},
-	importfile: {
-		vscodeCommandId: 'suitecloud.importfile',
-		cliCommandName: 'file:import',
-		vscodeCommandName: 'Import File',
-	},
 	importobjects: {
 		vscodeCommandId: 'suitecloud.importobjects',
 		cliCommandName: 'object:import',
@@ -80,10 +75,15 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		cliCommandName: 'account:setup',
 		vscodeCommandName: 'Set Up Account...',
 	},
+	updatefile: {
+		vscodeCommandId: 'suitecloud.updatefile',
+		cliCommandName: 'file:import',
+		vscodeCommandName: 'Update File from Account',
+	},
 	updateobject: {
 		vscodeCommandId: 'suitecloud.updateobject',
 		cliCommandName: 'object:update',
-		vscodeCommandName: 'Update Single Object with Account Object',
+		vscodeCommandName: 'Update Object from Account',
 		vscodeShortName: 'Update Object',
 	},
 	uploadfile: {
