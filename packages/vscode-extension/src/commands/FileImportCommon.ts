@@ -2,6 +2,7 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
+import * as path from 'path';
 import { window } from 'vscode';
 import { ANSWERS, IMPORT_FILES } from '../service/TranslationKeys';
 import { actionResultStatus, ProjectInfoService } from '../util/ExtensionUtil';
@@ -54,12 +55,15 @@ export default abstract class FileImportCommon extends BaseAction {
 				placeHolder:
 					selectedFilesPaths.length > 1
 						? this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE)
-						: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE_SINGLE, selectedFilesPaths[0]),
+						: this.translationService.getMessage(IMPORT_FILES.QUESTIONS.OVERRIDE_SINGLE, path.basename(selectedFilesPaths[0])),
 				canPickMany: false,
 			}
 		);
 
-		if (!override || override === this.translationService.getMessage(ANSWERS.NO)) {
+		if (!override) {
+			return;
+		}
+		if (override === this.translationService.getMessage(ANSWERS.NO)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
 			return;
 		}
