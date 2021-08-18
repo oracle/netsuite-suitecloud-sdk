@@ -33,21 +33,18 @@ export default class CreateFile extends BaseAction {
 			return superValidation;
 		}
 
-		const folderChoices = this.getFolderChoices();
-		if (folderChoices.length === 0) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(
+		const validFolderChoices = this.getValidFolderChoices();
+		if (validFolderChoices.length === 0) {
+			return this.unsuccessfulValidation(
+				this.translationService.getMessage(
 					CREATE_FILE.ERRORS.MISSING_VALID_FOLDER_FOR_SUITECRIPT_FILE,
 					this.vscodeCommandName,
 					ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
-				),
-			};
+				)
+			);
 		}
 
-		return {
-			valid: true,
-		};
+		return this.successfulValidation();
 	}
 
 	protected async execute(): Promise<void> {
@@ -131,7 +128,7 @@ export default class CreateFile extends BaseAction {
 	}
 
 	private async promptFolderSelection(): Promise<string | undefined> {
-		const folderChoices = this.getFolderChoices();
+		const validFolderChoices = this.getValidFolderChoices();
 
 		let fileToCheck = this.activeFile;
 
@@ -142,21 +139,24 @@ export default class CreateFile extends BaseAction {
 				fileToCheck = path.dirname(fileToCheck);
 			}
 			// filter folderChoices by the selected folder in the treeview
-			const filteredFolderChoices = folderChoices.filter((folder) =>
+			const filteredFolderChoices = validFolderChoices.filter((folder) =>
 				folder.startsWith(fileCabinetService.getFileCabinetRelativePath(fileToCheck))
 			);
 			// Autoselect folder when no subfolders in the tree
 			if (filteredFolderChoices.length === 1) {
 				return filteredFolderChoices[0];
 			}
-			return window.showQuickPick(filteredFolderChoices, {
-				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
-				canPickMany: false,
-			});
+			// could be 0 if the selected directory is not in a valid folder, like /SuiteScripts in a SuiteApp
+			if (filteredFolderChoices.length > 1) {
+				return window.showQuickPick(filteredFolderChoices, {
+					placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
+					canPickMany: false,
+				});
+			}
 		}
 
-		// action not originated from context menu
-		return window.showQuickPick(folderChoices, {
+		// action not originated from context menu or filteredChoices.length === 0
+		return window.showQuickPick(validFolderChoices, {
 			placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
 			canPickMany: false,
 		});
@@ -179,7 +179,7 @@ export default class CreateFile extends BaseAction {
 		});
 	}
 
-	private getFolderChoices(): string[] {
+	private getValidFolderChoices(): string[] {
 		const projectFolderPath = this.getProjectFolderPath();
 		const projectInfoService = new ProjectInfoService(projectFolderPath);
 		const fileSystemService = new FileSystemService();
