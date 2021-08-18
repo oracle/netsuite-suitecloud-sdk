@@ -28,10 +28,9 @@ export default class ImportObjects extends BaseAction {
 		}
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
 
-		const relativeDestinationFolder = this.getDestinationFolder(this.activeFile);
-		if (!relativeDestinationFolder.startsWith(ApplicationConstants.FOLDERS.OBJECTS)) {
-			this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.INCORRECT_FOLDER));
-			return;
+		let relativeDestinationFolder = ApplicationConstants.FOLDERS.OBJECTS;
+		if (this.isSelectedFromContextMenu) {
+			relativeDestinationFolder = this.getDestinationFolder(this.activeFile);
 		}
 
 		let appId: string = '';
