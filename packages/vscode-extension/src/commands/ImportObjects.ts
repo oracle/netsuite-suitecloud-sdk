@@ -7,7 +7,7 @@ import * as path from 'path';
 import { window } from 'vscode';
 import VsErrorConsoleLogger from '../loggers/VsErrorConsoleLogger';
 import CustomObjectService from '../service/ImportObjectService';
-import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
+import { ANSWERS, IMPORT_OBJECTS } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants, InteractiveAnswersValidator, objectTypes, ProjectInfoService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
@@ -76,9 +76,13 @@ export default class ImportObjects extends BaseAction {
 		if (!selectedScriptIds) {
 			return;
 		}
-		const includeReferencedFiles = await this.promptIncludeReferencedFiles();
-		if (!includeReferencedFiles) {
-			return;
+
+		let includeReferencedFiles = this.translationService.getMessage(ANSWERS.NO);
+		if (projectInfoService.isAccountCustomizationProject()) {
+			includeReferencedFiles = await this.promptIncludeReferencedFiles();
+			if (!includeReferencedFiles) {
+				return;
+			}
 		}
 
 		const overwrite = await this.promptOverwrite(includeReferencedFiles);
