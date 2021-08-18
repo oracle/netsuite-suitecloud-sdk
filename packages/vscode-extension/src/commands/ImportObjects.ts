@@ -109,12 +109,11 @@ export default class ImportObjects extends BaseAction {
 	private getDestinationFolder(pathDir: string) {
 		const isDirectory = fs.lstatSync(pathDir).isDirectory();
 		const directoryName = isDirectory ? pathDir : path.dirname(pathDir);
-		const destinationFolder = directoryName.split(this.getProjectFolderPath())[1].replace(/\\/gi, '/');
-		return destinationFolder;
+		return directoryName.split(this.getProjectFolderPath())[1].replace(/\\/gi, '/');
 	}
 
 	private async promptFilterAppId() {
-		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+		return window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.FILTER_APP_ID),
 			canPickMany: false,
 		});
@@ -144,7 +143,7 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	private async promptScriptIdFilter() {
-		let scriptId = await window.showInputBox({
+		return window.showInputBox({
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SCRIPT_ID),
 			validateInput: (fieldValue) => {
@@ -154,13 +153,11 @@ export default class ImportObjects extends BaseAction {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(fieldValue, InteractiveAnswersValidator.validateScriptId);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
-		});
-
-		return scriptId;
+		});;
 	}
 
 	private async promptObjectTypes(): Promise<string[] | undefined> {
-		return await window.showQuickPick(
+		return window.showQuickPick(
 			objectTypes.map((objectType) => objectType.value.type),
 			{
 				placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_TYPES),
@@ -188,14 +185,14 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	private async promptIncludeReferencedFiles() {
-		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+		return window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.REFERENCED_FILES),
 			canPickMany: false,
 		});
 	}
 
 	private async promptOverwrite(includeReferencedFiles: string) {
-		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+		return window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
 			placeHolder:
 				includeReferencedFiles === this.translationService.getMessage(ANSWERS.NO)
 					? this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE_WITH_REFERENCED)
