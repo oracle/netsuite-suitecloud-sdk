@@ -88,7 +88,7 @@ export default class ImportObjects extends BaseAction {
 		if (!overwrite) {
 			return;
 		}
-		if (overwrite === this.translationService.getMessage(ANSWERS.NO)) {
+		if (overwrite === this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
 		}
@@ -192,7 +192,7 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	private async promptOverwrite(includeReferencedFiles: string) {
-		return window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+		return window.showQuickPick([this.translationService.getMessage(ANSWERS.CONTINUE), this.translationService.getMessage(ANSWERS.CANCEL)], {
 			placeHolder:
 				includeReferencedFiles === this.translationService.getMessage(ANSWERS.NO)
 					? this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE_WITH_REFERENCED)
