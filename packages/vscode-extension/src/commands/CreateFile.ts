@@ -102,7 +102,7 @@ export default class CreateFile extends BaseAction {
 			return;
 		}
 
-		args.path = path.join(selectedFolder, fileName);
+		args.path = path.join(selectedFolder, fileName.trim());
 
 		return args;
 	}
@@ -168,10 +168,11 @@ export default class CreateFile extends BaseAction {
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.ENTER_NAME),
 			validateInput: (fieldValue: string) => {
+				fieldValue = fieldValue.trim();
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
+					InteractiveAnswersValidator.validateFileName,
 					(filename: string) => InteractiveAnswersValidator.validateSuiteScriptFileDoesNotExist(absoluteParentFolder, filename)
 				);
 				return typeof validationResult === 'string' ? validationResult : null;

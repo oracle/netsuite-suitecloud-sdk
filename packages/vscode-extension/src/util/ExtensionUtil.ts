@@ -53,4 +53,5 @@ export const InteractiveAnswersValidator: {
 	validateNonProductionDomain(fieldValue: string): boolean;
 	validateSuiteScriptFileDoesNotExist(parentFolderPath: string, filename:string): string|boolean;
 	validateFolderDoesNotExist(path: string): boolean;
+	validateFileName(fileName: string): boolean;
 } = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');

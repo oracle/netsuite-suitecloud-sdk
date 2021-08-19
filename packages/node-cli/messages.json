@@ -13,6 +13,8 @@
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "The {0} field contains forbidden characters. Use only lowercase letters and numbers.",
 	"ANSWERS_VALIDATION_MESSAGES_FILE_ALREADY_EXISTS": "The file already exists.",
+	"ANSWERS_VALIDATION_MESSAGES_FILENAME_CONTAINS_FORBIDDEN_CHARACTERS": "The file name cannot contain any of the following characters: \\ / : * ? \" < > |",
+	"ANSWERS_VALIDATION_MESSAGES_FILENAME_ENDS_WITH_PERIOD": "The file name cannot end with a period.",
 	"ANSWERS_VALIDATION_MESSAGES_FOLDER_ALREADY_EXISTS": "The folder {0} already exists.",
 	"ANSWERS_VALIDATION_MESSAGES_INVALID_EMAIL": "Invalid email address.",
 	"ANSWERS_VALIDATION_MESSAGES_MAX_LENGTH": "This field can only contain up to {0} characters.",
