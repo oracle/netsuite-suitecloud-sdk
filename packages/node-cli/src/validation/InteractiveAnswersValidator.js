@@ -24,6 +24,8 @@ const ALPHANUMERIC_HYPHEN_UNDERSCORE_EXTENDED = /^[a-zA-Z0-9-_ ]+([.]*[a-zA-Z0-9
 const SCRIPT_ID_REGEX = /^[a-z0-9_]+$/;
 const STRING_WITH_SPACES_REGEX = /\s/;
 const XML_FORBIDDEN_CHARACTERS_REGEX = /[<>&'"]/;
+const FILENAME_FORBIDDEN_CHARACTERS_REGEX = /[\\/:*?"<>|]/;
+const DOT_AT_THE_END_OF_A_STRING_REGEX = /^.*\.$/;
 const PROJECT_VERSION_FORMAT_REGEX = '^\\d+(\\.\\d+){2}$';
 const SUITEAPP_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '(\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '){2}$';
 const SUITEAPP_PUBLISHER_ID_FORMAT_REGEX = '^' + ALPHANUMERIC_LOWERCASE_REGEX + '\\.' + ALPHANUMERIC_LOWERCASE_REGEX + '$';
@@ -155,16 +157,16 @@ module.exports = {
 
 	validateNonProductionDomain(fieldValue) {
 		return !fieldValue.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) ||
-		fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.F_DOMAIN_REGEX) ||
-		fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.SNAP_DOMAIN_REGEX)
+			fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.F_DOMAIN_REGEX) ||
+			fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.SNAP_DOMAIN_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	},
 
 	validateNonProductionAccountSpecificDomain(fieldValue) {
 		return !fieldValue.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX) ||
-		fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.F_ACCOUNT_SPECIFIC_DOMAIN_REGEX) ||
-		fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.SNAP_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
+			fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.F_ACCOUNT_SPECIFIC_DOMAIN_REGEX) ||
+			fieldValue.match(ApplicationConstants.DOMAIN.NON_PRODUCTION.SNAP_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
 			? VALIDATION_RESULT_SUCCESS
 			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.PRODUCTION_DOMAIN));
 	},
@@ -189,6 +191,15 @@ module.exports = {
 		return !fileSystemService.folderExists(path)
 			? VALIDATION_RESULT_SUCCESS
 			: NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FOLDER_ALREADY_EXISTS, path);
-	}
+	},
 
+	validateFileName(filename) {
+		if (FILENAME_FORBIDDEN_CHARACTERS_REGEX.test(filename)) {
+			return VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILENAME_CONTAINS_FORBIDDEN_CHARACTERS));
+		}
+
+		return DOT_AT_THE_END_OF_A_STRING_REGEX.test(filename)
+			? VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(ANSWERS_VALIDATION_MESSAGES.FILENAME_ENDS_WITH_PERIOD))
+			: VALIDATION_RESULT_SUCCESS;
+	},
 };
