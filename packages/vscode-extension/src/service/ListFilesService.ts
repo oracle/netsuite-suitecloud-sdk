@@ -77,13 +77,15 @@ export default class ListFilesService {
 	public async selectFiles(files: string[]): Promise<vscode.QuickPickItem[] | undefined> {
 		let finish: boolean = false;
 		let message = this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FILES);
+		const filesChoices = files.map((file) => ({ label: file, detail: path.basename(file) }));
 		while (!finish) {
 			const selectedFiles = await vscode.window.showQuickPick(
-				files.map((file) => ({ label: file })),
+				filesChoices,
 				{
 					ignoreFocusOut: true,
 					placeHolder: message,
 					canPickMany: true,
+					onDidSelectItem: (item: vscode.QuickPickItem) => vscode.window.setStatusBarMessage(item.label, 5000),
 				}
 			);
 			if (!selectedFiles || selectedFiles.length > 0) {
