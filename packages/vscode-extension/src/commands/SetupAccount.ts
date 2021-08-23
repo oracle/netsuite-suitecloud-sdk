@@ -19,6 +19,7 @@ enum UiOption {
 	cancel_process,
 	dismiss,
 }
+
 interface NewAuthIdItem extends QuickPickItem {
 	option: UiOption.new_authid;
 }
@@ -50,20 +51,20 @@ export default class SetupAccount extends BaseAction {
 	protected async execute(): Promise<void> {
 		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
-			const actionResult: ActionResult<AuthListData> = await accountsPromise;
-			if (actionResult.isSuccess()) {
-				const selected = await this.getAuthListOption(actionResult.data);
-				if (!selected) {
-					return;
-				} else if (selected.option === UiOption.new_authid) {
-					await this.handleNewAuth(actionResult.data);
-				} else if (selected.option === UiOption.select_authid) {
-					this.handleSelectedAuth(selected.authId);
-				}
-			} else {
-				this.messageService.showCommandError(actionResult.errorMessages[0]);
-				this.vsConsoleLogger.error(actionResult.errorMessages[0]);
+		const actionResult: ActionResult<AuthListData> = await accountsPromise;
+		if (actionResult.isSuccess()) {
+			const selected = await this.getAuthListOption(actionResult.data);
+			if (!selected) {
+				return;
+			} else if (selected.option === UiOption.new_authid) {
+				await this.handleNewAuth(actionResult.data);
+			} else if (selected.option === UiOption.select_authid) {
+				this.handleSelectedAuth(selected.authId);
 			}
+		} else {
+			this.vsConsoleLogger.error(actionResult.errorMessages[0]);
+			this.messageService.showCommandError();
+		}
 		return;
 	}
 
@@ -160,7 +161,7 @@ export default class SetupAccount extends BaseAction {
 			commandParams,
 			getSdkPath(),
 			this.rootWorkspaceFolder,
-			cancellationToken
+			cancellationToken,
 		);
 		window
 			.showInformationMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), dismissButton, cancelButton)
@@ -175,7 +176,7 @@ export default class SetupAccount extends BaseAction {
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER),
 			true,
-			authenticatePromise
+			authenticatePromise,
 		);
 
 		const actionResult = await authenticatePromise;
@@ -193,7 +194,7 @@ export default class SetupAccount extends BaseAction {
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
-					InteractiveAnswersValidator.validateMaximumLength
+					InteractiveAnswersValidator.validateMaximumLength,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -209,7 +210,7 @@ export default class SetupAccount extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					InteractiveAnswersValidator.validateNonProductionDomain,
-					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain
+					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -225,7 +226,7 @@ export default class SetupAccount extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore
+					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -240,7 +241,7 @@ export default class SetupAccount extends BaseAction {
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -255,7 +256,7 @@ export default class SetupAccount extends BaseAction {
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -302,7 +303,7 @@ export default class SetupAccount extends BaseAction {
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA),
 			true,
-			saveTokenPromise
+			saveTokenPromise,
 		);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
@@ -316,8 +317,8 @@ export default class SetupAccount extends BaseAction {
 					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
 					actionResult.accountInfo.companyName,
 					actionResult.accountInfo.roleName,
-					actionResult.authId
-				)
+					actionResult.authId,
+				),
 			);
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
 		} else {
