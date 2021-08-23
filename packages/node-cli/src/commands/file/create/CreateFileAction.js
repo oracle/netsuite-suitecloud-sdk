@@ -66,7 +66,11 @@ module.exports = class CreateFileAction extends BaseAction {
 		});
 
 		if (operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS) {
-			const suiteScriptFileAbsolutePath = path.join(this._projectFolder, FOLDERS.FILE_CABINET, params[COMMAND_OPTIONS.PATH]);
+			const suiteScriptFileAbsolutePath = path.join(
+				this._projectFolder,
+				FOLDERS.FILE_CABINET,
+				CommandUtils.unquoteString(params[COMMAND_OPTIONS.PATH])
+			);
 
 			let resultMessage = NodeTranslationService.getMessage(MESSAGES.SUITESCRIPT_FILE_CREATED, suiteScriptFileAbsolutePath);
 			if (params.hasOwnProperty(COMMAND_OPTIONS.MODULE)) {
