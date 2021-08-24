@@ -138,24 +138,15 @@ export default class CreateFile extends BaseAction {
 			if (!fs.lstatSync(fileToCheck).isDirectory()) {
 				fileToCheck = path.dirname(fileToCheck);
 			}
-			// filter folderChoices by the selected folder in the treeview
-			const filteredFolderChoices = validFolderChoices.filter((folder) =>
-				folder.startsWith(fileCabinetService.getFileCabinetRelativePath(fileToCheck))
-			);
-			// Autoselect folder when no subfolders in the tree
-			if (filteredFolderChoices.length === 1) {
-				return filteredFolderChoices[0];
-			}
-			// could be 0 if the selected directory is not in a valid folder, like /SuiteScripts in a SuiteApp
-			if (filteredFolderChoices.length > 1) {
-				return window.showQuickPick(filteredFolderChoices, {
-					placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
-					canPickMany: false,
-				});
+			const fileToCheckRelativePath = fileCabinetService.getFileCabinetRelativePath(fileToCheck);
+			// If the fileToCheck is any of the validFolderChoices auto-select it
+			// fileToCheck could be an invalid folder, like /SuiteScripts in a SuiteApp or /SuiteApps/wrong.app.id
+			if (validFolderChoices.includes(fileToCheckRelativePath)) {
+				return fileToCheckRelativePath;
 			}
 		}
 
-		// action not originated from context menu or filteredChoices.length === 0
+		// action not originated from context menu or fileToCheck not in the validFolderChoices
 		return window.showQuickPick(validFolderChoices, {
 			placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
 			canPickMany: false,
