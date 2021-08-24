@@ -186,7 +186,7 @@ export default class CreateFile extends BaseAction {
 		const fileSystemService = new FileSystemService();
 		const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
 
-		const getAllowedPath = ((): string => {
+		const allowedFolder = ((): string => {
 			if (projectInfoService.isAccountCustomizationProject()) {
 				return FOLDERS.SUITESCRIPTS;
 			} else {
@@ -199,13 +199,20 @@ export default class CreateFile extends BaseAction {
 				return fileCabinetService.getFileCabinetRelativePath(applicationSuiteAppFolderAbsolutePath);
 			}
 		})();
+		const allowedFolderSegments = allowedFolder.split('/');
 
-		const isFolderNotRestricted = (folderRelativePath: string): boolean => folderRelativePath.startsWith(getAllowedPath);
+		const isValidRelativeFolder = (folderRelativePath: string): boolean => {
+			if (!folderRelativePath.startsWith(allowedFolder)) {
+				return false;
+			}
+			const folderRelativePathSegments = folderRelativePath.split('/');
+			return allowedFolderSegments.every((allowedSegment, index) => allowedSegment === folderRelativePathSegments[index]);
+		};
 		const getRelativePath = (absolutePath: string): string => fileCabinetService.getFileCabinetRelativePath(absolutePath);
 
 		const allFolders = fileSystemService.getFoldersFromDirectoryRecursively(
 			path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET)
 		);
-		return allFolders.map(getRelativePath).filter(isFolderNotRestricted);
+		return allFolders.map(getRelativePath).filter(isValidRelativeFolder);
 	}
 }

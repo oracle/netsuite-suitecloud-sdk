@@ -10,7 +10,7 @@ import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
 import MessageService from '../service/MessageService';
-import { ERRORS } from '../service/TranslationKeys';
+import { COMMAND, ERRORS } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 import { ApplicationConstants, AuthenticationUtils, CLIConfigurationService } from '../util/ExtensionUtil';
 import { commandsInfoMap, CommandsInfoMapType } from '../commandsMap';
@@ -40,20 +40,33 @@ export default abstract class BaseAction {
 	protected abstract execute(): Promise<void | ActionResult<any>>;
 
 	public async run(treeViewUri?: Uri) {
-		this.init(treeViewUri);
-		const validationResult = this.validateBeforeExecute();
+		try {
+			this.init(treeViewUri);
+			const validationResult = this.validateBeforeExecute();
 
-		if (!validationResult.valid) {
-			this.messageService.showErrorMessage(validationResult.message);
+			if (!validationResult.valid) {
+				this.messageService.showErrorMessage(validationResult.message);
+				return;
+			}
+
+			if (this.commandMetadata.isSetupRequired && !this.projectHasDefaultAuthId()) {
+				showSetupAccountWarningMessage();
+				return;
+			}
+
+			return this.execute();
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				this.messageService.showErrorMessage(error.message);
+				return;
+			}
+			if (error instanceof Object && typeof error.toString === 'function') {
+				this.messageService.showErrorMessage(error.toString());
+				return;
+			}
+			this.messageService.showErrorMessage(this.translationService.getMessage(COMMAND.ERROR, this.vscodeCommandName));
 			return;
 		}
-
-		if (this.commandMetadata.isSetupRequired && !this.projectHasDefaultAuthId()) {
-			showSetupAccountWarningMessage();
-			return;
-		}
-
-		return this.execute();
 	}
 
 	private init(treeViewUri?: Uri) {
