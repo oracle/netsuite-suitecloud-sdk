@@ -40,24 +40,9 @@ export default class ImportObjects extends BaseAction {
 
 		let relativeDestinationFolder;
 		if (this.isSelectedFromContextMenu) {
-			relativeDestinationFolder = this.getDestinationFolderFromContextMenuSelection(this.activeFile);
+			relativeDestinationFolder = this.getDestinationFolderRelativePathFromContextMenuSelection(this.activeFile);
 		} else {
-			const fileSystemService = new FileSystemService();
-			const objectsFolderAbsolutePaths = fileSystemService.getFoldersFromDirectoryRecursively(
-				path.join(this.rootWorkspaceFolder, SRC_FOLDER_NAME, ApplicationConstants.FOLDERS.OBJECTS)
-			);
-
-			if (objectsFolderAbsolutePaths.length > 0) {
-				const srcFolderAbsolutePath = path.join(this.rootWorkspaceFolder, SRC_FOLDER_NAME);
-				const transformAbsolutePathsToRelativePathsFunc = (absolutePath: string) => (
-					absolutePath.replace(srcFolderAbsolutePath, '').replace(/\\/g, '/')
-				);
-				const objectsFolderRelativePaths = objectsFolderAbsolutePaths.map(transformAbsolutePathsToRelativePathsFunc)
-				objectsFolderRelativePaths.splice(0, 0, ApplicationConstants.FOLDERS.OBJECTS);
-				relativeDestinationFolder = await this.promptSelectDestinationFolder(objectsFolderRelativePaths);
-			} else {
-				relativeDestinationFolder = ApplicationConstants.FOLDERS.OBJECTS
-			}
+			relativeDestinationFolder = await this.getDestinationFolderRelativePathFromCommandPalette(this.rootWorkspaceFolder);
 		}
 
 		if (!relativeDestinationFolder) {
@@ -137,6 +122,28 @@ export default class ImportObjects extends BaseAction {
 		return actionResult;
 	}
 
+	private async getDestinationFolderRelativePathFromCommandPalette(rootWorkspaceFolder: string): Promise<string> {
+		let relativeDestinationFolder;
+		const fileSystemService = new FileSystemService();
+		const objectsFolderAbsolutePaths = fileSystemService.getFoldersFromDirectoryRecursively(
+			path.join(rootWorkspaceFolder, SRC_FOLDER_NAME, ApplicationConstants.FOLDERS.OBJECTS)
+		);
+
+		if (objectsFolderAbsolutePaths.length > 0) {
+			const srcFolderAbsolutePath = path.join(rootWorkspaceFolder, SRC_FOLDER_NAME);
+			const transformAbsolutePathsToRelativePathsFunc = (absolutePath: string) => (
+				absolutePath.replace(srcFolderAbsolutePath, '').replace(/\\/g, '/')
+			);
+			const objectsFolderRelativePaths = objectsFolderAbsolutePaths.map(transformAbsolutePathsToRelativePathsFunc)
+			objectsFolderRelativePaths.splice(0, 0, ApplicationConstants.FOLDERS.OBJECTS);
+			relativeDestinationFolder = await this.promptSelectDestinationFolder(objectsFolderRelativePaths);
+		} else {
+			relativeDestinationFolder = ApplicationConstants.FOLDERS.OBJECTS
+		}
+
+		return relativeDestinationFolder;
+	}
+
 	private async promptSelectDestinationFolder(directories: string[]): Promise<string | undefined> {
 		return window.showQuickPick(directories, {
 			canPickMany: false,
@@ -144,7 +151,7 @@ export default class ImportObjects extends BaseAction {
 		});
 	}
 
-	private getDestinationFolderFromContextMenuSelection(pathDir: string) {
+	private getDestinationFolderRelativePathFromContextMenuSelection(pathDir: string) {
 		const isDirectory = fs.lstatSync(pathDir).isDirectory();
 		const directoryName = isDirectory ? pathDir : path.dirname(pathDir);
 		return directoryName.split(this.getProjectFolderPath())[1].replace(/\\/gi, '/');
@@ -191,7 +198,7 @@ export default class ImportObjects extends BaseAction {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(fieldValue, InteractiveAnswersValidator.validateScriptId);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
-		});;
+		});
 	}
 
 	private async promptObjectTypes(): Promise<string[] | undefined> {
