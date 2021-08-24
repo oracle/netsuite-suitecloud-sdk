@@ -89,6 +89,7 @@
 	"IMPORT_OBJECTS_QUESTIONS_OVERWRITE_WITH_REFERENCED": "The selected objects and referenced files in the project will be overwritten. Do you want to continue?",
 	"IMPORT_OBJECTS_QUESTIONS_REFERENCED_FILES": "Do you want to import the SuiteScript files referenced in the objects?",
 	"IMPORT_OBJECTS_QUESTIONS_SCRIPT_ID": "To filter the list, enter the full or partial script ID. For no filter, press Enter.",
+	"IMPORT_OBJECTS_QUESTIONS_SELECT_DESTINATION_FOLDER": "Select the folder where you want to import the objects.",
 	"IMPORT_OBJECTS_QUESTIONS_SELECT_OBJECTS": "Select the object you want to import.",
 	"IMPORT_OBJECTS_QUESTIONS_SELECT_TYPES": "Select the object types you want to import, or make no selection to list all object types.",
 

@@ -81,6 +81,8 @@ async function getAuthIds(sdkPath) {
 	const operationResult = await executeWithSpinner({
 		action: sdkExecutor.execute(getAuthListContext),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.LOADING_AUTHIDS),
+	}).catch((error) => {
+		return ActionResult.Builder.withErrors([error]).build();
 	});
 	return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 		? ActionResult.Builder.withData(operationResult.data).build()

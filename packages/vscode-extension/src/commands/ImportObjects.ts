@@ -8,7 +8,17 @@ import { window } from 'vscode';
 import VsErrorConsoleLogger from '../loggers/VsErrorConsoleLogger';
 import CustomObjectService from '../service/ImportObjectService';
 import { ANSWERS, IMPORT_OBJECTS } from '../service/TranslationKeys';
-import { actionResultStatus, ApplicationConstants, InteractiveAnswersValidator, objectTypes, ProjectInfoService } from '../util/ExtensionUtil';
+import {
+	ApplicationConstants,
+	FileSystemService,
+	InteractiveAnswersValidator,
+	ProjectInfoService,
+	actionResultStatus,
+	objectTypes
+} from '../util/ExtensionUtil';
+
+const SRC_FOLDER_NAME = 'src';
+
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'importobjects';
@@ -28,9 +38,15 @@ export default class ImportObjects extends BaseAction {
 		}
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
 
-		let relativeDestinationFolder = ApplicationConstants.FOLDERS.OBJECTS;
+		let relativeDestinationFolder;
 		if (this.isSelectedFromContextMenu) {
-			relativeDestinationFolder = this.getDestinationFolder(this.activeFile);
+			relativeDestinationFolder = this.getDestinationFolderRelativePathFromContextMenuSelection(this.activeFile);
+		} else {
+			relativeDestinationFolder = await this.getDestinationFolderRelativePathFromCommandPalette(this.rootWorkspaceFolder);
+		}
+
+		if (!relativeDestinationFolder) {
+			return;
 		}
 
 		let appId: string = '';
@@ -106,7 +122,36 @@ export default class ImportObjects extends BaseAction {
 		return actionResult;
 	}
 
-	private getDestinationFolder(pathDir: string) {
+	private async getDestinationFolderRelativePathFromCommandPalette(rootWorkspaceFolder: string): Promise<string> {
+		let relativeDestinationFolder;
+		const fileSystemService = new FileSystemService();
+		const objectsFolderAbsolutePaths = fileSystemService.getFoldersFromDirectoryRecursively(
+			path.join(rootWorkspaceFolder, SRC_FOLDER_NAME, ApplicationConstants.FOLDERS.OBJECTS)
+		);
+
+		if (objectsFolderAbsolutePaths.length > 0) {
+			const srcFolderAbsolutePath = path.join(rootWorkspaceFolder, SRC_FOLDER_NAME);
+			const transformAbsolutePathsToRelativePathsFunc = (absolutePath: string) => (
+				absolutePath.replace(srcFolderAbsolutePath, '').replace(/\\/g, '/')
+			);
+			const objectsFolderRelativePaths = objectsFolderAbsolutePaths.map(transformAbsolutePathsToRelativePathsFunc)
+			objectsFolderRelativePaths.splice(0, 0, ApplicationConstants.FOLDERS.OBJECTS);
+			relativeDestinationFolder = await this.promptSelectDestinationFolder(objectsFolderRelativePaths);
+		} else {
+			relativeDestinationFolder = ApplicationConstants.FOLDERS.OBJECTS
+		}
+
+		return relativeDestinationFolder;
+	}
+
+	private async promptSelectDestinationFolder(directories: string[]): Promise<string | undefined> {
+		return window.showQuickPick(directories, {
+			canPickMany: false,
+			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_DESTINATION_FOLDER),
+		});
+	}
+
+	private getDestinationFolderRelativePathFromContextMenuSelection(pathDir: string) {
 		const isDirectory = fs.lstatSync(pathDir).isDirectory();
 		const directoryName = isDirectory ? pathDir : path.dirname(pathDir);
 		return directoryName.split(this.getProjectFolderPath())[1].replace(/\\/gi, '/');
@@ -153,7 +198,7 @@ export default class ImportObjects extends BaseAction {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(fieldValue, InteractiveAnswersValidator.validateScriptId);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
-		});;
+		});
 	}
 
 	private async promptObjectTypes(): Promise<string[] | undefined> {

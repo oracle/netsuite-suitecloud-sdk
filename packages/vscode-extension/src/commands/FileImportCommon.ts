@@ -50,7 +50,7 @@ export default abstract class FileImportCommon extends BaseAction {
 		}
 
 		const override = await window.showQuickPick(
-			[this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)],
+			[this.translationService.getMessage(ANSWERS.CONTINUE), this.translationService.getMessage(ANSWERS.CANCEL)],
 			{
 				placeHolder:
 					selectedFilesPaths.length > 1
@@ -63,7 +63,7 @@ export default abstract class FileImportCommon extends BaseAction {
 		if (!override) {
 			return;
 		}
-		if (override === this.translationService.getMessage(ANSWERS.NO)) {
+		if (override === this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_FILES.PROCESS_CANCELED));
 			return;
 		}
