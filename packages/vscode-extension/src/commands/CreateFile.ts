@@ -138,24 +138,15 @@ export default class CreateFile extends BaseAction {
 			if (!fs.lstatSync(fileToCheck).isDirectory()) {
 				fileToCheck = path.dirname(fileToCheck);
 			}
-			// filter folderChoices by the selected folder in the treeview
-			const filteredFolderChoices = validFolderChoices.filter((folder) =>
-				folder.startsWith(fileCabinetService.getFileCabinetRelativePath(fileToCheck))
-			);
-			// Autoselect folder when no subfolders in the tree
-			if (filteredFolderChoices.length === 1) {
-				return filteredFolderChoices[0];
-			}
-			// could be 0 if the selected directory is not in a valid folder, like /SuiteScripts in a SuiteApp
-			if (filteredFolderChoices.length > 1) {
-				return window.showQuickPick(filteredFolderChoices, {
-					placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
-					canPickMany: false,
-				});
+			const fileToCheckRelativePath = fileCabinetService.getFileCabinetRelativePath(fileToCheck);
+			// If the fileToCheck is any of the validFolderChoices auto-select it
+			// fileToCheck could be an invalid folder, like /SuiteScripts in a SuiteApp or /SuiteApps/wrong.app.id
+			if (validFolderChoices.includes(fileToCheckRelativePath)) {
+				return fileToCheckRelativePath;
 			}
 		}
 
-		// action not originated from context menu or filteredChoices.length === 0
+		// action not originated from context menu or fileToCheck not in the validFolderChoices
 		return window.showQuickPick(validFolderChoices, {
 			placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
 			canPickMany: false,
@@ -186,7 +177,7 @@ export default class CreateFile extends BaseAction {
 		const fileSystemService = new FileSystemService();
 		const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
 
-		const getAllowedPath = ((): string => {
+		const allowedFolder = ((): string => {
 			if (projectInfoService.isAccountCustomizationProject()) {
 				return FOLDERS.SUITESCRIPTS;
 			} else {
@@ -199,13 +190,20 @@ export default class CreateFile extends BaseAction {
 				return fileCabinetService.getFileCabinetRelativePath(applicationSuiteAppFolderAbsolutePath);
 			}
 		})();
+		const allowedFolderSegments = allowedFolder.split('/');
 
-		const isFolderNotRestricted = (folderRelativePath: string): boolean => folderRelativePath.startsWith(getAllowedPath);
+		const isValidRelativeFolder = (folderRelativePath: string): boolean => {
+			if (!folderRelativePath.startsWith(allowedFolder)) {
+				return false;
+			}
+			const folderRelativePathSegments = folderRelativePath.split('/');
+			return allowedFolderSegments.every((allowedSegment, index) => allowedSegment === folderRelativePathSegments[index]);
+		};
 		const getRelativePath = (absolutePath: string): string => fileCabinetService.getFileCabinetRelativePath(absolutePath);
 
 		const allFolders = fileSystemService.getFoldersFromDirectoryRecursively(
 			path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET)
 		);
-		return allFolders.map(getRelativePath).filter(isFolderNotRestricted);
+		return allFolders.map(getRelativePath).filter(isValidRelativeFolder);
 	}
 }

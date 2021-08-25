@@ -20,7 +20,7 @@
 
 
 	"CREATE_FILE_ERRORS_MISSING_VALID_FOLDER_FOR_SUITECRIPT_FILE": "No valid folder found for the SuiteScript file you are about to create. Run '{0}' from a valid SuiteCloud project structure. For information about the project structure, see {1}",
-	"CREATE_FILE_QUESTIONS_CHOOSE_SUITESCRIPT_TYPE": "What type of SuiteScript do you want to create?",
+	"CREATE_FILE_QUESTIONS_CHOOSE_SUITESCRIPT_TYPE": "What type of SuiteScript file do you want to create?",
 	"CREATE_FILE_QUESTIONS_ENTER_NAME": "Enter a name for the SuiteScript file.",
 	"CREATE_FILE_QUESTIONS_SELECT_FOLDER": "Select the folder for the SuiteScript file you are creating:",
 	"CREATE_FILE_QUESTIONS_SELECT_SUITESCRIPT_MODULES": "Select the SuiteScript modules you want to add to the SuiteScript file:",
