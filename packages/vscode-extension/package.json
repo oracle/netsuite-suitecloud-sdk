@@ -134,7 +134,7 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+.[a-z0-9]+.[a-z0-9]+|SuiteScripts)(/.*)*$/",
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts)(/.*)*$/",
 					"command": "suitecloud.createfile",
 					"group": "suitecloud@1"
 				},
