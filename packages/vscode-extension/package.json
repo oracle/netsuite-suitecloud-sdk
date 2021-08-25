@@ -134,18 +134,23 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
-					"command": "suitecloud.updatefile",
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+.[a-z0-9]+.[a-z0-9]+|SuiteScripts)(/.*)*$/",
+					"command": "suitecloud.createfile",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)(/.*)*$/",
+					"command": "suitecloud.importfiles",
 					"group": "suitecloud@1"
 				},
 				{
 					"when": "resource =~ //Objects(/.+)*$/",
 					"command": "suitecloud.importobjects",
-					"group": "suitecloud@2"
+					"group": "suitecloud@1"
 				},
 				{
-					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+.[a-z0-9]+.[a-z0-9]+|SuiteScripts)(/.*)*$/",
-					"command": "suitecloud.createfile",
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"command": "suitecloud.updatefile",
 					"group": "suitecloud@1"
 				}
 			]
