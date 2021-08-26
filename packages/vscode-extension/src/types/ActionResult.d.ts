@@ -8,6 +8,8 @@ export interface ActionResult<T> {
 	resultMessage: string;
 	errorMessages: string[];
 	data: T;
+	isSuccess: () => boolean;
+	[key: string]: any;
 }
 
 export interface AuthenticateActionResult extends ActionResult<undefined> {
@@ -27,13 +29,15 @@ export type AuthListData = {
 			roleName: string;
 			entityId: number;
 			companyId: string;
-		},
-		token:{
+		};
+		token: {
 			tokenId: string;
 			tokenSecret: string;
-		},
-		urls:{
+		};
+		urls: {
 			app: string;
-		}
-	},
-}
+		};
+	};
+};
+
+export type ValidationResult = { valid: false; message: string } | { valid: true };

@@ -7,12 +7,13 @@
 const { prompt } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
 const AccountFileCabinetService = require('../../../services/AccountFileCabinetService');
+const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
 const { lineBreak } = require('../../../loggers/LoggerConstants');
 const {
-	COMMAND_LISTFILES: { SELECT_FOLDER, ERROR_INTERNAL, RESTRICTED_FOLDER },
+	COMMAND_LISTFILES: { SELECT_FOLDER, RESTRICTED_FOLDER },
 } = require('../../../services/TranslationKeys');
 
 const LIST_FOLDERS = {
@@ -29,17 +30,16 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 
 		// TODO input handlers shouldn't execute actions. rework this
 		this._sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
+		this._accountFileCabinetService = new AccountFileCabinetService(
+			this._sdkPath,
+			this._executionEnvironmentContext,
+			getProjectDefaultAuthId(this._executionPath)
+		);
 	}
 
 	async getParameters(params) {
-		const listFoldersResult = await AccountFileCabinetService.getFileCabinetFolders(
-			this._sdkPath,
-			this._executionEnvironmentContext,
-			this._executionPath,
-			this._commandMetadata.name
-		);
-
-		const fileCabinetFolders = listFoldersResult.map((folder) => {
+		const accountFileCabinetFolders = await this._accountFileCabinetService.getAccountFileCabinetFolders();
+		const fileCabinetFolders = accountFileCabinetFolders.map((folder) => {
 			return {
 				name: folder.path,
 				value: folder.path,
@@ -47,18 +47,14 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 			};
 		});
 
-		try {
-			return prompt([
-				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
-					name: this._commandMetadata.options.folder.name,
-					message: NodeTranslationService.getMessage(SELECT_FOLDER),
-					default: SUITE_SCRIPTS_FOLDER,
-					choices: fileCabinetFolders,
-				},
-			]);
-		} catch (error) {
-			throw NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, lineBreak, error);
-		}
+		return prompt([
+			{
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: this._commandMetadata.options.folder.name,
+				message: NodeTranslationService.getMessage(SELECT_FOLDER),
+				default: SUITE_SCRIPTS_FOLDER,
+				choices: fileCabinetFolders,
+			},
+		]);
 	}
 };

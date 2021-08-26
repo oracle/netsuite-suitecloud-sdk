@@ -9,10 +9,10 @@ const path = require('path');
 const { FOLDERS } = require('../../../ApplicationConstants');
 const {
     showValidationResults,
-    validateFieldHasNoSpaces,
     validateArrayIsNotEmpty,
     validateFieldIsNotEmpty,
-    validateSuiteScriptFileAlreadyExists,
+    validateSuiteScriptFileDoesNotExist,
+    validateFileName
 } = require('../../../validation/InteractiveAnswersValidator');
 const {
     COMMAND_CREATEFILE: { QUESTIONS },
@@ -134,11 +134,12 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             type: CommandUtils.INQUIRER_TYPES.INPUT,
             name: ANSWER_NAMES.NAME,
             message: NodeTranslationService.getMessage(QUESTIONS.ENTER_NAME),
+            filter: (fieldValue) => fieldValue.trim(),
             validate: (fieldValue) => showValidationResults(
                 fieldValue,
                 validateFieldIsNotEmpty,
-                validateFieldHasNoSpaces,
-                (fieldValue) => validateSuiteScriptFileAlreadyExists(parentAbsolutePath, fieldValue)
+                validateFileName,
+                (fieldValue) => validateSuiteScriptFileDoesNotExist(parentAbsolutePath, fieldValue)
             ),
         };
     }

@@ -5,19 +5,19 @@
 
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { ApplicationConstants, FileUtils, ProjectInfoServive } from '../util/ExtensionUtil';
+import { ApplicationConstants, FileUtils, ProjectInfoService } from '../util/ExtensionUtil';
 import { EXTENSION_INSTALLATION } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
+import { commandsInfoMap } from '../commandsMap';
 
-const COMMAND_SETUP_ACCOUNT = 'suitecloud.setupaccount';
 const MANIFEST_FILE_FILENAME = "manifest.xml";
 const SRC_FOLDER_NAME = 'src';
 
-export default async function showSetupAccountWarningMessageIfNeeded(): Promise<void> {
+export async function showSetupAccountWarningMessageIfNeeded(): Promise<void> {
     const workspaceFolders = vscode.workspace.workspaceFolders;
 	if (workspaceFolders) {
 		const projectAbsolutePath = workspaceFolders[0].uri.fsPath;
-		const projectInfoService = new ProjectInfoServive(path.join(projectAbsolutePath, SRC_FOLDER_NAME));
+		const projectInfoService = new ProjectInfoService(path.join(projectAbsolutePath, SRC_FOLDER_NAME));
 		if (!projectInfoService.isSuiteCloudProject()) {
 			return;
 		}
@@ -34,14 +34,25 @@ export default async function showSetupAccountWarningMessageIfNeeded(): Promise<
 				)
 			);
 
-			const translationService = new VSTranslationService();
-			const runSetupAccount = await vscode.window.showWarningMessage(
-				translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
-				translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT),
-			);
-			if (runSetupAccount) {
-				vscode.commands.executeCommand(COMMAND_SETUP_ACCOUNT);
-			}
+			showSetupAccountWarningMessage();
 		}
 	}
 }
+
+export function showSetupAccountWarningMessage() {
+	const translationService = new VSTranslationService();
+	const runSetupAccountMessage = translationService.getMessage(
+		EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT
+	);
+
+	vscode.window
+		.showWarningMessage(
+			translationService.getMessage(EXTENSION_INSTALLATION.PROJECT_STARTUP.MESSAGES.PROJECT_NEEDS_SETUP_ACCOUNT),
+			runSetupAccountMessage
+		)
+		.then((result) => {
+			if (result === runSetupAccountMessage) {
+				vscode.commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
+			}
+		});
+};

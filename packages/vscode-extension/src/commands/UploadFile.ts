@@ -5,8 +5,9 @@
 import * as path from 'path';
 import { window } from 'vscode';
 import { COMMAND, UPLOAD_FILE, ERRORS, ANSWERS } from '../service/TranslationKeys';
-import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoServive, actionResultStatus } from '../util/ExtensionUtil';
+import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoService, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import { ValidationResult } from '../types/ActionResult';
 
 const COMMAND_NAME = 'uploadfile';
 
@@ -16,19 +17,18 @@ export default class UploadFile extends BaseAction {
 	}
 
 	protected async execute() {
-		const activeFile = window.activeTextEditor?.document.uri;
-		if (!activeFile) {
-			// Already checked in validate
+		if (!this.activeFile) {
+			// Already checked in validateBeforeExecute
 			return;
 		}
 
 		const cliConfigurationService = new CLIConfigurationService();
-		cliConfigurationService.initialize(this.executionPath);
+		cliConfigurationService.initialize(this.rootWorkspaceFolder);
 
 		const projectFolder = cliConfigurationService.getProjectFolder(this.cliCommandName);
 		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
-		const relativePath = activeFile.fsPath.replace(fileCabinetFolder, '');
-		const fileName = path.basename(activeFile.fsPath);
+		const relativePath = this.activeFile.replace(fileCabinetFolder, '');
+		const fileName = path.basename(this.activeFile);
 
 		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
 		const cancelMessage = this.translationService.getMessage(ANSWERS.CANCEL);
@@ -57,41 +57,24 @@ export default class UploadFile extends BaseAction {
 		return;
 	}
 
-	protected validate(): { valid: false; message: string } | { valid: true } {
-		const activeFile = window.activeTextEditor?.document.uri;
-		if (!activeFile) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_FILE),
-			};
-		} else if (!this.executionPath) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(ERRORS.NO_ACTIVE_WORKSPACE),
-			};
-		} else {
-			const projectFolderPath = this.getProjectFolderPath();
-			const projectInfoService = new ProjectInfoServive(projectFolderPath);
-			try {
-				if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
-					const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
-					if (!fileCabinetService.isUnrestrictedPath(fileCabinetService.getFileCabinetRelativePath(activeFile.fsPath))) {
-						return {
-							valid: false,
-							message: this.translationService.getMessage(UPLOAD_FILE.ERROR.UPLOAD_FILE_FOLDER_RESTRICTION),
-						};
-					}
+	protected validateBeforeExecute(): ValidationResult {
+		const superValidation = super.validateBeforeExecute();
+		if (!superValidation.valid) {
+			return superValidation;
+		}
+		const projectFolderPath = this.getProjectFolderPath();
+		const projectInfoService = new ProjectInfoService(projectFolderPath);
+		try {
+			if (projectInfoService.isAccountCustomizationProject() || projectInfoService.isSuiteAppProject()) {
+				const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
+				if (!fileCabinetService.isUnrestrictedPath(fileCabinetService.getFileCabinetRelativePath(this.activeFile))) {
+					return this.unsuccessfulValidation(this.translationService.getMessage(UPLOAD_FILE.ERROR.UPLOAD_FILE_FOLDER_RESTRICTION));
 				}
-
-				return {
-					valid: true,
-				};
-			} catch (e) {
-				return {
-					valid: false,
-					message: e.getErrorMessage(),
-				};
 			}
+
+			return this.successfulValidation();
+		} catch (e) {
+			return this.unsuccessfulValidation(e.getErrorMessage());
 		}
 	}
 }

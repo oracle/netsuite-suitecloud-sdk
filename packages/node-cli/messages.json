@@ -13,6 +13,9 @@
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_HAS_XML_FORBIDDEN_CHARACTERS": "This field contains at least one of the following forbidden characters: <, >, &, ', or \".",
 	"ANSWERS_VALIDATION_MESSAGES_FIELD_NOT_LOWER_CASE": "The {0} field contains forbidden characters. Use only lowercase letters and numbers.",
 	"ANSWERS_VALIDATION_MESSAGES_FILE_ALREADY_EXISTS": "The file already exists.",
+	"ANSWERS_VALIDATION_MESSAGES_FILENAME_CONTAINS_FORBIDDEN_CHARACTERS": "The file name cannot contain any of the following characters: \\ / : * ? \" < > |",
+	"ANSWERS_VALIDATION_MESSAGES_FILENAME_ENDS_WITH_PERIOD": "The file name cannot end with a period.",
+	"ANSWERS_VALIDATION_MESSAGES_FOLDER_ALREADY_EXISTS": "The folder {0} already exists.",
 	"ANSWERS_VALIDATION_MESSAGES_INVALID_EMAIL": "Invalid email address.",
 	"ANSWERS_VALIDATION_MESSAGES_MAX_LENGTH": "This field can only contain up to {0} characters.",
 	"ANSWERS_VALIDATION_MESSAGES_PROJECT_VERSION_FORMAT": "The project version must only contain digits and dots. Ensure it follows a pattern such as \"0.0.0\".",
@@ -117,7 +120,7 @@
 	"COMMAND_IMPORTOBJECTS_QUESTIONS_OVERWRITE_OBJECTS_AND_FILES": "All the selected objects and their referenced SuiteScript files in the project will be overwritten with the objects and files from the account. Do you want to continue?",
 	"COMMAND_IMPORTOBJECTS_WARNINGS_OVERRIDE": "The imported objects will overwrite the project objects",
 
-	"COMMAND_LISTFILES_ERROR": "Error while calling {0}. Details:{1}{2}",
+	"COMMAND_LISTFILES_GETTING_INERNAL_ERROR": "Error while getting {0}. Details:{1}{2}",
 	"COMMAND_LISTFILES_LOADING_FILES": "Loading files...",
 	"COMMAND_LISTFILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
 	"COMMAND_LISTFILES_RESTRICTED_FOLDER": "Restricted Folder",
