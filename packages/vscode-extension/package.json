@@ -46,12 +46,12 @@
 			},
 			{
 				"command": "suitecloud.createproject",
-				"title": "Create Project...",
+				"title": "Create Project",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.deploy",
-				"title": "Deploy Project...",
+				"title": "Deploy Project",
 				"category": "SuiteCloud"
 			},
 			{
@@ -71,12 +71,12 @@
 			},
 			{
 				"command": "suitecloud.listobjects",
-				"title": "List Objects...",
+				"title": "List Objects",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.setupaccount",
-				"title": "Setup Account...",
+				"title": "Setup Account",
 				"category": "SuiteCloud"
 			},
 			{
