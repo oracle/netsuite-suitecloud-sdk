@@ -144,8 +144,13 @@
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "resource =~ //Objects(/.+)*$/",
+					"when": "explorerResourceIsFolder && resource =~ //Objects(/.+)*$/",
 					"command": "suitecloud.importobjects",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "!explorerResourceIsFolder && resource =~ //Objects/.+\\.xml$/",
+					"command": "suitecloud.updateobject",
 					"group": "suitecloud@1"
 				},
 				{
