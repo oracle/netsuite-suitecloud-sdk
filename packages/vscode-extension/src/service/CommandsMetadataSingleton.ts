@@ -5,7 +5,7 @@
 import { CommandsMetadataService } from '../util/ExtensionUtil';
 
 export default class CommandsMetadataSingleton {
-    private static commandsMetadataService = new CommandsMetadataService()
+    private static commandsMetadataService = new CommandsMetadataService();
 
     public static getInstance() {
       if (!this.commandsMetadataService) {
@@ -14,5 +14,3 @@ export default class CommandsMetadataSingleton {
       return this.commandsMetadataService;
     }
 }
-
-

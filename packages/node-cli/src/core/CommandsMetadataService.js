@@ -12,7 +12,6 @@ const {
 	NODE_COMMANDS_METADATA_FILE,
 	COMMAND_GENERATORS_METADATA_FILE,
 } = require('../ApplicationConstants');
-const SDK_WRAPPER_GENERATOR = 'commands/SdkWrapperCommandGenerator';
 
 let commandsMetadataCache;
 

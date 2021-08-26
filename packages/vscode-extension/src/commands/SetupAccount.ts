@@ -2,16 +2,14 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator, ApplicationConstants } from '../util/ExtensionUtil';
+import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
-import * as fs from 'fs';
-import * as path from 'path';
 
-const COMMAND_NAME = 'manageaccounts';
+const COMMAND_NAME = 'setupaccount';
 
 enum UiOption {
 	new_authid,
@@ -21,6 +19,7 @@ enum UiOption {
 	cancel_process,
 	dismiss,
 }
+
 interface NewAuthIdItem extends QuickPickItem {
 	option: UiOption.new_authid;
 }
@@ -44,60 +43,33 @@ interface CancellationToken {
 	cancel?: (x: string) => void;
 }
 
-export default class ManageAccounts extends BaseAction {
+export default class SetupAccount extends BaseAction {
 	constructor() {
 		super(COMMAND_NAME);
 	}
 
-	protected validate(): { valid: false; message: string } | { valid: true } {
-		const superValidation = super.validate();
-		if (!superValidation.valid) {
-			return superValidation;
-		}
-
-		const projectFolder: string = this.getProjectFolderPath();
-		const manifestFileLocation: string = path.join(projectFolder, ApplicationConstants.FILES.MANIFEST_XML);
-		const manifestFileExists: boolean = fs.existsSync(manifestFileLocation);
-
-		if (manifestFileExists) {
-			return {
-				valid: true,
-			};
-		}
-
-		return {
-			valid: false,
-			message: this.translationService.getMessage(
-				MANAGE_ACCOUNTS.ERROR.MISSING_MANIFEST,
-				manifestFileLocation,
-				this.vscodeCommandName,
-				ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
-			),
-		};
-	}
-
-	protected async execute() {
+	protected async execute(): Promise<void> {
 		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
 		const actionResult: ActionResult<AuthListData> = await accountsPromise;
-
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.isSuccess()) {
 			const selected = await this.getAuthListOption(actionResult.data);
 			if (!selected) {
 				return;
 			} else if (selected.option === UiOption.new_authid) {
-				this.handleNewAuth(actionResult.data);
+				await this.handleNewAuth(actionResult.data);
 			} else if (selected.option === UiOption.select_authid) {
 				this.handleSelectedAuth(selected.authId);
 			}
 		} else {
+			this.vsConsoleLogger.error(actionResult.errorMessages[0]);
 			this.messageService.showCommandError();
 		}
 		return;
 	}
 
 	private async getAuthListOption(data: AuthListData) {
-		return await window.showQuickPick(this.getAuthOptions(data), {
+		return window.showQuickPick(this.getAuthOptions(data), {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_CREATE),
 			ignoreFocusOut: true,
 			canPickMany: false,
@@ -126,14 +98,14 @@ export default class ManageAccounts extends BaseAction {
 		if (!selected) {
 			return;
 		} else if (selected.option === UiOption.new_authid_browser) {
-			this.handleBrowserAuth(accountCredentialsList);
+			await this.handleBrowserAuth(accountCredentialsList);
 		} else if (selected.option === UiOption.new_authid_save_token) {
-			this.handleSaveToken(accountCredentialsList);
+			await this.handleSaveToken(accountCredentialsList);
 		}
 	}
 
 	private async getNewAuthIdOption() {
-		if (!this.executionPath) {
+		if (!this.rootWorkspaceFolder) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.NOT_IN_PROJECT));
 			return;
 		}
@@ -188,8 +160,8 @@ export default class ManageAccounts extends BaseAction {
 		const authenticatePromise: Promise<AuthenticateActionResult> = AuthenticationUtils.authenticateWithOauth(
 			commandParams,
 			getSdkPath(),
-			this.executionPath,
-			cancellationToken
+			this.rootWorkspaceFolder,
+			cancellationToken,
 		);
 		window
 			.showInformationMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), dismissButton, cancelButton)
@@ -204,7 +176,7 @@ export default class ManageAccounts extends BaseAction {
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER),
 			true,
-			authenticatePromise
+			authenticatePromise,
 		);
 
 		const actionResult = await authenticatePromise;
@@ -222,7 +194,7 @@ export default class ManageAccounts extends BaseAction {
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
-					InteractiveAnswersValidator.validateMaximumLength
+					InteractiveAnswersValidator.validateMaximumLength,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -230,7 +202,7 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	private async getUrl() {
-		return await window.showInputBox({
+		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
@@ -238,18 +210,15 @@ export default class ManageAccounts extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					InteractiveAnswersValidator.validateNonProductionDomain,
-					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain
+					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain,
 				);
-				if (!fieldValue) {
-					fieldValue = ApplicationConstants.DOMAIN.PRODUCTION.GENERIC_NETSUITE_DOMAIN;
-				}
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
 	}
 
 	private async getAccountId() {
-		return await window.showInputBox({
+		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_ACCOUNT_ID),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
@@ -257,7 +226,7 @@ export default class ManageAccounts extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore
+					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -265,14 +234,14 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	private async getTokenId() {
-		return await window.showInputBox({
+		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_TOKEN_ID),
 			ignoreFocusOut: true,
 			password: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -280,14 +249,14 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	private async getTokenSecret() {
-		return await window.showInputBox({
+		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_TOKEN_SECRET),
 			ignoreFocusOut: true,
 			password: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -330,11 +299,11 @@ export default class ManageAccounts extends BaseAction {
 			commandParams.url = url;
 		}
 
-		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.executionPath);
+		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.rootWorkspaceFolder);
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA),
 			true,
-			saveTokenPromise
+			saveTokenPromise,
 		);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
@@ -348,8 +317,8 @@ export default class ManageAccounts extends BaseAction {
 					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
 					actionResult.accountInfo.companyName,
 					actionResult.accountInfo.roleName,
-					actionResult.authId
-				)
+					actionResult.authId,
+				),
 			);
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
 		} else {
@@ -361,13 +330,13 @@ export default class ManageAccounts extends BaseAction {
 	}
 
 	private handleSelectedAuth(authId: string) {
-		if (!this.executionPath) {
+		if (!this.rootWorkspaceFolder) {
 			this.messageService.showErrorMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.NOT_IN_PROJECT));
 			return;
 		}
 
 		try {
-			AuthenticationUtils.setDefaultAuthentication(this.executionPath, authId);
+			AuthenticationUtils.setDefaultAuthentication(this.rootWorkspaceFolder, authId);
 			this.vsConsoleLogger.result(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 		} catch (e) {

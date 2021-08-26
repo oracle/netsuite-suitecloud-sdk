@@ -55,7 +55,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 	async execute(params) {
 		try {
 			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
-				return ActionResult.Builder.withErrors(NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP)).build();
+				return ActionResult.Builder.withErrors([NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP)]).build();
 			}
 
 			if(this._runInInteractiveMode === false) {

@@ -40,6 +40,11 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.createfile",
+				"title": "Create SuiteScript File",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.createproject",
 				"title": "Create Project...",
 				"category": "SuiteCloud"
@@ -55,8 +60,8 @@
 				"category": "SuiteCloud"
 			},
 			{
-				"command": "suitecloud.importfile",
-				"title": "Import File from Account",
+				"command": "suitecloud.importobjects",
+				"title": "Import Objects",
 				"category": "SuiteCloud"
 			},
 			{
@@ -75,8 +80,13 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.updatefile",
+				"title": "Update File from Account",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.updateobject",
-				"title": "Update Single Object with Account Object",
+				"title": "Update Object from Account",
 				"category": "SuiteCloud"
 			},
 			{
@@ -98,6 +108,18 @@
 				"linux": "alt+d"
 			},
 			{
+				"command": "suitecloud.importfiles",
+				"key": "ctrl+alt+f",
+				"mac": "ctrl+alt+f",
+				"linux": "ctrl+alt+f"
+			},
+			{
+				"command": "suitecloud.importobjects",
+				"key": "ctrl+alt+o",
+				"mac": "ctrl+alt+cmd+o",
+				"linux": "ctrl+alt+o"
+			},
+			{
 				"command": "suitecloud.updateobject",
 				"key": "ctrl+alt+u",
 				"mac": "cmd+alt+u",
@@ -112,8 +134,23 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
-					"command": "suitecloud.importfile",
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts)(/.*)*$/",
+					"command": "suitecloud.createfile",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)(/.*)*$/",
+					"command": "suitecloud.importfiles",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "resource =~ //Objects(/.+)*$/",
+					"command": "suitecloud.importobjects",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"command": "suitecloud.updatefile",
 					"group": "suitecloud@1"
 				}
 			]
