@@ -73,7 +73,7 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	setupaccount: {
 		vscodeCommandId: 'suitecloud.setupaccount',
 		cliCommandName: 'account:setup',
-		vscodeCommandName: 'Setup Account',
+		vscodeCommandName: 'Set Up Account',
 	},
 	updatefile: {
 		vscodeCommandId: 'suitecloud.updatefile',

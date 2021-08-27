@@ -76,7 +76,7 @@
 			},
 			{
 				"command": "suitecloud.setupaccount",
-				"title": "Setup Account",
+				"title": "Set Up Account",
 				"category": "SuiteCloud"
 			},
 			{
