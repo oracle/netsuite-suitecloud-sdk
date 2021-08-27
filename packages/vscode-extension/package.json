@@ -46,12 +46,12 @@
 			},
 			{
 				"command": "suitecloud.createproject",
-				"title": "Create Project...",
+				"title": "Create Project",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.deploy",
-				"title": "Deploy Project...",
+				"title": "Deploy Project",
 				"category": "SuiteCloud"
 			},
 			{
@@ -71,12 +71,12 @@
 			},
 			{
 				"command": "suitecloud.listobjects",
-				"title": "List Objects...",
+				"title": "List Objects",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.setupaccount",
-				"title": "Setup Account...",
+				"title": "Set Up Account",
 				"category": "SuiteCloud"
 			},
 			{
@@ -144,8 +144,13 @@
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "resource =~ //Objects(/.+)*$/",
+					"when": "explorerResourceIsFolder && resource =~ //Objects(/.+)*$/",
 					"command": "suitecloud.importobjects",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "!explorerResourceIsFolder && resource =~ //Objects/.+\\.xml$/",
+					"command": "suitecloud.updateobject",
 					"group": "suitecloud@1"
 				},
 				{
