@@ -24,20 +24,6 @@ See more details about installation in <a href="https://system.netsuite.com/app/
 
 ## <font size="6"> <span style="color:gray"> Getting Started </font> </span>
 
-### <font size="5"> <span style="color:gray"> SuiteCloud Extension for Visual Studio Code User Interface </font> </span>
-Refer to the image below to get familiar with the SuiteCloud Extension for Visual Studio Code user interface.
-
-![Overview](resources/VSCodeUiOverview.png)
-
-
-| Element | Description |
-| --- | --- |
-| 1 | Project structure |
-| 2 | Editor area |
-| 3 | Progress view |
-| 4 | SDF logs |
-| 5 | SuiteCloud notifications |
-
 ### <font size="5"> <span style="color:gray"> How to Trigger the Command Palette </font>
 Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. The Command Palette allows you to perform several actions in a straightforward way, improving the user experience to the most. To trigger it, use the shortcut, which is Ctrl+Shift+P by default, or click **View** > **Command Palette**. 
 
