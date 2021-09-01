@@ -47,7 +47,7 @@ Interact through the Command Palette to use the SuiteCloud Extension for Visual 
 To start using the SuiteCloud Extension for Visual Studio Code, you first need to set up the NetSuite accounts you want to customize. The account set up includes adding an account to the extension and setting an account as default. 
 
 To add an account, follow these steps:
-1. Click Ctrl+Shift=P to open the Command Palette.
+1. Click Ctrl+Shift+P to open the Command Palette.
 2. Enter **SuiteCloud** and from the dropdown list select **SuiteCloud: Set Up Account**.
 3. From the dropdown list, select **New authentication ID**.
 4. From the dropdown list, select one of the following options:
@@ -60,7 +60,7 @@ To add an account, follow these steps:
     * Enter the token secret of the TBA token you previously issued in NetSuite.
 Your account is successfully set up.
 To set an account as default for a project, follow these steps:
-1. Click Ctrl+Shift=P to open the Command Palette.
+1. Click Ctrl+Shift+P to open the Command Palette.
 2. Enter **SuiteCloud** and from the dropdown list select **SuiteCloud: Set Up Account**.
 3. From the dropdown list, select the authentication ID (authID) of the account you want to set as default.
 The selected account is set as default for the project.
