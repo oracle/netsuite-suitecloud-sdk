@@ -239,7 +239,7 @@ export default class ImportObjects extends BaseAction {
 	private async promptOverwrite(includeReferencedFiles: string) {
 		return window.showQuickPick([this.translationService.getMessage(ANSWERS.CONTINUE), this.translationService.getMessage(ANSWERS.CANCEL)], {
 			placeHolder:
-				includeReferencedFiles === this.translationService.getMessage(ANSWERS.NO)
+				includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES)
 					? this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE_WITH_REFERENCED)
 					: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE),
 			canPickMany: false,
