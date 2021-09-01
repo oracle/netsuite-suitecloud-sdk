@@ -86,7 +86,7 @@
 	"IMPORT_OBJECTS_QUESTIONS_APP_ID": "Press Enter to use '{0}', or enter your application ID.",
 	"IMPORT_OBJECTS_QUESTIONS_FILTER_APP_ID": "Do you want to import objects from a specific SuiteApp?",
 	"IMPORT_OBJECTS_QUESTIONS_OVERWRITE": "The selected objects in the project will be overwritten.",
-	"IMPORT_OBJECTS_QUESTIONS_OVERWRITE_WITH_REFERENCED": "The selected objects and referenced files in the project will be overwritten.",
+	"IMPORT_OBJECTS_QUESTIONS_OVERWRITE_WITH_REFERENCED": "The selected objects and their referenced files in the project will be overwritten.",
 	"IMPORT_OBJECTS_QUESTIONS_REFERENCED_FILES": "Do you want to import the SuiteScript files referenced in the objects?",
 	"IMPORT_OBJECTS_QUESTIONS_SCRIPT_ID": "To filter the list, enter the full or partial script ID. For no filter, press Enter.",
 	"IMPORT_OBJECTS_QUESTIONS_SELECT_DESTINATION_FOLDER": "Select the folder where you want to import the objects.",
