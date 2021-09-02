@@ -34,20 +34,21 @@ To start using the SuiteCloud Extension for Visual Studio Code, you first need t
 
 To add an account, follow these steps:
 1. Click Ctrl+Shift+P to open the Command Palette.
-2. Enter **SuiteCloud** and from the dropdown list select **SuiteCloud: Set Up Account**.
+2. Enter **SuiteCloud** and from the dropdown list, select **SuiteCloud: Set Up Account**.
 3. From the dropdown list, select **New authentication ID**.
 4. From the dropdown list, select one of the following options:
     * Browser-based authentication
     * Save a TBA token issued in NetSuite
 5. In the text field, enter an authentication ID.
 6. If you selected the browser-based authentication, press Enter to confirm your NetSuite domain and follow the instructions in the browser prompt. If you selected to save an issued TBA token, do the following:
-    * Enter your account ID
+    * Enter your account ID.
     * Enter the token ID of the TBA token you previously issued in NetSuite.
     * Enter the token secret of the TBA token you previously issued in NetSuite.
-Your account is successfully set up.
+Your account is successfully set up. </br>
+
 To set an account as default for a project, follow these steps:
 1. Click Ctrl+Shift+P to open the Command Palette.
-2. Enter **SuiteCloud** and from the dropdown list select **SuiteCloud: Set Up Account**.
+2. Enter **SuiteCloud** and from the dropdown list, select **SuiteCloud: Set Up Account**.
 3. From the dropdown list, select the authentication ID (authID) of the account you want to set as default.
 The selected account is set as default for the project.
 
@@ -63,7 +64,7 @@ The following SuiteCloud commands are available through the Command Palette:
 | --- | --- | --- |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147339580.html" rel="noopener noreferrer" target=blank>Add Dependency References to the Manifest</a>|Adds the defined dependencies to the Manifest file.| Ctrl+Shift+Alt+A |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147328227.html" rel="noopener noreferrer" target=blank>Create SuiteScript Files</a>|Creates a SuiteScript file based on a script type template that also includes any modules you select to extend NetSuite and customize, search for, and process your data. 
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SDF file-based projects to develop ACPs or SuiteApps projects for internal use or for commercial distribution.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SDF file-based projects to develop ACPs or SuiteApp projects for internal use or for commercial distribution.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Generates a deploy.xml file that deploys all supported files in the **FileCabinet** folder and all custom NetSuite objects in the **Objects** folder. | Ctrl+Alt+D |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports a file from a NetSuite account to your project.| Ctrl+Alt+F |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162971830372.html" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports objects from a NetSuite account to your project.| Ctrl+Alt+O |
@@ -72,7 +73,7 @@ The following SuiteCloud commands are available through the Command Palette:
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_160147414469.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported **FileCabinet** folder.| Ctrl+Alt+U |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_160147382361.html" rel="noopener noreferrer" target=blank>Update Single Object with Account Object</a>|Updates your project objects with the objects from your account if objects share the same script ID and belong to the same object type.| Ctrl+Shift+U |
 
-To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>NetSuite's Help Center</a>.
+To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
 
 ## <font size="6"> <span style="color:gray"> Using SuiteCloud Extension for Visual Studio Code with SuiteCloud CLI for Node.js </font> </span>
 SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
