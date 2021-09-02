@@ -10,7 +10,7 @@ The following software is required to work with SuiteCloud Extension for Visual 
 - Node.js version 14.16.0 LTS
 - Oracle JDK version 11
 
-Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Prerequisites</a>.
+Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Requirements for SuiteCloud Extension for Visual Studio Code</a>.
 
 ## <font size="6"> <span style="color:gray"> Installing SuiteCloud Extension for Visual Studio Code </font> </span>
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
@@ -62,11 +62,11 @@ The following SuiteCloud commands are available through the Command Palette:
 | Command | Description | Shortcut |
 | --- | --- | --- |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147339580.html" rel="noopener noreferrer" target=blank>Add Dependency References to the Manifest</a>|Adds the defined dependencies to the Manifest file.| Ctrl+Shift+Alt+A |
-|[`Create SuiteScript Files`]|Creates a SuiteScript file based on a script type template that also includes any modules you select to extend NetSuite and customize, search for, and process your data. 
-|[`Create Project`]|Creates SDF file-based projects to develop ACPs or SuiteApps projects for internal use or for commercial distribution.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147328227.html" rel="noopener noreferrer" target=blank>Create SuiteScript Files</a>|Creates a SuiteScript file based on a script type template that also includes any modules you select to extend NetSuite and customize, search for, and process your data. 
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SDF file-based projects to develop ACPs or SuiteApps projects for internal use or for commercial distribution.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Generates a deploy.xml file that deploys all supported files in the **FileCabinet** folder and all custom NetSuite objects in the **Objects** folder. | Ctrl+Alt+D |
-|[`Import Files`]|Imports a file from a NetSuite account to your project.| Ctrl+Alt+F |
-|[`Import Objects`]|Imports objects from a NetSuite account to your project.| Ctrl+Alt+O |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports a file from a NetSuite account to your project.| Ctrl+Alt+F |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162971830372.html" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports objects from a NetSuite account to your project.| Ctrl+Alt+O |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_160163955513.html" rel="noopener noreferrer" target=blank>List Objects</a>|Lists the SDF custom objects existing in your account.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147609118.html" rel="noopener noreferrer" target=blank>Set Up Account</a>|Adds the NetSuite accounts you want to customize. It also allows setting an account as default for a project.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_160147414469.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported **FileCabinet** folder.| Ctrl+Alt+U |
