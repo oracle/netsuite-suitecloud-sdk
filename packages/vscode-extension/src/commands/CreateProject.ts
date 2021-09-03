@@ -44,6 +44,7 @@ export default class CreateProject extends BaseAction {
 			this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName),
 			this.translationService.getMessage(CREATE_PROJECT.MESSAGES.CREATING_PROJECT),
 			runSuiteCloudCommandPromise,
+			false,
 			false
 		);
 		const actionResult = await runSuiteCloudCommandPromise;
