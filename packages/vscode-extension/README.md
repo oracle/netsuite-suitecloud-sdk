@@ -9,13 +9,14 @@ Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/a
 The following software is required to work with SuiteCloud Extension for Visual Studio Code:
 - Node.js version 14.16.0 LTS
 - Oracle JDK version 11
+- VS Code version 1.57 or higher
 
 Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Requirements for SuiteCloud Extension for Visual Studio Code</a>.
 
 ## <font size="6"> <span style="color:gray"> Installing SuiteCloud Extension for Visual Studio Code </font> </span>
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
 
-1. Launch Visual Studio Code and select the **Extensions** tab.
+1. Launch Visual Studio Code and select the **Extensions** icon in the Activity Bar.
 2. In the search field, enter **SuiteCloud Extension for Visual Studio Code**.
 3. Click **Install**.
 4. Restart Visual Studio Code after installation.
@@ -25,18 +26,18 @@ See more details about installation in <a href="https://system.netsuite.com/app/
 ## <font size="6"> <span style="color:gray"> Getting Started </font> </span>
 
 ### <font size="5"> <span style="color:gray"> How to Trigger the Command Palette </font>
-Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. The Command Palette allows you to perform several actions in a straightforward way, improving the user experience to the most. To trigger it, use the shortcut, which is Ctrl+Shift+P by default, or click **View** > **Command Palette**. 
+Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. To trigger it, use the shortcut, which is Ctrl+Shift+P by default, or click **View** > **Command Palette**. 
 
 <p align="center"><a href="#"><img src="resources/CommandPalette.png" alt="Command Palette" width="500" height="600"></a></p>
 
 ### <font size="5"> <span style="color:gray"> Setting Up an Account </font> </span>
-To start using the SuiteCloud Extension for Visual Studio Code, you first need to set up the NetSuite accounts you want to customize. The account set up includes adding an account to the extension and setting an account as default. 
+To start using your NetSuite accounts with the SuiteCloud Extension for Visual Studio Code, you first need to set them up. The account set up includes adding an account to the extension and setting it as default. 
 
 To add an account, follow these steps:
-1. Click Ctrl+Shift+P to open the Command Palette.
+1. Open the Command Palette.
 2. Enter **SuiteCloud** and from the dropdown list, select **SuiteCloud: Set Up Account**.
-3. From the dropdown list, select **New authentication ID**.
-4. From the dropdown list, select one of the following options:
+3. Once the dropdown list is shown, select **New authentication ID**.
+4. Once the dropdown list is shown, select one of the following options:
     * Browser-based authentication
     * Save a TBA token issued in NetSuite
 5. In the text field, enter an authentication ID.
@@ -47,7 +48,7 @@ To add an account, follow these steps:
 Your account is successfully set up. </br>
 
 To set an account as default for a project, follow these steps:
-1. Click Ctrl+Shift+P to open the Command Palette.
+1. Open the Command Palette.
 2. Enter **SuiteCloud** and from the dropdown list, select **SuiteCloud: Set Up Account**.
 3. From the dropdown list, select the authentication ID (authID) of the account you want to set as default.
 The selected account is set as default for the project.
@@ -65,13 +66,15 @@ The following SuiteCloud commands are available through the Command Palette:
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147339580.html" rel="noopener noreferrer" target=blank>Add Dependency References to the Manifest</a>|Adds the defined dependencies to the Manifest file.| Ctrl+Shift+Alt+A |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147328227.html" rel="noopener noreferrer" target=blank>Create SuiteScript Files</a>|Creates a SuiteScript file based on a script type template that also includes any modules you select to extend NetSuite and customize, search for, and process your data. 
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SDF file-based projects to develop ACPs or SuiteApp projects for internal use or for commercial distribution.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Generates a deploy.xml file that deploys all supported files in the **FileCabinet** folder and all custom NetSuite objects in the **Objects** folder. | Ctrl+Alt+D |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports a file from a NetSuite account to your project.| Ctrl+Alt+F |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Deploys the folder containing the project. The project folder is zipped before deployment including only the files and folders referenced in the deploy.xml file. | Ctrl+Alt+D |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports files from a NetSuite account to your project. Note that you cannot import files from a SuiteApp.| Ctrl+Alt+F |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162971830372.html" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports objects from a NetSuite account to your project.| Ctrl+Alt+O |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_160163955513.html" rel="noopener noreferrer" target=blank>List Objects</a>|Lists the SDF custom objects existing in your account.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_.html" rel="noopener noreferrer" target=blank>List Files</a>|Lists the files existing in the File Cabinet of your account.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_163067396066.html" rel="noopener noreferrer" target=blank>List Objects</a>|Lists the SDF custom objects existing in your account.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147609118.html" rel="noopener noreferrer" target=blank>Set Up Account</a>|Adds the NetSuite accounts you want to customize. It also allows setting an account as default for a project.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=163067510539.html" rel="noopener noreferrer" target=blank>Update File from Account</a>.|Overwrites the selected file in the project with the matching file in an account.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_160147414469.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported **FileCabinet** folder.| Ctrl+Alt+U |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_160147382361.html" rel="noopener noreferrer" target=blank>Update Single Object with Account Object</a>|Updates your project objects with the objects from your account if objects share the same script ID and belong to the same object type.| Ctrl+Shift+U |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=subsect_160147382361.html" rel="noopener noreferrer" target=blank>Update Object from Account</a>|Overwrites the custom objects in the project with the custom objects in an account.| Ctrl+Shift+U |
 
 To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
 
