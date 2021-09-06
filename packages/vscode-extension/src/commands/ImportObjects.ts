@@ -252,7 +252,7 @@ export default class ImportObjects extends BaseAction {
 				this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST_SEARCH));
 				return;
 			}
-			this.messageService.showCommandInfo(this.translationService.getMessage(IMPORT_OBJECTS.FINISHED));
+			this.messageService.showCommandInfo();
 		} else {
 			this.messageService.showCommandError();
 		}
