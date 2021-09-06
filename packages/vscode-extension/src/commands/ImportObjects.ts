@@ -252,7 +252,15 @@ export default class ImportObjects extends BaseAction {
 				this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST_SEARCH));
 				return;
 			}
-			this.messageService.showCommandInfo();
+
+			const data = actionResult.data;
+			if (data.successfulImports.length === 0
+				|| (data.successfulImports.length > 0 && (data.failedImports.length > 0 || data.errorImports.length > 0))
+			) {
+				this.messageService.showCommandWarning();
+			} else {
+				this.messageService.showCommandInfo();
+			}
 		} else {
 			this.messageService.showCommandError();
 		}
