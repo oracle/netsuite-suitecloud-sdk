@@ -37,7 +37,7 @@ export default class ListFilesService {
 		const accountFileCabinetService = new AccountFileCabinetService(getSdkPath(), this.executionEnvironmentContext, defaultAuthId);
 		const listFoldersPromise = accountFileCabinetService.getAccountFileCabinetFolders();
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
-		this.messageService.showStatusBarMessage(statusBarMessage, listFoldersPromise);
+		this.messageService.showStatusBarMessage(statusBarMessage, true, listFoldersPromise);
 
 		const fileCabinetFolders = await listFoldersPromise;
 
@@ -79,15 +79,12 @@ export default class ListFilesService {
 		let message = this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FILES);
 		const filesChoices = files.map((file) => ({ label: file, detail: path.basename(file) }));
 		while (!finish) {
-			const selectedFiles = await vscode.window.showQuickPick(
-				filesChoices,
-				{
-					ignoreFocusOut: true,
-					placeHolder: message,
-					canPickMany: true,
-					onDidSelectItem: (item: vscode.QuickPickItem) => vscode.window.setStatusBarMessage(item.label, 5000),
-				}
-			);
+			const selectedFiles = await vscode.window.showQuickPick(filesChoices, {
+				ignoreFocusOut: true,
+				placeHolder: message,
+				canPickMany: true,
+				onDidSelectItem: (item: vscode.QuickPickItem) => vscode.window.setStatusBarMessage(item.label, 5000),
+			});
 			if (!selectedFiles || selectedFiles.length > 0) {
 				finish = true;
 				return selectedFiles;
@@ -108,7 +105,7 @@ export default class ListFilesService {
 		const accountFileCabinetService = new AccountFileCabinetService(getSdkPath(), this.executionEnvironmentContext, defaultAuthId);
 		const listFilesPromise = accountFileCabinetService.listFiles(selectedFolder);
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LISTING);
-		this.messageService.showStatusBarMessage(statusBarMessage, listFilesPromise);
+		this.messageService.showStatusBarMessage(statusBarMessage, true, listFilesPromise);
 
 		const actionResult = await listFilesPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS) {
