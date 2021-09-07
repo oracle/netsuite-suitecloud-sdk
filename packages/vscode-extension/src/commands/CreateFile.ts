@@ -177,9 +177,11 @@ export default class CreateFile extends BaseAction {
 		const fileSystemService = new FileSystemService();
 		const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
 
-		const allowedFolder = ((): string => {
+		const allowedFolders = ((): string[] => {
 			if (projectInfoService.isAccountCustomizationProject()) {
-				return FOLDERS.SUITESCRIPTS;
+				const suitescriptFolders = FOLDERS.SUITESCRIPTS;
+				const webSiteHostingFolders = FOLDERS.WEB_SITE_HOSTING_FILES + FOLDERS.SEPARATOR;
+				return [suitescriptFolders, webSiteHostingFolders];
 			} else {
 				const applicationSuiteAppFolderAbsolutePath = path.join(
 					projectFolderPath,
@@ -187,23 +189,21 @@ export default class CreateFile extends BaseAction {
 					FOLDERS.SUITEAPPS,
 					projectInfoService.getApplicationId()
 				);
-				return fileCabinetService.getFileCabinetRelativePath(applicationSuiteAppFolderAbsolutePath);
+				return [fileCabinetService.getFileCabinetRelativePath(applicationSuiteAppFolderAbsolutePath)];
 			}
 		})();
-		const allowedFolderSegments = allowedFolder.split('/');
+		var validFolders: string[] = [];
+		for (const allowedFolder of allowedFolders) {
+			const isValidRelativeFolder = (folderRelativePath: string): boolean => {
+				return folderRelativePath.match(allowedFolder) != null;
+			};
+			const getRelativePath = (absolutePath: string): string => fileCabinetService.getFileCabinetRelativePath(absolutePath);
 
-		const isValidRelativeFolder = (folderRelativePath: string): boolean => {
-			if (!folderRelativePath.startsWith(allowedFolder)) {
-				return false;
-			}
-			const folderRelativePathSegments = folderRelativePath.split('/');
-			return allowedFolderSegments.every((allowedSegment, index) => allowedSegment === folderRelativePathSegments[index]);
-		};
-		const getRelativePath = (absolutePath: string): string => fileCabinetService.getFileCabinetRelativePath(absolutePath);
-
-		const allFolders = fileSystemService.getFoldersFromDirectoryRecursively(
-			path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET)
-		);
-		return allFolders.map(getRelativePath).filter(isValidRelativeFolder);
+			const allFolders = fileSystemService.getFoldersFromDirectoryRecursively(
+				path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET)
+			);
+			validFolders = validFolders.concat(allFolders.map(getRelativePath).filter(isValidRelativeFolder));
+		}
+		return validFolders;
 	}
 }
