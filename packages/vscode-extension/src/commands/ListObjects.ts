@@ -38,7 +38,7 @@ export default class ListObjects extends BaseAction {
 			return;
 		}
 		if (selectedObjectTypes.length !== 0) {
-			commandArgs.types = selectedObjectTypes
+			commandArgs.type = selectedObjectTypes
 		}
 
 		const scriptIdFilter = await this.promptFilterScriptIdQuestion();
