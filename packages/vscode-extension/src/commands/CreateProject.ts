@@ -224,6 +224,7 @@ export default class CreateProject extends BaseAction {
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(CREATE_PROJECT.QUESTIONS.ENTER_PROJECT_NAME),
 			validateInput: (fieldValue) => {
+				fieldValue = fieldValue.trim();
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
