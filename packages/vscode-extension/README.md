@@ -29,7 +29,9 @@ See more details about installation in <a href="https://system.netsuite.com/app/
 In order for the extension to detect the working SDF project and run the commands against it, you first need to select a file from the current workspace and make it active in the editor.
 
 ### <font size="5"> <span style="color:gray"> How to Trigger the Command Palette </font>
-Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. To trigger it, use the shortcut, which is Ctrl+Shift+P by default, or click **View** > **Command Palette**. 
+Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. To trigger it, click **View** > **Command Palette** or use the relevant shortcut:
+* Ctrl+Shift+P if you are using Windows.
+* Cmd+Shift+P if you are using MacOS. 
 
 <p align="center"><a href="#"><img src="resources/CommandPalette.png" alt="Command Palette" width="500" height="600"></a></p>
 
