@@ -101,6 +101,10 @@ module.exports = class CreateProjectAction extends BaseAction {
 				throwValidationException(validationErrors, false, this._commandMetadata);
 			}
 
+			if (this._fileSystemService.folderExists(projectAbsolutePath) && !params[COMMAND_OPTIONS.OVERWRITE]) {
+				throw NodeTranslationService.getMessage(MESSAGES.OVERWRITE_ERROR, projectAbsolutePath);
+			}
+
 			const projectType = params[COMMAND_OPTIONS.TYPE];
 
 			const createProjectParams = {
@@ -111,7 +115,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 				...(params[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
 				...(projectType === ApplicationConstants.PROJECT_SUITEAPP && {
 					publisherid: params[COMMAND_OPTIONS.PUBLISHER_ID],
-					projectid: params[COMMAND_OPTIONS.PROJECT_ID],
+					projectid: params[COMMAND_OPTIONS.PROJECT_ID],	
 					projectversion: params[COMMAND_OPTIONS.PROJECT_VERSION],
 				}),
 			};
@@ -124,7 +128,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 				.build();
 
 			const createProjectAction = new Promise(
-				this.createProject(executionContextCreateProject, params, projectAbsolutePath, projectFolderName, manifestFilePath),
+				this.createProject(executionContextCreateProject, params, projectAbsolutePath, projectFolderName, manifestFilePath)
 			);
 
 			const createProjectActionData = await createProjectAction;
@@ -132,21 +136,21 @@ module.exports = class CreateProjectAction extends BaseAction {
 			const projectName = params[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = this._getIncludeUnitTestingBoolean(params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]);
 			//fixing project name for not interactive output before building results
-			const commandParameters = {...createProjectParams, [`${COMMAND_OPTIONS.PROJECT_NAME}`]: params[COMMAND_OPTIONS.PROJECT_NAME] };
+			const commandParameters = { ...createProjectParams, [`${COMMAND_OPTIONS.PROJECT_NAME}`]: params[COMMAND_OPTIONS.PROJECT_NAME] };
 
 			return createProjectActionData.operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
-					.withResultMessage(createProjectActionData.operationResult.resultMessage)
-					.withProjectType(projectType)
-					.withProjectName(projectName)
-					.withProjectDirectory(createProjectActionData.projectDirectory)
-					.withUnitTesting(includeUnitTesting)
-					.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
-					.withCommandParameters(commandParameters)
-					.build()
+						.withResultMessage(createProjectActionData.operationResult.resultMessage)
+						.withProjectType(projectType)
+						.withProjectName(projectName)
+						.withProjectDirectory(createProjectActionData.projectDirectory)
+						.withUnitTesting(includeUnitTesting)
+						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
+						.withCommandParameters(commandParameters)
+						.build()
 				: CreateProjectActionResult.Builder.withErrors(createProjectActionData.operationResult.errorMessages)
-					.withCommandParameters(commandParameters)
-					.build();
+						.withCommandParameters(commandParameters)
+						.build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}
@@ -185,7 +189,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 						params[COMMAND_OPTIONS.TYPE],
 						params[COMMAND_OPTIONS.PROJECT_NAME],
 						params[COMMAND_OPTIONS.PROJECT_VERSION],
-						projectAbsolutePath,
+						projectAbsolutePath
 					);
 
 					this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
@@ -211,7 +215,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 	_getIncludeUnitTestingBoolean(includeUnitTestingParam) {
 		let includeUnitTesting = includeUnitTestingParam;
 		if (typeof includeUnitTesting === 'string') {
-			includeUnitTesting = (includeUnitTesting === 'true');
+			includeUnitTesting = includeUnitTesting === 'true';
 		}
 
 		return includeUnitTesting;
@@ -325,16 +329,16 @@ module.exports = class CreateProjectAction extends BaseAction {
 				showValidationResults(
 					answers[COMMAND_OPTIONS.PUBLISHER_ID],
 					(optionValue) => validateNotUndefined(optionValue, COMMAND_OPTIONS.PUBLISHER_ID),
-					validatePublisherId,
-				),
+					validatePublisherId
+				)
 			);
 
 			validationErrors.push(
 				showValidationResults(
 					answers[COMMAND_OPTIONS.PROJECT_VERSION],
 					(optionValue) => validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_VERSION),
-					validateProjectVersion,
-				),
+					validateProjectVersion
+				)
 			);
 
 			validationErrors.push(
@@ -343,8 +347,8 @@ module.exports = class CreateProjectAction extends BaseAction {
 					(optionValue) => validateNotUndefined(optionValue, COMMAND_OPTIONS.PROJECT_ID),
 					validateFieldIsNotEmpty,
 					validateFieldHasNoSpaces,
-					(optionValue) => validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, optionValue),
-				),
+					(optionValue) => validateFieldIsLowerCase(COMMAND_OPTIONS.PROJECT_ID, optionValue)
+				)
 			);
 		}
 
