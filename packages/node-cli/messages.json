@@ -63,7 +63,7 @@
 	"COMMAND_CREATEPROJECT_MESSAGES_SETUP_TEST_ENV": "Setting up the testing environment...",
 
 	"COMMAND_DEPLOY_ERRORS_APPLY_INSTALLATION_PREFERENCES_IN_ACP": "Installation preferences cannot be applied in an Account Customizaton Project.",
-	"COMMAND_DEPLOY_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the --accountspecficvalue option. Enter either WARNING or ERROR.",
+	"COMMAND_DEPLOY_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
 	"COMMAND_DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
 	"COMMAND_DEPLOY_QUESTIONS_APPLY_INSTALLATION_PREFERENCES": "Do you want to apply installation preferences?",
 	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the process",
@@ -75,7 +75,7 @@
 	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_INSTALLATION_PREFERENCES": "The \"{0}\" project has been deployed without applying installation preferences.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_INSTALLATION_PREFERENCES_REASON": "Installation preferences were not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create the two files in order to apply installation preferences.\nFor more information about installation preferences, see {0}",
 	"COMMAND_DEPLOY_MESSAGES_PREVIEWING": "Previewing project \"{0}\" with authID \"{1}\"...",
-	"COMMAND_DEPLOY_ERRORS_VALIDATE_AND_DRYRUN_OPTIONS_PASSED": "The \"--validate\" and \"-–dryrun\" options are mutually exclusive. Use one of the two at a time.",
+	"COMMAND_DEPLOY_ERRORS_VALIDATE_AND_DRYRUN_OPTIONS_PASSED": "The \"--validate\" and \"--dryrun\" options are mutually exclusive. Use one of the two at a time.",
 
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Something went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
