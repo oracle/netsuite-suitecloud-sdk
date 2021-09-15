@@ -11,6 +11,7 @@ export const objectTypes: {
 	name: string;
 	value: { name: string; type: string; prefix: string; hasRelatedFiles: boolean; relatedFiles?: { type: string }[] };
 }[] = require('@oracle/suitecloud-cli/src/metadata/ObjectTypesMetadata');
+objectTypes.sort((a, b) => (a.value.type > b.value.type) ? 1 : -1);
 
 export const actionResultStatus: {
 	 SUCCESS: string;
@@ -53,4 +54,5 @@ export const InteractiveAnswersValidator: {
 	validateNonProductionDomain(fieldValue: string): boolean;
 	validateSuiteScriptFileDoesNotExist(parentFolderPath: string, filename:string): string|boolean;
 	validateFolderDoesNotExist(path: string): boolean;
+	validateFileName(fileName: string): boolean;
 } = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');

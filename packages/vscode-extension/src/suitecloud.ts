@@ -16,6 +16,7 @@ import ImportObjects from './commands/ImportObjects';
 import ListFiles from './commands/ListFiles';
 import ListObjects from './commands/ListObjects';
 import SetupAccount from './commands/SetupAccount';
+import UpdateFile from './commands/UpdateFile';
 import UpdateObject from './commands/UpdateObject';
 import UploadFile from './commands/UploadFile';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
@@ -42,12 +43,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.createfile', new CreateFile()),
 		register('suitecloud.createproject', new CreateProject()),
 		register('suitecloud.deploy', new Deploy()),
-		register('suitecloud.importfile', new ImportFiles()),
 		register('suitecloud.importfiles', new ImportFiles()),
 		register('suitecloud.importobjects', new ImportObjects()),
 		register('suitecloud.listfiles', new ListFiles()),
 		register('suitecloud.listobjects', new ListObjects()),
 		register('suitecloud.setupaccount', new SetupAccount()),
+		register('suitecloud.updatefile', new UpdateFile()),
 		register('suitecloud.updateobject', new UpdateObject()),
 		register('suitecloud.uploadfile', new UploadFile())
 	);

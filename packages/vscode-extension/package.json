@@ -12,7 +12,7 @@
 	"publisher": "Oracle",
 	"license": "UPL-1.0",
 	"private": true,
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"icon": "resources/pluginIcon_dark.png",
 	"repository": {
 		"type": "git",
@@ -46,22 +46,17 @@
 			},
 			{
 				"command": "suitecloud.createproject",
-				"title": "Create Project...",
+				"title": "Create Project",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.deploy",
-				"title": "Deploy Project...",
+				"title": "Deploy Project",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.importfiles",
 				"title": "Import Files",
-				"category": "SuiteCloud"
-			},
-			{
-				"command": "suitecloud.importfile",
-				"title": "Import File from Account",
 				"category": "SuiteCloud"
 			},
 			{
@@ -76,17 +71,22 @@
 			},
 			{
 				"command": "suitecloud.listobjects",
-				"title": "List Objects...",
+				"title": "List Objects",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.setupaccount",
-				"title": "Setup Account...",
+				"title": "Set Up Account",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.updatefile",
+				"title": "Update File from Account",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.updateobject",
-				"title": "Update Single Object with Account Object",
+				"title": "Update Object from Account",
 				"category": "SuiteCloud"
 			},
 			{
@@ -134,18 +134,28 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/",
-					"command": "suitecloud.importfile",
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts)(/.*)*$/",
+					"command": "suitecloud.createfile",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "resource =~ //Objects(/.+)*$/",
-					"command": "suitecloud.importobjects",
-					"group": "suitecloud@2"
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)(/.*)*$/",
+					"command": "suitecloud.importfiles",
+					"group": "suitecloud@1"
 				},
 				{
-					"when": "resource =~ //FileCabinet/(SuiteApps/.+|SuiteScripts(/.*)*)$/",
-					"command": "suitecloud.createfile",
+					"when": "explorerResourceIsFolder && resource =~ //Objects(/.+)*$/",
+					"command": "suitecloud.importobjects",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "!explorerResourceIsFolder && resource =~ //Objects/.+\\.xml$/",
+					"command": "suitecloud.updateobject",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"command": "suitecloud.updatefile",
 					"group": "suitecloud@1"
 				}
 			]
@@ -157,7 +167,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.2.1"
+		"@oracle/suitecloud-cli": "^1.3.0"
 	},
 	"devDependencies": {
 		"@types/glob": "7.1.3",

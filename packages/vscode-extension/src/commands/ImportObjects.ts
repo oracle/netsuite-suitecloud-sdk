@@ -7,8 +7,18 @@ import * as path from 'path';
 import { window } from 'vscode';
 import VsErrorConsoleLogger from '../loggers/VsErrorConsoleLogger';
 import CustomObjectService from '../service/ImportObjectService';
-import { ANSWERS, ERRORS, IMPORT_OBJECTS } from '../service/TranslationKeys';
-import { actionResultStatus, ApplicationConstants, InteractiveAnswersValidator, objectTypes, ProjectInfoService } from '../util/ExtensionUtil';
+import { ANSWERS, IMPORT_OBJECTS } from '../service/TranslationKeys';
+import {
+	ApplicationConstants,
+	FileSystemService,
+	InteractiveAnswersValidator,
+	ProjectInfoService,
+	actionResultStatus,
+	objectTypes
+} from '../util/ExtensionUtil';
+
+const SRC_FOLDER_NAME = 'src';
+
 import BaseAction from './BaseAction';
 
 const COMMAND_NAME = 'importobjects';
@@ -28,9 +38,14 @@ export default class ImportObjects extends BaseAction {
 		}
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
 
-		const relativeDestinationFolder = this.getDestinationFolder(this.activeFile);
-		if (!relativeDestinationFolder.startsWith(ApplicationConstants.FOLDERS.OBJECTS)) {
-			this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.INCORRECT_FOLDER));
+		let relativeDestinationFolder;
+		if (this.isSelectedFromContextMenu) {
+			relativeDestinationFolder = this.getDestinationFolderRelativePathFromContextMenuSelection(this.activeFile);
+		} else {
+			relativeDestinationFolder = await this.getDestinationFolderRelativePathFromCommandPalette(this.rootWorkspaceFolder);
+		}
+
+		if (!relativeDestinationFolder) {
 			return;
 		}
 
@@ -76,16 +91,20 @@ export default class ImportObjects extends BaseAction {
 		if (!selectedScriptIds) {
 			return;
 		}
-		const includeReferencedFiles = await this.promptIncludeReferencedFiles();
-		if (!includeReferencedFiles) {
-			return;
+
+		let includeReferencedFiles = this.translationService.getMessage(ANSWERS.NO);
+		if (projectInfoService.isAccountCustomizationProject()) {
+			includeReferencedFiles = await this.promptIncludeReferencedFiles();
+			if (!includeReferencedFiles) {
+				return;
+			}
 		}
 
 		const overwrite = await this.promptOverwrite(includeReferencedFiles);
 		if (!overwrite) {
 			return;
 		}
-		if (overwrite === this.translationService.getMessage(ANSWERS.NO)) {
+		if (overwrite === this.translationService.getMessage(ANSWERS.CANCEL)) {
 			this.messageService.showInformationMessage(this.translationService.getMessage(IMPORT_OBJECTS.PROCESS_CANCELED));
 			return;
 		}
@@ -103,15 +122,43 @@ export default class ImportObjects extends BaseAction {
 		return actionResult;
 	}
 
-	private getDestinationFolder(pathDir: string) {
+	private async getDestinationFolderRelativePathFromCommandPalette(rootWorkspaceFolder: string): Promise<string> {
+		let relativeDestinationFolder;
+		const fileSystemService = new FileSystemService();
+		const objectsFolderAbsolutePaths = fileSystemService.getFoldersFromDirectoryRecursively(
+			path.join(rootWorkspaceFolder, SRC_FOLDER_NAME, ApplicationConstants.FOLDERS.OBJECTS)
+		);
+
+		if (objectsFolderAbsolutePaths.length > 0) {
+			const srcFolderAbsolutePath = path.join(rootWorkspaceFolder, SRC_FOLDER_NAME);
+			const transformAbsolutePathsToRelativePathsFunc = (absolutePath: string) => (
+				absolutePath.replace(srcFolderAbsolutePath, '').replace(/\\/g, '/')
+			);
+			const objectsFolderRelativePaths = objectsFolderAbsolutePaths.map(transformAbsolutePathsToRelativePathsFunc)
+			objectsFolderRelativePaths.splice(0, 0, ApplicationConstants.FOLDERS.OBJECTS);
+			relativeDestinationFolder = await this.promptSelectDestinationFolder(objectsFolderRelativePaths);
+		} else {
+			relativeDestinationFolder = ApplicationConstants.FOLDERS.OBJECTS
+		}
+
+		return relativeDestinationFolder;
+	}
+
+	private async promptSelectDestinationFolder(directories: string[]): Promise<string | undefined> {
+		return window.showQuickPick(directories, {
+			canPickMany: false,
+			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_DESTINATION_FOLDER),
+		});
+	}
+
+	private getDestinationFolderRelativePathFromContextMenuSelection(pathDir: string) {
 		const isDirectory = fs.lstatSync(pathDir).isDirectory();
 		const directoryName = isDirectory ? pathDir : path.dirname(pathDir);
-		const destinationFolder = directoryName.split(this.getProjectFolderPath())[1].replace(/\\/gi, '/');
-		return destinationFolder;
+		return directoryName.split(this.getProjectFolderPath())[1].replace(/\\/gi, '/');
 	}
 
 	private async promptFilterAppId() {
-		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+		return window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.FILTER_APP_ID),
 			canPickMany: false,
 		});
@@ -141,7 +188,7 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	private async promptScriptIdFilter() {
-		let scriptId = await window.showInputBox({
+		return window.showInputBox({
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SCRIPT_ID),
 			validateInput: (fieldValue) => {
@@ -152,12 +199,10 @@ export default class ImportObjects extends BaseAction {
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
-
-		return scriptId;
 	}
 
 	private async promptObjectTypes(): Promise<string[] | undefined> {
-		return await window.showQuickPick(
+		return window.showQuickPick(
 			objectTypes.map((objectType) => objectType.value.type),
 			{
 				placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.SELECT_TYPES),
@@ -185,16 +230,16 @@ export default class ImportObjects extends BaseAction {
 	}
 
 	private async promptIncludeReferencedFiles() {
-		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+		return window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
 			placeHolder: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.REFERENCED_FILES),
 			canPickMany: false,
 		});
 	}
 
 	private async promptOverwrite(includeReferencedFiles: string) {
-		return await window.showQuickPick([this.translationService.getMessage(ANSWERS.YES), this.translationService.getMessage(ANSWERS.NO)], {
+		return window.showQuickPick([this.translationService.getMessage(ANSWERS.CONTINUE), this.translationService.getMessage(ANSWERS.CANCEL)], {
 			placeHolder:
-				includeReferencedFiles === this.translationService.getMessage(ANSWERS.NO)
+				includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES)
 					? this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE_WITH_REFERENCED)
 					: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE),
 			canPickMany: false,
@@ -207,7 +252,15 @@ export default class ImportObjects extends BaseAction {
 				this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST_SEARCH));
 				return;
 			}
-			this.messageService.showCommandInfo(this.translationService.getMessage(IMPORT_OBJECTS.FINISHED));
+
+			const data = actionResult.data;
+			if (data.successfulImports.length === 0
+				|| (data.successfulImports.length > 0 && (data.failedImports.length > 0 || data.errorImports.length > 0))
+			) {
+				this.messageService.showCommandWarning();
+			} else {
+				this.messageService.showCommandInfo();
+			}
 		} else {
 			this.messageService.showCommandError();
 		}

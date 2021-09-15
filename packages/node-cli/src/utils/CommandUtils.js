@@ -1,7 +1,7 @@
 /*
-** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const assert = require('assert');
@@ -13,7 +13,7 @@ class CommandUtils {
 			INPUT: 'input',
 			LIST: 'list',
 			PASSWORD: 'password',
-			PASSWORD_MASK: '*'
+			PASSWORD_MASK: '*',
 		};
 	}
 
@@ -37,6 +37,13 @@ class CommandUtils {
 
 	quoteString(string) {
 		return `"${string}"`;
+	}
+
+	unquoteString(stringValue) {
+		if (stringValue.length > 1 && stringValue.startsWith('"') && stringValue.endsWith('"')) {
+			return stringValue.slice(1, -1);
+		}
+		return stringValue;
 	}
 }
 

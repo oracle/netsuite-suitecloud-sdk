@@ -33,21 +33,18 @@ export default class CreateFile extends BaseAction {
 			return superValidation;
 		}
 
-		const folderChoices = this.getFolderChoices();
-		if (folderChoices.length === 0) {
-			return {
-				valid: false,
-				message: this.translationService.getMessage(
+		const validFolderChoices = this.getValidFolderChoices();
+		if (validFolderChoices.length === 0) {
+			return this.unsuccessfulValidation(
+				this.translationService.getMessage(
 					CREATE_FILE.ERRORS.MISSING_VALID_FOLDER_FOR_SUITECRIPT_FILE,
 					this.vscodeCommandName,
 					ApplicationConstants.LINKS.INFO.PROJECT_STRUCTURE
-				),
-			};
+				)
+			);
 		}
 
-		return {
-			valid: true,
-		};
+		return this.successfulValidation();
 	}
 
 	protected async execute(): Promise<void> {
@@ -105,7 +102,7 @@ export default class CreateFile extends BaseAction {
 			return;
 		}
 
-		args.path = path.join(selectedFolder, fileName);
+		args.path = path.join(selectedFolder, fileName.trim());
 
 		return args;
 	}
@@ -131,7 +128,7 @@ export default class CreateFile extends BaseAction {
 	}
 
 	private async promptFolderSelection(): Promise<string | undefined> {
-		const folderChoices = this.getFolderChoices();
+		const validFolderChoices = this.getValidFolderChoices();
 
 		let fileToCheck = this.activeFile;
 
@@ -141,22 +138,16 @@ export default class CreateFile extends BaseAction {
 			if (!fs.lstatSync(fileToCheck).isDirectory()) {
 				fileToCheck = path.dirname(fileToCheck);
 			}
-			// filter folderChoices by the selected folder in the treeview
-			const filteredFolderChoices = folderChoices.filter((folder) =>
-				folder.startsWith(fileCabinetService.getFileCabinetRelativePath(fileToCheck))
-			);
-			// Autoselect folder when no subfolders in the tree
-			if (filteredFolderChoices.length === 1) {
-				return filteredFolderChoices[0];
+			const fileToCheckRelativePath = fileCabinetService.getFileCabinetRelativePath(fileToCheck);
+			// If the fileToCheck is any of the validFolderChoices auto-select it
+			// fileToCheck could be an invalid folder, like /SuiteScripts in a SuiteApp or /SuiteApps/wrong.app.id
+			if (validFolderChoices.includes(fileToCheckRelativePath)) {
+				return fileToCheckRelativePath;
 			}
-			return window.showQuickPick(filteredFolderChoices, {
-				placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
-				canPickMany: false,
-			});
 		}
 
-		// action not originated from context menu
-		return window.showQuickPick(folderChoices, {
+		// action not originated from context menu or fileToCheck not in the validFolderChoices
+		return window.showQuickPick(validFolderChoices, {
 			placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.SELECT_FOLDER),
 			canPickMany: false,
 		});
@@ -168,10 +159,11 @@ export default class CreateFile extends BaseAction {
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(CREATE_FILE.QUESTIONS.ENTER_NAME),
 			validateInput: (fieldValue: string) => {
+				fieldValue = fieldValue.trim();
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscoreExtended,
+					InteractiveAnswersValidator.validateFileName,
 					(filename: string) => InteractiveAnswersValidator.validateSuiteScriptFileDoesNotExist(absoluteParentFolder, filename)
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
@@ -179,13 +171,13 @@ export default class CreateFile extends BaseAction {
 		});
 	}
 
-	private getFolderChoices(): string[] {
+	private getValidFolderChoices(): string[] {
 		const projectFolderPath = this.getProjectFolderPath();
 		const projectInfoService = new ProjectInfoService(projectFolderPath);
 		const fileSystemService = new FileSystemService();
 		const fileCabinetService = new FileCabinetService(path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET));
 
-		const getAllowedPath = ((): string => {
+		const allowedFolder = ((): string => {
 			if (projectInfoService.isAccountCustomizationProject()) {
 				return FOLDERS.SUITESCRIPTS;
 			} else {
@@ -198,13 +190,20 @@ export default class CreateFile extends BaseAction {
 				return fileCabinetService.getFileCabinetRelativePath(applicationSuiteAppFolderAbsolutePath);
 			}
 		})();
+		const allowedFolderSegments = allowedFolder.split('/');
 
-		const isFolderNotRestricted = (folderRelativePath: string): boolean => folderRelativePath.startsWith(getAllowedPath);
+		const isValidRelativeFolder = (folderRelativePath: string): boolean => {
+			if (!folderRelativePath.startsWith(allowedFolder)) {
+				return false;
+			}
+			const folderRelativePathSegments = folderRelativePath.split('/');
+			return allowedFolderSegments.every((allowedSegment, index) => allowedSegment === folderRelativePathSegments[index]);
+		};
 		const getRelativePath = (absolutePath: string): string => fileCabinetService.getFileCabinetRelativePath(absolutePath);
 
 		const allFolders = fileSystemService.getFoldersFromDirectoryRecursively(
 			path.join(projectFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET)
 		);
-		return allFolders.map(getRelativePath).filter(isFolderNotRestricted);
+		return allFolders.map(getRelativePath).filter(isValidRelativeFolder);
 	}
 }
