@@ -7,13 +7,12 @@ Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/a
 
 ## <font size="6"> <span style="color:gray"> Installation Prerequisites </font> </span>
 The following software is required to work with SuiteCloud Extension for Visual Studio Code:
-- Node.js version 14.16.0 LTS
 - Oracle JDK version 11
 - VS Code version 1.57 or higher
 
 Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Requirements for SuiteCloud Extension for Visual Studio Code</a>.
 
-## <font size="6"> <span style="color:gray"> Installing SuiteCloud Extension for Visual <br/> Studio Code </font> </span>
+## <font size="6"> <span style="color:gray"> Installing SuiteCloud Extension for Visual </br> Studio Code </font> </span>
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
 
 1. Launch Visual Studio Code and select the **Extensions** icon in the Activity Bar.
