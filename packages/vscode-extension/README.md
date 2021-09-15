@@ -1,6 +1,6 @@
 <p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo.png"></a></p>
 
-# <font size="7"> <span style="color:gray"> **SuiteCloud Extension for Visual Studio Code** </font> </span>
+# <font size="7"> <span style="color:gray"> **SuiteCloud Extension for Visual </br> Studio Code** </font> </span>
 SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. The SuiteCloud Extension for Visual Studio Code allows you to customize your SuiteCloud Development Framework (SDF) projects for NetSuite. The available SDF projects include **SuiteApp projects** — self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects** — intended for customizations on accounts you own, such as your production, development, and sandbox accounts.
 
 Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_156026236161.html" rel="noopener noreferrer" target=blank>Getting Started with SuiteCloud SDK</a> and <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4702656040.html" rel="noopener noreferrer" target=blank>SuiteCloud Development Framework Architecture</a>.
@@ -13,7 +13,7 @@ The following software is required to work with SuiteCloud Extension for Visual 
 
 Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Requirements for SuiteCloud Extension for Visual Studio Code</a>.
 
-## <font size="6"> <span style="color:gray"> Installing SuiteCloud Extension for Visual Studio Code </font> </span>
+## <font size="6"> <span style="color:gray"> Installing SuiteCloud Extension for Visual Studio <br/> Code </font> </span>
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
 
 1. Launch Visual Studio Code and select the **Extensions** icon in the Activity Bar.
@@ -83,7 +83,7 @@ The following SuiteCloud commands are available through the Command Palette:
 
 To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
 
-## <font size="6"> <span style="color:gray"> Using SuiteCloud Extension for Visual Studio Code with SuiteCloud CLI for Node.js </font> </span>
+## <font size="6"> <span style="color:gray"> Using SuiteCloud Extension for Visual Studio </br> Code with SuiteCloud CLI for Node.js </font> </span>
 SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
 
 ## <font size="6"> <span style="color:gray"> Contributing </font> </span>
