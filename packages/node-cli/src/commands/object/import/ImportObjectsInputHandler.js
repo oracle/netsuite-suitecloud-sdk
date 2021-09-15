@@ -58,7 +58,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(options.sdkPath);
+		this._sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
@@ -301,12 +301,10 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	}
 
 	_arrangeAnswersForImportObjects(answers) {
-		if (!answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
-			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
-		} else if (answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].length > 1) {
+		if (!answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE] || answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].length > 1) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = 'ALL';
 		}
-		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map((el) => el.scriptId).join(' ');
+		answers[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.OBJECTS_SELECTED].map((el) => el.scriptId);
 
 		return answers;
 	}

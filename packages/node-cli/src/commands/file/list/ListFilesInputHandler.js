@@ -6,16 +6,14 @@
 
 const { prompt } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const AccountFileCabinetService = require('../../../services/AccountFileCabinetService');
+const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
-const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const { lineBreak } = require('../../../loggers/LoggerConstants');
 const {
-	COMMAND_LISTFILES: { LOADING_FOLDERS, SELECT_FOLDER, RESTRICTED_FOLDER, ERROR_INTERNAL },
+	COMMAND_LISTFILES: { SELECT_FOLDER, RESTRICTED_FOLDER },
 } = require('../../../services/TranslationKeys');
 
 const LIST_FOLDERS = {
@@ -31,51 +29,32 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 		super(options);
 
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(options.sdkPath);
+		this._sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
+		this._accountFileCabinetService = new AccountFileCabinetService(
+			this._sdkPath,
+			this._executionEnvironmentContext,
+			getProjectDefaultAuthId(this._executionPath)
+		);
 	}
 
 	async getParameters(params) {
-		const executionContext = SdkExecutionContext.Builder.forCommand(LIST_FOLDERS.COMMAND)
-			.integration()
-			.addParam(LIST_FOLDERS.OPTIONS.AUTH_ID, getProjectDefaultAuthId(this._executionPath))
-			.build();
-
-		let listFoldersResult;
-		try {
-			listFoldersResult = await executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContext),
-				message: NodeTranslationService.getMessage(LOADING_FOLDERS),
-			});
-		} catch (error) {
-			throw NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, lineBreak, error);
-		}
-
-		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-			throw listFoldersResult.errorMessages;
-		}
-
-		try {
-			return prompt([
-				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
-					name: this._commandMetadata.options.folder.name,
-					message: NodeTranslationService.getMessage(SELECT_FOLDER),
-					default: SUITE_SCRIPTS_FOLDER,
-					choices: this._getFileCabinetFolders(listFoldersResult),
-				},
-			]);
-		} catch (error) {
-			throw NodeTranslationService.getMessage(ERROR_INTERNAL, this._commandMetadata.name, lineBreak, error);
-		}
-	}
-
-	_getFileCabinetFolders(listFoldersResponse) {
-		return listFoldersResponse.data.map((folder) => {
+		const accountFileCabinetFolders = await this._accountFileCabinetService.getAccountFileCabinetFolders();
+		const fileCabinetFolders = accountFileCabinetFolders.map((folder) => {
 			return {
 				name: folder.path,
 				value: folder.path,
 				disabled: folder.isRestricted ? NodeTranslationService.getMessage(RESTRICTED_FOLDER) : '',
 			};
 		});
+
+		return prompt([
+			{
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: this._commandMetadata.options.folder.name,
+				message: NodeTranslationService.getMessage(SELECT_FOLDER),
+				default: SUITE_SCRIPTS_FOLDER,
+				choices: fileCabinetFolders,
+			},
+		]);
 	}
 };

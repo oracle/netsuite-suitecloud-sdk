@@ -14,10 +14,10 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const CLIException = require('../../../CLIException');
-const { LINKS: { INFO } } = require('../../../ApplicationConstants');
-
 const {
+	DOMAIN,
 	FILES: { MANIFEST_XML },
+	LINKS: { INFO },
 } = require('../../../ApplicationConstants');
 
 const {
@@ -36,13 +36,13 @@ const {
 const { lineBreak } = require('../../../loggers/LoggerConstants');
 
 const ANSWERS = {
-	DEVELOPMENT_MODE_URL: 'developmentModeUrl',
 	SELECTED_AUTH_ID: 'selected_auth_id',
 	AUTH_MODE: 'AUTH_MODE',
 	NEW_AUTH_ID: 'NEW_AUTH_ID',
 	SAVE_TOKEN_ACCOUNT_ID: 'account',
 	SAVE_TOKEN_ID: 'saveTokenId',
 	SAVE_TOKEN_SECRET: 'saveTokenSecret',
+	URL: 'url',
 };
 
 const AUTH_MODE = {
@@ -57,7 +57,6 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkPath = options.sdkPath;
 		this._sdkExecutor = new SdkExecutor(this._sdkPath);
 	}
 
@@ -94,14 +93,26 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			choices.push(new Separator());
 			choices.push(new Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 			authIDs.forEach((authID) => {
-				const authentication = authIDActionResult.data[authID];
-				const isDevLabel = authentication.developmentMode
-					? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, authentication.urls.app)
+				const accountCredentials = authIDActionResult.data[authID];
+				const isNotProductionUrl =
+					!accountCredentials.urls &&
+					!accountCredentials.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+					!accountCredentials.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+				const notProductionLabel = isNotProductionUrl
+					? NodeTranslationService.getMessage(
+							QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION,
+							accountCredentials.urls.app
+					  )
 					: '';
-				const accountInfo = `${authentication.accountInfo.companyName} [${authentication.accountInfo.roleName}]`;
+				const accountInfo = `${accountCredentials.accountInfo.companyName} [${accountCredentials.accountInfo.roleName}]`;
 				choices.push({
-					name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID, authID, accountInfo, isDevLabel),
-					value: { authId: authID, accountInfo: authentication.accountInfo },
+					name: NodeTranslationService.getMessage(
+						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
+						authID,
+						accountInfo,
+						notProductionLabel
+					),
+					value: { authId: authID, accountInfo: accountCredentials.accountInfo },
 				});
 			});
 			choices.push(new Separator());
@@ -123,14 +134,13 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	}
 
 	async getParamsCreateNewAuthId(params, authIDActionResult) {
-		let developmentModeUrlAnswer;
-		const developmentMode = params && params.dev !== undefined && params.dev;
-		if (developmentMode) {
-			developmentModeUrlAnswer = await prompt([
+		let urlAnswer;
+		if (params && params.dev !== undefined && params.dev) {
+			urlAnswer = await prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.INPUT,
-					name: ANSWERS.DEVELOPMENT_MODE_URL,
-					message: NodeTranslationService.getMessage(QUESTIONS.DEVELOPMENT_MODE_URL),
+					name: ANSWERS.URL,
+					message: NodeTranslationService.getMessage(QUESTIONS.URL),
 					filter: (fieldValue) => fieldValue.trim(),
 					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
 				},
@@ -198,7 +208,6 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		]);
 
 		const executeActionContext = {
-			dev: developmentMode,
 			createNewAuthentication: true,
 			authid: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
 			mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
@@ -206,16 +215,18 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			tokenid: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
 			tokensecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
 		};
-		if (developmentModeUrlAnswer) {
-			executeActionContext.url = developmentModeUrlAnswer[ANSWERS.DEVELOPMENT_MODE_URL];
+		if (urlAnswer) {
+			executeActionContext.url = urlAnswer[ANSWERS.URL];
 		}
 		return executeActionContext;
 	}
 
 	_checkWorkingDirectoryContainsValidProject() {
 		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			const errorMessage = NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name)
-				+ lineBreak + NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
+			const errorMessage =
+				NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name) +
+				lineBreak +
+				NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
 			throw new CLIException(errorMessage);
 		}
 	}

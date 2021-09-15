@@ -7,7 +7,7 @@
 const path = require('path');
 const BaseAction = require('../../base/BaseAction');
 const { saveToken } = require('../../../utils/AuthenticationUtils');
-const { PROD_ENVIRONMENT_ADDRESS } = require('../../../ApplicationConstants');
+const { DOMAIN: { PRODUCTION: {GENERIC_NETSUITE_DOMAIN} } } = require('../../../ApplicationConstants');
 const CommandOptionsValidator = require('../../../core/CommandOptionsValidator');
 const ValidationErrorsFormatter = require('../../../utils/ValidationErrorsFormatter');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
@@ -23,7 +23,6 @@ const { LINKS: { INFO } } = require('../../../ApplicationConstants');
 const COMMAND = {
 	OPTIONS: {
 		URL: 'url',
-		DEV: 'dev',
 		ACCOUNT: 'account',
 	},
 	SDK_COMMAND: 'authenticate',
@@ -73,13 +72,10 @@ module.exports = class AccountSaveTokenAction extends BaseAction {
 		if (validationErrors.length > 0) {
 			throw new CLIException(ValidationErrorsFormatter.formatErrors(validationErrors));
 		}
-		// If url is system.netsuite.com, we must not pass it to the sdk. If it's anything else, we must add developmentMode flag
-		if (params[COMMAND.OPTIONS.URL] === PROD_ENVIRONMENT_ADDRESS) {
+		if (params[COMMAND.OPTIONS.URL] === GENERIC_NETSUITE_DOMAIN) {
 			delete params[COMMAND.OPTIONS.URL];
-		} else if (params[COMMAND.OPTIONS.URL]) {
-			params[COMMAND.OPTIONS.DEV] = true;
 		}
-		return await saveToken(params, this._sdkPath, this._executionPath);
+		return await saveToken(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
 
 	}
 

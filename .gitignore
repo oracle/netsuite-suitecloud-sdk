@@ -6,3 +6,6 @@
 
 # transpiled .js files
 packages/**/dist
+
+# coverage reports
+**/coverage/**

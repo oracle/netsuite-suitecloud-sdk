@@ -11,6 +11,7 @@ const {
 	ACCOUNT_TYPE,
 	COMMAND_MANAGE_ACCOUNT: { QUESTIONS_CHOICES },
 } = require('../services/TranslationKeys');
+const ApplicationConstants = require('../ApplicationConstants');
 
 const SANDBOX_ACCOUNT_ID_REGEX_PATTERN = '.+_SB\\d*$';
 const RELEASE_PREVIEW_ACCOUNT_ID_REGEX_PATTERN = '.+_RP\\d*$';
@@ -41,18 +42,21 @@ function _getAccountType(accountId) {
 	return NodeTranslationService.getMessage(ACCOUNT_TYPE.PRODUCTION);
 }
 
-function getListItemString(authID, accountCredential) {
-	const isDevLabel = accountCredential.developmentMode
-		? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, accountCredential.urls.app)
+function getListItemString(authID, accountCredentials) {
+	const isNotProductionUrl =
+		accountCredentials.urls &&
+		!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+		!accountCredentials.urls.app.match(ApplicationConstants.DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+	const notProductionLabel = isNotProductionUrl
+		? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION, accountCredentials.urls.app)
 		: '';
-	const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`;
-	const accountCredentialString = NodeTranslationService.getMessage(
+	const accountInfo = `${accountCredentials.accountInfo.roleName} @ ${accountCredentials.accountInfo.companyName}`;
+	return NodeTranslationService.getMessage(
 		QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
 		authID,
 		accountInfo,
-		isDevLabel
+		notProductionLabel
 	);
-	return accountCredentialString;
 }
 
 module.exports = { getInfoString, getListItemString };

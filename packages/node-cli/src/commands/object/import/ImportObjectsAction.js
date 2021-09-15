@@ -67,8 +67,9 @@ module.exports = class ImportObjectsAction extends BaseAction {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}
 
+		const flags = [];
+		let commandParams = {};
 		try {
-			const flags = [];
 			let scriptIdArray;
 			if (this._runInInteractiveMode) {
 				if (params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS] !== undefined && !params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS]) {
@@ -76,7 +77,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 					delete params[ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS];
 				}
 
-				scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
+				scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID];
 			} else {
 				if (params[COMMAND_FLAGS.EXCLUDE_FILES]) {
 					flags.push(COMMAND_FLAGS.EXCLUDE_FILES);
@@ -90,7 +91,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 						scriptIdArray = (await this._getAllScriptIdsForObjectType(params)).map((el) => el.scriptId);
 					}
 				} else {
-					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID].split(' ');
+					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID];
 				}
 
 				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
@@ -103,13 +104,13 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				errorImports: [],
 			};
 			let arrayOfPromises = [];
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 			const numberOfSdkCalls = Math.ceil(scriptIdArray.length / NUMBER_OF_SCRIPTS);
 			const numberOfSteps = Math.ceil(numberOfSdkCalls / MAX_PARALLEL_EXECUTIONS);
 
 			for (let i = 0; i < numberOfSdkCalls; i++) {
 				const partialScriptIds = scriptIdArray.slice(i * NUMBER_OF_SCRIPTS, (i + 1) * NUMBER_OF_SCRIPTS);
 				const partialScriptIdsString = partialScriptIds.join(' ');
-				const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 				const partialExecutionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 					.integration()
 					.addFlags(flags)
@@ -117,7 +118,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 					.addParam(ANSWERS_NAMES.SCRIPT_ID, partialScriptIdsString)
 					.build();
 
-				const sdkExecutor = new SdkExecutor(this._sdkPath);
+				const sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
 				arrayOfPromises.push(
 					sdkExecutor
 						.execute(partialExecutionContextForImportObjects)
@@ -136,10 +137,23 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				action: Promise.all(arrayOfPromises),
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_OBJECTS, numberOfSteps, numberOfSteps),
 			});
+
+
+			//adding all the scripts id to the params
+			commandParams = {...sdkParams, [ANSWERS_NAMES.SCRIPT_ID]: scriptIdArray.join(' ')}
+
 			// At this point, the OperationResult will never be an error. It's handled before
-			return ActionResult.Builder.withData(operationResultData).withResultMessage(operationResultData.resultMessage).build();
+			return ActionResult.Builder.withData(operationResultData)
+				.withResultMessage(operationResultData.resultMessage)
+				.withCommandParameters(commandParams)
+				.withCommandFlags(flags)
+				.build();
+
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			return ActionResult.Builder.withErrors([error])
+				.withCommandParameters(commandParams)
+				.withCommandFlags(flags)
+				.build();
 		}
 	}
 

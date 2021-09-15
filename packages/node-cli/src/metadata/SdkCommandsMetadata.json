@@ -164,16 +164,6 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
-			"applycontentprotection": {
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps. ***This option will be removed in NetSuite 2021.2. Use the \"applyinstallprefs\" option starting from NetSuite 2021.1.***",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
-			},
 			"applyinstallprefs": {
 				"name": "applyinstallprefs",
 				"option": "applyinstallprefs",
@@ -233,6 +223,55 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
+			}
+		}
+	},
+	"file:create": {
+		"name": "file:create",
+		"sdkCommand": "createfile",
+		"usage": "",
+		"description": "Creates a SuiteScript file.",
+		"isSetupRequired": false,
+		"options": {
+			"type": {
+				"name": "type",
+				"option": "type",
+				"description": "Specifies the type of the SuiteScript file that you want to create. For example, \"ClientScript\"",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "ClientScript",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"module": {
+				"name": "module",
+				"option": "module",
+				"description": "Specifies the SuiteScript modules you want to add to the SuiteScript file. For example, \"N\/record\"",
+				"mandatory": false,
+				"type": "MULTIPLE",
+				"usage": "N/record [...]",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"path": {
+				"name": "path",
+				"option": "path",
+				"description": "Specify the File Cabinet path of the SuiteScript file to create. For example, \"/SuiteScripts/ClientScipt.js\".",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "\"/SuiteScripts/ClientScript.js\"",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:/project/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
 			}
 		}
 	},
@@ -515,7 +554,7 @@
 		"name": "project:package",
 		"sdkCommand": "package",
 		"usage": "",
-		"description": "Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file, and applying local validation.",
+		"description": "Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file.",
 		"isSetupRequired": false,
 		"options": {
 			"destination": {
@@ -644,16 +683,6 @@
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
-			},
-			"applycontentprotection": {
-				"name": "applycontentprotection",
-				"option": "applycontentprotection",
-				"description": "Apply the content protection settings from the hiding.xml and locking.xml files. It only applies to SuiteApps. ***This option will be removed in NetSuite 2021.2. Use the \"applyinstallprefs\" option starting from NetSuite 2021.1.***",
-				"mandatory": false,
-				"type": "FLAG",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
 			},
 			"applyinstallprefs": {
 				"name": "applyinstallprefs",

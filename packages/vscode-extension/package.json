@@ -1,0 +1,186 @@
+{
+	"name": "suitecloud-vscode-extension",
+	"displayName": "SuiteCloud Extension for Visual Studio Code",
+	"description": "Develop and deploy SuiteCloud Projects with SuiteCloud Development Framework (SDF).",
+	"keywords": [
+		"NetSuite",
+		"SDF",
+		"SuiteApp",
+		"SuiteCloud",
+		"SuiteScripts"
+	],
+	"publisher": "Oracle",
+	"license": "UPL-1.0",
+	"private": true,
+	"version": "1.0.0",
+	"icon": "resources/pluginIcon_dark.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/oracle/netsuite-suitecloud-sdk",
+		"directory": "packages/vscode-extension"
+	},
+	"files": [
+		"**/*.vsix"
+	],
+	"engines": {
+		"vscode": "^1.57.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"main": "./dist/suitecloud.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "suitecloud.adddependencies",
+				"title": "Add Dependency References to the Manifest",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.createfile",
+				"title": "Create SuiteScript File",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.createproject",
+				"title": "Create Project",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.deploy",
+				"title": "Deploy Project",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.importfiles",
+				"title": "Import Files",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.importobjects",
+				"title": "Import Objects",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.listfiles",
+				"title": "List Files",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.listobjects",
+				"title": "List Objects",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.setupaccount",
+				"title": "Set Up Account",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.updatefile",
+				"title": "Update File from Account",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.updateobject",
+				"title": "Update Object from Account",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.uploadfile",
+				"title": "Upload File",
+				"category": "SuiteCloud"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "suitecloud.adddependencies",
+				"key": "ctrl+alt+shift+a",
+				"mac": "ctrl+alt+cmd+a"
+			},
+			{
+				"command": "suitecloud.deploy",
+				"key": "ctrl+alt+d",
+				"mac": "ctrl+alt+cmd+d",
+				"linux": "alt+d"
+			},
+			{
+				"command": "suitecloud.importfiles",
+				"key": "ctrl+alt+f",
+				"mac": "ctrl+alt+f",
+				"linux": "ctrl+alt+f"
+			},
+			{
+				"command": "suitecloud.importobjects",
+				"key": "ctrl+alt+o",
+				"mac": "ctrl+alt+cmd+o",
+				"linux": "ctrl+alt+o"
+			},
+			{
+				"command": "suitecloud.updateobject",
+				"key": "ctrl+alt+u",
+				"mac": "cmd+alt+u",
+				"when": "resource =~ //Objects/.+\\.xml$/"
+			},
+			{
+				"command": "suitecloud.uploadfile",
+				"key": "alt+shift+u",
+				"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts)(/.*)*$/",
+					"command": "suitecloud.createfile",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)(/.*)*$/",
+					"command": "suitecloud.importfiles",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "explorerResourceIsFolder && resource =~ //Objects(/.+)*$/",
+					"command": "suitecloud.importobjects",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "!explorerResourceIsFolder && resource =~ //Objects/.+\\.xml$/",
+					"command": "suitecloud.updateobject",
+					"group": "suitecloud@1"
+				},
+				{
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"command": "suitecloud.updatefile",
+					"group": "suitecloud@1"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./"
+	},
+	"dependencies": {
+		"@oracle/suitecloud-cli": "^1.3.0"
+	},
+	"devDependencies": {
+		"@types/glob": "7.1.3",
+		"@types/mocha": "8.2.2",
+		"@types/node": "15.12.5",
+		"@types/vscode": "1.57.0",
+		"@typescript-eslint/eslint-plugin": "4.28.1",
+		"@typescript-eslint/parser": "4.28.1",
+		"eslint": "7.29.0",
+		"eslint-config-prettier": "8.3.0",
+		"glob": "7.1.7",
+		"mocha": "9.0.1",
+		"typescript": "4.3.4",
+		"vscode-test": "1.5.2"
+	}
+}

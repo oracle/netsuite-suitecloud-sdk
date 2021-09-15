@@ -77,6 +77,7 @@ class AuthenticateActionResultBuilder extends ActionResultBuilder {
 			...(this.authId && { authId: this.authId }),
 			...(this.accountInfo && { accountInfo: this.accountInfo }),
 			...(this.projectFolder && { projectFolder: this.projectFolder }),
+			...(this.commandParameters && { commandParameters: this.commandParameters }),
 		});
 	}
 }

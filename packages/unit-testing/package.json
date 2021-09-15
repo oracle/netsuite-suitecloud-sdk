@@ -1,6 +1,6 @@
 {
 	"name": "@oracle/suitecloud-unit-testing",
-	"version": "1.1.3",
+	"version": "1.1.4",
 	"license": "UPL-1.0",
 	"repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/unit-testing",
 	"bugs": {
@@ -16,8 +16,8 @@
 	},
 	"main": "jest-configuration/SuiteCloudJestConfiguration.js",
 	"dependencies": {
-		"@babel/preset-env": "7.12.11",
-		"babel-jest": "26.6.3",
+		"@babel/preset-env": "7.14.7",
+		"babel-jest": "27.0.6",
 		"babel-plugin-transform-amd-to-commonjs": "1.4.0",
 		"xml2js": "0.4.23"
 	}

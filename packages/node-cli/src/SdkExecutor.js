@@ -6,8 +6,8 @@
 
 const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
+	SDK_CLIENT_PLATFORM_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
-	SDK_PROXY_JVM_OPTIONS,
 	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
 const path = require('path');
@@ -19,18 +19,25 @@ const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SdkErrorCodes = require('./SdkErrorCodes');
+const ExecutionEnvironmentContext = require('./ExecutionEnvironmentContext');
 
 const DATA_EVENT = 'data';
 const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
 module.exports = class SdkExecutor {
-	constructor(sdkPath) {
+	constructor(sdkPath, executionEnvironmentContext) {
 		this._sdkPath = sdkPath;
 
 		this._CLISettingsService = new CLISettingsService();
 		this._environmentInformationService = new EnvironmentInformationService();
 		this.childProcess = null;
+
+		if (!executionEnvironmentContext) {
+			this._executionEnvironmentContext = new ExecutionEnvironmentContext();
+		} else {
+			this._executionEnvironmentContext = executionEnvironmentContext;
+		}
 	}
 
 	execute(executionContext, token) {
@@ -90,38 +97,23 @@ module.exports = class SdkExecutor {
 			}
 		}
 
-		const proxyOptions = this._getProxyOptions();
 		const cliParams = this._convertParamsObjToString(executionContext.getParams(), executionContext.getFlags());
 
 		const integrationModeOption = executionContext.isIntegrationMode() ? SDK_INTEGRATION_MODE_JVM_OPTION : '';
 
-		const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
+		const clientPlatform = `${SDK_CLIENT_PLATFORM_JVM_OPTION}=${this._executionEnvironmentContext.getPlatform()}`;
+		const clientPlatformVersionOption = `${SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${this._executionEnvironmentContext.getPlatformVersion()}`;
+		const customVmOptions = this._getCustomVmOptionsString();
 
 		if (!FileUtils.exists(this._sdkPath)) {
 			throw NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_JAR_FILE_FOUND, path.join(__dirname, '..'));
 		}
 		const quotedSdkJarPath = `"${this._sdkPath}"`;
 
-		const vmOptions = `${proxyOptions} ${integrationModeOption} ${clientPlatformVersionOption}`;
+		const vmOptions = `${integrationModeOption} ${clientPlatform} ${clientPlatformVersionOption} ${customVmOptions}`;
 		const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 		return spawn(jvmCommand, [], { shell: true });
-	}
-
-	_getProxyOptions() {
-		if (!this._CLISettingsService.useProxy()) {
-			return '';
-		}
-		const proxyUrl = url.parse(this._CLISettingsService.getProxyUrl());
-		if (!proxyUrl.protocol || !proxyUrl.port || !proxyUrl.hostname) {
-			throw NodeTranslationService.getMessage(ERRORS.WRONG_PROXY_SETTING, proxyUrl);
-		}
-		const protocolWithoutColon = proxyUrl.protocol.slice(0, -1);
-		const hostName = proxyUrl.hostname;
-		const port = proxyUrl.port;
-		const { PROTOCOL, HOST, PORT } = SDK_PROXY_JVM_OPTIONS;
-
-		return `${PROTOCOL}=${protocolWithoutColon} ${HOST}=${hostName} ${PORT}=${port}`;
 	}
 
 	_convertParamsObjToString(cliParams, flags) {
@@ -140,6 +132,18 @@ module.exports = class SdkExecutor {
 		}
 
 		return cliParamsAsString;
+	}
+
+	_getCustomVmOptionsString() {
+		const customVmOptions = this._CLISettingsService.getCustomVmOptions();
+		if (!customVmOptions) {
+			return '';
+		}
+
+		const addVmOptionToString = (prevString, vmOptionKey) =>
+			(prevString += customVmOptions[vmOptionKey] === '' ? ` ${vmOptionKey}` : ` ${vmOptionKey}="${customVmOptions[vmOptionKey].trim()}"`);
+		// customVmOptions are already validated at CLISettingsService, it will be an object at this point
+		return Object.keys(customVmOptions).reduce(addVmOptionToString, '').trim();
 	}
 
 	_checkIfJavaVersionIssue() {

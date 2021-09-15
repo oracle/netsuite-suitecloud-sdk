@@ -25,10 +25,11 @@ Each version of CLI for Node.js in NPM works optimally with a specific NetSuite 
 
 | Version in NPM | Version in NetSuite |
 |:--------------:|:-------------------:|
-| 1.2.X | 2021.1 |
-| 1.1.X | 2020.2 |
-| 1.0.X | 2020.1 |
-  
+| 1.3.X  | 2021.2   |
+| 1.2.X  | 2021.1   |
+| 1.1.X  | 2020.2   |
+| 1.0.X  | 2020.1   |
+
 ## Installation
 Since CLI for Node.js is a development tool, use a global instance to install it by running the following command:
 
@@ -50,7 +51,7 @@ suitecloud <command> <option> <argument>
 |[`account:manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs (authid) for all your projects.|
 |[`account:savetoken`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159350785187.html)|Saves a TBA token that you issued previously in NetSuite.|
 |[`account:setup`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
-|[`config:proxy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044426239.html)|Configures a proxy server.|
+|[`file:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162810635242.html)|Creates SuiteScript files in the selected folder using the correct template with SuiteScript modules injected.|
 |[`file:import`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041963273.html)|Imports files from an account to your account customization project.|
 |[`file:list`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042966488.html)|Lists the files in the File Cabinet of your account.|
 |[`file:upload`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159066070687.html)|Uploads files from your project to an account.|
@@ -60,9 +61,8 @@ suitecloud <command> <option> <argument>
 |[`project:adddependencies`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155981452469.html)| Adds missing dependencies to the manifest file.|
 |[`project:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041348327.html)|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
 |[`project:deploy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044636320.html)|Deploys the folder containing the project.|
-|[`project:package`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159550971388.html)|Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file, and applying local validation.|
+|[`project:package`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159550971388.html)|Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file.|
 |[`project:validate`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
-|[`suitecommerce:localserver`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043691482.html)|Generates a local server of your SuiteCommerce extensions and themes.|
 
 To check the help for a specific command, run the following command:
 ```

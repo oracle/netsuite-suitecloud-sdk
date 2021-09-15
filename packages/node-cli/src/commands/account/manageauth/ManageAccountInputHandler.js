@@ -10,7 +10,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const AccountCredentialsFormatter = require('../../../utils/AccountCredentialsFormatter');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { MANAGE_ACTION } = require('../../../services/actionresult/ManageAccountActionResult');
-
+const { DOMAIN } = require('../../../ApplicationConstants');
 const { prompt, Separator } = require('inquirer');
 const {
 	showValidationResults,
@@ -49,7 +49,6 @@ const ANSWERS_NAMES = {
 module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		this._sdkPath = options.sdkPath;
 	}
 
 	async getParameters(params) {
@@ -85,15 +84,18 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	}
 
 	_accountCredentialToString(authID, accountCredential) {
-		const isDevLabel = accountCredential.developmentMode
-			? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_DEV_URL, accountCredential.urls.app)
-			: '';
+		const urlInfo =
+			accountCredential.urls &&
+			!accountCredential.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+			!accountCredential.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
+				? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION, accountCredential.urls.app)
+				: '';
 		const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`;
 		const accountCredentialString = NodeTranslationService.getMessage(
 			QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
 			authID,
 			accountInfo,
-			isDevLabel
+			urlInfo
 		);
 		return accountCredentialString;
 	}

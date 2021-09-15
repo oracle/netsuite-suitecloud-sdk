@@ -28,6 +28,9 @@ module.exports = class FileSystemService {
 
 	getFoldersFromDirectoryRecursively(parentFolder) {
 		assert(parentFolder);
+		if (!existsSync(parentFolder)) {
+			return [];
+		}
 		const folders = [];
 		const getFoldersRecursively = source =>
 				this.getFoldersFromDirectory(source).forEach(folder => {
@@ -90,17 +93,21 @@ module.exports = class FileSystemService {
 		assert(parentFolderPath);
 		assert(folderName);
 
-		let targetFolder = path.join(parentFolderPath, folderName);
+		return this.createFolderFromAbsolutePath(path.join(parentFolderPath, folderName));
+	}
+
+	createFolderFromAbsolutePath(folderAbsolutePath) {
+		assert(folderAbsolutePath);
 
 		try {
-			if (!existsSync(targetFolder)) {
-				mkdirSync(path.join(targetFolder));
+			if (!existsSync(folderAbsolutePath)) {
+				mkdirSync(path.join(folderAbsolutePath));
 			}
 		} catch (e) {
 			throw new CLIException(TranslationService.getMessage(CANT_CREATE_FOLDER, e.path, e.code));
 		}
 
-		return targetFolder;
+		return folderAbsolutePath;
 	}
 
 	renameFolder(oldPath, newPath) {
@@ -173,9 +180,13 @@ module.exports = class FileSystemService {
 		return existsSync(path);
 	}
 
+	fileExists(path) {
+		return this.folderExists(path);
+	}
+
 	isFolderEmpty(path) {
 		assert(path);
-		readdirSync(path).length !== 0;
+		return readdirSync(path).length === 0;
 	}
 
 	_processTemplateBindings(content, bindings) {

@@ -43,7 +43,6 @@ const COMMANDS = {
 const FLAGS = {
 	LIST: 'list',
 	SAVETOKEN: 'savetoken',
-	DEVELOPMENTMODE: 'developmentmode',
 };
 
 function setDefaultAuthentication(projectFolder, authId) {
@@ -82,15 +81,17 @@ async function getAuthIds(sdkPath) {
 	const operationResult = await executeWithSpinner({
 		action: sdkExecutor.execute(getAuthListContext),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.LOADING_AUTHIDS),
+	}).catch((error) => {
+		return ActionResult.Builder.withErrors([error]).build();
 	});
 	return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 		? ActionResult.Builder.withData(operationResult.data).build()
 		: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 }
 
-async function saveToken(params, sdkPath, projectFolder) {
+async function saveToken(params, sdkPath, projectFolder, executionEnvironmentContext) {
 	const authId = params.authid;
-	const sdkExecutor = new SdkExecutor(sdkPath);
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
 	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE.SDK_COMMAND)
 		.integration()
 		.addParam(COMMANDS.AUTHENTICATE.PARAMS.AUTH_ID, authId)
@@ -102,12 +103,10 @@ async function saveToken(params, sdkPath, projectFolder) {
 	if (params.url) {
 		contextBuilder.addParam(COMMANDS.AUTHENTICATE.PARAMS.URL, params.url);
 	}
-	if (params.dev === true) {
-		contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
-	}
 
+	const tokenExecutionContext = contextBuilder.build();
 	const operationResult = await executeWithSpinner({
-		action: sdkExecutor.execute(contextBuilder.build()),
+		action: sdkExecutor.execute(tokenExecutionContext),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.SAVING_TBA_TOKEN),
 	});
 	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
@@ -118,12 +117,13 @@ async function saveToken(params, sdkPath, projectFolder) {
 		.withMode(COMMANDS.AUTHENTICATE.MODES.SAVE_TOKEN)
 		.withAuthId(authId)
 		.withAccountInfo(operationResult.data.accountInfo)
+		.withCommandParameters(tokenExecutionContext.getParams())
 		.build();
 }
 
-async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken) {
+async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken, executionEnvironmentContext) {
 	let authId = params.authid;
-	const sdkExecutor = new SdkExecutor(sdkPath);
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
 	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE.SDK_COMMAND)
 		.integration()
 		.addParam(COMMANDS.AUTHENTICATE.PARAMS.AUTH_ID, authId);
@@ -131,23 +131,23 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 	if (params.url) {
 		contextBuilder.addParam(COMMANDS.AUTHENTICATE.PARAMS.URL, params.url);
 	}
-	if (params.dev === true) {
-		contextBuilder.addFlag(FLAGS.DEVELOPMENTMODE);
-	}
-
+	const oauthContext = contextBuilder.build();
 	return executeWithSpinner({
-		action: sdkExecutor.execute(contextBuilder.build(), cancelToken),
+		action: sdkExecutor.execute(oauthContext, cancelToken),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.STARTING_OAUTH_FLOW),
 	})
 		.then((operationResult) => {
 			if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-				return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
+				return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages)
+					.withCommandParameters(oauthContext.getParams())
+					.build();
 			}
 			setDefaultAuthentication(projectFolder, authId);
 			return AuthenticateActionResult.Builder.success()
 				.withMode(COMMANDS.AUTHENTICATE.MODES.OAUTH)
 				.withAuthId(authId)
 				.withAccountInfo(operationResult.data.accountInfo)
+				.withCommandParameters(oauthContext.getParams())
 				.build();
 		})
 		.catch((error) => AuthenticateActionResult.Builder.withErrors([error]));

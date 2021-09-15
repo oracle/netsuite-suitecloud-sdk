@@ -5,7 +5,11 @@
 'use strict';
 
 const assert = require('assert');
-const OPTION_TYPE_FLAG = 'FLAG';
+const OPTION_TYPE = {
+	FLAG: 'FLAG',
+	SINGLE: 'SINGLE',
+	MULTIPLE: 'MULTIPLE',
+};
 const INTERACTIVE_OPTION_NAME = 'interactive';
 const INTERACTIVE_OPTION_ALIAS = 'i';
 const NodeTranslationService = require('../services/NodeTranslationService');
@@ -14,7 +18,7 @@ const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys
 const EXIT_CODE = {
 	SUCCESS: 0,
 	ERROR: 1,
-}
+};
 
 module.exports = class CommandRegistrationService {
 	register(options) {
@@ -29,7 +33,7 @@ module.exports = class CommandRegistrationService {
 		const executeCommandFunction = options.executeCommandFunction;
 		const runInInteractiveMode = options.runInInteractiveMode;
 
-		let commandSetup = program.command(`${commandMetadata.name} folder>`);
+		let commandSetup = program.command(commandMetadata.name);
 		//program.alias(this._alias)
 
 		if (!runInInteractiveMode) {
@@ -42,7 +46,7 @@ module.exports = class CommandRegistrationService {
 					name: INTERACTIVE_OPTION_NAME,
 					alias: INTERACTIVE_OPTION_ALIAS,
 					description: interactiveOptionHelp,
-					type: OPTION_TYPE_FLAG,
+					type: OPTION_TYPE.FLAG,
 					mandatory: false,
 				};
 			}
@@ -52,30 +56,32 @@ module.exports = class CommandRegistrationService {
 			);
 		}
 
-		commandSetup.description(commandMetadata.description).action(async (options) => {
-			const actionResult = await executeCommandFunction(options);
-			process.exitCode = actionResult.isSuccess() ? EXIT_CODE.SUCCESS : EXIT_CODE.ERROR;
-		});
+		commandSetup
+			.description(commandMetadata.description)
+			.action(async (options) => {
+				const actionResult = await executeCommandFunction(options);
+				process.exitCode = actionResult.isSuccess() ? EXIT_CODE.SUCCESS : EXIT_CODE.ERROR;
+			});
 	}
 
 	_addNonInteractiveCommandOptions(commandSetup, options) {
 		const optionsSortedByName = Object.values(options).sort((option1, option2) =>
 			option1.name.localeCompare(option2.name)
 		);
-		optionsSortedByName.forEach(option => {
+		optionsSortedByName.forEach((option) => {
 			if (option.disableInIntegrationMode) {
 				return;
 			}
-			let mandatoryOptionString = '';
 			let optionString = '';
 			if (option.alias) {
 				optionString = `-${option.alias}, `;
 			}
 			optionString += `--${option.name}`;
 
-			if (option.type !== OPTION_TYPE_FLAG) {
-				mandatoryOptionString = '<argument>';
-				optionString += ` ${mandatoryOptionString}`;
+			if (option.type === OPTION_TYPE.SINGLE) {
+				optionString += ` <argument>`;
+			} else if (option.type === OPTION_TYPE.MULTIPLE) {
+				optionString += ` <arguments...>`;
 			}
 			commandSetup.option(optionString, option.description);
 		});
