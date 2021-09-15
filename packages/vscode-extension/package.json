@@ -12,7 +12,7 @@
 	"publisher": "Oracle",
 	"license": "UPL-1.0",
 	"private": true,
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"icon": "resources/pluginIcon_dark.png",
 	"repository": {
 		"type": "git",
