@@ -44,6 +44,7 @@ export default class CreateProject extends BaseAction {
 			this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName),
 			this.translationService.getMessage(CREATE_PROJECT.MESSAGES.CREATING_PROJECT),
 			runSuiteCloudCommandPromise,
+			false,
 			false
 		);
 		const actionResult = await runSuiteCloudCommandPromise;
@@ -101,7 +102,8 @@ export default class CreateProject extends BaseAction {
 		if (!projectName) {
 			return {};
 		}
-		commandArgs[COMMAND_ARGUMENTS.PROJECT_NAME] = projectName;
+		commandArgs[COMMAND_ARGUMENTS.PROJECT_NAME] = projectName.trim();
+		commandArgs[COMMAND_ARGUMENTS.PROJECT_FOLDER_NAME] = commandArgs[COMMAND_ARGUMENTS.PROJECT_NAME];
 
 		let publisherId, projectId, projectVersion;
 		if (projectType === this.translationService.getMessage(CREATE_PROJECT.PROJECT_TYPE.SUITEAPP)) {
@@ -124,9 +126,8 @@ export default class CreateProject extends BaseAction {
 			commandArgs[COMMAND_ARGUMENTS.PROJECT_VERSION] = projectVersion;
 
 			commandArgs[COMMAND_ARGUMENTS.PROJECT_FOLDER_NAME] = publisherId + '.' + projectId;
-		} else {
-			commandArgs[COMMAND_ARGUMENTS.PROJECT_FOLDER_NAME] = projectName;
 		}
+
 		commandArgs[COMMAND_ARGUMENTS.PARENT_DIRECTORY] = path.join(selectedFolder[0].fsPath, commandArgs[COMMAND_ARGUMENTS.PROJECT_FOLDER_NAME]);
 
 		const includeUnitTesting = await this.promptIncludeUnitTestingQuestion();
@@ -224,6 +225,7 @@ export default class CreateProject extends BaseAction {
 			ignoreFocusOut: true,
 			placeHolder: this.translationService.getMessage(CREATE_PROJECT.QUESTIONS.ENTER_PROJECT_NAME),
 			validateInput: (fieldValue) => {
+				fieldValue = fieldValue.trim();
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,

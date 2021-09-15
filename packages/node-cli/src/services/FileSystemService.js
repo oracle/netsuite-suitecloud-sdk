@@ -186,7 +186,7 @@ module.exports = class FileSystemService {
 
 	isFolderEmpty(path) {
 		assert(path);
-		return readdirSync(path).length !== 0;
+		return readdirSync(path).length === 0;
 	}
 
 	_processTemplateBindings(content, bindings) {

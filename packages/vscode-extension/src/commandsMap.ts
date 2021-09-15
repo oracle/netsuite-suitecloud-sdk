@@ -17,11 +17,11 @@ export type CommandsInfoMapType = {
 	createproject: CommandInfo;
 	deploy: CommandInfo;
 	importfiles: CommandInfo;
-	importfile: CommandInfo;
 	importobjects: CommandInfo;
 	listfiles: CommandInfo;
 	listobjects: CommandInfo;
 	setupaccount: CommandInfo;
+	updatefile: CommandInfo;
 	updateobject: CommandInfo;
 	uploadfile: CommandInfo;
 };
@@ -41,24 +41,19 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	createproject: {
 		vscodeCommandId: 'suitecloud.createproject',
 		cliCommandName: 'project:create',
-		vscodeCommandName: 'Create SuiteCloud Project...',
+		vscodeCommandName: 'Create Project',
 		vscodeShortName: 'Create Project',
 	},
 	deploy: {
 		vscodeCommandId: 'suitecloud.deploy',
 		cliCommandName: 'project:deploy',
-		vscodeCommandName: 'Deploy Project...',
+		vscodeCommandName: 'Deploy Project',
 		vscodeShortName: 'Deploy',
 	},
 	importfiles: {
 		vscodeCommandId: 'suitecloud.importfiles',
 		cliCommandName: 'file:import',
 		vscodeCommandName: 'Import Files',
-	},
-	importfile: {
-		vscodeCommandId: 'suitecloud.importfile',
-		cliCommandName: 'file:import',
-		vscodeCommandName: 'Import File',
 	},
 	importobjects: {
 		vscodeCommandId: 'suitecloud.importobjects',
@@ -73,17 +68,22 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	listobjects: {
 		vscodeCommandId: 'suitecloud.listobjects',
 		cliCommandName: 'object:list',
-		vscodeCommandName: 'List Objects...',
+		vscodeCommandName: 'List Objects',
 	},
 	setupaccount: {
 		vscodeCommandId: 'suitecloud.setupaccount',
 		cliCommandName: 'account:setup',
-		vscodeCommandName: 'Set Up Account...',
+		vscodeCommandName: 'Set Up Account',
+	},
+	updatefile: {
+		vscodeCommandId: 'suitecloud.updatefile',
+		cliCommandName: 'file:import',
+		vscodeCommandName: 'Update File from Account',
 	},
 	updateobject: {
 		vscodeCommandId: 'suitecloud.updateobject',
 		cliCommandName: 'object:update',
-		vscodeCommandName: 'Update Single Object with Account Object',
+		vscodeCommandName: 'Update Object from Account',
 		vscodeShortName: 'Update Object',
 	},
 	uploadfile: {

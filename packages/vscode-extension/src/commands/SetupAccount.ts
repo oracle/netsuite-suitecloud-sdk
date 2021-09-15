@@ -2,7 +2,7 @@
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator, ApplicationConstants } from '../util/ExtensionUtil';
+import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
@@ -19,6 +19,7 @@ enum UiOption {
 	cancel_process,
 	dismiss,
 }
+
 interface NewAuthIdItem extends QuickPickItem {
 	option: UiOption.new_authid;
 }
@@ -47,28 +48,28 @@ export default class SetupAccount extends BaseAction {
 		super(COMMAND_NAME);
 	}
 
-	protected async execute() {
+	protected async execute(): Promise<void> {
 		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
 		const actionResult: ActionResult<AuthListData> = await accountsPromise;
-
-		if (actionResult.status === actionResultStatus.SUCCESS) {
+		if (actionResult.isSuccess()) {
 			const selected = await this.getAuthListOption(actionResult.data);
 			if (!selected) {
 				return;
 			} else if (selected.option === UiOption.new_authid) {
-				this.handleNewAuth(actionResult.data);
+				await this.handleNewAuth(actionResult.data);
 			} else if (selected.option === UiOption.select_authid) {
 				this.handleSelectedAuth(selected.authId);
 			}
 		} else {
+			this.vsConsoleLogger.error(actionResult.errorMessages[0]);
 			this.messageService.showCommandError();
 		}
 		return;
 	}
 
 	private async getAuthListOption(data: AuthListData) {
-		return await window.showQuickPick(this.getAuthOptions(data), {
+		return window.showQuickPick(this.getAuthOptions(data), {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_CREATE),
 			ignoreFocusOut: true,
 			canPickMany: false,
@@ -97,9 +98,9 @@ export default class SetupAccount extends BaseAction {
 		if (!selected) {
 			return;
 		} else if (selected.option === UiOption.new_authid_browser) {
-			this.handleBrowserAuth(accountCredentialsList);
+			await this.handleBrowserAuth(accountCredentialsList);
 		} else if (selected.option === UiOption.new_authid_save_token) {
-			this.handleSaveToken(accountCredentialsList);
+			await this.handleSaveToken(accountCredentialsList);
 		}
 	}
 
@@ -160,7 +161,7 @@ export default class SetupAccount extends BaseAction {
 			commandParams,
 			getSdkPath(),
 			this.rootWorkspaceFolder,
-			cancellationToken
+			cancellationToken,
 		);
 		window
 			.showInformationMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), dismissButton, cancelButton)
@@ -175,7 +176,7 @@ export default class SetupAccount extends BaseAction {
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER),
 			true,
-			authenticatePromise
+			authenticatePromise,
 		);
 
 		const actionResult = await authenticatePromise;
@@ -193,7 +194,7 @@ export default class SetupAccount extends BaseAction {
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
-					InteractiveAnswersValidator.validateMaximumLength
+					InteractiveAnswersValidator.validateMaximumLength,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -201,7 +202,7 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async getUrl() {
-		return await window.showInputBox({
+		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_URL),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
@@ -209,18 +210,15 @@ export default class SetupAccount extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					InteractiveAnswersValidator.validateNonProductionDomain,
-					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain
+					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain,
 				);
-				if (!fieldValue) {
-					fieldValue = ApplicationConstants.DOMAIN.PRODUCTION.GENERIC_NETSUITE_DOMAIN;
-				}
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
 	}
 
 	private async getAccountId() {
-		return await window.showInputBox({
+		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_ACCOUNT_ID),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
@@ -228,7 +226,7 @@ export default class SetupAccount extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore
+					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -236,14 +234,14 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async getTokenId() {
-		return await window.showInputBox({
+		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_TOKEN_ID),
 			ignoreFocusOut: true,
 			password: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -251,14 +249,14 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async getTokenSecret() {
-		return await window.showInputBox({
+		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_TOKEN_SECRET),
 			ignoreFocusOut: true,
 			password: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -305,7 +303,7 @@ export default class SetupAccount extends BaseAction {
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA),
 			true,
-			saveTokenPromise
+			saveTokenPromise,
 		);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
@@ -319,8 +317,8 @@ export default class SetupAccount extends BaseAction {
 					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
 					actionResult.accountInfo.companyName,
 					actionResult.accountInfo.roleName,
-					actionResult.authId
-				)
+					actionResult.authId,
+				),
 			);
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
 		} else {
