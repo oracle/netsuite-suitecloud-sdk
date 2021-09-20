@@ -11,14 +11,14 @@ SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software D
 
 Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_156026236161.html" rel="noopener noreferrer" target=blank>Getting Started with SuiteCloud SDK</a> and <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4702656040.html" rel="noopener noreferrer" target=blank>SuiteCloud Development Framework Architecture</a>.
 
-## Installation Prerequisites
+## **Installation Prerequisites**
 The following software is required to work with SuiteCloud Extension for Visual Studio Code:
 - Oracle JDK version 11
 - VS Code version 1.57 or higher
 
 Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Requirements for SuiteCloud Extension for Visual Studio Code</a>.
 
-## Installing SuiteCloud Extension for Visual Studio Code
+## **Installing SuiteCloud Extension for Visual Studio Code**
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
 
 1. Launch Visual Studio Code and select the **Extensions** icon in the Activity Bar.
@@ -28,19 +28,19 @@ To install SuiteCloud Extension for Visual Studio Code, follow these steps:
 
 See more details about installation in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223240436.html" rel="noopener noreferrer" target=blank>Installing and Setting Up SuiteCloud Extension for Visual Studio Code</a>.
 
-## Getting Started
+## **Getting Started**
 
-### Making a File Active in the Editor
+### **Making a File Active in the Editor**
 For the extension to detect the working SDF project and run the commands against it, you first need to select a file from the current workspace and make it active in the editor.
 
-### How to Trigger the Command Palette
+### **How to Trigger the Command Palette**
 Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. To trigger it, click **View** > **Command Palette** or use the relevant shortcut:
 * Ctrl+Shift+P if you are using Windows or Linux.
 * Cmd+Shift+P if you are using Mac OS. 
 
 <p align="center"><a href="#"><img src="resources/CommandPalette.png" alt="Command Palette" width="500" height="600"></a></p>
 
-### Setting Up an Account
+### **Setting Up an Account**
 To start using your NetSuite accounts with the SuiteCloud Extension for Visual Studio Code, you first need to set them up. The account set up includes adding an account to the extension and setting it as default. 
 
 To add an account, follow these steps:
@@ -70,7 +70,7 @@ The selected account is set as default for the project.
   <img src="resources/SetUpAccount.gif"alt="animated" />
 </p>
 
-### SuiteCloud Commands
+### **SuiteCloud Commands**
 
 The following SuiteCloud commands are available through the Command Palette:
 
@@ -91,11 +91,11 @@ The following SuiteCloud commands are available through the Command Palette:
 
 To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
 
-## Using SuiteCloud Extension for Visual Studio Code with SuiteCloud CLI for Node.js
+## **Using SuiteCloud Extension for Visual Studio Code with SuiteCloud CLI for Node.js**
 SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
 
-## Contributing
+## **Contributing**
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
-## License
+## **License**
 Copyright (c) 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
