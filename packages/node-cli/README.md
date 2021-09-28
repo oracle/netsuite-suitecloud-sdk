@@ -1,4 +1,4 @@
-<p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo.png"></a></p>
+<p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo_redblack.png"></a></p>
 
 # SuiteCloud CLI for Node.js
 <p>

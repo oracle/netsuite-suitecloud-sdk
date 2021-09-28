@@ -1,6 +1,6 @@
-<p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo.png"></a></p>
+<p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo_redblack.png"></a></p>
 
-# **SuiteCloud Extension for Visual Studio Code**
+# SuiteCloud Extension for Visual Studio Code
 
 <a href="https://marketplace.visualstudio.com/items?itemName=Oracle.suitecloud-vscode-extension">
   <img src="https://img.shields.io/visual-studio-marketplace/i/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
@@ -31,7 +31,7 @@ See more details about installation in <a href="https://system.netsuite.com/app/
 ## Getting Started
 
 ### Making a File Active in the Editor
-For the extension to detect the working SDF project and run the commands against it, you first need to select a file from the current workspace and make it active in the editor.
+For the extension to detect the working SDF project and run any command against it, you first need to select a file from the current workspace and make it active in the editor.
 
 ### How to Trigger the Command Palette
 Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. To trigger it, click **View** > **Command Palette** or use the relevant shortcut:
