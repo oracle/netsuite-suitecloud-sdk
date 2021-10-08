@@ -66,6 +66,7 @@
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
 	"EXTENSION_PROJECT_STARTUP_BUTTON_RUN_SUITECLOUD_SETUP_ACCOUNT": "SuiteCloud: Setup Account",
 	"EXTENSION_PROJECT_STARTUP_MESSAGE_PROJECT_NEEDS_SETUP_ACCOUNT": "No account has been set up for this project. Click \"SuiteCloud: Setup Account\" to link your project with your account.",
+	"EXTENSION_INSTALLATION_WARINING_VALIDATING_SDK_DEPENDENCIES": "Before executing any SuiteCloud command, SuiteCloud SDK dependencies need to be validated. Try again in a few seconds.",
 
 	"IMPORT_FILES_ERROR_IMPORT_TO_SUITEAPP_NOT_ALLOWED": "Files cannot be imported to a SuiteApp project. You can only import files to Account Customization Projects.",
 	"IMPORT_FILES_ERROR_NOT_ALLOWED_FOLDER": "Files in an Account Customization Project can only be imported from the following File Cabinet folders: \"/SuiteScripts\", \"/Templates/E-mail Templates\", \"/Templates/Marketing Templates\" and \"/Web Site Hosting Files\".",
