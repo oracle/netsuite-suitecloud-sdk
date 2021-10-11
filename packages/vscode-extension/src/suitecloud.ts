@@ -20,23 +20,33 @@ import UpdateFile from './commands/UpdateFile';
 import UpdateObject from './commands/UpdateObject';
 import UploadFile from './commands/UploadFile';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
+import { VSTranslationService } from './service/VSTranslationService';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
+import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
+export const output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
+
+const translationService = new VSTranslationService();
 
 function register<T extends BaseAction>(command: string, action: T) {
 	return vscode.commands.registerCommand(command, (uri?: vscode.Uri) => {
-		//Called from a context menu, we recieve uri info related to the selected file.
+		if (!sdkDependenciesDownloadedAndValidated) {
+			vscode.window.showWarningMessage(translationService.getMessage(EXTENSION_INSTALLATION.WARNING.VALIDATING_SDK_DEPENDENCIES));
+			return;
+		}
+		// Called from a context menu, we recieve uri info related to the selected file.
 		action.run(uri);
 	});
 }
 
-export const output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
-
+let sdkDependenciesDownloadedAndValidated = false;
 // this method is called when SuiteCloud extension is activated
 // the extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-	await installIfNeeded();
+	installIfNeeded().then(() => {
+		sdkDependenciesDownloadedAndValidated = true;
+	});
 
 	context.subscriptions.push(
 		register('suitecloud.adddependencies', new AddDependencies()),
