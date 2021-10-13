@@ -13,7 +13,7 @@ const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const {
 	COMMAND_IMPORTFILES: { MESSAGES },
-	COMMAND_LISTFILES: { LOADING_FOLDERS, GETTING_INERNAL_ERROR },
+	COMMAND_LISTFILES: { LOADING_FOLDERS, GETTING_INERNAL_ERROR: GETTING_INTERNAL_ERROR },
 } = require('./TranslationKeys');
 
 const INTERMEDIATE_COMMANDS = {
@@ -53,7 +53,7 @@ module.exports = class AccountFileCabinetService {
 				message: NodeTranslationService.getMessage(LOADING_FOLDERS),
 			});
 		} catch (error) {
-			throw NodeTranslationService.getMessage(GETTING_INERNAL_ERROR, INTERMEDIATE_COMMANDS.LISTFOLDERS.FOLDERS_REFERENCE, lineBreak, error);
+			throw NodeTranslationService.getMessage(GETTING_INTERNAL_ERROR, INTERMEDIATE_COMMANDS.LISTFOLDERS.FOLDERS_REFERENCE, lineBreak, error);
 		}
 
 		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
@@ -79,7 +79,7 @@ module.exports = class AccountFileCabinetService {
 				message: NodeTranslationService.getMessage(MESSAGES.LOADING_FILES),
 			});
 		} catch (error) {
-			throw NodeTranslationService.getMessage(GETTING_INERNAL_ERROR, INTERMEDIATE_COMMANDS.LISTFILES.FILES_REFERENCE, lineBreak, error);
+			throw NodeTranslationService.getMessage(GETTING_INTERNAL_ERROR, INTERMEDIATE_COMMANDS.LISTFILES.FILES_REFERENCE, lineBreak, error);
 		}
 
 	}
