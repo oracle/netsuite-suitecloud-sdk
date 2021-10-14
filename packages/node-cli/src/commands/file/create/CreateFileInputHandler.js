@@ -38,6 +38,7 @@ const ANSWER_NAMES = {
 };
 const SUITEAPPS_PATH = '/SuiteApps';
 const SUITESCRIPTS_PATH = '/SuiteScripts';
+const WEB_HOSTING_SUBFOLDER_PATH = '/Web Site Hosting Files/.*/';
 
 module.exports = class CreateFileInputHandler extends BaseInputHandler {
 
@@ -151,7 +152,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             const folderRelativePath = this._fileCabinetService.getFileCabinetRelativePath(folder) + '/';
 
             if (this._accountCustomizationProject) {
-                folderRestricted = !folderRelativePath.startsWith(SUITESCRIPTS_PATH);
+                folderRestricted = !(folderRelativePath.startsWith(SUITESCRIPTS_PATH) || folderRelativePath.match(WEB_HOSTING_SUBFOLDER_PATH));
             } else {
                 const applicationId = this._projectInfoService.getApplicationId();
                 const applicationSuiteAppFolderAbsolutePath = path.join(this._projectFolder, FOLDERS.FILE_CABINET, SUITEAPPS_PATH, '/', applicationId, '/');

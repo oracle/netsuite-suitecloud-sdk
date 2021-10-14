@@ -6,6 +6,7 @@
 export const VSCODE_PLATFORM = 'VSCode';
 export const FOLDERS: { [KEY: string]: string } = {
 	OBJECTS: 'Objects',
+	SEPARATOR: '/',
 	SUITEAPPS: '/SuiteApps',
 	SUITESCRIPTS: '/SuiteScripts',
 	TEMPLATES_EMAIL_TEMPLATES: '/Templates/E-mail Templates',
