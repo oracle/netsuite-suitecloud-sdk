@@ -41,13 +41,13 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	createproject: {
 		vscodeCommandId: 'suitecloud.createproject',
 		cliCommandName: 'project:create',
-		vscodeCommandName: 'Create SuiteCloud Project...',
+		vscodeCommandName: 'Create Project',
 		vscodeShortName: 'Create Project',
 	},
 	deploy: {
 		vscodeCommandId: 'suitecloud.deploy',
 		cliCommandName: 'project:deploy',
-		vscodeCommandName: 'Deploy Project...',
+		vscodeCommandName: 'Deploy Project',
 		vscodeShortName: 'Deploy',
 	},
 	importfiles: {
@@ -68,12 +68,12 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	listobjects: {
 		vscodeCommandId: 'suitecloud.listobjects',
 		cliCommandName: 'object:list',
-		vscodeCommandName: 'List Objects...',
+		vscodeCommandName: 'List Objects',
 	},
 	setupaccount: {
 		vscodeCommandId: 'suitecloud.setupaccount',
 		cliCommandName: 'account:setup',
-		vscodeCommandName: 'Set Up Account...',
+		vscodeCommandName: 'Set Up Account',
 	},
 	updatefile: {
 		vscodeCommandId: 'suitecloud.updatefile',

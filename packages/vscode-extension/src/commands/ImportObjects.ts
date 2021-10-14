@@ -239,7 +239,7 @@ export default class ImportObjects extends BaseAction {
 	private async promptOverwrite(includeReferencedFiles: string) {
 		return window.showQuickPick([this.translationService.getMessage(ANSWERS.CONTINUE), this.translationService.getMessage(ANSWERS.CANCEL)], {
 			placeHolder:
-				includeReferencedFiles === this.translationService.getMessage(ANSWERS.NO)
+				includeReferencedFiles === this.translationService.getMessage(ANSWERS.YES)
 					? this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE_WITH_REFERENCED)
 					: this.translationService.getMessage(IMPORT_OBJECTS.QUESTIONS.OVERWRITE),
 			canPickMany: false,
@@ -252,7 +252,15 @@ export default class ImportObjects extends BaseAction {
 				this.messageService.showErrorMessage(this.translationService.getMessage(IMPORT_OBJECTS.ERROR.EMPTY_LIST_SEARCH));
 				return;
 			}
-			this.messageService.showCommandInfo(this.translationService.getMessage(IMPORT_OBJECTS.FINISHED));
+
+			const data = actionResult.data;
+			if (data.successfulImports.length === 0
+				|| (data.successfulImports.length > 0 && (data.failedImports.length > 0 || data.errorImports.length > 0))
+			) {
+				this.messageService.showCommandWarning();
+			} else {
+				this.messageService.showCommandInfo();
+			}
 		} else {
 			this.messageService.showCommandError();
 		}
