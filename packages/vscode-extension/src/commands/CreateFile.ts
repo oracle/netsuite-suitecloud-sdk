@@ -192,7 +192,7 @@ export default class CreateFile extends BaseAction {
 				return [fileCabinetService.getFileCabinetRelativePath(applicationSuiteAppFolderAbsolutePath)];
 			}
 		})();
-		var validFolders: string[] = [];
+		let validFolders: string[] = [];
 		for (const allowedFolder of allowedFolders) {
 			const isValidRelativeFolder = (folderRelativePath: string): boolean => {
 				return folderRelativePath.match(allowedFolder) != null;

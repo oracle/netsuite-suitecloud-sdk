@@ -35,7 +35,7 @@ function register<T extends BaseAction>(command: string, action: T) {
 			vscode.window.showWarningMessage(translationService.getMessage(EXTENSION_INSTALLATION.WARNING.VALIDATING_SDK_DEPENDENCIES));
 			return;
 		}
-		// Called from a context menu, we recieve uri info related to the selected file.
+		// Called from a context menu, we receive uri info related to the selected file.
 		action.run(uri);
 	});
 }
