@@ -2,11 +2,11 @@
 
 ## 1.0.3
 
-- Fix Browser-Based-Auth for Fedora 34
-- Proper Error handling when dependencies are not downloaded
-- Fix for feature dependencies added incorrectly in Manifest
-- Updated README documentation
-- Minor bug-fixes and improvements
+- Fix for browser-based auth for Fedora 34
+- Block extension commands while dependencies are not downloaded
+- Fix for feature dependencies incorrectly added in Manifest
+- Updated the Read Me documentation
+- Minor bug fixes and improvements
 
 ## 1.0.2
 
