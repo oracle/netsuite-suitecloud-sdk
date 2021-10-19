@@ -10,7 +10,7 @@ module.exports = {
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	COMPATIBLE_NS_VERSION: '2021.2',
-	SDK_FILENAME: 'cli-2021.2.1.jar',
+	SDK_FILENAME: 'cli-2021.2.2.jar',
 	SDK_REQUIRED_JAVA_VERSION: '11',
 	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
 	SDK_CLIENT_PLATFORM: 'SuiteCloudCLIforNode.js',

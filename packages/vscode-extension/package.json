@@ -12,7 +12,7 @@
 	"publisher": "Oracle",
 	"license": "UPL-1.0",
 	"private": true,
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"icon": "resources/pluginIcon_dark.png",
 	"repository": {
 		"type": "git",
@@ -134,7 +134,7 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts)(/.*)*$/",
+					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts|Web%20Site%20Hosting%20Files/.+)(/.*)*$/",
 					"command": "suitecloud.createfile",
 					"group": "suitecloud@1"
 				},
@@ -167,7 +167,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.3.0"
+		"@oracle/suitecloud-cli": "^1.3.1"
 	},
 	"devDependencies": {
 		"@types/glob": "7.1.3",
