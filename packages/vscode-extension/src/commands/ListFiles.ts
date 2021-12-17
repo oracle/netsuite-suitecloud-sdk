@@ -6,7 +6,6 @@ import { COMMAND, LIST_FILES } from '../service/TranslationKeys';
 import { actionResultStatus } from '../util/ExtensionUtil';
 
 import BaseAction from './BaseAction';
-import { FolderItem } from '../types/FolderItem';
 import ListFilesService from '../service/ListFilesService';
 
 const COMMAND_NAME = 'listfiles';
@@ -25,7 +24,7 @@ export default class ListFiles extends BaseAction {
 	protected async execute(): Promise<void> {
 		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.rootWorkspaceFolder);
 		try {
-			let fileCabinetFolders: FolderItem[] | undefined = await listFilesService.getAccountFileCabinetFolders();
+			let fileCabinetFolders: string[] | undefined = await listFilesService.getAccountFileCabinetFolders();
 			if (!fileCabinetFolders) {
 				return;
 			}
