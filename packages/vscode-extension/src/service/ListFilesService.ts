@@ -6,12 +6,12 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
-import { FolderItem } from '../types/FolderItem';
 import { AccountFileCabinetService, actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
 import { IMPORT_FILES, LIST_FILES } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 import { showSetupAccountWarningMessage } from '../startup/ShowSetupAccountWarning';
+
 export default class ListFilesService {
 	private readonly translationService: VSTranslationService;
 	private rootProjectFolder?: string;
@@ -27,7 +27,7 @@ export default class ListFilesService {
 		this.rootProjectFolder = rootProjectFolder;
 	}
 
-	public async getAccountFileCabinetFolders(): Promise<FolderItem[] | undefined> {
+	public async getAccountFileCabinetFolders(): Promise<string[] | undefined> {
 		const defaultAuthId = this.getDefaultAuthId();
 		if (!defaultAuthId) {
 			showSetupAccountWarningMessage();
@@ -39,31 +39,13 @@ export default class ListFilesService {
 		const statusBarMessage = this.translationService.getMessage(LIST_FILES.LOADING_FOLDERS);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, listFoldersPromise);
 
-		const fileCabinetFolders = await listFoldersPromise;
-
-		return this._sortFolders(fileCabinetFolders);
+		return await listFoldersPromise;
 	}
 
-	private _sortFolders(fileCabinetFolders: FolderItem[]) {
-		fileCabinetFolders = fileCabinetFolders.sort((folder1, folder2) => {
-			if (folder1.isRestricted && !folder2.isRestricted) {
-				return 1;
-			}
-
-			if (!folder1.isRestricted && folder2.isRestricted) {
-				return -1;
-			}
-
-			return 0;
-		});
-		return fileCabinetFolders;
-	}
-
-	public async selectFolder(folders: FolderItem[], placeHolderMessage: string): Promise<vscode.QuickPickItem | undefined> {
+	public async selectFolder(folderPaths: string[], placeHolderMessage: string): Promise<vscode.QuickPickItem | undefined> {
 		return vscode.window.showQuickPick(
-			folders.map((folder: FolderItem) => {
-				const description = folder.isRestricted ? this.translationService.getMessage(LIST_FILES.RESTRICTED_FOLDER) : '';
-				return { label: folder.path, description, detail: path.basename(folder.path) };
+			folderPaths.map((folderPath: string) => {
+				return { label: folderPath, description: '', detail: path.basename(folderPath) };
 			}),
 			{
 				ignoreFocusOut: true,

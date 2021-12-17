@@ -86,10 +86,9 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
-		return listFoldersResponse.map((folder) => ({
-			name: folder.path,
-			value: folder.path,
-			disabled: folder.isRestricted ? NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',
+		return listFoldersResponse.map((folderPath) => ({
+			name: folderPath,
+			value: folderPath,
 		}));
 	}
 
