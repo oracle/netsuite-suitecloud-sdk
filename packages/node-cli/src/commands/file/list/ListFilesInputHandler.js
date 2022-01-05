@@ -12,7 +12,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
 const {
-	COMMAND_LISTFILES: { SELECT_FOLDER },
+	COMMAND_LISTFILES: { ERRORS, SELECT_FOLDER },
 } = require('../../../services/TranslationKeys');
 
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
@@ -32,6 +32,9 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		const accountFileCabinetFolders = await this._accountFileCabinetService.getAccountFileCabinetFolders();
+		if (accountFileCabinetFolders.length === 0) {
+			throw NodeTranslationService.getMessage(ERRORS.NO_FOLDERS_FOUND);
+		}
 		const fileCabinetFolders = accountFileCabinetFolders.map((folderPath) => {
 			return {
 				name: folderPath,
