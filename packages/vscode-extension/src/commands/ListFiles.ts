@@ -28,6 +28,9 @@ export default class ListFiles extends BaseAction {
 			if (!fileCabinetFolders) {
 				return;
 			}
+			if (fileCabinetFolders.length === 0) {
+				throw this.translationService.getMessage(LIST_FILES.ERROR.NO_FOLDERS_FOUND);
+			}
 			const selectedFolder = await listFilesService.selectFolder(
 				fileCabinetFolders,
 				this.translationService.getMessage(LIST_FILES.SELECT_FOLDER)

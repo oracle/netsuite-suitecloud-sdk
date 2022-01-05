@@ -20,6 +20,9 @@ export default class ImportFiles extends FileImportCommon {
 		if (!fileCabinetFolders) {
 			return;
 		}
+		if (fileCabinetFolders.length === 0) {
+			throw this.translationService.getMessage(IMPORT_FILES.ERROR.NO_FOLDERS_FOUND);
+		}
 		const selectedFolder: QuickPickItem | undefined = await listFilesService.selectFolder(
 			fileCabinetFolders,
 			this.translationService.getMessage(IMPORT_FILES.QUESTIONS.SELECT_FOLDER)

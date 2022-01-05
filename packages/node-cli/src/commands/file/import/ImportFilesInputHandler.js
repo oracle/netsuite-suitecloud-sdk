@@ -52,6 +52,9 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		const accountFileCabinetService = new AccountFileCabinetService(this._sdkPath, this._executionEnvironmentContext, this._authId);
 		
 		const listFoldersResult = await accountFileCabinetService.getAccountFileCabinetFolders();
+		if (listFoldersResult.length === 0) {
+			throw NodeTranslationService.getMessage(MESSAGES.NO_FOLDERS_FOUND);
+		}
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);

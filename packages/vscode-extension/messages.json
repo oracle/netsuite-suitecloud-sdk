@@ -69,6 +69,7 @@
 	"EXTENSION_INSTALLATION_WARINING_VALIDATING_SDK_DEPENDENCIES": "Before executing any SuiteCloud command, SuiteCloud SDK dependencies need to be validated. Try again in a few seconds.",
 
 	"IMPORT_FILES_ERROR_IMPORT_TO_SUITEAPP_NOT_ALLOWED": "Files cannot be imported to a SuiteApp project. You can only import files to Account Customization Projects.",
+	"IMPORT_FILES_ERROR_NO_FOLDERS_FOUND": "No folders found.",
 	"IMPORT_FILES_ERROR_NOT_ALLOWED_FOLDER": "Files in an Account Customization Project can only be imported from the following File Cabinet folders: \"/SuiteScripts\", \"/Templates/E-mail Templates\", \"/Templates/Marketing Templates\" and \"/Web Site Hosting Files\".",
 	"IMPORT_FILES_IMPORTING_FILES": "Importing files...",
 	"IMPORT_FILES_PROCESS_CANCELED": "The file import process has been canceled. No custom files have been overwritten.",
@@ -94,9 +95,9 @@
 	"IMPORT_OBJECTS_QUESTIONS_SELECT_TYPES": "Select the object types you want to import, or make no selection to list all object types.",
 
 	"LIST_FILES_ERROR_NO_FILES_FOUND": "No files found.",
+	"LIST_FILES_ERROR_NO_FOLDERS_FOUND": "No folders found.",
 	"LIST_FILES_LISTING": "Listing files...",
 	"LIST_FILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
-	"LIST_FILES_RESTRICTED_FOLDER": "Restricted Folder",
 	"LIST_FILES_SELECT_FOLDER": "Select the path from where you want to list the files",
 
 	"LIST_OBJECTS_LISTING": "Listing objects...",
