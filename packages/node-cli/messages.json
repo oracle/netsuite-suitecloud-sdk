@@ -79,7 +79,7 @@
 
 	"COMMAND_IMPORTFILES_ERRORS_INTERNAL": "Something went wrong with {0}, error: {1}",
 	"COMMAND_IMPORTFILES_ERRORS_IS_SUITEAPP": "The files could not be imported. You are trying to import files to a SuiteApp project. You can only import files to Account Customization Projects.",
-	"COMMAND_IMPORTFILES_ERRORS_NO_FOLDERS_FOUND": "No folders found.",
+	"COMMAND_IMPORTFILES_ERRORS_NO_FOLDERS_FOUND": "No folders available.",
 	"COMMAND_IMPORTFILES_MESSAGES_CANCEL_IMPORT": "The importing process has been canceled.",
 	"COMMAND_IMPORTFILES_MESSAGES_IMPORTING_FILES": "Importing files...",
 	"COMMAND_IMPORTFILES_MESSAGES_LOADING_FILES": "Loading files...",
@@ -120,7 +120,7 @@
 	"COMMAND_IMPORTOBJECTS_QUESTIONS_OVERWRITE_OBJECTS_AND_FILES": "All the selected objects and their referenced SuiteScript files in the project will be overwritten with the objects and files from the account. Do you want to continue?",
 	"COMMAND_IMPORTOBJECTS_WARNINGS_OVERRIDE": "The imported objects will overwrite the project objects",
 
-	"COMMAND_LISTFILES_ERRORS_NO_FOLDERS_FOUND": "No folders found.",
+	"COMMAND_LISTFILES_ERRORS_NO_FOLDERS_FOUND": "No folders available.",
 	"COMMAND_LISTFILES_GETTING_INERNAL_ERROR": "Error while getting {0}. Details:{1}{2}",
 	"COMMAND_LISTFILES_LOADING_FILES": "Loading files...",
 	"COMMAND_LISTFILES_LOADING_FOLDERS": "Loading File Cabinet folders...",
