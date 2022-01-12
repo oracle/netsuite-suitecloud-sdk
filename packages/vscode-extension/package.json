@@ -10,7 +10,7 @@
 		"SuiteScripts"
 	],
 	"publisher": "Oracle",
-	"license": "UPL-1.0",
+	"license": "SEE LICENSE IN LICENSE.txt",
 	"private": true,
 	"version": "1.0.4",
 	"icon": "resources/pluginIcon_dark.png",

@@ -1,6 +1,6 @@
 # Contributing to SuiteCloud SDK
 
-*Copyright (c) 2014, 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0*
+*Copyright (c) 2014, 2022 Oracle and/or its affiliates SDK [FUTC ORACLE License](https://www.oracle.com/downloads/licenses/oracle-free-license.html)*
 
 **Pull requests are currently not being accepted for SuiteCloud SDK project.**
 

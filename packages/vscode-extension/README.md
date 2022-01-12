@@ -97,5 +97,5 @@ SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated
 ## Contributing
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
-## License
-Copyright (c) 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
+## [License](https://www.oracle.com/downloads/licenses/oracle-free-license.html)
+By installing the NPM package, you are accepting the installation of a dependency. See [License](/https://www.oracle.com/downloads/licenses/oracle-free-license.html) for details.
