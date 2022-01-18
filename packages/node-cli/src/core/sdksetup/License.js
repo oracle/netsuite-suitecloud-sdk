@@ -27,7 +27,7 @@ function display() {
 			bold: true,
 		});
 		const intro = NodeTranslationService.getMessage(LICENSE_INTRO);
-		NodeConsoleLogger.println(`${important}  ${intro}${lineBreak}`, COLORS.IMPORTANT);
+		NodeConsoleLogger.important(`${important}  ${intro}${lineBreak}`, COLORS.IMPORTANT);
 		NodeConsoleLogger.info(license);
 	} catch (err) {
 		NodeConsoleLogger.error(NodeTranslationService.getMessage(ERRORS.MISSING_LICENSE_FILE));
