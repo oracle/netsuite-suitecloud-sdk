@@ -8,10 +8,9 @@ const fs = require('fs');
 
 const NodeConsoleLogger = require('../../loggers/NodeConsoleLogger');
 const NodeTranslationService = require('../../services/NodeTranslationService');
-const { COLORS, lineBreak } = require('../../loggers/LoggerConstants');
+const { lineBreak } = require('../../loggers/LoggerConstants');
 const {
 	ERRORS,
-	IMPORTANT,
 	LICENSE_INTRO,
 } = require('../../services/TranslationKeys');
 
@@ -22,12 +21,8 @@ function display() {
 
 	try {
 		const license = fs.readFileSync(licenseFilePath, licenseFileEncoding);
-		const important = NodeConsoleLogger.formatString(NodeTranslationService.getMessage(IMPORTANT), {
-			color: COLORS.IMPORTANT,
-			bold: true,
-		});
 		const intro = NodeTranslationService.getMessage(LICENSE_INTRO);
-		NodeConsoleLogger.important(`${important}  ${intro}${lineBreak}`, COLORS.IMPORTANT);
+		NodeConsoleLogger.important(`${lineBreak}${intro}${lineBreak}`);
 		NodeConsoleLogger.info(license);
 	} catch (err) {
 		NodeConsoleLogger.error(NodeTranslationService.getMessage(ERRORS.MISSING_LICENSE_FILE));

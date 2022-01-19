@@ -9,9 +9,6 @@ const ConsoleLogger = require('./ConsoleLogger');
 const { COLORS } = require('./LoggerConstants');
 
 class NodeConsoleLogger extends ConsoleLogger {
-	_println(message, color) {
-		console.log(this.formatString(message, { color: color }));
-	}
 
 	info(message) {
 		this._println(message, COLORS.INFO);
@@ -30,10 +27,14 @@ class NodeConsoleLogger extends ConsoleLogger {
 	}
 
 	important(message) {
-		this._println(message, COLORS.IMPORTANT)
+		this._println(message, COLORS.IMPORTANT, true)
 	}
 
-	formatString(str, options) {
+	_println(message, color, isBold) {
+		console.log(this._formatString(message, { color: color, bold: isBold }));
+	}
+
+	_formatString(str, options) {
 		const color = options.color || COLORS.DEFAULT;
 		const bold = options.bold ? chalk.bold : str => str;
 		return bold(color(str));
