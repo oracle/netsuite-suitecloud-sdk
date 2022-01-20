@@ -241,7 +241,7 @@
 	"ERRORS_GENERAL_CONNECTION_PROBLEM": "There was an error when communicating with the server. Try again later.",
 	"ERRORS_INTERACTIVE_MODE_MORE_OPTIONS": "The '-i' option cannot be used in combination with other options. Use either the '-i' option, or the other options you specified.",
 	"ERRORS_MISSING_DEFAULT_AUTH_ID": "The {0} property is missing.",
-	"ERRORS_MISSING_LICENSE_FILE": "The LICENSE.txt file is missing and cannot be displayed. Please try again.",
+	"ERRORS_MISSING_LICENSE_FILE": "The FUTC-LICENSE.txt file is missing and cannot be displayed. Please try again.",
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 	"ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"{2}\" in a valid project folder.",
 	"ERRORS_PROCESS_FAILED": "The process has failed.",

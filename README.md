@@ -27,5 +27,7 @@ To read the 2021.1 NetSuite's release notes and documentation, check the followi
 ## [Contributing](./CONTRIBUTING.md)
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](./CONTRIBUTING.md) for details.
 
-## [License](https://www.oracle.com/downloads/licenses/oracle-free-license.html)
+## [License](./LICENSE.txt)
+Copyright (c) 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+
 By installing the NPM package, you are accepting the installation of a dependency. See [License](/https://www.oracle.com/downloads/licenses/oracle-free-license.html) for details.

@@ -99,3 +99,5 @@ SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requ
 
 ## License
 Copyright (c) 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
+
+By installing the NPM package, you are accepting the installation of a dependency. See [License](/https://www.oracle.com/downloads/licenses/oracle-free-license.html) for details.

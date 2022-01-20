@@ -15,7 +15,7 @@ const {
 } = require('../../services/TranslationKeys');
 
 const licenseFileEncoding = 'utf8';
-const licenseFilePath = 'LICENSE.txt';
+const licenseFilePath = 'resources/FUTC-LICENSE.txt';
 
 function display() {
 
