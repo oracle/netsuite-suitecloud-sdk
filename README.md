@@ -29,3 +29,5 @@ SuiteCloud CLI for Node.js is an open source project. Pull Requests are currentl
 
 ## [License](./LICENSE.txt)
 Copyright (c) 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+
+By installing this NPM package, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions license](https://www.oracle.com/downloads/licenses/oracle-free-license.html).
