@@ -20,13 +20,14 @@ In this GitHub repository, the following SuiteCloud SDK tools are available:
 </a>
 
 ## Release Notes & Documentation
-To read the 2021.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+To read the 2022.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
-- Read the release notes for NetSuite 2021.2 in [SuiteCloud SDK Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html).
+- Read the release notes for NetSuite 2022.1 in [SuiteCloud SDK Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html).
 
 ## [Contributing](./CONTRIBUTING.md)
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [Contributing](./CONTRIBUTING.md) for details.
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
+Suitecloud Unit Testing is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](./LICENSE.txt)
 Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
