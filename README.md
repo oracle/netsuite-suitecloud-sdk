@@ -26,6 +26,7 @@ To read the 2021.2 NetSuite's release notes and documentation, check the followi
 
 ## [Contributing](./CONTRIBUTING.md)
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [Contributing](./CONTRIBUTING.md) for details.
+SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](./LICENSE.txt)
 Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
