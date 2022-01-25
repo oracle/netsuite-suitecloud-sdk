@@ -25,10 +25,8 @@ Each version of CLI for Node.js in NPM works optimally with a specific NetSuite 
 
 | Version in NPM | Version in NetSuite |
 |:--------------:|:-------------------:|
+| 1.4.X  | 2022.1   |
 | 1.3.X  | 2021.2   |
-| 1.2.X  | 2021.1   |
-| 1.1.X  | 2020.2   |
-| 1.0.X  | 2020.1   |
 
 ## Installation
 Since CLI for Node.js is a development tool, use a global instance to install it by running the following command:
@@ -88,15 +86,15 @@ suitecloud account:setup
 ```
 
 ## Release Notes & Documentation
-To read the 2021.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+To read the 2021.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
-- Read the release notes for NetSuite 2021.1 in [SuiteCloud CLI for Node.js Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html#subsect_157467836973).
+- Read the release notes for NetSuite 2021.2 in [Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=preface_3710624702.html).
 - Read the CLI for Node.js documentation in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
 
 ## [Contributing](/CONTRIBUTING.md)
-SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [CONTRIBUTING](/CONTRIBUTING.md) for details.
+SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
-Copyright (c) 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
 
-By installing this NPM package, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions license](https://www.oracle.com/downloads/licenses/oracle-free-license.html).
+By installing the SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
