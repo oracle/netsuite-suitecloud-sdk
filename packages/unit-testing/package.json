@@ -16,8 +16,8 @@
 	},
 	"main": "jest-configuration/SuiteCloudJestConfiguration.js",
 	"dependencies": {
-		"@babel/preset-env": "7.14.7",
-		"babel-jest": "27.0.6",
+		"@babel/preset-env": "7.16.11",
+		"babel-jest": "27.4.6",
 		"babel-plugin-transform-amd-to-commonjs": "1.4.0",
 		"xml2js": "0.4.23"
 	}
