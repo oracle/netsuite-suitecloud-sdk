@@ -38,7 +38,7 @@ export default class ListFiles extends BaseAction {
 			if (selectedFolder) {
 				await this._listFiles(selectedFolder.label);
 			}
-		} catch (e) {
+		} catch (e: any) {
 			this.vsConsoleLogger.error(e);
 			this.messageService.showCommandError();
 		}

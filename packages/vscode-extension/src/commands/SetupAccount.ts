@@ -125,7 +125,7 @@ export default class SetupAccount extends BaseAction {
 				placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.NEW_AUTHID),
 				canPickMany: false,
 			});
-		} catch (e) {
+		} catch (e: any) {
 			this.messageService.showErrorMessage(e);
 		}
 	}
@@ -161,7 +161,7 @@ export default class SetupAccount extends BaseAction {
 			commandParams,
 			getSdkPath(),
 			this.rootWorkspaceFolder,
-			cancellationToken,
+			cancellationToken
 		);
 		window
 			.showInformationMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), dismissButton, cancelButton)
@@ -176,7 +176,7 @@ export default class SetupAccount extends BaseAction {
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER),
 			true,
-			authenticatePromise,
+			authenticatePromise
 		);
 
 		const actionResult = await authenticatePromise;
@@ -194,7 +194,7 @@ export default class SetupAccount extends BaseAction {
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
-					InteractiveAnswersValidator.validateMaximumLength,
+					InteractiveAnswersValidator.validateMaximumLength
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -210,7 +210,7 @@ export default class SetupAccount extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 					InteractiveAnswersValidator.validateNonProductionDomain,
-					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain,
+					InteractiveAnswersValidator.validateNonProductionAccountSpecificDomain
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -226,7 +226,7 @@ export default class SetupAccount extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
-					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
+					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -241,7 +241,7 @@ export default class SetupAccount extends BaseAction {
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty,
+					InteractiveAnswersValidator.validateFieldIsNotEmpty
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -256,7 +256,7 @@ export default class SetupAccount extends BaseAction {
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty,
+					InteractiveAnswersValidator.validateFieldIsNotEmpty
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
@@ -303,7 +303,7 @@ export default class SetupAccount extends BaseAction {
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA),
 			true,
-			saveTokenPromise,
+			saveTokenPromise
 		);
 
 		const actionResult: AuthenticateActionResult = await saveTokenPromise;
@@ -317,8 +317,8 @@ export default class SetupAccount extends BaseAction {
 					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
 					actionResult.accountInfo.companyName,
 					actionResult.accountInfo.roleName,
-					actionResult.authId,
-				),
+					actionResult.authId
+				)
 			);
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
 		} else {
@@ -339,7 +339,7 @@ export default class SetupAccount extends BaseAction {
 			AuthenticationUtils.setDefaultAuthentication(this.rootWorkspaceFolder, authId);
 			this.vsConsoleLogger.result(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, authId));
-		} catch (e) {
+		} catch (e: any) {
 			this.messageService.showErrorMessage(e);
 		}
 
