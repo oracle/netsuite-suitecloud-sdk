@@ -38,7 +38,7 @@ export default class Deploy extends BaseAction {
 
 		try {
 			projectType = this.getProjectType();
-		} catch (error) {
+		} catch (error: any) {
 			// if error is of "type" CLIException it will have getErrorMessage(), if not just use toString()
 			const errorMessage = typeof error.getErrorMessage === 'function' ? error.getErrorMessage() : error.toString();
 			this.vsConsoleLogger.error(errorMessage + EOL);

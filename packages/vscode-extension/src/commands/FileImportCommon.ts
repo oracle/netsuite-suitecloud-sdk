@@ -29,7 +29,7 @@ export default abstract class FileImportCommon extends BaseAction {
 		let selectedFilesPaths: string[] | undefined;
 		try {
 			selectedFilesPaths = await this.getSelectedFiles();
-		} catch (error) {
+		} catch (error: any) {
 			this.vsConsoleLogger.error(error);
 			this.messageService.showCommandError();
 		}
