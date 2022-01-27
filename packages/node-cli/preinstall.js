@@ -3,10 +3,13 @@ const readline = require('readline');
 const os = require('os');
 const RED_COLOR = '\x1b[31m';
 const COLOR_RESET = '\x1b[0m';
-const message = 'The installation will download the SuiteCloud SDK runtime dependency\n' +
+const question = 'Do you want to continue? (y/n) ';
+const installationMessage = 'The installation will download the SuiteCloud SDK runtime dependency\n' +
 	'for this package. By downloading the SuiteCloud SDK dependency,\n' +
 	'you are accepting the Oracle Free Use Terms and Conditions license\n' +
 	'displayed above.';
+const quitMessage = 'To continue with the installation, the above displayed license must be accepted.';
+const abortMessage = 'Installation aborted by user.';
 const REJECT_EXIT_CODE = 1;
 
 function showLicense() {
@@ -16,18 +19,16 @@ function showLicense() {
 		output: process.stdout,
 	});
 
-	rl.on('close', () => {
-		console.log(`${os.EOL}Installation aborted by user.`);
+	rl.on('close',  () => {
+		console.log(os.EOL + RED_COLOR + abortMessage + COLOR_RESET + os.EOL);
 		process.exit(REJECT_EXIT_CODE);
 	});
 
-	console.log(RED_COLOR);
-	console.log(message);
-	console.log(COLOR_RESET);
+	console.log(os.EOL + RED_COLOR + installationMessage + COLOR_RESET + os.EOL);
 
 	function promptQuestion() {
 
-		rl.question('Do you want to continue? (y/n) ', (answer) => {
+		rl.question(question, (answer) => {
 
 			if (answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes') {
 				rl.removeAllListeners();
@@ -37,6 +38,7 @@ function showLicense() {
 			if (answer.toLowerCase() === 'n' || answer.toLowerCase() === 'no') {
 				rl.removeAllListeners();
 				rl.close();
+				console.log(os.EOL + RED_COLOR + quitMessage + COLOR_RESET + os.EOL);
 				process.exit(REJECT_EXIT_CODE);
 			}
 
