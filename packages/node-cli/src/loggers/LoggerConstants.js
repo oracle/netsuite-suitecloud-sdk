@@ -14,7 +14,6 @@ module.exports = {
 		ERROR: chalk.red,
 		INFO: chalk.cyan,
 		WARNING: chalk.yellow,
-		IMPORTANT: chalk.red
 	},
 	padding: '\u0020\u0020\u0020\u0020', //4 spaces
 	lineBreak: os.EOL,
