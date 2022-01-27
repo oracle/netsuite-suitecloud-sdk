@@ -8,7 +8,7 @@ const installationMessage = 'The installation will download the SuiteCloud SDK r
 	'for this package. By downloading the SuiteCloud SDK dependency,\n' +
 	'you are accepting the Oracle Free Use Terms and Conditions license\n' +
 	'displayed above.';
-const quitMessage = 'To continue with the installation, the above displayed license must be accepted.';
+const quitMessage = 'To continue with the installation, the previously displayed license must be accepted.';
 const abortMessage = 'Installation aborted by user.';
 const REJECT_EXIT_CODE = 1;
 
