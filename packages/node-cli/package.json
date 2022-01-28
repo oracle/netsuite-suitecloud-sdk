@@ -36,7 +36,7 @@
 	},
 	"scripts": {
 		"test": "jest",
-		"preinstall": "more \"./resources/FUTC-LICENSE.txt\" && node preinstall.js",
+		"preinstall": "node preinstall.js",
 		"postinstall": "node postinstall.js"
 	}
 }
