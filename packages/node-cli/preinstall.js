@@ -22,7 +22,7 @@ const INSTALLATION_MESSAGE = 'The installation will download the SuiteCloud SDK 
 	'you are accepting the Oracle Free Use Terms and Conditions license\n' +
 	'displayed above.';
 const ACCEPT_FLAG_MESSAGE = 'By providing --acceptSuiteCloudSDKLicense flag you confirmed that you have\n' +
-	'read and accepted the Oracle Free Terms and Conditions license\nfor the SuiteCloud SDK displayed above.'
+	'read and accepted the Oracle Free Terms and Conditions license\nfor the SuiteCloud SDK dependency displayed above.';
 const QUIT_MESSAGE = 'To continue with the installation, the previously displayed license must be accepted.';
 const ABORT_MESSAGE = 'Installation aborted by user.';
 const NEGATIVE_ANSWERS = ['n', 'no'];
