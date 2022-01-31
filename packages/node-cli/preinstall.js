@@ -21,13 +21,13 @@ const INSTALLATION_MESSAGE = 'The installation will download the SuiteCloud SDK 
 	'for this package. By downloading the SuiteCloud SDK dependency,\n' +
 	'you are accepting the Oracle Free Use Terms and Conditions license\n' +
 	'displayed above.';
-const ACCEPT_FLAG_MESSAGE = 'By providing --acceptSuiteCloudSDKLicense flag you confirmed that you have\n' +
-	'read and accepted the Oracle Free Terms and Conditions license\nfor the SuiteCloud SDK dependency displayed above.';
+const ACCEPT_FLAG_MESSAGE = 'By adding the --acceptSuiteCloudSDKLicense flag to the script,you confirm that \n' +
+	'you have read and accepted the Oracle Free Terms and Conditions license\nfor the SuiteCloud SDK dependency displayed above.';
 const QUIT_MESSAGE = 'To continue with the installation, the previously displayed license must be accepted.';
 const ABORT_MESSAGE = 'Installation aborted by user.';
 const NEGATIVE_ANSWERS = ['n', 'no'];
 const AFFIRMATIVE_ANSWERS = ['y', 'yes'];
-const LICENSE_NOT_FOUND_ERROR = 'The FUTC-LICENSE.txt file is missing and cannot be displayed. Please try again.';
+const LICENSE_NOT_FOUND_ERROR = 'The FUTC-LICENSE.txt file is missing and cannot be displayed. Try again.';
 
 (() => {
 	return showLicense();
