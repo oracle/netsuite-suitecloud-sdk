@@ -26,10 +26,6 @@ class NodeConsoleLogger extends ConsoleLogger {
 		this._println(message, COLORS.ERROR);
 	}
 
-	important(message) {
-		this._println(message, COLORS.IMPORTANT, true)
-	}
-
 	_println(message, color, isBold) {
 		console.log(this._formatString(message, { color: color, bold: isBold }));
 	}

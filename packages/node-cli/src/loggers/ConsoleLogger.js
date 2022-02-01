@@ -17,8 +17,6 @@ class ConsoleLogger {
 
 	error(message) {}
 
-    important(message) {}
-
 	getPadding(padCount) {
 		if (padCount) {
 			let paddings = '';
