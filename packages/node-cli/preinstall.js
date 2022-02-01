@@ -33,14 +33,14 @@ const LICENSE_NOT_FOUND_ERROR = 'The FUTC-LICENSE.txt file is missing and cannot
 
 function showLicenseWithoutPrompt() {
 
-		try {
-			const license = fs.readFileSync(LICENSE_PATH, LICENSE_FILE_ENCODING);
-			console.log(license);
-			printMessage(INSTALLATION_MESSAGE);
-		} catch (err) {
-			printMessage(LICENSE_NOT_FOUND_ERROR);
-			process.exit(REJECT_EXIT_CODE);
-		}
+	try {
+		const license = fs.readFileSync(LICENSE_PATH, LICENSE_FILE_ENCODING);
+		console.log(license);
+		printMessage(INSTALLATION_MESSAGE);
+	} catch (err) {
+		printMessage(LICENSE_NOT_FOUND_ERROR);
+		process.exit(REJECT_EXIT_CODE);
+	}
 }
 
 function showLicenseAndPrompt() {
