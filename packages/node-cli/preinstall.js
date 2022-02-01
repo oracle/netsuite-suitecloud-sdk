@@ -16,33 +16,34 @@ const REJECT_EXIT_CODE = 1;
 
 const RED_COLOR = '\x1b[31m';
 const COLOR_RESET = '\x1b[0m';
+const INSTALLATION_MESSAGE = 'The installation of this package will download the SuiteCloud SDK runtime dependency\n' +
+	'released under the Oracle Free Use Terms and Conditions license displayed above.';
 const QUESTION = 'Do you want to continue? (yes/no) ';
-const INSTALLATION_MESSAGE = 'The installation will download the SuiteCloud SDK runtime dependency\n' +
-	'for this package. By downloading the SuiteCloud SDK dependency,\n' +
-	'you are accepting the Oracle Free Use Terms and Conditions license\n' +
-	'displayed above.';
-const ACCEPT_FLAG_MESSAGE = 'By adding the --acceptSuiteCloudSDKLicense flag to the script,you confirm that \n' +
-	'you have read and accepted the Oracle Free Terms and Conditions license\nfor the SuiteCloud SDK dependency displayed above.';
-const QUIT_MESSAGE = 'To continue with the installation, the previously displayed license must be accepted.';
 const ABORT_MESSAGE = 'Installation aborted by user.';
 const NEGATIVE_ANSWERS = ['n', 'no'];
 const AFFIRMATIVE_ANSWERS = ['y', 'yes'];
 const LICENSE_NOT_FOUND_ERROR = 'The FUTC-LICENSE.txt file is missing and cannot be displayed. Try again.';
 
 (() => {
-	return showLicense();
+	if (process.env.npm_config_supressSuiteCloudSDKLicensePrompt) {
+		return showLicenseWithoutPrompt();
+	}
+	return showLicenseAndPrompt();
 })();
 
-function showLicense() {
-	if (process.env.npm_config_acceptSuiteCloudSDKLicense) {
+function showLicenseWithoutPrompt() {
+
 		try {
 			const license = fs.readFileSync(LICENSE_PATH, LICENSE_FILE_ENCODING);
 			console.log(license);
-			return printMessage(ACCEPT_FLAG_MESSAGE);
+			printMessage(INSTALLATION_MESSAGE);
 		} catch (err) {
-			throw new Error(LICENSE_NOT_FOUND_ERROR);
+			printMessage(LICENSE_NOT_FOUND_ERROR);
+			process.exit(REJECT_EXIT_CODE);
 		}
-	}
+}
+
+function showLicenseAndPrompt() {
 
 	let shell;
 	if (os.platform() === WINDOWS_PLATFORM) {
@@ -58,7 +59,7 @@ function showLicense() {
 		return process.exit(code);
 	});
 	shell.on('error', () => {
-		return process.exit(REJECT_EXIT_CODE);
+		return process.exit(1);
 	});
 }
 
@@ -89,7 +90,7 @@ function promptQuestion() {
 			if (NEGATIVE_ANSWERS.includes(answer)) {
 				rl.removeAllListeners();
 				rl.close();
-				printMessage(QUIT_MESSAGE);
+				printMessage(ABORT_MESSAGE);
 				process.exit(REJECT_EXIT_CODE);
 			}
 
