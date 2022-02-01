@@ -11,7 +11,7 @@ const WINDOWS_PLATFORM = 'win32';
 const WINDOWS_SHELL = 'cmd';
 const WINDOWS_SHELL_PARAMS = ['/c', 'more', LICENSE_PATH];
 const UNIX_SHELL = 'sh';
-const UNIX_SHELL_PARAMS = ['-c', `less -meX ${LICENSE_PATH}`];
+const UNIX_SHELL_PARAMS = ['-c', `more ${LICENSE_PATH}`];
 const REJECT_EXIT_CODE = 1;
 
 const RED_COLOR = '\x1b[31m';
