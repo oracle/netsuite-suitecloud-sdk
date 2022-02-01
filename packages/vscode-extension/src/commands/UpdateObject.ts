@@ -75,7 +75,7 @@ export default class UpdateObject extends BaseAction {
 			}
 
 			return this.successfulValidation();
-		} catch (e) {
+		} catch (e: any) {
 			return this.unsuccessfulValidation(e.getErrorMessage());
 		}
 	}

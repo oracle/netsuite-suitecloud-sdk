@@ -73,7 +73,7 @@ export default class UploadFile extends BaseAction {
 			}
 
 			return this.successfulValidation();
-		} catch (e) {
+		} catch (e: any) {
 			return this.unsuccessfulValidation(e.getErrorMessage());
 		}
 	}
