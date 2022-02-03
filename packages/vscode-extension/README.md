@@ -14,7 +14,7 @@ Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/a
 ## Installation Prerequisites
 The following software is required to work with SuiteCloud Extension for Visual Studio Code:
 - Oracle JDK version 11
-- VS Code version 1.63.1 or higher
+- VS Code version 1.57 or higher
 
 Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Requirements for SuiteCloud Extension for Visual Studio Code</a>.
 
