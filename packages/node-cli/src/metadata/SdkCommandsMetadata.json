@@ -618,6 +618,45 @@
 			}
 		}
 	},
+	"object:updatecustomrecordwithinstances": {
+		"name": "object:updatecustomrecordwithinstances",
+		"sdkCommand": "updatecustomrecordwithinstances",
+		"usage": "",
+		"description": "Overwrites the custom record object and all its instances in the project with the ones in an account.",
+		"isSetupRequired": true,
+		"options": {
+			"scriptid": {
+				"name": "scriptid",
+				"option": "scriptid",
+				"description": "Specify the script ID.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "customrecord_test",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"authid": {
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom alias you gave to a specific account-role combination.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Set the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:/project/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			}
+		}
+	},
 	"file:upload": {
 		"name": "file:upload",
 		"sdkCommand": "uploadfiles",

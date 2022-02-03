@@ -12,6 +12,7 @@ const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
+const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 
 const {
 	COMMAND_UPDATE: { MESSAGES },
@@ -19,6 +20,7 @@ const {
 
 const ANSWERS_NAMES = {
 	FILTER_BY_SCRIPT_ID: 'filterByScriptId',
+	INCLUDE_CUSTOM_INSTANCES: 'includecustominstances',
 	OVERWRITE_OBJECTS: 'overwriteObjects',
 	SCRIPT_ID_LIST: 'scriptid',
 	SCRIPT_ID_FILTER: 'scriptIdFilter',
@@ -47,6 +49,10 @@ module.exports = class UpdateAction extends BaseAction {
 			if (params.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !params[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
 				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
+			if (params.hasOwnProperty(ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES) && params[ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES]) {
+				const commandsMetadataServiceSingleton = new CommandsMetadataService();
+				this._commandMetadata = commandsMetadataServiceSingleton.getCommandMetadataByName('object:updatecustomrecordwithinstances');
+			}
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 
 			const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
@@ -61,9 +67,9 @@ module.exports = class UpdateAction extends BaseAction {
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.withCommandParameters(sdkParams)
-					.build()
+						.withResultMessage(operationResult.resultMessage)
+						.withCommandParameters(sdkParams)
+						.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(sdkParams).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
