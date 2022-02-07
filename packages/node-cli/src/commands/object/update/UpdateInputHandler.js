@@ -50,7 +50,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		const customRecordsAndSegments = selectedScriptIds.filter((scriptid) => scriptid.startsWith('customrecord') || scriptid.startsWith('cseg'));
 
 		const includeCustomInstancesQuestions = {
-			when: selectedScriptIds.length == 1 && customRecordsAndSegments.length == selectedScriptIds.length,
+			when: customRecordsAndSegments.length >= 1, // && customRecordsAndSegments.length == selectedScriptIds.length,
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES,
 			message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_CUSTOM_INSTANCES),
