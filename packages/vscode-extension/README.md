@@ -30,15 +30,23 @@ See more details about installation in <a href="https://system.netsuite.com/app/
 
 ## Getting Started
 
-### Making a File Active in the Editor
-For the extension to detect the working SDF project and run any command against it, you first need to select a file from the current workspace to make it active in the editor.
-
 ### How to Trigger the Command Palette
 Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. To trigger it, click **View** > **Command Palette** or use the relevant shortcut:
 * Ctrl+Shift+P if you are using Windows or Linux.
 * Cmd+Shift+P if you are using Mac OS. 
 
 <p align="center"><a href="#"><img src="resources/CommandPalette.png" alt="Command Palette" width="500" height="600"></a></p>
+
+### How to Work with a SuiteCloud Project
+You can do the following actions with a SuiteCloud project:
+1. To create a SutieCloud project, open the Command Palette, enter **SuiteCloud** and, from the dropdown list, select **SuiteCloud: Create Project**.
+2. To open a SuiteCloud project, go to **File** > **Open Folder...** and select the root folder of your SuiteCloud project.
+
+### How to Work with Multiple SuiteCloud Projects
+To add a SuiteCloud project to an already opened Visual Studio Code window, go to **File** > **Add Folder To Workspace ...** and select the root folder of your SuiteCloud project. This allows you to work with multiple SuiteCloud projects at the same time.
+
+### Making a File Active in the Editor
+For the extension to detect the working SDF project and run any command against it, you first need to select a file from the current workspace to make it active in the editor.
 
 ### Setting Up an Account
 To start using your NetSuite accounts with the SuiteCloud Extension for Visual Studio Code, you first need to set them up. The account set up includes adding an account to the extension and setting it as default. As a prerequisite to adding an account, a SuiteCloud project must be open in Visual Studio Code.  
