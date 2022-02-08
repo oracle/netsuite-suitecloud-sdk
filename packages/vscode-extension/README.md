@@ -39,7 +39,7 @@ Interact through the Command Palette to use the SuiteCloud Extension for Visual 
 
 ### How to Work with a SuiteCloud Project
 You can do the following actions with a SuiteCloud project:
-1. To create a SutieCloud project, open the Command Palette, enter **SuiteCloud** and, from the dropdown list, select **SuiteCloud: Create Project**.
+1. To create a SuiteCloud project, open the Command Palette, enter **SuiteCloud** and, from the dropdown list, select **SuiteCloud: Create Project**.
 2. To open a SuiteCloud project, go to **File** > **Open Folder...** and select the root folder of your SuiteCloud project.
 
 ### How to Work with Multiple SuiteCloud Projects
