@@ -10,7 +10,7 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkExecutionContext = require('../../../SdkExecutionContext');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 
 const {
@@ -30,7 +30,11 @@ const COMMAND_OPTIONS = {
 	PROJECT: 'project',
 	SCRIPT_ID: 'scriptid',
 };
-
+const COMMAND_UPDATE_CUSTOM_RECORD_WITH_INSTANCES = 'updatecustomrecordwithinstances';
+const SCRIPT_ID_PREFIXES = {
+	CUSTOM_RECORD: 'customrecord',
+	CUSTOM_SEGMENT: 'cseg',
+};
 module.exports = class UpdateAction extends BaseAction {
 	constructor(options) {
 		super(options);
@@ -49,23 +53,23 @@ module.exports = class UpdateAction extends BaseAction {
 				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
 			if (params.hasOwnProperty(ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES) && params[ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES]) {
-				const customRecordScriptIds = params['scriptid'].split(' ').filter((scriptId) => this._isCustomRecord(scriptId));
-				params['scriptid'] = params['scriptid']
+				const customRecordScriptIds = params[COMMAND_OPTIONS.SCRIPT_ID].split(' ').filter((scriptId) => this._isCustomRecord(scriptId));
+				params[COMMAND_OPTIONS.SCRIPT_ID] = params[COMMAND_OPTIONS.SCRIPT_ID]
 					.split(' ')
 					.filter((scriptId) => !this._isCustomRecord(scriptId))
 					.join(' ');
 				const resultIncludeCustomInstances = await this._updateCustomRecordWithInstances(params, customRecordScriptIds);
 				if (resultIncludeCustomInstances.successful == false) {
 					for (const result of resultIncludeCustomInstances.results) {
-						if (result.status == 'ERROR') {
+						if (result.status == STATUS.ERROR) {
 							return ActionResult.Builder.withErrors(result.errorMessages).build();
 						}
 					}
 				}
 			}
 
-			if (params['scriptid'] === '') {
-				return ActionResult.Builder.withData().withResultMessage('Update finished').build();
+			if (params[COMMAND_OPTIONS.SCRIPT_ID] === '') {
+				return ActionResult.Builder.withData().withResultMessage('Update finished').build(); //TODO Change messages or the way whe log the result
 			}
 
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
@@ -80,7 +84,7 @@ module.exports = class UpdateAction extends BaseAction {
 				message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 			});
 
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withCommandParameters(sdkParams)
@@ -92,7 +96,7 @@ module.exports = class UpdateAction extends BaseAction {
 	}
 
 	_isCustomRecord(scriptid) {
-		return scriptid.startsWith('customrecord') || scriptid.startsWith('cseg');
+		return scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_RECORD) || scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_SEGMENT);
 	}
 
 	async _updateCustomRecordWithInstances(params, customRecordScriptIds) {
@@ -100,7 +104,7 @@ module.exports = class UpdateAction extends BaseAction {
 		for (const scriptId of customRecordScriptIds) {
 			const operationResult = await this._executeCommandUpdateCustomRecordWithInstances(params, scriptId);
 			operationResults.results.push(operationResult);
-			if (operationResult.status === 'ERROR') {
+			if (operationResult.status === STATUS.ERROR) {
 				operationResults.successful = false;
 				return operationResults;
 			} else {
@@ -111,12 +115,12 @@ module.exports = class UpdateAction extends BaseAction {
 	}
 
 	async _executeCommandUpdateCustomRecordWithInstances(params, scriptId) {
-		params['scriptid'] = scriptId;
-		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand('updatecustomrecordwithinstances')
+		params[COMMAND_OPTIONS.SCRIPT_ID] = scriptId;
+		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(COMMAND_UPDATE_CUSTOM_RECORD_WITH_INSTANCES)
 			.integration()
-			.addParam('authid', params['authid'])
-			.addParam('project', params['project'])
-			.addParam('scriptid', scriptId)
+			.addParam(COMMAND_OPTIONS.AUTH_ID, params[COMMAND_OPTIONS.AUTH_ID])
+			.addParam(COMMAND_OPTIONS.PROJECT, params[COMMAND_OPTIONS.PROJECT])
+			.addParam(COMMAND_OPTIONS.SCRIPT_ID, scriptId)
 			.build();
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForUpdate),
