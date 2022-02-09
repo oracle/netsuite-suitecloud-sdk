@@ -12,7 +12,6 @@ const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
-const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 
 const {
 	COMMAND_UPDATE: { MESSAGES },
@@ -57,8 +56,16 @@ module.exports = class UpdateAction extends BaseAction {
 					.join(' ');
 				const resultIncludeCustomInstances = await this._updateCustomRecordWithInstances(params, customRecordScriptIds);
 				if (resultIncludeCustomInstances.successful == false) {
-					return ActionResult.Builder.withErrors(['Error fill here']).build();
+					for (const result of resultIncludeCustomInstances.results) {
+						if (result.status == 'ERROR') {
+							return ActionResult.Builder.withErrors(result.errorMessages).build();
+						}
+					}
 				}
+			}
+
+			if (params['scriptid'] === '') {
+				return ActionResult.Builder.withData().withResultMessage('Update finished').build();
 			}
 
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
@@ -90,31 +97,30 @@ module.exports = class UpdateAction extends BaseAction {
 
 	async _updateCustomRecordWithInstances(params, customRecordScriptIds) {
 		const operationResults = { results: [], successful: true };
-		const commandsMetadataServiceSingleton = new CommandsMetadataService();
-		const commandMetadata = commandsMetadataServiceSingleton.getCommandMetadataByName('object:updatecustomrecordwithinstances');
 		for (const scriptId of customRecordScriptIds) {
-			const operationResult = await this._updateSingleCustomRecordWithInstances(params, scriptId, commandMetadata);
+			const operationResult = await this._executeCommandUpdateCustomRecordWithInstances(params, scriptId);
 			operationResults.results.push(operationResult);
 			if (operationResult.status === 'ERROR') {
 				operationResults.successful = false;
 				return operationResults;
+			} else {
+				this._log.result(operationResult.data);
 			}
 		}
 		return operationResults;
 	}
 
-	async _updateSingleCustomRecordWithInstances(params, scriptId, commandMetadata) {
-		const newParams = { ...params };
-		newParams['scriptid'] = scriptId;
-
-		const sdkParams = CommandUtils.extractCommandOptions(newParams, commandMetadata);
-		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(commandMetadata.sdkCommand)
+	async _executeCommandUpdateCustomRecordWithInstances(params, scriptId) {
+		params['scriptid'] = scriptId;
+		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand('updatecustomrecordwithinstances')
 			.integration()
-			.addParams(sdkParams)
+			.addParam('authid', params['authid'])
+			.addParam('project', params['project'])
+			.addParam('scriptid', scriptId)
 			.build();
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForUpdate),
-			message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
+			message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECT_WITH_CUSTOM_INSTANCES, scriptId),
 		});
 		return operationResult;
 	}
