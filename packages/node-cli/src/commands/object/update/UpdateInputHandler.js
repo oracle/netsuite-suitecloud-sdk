@@ -34,6 +34,11 @@ const COMMAND_OPTIONS = {
 	SCRIPT_ID: 'scriptid',
 };
 
+const SCRIPT_ID_PREFIXES = {
+	CUSTOM_RECORD: 'customrecord',
+	CUSTOM_SEGMENT: 'cseg',
+};
+
 const MAX_ENTRIES_BEFORE_FILTER = 30;
 const XML_EXTENSION = '.xml';
 
@@ -47,7 +52,9 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		const foundXMLFiles = this.searchFilesFromObjectsFolder();
 		let filteredObjects = await this.getObjectsToSelect(foundXMLFiles);
 		const selectedScriptIds = await this.selectObjectsScriptIds(foundXMLFiles, filteredObjects);
-		const customRecordsAndSegments = selectedScriptIds.filter((scriptid) => scriptid.startsWith('customrecord') || scriptid.startsWith('cseg'));
+		const customRecordsAndSegments = selectedScriptIds.filter(
+			(scriptid) => scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_RECORD) || scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_SEGMENT)
+		);
 
 		const includeCustomInstancesQuestions = {
 			when: customRecordsAndSegments.length >= 1, // && customRecordsAndSegments.length == selectedScriptIds.length,

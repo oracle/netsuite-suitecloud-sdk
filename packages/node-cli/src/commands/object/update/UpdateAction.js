@@ -14,7 +14,7 @@ const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 
 const {
-	COMMAND_UPDATE: { MESSAGES },
+	COMMAND_UPDATE: { ERRORS, MESSAGES, OUTPUT },
 } = require('../../../services/TranslationKeys');
 
 const ANSWERS_NAMES = {
@@ -69,7 +69,7 @@ module.exports = class UpdateAction extends BaseAction {
 			}
 
 			if (params[COMMAND_OPTIONS.SCRIPT_ID] === '') {
-				return ActionResult.Builder.withData().withResultMessage('Update finished').build(); //TODO Change messages or the way whe log the result
+				return ActionResult.Builder.withData([]).build(); //Empty result since it has been already logged
 			}
 
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
@@ -100,15 +100,18 @@ module.exports = class UpdateAction extends BaseAction {
 	}
 
 	async _updateCustomRecordWithInstances(params, customRecordScriptIds) {
+		this._log.result(NodeTranslationService.getMessage(OUTPUT.UPDATED_CUSTOM_RECORDS));
+		const copiedParams = { ...params };
 		const operationResults = { results: [], successful: true };
 		for (const scriptId of customRecordScriptIds) {
-			const operationResult = await this._executeCommandUpdateCustomRecordWithInstances(params, scriptId);
+			const operationResult = await this._executeCommandUpdateCustomRecordWithInstances(copiedParams, scriptId);
 			operationResults.results.push(operationResult);
 			if (operationResult.status === STATUS.ERROR) {
+				this._log.error(NodeTranslationService.getMessage(ERRORS.CUSTOM_RECORD, scriptId));
 				operationResults.successful = false;
 				return operationResults;
 			} else {
-				this._log.result(operationResult.data);
+				this._log.result(NodeTranslationService.getMessage(OUTPUT.UPDATED_CUSTOM_RECORD_SCRIPT_ID, scriptId));
 			}
 		}
 		return operationResults;
