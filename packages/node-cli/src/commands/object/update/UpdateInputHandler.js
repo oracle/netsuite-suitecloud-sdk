@@ -21,7 +21,7 @@ const { validateArrayIsNotEmpty, validateScriptId, showValidationResults } = req
 const { FOLDERS } = require('../../../ApplicationConstants');
 const ANSWERS_NAMES = {
 	FILTER_BY_SCRIPT_ID: 'filterByScriptId',
-	INCLUDE_CUSTOM_INSTANCES: 'includeCustomInstances',
+	INCLUDE_CUSTOM_INSTANCES: 'includeinstances',
 	OVERWRITE_OBJECTS: 'overwriteObjects',
 	SCRIPT_ID_LIST: 'scriptid',
 	SCRIPT_ID_FILTER: 'scriptIdFilter',
@@ -29,7 +29,7 @@ const ANSWERS_NAMES = {
 
 const COMMAND_OPTIONS = {
 	AUTH_ID: 'authid',
-	INCLUDE_CUSTOM_INSTANCES: 'includecustominstances',
+	INCLUDE_CUSTOM_INSTANCES: 'includeinstances',
 	PROJECT: 'project',
 	SCRIPT_ID: 'scriptid',
 };

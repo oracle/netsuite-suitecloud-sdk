@@ -21,6 +21,20 @@
 			}
 		}
 	},
+	"object:update": {
+		"options": {
+			"includeinstances": {
+				"name": "includeinstances",
+				"option": "includeinstances",
+				"description": "Include instances (Only available for custom records).",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": true,
+				"disableInIntegrationMode": false
+			}
+		}
+	},
 	"project:create": {
 		"options": {
 			"includeunittesting": {

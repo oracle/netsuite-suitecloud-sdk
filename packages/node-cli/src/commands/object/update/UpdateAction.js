@@ -19,7 +19,7 @@ const {
 
 const ANSWERS_NAMES = {
 	FILTER_BY_SCRIPT_ID: 'filterByScriptId',
-	INCLUDE_CUSTOM_INSTANCES: 'includecustominstances',
+	INCLUDE_CUSTOM_INSTANCES: 'includeinstances',
 	OVERWRITE_OBJECTS: 'overwriteObjects',
 	SCRIPT_ID_LIST: 'scriptid',
 	SCRIPT_ID_FILTER: 'scriptIdFilter',
@@ -29,6 +29,7 @@ const COMMAND_OPTIONS = {
 	AUTH_ID: 'authid',
 	PROJECT: 'project',
 	SCRIPT_ID: 'scriptid',
+	INCLUDE_INSTANCES: 'includeinstances',
 };
 const COMMAND_UPDATE_CUSTOM_RECORD_WITH_INSTANCES = 'updatecustomrecordwithinstances';
 const SCRIPT_ID_PREFIXES = {
@@ -52,7 +53,7 @@ module.exports = class UpdateAction extends BaseAction {
 			if (params.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !params[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
 				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
-			if (params.hasOwnProperty(ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES) && params[ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES]) {
+			if (params.hasOwnProperty(COMMAND_OPTIONS.INCLUDE_INSTANCES) && params[COMMAND_OPTIONS.INCLUDE_INSTANCES]) {
 				const customRecordScriptIds = params[COMMAND_OPTIONS.SCRIPT_ID].split(' ').filter((scriptId) => this._isCustomRecord(scriptId));
 				params[COMMAND_OPTIONS.SCRIPT_ID] = params[COMMAND_OPTIONS.SCRIPT_ID]
 					.split(' ')
@@ -66,6 +67,7 @@ module.exports = class UpdateAction extends BaseAction {
 						}
 					}
 				}
+				delete params[COMMAND_OPTIONS.INCLUDE_INSTANCES];
 			}
 
 			if (params[COMMAND_OPTIONS.SCRIPT_ID] === '') {
