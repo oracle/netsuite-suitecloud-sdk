@@ -104,6 +104,7 @@
 			{
 				"command": "suitecloud.deploy",
 				"key": "ctrl+alt+d",
+				"win": "ctrl+alt+d",
 				"mac": "ctrl+alt+cmd+d",
 				"linux": "alt+d"
 			},
