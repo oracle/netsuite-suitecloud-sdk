@@ -24,6 +24,7 @@ export type CommandsInfoMapType = {
 	updatefile: CommandInfo;
 	updateobject: CommandInfo;
 	uploadfile: CommandInfo;
+	validate: CommandInfo;
 };
 
 export const commandsInfoMap: CommandsInfoMapType = {
@@ -90,5 +91,10 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		vscodeCommandId: 'suitecloud.uploadfile',
 		cliCommandName: 'file:upload',
 		vscodeCommandName: 'Upload File',
+	},
+	validate: {
+		vscodeCommandId: 'suitecloud.validate',
+		cliCommandName: 'project:validate',
+		vscodeCommandName: 'Validate Project',
 	},
 };

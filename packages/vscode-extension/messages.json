@@ -135,5 +135,7 @@
 	"UPLOAD_FILE_ERROR_UPLOAD_FILE_FOLDER_RESTRICTION": "The file to upload should be in a supported folder inside the FileCabinet folder. For information about the supported folders, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4724963992.html.",
 	"UPLOAD_FILE_OVERWRITE_FILE": "The file in your account will be overwritten: {0}",
 	"UPLOAD_FILE_PROCESS_CANCELED": "The file upload process has been canceled. No files have been overwritten.",
-	"UPLOAD_FILE_UPLOADING": "Uploading files..."
+	"UPLOAD_FILE_UPLOADING": "Uploading files...",
+
+	"VALIDATE_VALIDATING": "Validating project..."
 }
