@@ -589,7 +589,7 @@
 			"scriptid": {
 				"name": "scriptid",
 				"option": "scriptid",
-				"description": "Specify the script ID of the objects you want to overwrite.",
+				"description": "Specifies the script ID of the objects you want to overwrite.",
 				"mandatory": true,
 				"type": "MULTIPLE",
 				"usage": "scriptid [...]",

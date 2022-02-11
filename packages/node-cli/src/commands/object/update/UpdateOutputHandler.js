@@ -7,6 +7,7 @@ const BaseOutputHandler = require('../../base/BaseOutputHandler');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 
 const {
+	CLI,
 	COMMAND_UPDATE: { OUTPUT },
 } = require('../../../services/TranslationKeys');
 
@@ -20,8 +21,18 @@ module.exports = class UpdateOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
-		const updatedObjects = actionResult.data.filter((element) => element.type === UPDATED_OBJECT_TYPE.SUCCESS);
-		const noUpdatedObjects = actionResult.data.filter((element) => element.type !== UPDATED_OBJECT_TYPE.SUCCESS);
+		this._parseUpdateObjects(actionResult);
+		this._parseUpdateCustomRecordsWithInstancesNonInteractiveExecution(actionResult);
+		return actionResult;
+	}
+
+	_parseUpdateObjects(actionResult) {
+		const updatedObjects = actionResult.data.filter(
+			(element) => element.type === UPDATED_OBJECT_TYPE.SUCCESS && (!element.includeinstances || element.includeinstances === false)
+		);
+		const noUpdatedObjects = actionResult.data.filter(
+			(element) => element.type !== UPDATED_OBJECT_TYPE.SUCCESS && (!element.includeinstances || element.includeinstances === false)
+		);
 		const sortByKey = (a, b) => (a.key > b.key ? 1 : -1);
 
 		if (updatedObjects.length > 0) {
@@ -36,6 +47,14 @@ module.exports = class UpdateOutputHandler extends BaseOutputHandler {
 				this._log.warning(`${this._log.getPadding(1)}- ${noUpdatedObject.key}: ${noUpdatedObject.message}`);
 			});
 		}
-		return actionResult;
+	}
+
+	_parseUpdateCustomRecordsWithInstancesNonInteractiveExecution(actionResult) {
+		const objectsWithInstances = actionResult.data.filter((element) => element.includeinstances === true);
+
+		if (objectsWithInstances.length > 0) {
+			const scriptids = objectsWithInstances.map((object) => object.key).sort();
+			this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE_CUSTOM_RECORDS, scriptids));
+		}
 	}
 };

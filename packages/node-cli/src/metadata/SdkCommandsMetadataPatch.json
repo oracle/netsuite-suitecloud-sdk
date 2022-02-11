@@ -26,7 +26,7 @@
 			"includeinstances": {
 				"name": "includeinstances",
 				"option": "includeinstances",
-				"description": "Include instances (Only available for custom records).",
+				"description": "Includes instances. This is only available for custom records and custom segments.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",

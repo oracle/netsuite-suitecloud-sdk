@@ -1,10 +1,12 @@
 /*
-** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-*/
+ ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
 'use strict';
 
 const assert = require('assert');
+const NodeTranslationService = require('../services/NodeTranslationService');
+const { COMMAND_OPTIONS } = require('../services/TranslationKeys');
 const OPTION_TYPE = {
 	FLAG: 'FLAG',
 	SINGLE: 'SINGLE',
@@ -12,8 +14,7 @@ const OPTION_TYPE = {
 };
 const INTERACTIVE_OPTION_NAME = 'interactive';
 const INTERACTIVE_OPTION_ALIAS = 'i';
-const NodeTranslationService = require('../services/NodeTranslationService');
-const { COMMAND_OPTION_INTERACTIVE_HELP } = require('../services/TranslationKeys');
+const HELP_OPTION_ALIAS_NAME = '-h, --help';
 
 const EXIT_CODE = {
 	SUCCESS: 0,
@@ -33,15 +34,14 @@ module.exports = class CommandRegistrationService {
 		const executeCommandFunction = options.executeCommandFunction;
 		const runInInteractiveMode = options.runInInteractiveMode;
 
-		let commandSetup = program.command(commandMetadata.name);
+		const helpMessage = NodeTranslationService.getMessage(COMMAND_OPTIONS.HELP);
+
+		let commandSetup = program.command(commandMetadata.name).helpOption(HELP_OPTION_ALIAS_NAME, helpMessage);
 		//program.alias(this._alias)
 
 		if (!runInInteractiveMode) {
 			if (commandMetadata.supportsInteractiveMode) {
-				const interactiveOptionHelp = NodeTranslationService.getMessage(
-					COMMAND_OPTION_INTERACTIVE_HELP,
-					commandMetadata.name
-				);
+				const interactiveOptionHelp = NodeTranslationService.getMessage(COMMAND_OPTIONS.INTERACTIVE_HELP, commandMetadata.name);
 				commandMetadata.options.interactive = {
 					name: INTERACTIVE_OPTION_NAME,
 					alias: INTERACTIVE_OPTION_ALIAS,
@@ -50,24 +50,17 @@ module.exports = class CommandRegistrationService {
 					mandatory: false,
 				};
 			}
-			commandSetup = this._addNonInteractiveCommandOptions(
-				commandSetup,
-				commandMetadata.options
-			);
+			commandSetup = this._addNonInteractiveCommandOptions(commandSetup, commandMetadata.options);
 		}
 
-		commandSetup
-			.description(commandMetadata.description)
-			.action(async (options) => {
-				const actionResult = await executeCommandFunction(options);
-				process.exitCode = actionResult.isSuccess() ? EXIT_CODE.SUCCESS : EXIT_CODE.ERROR;
-			});
+		commandSetup.description(commandMetadata.description).action(async (options) => {
+			const actionResult = await executeCommandFunction(options);
+			process.exitCode = actionResult.isSuccess() ? EXIT_CODE.SUCCESS : EXIT_CODE.ERROR;
+		});
 	}
 
 	_addNonInteractiveCommandOptions(commandSetup, options) {
-		const optionsSortedByName = Object.values(options).sort((option1, option2) =>
-			option1.name.localeCompare(option2.name)
-		);
+		const optionsSortedByName = Object.values(options).sort((option1, option2) => option1.name.localeCompare(option2.name));
 		optionsSortedByName.forEach((option) => {
 			if (option.disableInIntegrationMode) {
 				return;
