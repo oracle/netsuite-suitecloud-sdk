@@ -19,6 +19,7 @@ import SetupAccount from './commands/SetupAccount';
 import UpdateFile from './commands/UpdateFile';
 import UpdateObject from './commands/UpdateObject';
 import UploadFile from './commands/UploadFile';
+import Validate from './commands/Validate';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import { VSTranslationService } from './service/VSTranslationService';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
@@ -61,7 +62,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.setupaccount', new SetupAccount()),
 		register('suitecloud.updatefile', new UpdateFile()),
 		register('suitecloud.updateobject', new UpdateObject()),
-		register('suitecloud.uploadfile', new UploadFile())
+		register('suitecloud.uploadfile', new UploadFile()),
+		register('suitecloud.validate', new Validate()),
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
