@@ -48,7 +48,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		this._fileSystemService = new FileSystemService();
 	}
 
-	async getParameters(_params) {
+	async getParameters(params) {
 		const foundXMLFiles = this.searchFilesFromObjectsFolder();
 		let filteredObjects = await this.getObjectsToSelect(foundXMLFiles);
 		const selectedScriptIds = await this.selectObjectsScriptIds(foundXMLFiles, filteredObjects);

@@ -129,10 +129,9 @@ module.exports = class UpdateAction extends BaseAction {
 			.addParam(COMMAND_OPTIONS.PROJECT, params[COMMAND_OPTIONS.PROJECT])
 			.addParam(COMMAND_OPTIONS.SCRIPT_ID, scriptId)
 			.build();
-		const operationResult = await executeWithSpinner({
+		return await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForUpdate),
 			message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECT_WITH_CUSTOM_INSTANCES, scriptId),
 		});
-		return operationResult;
 	}
 };
