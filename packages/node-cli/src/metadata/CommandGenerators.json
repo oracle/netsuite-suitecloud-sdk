@@ -50,11 +50,6 @@
 		"generator": "./commands/object/update/UpdateCommand"
 	},
 	{
-		"commandName": "object:updatecustomrecordwithinstances",
-		"supportsInteractiveMode": false,
-		"generator": "./commands/object/update/UpdateCommand"
-	},
-	{
 		"commandName": "project:adddependencies",
 		"supportsInteractiveMode": false,
 		"generator": "commands/project/adddependencies/AddDependenciesCommand"
