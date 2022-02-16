@@ -162,7 +162,7 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",
 
-	"COMMAND_OPTIONS_HELP": "Displays help for command.",
+	"COMMAND_OPTIONS_HELP": "Displays help for the command.",
 	"COMMAND_OPTIONS_INTERACTIVE_HELP": "Runs the {0} command in interactive mode.",
 	"COMMAND_OPTIONS_IS_MANDATORY": "\"{0}\" option is mandatory.",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
