@@ -11,17 +11,10 @@ const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils'
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
-const { lineBreak } = require('../../../loggers/LoggerConstants');
 const {
-	COMMAND_LISTFILES: { SELECT_FOLDER, RESTRICTED_FOLDER },
+	COMMAND_LISTFILES: { ERRORS, SELECT_FOLDER },
 } = require('../../../services/TranslationKeys');
 
-const LIST_FOLDERS = {
-	COMMAND: 'listfolders',
-	OPTIONS: {
-		AUTH_ID: 'authid',
-	},
-};
 const SUITE_SCRIPTS_FOLDER = '/SuiteScripts';
 
 module.exports = class ListFilesInputHandler extends BaseInputHandler {
@@ -39,11 +32,13 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		const accountFileCabinetFolders = await this._accountFileCabinetService.getAccountFileCabinetFolders();
-		const fileCabinetFolders = accountFileCabinetFolders.map((folder) => {
+		if (accountFileCabinetFolders.length === 0) {
+			throw NodeTranslationService.getMessage(ERRORS.NO_FOLDERS_FOUND);
+		}
+		const fileCabinetFolders = accountFileCabinetFolders.map((folderPath) => {
 			return {
-				name: folder.path,
-				value: folder.path,
-				disabled: folder.isRestricted ? NodeTranslationService.getMessage(RESTRICTED_FOLDER) : '',
+				name: folderPath,
+				value: folderPath,
 			};
 		});
 

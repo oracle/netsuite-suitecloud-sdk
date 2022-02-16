@@ -29,9 +29,6 @@ build
 # Optional npm cache directory
 .npm
 
-# Lerna
-lerna-debug.log
-
 # System Files
 .DS_Store
 Thumbs.db

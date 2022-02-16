@@ -9,24 +9,25 @@ const ConsoleLogger = require('./ConsoleLogger');
 const { COLORS } = require('./LoggerConstants');
 
 class NodeConsoleLogger extends ConsoleLogger {
-	println(message, color) {
-		console.log(this._formatString(message, { color: color }));
-	}
 
 	info(message) {
-		this.println(message, COLORS.INFO);
+		this._println(message, COLORS.INFO);
 	}
 
 	result(message) {
-		this.println(message, COLORS.RESULT);
+		this._println(message, COLORS.RESULT);
 	}
 
 	warning(message) {
-		this.println(message, COLORS.WARNING);
+		this._println(message, COLORS.WARNING);
 	}
 
 	error(message) {
-		this.println(message, COLORS.ERROR);
+		this._println(message, COLORS.ERROR);
+	}
+
+	_println(message, color, isBold) {
+		console.log(this._formatString(message, { color: color, bold: isBold }));
 	}
 
 	_formatString(str, options) {

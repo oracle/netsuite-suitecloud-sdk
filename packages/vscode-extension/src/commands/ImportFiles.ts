@@ -5,7 +5,6 @@
 import { QuickPickItem } from 'vscode';
 import ListFilesService from '../service/ListFilesService';
 import { IMPORT_FILES, LIST_FILES } from '../service/TranslationKeys';
-import { FolderItem } from '../types/FolderItem';
 import FileImportCommon from './FileImportCommon';
 
 const COMMAND_NAME = 'importfiles';
@@ -17,9 +16,12 @@ export default class ImportFiles extends FileImportCommon {
 
 	protected async getSelectedFiles(): Promise<string[] | undefined> {
 		const listFilesService = new ListFilesService(this.messageService, this.translationService, this.rootWorkspaceFolder);
-		const fileCabinetFolders: FolderItem[] | undefined = await listFilesService.getAccountFileCabinetFolders();
+		const fileCabinetFolders: string[] | undefined = await listFilesService.getAccountFileCabinetFolders();
 		if (!fileCabinetFolders) {
 			return;
+		}
+		if (fileCabinetFolders.length === 0) {
+			throw this.translationService.getMessage(IMPORT_FILES.ERROR.NO_FOLDERS_FOUND);
 		}
 		const selectedFolder: QuickPickItem | undefined = await listFilesService.selectFolder(
 			fileCabinetFolders,

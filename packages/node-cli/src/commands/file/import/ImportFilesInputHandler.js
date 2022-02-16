@@ -52,6 +52,9 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		const accountFileCabinetService = new AccountFileCabinetService(this._sdkPath, this._executionEnvironmentContext, this._authId);
 		
 		const listFoldersResult = await accountFileCabinetService.getAccountFileCabinetFolders();
+		if (listFoldersResult.length === 0) {
+			throw NodeTranslationService.getMessage(ERRORS.NO_FOLDERS_FOUND);
+		}
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
 		const selectFolderAnswer = await prompt([selectFolderQuestion]);
@@ -86,10 +89,9 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	}
 
 	_getFileCabinetFolders(listFoldersResponse) {
-		return listFoldersResponse.map((folder) => ({
-			name: folder.path,
-			value: folder.path,
-			disabled: folder.isRestricted ? NodeTranslationService.getMessage(MESSAGES.RESTRICTED_FOLDER) : '',
+		return listFoldersResponse.map((folderPath) => ({
+			name: folderPath,
+			value: folderPath,
 		}));
 	}
 

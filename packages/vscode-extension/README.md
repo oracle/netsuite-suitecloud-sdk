@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/visual-studio-marketplace/v/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
 </a>
 
-SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. The SuiteCloud Extension for Visual Studio Code allows you to customize your SuiteCloud Development Framework (SDF) projects for NetSuite. The available SDF projects include **SuiteApp projects** — self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects** — intended for customizations on accounts you own, such as your production, development, and sandbox accounts.
+SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. The SuiteCloud Extension for Visual Studio Code allows you to customize your SuiteCloud Development Framework (SDF) projects for NetSuite. The available SuiteCloud projects include **SuiteApp projects** — self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects** — intended for customizations on accounts you own, such as your production, development, and sandbox accounts.
 
 Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_156026236161.html" rel="noopener noreferrer" target=blank>Getting Started with SuiteCloud SDK</a> and <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4702656040.html" rel="noopener noreferrer" target=blank>SuiteCloud Development Framework Architecture</a>.
 
@@ -30,9 +30,6 @@ See more details about installation in <a href="https://system.netsuite.com/app/
 
 ## Getting Started
 
-### Making a File Active in the Editor
-For the extension to detect the working SDF project and run any command against it, you first need to select a file from the current workspace and make it active in the editor.
-
 ### How to Trigger the Command Palette
 Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. To trigger it, click **View** > **Command Palette** or use the relevant shortcut:
 * Ctrl+Shift+P if you are using Windows or Linux.
@@ -40,8 +37,19 @@ Interact through the Command Palette to use the SuiteCloud Extension for Visual 
 
 <p align="center"><a href="#"><img src="resources/CommandPalette.png" alt="Command Palette" width="500" height="600"></a></p>
 
+### How to Work with a SuiteCloud Project
+To start working with a SuiteCloud project, you can do any of the following actions:
+1. Create a SuiteCloud project. To do this, open the Command Palette, enter **SuiteCloud** and, from the dropdown list, select **SuiteCloud: Create Project**.
+2. Open a SuiteCloud project. To do this, go to **File** > **Open Folder...** and select the root folder of your SuiteCloud project.
+
+### How to Work with Multiple SuiteCloud Projects
+To add a SuiteCloud project to an already opened Visual Studio Code window, go to **File** > **Add Folder To Workspace ...** and select the root folder of your SuiteCloud project. This allows you to work with multiple SuiteCloud projects at the same time.
+
+### Making a File Active in the Editor
+For the extension to detect the working SuiteCloud project and run any command against it, you first need to select a file from the current workspace to make it active in the editor.
+
 ### Setting Up an Account
-To start using your NetSuite accounts with the SuiteCloud Extension for Visual Studio Code, you first need to set them up. The account set up includes adding an account to the extension and setting it as default. 
+To start using your NetSuite accounts with the SuiteCloud Extension for Visual Studio Code, you first need to set them up. The account set up includes adding an account to the extension and setting it as default. As a prerequisite to adding an account, a SuiteCloud project must be open in Visual Studio Code.  
 
 To add an account, follow these steps:
 1. Open the Command Palette.
@@ -74,28 +82,36 @@ The selected account is set as default for the project.
 
 The following SuiteCloud commands are available through the Command Palette:
 
-| Command | Description | Shortcut |
-| --- | --- | --- |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147339580.html" rel="noopener noreferrer" target=blank>Add Dependency References to the Manifest</a>|Adds the defined dependencies to the Manifest file.| Ctrl+Shift+Alt+A |
+| Command | Description |
+| --- | --- |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147339580.html" rel="noopener noreferrer" target=blank>Add Dependency References to the Manifest</a>|Adds the defined dependencies to the Manifest file.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147328227.html" rel="noopener noreferrer" target=blank>Create SuiteScript Files</a>|Creates a SuiteScript file based on a script type template that also includes any modules you select to extend NetSuite and customize, search for, and process your data. 
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SDF file-based projects to develop ACPs or SuiteApp projects for internal use or for commercial distribution.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Deploys the folder containing the project. The project folder is zipped before deployment including only the files and folders referenced in the deploy.xml file. | Ctrl+Alt+D |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports files from a NetSuite account to your project. Note that you cannot import files from a SuiteApp.| Ctrl+Alt+F |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162971830372.html" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports objects from a NetSuite account to your project.| Ctrl+Alt+O |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SuiteCloud file-based projects to develop ACPs or SuiteApp projects for internal use or for commercial distribution.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Deploys the folder containing the project. The project folder is zipped before deployment including only the files and folders referenced in the deploy.xml file. |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports files from a NetSuite account to your project. Note that you cannot import files from a SuiteApp.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162971830372.html" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports objects from a NetSuite account to your project.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_163067396066.html" rel="noopener noreferrer" target=blank>List Files</a>|Lists the files in the File Cabinet of your account.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160163955513" rel="noopener noreferrer" target=blank>List Objects</a>|Lists the SDF custom objects in your account.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147609118.html" rel="noopener noreferrer" target=blank>Set Up Account</a>|Adds the NetSuite accounts you want to customize. It also allows setting an account as default for a project.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_163067510539.html" rel="noopener noreferrer" target=blank>Update File from Account</a>|Overwrites the selected file in the project with the matching file in an account.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_161643514921.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported FileCabinet folder.| Ctrl+Alt+U |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160147382361" rel="noopener noreferrer" target=blank>Update Object from Account</a>|Overwrites the selected object in the project with the matching object in an account.| Ctrl+Shift+U |
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_161643514921.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported FileCabinet folder.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160147382361" rel="noopener noreferrer" target=blank>Update Object from Account</a>|Overwrites the selected object in the project with the matching object in an account.|
 
 To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
 
 ## Using SuiteCloud Extension for Visual Studio Code with SuiteCloud CLI for Node.js
 SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
 
+## Release Notes & Documentation
+To read the 2022.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
+- Read the release notes for NetSuite 2022.1 in [Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=preface_3710624702.html).
+- Read the SuiteCloud Extension for Visual Studio Code documentation in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=book_159223417590.html).
+
 ## Contributing
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## License
-Copyright (c) 2021 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
+Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
+
+By installing the SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
