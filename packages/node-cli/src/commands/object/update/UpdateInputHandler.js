@@ -107,7 +107,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 
 	async _getObjectsToSelect(foundXMLFiles) {
 		if (foundXMLFiles.length > MAX_ENTRIES_BEFORE_FILTER) {
-			const filteredObjects = await this._filterObjectsByScriptId(filteredObjects, foundXMLFiles);
+			const filteredObjects = await this._filterObjectsByScriptId(foundXMLFiles);
 			if (filteredObjects.length === 0) {
 				throw NodeTranslationService.getMessage(MESSAGES.NO_OBJECTS_WITH_SCRIPT_ID_FILTER);
 			}
@@ -117,9 +117,9 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		}
 	}
 
-	async _filterObjectsByScriptId(filteredObjects, foundXMLFiles) {
+	async _filterObjectsByScriptId(foundXMLFiles) {
 		const filterAnswers = await this._questionFilterByScriptId();
-		filteredObjects = filterAnswers[ANSWERS_NAMES.FILTER_BY_SCRIPT_ID]
+		const filteredObjects = filterAnswers[ANSWERS_NAMES.FILTER_BY_SCRIPT_ID]
 			? foundXMLFiles.filter((element) => element.value.includes(filterAnswers[ANSWERS_NAMES.SCRIPT_ID_FILTER]))
 			: foundXMLFiles;
 		return filteredObjects;

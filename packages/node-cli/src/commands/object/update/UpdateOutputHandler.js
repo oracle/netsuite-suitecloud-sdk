@@ -21,8 +21,9 @@ module.exports = class UpdateOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
+		// updated CustomRecordsWithInstances has been alrady logged during the action execution.
 		this._parseUpdateObjects(actionResult);
-		this._parseUpdateCustomRecordsWithInstancesNonInteractiveExecution(actionResult);
+		this._logNonInteractiveExecForCustomRecordWithInstances(actionResult);
 		return actionResult;
 	}
 
@@ -49,7 +50,7 @@ module.exports = class UpdateOutputHandler extends BaseOutputHandler {
 		}
 	}
 
-	_parseUpdateCustomRecordsWithInstancesNonInteractiveExecution(actionResult) {
+	_logNonInteractiveExecForCustomRecordWithInstances(actionResult) {
 		const objectsWithInstances = actionResult.data.filter((element) => element.includeinstances === true);
 
 		if (objectsWithInstances.length > 0) {

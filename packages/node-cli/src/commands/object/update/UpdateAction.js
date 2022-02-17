@@ -53,7 +53,7 @@ module.exports = class UpdateAction extends BaseAction {
 			if (params.hasOwnProperty(ANSWERS_NAMES.OVERWRITE_OBJECTS) && !params[ANSWERS_NAMES.OVERWRITE_OBJECTS]) {
 				throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPDATE);
 			}
-			let totalData = [];
+			let updateCustomRecordsWithInstancesResult = [];
 			if (params.hasOwnProperty(COMMAND_OPTIONS.INCLUDE_INSTANCES) && params[COMMAND_OPTIONS.INCLUDE_INSTANCES]) {
 				const customRecordScriptIds = params[COMMAND_OPTIONS.SCRIPT_ID]
 					.split(' ')
@@ -62,40 +62,29 @@ module.exports = class UpdateAction extends BaseAction {
 					.split(' ')
 					.filter((scriptId) => !this._isCustomRecordOrSegment(scriptId))
 					.join(' ');
-				const updateCustomRecordWithInstancesResult = await this._updateCustomRecordWithInstances(params, customRecordScriptIds);
-				totalData = totalData.concat(updateCustomRecordWithInstancesResult);
+				updateCustomRecordsWithInstancesResult = await this._updateCustomRecordWithInstances(params, customRecordScriptIds);
 
 				delete params[COMMAND_OPTIONS.INCLUDE_INSTANCES];
 			}
 
 			if (params[COMMAND_OPTIONS.SCRIPT_ID] === '') {
 				// If there are no more objects to update (all were custom records) we already return with only previous messages
-				return ActionResult.Builder.withData(totalData).build();
+				return ActionResult.Builder.withData(updateCustomRecordsWithInstancesResult).build();
 			}
 
-			return await this._updateObjects(params, totalData);
+			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
+			const updateObjectsResult = await this._updateObjects(sdkParams);
+			updateCustomRecordsWithInstancesResult = updateCustomRecordsWithInstancesResult.concat(updateObjectsResult.data);
+
+			return updateObjectsResult.status === STATUS.SUCCESS
+				? ActionResult.Builder.withData(updateCustomRecordsWithInstancesResult)
+						.withResultMessage(updateObjectsResult.resultMessage)
+						.withCommandParameters(sdkParams)
+						.build()
+				: ActionResult.Builder.withErrors(updateObjectsResult.errorMessages).withCommandParameters(sdkParams).build();
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	async _updateObjects(params, totalData) {
-		const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
-
-		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-			.integration()
-			.addParams(sdkParams)
-			.build();
-
-		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForUpdate),
-			message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
-		});
-		totalData = totalData.concat(operationResult.data);
-
-		return operationResult.status === STATUS.SUCCESS
-			? ActionResult.Builder.withData(totalData).withResultMessage(operationResult.resultMessage).withCommandParameters(sdkParams).build()
-			: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(sdkParams).build();
 	}
 
 	_isCustomRecordOrSegment(scriptid) {
@@ -104,25 +93,33 @@ module.exports = class UpdateAction extends BaseAction {
 
 	async _updateCustomRecordWithInstances(params, customRecordScriptIds) {
 		this._log.result(NodeTranslationService.getMessage(OUTPUT.UPDATED_CUSTOM_RECORDS));
-		const copiedParams = { ...params };
-		const dataResults = [];
+		const updateWithInstancesResults = [];
 
 		for (const scriptId of customRecordScriptIds) {
-			const operationResult = await this._executeCommandUpdateCustomRecordWithInstances(copiedParams, scriptId);
+			const operationResult = await this._executeCommandUpdateCustomRecordWithInstances(params, scriptId);
 
 			if (operationResult.status === STATUS.ERROR) {
-				dataResults.push({ key: scriptId, message: operationResult.errorMessages, type: operationResult.status, includeinstances: true });
+				updateWithInstancesResults.push({
+					key: scriptId,
+					message: operationResult.errorMessages,
+					type: operationResult.status,
+					includeinstances: true,
+				});
 				this._log.warning(NodeTranslationService.getMessage(ERRORS.CUSTOM_RECORD, scriptId, operationResult.errorMessages));
 			} else {
-				dataResults.push({ key: scriptId, message: operationResult.data, type: operationResult.status, includeinstances: true });
+				updateWithInstancesResults.push({
+					key: scriptId,
+					message: operationResult.data,
+					type: operationResult.status,
+					includeinstances: true,
+				});
 				this._log.result(`${this._log.getPadding(1)}- ${scriptId}`);
 			}
 		}
-		return dataResults;
+		return updateWithInstancesResults;
 	}
 
 	async _executeCommandUpdateCustomRecordWithInstances(params, scriptId) {
-		params[COMMAND_OPTIONS.SCRIPT_ID] = scriptId;
 		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(COMMAND_UPDATE_CUSTOM_RECORD_WITH_INSTANCES)
 			.integration()
 			.addParam(COMMAND_OPTIONS.AUTH_ID, params[COMMAND_OPTIONS.AUTH_ID])
@@ -132,6 +129,18 @@ module.exports = class UpdateAction extends BaseAction {
 		return await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContextForUpdate),
 			message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECT_WITH_CUSTOM_INSTANCES, scriptId),
+		});
+	}
+
+	async _updateObjects(sdkParams) {
+		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
+			.integration()
+			.addParams(sdkParams)
+			.build();
+
+		return await executeWithSpinner({
+			action: this._sdkExecutor.execute(executionContextForUpdate),
+			message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 		});
 	}
 };
