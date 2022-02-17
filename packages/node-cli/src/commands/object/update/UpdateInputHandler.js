@@ -49,15 +49,15 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const foundXMLFiles = this.searchFilesFromObjectsFolder();
-		let filteredObjects = await this.getObjectsToSelect(foundXMLFiles);
-		const selectedScriptIds = await this.selectObjectsScriptIds(foundXMLFiles, filteredObjects);
+		const foundXMLFiles = this._searchFilesFromObjectsFolder();
+		let filteredObjectsList = await this._getObjectsToSelect(foundXMLFiles);
+		const selectedScriptIds = await this._getSelectedScriptIds(filteredObjectsList);
 		const customRecordsAndSegments = selectedScriptIds.filter(
 			(scriptid) => scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_RECORD) || scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_SEGMENT)
 		);
 
 		const includeCustomInstancesQuestions = {
-			when: customRecordsAndSegments.length >= 1, // && customRecordsAndSegments.length == selectedScriptIds.length,
+			when: customRecordsAndSegments.length >= 1,
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES,
 			message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_CUSTOM_INSTANCES),
@@ -89,7 +89,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		};
 	}
 
-	searchFilesFromObjectsFolder() {
+	_searchFilesFromObjectsFolder() {
 		const pathToObjectsFolder = path.join(this._projectFolder, FOLDERS.OBJECTS);
 		const filesInObjectsFolder = this._fileSystemService.getFilesFromDirectory(pathToObjectsFolder);
 		const foundXMLFiles = filesInObjectsFolder
@@ -105,25 +105,29 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		return foundXMLFiles;
 	}
 
-	async getObjectsToSelect(foundXMLFiles) {
-		let filteredObjects;
-
+	async _getObjectsToSelect(foundXMLFiles) {
 		if (foundXMLFiles.length > MAX_ENTRIES_BEFORE_FILTER) {
-			filteredObjects = await this.filterObjectsByScriptId(filteredObjects, foundXMLFiles);
+			const filteredObjects = await this._filterObjectsByScriptId(filteredObjects, foundXMLFiles);
 			if (filteredObjects.length === 0) {
 				throw NodeTranslationService.getMessage(MESSAGES.NO_OBJECTS_WITH_SCRIPT_ID_FILTER);
 			}
+			return filteredObjects;
 		} else {
-			filteredObjects = foundXMLFiles;
+			return foundXMLFiles;
 		}
-		filteredObjects.push(new Separator());
+	}
 
+	async _filterObjectsByScriptId(filteredObjects, foundXMLFiles) {
+		const filterAnswers = await this._questionFilterByScriptId();
+		filteredObjects = filterAnswers[ANSWERS_NAMES.FILTER_BY_SCRIPT_ID]
+			? foundXMLFiles.filter((element) => element.value.includes(filterAnswers[ANSWERS_NAMES.SCRIPT_ID_FILTER]))
+			: foundXMLFiles;
 		return filteredObjects;
 	}
 
-	async selectObjectsScriptIds(foundXMLFiles, filteredObjects) {
+	async _getSelectedScriptIds(filteredObjects) {
+		filteredObjects.push(new Separator());
 		const selectObjectsToUpdateQuestion = {
-			when: foundXMLFiles.length > 1,
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 			name: ANSWERS_NAMES.SCRIPT_ID_LIST,
 			message: NodeTranslationService.getMessage(QUESTIONS.SCRIPT_ID),
@@ -136,15 +140,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		return answers[ANSWERS_NAMES.SCRIPT_ID_LIST];
 	}
 
-	async filterObjectsByScriptId(filteredObjects, foundXMLFiles) {
-		const filterAnswers = await this.questionFilterByScriptId();
-		filteredObjects = filterAnswers[ANSWERS_NAMES.FILTER_BY_SCRIPT_ID]
-			? foundXMLFiles.filter((element) => element.value.includes(filterAnswers[ANSWERS_NAMES.SCRIPT_ID_FILTER]))
-			: foundXMLFiles;
-		return filteredObjects;
-	}
-
-	async questionFilterByScriptId() {
+	async _questionFilterByScriptId() {
 		return await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
