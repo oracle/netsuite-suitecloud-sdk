@@ -6,7 +6,7 @@
 
 const NodeTranslationService = require('../services/NodeTranslationService');
 const CLIException = require('../CLIException');
-const { COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION } = require('../services/TranslationKeys');
+const { COMMAND_OPTIONS } = require('../services/TranslationKeys');
 const ValidationErrorsFormatter = require('../utils/ValidationErrorsFormatter');
 
 function unwrapExceptionMessage(exception) {
@@ -20,7 +20,10 @@ function unwrapInformationMessage(exception) {
 function throwValidationException(errorMessages, runInInteractiveMode, commandMetadata) {
 	const formattedError = ValidationErrorsFormatter.formatErrors(errorMessages);
 	if (!runInInteractiveMode && commandMetadata.supportsInteractiveMode) {
-		const suggestedCommandMessage = NodeTranslationService.getMessage(COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION, commandMetadata.name);
+		const suggestedCommandMessage = NodeTranslationService.getMessage(
+			COMMAND_OPTIONS.VALIDATION_ERRORS_INTERACTIVE_SUGGESTION,
+			commandMetadata.name
+		);
 		throw new CLIException(formattedError, suggestedCommandMessage);
 	}
 
