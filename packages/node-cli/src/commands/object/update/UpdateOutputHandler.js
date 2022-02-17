@@ -21,7 +21,7 @@ module.exports = class UpdateOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
-		// updated CustomRecordsWithInstances has been alrady logged during the action execution.
+		// updated CustomRecordsWithInstances has been already logged during the action execution.
 		this._parseUpdateObjects(actionResult);
 		this._logNonInteractiveExecForCustomRecordWithInstances(actionResult);
 		return actionResult;

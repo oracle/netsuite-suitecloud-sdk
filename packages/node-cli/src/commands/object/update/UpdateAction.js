@@ -74,10 +74,10 @@ module.exports = class UpdateAction extends BaseAction {
 
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 			const updateObjectsResult = await this._updateObjects(sdkParams);
-			updateCustomRecordsWithInstancesResult = updateCustomRecordsWithInstancesResult.concat(updateObjectsResult.data);
+			const allResults = updateCustomRecordsWithInstancesResult.concat(updateObjectsResult.data);
 
 			return updateObjectsResult.status === STATUS.SUCCESS
-				? ActionResult.Builder.withData(updateCustomRecordsWithInstancesResult)
+				? ActionResult.Builder.withData(allResults)
 						.withResultMessage(updateObjectsResult.resultMessage)
 						.withCommandParameters(sdkParams)
 						.build()
