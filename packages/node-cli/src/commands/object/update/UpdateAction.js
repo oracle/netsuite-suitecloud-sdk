@@ -96,25 +96,21 @@ module.exports = class UpdateAction extends BaseAction {
 		const updateWithInstancesResults = [];
 
 		for (const scriptId of customRecordScriptIds) {
-			const operationResult = await this._executeCommandUpdateCustomRecordWithInstances(params, scriptId);
-
-			if (operationResult.status === STATUS.ERROR) {
-				updateWithInstancesResults.push({
-					key: scriptId,
-					message: operationResult.errorMessages,
-					type: operationResult.status,
-					includeinstances: true,
-				});
-				this._log.warning(NodeTranslationService.getMessage(ERRORS.CUSTOM_RECORD, scriptId, operationResult.errorMessages));
+			const updateCustomRecordResult = await this._executeCommandUpdateCustomRecordWithInstances(params, scriptId);
+			let resultMessage;
+			if (updateCustomRecordResult.status === STATUS.ERROR) {
+				resultMessage = updateCustomRecordResult.errorMessages;
+				this._log.warning(NodeTranslationService.getMessage(ERRORS.CUSTOM_RECORD, scriptId, resultMessage));
 			} else {
-				updateWithInstancesResults.push({
-					key: scriptId,
-					message: operationResult.data,
-					type: operationResult.status,
-					includeinstances: true,
-				});
+				resultMessage = updateCustomRecordResult.data;
 				this._log.result(`${this._log.getPadding(1)}- ${scriptId}`);
 			}
+			updateWithInstancesResults.push({
+				key: scriptId,
+				message: resultMessage,
+				type: updateCustomRecordResult.status,
+				includeinstances: true,
+			});
 		}
 		return updateWithInstancesResults;
 	}
