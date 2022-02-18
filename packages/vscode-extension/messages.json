@@ -109,6 +109,9 @@
 	"MANAGE_ACCOUNTS_AVAILABLE_CONNECTIONS": "Available connections",
 	"MANAGE_ACCOUNTS_CANCELED": "The creation of a new authentication ID (authID) has been canceled.",
 
+	"MANAGE_AUTH_SELECT_AUTH_ID": "Select the AuthID you want to manage",
+	"MANAGE_AUTH_SELECT_MANAGE_OPTION": "Select one of the following options",
+
 	"MANAGE_ACCOUNTS_CREATE_BROWSER": "Browser-based authentication",
 	"MANAGE_ACCOUNTS_CREATE_BROWSER_CANCEL": "Cancel the process",
 	"MANAGE_ACCOUNTS_CREATE_CONTINUE_IN_BROWSER": "Continue the authentication process in the prompted browser.",

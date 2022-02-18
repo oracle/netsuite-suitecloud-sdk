@@ -20,6 +20,7 @@ export type CommandsInfoMapType = {
 	importobjects: CommandInfo;
 	listfiles: CommandInfo;
 	listobjects: CommandInfo;
+	manageauth: CommandInfo;
 	setupaccount: CommandInfo;
 	updatefile: CommandInfo;
 	updateobject: CommandInfo;
@@ -70,6 +71,11 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		vscodeCommandId: 'suitecloud.listobjects',
 		cliCommandName: 'object:list',
 		vscodeCommandName: 'List Objects',
+	},
+	manageauth: {
+		vscodeCommandId: 'suitecloud.manageauth',
+		cliCommandName: 'account:manageauth',
+		vscodeCommandName: 'Manage AuthIDs'
 	},
 	setupaccount: {
 		vscodeCommandId: 'suitecloud.setupaccount',

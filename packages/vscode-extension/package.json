@@ -75,6 +75,11 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.manageauth",
+				"title": "Manage AuthIDs",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.setupaccount",
 				"title": "Set Up Account",
 				"category": "SuiteCloud"
