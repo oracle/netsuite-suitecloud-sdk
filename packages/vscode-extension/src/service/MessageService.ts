@@ -63,13 +63,16 @@ export default class MessageService {
 		}
 	}
 
-	showCommandInfo(successMessage?: string) {
+	showCommandInfo(successMessage?: string, includeProjectName = true) {
 		if (!this.vscodeCommandName) {
 			throw COMMAND_NOT_DEFINED;
 		}
 		const message = successMessage ? successMessage : this.translationService.getMessage(COMMAND.SUCCESS, this.vscodeCommandName);
 		window
-			.showInformationMessage(this.addProjectNameToMessage(message), this.translationService.getMessage(BUTTONS.SEE_DETAILS))
+			.showInformationMessage(
+				includeProjectName ? this.addProjectNameToMessage(message) : message,
+				this.translationService.getMessage(BUTTONS.SEE_DETAILS)
+			)
 			.then(this.showOutputIfClicked);
 	}
 

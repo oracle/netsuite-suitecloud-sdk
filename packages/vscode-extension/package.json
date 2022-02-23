@@ -76,7 +76,7 @@
 			},
 			{
 				"command": "suitecloud.manageauth",
-				"title": "Manage AuthIDs",
+				"title": "Manage Accounts",
 				"category": "SuiteCloud"
 			},
 			{

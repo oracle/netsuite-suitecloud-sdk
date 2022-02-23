@@ -75,7 +75,7 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	manageauth: {
 		vscodeCommandId: 'suitecloud.manageauth',
 		cliCommandName: 'account:manageauth',
-		vscodeCommandName: 'Manage AuthIDs'
+		vscodeCommandName: 'Manage Accounts'
 	},
 	setupaccount: {
 		vscodeCommandId: 'suitecloud.setupaccount',

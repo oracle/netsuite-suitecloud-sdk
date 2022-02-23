@@ -14,6 +14,7 @@ const INVALID_JAR_FILE_MESSAGE = 'Invalid or corrupt jarfile';
 export default class VSConsoleLogger extends ConsoleLogger {
 	private _executionPath?: string;
 	private _addExecutionDetailsToLog: boolean = false;
+	private _hiddeProjectFolerName: boolean = false;
 	private readonly translationService = new VSTranslationService();
 
 	constructor(addExecutionDetailsToLog: boolean = false, executionPath?: string) {
@@ -24,13 +25,17 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	}
 
 	private getExecutionDetails(): string {
-		if (this._executionPath) {
+		if (this._executionPath && !this._hiddeProjectFolerName) {
 			const executionPathParts = this._executionPath.replace(/\\/g, '/').split('/');
 			const projectFolderName = executionPathParts[executionPathParts.length - 1];
 			return getTimestamp() + ' - ' + projectFolderName;
 		} else {
 			return getTimestamp();
 		}
+	}
+
+	hiddeInitialProjectFolerNameDetails() {
+		this._hiddeProjectFolerName = true;
 	}
 
 	// Output from VSCode doesn't accept colors, for the moment we would pring in default white
