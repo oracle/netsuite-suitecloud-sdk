@@ -64,8 +64,8 @@
 	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
-	"EXTENSION_PROJECT_STARTUP_BUTTON_RUN_SUITECLOUD_SETUP_ACCOUNT": "SuiteCloud: Setup Account",
-	"EXTENSION_PROJECT_STARTUP_MESSAGE_PROJECT_NEEDS_SETUP_ACCOUNT": "No account has been set up for this project. Click \"SuiteCloud: Setup Account\" to link your project to your account.",
+	"EXTENSION_PROJECT_STARTUP_BUTTON_RUN_SUITECLOUD_SETUP_ACCOUNT": "SuiteCloud: {0}",
+	"EXTENSION_PROJECT_STARTUP_MESSAGE_PROJECT_NEEDS_SETUP_ACCOUNT": "No account has been set up for this project. Click \"SuiteCloud: {0}\" to link your project to your account.",
 	"EXTENSION_INSTALLATION_WARINING_VALIDATING_SDK_DEPENDENCIES": "Before executing any SuiteCloud command, SuiteCloud SDK dependencies need to be validated. Try again in a few seconds.",
 
 	"IMPORT_FILES_ERROR_IMPORT_TO_SUITEAPP_NOT_ALLOWED": "Files cannot be imported to a SuiteApp project. You can only import files to Account Customization Projects.",
@@ -110,7 +110,7 @@
 	"MANAGE_ACCOUNTS_CANCELED": "The creation of a new authentication ID (authID) has been canceled.",
 
 	"MANAGE_AUTH_GENERAL_INFO_OPTION": "Show details",
-	"MANAGE_AUTH_GENERAL_NO_ACCOUNTS_TO_MANAGE": "There are no accounts to manage. Click \"SuiteCloud: Setup Account\" to link your project to your account.",
+	"MANAGE_AUTH_GENERAL_NO_ACCOUNTS_TO_MANAGE": "There are no accounts to manage. Click \"SuiteCloud: {0}\" to link your project to your account.",
 	"MANAGE_AUTH_GENERAL_REMOVE_OPTION": "Remove",
 	"MANAGE_AUTH_GENERAL_RENAME_OPTION":"Rename",
 	"MANAGE_AUTH_GENERAL_SELECT_AUTH_ID_TO_MANAGE": "Select the authID you want to manage:",

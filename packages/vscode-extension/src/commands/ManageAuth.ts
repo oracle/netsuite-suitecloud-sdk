@@ -75,9 +75,13 @@ export default class ManageAuth extends BaseAction {
 
 	private showNoAccountsWarningMessage() {
 		const runSetupAccountButtonMessage = this.translationService.getMessage(
-			EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT
+			EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT,
+			commandsInfoMap.setupaccount.vscodeCommandName
 		);
-		const noAccountWarningMessage = this.translationService.getMessage(MANAGE_AUTH.GENERAL.NO_ACCOUNTS_TO_MANAGE);
+		const noAccountWarningMessage = this.translationService.getMessage(
+			MANAGE_AUTH.GENERAL.NO_ACCOUNTS_TO_MANAGE,
+			commandsInfoMap.setupaccount.vscodeCommandName
+		);
 		window.showWarningMessage(noAccountWarningMessage, runSetupAccountButtonMessage).then((result) => {
 			if (result === runSetupAccountButtonMessage) {
 				commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
