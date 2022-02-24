@@ -46,8 +46,10 @@ export default class MessageService {
 		}
 	}
 
-	showWarningMessage(infoMessage: string) {
-		window.showWarningMessage(this.addProjectNameToMessage(infoMessage));
+	showWarningMessage(warningMessage: string, includeProjectName = true) {
+		window.showWarningMessage(
+			includeProjectName ? this.addProjectNameToMessage(warningMessage) : warningMessage
+			);
 	}
 
 	showErrorMessage(errorMessage: string) {
@@ -76,13 +78,16 @@ export default class MessageService {
 			.then(this.showOutputIfClicked);
 	}
 
-	showCommandWarning(warningMessage?: string) {
+	showCommandWarning(warningMessage?: string, includeProjectName = true) {
 		if (!this.vscodeCommandName) {
 			throw COMMAND_NOT_DEFINED;
 		}
 		const message = warningMessage ? warningMessage : this.translationService.getMessage(COMMAND.WARNING, this.vscodeCommandName);
 		window
-			.showWarningMessage(this.addProjectNameToMessage(message), this.translationService.getMessage(BUTTONS.SEE_DETAILS))
+			.showWarningMessage(
+				includeProjectName ? this.addProjectNameToMessage(message) : message,
+				this.translationService.getMessage(BUTTONS.SEE_DETAILS)
+			)
 			.then(this.showOutputIfClicked);
 	}
 

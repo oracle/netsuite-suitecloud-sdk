@@ -33,8 +33,9 @@ export default class ManageAuth extends BaseAction {
 	}
 
 	protected async execute(): Promise<void> {
-		// done to not show project folder name in the output
-		// AuthID management is independent from it
+		// do not show project folder name in the console output
+		// or in any other info message
+		// AuthIDs management is independent from it
 		this.vsConsoleLogger.hiddeInitialProjectFolerNameDetails();
 
 		const authIDsMapPromise = AuthenticationUtils.getAuthIds(getSdkPath());
@@ -43,6 +44,10 @@ export default class ManageAuth extends BaseAction {
 
 		if (auhtIDsMapResult.isSuccess()) {
 			const auhtIDsMap = auhtIDsMapResult.data;
+			if (Object.keys(auhtIDsMap).length === 0) {
+				this.messageService.showWarningMessage(this.translationService.getMessage(MANAGE_AUTH.GENERAL.NO_ACCOUNTS_TO_MANAGE), false);
+				return;
+			}
 			const selectedAuhtID = await this.showAuthList(auhtIDsMap);
 			if (!selectedAuhtID) {
 				return;
@@ -67,29 +72,29 @@ export default class ManageAuth extends BaseAction {
 		return;
 	}
 
-	private async showAuthList(data: AuthListData) {
-		return window.showQuickPick(this.getAuthIDItems(data), {
-			placeHolder: "Select the authID you want to manage:",
+	private async showAuthList(authIDsMap: AuthListData) {
+		return window.showQuickPick(this.getAuthIDItems(authIDsMap), {
+			placeHolder: this.translationService.getMessage(MANAGE_AUTH.GENERAL.SELECT_AUTH_ID_TO_MANAGE),
 			ignoreFocusOut: true,
 			canPickMany: false,
 		});
 	}
 
-	private getAuthIDItems(authData: AuthListData): AuthIdItem[] {
-		return Object.keys(authData).map<AuthIdItem>((authId) => ({
-			label: `${authId} | ${authData[authId].accountInfo.roleName} @ ${authData[authId].accountInfo.companyName}`,
+	private getAuthIDItems(authIDsMap: AuthListData): AuthIdItem[] {
+		return Object.keys(authIDsMap).map<AuthIdItem>((authId) => ({
+			label: `${authId} | ${authIDsMap[authId].accountInfo.roleName} @ ${authIDsMap[authId].accountInfo.companyName}`,
 			authId: authId,
 		}));
 	}
 
 	private async showManageAuthOptions(selectedAuhtID: AuthIdItem) {
 		const options: ManageAuhtOptionItem[] = [
-			{ label: `Show details`, manageOption: ManageAuthOption.INFO },
-			{ label: `Rename`, manageOption: ManageAuthOption.RENAME },
-			{ label: `Remove`, manageOption: ManageAuthOption.REMOVE },
+			{ label: this.translationService.getMessage(MANAGE_AUTH.GENERAL.INFO_OPTION), manageOption: ManageAuthOption.INFO },
+			{ label: this.translationService.getMessage(MANAGE_AUTH.GENERAL.RENAME_OPTION), manageOption: ManageAuthOption.RENAME },
+			{ label: this.translationService.getMessage(MANAGE_AUTH.GENERAL.REMOVE_OPTION), manageOption: ManageAuthOption.REMOVE },
 		];
 		return window.showQuickPick(options, {
-			placeHolder: `Select one of the following options for ${selectedAuhtID.authId}:`,
+			placeHolder: this.translationService.getMessage(MANAGE_AUTH.GENERAL.SELECT_OPTION_FOR_AUTH_ID, selectedAuhtID.authId),
 			ignoreFocusOut: true,
 			canPickMany: false,
 		});
@@ -101,7 +106,7 @@ export default class ManageAuth extends BaseAction {
 		accountCredentials.authId = selectedAuhtID.authId;
 		accountCredentials.domain = authIDInfo.urls.app;
 		const authIDInfoMessage = AccountCredentialsFormatter.getInfoString(authIDInfo);
-		
+
 		this.messageService.showCommandInfo(undefined, false);
 		this.vsConsoleLogger.info(authIDInfoMessage);
 		this.vsConsoleLogger.info('');
@@ -109,7 +114,7 @@ export default class ManageAuth extends BaseAction {
 
 	private async renameAuthId(selectedAuhtID: AuthIdItem, auhtIDsMap: AuthListData) {
 		const newAuhtID = await window.showInputBox({
-			placeHolder: 'Enter the new authID.',
+			placeHolder: this.translationService.getMessage(MANAGE_AUTH.RENAME.ENTER_NEW_AUTH_ID),
 			validateInput: (fieldValue: string) => {
 				const validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
@@ -127,19 +132,13 @@ export default class ManageAuth extends BaseAction {
 			return;
 		}
 
-
 		const commandOptions: { [option: string]: string } = {};
 		commandOptions.rename = selectedAuhtID.authId;
 		commandOptions.renameto = newAuhtID;
 		const renameActionPromise = this.runSuiteCloudCommand(commandOptions, NON_EXISTING_PATH);
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
-		this.messageService.showInformationMessage(
-			commandMessage,
-			`Renaming authID...`,
-			renameActionPromise,
-			true,
-			false
-		);
+		const statusBarMessage = this.translationService.getMessage(MANAGE_AUTH.RENAME.RENAMING_AUTH_ID);
+		this.messageService.showInformationMessage(commandMessage, statusBarMessage, renameActionPromise, true, false);
 
 		const renameActionResult = await renameActionPromise;
 		if (renameActionResult.status === actionResultStatus.SUCCESS) {
@@ -151,11 +150,11 @@ export default class ManageAuth extends BaseAction {
 
 	private async removeAuhtId(selectedAuhtID: AuthIdItem) {
 		const REMOVE_ANSWER = {
-			CONTINUE: 'Continue',
-			CANCEL: 'Cancel',
+			CONTINUE: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CONTINUE),
+			CANCEL: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CANCEL),
 		};
 		const removeAnswer = await window.showQuickPick([REMOVE_ANSWER.CONTINUE, REMOVE_ANSWER.CANCEL], {
-			placeHolder: `This authID will be removed locally but still be valid in your account: ${selectedAuhtID.authId}.`,
+			placeHolder: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CONFIRMATION_MESSAGE, selectedAuhtID.authId),
 			ignoreFocusOut: true,
 			canPickMany: false,
 		});
@@ -170,7 +169,8 @@ export default class ManageAuth extends BaseAction {
 
 			const renameAuthIDActionPromise = this.runSuiteCloudCommand(commandOptions, NON_EXISTING_PATH);
 			const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
-			this.messageService.showInformationMessage(commandMessage, `Removing auhtID...`, renameAuthIDActionPromise, true, false);
+			const statusBarMessage = this.translationService.getMessage(MANAGE_AUTH.REMOVE.REMOVING_AUTH_ID);
+			this.messageService.showInformationMessage(commandMessage, statusBarMessage, renameAuthIDActionPromise, true, false);
 
 			const renameAuhtIDActionResult = await renameAuthIDActionPromise;
 			if (renameAuhtIDActionResult.status === actionResultStatus.SUCCESS) {
