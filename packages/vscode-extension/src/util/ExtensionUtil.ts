@@ -1,9 +1,9 @@
-import { ActionResult, AuthListData } from '../types/ActionResult';
-
 /*
  ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
+import { ActionResult, AuthListData } from '../types/ActionResult';
+
 export const ApplicationConstants = require('@oracle/suitecloud-cli/src/ApplicationConstants');
 export const ExecutionEnvironmentContext = require('@oracle/suitecloud-cli/src/ExecutionEnvironmentContext');
 export const SUITESCRIPT_TYPES: { id: string; name: string }[] = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptTypesMetadata');
