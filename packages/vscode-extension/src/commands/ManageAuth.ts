@@ -1,6 +1,7 @@
-import { QuickPickItem, window } from 'vscode';
+import { commands, QuickPickItem, window } from 'vscode';
+import { commandsInfoMap } from '../commandsMap';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
-import { COMMAND, MANAGE_ACCOUNTS, MANAGE_AUTH } from '../service/TranslationKeys';
+import { COMMAND, EXTENSION_INSTALLATION, MANAGE_ACCOUNTS, MANAGE_AUTH } from '../service/TranslationKeys';
 import { ActionResult, AuthListData, ValidationResult } from '../types/ActionResult';
 import { AccountCredentialsFormatter, actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
@@ -45,7 +46,7 @@ export default class ManageAuth extends BaseAction {
 		if (auhtIDsMapResult.isSuccess()) {
 			const auhtIDsMap = auhtIDsMapResult.data;
 			if (Object.keys(auhtIDsMap).length === 0) {
-				this.messageService.showWarningMessage(this.translationService.getMessage(MANAGE_AUTH.GENERAL.NO_ACCOUNTS_TO_MANAGE), false);
+				this.showNoAccountsWarningMessage();
 				return;
 			}
 			const selectedAuhtID = await this.showAuthList(auhtIDsMap);
@@ -70,6 +71,18 @@ export default class ManageAuth extends BaseAction {
 			this.messageService.showCommandError(undefined, false);
 		}
 		return;
+	}
+
+	private showNoAccountsWarningMessage() {
+		const runSetupAccountButtonMessage = this.translationService.getMessage(
+			EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT
+		);
+		const noAccountWarningMessage = this.translationService.getMessage(MANAGE_AUTH.GENERAL.NO_ACCOUNTS_TO_MANAGE);
+		window.showWarningMessage(noAccountWarningMessage, runSetupAccountButtonMessage).then((result) => {
+			if (result === runSetupAccountButtonMessage) {
+				commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
+			}
+		});
 	}
 
 	private async showAuthList(authIDsMap: AuthListData) {
