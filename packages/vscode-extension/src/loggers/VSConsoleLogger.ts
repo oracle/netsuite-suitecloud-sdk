@@ -12,20 +12,21 @@ import * as vscode from 'vscode';
 
 const INVALID_JAR_FILE_MESSAGE = 'Invalid or corrupt jarfile';
 export default class VSConsoleLogger extends ConsoleLogger {
-	private _executionPath?: string;
-	private _addExecutionDetailsToLog: boolean = false;
+	private executionPath?: string;
+	private addExecutionDetailsToLog: boolean = false;
+	private hideProjectFolderName: boolean = false;
 	private readonly translationService = new VSTranslationService();
 
 	constructor(addExecutionDetailsToLog: boolean = false, executionPath?: string) {
 		super();
 
-		this._addExecutionDetailsToLog = addExecutionDetailsToLog;
-		this._executionPath = executionPath;
+		this.addExecutionDetailsToLog = addExecutionDetailsToLog;
+		this.executionPath = executionPath;
 	}
 
 	private getExecutionDetails(): string {
-		if (this._executionPath) {
-			const executionPathParts = this._executionPath.replace(/\\/g, '/').split('/');
+		if (this.executionPath && !this.hideProjectFolderName) {
+			const executionPathParts = this.executionPath.replace(/\\/g, '/').split('/');
 			const projectFolderName = executionPathParts[executionPathParts.length - 1];
 			return getTimestamp() + ' - ' + projectFolderName;
 		} else {
@@ -33,12 +34,16 @@ export default class VSConsoleLogger extends ConsoleLogger {
 		}
 	}
 
+	hiddeInitialProjectFolerNameDetails() {
+		this.hideProjectFolderName = true;
+	}
+
 	// Output from VSCode doesn't accept colors, for the moment we would pring in default white
 	// We could explore some workarounds in future like creating a Terminal, importing a new library or just implment it ourselves
 	println(message: string): void {
-		if (this._addExecutionDetailsToLog) {
+		if (this.addExecutionDetailsToLog) {
 			output.appendLine(this.getExecutionDetails());
-			this._addExecutionDetailsToLog = false;
+			this.addExecutionDetailsToLog = false;
 		}
 		this.checkForCorruptedJar(message);
 		output.appendLine(message);

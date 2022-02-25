@@ -15,6 +15,7 @@ import ImportFiles from './commands/ImportFiles';
 import ImportObjects from './commands/ImportObjects';
 import ListFiles from './commands/ListFiles';
 import ListObjects from './commands/ListObjects';
+import ManageAuth from './commands/ManageAuth';
 import SetupAccount from './commands/SetupAccount';
 import UpdateFile from './commands/UpdateFile';
 import UpdateObject from './commands/UpdateObject';
@@ -59,6 +60,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.importobjects', new ImportObjects()),
 		register('suitecloud.listfiles', new ListFiles()),
 		register('suitecloud.listobjects', new ListObjects()),
+		register('suitecloud.manageauth', new ManageAuth()),
 		register('suitecloud.setupaccount', new SetupAccount()),
 		register('suitecloud.updatefile', new UpdateFile()),
 		register('suitecloud.updateobject', new UpdateObject()),

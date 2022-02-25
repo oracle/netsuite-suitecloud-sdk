@@ -64,8 +64,8 @@
 	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
-	"EXTENSION_PROJECT_STARTUP_BUTTON_RUN_SUITECLOUD_SETUP_ACCOUNT": "SuiteCloud: Setup Account",
-	"EXTENSION_PROJECT_STARTUP_MESSAGE_PROJECT_NEEDS_SETUP_ACCOUNT": "No account has been set up for this project. Click \"SuiteCloud: Setup Account\" to link your project with your account.",
+	"EXTENSION_PROJECT_STARTUP_BUTTON_RUN_SUITECLOUD_SETUP_ACCOUNT": "SuiteCloud: {0}",
+	"EXTENSION_PROJECT_STARTUP_MESSAGE_PROJECT_NEEDS_SETUP_ACCOUNT": "No account has been set up for this project. Click \"SuiteCloud: {0}\" to link your project to your account.",
 	"EXTENSION_INSTALLATION_WARINING_VALIDATING_SDK_DEPENDENCIES": "Before executing any SuiteCloud command, SuiteCloud SDK dependencies need to be validated. Try again in a few seconds.",
 
 	"IMPORT_FILES_ERROR_IMPORT_TO_SUITEAPP_NOT_ALLOWED": "Files cannot be imported to a SuiteApp project. You can only import files to Account Customization Projects.",
@@ -108,6 +108,19 @@
 
 	"MANAGE_ACCOUNTS_AVAILABLE_CONNECTIONS": "Available connections",
 	"MANAGE_ACCOUNTS_CANCELED": "The creation of a new authentication ID (authID) has been canceled.",
+
+	"MANAGE_AUTH_GENERAL_INFO_OPTION": "Show details",
+	"MANAGE_AUTH_GENERAL_NO_ACCOUNTS_TO_MANAGE": "There are no accounts to manage. Click \"SuiteCloud: {0}\" to link your project to your account.",
+	"MANAGE_AUTH_GENERAL_REMOVE_OPTION": "Remove",
+	"MANAGE_AUTH_GENERAL_RENAME_OPTION":"Rename",
+	"MANAGE_AUTH_GENERAL_SELECT_AUTH_ID_TO_MANAGE": "Select the authID you want to manage:",
+	"MANAGE_AUTH_GENERAL_SELECT_OPTION_FOR_AUTH_ID": "Select one of the following options for {0}:",
+	"MANAGE_AUTH_REMOVE_CANCEL": "Cancel",
+	"MANAGE_AUTH_REMOVE_CONFIRMATION_MESSAGE": "This authID will be removed locally but still be valid in your account: {0}.",
+	"MANAGE_AUTH_REMOVE_CONTINUE": "Continue",
+	"MANAGE_AUTH_REMOVE_REMOVING_AUTH_ID": "Removing auhtID...",
+	"MANAGE_AUTH_RENAME_ENTER_NEW_AUTH_ID": "Enter the new authID.",
+	"MANAGE_AUTH_RENAME_RENAMING_AUTH_ID": "Renaming authID...",
 
 	"MANAGE_ACCOUNTS_CREATE_BROWSER": "Browser-based authentication",
 	"MANAGE_ACCOUNTS_CREATE_BROWSER_CANCEL": "Cancel the process",

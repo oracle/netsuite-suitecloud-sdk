@@ -14,7 +14,7 @@ import {
 	InteractiveAnswersValidator,
 	ProjectInfoService,
 	actionResultStatus,
-	objectTypes
+	objectTypes,
 } from '../util/ExtensionUtil';
 
 const SRC_FOLDER_NAME = 'src';
@@ -92,7 +92,7 @@ export default class ImportObjects extends BaseAction {
 			return;
 		}
 
-		let includeReferencedFiles = this.translationService.getMessage(ANSWERS.NO);
+		let includeReferencedFiles: string | undefined = this.translationService.getMessage(ANSWERS.NO);
 		if (projectInfoService.isAccountCustomizationProject()) {
 			includeReferencedFiles = await this.promptIncludeReferencedFiles();
 			if (!includeReferencedFiles) {
@@ -131,14 +131,13 @@ export default class ImportObjects extends BaseAction {
 
 		if (objectsFolderAbsolutePaths.length > 0) {
 			const srcFolderAbsolutePath = path.join(rootWorkspaceFolder, SRC_FOLDER_NAME);
-			const transformAbsolutePathsToRelativePathsFunc = (absolutePath: string) => (
-				absolutePath.replace(srcFolderAbsolutePath, '').replace(/\\/g, '/')
-			);
-			const objectsFolderRelativePaths = objectsFolderAbsolutePaths.map(transformAbsolutePathsToRelativePathsFunc)
+			const transformAbsolutePathsToRelativePathsFunc = (absolutePath: string) =>
+				absolutePath.replace(srcFolderAbsolutePath, '').replace(/\\/g, '/');
+			const objectsFolderRelativePaths = objectsFolderAbsolutePaths.map(transformAbsolutePathsToRelativePathsFunc);
 			objectsFolderRelativePaths.splice(0, 0, ApplicationConstants.FOLDERS.OBJECTS);
 			relativeDestinationFolder = await this.promptSelectDestinationFolder(objectsFolderRelativePaths);
 		} else {
-			relativeDestinationFolder = ApplicationConstants.FOLDERS.OBJECTS
+			relativeDestinationFolder = ApplicationConstants.FOLDERS.OBJECTS;
 		}
 
 		return relativeDestinationFolder;
@@ -254,8 +253,9 @@ export default class ImportObjects extends BaseAction {
 			}
 
 			const data = actionResult.data;
-			if (data.successfulImports.length === 0
-				|| (data.successfulImports.length > 0 && (data.failedImports.length > 0 || data.errorImports.length > 0))
+			if (
+				data.successfulImports.length === 0 ||
+				(data.successfulImports.length > 0 && (data.failedImports.length > 0 || data.errorImports.length > 0))
 			) {
 				this.messageService.showCommandWarning();
 			} else {
@@ -265,5 +265,4 @@ export default class ImportObjects extends BaseAction {
 			this.messageService.showCommandError();
 		}
 	}
-
 }

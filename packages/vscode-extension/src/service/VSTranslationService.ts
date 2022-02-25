@@ -14,4 +14,8 @@ export class VSTranslationService extends TranslationService {
 		let filePath = join(__dirname, MESSAGES_PATH);
 		this._MESSAGES = FileUtils.readAsJson(filePath);
 	}
+
+	getMessage(key: string, ...params: string[]): string {
+		return super.getMessage(key, ...params);
+	}
 }
