@@ -34,10 +34,7 @@ const COMMAND_OPTIONS = {
 	SCRIPT_ID: 'scriptid',
 };
 
-const SCRIPT_ID_PREFIXES = {
-	CUSTOM_RECORD: 'customrecord',
-	CUSTOM_SEGMENT: 'cseg',
-};
+const CUSTOM_RECORD_PREFIX = 'customrecord';
 
 const MAX_ENTRIES_BEFORE_FILTER = 30;
 const XML_EXTENSION = '.xml';
@@ -52,40 +49,14 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		const foundXMLFiles = this._searchFilesFromObjectsFolder();
 		let filteredObjectsList = await this._getObjectsToSelect(foundXMLFiles);
 		const selectedScriptIds = await this._getSelectedScriptIds(filteredObjectsList);
-		const customRecordsAndSegments = selectedScriptIds.filter(
-			(scriptid) => scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_RECORD) || scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_SEGMENT)
-		);
-
-		const includeCustomInstancesQuestions = {
-			when: customRecordsAndSegments.length >= 1,
-			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES,
-			message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_CUSTOM_INSTANCES),
-			default: false,
-			choices: [
-				{ name: NodeTranslationService.getMessage(YES), value: true },
-				{ name: NodeTranslationService.getMessage(NO), value: false },
-			],
-		};
-
-		const overwriteObjectsQuestion = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
-			name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
-			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS),
-			default: 0,
-			choices: [
-				{ name: NodeTranslationService.getMessage(YES), value: true },
-				{ name: NodeTranslationService.getMessage(NO), value: false },
-			],
-		};
-		const answers = await prompt([includeCustomInstancesQuestions, overwriteObjectsQuestion]);
+		const customRecordsAndSegments = selectedScriptIds.filter((scriptid) => scriptid.startsWith(CUSTOM_RECORD_PREFIX));
+		const includeCustomInstances = await this._includeCustomInstancesQuestion(customRecordsAndSegments);
+		const overwriteObjects = await this._overwriteQuestion(includeCustomInstances);
 
 		return {
-			[ANSWERS_NAMES.OVERWRITE_OBJECTS]: answers[ANSWERS_NAMES.OVERWRITE_OBJECTS],
+			[ANSWERS_NAMES.OVERWRITE_OBJECTS]: overwriteObjects,
 			[COMMAND_OPTIONS.SCRIPT_ID]: selectedScriptIds,
-			[COMMAND_OPTIONS.INCLUDE_CUSTOM_INSTANCES]: answers[ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES]
-				? answers[ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES]
-				: false,
+			[COMMAND_OPTIONS.INCLUDE_CUSTOM_INSTANCES]: includeCustomInstances,
 		};
 	}
 
@@ -162,5 +133,38 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 				validate: (fieldValue) => showValidationResults(fieldValue, validateScriptId),
 			},
 		]);
+	}
+	async _includeCustomInstancesQuestion(customRecordsAndSegments) {
+		const includeCustomInstancesQuestions = {
+			when: customRecordsAndSegments.length >= 1,
+			type: CommandUtils.INQUIRER_TYPES.LIST,
+			name: ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES,
+			message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_CUSTOM_INSTANCES),
+			default: false,
+			choices: [
+				{ name: NodeTranslationService.getMessage(YES), value: true },
+				{ name: NodeTranslationService.getMessage(NO), value: false },
+			],
+		};
+		const answer = await prompt([includeCustomInstancesQuestions]);
+		return answer[ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES];
+	}
+
+	async _overwriteQuestion(includeCustomInstances) {
+		const message = includeCustomInstances
+			? NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS_WITH_CUSTOM_INSTANCES)
+			: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS);
+		const overwriteObjectsQuestion = {
+			type: CommandUtils.INQUIRER_TYPES.LIST,
+			name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
+			message: message,
+			default: 0,
+			choices: [
+				{ name: NodeTranslationService.getMessage(YES), value: true },
+				{ name: NodeTranslationService.getMessage(NO), value: false },
+			],
+		};
+		const answers = await prompt([overwriteObjectsQuestion]);
+		return answers[ANSWERS_NAMES.OVERWRITE_OBJECTS];
 	}
 };

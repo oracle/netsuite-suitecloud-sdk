@@ -32,10 +32,7 @@ const COMMAND_OPTIONS = {
 	INCLUDE_INSTANCES: 'includeinstances',
 };
 const COMMAND_UPDATE_CUSTOM_RECORD_WITH_INSTANCES = 'updatecustomrecordwithinstances';
-const SCRIPT_ID_PREFIXES = {
-	CUSTOM_RECORD: 'customrecord',
-	CUSTOM_SEGMENT: 'cseg',
-};
+const CUSTOM_RECORD_PREFIX = 'customrecord';
 module.exports = class UpdateAction extends BaseAction {
 	constructor(options) {
 		super(options);
@@ -55,12 +52,10 @@ module.exports = class UpdateAction extends BaseAction {
 			}
 			let updateCustomRecordsWithInstancesResult = [];
 			if (params.hasOwnProperty(COMMAND_OPTIONS.INCLUDE_INSTANCES) && params[COMMAND_OPTIONS.INCLUDE_INSTANCES]) {
-				const customRecordScriptIds = params[COMMAND_OPTIONS.SCRIPT_ID]
-					.split(' ')
-					.filter((scriptId) => this._isCustomRecordOrSegment(scriptId));
+				const customRecordScriptIds = params[COMMAND_OPTIONS.SCRIPT_ID].split(' ').filter((scriptId) => this._isCustomRecord(scriptId));
 				params[COMMAND_OPTIONS.SCRIPT_ID] = params[COMMAND_OPTIONS.SCRIPT_ID]
 					.split(' ')
-					.filter((scriptId) => !this._isCustomRecordOrSegment(scriptId))
+					.filter((scriptId) => !this._isCustomRecord(scriptId))
 					.join(' ');
 				updateCustomRecordsWithInstancesResult = await this._updateCustomRecordWithInstances(params, customRecordScriptIds);
 
@@ -87,8 +82,8 @@ module.exports = class UpdateAction extends BaseAction {
 		}
 	}
 
-	_isCustomRecordOrSegment(scriptid) {
-		return scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_RECORD) || scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_SEGMENT);
+	_isCustomRecord(scriptid) {
+		return scriptid.startsWith(CUSTOM_RECORD_PREFIX);
 	}
 
 	async _updateCustomRecordWithInstances(params, customRecordScriptIds) {
