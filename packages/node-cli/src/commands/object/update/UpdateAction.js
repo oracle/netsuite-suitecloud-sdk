@@ -32,9 +32,7 @@ const COMMAND_OPTIONS = {
 	INCLUDE_INSTANCES: 'includeinstances',
 };
 const COMMAND_UPDATE_CUSTOM_RECORD_WITH_INSTANCES = 'updatecustomrecordwithinstances';
-const SCRIPT_ID_PREFIXES = {
-	CUSTOM_RECORD: 'customrecord',
-};
+const CUSTOM_RECORD_PREFIX = 'customrecord';
 module.exports = class UpdateAction extends BaseAction {
 	constructor(options) {
 		super(options);
@@ -85,7 +83,7 @@ module.exports = class UpdateAction extends BaseAction {
 	}
 
 	_isCustomRecord(scriptid) {
-		return scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_RECORD);
+		return scriptid.startsWith(CUSTOM_RECORD_PREFIX);
 	}
 
 	async _updateCustomRecordWithInstances(params, customRecordScriptIds) {

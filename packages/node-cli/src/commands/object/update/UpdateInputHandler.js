@@ -34,9 +34,7 @@ const COMMAND_OPTIONS = {
 	SCRIPT_ID: 'scriptid',
 };
 
-const SCRIPT_ID_PREFIXES = {
-	CUSTOM_RECORD: 'customrecord',
-};
+const CUSTOM_RECORD_PREFIX = 'customrecord';
 
 const MAX_ENTRIES_BEFORE_FILTER = 30;
 const XML_EXTENSION = '.xml';
@@ -51,7 +49,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 		const foundXMLFiles = this._searchFilesFromObjectsFolder();
 		let filteredObjectsList = await this._getObjectsToSelect(foundXMLFiles);
 		const selectedScriptIds = await this._getSelectedScriptIds(filteredObjectsList);
-		const customRecordsAndSegments = selectedScriptIds.filter((scriptid) => scriptid.startsWith(SCRIPT_ID_PREFIXES.CUSTOM_RECORD));
+		const customRecordsAndSegments = selectedScriptIds.filter((scriptid) => scriptid.startsWith(CUSTOM_RECORD_PREFIX));
 		const includeCustomInstances = await this._includeCustomInstancesQuestion(customRecordsAndSegments);
 		const overwriteObjects = await this._overwriteQuestion(includeCustomInstances);
 
