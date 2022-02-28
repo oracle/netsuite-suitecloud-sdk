@@ -96,7 +96,7 @@ The following SuiteCloud commands are available through the Command Palette:
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_163067510539.html" rel="noopener noreferrer" target=blank>Update File from Account</a>|Overwrites the selected file in the project with the matching file in an account.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_161643514921.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported FileCabinet folder.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160147382361" rel="noopener noreferrer" target=blank>Update Object from Account</a>|Overwrites the selected object in the project with the matching object in an account.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_164563201243.html" rel="noopener noreferrer" target=blank>Validate Project</a>|Validates a project against your NetSuite account. Only the files referenced in the deploy.xml file are validated.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_164563201243.html" rel="noopener noreferrer" target=blank>Validate Project</a>|Validates a project against your NetSuite account. Only the files and folders referenced in the deploy.xml file are validated.|
 
 To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
 
