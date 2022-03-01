@@ -53,11 +53,13 @@ module.exports = class UpdateAction extends BaseAction {
 			let updateCustomRecordsWithInstancesResult = [];
 			if (params.hasOwnProperty(COMMAND_OPTIONS.INCLUDE_INSTANCES) && params[COMMAND_OPTIONS.INCLUDE_INSTANCES]) {
 				const customRecordScriptIds = params[COMMAND_OPTIONS.SCRIPT_ID].split(' ').filter((scriptId) => this._isCustomRecord(scriptId));
-				params[COMMAND_OPTIONS.SCRIPT_ID] = params[COMMAND_OPTIONS.SCRIPT_ID]
-					.split(' ')
-					.filter((scriptId) => !this._isCustomRecord(scriptId))
-					.join(' ');
-				updateCustomRecordsWithInstancesResult = await this._updateCustomRecordWithInstances(params, customRecordScriptIds);
+				if (customRecordScriptIds && customRecordScriptIds.length > 0) {
+					params[COMMAND_OPTIONS.SCRIPT_ID] = params[COMMAND_OPTIONS.SCRIPT_ID]
+						.split(' ')
+						.filter((scriptId) => !this._isCustomRecord(scriptId))
+						.join(' ');
+					updateCustomRecordsWithInstancesResult = await this._updateCustomRecordWithInstances(params, customRecordScriptIds);
+				}
 
 				delete params[COMMAND_OPTIONS.INCLUDE_INSTANCES];
 			}
@@ -95,7 +97,7 @@ module.exports = class UpdateAction extends BaseAction {
 			let resultMessage;
 			if (updateCustomRecordResult.status === STATUS.ERROR) {
 				resultMessage = updateCustomRecordResult.errorMessages;
-				this._log.warning(NodeTranslationService.getMessage(ERRORS.CUSTOM_RECORD, scriptId, resultMessage));
+				this._log.warning(`${this._log.getPadding(1)}- ${NodeTranslationService.getMessage(ERRORS.CUSTOM_RECORD, scriptId, resultMessage)}`);
 			} else {
 				resultMessage = updateCustomRecordResult.data;
 				this._log.result(`${this._log.getPadding(1)}- ${scriptId}`);
