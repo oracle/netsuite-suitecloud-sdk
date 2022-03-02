@@ -55,7 +55,7 @@ module.exports = class UpdateOutputHandler extends BaseOutputHandler {
 
 		if (objectsWithInstances.length > 0) {
 			const scriptids = objectsWithInstances.map((object) => object.key).sort();
-			this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE_CUSTOM_RECORDS, scriptids));
+			this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE_CUSTOM_RECORDS, scriptids.join(' ')));
 		}
 	}
 };
