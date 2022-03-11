@@ -33,33 +33,34 @@ export default class UpdateObject extends BaseAction {
 
 		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
 		const cancelMessage = this.translationService.getMessage(ANSWERS.CANCEL);
-		const override = await window.showQuickPick([continueMessage, cancelMessage], {
+		const yes = this.translationService.getMessage(ANSWERS.YES);
+		const no = this.translationService.getMessage(ANSWERS.NO);
+		const processCanceledMessage = this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED);
+
+		const overwriteObject = await window.showQuickPick([continueMessage, cancelMessage], {
 			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE, scriptId),
 			canPickMany: false,
 		});
 
-		if (!override || override === this.translationService.getMessage(ANSWERS.CANCEL)) {
-			this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED));
+		if (!overwriteObject || overwriteObject === cancelMessage) {
+			this.messageService.showInformationMessage(processCanceledMessage);
 			return;
 		}
 
-		const yes = this.translationService.getMessage(ANSWERS.YES);
-		const no = this.translationService.getMessage(ANSWERS.NO);
 		const includeInstancesAnswer = await window.showQuickPick([yes, no], {
 			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.QUESTIONS.INCLUDE_INSTANCES),
 			canPickMany: false,
 		});
 
-
 		let includeInstancesFlag = '';
-		if (includeInstancesAnswer === this.translationService.getMessage(ANSWERS.YES)) {
+		if (includeInstancesAnswer === yes) {
 			const overwriteInstances = await window.showQuickPick([continueMessage, cancelMessage], {
 				placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE_INSTANCES),
 				canPickMany: false,
 			});
-	
-			if (!overwriteInstances || overwriteInstances === this.translationService.getMessage(ANSWERS.CANCEL)) {
-				this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED));
+
+			if (!overwriteInstances || overwriteInstances === cancelMessage) {
+				this.messageService.showInformationMessage(processCanceledMessage);
 				return;
 			}
 			includeInstancesFlag = INCLUDE_INSTANCES;
