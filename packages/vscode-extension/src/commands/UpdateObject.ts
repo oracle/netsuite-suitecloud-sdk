@@ -11,6 +11,8 @@ import { ValidationResult } from '../types/ActionResult';
 import { FOLDERS } from '../ApplicationConstants';
 
 const COMMAND_NAME = 'updateobject';
+const INCLUDE_INSTANCES = 'includeinstances';
+
 const STATUS = {
 	SUCCESS: 'SUCCESS',
 	ERROR: 'ERROR',
@@ -32,7 +34,7 @@ export default class UpdateObject extends BaseAction {
 		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
 		const cancelMessage = this.translationService.getMessage(ANSWERS.CANCEL);
 		const override = await window.showQuickPick([continueMessage, cancelMessage], {
-			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERRIDE, scriptId),
+			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE, scriptId),
 			canPickMany: false,
 		});
 
@@ -41,9 +43,31 @@ export default class UpdateObject extends BaseAction {
 			return;
 		}
 
+		const yes = this.translationService.getMessage(ANSWERS.YES);
+		const no = this.translationService.getMessage(ANSWERS.NO);
+		const includeInstancesAnswer = await window.showQuickPick([yes, no], {
+			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.QUESTIONS.INCLUDE_INSTANCES),
+			canPickMany: false,
+		});
+
+
+		let includeInstancesFlag = '';
+		if (includeInstancesAnswer === this.translationService.getMessage(ANSWERS.YES)) {
+			const overwriteInstances = await window.showQuickPick([continueMessage, cancelMessage], {
+				placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE_INSTANCES),
+				canPickMany: false,
+			});
+	
+			if (!overwriteInstances || overwriteInstances === this.translationService.getMessage(ANSWERS.CANCEL)) {
+				this.messageService.showInformationMessage(this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED));
+				return;
+			}
+			includeInstancesFlag = INCLUDE_INSTANCES;
+		}
+
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(UPDATE_OBJECT.UPDATING);
-		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: [scriptId] });
+		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: [scriptId], includeinstances: includeInstancesFlag });
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
