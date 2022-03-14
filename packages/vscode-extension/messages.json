@@ -141,8 +141,8 @@
 	"MANAGE_ACCOUNTS_SELECT_CREATE": "Select or create an authentication ID (authID). It will be set up as default:",
 
 	"UPDATE_OBJECT_ERROR_SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER": "The SDF object file to update should be in the Objects folder.",
-	"UPDATE_OBJECT_OVERWRITE": "Account object will overwrite project object: {0}",
-	"UPDATE_OBJECT_OVERWRITE_INSTANCES": "All Custom Instances will be overwritten with the values from the account.",
+	"UPDATE_OBJECT_OVERWRITE": "The following object will be overwritten: {0}.",
+	"UPDATE_OBJECT_OVERWRITE_INSTANCES": "The following object and its instances will be overwritten: {0}.",
 	"UPDATE_OBJECT_PROCESS_CANCELED": "The custom object update process has been canceled. No custom objects have been overwritten.",
 	"UPDATE_OBJECT_QUESTIONS_INCLUDE_INSTANCES" : "Do you want to include Custom Instances from the account?",
 	"UPDATE_OBJECT_UPDATING": "Updating object...",

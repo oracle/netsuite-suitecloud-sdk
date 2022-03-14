@@ -11,6 +11,7 @@ import { ValidationResult } from '../types/ActionResult';
 import { FOLDERS } from '../ApplicationConstants';
 
 const COMMAND_NAME = 'updateobject';
+const CUSTOM_RECORD_PREFIX = 'customrecord';
 const INCLUDE_INSTANCES = 'includeinstances';
 
 const STATUS = {
@@ -36,9 +37,22 @@ export default class UpdateObject extends BaseAction {
 		const yes = this.translationService.getMessage(ANSWERS.YES);
 		const no = this.translationService.getMessage(ANSWERS.NO);
 		const processCanceledMessage = this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED);
+		const suiteCloudCommand = { scriptid: [scriptId], includeinstances: '' };
+		let overwriteMessage = this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE, scriptId);
+
+		if (UpdateObject.isCustomRecord(scriptId)) {
+			const includeInstancesAnswer = await window.showQuickPick([yes, no], {
+				placeHolder: this.translationService.getMessage(UPDATE_OBJECT.QUESTIONS.INCLUDE_INSTANCES),
+				canPickMany: false,
+			});
+			if (includeInstancesAnswer === yes) {
+				suiteCloudCommand.includeinstances = INCLUDE_INSTANCES;
+				overwriteMessage = this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE_INSTANCES, scriptId);
+			}
+		}
 
 		const overwriteObject = await window.showQuickPick([continueMessage, cancelMessage], {
-			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE, scriptId),
+			placeHolder: overwriteMessage,
 			canPickMany: false,
 		});
 
@@ -47,28 +61,9 @@ export default class UpdateObject extends BaseAction {
 			return;
 		}
 
-		const includeInstancesAnswer = await window.showQuickPick([yes, no], {
-			placeHolder: this.translationService.getMessage(UPDATE_OBJECT.QUESTIONS.INCLUDE_INSTANCES),
-			canPickMany: false,
-		});
-
-		let includeInstancesFlag = '';
-		if (includeInstancesAnswer === yes) {
-			const overwriteInstances = await window.showQuickPick([continueMessage, cancelMessage], {
-				placeHolder: this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE_INSTANCES),
-				canPickMany: false,
-			});
-
-			if (!overwriteInstances || overwriteInstances === cancelMessage) {
-				this.messageService.showInformationMessage(processCanceledMessage);
-				return;
-			}
-			includeInstancesFlag = INCLUDE_INSTANCES;
-		}
-
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(UPDATE_OBJECT.UPDATING);
-		const commandActionPromise = this.runSuiteCloudCommand({ scriptid: [scriptId], includeinstances: includeInstancesFlag });
+		const commandActionPromise = this.runSuiteCloudCommand(suiteCloudCommand);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
@@ -103,5 +98,9 @@ export default class UpdateObject extends BaseAction {
 		} catch (e: any) {
 			return this.unsuccessfulValidation(e.getErrorMessage());
 		}
+	}
+
+	private static isCustomRecord(scriptid: string): boolean {
+		return scriptid.startsWith(CUSTOM_RECORD_PREFIX);
 	}
 }
