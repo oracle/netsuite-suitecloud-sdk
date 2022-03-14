@@ -45,12 +45,13 @@ export default class UpdateObject extends BaseAction {
 				placeHolder: this.translationService.getMessage(UPDATE_OBJECT.QUESTIONS.INCLUDE_INSTANCES),
 				canPickMany: false,
 			});
+			if(!includeInstancesAnswer) {
+				this.messageService.showInformationMessage(processCanceledMessage);
+				return;
+			}
 			if (includeInstancesAnswer === yes) {
 				suiteCloudCommandOptions.includeinstances = INCLUDE_INSTANCES;
 				overwriteMessage = this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE_INSTANCES, scriptId);
-			} else if(!includeInstancesAnswer) {
-				this.messageService.showInformationMessage(processCanceledMessage);
-				return;
 			}
 		}
 
