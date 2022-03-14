@@ -48,8 +48,7 @@ export default class UpdateObject extends BaseAction {
 			if (includeInstancesAnswer === yes) {
 				suiteCloudCommandOptions.includeinstances = INCLUDE_INSTANCES;
 				overwriteMessage = this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE_INSTANCES, scriptId);
-			}
-			if(!includeInstancesAnswer) {
+			} else if(!includeInstancesAnswer) {
 				this.messageService.showInformationMessage(processCanceledMessage);
 				return;
 			}
