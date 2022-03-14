@@ -81,7 +81,7 @@
 	"IMPORT_FILES_QUESTIONS_OVERRIDE_SINGLE": "The selected file in the project will be overwritten: {0}",
 
 	"IMPORT_OBJECTS_ERROR_EMPTY_LIST_SEARCH": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID or script ID.",
-	"IMPORT_OBJECTS_ERROR_INCORRECT_FOLDER": "To import a custom object from an account, first select a valid location inside the Objects folder",
+	"IMPORT_OBJECTS_ERROR_INCORRECT_FOLDER": "To import a custom object from an account, select a valid location inside the Objects folder first.",
 	"IMPORT_OBJECTS_IMPORTING_OBJECTS": "Importing objects...",
 	"IMPORT_OBJECTS_PROCESS_CANCELED": "The object import process has been canceled. No custom files have been overwritten.",
 	"IMPORT_OBJECTS_QUESTIONS_APP_ID": "Press Enter to use '{0}', or enter your application ID.",

@@ -37,17 +37,21 @@ export default class UpdateObject extends BaseAction {
 		const yes = this.translationService.getMessage(ANSWERS.YES);
 		const no = this.translationService.getMessage(ANSWERS.NO);
 		const processCanceledMessage = this.translationService.getMessage(UPDATE_OBJECT.PROCESS_CANCELED);
-		const suiteCloudCommand = { scriptid: [scriptId], includeinstances: '' };
+		const suiteCloudCommandOptions = { scriptid: [scriptId], includeinstances: '' };
 		let overwriteMessage = this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE, scriptId);
 
-		if (UpdateObject.isCustomRecord(scriptId)) {
+		if (this.isCustomRecord(scriptId)) {
 			const includeInstancesAnswer = await window.showQuickPick([yes, no], {
 				placeHolder: this.translationService.getMessage(UPDATE_OBJECT.QUESTIONS.INCLUDE_INSTANCES),
 				canPickMany: false,
 			});
 			if (includeInstancesAnswer === yes) {
-				suiteCloudCommand.includeinstances = INCLUDE_INSTANCES;
+				suiteCloudCommandOptions.includeinstances = INCLUDE_INSTANCES;
 				overwriteMessage = this.translationService.getMessage(UPDATE_OBJECT.OVERWRITE_INSTANCES, scriptId);
+			}
+			if(!includeInstancesAnswer) {
+				this.messageService.showInformationMessage(processCanceledMessage);
+				return;
 			}
 		}
 
@@ -63,7 +67,7 @@ export default class UpdateObject extends BaseAction {
 
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(UPDATE_OBJECT.UPDATING);
-		const commandActionPromise = this.runSuiteCloudCommand(suiteCloudCommand);
+		const commandActionPromise = this.runSuiteCloudCommand(suiteCloudCommandOptions);
 		this.messageService.showInformationMessage(commandMessage, statusBarMessage, commandActionPromise);
 
 		const actionResult = await commandActionPromise;
@@ -100,7 +104,7 @@ export default class UpdateObject extends BaseAction {
 		}
 	}
 
-	private static isCustomRecord(scriptid: string): boolean {
+	private isCustomRecord(scriptid: string): boolean {
 		return scriptid.startsWith(CUSTOM_RECORD_PREFIX);
 	}
 }
