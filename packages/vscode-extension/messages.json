@@ -81,7 +81,7 @@
 	"IMPORT_FILES_QUESTIONS_OVERRIDE_SINGLE": "The selected file in the project will be overwritten: {0}",
 
 	"IMPORT_OBJECTS_ERROR_EMPTY_LIST_SEARCH": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID or script ID.",
-	"IMPORT_OBJECTS_ERROR_INCORRECT_FOLDER": "To import a custom object from an account, first select a valid location inside the Objects folder",
+	"IMPORT_OBJECTS_ERROR_INCORRECT_FOLDER": "To import a custom object from an account, select a valid location inside the Objects folder first.",
 	"IMPORT_OBJECTS_IMPORTING_OBJECTS": "Importing objects...",
 	"IMPORT_OBJECTS_PROCESS_CANCELED": "The object import process has been canceled. No custom files have been overwritten.",
 	"IMPORT_OBJECTS_QUESTIONS_APP_ID": "Press Enter to use '{0}', or enter your application ID.",
@@ -141,8 +141,10 @@
 	"MANAGE_ACCOUNTS_SELECT_CREATE": "Select or create an authentication ID (authID). It will be set up as default:",
 
 	"UPDATE_OBJECT_ERROR_SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER": "The SDF object file to update should be in the Objects folder.",
-	"UPDATE_OBJECT_OVERRIDE": "Account object will overwrite project object: {0}",
+	"UPDATE_OBJECT_OVERWRITE": "The following object will be overwritten: {0}.",
+	"UPDATE_OBJECT_OVERWRITE_INSTANCES": "The following object and its instances will be overwritten: {0}.",
 	"UPDATE_OBJECT_PROCESS_CANCELED": "The custom object update process has been canceled. No custom objects have been overwritten.",
+	"UPDATE_OBJECT_QUESTIONS_INCLUDE_INSTANCES" : "Do you want to include Custom Instances from the account?",
 	"UPDATE_OBJECT_UPDATING": "Updating object...",
 
 	"UPLOAD_FILE_ERROR_UPLOAD_FILE_FOLDER_RESTRICTION": "The file to upload should be in a supported folder inside the FileCabinet folder. For information about the supported folders, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4724963992.html.",
