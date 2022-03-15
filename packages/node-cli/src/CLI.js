@@ -10,7 +10,8 @@ const program = require('commander');
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const {
-	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE },
+	CLI: { INTERACTIVE_OPTION_DESCRIPTION, TITLE, USAGE, VERSION_HELP },
+	COMMAND_OPTIONS,
 	ERRORS,
 } = require('./services/TranslationKeys');
 const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapExceptionMessage;
@@ -22,9 +23,11 @@ const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 const configFile = require(PACKAGE_FILE);
 const CLI_VERSION = configFile ? configFile.version : 'unknown';
 const { COMPATIBLE_NS_VERSION } = require('./ApplicationConstants');
+const COMMAND_ALIAS = '[command]';
 const HELP_COMMAND = 'help';
 const HELP_OPTION = '--help';
 const HELP_OPTION_ALIAS = '-h';
+const HELP_OPTION_ALIAS_NAME = '-h, --help';
 const VERSION_OPTION = '--version';
 
 module.exports = class CLI {
@@ -69,12 +72,14 @@ module.exports = class CLI {
 			}
 
 			program
-				.version(CLI_VERSION, VERSION_OPTION)
+				.version(CLI_VERSION, VERSION_OPTION, NodeTranslationService.getMessage(VERSION_HELP))
 				.option(
 					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
 					NodeTranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION),
 					this._validateInteractive
 				)
+				.helpOption(HELP_OPTION_ALIAS_NAME, NodeTranslationService.getMessage(COMMAND_OPTIONS.HELP))
+				.addHelpCommand(`${HELP_COMMAND} ${COMMAND_ALIAS}`, NodeTranslationService.getMessage(COMMAND_OPTIONS.HELP))
 				.on('command:*', (args) => {
 					NodeConsoleLogger.error(NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, args[0]));
 				})
