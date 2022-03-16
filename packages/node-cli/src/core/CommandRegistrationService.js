@@ -37,7 +37,6 @@ module.exports = class CommandRegistrationService {
 		const helpMessage = NodeTranslationService.getMessage(COMMAND_OPTIONS.HELP);
 
 		let commandSetup = program.command(commandMetadata.name).helpOption(HELP_OPTION_ALIAS_NAME, helpMessage);
-		//program.alias(this._alias)
 
 		if (!runInInteractiveMode) {
 			if (commandMetadata.supportsInteractiveMode) {

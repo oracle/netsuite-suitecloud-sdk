@@ -24,11 +24,12 @@
 	"ANSWERS_VALIDATION_MESSAGES_SCRIPT_ID_FORMAT": "The specified script ID contains forbidden characters. Use only lowercase letters, numbers, or underscores.",
 	"ANSWERS_VALIDATION_MESSAGES_WRONG_PROJECT_TYPE": "Invalid \"--type\" option specified. Enter one of the following options: ACCOUNTCUSTOMIZATION or SUITEAPP.",
 
-	"CLI_INTERACTIVE_OPTION_DESCRIPTION": "run the command in interactive mode",
-	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite {0})",
-	"CLI_USAGE": "command [option]",
+	"CLI_INTERACTIVE_OPTION_DESCRIPTION": "Runs the command in interactive mode.",
 	"CLI_SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE": "Non-interactive execution:\nsuitecloud {0}",
 	"CLI_SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE_CUSTOM_RECORDS": "Non-interactive execution:\nsuitecloud object:update --includeinstances --scriptid {0}",
+	"CLI_TITLE": "SuiteCloud CLI for Node.js (NetSuite {0})",
+	"CLI_USAGE": "command [option]",
+	"CLI_VERSION_HELP": "Outputs the version number.",
 
 	"COMMAND_ACCOUNTSAVETOKEN_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default.",
 
