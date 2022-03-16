@@ -26,8 +26,7 @@ const { COMPATIBLE_NS_VERSION } = require('./ApplicationConstants');
 const COMMAND_ALIAS = '[command]';
 const HELP_COMMAND = 'help';
 const HELP_OPTION = '--help';
-const HELP_OPTION_ALIAS = '-h';
-const HELP_OPTION_ALIAS_NAME = '-h, --help';
+const HELP_ALIAS = '-h';
 const VERSION_OPTION = '--version';
 
 module.exports = class CLI {
@@ -49,7 +48,7 @@ module.exports = class CLI {
 			const thirdArgument = process.argv[2];
 			if (
 				thirdArgument &&
-				thirdArgument !== HELP_OPTION_ALIAS &&
+				thirdArgument !== HELP_ALIAS &&
 				thirdArgument !== HELP_OPTION &&
 				thirdArgument !== HELP_COMMAND &&
 				thirdArgument !== VERSION_OPTION
@@ -59,7 +58,7 @@ module.exports = class CLI {
 				this._validateCommandExists(commandMetadataList, process.argv[3]);
 			}
 
-			if (process.argv.length > 3 && (process.argv.includes(HELP_OPTION_ALIAS) || process.argv.includes(HELP_OPTION))) {
+			if (process.argv.length > 3 && (process.argv.includes(HELP_ALIAS) || process.argv.includes(HELP_OPTION))) {
 				process.argv = this._leaveOnlyHelpArguments();
 			}
 
@@ -78,7 +77,7 @@ module.exports = class CLI {
 					NodeTranslationService.getMessage(INTERACTIVE_OPTION_DESCRIPTION),
 					this._validateInteractive
 				)
-				.helpOption(HELP_OPTION_ALIAS_NAME, NodeTranslationService.getMessage(COMMAND_OPTIONS.HELP))
+				.helpOption(`${HELP_ALIAS}, ${HELP_OPTION}`, NodeTranslationService.getMessage(COMMAND_OPTIONS.HELP))
 				.addHelpCommand(`${HELP_COMMAND} ${COMMAND_ALIAS}`, NodeTranslationService.getMessage(COMMAND_OPTIONS.HELP))
 				.on('command:*', (args) => {
 					NodeConsoleLogger.error(NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_EXIST, args[0]));
@@ -97,7 +96,7 @@ module.exports = class CLI {
 	}
 
 	_leaveOnlyHelpArguments() {
-		return process.argv.slice(0, 3).concat(HELP_OPTION_ALIAS); //We only leave commandName and help argument
+		return process.argv.slice(0, 3).concat(HELP_ALIAS); //We only leave commandName and help argument
 	}
 
 	_isRunningInInteractiveMode() {
