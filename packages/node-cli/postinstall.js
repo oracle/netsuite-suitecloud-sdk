@@ -4,4 +4,5 @@
  */
 'use strict';
 
+require('./src/core/sdksetup/SdkLicense').show();
 require('./src/core/sdksetup/SdkDownloadService').download();
