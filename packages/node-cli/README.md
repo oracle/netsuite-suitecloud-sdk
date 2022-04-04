@@ -34,10 +34,10 @@ Since CLI for Node.js is a development tool, use a global instance to install it
 ```
 npm install -g @oracle/suitecloud-cli
 ```
-When installing the SuiteCloud CLI for Node.js via script, for instance in a CI environment, you can skip the license prompt presented during the normal installation process by adding the --supressSuiteCloudSDKLicensePrompt flag to the install script as shown below. Note that by adding the mentioned flag to the script, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions license. See the [License](#license) section for details.
+When installing the SuiteCloud CLI for Node.js via script, for instance in a CI environment, you can skip the license prompt presented during the normal installation process by adding the --acceptSuiteCloudSDKLicensePrompt flag to the install script as shown below. Note that by adding the mentioned flag to the script, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions license. See the [License](#license) section for details.
 
 ```
-npm install -g --supressSuiteCloudSDKLicensePrompt @oracle/suitecloud-cli
+npm install -g --acceptSuiteCloudSDKLicensePrompt @oracle/suitecloud-cli
 ```
 
 
