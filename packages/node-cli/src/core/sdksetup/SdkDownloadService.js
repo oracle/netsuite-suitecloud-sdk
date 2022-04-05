@@ -18,16 +18,15 @@ const HOME_PATH = require('os').homedir();
 
 const { FOLDERS } = require('../../ApplicationConstants');
 
-const NodeConsoleLogger = require('../../loggers/NodeConsoleLogger');
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
 
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
-const { executeWithSpinner } = require('../../ui/CliSpinner');
 
 const { SDK_DOWNLOAD_SERVICE } = require('../../services/TranslationKeys');
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
+const ERROR_CODE = -1;
 
 class SdkDownloadService {
 	constructor() {
@@ -46,13 +45,10 @@ class SdkDownloadService {
 		const skipProxy = SdkProperties.configFileExists();
 
 		try {
-			await executeWithSpinner({
-				action: this._downloadJarFilePromise(fullURL, destinationFilePath, proxy, skipProxy),
-				message: NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.DOWNLOADING, fullURL),
-			});
-			NodeConsoleLogger.info(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.SUCCESS));
+			await this._downloadJarFilePromise(fullURL, destinationFilePath, proxy, skipProxy);
 		} catch (error) {
-			NodeConsoleLogger.error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.ERROR, fullURL, unwrapExceptionMessage(error)));
+			console.error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.ERROR, fullURL, unwrapExceptionMessage(error)));
+			process.exit(ERROR_CODE);
 		}
 	}
 
