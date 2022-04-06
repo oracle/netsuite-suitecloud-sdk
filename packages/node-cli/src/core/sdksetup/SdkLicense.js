@@ -1,6 +1,5 @@
 'use strict';
 const os = require('os');
-const fs = require('fs');
 const path = require('path');
 
 const { spawnSync } = require('child_process');
@@ -12,7 +11,6 @@ const OSX_PLATFORM = 'darwin';
 const WINDOWS_CMD = 'start';
 const LINUX_CMD = 'xdg-open';
 const OSX_CMD = 'open';
-const READ_ONLY = 0o444;
 const ERROR_MESSAGE = 'Something went wrong.';
 const LICENSE_MESSAGE = 'Use the --acceptsuitecloudsdklicense flag to accept the FUTC license:' +
 	' https://www.oracle.com/downloads/licenses/oracle-free-license.html';
@@ -28,10 +26,6 @@ class SdkLicense {
 		if (process.env.npm_config_acceptsuitecloudsdklicense || process.env.npm_config_acceptSuiteCloudSDKLicense) {
 			return;
 		}
-		//changing license permission to read-only and ignoring exception
-		try{
-			fs.chmodSync(LICENSE_PATH, READ_ONLY);
-		} catch (e){}
 		const currentPlatform = os.platform();
 		const command = supportedPlatformsCommands[currentPlatform];
 		const execution = spawnSync(command, [LICENSE_PATH], { stdio: 'ignore', detached: true, shell: true });
