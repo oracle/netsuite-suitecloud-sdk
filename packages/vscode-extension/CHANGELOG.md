@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.1
+
+- Vulnerability updates for XStream and Axis libraries
+
 ## 1.1.0
 
 - Bug fixes and improvements
