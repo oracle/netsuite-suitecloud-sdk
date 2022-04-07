@@ -18,12 +18,14 @@ class ProxyAgent {
 	}
 
 	initProxyURL() {
-		// throws error if proxyString is invalid
-		const proxy = new URL(this.proxyString);
-
-		proxy.host = proxy.hostname || proxy.host;
-		proxy.port = +proxy.port || (proxy.protocol.toLowerCase() === PROTOCOL.HTTPS ? 443 : 80);
-		this.proxyURL = proxy;
+		try {
+			const proxy = new URL(this.proxyString);
+			proxy.host = proxy.hostname || proxy.host;
+			proxy.port = +proxy.port || (proxy.protocol.toLowerCase() === PROTOCOL.HTTPS ? 443 : 80);
+			this.proxyURL = proxy;
+		} catch (err) {
+			throw new ProxyAgentError(`${err.input} ${ERROR_MESSAGES.BAD_PROXY}`);
+		}
 	}
 
 	addRequest(req, options) {
@@ -101,7 +103,8 @@ class ProxyAgentError extends Error {
 
 const ERROR_MESSAGES = {
 	CONNECT_TIMEOUT: 'CONNECT request timeout.',
-	SERVER_CLOSE_EVENT: 'Tunnel failed. Socket closed prematurely.'
+	SERVER_CLOSE_EVENT: 'Tunnel failed. Socket closed prematurely.',
+	BAD_PROXY: 'is not a valid value for proxy.'
 }
 
 module.exports = ProxyAgent;
