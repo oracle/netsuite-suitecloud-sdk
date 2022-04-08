@@ -28,7 +28,10 @@ class SdkLicense {
 			return;
 		}
 		const tmpFilePath = os.tmpdir() + path.sep + LICENSE_FILENAME;
-		fs.cpSync(LICENSE_PATH, tmpFilePath);
+		const fileExists = fs.lstatSync(tmpFilePath);
+		if (!fileExists) {
+			fs.copyFileSync(LICENSE_PATH, tmpFilePath);
+		}
 		const currentPlatform = os.platform();
 		const command = supportedPlatformsCommands[currentPlatform];
 		const execution = spawnSync(command, [tmpFilePath], { stdio: 'ignore', detached: true, shell: true });
