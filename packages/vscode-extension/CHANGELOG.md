@@ -19,7 +19,7 @@
 - Fix for browser-based auth for Fedora 34
 - Block extension commands while dependencies are not downloaded
 - Fix for feature dependencies incorrectly added in Manifest
-- Update the Read Me documentation
+- Update Read Me documentation
 - Minor bug fixes and improvements
 
 ## 1.0.2
