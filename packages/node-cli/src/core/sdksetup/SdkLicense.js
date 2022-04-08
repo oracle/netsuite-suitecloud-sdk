@@ -1,10 +1,11 @@
 'use strict';
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
-
 const { spawnSync } = require('child_process');
 
-const LICENSE_PATH = path.normalize('./resources/FUTC-LICENSE.txt');
+const LICENSE_FILENAME = 'FUTC-LICENSE.txt';
+const LICENSE_PATH = path.normalize('./resources/' + LICENSE_FILENAME);
 const WINDOWS_PLATFORM = 'win32';
 const LINUX_PLATFORM = 'linux';
 const OSX_PLATFORM = 'darwin';
@@ -26,9 +27,14 @@ class SdkLicense {
 		if (process.env.npm_config_acceptsuitecloudsdklicense || process.env.npm_config_acceptSuiteCloudSDKLicense) {
 			return;
 		}
+		const tmpFilePath = os.tmpdir() + path.sep + LICENSE_FILENAME;
+		const fileExists = fs.lstatSync(tmpFilePath, {throwIfNoEntry: false});
+		if (!fileExists) {
+			fs.copyFileSync(LICENSE_PATH, tmpFilePath);
+		}
 		const currentPlatform = os.platform();
 		const command = supportedPlatformsCommands[currentPlatform];
-		const execution = spawnSync(command, [LICENSE_PATH], { stdio: 'ignore', detached: true, shell: true });
+		const execution = spawnSync(command, [tmpFilePath], { stdio: 'ignore', detached: true, shell: true });
 		if (execution.error || execution.status !== 0) {
 			console.error(ERROR_MESSAGE);
 			console.error(LICENSE_MESSAGE);
