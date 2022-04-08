@@ -28,7 +28,7 @@ class SdkLicense {
 			return;
 		}
 		const tmpFilePath = os.tmpdir() + path.sep + LICENSE_FILENAME;
-		const fileExists = fs.lstatSync(tmpFilePath);
+		const fileExists = fs.lstatSync(tmpFilePath, {throwIfNoEntry: false});
 		if (!fileExists) {
 			fs.copyFileSync(LICENSE_PATH, tmpFilePath);
 		}
