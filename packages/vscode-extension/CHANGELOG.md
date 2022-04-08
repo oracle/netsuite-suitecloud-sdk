@@ -2,7 +2,7 @@
 
 ## 1.1.1
 
-- Vulnerability updates for XStream and Axis libraries
+- Updated the SuiteCloud SDK dependency
 
 ## 1.1.0
 
