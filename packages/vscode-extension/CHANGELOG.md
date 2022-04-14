@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.2.0
+
+- Update SuiteCloud SDK dependency
+
 ## 1.1.1
 
 - Update SuiteCloud SDK dependency
