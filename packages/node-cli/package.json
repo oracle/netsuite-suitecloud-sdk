@@ -1,6 +1,6 @@
 {
 	"name": "@oracle/suitecloud-cli",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"license": "UPL-1.0",
 	"description": "SuiteCloud CLI for Node.js",
 	"keywords": [
@@ -28,7 +28,7 @@
 		"cli-spinner": "0.2.10",
 		"commander": "8.3.0",
 		"inquirer": "8.2.0",
-		"vm2": "3.9.5",
+		"vm2": "3.9.8",
 		"xml2js": "0.4.23"
 	},
 	"devDependencies": {
@@ -36,7 +36,6 @@
 	},
 	"scripts": {
 		"test": "jest",
-		"preinstall": "node preinstall.js",
 		"postinstall": "node postinstall.js"
 	}
 }

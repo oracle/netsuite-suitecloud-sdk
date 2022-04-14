@@ -266,11 +266,9 @@
 
 	"NO": "No",
 
-	"SDK_DOWNLOAD_SERVICE_DOWNLOADING": "Downloading SuiteCloud SDK dependency...",
 	"SDK_DOWNLOAD_SERVICE_ERROR": "There was an error when downloading SuiteCloud SDK dependency from {0}\n{1}",
 	"SDK_DOWNLOAD_SERVICE_FILE_NOT_AVAILABLE_ERROR": "The JAR file is not available from this URL.",
 	"SDK_DOWNLOAD_SERVICE_GET_TIMEOUT": "GET request timeout.",
-	"SDK_DOWNLOAD_SERVICE_SUCCESS": "SuiteCloud SDK dependency downloaded successfully.",
 	"SDK_DOWNLOAD_SERVICE_WRONG_DOWNLOAD_URL_PROTOCOL": "Invalid SDK jar file download url protocol. Only http: or https: are allowed.",
 
 	"UNIT_TEST_TEST_FAILED": "The tests failed.",

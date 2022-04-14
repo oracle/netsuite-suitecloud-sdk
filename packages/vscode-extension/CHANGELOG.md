@@ -1,9 +1,17 @@
 # Change Log
 
+## 1.2.0
+
+- Update SuiteCloud SDK dependency
+
+## 1.1.1
+
+- Update SuiteCloud SDK dependency
+
 ## 1.1.0
 
 - Bug fixes and improvements
-- Updated SuiteCloud SDK License
+- Update SuiteCloud SDK License
 
 ## 1.0.4
 
@@ -15,7 +23,7 @@
 - Fix for browser-based auth for Fedora 34
 - Block extension commands while dependencies are not downloaded
 - Fix for feature dependencies incorrectly added in Manifest
-- Updated the Read Me documentation
+- Update Read Me documentation
 - Minor bug fixes and improvements
 
 ## 1.0.2
