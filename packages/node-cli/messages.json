@@ -64,7 +64,7 @@
 	"COMMAND_CREATEPROJECT_MESSAGES_SAMPLE_UNIT_TEST_ADDED": "A sample unit test has been added in the \"__tests__\" folder of your project.",
 	"COMMAND_CREATEPROJECT_MESSAGES_SETUP_TEST_ENV": "Setting up the testing environment...",
 
-	"COMMAND_DEPLOY_ERRORS_APPLY_INSTALLATION_PREFERENCES_IN_ACP": "Installation preferences cannot be applied in an Account Customizaton Project.",
+	"COMMAND_DEPLOY_ERRORS_APPLY_INSTALLATION_PREFERENCES_IN_ACP": "Installation preferences cannot be applied in an Account Customization Project.",
 	"COMMAND_DEPLOY_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
 	"COMMAND_DEPLOY_QUESTIONS_ACCOUNT_SPECIFIC_VALUES": "What do you want to do if the project contains account-specific values?",
 	"COMMAND_DEPLOY_QUESTIONS_APPLY_INSTALLATION_PREFERENCES": "Do you want to apply installation preferences?",
@@ -239,7 +239,7 @@
 	"ERRORS_CANT_CREATE_FOLDER": "There was an error when creating the {0} folder. Verify that the path is correct.\nError code: {1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_FAILED": "There was an error while executing the \"beforeExecuting\" function of the \"suitecloud.config.js\" module defined in the project. Details:{0}{1}",
 	"ERRORS_CLI_CONFIG_BEFORE_EXECUTING_WRONG_RETURN_VALUE": "The return value of the function should be an object with the property \"arguments\" of type \"object\".",
-	"ERRORS_CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE": "There was an error while loading configuration file {0}. Please review the file and try again. Details:{1}{2}",
+	"ERRORS_CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE": "There was an error while loading configuration file {0}. Review the file and try again. Details:{1}{2}",
 	"ERRORS_CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with CLI for Node.js. Install Oracle JDK version {1}.",
 	"ERRORS_CLI_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install Oracle JDK version {0} to run CLI for Node.js.",
 	"ERRORS_COMMAND_DOES_NOT_EXIST": "The \"{0}\" command does not exist. Run \"suitecloud\" to see the supported commands.",
@@ -256,7 +256,7 @@
 	"ERRORS_RUN_SETUP_ACCOUNT": "Run \"suitecloud account:setup\" to restore the account configuration for the project.",
 	"ERRORS_SCRUMBOX_URL_NOT_FOUND": "The {0} domain does not exist. Check the NetSuite domain and try again.\n\n{1}",
 	"ERRORS_SDKEXECUTOR_NO_JAR_FILE_FOUND": "There is no JAR file in your CLI for Node.js. Run \"npm install\" from \"{0}\" to install the JAR file.",
-	"ERRORS_SDKEXECUTOR_NO_TBA_FOR_ACCOUNT_AND_ROLE": "The email, NetSuite domain, account ID, and role combination in your account.json file has not been set up for token-based authentication (TBA). Run \"suitecloud account:setup\" to set up TBA.",
+	"ERRORS_SDKEXECUTOR_NO_TBA_FOR_ACCOUNT_AND_ROLE": "The email, NetSuite domain, account ID, and role combination in your account.json file have not been set up for token-based authentication (TBA). Run \"suitecloud account:setup\" to set up TBA.",
 	"ERRORS_SDKEXECUTOR_RUNNING_COMMAND": "There was an internal error while running the command. Details: {0}",
 	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}\n{1}",
 	"ERRORS_SDK_SETTINGS_FILE_WRONG_JSON_SYNTAX": "Your {0} file is not valid. Ensure the content of the file is correct, or delete the file.\n{1}",
@@ -280,7 +280,7 @@
 	"SDK_DOWNLOAD_SERVICE_WRONG_DOWNLOAD_URL_PROTOCOL": "Invalid SDK jar file download url protocol. Only http: or https: are allowed.",
 
 	"UNIT_TEST_TEST_FAILED": "The tests failed.",
-	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures, The Deployment will not continue.",
+	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures. The deployment will not continue.",
 
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP": "Account-specific values cannot be applied to SuiteApps.",
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
