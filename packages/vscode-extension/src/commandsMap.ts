@@ -13,6 +13,7 @@ export type CommandInfo = {
 
 export type CommandsInfoMapType = {
 	adddependencies: CommandInfo;
+	comparefile: CommandInfo;
 	createfile: CommandInfo;
 	createproject: CommandInfo;
 	deploy: CommandInfo;
@@ -34,6 +35,11 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		cliCommandName: 'project:adddependencies',
 		vscodeCommandName: 'Add Dependency References to the Manifest',
 		vscodeShortName: 'Add Dependencies',
+	},
+	comparefile: {
+		cliCommandName: 'file:import',
+		vscodeCommandId: 'suitecloud.comparefile',
+		vscodeCommandName: 'Compare File with Account File',
 	},
 	createfile: {
 		vscodeCommandId: 'suitecloud.createfile',
