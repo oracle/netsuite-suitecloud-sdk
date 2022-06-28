@@ -14,6 +14,7 @@ import FileImportCommon from './FileImportCommon';
 
 export default class CompareFile extends FileImportCommon {
 	private static readonly COMMAND_NAME = 'comparefile';
+    private static readonly TEMP_FOLDER_PREFIX = 'suitecloud-vscode-extension-compare-file-';
 
 	constructor() {
 		super(CompareFile.COMMAND_NAME);
@@ -34,7 +35,7 @@ export default class CompareFile extends FileImportCommon {
 
 	protected async execute() {
 		const activeFilePath = this.activeFile!;
-		const tempFolderPath = fs.mkdtempSync(path.join(os.tmpdir(), 'suitecloud-vscode-extension-compare-file-'));
+		const tempFolderPath = fs.mkdtempSync(path.join(os.tmpdir(), CompareFile.TEMP_FOLDER_PREFIX));
 
 		this.copyManifestFileToTempFolder(tempFolderPath);
 		this.copyProjectJsonToTempFolder(tempFolderPath);
@@ -74,7 +75,7 @@ export default class CompareFile extends FileImportCommon {
 	}
 
 	private copyActiveFileToTempFolder(tempFolderPath: string, activeFilePath: string, activeFileRelativePath: string): string {
-		const importFileParentFolderPath = path.join(tempFolderPath, 'FileCabinet', path.dirname(activeFileRelativePath));
+		const importFileParentFolderPath = path.join(tempFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET, path.dirname(activeFileRelativePath));
 		fs.mkdirSync(importFileParentFolderPath, { recursive: true });
 		const importFilePath = path.join(importFileParentFolderPath, path.basename(activeFilePath));
 		fs.copyFileSync(activeFilePath, importFilePath);
@@ -83,12 +84,12 @@ export default class CompareFile extends FileImportCommon {
 	}
 
 	private copyProjectJsonToTempFolder(tempFolderPath: string) {
-		const projectJsonPath = path.join(this.rootWorkspaceFolder!, 'project.json');
-		fs.copyFileSync(projectJsonPath, path.join(tempFolderPath, 'project.json'));
+		const projectJsonPath = path.join(this.rootWorkspaceFolder!, ApplicationConstants.FILES.PROJECT_JSON);
+		fs.copyFileSync(projectJsonPath, path.join(tempFolderPath, ApplicationConstants.FILES.PROJECT_JSON));
 	}
 
 	private copyManifestFileToTempFolder(tempFolderPath: string) {
-		const manifestFilePath = path.join(this.getProjectFolderPath(), 'manifest.xml');
-		fs.copyFileSync(manifestFilePath, path.join(tempFolderPath, 'manifest.xml'));
+		const manifestFilePath = path.join(this.getProjectFolderPath(), ApplicationConstants.FILES.MANIFEST_XML);
+		fs.copyFileSync(manifestFilePath, path.join(tempFolderPath, ApplicationConstants.FILES.MANIFEST_XML));
 	}
 }
