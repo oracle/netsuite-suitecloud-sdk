@@ -14,7 +14,7 @@ import FileImportCommon from './FileImportCommon';
 
 export default class CompareFile extends FileImportCommon {
 	private static readonly COMMAND_NAME = 'comparefile';
-    private static readonly TEMP_FOLDER_PREFIX = 'suitecloud-vscode-extension-compare-file-';
+	private static readonly TEMP_FOLDER_PREFIX = 'suitecloud-vscode-extension-compare-file-';
 
 	constructor() {
 		super(CompareFile.COMMAND_NAME);
@@ -54,7 +54,8 @@ export default class CompareFile extends FileImportCommon {
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(COMPARE_FILE.COMPARING_FILE), true, commandActionPromise);
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
-            const compareWindowTitle = this.translationService.getMessage(COMPARE_FILE.COMPARE_FILE_WITH_ACCOUNT_FILE) + ' - ' + path.basename(activeFilePath);
+			const compareWindowTitle =
+				this.translationService.getMessage(COMPARE_FILE.COMPARE_FILE_WITH_ACCOUNT_FILE) + ' - ' + path.basename(activeFilePath);
 			vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(activeFilePath), vscode.Uri.file(importFilePath), compareWindowTitle);
 		} else {
 			this.messageService.showCommandError();
@@ -71,7 +72,7 @@ export default class CompareFile extends FileImportCommon {
 		return UNRESTRICTED_FOLDERS.some((unrestricedPath) => activeFileRelativePath?.startsWith(unrestricedPath));
 	}
 
-    private getFileCabinetFolderPath(): string {
+	private getFileCabinetFolderPath(): string {
 		return path.join(this.getProjectFolderPath(), ApplicationConstants.FOLDERS.FILE_CABINET);
 	}
 
