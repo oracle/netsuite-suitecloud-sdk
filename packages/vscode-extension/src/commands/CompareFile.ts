@@ -8,7 +8,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
-import { COMPARE_FILES, IMPORT_FILES } from '../service/TranslationKeys';
+import { COMPARE_FILE, IMPORT_FILES } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants } from '../util/ExtensionUtil';
 import FileImportCommon from './FileImportCommon';
 
@@ -51,10 +51,11 @@ export default class CompareFile extends FileImportCommon {
 		};
 
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, tempFolderPath);
-		this.messageService.showStatusBarMessage(this.translationService.getMessage(COMPARE_FILES.COMPARING_FILES), true, commandActionPromise);
+		this.messageService.showStatusBarMessage(this.translationService.getMessage(COMPARE_FILE.COMPARING_FILE), true, commandActionPromise);
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
-			vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(activeFilePath), vscode.Uri.file(importFilePath));
+            const compareWindowTitle = this.translationService.getMessage(COMPARE_FILE.COMPARE_FILE_WITH_ACCOUNT_FILE) + ' - ' + path.basename(activeFilePath);
+			vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(activeFilePath), vscode.Uri.file(importFilePath), compareWindowTitle);
 		} else {
 			this.messageService.showCommandError();
 		}
