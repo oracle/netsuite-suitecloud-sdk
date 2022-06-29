@@ -9,7 +9,7 @@ import { actionResultStatus, ProjectInfoService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 export default abstract class FileImportCommon extends BaseAction {
-	validateBeforeExecute() {
+	protected validateBeforeExecute() {
 		const superValidation = super.validateBeforeExecute();
 		if (!superValidation.valid) {
 			return superValidation;
