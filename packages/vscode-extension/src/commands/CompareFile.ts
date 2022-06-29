@@ -40,7 +40,7 @@ export default class CompareFile extends FileImportCommon {
 		this.copyManifestFileToTempFolder(tempFolderPath);
 		this.copyProjectJsonToTempFolder(tempFolderPath);
 		const activeFileRelativePath = activeFilePath.split(this.getFileCabinetFolderPath())[1]?.replace(/\\/g, '/');
-		const importFilePath = this.copyActiveFileToTempFolder(tempFolderPath, activeFilePath, activeFileRelativePath);
+		const importFilePath = this.getImportFilePath(tempFolderPath, activeFilePath, activeFileRelativePath);
 
 		const selectedFilesPaths = [];
 		selectedFilesPaths.push(activeFileRelativePath);
@@ -76,13 +76,11 @@ export default class CompareFile extends FileImportCommon {
 		return path.join(this.getProjectFolderPath(), ApplicationConstants.FOLDERS.FILE_CABINET);
 	}
 
-	private copyActiveFileToTempFolder(tempFolderPath: string, activeFilePath: string, activeFileRelativePath: string): string {
+	private getImportFilePath(tempFolderPath: string, activeFilePath: string, activeFileRelativePath: string): string {
 		const importFileParentFolderPath = path.join(tempFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET, path.dirname(activeFileRelativePath));
 		fs.mkdirSync(importFileParentFolderPath, { recursive: true });
-		const importFilePath = path.join(importFileParentFolderPath, path.basename(activeFilePath));
-		fs.copyFileSync(activeFilePath, importFilePath);
 
-		return importFilePath;
+		return path.join(importFileParentFolderPath, path.basename(activeFilePath));
 	}
 
 	private copyProjectJsonToTempFolder(tempFolderPath: string) {
