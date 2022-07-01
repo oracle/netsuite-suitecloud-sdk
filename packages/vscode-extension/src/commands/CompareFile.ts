@@ -8,7 +8,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
-import { COMPARE_FILE, IMPORT_FILES } from '../service/TranslationKeys';
+import { COMPARE_FILE } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants } from '../util/ExtensionUtil';
 import FileImportCommon from './FileImportCommon';
 
@@ -27,7 +27,7 @@ export default class CompareFile extends FileImportCommon {
 		}
 
 		if (!this.activeFileIsUnderUnrestrictedFolder()) {
-			return this.unsuccessfulValidation(this.translationService.getMessage(IMPORT_FILES.ERROR.NOT_ALLOWED_FOLDER));
+			return this.unsuccessfulValidation(this.translationService.getMessage(COMPARE_FILE.ERROR.NOT_ALLOWED_FOLDER));
 		}
 
 		return this.successfulValidation();
