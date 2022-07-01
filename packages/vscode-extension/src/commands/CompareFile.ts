@@ -9,7 +9,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
 import { COMPARE_FILE } from '../service/TranslationKeys';
-import { actionResultStatus, ApplicationConstants } from '../util/ExtensionUtil';
+import { actionResultStatus, ApplicationConstants, ProjectInfoService } from '../util/ExtensionUtil';
 import FileImportCommon from './FileImportCommon';
 
 export default class CompareFile extends FileImportCommon {
@@ -21,6 +21,11 @@ export default class CompareFile extends FileImportCommon {
 	}
 
 	protected validateBeforeExecute() {
+		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
+		if (projectInfoService.isSuiteAppProject()) {
+			return this.unsuccessfulValidation(this.translationService.getMessage(COMPARE_FILE.ERROR.COMPARE_FILE_TO_SUITEAPP_NOT_ALLOWED));
+		}
+
 		const superValidation = super.validateBeforeExecute();
 		if (!superValidation.valid) {
 			return superValidation;
@@ -48,6 +53,7 @@ export default class CompareFile extends FileImportCommon {
 		const commandArgs = {
 			paths: selectedFilesPaths,
 			excludeproperties: 'true',
+			calledfromcomparefiles: 'true',
 		};
 
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, tempFolderPath);

@@ -31,6 +31,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 		super(options);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._calledFromCompareFiles = true;
 	}
 
 	preExecute(params) {
@@ -49,6 +50,12 @@ module.exports = class ImportFilesAction extends BaseAction {
 		} else {
 			delete params[EXCLUDE_PROPERTIES];
 		}
+
+		if (params['calledfromcomparefiles']) {
+			this._calledFromCompareFiles = true;
+			delete params['calledfromcomparefiles'];
+		}
+
 		return params;
 	}
 
@@ -58,7 +65,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 				return ActionResult.Builder.withErrors([NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP)]).build();
 			}
 
-			if(this._runInInteractiveMode === false) {
+			if (!this._calledFromCompareFiles && this._runInInteractiveMode === false) {
 				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 			}
 
@@ -71,6 +78,10 @@ module.exports = class ImportFilesAction extends BaseAction {
 				action: this._sdkExecutor.execute(executionContextImportObjects),
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
+
+			if (this._calledFromCompareFiles) {
+				params['calledfromcomparefiles'] = true;
+			}
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)

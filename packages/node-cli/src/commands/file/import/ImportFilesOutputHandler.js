@@ -16,6 +16,10 @@ module.exports = class ImportFilesOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
+		if (actionResult.commandParameters['calledfromcomparefiles']) {
+			return actionResult;
+		}
+
 		if (Array.isArray(actionResult.data.results)) {
 			const successful = actionResult.data.results.filter((result) => result.loaded === true);
 			const unsuccessful = actionResult.data.results.filter((result) => result.loaded !== true);
