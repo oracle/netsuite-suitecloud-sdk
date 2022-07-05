@@ -32,7 +32,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 		super(options);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
-		this._calledFromCompareFiles = true;
+		this._calledFromCompareFiles = false;
 	}
 
 	preExecute(params) {
