@@ -4,6 +4,8 @@
  */
 'use strict';
 
+const { Option } = require('commander');
+
 const assert = require('assert');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const { COMMAND_OPTIONS } = require('../services/TranslationKeys');
@@ -75,7 +77,12 @@ module.exports = class CommandRegistrationService {
 			} else if (option.type === OPTION_TYPE.MULTIPLE) {
 				optionString += ` <arguments...>`;
 			}
-			commandSetup.option(optionString, option.description);
+
+			const commandOption = new Option(optionString, option.description);
+			if (option.hidden) {
+				commandOption.hideHelp();
+			}
+			commandSetup.addOption(commandOption);
 		});
 		return commandSetup;
 	}

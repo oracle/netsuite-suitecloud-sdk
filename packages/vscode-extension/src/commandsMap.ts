@@ -39,7 +39,7 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	comparefile: {
 		cliCommandName: 'file:import',
 		vscodeCommandId: 'suitecloud.comparefile',
-		vscodeCommandName: 'Compare File with Account File',
+		vscodeCommandName: 'Compare with Account File',
 	},
 	createfile: {
 		vscodeCommandId: 'suitecloud.createfile',
