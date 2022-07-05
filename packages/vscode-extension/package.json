@@ -41,7 +41,7 @@
 			},
 			{
 				"command": "suitecloud.comparefile",
-				"title": "Compare File with Account File",
+				"title": "Compare with Account File",
 				"category": "SuiteCloud"
 			},
 			{

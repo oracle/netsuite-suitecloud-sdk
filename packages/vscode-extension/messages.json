@@ -18,7 +18,7 @@
 	"COMMAND_TRIGGERED": "'{0}' has been triggered.",
 	"COMMAND_WARNING": "'{0}' has finished.",
 
-	"COMPARE_FILE_COMPARE_FILE_WITH_ACCOUNT_FILE": "Compare File with Account File",
+	"COMPARE_FILE_COMPARE_FILE_WITH_ACCOUNT_FILE": "Compare with Account File",
 	"COMPARE_FILE_COMPARING_FILE": "Comparing file...",
 	"COMPARE_FILE_ERROR_COMPARE_FILE_TO_SUITEAPP_NOT_ALLOWED": "SuiteApp project files cannot be compared. You can only compare Account Customization Project files.",
 	"COMPARE_FILE_ERROR_NOT_ALLOWED_FOLDER": "Files in an Account Customization Project can only be compared with files from the File Cabinet folder: \"/SuiteScripts\", \"/Templates/E-mail Templates\", \"/Templates/Marketing Templates\" and \"/Web Site Hosting Files\".",
