@@ -20,6 +20,7 @@ const {
 
 const COMMAND_OPTIONS = {
 	AUTH_ID: 'authid',
+	CALLED_FROM_COMPARE_FILES: 'calledfromcomparefiles',
 	FOLDER: 'folder',
 	PATHS: 'paths',
 	EXCLUDE_PROPERTIES: 'excludeproperties',
@@ -51,9 +52,9 @@ module.exports = class ImportFilesAction extends BaseAction {
 			delete params[EXCLUDE_PROPERTIES];
 		}
 
-		if (params['calledfromcomparefiles']) {
+		if (params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES]) {
 			this._calledFromCompareFiles = true;
-			delete params['calledfromcomparefiles'];
+			delete params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES];
 		}
 
 		return params;
@@ -80,7 +81,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 			});
 
 			if (this._calledFromCompareFiles) {
-				params['calledfromcomparefiles'] = true;
+				params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES] = true;
 			}
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS

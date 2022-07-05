@@ -60,9 +60,12 @@ export default class CompareFile extends FileImportCommon {
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(COMPARE_FILE.COMPARING_FILE), true, commandActionPromise);
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
-			const compareWindowTitle =
-				this.translationService.getMessage(COMPARE_FILE.COMPARE_FILE_WITH_ACCOUNT_FILE) + ' - ' + path.basename(activeFilePath);
-			vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(activeFilePath), vscode.Uri.file(importFilePath), compareWindowTitle);
+			if (actionResult.data.results[0].loaded) {
+				const compareWindowTitle = this.translationService.getMessage(COMPARE_FILE.COMPARE_FILE_WITH_ACCOUNT_FILE) + ' - ' + path.basename(activeFilePath);
+				vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(activeFilePath), vscode.Uri.file(importFilePath), compareWindowTitle);
+			} else {
+				this.messageService.showCommandWarning();
+			}
 		} else {
 			this.messageService.showCommandError();
 		}
