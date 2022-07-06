@@ -41,7 +41,7 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	// Output from VSCode doesn't accept colors, for the moment we would pring in default white
 	// We could explore some workarounds in future like creating a Terminal, importing a new library or just implment it ourselves
 	println(message: string): void {
-		if (this.addExecutionDetailsToLog) {
+		if (this.addExecutionDetailsToLog && message !== '') {
 			output.appendLine(this.getExecutionDetails());
 			this.addExecutionDetailsToLog = false;
 		}
