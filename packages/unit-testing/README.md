@@ -68,7 +68,7 @@ to run your test. You should see an output similar to following:
     ```
 >💡 If you want to run tests with coverage, from the root of your SuiteCloud project folder, run `npm test --coverage`.
 
-**You successfully ran your first test for an SuiteCloud project!**
+**You successfully ran your first test for a SuiteCloud project!**
 
 ## Additional Configuration
 To properly run your tests against the SuiteScript 2.X files of your SuiteCloud project, create a `jest.config.js` file inside of the root of your SuiteCloud project folder.
@@ -97,7 +97,7 @@ module.exports = SuiteCloudJestConfiguration.build({
 
 ## SuiteCloud Unit Testing Examples
 
-Here you can find two examples on how to use SuiteCloud Unit Testing with an SuiteCloud project.
+Here you can find two examples on how to use SuiteCloud Unit Testing with a SuiteCloud project.
 
 The first example covers testing for the **N/record** module, which is fully mocked in SuiteCloud Unit Testing. Whereas the second example covers the testing of a module that is not mocked in SuiteCloud Unit Testing, by using a custom stub.
 
