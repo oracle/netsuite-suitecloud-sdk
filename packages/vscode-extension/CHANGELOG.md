@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.3.0
+- New SuiteCloud: Validate Project command
+- New SuiteCloud: Manage Accounts command
+- New SuiteCloud: Compare Files command
+- Option to include custom instances from the account for custom records in the SuiteCloud: Update object command
+- Update Oracle JDK version 17
+
 ## 1.2.0
 
 - Update SuiteCloud SDK dependency

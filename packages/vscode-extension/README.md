@@ -13,10 +13,10 @@ Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/a
 
 ## Installation Prerequisites
 The following software is required to work with SuiteCloud Extension for Visual Studio Code:
-- Oracle JDK version 11
+- Oracle JDK version 17
 - VS Code version 1.57 or higher
 
-Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Requirements for SuiteCloud Extension for Visual Studio Code</a>.
+Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Prerequisites for SuiteCloud Extension for Visual Studio Code</a>.
 
 ## Installing SuiteCloud Extension for Visual Studio Code
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
@@ -106,9 +106,9 @@ To read more about what you can do with SuiteCloud Extension for Visual Studio C
 SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
 
 ## Release Notes & Documentation
-To read the 2022.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+To read the 2022.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2022.2 in [Release Notes](https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=chapter_3715068484.html).
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
-- Read the release notes for NetSuite 2022.1 in [Release Notes](https://system.netsuite.com/app/help/helpcenter.nl?fid=preface_3710624702.html).
 - Read the SuiteCloud Extension for Visual Studio Code documentation in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=book_159223417590.html).
 
 ## Contributing
