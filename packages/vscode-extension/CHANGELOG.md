@@ -4,8 +4,9 @@
 - New SuiteCloud: Validate Project command
 - New SuiteCloud: Manage Accounts command
 - New SuiteCloud: Compare Files command
-- Option to include custom instances from the account for custom records in the SuiteCloud: Update object command
+- Include custom instances from the account for custom records in the SuiteCloud: Update Object command
 - Update Oracle JDK version 17
+- Removal of outdated dependencies
 
 ## 1.2.0
 
