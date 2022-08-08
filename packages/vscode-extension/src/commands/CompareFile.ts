@@ -68,7 +68,7 @@ export default class CompareFile extends FileImportCommon {
 					'vscode.diff',
 					this.getImportedFileUri(importFilePath),
 					vscode.Uri.file(activeFilePath),
-					this.translationService.getMessage(COMPARE_FILE.EDITOR_LABEL)
+					this.translationService.getMessage(COMPARE_FILE.EDITOR_LABEL, path.basename(activeFilePath))
 				);
 			} else {
 				this.messageService.showCommandWarning();
