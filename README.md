@@ -1,7 +1,7 @@
 <p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo_redblack.png"></a></p>
 
 # SuiteCloud SDK
-SuiteCloud Software Development Kit (SuiteCloud SDK) are the set of tools that allow you to customize accounts and create SuiteApps through SuiteCloud Development Framework (SDF).
+SuiteCloud Software Development Kit (SuiteCloud SDK) are the set of tools that let you customize accounts and create SuiteApps through SuiteCloud Development Framework (SDF).
 
 In this GitHub repository, the following SuiteCloud SDK tools are available:
 - [SuiteCloud CLI for Node.js](./packages/node-cli)<a href="https://www.npmjs.com/package/@oracle/suitecloud-cli">
