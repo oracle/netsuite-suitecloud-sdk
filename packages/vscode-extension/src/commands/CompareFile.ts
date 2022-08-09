@@ -7,13 +7,16 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { Uri } from 'vscode';
 import { UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
 import { COMPARE_FILE } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants, ProjectInfoService } from '../util/ExtensionUtil';
 import FileImportCommon from './FileImportCommon';
 
 export default class CompareFile extends FileImportCommon {
+	private static readonly ACCOUNT_COPY_LABEL = 'Account Copy';
 	private static readonly COMMAND_NAME = 'comparefile';
+	private static readonly SCHEME = 'suitecloud';
 	private static readonly TEMP_FOLDER_PREFIX = 'suitecloud-vscode-extension-compare-file-';
 
 	constructor() {
@@ -61,8 +64,12 @@ export default class CompareFile extends FileImportCommon {
 		const actionResult = await commandActionPromise;
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
 			if (actionResult.data.results[0].loaded) {
-				const compareWindowTitle = this.translationService.getMessage(COMPARE_FILE.COMPARE_FILE_WITH_ACCOUNT_FILE) + ' - ' + path.basename(activeFilePath);
-				vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(activeFilePath), vscode.Uri.file(importFilePath), compareWindowTitle);
+				vscode.commands.executeCommand(
+					'vscode.diff',
+					this.getImportedFileUri(importFilePath),
+					vscode.Uri.file(activeFilePath),
+					this.translationService.getMessage(COMPARE_FILE.EDITOR_LABEL, path.basename(activeFilePath))
+				);
 			} else {
 				this.messageService.showCommandWarning();
 			}
@@ -74,6 +81,17 @@ export default class CompareFile extends FileImportCommon {
 	protected async getSelectedFiles(): Promise<string[] | undefined> {
 		//Required but not used since execute is overwritten in this class.
 		return undefined;
+	}
+
+	private getImportedFileUri(importFilePath: string): Uri {
+		const scheme = CompareFile.SCHEME;
+		const provider = new (class implements vscode.TextDocumentContentProvider {
+			provideTextDocumentContent(uri: vscode.Uri): string {
+			  return fs.readFileSync(importFilePath, 'utf-8');
+			}
+		  })();
+		vscode.workspace.registerTextDocumentContentProvider(scheme, provider);
+		return vscode.Uri.parse(scheme + ': ' + CompareFile.ACCOUNT_COPY_LABEL);
 	}
 
 	private activeFileIsUnderUnrestrictedFolder(): boolean {
