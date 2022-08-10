@@ -18,6 +18,16 @@ The following software is required to work with SuiteCloud Extension for Visual 
 
 Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Prerequisites for SuiteCloud Extension for Visual Studio Code</a>.
 
+## Supported Versions
+Although you may have access to older versions of the SuiteCloud Extension for Visual Studio Code, only the versions in this section are officially supported.
+
+Each version of the SuiteCloud Extenstion for Visual Studio Code in the Marketplace works optimally with a specific NetSuite version. To check the equivalence among versions, see the following table:
+
+| Version in the Marketplace | Version in NetSuite |
+|:--------------:|:-------------------:|
+| 1.3.0  | 2022.2  |
+| 1.2.0  | 2022.1  |
+
 ## Installing SuiteCloud Extension for Visual Studio Code
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
 
