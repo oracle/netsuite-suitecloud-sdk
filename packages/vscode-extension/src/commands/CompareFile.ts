@@ -14,7 +14,7 @@ import { actionResultStatus, ApplicationConstants, ProjectInfoService } from '..
 import FileImportCommon from './FileImportCommon';
 
 export default class CompareFile extends FileImportCommon {
-	private static readonly ACCOUNT_COPY_LABEL = 'Account Copy';
+	private static readonly ACCOUNT_COPY_BASE_NAME = 'accountCopy';
 	private static readonly COMMAND_NAME = 'comparefile';
 	private static readonly SCHEME = 'suitecloud';
 	private static readonly TEMP_FOLDER_PREFIX = 'suitecloud-vscode-extension-compare-file-';
@@ -91,7 +91,9 @@ export default class CompareFile extends FileImportCommon {
 			}
 		  })();
 		vscode.workspace.registerTextDocumentContentProvider(scheme, provider);
-		return vscode.Uri.parse(scheme + ': ' + CompareFile.ACCOUNT_COPY_LABEL);
+		const accountCopyExtension = path.extname(importFilePath);
+		const schemeUri = `${scheme}: ${CompareFile.ACCOUNT_COPY_BASE_NAME}.${accountCopyExtension}`;
+		return vscode.Uri.parse(schemeUri);
 	}
 
 	private activeFileIsUnderUnrestrictedFolder(): boolean {
