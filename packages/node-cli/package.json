@@ -26,13 +26,13 @@
 	"dependencies": {
 		"chalk": "4.1.2",
 		"cli-spinner": "0.2.10",
-		"commander": "8.3.0",
-		"inquirer": "8.2.0",
-		"vm2": "3.9.8",
+		"commander": "9.4.0",
+		"inquirer": "8.2.2",
+		"vm2": "3.9.10",
 		"xml2js": "0.4.23"
 	},
 	"devDependencies": {
-		"jest": "27.4.7"
+		"jest": "28.1.3"
 	},
 	"scripts": {
 		"test": "jest",
