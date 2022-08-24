@@ -12,7 +12,7 @@ module.exports = {
 	COMPATIBLE_NS_VERSION: '2022.2',
 	SDK_FILENAME: 'cli-2022.2.0.jar',
 	SDK_REQUIRED_JAVA_VERSION: '17',
-	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode',
+	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode --add-opens java.base/java.io=ALL-UNNAMED',
 	SDK_CLIENT_PLATFORM: 'SuiteCloudCLIforNode.js',
 	SDK_CLIENT_PLATFORM_JVM_OPTION: '-DclientPlatform',
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION: '-DclientPlatformVersion',
