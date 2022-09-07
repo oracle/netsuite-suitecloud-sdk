@@ -106,16 +106,12 @@ export default class CompareFile extends FileImportCommon {
 	}
 
 	private activeFileIsUnderSuiteAppUnrestrictedFolder(projectInfoService: typeof ProjectInfoService): boolean {
-		const activeFileRelativePath = this.activeFile?.replace(this.getFileCabinetFolderPath(), '').replace(/\\/g, '/');
 		const suiteAppFileCabinetPath = path.join(
 			this.getFileCabinetFolderPath(),
 			ApplicationConstants.FOLDERS.SUITEAPPS,
 			projectInfoService.getApplicationId()
 		);
-		const suiteAppFileCabinetRelativePath = suiteAppFileCabinetPath
-			.replace(this.getFileCabinetFolderPath(), '')
-			.replace(/\\/g, '/');
-		return activeFileRelativePath!.startsWith(suiteAppFileCabinetRelativePath);
+		return this.activeFile!.startsWith(suiteAppFileCabinetPath);
 	}
 
 	private activeFileIsUnderAcpUnrestrictedFolder(): boolean {
