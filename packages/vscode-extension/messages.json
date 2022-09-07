@@ -20,9 +20,9 @@
 
 	"COMPARE_FILE_COMPARING_FILE": "Comparing file...",
 	"COMPARE_FILE_EDITOR_LABEL": "{0} (Account ⟷  Local)",
-	"COMPARE_FILE_ERROR_COMPARE_FILE_TO_SUITEAPP_NOT_ALLOWED": "SuiteApp project files cannot be compared. You can only compare Account Customization Project files.",
-	"COMPARE_FILE_ERROR_NOT_ALLOWED_FOLDER": "Files in an Account Customization Project can only be compared with files from the File Cabinet folder: \"/SuiteScripts\", \"/Templates/E-mail Templates\", \"/Templates/Marketing Templates\" and \"/Web Site Hosting Files\".",
-	
+	"COMPARE_FILE_ERROR_ACP_NOT_ALLOWED_FOLDER": "Files in an Account Customization Project can only be compared with files from the File Cabinet folder: \"/SuiteScripts\", \"/Templates/E-mail Templates\", \"/Templates/Marketing Templates\" and \"/Web Site Hosting Files\".",
+	"COMPARE_FILE_ERROR_SUITEAPP_NOT_ALLOWED_FOLDER": "Files in a SuiteApp Project can only be compared with files from the File Cabinet folder: \"/SuiteApps/{0}\".",
+
 	"CREATE_FILE_ERRORS_MISSING_VALID_FOLDER_FOR_SUITECRIPT_FILE": "No valid folder found for the SuiteScript file you are about to create. Run '{0}' from a valid SuiteCloud project structure. For information about the project structure, see {1}",
 	"CREATE_FILE_QUESTIONS_CHOOSE_SUITESCRIPT_TYPE": "What type of SuiteScript file do you want to create?",
 	"CREATE_FILE_QUESTIONS_ENTER_NAME": "Enter a name for the SuiteScript file.",

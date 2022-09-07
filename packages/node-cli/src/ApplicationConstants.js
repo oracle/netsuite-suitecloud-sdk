@@ -27,6 +27,7 @@ module.exports = {
 		FILE_CABINET: '/FileCabinet',
 		INSTALLATION_PREFERENCES: '/InstallationPreferences',
 		OBJECTS: '/Objects',
+		SUITEAPPS: '/SuiteApps',
 		SUITECLOUD_SDK: '.suitecloud-sdk',
 		NODE_CLI: 'cli',
 	},

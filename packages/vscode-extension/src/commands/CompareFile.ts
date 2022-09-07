@@ -8,7 +8,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { Uri } from 'vscode';
-import { UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
+import { ACP_UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
 import { COMPARE_FILE } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants, ProjectInfoService } from '../util/ExtensionUtil';
 import FileImportCommon from './FileImportCommon';
@@ -25,17 +25,26 @@ export default class CompareFile extends FileImportCommon {
 
 	protected validateBeforeExecute() {
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
-		if (projectInfoService.isSuiteAppProject()) {
-			return this.unsuccessfulValidation(this.translationService.getMessage(COMPARE_FILE.ERROR.COMPARE_FILE_TO_SUITEAPP_NOT_ALLOWED));
-		}
-
-		const superValidation = super.validateBeforeExecute();
+		const superValidation = super.validateBeforeExecute(true);
 		if (!superValidation.valid) {
 			return superValidation;
 		}
 
-		if (!this.activeFileIsUnderUnrestrictedFolder()) {
-			return this.unsuccessfulValidation(this.translationService.getMessage(COMPARE_FILE.ERROR.NOT_ALLOWED_FOLDER));
+		if (projectInfoService.isSuiteAppProject()) {
+			if (!this.activeFileIsUnderSuiteAppsAppIdFolder(projectInfoService)) {
+				return this.unsuccessfulValidation(
+					this.translationService.getMessage(
+						COMPARE_FILE.ERROR.SUITEAPP_NOT_ALLOWED_FOLDER,
+						projectInfoService.getApplicationId()
+					)
+				);
+			}
+		} else {
+			if (!this.activeFileIsUnderAcpUnrestrictedFolder()) {
+				return this.unsuccessfulValidation(
+					this.translationService.getMessage(COMPARE_FILE.ERROR.ACP_NOT_ALLOWED_FOLDER)
+				);
+			}
 		}
 
 		return this.successfulValidation();
@@ -96,9 +105,18 @@ export default class CompareFile extends FileImportCommon {
 		return vscode.Uri.parse(schemeUri);
 	}
 
-	private activeFileIsUnderUnrestrictedFolder(): boolean {
+	private activeFileIsUnderSuiteAppsAppIdFolder(projectInfoService: typeof ProjectInfoService): boolean {
+		const suiteAppFileCabinetPath = path.join(
+			this.getFileCabinetFolderPath(),
+			ApplicationConstants.FOLDERS.SUITEAPPS,
+			projectInfoService.getApplicationId()
+		);
+		return this.activeFile!.startsWith(suiteAppFileCabinetPath);
+	}
+
+	private activeFileIsUnderAcpUnrestrictedFolder(): boolean {
 		const activeFileRelativePath = this.activeFile?.replace(this.getFileCabinetFolderPath(), '').replace(/\\/g, '/');
-		return UNRESTRICTED_FOLDERS.some((unrestricedPath) => activeFileRelativePath?.startsWith(unrestricedPath));
+		return ACP_UNRESTRICTED_FOLDERS.some((unrestricedPath) => activeFileRelativePath?.startsWith(unrestricedPath));
 	}
 
 	private getFileCabinetFolderPath(): string {
