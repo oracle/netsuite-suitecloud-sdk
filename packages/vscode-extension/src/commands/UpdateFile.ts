@@ -4,7 +4,7 @@
  */
 import * as path from 'path';
 import { ApplicationConstants } from '../util/ExtensionUtil';
-import { UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
+import { ACP_UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
 import { IMPORT_FILES } from '../service/TranslationKeys';
 import FileImportCommon from './FileImportCommon';
 
@@ -30,7 +30,7 @@ export default class UpdateFile extends FileImportCommon {
 
 	private activeFileIsUnderUnrestrictedFolder(): boolean {
 		const activeFileRelativePath = this.activeFile?.replace(this.getFileCabinetFolerPath(), '').replace(/\\/g, '/');
-		return UNRESTRICTED_FOLDERS.some((unrestricedPath) => activeFileRelativePath?.startsWith(unrestricedPath));
+		return ACP_UNRESTRICTED_FOLDERS.some((unrestricedPath) => activeFileRelativePath?.startsWith(unrestricedPath));
 	}
 
 	private getFileCabinetFolerPath(): string {

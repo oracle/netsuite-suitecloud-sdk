@@ -14,7 +14,7 @@ export const FOLDERS: { [KEY: string]: string } = {
 	WEB_SITE_HOSTING_FILES: '/Web Site Hosting Files',
 };
 
-export const UNRESTRICTED_FOLDERS: string[] = [
+export const ACP_UNRESTRICTED_FOLDERS: string[] = [
 	FOLDERS.SUITESCRIPTS,
 	FOLDERS.TEMPLATES_EMAIL_TEMPLATES,
 	FOLDERS.TEMPLATES_MARKETING_TEMPLATES,

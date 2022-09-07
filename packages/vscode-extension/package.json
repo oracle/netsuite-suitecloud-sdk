@@ -182,7 +182,7 @@
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps|SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
 					"command": "suitecloud.comparefile",
 					"group": "suitecloud@1"
 				}
