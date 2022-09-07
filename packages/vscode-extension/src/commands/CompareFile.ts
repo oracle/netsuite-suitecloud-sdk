@@ -31,7 +31,7 @@ export default class CompareFile extends FileImportCommon {
 		}
 
 		if (projectInfoService.isSuiteAppProject()) {
-			if (!this.activeFileIsUnderSuiteAppUnrestrictedFolder(projectInfoService)) {
+			if (!this.activeFileIsUnderSuiteAppsAppIdFolder(projectInfoService)) {
 				return this.unsuccessfulValidation(
 					this.translationService.getMessage(
 						COMPARE_FILE.ERROR.SUITEAPP_NOT_ALLOWED_FOLDER,
@@ -105,7 +105,7 @@ export default class CompareFile extends FileImportCommon {
 		return vscode.Uri.parse(schemeUri);
 	}
 
-	private activeFileIsUnderSuiteAppUnrestrictedFolder(projectInfoService: typeof ProjectInfoService): boolean {
+	private activeFileIsUnderSuiteAppsAppIdFolder(projectInfoService: typeof ProjectInfoService): boolean {
 		const suiteAppFileCabinetPath = path.join(
 			this.getFileCabinetFolderPath(),
 			ApplicationConstants.FOLDERS.SUITEAPPS,
