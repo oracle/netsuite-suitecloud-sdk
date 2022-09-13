@@ -23,7 +23,7 @@ Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestj
 
 ## Prerequisites
 - Node.js version 16.14.2 LTS
-- A SuiteCloud project
+- Having a SuiteCloud project
 
 ## Getting Started
 If you use SuiteCloud CLI for Node.js, you can install SuiteCloud Unit Testing when running the `project:create` command by following the questions prompted. This way, your project is initialized with SuiteCloud Unit Testing, and all the dependencies are being taken care of.
