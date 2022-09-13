@@ -10,3 +10,6 @@ packages/**/dist
 
 # coverage reports
 **/coverage/**
+
+# config
+**/core/sdksetup/config*.json
