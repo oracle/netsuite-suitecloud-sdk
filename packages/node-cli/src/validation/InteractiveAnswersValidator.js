@@ -15,7 +15,7 @@ const VALIDATION_RESULT_FAILURE = (validationError) => ({
 });
 const VALIDATION_RESULT_SUCCESS = { result: true };
 
-const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTION_IS_MANDATORY } = require('../services/TranslationKeys');
+const { ANSWERS_VALIDATION_MESSAGES, COMMAND_OPTIONS } = require('../services/TranslationKeys');
 
 const ALPHANUMERIC_LOWERCASE_REGEX = '[a-z0-9]+';
 const ALPHANUMERIC_LOWERCASE_WHOLE_REGEX = `^${ALPHANUMERIC_LOWERCASE_REGEX}$`;
@@ -122,7 +122,7 @@ module.exports = {
 	validateNotUndefined(value, optionName) {
 		return value !== undefined
 			? VALIDATION_RESULT_SUCCESS
-			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(COMMAND_OPTION_IS_MANDATORY, optionName));
+			: VALIDATION_RESULT_FAILURE(NodeTranslationService.getMessage(COMMAND_OPTIONS.IS_MANDATORY, optionName));
 	},
 
 	validateProjectType(value) {

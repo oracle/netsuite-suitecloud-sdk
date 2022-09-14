@@ -5,8 +5,8 @@
 
 import DeployValidateCommon from './DeployValidateCommon';
 
-const COMMAND_NAME = 'deploy';
-export default class Deploy extends DeployValidateCommon {
+const COMMAND_NAME = 'validate';
+export default class Validate extends DeployValidateCommon {
 	constructor() {
 		super(COMMAND_NAME);
 	}

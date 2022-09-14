@@ -2,5 +2,9 @@
 	"name": "@oracle/suitecloud-sdk",
 	"version": "0.0.0",
 	"license": "UPL-1.0",
-	"private": true
+	"private": true,
+	"workspaces": [
+		"packages/node-cli",
+		"packages/unit-testing"
+	]
 }

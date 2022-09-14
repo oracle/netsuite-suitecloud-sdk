@@ -65,7 +65,7 @@ async function install() {
 		await downloadFilePromise;
 		messageService.showInformationMessage(translationService.getMessage(EXTENSION_INSTALLATION.SUCCESS.SDK_DOWNLOADED));
 	} catch (error) {
-		messageService.showErrorMessage(translationService.getMessage(EXTENSION_INSTALLATION.ERROR.GENERAL_ERROR, fullUrl, error));
+		messageService.showErrorMessage(translationService.getMessage(EXTENSION_INSTALLATION.ERROR.GENERAL_ERROR, fullUrl, `${error}`));
 		throw error;
 	}
 }

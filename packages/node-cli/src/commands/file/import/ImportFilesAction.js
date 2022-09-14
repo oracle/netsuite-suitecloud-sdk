@@ -19,7 +19,9 @@ const {
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
+	ALLOW_FOR_SUITEAPPS: 'allowforsuiteapps',
 	AUTH_ID: 'authid',
+	CALLED_FROM_COMPARE_FILES: 'calledfromcomparefiles',
 	FOLDER: 'folder',
 	PATHS: 'paths',
 	EXCLUDE_PROPERTIES: 'excludeproperties',
@@ -31,6 +33,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 		super(options);
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._calledFromCompareFiles = false;
 	}
 
 	preExecute(params) {
@@ -49,17 +52,27 @@ module.exports = class ImportFilesAction extends BaseAction {
 		} else {
 			delete params[EXCLUDE_PROPERTIES];
 		}
+
+		if (params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES]) {
+			this._calledFromCompareFiles = true;
+			delete params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES];
+		}
+
 		return params;
 	}
 
 	async execute(params) {
 		try {
-			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
+			if (!this._calledFromCompareFiles && this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 				return ActionResult.Builder.withErrors([NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP)]).build();
 			}
 
-			if(this._runInInteractiveMode === false) {
+			if (!this._calledFromCompareFiles && this._runInInteractiveMode === false) {
 				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
+			}
+
+			if (this._calledFromCompareFiles) {
+				params[COMMAND_OPTIONS.ALLOW_FOR_SUITEAPPS] = '';
 			}
 
 			const executionContextImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
@@ -71,6 +84,10 @@ module.exports = class ImportFilesAction extends BaseAction {
 				action: this._sdkExecutor.execute(executionContextImportObjects),
 				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
+
+			if (this._calledFromCompareFiles) {
+				params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES] = true;
+			}
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
