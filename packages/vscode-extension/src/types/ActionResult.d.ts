@@ -22,7 +22,7 @@ export interface AuthenticateActionResult extends ActionResult<undefined> {
 }
 
 export type AuthListData = {
-	[key: string]: {
+	[authID: string]: {
 		accountInfo: {
 			companyName: string;
 			roleId: number;

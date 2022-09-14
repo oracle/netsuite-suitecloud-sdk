@@ -30,7 +30,7 @@ module.exports = class CommandOptionsValidator {
 				) {
 					validationErrors.push(
 						NodeTranslationService.getMessage(
-							TRANSLATION_KEYS.COMMAND_OPTION_IS_MANDATORY,
+							TRANSLATION_KEYS.COMMAND_OPTIONS.IS_MANDATORY,
 							option.name
 						)
 					);

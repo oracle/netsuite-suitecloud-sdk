@@ -14,7 +14,7 @@ class ValidationErrorsFormatter {
 		assert(validationErrors);
 		assert(Array.isArray(validationErrors));
 
-		const errorMessageHeader = NodeTranslationService.getMessage(TRANSLATION_KEYS.COMMAND_OPTIONS_VALIDATION_ERRORS);
+		const errorMessageHeader = NodeTranslationService.getMessage(TRANSLATION_KEYS.COMMAND_OPTIONS.VALIDATION_ERRORS);
 		const validationErrorsString = validationErrors.join(lineBreak);
 		return `${errorMessageHeader}${lineBreak}${validationErrorsString}`;
 	}

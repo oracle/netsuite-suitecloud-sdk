@@ -8,6 +8,7 @@
 import * as vscode from 'vscode';
 import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
+import CompareFile from './commands/CompareFile';
 import CreateFile from './commands/CreateFile';
 import CreateProject from './commands/CreateProject';
 import Deploy from './commands/Deploy';
@@ -15,14 +16,16 @@ import ImportFiles from './commands/ImportFiles';
 import ImportObjects from './commands/ImportObjects';
 import ListFiles from './commands/ListFiles';
 import ListObjects from './commands/ListObjects';
+import ManageAuth from './commands/ManageAuth';
 import SetupAccount from './commands/SetupAccount';
 import UpdateFile from './commands/UpdateFile';
 import UpdateObject from './commands/UpdateObject';
 import UploadFile from './commands/UploadFile';
+import Validate from './commands/Validate';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
+import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
-import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 export const output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
@@ -51,6 +54,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		register('suitecloud.adddependencies', new AddDependencies()),
+		register('suitecloud.comparefile', new CompareFile()),
 		register('suitecloud.createfile', new CreateFile()),
 		register('suitecloud.createproject', new CreateProject()),
 		register('suitecloud.deploy', new Deploy()),
@@ -58,10 +62,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.importobjects', new ImportObjects()),
 		register('suitecloud.listfiles', new ListFiles()),
 		register('suitecloud.listobjects', new ListObjects()),
+		register('suitecloud.manageauth', new ManageAuth()),
 		register('suitecloud.setupaccount', new SetupAccount()),
 		register('suitecloud.updatefile', new UpdateFile()),
 		register('suitecloud.updateobject', new UpdateObject()),
-		register('suitecloud.uploadfile', new UploadFile())
+		register('suitecloud.uploadfile', new UploadFile()),
+		register('suitecloud.validate', new Validate()),
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)

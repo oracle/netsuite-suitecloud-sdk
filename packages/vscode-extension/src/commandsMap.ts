@@ -13,6 +13,7 @@ export type CommandInfo = {
 
 export type CommandsInfoMapType = {
 	adddependencies: CommandInfo;
+	comparefile: CommandInfo;
 	createfile: CommandInfo;
 	createproject: CommandInfo;
 	deploy: CommandInfo;
@@ -20,10 +21,12 @@ export type CommandsInfoMapType = {
 	importobjects: CommandInfo;
 	listfiles: CommandInfo;
 	listobjects: CommandInfo;
+	manageauth: CommandInfo;
 	setupaccount: CommandInfo;
 	updatefile: CommandInfo;
 	updateobject: CommandInfo;
 	uploadfile: CommandInfo;
+	validate: CommandInfo;
 };
 
 export const commandsInfoMap: CommandsInfoMapType = {
@@ -32,6 +35,11 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		cliCommandName: 'project:adddependencies',
 		vscodeCommandName: 'Add Dependency References to the Manifest',
 		vscodeShortName: 'Add Dependencies',
+	},
+	comparefile: {
+		cliCommandName: 'file:import',
+		vscodeCommandId: 'suitecloud.comparefile',
+		vscodeCommandName: 'Compare with Account File',
 	},
 	createfile: {
 		vscodeCommandId: 'suitecloud.createfile',
@@ -70,6 +78,11 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		cliCommandName: 'object:list',
 		vscodeCommandName: 'List Objects',
 	},
+	manageauth: {
+		vscodeCommandId: 'suitecloud.manageauth',
+		cliCommandName: 'account:manageauth',
+		vscodeCommandName: 'Manage Accounts'
+	},
 	setupaccount: {
 		vscodeCommandId: 'suitecloud.setupaccount',
 		cliCommandName: 'account:setup',
@@ -90,5 +103,10 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		vscodeCommandId: 'suitecloud.uploadfile',
 		cliCommandName: 'file:upload',
 		vscodeCommandName: 'Upload File',
+	},
+	validate: {
+		vscodeCommandId: 'suitecloud.validate',
+		cliCommandName: 'project:validate',
+		vscodeCommandName: 'Validate Project',
 	},
 };

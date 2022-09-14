@@ -6,7 +6,7 @@
 		"options": {
 			"account": {
 				"name": "account",
-				"description": "References the ID of the account to log in to.",
+				"description": "Specifies the ID of the account to log in to.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"disableInIntegrationMode": false
@@ -20,21 +20,21 @@
 			},
 			"tokenid": {
 				"name": "tokenid",
-				"description": "Enter the token ID of a TBA token you issued previously in NetSuite.",
+				"description": "Specifies the token ID of a TBA token you issued previously in NetSuite.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"disableInIntegrationMode": false
 			},
 			"tokensecret": {
 				"name": "tokensecret",
-				"description": "Enter the token secret of a TBA token you issued previously in NetSuite.",
+				"description": "Specifies the token secret of a TBA token you issued previously in NetSuite.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"disableInIntegrationMode": false
 			},
 			"url": {
 				"name": "url",
-				"description": "Specify the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
+				"description": "Specifies the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"disableInIntegrationMode": false
@@ -51,7 +51,7 @@
 			"dev": {
 				"name": "dev",
 				"alias": "d",
-				"description": "Specify the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
+				"description": "Specifies the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
 				"type": "FLAG",
 				"mandatory": false,
 				"disableInIntegrationMode": false

@@ -18,11 +18,11 @@ module.exports = class EnvironmentInformationService {
 
 	getInstalledJavaVersionString() {
 		const childProcess = spawn('java', ['-version'], { shell: true });
-		const javaVersionOutput = childProcess.stderr.toString(); //The output should be: java full version "11.1.0_201-b09"
-		const javaVersion = /\bjava version\b|\bopenjdk version\b/gi.test(javaVersionOutput)
-			? javaVersionOutput.split(' ')[2].replace(/"|\r\n|\n|\r/g, '')
-			: '';
-		
-		return javaVersion; 
+		const javaVersionOutput = childProcess.stderr.toString();
+		// The output should be similar to: java version "17.0.4" 2022-07-19 LTS
+		// It's expected to have the version surrounded by double quotes and only contain numbers and dots
+		const regex = /(?:\bjava version\b|\bopenjdk version\b) "([\d.]+)"/;
+		const matchResult = javaVersionOutput.match(regex);
+		return matchResult ? matchResult[1] : '';
 	}
 };

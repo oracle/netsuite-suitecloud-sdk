@@ -10,6 +10,8 @@ const {
 	COMMAND_IMPORTFILES: { OUTPUT },
 } = require('../../../services/TranslationKeys');
 
+const COMMAND_OPTIONS_CALLED_FROM_COMPARE_FILES = 'calledfromcomparefiles';
+
 module.exports = class ImportFilesOutputHandler extends BaseOutputHandler {
 	constructor(options) {
 		super(options);
@@ -20,13 +22,20 @@ module.exports = class ImportFilesOutputHandler extends BaseOutputHandler {
 			const successful = actionResult.data.results.filter((result) => result.loaded === true);
 			const unsuccessful = actionResult.data.results.filter((result) => result.loaded !== true);
 			if (successful.length) {
+				if (actionResult.commandParameters[COMMAND_OPTIONS_CALLED_FROM_COMPARE_FILES]) {
+					return actionResult;
+				}
 				this._log.result(NodeTranslationService.getMessage(OUTPUT.FILES_IMPORTED));
 				successful.forEach((result) => {
 					this._log.result(result.path);
 				});
 			}
 			if (unsuccessful.length) {
-				this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED));
+				if (actionResult.commandParameters[COMMAND_OPTIONS_CALLED_FROM_COMPARE_FILES]) {
+					this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_COMPARED));
+				} else {
+					this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED));
+				}
 				unsuccessful.forEach((result) => {
 					this._log.warning(`${result.path}, ${result.message}`);
 				});
