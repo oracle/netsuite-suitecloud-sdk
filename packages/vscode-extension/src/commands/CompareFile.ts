@@ -24,12 +24,12 @@ export default class CompareFile extends FileImportCommon {
 	}
 
 	protected validateBeforeExecute() {
-		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
 		const superValidation = super.validateBeforeExecute(true);
 		if (!superValidation.valid) {
 			return superValidation;
 		}
 
+		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
 		if (projectInfoService.isSuiteAppProject()) {
 			if (!this.activeFileIsUnderSuiteAppsAppIdFolder(projectInfoService)) {
 				return this.unsuccessfulValidation(
