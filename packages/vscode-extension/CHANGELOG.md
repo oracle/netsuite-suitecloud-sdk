@@ -1,6 +1,11 @@
 # Change Log
 
+## 1.3.1
+
+- Fix for **SuiteCloud: Compare Files** command
+
 ## 1.3.0
+
 - New **SuiteCloud: Validate Project** command
 - New **SuiteCloud: Manage Accounts** command
 - New **SuiteCloud: Compare Files** command

@@ -25,8 +25,8 @@ Each version of the SuiteCloud Extenstion for Visual Studio Code in the Marketpl
 
 | Version in the Marketplace | Version in NetSuite |
 |:--------------:|:-------------------:|
-| 1.3.0  | 2022.2  |
-| 1.2.0  | 2022.1  |
+| 1.3.X  | 2022.2  |
+| 1.2.X  | 2022.1  |
 
 ## Installing SuiteCloud Extension for Visual Studio Code
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
