@@ -9,14 +9,14 @@ import { actionResultStatus, ProjectInfoService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 
 export default abstract class FileImportCommon extends BaseAction {
-	protected validateBeforeExecute() {
+	protected validateBeforeExecute(calledFromCompareFiles?: boolean) {
 		const superValidation = super.validateBeforeExecute();
 		if (!superValidation.valid) {
 			return superValidation;
 		}
 
 		const projectInfoService = new ProjectInfoService(this.getProjectFolderPath());
-		if (projectInfoService.isSuiteAppProject()) {
+		if (!calledFromCompareFiles && projectInfoService.isSuiteAppProject()) {
 			return this.unsuccessfulValidation(this.translationService.getMessage(IMPORT_FILES.ERROR.IMPORT_TO_SUITEAPP_NOT_ALLOWED));
 		}
 

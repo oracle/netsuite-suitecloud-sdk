@@ -12,7 +12,7 @@
 	"publisher": "Oracle",
 	"license": "UPL-1.0",
 	"private": true,
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"icon": "resources/pluginIcon_dark.png",
 	"repository": {
 		"type": "git",
@@ -182,7 +182,7 @@
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps|SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
 					"command": "suitecloud.comparefile",
 					"group": "suitecloud@1"
 				}
@@ -195,7 +195,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.5.0"
+		"@oracle/suitecloud-cli": "^1.7.0"
 	},
 	"devDependencies": {
 		"@types/glob": "7.2.0",

@@ -1,0 +1,13 @@
+# ide
+**/.idea/**
+**/.vscode/**
+
+# coverage reports
+**/coverage/**
+
+# config
+**/core/sdksetup/config*.json
+
+# node-cli specific
+**/__test__/**
+**/__tests__/**

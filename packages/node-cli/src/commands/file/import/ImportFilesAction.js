@@ -19,6 +19,7 @@ const {
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
+	ALLOW_FOR_SUITEAPPS: 'allowforsuiteapps',
 	AUTH_ID: 'authid',
 	CALLED_FROM_COMPARE_FILES: 'calledfromcomparefiles',
 	FOLDER: 'folder',
@@ -62,12 +63,16 @@ module.exports = class ImportFilesAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
+			if (!this._calledFromCompareFiles && this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 				return ActionResult.Builder.withErrors([NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP)]).build();
 			}
 
 			if (!this._calledFromCompareFiles && this._runInInteractiveMode === false) {
 				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
+			}
+
+			if (this._calledFromCompareFiles) {
+				params[COMMAND_OPTIONS.ALLOW_FOR_SUITEAPPS] = '';
 			}
 
 			const executionContextImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
