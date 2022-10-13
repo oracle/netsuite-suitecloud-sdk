@@ -14,6 +14,34 @@ const PROJECT_TYPE = {
 
 const CORE_STUBS = [
 	{
+		module: 'N/action',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/action/action.js`,
+	},
+	{
+		module: 'N/action/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/action/ActionInstance.js`,
+	},
+	{
+		module: 'N/auth',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/auth/auth.js`,
+	},
+	{
+		module: 'N/cache',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/cache/cache.js`,
+	},
+	{
+		module: 'N/cache/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/cache/CacheInstance.js`,
+	},
+	{
+		module: 'N/currency',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/currency/currency.js`,
+	},
+	{
+		module: 'N/email',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/email/email.js`,
+	},
+	{
 		module: 'N/http',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/http.js`,
 	},
@@ -38,6 +66,62 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecureString.js`,
 	},
 	{
+		module: 'N/query',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/query.js`,
+	},
+	{
+		module: 'N/query/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/QueryInstance.js`,
+	},
+	{
+		module: 'N/query/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Column.js`,
+	},
+	{
+		module: 'N/query/component',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Component.js`,
+	},
+	{
+		module: 'N/query/iterator',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Iterator.js`,
+	},
+	{
+		module: 'N/query/page',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Page.js`,
+	},
+	{
+		module: 'N/query/pagedData',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/pagedData.js`,
+	},
+	{
+		module: 'N/query/pageRange',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/pageRange.js`,
+	},
+	{
+		module: 'N/query/period',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Period.js`,
+	},
+	{
+		module: 'N/query/result',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Result.js`,
+	},
+	{
+		module: 'N/query/resultSet',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/ResultSet.js`,
+	},
+	{
+		module: 'N/query/sort',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Sort.js`,
+	},
+	{
+		module: 'N/query/suiteQL',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/SuiteQL.js`,
+	},
+	{
+		module: 'N/https/clientCertificate',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/clientCertificate.js`,
+	},
+	{
 		module: 'N/record',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/record.js`,
 	},
@@ -56,6 +140,26 @@ const CORE_STUBS = [
 	{
 		module: 'N/record/sublist',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
+	},
+	{
+		module: 'N/redirect',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/redirect/redirect.js`,
+	},
+	{
+		module: 'N/runtime',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/runtime.js`,
+	},
+	{
+		module: 'N/runtime/script',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/Script.js`,
+	},
+	{
+		module: 'N/runtime/session',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/Session.js`,
+	},
+	{
+		module: 'N/runtime/user',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/User.js`,
 	},
 	{
 		module: 'N/search',
@@ -92,6 +196,34 @@ const CORE_STUBS = [
 	{
 		module: 'N/search/setting',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Setting.js`,
+	},
+	{
+		module: 'N/xml',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/xml.js`,
+	},
+	{
+		module: 'N/xml/attr',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Attr.js`,
+	},
+	{
+		module: 'N/xml/document',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Document.js`,
+	},
+	{
+		module: 'N/xml/element',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Element.js`,
+	},
+	{
+		module: 'N/xml/node',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Node.js`,
+	},
+	{
+		module: 'N/xml/parser',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Parser.js`,
+	},
+	{
+		module: 'N/xml/xPath',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/XPath.js`,
 	},
 ];
 
