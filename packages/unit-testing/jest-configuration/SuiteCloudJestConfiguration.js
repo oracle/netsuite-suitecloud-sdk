@@ -46,7 +46,7 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/http.js`,
 	},
 	{
-		module: 'N/http/clientresponse',
+		module: 'N/http/clientResponse',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/ClientResponse.js`,
 	},
 	{
@@ -54,15 +54,15 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/https.js`,
 	},
 	{
-		module: 'N/https/clientresponse',
+		module: 'N/https/clientResponse',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/ClientResponse.js`,
 	},
 	{
-		module: 'N/https/secretkey',
+		module: 'N/https/secretKey',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecretKey.js`,
 	},
 	{
-		module: 'N/https/securestring',
+		module: 'N/https/secureString',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecureString.js`,
 	},
 	{
@@ -182,15 +182,15 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Result.js`,
 	},
 	{
-		module: 'N/search/resultset',
+		module: 'N/search/resultSet',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/ResultSet.js`,
 	},
 	{
-		module: 'N/search/pageddata',
+		module: 'N/search/pagedData',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchPagedData.js`,
 	},
 	{
-		module: 'N/search/pagerange',
+		module: 'N/search/pageRange',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchPageRange.js`,
 	},
 	{
