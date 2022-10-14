@@ -13,6 +13,9 @@
 	"license": "UPL-1.0",
 	"private": true,
 	"version": "1.3.1",
+	"sdkFileName": "cli-2022.2.1.jar",
+	"nsCompatibleVersion": "2023.2",
+	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/22.2",
 	"icon": "resources/pluginIcon_dark.png",
 	"repository": {
 		"type": "git",

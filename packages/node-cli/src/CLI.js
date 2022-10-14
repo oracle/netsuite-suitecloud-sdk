@@ -22,7 +22,7 @@ const INTERACTIVE_OPTION = '--interactive';
 const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
 const configFile = require(PACKAGE_FILE);
 const CLI_VERSION = configFile ? configFile.version : 'unknown';
-const { COMPATIBLE_NS_VERSION } = require('./ApplicationConstants');
+const { nsCompatibleVersion } = require(PACKAGE_FILE);
 const COMMAND_ALIAS = '[command]';
 const HELP_COMMAND = 'help';
 const HELP_OPTION = '--help';
@@ -67,7 +67,7 @@ module.exports = class CLI {
 
 			// If there are no arguments, we print SuiteCloud version header
 			if (!process.argv || process.argv.length <= 2) {
-				NodeConsoleLogger.info(NodeTranslationService.getMessage(TITLE, COMPATIBLE_NS_VERSION));
+				NodeConsoleLogger.info(NodeTranslationService.getMessage(TITLE, nsCompatibleVersion));
 			}
 
 			program
