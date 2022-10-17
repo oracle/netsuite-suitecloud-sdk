@@ -2,7 +2,7 @@
 
 ## 1.3.2
 
-- Fix for security vulnerabilities
+- Fix for security vulnerabilities for third-party library
 
 ## 1.3.1
 
