@@ -38,8 +38,10 @@ export function getSdkFilename(): string {
 		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
 		return extensionConfigJsonFile.sdkFilename;
 	}
-	const sdkFileName = require.resolve(SUITECLOUD_CLI_PACKAGE_JSON);
-	return sdkFileName;
+
+	const suiteCloudCliModulePackageJsonPath = require.resolve(SUITECLOUD_CLI_PACKAGE_JSON);
+	return require(suiteCloudCliModulePackageJsonPath).sdkFileName;
+
 }
 
 export function getSdkDownloadFullUrl(): string {
