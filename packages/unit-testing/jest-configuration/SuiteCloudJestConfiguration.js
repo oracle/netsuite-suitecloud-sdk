@@ -138,6 +138,34 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
 	},
 	{
+		module: 'N/dataset',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/dataset.js`,
+	},
+	{
+		module: 'N/dataset/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/DatasetInstance.js`,
+	},
+	{
+		module: 'N/dataset/condition',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/Condition.js`,
+	},
+	{
+		module: 'N/dataset/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/Column.js`,
+	},
+	{
+		module: 'N/dataset/join',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/Join.js`,
+	},
+	{
+		module: 'N/datasetLink',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/datasetLink/datasetLink.js`,
+	},
+	{
+		module: 'N/datasetLink/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/datasetLink/DatasetLinkInstance.js`,
+	},
+	{
 		module: 'N/email',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/email/email.js`,
 	},
