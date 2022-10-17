@@ -41,22 +41,6 @@ define(['./CacheInstance'], function (Cache) {
     cache.prototype.Scope = new cacheScope();
 
     /**
-     * Get a named, scoped cache.
-     * @restriction Server SuiteScript only
-     * @governance none
-     *
-     * @param {Object} options
-     * @param {string} options.name The cache name. If a cache does not exist with the given name it will be created and returned. The maximum size for the cache name is 1K.
-     * @param {string} [options.scope] The cache scope (optional). The default cache scope is SCRIPT.
-     *
-     * @return {Cache}
-     *
-     * @since 2016.2
-     */
-    function getCache() {
-    }
-
-    /**
      * @exports N/cache
      * @namespace cache
      */

@@ -34,8 +34,108 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/cache/CacheInstance.js`,
 	},
 	{
+		module: 'N/certificateControl',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/certificateControl/certificateControl.js`,
+	},
+	{
+		module: 'N/certificateControl/certificate',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/certificateControl/Certificate.js`,
+	},
+	{
+		module: 'N/commerce/recordView',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/recordView.js`,
+	},
+	{
+		module: 'N/commerce/promising',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/promising.js`,
+	},
+	{
+		module: 'N/commerce/webstore/order',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/webstore/order.js`,
+	},
+	{
+		module: 'N/commerce/webstore/shopper',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/webstore/shopper.js`,
+	},
+	{
+		module: 'N/commerce/webstore/shopper/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/webstore/ShopperInstance.js`,
+	},
+	{
+		module: 'N/compress',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/compress/compress.js`,
+	},
+	{
+		module: 'N/compress/archiver',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/compress/Archiver.js`,
+	},
+	{
+		module: 'N/crypto',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/crypto.js`,
+	},
+	{
+		module: 'N/crypto/certificate',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/certificate.js`,
+	},
+	{
+		module: 'N/crypto/certificate/signedXml',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/SignedXml.js`,
+	},
+	{
+		module: 'N/crypto/certificate/signer',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Signer.js`,
+	},
+	{
+		module: 'N/crypto/certificate/verifier',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Verifier.js`,
+	},
+	{
+		module: 'N/crypto/cipher',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Cipher.js`,
+	},
+	{
+		module: 'N/crypto/cipher/payload',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/CipherPayload.js`,
+	},
+	{
+		module: 'N/crypto/decipher',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Decipher.js`,
+	},
+	{
+		module: 'N/crypto/hash',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Hash.js`,
+	},
+	{
+		module: 'N/crypto/hmac',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Hmac.js`,
+	},
+	{
+		module: 'N/crypto/secretKey',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/SecretKey.js`,
+	},
+	{
 		module: 'N/currency',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/currency/currency.js`,
+	},
+	{
+		module: 'N/currentRecord',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/currentRecord/currentRecord.js`,
+	},
+	{
+		module: 'N/currentRecord/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/currentRecord/CurrentRecordInstance.js`,
+	},
+	{
+		module: 'N/currentRecord/field',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Field.js`,
+	},
+	{
+		module: 'N/currentRecord/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Column.js`,
+	},
+	{
+		module: 'N/currentRecord/sublist',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
 	},
 	{
 		module: 'N/email',
