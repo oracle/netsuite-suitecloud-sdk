@@ -8,11 +8,10 @@ import { homedir } from 'os';
 import { join, resolve } from 'path';
 import { existsSync } from 'fs';
 
-const PJSON = require('../../../package.json');
-
 export const SUITECLOUD_FOLDER = '.suitecloud-sdk';
 export const VSCODE_SDK_FOLDER = 'vscode';
 
+const SUITECLOUD_CLI_PACKAGE_JSON = '@oracle/suitecloud-cli/package.json';
 const EXTENSION_CONFIG_JSON_FILENAME = 'extension.config.json';
 const EXTENSION_CONFIG_JSON_FILE = './' + EXTENSION_CONFIG_JSON_FILENAME;
 
@@ -22,7 +21,8 @@ function getSdkDownloadUrl(): string {
 		return extensionConfigJsonFile.sdkDownloadUrl;
 	}
 
-	return PJSON.sdkDownloadUrl;
+	const suiteCloudCliModulePackageJsonPath = require.resolve(SUITECLOUD_CLI_PACKAGE_JSON);
+	return require(suiteCloudCliModulePackageJsonPath).sdkDownloadUrl;
 }
 
 function extensionConfigJsonFileExists(): boolean {
@@ -38,8 +38,8 @@ export function getSdkFilename(): string {
 		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
 		return extensionConfigJsonFile.sdkFilename;
 	}
-
-	return PJSON.sdkFileName;
+	const sdkFileName = require.resolve(SUITECLOUD_CLI_PACKAGE_JSON);
+	return sdkFileName;
 }
 
 export function getSdkDownloadFullUrl(): string {
