@@ -20,7 +20,7 @@
 	"main": "./src/suitecloud.js",
 	"preferGlobal": true,
 	"sdkFileName": "cli-2022.2.1.jar",
-	"nsCompatibleVersion": "2023.2",
+	"nsCompatibleVersion": "2022.2",
 	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/22.2",
 	"bin": {
 		"suitecloud": "./src/suitecloud.js"

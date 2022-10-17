@@ -39,9 +39,7 @@ export function getSdkFilename(): string {
 		return extensionConfigJsonFile.sdkFilename;
 	}
 
-	const suiteCloudCliModulePackageJsonPath = require.resolve(SUITECLOUD_CLI_PACKAGE_JSON);
-	return require(suiteCloudCliModulePackageJsonPath).sdkFileName;
-
+	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkFileName;
 }
 
 export function getSdkDownloadFullUrl(): string {
