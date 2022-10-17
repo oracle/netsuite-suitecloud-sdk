@@ -28,7 +28,9 @@ class SdkProperties {
 	}
 
 	getSdkFileName() {
-		return this.configFileExists() ? CONFIG_FILE_CACHE.sdkFilename : sdkFileName;
+		// read config.js file if exists or use package.json
+		const configFile = this.configFileExists() ? CONFIG_FILE_CACHE : require(PACKAGE_FILE);
+		return configFile.sdkFileName;
 	}
 
 	configFileExists() {
