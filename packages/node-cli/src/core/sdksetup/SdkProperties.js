@@ -12,7 +12,7 @@ const ROOT_DIRECTORY = path.dirname(path.resolve(__dirname, '../../'));
 const PACKAGE_FILE = `${ROOT_DIRECTORY}/package.json`;
 const CONFIG_FILE = './config.json';
 const { FOLDERS } = require('../../ApplicationConstants');
-const { sdkFileName } = require(PACKAGE_FILE);
+const { sdkFilename } = require(PACKAGE_FILE);
 
 let CONFIG_FILE_CACHE = null;
 
@@ -29,8 +29,8 @@ class SdkProperties {
 
 	getSdkFileName() {
 		// read config.js file if exists or use package.json
-		const configFile = this.configFileExists() ? CONFIG_FILE_CACHE : require(PACKAGE_FILE);
-		return configFile.sdkFileName;
+		const sdkFileName = this.configFileExists() ? CONFIG_FILE_CACHE.sdkFilename : sdkFilename
+		return sdkFileName;
 	}
 
 	configFileExists() {
