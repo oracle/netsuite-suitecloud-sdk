@@ -330,6 +330,15 @@
 				"type": "FLAG",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
+			},
+			"calledfromupdate": {
+				"name": "calledfromupdate",
+				"option": "calledfromupdate",
+				"description": "Message displayed should be different if called from Update File.",
+				"mandatory": false,
+				"type": "FLAG",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
 			}
 		}
 	},

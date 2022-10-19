@@ -83,6 +83,7 @@
 	"IMPORT_FILES_QUESTIONS_SELECT_FOLDER": "Select the path from where you want to import the files.",
 	"IMPORT_FILES_QUESTIONS_OVERRIDE": "The selected files in the project will be overwritten.",
 	"IMPORT_FILES_QUESTIONS_OVERRIDE_SINGLE": "The selected file in the project will be overwritten: {0}",
+	"IMPORT_FILES_UPDATING_FILE": "Updating file...",
 
 	"IMPORT_OBJECTS_ERROR_EMPTY_LIST_SEARCH": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID or script ID.",
 	"IMPORT_OBJECTS_ERROR_INCORRECT_FOLDER": "To import a custom object from an account, select a valid location inside the Objects folder first.",
@@ -116,7 +117,7 @@
 	"MANAGE_AUTH_GENERAL_INFO_OPTION": "Show details",
 	"MANAGE_AUTH_GENERAL_NO_ACCOUNTS_TO_MANAGE": "There are no accounts to manage. Click \"SuiteCloud: {0}\" to link your project to your account.",
 	"MANAGE_AUTH_GENERAL_REMOVE_OPTION": "Remove",
-	"MANAGE_AUTH_GENERAL_RENAME_OPTION":"Rename",
+	"MANAGE_AUTH_GENERAL_RENAME_OPTION": "Rename",
 	"MANAGE_AUTH_GENERAL_SELECT_AUTH_ID_TO_MANAGE": "Select the authID you want to manage:",
 	"MANAGE_AUTH_GENERAL_SELECT_OPTION_FOR_AUTH_ID": "Select one of the following options for {0}:",
 	"MANAGE_AUTH_REMOVE_CANCEL": "Cancel",
@@ -148,7 +149,7 @@
 	"UPDATE_OBJECT_OVERWRITE": "The following object will be overwritten: {0}.",
 	"UPDATE_OBJECT_OVERWRITE_INSTANCES": "The following object and its instances will be overwritten: {0}.",
 	"UPDATE_OBJECT_PROCESS_CANCELED": "The custom object update process has been canceled. No custom objects have been overwritten.",
-	"UPDATE_OBJECT_QUESTIONS_INCLUDE_INSTANCES" : "Do you want to include Custom Instances from the account?",
+	"UPDATE_OBJECT_QUESTIONS_INCLUDE_INSTANCES": "Do you want to include Custom Instances from the account?",
 	"UPDATE_OBJECT_UPDATING": "Updating object...",
 
 	"UPLOAD_FILE_ERROR_UPLOAD_FILE_FOLDER_RESTRICTION": "The file to upload should be in a supported folder inside the FileCabinet folder. For information about the supported folders, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4724963992.html.",

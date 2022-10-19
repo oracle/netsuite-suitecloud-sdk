@@ -11,6 +11,7 @@ const {
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS_CALLED_FROM_COMPARE_FILES = 'calledfromcomparefiles';
+const COMMAND_OPTIONS_CALLED_FROM_UPDATE = 'calledfromupdate';
 
 module.exports = class ImportFilesOutputHandler extends BaseOutputHandler {
 	constructor(options) {
@@ -25,7 +26,11 @@ module.exports = class ImportFilesOutputHandler extends BaseOutputHandler {
 				if (actionResult.commandParameters[COMMAND_OPTIONS_CALLED_FROM_COMPARE_FILES]) {
 					return actionResult;
 				}
-				this._log.result(NodeTranslationService.getMessage(OUTPUT.FILES_IMPORTED));
+				if (actionResult.commandParameters[COMMAND_OPTIONS_CALLED_FROM_UPDATE]) {
+					this._log.result(NodeTranslationService.getMessage(OUTPUT.FILE_UPDATED));
+				} else {
+					this._log.result(NodeTranslationService.getMessage(OUTPUT.FILES_IMPORTED));
+				}
 				successful.forEach((result) => {
 					this._log.result(result.path);
 				});
@@ -33,6 +38,8 @@ module.exports = class ImportFilesOutputHandler extends BaseOutputHandler {
 			if (unsuccessful.length) {
 				if (actionResult.commandParameters[COMMAND_OPTIONS_CALLED_FROM_COMPARE_FILES]) {
 					this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_COMPARED));
+				} else if (actionResult.commandParameters[COMMAND_OPTIONS_CALLED_FROM_UPDATE]) {
+					this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILE_NOT_UPDATED));
 				} else {
 					this._log.warning(NodeTranslationService.getMessage(OUTPUT.FILES_NOT_IMPORTED));
 				}

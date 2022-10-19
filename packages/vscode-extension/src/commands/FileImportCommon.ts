@@ -68,16 +68,27 @@ export default abstract class FileImportCommon extends BaseAction {
 			return;
 		}
 
-		const commandArgs = {
-			paths: selectedFilesPaths,
-			...(excludeProperties === this.translationService.getMessage(ANSWERS.YES) && { excludeproperties: 'true' }),
-		};
+		const commandArgs = this.getCommandArgs(selectedFilesPaths, excludeProperties);
 
 		const commandActionPromise = this.runSuiteCloudCommand(commandArgs);
-		this.messageService.showStatusBarMessage(this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILES), true, commandActionPromise);
+		let statusMessage = this.translationService.getMessage(IMPORT_FILES.IMPORTING_FILES);
+		if (commandArgs.calledfromupdate === 'true') {
+			statusMessage = this.translationService.getMessage(IMPORT_FILES.UPDATING_FILE);
+		}
+		this.messageService.showStatusBarMessage(statusMessage, true, commandActionPromise);
 		const actionResult = await commandActionPromise;
 
 		this.showOutput(actionResult);
+	}
+
+	getCommandArgs(
+		selectedFilesPaths: string[],
+		excludeProperties: string
+	): { excludeproperties?: string | undefined; paths: string[]; calledfromupdate?: string } {
+		return {
+			paths: selectedFilesPaths,
+			...(excludeProperties === this.translationService.getMessage(ANSWERS.YES) && { excludeproperties: 'true' }),
+		};
 	}
 
 	private showOutput(actionResult: any) {
