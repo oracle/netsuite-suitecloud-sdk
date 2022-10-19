@@ -13,7 +13,6 @@
 	"license": "UPL-1.0",
 	"private": true,
 	"version": "1.4.0",
-	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/22.2",
 	"icon": "resources/pluginIcon_dark.png",
 	"repository": {
 		"type": "git",
