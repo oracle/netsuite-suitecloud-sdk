@@ -86,7 +86,6 @@
 	"COMMAND_IMPORTFILES_MESSAGES_IMPORTING_FILES": "Importing files...",
 	"COMMAND_IMPORTFILES_MESSAGES_LOADING_FILES": "Loading files...",
 	"COMMAND_IMPORTFILES_MESSAGES_LOADING_FOLDERS": "Loading File Cabinet folders...",
-	"COMMAND_IMPORTFILES_MESSAGES_UPDATING_FILE": "Updating file...",
 	"COMMAND_IMPORTFILES_OUTPUT_FILES_IMPORTED": "The following files were imported:",
 	"COMMAND_IMPORTFILES_OUTPUT_FILES_NOT_COMPARED": "The following files were not compared:",
 	"COMMAND_IMPORTFILES_OUTPUT_FILES_NOT_IMPORTED": "The following files were not imported:",

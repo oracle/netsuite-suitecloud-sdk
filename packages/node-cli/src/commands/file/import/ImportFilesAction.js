@@ -86,14 +86,9 @@ module.exports = class ImportFilesAction extends BaseAction {
 				.addParams(params)
 				.build();
 
-			let statusMessage = NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES);
-			if (this._calledFromUpdate) {
-				statusMessage = NodeTranslationService.getMessage(MESSAGES.UPDATING_FILE);
-			}
-
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextImportObjects),
-				message: statusMessage,
+				message:  NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
 			if (this._calledFromCompareFiles) {
