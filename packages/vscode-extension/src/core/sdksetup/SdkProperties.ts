@@ -39,7 +39,7 @@ export function getSdkFilename(): string {
 		return extensionConfigJsonFile.sdkFilename;
 	}
 
-	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkFileName;
+	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkFilename;
 }
 
 export function getSdkDownloadFullUrl(): string {
