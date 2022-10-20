@@ -28,10 +28,14 @@ export default class UpdateFile extends FileImportCommon {
 		return this.successfulValidation();
 	}
 
-	getCommandArgs(selectedFilesPaths: string[], excludeProperties: string) {
+	protected getCommandArgs(selectedFilesPaths: string[], excludeProperties: string) {
 		const args = super.getCommandArgs(selectedFilesPaths, excludeProperties);
 		args['calledfromupdate'] = 'true';
 		return args;
+	}
+
+	protected getStatusMessage() {
+		return this.translationService.getMessage(IMPORT_FILES.UPDATING_FILE);
 	}
 
 	private activeFileIsUnderUnrestrictedFolder(): boolean {
