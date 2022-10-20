@@ -34,10 +34,6 @@ export default class UpdateFile extends FileImportCommon {
 		return args;
 	}
 
-	execute() {
-		return super.execute();
-	}
-
 	private activeFileIsUnderUnrestrictedFolder(): boolean {
 		const activeFileRelativePath = this.activeFile?.replace(this.getFileCabinetFolerPath(), '').replace(/\\/g, '/');
 		return ACP_UNRESTRICTED_FOLDERS.some((unrestricedPath) => activeFileRelativePath?.startsWith(unrestricedPath));
