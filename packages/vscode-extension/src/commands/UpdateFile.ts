@@ -30,7 +30,7 @@ export default class UpdateFile extends FileImportCommon {
 
 	protected getCommandArgs(selectedFilesPaths: string[], excludeProperties: string) {
 		const args = super.getCommandArgs(selectedFilesPaths, excludeProperties);
-		args['calledfromupdate'] = 'true';
+		args.calledfromupdate = 'true';
 		return args;
 	}
 
