@@ -4,10 +4,17 @@
  */
 
 export const VSCODE_PLATFORM = 'VSCode';
-export const FOLDERS: { [KEY: string]: string } = {
+
+export const FILES = {
+	CREDENTIALS: 'credentials',
+	PROJECT_JSON: 'project.json'
+};
+
+export const FOLDERS = {
 	OBJECTS: 'Objects',
 	SEPARATOR: '/',
 	SUITEAPPS: '/SuiteApps',
+	SUITECLOUD_SDK: '.suitecloud-sdk',
 	SUITESCRIPTS: '/SuiteScripts',
 	TEMPLATES_EMAIL_TEMPLATES: '/Templates/E-mail Templates',
 	TEMPLATES_MARKETING_TEMPLATES: '/Templates/Marketing Templates',
