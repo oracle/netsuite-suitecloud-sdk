@@ -14,11 +14,167 @@ const PROJECT_TYPE = {
 
 const CORE_STUBS = [
 	{
+		module: 'N/action',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/action/action.js`,
+	},
+	{
+		module: 'N/action/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/action/ActionInstance.js`,
+	},
+	{
+		module: 'N/auth',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/auth/auth.js`,
+	},
+	{
+		module: 'N/cache',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/cache/cache.js`,
+	},
+	{
+		module: 'N/cache/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/cache/CacheInstance.js`,
+	},
+	{
+		module: 'N/certificateControl',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/certificateControl/certificateControl.js`,
+	},
+	{
+		module: 'N/certificateControl/certificate',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/certificateControl/Certificate.js`,
+	},
+	{
+		module: 'N/commerce/recordView',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/recordView.js`,
+	},
+	{
+		module: 'N/commerce/promising',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/promising.js`,
+	},
+	{
+		module: 'N/commerce/webstore/order',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/webstore/order.js`,
+	},
+	{
+		module: 'N/commerce/webstore/shopper',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/webstore/shopper.js`,
+	},
+	{
+		module: 'N/commerce/webstore/shopper/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/commerce/webstore/ShopperInstance.js`,
+	},
+	{
+		module: 'N/compress',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/compress/compress.js`,
+	},
+	{
+		module: 'N/compress/archiver',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/compress/Archiver.js`,
+	},
+	{
+		module: 'N/crypto',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/crypto.js`,
+	},
+	{
+		module: 'N/crypto/certificate',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/certificate.js`,
+	},
+	{
+		module: 'N/crypto/certificate/signedXml',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/SignedXml.js`,
+	},
+	{
+		module: 'N/crypto/certificate/signer',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Signer.js`,
+	},
+	{
+		module: 'N/crypto/certificate/verifier',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Verifier.js`,
+	},
+	{
+		module: 'N/crypto/cipher',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Cipher.js`,
+	},
+	{
+		module: 'N/crypto/cipher/payload',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/CipherPayload.js`,
+	},
+	{
+		module: 'N/crypto/decipher',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Decipher.js`,
+	},
+	{
+		module: 'N/crypto/hash',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Hash.js`,
+	},
+	{
+		module: 'N/crypto/hmac',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Hmac.js`,
+	},
+	{
+		module: 'N/crypto/secretKey',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/SecretKey.js`,
+	},
+	{
+		module: 'N/currency',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/currency/currency.js`,
+	},
+	{
+		module: 'N/currentRecord',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/currentRecord/currentRecord.js`,
+	},
+	{
+		module: 'N/currentRecord/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/currentRecord/CurrentRecordInstance.js`,
+	},
+	{
+		module: 'N/currentRecord/field',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Field.js`,
+	},
+	{
+		module: 'N/currentRecord/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Column.js`,
+	},
+	{
+		module: 'N/currentRecord/sublist',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
+	},
+	{
+		module: 'N/dataset',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/dataset.js`,
+	},
+	{
+		module: 'N/dataset/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/DatasetInstance.js`,
+	},
+	{
+		module: 'N/dataset/condition',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/Condition.js`,
+	},
+	{
+		module: 'N/dataset/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/Column.js`,
+	},
+	{
+		module: 'N/dataset/join',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/dataset/Join.js`,
+	},
+	{
+		module: 'N/datasetLink',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/datasetLink/datasetLink.js`,
+	},
+	{
+		module: 'N/datasetLink/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/datasetLink/DatasetLinkInstance.js`,
+	},
+	{
+		module: 'N/email',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/email/email.js`,
+	},
+	{
 		module: 'N/http',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/http.js`,
 	},
 	{
-		module: 'N/http/clientresponse',
+		module: 'N/http/clientResponse',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/ClientResponse.js`,
 	},
 	{
@@ -26,16 +182,72 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/https.js`,
 	},
 	{
-		module: 'N/https/clientresponse',
+		module: 'N/https/clientResponse',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/ClientResponse.js`,
 	},
 	{
-		module: 'N/https/secretkey',
+		module: 'N/https/secretKey',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecretKey.js`,
 	},
 	{
-		module: 'N/https/securestring',
+		module: 'N/https/secureString',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecureString.js`,
+	},
+	{
+		module: 'N/query',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/query.js`,
+	},
+	{
+		module: 'N/query/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/QueryInstance.js`,
+	},
+	{
+		module: 'N/query/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Column.js`,
+	},
+	{
+		module: 'N/query/component',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Component.js`,
+	},
+	{
+		module: 'N/query/iterator',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Iterator.js`,
+	},
+	{
+		module: 'N/query/page',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Page.js`,
+	},
+	{
+		module: 'N/query/pagedData',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/pagedData.js`,
+	},
+	{
+		module: 'N/query/pageRange',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/pageRange.js`,
+	},
+	{
+		module: 'N/query/period',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Period.js`,
+	},
+	{
+		module: 'N/query/result',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Result.js`,
+	},
+	{
+		module: 'N/query/resultSet',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/ResultSet.js`,
+	},
+	{
+		module: 'N/query/sort',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Sort.js`,
+	},
+	{
+		module: 'N/query/suiteQL',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/SuiteQL.js`,
+	},
+	{
+		module: 'N/https/clientCertificate',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/clientCertificate.js`,
 	},
 	{
 		module: 'N/record',
@@ -58,6 +270,26 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
 	},
 	{
+		module: 'N/redirect',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/redirect/redirect.js`,
+	},
+	{
+		module: 'N/runtime',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/runtime.js`,
+	},
+	{
+		module: 'N/runtime/script',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/Script.js`,
+	},
+	{
+		module: 'N/runtime/session',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/Session.js`,
+	},
+	{
+		module: 'N/runtime/user',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/User.js`,
+	},
+	{
 		module: 'N/search',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/search.js`,
 	},
@@ -78,20 +310,48 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Result.js`,
 	},
 	{
-		module: 'N/search/resultset',
+		module: 'N/search/resultSet',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/ResultSet.js`,
 	},
 	{
-		module: 'N/search/pageddata',
+		module: 'N/search/pagedData',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchPagedData.js`,
 	},
 	{
-		module: 'N/search/pagerange',
+		module: 'N/search/pageRange',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/SearchPageRange.js`,
 	},
 	{
 		module: 'N/search/setting',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Setting.js`,
+	},
+	{
+		module: 'N/xml',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/xml.js`,
+	},
+	{
+		module: 'N/xml/attr',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Attr.js`,
+	},
+	{
+		module: 'N/xml/document',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Document.js`,
+	},
+	{
+		module: 'N/xml/element',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Element.js`,
+	},
+	{
+		module: 'N/xml/node',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Node.js`,
+	},
+	{
+		module: 'N/xml/parser',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Parser.js`,
+	},
+	{
+		module: 'N/xml/xPath',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/XPath.js`,
 	},
 ];
 

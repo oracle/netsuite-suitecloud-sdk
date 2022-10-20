@@ -1,4 +1,4 @@
-define([], function () {
+define(['./Column'], function (Column) {
 	/**
 	 * Return a new instance of search.Result object.
 	 *

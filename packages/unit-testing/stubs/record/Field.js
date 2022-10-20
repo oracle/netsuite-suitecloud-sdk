@@ -89,20 +89,51 @@ define([], function () {
 		 */
 
 		this.isPopup = undefined;
+
+		/**
+		 * Obtains an array of available options on a dropdown select, multi-select, or radio field.
+		 * @param {Object} options
+		 * @param {string} options.filter
+		 * @param {string} options.operator
+		 * @return {{value: *, text: *}}
+		 *
+		*/
+		this.getSelectOptions = function (options) { };
+
+		/**
+		 * Inserts an option into certain types of select and multiselect fields.
+		 * @param {Object} options
+		 * @param {string} options.value
+		 * @param {string} options.text
+		 * @param {boolean} options.isSelected
+		 * @return 
+		 *
+		*/
+		this.insertSelectOption = function (options) { };
+
+		/**
+		 * Removes a select option from certain types of select and multiselect fields.
+		 * @param {Object} options
+		 * @param {string} options.value
+		 * @return 
+		 *
+		*/
+		this.removeSelectOption = function (options) { };
+
 		/**
 		 * get JSON format of the object
 		 * @return {{id: *, label: *, type: *}}
 		 *
 		 */
 
-		this.toJSON = function (options) {};
+		this.toJSON = function (options) { };
 
 		/**
 		 * @return {string}
 		 *
 		 */
 
-		this.toString = function (options) {};
+		this.toString = function (options) { };
 	}
 
 	return new Field();
