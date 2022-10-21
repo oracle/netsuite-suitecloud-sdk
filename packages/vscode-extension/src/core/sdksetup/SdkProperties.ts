@@ -7,7 +7,6 @@
 import { homedir } from 'os';
 import { join, resolve } from 'path';
 import { existsSync } from 'fs';
-import { ApplicationConstants } from '../../util/ExtensionUtil';
 
 export const SUITECLOUD_FOLDER = '.suitecloud-sdk';
 export const VSCODE_SDK_FOLDER = 'vscode';
@@ -40,7 +39,7 @@ export function getSdkFilename(): string {
 		return extensionConfigJsonFile.sdkFilename;
 	}
 
-	return ApplicationConstants.SDK_FILENAME;
+	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkFilename;
 }
 
 export function getSdkDownloadFullUrl(): string {
