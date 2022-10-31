@@ -105,7 +105,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 						.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(params).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			return ActionResult.Builder.withErrors([error.getErrorMessage()]).build();
 		}
 	}
 };
