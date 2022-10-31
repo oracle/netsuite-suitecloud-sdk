@@ -78,10 +78,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.validate', new Validate())
 	);
 
-	// add watchers
+	// add watchers needed to update the status bars
 	context.subscriptions.push(
-		vscode.window.onDidChangeActiveTextEditor((editor) => updateStatusBars(editor, suitecloudProjectStatusBar, authIDStatusBar)),
-		vscode.workspace.createFileSystemWatcher(`**/${FILES.PROJECT_JSON}`).onDidChange((e) => updateAuthIDStatusBarIfNeeded(e, authIDStatusBar))
+		vscode.window.onDidChangeActiveTextEditor((textEditor) => updateStatusBars(textEditor, suitecloudProjectStatusBar, authIDStatusBar)),
+		vscode.workspace.createFileSystemWatcher(`**/${FILES.PROJECT_JSON}`).onDidChange((uri) => updateAuthIDStatusBarIfNeeded(uri, authIDStatusBar))
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
@@ -91,4 +91,3 @@ export async function activate(context: vscode.ExtensionContext) {
 
 // this method is called when SuiteCloud extension is deactivated
 export function deactivate() {}
-
