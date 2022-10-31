@@ -7,7 +7,10 @@ export const VSCODE_PLATFORM = 'VSCode';
 
 export const FILES = {
 	CREDENTIALS: 'credentials',
-	PROJECT_JSON: 'project.json'
+	DEPLOY_XML: 'deploy.xml',
+	MANIFEST_XML: 'manifest.xml',
+	PROJECT_JSON: 'project.json',
+	SUITECLOUD_CONFIG_JS: 'suitecloud.config.js'
 };
 
 export const FOLDERS = {
