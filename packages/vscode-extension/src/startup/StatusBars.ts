@@ -89,7 +89,7 @@ export async function updateStatusBars(
 
 function updateAuthIDStatusBar(authIDStatusBar: vscode.StatusBarItem, defaultAuthId: string): void {
 	if (defaultAuthId === '') {
-		authIDStatusBar.text = `$(key) ${commandsInfoMap.setupaccount.vscodeCommandName}`;
+		authIDStatusBar.text = `$(key) ${translationService.getMessage(STATUS_BARS.AUTH_ID.SET_UP_ACCOUNT)}`;
 		authIDStatusBar.show();
 		return;
 	}
@@ -129,6 +129,7 @@ async function getDefaultAuthIdForWorkspaceFolder(workspaceFolder: vscode.Worksp
 		const { defaultAuthId } = JSON.parse(projectJsonContent);
 		return defaultAuthId ? defaultAuthId : '';
 	} catch (error) {
-		return translationService.getMessage(STATUS_BARS.AUTH_ID.UNABLE_TO_READ_PROJECT_JSON);
+		// unable to read or parse project.json
+		return '';
 	}
 }

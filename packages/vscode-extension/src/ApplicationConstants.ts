@@ -6,7 +6,6 @@
 export const VSCODE_PLATFORM = 'VSCode';
 
 export const FILES = {
-	CREDENTIALS: 'credentials',
 	DEPLOY_XML: 'deploy.xml',
 	MANIFEST_XML: 'manifest.xml',
 	PROJECT_JSON: 'project.json',
@@ -17,7 +16,6 @@ export const FOLDERS = {
 	OBJECTS: 'Objects',
 	SEPARATOR: '/',
 	SUITEAPPS: '/SuiteApps',
-	SUITECLOUD_SDK: '.suitecloud-sdk',
 	SUITESCRIPTS: '/SuiteScripts',
 	TEMPLATES_EMAIL_TEMPLATES: '/Templates/E-mail Templates',
 	TEMPLATES_MARKETING_TEMPLATES: '/Templates/Marketing Templates',
