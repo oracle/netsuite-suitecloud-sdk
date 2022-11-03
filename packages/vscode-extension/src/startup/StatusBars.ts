@@ -5,6 +5,7 @@ import { STATUS_BARS } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 
 const translationService = new VSTranslationService();
+const STATUS_BAR_PRIORITY: number = 10;
 
 /**
  * Create the status bar item used to display the active suitecloud project
@@ -12,7 +13,7 @@ const translationService = new VSTranslationService();
  * @returns {vscode.StatusBarItem} The suitecloud project status bar item
  */
 export function createSuiteCloudProjectStatusBar(): vscode.StatusBarItem {
-	const suitecloudProjectStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
+	const suitecloudProjectStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, STATUS_BAR_PRIORITY);
 	suitecloudProjectStatusBar.tooltip = translationService.getMessage(STATUS_BARS.SUITECLOUD_PROJECT.TOOLTIP);
 	suitecloudProjectStatusBar.hide();
 
@@ -25,7 +26,7 @@ export function createSuiteCloudProjectStatusBar(): vscode.StatusBarItem {
  * @returns {vscode.StatusBarItem} The authID status bar item
  */
 export function createAuthIDStatusBar(): vscode.StatusBarItem {
-	const authIDStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
+	const authIDStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, STATUS_BAR_PRIORITY - 1);
 	authIDStatusBar.tooltip = translationService.getMessage(STATUS_BARS.AUTH_ID.TOOLTIP);
 	authIDStatusBar.command = commandsInfoMap.setupaccount.vscodeCommandId;
 	authIDStatusBar.hide();
@@ -45,13 +46,12 @@ export async function updateStatusBars(
 	suitecloudProjectStatusBar: vscode.StatusBarItem,
 	authIDStatusBar: vscode.StatusBarItem
 ) {
-	const activeTextEditor = textEditor;
-	const activeWorkspaceFolder = activeTextEditor ? vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) : undefined;
+	const workspaceFolder = textEditor ? vscode.workspace.getWorkspaceFolder(textEditor.document.uri) : undefined;
 
-	if (activeWorkspaceFolder && (await isSuiteCloudProjectFolder(activeWorkspaceFolder))) {
-		updateSuiteCloudProjectStatusBar(suitecloudProjectStatusBar, activeWorkspaceFolder.name);
+	if (workspaceFolder && (await isSuiteCloudProjectFolder(workspaceFolder))) {
+		updateSuiteCloudProjectStatusBar(suitecloudProjectStatusBar, workspaceFolder.name);
 
-		const defaultAuthId = await getDefaultAuthIdForWorkspaceFolder(activeWorkspaceFolder);
+		const defaultAuthId = await getDefaultAuthIdForWorkspaceFolder(workspaceFolder);
 		updateAuthIDStatusBar(authIDStatusBar, defaultAuthId);
 		return;
 	}
@@ -77,7 +77,7 @@ export async function updateStatusBars(
  * @param {vscode.Uri} uri
  * @param {vscode.StatusBarItem} authIDStatusBar
  */
- export async function updateAuthIDStatusBarIfNeeded(uri: vscode.Uri, authIDStatusBar: vscode.StatusBarItem) {
+export async function updateAuthIDStatusBarIfNeeded(uri: vscode.Uri, authIDStatusBar: vscode.StatusBarItem) {
 	// check if the changed project.json belongs to the same workspace folder as the activeTextEditor
 	const activeTextEditor = vscode.window.activeTextEditor;
 	if (activeTextEditor && vscode.workspace.getWorkspaceFolder(activeTextEditor.document.uri) === vscode.workspace.getWorkspaceFolder(uri)) {
