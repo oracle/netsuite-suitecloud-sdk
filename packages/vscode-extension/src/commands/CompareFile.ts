@@ -33,17 +33,12 @@ export default class CompareFile extends FileImportCommon {
 		if (projectInfoService.isSuiteAppProject()) {
 			if (!this.activeFileIsUnderSuiteAppsAppIdFolder(projectInfoService)) {
 				return this.unsuccessfulValidation(
-					this.translationService.getMessage(
-						COMPARE_FILE.ERROR.SUITEAPP_NOT_ALLOWED_FOLDER,
-						projectInfoService.getApplicationId()
-					)
+					this.translationService.getMessage(COMPARE_FILE.ERROR.SUITEAPP_NOT_ALLOWED_FOLDER, projectInfoService.getApplicationId())
 				);
 			}
 		} else {
 			if (!this.activeFileIsUnderAcpUnrestrictedFolder()) {
-				return this.unsuccessfulValidation(
-					this.translationService.getMessage(COMPARE_FILE.ERROR.ACP_NOT_ALLOWED_FOLDER)
-				);
+				return this.unsuccessfulValidation(this.translationService.getMessage(COMPARE_FILE.ERROR.ACP_NOT_ALLOWED_FOLDER));
 			}
 		}
 
@@ -96,9 +91,9 @@ export default class CompareFile extends FileImportCommon {
 		const scheme = CompareFile.SCHEME;
 		const provider = new (class implements vscode.TextDocumentContentProvider {
 			provideTextDocumentContent(uri: vscode.Uri): string {
-			  return fs.readFileSync(importFilePath, 'utf-8');
+				return fs.readFileSync(importFilePath, 'utf-8');
 			}
-		  })();
+		})();
 		vscode.workspace.registerTextDocumentContentProvider(scheme, provider);
 		const accountCopyExtension = path.extname(importFilePath);
 		const schemeUri = `${scheme}: ${CompareFile.ACCOUNT_COPY_BASE_NAME}.${accountCopyExtension}`;

@@ -28,6 +28,16 @@ export default class UpdateFile extends FileImportCommon {
 		return this.successfulValidation();
 	}
 
+	protected getCommandArgs(selectedFilesPaths: string[], excludeProperties: string) {
+		const args = super.getCommandArgs(selectedFilesPaths, excludeProperties);
+		args.calledfromupdate = 'true';
+		return args;
+	}
+
+	protected getStatusMessage() {
+		return this.translationService.getMessage(IMPORT_FILES.UPDATING_FILE);
+	}
+
 	private activeFileIsUnderUnrestrictedFolder(): boolean {
 		const activeFileRelativePath = this.activeFile?.replace(this.getFileCabinetFolerPath(), '').replace(/\\/g, '/');
 		return ACP_UNRESTRICTED_FOLDERS.some((unrestricedPath) => activeFileRelativePath?.startsWith(unrestricedPath));
