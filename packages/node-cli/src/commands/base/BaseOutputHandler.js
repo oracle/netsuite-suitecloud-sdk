@@ -4,7 +4,6 @@
  */
 'use strict';
 
-const ActionResultUtils = require('../../utils/ActionResultUtils');
 
 module.exports = class BaseOutputHandler {
 	constructor(options) {

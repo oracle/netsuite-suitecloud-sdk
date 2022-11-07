@@ -17,6 +17,7 @@ const BaseAction = require('../../base/BaseAction');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');
+const CLIException = require('../../../CLIException');
 
 const COMMAND_OPTIONS = {
 	ALLOW_FOR_SUITEAPPS: 'allowforsuiteapps',
@@ -105,7 +106,8 @@ module.exports = class ImportFilesAction extends BaseAction {
 						.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(params).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			const errorMessage = error instanceof CLIException ? error.getErrorMessage() : error;
+			return ActionResult.Builder.withErrors([errorMessage]).build();
 		}
 	}
 };
