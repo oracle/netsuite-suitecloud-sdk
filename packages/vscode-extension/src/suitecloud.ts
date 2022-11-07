@@ -26,6 +26,8 @@ import { installIfNeeded } from './core/sdksetup/SdkServices';
 import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
+import { FILES } from './ApplicationConstants';
+import { createAuthIDStatusBar, createSuiteCloudProjectStatusBar, updateAuthIDStatusBarIfNeeded, updateStatusBars } from './startup/StatusBarItemsFunctions';
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
 export const output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
@@ -52,6 +54,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		showSetupAccountWarningMessageIfNeeded();
 	});
 
+	// initialize status bars
+	const suitecloudProjectStatusBar = createSuiteCloudProjectStatusBar();
+	const authIDStatusBar = createAuthIDStatusBar();
+	updateStatusBars(vscode.window.activeTextEditor, suitecloudProjectStatusBar, authIDStatusBar);
+
+	// register commands
 	context.subscriptions.push(
 		register('suitecloud.adddependencies', new AddDependencies()),
 		register('suitecloud.comparefile', new CompareFile()),
@@ -67,7 +75,13 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.updatefile', new UpdateFile()),
 		register('suitecloud.updateobject', new UpdateObject()),
 		register('suitecloud.uploadfile', new UploadFile()),
-		register('suitecloud.validate', new Validate()),
+		register('suitecloud.validate', new Validate())
+	);
+
+	// add watchers needed to update the status bars
+	context.subscriptions.push(
+		vscode.window.onDidChangeActiveTextEditor((textEditor) => updateStatusBars(textEditor, suitecloudProjectStatusBar, authIDStatusBar)),
+		vscode.workspace.createFileSystemWatcher(`**/${FILES.PROJECT_JSON}`).onDidChange((uri) => updateAuthIDStatusBarIfNeeded(uri, authIDStatusBar))
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)

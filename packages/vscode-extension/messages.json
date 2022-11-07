@@ -145,6 +145,10 @@
 	"MANAGE_ACCOUNTS_SELECT_AUTH_ID_SUCCESS": "The default account for the current project was successfully set to {0}.",
 	"MANAGE_ACCOUNTS_SELECT_CREATE": "Select or create an authentication ID (authID). It will be set up as default:",
 
+	"STATUS_BARS_AUTH_ID_SET_UP_ACCOUNT": "Set up account",
+	"STATUS_BARS_AUTH_ID_TOOLTIP": "Select the authID for the active SuiteCloud project",
+	"STATUS_BARS_SUITECLOUD_PROJECT_TOOLTIP": "Active SuiteCloud project",
+
 	"UPDATE_OBJECT_ERROR_SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER": "The SDF object file to update should be in the Objects folder.",
 	"UPDATE_OBJECT_OVERWRITE": "The following object will be overwritten: {0}.",
 	"UPDATE_OBJECT_OVERWRITE_INSTANCES": "The following object and its instances will be overwritten: {0}.",
