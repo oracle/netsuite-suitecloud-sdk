@@ -208,6 +208,18 @@ define(['./Line', './Sublist', './Field'], function (Line, Sublist, Field) {
         this.removeLine = function (options) { };
 
         /**
+         * Selects an existing line in a sublist.
+         * @param {Object} options
+         * @param {string} options.sublistId
+         * @param {number} options.line
+         * @return {Line} [line object]
+         * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if sublistId is missing or undefined
+         * @throws {SuiteScriptError} SSS_INVALID_SUBLIST_OPERATION if invalid sublist id or sublist is not editable
+         */
+
+        this.selectLine = function (options) { };
+
+        /**
          * select a new line at the end of sublist
          * @param {Object} options
          * @param {string} options.sublistId
@@ -217,9 +229,7 @@ define(['./Line', './Sublist', './Field'], function (Line, Sublist, Field) {
          * @restriction only available in dynamic record
          */
 
-        this.selectNewLine = function (options) {
-
-        };
+        this.selectNewLine = function (options) { };
 
         /**
          * cancel the current selected line
