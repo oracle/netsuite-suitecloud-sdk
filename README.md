@@ -21,7 +21,7 @@ In this GitHub repository, the following SuiteCloud SDK tools are available:
 
 ## Release Notes & Documentation
 To read the 2022.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2022.2 in [SuiteCloud SDK Release Notes](https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=section_1558730192.html). 
+- Read the release notes for NetSuite 2022.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html). 
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
 
 
