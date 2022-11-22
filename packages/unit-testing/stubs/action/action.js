@@ -65,6 +65,7 @@ define(['./ActionInstance'], function (Action) {
      * @param {string} options.recordType record type
      * @param {string} options.id action ID
      * @param {Params} options.params action arguments
+     * @param {string} options.params.recordId The record instance ID.
      * @return {Object} action result; the actual return value returned by the action implementation is stored in the response property
      * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if options.recordType or options.id or options.params.recordId is missing or undefined
      * @throws {SuiteScriptError} SSS_INVALID_RECORD_TYPE if the specified record type doesn't exist

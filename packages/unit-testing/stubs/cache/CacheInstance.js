@@ -5,7 +5,22 @@ define([], function () {
      * @protected
      * @constructor
      */
-     function Cache() {
+    function Cache() {
+
+        /**
+         * The name of the cache.
+         * @name Cache#name
+         * @type string
+         */
+        this.name = undefined;
+
+        /**
+        * The availability of the cache. A cache can be made available to the current script only, to all scripts in the current bundle, or to all scripts in your NetSuite account. Set this value using the cache.Scope enum.
+        * @name Cache#scope
+        * @type string
+        */
+        this.scope = undefined;
+
         /**
          * get JSON format of the object
          * @restriction Server SuiteScript only

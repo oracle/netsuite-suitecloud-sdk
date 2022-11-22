@@ -5,6 +5,41 @@ define([], function () {
      */
     function Action(options) {
 
+        /**
+         * The action description.
+         * @name Action#description
+         * @type string
+         */
+        this.description = undefined;
+
+        /**
+         * The ID of the action.
+         * @name Action#id
+         * @type string
+         */
+        this.id = undefined;
+
+        /**
+        * 	The action label.
+        * @name Action#label
+        * @type string
+        */
+        this.label = undefined;
+
+        /**
+         * The action parameters.
+         * @name Action#parameters
+         * @type Object
+         */
+        this.parameters = undefined;
+
+        /**
+        * The type of the record on which the action is to be performed.
+        * @name Action#recordType
+        * @type string
+        */
+        this.recordType = undefined;
+
         this.promise = function (options) { };
 
         /**
