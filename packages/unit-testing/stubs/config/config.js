@@ -1,4 +1,4 @@
-define([], function () {
+define(['../record/RecordInstance'], function (Record) {
     /**
      * SuiteScript module
      *
