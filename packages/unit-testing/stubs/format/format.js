@@ -10,7 +10,7 @@ define([], function () {
 
 	/**
 	 * Parse a value from the appropriate preference formatted-value to a raw value.
-	 *
+	 * @governance none
 	 * @param {Object} options
 	 * @param {string} options.value the data you wish to parse
 	 * @param {string} options.type the field type i.e. DATE, CURRENCY, INTEGER
@@ -27,7 +27,7 @@ define([], function () {
 
 	/**
 	 * Parse a value from the raw value to its appropriate preference formatted-value.
-	 *
+	 * @governance none
 	 * @param {Object} options
 	 * @param {Date|string|number} options.value the data you wish to format
 	 * @param {string} options.type the field type i.e. DATE, CURRENCY, INTEGER
@@ -87,8 +87,10 @@ define([], function () {
 		this.ADDRESS = 'address';
 		this.TEXT = 'text';
 		this.TEXTAREA = 'textarea';
+		this.CLOBTEXT = 'clobtext';
 		this.SELECT = 'select';
 		this.DOCUMENT = 'document';
+		this.MULTISELECT = 'multiselect';
 	}
 
 	format.prototype.Type = new formatType();
