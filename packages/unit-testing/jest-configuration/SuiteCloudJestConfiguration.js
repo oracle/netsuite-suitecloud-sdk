@@ -170,6 +170,14 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/email/email.js`,
 	},
 	{
+		module: 'N/encode',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/encode/encode.js`,
+	},
+	{
+		module: 'N/format',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/format.js`,
+	},
+	{
 		module: 'N/http',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/http.js`,
 	},
@@ -192,6 +200,14 @@ const CORE_STUBS = [
 	{
 		module: 'N/https/secureString',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecureString.js`,
+	},
+	{
+		module: 'N/log',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/log/log.js`,
+	},
+	{
+		module: 'N/plugin',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/plugin/plugin.js`,
 	},
 	{
 		module: 'N/query',
