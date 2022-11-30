@@ -342,6 +342,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Setting.js`,
 	},
 	{
+		module: 'N/workbook',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/workbook.js`,
+	},
+	{
 		module: 'N/xml',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/xml.js`,
 	},
