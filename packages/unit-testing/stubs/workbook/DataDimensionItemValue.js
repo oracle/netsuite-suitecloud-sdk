@@ -1,4 +1,4 @@
-define(['DataDimension', './Record', './Currency', './Range'], function () {
+define(['./DataDimension', './Record', './Currency', './Range'], function (DataDimension, Record, Currency, Range) {
 	/**
 	 * @class DataDimensionItemValue
 	 * @classDescription Class holding reference to the dimension item and its value

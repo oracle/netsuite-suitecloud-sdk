@@ -1,4 +1,4 @@
-define(['./Pivot', './Chart', './Table', './PivotIntersection'], function () {
+define(['./Pivot', './Chart', './Table', './PivotIntersection'], function (Pivot, Chart, Table, PivotIntersection) {
 	/**
 	 * @class Workbook
 	 * @classDescription Object representing SuiteAnalytics workbook

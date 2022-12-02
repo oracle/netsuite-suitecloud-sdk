@@ -1,4 +1,10 @@
-define(['./DataMeasure', './CalculatedMeasure', './DescendantOrSelfNodesSelector', './PathSelector', './ChildNodesSelector'], function () {
+define(['DataMeasure', './CalculatedMeasure', './DescendantOrSelfNodesSelector', './PathSelector', './ChildNodesSelector'], function (
+	DataMeasure,
+	CalculatedMeasure,
+	DescendantOrSelfNodesSelector,
+	PathSelector,
+	ChildNodesSelector
+) {
 	/**
 	 * @class ConditionalFilter
 	 * @classDescription Object for pivot filtering based on a measure

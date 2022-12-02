@@ -1,4 +1,4 @@
-define(['./TableColumnFilter'], function () {
+define(['./TableColumnFilter'], function (TableColumnFilter) {
 	/**
 	 * @class TableColumnCondition
 	 * @classDescription Condition for a table view column

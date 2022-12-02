@@ -1,4 +1,4 @@
-define(['DataDimension', './DataDimensionItemValue'], function () {
+define(['DataDimension', './DataDimensionItemValue'], function (DataDimension, DataDimensionItemValue) {
 	/**
 	 * @class DataDimensionValue
 	 * @classDescription Value of the data dimension from pivot intersection

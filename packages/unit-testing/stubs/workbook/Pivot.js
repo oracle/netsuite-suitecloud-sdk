@@ -1,4 +1,11 @@
-define(['LimitingFilter', './ConditionalFilter', './PivotAxis', './Dataset', './DatasetLink', './ReportStyle'], function () {
+define(['../dataset/Dataset', '../datasetLink/DatasetLink', './LimitingFilter', './ConditionalFilter', './PivotAxis', './ReportStyle'], function (
+	Dataset,
+	DatasetLink,
+	LimitingFilter,
+	ConditionalFilter,
+	PivotAxis,
+	ReportStyle
+) {
 	/**
 	 * @class Pivot
 	 * @classDescription Object representing SuiteAnalytics pivot

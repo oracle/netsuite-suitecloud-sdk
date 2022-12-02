@@ -1,4 +1,12 @@
-define(['./DatasetLink', './LimitingFilter', './ConditionalFilter', './Legend', './Category', './Series', './Dataset'], function () {
+define(['../dataset/Dataset', '../datasetLink/DatasetLink', './LimitingFilter', './ConditionalFilter', './Legend', './Category', './Series'], function (
+	Dataset,
+	DatasetLink,
+	LimitingFilter,
+	ConditionalFilter,
+	Legend,
+	Category,
+	Series
+) {
 	/**
 	 * @class Chart
 	 * @classDescription Object representing a chart of a workbook

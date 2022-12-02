@@ -1,4 +1,10 @@
-define(['Color', './FontSize', './PositionUnits', './PositionValues', './PositionPercent'], function () {
+define(['./Color', './FontSize', './PositionUnits', './PositionValues', './PositionPercent'], function ([
+	Color,
+	FontSize,
+	PositionUnits,
+	PositionValues,
+	PositionPercent,
+]) {
 	/**
 	 * @class Style
 	 * @classDescription Style to be used in conditional filter

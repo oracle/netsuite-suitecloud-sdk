@@ -1,4 +1,4 @@
-define(['./Section'], function () {
+define(['./Section'], function (Section) {
 	/**
 	 * @class SectionValue
 	 * @classDescription Value of the section from pivot intersection

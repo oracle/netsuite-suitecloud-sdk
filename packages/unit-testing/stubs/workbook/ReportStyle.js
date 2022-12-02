@@ -1,4 +1,9 @@
-define(['./MeasureValueSelector', './DataMeasure', './CalculatedMeasure', './ReportStyleRule'], function () {
+define(['./MeasureValueSelector', './DataMeasure', './CalculatedMeasure', './ReportStyleRule'], function (
+	MeasureValueSelector,
+	DataMeasure,
+	CalculatedMeasure,
+	ReportStyleRule
+) {
 	/**
 	 * @class ReportStyle
 	 * @classDescription Conditional formatting object for reports

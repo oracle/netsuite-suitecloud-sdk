@@ -1,4 +1,4 @@
-define(['./CalculatedMeasure', './DataMeasure'], function () {
+define(['./CalculatedMeasure', './DataMeasure'], function (CalculatedMeasure, DataMeasure) {
 	/**
 	 * @class Aspect
 	 * @classDescription Aspect of a series in a chart

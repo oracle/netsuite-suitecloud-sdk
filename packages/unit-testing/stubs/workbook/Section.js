@@ -1,4 +1,4 @@
-define(['./CalculatedMeasure', './DataMeasure', './DataDimension', './Section'], function () {
+define(['./CalculatedMeasure', './DataMeasure', './DataDimension', './Section'], function (CalculatedMeasure, DataMeasure, DataDimension, Section) {
 	/**
 	 * @class Section
 	 * @classDescription Object representing section of a pivot - used for creating a hierarchy tree

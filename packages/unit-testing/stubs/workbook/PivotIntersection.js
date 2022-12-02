@@ -1,4 +1,4 @@
-define(['./DimensionValue', './SectionValue', './MeasureValue'], function () {
+define(['./DataDimensionValue', './SectionValue', './MeasureValue'], function (DimensionValue, SectionValue, MeasureValue) {
 	/**
 	 * @class PivotIntersection
 	 * @classDescription Intersection of row and column holding measure values
@@ -11,7 +11,7 @@ define(['./DimensionValue', './SectionValue', './MeasureValue'], function () {
 		/**
 		 * Row dimension value
 		 * @name PivotIntersection#row
-		 * @type {DimensionValue | SectionValue}
+		 * @type {DataDimensionValue | SectionValue}
 		 * @throws {SuiteScriptError} READ_ONLY_PROPERTY when setting the property is attempted
 		 *
 		 * @since 2021.2
@@ -20,7 +20,7 @@ define(['./DimensionValue', './SectionValue', './MeasureValue'], function () {
 		/**
 		 * Column dimension values
 		 * @name PivotIntersection#column
-		 * @type {DimensionValue | SectionValue}
+		 * @type {DataDimensionValue | SectionValue}
 		 * @throws {SuiteScriptError} READ_ONLY_PROPERTY when setting the property is attempted
 		 *
 		 * @since 2021.2

@@ -1,4 +1,4 @@
-define(['./DataDimension', './DataMeasure', './DataDimensionItem', './CalculatedMeasure'], function () {
+define(['./DataMeasure', './DataDimensionItem', './CalculatedMeasure'], function (DataMeasure, DataDimensionItem, CalculatedMeasure) {
 	/**
 	 * @class DataDimension
 	 * @classDescription Object representing data dimension in a pivot

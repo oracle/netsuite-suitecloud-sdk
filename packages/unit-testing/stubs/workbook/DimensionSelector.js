@@ -1,4 +1,4 @@
-define(['Section', './DataDimension'], function () {
+define(['Section', './DataDimension'], function (Section, DataDimension) {
 	/**
 	 * @class DimensionSelector
 	 * @classDescription Used to select a dimension in a pivot

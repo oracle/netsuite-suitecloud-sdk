@@ -1,4 +1,10 @@
-define(['./MeasureSelector', './DescendantOrSelfNodesSelector', './PathSelector', './DimensionSelector', './ChildNodesSelector'], function () {
+define(['./MeasureSelector', './DescendantOrSelfNodesSelector', './PathSelector', './DimensionSelector', './ChildNodesSelector'], function (
+	MeasureSelector,
+	DescendantOrSelfNodesSelector,
+	PathSelector,
+	DimensionSelector,
+	ChildNodesSelector
+) {
 	/**
 	 * @class MeasureValueSelector
 	 * @classDescription Selector for selecting a measure value using row, column and list of measures to use

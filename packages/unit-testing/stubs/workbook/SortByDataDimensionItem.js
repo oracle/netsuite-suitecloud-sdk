@@ -1,4 +1,4 @@
-define(['./Sort', './DataDimensionItem'], function () {
+define(['./Sort', './DataDimensionItem'], function (Sort, DataDimensionItem) {
 	/**
 	 * @class SortByDataDimensionItem
 	 * @classDescription Sort by option for data dimension items

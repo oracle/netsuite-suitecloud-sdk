@@ -1,4 +1,4 @@
-define(['./ChartAxis', './Section', './DataDimension', './SortDefinition'], function () {
+define(['./ChartAxis', './Section', './DataDimension', './SortDefinition'], function (ChartAxis, Section, DataDimension, SortDefinition) {
 	/**
 	 * @class Legend
 	 * @classDescription Legend of a chart

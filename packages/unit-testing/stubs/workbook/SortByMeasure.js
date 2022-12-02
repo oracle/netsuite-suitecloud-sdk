@@ -1,4 +1,12 @@
-define(['./Sort', './DataMeasure', './CalculatedMeasure', './DescendantOrSelfNodesSelector', './PathSelector', './DimensionSelector', './ChildNodesSelector'], function () {
+define([
+	'./Sort',
+	'./DataMeasure',
+	'./CalculatedMeasure',
+	'./DescendantOrSelfNodesSelector',
+	'./PathSelector',
+	'./DimensionSelector',
+	'./ChildNodesSelector',
+], function (Sort, DataMeasure, CalculatedMeasure, DescendantOrSelfNodesSelector, PathSelector, DimensionSelector, ChildNodesSelector) {
 	/**
 	 * @class SortByMeasure
 	 * @classDescription Sort by option for measures

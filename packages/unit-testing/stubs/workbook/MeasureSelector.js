@@ -1,4 +1,4 @@
-define(['./CalculatedMeasure', './DataMeasure'], function () {
+define(['./CalculatedMeasure', './DataMeasure'], function (CalculatedMeasure, DataMeasure) {
 	/**
 	 * @class MeasureSelector
 	 * @classDescription Selector for measures to be used in conditional formatting of pivot

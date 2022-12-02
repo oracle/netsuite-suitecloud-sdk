@@ -1,4 +1,4 @@
-define(['DataDimension', './Section', './SortDefinition'], function () {
+define(['./DataDimension', './Section', './SortDefinition'], function (DataDimension, Section, SortDefinition) {
 	/**
 	 * @class Pivot axis
 	 * @classDescription Pivot axis holds root dimension a its sorts

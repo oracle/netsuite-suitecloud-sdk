@@ -1,4 +1,4 @@
-define(['./ConditionalFormatRule'], function () {
+define(['./ConditionalFormatRule'], function (ConditionalFormatRule) {
 	/**
 	 * @class ConditionalFormat
 	 * @classDescription Conditional format object holding conditional format rules

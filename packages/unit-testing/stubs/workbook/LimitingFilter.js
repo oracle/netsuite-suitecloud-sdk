@@ -1,4 +1,11 @@
-define(['./SortByDataDimensionItem', './SortByMeasure', './DescendantOrSelfNodesSelector', './PathSelector', './DimensionSelector', './ChildNodesSelector'], function () {
+define([
+	'./SortByDataDimensionItem',
+	'./SortByMeasure',
+	'./DescendantOrSelfNodesSelector',
+	'./PathSelector',
+	'./DimensionSelector',
+	'./ChildNodesSelector',
+], function (SortByDataDimensionItem, SortByMeasure, DescendantOrSelfNodesSelector, PathSelector, DimensionSelector, ChildNodesSelector) {
 	/**
 	 * @class LimitingFilter
 	 * @classDescription Object representing limiting aggregation filter

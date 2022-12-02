@@ -1,4 +1,4 @@
-define(['./Range', './Record', './Currency'], function () {
+define(['./Range', './Record', './Currency'], function (Range, Record, Currency) {
 	/**
 	 * @class MeasureValue
 	 * @classDescription Value of the measure from pivot intersection

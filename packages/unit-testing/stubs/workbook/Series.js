@@ -1,4 +1,4 @@
-define(['./Aspect'], function () {
+define(['./Aspect'], function (Aspect) {
 	/**
 	 * @class Series
 	 * @classDescription Series of a chart

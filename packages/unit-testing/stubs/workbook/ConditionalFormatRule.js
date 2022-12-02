@@ -1,4 +1,4 @@
-define(['./TableColumnFilter', './Style'], function () {
+define(['./TableColumnFilter', './Style'], function (TableColumnFilter, Style) {
 	/**
 	 * @class ConditionalFormatRule
 	 * @classDescription Conditional format rule object for styling resulting cells of a table column

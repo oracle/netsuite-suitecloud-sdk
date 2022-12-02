@@ -1,4 +1,4 @@
-define(['./TableColumnCondition', './ConditionalFormat', './FieldContext'], function () {
+define(['./TableColumnCondition', './ConditionalFormat', './FieldContext'], function (TableColumnCondition, ConditionalFormat, FieldContext) {
 	/**
 	 * @class TableColumn
 	 * @classDescription Column of a table view

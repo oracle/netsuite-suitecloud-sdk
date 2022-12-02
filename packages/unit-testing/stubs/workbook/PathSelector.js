@@ -1,4 +1,8 @@
-define(['./DescendantOrSelfNodesSelector', './DimensionSelector', './ChildNodesSelector'], function () {
+define(['./DescendantOrSelfNodesSelector', './DimensionSelector', './ChildNodesSelector'], function (
+	DescendantOrSelfNodesSelector,
+	DimensionSelector,
+	ChildNodesSelector
+) {
 	/**
 	 * @class PathSelector
 	 * @classDescription Used to select a portion of a pivot aither for sorting or filtering
