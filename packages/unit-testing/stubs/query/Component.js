@@ -159,7 +159,7 @@ define(['./Column'], function (Column) {
          * Creates a sort based on the query.Component object. The query.Sort object describes a sort that is placed on a particular query result column or condition.
          * @governance none
          * @param {Object} options The options object.
-         * @param {string} options.column The query result column that you want to sort by. This value sets the Sort.column property.
+         * @param {Column} options.column The query result column that you want to sort by. This value sets the Sort.column property.
          * @param {boolean} [options.ascending] Indicates whether the sort direction is ascending. This value sets the Sort.ascending property.
          * @param {boolean} [options.nullsLast] Where to put results with null value. Defaults to value of ascending flag
          * @param {boolean} [options.caseSensitive] Indicates whether query results with null values are listed at the end of the query results. This value sets the Sort.nullsLast property.

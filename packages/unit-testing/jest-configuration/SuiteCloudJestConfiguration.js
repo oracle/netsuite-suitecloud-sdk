@@ -75,19 +75,19 @@ const CORE_STUBS = [
 	},
 	{
 		module: 'N/crypto/certificate',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/certificate.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/certificate/certificate.js`,
 	},
 	{
 		module: 'N/crypto/certificate/signedXml',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/SignedXml.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/certificate/SignedXml.js`,
 	},
 	{
 		module: 'N/crypto/certificate/signer',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Signer.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/certificate/Signer.js`,
 	},
 	{
 		module: 'N/crypto/certificate/verifier',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Verifier.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/certificate/Verifier.js`,
 	},
 	{
 		module: 'N/crypto/cipher',
@@ -192,6 +192,10 @@ const CORE_STUBS = [
 	{
 		module: 'N/https/secureString',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/SecureString.js`,
+	},
+	{
+		module: 'N/https/clientCertificate',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/https/clientCertificate.js`,
 	},
 	{
 		module: 'N/query',

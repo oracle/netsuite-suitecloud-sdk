@@ -181,7 +181,7 @@ define(['./Attr', './Element'], function (Attr, Element) {
         /**
          * The Document Type Declaration associated with this document.
          * @name Document#doctype
-         * @type {Object}
+         * @type {Element}
          * @readonly
          * @throws {SuiteScriptError} READ_ONLY when setting the property is attempted
          *
