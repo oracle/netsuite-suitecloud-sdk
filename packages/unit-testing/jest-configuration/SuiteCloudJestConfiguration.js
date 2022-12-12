@@ -234,6 +234,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Period.js`,
 	},
 	{
+		module: 'N/query/relativeDate',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/RelativeDate.js`,
+	},
+	{
 		module: 'N/query/result',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/Result.js`,
 	},

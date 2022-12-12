@@ -1,4 +1,4 @@
-define(['./Period', './QueryInstance', './ResultSet', './PagedData'], function (Period, Query, ResultSet, PagedData) {
+define(['./Period', './QueryInstance', './ResultSet', './PagedData', './RelativeDate'], function (Period, Query, ResultSet, PagedData, RelativeDate) {
     /**
      * SuiteScript new-generation query common module
      * Load the N/query module to create and run queries using the SuiteAnalytics Workbook query engine.
