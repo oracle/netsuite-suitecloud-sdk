@@ -1,85 +1,35 @@
-define([], function () {
-
-    /**
-     * Return a new instance of sublist object
-     *
-     * @param {Object} sublist
-     * @param {string} sublist.type type of sublist
-     * @param {SublistState} sublist.sublistState SublistState
-
-     * @return {Sublist}
-     * @constructor
-     *
-     * @since 2015.2
-     */
+define(['./Column'], function (Column) {
     function Sublist() {
         /**
-         * The name of the sublist.
-         * @name Sublist#name
-         * @type string
-         * @readonly
+         * Returns a column in the sublist.
+         * @param {Object} options
+         * @param {Object} options.fieldId - The internal ID of the column field in the sublist.
+         * @return {Column}
          */
 
-        this.getName = function(options) {};
+        this.getColumn = function (options) { };
 
-        /**
-         * The type of the sublist.
-         * @name Sublist#type
-         * @type string
-         * @readonly
-         */
-        
-        this.getType = function(options) {};
-        
-        /**
-         * The sublist is changed
-         * @name Sublist#isChanged
-         * @type boolean
-         * @readonly
-         */
-        
-        this.isChanged = function(options) {};
-        
-        /**
-         * The sublist is hidden
-         * @name Sublist#isHidden
-         * @type boolean
-         * @readonly
-         */
-        
-        this.isHidden = function(options) {};
-        
-        /**
-         * The sublist is display
-         * @name Sublist#isDisplay
-         * @type boolean
-         * @readonly
-         */
-        
-        this.isDisplay = function(options) {};
-        
-        /**
-         * A flag to indicate whether or not the sublist supports multi-line buffer feature.
-         * @name Sublist#isMultilineEditable
-         * @type boolean
-         * @readonly
-         */
-        
-        this.isMultilineEditable = function(options) {};
-        
+        this.isChanged = undefined;
+
+        this.isDisplay = undefined;
+
+        this.type = undefined;
+
+        this.id = undefined;
+
         /**
          * Returns the object type name (sublist.Sublist)
          * @returns {string}
          */
-        
-        this.toString = function(options) {};
-        
+
+        this.toString = function (options) { };
+
         /**
          * JSON.stringify() implementation.
          * @returns {{id: string, type: string, isChanged: boolean, isDisplay: boolean}}
          */
-        
-        this.toJSON = function(options) {};
+
+        this.toJSON = function (options) { };
     }
 
     return new Sublist();
