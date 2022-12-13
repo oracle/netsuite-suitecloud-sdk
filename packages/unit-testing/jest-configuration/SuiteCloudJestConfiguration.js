@@ -195,7 +195,7 @@ const CORE_STUBS = [
 	},
 	{
 		module: 'N/https/clientCertificate',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/https/clientCertificate.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/clientCertificate/clientCertificate.js`,
 	},
 	{
 		module: 'N/query',
@@ -252,10 +252,6 @@ const CORE_STUBS = [
 	{
 		module: 'N/query/suiteQL',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/SuiteQL.js`,
-	},
-	{
-		module: 'N/https/clientCertificate',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/clientCertificate.js`,
 	},
 	{
 		module: 'N/record',
