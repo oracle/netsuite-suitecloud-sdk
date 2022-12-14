@@ -12,7 +12,7 @@ define([], function () {
          * @governance none
          * @param {Object} options
          * @param {string} options.name The key used to store the session object
-         * @return {string}
+         * @return {string|null}
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT when name argument is missing
          *
          * @since 2015.2

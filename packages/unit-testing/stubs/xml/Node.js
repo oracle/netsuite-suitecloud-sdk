@@ -39,7 +39,7 @@ define(['./Document'], function (Document) {
          * @governance none
          * @param {Object} options
          * @param {Node} options.other the node to compare against the reference node
-         * @return {int} how the node is positioned relatively to the reference node
+         * @return {number} how the node is positioned relatively to the reference node
          * @throws {SuiteScriptError} SSS_XML_DOM_EXCEPTION when the nodes cannot be compared
          */
         this.compareDocumentPosition = function (options) { };

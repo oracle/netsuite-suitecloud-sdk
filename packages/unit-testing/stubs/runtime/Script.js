@@ -68,7 +68,7 @@ define([], function () {
          * @governance none
          * @param {Object} options
          * @param {string} options.name The name of the parameter
-         * @return {number|Date|string|boolean}
+         * @return {number|Date|string|boolean|null|undefined}
          *
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT when name argument is missing
          * @throws {SuiteScriptError} WRONG_PARAMETER_NAME when name is not string

@@ -1,12 +1,30 @@
 define(['./Sublist', './Field'], function (Sublist, Field) {
     function CurrentRecord() {
+
+        /**
+         * @type {number}
+         * @readonly
+         */
+        this.id = undefined;
+
+        /**
+         * @type {boolean}
+         * @readonly
+         */
+        this.isDynamic = undefined;
+
+        /**
+         * @type {string}
+         * @readonly
+         */
+        this.type = undefined;
+
         /**
          * return value of the field
          * @param {Object} options
          * @param {string} options.fieldId
          * @return {(number|Date|string|Array|boolean)}
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if fieldId is missing or undefined
-         * @throws {SuiteScriptError} SSS_INVALID_API_USAGE if invoked after using setText
          */
         this.getValue = function (options) { };
 
@@ -16,7 +34,9 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {string} options.fieldId
          * @param {number|Date|string|Array|boolean} options.value
          * @param {boolean} [options.ignoreFieldChange=false] Ignore the field change script
-         * @return {Record} same record, for chaining
+         * @param {boolean} [options.forceSyncSourcing=false] Indicates whether to perform field sourcing synchronously
+         * @return {CurrentRecord} same record, for chaining
+         * @throws {SuiteScriptError} INVALID_FLD_VALUE if options.value type does not match the field type
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if fieldId is missing or undefined
          */
         this.setValue = function (options) { };
@@ -25,7 +45,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * get value of the field in text representation
          * @param {Object} options
          * @param {string} options.fieldId
-         * @return {string}
+         * @return {string|Array} for multiselect fields, returns an array
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if fieldId is missing or undefined
          */
         this.getText = function (options) { };
@@ -39,7 +59,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          *     null value. Passing in null deselects all currentlsy selected values. If the field type is not multiselect: this
          *     parameter accepts only a single string value.
          * @param {boolean} [options.ignoreFieldChange=false] ignore field change script and slaving event if set to true
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if fieldId is missing or undefined
          */
         this.setText = function (options) { };
@@ -112,7 +132,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {number} options.line
          * @param {string} options.lineInstanceId
          * @param {boolean} [ignoreRecalc=false] options.ignoreRecalc ignore recalc scripting
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          * @throws {SuiteScriptError} MUTUALLY_EXCLUSIVE_ARGUMENTS if both line and lineInstanceId are provided
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if sublistId is missing or both line and lineInstanceId are
          *     missing
@@ -160,7 +180,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * cancel the current selected line
          * @param {Object} options
          * @param {string} options.sublistId
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if sublistId is missing or undefined
          * @throws {SuiteScriptError} SSS_INVALID_SUBLIST_OPERATION if sublistId is invalid or if machine is not editable
          * @restriction only available in dynamic record
@@ -171,7 +191,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * commit the current selected line
          * @param {Object} options
          * @param {string} options.sublistId
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if sublistId is missing or undefined
          * @throws {SuiteScriptError} SSS_INVALID_SUBLIST_OPERATION if invalid sublist id
          * @restriction only available in dynamic record
@@ -197,7 +217,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {string} options.fieldId
          * @param {(number|Date|string|Array|boolean)} options.value
          * @param {boolean} [options.ignoreFieldChange=false] ignore field change script and slaving event if set to true
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if sublistId or fieldId is missing
          * @throws {SuiteScriptError} A_SCRIPT_IS_ATTEMPTING_TO_EDIT_THE_1_SUBLIST_THIS_SUBLIST_IS_CURRENTLY_IN_READONLY_MODE_AND_CANNOT_BE_EDITED_CALL_YOUR_NETSUITE_ADMINISTRATOR_TO_DISABLE_THIS_SCRIPT_IF_YOU_NEED_TO_SUBMIT_THIS_RECORD
          *     if user tries to edit readonly sublist field
@@ -223,7 +243,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {string} options.fieldId
          * @param {(number|Date|string|Array|boolean)} options.text
          * @param {boolean} [options.ignoreFieldChange=false] ignore field change script and slaving event if set to true
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if sublistId or fieldId is missing
          * @throws {SuiteScriptError} A_SCRIPT_IS_ATTEMPTING_TO_EDIT_THE_1_SUBLIST_THIS_SUBLIST_IS_CURRENTLY_IN_READONLY_MODE_AND_CANNOT_BE_EDITED_CALL_YOUR_NETSUITE_ADMINISTRATOR_TO_DISABLE_THIS_SCRIPT_IF_YOU_NEED_TO_SUBMIT_THIS_RECORD
          *     if user tries to edit readonly sublist field
@@ -243,7 +263,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * get the subrecord for the associated field
          * @param {Object} options
          * @param {string} options.fieldId
-         * @return {Record} [client-side subrecord implementation]
+         * @return {CurrentRecord} [client-side subrecord implementation]
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if options.fieldId is missing or undefined
          * @throws {SuiteScriptError} FIELD_1_IS_NOT_A_SUBRECORD_FIELD if field is not a subrecord field
          * @throws {SuiteScriptError} FIELD_1_IS_DISABLED_YOU_CANNOT_APPLY_SUBRECORD_OPERATION_ON_THIS_FIELD if field is disable
@@ -254,7 +274,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * remove the subrecord for the associated field
          * @param {Object} options
          * @param {string} options.fieldId
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          */
         this.removeSubrecord = function (options) { };
 
@@ -285,7 +305,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {string} options.sublistId
          * @param {string} options.fieldId
          * @restriction only available in dynamic record
-         * @return {Record} [client-side subrecord implementation]
+         * @return {CurrentRecord} [client-side subrecord implementation]
          */
         this.getCurrentSublistSubrecord = function (options) { };
 
@@ -295,7 +315,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {string} options.sublistId
          * @param {string} options.fieldId
          * @restriction only available in dynamic record
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          */
         this.removeCurrentSublistSubrecord = function (options) { };
 
@@ -337,7 +357,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {string} options.value the value to set it to
          * @param {boolean} [options.ignoreFieldChange] Ignore the field change script (default false)
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if any required values are missing
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          */
         this.setMatrixHeaderValue = function (options) { };
 
@@ -348,7 +368,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {string} options.fieldId the id of the matrix field
          * @param {number} options.column the column number for the field
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if any required values are missing
-         * @return {number|Date|string}
+         * @return {number|Date|string|Array|boolean}
          */
         this.getMatrixHeaderValue = function (options) { };
 
@@ -362,7 +382,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {string} options.value the value to set it to
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if any required values are missing
          * @restriction only available in deferred dynamic record
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          */
         this.setMatrixSublistValue = function (options) { };
 
@@ -374,7 +394,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {number} options.line the line number for the field
          * @param {number} options.column the column number for the field
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if any required values are missing
-         * @return {number|Date|string}
+         * @return {number|Date|string|Array|boolean}
          */
         this.getMatrixSublistValue = function (options) { };
 
@@ -434,7 +454,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {boolean} options.fireSlavingSync (optional) - Flag to perform slaving synchronously (default false)
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if any required values are missing
          * @restriction only available in dynamic record
-         * @return {Record} same record, for chaining
+         * @return {CurrentRecord} same record, for chaining
          */
         this.setCurrentMatrixSublistValue = function (options) { };
 
@@ -446,7 +466,7 @@ define(['./Sublist', './Field'], function (Sublist, Field) {
          * @param {number} options.column - the column number for the field
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if any required values are missing
          * @restriction only available in dynamic record
-         * @return {number|Date|string}
+         * @return {number|Date|string|Array|boolean}
          */
         this.getCurrentMatrixSublistValue = function (options) { };
 

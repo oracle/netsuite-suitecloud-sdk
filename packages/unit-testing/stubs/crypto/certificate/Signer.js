@@ -1,11 +1,12 @@
 define([], function () {
     /**
-         * @class Signer
-         * @classdesc Class for signing certificates
-         * @protected
-         * @constructor
-         */
+     * @class Signer
+     * @classdesc Class for signing certificates
+     * @protected
+     * @constructor
+     */
     function Signer() {
+
         /**
          * Updates the input string to be signed. The string can be encoded.
          * @restriction Server SuiteScript only
@@ -22,7 +23,7 @@ define([], function () {
 
 
         /**
-        * 	Signs the string and returns the signature. Formatting, such as line breaks, is disabled in signatures.
+        * Signs the string and returns the signature. Formatting, such as line breaks, is disabled in signatures.
         * @restriction Server SuiteScript only
         * @governance none
         *

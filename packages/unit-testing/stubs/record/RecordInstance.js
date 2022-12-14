@@ -21,6 +21,25 @@ define(['./Line', './Sublist', './Field'], function (Line, Sublist, Field) {
      * @constructor
      */
     function Record() {
+
+        /**
+         * @type {number}
+         * @readonly
+         */
+        this.id = undefined;
+
+        /**
+         * @type {boolean}
+         * @readonly
+         */
+        this.isDynamic = undefined;
+
+        /**
+         * @type {string}
+         * @readonly
+         */
+        this.type = undefined;
+
         /**
          * provide scripting context for records
          * getScriptContext is only in recordDefinition.js and not in dynamicrecord.js.So it is only visible inside NetSuite.

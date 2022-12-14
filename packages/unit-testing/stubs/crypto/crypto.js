@@ -60,7 +60,7 @@ define(['./SecretKey', './Hash', './Hmac', './Cipher', './Decipher'], function (
      * Method used to create a crypto.Decipher object.
      * @param {object} options The options object.
      * @param {string} options.algorithm The hash algorithm. Set by the crypto.EncryptionAlg enum.
-     * @param {string} options.key The crypto.SecretKey object used for encryption.
+     * @param {SecretKey} options.key The crypto.SecretKey object used for encryption.
      * @param {string} options.blockCipherMode
      * @param {Object} [options.padding] The padding for the cipher. Set the value using the crypto.Padding enum.
      * @param {string} options.iv The initialization vector that was used for encryption.
@@ -75,7 +75,7 @@ define(['./SecretKey', './Hash', './Hmac', './Cipher', './Decipher'], function (
      * @param {object} options The options object.
      * @param {string} options.recordType Type of the record with a password field
      * @param {number} options.recordId Id of the record with password field
-     * @param {value} options.value Input value to be checked against the password stored in the record
+     * @param {string} options.value Input value to be checked against the password stored in the record
      * @param {string} options.fieldId Id of the password field
      * @param {string} [options.sublistId] Id of the sublist if password field is on a line
      * @param {number} [options.line] Zero based line index of a password field if on a line

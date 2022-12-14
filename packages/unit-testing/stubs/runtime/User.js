@@ -102,7 +102,7 @@ define([], function () {
          * @governance none
          * @param {Object} options
          * @param {string} options.name The internal ID of a permission
-         * @return {number} one value of the Permission
+         * @return {string} one value of the Permission
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT when name argument is missing
          *
          * @since 2015.2

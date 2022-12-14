@@ -1,4 +1,4 @@
-define(['./ClientResonse'], function (ClientResonse) {
+define(['../ClientResponse'], function (ClientResponse) {
     /**
      * SuiteScript module
      *

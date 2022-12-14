@@ -1,4 +1,4 @@
-define([], function () {
+define(['../search/SearchInstance'], function (Search) {
     /**
      * SuiteScript module
      *
@@ -62,6 +62,7 @@ define([], function () {
      * @param {string} options.toType record type to transform to
      * @param {string} options.fromId  record id of the record to transform from
      * @param {string} options.fromType record type to transform from
+     * @param {Object} [options.parameters] url parameters
      *
      * @since 2020.1
      */
@@ -85,7 +86,7 @@ define([], function () {
      * Redirect to saved search
      *
      * @governance 5 units
-     * @restriction Supppprted only by afterSubmit user event scripts and client scripts
+     * @restriction Supported only by afterSubmit user event scripts and client scripts
      *
      * @param {Object} options
      * @param {number} options.id search id
@@ -98,7 +99,7 @@ define([], function () {
      * Redirect to saved search results
      *
      * @governance 5 units
-     * @restriction Supppprted only by afterSubmit user event scripts and client scripts
+     * @restriction Supported only by afterSubmit user event scripts and client scripts
      *
      * @param {Object} options
      * @param {number} options.id id of a saved search to redirect to
@@ -111,7 +112,7 @@ define([], function () {
      * Redirect to search
      *
      * @governance none
-     * @restriction Supppprted only by afterSubmit user event scripts and client scripts
+     * @restriction Supported only by afterSubmit user event scripts and client scripts
      *
      * @param {Object} options
      * @param {Search} options.search Search object to redirect to
@@ -124,7 +125,7 @@ define([], function () {
      * Redirect to search results
      *
      * @governance none
-     * @restriction Supppprted only by afterSubmit user event scripts and client scripts
+     * @restriction Supported only by afterSubmit user event scripts and client scripts
      *
      * @param {Object} options
      * @param {Search} options.search Search object of which results to redirect to
