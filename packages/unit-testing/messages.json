@@ -4,6 +4,6 @@
 	"ERRORS_ONLY_SUITEAPP_HAVE_APP_ID": "Only SuiteApp projects can have an application ID.",
 	"ERRORS_PROCESS_FAILED": "The process has failed.",
 	"ERRORS_TEST_FAILED": "The tests failed.",
-	"ERRORS_TEST_FAILURES_PRESENT": "There are some Test failures, The Deployment will not continue.",
+	"ERRORS_TEST_FAILURES_PRESENT": "There are some test failures. The deployment will not continue.",
 	"ERRORS_XML_MANIFEST_TAG_MISSING": "The manifest.xml file does not contain the manifest tag."
 }
