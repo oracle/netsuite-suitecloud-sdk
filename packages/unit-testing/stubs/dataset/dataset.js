@@ -1,4 +1,4 @@
-define(['./DatasetInstance', './Join', './Column', './Condition'], function (Dataset, Join, Column, Condition) {
+define(['../workbook/Expression', './DatasetInstance', './Join', './Column', './Condition'], function (Dataset, Join, Column, Condition) {
     /**
      * SuiteScript dataset module
      * Create/Load a dataset and execute it using the SuiteAnalytics Workbook query engine. Or use it as a data source for the workbook

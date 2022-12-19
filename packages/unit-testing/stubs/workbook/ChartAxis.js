@@ -1,4 +1,4 @@
-define([], function () {
+define(['./Expression'], function () {
 	/**
 	 * @class ChartAxis
 	 * @classDescription Axis of a chart

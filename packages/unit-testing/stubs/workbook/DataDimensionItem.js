@@ -1,4 +1,4 @@
-define([], function () {
+define(['./Expression',], function () {
 	/**
 	 * @class DataDimensionItem
 	 * @classDescription Object representing data dimension item of a data dimension

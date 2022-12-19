@@ -1,4 +1,4 @@
-define(['./DatasetLinkInstance'], function (DatasetLink) {
+define(['../workbook/Expression', './DatasetLinkInstance'], function (DatasetLink) {
     /**
      * SuiteScript datasetLink module
      * Create a DatasetLink object which can be constructed using multiple datasets and expression matrix.

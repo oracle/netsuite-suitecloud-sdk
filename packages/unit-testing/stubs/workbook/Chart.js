@@ -1,4 +1,4 @@
-define(['../dataset/Dataset', '../datasetLink/DatasetLink', './LimitingFilter', './ConditionalFilter', './Legend', './Category', './Series'], function (
+define(['../dataset/Dataset', '../datasetLink/DatasetLink', './LimitingFilter', './ConditionalFilter', './Expression', './Legend', './Category', './Series'], function (
 	Dataset,
 	DatasetLink,
 	LimitingFilter,

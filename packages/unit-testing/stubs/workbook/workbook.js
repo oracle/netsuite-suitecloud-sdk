@@ -1,4 +1,6 @@
 define([
+	'../dataset/Dataset',
+	'../datasetLink/DatasetLink',
 	'./Aspect',
 	'./CalculatedMeasure',
 	'./Category',
@@ -13,11 +15,10 @@ define([
 	'./DataDimension',
 	'./DataDimensionItem',
 	'./DataMeasure',
-	'../dataset/Dataset',
-	'../datasetLink/DatasetLink',
 	'./DescendantOrSelfNodesSelector',
 	'./DimensionSelector',
 	'./Duration',
+	'./Expression',
 	'./FieldContext',
 	'./FontSize',
 	'./Legend',
@@ -163,6 +164,44 @@ define([
 	}
 
 	workbook.prototype.Color = new workbookColor();
+
+	/**
+	 * @enum {string}
+	 * @readonly
+	 */
+	function workbookExpressionType() {
+		this.AND = 'AND';
+		this.ANY_OF = 'ANY_OF';
+		this.BETWEEN = 'BETWEEN';
+		this.CHILD_OF = 'CHILD_OF';
+		this.COMPARE = 'COMPARE';
+		this.CONSTANT = 'CONSTANT';
+		this.CURRENCY_CONVERSION = 'CURRENCY_CONVERSION';
+		this.DATE_RANGE_SELECTOR_ID = 'DATE_RANGE_SELECTOR_ID';
+		this.DATE_SELECTOR_ID = 'DATE_SELECTOR_ID';
+		this.DATE_TIME_PROPERTY = 'DATE_TIME_PROPERTY';
+		this.DIVIDE = 'DIVIDE';
+		this.EQUALS = 'EQUALS';
+		this.FIELD = 'FIELD';
+		this.HIERARCHY = 'HIERARCHY';
+		this.HIERARCHY_TO_TEXT = 'HIERARCHY_TO_TEXT';
+		this.IN_RANGE = 'IN_RANGE';
+		this.IS_NULL = 'IS_NULL';
+		this.LAMBDA = 'LAMBDA';
+		this.MEASURE_VALUE = 'MEASURE_VALUE';
+		this.MINUS = 'MINUS';
+		this.MULTIPLY = 'MULTIPLY';
+		this.NOT = 'NOT';
+		this.OR = 'OR';
+		this.PLUS = 'PLUS';
+		this.RECORD_DISPLAY_VALUE = 'RECORD_DISPLAY_VALUE';
+		this.RECORD_KEY = 'RECORD_KEY';
+		this.SIMPLE_CONSOLIDATE = 'SIMPLE_CONSOLIDATE';
+		this.TRANSLATE = 'TRANSLATE';
+		this.TRUNCATE_DATE_TIME = 'TRUNCATE_DATE_TIME';
+	}
+
+	workbook.prototype.ExpressionType = new workbookExpressionType();
 
 	/**
 	 * @enum {string}
@@ -436,6 +475,18 @@ define([
 	 * @since 2020.2
 	 */
 	workbook.prototype.createDimensionSelector = function createDimensionSelector() {};
+
+	/**
+	 * Creates an expression, that includes a function ID and parameters. Expressions can be used to create a pivot definition, a data dimension item, a measure, a conditional filter, and a dimension sort.
+	 * @governance none
+	 * @param {Object} options
+	 * @param {string} options.functionId - The function for the expression.
+	 * @param {Object} options.parameters - The parameters for the expression.
+	 * @return {Expression}
+	 *
+	 * @since 2020.2
+	 */
+	workbook.prototype.createExpression = function createExpression() {};
 
 	/**
 	 * Creates a SortByDataDimensionItem object

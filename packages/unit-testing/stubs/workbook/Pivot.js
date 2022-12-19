@@ -1,4 +1,4 @@
-define(['../dataset/Dataset', '../datasetLink/DatasetLink', './LimitingFilter', './ConditionalFilter', './PivotAxis', './ReportStyle'], function (
+define(['../dataset/Dataset', '../datasetLink/DatasetLink', './Expression', './LimitingFilter', './ConditionalFilter', './PivotAxis', './ReportStyle'], function (
 	Dataset,
 	DatasetLink,
 	LimitingFilter,
