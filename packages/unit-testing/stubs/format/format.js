@@ -36,7 +36,7 @@ define([], function () {
 	 *
 	 * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if either value or type is missing
 	 *
-	 * @return {string} If format-able, the formatted value. If not or given an invalid Type, the value passed in options.value
+	 * @return {string|Date} If format-able, the formatted value. If not or given an invalid Type, the value passed in options.value
 	 *
 	 * @since 2015.2
 	 */

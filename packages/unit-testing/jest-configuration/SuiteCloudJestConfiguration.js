@@ -190,10 +190,6 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/https.js`,
 	},
 	{
-		module: 'N/https/clientCertificate',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/clientCertificate.js`,
-	},
-	{
 		module: 'N/https/clientResponse',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/ClientResponse.js`,
 	},
@@ -578,7 +574,7 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/TableColumnFilter.js`,
 	},
 	{
-		module: 'N/workbook/workbook',
+		module: 'N/workbook/instance',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/WorkbookInstance.js`,
 	},
 ];
