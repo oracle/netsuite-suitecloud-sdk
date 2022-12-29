@@ -52,7 +52,7 @@ suitecloud <command> <option> <argument>
 ### Commands
 | Command | Description |
 | --- | --- |
-|[`account:manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs (authid) for all your projects.|
+|[`account:manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs for all your projects.|
 |[`account:savetoken`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159350785187.html)|Saves a TBA token that you issued previously in NetSuite.|
 |[`account:setup`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
 |[`file:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162810635242.html)|Creates SuiteScript files in the selected folder using the correct template with SuiteScript modules injected.|
