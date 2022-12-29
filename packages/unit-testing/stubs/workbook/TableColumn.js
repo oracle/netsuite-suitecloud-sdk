@@ -1,4 +1,4 @@
-define(['./ConditionalFormat', './Expression', './FieldContext', './TableColumnCondition'], function (TableColumnCondition, ConditionalFormat, FieldContext) {
+define(['./ConditionalFormat', './Expression', './FieldContext', './TableColumnCondition'], function (ConditionalFormat, Expression, FieldContext, TableColumnCondition) {
 	/**
 	 * @class TableColumn
 	 * @classDescription Column of a table view
@@ -68,7 +68,7 @@ define(['./ConditionalFormat', './Expression', './FieldContext', './TableColumnC
 		 *
 		 * @since 2020.2
 		 */
-		this.toString = function () {};
+		this.toString = function () { };
 
 		/**
 		 * get JSON format of the object
@@ -77,7 +77,7 @@ define(['./ConditionalFormat', './Expression', './FieldContext', './TableColumnC
 		 *
 		 * @since 2020.2
 		 */
-		this.toJSON = function () {};
+		this.toJSON = function () { };
 	}
 	return new TableColumn();
 });

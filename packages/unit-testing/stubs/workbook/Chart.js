@@ -1,8 +1,9 @@
-define(['../dataset/Dataset', '../datasetLink/DatasetLink', './LimitingFilter', './ConditionalFilter', './Expression', './Legend', './Category', './Series'], function (
+define(['../dataset/DatasetInstance', '../datasetLink/DatasetLinkInstance', './LimitingFilter', './ConditionalFilter', './Expression', './Legend', './Category', './Series'], function (
 	Dataset,
 	DatasetLink,
 	LimitingFilter,
 	ConditionalFilter,
+	Expression,
 	Legend,
 	Category,
 	Series
@@ -148,7 +149,7 @@ define(['../dataset/Dataset', '../datasetLink/DatasetLink', './LimitingFilter', 
 		 *
 		 * @since 2020.2
 		 */
-		this.toString = function () {};
+		this.toString = function () { };
 
 		/**
 		 * get JSON format of the object
@@ -157,7 +158,7 @@ define(['../dataset/Dataset', '../datasetLink/DatasetLink', './LimitingFilter', 
 		 *
 		 * @since 2020.2
 		 */
-		this.toJSON = function () {};
+		this.toJSON = function () { };
 	}
 	return new Chart();
 });

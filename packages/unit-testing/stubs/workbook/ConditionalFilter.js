@@ -1,9 +1,10 @@
-define(['DataMeasure', './CalculatedMeasure', './ChildNodesSelector', './DescendantOrSelfNodesSelector', './Expression', './PathSelector'], function (
+define(['./DataMeasure', './CalculatedMeasure', './ChildNodesSelector', './DescendantOrSelfNodesSelector', './Expression', './PathSelector'], function (
 	DataMeasure,
 	CalculatedMeasure,
+	ChildNodesSelector,
 	DescendantOrSelfNodesSelector,
-	PathSelector,
-	ChildNodesSelector
+	Expression,
+	PathSelector
 ) {
 	/**
 	 * @class ConditionalFilter
@@ -66,7 +67,7 @@ define(['DataMeasure', './CalculatedMeasure', './ChildNodesSelector', './Descend
 		 *
 		 * @since 2020.2
 		 */
-		this.toString = function () {};
+		this.toString = function () { };
 
 		/**
 		 * get JSON format of the object
@@ -75,7 +76,7 @@ define(['DataMeasure', './CalculatedMeasure', './ChildNodesSelector', './Descend
 		 *
 		 * @since 2020.2
 		 */
-		this.toJSON = function () {};
+		this.toJSON = function () { };
 	}
 	return new ConditionalFilter();
 });

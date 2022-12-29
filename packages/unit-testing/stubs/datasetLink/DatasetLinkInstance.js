@@ -1,4 +1,4 @@
-define(['../workbook/Expression'], function (Expression) {
+define(['../workbook/Expression', '../dataset/DatasetInstance'], function (Expression, Dataset) {
     /**
      * @class DatasetLink
      * @classDescription Object representing SuiteAnalytics DatasetLink - multiple datasets linked by expressions matrix

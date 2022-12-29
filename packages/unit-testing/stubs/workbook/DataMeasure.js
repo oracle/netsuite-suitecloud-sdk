@@ -1,4 +1,4 @@
-define(['./Expression',], function () {
+define(['./Expression',], function (Expression) {
 	/**
 	 * @class DataMeasure
 	 * @classDescription Object representing data measure to be used in pivot or chart

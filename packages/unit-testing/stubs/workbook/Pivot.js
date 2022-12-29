@@ -1,6 +1,7 @@
 define(['../dataset/Dataset', '../datasetLink/DatasetLink', './Expression', './LimitingFilter', './ConditionalFilter', './PivotAxis', './ReportStyle'], function (
 	Dataset,
 	DatasetLink,
+	Expression,
 	LimitingFilter,
 	ConditionalFilter,
 	PivotAxis,

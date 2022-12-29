@@ -1,4 +1,4 @@
-define(['./Expression',], function () {
+define(['./Expression',], function (Expression) {
 	/**
 	 * @class DataDimensionItem
 	 * @classDescription Object representing data dimension item of a data dimension
@@ -33,7 +33,7 @@ define(['./Expression',], function () {
 		 *
 		 * @since 2020.2
 		 */
-		this.toString = function () {};
+		this.toString = function () { };
 
 		/**
 		 * get JSON format of the object
@@ -42,7 +42,7 @@ define(['./Expression',], function () {
 		 *
 		 * @since 2020.2
 		 */
-		this.toJSON = function () {};
+		this.toJSON = function () { };
 	}
 	return new DataDimensionItem();
 });
