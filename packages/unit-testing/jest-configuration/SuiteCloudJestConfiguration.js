@@ -170,6 +170,14 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/email/email.js`,
 	},
 	{
+		module: 'N/encode',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/encode/encode.js`,
+	},
+	{
+		module: 'N/format',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/format.js`,
+	},
+	{
 		module: 'N/http',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/http/http.js`,
 	},
@@ -196,6 +204,14 @@ const CORE_STUBS = [
 	{
 		module: 'N/https/clientCertificate',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/clientCertificate/clientCertificate.js`,
+	},
+	{
+		module: 'N/log',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/log/log.js`,
+	},
+	{
+		module: 'N/plugin',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/plugin/plugin.js`,
 	},
 	{
 		module: 'N/query',
@@ -357,6 +373,210 @@ const CORE_STUBS = [
 		module: 'N/xml/xPath',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/XPath.js`,
 	},
+	{
+		module: 'N/workbook',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/workbook.js`,
+	},
+	{
+		module: 'N/workbook/aspect',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Aspect.js`,
+	},
+	{
+		module: 'N/workbook/calculatedMeasure',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/CalculatedMeasure.js`,
+	},
+	{
+		module: 'N/workbook/category',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Category.js`,
+	},
+	{
+		module: 'N/workbook/chart',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Chart.js`,
+	},
+	{
+		module: 'N/workbook/childNodesSelector',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ChildNodesSelector.js`,
+	},
+	{
+		module: 'N/workbook/color',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Color.js`,
+	},
+	{
+		module: 'N/workbook/conditionalFilter',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ConditionalFilter.js`,
+	},
+	{
+		module: 'N/workbook/conditionalFormat',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ConditionalFormat.js`,
+	},
+	{
+		module: 'N/workbook/conditionalFormatRule',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ConditionalFormatRule.js`,
+	},
+	{
+		module: 'N/workbook/currency',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Currency.js`,
+	},
+	{
+		module: 'N/workbook/dataDimension',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/DataDimension.js`,
+	},
+	{
+		module: 'N/workbook/dataDimensionItem',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/DataDimensionItem.js`,
+	},
+	{
+		module: 'N/workbook/dataDimensionValue',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/DataDimensionValue.js`,
+	},
+	{
+		module: 'N/workbook/dataDimensionItemValue',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/DataDimensionItemValue.js`,
+	},
+	{
+		module: 'N/workbook/dataMeasure',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/DataMeasure.js`,
+	},
+	{
+		module: 'N/workbook/descendantOrSelfNodesSelector',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/DescendantOrSelfNodesSelector.js`,
+	},
+	{
+		module: 'N/workbook/dimensionSelector',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/DimensionSelector.js`,
+	},
+	{
+		module: 'N/workbook/duration',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Duration.js`,
+	},
+	{
+		module: 'N/workbook/fieldContext',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/FieldContext.js`,
+	},
+	{
+		module: 'N/workbook/fontSize',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/FontSize.js`,
+	},
+	{
+		module: 'N/workbook/legend',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Legend.js`,
+	},
+	{
+		module: 'N/workbook/limitingFilter',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/LimitingFilter.js`,
+	},
+	{
+		module: 'N/workbook/measureSelector',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/MeasureSelector.js`,
+	},
+	{
+		module: 'N/workbook/measureValue',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/MeasureValue.js`,
+	},
+	{
+		module: 'N/workbook/measureValueSelector',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/MeasureValueSelector.js`,
+	},
+	{
+		module: 'N/workbook/pathSelector',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PathSelector.js`,
+	},
+	{
+		module: 'N/workbook/pivot',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Pivot.js`,
+	},
+	{
+		module: 'N/workbook/pivotAxis',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PivotAxis.js`,
+	},
+	{
+		module: 'N/workbook/pivoIntersection',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PivotIntersection.js`,
+	},
+	{
+		module: 'N/workbook/pivotResultsIterator',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PivotResultsIterator.js`,
+	},
+	{
+		module: 'N/workbook/positionPercent',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PositionPercent.js`,
+	},
+	{
+		module: 'N/workbook/positionUnits',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PositionUnits.js`,
+	},
+	{
+		module: 'N/workbook/positionValues',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PositionValues.js`,
+	},
+	{
+		module: 'N/workbook/range',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Range.js`,
+	},
+	{
+		module: 'N/workbook/record',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Record.js`,
+	},
+	{
+		module: 'N/workbook/recordKey',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/RecordKey.js`,
+	},
+	{
+		module: 'N/workbook/reportStyle',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ReportStyle.js`,
+	},
+	{
+		module: 'N/workbook/section',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Section.js`,
+	},
+	{
+		module: 'N/workbook/sectionValue',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/SectionValue.js`,
+	},
+	{
+		module: 'N/workbook/series',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Series.js`,
+	},
+	{
+		module: 'N/workbook/sort',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Sort.js`,
+	},
+	{
+		module: 'N/workbook/sortByDataDimensionItem',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/SortByDataDimensionItem.js`,
+	},
+	{
+		module: 'N/workbook/sortByMeasure',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/SortByMeasure.js`,
+	},
+	{
+		module: 'N/workbook/sortDefinition',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/SortDefinition.js`,
+	},
+	{
+		module: 'N/workbook/style',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Style.js`,
+	},
+	{
+		module: 'N/workbook/table',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Table.js`,
+	},
+	{
+		module: 'N/workbook/tableColumn',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/TableColumn.js`,
+	},
+	{
+		module: 'N/workbook/tableColumnCondition',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/TableColumnCondition.js`,
+	},
+	{
+		module: 'N/workbook/tableColumnFilter',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/TableColumnFilter.js`,
+	},
+	{
+		module: 'N/workbook/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/WorkbookInstance.js`,
+	},
 ];
 
 class SuiteCloudAdvancedJestConfiguration {
@@ -398,7 +618,7 @@ class SuiteCloudAdvancedJestConfiguration {
 
 	_generateStubsModuleNameMapperEntries() {
 		const stubs = {};
-		const forEachFn = stub => {
+		const forEachFn = (stub) => {
 			stubs[`^${stub.module}$`] = stub.path;
 		};
 		CORE_STUBS.forEach(forEachFn);
@@ -423,7 +643,7 @@ class SuiteCloudAdvancedJestConfiguration {
 }
 
 module.exports = {
-	build: options => {
+	build: (options) => {
 		return new SuiteCloudAdvancedJestConfiguration(options).generate();
 	},
 	ProjectType: PROJECT_TYPE,

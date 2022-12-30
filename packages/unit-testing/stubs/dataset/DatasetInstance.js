@@ -1,4 +1,4 @@
-define(['./Condition', './Column'], function (Condition, Column) {
+define(['../workbook/Expression', './Condition', './Column', '../query/PagedData', '../query/ResultSet'], function (Expression, Condition, Column, PagedData, ResultSet) {
     /**
      * @class Dataset
      * @classDescription Object representing SuiteAnalytics dataset
