@@ -1,4 +1,4 @@
-define([], function () {
+define(['../workbook/Expression'], function (Expression) {
     /**
      * @class Column
      * @classDescription Object representing dataset column
