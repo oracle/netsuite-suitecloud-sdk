@@ -1,5 +1,6 @@
-define(['./DataMeasure', './CalculatedMeasure', './ChildNodesSelector', './DescendantOrSelfNodesSelector', './Expression', './PathSelector'], function (
+define(['./DataMeasure', './DimensionSelector', './CalculatedMeasure', './ChildNodesSelector', './DescendantOrSelfNodesSelector', './Expression', './PathSelector'], function (
 	DataMeasure,
+	DimensionSelector,
 	CalculatedMeasure,
 	ChildNodesSelector,
 	DescendantOrSelfNodesSelector,
