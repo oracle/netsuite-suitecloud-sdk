@@ -1,4 +1,4 @@
-define([], function () {
+define(['../workbook/Expression', '../dataset/DatasetInstance'], function (Expression, Dataset) {
     /**
      * @class DatasetLink
      * @classDescription Object representing SuiteAnalytics DatasetLink - multiple datasets linked by expressions matrix
@@ -32,7 +32,7 @@ define([], function () {
          * Mapping expressions
          * @name DatasetLink#expressions
          * @type {Array<Array<Expression>>}
-         * @throws {SuiteScriptError} WRONG_PARAMETER_TYPE when assigning something else than Array<Array<Expresion>>
+         * @throws {SuiteScriptError} WRONG_PARAMETER_TYPE when assigning something else than Array<Array<Expression>>
          *
          * @since 2021.2
          */
