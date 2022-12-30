@@ -1,18 +1,15 @@
-/**
- * SuiteScript suiteAppInfo module
- *
- * A module exposing a set of handy functions
- * to read information about bundles and suite apps.
- *
- * @module N/suiteAppInfo
- * @NApiVersion 2.x
- */
-define([], function(){        
+define([], function () {
     /**
-     * @namespace suiteAppInfo
-     */    
-    var suiteAppInfo = {};    
-            
+     * SuiteScript suiteAppInfo module
+     *
+     * A module exposing a set of handy functions
+     * to read information about bundles and suite apps.
+     *
+     * @module N/suiteAppInfo
+     * @NApiVersion 2.x
+     */
+    var suiteAppInfo = function () { };
+
     /**
      * Tells whether the given bundle is installed.
      *
@@ -21,10 +18,9 @@ define([], function(){
      * @return {boolean}
      * @governance 5
      * @since 2021.1
-     */    
-    function isBundleInstalled() {    
-    }    
-        
+     */
+    suiteAppInfo.prototype.isBundleInstalled = function (options) { }
+
     /**
      * Returns a list of installed bundles.
      *
@@ -35,10 +31,9 @@ define([], function(){
      * @return {Array<Bundle>}
      * @governance 10
      * @since 2021.1
-     */    
-    function listInstalledBundles() {    
-    }    
-        
+     */
+    suiteAppInfo.prototype.listInstalledBundles = function (options) { }
+
     /**
      * Lists ID-s of bundles that contain a script,
      * for each given script individually.
@@ -48,10 +43,9 @@ define([], function(){
      * @return {Object<string,Array<int>>} A `{ scriptId: arrayOfBundleIds }` mapping.
      * @governance 10
      * @since 2021.1
-     */    
-    function listBundlesContainingScripts() {    
-    }    
-        
+     */
+    suiteAppInfo.prototype.listBundlesContainingScripts = function (options) { }
+
     /**
      * Tells whether the given suite app is installed.
      *
@@ -60,10 +54,9 @@ define([], function(){
      * @return {boolean}
      * @governance 5
      * @since 2021.1
-     */    
-    function isSuiteAppInstalled() {    
-    }    
-        
+     */
+    suiteAppInfo.prototype.isSuiteAppInstalled = function (options) { }
+
     /**
      * Returns a list of installed suite apps.
      *
@@ -74,10 +67,9 @@ define([], function(){
      * @return {Array<SuiteApp>}
      * @governance 10
      * @since 2021.1
-     */    
-    function listInstalledSuiteApps() {    
-    }    
-        
+     */
+    suiteAppInfo.prototype.listInstalledSuiteApps = function (options) { }
+
     /**
      * Lists ID-s of suite apps that contain a script,
      * for each given script individually.
@@ -87,14 +79,12 @@ define([], function(){
      * @return {Object.<String,null|String>} A `{ scriptId: suiteAppId|null }` mapping.
      * @governance 10
      * @since 2021.1
-     */    
-    function listSuiteAppsContainingScripts() {    
-    }    
-    
-    N.suiteAppInfo = suiteAppInfo;
-    
+     */
+    suiteAppInfo.prototype.listSuiteAppsContainingScripts = function (options) { }
+
     /**
      * @exports N/suiteAppInfo
+     * @namespace suiteAppInfo
      */
-    return suiteAppInfo;
+    return new suiteAppInfo();
 });
