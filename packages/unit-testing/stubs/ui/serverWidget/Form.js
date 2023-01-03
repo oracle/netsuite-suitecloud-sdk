@@ -1,4 +1,4 @@
-define(['./Tab', './Button', './Field', './FieldGroup', './Sublist'], function (Tab, Button, Field, FieldGroup, Sublist) {
+define(['./Tab', './Button', './Field', './FieldGroup', './Sublist', '../message/MessageInstance'], function (Tab, Button, Field, FieldGroup, Sublist, Message) {
     /**
      * @class Form
      * @classdesc Primary object used to encapsulate a NetSuite-looking form.

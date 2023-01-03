@@ -60,14 +60,6 @@ define([], function () {
     dialog.protptype.create = function (options) { };
 
     /**
-     * @typedef {Object} ButtonOption
-     * @property {*} label The label of the button
-     * @property {*} value The return value of the dialog if the button was clicked
-     */
-    function ButtonOptionTypedef() {
-    }
-
-    /**
      * @exports N/ui/dialog
      * @namespace dialog
      */
