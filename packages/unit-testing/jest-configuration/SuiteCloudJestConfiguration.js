@@ -346,6 +346,74 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Setting.js`,
 	},
 	{
+		module: 'N/sso',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/sso/sso.js`,
+	},
+	{
+		module: 'N/transaction',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/transaction/transaction.js`,
+	},
+	{
+		module: 'N/ui',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/ui.js`,
+	},
+	{
+		module: 'N/ui/dialog',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/dialog/dialog.js`,
+	},
+	{
+		module: 'N/ui/message',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/message/message.js`,
+	},
+	{
+		module: 'N/ui/message/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/message/MessageInstance.js`,
+	},
+	{
+		module: 'N/ui/serverWidget',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/serverWidget.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/assistant',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/Assistant.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/assistantStep',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/AssistantStep.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/button',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/Button.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/field',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/Field.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/fieldGroup',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/FieldGroup.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/form',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/Form.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/list',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/List.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/listColumn',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/ListColumn.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/sublist',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/Sublist.js`,
+	},
+	{
+		module: 'N/ui/serverWidget/tab',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/Tab.js`,
+	},
+	{
 		module: 'N/xml',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/xml.js`,
 	},
