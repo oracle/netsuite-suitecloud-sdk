@@ -218,12 +218,12 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/log/log.js`,
 	},
 	{
-		module: 'N/portlet',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/portlet/portlet.js`,
-	},
-	{
 		module: 'N/plugin',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/plugin/plugin.js`,
+	},
+	{
+		module: 'N/portlet',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/portlet/portlet.js`,
 	},
 	{
 		module: 'N/query',
