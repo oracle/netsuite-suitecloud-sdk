@@ -196,7 +196,7 @@
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID \"{0}\" as default for the following company and role: {1} [{2}]. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 
 	"COMMAND_UPDATE_ERRORS_CUSTOM_RECORD": "{0} was not updated. {1}",
-	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any custom objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
+	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
 	"COMMAND_UPDATE_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your search?",
 	"COMMAND_UPDATE_QUESTIONS_INCLUDE_CUSTOM_INSTANCES": "Do you want to include Custom Instances from the account?",
 	"COMMAND_UPDATE_QUESTIONS_OVERWRITE_OBJECTS": "All the selected objects in the project will be overwritten with the objects from the account. Do you want to continue?",
