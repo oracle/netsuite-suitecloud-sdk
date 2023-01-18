@@ -206,12 +206,24 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/https/clientCertificate/clientCertificate.js`,
 	},
 	{
+		module: 'N/keyControl',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/keyControl/keyControl.js`,
+	},
+	{
+		module: 'N/keyControl/key',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/keyControl/Key.js`,
+	},
+	{
 		module: 'N/log',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/log/log.js`,
 	},
 	{
 		module: 'N/plugin',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/plugin/plugin.js`,
+	},
+	{
+		module: 'N/portlet',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/portlet/portlet.js`,
 	},
 	{
 		module: 'N/query',
@@ -290,6 +302,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
 	},
 	{
+		module: 'N/recordContext/recordContext',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/recordContext/recordContext.js`,
+	},
+	{
 		module: 'N/redirect',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/redirect/redirect.js`,
 	},
@@ -346,8 +362,100 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Setting.js`,
 	},
 	{
+		module: 'N/sftp',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/sftp/sftp.js`,
+	},
+	{
+		module: 'N/sftp/connection',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/sftp/Connection.js`,
+	},
+	{
 		module: 'N/sso',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/sso/sso.js`,
+	},
+	{
+		module: 'N/task',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/task.js`,
+	},
+	{
+		module: 'N/task/csvImportTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/CsvImportTask.js`,
+	},
+	{
+		module: 'N/task/csvImportTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/CsvImportTaskStatus.js`,
+	},
+	{
+		module: 'N/task/entityDeduplicationTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/EntityDeduplicationTask.js`,
+	},
+	{
+		module: 'N/task/entityDeduplicationTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/EntityDeduplicationTaskStatus.js`,
+	},
+	{
+		module: 'N/task/mapReduceScriptTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/MapReduceScriptTask.js`,
+	},
+	{
+		module: 'N/task/mapReduceScriptTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/MapReduceScriptTaskStatus.js`,
+	},
+	{
+		module: 'N/task/pivotExecutionTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/PivotExecutionTask.js`,
+	},
+	{
+		module: 'N/task/pivotTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/PivotTaskStatus.js`,
+	},
+	{
+		module: 'N/task/queryTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/QueryTask.js`,
+	},
+	{
+		module: 'N/task/queryTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/QueryTaskStatus.js`,
+	},
+	{
+		module: 'N/task/recordActionTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/RecordActionTask.js`,
+	},
+	{
+		module: 'N/task/recordActionTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/RecordActionTaskStatus.js`,
+	},
+	{
+		module: 'N/task/scheduledScriptTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/ScheduledScriptTask.js`,
+	},
+	{
+		module: 'N/task/scheduledScriptTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/ScheduledScriptTaskStatus.js`,
+	},
+	{
+		module: 'N/task/searchTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/SearchTask.js`,
+	},
+	{
+		module: 'N/task/searchTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/SearchTaskStatus.js`,
+	},
+	{
+		module: 'N/task/suiteQLTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/SuiteQLTask.js`,
+	},
+	{
+		module: 'N/task/suiteQLTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/SuiteQLTaskStatus.js`,
+	},
+	{
+		module: 'N/task/workflowTriggerTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/WorkflowTriggerTask.js`,
+	},
+	{
+		module: 'N/task/workflowTriggerTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/WorkflowTriggerTaskStatus.js`,
 	},
 	{
 		module: 'N/transaction',
@@ -412,6 +520,14 @@ const CORE_STUBS = [
 	{
 		module: 'N/ui/serverWidget/tab',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/ui/serverWidget/Tab.js`,
+	},
+	{
+		module: 'N/url',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/url/url.js`,
+	},
+	{
+		module: 'N/util',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/util/util.js`,
 	},
 	{
 		module: 'N/xml',
@@ -644,6 +760,10 @@ const CORE_STUBS = [
 	{
 		module: 'N/workbook/instance',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/WorkbookInstance.js`,
+	},
+	{
+		module: 'N/workflow',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workflow/workflow.js`,
 	},
 ];
 
