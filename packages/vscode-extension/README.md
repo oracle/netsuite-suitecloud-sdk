@@ -85,7 +85,7 @@ To add an account, follow these steps:
 To set an account as default for a project, follow these steps:
 1. Open the Command Palette.
 2. Enter **SuiteCloud** and from the dropdown list, select **SuiteCloud: Set Up Account**.
-3. From the dropdown list, select the authentication ID (auth ID) of the account you want to set as default.
+3. From the dropdown list, select the authentication ID of the account you want to set as default.
 The selected account is set as default for the project.
 
 <p align="center">
@@ -104,14 +104,14 @@ The following SuiteCloud commands are available through the Command Palette:
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SuiteCloud file-based projects to develop ACPs or SuiteApp projects for internal use or for commercial distribution.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Deploys the folder containing the project. The project folder is zipped before deployment including only the files and folders referenced in the deploy.xml file. |
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports files from a NetSuite account to your project. Note that you cannot import files from a SuiteApp.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162971830372.html" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports objects from a NetSuite account to your project.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162971830372.html" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports SDF custom objects from a NetSuite account to your project.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_163067396066.html" rel="noopener noreferrer" target=blank>List Files</a>|Lists the files in the File Cabinet of your account.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160163955513" rel="noopener noreferrer" target=blank>List Objects</a>|Lists the SDF custom objects in your account.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_164630701111.html" rel="noopener noreferrer" target=blank>Manage Accounts</a>|Lets you manage the authentication IDs (auth IDs) associated to your accounts by renaming or removing them. It also shows the details of any specific auth ID.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160163955513" rel="noopener noreferrer" target=blank>List Objects</a>|Lists the SDF custom objects existing in your account.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_164630701111.html" rel="noopener noreferrer" target=blank>Manage Accounts</a>|Lets you manage the authentication IDs associated to your accounts by renaming or removing them. It also shows the details of any specific authentication ID.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147609118.html" rel="noopener noreferrer" target=blank>Set Up Account</a>|Adds the NetSuite accounts you want to customize. It also lets you set an account as default for a project.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_163067510539.html" rel="noopener noreferrer" target=blank>Update File from Account</a>|Overwrites the selected file in the project with the matching file in an account.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_161643514921.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported FileCabinet folder.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160147382361" rel="noopener noreferrer" target=blank>Update Object from Account</a>|Overwrites the selected object in the project with the matching object in an account. In the case of custom records, custom instances can be included.|
+|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160147382361" rel="noopener noreferrer" target=blank>Update Object from Account</a>|Overwrites the selected SDF custom objects in the project with their matching objects imported from your account. In the case of custom records, custom instances can be included.|
 |<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_164563201243.html" rel="noopener noreferrer" target=blank>Validate Project</a>|Validates a project against your NetSuite account. Only the files and folders referenced in the deploy.xml file are validated.|
 
 To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.

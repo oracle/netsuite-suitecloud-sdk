@@ -52,16 +52,16 @@ suitecloud <command> <option> <argument>
 ### Commands
 | Command | Description |
 | --- | --- |
-|[`account:manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs (authid) for all your projects.|
+|[`account:manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs for all your projects.|
 |[`account:savetoken`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159350785187.html)|Saves a TBA token that you issued previously in NetSuite.|
 |[`account:setup`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
 |[`file:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162810635242.html)|Creates SuiteScript files in the selected folder using the correct template with SuiteScript modules injected.|
 |[`file:import`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041963273.html)|Imports files from an account to your account customization project.|
 |[`file:list`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042966488.html)|Lists the files in the File Cabinet of your account.|
 |[`file:upload`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159066070687.html)|Uploads files from your project to an account.|
-|[`object:import`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042181820.html)|Imports custom objects from an account to your SuiteCloud project.|
-|[`object:list`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043303237.html)|Lists the custom objects deployed in an account.|
-|[`object:update`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156050566547.html)|Overwrites the custom objects in the project with the custom objects from an account. In the case of custom records, custom instances can be included.|
+|[`object:import`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042181820.html)|Imports SDF custom objects from an account to your SuiteCloud project.|
+|[`object:list`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043303237.html)|Lists the SDF custom objects deployed in an account.|
+|[`object:update`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156050566547.html)|Overwrites the SDF custom objects in the project with their matching objects imported from the account. In the case of custom records, custom instances can be included.|
 |[`project:adddependencies`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155981452469.html)| Adds missing dependencies to the manifest file.|
 |[`project:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041348327.html)|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
 |[`project:deploy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044636320.html)|Deploys the folder containing the project.|
