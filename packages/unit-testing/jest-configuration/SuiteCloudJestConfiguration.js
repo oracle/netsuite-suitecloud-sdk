@@ -170,12 +170,68 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/email/email.js`,
 	},
 	{
+		module: 'N/error',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/error/error.js`,
+	},
+	{
+		module: 'N/error/suiteScriptError',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/error/SuiteScriptError.js`,
+	},
+	{
+		module: 'N/error/userEventError',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/error/UserEventError.js`,
+	},
+	{
 		module: 'N/encode',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/encode/encode.js`,
 	},
 	{
+		module: 'N/file',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/file/file.js`,
+	},
+	{
+		module: 'N/file/instance',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/file/FileInstance.js`,
+	},
+	{
+		module: 'N/file/fileLines',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/file/FileLines.js`,
+	},
+	{
+		module: 'N/file/fileSegments',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/file/FileSegments.js`,
+	},
+	{
+		module: 'N/file/reader',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/file/Reader.js`,
+	},
+	{
 		module: 'N/format',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/format.js`,
+	},
+	{
+		module: 'N/format/i18n',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/i18n.js`,
+	},
+	{
+		module: 'N/format/currencyFormatter',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/CurrencyFormatter.js`,
+	},
+	{
+		module: 'N/format/numberFormatter',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/NumberFormatter.js`,
+	},
+	{
+		module: 'N/format/phoneNumber',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumber.js`,
+	},
+	{
+		module: 'N/format/phoneNumberFormatter',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumberFormatter.js`,
+	},
+	{
+		module: 'N/format/phoneNumberParser',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumberParser.js`,
 	},
 	{
 		module: 'N/http',
@@ -216,6 +272,22 @@ const CORE_STUBS = [
 	{
 		module: 'N/log',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/log/log.js`,
+	},
+	{
+		module: 'N/piremoval',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/piremoval/piremoval.js`,
+	},
+	{
+		module: 'N/piremoval/piRemovalTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/piremoval/PiRemovalTask.js`,
+	},
+	{
+		module: 'N/piremoval/piRemovalTaskLogItem',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/piremoval/PiRemovalTaskLogItem.js`,
+	},
+	{
+		module: 'N/piremoval/piRemovalTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/piremoval/PiRemovalTaskStatus.js`,
 	},
 	{
 		module: 'N/plugin',
@@ -310,6 +382,18 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/redirect/redirect.js`,
 	},
 	{
+		module: 'N/render',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/render/render.js`,
+	},
+	{
+		module: 'N/render/emailMergeResult',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/render/EmailMergeResult.js`,
+	},
+	{
+		module: 'N/render/templateRenderer',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/render/TemplateRenderer.js`,
+	},
+	{
 		module: 'N/runtime',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/runtime/runtime.js`,
 	},
@@ -372,6 +456,26 @@ const CORE_STUBS = [
 	{
 		module: 'N/sso',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/sso/sso.js`,
+	},
+	{
+		module: 'N/suiteAppInfo',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/suiteAppInfo/suiteAppInfo.js`,
+	},
+	{
+		module: 'N/task/accounting/recognition',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition.js`,
+	},
+	{
+		module: 'N/task/accounting/recognition/mergeArrangementsTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeArrangementsTask.js`,
+	},
+	{
+		module: 'N/task/accounting/recognition/mergeArrangementsTaskStatus',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeArrangementsTaskStatus.js`,
+	},
+	{
+		module: 'N/task/accounting/recognition/mergeElementsTask',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeElementsTask.js`,
 	},
 	{
 		module: 'N/task',
@@ -460,6 +564,14 @@ const CORE_STUBS = [
 	{
 		module: 'N/transaction',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/transaction/transaction.js`,
+	},
+	{
+		module: 'N/translation',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/translation/translation.js`,
+	},
+	{
+		module: 'N/translation/handle',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/translation/Handle.js`,
 	},
 	{
 		module: 'N/ui',
