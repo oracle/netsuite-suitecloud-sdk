@@ -88,5 +88,5 @@ define([], function () {
         this.toJSON = function () { };
     }
 
-    return RelativeDate();
+    return new RelativeDate();
 });
