@@ -94,7 +94,7 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Cipher.js`,
 	},
 	{
-		module: 'N/crypto/cipher/payload',
+		module: 'N/crypto/cipherPayload',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/CipherPayload.js`,
 	},
 	{
