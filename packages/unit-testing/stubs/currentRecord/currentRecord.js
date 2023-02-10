@@ -11,8 +11,8 @@ define(['./CurrentRecordInstance'], function (CurrentRecord) {
     /**
      * @return {CurrentRecord}
      */
-    record.prototype.get = function () { };
-    record.prototype.get.promise = function () { };
+    currentRecord.prototype.get = function () { };
+    currentRecord.prototype.get.promise = function () { };
 
     /**
      * @exports N/currentRecordBootstrap
