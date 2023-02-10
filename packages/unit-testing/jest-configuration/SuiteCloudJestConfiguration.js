@@ -214,23 +214,23 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/i18n.js`,
 	},
 	{
-		module: 'N/format/currencyFormatter',
+		module: 'N/format/i18n/currencyFormatter',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/CurrencyFormatter.js`,
 	},
 	{
-		module: 'N/format/numberFormatter',
+		module: 'N/format/i18n/numberFormatter',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/NumberFormatter.js`,
 	},
 	{
-		module: 'N/format/phoneNumber',
+		module: 'N/format/i18n/phoneNumber',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumber.js`,
 	},
 	{
-		module: 'N/format/phoneNumberFormatter',
+		module: 'N/format/i18n/phoneNumberFormatter',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumberFormatter.js`,
 	},
 	{
-		module: 'N/format/phoneNumberParser',
+		module: 'N/format/i18n/phoneNumberParser',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumberParser.js`,
 	},
 	{
