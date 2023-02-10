@@ -1,4 +1,4 @@
-define(['./Sublist', './Field'], function (Sublist, Field) {
+define(['../record/Sublist', '../record/Field'], function (Sublist, Field) {
     function CurrentRecord() {
 
         /**
