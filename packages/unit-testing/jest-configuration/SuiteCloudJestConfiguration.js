@@ -378,7 +378,7 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
 	},
 	{
-		module: 'N/recordContext/recordContext',
+		module: 'N/recordContext',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/recordContext/recordContext.js`,
 	},
 	{
