@@ -467,19 +467,19 @@ const CORE_STUBS = [
 	},
 	{
 		module: 'N/task/accounting/recognition',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition/recognition.js`,
 	},
 	{
 		module: 'N/task/accounting/recognition/mergeArrangementsTask',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeArrangementsTask.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition/MergeArrangementsTask.js`,
 	},
 	{
 		module: 'N/task/accounting/recognition/mergeArrangementsTaskStatus',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeArrangementsTaskStatus.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition/MergeArrangementsTaskStatus.js`,
 	},
 	{
 		module: 'N/task/accounting/recognition/mergeElementsTask',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeElementsTask.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition/MergeElementsTask.js`,
 	},
 	{
 		module: 'N/task',
