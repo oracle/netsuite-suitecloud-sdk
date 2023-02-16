@@ -23,7 +23,7 @@ define([], function () {
      *
      * @since 2016.1
      */
-    dialog.protptype.alert = function (options) { };
+    dialog.prototype.alert = function (options) { };
 
     /**
      * Creates an Confirm Dialog with OK and Cancel Button.
@@ -57,7 +57,7 @@ define([], function () {
      * @since 2016.1
      *
      */
-    dialog.protptype.create = function (options) { };
+    dialog.prototype.create = function (options) { };
 
     /**
      * @exports N/ui/dialog
