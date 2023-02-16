@@ -135,7 +135,7 @@ define(['./Handle'], function (Handle) {
         this.zh_TW = 'zh_TW';
     }
 
-    recognition.prototype.Locale = new translationLocale();
+    translation.prototype.Locale = new translationLocale();
 
     /**
      * @exports N/translation
