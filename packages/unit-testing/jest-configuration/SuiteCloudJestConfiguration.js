@@ -659,7 +659,7 @@ const CORE_STUBS = [
 	},
 	{
 		module: 'N/xml/element',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Element.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Element.js`,
 	},
 	{
 		module: 'N/xml/node',
