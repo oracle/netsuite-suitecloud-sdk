@@ -694,6 +694,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Chart.js`,
 	},
 	{
+		module: 'N/workbook/chartAxis',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ChartAxis.js`,
+	},
+	{
 		module: 'N/workbook/childNodesSelector',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ChildNodesSelector.js`,
 	},
@@ -750,6 +754,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Duration.js`,
 	},
 	{
+		module: 'N/workbook/expression',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Expression.js`,
+	},
+	{
 		module: 'N/workbook/fieldContext',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/FieldContext.js`,
 	},
@@ -790,7 +798,7 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PivotAxis.js`,
 	},
 	{
-		module: 'N/workbook/pivoIntersection',
+		module: 'N/workbook/pivotIntersection',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PivotIntersection.js`,
 	},
 	{
