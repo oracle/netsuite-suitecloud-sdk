@@ -1,6 +1,4 @@
 define([
-	'../dataset/Dataset',
-	'../datasetLink/DatasetLink',
 	'./Aspect',
 	'./CalculatedMeasure',
 	'./Category',
@@ -15,6 +13,8 @@ define([
 	'./DataDimension',
 	'./DataDimensionItem',
 	'./DataMeasure',
+	'../dataset/DatasetInstance',
+	'../datasetLink/DatasetLinkInstance',
 	'./DescendantOrSelfNodesSelector',
 	'./DimensionSelector',
 	'./Duration',
@@ -23,6 +23,7 @@ define([
 	'./FontSize',
 	'./Legend',
 	'./LimitingFilter',
+	'./MeasureSelector',
 	'./MeasureSort',
 	'./MeasureValueSelector',
 	'./PathSelector',
@@ -34,11 +35,15 @@ define([
 	'./Range',
 	'./RecordKey',
 	'./ReportStyle',
+	'./ReportStyleRule',
 	'./Section',
 	'./Series',
 	'./Sort',
 	'./SortByDataDimensionItem',
+	'./SortByMeasure',
 	'./SortDefinition',
+	'./Style',
+	'./Table',
 	'./TableColumn',
 	'./TableColumnCondition',
 	'./TableColumnFilter',
@@ -67,6 +72,7 @@ define([
 	FontSize,
 	Legend,
 	LimitingFilter,
+	MeasureSelector,
 	MeasureSort,
 	MeasureValueSelector,
 	PathSelector,
@@ -78,11 +84,15 @@ define([
 	Range,
 	RecordKey,
 	ReportStyle,
+	ReportStyleRule,
 	Section,
 	Series,
 	Sort,
 	SortByDataDimensionItem,
+	SortByMeasure,
 	SortDefinition,
+	Style,
+	Table,
 	TableColumn,
 	TableColumnCondition,
 	TableColumnFilter,
@@ -800,6 +810,20 @@ define([
 	 * @since 2021.1
 	 */
 	workbook.prototype.createMeasureSelector = function createMeasureSelector() {};
+
+	/**
+	 * Creates a measure sort, which defines a sort on a measure.
+	 * @governance none
+	 * @param {Object} options
+	 * @param {Measure} options.measure The measure for the measure sort.
+	 * @param {DimensionSelector|PathSelector} options.otherAxisSelector The selector for the other axis of the measure sort.
+	 * @param {DimensionSelector|PathSelector} options.selector The selector of the measure sort. This corresponds to the MeasureSort.sort property.
+	 * @param {Sort} options.sort The sort for the measure sort.
+	 * @return {MeasureSort}
+	 *
+	 * @since 2021.1
+	 */
+		workbook.prototype.createMeasureSort = function createMeasureSort() {};
 
 	/**
 	 * Creates a report style formatting rule

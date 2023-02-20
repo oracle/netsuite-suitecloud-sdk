@@ -778,6 +778,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/MeasureSelector.js`,
 	},
 	{
+		module: 'N/workbook/measureSort',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/MeasureSort.js`,
+	},
+	{
 		module: 'N/workbook/measureValue',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/MeasureValue.js`,
 	},
@@ -832,6 +836,10 @@ const CORE_STUBS = [
 	{
 		module: 'N/workbook/reportStyle',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ReportStyle.js`,
+	},
+	{
+		module: 'N/workbook/reportStyleRule',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ReportStyleRule.js`,
 	},
 	{
 		module: 'N/workbook/section',
