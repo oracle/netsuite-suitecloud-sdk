@@ -70,6 +70,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/compress/Archiver.js`,
 	},
 	{
+		module: 'N/config',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/config/config.js`,
+	},
+	{
 		module: 'N/crypto',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/crypto.js`,
 	},
