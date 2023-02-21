@@ -1,4 +1,4 @@
-define(['./MergeRevenueArrangementsTask', './MergeRevenueElementsTask', './MergeArrangementsTaskStatus'], function (MergeRevenueArrangementsTask, MergeRevenueElementsTask, MergeArrangementsTaskStatus) {
+define(['./MergeArrangementsTask', './MergeElementsTask', './MergeArrangementsTaskStatus'], function (MergeArrangementsTask, MergeElementsTask, MergeArrangementsTaskStatus) {
     /**
      * SuiteScript module
      *
@@ -15,7 +15,7 @@ define(['./MergeRevenueArrangementsTask', './MergeRevenueElementsTask', './Merge
      *
      * @param {Object} options
      * @param {string} options.taskType specifies the type of task to be created; use values from the task.TaskType enum
-     * @return {MergeRevenueArrangementsTask | MergeRevenueElementsTask }
+     * @return {MergeArrangementsTask | MergeElementsTask }
      */
     recognition.prototype.create = function (options) { };
 

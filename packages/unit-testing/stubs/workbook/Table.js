@@ -1,4 +1,4 @@
-define(['./Dataset', './Expression', './TableColumn'], function (Dataset, Expression, TableColumn) {
+define(['../dataset/DatasetInstance', './Expression', './TableColumn'], function (Dataset, Expression, TableColumn) {
 	/**
 	 * @class Table
 	 * @classDescription Object representing SuiteAnalytics table

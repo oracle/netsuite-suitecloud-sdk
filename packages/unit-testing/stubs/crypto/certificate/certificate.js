@@ -73,5 +73,5 @@ define(['./SignedXml', './Signer', './Verifier'], function (SignedXml, Signer, V
      * @exports N/crypto/certificate
      * @namespace certificate
      */
-    return certificate;
+    return new certificate();
 });

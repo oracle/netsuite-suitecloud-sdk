@@ -70,6 +70,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/compress/Archiver.js`,
 	},
 	{
+		module: 'N/config',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/config/config.js`,
+	},
+	{
 		module: 'N/crypto',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/crypto.js`,
 	},
@@ -94,7 +98,7 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/Cipher.js`,
 	},
 	{
-		module: 'N/crypto/cipher/payload',
+		module: 'N/crypto/cipherPayload',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/crypto/CipherPayload.js`,
 	},
 	{
@@ -214,23 +218,23 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/i18n.js`,
 	},
 	{
-		module: 'N/format/currencyFormatter',
+		module: 'N/format/i18n/currencyFormatter',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/CurrencyFormatter.js`,
 	},
 	{
-		module: 'N/format/numberFormatter',
+		module: 'N/format/i18n/numberFormatter',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/NumberFormatter.js`,
 	},
 	{
-		module: 'N/format/phoneNumber',
+		module: 'N/format/i18n/phoneNumber',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumber.js`,
 	},
 	{
-		module: 'N/format/phoneNumberFormatter',
+		module: 'N/format/i18n/phoneNumberFormatter',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumberFormatter.js`,
 	},
 	{
-		module: 'N/format/phoneNumberParser',
+		module: 'N/format/i18n/phoneNumberParser',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/format/i18n/PhoneNumberParser.js`,
 	},
 	{
@@ -362,6 +366,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/RecordInstance.js`,
 	},
 	{
+		module: 'N/record/column',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Column.js`,
+	},
+	{
 		module: 'N/record/field',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Field.js`,
 	},
@@ -374,7 +382,7 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/record/Sublist.js`,
 	},
 	{
-		module: 'N/recordContext/recordContext',
+		module: 'N/recordContext',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/recordContext/recordContext.js`,
 	},
 	{
@@ -463,19 +471,19 @@ const CORE_STUBS = [
 	},
 	{
 		module: 'N/task/accounting/recognition',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition/recognition.js`,
 	},
 	{
 		module: 'N/task/accounting/recognition/mergeArrangementsTask',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeArrangementsTask.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition/MergeArrangementsTask.js`,
 	},
 	{
 		module: 'N/task/accounting/recognition/mergeArrangementsTaskStatus',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeArrangementsTaskStatus.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition/MergeArrangementsTaskStatus.js`,
 	},
 	{
 		module: 'N/task/accounting/recognition/mergeElementsTask',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/MergeElementsTask.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/task/accounting/recognition/MergeElementsTask.js`,
 	},
 	{
 		module: 'N/task',
@@ -655,7 +663,7 @@ const CORE_STUBS = [
 	},
 	{
 		module: 'N/xml/element',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/search/Element.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/xml/Element.js`,
 	},
 	{
 		module: 'N/xml/node',
@@ -688,6 +696,10 @@ const CORE_STUBS = [
 	{
 		module: 'N/workbook/chart',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Chart.js`,
+	},
+	{
+		module: 'N/workbook/chartAxis',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ChartAxis.js`,
 	},
 	{
 		module: 'N/workbook/childNodesSelector',
@@ -746,6 +758,10 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Duration.js`,
 	},
 	{
+		module: 'N/workbook/expression',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/Expression.js`,
+	},
+	{
 		module: 'N/workbook/fieldContext',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/FieldContext.js`,
 	},
@@ -764,6 +780,10 @@ const CORE_STUBS = [
 	{
 		module: 'N/workbook/measureSelector',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/MeasureSelector.js`,
+	},
+	{
+		module: 'N/workbook/measureSort',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/MeasureSort.js`,
 	},
 	{
 		module: 'N/workbook/measureValue',
@@ -786,7 +806,7 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PivotAxis.js`,
 	},
 	{
-		module: 'N/workbook/pivoIntersection',
+		module: 'N/workbook/pivotIntersection',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/PivotIntersection.js`,
 	},
 	{
@@ -820,6 +840,10 @@ const CORE_STUBS = [
 	{
 		module: 'N/workbook/reportStyle',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ReportStyle.js`,
+	},
+	{
+		module: 'N/workbook/reportStyleRule',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/workbook/ReportStyleRule.js`,
 	},
 	{
 		module: 'N/workbook/section',
