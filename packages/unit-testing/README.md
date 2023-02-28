@@ -12,17 +12,16 @@ Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestj
 
 ## Features
 - Provides a default configuration to run unit tests with Jest in SuiteCloud projects.
-- Supports unit testing for SuiteScript 2.X files.
-- Provides SuiteScript 2.X stubs for the following SuiteScript modules:
-  - **N/http**
-  - **N/https**
-  - **N/record**
-  - **N/search**
-- Allows you to create custom stubs for SuiteScript 2.X or custom modules.
+- Supports unit testing for SuiteScript 2.x files.
+- Provides SuiteScript 2.x stubs for SuiteScript modules.
+- Allows you to create custom stubs for SuiteScript 2.x or custom modules.
 - Supports code coverage capabilities through Jest.
 
+For more information about the available SuitScript 2.x modules, see [SuiteScript 2.x Modules](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_4220488571.html).  
+For more information about all the mockable stubs, check the CORE_STUBS list in packages\unit-testing\jest-configuration\SuiteCloudJestConfiguration.js.
+
 ## Prerequisites
-- Node.js version 16.14.2 LTS
+- Node.js version 18.14.2 LTS
 - Having a SuiteCloud project
 
 ## Getting Started
@@ -60,18 +59,18 @@ However, if you want to configure SuiteCloud Unit Testing manually, do the follo
     });
     ```
 8. From the root of your SuiteCloud project folder, run `npm test`
-to run your test. You should see an output similar to following:
+to run your test. You should see an output similar to the following:
     ```
     PASS  __tests__/sample-test.js
     Basic jest test with simple assert
         √ should assert stings are equal (2ms)
     ```
->💡 If you want to run tests with coverage, from the root of your SuiteCloud project folder, run `npm test --coverage`.
+>💡 If you want to run tests with coverage, run `npm test --coverage` from the root of your SuiteCloud project folder.
 
 **You successfully ran your first test for a SuiteCloud project!**
 
 ## Additional Configuration
-To properly run your tests against the SuiteScript 2.X files of your SuiteCloud project, create a `jest.config.js` file inside of the root of your SuiteCloud project folder.
+To properly run your tests against the SuiteScript 2.x files of your SuiteCloud project, create a `jest.config.js` file inside of the root of your SuiteCloud project folder.
 
 The `jest.config.js` file must follow a specific structure. Depending on your SuiteCloud project type, check one of the following examples:
 
@@ -249,7 +248,7 @@ module.exports = SuiteCloudJestConfiguration.build({
 });
 ```
 - `http.js` file: This is the stub file. It partially mocks NetSuite's **N/http** module.
->💡 The JSDoc annotations are copied from NetSuite's **N/http** module, but are not required to run SuiteCloud unit testing.
+>💡 The JSDoc annotations are copied from NetSuite's **N/http** module, but are not required to run SuiteCloud Unit Testing.
 ```javascript
 define([], function() {
     /**
@@ -325,7 +324,7 @@ describe('Sample test with user defined http module stub', () => {
 ```
 
 ## [Contributing](/CONTRIBUTING.md)
-Suitecloud Unit Testing is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
+Suitecloud Unit Testing is an open source project. Pull requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
-Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
