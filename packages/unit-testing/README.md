@@ -17,7 +17,7 @@ Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestj
 - Allows you to create custom stubs for SuiteScript 2.x or custom modules.
 
 For more information about the available SuitScript 2.x modules, see [SuiteScript 2.x Modules](https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=chapter_4220488571.html).  
-For more information about all the mockable stubs, see the CORE_STUBS list in the [Stubs](https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/unit-testing/stubs) folder.
+For more information about all the mockable stubs, see the CORE_STUBS list in  [SuiteCloudJestConfiguration.js](./jest-configuration/SuiteCloudJestConfiguration.js).
 
 ## Prerequisites
 - Node.js version 18.14.2 LTS
