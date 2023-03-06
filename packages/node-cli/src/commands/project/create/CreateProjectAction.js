@@ -60,6 +60,9 @@ const UNIT_TEST_JEST_CONFIG_EXTENSION = 'js';
 const UNIT_TEST_SAMPLE_TEST_KEY = 'sampletest';
 const UNIT_TEST_SAMPLE_TEST_FILENAME = 'sample-test';
 const UNIT_TEST_SAMPLE_TEST_EXTENSION = 'js';
+const UNIT_TEST_JSCONFIG_TEMPLATE_KEY = 'jsconfig';
+const UNIT_TEST_JSCONFIG_FILENAME = 'jsconfig';
+const UNIT_TEST_JSCONFIG_EXTENSION = 'json';
 
 const COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
@@ -115,7 +118,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 				...(params[COMMAND_OPTIONS.OVERWRITE] && { overwrite: '' }),
 				...(projectType === ApplicationConstants.PROJECT_SUITEAPP && {
 					publisherid: params[COMMAND_OPTIONS.PUBLISHER_ID],
-					projectid: params[COMMAND_OPTIONS.PROJECT_ID],	
+					projectid: params[COMMAND_OPTIONS.PROJECT_ID],
 					projectversion: params[COMMAND_OPTIONS.PROJECT_VERSION],
 				}),
 			};
@@ -140,17 +143,17 @@ module.exports = class CreateProjectAction extends BaseAction {
 
 			return createProjectActionData.operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
-						.withResultMessage(createProjectActionData.operationResult.resultMessage)
-						.withProjectType(projectType)
-						.withProjectName(projectName)
-						.withProjectDirectory(createProjectActionData.projectDirectory)
-						.withUnitTesting(includeUnitTesting)
-						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
-						.withCommandParameters(commandParameters)
-						.build()
+					.withResultMessage(createProjectActionData.operationResult.resultMessage)
+					.withProjectType(projectType)
+					.withProjectName(projectName)
+					.withProjectDirectory(createProjectActionData.projectDirectory)
+					.withUnitTesting(includeUnitTesting)
+					.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
+					.withCommandParameters(commandParameters)
+					.build()
 				: CreateProjectActionResult.Builder.withErrors(createProjectActionData.operationResult.errorMessages)
-						.withCommandParameters(commandParameters)
-						.build();
+					.withCommandParameters(commandParameters)
+					.build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}
@@ -240,6 +243,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 		await this._createUnitTestPackageJsonFile(type, projectName, projectVersion, projectAbsolutePath);
 		await this._createJestConfigFile(type, projectAbsolutePath);
 		await this._createSampleUnitTestFile(projectAbsolutePath);
+		await this._createJsConfigFile(projectAbsolutePath);
 	}
 
 	async _createGitignoreFile(projectAbsolutePath) {
@@ -308,6 +312,15 @@ module.exports = class CreateProjectAction extends BaseAction {
 			destinationFolder: testsFolderAbsolutePath,
 			fileName: UNIT_TEST_SAMPLE_TEST_FILENAME,
 			fileExtension: UNIT_TEST_SAMPLE_TEST_EXTENSION,
+		});
+	}
+
+	async _createJsConfigFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.UNIT_TEST[UNIT_TEST_JSCONFIG_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: UNIT_TEST_JSCONFIG_FILENAME,
+			fileExtension: UNIT_TEST_JSCONFIG_EXTENSION,
 		});
 	}
 
