@@ -7,11 +7,7 @@
   <img src="https://img.shields.io/visual-studio-marketplace/v/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
 </a>
 
-<<<<<<< HEAD
 SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. The SuiteCloud Extension for Visual Studio Code allows you to customize your SuiteCloud projects for NetSuite. The available SuiteCloud projects include **SuiteApp projects** — self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects** — intended for customizations on accounts you own, such as your production, development, and sandbox accounts.
-=======
-SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. The SuiteCloud Extension for Visual Studio Code lets you customize your SuiteCloud Development Framework (SDF) projects for NetSuite. The available SuiteCloud projects include **SuiteApp projects** — self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects** — intended for customizations on accounts you own, such as your production, development, and sandbox accounts.
->>>>>>> e35226c3017c62ede0ea2a3a8064616808d9b4d8
 
 Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_156026236161.html" rel="noopener noreferrer" target=blank>Getting Started with SuiteCloud SDK</a> and <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4702656040.html" rel="noopener noreferrer" target=blank>SuiteCloud Development Framework Architecture</a>.
 
@@ -29,8 +25,8 @@ Each version of the SuiteCloud Extenstion for Visual Studio Code in the Marketpl
 
 | Version in the Marketplace | Version in NetSuite |
 |:--------------:|:-------------------:|
+| 1.4.X  | 2023.1  |
 | 1.3.X  | 2022.2  |
-| 1.2.X  | 2022.1  |
 
 ## Installing SuiteCloud Extension for Visual Studio Code
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
@@ -120,8 +116,8 @@ To read more about what you can do with SuiteCloud Extension for Visual Studio C
 SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
 
 ## Release Notes & Documentation
-To read the 2022.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2022.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
+To read the 2023.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2023.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
 - Read the SuiteCloud Extension for Visual Studio Code documentation in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=book_159223417590.html).
 
@@ -129,6 +125,6 @@ To read the 2022.2 NetSuite's release notes and documentation, check the followi
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## License
-Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
+Copyright (c) 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
 
 By installing the SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
