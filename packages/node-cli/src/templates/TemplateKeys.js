@@ -20,5 +20,6 @@ module.exports = {
 		jestconfig: require.resolve('./unittest/jest.config.js.template'),
 		packagejson: require.resolve('./unittest/package.json.template'),
 		sampletest: require.resolve('./unittest/sample-test.js.template'),
+		jsconfig: require.resolve('./unittest/jsconfig.json.template')
 	}
 };

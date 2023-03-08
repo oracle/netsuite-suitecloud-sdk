@@ -20,8 +20,8 @@ In this GitHub repository, the following SuiteCloud SDK tools are available:
 </a>
 
 ## Release Notes & Documentation
-To read the 2022.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2022.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html). 
+To read the 2023.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2023.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html). 
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
 
 
@@ -29,7 +29,7 @@ To read the 2022.2 NetSuite's release notes and documentation, check the followi
 SuiteCloud SDK is an open source project. Pull Requests are currently not being accepted. See [Contributing to SuiteCloud SDK](./CONTRIBUTING.md).
 
 ## [License](./LICENSE.txt)
-Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
 
 By installing the SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
 

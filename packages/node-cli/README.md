@@ -13,7 +13,7 @@ CLI for Node.js is an interactive tool that guides you through all the steps of 
 
 ## Prerequisites
 The following software is required to work with SuiteCloud CLI for Node.js:
-- Node.js version 16.14.2 LTS
+- Node.js version 18.14.2 LTS
 - Oracle JDK version 17
 
 Read the full list of prerequisites in [SuiteCloud CLI for Node.js Installation Prerequisites](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558708810.html).
@@ -25,8 +25,8 @@ Each version of CLI for Node.js in NPM works optimally with a specific NetSuite 
 
 | Version in NPM | Version in NetSuite |
 |:--------------:|:-------------------:|
+| 1.7.X  | 2023.1  |
 | 1.6.X  | 2022.2  |
-| 1.5.X  | 2022.1  |
 
 ## Installation
 Since CLI for Node.js is a development tool, use a global instance to install it by running the following command:
@@ -92,8 +92,8 @@ suitecloud account:setup
 ```
 
 ## Release Notes & Documentation
-To read the 2022.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2022.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
+To read the 2023.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2023.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
 - Read the CLI for Node.js documentation in [SuiteCloud CLI for Node.js Guide](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
 
@@ -101,6 +101,6 @@ To read the 2022.2 NetSuite's release notes and documentation, check the followi
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
-Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
 
 By installing the SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
