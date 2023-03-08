@@ -23,7 +23,7 @@
 		"**/*.vsix"
 	],
 	"engines": {
-		"vscode": "^1.70.0"
+		"vscode": "^1.76.0"
 	},
 	"categories": [
 		"Other"
@@ -195,7 +195,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.6.2"
+		"@oracle/suitecloud-cli": "^1.7.0"
 	},
 	"devDependencies": {
 		"@types/glob": "8.1.0",
