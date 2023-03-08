@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.4.0
+
+- New version of SuiteCloud Unit Testing that provides SuiteScript 2.x stubs for all SuiteScript modules.
+- Show active authentication ID when working with multiple projects.
+
 ## 1.3.2
 
 - Fix for security vulnerabilities for third-party library
