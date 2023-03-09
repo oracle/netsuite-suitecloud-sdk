@@ -3,7 +3,7 @@
 ## 1.4.0
 
 - New version of SuiteCloud Unit Testing that provides SuiteScript 2.x stubs for all SuiteScript modules.
-- Show the active project name its authentication ID when working with multiple projects.
+- Show the active project name and its authentication ID in the status bar.
 
 ## 1.3.2
 
