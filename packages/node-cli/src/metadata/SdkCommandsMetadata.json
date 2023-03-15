@@ -32,7 +32,7 @@
 				"description": "Specifies the files to add to the project. When specified, ensure that you do not use the -all option.",
 				"mandatory": false,
 				"type": "MULTIPLE",
-				"usage": "/js/test.js [...]",
+				"usage": "\/js\/test.js [...]",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -52,7 +52,7 @@
 				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -78,20 +78,20 @@
 			"module": {
 				"name": "module",
 				"option": "module",
-				"description": "Specifies the SuiteScript modules you want to add to the SuiteScript file. For example, \"N/record\"",
+				"description": "Specifies the SuiteScript modules you want to add to the SuiteScript file. For example, \"N\/record\"",
 				"mandatory": false,
 				"type": "MULTIPLE",
-				"usage": "N/record [...]",
+				"usage": "N\/record [...]",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
 			"path": {
 				"name": "path",
 				"option": "path",
-				"description": "Specifies the File Cabinet path of the SuiteScript file to create. For example, \"/SuiteScripts/ClientScipt.js\".",
+				"description": "Specifies the File Cabinet path of the SuiteScript file to create. For example, \"\/SuiteScripts\/ClientScipt.js\".",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "\"/SuiteScripts/ClientScript.js\"",
+				"usage": "\"\/SuiteScripts\/ClientScript.js\"",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
@@ -101,7 +101,7 @@
 				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -130,7 +130,7 @@
 				"description": "Sets the parent folder where to create the project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "d:/foo/bar",
+				"usage": "d:\/foo\/bar",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -206,7 +206,7 @@
 			"authid": {
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -229,7 +229,7 @@
 				"description": "Sets the deployment log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, deployment log details are appended to that existing file.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "d:/path/test.log",
+				"usage": "d:\/path\/test.log",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
@@ -249,7 +249,7 @@
 				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -285,10 +285,10 @@
 			"paths": {
 				"name": "paths",
 				"option": "paths",
-				"description": "Specifies the File Cabinet paths of the files to import. For example, \"/SuiteScripts/file.js\".",
+				"description": "Specifies the File Cabinet paths of the files to import. For example, \"\/SuiteScripts\/file.js\".",
 				"mandatory": true,
 				"type": "MULTIPLE",
-				"usage": "\"/SuiteScripts/test.js\"",
+				"usage": "\"\/SuiteScripts\/test.js\"",
 				"defaultOption": true,
 				"disableInIntegrationMode": false
 			},
@@ -302,10 +302,20 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
+			"allowforsuiteapps": {
+				"name": "allowforsuiteapps",
+				"option": "allowforsuiteapps",
+				"description": "",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
 			"authid": {
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -318,18 +328,9 @@
 				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
-			},
-			"calledfromcomparefiles": {
-				"name": "calledfromcomparefiles",
-				"option": "calledfromcomparefiles",
-				"description": "Message displayed should be different if called from Compare Files.",
-				"mandatory": false,
-				"type": "FLAG",
-				"defaultOption": false,
-				"disableInIntegrationMode": false
 			}
 		}
 	},
@@ -363,7 +364,7 @@
 			"type": {
 				"name": "type",
 				"option": "type",
-				"description": "Specifies the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https://system.netsuite.com/app/help/helpcenter.nl?fid=sdfxml.html.",
+				"description": "Specifies the type of custom objects to import. Enter \"ALL\" to import all custom objects. To see what custom objects are supported by SDF, see https:\/\/system.netsuite.com\/app\/help\/helpcenter.nl?fid=sdfxml.html.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "customrecordtype",
@@ -373,10 +374,10 @@
 			"destinationfolder": {
 				"name": "destinationfolder",
 				"option": "destinationfolder",
-				"description": "Specifies the project folder where objects will be stored. It must be within the Objects folder of your project. For example, /Objects/MyObjects.",
+				"description": "Specifies the project folder where objects will be stored. It must be within the Objects folder of your project. For example, \/Objects\/MyObjects.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "/Objects",
+				"usage": "\/Objects",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
@@ -393,7 +394,7 @@
 			"authid": {
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -406,7 +407,7 @@
 				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -422,17 +423,17 @@
 			"folder": {
 				"name": "folder",
 				"option": "folder",
-				"description": "Specifies the File Cabinet path, for example, \"/SuiteScripts\". All files within subfolders are included.",
+				"description": "Specifies the File Cabinet path, for example, \"\/SuiteScripts\". All files within subfolders are included.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "\"/SuiteScripts\"",
+				"usage": "\"\/SuiteScripts\"",
 				"defaultOption": true,
 				"disableInIntegrationMode": false
 			},
 			"authid": {
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -471,7 +472,7 @@
 			"type": {
 				"name": "type",
 				"option": "type",
-				"description": "Specifies the type of custom objects to list. To specify multiple types, enter the types separated by spaces. Otherwise, all types are listed. To see what custom objects are supported by SDF, see https://system.netsuite.com/app/help/helpcenter.nl?fid=sdfxml.html.",
+				"description": "Specifies the type of custom objects to list. To specify multiple types, enter the types separated by spaces. Otherwise, all types are listed. To see what custom objects are supported by SDF, see https:\/\/system.netsuite.com\/app\/help\/helpcenter.nl?fid=sdfxml.html.",
 				"mandatory": false,
 				"type": "MULTIPLE",
 				"usage": "customrecordtype workflow [...]",
@@ -481,7 +482,7 @@
 			"authid": {
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -494,13 +495,13 @@
 		"name": "account:manageauth",
 		"sdkCommand": "manageauth",
 		"usage": "",
-		"description": "Manages authentication IDs (authID) for all your projects. An authentication ID is a custom alias you gave to a specific account-role combination.",
+		"description": "Manages authentication IDs for all your projects. An authentication ID is a custom alias you give to a specific account-role combination.",
 		"isSetupRequired": false,
 		"options": {
 			"list": {
 				"name": "list",
 				"option": "list",
-				"description": "Prints a list of all the configured authentication IDs (authID). Usage: manageauth -list.",
+				"description": "Prints a list of all the configured authentication IDs. Usage: manageauth -list.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",
@@ -510,7 +511,7 @@
 			"info": {
 				"name": "info",
 				"option": "info",
-				"description": "Prints the following information for the specified authentication ID (authID): account ID, role ID, and url. Usage: manageauth -info {authID}.",
+				"description": "Prints the following information for the specified authentication ID: account ID, role ID, and url. Usage: manageauth -info {authenticationID}.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "",
@@ -520,7 +521,7 @@
 			"rename": {
 				"name": "rename",
 				"option": "rename",
-				"description": "Renames an authentication ID (authID). You must specify it together with the renameto option. Usage: manageauth -rename {authID} -renameto {newauthID}.",
+				"description": "Renames an authentication ID. You must specify it together with the renameto option. Usage: manageauth -rename {authenticationID} -renameto {newAuthenticationID}.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "",
@@ -530,7 +531,7 @@
 			"renameto": {
 				"name": "renameto",
 				"option": "renameto",
-				"description": "Specifies the new ID for an authentication ID (authID). You must specify it together with the rename option. Usage: manageauth -rename {authID} -renameto {newauthID}.",
+				"description": "Specifies the new ID for an authentication ID. You must specify it together with the rename option. Usage: manageauth -rename {authenticationID} -renameto {newAuthenticationID}.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "",
@@ -540,7 +541,7 @@
 			"remove": {
 				"name": "remove",
 				"option": "remove",
-				"description": "Removes an authentication ID (authID). Usage: manageauth -remove {authID}.",
+				"description": "Removes an authentication ID. Usage: manageauth -remove {authenticationID}.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "",
@@ -550,7 +551,7 @@
 			"revoke": {
 				"name": "revoke",
 				"option": "revoke",
-				"description": "Revokes the TBA token that was issued to your account and is linked to the specified authentication ID (authID).",
+				"description": "Revokes the TBA token that was issued to your account and is linked to the specified authentication ID.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "",
@@ -572,7 +573,7 @@
 				"description": "Specifies a path to store the ZIP file containing your project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},
@@ -582,7 +583,7 @@
 				"description": "Specifies the path of your project folder.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -608,7 +609,7 @@
 			"authid": {
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -621,7 +622,7 @@
 				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -637,17 +638,17 @@
 			"paths": {
 				"name": "paths",
 				"option": "paths",
-				"description": "Specifies the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"/SuiteScripts/file.js\" for account customization projects, and \"/SuiteApps/com.project.example/script.js\" for SuiteApp projects.",
+				"description": "Specifies the file cabinet paths of the files to upload. To specify multiple paths, enter a space between paths and enclose the entire argument in double quotes. For example, \"\/SuiteScripts\/file.js\" for account customization projects, and \"\/SuiteApps\/com.project.example\/script.js\" for SuiteApp projects.",
 				"mandatory": true,
 				"type": "MULTIPLE",
-				"usage": "\"/SuiteScripts/test.js\"",
+				"usage": "\"\/SuiteScripts\/test.js\"",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
 			"authid": {
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -660,7 +661,7 @@
 				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			}
@@ -686,7 +687,7 @@
 			"authid": {
 				"name": "authid",
 				"option": "authid",
-				"description": "References the custom alias you gave to a specific account-role combination.",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
 				"mandatory": true,
 				"type": "SINGLE",
 				"usage": "",
@@ -709,7 +710,7 @@
 				"description": "Sets the validation log file location, as either a directory or a file name. If it is a directory, a default log file is generated in the specified location. If a log file already exists in the specified location, validation log details are appended to that existing file.",
 				"mandatory": false,
 				"type": "SINGLE",
-				"usage": "d:/path/test.log",
+				"usage": "d:\/path\/test.log",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
 			},
@@ -719,7 +720,7 @@
 				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
 				"mandatory": true,
 				"type": "SINGLE",
-				"usage": "c:/project/",
+				"usage": "c:\/project\/",
 				"defaultOption": false,
 				"disableInIntegrationMode": true
 			},

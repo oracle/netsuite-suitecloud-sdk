@@ -17,11 +17,13 @@ const BaseAction = require('../../base/BaseAction');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');
+const CLIException = require('../../../CLIException');
 
 const COMMAND_OPTIONS = {
 	ALLOW_FOR_SUITEAPPS: 'allowforsuiteapps',
 	AUTH_ID: 'authid',
 	CALLED_FROM_COMPARE_FILES: 'calledfromcomparefiles',
+	CALLED_FROM_UPDATE: 'calledfromupdate',
 	FOLDER: 'folder',
 	PATHS: 'paths',
 	EXCLUDE_PROPERTIES: 'excludeproperties',
@@ -34,6 +36,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._calledFromCompareFiles = false;
+		this._calledFromUpdate = false;
 	}
 
 	preExecute(params) {
@@ -57,6 +60,10 @@ module.exports = class ImportFilesAction extends BaseAction {
 			this._calledFromCompareFiles = true;
 			delete params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES];
 		}
+		if (params[COMMAND_OPTIONS.CALLED_FROM_UPDATE]) {
+			this._calledFromUpdate = true;
+			delete params[COMMAND_OPTIONS.CALLED_FROM_UPDATE];
+		}
 
 		return params;
 	}
@@ -67,7 +74,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 				return ActionResult.Builder.withErrors([NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP)]).build();
 			}
 
-			if (!this._calledFromCompareFiles && this._runInInteractiveMode === false) {
+			if (!this._calledFromCompareFiles && !this._calledFromUpdate && this._runInInteractiveMode === false) {
 				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 			}
 
@@ -82,21 +89,25 @@ module.exports = class ImportFilesAction extends BaseAction {
 
 			const operationResult = await executeWithSpinner({
 				action: this._sdkExecutor.execute(executionContextImportObjects),
-				message: NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
+				message:  NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
 			if (this._calledFromCompareFiles) {
 				params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES] = true;
 			}
+			if (this._calledFromUpdate) {
+				params[COMMAND_OPTIONS.CALLED_FROM_UPDATE] = true;
+			}
 
 			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? ActionResult.Builder.withData(operationResult.data)
-					.withResultMessage(operationResult.resultMessage)
-					.withCommandParameters(params)
-					.build()
+						.withResultMessage(operationResult.resultMessage)
+						.withCommandParameters(params)
+						.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(params).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			const errorMessage = error instanceof CLIException ? error.getErrorMessage() : error;
+			return ActionResult.Builder.withErrors([errorMessage]).build();
 		}
 	}
 };

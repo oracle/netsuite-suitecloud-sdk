@@ -20,21 +20,16 @@ In this GitHub repository, the following SuiteCloud SDK tools are available:
 </a>
 
 ## Release Notes & Documentation
-To read the 2022.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2022.2 in [SuiteCloud SDK Release Notes](https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=chapter_3715068484.html). 
+To read the 2023.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2023.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html). 
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
 
-## Contributing
 
-This project is not accepting external contributions at this time. For bugs or enhancement requests, please file a GitHub issue unless it’s security related. When filing a bug remember that the better written the bug is, the more likely it is to be fixed. If you think you’ve found a security vulnerability, do not raise a GitHub issue and follow the instructions in our [security policy](./SECURITY.md).
+## [Contributing](./CONTRIBUTING.md)
+SuiteCloud SDK is an open source project. Pull Requests are currently not being accepted. See [Contributing to SuiteCloud SDK](./CONTRIBUTING.md).
 
-## Security
-
-Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
-
-## License
-
-Copyright (c) 2022 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+## [License](./LICENSE.txt)
+Copyright (c) 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
 
 By installing the SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
 

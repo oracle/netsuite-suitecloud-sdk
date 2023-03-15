@@ -1,4 +1,4 @@
-define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
+define(['./Line', './Sublist', './Field'], function (Line, Sublist, Field) {
 
     /**
      * Primary object used to encapsulate a record object.
@@ -21,32 +21,51 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
      * @constructor
      */
     function Record() {
+
+        /**
+         * @type {number}
+         * @readonly
+         */
+        this.id = undefined;
+
+        /**
+         * @type {boolean}
+         * @readonly
+         */
+        this.isDynamic = undefined;
+
+        /**
+         * @type {string}
+         * @readonly
+         */
+        this.type = undefined;
+
         /**
          * provide scripting context for records
          * getScriptContext is only in recordDefinition.js and not in dynamicrecord.js.So it is only visible inside NetSuite.
          */
 
-        this.getScriptingContext = function(options) {};
+        this.getScriptingContext = function (options) { };
 
         /**
          * provide scripting context for records
          */
 
-        this.eventHandlerModules = function(options) {};
+        this.eventHandlerModules = function (options) { };
 
         /**
          * return array of names of all body fields, including machine header field and matrix header fields
          * @return {string[]}
          */
 
-        this.getFields = function(options) {};
+        this.getFields = function (options) { };
 
         /**
          * return array of names of all sublists
          * @return {string[]}
          */
 
-        this.getSublists = function(options) {};
+        this.getSublists = function (options) { };
 
         /**
          * return value of the field
@@ -57,7 +76,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_INVALID_API_USAGE if invoked after using setText
          */
 
-        this.getValue = function(options) {};
+        this.getValue = function (options) { };
 
         /**
          * set value of the field
@@ -69,7 +88,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if fieldId is missing or undefined
          */
 
-        this.setValue = function(options) {};
+        this.setValue = function (options) { };
 
         /**
          * get value of the field in text representation
@@ -79,7 +98,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if fieldId is missing or undefined
          */
 
-        this.getText = function(options) {};
+        this.getText = function (options) { };
 
         /**
          * set value of the field by text representation
@@ -94,7 +113,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if fieldId is missing or undefined
          */
 
-        this.setText = function(options) {};
+        this.setText = function (options) { };
 
         /**
          * return the line number for the first occurrence of a field value in a sublist and return -1 if not found
@@ -106,7 +125,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if sublistId or field is missing
          */
 
-        this.findSublistLineWithValue = function(options) {};
+        this.findSublistLineWithValue = function (options) { };
 
         /**
          * return value of a sublist field
@@ -120,7 +139,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_INVALID_API_USAGE if invoked after using setSublistText
          */
 
-        this.getSublistValue = function(options) {};
+        this.getSublistValue = function (options) { };
 
         /**
          * set the value of a sublist field (available for deferred dynamic only)
@@ -134,7 +153,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_INVALID_SUBLIST_OPERATION if invalid sublist id, field id, or line number
          */
 
-        this.setSublistValue = function(options) {};
+        this.setSublistValue = function (options) { };
 
         /**
          * return value of a sublist field in text representation
@@ -148,7 +167,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_INVALID_API_USAGE if invoked prior using setSublistText
          */
 
-        this.getSublistText = function(options) {};
+        this.getSublistText = function (options) { };
 
         /**
          * set the value of a sublist field in text representation (available for deferred dynamic only)
@@ -162,7 +181,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_INVALID_SUBLIST_OPERATION if invalid sublist id, field id, or line number
          */
 
-        this.setSublistText = function(options) {};
+        this.setSublistText = function (options) { };
 
         /**
          * return line count of sublist
@@ -171,7 +190,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {number}
          */
 
-        this.getLineCount = function(options) {};
+        this.getLineCount = function (options) { };
 
         /**
          * insert a sublist line
@@ -188,7 +207,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          *     editable or before exists and before is an instanceId that does not point to a line in the sublist.
          */
 
-        this.insertLine = function(options) {};
+        this.insertLine = function (options) { };
 
         /**
          * remove a sublist line
@@ -205,7 +224,19 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          *     editable
          */
 
-        this.removeLine = function(options) {};
+        this.removeLine = function (options) { };
+
+        /**
+         * Selects an existing line in a sublist.
+         * @param {Object} options
+         * @param {string} options.sublistId
+         * @param {number} options.line
+         * @return {Line} [line object]
+         * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if sublistId is missing or undefined
+         * @throws {SuiteScriptError} SSS_INVALID_SUBLIST_OPERATION if invalid sublist id or sublist is not editable
+         */
+
+        this.selectLine = function (options) { };
 
         /**
          * select a new line at the end of sublist
@@ -217,9 +248,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @restriction only available in dynamic record
          */
 
-        this.selectNewLine = function(options) {
-
-        };
+        this.selectNewLine = function (options) { };
 
         /**
          * cancel the current selected line
@@ -231,7 +260,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @restriction only available in dynamic record
          */
 
-        this.cancelLine = function(options) {};
+        this.cancelLine = function (options) { };
 
         /**
          * commit the current selected line
@@ -243,7 +272,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @restriction only available in dynamic record
          */
 
-        this.commitLine = function(options) {};
+        this.commitLine = function (options) { };
 
         /**
          * return value of a sublist field on the current selected sublist line
@@ -256,7 +285,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @restriction only available in dynamic record
          */
 
-        this.getCurrentSublistValue = function(options) {};
+        this.getCurrentSublistValue = function (options) { };
 
         /**
          * set the value for field in the current selected line
@@ -271,7 +300,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          *     if user tries to edit readonly sublist field
          */
 
-        this.setCurrentSublistValue = function(options) {};
+        this.setCurrentSublistValue = function (options) { };
 
         /**
          * return the value for field in the current selected line by text representation
@@ -284,7 +313,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @restriction only available in dynamic record
          */
 
-        this.getCurrentSublistText = function(options) {};
+        this.getCurrentSublistText = function (options) { };
 
         /**
          * set the value for field in the current selected line by text representation
@@ -300,7 +329,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @restriction only available in dynamic record
          */
 
-        this.setCurrentSublistText = function(options) {};
+        this.setCurrentSublistText = function (options) { };
 
         /**
          * save record updates to the system
@@ -312,8 +341,8 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {number} id of submitted record
          */
 
-        this.save = function(options) {};
-        this.save.promise = function(options) {};
+        this.save = function (options) { };
+        this.save.promise = function (options) { };
 
         /**
          * return a value indicating if the field has a subrecord
@@ -322,7 +351,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {boolean}
          */
 
-        this.hasSubrecord = function(options) {};
+        this.hasSubrecord = function (options) { };
 
         /**
          * get the subrecord for the associated field
@@ -334,7 +363,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} FIELD_1_IS_DISABLED_YOU_CANNOT_APPLY_SUBRECORD_OPERATION_ON_THIS_FIELD if field is disable
          */
 
-        this.getSubrecord = function(options) {};
+        this.getSubrecord = function (options) { };
 
         /**
          * remove the subrecord for the associated field
@@ -343,7 +372,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Record} same record, for chaining
          */
 
-        this.removeSubrecord = function(options) {};
+        this.removeSubrecord = function (options) { };
 
         /**
          * return a value indicating if the associated sublist field has a subrecord
@@ -355,7 +384,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {boolean}
          */
 
-        this.hasSublistSubrecord = function(options) {};
+        this.hasSublistSubrecord = function (options) { };
 
         /**
          * get the subrecord for the associated sublist field
@@ -367,7 +396,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Record} [client-side subrecord implementation]
          */
 
-        this.getSublistSubrecord = function(options) {};
+        this.getSublistSubrecord = function (options) { };
 
         /**
          * remove the subrecord for the associated sublist field
@@ -379,7 +408,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Record} same record, for chaining
          */
 
-        this.removeSublistSubrecord = function(options) {};
+        this.removeSublistSubrecord = function (options) { };
 
         /**
          * return a value indicating if the associated sublist field has a subrecord on the current line
@@ -390,7 +419,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {boolean}
          */
 
-        this.hasCurrentSublistSubrecord = function(options) {};
+        this.hasCurrentSublistSubrecord = function (options) { };
 
         /**
          * get the subrecord for the associated sublist field on the current line
@@ -401,7 +430,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Record} [client-side subrecord implementation]
          */
 
-        this.getCurrentSublistSubrecord = function(options) {};
+        this.getCurrentSublistSubrecord = function (options) { };
 
         /**
          * remove the subrecord for the associated sublist field on the current line
@@ -412,7 +441,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Record} same record, for chaining
          */
 
-        this.removeCurrentSublistSubrecord = function(options) {};
+        this.removeCurrentSublistSubrecord = function (options) { };
 
         /**
          * returns the specified sublist
@@ -421,9 +450,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Sublist} [requested sublist]
          */
 
-        this.getSublist = function(options) {
-            return Sublist;
-        };
+        this.getSublist = function (options) { };
 
         /**
          * return array of names of all fields in a sublist
@@ -433,7 +460,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if options.sublistId is missing or undefined
          */
 
-        this.getSublistFields = function(options) {};
+        this.getSublistFields = function (options) { };
 
         /**
          * return field object from record
@@ -443,7 +470,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if options.fieldId is missing or undefined
          */
 
-        this.getField = function(options) {};
+        this.getField = function (options) { };
 
         /**
          * return field object from record's sublist
@@ -456,7 +483,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @throws {SuiteScriptError} SSS_INVALID_SUBLIST_OPERATION if line number is invalid
          */
 
-        this.getSublistField = function(options) {};
+        this.getSublistField = function (options) { };
 
         /**
          * return field object from record's sublist current line
@@ -468,7 +495,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @restriction only available in dynamic record
          */
 
-        this.getCurrentSublistField = function(options) {};
+        this.getCurrentSublistField = function (options) { };
 
         /**
          * set the value for the associated header in the matrix
@@ -482,7 +509,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Record} same record, for chaining
          */
 
-        this.setMatrixHeaderValue = function(options) {};
+        this.setMatrixHeaderValue = function (options) { };
 
         /**
          * get the value for the associated header in the matrix
@@ -494,7 +521,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {number|Date|string}
          */
 
-        this.getMatrixHeaderValue = function(options) {};
+        this.getMatrixHeaderValue = function (options) { };
 
         /**
          * set the value for the associated field in the matrix
@@ -509,7 +536,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Record} same record, for chaining
          */
 
-        this.setMatrixSublistValue = function(options) {};
+        this.setMatrixSublistValue = function (options) { };
 
         /**
          * get the value for the associated field in the matrix
@@ -522,7 +549,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {number|Date|string}
          */
 
-        this.getMatrixSublistValue = function(options) {};
+        this.getMatrixSublistValue = function (options) { };
 
         /**
          * get the field for the specified header in the matrix
@@ -534,7 +561,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Field} [requested field]
          */
 
-        this.getMatrixHeaderField = function(options) {};
+        this.getMatrixHeaderField = function (options) { };
 
         /**
          * get the field for the specified sublist in the matrix
@@ -547,7 +574,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Field} [requested field]
          */
 
-        this.getMatrixSublistField = function(options) {};
+        this.getMatrixSublistField = function (options) { };
 
         /**
          * returns the line number of the first line that contains the specified value in the specified column of the matrix
@@ -560,7 +587,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {number}
          */
 
-        this.findMatrixSublistLineWithValue = function(options) {};
+        this.findMatrixSublistLineWithValue = function (options) { };
 
         /**
          * returns the number of columns for the specified matrix.
@@ -571,7 +598,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {number}
          */
 
-        this.getMatrixHeaderCount = function(options) {};
+        this.getMatrixHeaderCount = function (options) { };
 
         /**
          * set the value for the line currently selected in the matrix
@@ -587,7 +614,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {Record} same record, for chaining
          */
 
-        this.setCurrentMatrixSublistValue = function(options) {};
+        this.setCurrentMatrixSublistValue = function (options) { };
 
         /**
          * get the value for the line currently selected in the matrix
@@ -600,7 +627,7 @@ define(['./Line', './Sublist', './Field'], function(Line, Sublist, Field) {
          * @return {number|Date|string}
          */
 
-        this.getCurrentMatrixSublistValue = function(options) {};
+        this.getCurrentMatrixSublistValue = function (options) { };
     }
 
     return new Record();
