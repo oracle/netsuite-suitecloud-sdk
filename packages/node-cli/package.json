@@ -19,8 +19,8 @@
 	"repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/node-cli",
 	"main": "./src/suitecloud.js",
 	"preferGlobal": true,
-	"sdkFilename": "cli-2023.1.jar",
-	"nsCompatibleVersion": "2022.2",
+	"sdkFilename": "cli-2023.1.0.jar",
+	"nsCompatibleVersion": "2023.1",
 	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/23.1",
 	"bin": {
 		"suitecloud": "./src/suitecloud.js"
