@@ -9,14 +9,14 @@
 
 SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. The SuiteCloud Extension for Visual Studio Code allows you to customize your SuiteCloud projects for NetSuite. The available SuiteCloud projects include **SuiteApp projects** — self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects** — intended for customizations on accounts you own, such as your production, development, and sandbox accounts.
 
-Read more about SuiteCloud SDK and SDF in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_156026236161.html" rel="noopener noreferrer" target=blank>Getting Started with SuiteCloud SDK</a> and <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_4702656040.html" rel="noopener noreferrer" target=blank>SuiteCloud Development Framework Architecture</a>.
+Read more about SuiteCloud SDK and SDF in <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_156026236161.html" rel="noopener noreferrer" target=blank>SuiteCloud SDK Overview</a> and <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4702656040.html" rel="noopener noreferrer" target=blank>SuiteCloud Development Framework Architecture</a>.
 
 ## Installation Prerequisites
 The following software is required to work with SuiteCloud Extension for Visual Studio Code:
 - Oracle JDK version 17
 - VS Code version 1.70 or higher
 
-Read the detailed list of prerequisites in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Prerequisites for SuiteCloud Extension for Visual Studio Code</a>.
+Read the detailed list of prerequisites in <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Prerequisites for SuiteCloud Extension for Visual Studio Code</a>.
 
 ## Supported Versions
 Although you may have access to older versions of the SuiteCloud Extension for Visual Studio Code, only the versions in this section are officially supported.
@@ -36,7 +36,7 @@ To install SuiteCloud Extension for Visual Studio Code, follow these steps:
 3. Click **Install**.
 4. Restart Visual Studio Code after installation.
 
-See more details about installation in <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159223240436.html" rel="noopener noreferrer" target=blank>Installing and Setting Up SuiteCloud Extension for Visual Studio Code</a>.
+See more details about installation in <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_159223155621.html" rel="noopener noreferrer" target=blank>Installing and Setting Up SuiteCloud Extension for Visual Studio Code</a>.
 
 ## Getting Started
 
@@ -94,32 +94,32 @@ The following SuiteCloud commands are available through the Command Palette:
 
 | Command | Description |
 | --- | --- |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147339580.html" rel="noopener noreferrer" target=blank>Add Dependency References to the Manifest</a>|Adds the defined dependencies to the Manifest file.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_0608124000.html" rel="noopener noreferrer" target=blank>Compare with Account File</a>|Compares a local file with its account version.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147328227.html" rel="noopener noreferrer" target=blank>Create SuiteScript Files</a>|Creates a SuiteScript file based on a script type template that also includes any modules you select to extend NetSuite and customize, search for, and process your data. |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SuiteCloud file-based projects to develop ACPs or SuiteApp projects for internal use or for commercial distribution.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Deploys the folder containing the project. The project folder is zipped before deployment including only the files and folders referenced in the deploy.xml file. |
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports files from a NetSuite account to your project. Note that you cannot import files from a SuiteApp.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#section_162971830372" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports SDF custom objects from a NetSuite account to your project.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_163067396066.html" rel="noopener noreferrer" target=blank>List Files</a>|Lists the files in the File Cabinet of your account.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160163955513" rel="noopener noreferrer" target=blank>List Objects</a>|Lists the SDF custom objects existing in your account.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_164630701111.html" rel="noopener noreferrer" target=blank>Manage Accounts</a>|Lets you manage the authentication IDs associated to your accounts by renaming or removing them. It also shows the details of any specific authentication ID.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147609118.html" rel="noopener noreferrer" target=blank>Set Up Account</a>|Adds the NetSuite accounts you want to customize. It also lets you set an account as default for a project.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_163067510539.html" rel="noopener noreferrer" target=blank>Update File from Account</a>|Overwrites the selected file in the project with the matching file in an account.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_161643514921.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported FileCabinet folder.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160147311996.html#subsect_160147382361" rel="noopener noreferrer" target=blank>Update Object from Account</a>|Overwrites the selected SDF custom objects in the project with their matching objects imported from your account. In the case of custom records, custom instances can be included.|
-|<a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=section_164563201243.html" rel="noopener noreferrer" target=blank>Validate Project</a>|Validates a project against your NetSuite account. Only the files and folders referenced in the deploy.xml file are validated.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_160147339580.html" rel="noopener noreferrer" target=blank>Add Dependency References to the Manifest</a>|Adds the defined dependencies to the Manifest file.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_0608124000.html" rel="noopener noreferrer" target=blank>Compare with Account File</a>|Compares a local file with its account version.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_160147328227.html" rel="noopener noreferrer" target=blank>Create SuiteScript Files</a>|Creates a SuiteScript file based on a script type template that also includes any modules you select to extend NetSuite and customize, search for, and process your data. |
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162938506015.html" rel="noopener noreferrer" target=blank>Create Project</a>|Creates SuiteCloud file-based projects to develop ACPs or SuiteApp projects for internal use or for commercial distribution.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_160147342366.html" rel="noopener noreferrer" target=blank>Deploy Project</a>|Deploys the folder containing the project. The project folder is zipped before deployment including only the files and folders referenced in the deploy.xml file. |
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162930381001.html" rel="noopener noreferrer" target=blank>Import Files</a>|Imports files from a NetSuite account to your project. Note that you cannot import files from a SuiteApp.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_160147311996.html" rel="noopener noreferrer" target=blank>Import Objects</a>|Imports SDF custom objects from a NetSuite account to your project.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_163067396066.html" rel="noopener noreferrer" target=blank>List Files</a>|Lists the files in the File Cabinet of your account.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_160147311996.html" rel="noopener noreferrer" target=blank>List Objects</a>|Lists the SDF custom objects existing in your account.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_164630701111.html" rel="noopener noreferrer" target=blank>Manage Accounts</a>|Lets you manage the authentication IDs associated to your accounts by renaming or removing them. It also shows the details of any specific authentication ID.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_160147609118.html" rel="noopener noreferrer" target=blank>Set Up Account</a>|Adds the NetSuite accounts you want to customize. It also lets you set an account as default for a project.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_163067510539.html" rel="noopener noreferrer" target=blank>Update File from Account</a>|Overwrites the selected file in the project with the matching file in an account.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_161643514921.html" rel="noopener noreferrer" target=blank>Upload File</a>|Uploads files to the FileCabinet folder without requiring the deployment of the entire project. Files must be in an SDF supported FileCabinet folder.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_160147311996.html" rel="noopener noreferrer" target=blank>Update Object from Account</a>|Overwrites the selected SDF custom objects in the project with their matching objects imported from your account. In the case of custom records, custom instances can be included.|
+|<a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_164563201243.html" rel="noopener noreferrer" target=blank>Validate Project</a>|Validates a project against your NetSuite account. Only the files and folders referenced in the deploy.xml file are validated.|
 
-To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://system.netsuite.com/app/help/helpcenter.nl?fid=article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
+To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
 
 ## Using SuiteCloud Extension for Visual Studio Code with SuiteCloud CLI for Node.js
-SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
+SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
 
 ## Release Notes & Documentation
 To read the 2023.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
 - Read the release notes for NetSuite 2023.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
-- Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
-- Read the SuiteCloud Extension for Visual Studio Code documentation in [NetSuite's Help Center](https://system.netsuite.com/app/help/helpcenter.nl?fid=book_159223417590.html).
+- Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_3798389663.html).
+- Read the SuiteCloud Extension for Visual Studio Code documentation in [NetSuite's Help Center](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/book_159223417590.html).
 
 ## Contributing
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
