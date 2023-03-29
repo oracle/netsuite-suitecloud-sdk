@@ -17,7 +17,8 @@ module.exports = {
 
 			const result = childProcess.spawn( npm, [NPM_ARG_INSTALL], {
 				cwd: projectAbsolutePath,
-				stdio: [process.stdin, process.stdout, process.stderr]
+				stdio: 'inherit',
+				windowsHide: true
 			});
 
 			result.on(NPM_RESULT_CLOSE, code => {
