@@ -15,7 +15,7 @@ module.exports = {
 		return new Promise((resolve, reject) => {
 			let npm = process.platform === PLATFORM_WIN ? COMMAND_NPM_WIN : COMMAND_NPM_UNIX;
 
-			const result = childProcess.spawn( npm, [NPM_ARG_INSTALL], {
+			const result = childProcess.spawn(npm, [NPM_ARG_INSTALL], {
 				cwd: projectAbsolutePath,
 				stdio: 'inherit',
 				windowsHide: true
