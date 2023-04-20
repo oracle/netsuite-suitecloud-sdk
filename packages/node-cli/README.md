@@ -16,7 +16,7 @@ The following software is required to work with SuiteCloud CLI for Node.js:
 - Node.js version 18.14.2 LTS
 - Oracle JDK version 17
 
-Read the full list of prerequisites in [SuiteCloud CLI for Node.js Installation Prerequisites](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1558708810.html).
+Read the full list of prerequisites in [SuiteCloud CLI for Node.js Installation Prerequisites](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558708810.html).
 
 ## Supported Versions
 Although you may have access to older versions of CLI for Node.js, only the versions in this section are officially supported.
@@ -52,28 +52,28 @@ suitecloud <command> <option> <argument>
 ### Commands
 | Command | Description |
 | --- | --- |
-|[`account:manageauth`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_157304934116.html)|Manages authentication IDs for all your projects.|
-|[`account:savetoken`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159350785187.html)|Saves a TBA token that you issued previously in NetSuite.|
-|[`account:setup`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
-|[`file:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_162810635242.html)|Creates SuiteScript files in the selected folder using the correct template with SuiteScript modules injected.|
-|[`file:import`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041963273.html)|Imports files from an account to your account customization project.|
-|[`file:list`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042966488.html)|Lists the files in the File Cabinet of your account.|
-|[`file:upload`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159066070687.html)|Uploads files from your project to an account.|
-|[`object:import`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156042181820.html)|Imports SDF custom objects from an account to your SuiteCloud project.|
-|[`object:list`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156043303237.html)|Lists the SDF custom objects deployed in an account.|
-|[`object:update`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156050566547.html)|Overwrites the SDF custom objects in the project with their matching objects imported from the account. In the case of custom records, custom instances can be included.|
-|[`project:adddependencies`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_155981452469.html)| Adds missing dependencies to the manifest file.|
-|[`project:create`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156041348327.html)|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
-|[`project:deploy`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156044636320.html)|Deploys the folder containing the project.|
-|[`project:package`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_159550971388.html)|Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file.|
-|[`project:validate`](https://system.netsuite.com/app/help/helpcenter.nl?fid=section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
+|[`account:manageauth`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_157304934116.html)|Manages authentication IDs for all your projects.|
+|[`account:savetoken`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159350785187.html)|Saves a TBA token that you issued previously in NetSuite.|
+|[`account:setup`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
+|[`file:create`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162810635242.html)|Creates SuiteScript files in the selected folder using the correct template with SuiteScript modules injected.|
+|[`file:import`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156041963273.html)|Imports files from an account to your account customization project.|
+|[`file:list`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156042966488.html)|Lists the files in the File Cabinet of your account.|
+|[`file:upload`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159066070687.html)|Uploads files from your project to an account.|
+|[`object:import`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156042181820.html)|Imports SDF custom objects from an account to your SuiteCloud project.|
+|[`object:list`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156043303237.html)|Lists the SDF custom objects deployed in an account.|
+|[`object:update`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156050566547.html)|Overwrites the SDF custom objects in the project with their matching objects imported from the account. In the case of custom records, custom instances can be included.|
+|[`project:adddependencies`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_155981452469.html)| Adds missing dependencies to the manifest file.|
+|[`project:create`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156041348327.html)|Creates a SuiteCloud project, either a SuiteApp or an account customization project (ACP).|
+|[`project:deploy`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156044636320.html)|Deploys the folder containing the project.|
+|[`project:package`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159550971388.html)|Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file.|
+|[`project:validate`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
 
 To check the help for a specific command, run the following command:
 ```
 suitecloud {command} -h
 ```
 
-Read the detailed documentation for all the commands in [SuiteCloud CLI for Node.js Reference](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_155931263126.html).
+Read the detailed documentation for all the commands in [SuiteCloud CLI for Node.js Reference](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_155931263126.html).
 
 ## Getting Started
 🎞 To see how to install and set up CLI for Node.js, watch the following video:
@@ -94,10 +94,10 @@ suitecloud account:setup
 ## Release Notes & Documentation
 To read the 2023.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
 - Read the release notes for NetSuite 2023.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
-- Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
-- Read the CLI for Node.js documentation in [SuiteCloud CLI for Node.js Guide](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
+- Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_3798389663.html).
+- Read the CLI for Node.js documentation in [SuiteCloud CLI for Node.js Guide](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_1558708800.html).
 
-## [Contributing](/CONTRIBUTING.md)
+## Contributing
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
