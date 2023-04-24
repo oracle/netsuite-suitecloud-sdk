@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.2
+
+- Fix for security vulnerabilities for third-party library
+
 ## 1.4.1
 
 - Fix for security vulnerabilities for third-party library
