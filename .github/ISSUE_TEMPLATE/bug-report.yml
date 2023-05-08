@@ -58,10 +58,16 @@ body:
     validations:
       required: true
   - type: textarea
-    id: steps
     attributes:
-      label: Steps to reproduce
-      description: Which steps do we need to take to reproduce this error?
+      label: Steps To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. when running suitecloud account:setup ...
+        2. creating a new authid
+        3. Browser based authentication
+        4. See error...
+    validations:
+      required: true
   - type: textarea
     id: logs
     attributes:
