@@ -12,17 +12,21 @@ body:
   - type: dropdown
     id: tool
     attributes:
-      label: Select the tool where you encountered the issue
-      description: What version of our software are you running?
+      label: Select the SuiteCloud tool where you encountered the issue
       options:
         - SuiteCloud CLI
         - SuiteCloud Extension for VSCode
+        - SuiteCloud Unit Testing
   - type: input
     id: toolVersion
     attributes:
-      label: Version of the Tool
-      description: "Please provide the version of SuiteCloud CLI `suitecloud --version` or 
-                    SuiteCloud Extension version installed"
+      label: Version of the SuiteCloud Tool
+      description: |
+                    For CLI run: `suitecloud --version`
+
+                    For VSCode Extension: `ctrl+shift+x` , search for suitecloud extension, click on uninstall drop down, click on Install Another Version, check current version number
+
+                    For Unit-Testing package: Open package.json from your suitecloud project, check the version on "@oracle/suitecloud-unit-testing": ^1.2.1"
       placeholder: "1.2.0"
     validations:
       required: true
