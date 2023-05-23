@@ -4,7 +4,6 @@
  */
 'use strict';
 
-const { NodeVM } = require('vm2');
 const { lineBreak } = require('../../loggers/LoggerConstants');
 const FileUtils = require('../../utils/FileUtils');
 const path = require('path');
@@ -32,17 +31,7 @@ module.exports = class CLIConfigurationService {
 		}
 
 		try {
-			const nodeVm = new NodeVM({
-				console: 'inherit',
-				sandbox: {},
-				require: {
-					external: true,
-					builtin: ['*'],
-					root: this._executionPath,
-				},
-			});
-			const cliConfigFileContent = FileUtils.readAsString(cliConfigFile);
-			this._cliConfig = nodeVm.run(cliConfigFileContent, cliConfigFile);
+			this._cliConfig = require(cliConfigFile);
 		} catch (error) {
 			throw NodeTranslationService.getMessage(ERRORS.CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE, cliConfigFile, lineBreak, error);
 		}
@@ -58,10 +47,10 @@ module.exports = class CLIConfigurationService {
 		const defaultProjectFolder = isString(this._cliConfig.defaultProjectFolder) ? this._cliConfig.defaultProjectFolder : '';
 
 		const commandConfig = this._cliConfig && this._cliConfig.commands && this._cliConfig.commands[command];
-		let commandOverridenProjectFolder;
+		let commandOverriddenProjectFolder;
 		if (commandConfig && isString(commandConfig.projectFolder)) {
-			commandOverridenProjectFolder = commandConfig.projectFolder;
+			commandOverriddenProjectFolder = commandConfig.projectFolder;
 		}
-		return path.join(this._executionPath, commandOverridenProjectFolder ? commandOverridenProjectFolder : defaultProjectFolder);
+		return path.join(this._executionPath, commandOverriddenProjectFolder ? commandOverriddenProjectFolder : defaultProjectFolder);
 	}
 };
