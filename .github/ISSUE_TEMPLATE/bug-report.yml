@@ -17,8 +17,6 @@ body:
         - SuiteCloud CLI
         - SuiteCloud Extension for VSCode
         - SuiteCloud Unit Testing
-      validations:
-        required: true
   - type: input
     id: toolVersion
     attributes:
