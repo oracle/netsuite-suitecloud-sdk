@@ -48,7 +48,7 @@ body:
         Please provide the full Node version of your project. node -v 
 
         VSCODE version in case you selected SuiteCloud Extension. This can be checked in "About VIsual Studio Code".
-      placeholder: "Node = v18.15.0, VSCode: Version: 1.78.0 (Universal)"
+      placeholder: "v18.15.0, 1.78.0 (Universal)"
     validations:
       required: true
   - type: input
