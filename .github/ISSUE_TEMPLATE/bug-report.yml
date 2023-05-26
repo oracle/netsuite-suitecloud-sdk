@@ -26,7 +26,7 @@ body:
       description: |
                     For CLI run: `suitecloud --version`
 
-                    For VSCode Extension: `ctrl+shift+x` , search for suitecloud extension, click on uninstall drop down, click on Install Another Version, check current version number
+                    For VSCode Extension: `ctrl+shift+x` , search for suitecloud extension, Check the Version in front of Extension Name (Not in the description below)
 
                     For Unit-Testing package: Open package.json from your suitecloud project, check the version on "@oracle/suitecloud-unit-testing": ^1.2.1"
       placeholder: "1.2.0"
@@ -43,13 +43,12 @@ body:
   - type: input
     id: Node
     attributes:
-      label: Node Version/VSCODE Version
+      label: Node Version/ VSCode Version
       description: |
         Please provide the full Node version of your project. node -v 
 
         VSCODE version in case you selected SuiteCloud Extension. This can be checked in "About VIsual Studio Code".
-      description: "or "
-      placeholder: "v18.15.0"
+      placeholder: "Node = v18.15.0, VSCode: Version: 1.78.0 (Universal)"
     validations:
       required: true
   - type: input
