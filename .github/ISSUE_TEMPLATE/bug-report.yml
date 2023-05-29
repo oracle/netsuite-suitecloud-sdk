@@ -43,11 +43,11 @@ body:
   - type: input
     id: Node
     attributes:
-      label: Node Version/ VSCode Version
+      label: Node Version / VSCode Version
       description: |
         Please provide the full Node version of your project. node -v 
            OR
-        Please provide VSCODE version in case you selected SuiteCloud Extension. This can be checked in "About VIsual Studio Code".
+        Please provide VSCODE version in case you selected SuiteCloud Extension. This can be checked in "About Visual Studio Code".
       placeholder: "v18.15.0, 1.78.0 (Universal)"
     validations:
       required: true
