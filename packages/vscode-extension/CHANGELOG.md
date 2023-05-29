@@ -1,12 +1,16 @@
 # Change Log
 
+## 1.4.3
+
+- Fix for security vulnerabilities for a third-party library
+
 ## 1.4.2
 
-- Fix for security vulnerabilities for third-party library
+- Fix for security vulnerabilities for a third-party library
 
 ## 1.4.1
 
-- Fix for security vulnerabilities for third-party library
+- Fix for security vulnerabilities for a third-party library
 
 ## 1.4.0
 
@@ -15,7 +19,7 @@
 
 ## 1.3.2
 
-- Fix for security vulnerabilities for third-party library
+- Fix for security vulnerabilities for a third-party library
 
 ## 1.3.1
 
