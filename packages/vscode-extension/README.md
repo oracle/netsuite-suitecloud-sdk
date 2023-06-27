@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/visual-studio-marketplace/v/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
 </a>
 
-SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. The SuiteCloud Extension for Visual Studio Code allows you to customize your SuiteCloud projects for NetSuite. The available SuiteCloud projects include **SuiteApp projects** — self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects** — intended for customizations on accounts you own, such as your production, development, and sandbox accounts.
+SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. SuiteCloud Extension for Visual Studio Code allows you to customize your SuiteCloud projects for NetSuite. The available SuiteCloud projects include **SuiteApp projects** — self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects** — intended for customizations on accounts you own, such as your production, development, and sandbox accounts.
 
 Read more about SuiteCloud SDK and SDF in <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_156026236161.html" rel="noopener noreferrer" target=blank>SuiteCloud SDK Overview</a> and <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4702656040.html" rel="noopener noreferrer" target=blank>SuiteCloud Development Framework Architecture</a>.
 
@@ -19,9 +19,9 @@ The following software is required to work with SuiteCloud Extension for Visual 
 Read the detailed list of prerequisites in <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Prerequisites for SuiteCloud Extension for Visual Studio Code</a>.
 
 ## Supported Versions
-Although you may have access to older versions of the SuiteCloud Extension for Visual Studio Code, only the versions in this section are officially supported.
+Although you may have access to older versions of SuiteCloud Extension for Visual Studio Code, only the versions in this section are officially supported.
 
-Each version of the SuiteCloud Extenstion for Visual Studio Code in the Marketplace works optimally with a specific NetSuite version. To check the equivalence among versions, see the following table:
+Each version of SuiteCloud Extenstion for Visual Studio Code in the Marketplace works optimally with a specific NetSuite version. To check the equivalence among versions, see the following table:
 
 | Version in the Marketplace | Version in NetSuite |
 |:--------------:|:-------------------:|
@@ -41,7 +41,7 @@ See more details about installation in <a href="https://docs.oracle.com/en/cloud
 ## Getting Started
 
 ### How to Trigger the Command Palette
-Interact through the Command Palette to use the SuiteCloud Extension for Visual Studio Code. To trigger it, click **View** > **Command Palette** or use the relevant shortcut:
+Interact through the Command Palette to use SuiteCloud Extension for Visual Studio Code. To trigger it, click **View** > **Command Palette** or use the relevant shortcut:
 * Ctrl+Shift+P if you are using Windows or Linux.
 * Cmd+Shift+P if you are using Mac OS. 
 
@@ -59,7 +59,7 @@ To add a SuiteCloud project to an already opened Visual Studio Code window, go t
 For the extension to detect the working SuiteCloud project and run any command against it, you first need to select a file from the current workspace to make it active in the editor.
 
 ### Setting Up an Account
-To start using your NetSuite accounts with the SuiteCloud Extension for Visual Studio Code, you first need to set them up. The account set up includes adding an account to the extension and setting it as default. As a prerequisite to adding an account, a SuiteCloud project must be open in Visual Studio Code.  
+To start using your NetSuite accounts with SuiteCloud Extension for Visual Studio Code, you first need to set them up. The account set up includes adding an account to the extension and setting it as default. As a prerequisite to adding an account, a SuiteCloud project must be open in Visual Studio Code.  
 
 To add an account, follow these steps:
 1. Open the Command Palette.
@@ -127,4 +127,4 @@ SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requ
 ## License
 Copyright (c) 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
 
-By installing the SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
+By installing SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
