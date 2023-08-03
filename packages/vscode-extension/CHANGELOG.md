@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.5.0
+
+- Credentials file changes
+- Fix for security vulnerabilities for third-party libraries
+
 ## 1.4.2
 
 - Fix for security vulnerabilities for third-party library
