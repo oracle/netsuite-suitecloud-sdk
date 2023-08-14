@@ -44,7 +44,7 @@
 	"account:setup": {
 		"name": "account:setup",
 		"alias": "sa",
-		"description": "Sets up an account to use with the SuiteCloud CLI for Node.js.",
+		"description": "Sets up an account to use with SuiteCloud CLI for Node.js.",
 		"isSetupRequired": false,
 		"forceInteractiveMode": true,
 		"options": {
