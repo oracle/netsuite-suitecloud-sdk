@@ -2,6 +2,10 @@
 
 ## 1.5.0
 
+- Update extension details
+
+## 1.5.0
+
 - Credentials file changes
 - Fix for security vulnerabilities for third-party libraries
 
