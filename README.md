@@ -31,6 +31,6 @@ SuiteCloud SDK is an open source project. Pull Requests are currently not being 
 ## [License](./LICENSE.txt)
 Copyright (c) 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
 
-By installing the SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
+By installing SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
 
-By installing the SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
+By installing SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.

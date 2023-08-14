@@ -34,7 +34,7 @@ Since CLI for Node.js is a development tool, use a global instance to install it
 ```
 npm install -g @oracle/suitecloud-cli
 ```
-When installing the SuiteCloud CLI for Node.js via script, for instance in a CI environment, you can skip showing the license presented during the normal installation process by adding the --acceptSuiteCloudSDKLicense flag to the install script as shown below. Note that by adding the mentioned flag to the script, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions license. See the [License](#license) section for details.
+When installing SuiteCloud CLI for Node.js via script, for instance in a CI environment, you can skip showing the license presented during the normal installation process by adding the --acceptSuiteCloudSDKLicense flag to the install script as shown below. Note that by adding the mentioned flag to the script, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions license. See the [License](#license) section for details.
 
 ```
 npm install -g --acceptSuiteCloudSDKLicense @oracle/suitecloud-cli
@@ -54,7 +54,7 @@ suitecloud <command> <option> <argument>
 | --- | --- |
 |[`account:manageauth`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_157304934116.html)|Manages authentication IDs for all your projects.|
 |[`account:savetoken`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159350785187.html)|Saves a TBA token that you issued previously in NetSuite.|
-|[`account:setup`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156044528841.html)|Sets up an account to use with the SuiteCloud CLI for Node.js.|
+|[`account:setup`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156044528841.html)|Sets up an account to use with SuiteCloud CLI for Node.js.|
 |[`file:create`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162810635242.html)|Creates SuiteScript files in the selected folder using the correct template with SuiteScript modules injected.|
 |[`file:import`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156041963273.html)|Imports files from an account to your account customization project.|
 |[`file:list`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156042966488.html)|Lists the files in the File Cabinet of your account.|
@@ -73,7 +73,7 @@ To check the help for a specific command, run the following command:
 suitecloud {command} -h
 ```
 
-Read the detailed documentation for all the commands in [SuiteCloud CLI for Node.js Reference](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_155931263126.html).
+Read the detailed documentation for all the commands in [SuiteCloud CLI for Node.js Reference](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_155931263126.html).
 
 ## Getting Started
 🎞 To see how to install and set up CLI for Node.js, watch the following video:
@@ -94,13 +94,13 @@ suitecloud account:setup
 ## Release Notes & Documentation
 To read the 2023.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
 - Read the release notes for NetSuite 2023.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
-- Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_3798389663.html).
-- Read the CLI for Node.js documentation in [SuiteCloud CLI for Node.js Guide](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_1558708800.html).
+- Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_3798389663.html).
+- Read the CLI for Node.js documentation in [SuiteCloud CLI for Node.js Guide](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_1558708800.html).
 
-## [Contributing](/CONTRIBUTING.md)
+## Contributing
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
 Copyright (c) 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
 
-By installing the SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
+By installing SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
