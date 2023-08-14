@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.5.0
+## 1.5.1
 
 - Update extension details
 
