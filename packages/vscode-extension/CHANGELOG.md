@@ -1,16 +1,25 @@
 # Change Log
 
+## 1.5.1
+
+- Update extension details
+
+## 1.5.0
+
+- Credentials file changes
+- Fix for security vulnerabilities for third-party libraries
+
 ## 1.4.3
 
-- Fix for security vulnerabilities for a third-party library
+- Fix for security vulnerabilities for third-party library
 
 ## 1.4.2
 
-- Fix for security vulnerabilities for a third-party library
+- Fix for security vulnerabilities for third-party library
 
 ## 1.4.1
 
-- Fix for security vulnerabilities for a third-party library
+- Fix for security vulnerabilities for third-party library
 
 ## 1.4.0
 
@@ -19,7 +28,7 @@
 
 ## 1.3.2
 
-- Fix for security vulnerabilities for a third-party library
+- Fix for security vulnerabilities for third-party library
 
 ## 1.3.1
 
