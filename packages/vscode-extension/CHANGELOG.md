@@ -9,6 +9,10 @@
 - Credentials file changes
 - Fix for security vulnerabilities for third-party libraries
 
+## 1.4.3
+
+- Fix for security vulnerabilities for third-party library
+
 ## 1.4.2
 
 - Fix for security vulnerabilities for third-party library
