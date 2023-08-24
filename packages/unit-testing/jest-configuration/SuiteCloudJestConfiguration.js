@@ -327,11 +327,11 @@ const CORE_STUBS = [
 	},
 	{
 		module: 'N/query/pagedData',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/pagedData.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/PagedData.js`,
 	},
 	{
 		module: 'N/query/pageRange',
-		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/pageRange.js`,
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/query/PageRange.js`,
 	},
 	{
 		module: 'N/query/period',
