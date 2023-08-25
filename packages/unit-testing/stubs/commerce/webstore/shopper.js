@@ -1,4 +1,4 @@
-define(['./Shopper'], function (Shopper) {
+define(['./ShopperInstance'], function (Shopper) {
     /**
      * Webstore shopper module.
      *
