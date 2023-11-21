@@ -60,10 +60,18 @@ export default abstract class BaseAction {
 				this.messageService.showErrorMessage(error.message);
 				return;
 			}
+			
 			if (error instanceof Object && typeof error.toString === 'function') {
 				this.messageService.showErrorMessage(error.toString());
 				return;
 			}
+
+			if (typeof error === 'string') {
+				this.vsConsoleLogger.error(error);
+				this.messageService.showCommandError(this.translationService.getMessage(COMMAND.ERROR, this.vscodeCommandName));
+				return;
+			}
+
 			this.messageService.showErrorMessage(this.translationService.getMessage(COMMAND.ERROR, this.vscodeCommandName));
 			return;
 		}
