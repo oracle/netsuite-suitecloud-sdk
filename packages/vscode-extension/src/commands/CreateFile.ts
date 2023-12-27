@@ -102,7 +102,9 @@ export default class CreateFile extends BaseAction {
 			return;
 		}
 
-		args.path = path.join(selectedFolder, fileName.trim());
+		// backslashes in some windows systems are not wel handled by java core
+		// fix for https://github.com/oracle/netsuite-suitecloud-sdk/issues/711
+		args.path = path.join(selectedFolder, fileName.trim()).replace(/\\/g, '/');
 
 		return args;
 	}
