@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const chalk = require('chalk');
+const chalk = import('chalk');
 const os = require('os');
 
 module.exports = {
