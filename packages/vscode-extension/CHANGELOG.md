@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.6.0
+
+- Fix path-related issue for create and update files.
+- Update third-party libraries
+
 ## 1.5.1
 
 - Update extension details
