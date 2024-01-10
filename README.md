@@ -34,7 +34,7 @@ Please consult the [security guide](./SECURITY.md) for our responsible security 
 
 
 ## License
-Copyright (c) 2022, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2022, 2023, 2024 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
 
 By installing SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
 
