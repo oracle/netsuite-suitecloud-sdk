@@ -2,8 +2,8 @@
 
 ## 1.6.0
 
-- Fix path-related issue for create and update files.
-- Update third-party libraries
+- Minor bug fixes and improvements
+- Fix for security vulnerabilities for third-party libraries
 
 ## 1.5.1
 
