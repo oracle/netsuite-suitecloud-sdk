@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.6.0
+
+- Minor bug fixes and improvements
+- Fix for security vulnerabilities for third-party libraries
+
 ## 1.5.1
 
 - Update extension details
