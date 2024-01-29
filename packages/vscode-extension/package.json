@@ -139,12 +139,12 @@
 				"command": "suitecloud.updateobject",
 				"key": "ctrl+alt+u",
 				"mac": "cmd+alt+u",
-				"when": "resource =~ //Objects/.+\\.xml$/"
+				"when": "resource =~ /\\/Objects\\/.+\\.xml$/"
 			},
 			{
 				"command": "suitecloud.uploadfile",
 				"key": "alt+shift+u",
-				"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/"
+				"when": "resource =~ /\\/FileCabinet\\/(SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)\\/.+$/"
 			},
 			{
 				"command": "suitecloud.validate",
@@ -157,32 +157,32 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts|Web%20Site%20Hosting%20Files/.+)(/.*)*$/",
+					"when": "explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteApps\\/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts|Web%20Site%20Hosting%20Files\\/.+)(\\/.*)*$/",
 					"command": "suitecloud.createfile",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)(/.*)*$/",
+					"when": "explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)(\\/.*)*$/",
 					"command": "suitecloud.importfiles",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "explorerResourceIsFolder && resource =~ //Objects(/.+)*$/",
+					"when": "explorerResourceIsFolder && resource =~ /\\/Objects(\\/.+)*$/",
 					"command": "suitecloud.importobjects",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //Objects/.+\\.xml$/",
+					"when": "!explorerResourceIsFolder && resource =~ /\\/Objects\\/.+\\.xml$/",
 					"command": "suitecloud.updateobject",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"when": "!explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)\\/.+$/",
 					"command": "suitecloud.updatefile",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps|SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"when": "!explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteApps|SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)\\/.+$/",
 					"command": "suitecloud.comparefile",
 					"group": "suitecloud@1"
 				}
