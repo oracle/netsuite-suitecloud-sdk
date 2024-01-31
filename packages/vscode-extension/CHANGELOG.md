@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.6.0
+- Fix for path escaping in **SuiteCloud: Upload file**
+- Fix for menu filters
+- Improve error message 
+
 ## 1.5.1
 
 - Update extension details
