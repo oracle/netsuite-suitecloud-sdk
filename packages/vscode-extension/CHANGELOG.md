@@ -2,8 +2,9 @@
 
 ## 1.6.0
 
-- Minor bug fixes and improvements
-- Fix for security vulnerabilities for third-party libraries
+- Fix for path escaping in **SuiteCloud: Upload file**
+- Fix for menu filters
+- Improve error message 
 
 ## 1.5.1
 
