@@ -2,9 +2,9 @@
 
 ## 1.6.0
 
-- Fix for path escaping in **SuiteCloud: Upload file**
+- Fix for GitHub issues 711, 744, and 773
+- Fix for GitHub issue 716
 - Fix for menu filters
-- Improve error message 
 
 ## 1.5.1
 
