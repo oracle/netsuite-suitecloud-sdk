@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.6.0
+
+- Fix for GitHub issues 711, 744, and 773
+- Fix for GitHub issue 716
+- Fix for menu filters
+
 ## 1.5.1
 
 - Update extension details
