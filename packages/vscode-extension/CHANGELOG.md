@@ -2,8 +2,9 @@
 
 ## 1.6.0
 
-- Minor bug fixes and improvements
-- Fix for security vulnerabilities for third-party libraries
+- Fix for GitHub issues 711, 744, and 773
+- Fix for GitHub issue 716
+- Fix for menu filters
 
 ## 1.5.1
 
