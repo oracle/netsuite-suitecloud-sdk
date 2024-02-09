@@ -16,14 +16,17 @@
 	"bugs": {
 		"url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"
 	},
-	"repository": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/node-cli",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/oracle/netsuite-suitecloud-sdk.git#master"
+	},
 	"main": "./src/suitecloud.js",
 	"preferGlobal": true,
 	"sdkFilename": "cli-2024.1.0.jar",
 	"nsCompatibleVersion": "2024.1",
 	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/24.1",
 	"bin": {
-		"suitecloud": "./src/suitecloud.js"
+		"suitecloud": "src/suitecloud.js"
 	},
 	"dependencies": {
 		"chalk": "4.1.2",
