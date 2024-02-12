@@ -12,11 +12,11 @@
 	"publisher": "Oracle",
 	"license": "UPL-1.0",
 	"private": true,
-	"version": "1.5.1",
+	"version": "1.6.0",
 	"icon": "resources/pluginIcon_dark.png",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/oracle/netsuite-suitecloud-sdk",
+		"url": "git+https://github.com/oracle/netsuite-suitecloud-sdk.git",
 		"directory": "packages/vscode-extension"
 	},
 	"files": [
@@ -139,12 +139,12 @@
 				"command": "suitecloud.updateobject",
 				"key": "ctrl+alt+u",
 				"mac": "cmd+alt+u",
-				"when": "resource =~ //Objects/.+\\.xml$/"
+				"when": "resource =~ /\\/Objects\\/.+\\.xml$/"
 			},
 			{
 				"command": "suitecloud.uploadfile",
 				"key": "alt+shift+u",
-				"when": "resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)/.+$/"
+				"when": "resource =~ /\\/FileCabinet\\/(SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files|SuiteApps)\\/.+$/"
 			},
 			{
 				"command": "suitecloud.validate",
@@ -157,32 +157,32 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts|Web%20Site%20Hosting%20Files/.+)(/.*)*$/",
+					"when": "explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteApps\\/[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+|SuiteScripts|Web%20Site%20Hosting%20Files\\/.+)(\\/.*)*$/",
 					"command": "suitecloud.createfile",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)(/.*)*$/",
+					"when": "explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)(\\/.*)*$/",
 					"command": "suitecloud.importfiles",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "explorerResourceIsFolder && resource =~ //Objects(/.+)*$/",
+					"when": "explorerResourceIsFolder && resource =~ /\\/Objects(\\/.+)*$/",
 					"command": "suitecloud.importobjects",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //Objects/.+\\.xml$/",
+					"when": "!explorerResourceIsFolder && resource =~ /\\/Objects\\/.+\\.xml$/",
 					"command": "suitecloud.updateobject",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"when": "!explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)\\/.+$/",
 					"command": "suitecloud.updatefile",
 					"group": "suitecloud@1"
 				},
 				{
-					"when": "!explorerResourceIsFolder && resource =~ //FileCabinet/(SuiteApps|SuiteScripts|Templates/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)/.+$/",
+					"when": "!explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteApps|SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)\\/.+$/",
 					"command": "suitecloud.comparefile",
 					"group": "suitecloud@1"
 				}
@@ -195,20 +195,20 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^1.8.0"
+		"@oracle/suitecloud-cli": "^1.9.0"
 	},
 	"devDependencies": {
 		"@types/glob": "8.1.0",
-		"@types/mocha": "10.0.1",
-		"@types/node": "18.15.3",
+		"@types/mocha": "10.0.6",
+		"@types/node": "20.10.7",
 		"@types/vscode": "1.80.0",
-		"@typescript-eslint/eslint-plugin": "5.61.0",
-		"@typescript-eslint/parser": "5.61.0",
-		"@vscode/test-electron": "2.3.3",
-		"eslint": "8.45.0",
-		"eslint-config-prettier": "8.8.0",
+		"@typescript-eslint/eslint-plugin": "6.18.0",
+		"@typescript-eslint/parser": "6.18.0",
+		"@vscode/test-electron": "2.3.8",
+		"eslint": "8.56.0",
+		"eslint-config-prettier": "9.1.0",
 		"glob": "8.1.0",
 		"mocha": "10.2.0",
-		"typescript": "5.1.6"
+		"typescript": "5.3.3"
 	}
 }

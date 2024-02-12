@@ -1,11 +1,11 @@
 /*
- ** Copyright (c) 2021 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2024 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import * as path from 'path';
 import { window } from 'vscode';
-import { COMMAND, UPLOAD_FILE, ERRORS, ANSWERS } from '../service/TranslationKeys';
-import { ApplicationConstants, CLIConfigurationService, FileCabinetService, ProjectInfoService, actionResultStatus } from '../util/ExtensionUtil';
+import { COMMAND, UPLOAD_FILE, ANSWERS } from '../service/TranslationKeys';
+import { ApplicationConstants, FileCabinetService, ProjectInfoService, actionResultStatus } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { ValidationResult } from '../types/ActionResult';
 
@@ -22,12 +22,10 @@ export default class UploadFile extends BaseAction {
 			return;
 		}
 
-		const cliConfigurationService = new CLIConfigurationService();
-		cliConfigurationService.initialize(this.rootWorkspaceFolder);
-
-		const projectFolder = cliConfigurationService.getProjectFolder(this.cliCommandName);
-		const fileCabinetFolder = path.join(projectFolder, ApplicationConstants.FOLDERS.FILE_CABINET);
-		const relativePath = this.activeFile.replace(fileCabinetFolder, '');
+		const fileCabinetService = new FileCabinetService(path.join(this.getProjectFolderPath(), ApplicationConstants.FOLDERS.FILE_CABINET));
+		// fileCabinetService.getFileCabinetRelativePath result already replaces possible '\' for '/'
+		// this fact helps to fix https://github.com/oracle/netsuite-suitecloud-sdk/issues/711
+		const relativePath = fileCabinetService.getFileCabinetRelativePath(this.activeFile);
 		const fileName = path.basename(this.activeFile);
 
 		const continueMessage = this.translationService.getMessage(ANSWERS.CONTINUE);
