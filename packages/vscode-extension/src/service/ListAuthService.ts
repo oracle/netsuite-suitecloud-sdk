@@ -22,11 +22,11 @@ export default class ListAuthService {
 		this.rootProjectFolder = rootProjectFolder;
 	}
 
-    public async getAuthIds(showWarning: boolean = true): Promise<AuthListData | void> {
-        const authIdsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
-        const statusBarMessage = this.translationService.getMessage(LIST_AUTH.LOADING);
+	public async getAuthIds(showWarning: boolean = true): Promise<AuthListData | void> {
+		const authIdsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
+		const statusBarMessage = this.translationService.getMessage(LIST_AUTH.LOADING);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, authIdsPromise);
-        const authIdsResult = await authIdsPromise;
+		const authIdsResult = await authIdsPromise;
 
 		if (authIdsResult.isSuccess()) {
 			const authIds: AuthListData = authIdsResult.data;
@@ -34,23 +34,23 @@ export default class ListAuthService {
 				showSetupAccountWarningMessage();
 				return;
 			}
-            return authIds;
-        }
-        else {
-            throw authIdsResult.errorMessages;
-        }
-    }
+			return authIds;
+		}
+		else {
+			throw authIdsResult.errorMessages;
+		}
+	}
 
 	public async selectAuthId(authIds: AuthListData) {
-        const defaultAuthId = this.getDefaultAuthId();
+		const defaultAuthId = this.getDefaultAuthId();
 
-        const options = Object.entries(authIds).map<AuthIdItem>(([authId, info]) => ({
+		const options = Object.entries(authIds).map<AuthIdItem>(([authId, info]) => ({
 			label: `${authId} | ${info.accountInfo.roleName} @ ${info.accountInfo.companyName}`,
-            description: defaultAuthId && defaultAuthId === authId ? "(default)" : "",
+			description: defaultAuthId && defaultAuthId === authId ? "(default)" : "",
 			authId,
 		}));
 
-        options.sort((a, b) => (a.description || "") > (b.description || "") ? -1 : 1);
+		options.sort((a, b) => (a.description || "") > (b.description || "") ? -1 : 1);
 
 		return vscode.window.showQuickPick(options, {
 			placeHolder: this.translationService.getMessage(LIST_AUTH.SELECT),
