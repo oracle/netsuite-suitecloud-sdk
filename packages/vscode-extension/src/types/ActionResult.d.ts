@@ -21,6 +21,11 @@ export interface AuthenticateActionResult extends ActionResult<undefined> {
 	};
 }
 
+export type AuthenticateParams = {
+	authid: string;
+	url?: string;
+};
+
 export type AuthListData = {
 	[authID: string]: {
 		accountInfo: {
@@ -39,5 +44,9 @@ export type AuthListData = {
 		};
 	};
 };
+
+export interface CancellationToken {
+	cancel?: (x: string) => void;
+}
 
 export type ValidationResult = { valid: false; message: string } | { valid: true };
