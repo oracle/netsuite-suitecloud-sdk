@@ -99,6 +99,9 @@
 	"IMPORT_OBJECTS_QUESTIONS_SELECT_OBJECTS": "Select the object you want to import.",
 	"IMPORT_OBJECTS_QUESTIONS_SELECT_TYPES": "Select the object types you want to import, or make no selection to list all object types.",
 
+	"LIST_AUTH_LOADING": "Loading the configured authentication IDs in this machine...",
+	"LIST_AUTH_SELECT": "Select the authentication ID to use",
+
 	"LIST_FILES_ERROR_NO_FILES_FOUND": "No files found.",
 	"LIST_FILES_ERROR_NO_FOLDERS_FOUND": "No folders available.",
 	"LIST_FILES_LISTING": "Listing files...",
@@ -123,7 +126,7 @@
 	"MANAGE_AUTH_REMOVE_CANCEL": "Cancel",
 	"MANAGE_AUTH_REMOVE_CONFIRMATION_MESSAGE": "This auth ID will be removed locally but still be valid in your account: {0}.",
 	"MANAGE_AUTH_REMOVE_CONTINUE": "Continue",
-	"MANAGE_AUTH_REMOVE_REMOVING_AUTH_ID": "Removing auhtID...",
+	"MANAGE_AUTH_REMOVE_REMOVING_AUTH_ID": "Removing auth ID...",
 	"MANAGE_AUTH_RENAME_ENTER_NEW_AUTH_ID": "Enter the new auth ID.",
 	"MANAGE_AUTH_RENAME_RENAMING_AUTH_ID": "Renaming auth ID...",
 

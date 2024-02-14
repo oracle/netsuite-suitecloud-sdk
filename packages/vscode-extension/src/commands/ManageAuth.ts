@@ -1,16 +1,11 @@
-import { commands, QuickPickItem, window } from 'vscode';
-import { commandsInfoMap } from '../commandsMap';
-import { getSdkPath } from '../core/sdksetup/SdkProperties';
-import { COMMAND, EXTENSION_INSTALLATION, MANAGE_ACCOUNTS, MANAGE_AUTH } from '../service/TranslationKeys';
-import { ActionResult, AuthListData, ValidationResult } from '../types/ActionResult';
-import { AccountCredentialsFormatter, actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator } from '../util/ExtensionUtil';
+import { QuickPickItem, window } from 'vscode';
+import { COMMAND, MANAGE_AUTH } from '../service/TranslationKeys';
+import { AuthListData, ValidationResult } from '../types/ActionResult';
+import { AccountCredentialsFormatter, actionResultStatus, InteractiveAnswersValidator } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
+import ListAuthService, { AuthIdItem } from '../service/ListAuthService';
 
-interface AuthIdItem extends QuickPickItem {
-	authId: string;
-}
-
-interface ManageAuhtOptionItem extends QuickPickItem {
+interface ManageAuthOptionItem extends QuickPickItem {
 	manageOption: ManageAuthOption;
 }
 enum ManageAuthOption {
@@ -39,88 +34,50 @@ export default class ManageAuth extends BaseAction {
 		// AuthIDs management is independent from it
 		this.vsConsoleLogger.hiddeInitialProjectFolerNameDetails();
 
-		const authIDsMapPromise = AuthenticationUtils.getAuthIds(getSdkPath());
-		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, authIDsMapPromise);
-		const auhtIDsMapResult: ActionResult<AuthListData> = await authIDsMapPromise;
+		const listAuthService = new ListAuthService(this.messageService, this.translationService, this.rootWorkspaceFolder);
 
-		if (auhtIDsMapResult.isSuccess()) {
-			const auhtIDsMap = auhtIDsMapResult.data;
-			if (Object.keys(auhtIDsMap).length === 0) {
-				this.showNoAccountsWarningMessage();
-				return;
-			}
-			const selectedAuhtID = await this.showAuthList(auhtIDsMap);
-			if (!selectedAuhtID) {
-				return;
-			}
+		const authIds = await listAuthService.getAuthIds();
+		if(!authIds) {
+			return;
+		}
 
-			const selectedManageAuhtOption = await this.showManageAuthOptions(selectedAuhtID);
-			if (!selectedManageAuhtOption) {
-				return;
-			}
+		const selectedAuthID = await listAuthService.selectAuthId(authIds);
+		if (!selectedAuthID) {
+			return;
+		}
 
-			if (selectedManageAuhtOption.manageOption === ManageAuthOption.INFO) {
-				this.showInfo(selectedAuhtID, auhtIDsMap);
-			} else if (selectedManageAuhtOption.manageOption === ManageAuthOption.RENAME) {
-				this.renameAuthId(selectedAuhtID, auhtIDsMap);
-			} else if (selectedManageAuhtOption.manageOption === ManageAuthOption.REMOVE) {
-				this.removeAuhtId(selectedAuhtID);
-			}
-		} else {
-			this.vsConsoleLogger.error(auhtIDsMapResult.errorMessages[0]);
-			this.messageService.showCommandError(undefined, false);
+		const selectedManageAuthOption = await this.showManageAuthOptions(selectedAuthID);
+		if (!selectedManageAuthOption) {
+			return;
+		}
+
+		if (selectedManageAuthOption.manageOption === ManageAuthOption.INFO) {
+			this.showInfo(selectedAuthID, authIds);
+		} else if (selectedManageAuthOption.manageOption === ManageAuthOption.RENAME) {
+			this.renameAuthId(selectedAuthID, authIds);
+		} else if (selectedManageAuthOption.manageOption === ManageAuthOption.REMOVE) {
+			this.removeAuthId(selectedAuthID);
 		}
 		return;
 	}
 
-	private showNoAccountsWarningMessage() {
-		const runSetupAccountButtonMessage = this.translationService.getMessage(
-			EXTENSION_INSTALLATION.PROJECT_STARTUP.BUTTONS.RUN_SUITECLOUD_SETUP_ACCOUNT,
-			commandsInfoMap.setupaccount.vscodeCommandName
-		);
-		const noAccountWarningMessage = this.translationService.getMessage(
-			MANAGE_AUTH.GENERAL.NO_ACCOUNTS_TO_MANAGE,
-			commandsInfoMap.setupaccount.vscodeCommandName
-		);
-		window.showWarningMessage(noAccountWarningMessage, runSetupAccountButtonMessage).then((result) => {
-			if (result === runSetupAccountButtonMessage) {
-				commands.executeCommand(commandsInfoMap.setupaccount.vscodeCommandId);
-			}
-		});
-	}
-
-	private async showAuthList(authIDsMap: AuthListData) {
-		return window.showQuickPick(this.getAuthIDItems(authIDsMap), {
-			placeHolder: this.translationService.getMessage(MANAGE_AUTH.GENERAL.SELECT_AUTH_ID_TO_MANAGE),
-			ignoreFocusOut: true,
-			canPickMany: false,
-		});
-	}
-
-	private getAuthIDItems(authIDsMap: AuthListData): AuthIdItem[] {
-		return Object.keys(authIDsMap).map<AuthIdItem>((authId) => ({
-			label: `${authId} | ${authIDsMap[authId].accountInfo.roleName} @ ${authIDsMap[authId].accountInfo.companyName}`,
-			authId: authId,
-		}));
-	}
-
-	private async showManageAuthOptions(selectedAuhtID: AuthIdItem) {
-		const options: ManageAuhtOptionItem[] = [
+	private async showManageAuthOptions(selectedAuthID: AuthIdItem) {
+		const options: ManageAuthOptionItem[] = [
 			{ label: this.translationService.getMessage(MANAGE_AUTH.GENERAL.INFO_OPTION), manageOption: ManageAuthOption.INFO },
 			{ label: this.translationService.getMessage(MANAGE_AUTH.GENERAL.RENAME_OPTION), manageOption: ManageAuthOption.RENAME },
 			{ label: this.translationService.getMessage(MANAGE_AUTH.GENERAL.REMOVE_OPTION), manageOption: ManageAuthOption.REMOVE },
 		];
 		return window.showQuickPick(options, {
-			placeHolder: this.translationService.getMessage(MANAGE_AUTH.GENERAL.SELECT_OPTION_FOR_AUTH_ID, selectedAuhtID.authId),
+			placeHolder: this.translationService.getMessage(MANAGE_AUTH.GENERAL.SELECT_OPTION_FOR_AUTH_ID, selectedAuthID.authId),
 			ignoreFocusOut: true,
 			canPickMany: false,
 		});
 	}
 
-	private showInfo(selectedAuhtID: AuthIdItem, authList: AuthListData) {
-		const authIDInfo = authList[selectedAuhtID.authId];
+	private showInfo(selectedAuthID: AuthIdItem, authList: AuthListData) {
+		const authIDInfo = authList[selectedAuthID.authId];
 		const accountCredentials = authIDInfo as any;
-		accountCredentials.authId = selectedAuhtID.authId;
+		accountCredentials.authId = selectedAuthID.authId;
 		accountCredentials.domain = authIDInfo.urls.app;
 		const authIDInfoMessage = AccountCredentialsFormatter.getInfoString(authIDInfo);
 
@@ -129,29 +86,29 @@ export default class ManageAuth extends BaseAction {
 		this.vsConsoleLogger.info('');
 	}
 
-	private async renameAuthId(selectedAuhtID: AuthIdItem, auhtIDsMap: AuthListData) {
-		const newAuhtID = await window.showInputBox({
+	private async renameAuthId(selectedAuthID: AuthIdItem, authIds: AuthListData) {
+		const newAuthID = await window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_AUTH.RENAME.ENTER_NEW_AUTH_ID),
 			validateInput: (fieldValue: string) => {
 				const validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
-					(fieldValue: string) => InteractiveAnswersValidator.validateSameAuthID(fieldValue, selectedAuhtID.authId),
-					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(auhtIDsMap)),
+					(fieldValue: string) => InteractiveAnswersValidator.validateSameAuthID(fieldValue, selectedAuthID.authId),
+					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(authIds)),
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
 					InteractiveAnswersValidator.validateMaximumLength
 				);
 				return typeof validationResult === 'string' ? validationResult : '';
 			},
 		});
-		if (!newAuhtID) {
+		if (!newAuthID) {
 			return;
 		}
 
 		const commandOptions: { [option: string]: string } = {};
-		commandOptions.rename = selectedAuhtID.authId;
-		commandOptions.renameto = newAuhtID;
+		commandOptions.rename = selectedAuthID.authId;
+		commandOptions.renameto = newAuthID;
 		const renameActionPromise = this.runSuiteCloudCommand(commandOptions, NON_EXISTING_PATH);
 		const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 		const statusBarMessage = this.translationService.getMessage(MANAGE_AUTH.RENAME.RENAMING_AUTH_ID);
@@ -165,13 +122,13 @@ export default class ManageAuth extends BaseAction {
 		}
 	}
 
-	private async removeAuhtId(selectedAuhtID: AuthIdItem) {
+	private async removeAuthId(selectedAuthID: AuthIdItem) {
 		const REMOVE_ANSWER = {
 			CONTINUE: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CONTINUE),
 			CANCEL: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CANCEL),
 		};
 		const removeAnswer = await window.showQuickPick([REMOVE_ANSWER.CONTINUE, REMOVE_ANSWER.CANCEL], {
-			placeHolder: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CONFIRMATION_MESSAGE, selectedAuhtID.authId),
+			placeHolder: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CONFIRMATION_MESSAGE, selectedAuthID.authId),
 			ignoreFocusOut: true,
 			canPickMany: false,
 		});
@@ -182,15 +139,15 @@ export default class ManageAuth extends BaseAction {
 
 		if (removeAnswer === REMOVE_ANSWER.CONTINUE) {
 			const commandOptions: { [option: string]: string } = {};
-			commandOptions.remove = selectedAuhtID.authId;
+			commandOptions.remove = selectedAuthID.authId;
 
 			const renameAuthIDActionPromise = this.runSuiteCloudCommand(commandOptions, NON_EXISTING_PATH);
 			const commandMessage = this.translationService.getMessage(COMMAND.TRIGGERED, this.vscodeCommandName);
 			const statusBarMessage = this.translationService.getMessage(MANAGE_AUTH.REMOVE.REMOVING_AUTH_ID);
 			this.messageService.showInformationMessage(commandMessage, statusBarMessage, renameAuthIDActionPromise, true, false);
 
-			const renameAuhtIDActionResult = await renameAuthIDActionPromise;
-			if (renameAuhtIDActionResult.status === actionResultStatus.SUCCESS) {
+			const renameAuthIDActionResult = await renameAuthIDActionPromise;
+			if (renameAuthIDActionResult.status === actionResultStatus.SUCCESS) {
 				this.messageService.showCommandInfo(undefined, false);
 			} else {
 				this.messageService.showCommandError(undefined, false);

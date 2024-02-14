@@ -170,6 +170,11 @@ export const IMPORT_OBJECTS = {
 	},
 };
 
+export const LIST_AUTH = {
+	LOADING: 'LIST_AUTH_LOADING',
+	SELECT: 'LIST_AUTH_SELECT'
+};
+
 export const LIST_FILES = {
 	ERROR: {
 		NO_FILES_FOUND: 'LIST_FILES_ERROR_NO_FILES_FOUND',
@@ -252,7 +257,7 @@ export const STATUS_BARS = {
 	SUITECLOUD_PROJECT: {
 		TOOLTIP: 'STATUS_BARS_SUITECLOUD_PROJECT_TOOLTIP'
 	}
-}
+};
 
 export const UPLOAD_FILE = {
 	ERROR: {

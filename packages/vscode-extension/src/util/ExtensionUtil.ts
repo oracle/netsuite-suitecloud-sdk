@@ -2,7 +2,7 @@
  ** Copyright (c) 2024 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import { ActionResult, AuthListData } from '../types/ActionResult';
+import { ActionResult, AuthListData, AuthenticateActionResult, AuthenticateParams, CancellationToken } from '../types/ActionResult';
 
 export const ApplicationConstants = require('@oracle/suitecloud-cli/src/ApplicationConstants');
 export const ExecutionEnvironmentContext = require('@oracle/suitecloud-cli/src/ExecutionEnvironmentContext');
@@ -33,8 +33,11 @@ export const ProjectInfoService = require('@oracle/suitecloud-cli/src/services/P
 export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
 export const AuthenticationUtils: {
 	[key: string]: any;
-	getProjectDefaultAuthId(projectFolder?: string): string;
+	authenticateWithOauth(params: AuthenticateParams, sdkPath: string, projectFolder: string, cancelToken?: CancellationToken, executionEnvironmentContext?: typeof ExecutionEnvironmentContext): Promise<AuthenticateActionResult>;
 	getAuthIds(sdkPath: string): Promise<ActionResult<AuthListData>>;
+	getProjectDefaultAuthId(projectFolder?: string): string;
+	saveToken(params: AuthenticateParams, sdkPath: string, projectFolder: string, executionEnvironmentContext?: typeof ExecutionEnvironmentContext): Promise<AuthenticateActionResult>;
+	setDefaultAuthentication(projectFolder: string, authId: string): void;
 } = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
 export const AccountCredentialsFormatter: {
 	getInfoString(accountCredentials: any): string;

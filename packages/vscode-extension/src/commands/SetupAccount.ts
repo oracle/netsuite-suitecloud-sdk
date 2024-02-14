@@ -5,42 +5,39 @@
 import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
-import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
+import { AuthListData, AuthenticateActionResult, CancellationToken } from '../types/ActionResult';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
+import ListAuthService from '../service/ListAuthService';
 
 const COMMAND_NAME = 'setupaccount';
 
-enum UiOption {
-	new_authid,
-	select_authid,
-	new_authid_browser,
-	new_authid_save_token,
-	cancel_process,
-	dismiss,
+enum UIOptions {
+	NEW_AUTHID,
+	SELECT_AUTHID,
+	NEW_AUTHID_BROWSER,
+	NEW_AUTHID_TOKEN,
+	CANCEL,
+	DISMISS,
 }
 
 interface NewAuthIdItem extends QuickPickItem {
-	option: UiOption.new_authid;
+	option: UIOptions.NEW_AUTHID;
 }
 
 interface SelectAuthIdItem extends QuickPickItem {
-	option: UiOption.select_authid;
+	option: UIOptions.SELECT_AUTHID;
 	authId: string;
 }
 
 interface MessageItemWithCode extends MessageItem {
-	code: UiOption.cancel_process | UiOption.dismiss;
+	code: UIOptions.CANCEL | UIOptions.DISMISS;
 }
 
 type AuthIdItem = NewAuthIdItem | SelectAuthIdItem;
 
 interface NewAuthID extends QuickPickItem {
-	option: UiOption.new_authid_browser | UiOption.new_authid_save_token;
-}
-
-interface CancellationToken {
-	cancel?: (x: string) => void;
+	option: UIOptions.NEW_AUTHID_BROWSER | UIOptions.NEW_AUTHID_TOKEN;
 }
 
 export default class SetupAccount extends BaseAction {
@@ -49,58 +46,54 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	protected async execute(): Promise<void> {
-		const accountsPromise = AuthenticationUtils.getAuthIds(getSdkPath());
-		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, accountsPromise);
-		const actionResult: ActionResult<AuthListData> = await accountsPromise;
-		if (actionResult.isSuccess()) {
-			const selected = await this.getAuthListOption(actionResult.data);
-			if (!selected) {
-				return;
-			} else if (selected.option === UiOption.new_authid) {
-				await this.handleNewAuth(actionResult.data);
-			} else if (selected.option === UiOption.select_authid) {
-				this.handleSelectedAuth(selected.authId);
-			}
-		} else {
-			this.vsConsoleLogger.error(actionResult.errorMessages[0]);
-			this.messageService.showCommandError();
+		const listAuthService = new ListAuthService(this.messageService, this.translationService, this.rootWorkspaceFolder!);
+
+		const authIds = await listAuthService.getAuthIds(false);
+		if(!authIds) {
+			return;
 		}
-		return;
+
+		const selected = await this.selectAuthId(authIds);
+		if (!selected) {
+			return;
+		} else if (selected.option === UIOptions.NEW_AUTHID) {
+			await this.handleNewAuth(authIds);
+		} else if (selected.option === UIOptions.SELECT_AUTHID) {
+			this.handleSelectedAuth(selected.authId);
+		}
 	}
 
-	private async getAuthListOption(data: AuthListData) {
-		return window.showQuickPick(this.getAuthOptions(data), {
+	private async selectAuthId(authData: AuthListData) {
+		let options: AuthIdItem[] = [
+			{
+				option: UIOptions.NEW_AUTHID,
+				description: "(default)",
+				label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE_NEW),
+			},
+		];
+		Object.entries(authData).forEach(([authId, info]) => {
+			options.push({
+				option: UIOptions.SELECT_AUTHID,
+				label: `${authId} | ${info.accountInfo.roleName} @ ${info.accountInfo.companyName}`,
+				authId: authId,
+			});
+		});
+
+		return window.showQuickPick(options, {
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_CREATE),
 			ignoreFocusOut: true,
 			canPickMany: false,
 		});
 	}
 
-	private getAuthOptions(authData: AuthListData): AuthIdItem[] {
-		let options: AuthIdItem[] = [
-			{
-				option: UiOption.new_authid,
-				label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE_NEW),
-			},
-		];
-		Object.keys(authData).forEach((authId) => {
-			options.push({
-				option: UiOption.select_authid,
-				label: `${authId} | ${authData[authId].accountInfo.roleName} @ ${authData[authId].accountInfo.companyName}`,
-				authId: authId,
-			});
-		});
-		return options;
-	}
-
-	private async handleNewAuth(accountCredentialsList: AuthListData) {
+	private async handleNewAuth(authIds: AuthListData) {
 		const selected = await this.getNewAuthIdOption();
 		if (!selected) {
 			return;
-		} else if (selected.option === UiOption.new_authid_browser) {
-			await this.handleBrowserAuth(accountCredentialsList);
-		} else if (selected.option === UiOption.new_authid_save_token) {
-			await this.handleSaveToken(accountCredentialsList);
+		} else if (selected.option === UIOptions.NEW_AUTHID_BROWSER) {
+			await this.handleBrowserAuth(authIds);
+		} else if (selected.option === UIOptions.NEW_AUTHID_TOKEN) {
+			await this.handleSaveToken(authIds);
 		}
 	}
 
@@ -112,11 +105,11 @@ export default class SetupAccount extends BaseAction {
 		try {
 			let options: NewAuthID[] = [
 				{
-					option: UiOption.new_authid_browser,
+					option: UIOptions.NEW_AUTHID_BROWSER,
 					label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.BROWSER),
 				},
 				{
-					option: UiOption.new_authid_save_token,
+					option: UIOptions.NEW_AUTHID_TOKEN,
 					label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.OPTION),
 				},
 			];
@@ -130,29 +123,27 @@ export default class SetupAccount extends BaseAction {
 		}
 	}
 
-	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
-		const authId = await this.getNewAuthId(accountCredentialsList);
+	private async handleBrowserAuth(authIds: AuthListData) {
+		const authId = await this.getNewAuthId(authIds);
 		if (!authId) {
 			return;
 		}
 		const url = await this.getUrl();
-		const commandParams: { authid: string; url?: string } = {
-			authid: authId,
-		};
 		if (url === undefined) {
 			return;
 		}
-		if (url) {
-			commandParams.url = url;
-		}
+		const commandParams = {
+			authid: authId,
+			url
+		};
 
 		let cancellationToken: CancellationToken = {};
 		const dismissButton: MessageItemWithCode = {
-			code: UiOption.dismiss,
+			code: UIOptions.DISMISS,
 			title: this.translationService.getMessage(DISMISS),
 		};
 		const cancelButton: MessageItemWithCode = {
-			code: UiOption.cancel_process,
+			code: UIOptions.CANCEL,
 			title: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.BROWSER_CANCEL),
 		};
 
@@ -160,13 +151,13 @@ export default class SetupAccount extends BaseAction {
 		const authenticatePromise: Promise<AuthenticateActionResult> = AuthenticationUtils.authenticateWithOauth(
 			commandParams,
 			getSdkPath(),
-			this.rootWorkspaceFolder,
+			this.rootWorkspaceFolder!,
 			cancellationToken
 		);
 		window
 			.showInformationMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), dismissButton, cancelButton)
 			.then((x) => {
-				if (x?.code === UiOption.cancel_process) {
+				if (x?.code === UIOptions.CANCEL) {
 					if (cancellationToken.cancel) {
 						cancellationToken.cancel(this.translationService.getMessage(MANAGE_ACCOUNTS.CANCELED));
 					}
@@ -183,7 +174,7 @@ export default class SetupAccount extends BaseAction {
 		this.handleAuthenticateActionResult(actionResult);
 	}
 
-	private async getNewAuthId(accountCredentialsList: AuthListData) {
+	private async getNewAuthId(authIds: AuthListData) {
 		return window.showInputBox({
 			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.ENTER_AUTH_ID),
 			ignoreFocusOut: true,
@@ -192,7 +183,7 @@ export default class SetupAccount extends BaseAction {
 					fieldValue,
 					InteractiveAnswersValidator.validateFieldIsNotEmpty,
 					InteractiveAnswersValidator.validateFieldHasNoSpaces,
-					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(accountCredentialsList)),
+					(fieldValue: string) => InteractiveAnswersValidator.validateAuthIDNotInList(fieldValue, Object.keys(authIds)),
 					InteractiveAnswersValidator.validateAlphanumericHyphenUnderscore,
 					InteractiveAnswersValidator.validateMaximumLength
 				);
@@ -263,8 +254,8 @@ export default class SetupAccount extends BaseAction {
 		});
 	}
 
-	private async handleSaveToken(accountCredentialsList: AuthListData) {
-		const authId = await this.getNewAuthId(accountCredentialsList);
+	private async handleSaveToken(authIds: AuthListData) {
+		const authId = await this.getNewAuthId(authIds);
 		if (!authId) {
 			return;
 		}
@@ -299,7 +290,7 @@ export default class SetupAccount extends BaseAction {
 			commandParams.url = url;
 		}
 
-		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.rootWorkspaceFolder);
+		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.rootWorkspaceFolder!);
 		this.messageService.showStatusBarMessage(
 			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA),
 			true,
