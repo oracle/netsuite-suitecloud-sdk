@@ -33,7 +33,18 @@ const COMMANDS = {
 			OAUTH: 'OAUTH',
 			SAVE_TOKEN: 'SAVE_TOKEN',
 			REUSE: 'REUSE',
+			CLIENT_CREDENTIALS: 'CLIENT_CREDENTIALS'
 		},
+	},
+	AUTHENTICATE_CI: {
+		SDK_COMMAND: 'authenticateci',
+		PARAMS: {
+			ACCOUNT: 'account',
+			AUTH_ID: 'authid',
+			CERTIFICATEID: 'certificateid',
+			PRIVATEKEYPATH: 'privatekeypath',
+			URL: 'url',
+		}
 	},
 	MANAGEAUTH: {
 		SDK_COMMAND: 'manageauth',
@@ -153,4 +164,35 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 		.catch((error) => AuthenticateActionResult.Builder.withErrors([error]));
 }
 
-module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, saveToken, authenticateWithOauth };
+async function auhtenticateCi(params, sdkPath, projectFolder, executionEnvironmentContext) {
+	const authId = params.authid;
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE_CI.SDK_COMMAND)
+		.integration()
+		.addParam(COMMANDS.AUTHENTICATE_CI.PARAMS.AUTH_ID, authId)
+		.addParam(COMMANDS.AUTHENTICATE_CI.PARAMS.ACCOUNT, params.account)
+		.addParam(COMMANDS.AUTHENTICATE_CI.PARAMS.CERTIFICATEID, params.certificateid)
+		.addParam(COMMANDS.AUTHENTICATE_CI.PARAMS.PRIVATEKEYPATH, params.privatekeypath)
+
+	if (params.domain) {
+		contextBuilder.addParam(COMMANDS.AUTHENTICATE.PARAMS.URL, params.domain);
+	}
+
+	const authenticateCiExecutionContext = contextBuilder.build();
+	const operationResult = await executeWithSpinner({
+		action: sdkExecutor.execute(authenticateCiExecutionContext),
+		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.AUTHENTICATING),
+	});
+	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
+	}
+	setDefaultAuthentication(projectFolder, authId);
+	return AuthenticateActionResult.Builder.success()
+		.withMode(COMMANDS.AUTHENTICATE.MODES.CLIENT_CREDENTIALS)
+		.withAuthId(authId)
+		.withAccountInfo(operationResult.data.accountInfo)
+		.withCommandParameters(authenticateCiExecutionContext.getParams())
+		.build();
+}
+
+module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, saveToken, authenticateWithOauth, auhtenticateCi};

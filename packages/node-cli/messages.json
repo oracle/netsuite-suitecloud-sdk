@@ -195,6 +195,8 @@
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID \"{0}\" as default for the following company and role: {1} [{2}]. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 
+	"COMMAND_SETUPACCOUNTCI_OUTPUT_NEW_OAUTH": "The authentication was successful with the following account and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default.",
+
 	"COMMAND_UPDATE_ERRORS_CUSTOM_RECORD": "{0} was not updated. {1}",
 	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
 	"COMMAND_UPDATE_QUESTIONS_FILTER_BY_SCRIPT_ID": "Do you want to enter a script ID to filter your search?",
@@ -290,6 +292,7 @@
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs in this machine...",
 	"UTILS_AUTHENTICATION_SAVING_TBA_TOKEN": "Saving the TBA token...",
+	"UTILS_AUTHENTICATION_AUTHENTICATING": "Authenticating...",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 	"UTILS_ERRORS_COMMAND": "There was an error with the {0} command. {1}",
 
