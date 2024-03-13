@@ -1804,7 +1804,7 @@ declare module '@uif-js/core' {
 		/**
 		 * Create a comparator for strings
 		 */
-		function string(ascending?: boolean, nullFirst?: boolean): Self.Comparator.Function;
+		function string(ascending?: boolean, nullFirst?: boolean, caseSensitive?: boolean): Self.Comparator.Function;
 
 		/**
 		 * Create a comparator for numbers
@@ -11655,17 +11655,20 @@ declare module '@uif-js/core' {
 
 		export import Name = Self.ThemeName;
 
-		export import Background = Self.ThemeBackground;
+		/**
+		 * Theme background
+		 */
+		enum Background {
+			LIGHT,
+			DARK,
+		}
 
 	}
 
 	/**
-	 * Theme background
+	 * Theme background context provider
 	 */
-	enum ThemeBackground {
-		LIGHT,
-		DARK,
-	}
+	export function ThemeBackground(props: {value: Self.Theme.Background; children?: Self.VDom.Children}): Self.JSX.Element;
 
 	/**
 	 * Theme icons
@@ -12999,9 +13002,9 @@ declare module '@uif-js/core' {
 		function fromString(string: string): Self.VDomElement;
 
 		/**
-		 * Get an array of child elements
+		 * Create an array out of the VDom children structure
 		 */
-		function children(children: Self.VDom.Children): globalThis.Array<Self.VDom.Node>;
+		function children(children: Self.VDom.Children, omitEmpty?: boolean): globalThis.Array<Self.VDom.Node>;
 
 		/**
 		 * Fragment component
@@ -13013,10 +13016,26 @@ declare module '@uif-js/core' {
 		 */
 		function Portal(props: {container: HTMLElement; children?: Self.VDom.Children}): Self.VDomElement;
 
+		interface SingleContextProps {
+			type: (string | symbol);
+
+			value: any;
+
+			children?: Self.VDom.Children;
+
+		}
+
+		interface MultipleContextProps {
+			value: object;
+
+			children?: Self.VDom.Children;
+
+		}
+
 		/**
 		 * Context provider component
 		 */
-		function Context(props: {value: object; children?: Self.VDom.Children}): Self.VDomElement;
+		function Context(props: (Self.VDom.SingleContextProps | Self.VDom.MultipleContextProps)): Self.VDomElement;
 
 		/**
 		 * Element decorator
@@ -13079,7 +13098,7 @@ declare module '@uif-js/core' {
 		constructor(tag: Self.VDomFiberTag, type: (string | symbol | ((props: any) => Self.VDomElement)), key: any, ref: (Self.VDomRef | null), props: any, flags: number);
 
 		/**
-		 * Create a clone with merged props
+		 * Create a clone with given props
 		 */
 		cloneWithProps(props: object): Self.VDomElement;
 
@@ -15324,7 +15343,7 @@ declare module '@uif-js/component' {
 		/**
 		 * BannerMessage content
 		 */
-		content: (string | PackageCore.Translation | PackageCore.Component);
+		content: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		/**
 		 * Alias for content property that is used by virtual DOM and JSX
@@ -15347,7 +15366,7 @@ declare module '@uif-js/component' {
 
 	export namespace BannerMessage {
 		interface Options extends PackageCore.Component.Options {
-			content: (string | PackageCore.Translation | PackageCore.Component);
+			content?: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 			layout?: Self.BannerMessage.Layout;
 
@@ -20320,9 +20339,16 @@ declare module '@uif-js/component' {
 		type SortCallback = (args: Self.DataGrid.SortArgs, sender: Self.DataGrid) => void;
 
 		interface SortArgs {
-			directions: globalThis.Array<{column: Self.GridColumn; direction: Self.DataGrid.SortDirection}>;
+			directions: globalThis.Array<Self.DataGrid.SortArg>;
 
-			previousDirections: globalThis.Array<{column: Self.GridColumn; direction: Self.DataGrid.SortDirection}>;
+			previousDirections: globalThis.Array<Self.DataGrid.SortArg>;
+
+		}
+
+		interface SortArg {
+			column: Self.GridColumn;
+
+			direction: Self.DataGrid.SortDirection;
 
 		}
 
@@ -21293,6 +21319,11 @@ declare module '@uif-js/component' {
 		 */
 		private _handleRangeSelected(args: Self.DateRange.RangeChangedArgs): void;
 
+		/**
+		 * Parse date range value with fallback to deprecated properties
+		 */
+		private static _parseDateRangeValue(value: {endDate: (PackageCore.Date | null); startDate: (PackageCore.Date | null); rangeStart: (PackageCore.Date | null); rangeEnd: (PackageCore.Date | null)}): {endDate: (PackageCore.Date | null); startDate: (PackageCore.Date | null)};
+
 	}
 
 	export namespace DateRangePicker {
@@ -21468,7 +21499,7 @@ declare module '@uif-js/component' {
 		/**
 		 * Gets the picker
 		 */
-		picker: (Self.Picker | null);
+		picker: (Self.ListBoxPicker.Options | null);
 
 		/**
 		 * Size of the component
@@ -21550,7 +21581,7 @@ declare module '@uif-js/component' {
 
 			openDropDownOnFocus?: boolean;
 
-			picker?: (Self.ListBoxPicker.Options | Self.Dropdown.PickerCallback);
+			picker?: Self.ListBoxPicker.Options;
 
 			placeholder?: (string | PackageCore.Translation | PackageCore.Component);
 
@@ -21600,8 +21631,6 @@ declare module '@uif-js/component' {
 			reason: Self.Dropdown.Reason;
 
 		}
-
-		type PickerCallback = (dropdown: Self.Dropdown) => Self.Picker;
 
 		interface EventTypes extends Self.DataSourceComponent.EventTypes {
 			SELECTED_ITEM_CHANGED: string;
@@ -27405,7 +27434,7 @@ declare module '@uif-js/component' {
 		interface Options extends PackageCore.Component.Options {
 			title?: (string | PackageCore.Translation);
 
-			content: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
+			content?: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 			icon?: Self.Image.Source;
 
@@ -30072,6 +30101,8 @@ declare module '@uif-js/component' {
 		}
 
 		interface ColumnDefinition extends Self.GridColumn {
+			sortPredicate?: (args: Self.DataGrid.SortArg) => PackageCore.Comparator.Function;
+
 			visibility?: globalThis.Array<Self.ListView.VisibilityBreakpoint>;
 
 		}
@@ -30172,6 +30203,8 @@ declare module '@uif-js/component' {
 		export import Layout = Self.ListPresenterConstant.Layout;
 
 		export import TableMasterDetailWidth = Self.ListTableLayout.MasterDetailWidth;
+
+		export import SortDirection = Self.GridConstants.SortDirection;
 
 		enum StateProperty {
 			VIEW_SELECTED_ITEMS,
@@ -31879,7 +31912,7 @@ declare module '@uif-js/component' {
 		/**
 		 * Picker component
 		 */
-		picker: (PackageCore.Component | null);
+		picker: (Self.ListBoxPicker.Options | null);
 
 		/**
 		 * States if Picker opens on TextBox click
@@ -32109,7 +32142,7 @@ declare module '@uif-js/component' {
 
 			tagMaxWidth?: number;
 
-			picker?: (Self.ListBoxPicker.Options | Self.MultiselectDropdown.PickerCallback);
+			picker?: Self.ListBoxPicker.Options;
 
 			size?: Self.MultiselectDropdown.Size;
 
@@ -32131,8 +32164,6 @@ declare module '@uif-js/component' {
 			reason: Self.MultiselectDropdown.Reason;
 
 		}
-
-		type PickerCallback = (dropdown: Self.MultiselectDropdown) => Self.Picker;
 
 		interface EventTypes extends PackageCore.Component.EventTypes {
 			SELECTED_ITEMS_CHANGED: string;
@@ -36354,7 +36385,7 @@ declare module '@uif-js/component' {
 		/**
 		 * JSX function component that creates a compound skeleton depicting a loading paragraph of text
 		 */
-		static Text(options: {count: number}): PackageCore.JSX.Element;
+		static Text(props: PackageCore.Component.Options & {count?: number}): PackageCore.JSX.Element;
 
 		/**
 		 * Factory function that creates divider skeleton - rectangle skeleton with height of 2 px and full width
@@ -36404,7 +36435,7 @@ declare module '@uif-js/component' {
 		/**
 		 * JSX function component that creates compound skeleton for table
 		 */
-		static Table(props?: {rows?: number; columns?: number; settings?: Self.GridPanel.Options}): PackageCore.JSX.Element;
+		static Table(props?: PackageCore.Component.Options & {rows?: number; columns?: number}): PackageCore.JSX.Element;
 
 		/**
 		 * Factory function that creates compound skeleton for the Kpi component
@@ -36414,7 +36445,7 @@ declare module '@uif-js/component' {
 		/**
 		 * JSX function component that creates compound skeleton for the Kpi component
 		 */
-		static Kpi(props?: Self.ContentPanel.Options): PackageCore.JSX.Element;
+		static Kpi(props?: PackageCore.Component.Options): PackageCore.JSX.Element;
 
 		/**
 		 * Factory function that creates compound skeleton for the Reminder component
@@ -36424,7 +36455,7 @@ declare module '@uif-js/component' {
 		/**
 		 * Factory function that creates compound skeleton for the Reminder component
 		 */
-		static Reminder(props?: Self.GridPanel.Options): PackageCore.JSX.Element;
+		static Reminder(props?: PackageCore.Component.Options): PackageCore.JSX.Element;
 
 		/**
 		 * Factory function that creates compound skeleton for a list of reminders
@@ -36434,7 +36465,7 @@ declare module '@uif-js/component' {
 		/**
 		 * Factory function that creates compound skeleton for a list of reminders
 		 */
-		static Reminders(props?: {count?: number}): PackageCore.JSX.Element;
+		static Reminders(props?: PackageCore.Component.Options & {count?: number}): PackageCore.JSX.Element;
 
 		/**
 		 * Field skeleton
@@ -36444,7 +36475,7 @@ declare module '@uif-js/component' {
 		/**
 		 * Field skeleton
 		 */
-		static Field(): PackageCore.JSX.Element;
+		static Field(props?: PackageCore.Component.Options): PackageCore.JSX.Element;
 
 		/**
 		 * FieldGroup skeleton
@@ -36454,7 +36485,7 @@ declare module '@uif-js/component' {
 		/**
 		 * FieldGroup skeleton
 		 */
-		static FieldGroup(): PackageCore.JSX.Element;
+		static FieldGroup(props?: PackageCore.Component.Options & {children?: any}): PackageCore.JSX.Element;
 
 		/**
 		 * Grid skeleton
@@ -36464,7 +36495,7 @@ declare module '@uif-js/component' {
 		/**
 		 * Grid skeleton
 		 */
-		static Grid(options: PackageCore.Component.Options & {rows: number; columns: number}): PackageCore.JSX.Element;
+		static Grid(props: PackageCore.Component.Options & {rows: number; columns: number}): PackageCore.JSX.Element;
 
 		/**
 		 * ApplicationHeader skeleton
@@ -36474,7 +36505,7 @@ declare module '@uif-js/component' {
 		/**
 		 * ApplicationHeader skeleton
 		 */
-		static ApplicationHeader(props?: {icon?: boolean; subtitle?: boolean; actions?: number}): PackageCore.JSX.Element;
+		static ApplicationHeader(props?: PackageCore.Component.Options & {icon?: boolean; subtitle?: boolean; actions?: number}): PackageCore.JSX.Element;
 
 	}
 
