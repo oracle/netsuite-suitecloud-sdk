@@ -16,7 +16,6 @@ module.exports = class AccountSetupCiOutputHandler extends BaseOutputHandler {
 	parse(actionResult) {
 		const resultMessage = NodeTranslationService.getMessage(
 			COMMAND_SETUPACCOUNTCI.OUTPUT.NEW_OAUTH,
-
 			actionResult.accountInfo.companyName,
 			actionResult.accountInfo.roleName,
 			actionResult.authId

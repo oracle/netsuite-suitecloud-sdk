@@ -19,11 +19,6 @@
 		}
 	},
 	"account:setup:ci": {
-		"name": "account:setup:ci",
-		"sdkCommand": "authenticateci",
-		"usage": "",
-		"description": "Grants authorization for SuiteCloud SDK to access NetSuite with an account-role combination. It does not require browser-based login to NetSuite.",
-		"isSetupRequired": false,
 		"options": {
 			"domain": {
 				"name": "domain",
