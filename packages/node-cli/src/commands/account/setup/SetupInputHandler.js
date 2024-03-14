@@ -6,23 +6,18 @@
 
 const { prompt, Separator } = require('inquirer');
 const chalk = require('chalk');
-const path = require('path');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const FileUtils = require('../../../utils/FileUtils');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
-const CLIException = require('../../../CLIException');
 const {
-	DOMAIN,
-	FILES: { MANIFEST_XML },
-	LINKS: { INFO },
+	DOMAIN
 } = require('../../../ApplicationConstants');
+const ProjectInfoService = require('../../../services/ProjectInfoService');
 
 const {
-	COMMAND_SETUPACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
-	ERRORS,
+	COMMAND_SETUPACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES }
 } = require('../../../services/TranslationKeys');
 
 const {
@@ -33,7 +28,6 @@ const {
 	validateMaximumLength,
 	showValidationResults,
 } = require('../../../validation/InteractiveAnswersValidator');
-const { lineBreak } = require('../../../loggers/LoggerConstants');
 
 const ANSWERS = {
 	SELECTED_AUTH_ID: 'selected_auth_id',
@@ -58,10 +52,11 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		super(options);
 		// TODO input handlers shouldn't execute actions. rework this
 		this._sdkExecutor = new SdkExecutor(this._sdkPath);
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
 	async getParameters(params) {
-		this._checkWorkingDirectoryContainsValidProject();
+		this._projectInfoService.checkWorkingDirectoryContainsValidProject(this._commandMetadata.name);
 
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (!authIDActionResult.isSuccess()) {
@@ -94,15 +89,18 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			choices.push(new Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 			authIDs.forEach((authID) => {
 				const accountCredentials = authIDActionResult.data[authID];
+				// just fixed the isNotProductionUrl because of new credentials format, but the previous version was always false
+				// TODO: review if we want to show non-production urls on the list of selectable authIds
 				const isNotProductionUrl =
-					!accountCredentials.urls &&
-					!accountCredentials.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
-					!accountCredentials.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+					accountCredentials.hostInfo &&
+					accountCredentials.hostInfo.hostName &&
+					!accountCredentials.hostInfo.hostName.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+					!accountCredentials.hostInfo.hostName.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
 				const notProductionLabel = isNotProductionUrl
 					? NodeTranslationService.getMessage(
-							QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION,
-							accountCredentials.urls.app
-					  )
+						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION,
+						accountCredentials.hostInfo.hostName
+					)
 					: '';
 				const accountInfo = `${accountCredentials.accountInfo.companyName} [${accountCredentials.accountInfo.roleName}]`;
 				choices.push({
@@ -219,15 +217,5 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			executeActionContext.url = urlAnswer[ANSWERS.URL];
 		}
 		return executeActionContext;
-	}
-
-	_checkWorkingDirectoryContainsValidProject() {
-		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			const errorMessage =
-				NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name) +
-				lineBreak +
-				NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
-			throw new CLIException(errorMessage);
-		}
 	}
 };

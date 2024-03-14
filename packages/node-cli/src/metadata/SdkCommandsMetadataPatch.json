@@ -15,9 +15,24 @@
 			},
 			"renameto": {
 				"description": "Specifies the new ID for an authentication ID. You must specify it together with the rename option. Usage: account:manageauth --rename {authenticationID} --renameto {newAuthenticationID}."
+			}
+		}
+	},
+	"account:setup:ci": {
+		"description": "Sets up an account to use with SuiteCloud SDK and configures the default auth ID for the SuiteCloud project. It does not require browser-based login to NetSuite.\nTo change the default auth ID for the project, run: suitecloud account:setup.",
+		"options": {
+			"domain": {
+				"name": "domain",
+				"option": "domain",
+				"description": "References the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
 			},
-			"revoke": {
-				"description": "Revokes the TBA token that was issued to your account and is linked to the specified authentication ID. Usage: account:manageauth --revoke {authenticationID}."
+			"url": {
+				"disableInIntegrationMode": true
 			}
 		}
 	},
