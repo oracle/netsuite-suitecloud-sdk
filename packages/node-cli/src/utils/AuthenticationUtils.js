@@ -175,7 +175,7 @@ async function authenticateCi(params, sdkPath, projectFolder, executionEnvironme
 		.addParam(COMMANDS.AUTHENTICATE_CI.PARAMS.PRIVATEKEYPATH, params.privatekeypath)
 
 	if (params.domain) {
-		contextBuilder.addParam(COMMANDS.AUTHENTICATE.PARAMS.URL, params.domain);
+		contextBuilder.addParam(COMMANDS.AUTHENTICATE_CI.PARAMS.URL, params.domain);
 	}
 
 	const authenticateCiExecutionContext = contextBuilder.build();
