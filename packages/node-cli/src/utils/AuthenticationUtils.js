@@ -164,7 +164,7 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 		.catch((error) => AuthenticateActionResult.Builder.withErrors([error]));
 }
 
-async function auhtenticateCi(params, sdkPath, projectFolder, executionEnvironmentContext) {
+async function authenticateCi(params, sdkPath, projectFolder, executionEnvironmentContext) {
 	const authId = params.authid;
 	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
 	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE_CI.SDK_COMMAND)
@@ -195,4 +195,4 @@ async function auhtenticateCi(params, sdkPath, projectFolder, executionEnvironme
 		.build();
 }
 
-module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, saveToken, authenticateWithOauth, auhtenticateCi};
+module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, saveToken, authenticateWithOauth, authenticateCi};

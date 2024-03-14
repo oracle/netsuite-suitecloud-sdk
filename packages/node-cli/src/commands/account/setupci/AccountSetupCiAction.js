@@ -4,19 +4,10 @@
  */
 'use strict';
 
-const path = require('path');
 const BaseAction = require('../../base/BaseAction');
-const { auhtenticateCi } = require('../../../utils/AuthenticationUtils');
+const { authenticateCi } = require('../../../utils/AuthenticationUtils');
 const { DOMAIN: { PRODUCTION: { GENERIC_NETSUITE_DOMAIN } } } = require('../../../ApplicationConstants');
-const NodeTranslationService = require('../../../services/NodeTranslationService');
-const FileUtils = require('../../../utils/FileUtils');
-const { ERRORS } = require('../../../services/TranslationKeys');
-const {
-	FILES: { MANIFEST_XML },
-} = require('../../../ApplicationConstants');
-const CLIException = require('../../../CLIException');
-const { lineBreak } = require('../../../loggers/LoggerConstants');
-const { LINKS: { INFO } } = require('../../../ApplicationConstants');
+const ProjectInfoService = require('../../../services/ProjectInfoService');
 
 const COMMAND = {
 	OPTIONS: {
@@ -31,12 +22,15 @@ const COMMAND = {
 };
 
 module.exports = class AccountSetupCiAction extends BaseAction {
+	
 	constructor(options) {
 		super(options);
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
 	preExecute(params) {
-		this._checkWorkingDirectoryContainsValidProject();
+		this._projectInfoService.checkWorkingDirectoryContainsValidProject(this._commandMetadata.name);
+		
 		if (params[COMMAND.OPTIONS.ACCOUNT]) {
 			params[COMMAND.OPTIONS.ACCOUNT] = params[COMMAND.OPTIONS.ACCOUNT].toUpperCase();
 		}
@@ -47,15 +41,6 @@ module.exports = class AccountSetupCiAction extends BaseAction {
 		if (params[COMMAND.OPTIONS.DOMAIN] === GENERIC_NETSUITE_DOMAIN) {
 			delete params[COMMAND.OPTIONS.DOMAIN];
 		}
-		return await auhtenticateCi(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
-
-	}
-
-	_checkWorkingDirectoryContainsValidProject() {
-		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			const errorMessage = NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name)
-				+ lineBreak + NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
-			throw new CLIException(errorMessage);
-		}
+		return await authenticateCi(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
 	}
 };

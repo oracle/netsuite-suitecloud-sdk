@@ -6,10 +6,11 @@
 
 const { ERRORS } = require('./TranslationKeys');
 const {
-	PROJECT_SUITEAPP,
-	PROJECT_ACP,
 	FILES,
 	FOLDERS,
+	LINKS: { INFO },
+	PROJECT_ACP,
+	PROJECT_SUITEAPP
 } = require('../ApplicationConstants');
 const CLIException = require('../CLIException');
 const FileUtils = require('../utils/FileUtils');
@@ -18,7 +19,6 @@ const NodeTranslationService = require('./NodeTranslationService');
 const xml2js = require('xml2js');
 const assert = require('assert');
 const { lineBreak } = require('../loggers/LoggerConstants');
-const { LINKS: { INFO } } = require('../ApplicationConstants');
 
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
@@ -66,7 +66,7 @@ module.exports = class ProjectInfoService {
 
 	getProjectType() {
 		if (!this._CACHED_PROJECT_TYPE) {
-			this.parseManifest();
+			this._parseManifest();
 		}
 
 		return this._CACHED_PROJECT_TYPE;
@@ -74,14 +74,14 @@ module.exports = class ProjectInfoService {
 
 	getProjectName() {
 		if (!this._CACHED_PROJECT_NAME) {
-			this.parseManifest();
+			this._parseManifest();
 		}
 		return this._CACHED_PROJECT_NAME;
 	}
 
 	getPublisherId() {
 		if (!this._CACHED_PUBLISHER_ID) {
-			this.parseManifest();
+			this._parseManifest();
 		}
 
 		return this._CACHED_PUBLISHER_ID;
@@ -89,19 +89,19 @@ module.exports = class ProjectInfoService {
 
 	getProjectId() {
 		if (!this._CACHED_PROJECT_ID) {
-			this.parseManifest();
+			this._parseManifest();
 		}
 
 		return this._CACHED_PROJECT_ID;
 	}
 
 	getApplicationId() {
-		return this.getPublisherId() + "." + this.getProjectId();
+		return this.getPublisherId() + '.' + this.getProjectId();
 	}
 
-	parseManifest() {
-		const manifestPath = this.getManifestPath();
-		const manifestString = this.getManifestString(manifestPath);
+	_parseManifest() {
+		const manifestPath = this._getManifestPath();
+		const manifestString = this._getManifestString(manifestPath);
 
 		let projectName;
 		let projectType;
@@ -137,7 +137,7 @@ module.exports = class ProjectInfoService {
 		this._CACHED_PROJECT_ID = projectId;
 	}
 
-	getManifestPath() {
+	_getManifestPath() {
 		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
 
 		if (!FileUtils.exists(manifestPath)) {
@@ -152,7 +152,7 @@ module.exports = class ProjectInfoService {
 		return manifestPath;
 	}
 
-	getManifestString(manifestPath) {
+	_getManifestString(manifestPath) {
 		const manifestString = FileUtils.readAsString(manifestPath);
 
 		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
@@ -199,4 +199,11 @@ module.exports = class ProjectInfoService {
 		return this.isAccountCustomizationProject() || this.isSuiteAppProject();
 	}
 
+	checkWorkingDirectoryContainsValidProject(commandName) {
+		if (!FileUtils.exists(path.join(this._projectFolder, FILES.MANIFEST_XML))) {
+			const errorMessage = NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, FILES.MANIFEST_XML, this._projectFolder, commandName)
+				+ lineBreak + NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
+			throw new CLIException(errorMessage);
+		}
+	}
 };
