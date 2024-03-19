@@ -14,6 +14,7 @@ module.exports = {
 	SDK_CLIENT_PLATFORM: 'SuiteCloudCLIforNode.js',
 	SDK_CLIENT_PLATFORM_JVM_OPTION: '-DclientPlatform',
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION: '-DclientPlatformVersion',
+	SDK_FILE_ENCODING: '-Dfile.encoding=UTF-8',
 	FILES: {
 		PROJECT_JSON: 'project.json',
 		HIDING_PREFERENCE: 'hiding.xml',
