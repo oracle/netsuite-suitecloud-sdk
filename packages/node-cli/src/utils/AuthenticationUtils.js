@@ -31,7 +31,6 @@ const COMMANDS = {
 		},
 		MODES: {
 			OAUTH: 'OAUTH',
-			SAVE_TOKEN: 'SAVE_TOKEN',
 			REUSE: 'REUSE',
 			CLIENT_CREDENTIALS: 'CLIENT_CREDENTIALS'
 		},
@@ -52,8 +51,7 @@ const COMMANDS = {
 };
 
 const FLAGS = {
-	LIST: 'list',
-	SAVETOKEN: 'savetoken',
+	LIST: 'list'
 };
 
 function setDefaultAuthentication(projectFolder, authId) {
@@ -98,38 +96,6 @@ async function getAuthIds(sdkPath) {
 	return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 		? ActionResult.Builder.withData(operationResult.data).build()
 		: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
-}
-
-async function saveToken(params, sdkPath, projectFolder, executionEnvironmentContext) {
-	const authId = params.authid;
-	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
-	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.AUTHENTICATE.SDK_COMMAND)
-		.integration()
-		.addParam(COMMANDS.AUTHENTICATE.PARAMS.AUTH_ID, authId)
-		.addParam(COMMANDS.AUTHENTICATE.PARAMS.ACCOUNT, params.account)
-		.addParam(COMMANDS.AUTHENTICATE.PARAMS.TOKEN_ID, params.tokenid)
-		.addParam(COMMANDS.AUTHENTICATE.PARAMS.TOKEN_SECRET, params.tokensecret)
-		.addFlag(FLAGS.SAVETOKEN);
-
-	if (params.url) {
-		contextBuilder.addParam(COMMANDS.AUTHENTICATE.PARAMS.URL, params.url);
-	}
-
-	const tokenExecutionContext = contextBuilder.build();
-	const operationResult = await executeWithSpinner({
-		action: sdkExecutor.execute(tokenExecutionContext),
-		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.SAVING_TBA_TOKEN),
-	});
-	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-		return AuthenticateActionResult.Builder.withErrors(operationResult.errorMessages).build();
-	}
-	setDefaultAuthentication(projectFolder, authId);
-	return AuthenticateActionResult.Builder.success()
-		.withMode(COMMANDS.AUTHENTICATE.MODES.SAVE_TOKEN)
-		.withAuthId(authId)
-		.withAccountInfo(operationResult.data.accountInfo)
-		.withCommandParameters(tokenExecutionContext.getParams())
-		.build();
 }
 
 async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken, executionEnvironmentContext) {
@@ -195,4 +161,4 @@ async function authenticateCi(params, sdkPath, projectFolder, executionEnvironme
 		.build();
 }
 
-module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, saveToken, authenticateWithOauth, authenticateCi};
+module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, authenticateWithOauth, authenticateCi};
