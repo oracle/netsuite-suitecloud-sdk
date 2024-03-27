@@ -161,7 +161,7 @@ async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken
 				.withCommandParameters(oauthContext.getParams())
 				.build();
 		})
-		.catch((error) => AuthenticateActionResult.Builder.withErrors([error]));
+		.catch((error) => AuthenticateActionResult.Builder.withErrors([error]).build());
 }
 
 async function authenticateCi(params, sdkPath, projectFolder, executionEnvironmentContext) {

@@ -6,7 +6,7 @@
 
 const BaseAction = require('../../base/BaseAction');
 const AuthenticateActionResult = require('../../../services/actionresult/AuthenticateActionResult');
-const { setDefaultAuthentication, authenticateWithOauth, saveToken } = require('../../../utils/AuthenticationUtils');
+const { setDefaultAuthentication, authenticateWithOauth } = require('../../../utils/AuthenticationUtils');
 
 const AUTH_MODE = {
 	OAUTH: 'OAUTH',
