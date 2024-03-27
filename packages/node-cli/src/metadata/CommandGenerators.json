@@ -1,10 +1,5 @@
 [
 	{
-		"commandName": "account:savetoken",
-		"supportsInteractiveMode": false,
-		"generator": "./commands/account/savetoken/AccountSaveTokenCommand"
-	},
-	{
 		"commandName": "account:manageauth",
 		"supportsInteractiveMode": true,
 		"generator": "./commands/account/manageauth/ManageAccountCommand"

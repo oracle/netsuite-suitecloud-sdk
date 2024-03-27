@@ -1,57 +1,15 @@
 {
-	"account:savetoken": {
-		"name": "account:savetoken",
-		"description": "Saves a TBA token that you issued previously in NetSuite.",
-		"isSetupRequired": false,
-		"options": {
-			"account": {
-				"name": "account",
-				"description": "Specifies the ID of the account to log in to.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"disableInIntegrationMode": false
-			},
-			"authid": {
-				"name": "authid",
-				"description": "References the custom name you gave to a specific account-role combination.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"disableInIntegrationMode": false
-			},
-			"tokenid": {
-				"name": "tokenid",
-				"description": "Specifies the token ID of a TBA token you issued previously in NetSuite.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"disableInIntegrationMode": false
-			},
-			"tokensecret": {
-				"name": "tokensecret",
-				"description": "Specifies the token secret of a TBA token you issued previously in NetSuite.",
-				"mandatory": true,
-				"type": "SINGLE",
-				"disableInIntegrationMode": false
-			},
-			"url": {
-				"name": "url",
-				"description": "Specifies the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"disableInIntegrationMode": false
-			}
-		}
-	},
 	"account:setup": {
 		"name": "account:setup",
 		"alias": "sa",
-		"description": "Sets up an account to use with SuiteCloud CLI for Node.js.",
+		"description": "Sets up an account to use with SuiteCloud SDK and configures the default auth ID for the SuiteCloud project. It requires browser-based login to NetSuite.",
 		"isSetupRequired": false,
 		"forceInteractiveMode": true,
 		"options": {
 			"dev": {
 				"name": "dev",
 				"alias": "d",
-				"description": "Specifies the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
+				"description": "Needs to be specified if you want to use a customized NetSuite domain.",
 				"type": "FLAG",
 				"mandatory": false,
 				"disableInIntegrationMode": false
