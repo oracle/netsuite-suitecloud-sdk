@@ -51,7 +51,6 @@ suitecloud <command> <option> <argument>
 | Command | Description |
 | --- | --- |
 |[`account:manageauth`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_157304934116.html)|Manages authentication IDs for all your projects.|
-|[`account:savetoken`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159350785187.html)|Saves a TBA token that you issued previously in NetSuite.|
 |[`account:setup`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156044528841.html)|Sets up an account to use with SuiteCloud CLI for Node.js.|
 |[`file:create`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162810635242.html)|Creates SuiteScript files in the selected folder using the correct template with SuiteScript modules injected.|
 |[`file:import`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156041963273.html)|Imports files from an account to your account customization project.|

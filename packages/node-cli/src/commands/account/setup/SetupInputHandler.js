@@ -9,7 +9,6 @@ const chalk = require('chalk');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const {
 	DOMAIN
@@ -33,15 +32,11 @@ const ANSWERS = {
 	SELECTED_AUTH_ID: 'selected_auth_id',
 	AUTH_MODE: 'AUTH_MODE',
 	NEW_AUTH_ID: 'NEW_AUTH_ID',
-	SAVE_TOKEN_ACCOUNT_ID: 'account',
-	SAVE_TOKEN_ID: 'saveTokenId',
-	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 	URL: 'url',
 };
 
 const AUTH_MODE = {
 	OAUTH: 'OAUTH',
-	SAVE_TOKEN: 'SAVE_TOKEN',
 	REUSE: 'REUSE',
 };
 
@@ -50,8 +45,6 @@ const CREATE_NEW_AUTH = '******CREATE_NEW_AUTH*******!£$%&*';
 module.exports = class SetupInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(this._sdkPath);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
@@ -132,33 +125,15 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	}
 
 	async getParamsCreateNewAuthId(params, authIDActionResult) {
-		let urlAnswer;
-		if (params && params.dev !== undefined && params.dev) {
-			urlAnswer = await prompt([
-				{
-					type: CommandUtils.INQUIRER_TYPES.INPUT,
-					name: ANSWERS.URL,
-					message: NodeTranslationService.getMessage(QUESTIONS.URL),
-					filter: (fieldValue) => fieldValue.trim(),
-					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
-				},
-			]);
-		}
 		const newAuthenticationAnswers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: ANSWERS.AUTH_MODE,
-				message: NodeTranslationService.getMessage(QUESTIONS.AUTH_MODE),
-				choices: [
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.OAUTH),
-						value: AUTH_MODE.OAUTH,
-					},
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN),
-						value: AUTH_MODE.SAVE_TOKEN,
-					},
-				],
+				when: params && params.dev !== undefined && params.dev,
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: ANSWERS.URL,
+				message: NodeTranslationService.getMessage(QUESTIONS.URL),
+				filter: (fieldValue) => fieldValue.trim(),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
+
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -175,47 +150,15 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 						validateMaximumLength
 					),
 			},
-			{
-				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
-				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
-				transformer: (answer) => answer.toUpperCase(),
-				filter: (fieldValue) => fieldValue.trim().toUpperCase(),
-				validate: (fieldValue) =>
-					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
-			},
-			{
-				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
-				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
-				name: ANSWERS.SAVE_TOKEN_ID,
-				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
-				filter: (fieldValue) => fieldValue.trim(),
-				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
-			},
-			{
-				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
-				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
-				name: ANSWERS.SAVE_TOKEN_SECRET,
-				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
-				filter: (fieldValue) => fieldValue.trim(),
-				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
-			},
 		]);
 
 		const executeActionContext = {
 			createNewAuthentication: true,
 			authid: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
-			mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
-			account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
-			tokenid: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
-			tokensecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
+			mode: AUTH_MODE.OAUTH,
+			...(newAuthenticationAnswers[ANSWERS.URL] && { url: newAuthenticationAnswers[ANSWERS.URL] })
 		};
-		if (urlAnswer) {
-			executeActionContext.url = urlAnswer[ANSWERS.URL];
-		}
+
 		return executeActionContext;
 	}
 };
