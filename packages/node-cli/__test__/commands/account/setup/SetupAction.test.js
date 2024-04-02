@@ -17,7 +17,7 @@ const AUTH_MODE = {
 };
 
 describe('SetupAction execute(params)', () => {
-	it('should fail with exeption message generated in the java-core', async () => {
+	it('should fail when exception message is returned from java-core', async () => {
 		// given
 		const setupAction = new SetupAction({});
 		const mockedJavaExecutionExceptionMessage = 'My mocked java exception';
