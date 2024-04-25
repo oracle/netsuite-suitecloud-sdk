@@ -15,7 +15,9 @@ const path = require('path');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutor = require('../SdkExecutor');
-const {lineBreak} = require('../loggers/LoggerConstants')
+const { lineBreak } = require('../loggers/LoggerConstants')
+const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
+const SdkOperationResult = require('../utils/SdkOperationResult')
 
 const DEFAULT_AUTH_ID_PROPERTY = 'defaultAuthId';
 
@@ -48,6 +50,18 @@ const COMMANDS = {
 	MANAGEAUTH: {
 		SDK_COMMAND: 'manageauth',
 	},
+	INSPECT_AUTHORIZATION: {
+		SDK_COMMAND: 'inspectauthorization',
+		PARAMS: {
+			AUTH_ID: 'authid',
+		}
+	},
+	REFRESH_AUTHORIZATION: {
+		SDK_COMMAND: 'refreshauthorization',
+		PARAMS: {
+			AUTH_ID: 'authid',
+		}
+	},
 };
 
 const FLAGS = {
@@ -77,7 +91,7 @@ function getProjectDefaultAuthId(projectFolder) {
 			}
 			return fileContentJson[DEFAULT_AUTH_ID_PROPERTY];
 		} catch (error) {
-			throw NodeTranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error) + 
+			throw NodeTranslationService.getMessage(ERRORS.WRONG_JSON_FILE, projectFilePath, error) +
 			lineBreak + NodeTranslationService.getMessage(ERRORS.RUN_SETUP_ACCOUNT);
 		}
 	}
@@ -160,5 +174,43 @@ async function authenticateCi(params, sdkPath, projectFolder, executionEnvironme
 		.withCommandParameters(authenticateCiExecutionContext.getParams())
 		.build();
 }
+/**
+ * 
+ * @param {String} authid 
+ * @param {String} sdkPath 
+ * @param {ExecutionEnvironmentContext} executionEnvironmentContext 
+ * @returns {SdkOperationResult}
+ */
+async function checkIfReauthzorizationIsNeeded(authid, sdkPath, executionEnvironmentContext) {
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+	const inspectAuthContext = SdkExecutionContext.Builder.
+		forCommand(COMMANDS.INSPECT_AUTHORIZATION.SDK_COMMAND)
+		.addParam(COMMANDS.INSPECT_AUTHORIZATION.PARAMS.AUTH_ID, authid)
+		.integration()
+		.build();
+	const result = await sdkExecutor.execute(inspectAuthContext);
+	return new SdkOperationResult(result);
+}
+/**
+ * 
+ * @param {String} authid 
+ * @param {String} sdkPath 
+ * @param {ExecutionEnvironmentContext} executionEnvironmentContext 
+ * @returns {SdkOperationResult}
+ */
+async function refreshAuthorization(authid, sdkPath, executionEnvironmentContext) {
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+	const reauthorizeAuthContext = SdkExecutionContext.Builder.
+		forCommand(COMMANDS.REFRESH_AUTHORIZATION.SDK_COMMAND)
+		.addParam(COMMANDS.REFRESH_AUTHORIZATION.PARAMS.AUTH_ID, authid)
+		.integration()
+		.build();
 
-module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, authenticateWithOauth, authenticateCi};
+	const result =  await executeWithSpinner({
+		action: sdkExecutor.execute(reauthorizeAuthContext),
+		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.AUTHORIZING)
+	});
+	return new SdkOperationResult(result);
+}
+
+module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, authenticateWithOauth, authenticateCi, checkIfReauthzorizationIsNeeded, refreshAuthorization };

@@ -6,13 +6,15 @@
 
 const assert = require('assert');
 const NodeTranslationService = require('./../services/NodeTranslationService');
-const { ERRORS, CLI } = require('../services/TranslationKeys');
+const { ERRORS, CLI, COMMAND_REFRESH_AUTHORIZATION } = require('../services/TranslationKeys');
 const { ActionResult } = require('../services/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/ExceptionUtils');
 const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
+const { checkIfReauthzorizationIsNeeded, refreshAuthorization } = require('../utils/AuthenticationUtils');
+const { AUTHORIZATION_PROPERTIES_KEYS } = require('../ApplicationConstants');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -43,37 +45,51 @@ module.exports = class CommandActionExecutor {
 
 		let commandUserExtension;
 		try {
-			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(context.commandName);
 			const commandName = context.commandName;
-
+			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(commandName);
 			this._cliConfigurationService.initialize(this._executionPath);
 			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
 			commandUserExtension = this._cliConfigurationService.getCommandUserExtension(commandName);
-
 			const runInInteractiveMode = context.runInInteractiveMode;
-			const args = context.arguments;
+			const defaultAuthId = commandMetadata.isSetupRequired ? getProjectDefaultAuthId(this._executionPath) : null;
 
-			const projectConfiguration = commandMetadata.isSetupRequired ? getProjectDefaultAuthId(this._executionPath) : null;
-			this._checkCanExecute({ runInInteractiveMode, commandMetadata, projectConfiguration });
+			this._checkCanExecuteCommand({ runInInteractiveMode, commandMetadata, defaultAuthId });
 
-			const command = this._getCommand(runInInteractiveMode, projectFolder, commandMetadata);
-			const commandArguments = this._extractOptionValuesFromArguments(commandMetadata.options, args);
-
-			const actionResult = await this._executeCommandAction({
-				command: command,
-				arguments: commandArguments,
-				runInInteractiveMode: context.runInInteractiveMode,
-				metadata: commandMetadata,
-				commandUserExtension: commandUserExtension,
-				projectConfiguration: projectConfiguration,
+			const commandArguments = this._extractOptionValuesFromArguments(commandMetadata.options, context.arguments);
+			
+			// run beforeExecute(args) from suitecloud.config.js
+			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
+				commandName: commandName,
+				projectFolder: this._executionPath,
+				arguments: commandMetadata.isSetupRequired ? this._applyDefaultContextParams(commandArguments, defaultAuthId) : commandArguments,
 			});
+			const overriddenArguments = beforeExecutingOutput.arguments;
+			
+			if (commandMetadata.isSetupRequired && !context.arguments[AUTHORIZATION_PROPERTIES_KEYS.SKIP_AUHTORIZATION_CHECK]) {
+				// check if reauthz is needed to show proper message before continuing with the execution
+				// check after the beforeExecute() has been performed because for instance some unit-test failed and we won't continue the execution
+				await this._refreshAuthorizationIfNeeded(defaultAuthId);
+			}
+
+			// command creation
+			// src/commands/{noun}/{verb}/{verb}{noun}Command.js => specific implementation creation for a given command
+			const command = this._getCommand(runInInteractiveMode, projectFolder, commandMetadata);
+
+			// command execution
+			// src/commands/Command.js, run(inputParams) => execution flow for all commands
+			const actionResult = await command.run(overriddenArguments)
+
 			if (context.runInInteractiveMode) {
+				// generate non-interactive equivalent
 				const notInteractiveCommand = ActionResultUtils.extractNotInteractiveCommand(commandName, commandMetadata, actionResult);
 				this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE, notInteractiveCommand));
 			}
+
 			if (actionResult.isSuccess() && commandUserExtension.onCompleted) {
+				// run onCompleted(output) from suitecloud.config.js
 				commandUserExtension.onCompleted(actionResult);
 			} else if (!actionResult.isSuccess() && commandUserExtension.onError) {
+				// run onError(error) from suitecloud.config.js
 				commandUserExtension.onError(ActionResultUtils.getErrorMessagesString(actionResult));
 			}
 			return actionResult;
@@ -81,9 +97,28 @@ module.exports = class CommandActionExecutor {
 		} catch (error) {
 			let errorMessage = this._logGenericError(error);
 			if (commandUserExtension && commandUserExtension.onError) {
+				// run onError(error) from suitecloud.config.js
 				commandUserExtension.onError(error);
 			}
 			return ActionResult.Builder.withErrors(Array.isArray(errorMessage) ? errorMessage : [errorMessage]).build();
+		}
+	}
+
+	async _refreshAuthorizationIfNeeded(defaultAuthId) {
+		const inspectAuthzOperationResult = await checkIfReauthzorizationIsNeeded(defaultAuthId, this._sdkPath, this._executionEnvironmentContext);
+
+		if (!inspectAuthzOperationResult.isSuccess()) {
+			throw inspectAuthzOperationResult.errorMessages;
+		}
+		const inspectAuthzData = inspectAuthzOperationResult.data;
+		if (inspectAuthzData[AUTHORIZATION_PROPERTIES_KEYS.NEEDS_REAUTHORIZATION]) {
+			this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.CREDENTIALS_NEED_TO_BE_REFRESHED, defaultAuthId));
+			const refreshAuthzOperationResult = await refreshAuthorization(defaultAuthId, this._sdkPath, this._executionEnvironmentContext);
+
+			if (!refreshAuthzOperationResult.isSuccess()) {
+				throw refreshAuthzOperationResult.errorMessages;
+			}
+			this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.AUTHORIZATION_REFRESH_COMPLETED));
 		}
 	}
 
@@ -99,12 +134,12 @@ module.exports = class CommandActionExecutor {
 		return errorMessage;
 	}
 
-	_checkCanExecute(context) {
-		if (context.commandMetadata.isSetupRequired && !context.projectConfiguration) {
+	_checkCanExecuteCommand({ commandMetadata, defaultAuthId, runInInteractiveMode}) {
+		if (commandMetadata.isSetupRequired && !defaultAuthId) {
 			throw NodeTranslationService.getMessage(ERRORS.SETUP_REQUIRED);
 		}
-		if (context.runInInteractiveMode && !context.commandMetadata.supportsInteractiveMode) {
-			throw NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE, context.commandMetadata.name);
+		if (runInInteractiveMode && !commandMetadata.supportsInteractiveMode) {
+			throw NodeTranslationService.getMessage(ERRORS.COMMAND_DOES_NOT_SUPPORT_INTERACTIVE_MODE, commandMetadata.name);
 		}
 	}
 
@@ -136,30 +171,8 @@ module.exports = class CommandActionExecutor {
 		});
 	}
 
-	async _executeCommandAction(options) {
-		const command = options.command;
-		const projectConfiguration = options.projectConfiguration;
-		const isSetupRequired = options.metadata.isSetupRequired;
-		const commandName = options.metadata.name;
-		const commandUserExtension = options.commandUserExtension;
-		let commandArguments = options.arguments;
-
-		try {
-			const beforeExecutingOutput = await commandUserExtension.beforeExecuting({
-				commandName: commandName,
-				projectFolder: this._executionPath,
-				arguments: isSetupRequired ? this._applyDefaultContextParams(commandArguments, projectConfiguration) : commandArguments,
-			});
-			const overriddenArguments = beforeExecutingOutput.arguments;
-
-			return command.run(overriddenArguments);
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	_applyDefaultContextParams(args, projectConfiguration) {
-		args.authid = projectConfiguration.defaultAuthId;
+	_applyDefaultContextParams(args, defaultAuthId) {
+		args.authid = defaultAuthId;
 		return args;
 	}
 };
