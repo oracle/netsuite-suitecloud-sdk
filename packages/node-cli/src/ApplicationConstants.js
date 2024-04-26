@@ -5,6 +5,10 @@
 'use strict';
 
 module.exports = {
+	AUTHORIZATION_PROPERTIES_KEYS: {
+		NEEDS_REAUTHORIZATION: 'needsReauthorization',
+		SKIP_AUHTORIZATION_CHECK: 'skipAuthorizationCheck'
+	},
 	SDK_COMMANDS_METADATA_FILE: 'metadata/SdkCommandsMetadata.json',
 	SDK_COMMANDS_METADATA_PATCH_FILE: 'metadata/SdkCommandsMetadataPatch.json', //Overwrites selected properties in SdkCommandsMetadata.json file that are specific for SuiteCloud CLI for Node.js
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',

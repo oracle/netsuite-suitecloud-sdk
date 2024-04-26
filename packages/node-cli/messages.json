@@ -175,6 +175,9 @@
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
+	"COMMAND_REFRESH_AUTHORIZATION_MESSAGES_AUTHORIZATION_REFRESH_COMPLETED": "Authorization refresh completed.",
+	"COMMAND_REFRESH_AUTHORIZATION_MESSAGES_CREDENTIALS_NEED_TO_BE_REFRESHED": "The authorization credentials associated with {0} auhtid are no longer valid. Starting the browser-based authentication for refreshing them.",
+
 	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SELECT_AUTHID": "Select or create an authentication ID (a custom alias you give to a specific account-role combination):\n  ***The authentication ID that you select or create will be set up as default.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_NEW_AUTH_ID": "Create a new authentication ID.",
@@ -280,10 +283,10 @@
 
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP": "Account-specific values cannot be applied to SuiteApps.",
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
-	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
-	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs in this machine...",
-	"UTILS_AUTHENTICATION_SAVING_TBA_TOKEN": "Saving the TBA token...",
 	"UTILS_AUTHENTICATION_AUTHENTICATING": "Authenticating...",
+	"UTILS_AUTHENTICATION_AUTHORIZING": "Authorizing...",
+	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs in this machine...",
+	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 	"UTILS_ERRORS_COMMAND": "There was an error with the {0} command. {1}",
 
