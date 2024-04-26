@@ -13,7 +13,7 @@ const ActionResultUtils = require('../utils/ActionResultUtils');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/ExceptionUtils');
 const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
-const { checkIfReauthzorizationIsNeeded, refreshAuthorization } = require('../utils/AuthenticationUtils');
+const { checkIfReauthorizationIsNeeded, refreshAuthorization } = require('../utils/AuthenticationUtils');
 const { AUTHORIZATION_PROPERTIES_KEYS } = require('../ApplicationConstants');
 
 module.exports = class CommandActionExecutor {
@@ -105,7 +105,7 @@ module.exports = class CommandActionExecutor {
 	}
 
 	async _refreshAuthorizationIfNeeded(defaultAuthId) {
-		const inspectAuthzOperationResult = await checkIfReauthzorizationIsNeeded(defaultAuthId, this._sdkPath, this._executionEnvironmentContext);
+		const inspectAuthzOperationResult = await checkIfReauthorizationIsNeeded(defaultAuthId, this._sdkPath, this._executionEnvironmentContext);
 
 		if (!inspectAuthzOperationResult.isSuccess()) {
 			throw inspectAuthzOperationResult.errorMessages;

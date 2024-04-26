@@ -174,6 +174,7 @@ async function authenticateCi(params, sdkPath, projectFolder, executionEnvironme
 		.withCommandParameters(authenticateCiExecutionContext.getParams())
 		.build();
 }
+
 /**
  * 
  * @param {String} authid 
@@ -181,16 +182,17 @@ async function authenticateCi(params, sdkPath, projectFolder, executionEnvironme
  * @param {ExecutionEnvironmentContext} executionEnvironmentContext 
  * @returns {SdkOperationResult}
  */
-async function checkIfReauthzorizationIsNeeded(authid, sdkPath, executionEnvironmentContext) {
+async function checkIfReauthorizationIsNeeded(authid, sdkPath, executionEnvironmentContext) {
 	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
-	const inspectAuthContext = SdkExecutionContext.Builder.
-		forCommand(COMMANDS.INSPECT_AUTHORIZATION.SDK_COMMAND)
+	const inspectAuthContext = SdkExecutionContext.Builder
+		.forCommand(COMMANDS.INSPECT_AUTHORIZATION.SDK_COMMAND)
 		.addParam(COMMANDS.INSPECT_AUTHORIZATION.PARAMS.AUTH_ID, authid)
 		.integration()
 		.build();
 	const result = await sdkExecutor.execute(inspectAuthContext);
 	return new SdkOperationResult(result);
 }
+
 /**
  * 
  * @param {String} authid 
@@ -200,17 +202,16 @@ async function checkIfReauthzorizationIsNeeded(authid, sdkPath, executionEnviron
  */
 async function refreshAuthorization(authid, sdkPath, executionEnvironmentContext) {
 	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
-	const reauthorizeAuthContext = SdkExecutionContext.Builder.
-		forCommand(COMMANDS.REFRESH_AUTHORIZATION.SDK_COMMAND)
+	const reauthorizeAuthContext = SdkExecutionContext.Builder
+		.forCommand(COMMANDS.REFRESH_AUTHORIZATION.SDK_COMMAND)
 		.addParam(COMMANDS.REFRESH_AUTHORIZATION.PARAMS.AUTH_ID, authid)
 		.integration()
 		.build();
-
-	const result =  await executeWithSpinner({
+	const result = await executeWithSpinner({
 		action: sdkExecutor.execute(reauthorizeAuthContext),
 		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.AUTHORIZING)
 	});
 	return new SdkOperationResult(result);
 }
 
-module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, authenticateWithOauth, authenticateCi, checkIfReauthzorizationIsNeeded, refreshAuthorization };
+module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, authenticateWithOauth, authenticateCi, checkIfReauthorizationIsNeeded, refreshAuthorization };
