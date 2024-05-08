@@ -19,7 +19,7 @@
 		}
 	},
 	"account:setup:ci": {
-		"description": "Sets up an account to use with SuiteCloud SDK and configures the default auth ID for the SuiteCloud project. It does not require browser-based login to NetSuite.\nTo change the default auth ID for the project, run: suitecloud account:setup.",
+		"description": "Sets up an account to use with SuiteCloud SDK and configures the default auth ID for the SuiteCloud project. This command does not require browser-based login to NetSuite.\nTo change the default auth ID for the project, run: suitecloud account:setup.",
 		"options": {
 			"domain": {
 				"name": "domain",

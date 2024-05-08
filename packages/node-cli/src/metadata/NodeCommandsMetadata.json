@@ -2,7 +2,7 @@
 	"account:setup": {
 		"name": "account:setup",
 		"alias": "sa",
-		"description": "Sets up an account to use with SuiteCloud SDK and configures the default auth ID for the SuiteCloud project. It requires browser-based login to NetSuite.",
+		"description": "Sets up an account to use with SuiteCloud SDK and configures the default auth ID for the SuiteCloud project. This command requires browser-based login to NetSuite.",
 		"isSetupRequired": false,
 		"forceInteractiveMode": true,
 		"options": {
