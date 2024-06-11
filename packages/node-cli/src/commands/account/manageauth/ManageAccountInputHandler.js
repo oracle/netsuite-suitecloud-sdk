@@ -64,9 +64,9 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
 		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(prompt);
-		if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.RENAME) {
+		if (answers[ANSWERS_NAMES.ACTION] === MANAGE_ACTION.RENAME) {
 			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(prompt, authIDActionResult.data, selectedAuthID);
-		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
+		} else if (answers[ANSWERS_NAMES.ACTION] === MANAGE_ACTION.REMOVE) {
 			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(prompt);
 		}
 
@@ -85,19 +85,18 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 
 	_accountCredentialToString(authID, accountCredential) {
 		const urlInfo =
-			accountCredential.urls &&
-			!accountCredential.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
-			!accountCredential.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
-				? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION, accountCredential.urls.app)
+			accountCredential.hostInfo.hostName &&
+			!accountCredential.hostInfo.hostName.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+			!accountCredential.hostInfo.hostName.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX)
+				? NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION, accountCredential.hostInfo.hostName)
 				: '';
 		const accountInfo = `${accountCredential.accountInfo.roleName} @ ${accountCredential.accountInfo.companyName}`;
-		const accountCredentialString = NodeTranslationService.getMessage(
+		return NodeTranslationService.getMessage(
 			QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID,
 			authID,
 			accountInfo,
 			urlInfo
 		);
-		return accountCredentialString;
 	}
 
 	async _selectAuthID(authIDList, prompt) {
@@ -112,11 +111,11 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			const accountCredentialString = this._accountCredentialToString(authID, accountCredential);
 			choices.push({
 				name: accountCredentialString,
-				value: { authId: authID, accountInfo: accountCredential.accountInfo, domain: accountCredential.urls.app },
+				value: { authId: authID, accountInfo: accountCredential.accountInfo, domain: accountCredential.hostInfo.hostname },
 			});
 		});
 		choices.push(new Separator());
-		let answers = await prompt([
+		return await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SELECTED_AUTH_ID,
@@ -124,7 +123,6 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 				choices: choices,
 			},
 		]);
-		return answers;
 	}
 
 	async _selectAction(prompt) {
@@ -148,7 +146,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			],
 		});
 
-		if (answer[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.EXIT) {
+		if (answer[ANSWERS_NAMES.ACTION] === MANAGE_ACTION.EXIT) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL);
 		}
 
@@ -195,12 +193,12 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	}
 
 	_extractAnswers(answers) {
-		if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.RENAME) {
+		if (answers[ANSWERS_NAMES.ACTION] === MANAGE_ACTION.RENAME) {
 			return {
 				[COMMAND.OPTIONS.RENAME]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 				[COMMAND.OPTIONS.RENAMETO]: answers[ANSWERS_NAMES.RENAMETO],
 			};
-		} else if (answers[ANSWERS_NAMES.ACTION] == MANAGE_ACTION.REMOVE) {
+		} else if (answers[ANSWERS_NAMES.ACTION] === MANAGE_ACTION.REMOVE) {
 			return {
 				[COMMAND.OPTIONS.REMOVE]: answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId,
 			};
