@@ -2,21 +2,24 @@
  ** Copyright (c) 2024 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
+
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { Uri, window } from 'vscode';
+import { VSCODE_PLATFORM } from '../ApplicationConstants';
+import { CommandsInfoMapType, commandsInfoMap } from '../commandsMap';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
+import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
 import CommandsMetadataSingleton from '../service/CommandsMetadataSingleton';
 import MessageService from '../service/MessageService';
-import { COMMAND, ERRORS } from '../service/TranslationKeys';
+import { COMMAND, ERRORS, REFRESH_AUTHORIZATION } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
-import { ApplicationConstants, AuthenticationUtils, CLIConfigurationService } from '../util/ExtensionUtil';
-import { commandsInfoMap, CommandsInfoMapType } from '../commandsMap';
+import { showSetupAccountWarningMessage } from '../startup/ShowSetupAccountWarning';
 import { ActionResult, ValidationResult } from '../types/ActionResult';
 import { CommandMetadata } from '../types/Metadata';
-import { showSetupAccountWarningMessage } from '../startup/ShowSetupAccountWarning';
+import { ApplicationConstants, AuthenticationUtils, CLIConfigurationService, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 
 export default abstract class BaseAction {
 	protected readonly translationService: VSTranslationService;
@@ -49,9 +52,14 @@ export default abstract class BaseAction {
 				return;
 			}
 
-			if (this.commandMetadata.isSetupRequired && !this.projectHasDefaultAuthId()) {
-				showSetupAccountWarningMessage();
-				return;
+			if (this.commandMetadata.isSetupRequired) {
+				const defaultAuthId = this.getDefaultAuthId();
+				if (defaultAuthId !== '') {
+					await this.checkAndRefreshAuthorizationIfNeeded(defaultAuthId);
+				} else {
+					showSetupAccountWarningMessage();
+					return;
+				}
 			}
 
 			return this.execute();
@@ -175,14 +183,47 @@ export default abstract class BaseAction {
 		return cliConfigurationService.getProjectFolder(this.cliCommandName);
 	}
 
-	private projectHasDefaultAuthId(): boolean {
-		let defaultAuthId: string;
+	private getDefaultAuthId(): string {
 		try {
-			defaultAuthId = AuthenticationUtils.getProjectDefaultAuthId(this.rootWorkspaceFolder);
+			return AuthenticationUtils.getProjectDefaultAuthId(this.rootWorkspaceFolder);
 		} catch (error) {
-			return false;
+			return '';
 		}
+	}
 
-		return defaultAuthId !== undefined && defaultAuthId !== '';
+	private async checkAndRefreshAuthorizationIfNeeded(defaultAuthId: string): Promise<void> {
+		const executionEnvironmentContext = new ExecutionEnvironmentContext({
+			platform: VSCODE_PLATFORM,
+			platformVersion: vscode.version,
+		});
+		const inspectAuthzOperationResult = await AuthenticationUtils.checkIfReauthorizationIsNeeded(
+			defaultAuthId,
+			getSdkPath(),
+			executionEnvironmentContext
+		);
+		if (!inspectAuthzOperationResult.isSuccess()) {
+			throw inspectAuthzOperationResult.errorMessages;
+		}
+		const inspectAuthzData = inspectAuthzOperationResult.data;
+		if (inspectAuthzData[ApplicationConstants.AUTHORIZATION_PROPERTIES_KEYS.NEEDS_REAUTHORIZATION]) {
+			this.messageService.showInformationMessage(
+				this.translationService.getMessage(
+					REFRESH_AUTHORIZATION.CREDENTIALS_NEED_TO_BE_REFRESHED, defaultAuthId
+				)
+			);
+			const refreshAuthzOperationResult = await AuthenticationUtils.refreshAuthorization(
+				defaultAuthId,
+				getSdkPath(),
+				executionEnvironmentContext
+			);
+			if (!refreshAuthzOperationResult.isSuccess()) {
+				throw refreshAuthzOperationResult.errorMessages;
+			}
+			this.messageService.showInformationMessage(
+				this.translationService.getMessage(
+					REFRESH_AUTHORIZATION.AUTHORIZATION_REFRESH_COMPLETED
+				)
+			);
+		}
 	}
 }
