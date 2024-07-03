@@ -38,6 +38,7 @@ export default class SuiteCloudRunner {
 
 	run(options: any) : Promise<ActionResult<any>>{
 		options.runInInteractiveMode = false;
+		options.arguments.skipAuthorizationCheck = true;
 		return this.commandActionExecutor.executeAction(options);
 	}
 }

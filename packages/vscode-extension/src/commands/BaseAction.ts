@@ -22,8 +22,6 @@ import { CommandMetadata } from '../types/Metadata';
 import { ApplicationConstants, AuthenticationUtils, CLIConfigurationService, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 
 export default abstract class BaseAction {
-	private static readonly SKIP_AUTHORIZATION_CHECK_VALUE = 'T';
-
 	protected readonly translationService: VSTranslationService;
 	protected isSelectedFromContextMenu?: boolean;
 	protected readonly messageService: MessageService;
@@ -33,7 +31,6 @@ export default abstract class BaseAction {
 	protected rootWorkspaceFolder?: string;
 	protected vsConsoleLogger!: VSConsoleLogger;
 	protected activeFile?: string;
-	private refreshAuthorizationPeformed = false;
 
 	constructor(commandName: keyof CommandsInfoMapType) {
 		this.cliCommandName = commandsInfoMap[commandName].cliCommandName;
@@ -161,10 +158,6 @@ export default abstract class BaseAction {
 	}
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string | string[] } = {}, otherExecutionPath?: string) {
-		if (this.refreshAuthorizationPeformed) {
-			args.skipAuthorizationCheck = BaseAction.SKIP_AUTHORIZATION_CHECK_VALUE;
-		}
-
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(
 			this.vsConsoleLogger,
 			otherExecutionPath !== undefined ? otherExecutionPath : this.rootWorkspaceFolder
@@ -226,7 +219,6 @@ export default abstract class BaseAction {
 			if (!refreshAuthzOperationResult.isSuccess()) {
 				throw refreshAuthzOperationResult.errorMessages;
 			}
-			this.refreshAuthorizationPeformed = true;
 			this.messageService.showInformationMessage(
 				this.translationService.getMessage(
 					REFRESH_AUTHORIZATION.AUTHORIZATION_REFRESH_COMPLETED
