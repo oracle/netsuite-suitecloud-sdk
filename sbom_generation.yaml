@@ -40,7 +40,7 @@ steps:
     name: "Run cyclonedx-node-npm package"
     command: |
       # For more details, visit https://github.com/CycloneDX/cyclonedx-node-npm/blob/main/README.md
-      npx @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file artifactSBOM2.json --spec-version 1.4
+      npx @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file artifactSBOM2.json --spec-version 1.4 && ls -la 
   - type: Command
     name: "Download CycloneDx-cli executable and install dependencies"
     command: |
@@ -50,7 +50,7 @@ steps:
     name: "Merge multiple SBOMs using CycloneDX-cli"
     command: |
       # For more details, visit https://github.com/CycloneDX/cyclonedx-cli/blob/main/README.md
-      chmod +x cyclonedx-linux-x64
+      chmod +x cyclonedx-linux-x64 && pwd && ls -la
       ./cyclonedx-linux-x64 merge --input-files artifactSBOM1.json packages/vscode-extension/artifactSBOM2.json --output-file artifactSBOM.json
 outputArtifacts:
   - name: artifactSBOM
