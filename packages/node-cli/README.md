@@ -23,8 +23,8 @@ You should use the latest version of the SuiteCloud CLI for Node.js available in
 
 | Version in NPM | Version in NetSuite |
 |:--------------:|:-------------------:|
-| 1.8.X  | 2023.2  |
-| 1.7.X  | 2023.1  |
+| 1.10.X  | 2024.2  |
+| 1.9.X  | 2024.1  |
 
 ## Installation
 Since CLI for Node.js is a development tool, use a global instance to install it by running the following command:
@@ -90,8 +90,8 @@ suitecloud account:setup
 ```
 
 ## Release Notes & Documentation
-To read the 2023.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2023.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
+To read the 2024.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2024.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_3798389663.html).
 - Read the CLI for Node.js documentation in [SuiteCloud CLI for Node.js Guide](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_1558708800.html).
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.7.0
+
+- New OAuth 2.0 authorization protocol
+
 ## 1.6.0
 
 - Fix for GitHub issues 711, 744, and 773
