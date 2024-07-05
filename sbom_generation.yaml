@@ -20,40 +20,35 @@ steps:
     command: |
       npm install --ignore-scripts
   - type: Command
-    name: "Install cyclonedx-node-npm package"
+    name: "Install cyclonedx globally"
     command: |
-      npm install --ignore-scripts -g --save-dev @cyclonedx/cyclonedx-npm
+      npm install --ignore-scripts -g @cyclonedx/cyclonedx-npm
   - type: Command
-    name: "Run cyclonedx-node-npm package"
+    name: "Run cyclonedx for node-cli & unit-testing packages"
     command: |
       # For more details, visit https://github.com/CycloneDX/cyclonedx-node-npm/blob/main/README.md
-      npx @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file artifactSBOM1.json --spec-version 1.4
+      npx @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file artifactSBOM_node-cli_unit-testing.json --spec-version 1.4
   - type: Command
     name: "Install vscode extension package"
     command: |
       cd packages/vscode-extension && npm install --ignore-scripts
   - type: Command
-    name: "Install cyclonedx-node-npm package"
-    command: |
-      npm install --ignore-scripts -g --save-dev @cyclonedx/cyclonedx-npm
-  - type: Command
-    name: "Run cyclonedx-node-npm package"
+    name: "Run cyclonedx for vscode-extension package"
     command: |
       # For more details, visit https://github.com/CycloneDX/cyclonedx-node-npm/blob/main/README.md
-      cd packages/vscode-extension && npx @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file artifactSBOM2.json --spec-version 1.4
+      cd packages/vscode-extension && npx @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file artifactSBOM_vscode-extension.json --spec-version 1.4
   - type: Command
-    name: "Download CycloneDx-cli executable and install dependencies"
+    name: "Download CycloneDx-linux-cli executable and install dependencies"
     command: |
       wget https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.2/cyclonedx-linux-x64
       yum install -y libicu
   - type: Command
-    name: "Merge multiple SBOMs using CycloneDX-cli"
+    name: "Merge multiple SBOMs using CycloneDX-linux-cli"
     command: |
       # For more details, visit https://github.com/CycloneDX/cyclonedx-cli/blob/main/README.md
       chmod +x cyclonedx-linux-x64
-      ./cyclonedx-linux-x64 merge --input-files artifactSBOM1.json packages/vscode-extension/artifactSBOM2.json --output-file artifactSBOM.json
+      ./cyclonedx-linux-x64 merge --input-files artifactSBOM_node-cli_unit-testing.json packages/vscode-extension/artifactSBOM_vscode-extension.json --output-file artifactSBOM.json
 outputArtifacts:
   - name: artifactSBOM
     type: BINARY
     location: ${OCI_PRIMARY_SOURCE_DIR}/artifactSBOM.json
-  
