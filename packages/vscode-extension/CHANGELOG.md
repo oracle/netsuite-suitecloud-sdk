@@ -2,7 +2,7 @@
 
 ## 1.7.0
 
-- New OAuth 2.0 authorization protocol
+- Upgrade to OAuth 2.0 authorization protocol
 
 ## 1.6.0
 
