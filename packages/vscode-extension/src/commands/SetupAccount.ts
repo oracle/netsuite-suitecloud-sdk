@@ -164,7 +164,11 @@ export default class SetupAccount extends BaseAction {
 			commandParams,
 			getSdkPath(),
 			this.rootWorkspaceFolder,
-			cancellationToken
+			cancellationToken,
+			new ExecutionEnvironmentContext({
+				platform: VSCODE_PLATFORM,
+				platformVersion: vscode.version,
+			}),
 		);
 		window
 			.showInformationMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), dismissButton, cancelButton)
@@ -254,6 +258,9 @@ export default class SetupAccount extends BaseAction {
 	private async getPrivateKeyFilePath() {
 		return window.showOpenDialog({
 			title: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE),
+			canSelectFolders: false,
+			canSelectFiles: true,
+			canSelectMany: false,
 		});
 	}
 
