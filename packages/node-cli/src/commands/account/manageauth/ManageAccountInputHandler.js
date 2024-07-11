@@ -111,7 +111,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			const accountCredentialString = this._accountCredentialToString(authID, accountCredential);
 			choices.push({
 				name: accountCredentialString,
-				value: { authId: authID, accountInfo: accountCredential.accountInfo, domain: accountCredential.hostInfo.hostname },
+				value: { authId: authID, accountInfo: accountCredential.accountInfo, domain: accountCredential.hostInfo.hostName },
 			});
 		});
 		choices.push(new Separator());
