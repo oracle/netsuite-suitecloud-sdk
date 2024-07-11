@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.7.0
+## 2.0.0
 
 - Upgrade to OAuth 2.0 authorization protocol
 
