@@ -31,12 +31,18 @@ export type AuthListData = {
 			companyId: string;
 		};
 		token: {
-			tokenId: string;
-			tokenSecret: string;
+			accessToken: string;
+			expirationDate: string;
+			refreshToken: string;
 		};
-		urls: {
-			app: string;
+		hostInfo: {
+			hostName: string;
+			clientId: string;
 		};
+		certificateInfo: {
+			privateKeyPath: string;
+			certificateId:string;
+		}
 	};
 };
 
