@@ -35,7 +35,7 @@ const COMMAND = {
 const DATA_PROPERTIES = {
 	INFO: 'info',
 	ACCOUNT_INFO: 'accountInfo',
-	URLS: 'urls',
+	HOST_INFO: 'hostInfo',
 };
 
 const DOMAIN = 'domain';
@@ -112,14 +112,14 @@ module.exports = class ManageAccountAction extends BaseAction {
 		assert.fail(NodeTranslationService.getMessage(ERRORS.UNKNOWN_ACTION));
 	}
 	_prepareData(selectedOptions, data) {
-		if (selectedOptions.action != MANAGE_ACTION.INFO) {
+		if (selectedOptions.action !== MANAGE_ACTION.INFO) {
 			return data;
 		}
 		assert(selectedOptions.authId);
 		assert(data.hasOwnProperty(DATA_PROPERTIES.ACCOUNT_INFO));
 		let actionResultData = { authId: selectedOptions.authId, accountInfo: data.accountInfo };
-		if (data.hasOwnProperty(DATA_PROPERTIES.URLS)) {
-			actionResultData[DOMAIN] = data.urls.app;
+		if (data.hasOwnProperty(DATA_PROPERTIES.HOST_INFO)) {
+			actionResultData[DOMAIN] = data.hostInfo.hostName;
 		}
 		return actionResultData;
 	}

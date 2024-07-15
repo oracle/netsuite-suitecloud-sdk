@@ -121,7 +121,7 @@ export default class ManageAuth extends BaseAction {
 		const authIDInfo = authList[selectedAuhtID.authId];
 		const accountCredentials = authIDInfo as any;
 		accountCredentials.authId = selectedAuhtID.authId;
-		accountCredentials.domain = authIDInfo.urls.app;
+		accountCredentials.domain = authIDInfo.hostInfo.hostName;
 		const authIDInfoMessage = AccountCredentialsFormatter.getInfoString(authIDInfo);
 
 		this.messageService.showCommandInfo(undefined, false);
