@@ -113,35 +113,6 @@ declare module '@uif-js/core' {
 	export namespace AppContext {
 	}
 
-	/**
-	 * @deprecated
-	 */
-	class Application {
-		constructor();
-
-		state: Self.Application.State;
-
-		context: Self.Context;
-
-		shell: PackageComponent.Shell;
-
-		run(): globalThis.Promise<void>;
-
-		dispose(): void;
-
-	}
-
-	namespace Application {
-		enum State {
-			NEW,
-			INITIALIZING,
-			READY,
-			DISPOSED,
-			ERROR,
-		}
-
-	}
-
 	export enum AriaProperty {
 		ACTIVE_DESCENDANT,
 		ATOMIC,
@@ -1270,7 +1241,7 @@ declare module '@uif-js/core' {
 
 		setDescribedBy(value: (Self.Component | Self.VDomRef | string | number | null)): void;
 
-		setAriaLabel(value: (string | null)): void;
+		setAriaLabel(ariaLabel: (string | Self.Translation | null)): void;
 
 		addMessageFilter(filter: (Self.RoutedMessage.Filter | Record<string, Self.RoutedMessage.Handler>)): {remove: () => void};
 
@@ -1459,6 +1430,8 @@ declare module '@uif-js/core' {
 
 		protected _onStatusMessageChanged(args: {message: (string | Self.Translation | Self.Component); previousMessage: (string | Self.Translation | Self.Component); reason?: string}): void;
 
+		private _onAriaLabelChanged(args: {ariaLabel: (string | Self.Translation | null); previousAriaLabel: (string | Self.Translation | null)}): void;
+
 		protected _onContentMeasurementStarted(): void;
 
 		protected _onContentMeasurementFinalized(): void;
@@ -1474,10 +1447,6 @@ declare module '@uif-js/core' {
 		static Event: Self.Component.EventTypes;
 
 		static findByElement(element: Element, context?: Element): (Self.Component | null);
-
-		static wrapElement(element: Element, host: PackageComponent.Host): Self.ElementComponent;
-
-		static getHostByComponent(component: (Self.Component | Self.ElementComponent)): (PackageComponent.Host | null);
 
 		static props(Class: (options: any) => any, options: object, deepExtend?: boolean): object;
 
@@ -1791,11 +1760,17 @@ declare module '@uif-js/core' {
 
 		static SHORTCUTS: string;
 
+		static DATA_EXCHANGE_MANAGER: string;
+
 		static WINDOW_MANAGER: string;
 
 		static THEME: string;
 
 		static THEME_BACKGROUND: string;
+
+		static AVAILABLE_THEMES: string;
+
+		static PREFERRED_THEME: string;
 
 		static DEBUG: string;
 
@@ -2002,6 +1977,8 @@ declare module '@uif-js/core' {
 	export class DataExchangeManager implements Self.MessageHandler {
 		constructor();
 
+		dragging: boolean;
+
 		processMessage(next: Self.RoutedMessage.Handler, message: Self.RoutedMessage, result: object): void;
 
 	}
@@ -2121,6 +2098,8 @@ declare module '@uif-js/core' {
 
 		utcMilliseconds: number;
 
+		timezoneOffset: number;
+
 		isValid(): boolean;
 
 		stripTime(): Self.Date;
@@ -2215,9 +2194,17 @@ declare module '@uif-js/core' {
 
 		lastOfMonth(): Self.Date;
 
-		weekNumber(): number;
+		firstOfYear(): Self.Date;
+
+		lastOfYear(): Self.Date;
+
+		weekNumber(firstDayOfWeek?: number): number;
+
+		static getWeek(year: number, firstDayOfWeek: number, number: number): Self.Date;
 
 		static fromDate(date: (globalThis.Date | null)): (Self.Date | null);
+
+		static fromMillisecondsSinceEpoch(value: number): Self.Date;
 
 		static fromTimeStamp(timeStamp: number): Self.Date;
 
@@ -2234,6 +2221,24 @@ declare module '@uif-js/core' {
 		static dateTimeEquals(left: (Self.Date | null), right: (Self.Date | null)): boolean;
 
 		static thisYear(): Self.Date;
+
+		static millisecondsSinceEpoch(): number;
+
+		static millisecondsBetween(start: Self.Date, end: Self.Date): number;
+
+		static secondsBetween(start: Self.Date, end: Self.Date): number;
+
+		static minutesBetween(start: Self.Date, end: Self.Date): number;
+
+		static hoursBetween(start: Self.Date, end: Self.Date): number;
+
+		static daysBetween(start: Self.Date, end: Self.Date): number;
+
+		static weeksBetween(start: Self.Date, end: Self.Date): number;
+
+		static monthsBetween(start: Self.Date, end: Self.Date): number;
+
+		static yearsBetween(start: Self.Date, end: Self.Date): number;
 
 	}
 
@@ -2253,7 +2258,7 @@ declare module '@uif-js/core' {
 	}
 
 	export class Decorator {
-		constructor(options: object);
+		constructor(options?: Self.Decorator.Options);
 
 		attributes(context: object): object;
 
@@ -2275,7 +2280,7 @@ declare module '@uif-js/core' {
 
 		static depth(depth: Self.Decorator.Depth): Self.Decorator;
 
-		static custom(options: {background?: Self.Decorator.ColorOptions; border?: Self.Decorator.BorderOptions; margin?: Self.Decorator.BoxOptions; padding?: Self.Decorator.BoxOptions; depth?: Self.Decorator.Depth; shape?: Self.Decorator.Shape; font?: Self.Decorator.FontOptions}): Self.Decorator;
+		static custom(options: Self.Decorator.Options): Self.Decorator;
 
 		static combine(...decorators: globalThis.Array<Self.Decorator>): Self.Decorator;
 
@@ -2354,6 +2359,23 @@ declare module '@uif-js/core' {
 			horizontal?: (Self.Decorator.Padding | Self.Decorator.Margin);
 
 			vertical?: (Self.Decorator.Padding | Self.Decorator.Margin);
+
+		}
+
+		interface Options {
+			background?: Self.Decorator.ColorOptions;
+
+			border?: Self.Decorator.BorderOptions;
+
+			margin?: Self.Decorator.BoxOptions;
+
+			padding?: Self.Decorator.BoxOptions;
+
+			depth?: Self.Decorator.Depth;
+
+			shape?: Self.Decorator.Shape;
+
+			font?: Self.Decorator.FontOptions;
 
 		}
 
@@ -2612,12 +2634,6 @@ declare module '@uif-js/core' {
 
 		function makeElementNS(ns: string, elementName: string, attributes: (string | globalThis.Array<any> | object | null), children: any): Element;
 
-	}
-
-	export class ElementComponent {
-	}
-
-	export namespace ElementComponent {
 	}
 
 	export class EventBus {
@@ -2978,7 +2994,7 @@ declare module '@uif-js/core' {
 
 		clear(): void;
 
-		flatten(): object;
+		flatten(recursive?: boolean): object;
 
 	}
 
@@ -3076,6 +3092,8 @@ declare module '@uif-js/core' {
 		function copyElementToClipboard(element: Element): void;
 
 		function clearSelection(): void;
+
+		function isElementVisible(element: Element): boolean;
 
 		function waitDocumentReady(): globalThis.Promise<void>;
 
@@ -4259,6 +4277,10 @@ declare module '@uif-js/core' {
 
 		function toBounds(number: number, min: number, max: number): number;
 
+		function lerp(a: number, b: number, t: number): number;
+
+		function inverseLerp(value: number, a: number, b: number): number;
+
 		function randomInteger(min: number, max: number): number;
 
 		function randomIndex(length: number): number;
@@ -4399,6 +4421,8 @@ declare module '@uif-js/core' {
 
 		services: Self.HierarchicalMap;
 
+		supportedThemes: (globalThis.Array<Self.Theme.Name> | null);
+
 		run(): void;
 
 	}
@@ -4433,6 +4457,8 @@ declare module '@uif-js/core' {
 		private hookOnEventDispatcher(): void;
 
 		private unhookFromEventDispatcher(): void;
+
+		static addElementMessageFilter(element: Element, filter: Self.RoutedMessage.Filter): {remove: ((() => void))};
 
 		static HandledEvents: globalThis.Array<string>;
 
@@ -4588,7 +4614,7 @@ declare module '@uif-js/core' {
 	}
 
 	interface Portal {
-		owner: (Self.Component | Self.VDomRef | null);
+		owner: (Self.Component | Self.VDomRef | Element | null);
 
 	}
 
@@ -4989,6 +5015,91 @@ declare module '@uif-js/core' {
 	export namespace PureComponent {
 	}
 
+	export namespace RecordIcon {
+		const ACTIVITY: Self.ImageMetadata;
+
+		const CALL: Self.ImageMetadata;
+
+		const CAMPAIGN: Self.ImageMetadata;
+
+		const CASE: Self.ImageMetadata;
+
+		const CASH_REFUND: Self.ImageMetadata;
+
+		const CONTACT: Self.ImageMetadata;
+
+		const CREDIT_CARD: Self.ImageMetadata;
+
+		const CUSTOMER: Self.ImageMetadata;
+
+		const EMAIL: Self.ImageMetadata;
+
+		const EMPLOYEE: Self.ImageMetadata;
+
+		const ESTIMATE: Self.ImageMetadata;
+
+		const EVENT: Self.ImageMetadata;
+
+		const EXPENSE_REPORT: Self.ImageMetadata;
+
+		const FILE: Self.ImageMetadata;
+
+		const INFORMATION_ITEM: Self.ImageMetadata;
+
+		const INVOICE: Self.ImageMetadata;
+
+		const ISSUE: Self.ImageMetadata;
+
+		const ITEM: Self.ImageMetadata;
+
+		const JOURNAL: Self.ImageMetadata;
+
+		const LEAD: Self.ImageMetadata;
+
+		const LETTER: Self.ImageMetadata;
+
+		const NOTE: Self.ImageMetadata;
+
+		const OPPORTUNITY: Self.ImageMetadata;
+
+		const PARTNER: Self.ImageMetadata;
+
+		const PARTNER_SCHEDULE: Self.ImageMetadata;
+
+		const PAYCHECK: Self.ImageMetadata;
+
+		const PAYROLL_BATCH: Self.ImageMetadata;
+
+		const PDF: Self.ImageMetadata;
+
+		const PROJECT: Self.ImageMetadata;
+
+		const PROSPECT: Self.ImageMetadata;
+
+		const PURCHASE_ORDER: Self.ImageMetadata;
+
+		const RETURN_AUTHORIZATION: Self.ImageMetadata;
+
+		const SALES_ORDER: Self.ImageMetadata;
+
+		const SOLUTION: Self.ImageMetadata;
+
+		const TASK: Self.ImageMetadata;
+
+		const TIME_OFF_REQUEST: Self.ImageMetadata;
+
+		const TOPIC: Self.ImageMetadata;
+
+		const TRANSACTION: Self.ImageMetadata;
+
+		const TRANSFER: Self.ImageMetadata;
+
+		const WEEKLY_TIME: Self.ImageMetadata;
+
+		const WORK_ORDER: Self.ImageMetadata;
+
+	}
+
 	export class Rectangle {
 		constructor(rectangle: Self.Rectangle.RectangleSpec);
 
@@ -5085,6 +5196,7 @@ declare module '@uif-js/core' {
 	}
 
 	enum RedwoodIcon {
+		AI_SPARKLE,
 		ICO_ACCOUNTS_PAYABLE,
 		ICO_ADAPTER,
 		ICO_ADD_COLUMN_ALT,
@@ -5242,6 +5354,7 @@ declare module '@uif-js/core' {
 		ICO_NOTE,
 		ICO_NOTES_ADD,
 		ICO_NULL_VALUE,
+		ICO_ORACLE_CHAT_OUTLINE,
 		ICO_OVERFLOW_H,
 		ICO_OVERFLOW_VERT,
 		ICO_PAGINATION,
@@ -5321,25 +5434,84 @@ declare module '@uif-js/core' {
 		ICO_ZOOM_OUT,
 	}
 
+	enum RedwoodRecordIcon {
+		ACTIVITY,
+		CALL,
+		CAMPAIGN,
+		CASE,
+		CASH_REFUND,
+		CONTACT,
+		CREDIT_CARD,
+		CUSTOMER,
+		EMAIL,
+		EMPLOYEE,
+		ESTIMATE,
+		EVENT,
+		EXPENSE_REPORT,
+		FILE,
+		INFORMATION_ITEM,
+		INVOICE,
+		ISSUE,
+		ITEM,
+		JOURNAL,
+		LEAD,
+		LETTER,
+		NOTE,
+		OPPORTUNITY,
+		PARTNER,
+		PARTNER_SCHEDULE,
+		PAYCHECK,
+		PAYROLL_BATCH,
+		PDF,
+		PROJECT,
+		PROSPECT,
+		PURCHASE_ORDER,
+		RETURN_AUTHORIZATION,
+		SALES_ORDER,
+		SOLUTION,
+		TASK,
+		TIME_OFF_REQUEST,
+		TOPIC,
+		TRANSACTION,
+		TRANSFER,
+		WEEKLY_TIME,
+		WORK_ORDER,
+	}
+
 	enum RedwoodSystemIconMapping {
 	}
 
 	export class RedwoodTheme extends Self.Theme {
 		constructor(options?: Self.RedwoodTheme.Options);
 
+		density: Self.RedwoodTheme.Density;
+
+		densityNS: boolean;
+
+		densityLow: boolean;
+
+		densityHigh: boolean;
+
 	}
 
 	export namespace RedwoodTheme {
 		interface Options extends Self.Theme.Options {
+			density?: Self.RedwoodTheme.Density;
+
 		}
 
 		export import Icon = Self.RedwoodIcon;
 
+		export import RecordIcon = Self.RedwoodRecordIcon;
+
 		export import SystemIconMapping = Self.RedwoodSystemIconMapping;
 
-	}
+		enum Density {
+			LOW,
+			HIGH,
+			NETSUITE,
+		}
 
-	enum RedwoodToken {
 	}
 
 	class ReflectionClassDescriptor {
@@ -5495,6 +5667,7 @@ declare module '@uif-js/core' {
 		LOCALIZE,
 		LOCK,
 		LOCKED_TASK,
+		LOG_OUT,
 		MANUFACTURING,
 		MAP,
 		MASTER_DETAIL,
@@ -5616,6 +5789,50 @@ declare module '@uif-js/core' {
 		ZOOM_OUT,
 	}
 
+	enum RefreshedRecordIcon {
+		ACTIVITY,
+		CALL,
+		CAMPAIGN,
+		CASE,
+		CASH_REFUND,
+		CONTACT,
+		CREDIT_CARD,
+		CUSTOMER,
+		EMAIL,
+		EMPLOYEE,
+		ESTIMATE,
+		EVENT,
+		EXPENSE_REPORT,
+		FILE,
+		INFORMATION_ITEM,
+		INVOICE,
+		ISSUE,
+		ITEM,
+		JOURNAL,
+		LEAD,
+		LETTER,
+		NOTE,
+		OPPORTUNITY,
+		PARTNER,
+		PARTNER_SCHEDULE,
+		PAYCHECK,
+		PAYROLL_BATCH,
+		PDF,
+		PROJECT,
+		PROSPECT,
+		PURCHASE_ORDER,
+		RETURN_AUTHORIZATION,
+		SALES_ORDER,
+		SOLUTION,
+		TASK,
+		TIME_OFF_REQUEST,
+		TOPIC,
+		TRANSACTION,
+		TRANSFER,
+		WEEKLY_TIME,
+		WORK_ORDER,
+	}
+
 	export class RefreshedTheme extends Self.Theme {
 		constructor(options?: Self.RefreshedTheme.Options);
 
@@ -5643,6 +5860,8 @@ declare module '@uif-js/core' {
 		}
 
 		export import Icon = Self.RefreshedIcon;
+
+		export import RecordIcon = Self.RefreshedRecordIcon;
 
 		export import ColorSet = Self.RefreshedColorSet;
 
@@ -5934,7 +6153,7 @@ declare module '@uif-js/core' {
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
-		constructor(options: {on?: Self.EventSource.ListenerMap});
+		constructor(options?: Self.ScrollController.Options);
 
 		viewportSize: Self.Scrollable.Size;
 
@@ -5946,15 +6165,23 @@ declare module '@uif-js/core' {
 
 		scrollabilityOffset: Self.Scrollable.Scrollability;
 
+		hasHorizontalScrollbar: boolean;
+
+		hasVerticalScrollbar: boolean;
+
 		canScroll(options: Self.ScrollController.ScrollOptions): boolean;
 
 		scroll(options: Self.ScrollController.ScrollOptions): boolean;
+
+		applyScrollOffsetFromElement(element: HTMLElement, options?: Self.ScrollController.ScrollOptions): boolean;
 
 		scrollToTop(options?: {reason?: any}): boolean;
 
 		scrollToBottom(options?: {reason?: any}): boolean;
 
 		resize(options: Self.ScrollController.ResizeOptions): boolean;
+
+		resizeFromElement(element: HTMLElement, options?: Self.ScrollController.ResizeOptions): void;
 
 		bind(scrollable: Self.Scrollable, options: object): {remove: () => void};
 
@@ -5973,6 +6200,17 @@ declare module '@uif-js/core' {
 			RESIZE: string;
 
 			SCROLLABILITY_CHANGED: string;
+
+		}
+
+		interface Options {
+			viewportSize?: Self.Scrollable.Size;
+
+			contentSize?: Self.Scrollable.Size;
+
+			scrollOffset?: Self.Scrollable.Offset;
+
+			on?: Self.EventSource.ListenerMap;
 
 		}
 
@@ -6356,7 +6594,9 @@ declare module '@uif-js/core' {
 
 		}
 
-		type ActionCreator = (dispatch: Self.Store.DispatchFunc, getState: (path: globalThis.Array<string>) => any) => globalThis.Promise<any>;
+		type ActionCreator = (dispatch: Self.Store.DispatchFunc, getState: Self.Store.GetStateCallback) => globalThis.Promise<any>;
+
+		type GetStateCallback = (path?: (string | globalThis.Array<string>)) => any;
 
 		interface EventTypes {
 			STATE_CHANGED: string;
@@ -6718,6 +6958,8 @@ declare module '@uif-js/core' {
 
 		const LOCKED_TASK: Self.ImageMetadata;
 
+		const LOG_OUT: Self.ImageMetadata;
+
 		const MANUFACTURING: Self.ImageMetadata;
 
 		const MAP: Self.ImageMetadata;
@@ -6979,6 +7221,8 @@ declare module '@uif-js/core' {
 
 		private generateCssVariablesStyle(): Self.Style;
 
+		static select(preferredTheme: Self.Theme.Name, availableThemes: Record<Self.Theme.Name, Self.Theme>, supportedThemes: (globalThis.Array<Self.Theme.Name> | null)): Self.Theme.Name;
+
 	}
 
 	export namespace Theme {
@@ -6995,7 +7239,10 @@ declare module '@uif-js/core' {
 
 		}
 
-		export import Name = Self.ThemeName;
+		enum Name {
+			REFRESHED,
+			REDWOOD,
+		}
 
 		enum Background {
 			LIGHT,
@@ -7150,6 +7397,7 @@ declare module '@uif-js/core' {
 		LOCALIZE,
 		LOCK,
 		LOCKED_TASK,
+		LOG_OUT,
 		MANUFACTURING,
 		MAP,
 		MASTER_DETAIL,
@@ -7269,11 +7517,6 @@ declare module '@uif-js/core' {
 		ZOOM_FIT,
 		ZOOM_IN,
 		ZOOM_OUT,
-	}
-
-	enum ThemeName {
-		REFRESHED,
-		REDWOOD,
 	}
 
 	export namespace Thenable {
@@ -7802,6 +8045,8 @@ declare module '@uif-js/core' {
 
 		function children(children: Self.VDom.Children, omitEmpty?: boolean): globalThis.Array<Self.VDom.Node>;
 
+		function getHost(element: Element): (PackageComponent.Host | null);
+
 		function Fragment(props: {children?: Self.VDom.Children}): Self.VDomElement;
 
 		function Portal(props: {container: HTMLElement; children?: Self.VDom.Children}): Self.VDomElement;
@@ -8055,6 +8300,8 @@ declare module '@uif-js/core' {
 	}
 
 	function dateParser(tokenList: RegExp, string: string, format: string, options?: object): object;
+
+	function generateTokens(): object;
 
 	function reconstructFiberChildren(fiber: Self.VDomFiber): void;
 
