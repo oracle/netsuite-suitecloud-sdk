@@ -10,8 +10,9 @@ import * as vscode from 'vscode';
 import { Uri } from 'vscode';
 import { ACP_UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
 import { COMPARE_FILE } from '../service/TranslationKeys';
-import { actionResultStatus, ApplicationConstants, ProjectInfoService } from '../util/ExtensionUtil';
+import { actionResultStatus, ApplicationConstants, ProjectInfoService, AuthenticationUtils } from '../util/ExtensionUtil';
 import FileImportCommon from './FileImportCommon';
+import ListAuthService from '../service/ListAuthService';
 
 export default class CompareFile extends FileImportCommon {
 	private static readonly ACCOUNT_COPY_BASE_NAME = 'accountCopy';
@@ -46,11 +47,23 @@ export default class CompareFile extends FileImportCommon {
 	}
 
 	protected async execute() {
+		const listAuthService = new ListAuthService(this.messageService, this.translationService, this.rootWorkspaceFolder!);
+
 		const activeFilePath = this.activeFile!;
 		const tempFolderPath = fs.mkdtempSync(path.join(os.tmpdir(), CompareFile.TEMP_FOLDER_PREFIX));
 
+		const authIds = await listAuthService.getAuthIds();
+		if(!authIds) {
+			return;
+		}
+
+		const selectedAuthId = await listAuthService.selectAuthId(authIds);
+		if(!selectedAuthId) {
+			return;
+		}
+
 		this.copyManifestFileToTempFolder(tempFolderPath);
-		this.copyProjectJsonToTempFolder(tempFolderPath);
+		this.createProjectJsonInTempFolder(tempFolderPath, selectedAuthId.authId);
 		const activeFileRelativePath = activeFilePath.split(this.getFileCabinetFolderPath())[1]?.replace(/\\/g, '/');
 		const importFilePath = this.getImportFilePath(tempFolderPath, activeFilePath, activeFileRelativePath);
 
@@ -125,9 +138,8 @@ export default class CompareFile extends FileImportCommon {
 		return path.join(importFileParentFolderPath, path.basename(activeFilePath));
 	}
 
-	private copyProjectJsonToTempFolder(tempFolderPath: string) {
-		const projectJsonPath = path.join(this.rootWorkspaceFolder!, ApplicationConstants.FILES.PROJECT_JSON);
-		fs.copyFileSync(projectJsonPath, path.join(tempFolderPath, ApplicationConstants.FILES.PROJECT_JSON));
+	private createProjectJsonInTempFolder(tempFolderPath: string, authId: string) {
+		AuthenticationUtils.setDefaultAuthentication(tempFolderPath, authId);
 	}
 
 	private copyManifestFileToTempFolder(tempFolderPath: string) {

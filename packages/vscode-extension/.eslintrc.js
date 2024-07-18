@@ -1,3 +1,5 @@
+const rules = require("@typescript-eslint/eslint-plugin").rules
+
 module.exports = {
     "env": {
         "es6": true,
@@ -15,6 +17,7 @@ module.exports = {
     "plugins": [
         "@typescript-eslint"
     ],
+    "ignorePatterns": ['.eslintrc.js'],
     "rules": {
         "@typescript-eslint/member-delimiter-style": [
             "warn",
@@ -29,7 +32,23 @@ module.exports = {
                 }
             }
         ],
-        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/naming-convention": [
+            "warn",
+            ...rules["naming-convention"].defaultOptions,
+            {
+                "selector": ["enumMember"],
+                "format": ["UPPER_CASE"]
+            },
+            {
+                "selector": ["property"],
+                "format": ["camelCase", "UPPER_CASE"]
+            },
+            {
+                "selector": ["variable"],
+                "modifiers": ["const"],
+                "format": ["camelCase", "UPPER_CASE", "PascalCase"]
+            }
+        ],
         "@typescript-eslint/no-unused-expressions": "warn",
         "@typescript-eslint/semi": [
             "warn",
