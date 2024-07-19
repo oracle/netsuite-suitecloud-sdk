@@ -14,7 +14,7 @@ Read more about SuiteCloud SDK and SDF in <a href="https://docs.oracle.com/en/cl
 ## Installation Prerequisites
 The following software is required to work with SuiteCloud Extension for Visual Studio Code:
 - Oracle JDK version 17
-- VS Code version 2.0.0 or higher
+- VS Code version 1.91.1 or higher
 
 Read the detailed list of prerequisites in <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Prerequisites for SuiteCloud Extension for Visual Studio Code</a>.
 
@@ -65,12 +65,12 @@ To add an account, follow these steps:
 3. Once the dropdown list is shown, select **New authentication ID**.
 4. Once the dropdown list is shown, select one of the following options:
     * Browser-based authentication
-    * Save a TBA token issued in NetSuite
+    * Machine-to-machine authentication
 5. In the text field, enter an authentication ID.
-6. If you selected the browser-based authentication, press Enter to confirm your NetSuite domain and follow the instructions in the browser prompt. If you selected to save an issued TBA token, do the following:
-    * Enter your account ID.
-    * Enter the token ID of the TBA token you previously issued in NetSuite.
-    * Enter the token secret of the TBA token you previously issued in NetSuite. 
+6. If you selected the browser-based authentication, press Enter to confirm your NetSuite domain and follow the instructions in the browser prompt. If you selected machine-to-machine authentication, do the following:
+    * Enter the account ID.
+    * Enter the certificate ID.
+    * Select the private key file in the prompted file explorer. 
     
     Your account is successfully set up.
 
