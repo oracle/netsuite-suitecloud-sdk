@@ -20,7 +20,7 @@ For more information about the available SuitScript 2.x modules, see [SuiteScrip
 For more information about all the mockable stubs, see the CORE_STUBS list in  [SuiteCloudJestConfiguration.js](./jest-configuration/SuiteCloudJestConfiguration.js).
 
 ## Prerequisites
-- Node.js version 18.14.2 LTS
+- Node.js version 20 LTS
 - Having a SuiteCloud project
 
 ## Getting Started
