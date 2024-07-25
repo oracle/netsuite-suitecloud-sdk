@@ -32,7 +32,7 @@
 		"chalk": "4.1.2",
 		"cli-spinner": "0.2.10",
 		"commander": "11.1.0",
-		"inquirer": "10.1.2",
+		"inquirer": "8.2.6",
 		"xml2js": "0.6.2"
 	},
 	"devDependencies": {
