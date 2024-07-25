@@ -9,7 +9,7 @@
 			"dev": {
 				"name": "dev",
 				"alias": "d",
-				"description": "Needs to be specified if you want to use a customized NetSuite domain.",
+				"description": "It only needs to be specified if you want to use a customized NetSuite domain.",
 				"type": "FLAG",
 				"mandatory": false,
 				"disableInIntegrationMode": false
