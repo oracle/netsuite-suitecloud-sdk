@@ -256,6 +256,14 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async getPrivateKeyFilePath() {
+		if (!await window.showQuickPick(['Select private key file'], {
+			placeHolder: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE_PLACEHOLDER),
+			ignoreFocusOut: true,
+			canPickMany: false,
+		})) {
+			return;
+		}
+
 		return window.showOpenDialog({
 			title: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE),
 			canSelectFolders: false,
