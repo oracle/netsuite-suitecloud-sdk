@@ -151,6 +151,7 @@
 	"SETUP_ACCOUNT_CREATE_M2M_ENTER_ACCOUNT_ID": "Enter the account ID:",
 	"SETUP_ACCOUNT_CREATE_M2M_ENTER_CERTIFICATE_ID": "Enter the certificate ID:",
 	"SETUP_ACCOUNT_CREATE_M2M_SELECT_PRIVATE_KEY_FILE": "Select the private key file",
+	"SETUP_ACCOUNT_CREATE_M2M_SELECT_PRIVATE_KEY_FILE_PLACEHOLDER": "Press Enter to continue with the selection of the private key file.",
 	"SETUP_ACCOUNT_OUTPUT_NEW_OAUTH": "The account has been authenticated for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 
 	"STATUS_BARS_AUTH_ID_SET_UP_ACCOUNT": "Set up account",
