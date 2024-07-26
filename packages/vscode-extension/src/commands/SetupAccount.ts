@@ -298,15 +298,13 @@ export default class SetupAccount extends BaseAction {
 			return;
 		}
 
-		const commandParams: { authid: string; account: string; certificateid: string; privatekeypath: string; url?: string } = {
+		const commandParams: { authid: string; account: string; certificateid: string; privatekeypath: string; domain?: string } = {
 			authid: authId,
 			account: accountId,
 			certificateid: certificateId,
 			privatekeypath: privateKeyFilePath[0].fsPath,
+			domain: url,
 		};
-		if (url) {
-			commandParams.url = url;
-		}
 
 		const authenticateCiPromise = AuthenticationUtils.authenticateCi(
 			commandParams,
