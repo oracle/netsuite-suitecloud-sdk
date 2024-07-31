@@ -98,7 +98,7 @@
 			"url": {
 				"name": "url",
 				"option": "url",
-				"description": "References the NetSuite domain of the account you want to use. You only need to specify the NetSuite domain if you are not using a production account.",
+				"description": "References the NetSuite domain of the account you want to use. It only needs to be specified if you want to use a customized NetSuite domain.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "",
