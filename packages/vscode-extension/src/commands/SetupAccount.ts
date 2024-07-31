@@ -256,6 +256,14 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async getPrivateKeyFilePath() {
+		if (!await window.showQuickPick([this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE)], {
+			placeHolder: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE_PLACEHOLDER),
+			ignoreFocusOut: true,
+			canPickMany: false,
+		})) {
+			return;
+		}
+
 		return window.showOpenDialog({
 			title: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE),
 			canSelectFolders: false,
@@ -290,15 +298,13 @@ export default class SetupAccount extends BaseAction {
 			return;
 		}
 
-		const commandParams: { authid: string; account: string; certificateid: string; privatekeypath: string; url?: string } = {
+		const commandParams: { authid: string; account: string; certificateid: string; privatekeypath: string; domain?: string } = {
 			authid: authId,
 			account: accountId,
 			certificateid: certificateId,
 			privatekeypath: privateKeyFilePath[0].fsPath,
+			domain: url,
 		};
-		if (url) {
-			commandParams.url = url;
-		}
 
 		const authenticateCiPromise = AuthenticationUtils.authenticateCi(
 			commandParams,
