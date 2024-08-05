@@ -1,4 +1,4 @@
-<p align="lwft"><a href="#"><img width="250" src="resources/netsuite_logo_simplified.png"></a></p>
+<p align="left"><a href="#"><img width="250" src="resources/netsuite_logo_simplified.png"></a></p>
 
 # SuiteCloud Unit Testing
 <p>
