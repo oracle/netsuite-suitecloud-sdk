@@ -13,7 +13,7 @@
 	"license": "UPL-1.0",
 	"private": true,
 	"version": "2.0.0",
-	"icon": "resources/pluginIcon_dark.png",
+	"icon": "resources/extension_icon_dark.png",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/oracle/netsuite-suitecloud-sdk.git",

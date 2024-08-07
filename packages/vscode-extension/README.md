@@ -1,4 +1,4 @@
-<p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo_redblack.png"></a></p>
+<p align="left"><a href="#"><img width="250" src="resources/netsuite_logo_simplified.png"></a></p>
 
 # SuiteCloud Extension for Visual Studio Code
 
