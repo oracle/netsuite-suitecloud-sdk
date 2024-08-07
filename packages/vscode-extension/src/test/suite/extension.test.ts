@@ -12,7 +12,7 @@ suite('Extension Test Suite', () => {
 
 	test('Command Names in commandsMap.ts should match the ones defined in the package.json', () => {
 		const packagejson = require('../../../package.json');
-		const vscodeCommandTitles: string[] = packagejson.contributes.commands.map((packageCommnand: any) => packageCommnand.title);
+		const vscodeCommandTitles: string[] = packagejson.contributes.commands.map((packageCommand: any) => packageCommand.title);
 		const vscodeCommandNames: string[] = Object.values(commandsInfoMap).map((el) => el.vscodeCommandName);
 
 		vscodeCommandTitles.forEach((title) => assert(vscodeCommandNames.includes(title), `Missing '${title}' command in commandsInfoMap.`));
