@@ -18,9 +18,9 @@ module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 		}
 
-		if (actionResult.actionExecuted == MANAGE_ACTION.INFO) {
+		if (actionResult.actionExecuted === MANAGE_ACTION.INFO) {
 			this._log.result(AccountCredentialsFormatter.getInfoString(actionResult.data));
-		} else if (actionResult.actionExecuted == MANAGE_ACTION.LIST) {
+		} else if (actionResult.actionExecuted === MANAGE_ACTION.LIST) {
 			Object.keys(actionResult.data).forEach((authId) =>
 				this._log.result(AccountCredentialsFormatter.getListItemString(authId, actionResult.data[authId]))
 			);

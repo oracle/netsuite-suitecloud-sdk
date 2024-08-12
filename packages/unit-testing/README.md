@@ -1,4 +1,4 @@
-<p align="center"><a href="#"><img width="250" src="resources/oracle_netsuite_logo_redblack.png"></a></p>
+<p align="left"><a href="#"><img width="250" src="resources/netsuite_logo_simplified.png"></a></p>
 
 # SuiteCloud Unit Testing
 <p>
@@ -20,7 +20,7 @@ For more information about the available SuitScript 2.x modules, see [SuiteScrip
 For more information about all the mockable stubs, see the CORE_STUBS list in  [SuiteCloudJestConfiguration.js](./jest-configuration/SuiteCloudJestConfiguration.js).
 
 ## Prerequisites
-- Node.js version 18.14.2 LTS
+- Node.js version 20 LTS
 - Having a SuiteCloud project
 
 ## Getting Started

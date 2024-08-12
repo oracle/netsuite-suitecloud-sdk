@@ -2,12 +2,15 @@
  ** Copyright (c) 2024 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
-import { actionResultStatus, AuthenticationUtils, InteractiveAnswersValidator } from '../util/ExtensionUtil';
+
+import * as vscode from 'vscode';
+import { actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext, InteractiveAnswersValidator } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
-import { MANAGE_ACCOUNTS, DISMISS } from '../service/TranslationKeys';
+import { MANAGE_ACCOUNTS, DISMISS, SETUP_ACCOUNT } from '../service/TranslationKeys';
+import { VSCODE_PLATFORM } from '../ApplicationConstants';
 
 const COMMAND_NAME = 'setupaccount';
 
@@ -15,7 +18,7 @@ enum UiOption {
 	new_authid,
 	select_authid,
 	new_authid_browser,
-	new_authid_save_token,
+	new_authid_m2m,
 	cancel_process,
 	dismiss,
 }
@@ -36,7 +39,7 @@ interface MessageItemWithCode extends MessageItem {
 type AuthIdItem = NewAuthIdItem | SelectAuthIdItem;
 
 interface NewAuthID extends QuickPickItem {
-	option: UiOption.new_authid_browser | UiOption.new_authid_save_token;
+	option: UiOption.new_authid_browser | UiOption.new_authid_m2m;
 }
 
 interface CancellationToken {
@@ -99,8 +102,8 @@ export default class SetupAccount extends BaseAction {
 			return;
 		} else if (selected.option === UiOption.new_authid_browser) {
 			await this.handleBrowserAuth(accountCredentialsList);
-		} else if (selected.option === UiOption.new_authid_save_token) {
-			await this.handleSaveToken(accountCredentialsList);
+		} else if (selected.option === UiOption.new_authid_m2m) {
+			await this.handleM2m(accountCredentialsList);
 		}
 	}
 
@@ -116,8 +119,8 @@ export default class SetupAccount extends BaseAction {
 					label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.BROWSER),
 				},
 				{
-					option: UiOption.new_authid_save_token,
-					label: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.OPTION),
+					option: UiOption.new_authid_m2m,
+					label: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.OPTION),
 				},
 			];
 			return await window.showQuickPick(options, {
@@ -161,7 +164,11 @@ export default class SetupAccount extends BaseAction {
 			commandParams,
 			getSdkPath(),
 			this.rootWorkspaceFolder,
-			cancellationToken
+			cancellationToken,
+			new ExecutionEnvironmentContext({
+				platform: VSCODE_PLATFORM,
+				platformVersion: vscode.version,
+			}),
 		);
 		window
 			.showInformationMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.CONTINUE_IN_BROWSER), dismissButton, cancelButton)
@@ -219,7 +226,7 @@ export default class SetupAccount extends BaseAction {
 
 	private async getAccountId() {
 		return window.showInputBox({
-			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_ACCOUNT_ID),
+			placeHolder: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.ENTER.ACCOUNT_ID),
 			ignoreFocusOut: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
@@ -233,37 +240,39 @@ export default class SetupAccount extends BaseAction {
 		});
 	}
 
-	private async getTokenId() {
+	private async getCertificateId() {
 		return window.showInputBox({
-			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_TOKEN_ID),
+			placeHolder: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.ENTER.CERTIFICATE_ID),
 			ignoreFocusOut: true,
-			password: true,
 			validateInput: (fieldValue) => {
 				let validationResult = InteractiveAnswersValidator.showValidationResults(
 					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
+					InteractiveAnswersValidator.validateFieldIsNotEmpty,
+					InteractiveAnswersValidator.validateFieldHasNoSpaces,
 				);
 				return typeof validationResult === 'string' ? validationResult : null;
 			},
 		});
 	}
 
-	private async getTokenSecret() {
-		return window.showInputBox({
-			placeHolder: this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.ENTER_TOKEN_SECRET),
+	private async getPrivateKeyFilePath() {
+		if (!await window.showQuickPick([this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE)], {
+			placeHolder: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE_PLACEHOLDER),
 			ignoreFocusOut: true,
-			password: true,
-			validateInput: (fieldValue) => {
-				let validationResult = InteractiveAnswersValidator.showValidationResults(
-					fieldValue,
-					InteractiveAnswersValidator.validateFieldIsNotEmpty
-				);
-				return typeof validationResult === 'string' ? validationResult : null;
-			},
+			canPickMany: false,
+		})) {
+			return;
+		}
+
+		return window.showOpenDialog({
+			title: this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.SELECT_PRIVATE_KEY_FILE),
+			canSelectFolders: false,
+			canSelectFiles: true,
+			canSelectMany: false,
 		});
 	}
 
-	private async handleSaveToken(accountCredentialsList: AuthListData) {
+	private async handleM2m(accountCredentialsList: AuthListData) {
 		const authId = await this.getNewAuthId(accountCredentialsList);
 		if (!authId) {
 			return;
@@ -279,34 +288,40 @@ export default class SetupAccount extends BaseAction {
 			return;
 		}
 
-		const tokenId = await this.getTokenId();
-		if (!tokenId) {
+		const certificateId = await this.getCertificateId();
+		if (!certificateId) {
 			return;
 		}
 
-		const tokenSecret = await this.getTokenSecret();
-		if (!tokenSecret) {
+		const privateKeyFilePath = await this.getPrivateKeyFilePath();
+		if (!privateKeyFilePath) {
 			return;
 		}
 
-		const commandParams: { authid: string; account: string; tokenid: string; tokensecret: string; url?: string } = {
+		const commandParams: { authid: string; account: string; certificateid: string; privatekeypath: string; domain?: string } = {
 			authid: authId,
 			account: accountId,
-			tokenid: tokenId,
-			tokensecret: tokenSecret,
+			certificateid: certificateId,
+			privatekeypath: privateKeyFilePath[0].fsPath,
+			domain: url,
 		};
-		if (url) {
-			commandParams.url = url;
-		}
 
-		const saveTokenPromise = AuthenticationUtils.saveToken(commandParams, getSdkPath(), this.rootWorkspaceFolder);
+		const authenticateCiPromise = AuthenticationUtils.authenticateCi(
+			commandParams,
+			getSdkPath(),
+			this.rootWorkspaceFolder,
+			new ExecutionEnvironmentContext({
+				platform: VSCODE_PLATFORM,
+				platformVersion: vscode.version,
+			}),
+		);
 		this.messageService.showStatusBarMessage(
-			this.translationService.getMessage(MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SAVING_TBA),
+			this.translationService.getMessage(SETUP_ACCOUNT.CREATE.M2M.AUTHENTICATING),
 			true,
-			saveTokenPromise
+			authenticateCiPromise,
 		);
 
-		const actionResult: AuthenticateActionResult = await saveTokenPromise;
+		const actionResult: AuthenticateActionResult = await authenticateCiPromise;
 		this.handleAuthenticateActionResult(actionResult);
 	}
 
@@ -314,10 +329,10 @@ export default class SetupAccount extends BaseAction {
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			this.vsConsoleLogger.result(
 				this.translationService.getMessage(
-					MANAGE_ACCOUNTS.CREATE.SAVE_TOKEN.SUCCESS.NEW_TBA,
+					SETUP_ACCOUNT.OUTPUT_NEW_OAUTH,
 					actionResult.accountInfo.companyName,
 					actionResult.accountInfo.roleName,
-					actionResult.authId
+					actionResult.authId,
 				)
 			);
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
