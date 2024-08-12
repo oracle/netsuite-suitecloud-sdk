@@ -1,10 +1,5 @@
 [
 	{
-		"commandName": "account:savetoken",
-		"supportsInteractiveMode": false,
-		"generator": "./commands/account/savetoken/AccountSaveTokenCommand"
-	},
-	{
 		"commandName": "account:manageauth",
 		"supportsInteractiveMode": true,
 		"generator": "./commands/account/manageauth/ManageAccountCommand"
@@ -13,6 +8,11 @@
 		"commandName": "account:setup",
 		"supportsInteractiveMode": true,
 		"generator": "./commands/account/setup/SetupCommand"
+	},
+	{
+		"commandName": "account:setup:ci",
+		"supportsInteractiveMode": false,
+		"generator": "./commands/account/setupci/AccountSetupCiCommand"
 	},
 	{
 		"commandName": "file:create",

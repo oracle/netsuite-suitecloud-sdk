@@ -58,6 +58,65 @@
 			}
 		}
 	},
+	"account:setup:ci": {
+		"name": "account:setup:ci",
+		"sdkCommand": "authenticateci",
+		"usage": "",
+		"description": "Grants authorization for SuiteCloud SDK to access NetSuite with an account-role combination. It does not require browser-based login to NetSuite.",
+		"isSetupRequired": false,
+		"options": {
+			"account": {
+				"name": "account",
+				"option": "account",
+				"description": "References the NetSuite account ID.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"authid": {
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom alias you give to a specific account-role combination.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"certificateid": {
+				"name": "certificateid",
+				"option": "certificateid",
+				"description": "References the certificate ID obtained from NetSuite after uploading the public key file.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"url": {
+				"name": "url",
+				"option": "url",
+				"description": "References the NetSuite domain of the account you want to use. It only needs to be specified if you want to use a customized NetSuite domain.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"privatekeypath": {
+				"name": "privatekeypath",
+				"option": "privatekeypath",
+				"description": "References the local path to the private key file matching the certificate in NetSuite. For example: \"d:\/path\/private-key.pem\".",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			}
+		}
+	},
 	"file:create": {
 		"name": "file:create",
 		"sdkCommand": "createfile",
@@ -541,22 +600,12 @@
 			"remove": {
 				"name": "remove",
 				"option": "remove",
-				"description": "Removes an authentication ID. Usage: manageauth -remove {authenticationID}.",
+				"description": "Removes an authentication ID. This option only removes the credentials locally and it doesn't revoke the token from the account. Usage: manageauth -remove {authenticationID}.",
 				"mandatory": false,
 				"type": "SINGLE",
 				"usage": "",
 				"defaultOption": false,
 				"disableInIntegrationMode": false
-			},
-			"revoke": {
-				"name": "revoke",
-				"option": "revoke",
-				"description": "Revokes the TBA token that was issued to your account and is linked to the specified authentication ID.",
-				"mandatory": false,
-				"type": "SINGLE",
-				"usage": "",
-				"defaultOption": false,
-				"disableInIntegrationMode": true
 			}
 		}
 	},

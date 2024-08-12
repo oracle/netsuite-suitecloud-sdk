@@ -33,14 +33,6 @@ module.exports = class SetupOutputHandler extends BaseOutputHandler {
 					actionResult.authId
 				);
 				break;
-			case AUTH_MODE.SAVE_TOKEN:
-				resultMessage = NodeTranslationService.getMessage(
-					OUTPUT.NEW_SAVED_TOKEN,
-					actionResult.accountInfo.companyName,
-					actionResult.accountInfo.roleName,
-					actionResult.authId
-				);
-				break;
 			case AUTH_MODE.REUSE:
 				resultMessage = NodeTranslationService.getMessage(
 					OUTPUT.REUSED_AUTH_ID,

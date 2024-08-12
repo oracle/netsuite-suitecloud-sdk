@@ -6,23 +6,17 @@
 
 const { prompt, Separator } = require('inquirer');
 const chalk = require('chalk');
-const path = require('path');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const FileUtils = require('../../../utils/FileUtils');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const SdkExecutor = require('../../../SdkExecutor');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
-const CLIException = require('../../../CLIException');
 const {
-	DOMAIN,
-	FILES: { MANIFEST_XML },
-	LINKS: { INFO },
+	DOMAIN
 } = require('../../../ApplicationConstants');
+const ProjectInfoService = require('../../../services/ProjectInfoService');
 
 const {
-	COMMAND_SETUPACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES },
-	ERRORS,
+	COMMAND_SETUPACCOUNT: { QUESTIONS, QUESTIONS_CHOICES, MESSAGES }
 } = require('../../../services/TranslationKeys');
 
 const {
@@ -33,21 +27,16 @@ const {
 	validateMaximumLength,
 	showValidationResults,
 } = require('../../../validation/InteractiveAnswersValidator');
-const { lineBreak } = require('../../../loggers/LoggerConstants');
 
 const ANSWERS = {
 	SELECTED_AUTH_ID: 'selected_auth_id',
 	AUTH_MODE: 'AUTH_MODE',
 	NEW_AUTH_ID: 'NEW_AUTH_ID',
-	SAVE_TOKEN_ACCOUNT_ID: 'account',
-	SAVE_TOKEN_ID: 'saveTokenId',
-	SAVE_TOKEN_SECRET: 'saveTokenSecret',
 	URL: 'url',
 };
 
 const AUTH_MODE = {
 	OAUTH: 'OAUTH',
-	SAVE_TOKEN: 'SAVE_TOKEN',
 	REUSE: 'REUSE',
 };
 
@@ -56,12 +45,11 @@ const CREATE_NEW_AUTH = '******CREATE_NEW_AUTH*******!£$%&*';
 module.exports = class SetupInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(this._sdkPath);
+		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 	}
 
 	async getParameters(params) {
-		this._checkWorkingDirectoryContainsValidProject();
+		this._projectInfoService.checkWorkingDirectoryContainsValidProject(this._commandMetadata.name);
 
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (!authIDActionResult.isSuccess()) {
@@ -94,15 +82,18 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			choices.push(new Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 			authIDs.forEach((authID) => {
 				const accountCredentials = authIDActionResult.data[authID];
+				// just fixed the isNotProductionUrl because of new credentials format, but the previous version was always false
+				// TODO: review if we want to show non-production urls on the list of selectable authIds
 				const isNotProductionUrl =
-					!accountCredentials.urls &&
-					!accountCredentials.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
-					!accountCredentials.urls.app.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
+					accountCredentials.hostInfo &&
+					accountCredentials.hostInfo.hostName &&
+					!accountCredentials.hostInfo.hostName.match(DOMAIN.PRODUCTION.PRODUCTION_DOMAIN_REGEX) &&
+					!accountCredentials.hostInfo.hostName.match(DOMAIN.PRODUCTION.PRODUCTION_ACCOUNT_SPECIFIC_DOMAIN_REGEX);
 				const notProductionLabel = isNotProductionUrl
 					? NodeTranslationService.getMessage(
-							QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION,
-							accountCredentials.urls.app
-					  )
+						QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID_URL_NOT_PRODUCTION,
+						accountCredentials.hostInfo.hostName
+					)
 					: '';
 				const accountInfo = `${accountCredentials.accountInfo.companyName} [${accountCredentials.accountInfo.roleName}]`;
 				choices.push({
@@ -134,33 +125,15 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	}
 
 	async getParamsCreateNewAuthId(params, authIDActionResult) {
-		let urlAnswer;
-		if (params && params.dev !== undefined && params.dev) {
-			urlAnswer = await prompt([
-				{
-					type: CommandUtils.INQUIRER_TYPES.INPUT,
-					name: ANSWERS.URL,
-					message: NodeTranslationService.getMessage(QUESTIONS.URL),
-					filter: (fieldValue) => fieldValue.trim(),
-					validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
-				},
-			]);
-		}
 		const newAuthenticationAnswers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: ANSWERS.AUTH_MODE,
-				message: NodeTranslationService.getMessage(QUESTIONS.AUTH_MODE),
-				choices: [
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.OAUTH),
-						value: AUTH_MODE.OAUTH,
-					},
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.AUTH_MODE.SAVE_TOKEN),
-						value: AUTH_MODE.SAVE_TOKEN,
-					},
-				],
+				when: params && params.dev !== undefined && params.dev,
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: ANSWERS.URL,
+				message: NodeTranslationService.getMessage(QUESTIONS.URL),
+				filter: (fieldValue) => fieldValue.trim(),
+				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
+
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
@@ -177,57 +150,15 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 						validateMaximumLength
 					),
 			},
-			{
-				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: ANSWERS.SAVE_TOKEN_ACCOUNT_ID,
-				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ACCOUNT_ID),
-				transformer: (answer) => answer.toUpperCase(),
-				filter: (fieldValue) => fieldValue.trim().toUpperCase(),
-				validate: (fieldValue) =>
-					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, validateAlphanumericHyphenUnderscore),
-			},
-			{
-				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
-				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
-				name: ANSWERS.SAVE_TOKEN_ID,
-				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_ID),
-				filter: (fieldValue) => fieldValue.trim(),
-				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
-			},
-			{
-				when: (response) => response[ANSWERS.AUTH_MODE] === AUTH_MODE.SAVE_TOKEN,
-				type: CommandUtils.INQUIRER_TYPES.PASSWORD,
-				mask: CommandUtils.INQUIRER_TYPES.PASSWORD_MASK,
-				name: ANSWERS.SAVE_TOKEN_SECRET,
-				message: NodeTranslationService.getMessage(QUESTIONS.SAVE_TOKEN_SECRET),
-				filter: (fieldValue) => fieldValue.trim(),
-				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
-			},
 		]);
 
 		const executeActionContext = {
 			createNewAuthentication: true,
 			authid: newAuthenticationAnswers[ANSWERS.NEW_AUTH_ID],
-			mode: newAuthenticationAnswers[ANSWERS.AUTH_MODE],
-			account: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ACCOUNT_ID],
-			tokenid: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_ID],
-			tokensecret: newAuthenticationAnswers[ANSWERS.SAVE_TOKEN_SECRET],
+			mode: AUTH_MODE.OAUTH,
+			...(newAuthenticationAnswers[ANSWERS.URL] && { url: newAuthenticationAnswers[ANSWERS.URL] })
 		};
-		if (urlAnswer) {
-			executeActionContext.url = urlAnswer[ANSWERS.URL];
-		}
-		return executeActionContext;
-	}
 
-	_checkWorkingDirectoryContainsValidProject() {
-		if (!FileUtils.exists(path.join(this._projectFolder, MANIFEST_XML))) {
-			const errorMessage =
-				NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, MANIFEST_XML, this._projectFolder, this._commandMetadata.name) +
-				lineBreak +
-				NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
-			throw new CLIException(errorMessage);
-		}
+		return executeActionContext;
 	}
 };

@@ -31,8 +31,6 @@
 	"CLI_USAGE": "command [option]",
 	"CLI_VERSION_HELP": "Outputs the version number.",
 
-	"COMMAND_ACCOUNTSAVETOKEN_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default.",
-
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_ADDING_DEPENDENCIES": "Adding dependencies...",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_DEPENDENCIES_ADDED_TO_MANIFEST": "The following dependencies were added to the manifest:",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_NO_UNRESOLVED_DEPENDENCIES": "There are no dependencies to add to the manifest.xml file.",
@@ -177,14 +175,11 @@
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
-	"COMMAND_SETUPACCOUNT_QUESTIONS_AUTH_MODE": "Select an authentication method:",
+	"COMMAND_REFRESH_AUTHORIZATION_MESSAGES_AUTHORIZATION_REFRESH_COMPLETED": "Authorization refresh completed.",
+	"COMMAND_REFRESH_AUTHORIZATION_MESSAGES_CREDENTIALS_NEED_TO_BE_REFRESHED": "The authorization credentials associated with {0} auhtid are no longer valid. Starting the browser-based authentication for refreshing them.",
+
 	"COMMAND_SETUPACCOUNT_QUESTIONS_NEW_AUTH_ID": "Enter an authentication ID:",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ACCOUNT_ID": "Enter the account ID:",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_ID": "Enter the Token ID:",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_SAVE_TOKEN_SECRET": "Enter the Token Secret:",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_SELECT_AUTHID": "Select or create an authentication ID (a custom alias you give to a specific account-role combination):\n  ***The authentication ID that you select or create will be set up as default.",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_AUTH_MODE_OAUTH": "Browser-based authentication.",
-	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_AUTH_MODE_SAVE_TOKEN": "Save a TBA token issued in NetSuite.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_NEW_AUTH_ID": "Create a new authentication ID.",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_EXISTING_AUTH_ID": "{0} | {1} {2}",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_EXISTING_AUTH_ID_URL_NOT_PRODUCTION": "| {0}",
@@ -192,8 +187,9 @@
 	"COMMAND_SETUPACCOUNT_MESSAGES_CANCEL_SETUP": "The setupaccount process has been canceled.",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SELECT_CONFIGURED_AUTHID": "Select a configured authentication ID:",
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_OAUTH": "The account has been authenticated for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
-	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_SAVED_TOKEN": "The TBA token has been saved for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID \"{0}\" as default for the following company and role: {1} [{2}]. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
+
+	"COMMAND_SETUPACCOUNTCI_OUTPUT_NEW_OAUTH": "The authentication was successful with the following account and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default.",
 
 	"COMMAND_UPDATE_ERRORS_CUSTOM_RECORD": "{0} was not updated. {1}",
 	"COMMAND_UPDATE_ERRORS_NO_OBJECTS_IN_PROJECT": "The \"Objects\" folder of your project does not contain any objects. Run \"suitecloud object:import -i\" to import objects from your account to your project.",
@@ -287,9 +283,10 @@
 
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_APPLY_ACCOUNT_SPECIFIC_VALUES_IN_SUITEAPP": "Account-specific values cannot be applied to SuiteApps.",
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
-	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
+	"UTILS_AUTHENTICATION_AUTHENTICATING": "Authenticating...",
+	"UTILS_AUTHENTICATION_AUTHORIZING": "Authorizing...",
 	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs in this machine...",
-	"UTILS_AUTHENTICATION_SAVING_TBA_TOKEN": "Saving the TBA token...",
+	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 	"UTILS_ERRORS_COMMAND": "There was an error with the {0} command. {1}",
 
