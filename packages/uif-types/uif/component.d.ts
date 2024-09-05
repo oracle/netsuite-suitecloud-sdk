@@ -884,25 +884,25 @@ declare module '@uif-js/component' {
 	export class ApplicationHeader extends PackageCore.Component {
 		constructor(options?: Self.ApplicationHeader.Options);
 
-		title: (string | number | PackageCore.Component | PackageCore.Translation);
+		title: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-		subtitle: (string | number | PackageCore.Component | PackageCore.Translation);
+		subtitle: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		badge: (string | number | PackageCore.Translation | Self.Badge.Options);
 
-		icon: (object | globalThis.Array<any> | string | PackageCore.ImageMetadata | PackageCore.Component | PackageCore.VDom.Element);
+		icon: (object | globalThis.Array<any> | string | PackageCore.ImageMetadata | PackageCore.Component | PackageCore.JSX.Element);
 
 		actions: globalThis.Array<Self.ApplicationHeader.ActionDefinition>;
 
 		links: globalThis.Array<Self.ApplicationHeader.LinkDefinition>;
 
-		tools: PackageCore.Component;
+		tools: (PackageCore.Component | PackageCore.JSX.Element);
 
 		outerGap: Self.ApplicationHeader.GapSize;
 
-		setTitle(title: (string | number | PackageCore.Component | PackageCore.Translation)): void;
+		setTitle(title: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element)): void;
 
-		setSubtitle(subtitle: (string | number | PackageCore.Component | PackageCore.Translation)): void;
+		setSubtitle(subtitle: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element)): void;
 
 		setBadge(badge: (string | number | PackageCore.Translation)): void;
 
@@ -912,7 +912,7 @@ declare module '@uif-js/component' {
 
 		setActions(actions: globalThis.Array<Self.ApplicationHeader.ActionDefinition>): void;
 
-		setTools(tools: PackageCore.Component): void;
+		setTools(tools: (PackageCore.Component | PackageCore.JSX.Element)): void;
 
 		getAction(actionId?: number): (Self.ApplicationHeader.ActionHandle | null);
 
@@ -968,17 +968,17 @@ declare module '@uif-js/component' {
 		interface Options extends PackageCore.Component.Options {
 			actions?: globalThis.Array<Self.ApplicationHeader.ActionDefinition>;
 
-			icon?: (object | globalThis.Array<any> | string | PackageCore.ImageMetadata | PackageCore.Component | PackageCore.VDom.Element);
+			icon?: (object | globalThis.Array<any> | string | PackageCore.ImageMetadata | PackageCore.Component | PackageCore.JSX.Element);
 
 			links?: globalThis.Array<Self.ApplicationHeader.LinkDefinition>;
 
 			badge?: (string | number | PackageCore.Translation | Self.Badge.Options);
 
-			subtitle?: (string | number | PackageCore.Component | PackageCore.Translation);
+			subtitle?: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-			title?: (string | number | PackageCore.Component | PackageCore.Translation);
+			title?: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-			tools?: PackageCore.Component;
+			tools?: (PackageCore.Component | PackageCore.JSX.Element);
 
 			outerGap?: (Self.ApplicationHeader.GapSize | Self.ApplicationHeader.GapSizeObject);
 
@@ -1440,7 +1440,7 @@ declare module '@uif-js/component' {
 
 		setLabel(label: (null | string | number | PackageCore.Translation | PackageCore.Component)): void;
 
-		setIcon(icon: (object | null)): void;
+		setIcon(icon: (PackageCore.ImageMetadata | null)): void;
 
 		setBadge(badge: (boolean | string | number | PackageCore.Translation | Self.Button.BadgeDefinition)): void;
 
@@ -1456,9 +1456,11 @@ declare module '@uif-js/component' {
 
 		setToggled(toggled: boolean, options?: object): void;
 
-		protected _handleClicked(options: object): void;
+		protected handleClicked(options: object): void;
 
 		static toggle(options: Self.Button.ToggleButtonOptions): Self.Button;
+
+		static Toggle(props: Self.Button.ToggleButtonOptions): PackageCore.JSX.Element;
 
 		static Event: Self.Button.EventTypes;
 
@@ -1494,9 +1496,9 @@ declare module '@uif-js/component' {
 		}
 
 		interface EventTypes extends PackageCore.Component.EventTypes {
-			CLICK: string;
+			TOGGLED: string;
 
-			KEY_UP: string;
+			ACTION: string;
 
 		}
 
@@ -2277,6 +2279,10 @@ declare module '@uif-js/component' {
 
 		mode: Self.Card.Mode;
 
+		draggable: boolean;
+
+		contentGap: (Self.Card.GapSize | Self.Card.GapSizeObject | null);
+
 		hasAction: boolean;
 
 		hasImage: boolean;
@@ -2301,9 +2307,15 @@ declare module '@uif-js/component' {
 
 		setDecorator(decorator: (PackageCore.Decorator | null)): void;
 
+		/**
+		 * @deprecated Use draggable property on Card
+		 */
 		static draggableDecorator(options: object): PackageCore.Decorator;
 
-		static defaultDecorator(options?: object): PackageCore.Decorator;
+		/**
+		 * @deprecated Wrap your component in Card
+		 */
+		static defaultDecorator(options?: PackageCore.Decorator.Options): PackageCore.Decorator;
 
 		static metric(title: (string | number | PackageCore.Translation), metric: (string | number | PackageCore.Translation), metadata?: (string | number | PackageCore.Translation), description?: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element), toolbar?: (PackageCore.Component | PackageCore.JSX.Element | globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>), action?: () => void, cardOptions?: Self.Card.Options): Self.Card;
 
@@ -2312,15 +2324,6 @@ declare module '@uif-js/component' {
 	}
 
 	export namespace Card {
-		interface ImageSize {
-			aspectRatio?: number;
-
-			height?: string;
-
-			width?: string;
-
-		}
-
 		interface Options extends PackageCore.Component.Options {
 			decorator?: PackageCore.Decorator;
 
@@ -2338,7 +2341,37 @@ declare module '@uif-js/component' {
 
 			action?: () => void;
 
+			contentGap?: (Self.Card.GapSize | Self.Card.GapSizeObject);
+
 		}
+
+		interface ImageSize {
+			aspectRatio?: number;
+
+			height?: string;
+
+			width?: string;
+
+		}
+
+		interface GapSizeObject {
+			top?: Self.Card.GapSize;
+
+			bottom?: Self.Card.GapSize;
+
+			start?: Self.Card.GapSize;
+
+			end?: Self.Card.GapSize;
+
+			horizontal?: Self.Card.GapSize;
+
+			vertical?: Self.Card.GapSize;
+
+		}
+
+		export import GapSize = Self.GapSize;
+
+		export import Decorator = PackageCore.Decorator;
 
 		enum Mode {
 			VERTICAL,
@@ -2863,6 +2896,8 @@ declare module '@uif-js/component' {
 
 			showLIneNumbers?: boolean;
 
+			lineWrapping?: boolean;
+
 		}
 
 		interface EventTypes extends PackageCore.Component.EventTypes {
@@ -2962,6 +2997,8 @@ declare module '@uif-js/component' {
 		private degreesToRadians(deg: number): number;
 
 		private roundFloat(float: number): number;
+
+		private limitValue(value: number, min: number, max: number): number;
 
 		private isPointInTriangle(x: number, y: number): boolean;
 
@@ -4791,14 +4828,6 @@ declare module '@uif-js/component' {
 			INTERVAL,
 		}
 
-		/**
-		 * @deprecated Not used internally anymore
-		 */
-		enum DatePart {
-			START,
-			END,
-		}
-
 	}
 
 	export class DateRangePicker extends Self.Picker {
@@ -4807,8 +4836,6 @@ declare module '@uif-js/component' {
 		dateRange: Self.DateRange;
 
 		private _handleRangeSelected(args: Self.DateRange.RangeChangedArgs): void;
-
-		private static _parseDateRangeValue(value: {endDate: (PackageCore.Date | null); startDate: (PackageCore.Date | null); rangeStart: (PackageCore.Date | null); rangeEnd: (PackageCore.Date | null)}): {endDate: (PackageCore.Date | null); startDate: (PackageCore.Date | null)};
 
 	}
 
@@ -5236,11 +5263,6 @@ declare module '@uif-js/component' {
 
 		mandatory: boolean;
 
-		/**
-		 * @deprecated
-		 */
-		visibility: Self.Field.Visibility;
-
 		infoIcons: globalThis.Array<(Self.Image | PackageCore.JSX.Element)>;
 
 		helperButtons: globalThis.Array<Self.Field.ButtonOption>;
@@ -5259,94 +5281,19 @@ declare module '@uif-js/component' {
 
 		setInline(value: boolean): void;
 
-		/**
-		 * @deprecated
-		 */
-		getLabel(): (string | number | PackageCore.Translation);
-
 		setLabel(value: (string | number | PackageCore.Translation)): void;
-
-		/**
-		 * @deprecated
-		 */
-		getControl(): (PackageCore.Component | PackageCore.JSX.Element | Self.Field.ControlOptions | null);
 
 		setControl(value: (PackageCore.Component | PackageCore.JSX.Element | Self.Field.ControlOptions)): void;
 
-		/**
-		 * @deprecated
-		 */
-		getActiveControl(): (PackageCore.Component | PackageCore.JSX.Element);
-
-		/**
-		 * @deprecated
-		 */
-		getAssistiveContent(): (PackageCore.Component | PackageCore.JSX.Element);
-
 		setAssistiveContent(value: (PackageCore.Component | PackageCore.JSX.Element)): void;
-
-		/**
-		 * @deprecated
-		 */
-		getMode(): Self.Field.Mode;
 
 		setMode(value: Self.Field.Mode): void;
 
-		/**
-		 * @deprecated
-		 */
-		isMandatory(): boolean;
-
 		setMandatory(value: boolean): void;
-
-		/**
-		 * @deprecated
-		 */
-		getVisibility(): Self.Field.Visibility;
-
-		/**
-		 * @deprecated
-		 */
-		setVisibility(value: Self.Field.Visibility): void;
-
-		/**
-		 * @deprecated
-		 */
-		getInfoIcons(): globalThis.Array<Self.Image>;
 
 		setInfoIcons(value: globalThis.Array<(Self.Image | PackageCore.JSX.Element)>): void;
 
-		/**
-		 * @deprecated
-		 */
-		addInfoIcon(icon: Self.Image, index: number): void;
-
-		/**
-		 * @deprecated
-		 */
-		removeInfoIcon(icon: PackageCore.Component): void;
-
-		/**
-		 * @deprecated
-		 */
-		getHelperButtons(): globalThis.Array<Self.Field.ButtonOption>;
-
 		setHelperButtons(buttons: globalThis.Array<Self.Field.ButtonOption>): void;
-
-		/**
-		 * @deprecated
-		 */
-		addHelperButton(button: Self.Field.ButtonOption, index: number): void;
-
-		/**
-		 * @deprecated
-		 */
-		removeHelperButton(button: Self.Field.ButtonOption): void;
-
-		/**
-		 * @deprecated
-		 */
-		getStatus(): Self.Field.Status;
 
 		clearStatus(): void;
 
@@ -5360,36 +5307,11 @@ declare module '@uif-js/component' {
 
 		pending(message: (string | PackageCore.Translation | PackageCore.Component)): void;
 
-		/**
-		 * @deprecated
-		 */
-		getStatusMessage(): (string | PackageCore.Translation | PackageCore.Component);
-
-		/**
-		 * @deprecated
-		 */
-		getSize(): Self.Field.Size;
-
 		setSize(size: Self.Field.Size): void;
-
-		/**
-		 * @deprecated
-		 */
-		getOffset(): boolean;
 
 		setOffset(offset: boolean): void;
 
-		/**
-		 * @deprecated
-		 */
-		getOrientation(): Self.Field.Orientation;
-
 		setOrientation(value: Self.Field.Orientation): void;
-
-		/**
-		 * @deprecated
-		 */
-		getLabelJustification(): Self.Field.LabelJustification;
 
 		setLabelJustification(value: Self.Field.LabelJustification): void;
 
@@ -5424,15 +5346,6 @@ declare module '@uif-js/component' {
 
 		}
 
-		interface Visibility {
-			label?: boolean;
-
-			control?: boolean;
-
-			assistiveContent?: boolean;
-
-		}
-
 		interface Options extends PackageCore.Component.Options {
 			label?: (string | number | PackageCore.Translation);
 
@@ -5459,8 +5372,6 @@ declare module '@uif-js/component' {
 			labelJustification?: Self.Field.LabelJustification;
 
 			labelWrap?: (boolean | number);
-
-			visibility?: Self.Field.Visibility;
 
 			inline?: boolean;
 
@@ -5517,6 +5428,10 @@ declare module '@uif-js/component' {
 
 		color: Self.FieldGroup.Color;
 
+		collapsed: boolean;
+
+		collapsible: boolean;
+
 	}
 
 	export namespace FieldGroup {
@@ -5524,6 +5439,10 @@ declare module '@uif-js/component' {
 			title: (string | number | PackageCore.Translation);
 
 			color?: Self.FieldGroup.Color;
+
+			collapsible?: boolean;
+
+			collapsed?: boolean;
 
 		}
 
@@ -6218,6 +6137,650 @@ declare module '@uif-js/component' {
 
 	}
 
+	export class GanttChart extends PackageCore.Component {
+		constructor(options: Self.GanttChart.Options);
+
+		columns: globalThis.Array<Self.GanttChart.ColumnDefinition>;
+
+		resources: globalThis.Array<Self.GanttChart.ResourceDefinition>;
+
+		tasks: globalThis.Array<Self.GanttChart.TaskDefinition>;
+
+		assignments: globalThis.Array<Self.GanttChart.AssignmentDefinition>;
+
+		dependencies: globalThis.Array<Self.GanttChart.DependencyDefinition>;
+
+		calendars: (globalThis.Array<Self.GanttChart.CalendarDefinition> | null);
+
+		startDate: PackageCore.Date;
+
+		endDate: PackageCore.Date;
+
+		projectCalendar: Self.GanttChart.Id;
+
+		timeRanges: (globalThis.Array<Self.GanttChart.TimeRange> | null);
+
+		resourceTimeRanges: (globalThis.Array<Self.GanttChart.ResourceTimeRange> | null);
+
+		resourceTimeRangeContent: (Self.GanttChart.ResourceTimeRangeContentCallback | null);
+
+		taskResize: boolean;
+
+		taskDrag: boolean;
+
+		rowHeight: (number | null);
+
+		expanded: boolean;
+
+		firstDayOfWeek: (number | null);
+
+		showCriticalPath: boolean;
+
+		viewPreset: (Self.GanttChart.ViewPreset | Self.GanttChart.ViewPresetConfig);
+
+		taskColor: Self.GanttChart.TaskColor;
+
+		taskHorizontalMargin: number;
+
+		taskVerticalMargin: number;
+
+		gridLines: Self.GanttChart.GridLines;
+
+		gridColumnContent: (Self.GanttChart.GridColumnContentCallback | null);
+
+		gridRowContent: (Self.GanttChart.GridRowContentCallback | null);
+
+		taskTooltip: (Self.GanttChart.TaskTooltipCallback | null);
+
+		taskLabel: (Self.GanttChart.TaskLabelCallback | null);
+
+		expandedResources: (globalThis.Array<Self.GanttChart.Id> | globalThis.Set<Self.GanttChart.Id> | null);
+
+		timelineTooltip: (Self.GanttChart.TimelineTooltipCallback | null);
+
+		dropValidator: Self.GanttChart.DropValidatorCallback;
+
+		onTaskClick: (Self.GanttChart.TaskClickCallback | null);
+
+		onTaskDoubleClick: (Self.GanttChart.TaskClickCallback | null);
+
+		onTaskContextMenu: (Self.GanttChart.TaskContextMenuCallback | null);
+
+		onTaskResized: (Self.GanttChart.TaskResizedCallback | null);
+
+		onTaskMoved: (Self.GanttChart.TaskMovedCallback | null);
+
+		onResourceExpanded: (Self.GanttChart.ResourceExpandedCallback | null);
+
+		static weekendIntervals(startDate: PackageCore.Date, endDate: PackageCore.Date, options: Partial<Self.GanttChart.CalendarIntervalDefinition>): globalThis.Array<Self.GanttChart.CalendarIntervalDefinition>;
+
+		static extendViewPreset(base: Self.GanttChart.ViewPreset, options: Partial<Self.GanttChart.ViewPresetConfig>): void;
+
+	}
+
+	export namespace GanttChart {
+		interface Options extends PackageCore.Component.Options {
+			columns: globalThis.Array<Self.GanttChart.ColumnDefinition>;
+
+			resources: globalThis.Array<Self.GanttChart.ResourceDefinition>;
+
+			tasks: globalThis.Array<Self.GanttChart.TaskDefinition>;
+
+			assignments: globalThis.Array<Self.GanttChart.AssignmentDefinition>;
+
+			dependencies?: globalThis.Array<Self.GanttChart.DependencyDefinition>;
+
+			calendars?: globalThis.Array<Self.GanttChart.CalendarDefinition>;
+
+			startDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
+
+			projectCalendar?: Self.GanttChart.Id;
+
+			timeRanges?: globalThis.Array<Self.GanttChart.TimeRange>;
+
+			resourceTimeRanges?: globalThis.Array<Self.GanttChart.ResourceTimeRange>;
+
+			resourceTimeRangeContent?: Self.GanttChart.ResourceTimeRangeContentCallback;
+
+			taskResize?: boolean;
+
+			taskDrag?: boolean;
+
+			taskHorizontalMargin?: number;
+
+			taskVerticalMargin?: number;
+
+			rowHeight?: number;
+
+			firstDayOfWeek?: number;
+
+			showCriticalPath?: boolean;
+
+			viewPreset?: (Self.GanttChart.ViewPreset | Self.GanttChart.ViewPresetConfig);
+
+			taskColor?: Self.GanttChart.TaskColor;
+
+			gridLines?: Self.GanttChart.GridLines;
+
+			gridColumnContent?: Self.GanttChart.GridColumnContentCallback;
+
+			gridRowContent?: Self.GanttChart.GridRowContentCallback;
+
+			expandedResources?: (globalThis.Array<Self.GanttChart.Id> | globalThis.Set<Self.GanttChart.Id>);
+
+			expanded?: boolean;
+
+			dropValidator?: Self.GanttChart.DropValidatorCallback;
+
+			taskTooltip?: Self.GanttChart.TaskTooltipCallback;
+
+			taskLabel?: Self.GanttChart.TaskLabelCallback;
+
+			onTaskClick?: Self.GanttChart.TaskClickCallback;
+
+			onTaskDoubleClick?: Self.GanttChart.TaskClickCallback;
+
+			onTaskContextMenu?: Self.GanttChart.TaskContextMenuCallback;
+
+			onResourceExpanded?: Self.GanttChart.ResourceExpandedCallback;
+
+			onTaskResized?: Self.GanttChart.TaskResizedCallback;
+
+			onTaskMoved?: Self.GanttChart.TaskMovedCallback;
+
+			timelineTooltip?: Self.GanttChart.TimelineTooltipCallback;
+
+		}
+
+		type Id = (string | number);
+
+		interface ColumnDefinition {
+			id: Self.GanttChart.Id;
+
+			type?: Self.GanttChart.ColumnType;
+
+			label: (string | Self.GanttChart.ColumnLabelCallback);
+
+			labelAlignment?: Self.GanttChart.LabelAlignment;
+
+			resourceLabel?: Self.GanttChart.ResourceLabelCallback;
+
+			field?: string;
+
+			controls?: globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>;
+
+			region?: Self.GanttChart.ColumnRegion;
+
+			width?: number;
+
+		}
+
+		interface ResourceDefinition {
+			id: Self.GanttChart.Id;
+
+			height?: number;
+
+			taskColor?: Self.GanttChart.TaskColor;
+
+			calendar?: Self.GanttChart.Id;
+
+			children?: globalThis.Array<Self.GanttChart.ResourceDefinition>;
+
+		}
+
+		interface TaskDefinition {
+			id: Self.GanttChart.Id;
+
+			parentId?: Self.GanttChart.Id;
+
+			startDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
+
+			type?: Self.GanttChart.TaskType;
+
+			color?: Self.GanttChart.TaskColor;
+
+			percentDone?: number;
+
+			resizable?: boolean;
+
+			draggable?: boolean;
+
+			label?: (string | Self.GanttChart.TaskLabelCallback);
+
+		}
+
+		interface AssignmentDefinition {
+			id: Self.GanttChart.Id;
+
+			resourceId: Self.GanttChart.Id;
+
+			taskId: Self.GanttChart.Id;
+
+		}
+
+		interface DependencyDefinition {
+			id: Self.GanttChart.Id;
+
+			fromTask: Self.GanttChart.Id;
+
+			toTask: Self.GanttChart.Id;
+
+			fromSide?: Self.GanttChart.TaskSide;
+
+			toSide?: Self.GanttChart.TaskSide;
+
+			bidirectional?: boolean;
+
+		}
+
+		interface CalendarDefinition {
+			id: Self.GanttChart.Id;
+
+			intervals: globalThis.Array<Self.GanttChart.CalendarIntervalDefinition>;
+
+		}
+
+		interface CalendarIntervalDefinition {
+			id: Self.GanttChart.Id;
+
+			startDate?: PackageCore.Date;
+
+			endDate?: PackageCore.Date;
+
+			style?: (string | PackageCore.Style);
+
+			tooltip?: (string | PackageCore.JSX.Element);
+
+			content?: (string | Self.GanttChart.CalendarIntervalContentCallback);
+
+		}
+
+		type ColumnLabelCallback = (args: Self.GanttChart.ColumnLabelCallbackArgs) => (string | PackageCore.JSX.Element);
+
+		interface ColumnLabelCallbackArgs {
+			column: Self.GanttChart.ColumnDefinition;
+
+		}
+
+		type ResourceLabelCallback = (args: Self.GanttChart.ResourceLabelCallbackArgs) => (string | PackageCore.JSX.Element);
+
+		interface ResourceLabelCallbackArgs {
+			resource: Self.GanttChart.ResourceDefinition;
+
+			column: Self.GanttChart.ColumnDefinition;
+
+		}
+
+		type TaskLabelCallback = (args: Self.GanttChart.TaskLabelCallbackArgs) => (string | number | PackageCore.JSX.Element);
+
+		interface TaskLabelCallbackArgs {
+			resource: Self.GanttChart.ResourceDefinition;
+
+			task: Self.GanttChart.TaskDefinition;
+
+		}
+
+		type TaskClickCallback = (args: Self.GanttChart.TaskClickCallbackArgs) => (boolean | null);
+
+		interface TaskClickCallbackArgs {
+			resource: Self.GanttChart.ResourceDefinition;
+
+			task: Self.GanttChart.TaskDefinition;
+
+		}
+
+		type TaskContextMenuCallback = (args: Self.GanttChart.TaskContextMenuArgs) => (Self.GanttChart.TaskContextMenuDefinition | null);
+
+		interface TaskContextMenuArgs {
+			resource: Self.GanttChart.ResourceDefinition;
+
+			task: Self.GanttChart.TaskDefinition;
+
+		}
+
+		interface TaskContextMenuDefinition {
+			items: (globalThis.Array<Self.MenuItem.ItemDefinition> | null);
+
+		}
+
+		type TaskTooltipCallback = (args: Self.GanttChart.TaskTooltipCallbackArgs) => (PackageCore.JSX.Element | null);
+
+		interface TaskTooltipCallbackArgs {
+			resource: Self.GanttChart.ResourceDefinition;
+
+			task: Self.GanttChart.TaskDefinition;
+
+		}
+
+		type ResourceExpandedCallback = (args: Self.GanttChart.ResourceExpandedCallbackArgs) => void;
+
+		interface ResourceExpandedCallbackArgs {
+			resource: Self.GanttChart.ResourceDefinition;
+
+			expanded: boolean;
+
+		}
+
+		type TaskResizedCallback = (args: Self.GanttChart.TaskResizedCallbackArgs) => void;
+
+		interface TaskResizedCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			previousTask: Self.GanttChart.TaskDefinition;
+
+			startDate: PackageCore.Date;
+
+			previousStartDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
+
+			previousEndDate: PackageCore.Date;
+
+		}
+
+		type TaskMovedCallback = (args: Self.GanttChart.TaskMovedCallbackArgs) => void;
+
+		interface TaskMovedCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			previousTask: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+			previousResource: Self.GanttChart.ResourceDefinition;
+
+			startDate: PackageCore.Date;
+
+			previousStartDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
+
+			previousEndDate: PackageCore.Date;
+
+		}
+
+		interface ViewPresetConfig {
+			tickWidth: number;
+
+			rowHeight?: number;
+
+			timelines: globalThis.Array<Self.GanttChart.TimelineConfig>;
+
+			timeResolution?: Self.GanttChart.TimeResolutionConfig;
+
+		}
+
+		interface TimelineConfig {
+			unit: Self.GanttChart.TimelineUnit;
+
+			alignment?: Self.GanttChart.LabelAlignment;
+
+			height?: number;
+
+			label: (string | Self.GanttChart.TimelineLabelCallback);
+
+		}
+
+		type TimelineLabelCallback = (args: Self.GanttChart.TimelineLabelCallbackArgs) => (string | PackageCore.JSX.Element);
+
+		interface TimelineLabelCallbackArgs {
+			unit: Self.GanttChart.TimelineUnit;
+
+			startDate: PackageCore.Date;
+
+			i18n: PackageCore.I18n;
+
+			formatService: PackageCore.FormatService;
+
+			firstDayOfWeek: number;
+
+		}
+
+		type TimelineTooltipCallback = (args: Self.GanttChart.TimelineTooltipCallbackArgs) => (string | PackageCore.JSX.Element | null);
+
+		interface TimelineTooltipCallbackArgs {
+			unit: Self.GanttChart.TimelineUnit;
+
+			startDate: PackageCore.Date;
+
+			i18n: PackageCore.I18n;
+
+			formatService: PackageCore.FormatService;
+
+			firstDayOfWeek: number;
+
+		}
+
+		interface TimeResolutionConfig {
+			unit: Self.GanttChart.TimelineUnit;
+
+			increment: number;
+
+		}
+
+		type GridColumnContentCallback = (args: Self.GanttChart.GridColumnContentCallbackArgs) => (string | PackageCore.Style | PackageCore.JSX.Element | null);
+
+		interface GridColumnContentCallbackArgs {
+			startDate: PackageCore.Date;
+
+		}
+
+		type GridRowContentCallback = (args: Self.GanttChart.GridRowContentCallbackArgs) => (string | PackageCore.Style | PackageCore.JSX.Element | null);
+
+		interface GridRowContentCallbackArgs {
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		interface TimeRange {
+			id: Self.GanttChart.Id;
+
+			startDate: PackageCore.Date;
+
+			endDate?: PackageCore.Date;
+
+			headerStyle?: (string | PackageCore.Style);
+
+			headerTooltip?: (string | PackageCore.JSX.Element);
+
+			headerContent?: (string | PackageCore.JSX.Element | Self.GanttChart.TimeRangeContentCallback);
+
+			bodyStyle?: (string | PackageCore.Style);
+
+			bodyTooltip?: (string | PackageCore.JSX.Element);
+
+			bodyContent?: (string | PackageCore.JSX.Element | Self.GanttChart.TimeRangeContentCallback);
+
+		}
+
+		type TimeRangeContentCallback = (args: Self.GanttChart.TimeRangeContentCallbackArgs) => PackageCore.JSX.Element;
+
+		interface TimeRangeContentCallbackArgs {
+			range: Self.GanttChart.TimeRange;
+
+		}
+
+		interface ResourceTimeRange {
+			id: Self.GanttChart.Id;
+
+			resourceId: Self.GanttChart.Id;
+
+			startDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
+
+			style?: (string | PackageCore.Style);
+
+			tooltip?: (string | PackageCore.JSX.Element);
+
+			content?: (string | PackageCore.JSX.Element | Self.GanttChart.ResourceTimeRangeContentCallback);
+
+		}
+
+		type ResourceTimeRangeContentCallback = (args: Self.GanttChart.ResourceTimeRangeContentCallbackArgs) => PackageCore.JSX.Element;
+
+		interface ResourceTimeRangeContentCallbackArgs {
+			range: Self.GanttChart.ResourceTimeRange;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		type CalendarIntervalContentCallback = (args: Self.GanttChart.CalendarIntervalContentCallbackArgs) => PackageCore.JSX.Element;
+
+		interface CalendarIntervalContentCallbackArgs {
+			interval: Self.GanttChart.CalendarIntervalDefinition;
+
+			resource?: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		type DropValidatorCallback = (args: Self.GanttChart.DropValidatorCallbackArgs) => (boolean | Self.GanttChart.DropValidatorCallbackResult);
+
+		interface DropValidatorCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			sourceResource: Self.GanttChart.ResourceDefinition;
+
+			targetResource: Self.GanttChart.ResourceDefinition;
+
+			sourceStartDate: PackageCore.Date;
+
+			targetStartDate: PackageCore.Date;
+
+			sourceEndDate: PackageCore.Date;
+
+			targetEndDate: PackageCore.Date;
+
+		}
+
+		interface DropValidatorCallbackResult {
+			resourceId?: Self.GanttChart.Id;
+
+			startDate?: PackageCore.Date;
+
+			endDate?: PackageCore.Date;
+
+		}
+
+		enum ColumnRegion {
+			START,
+			END,
+		}
+
+		export import ColumnType = Self.GanttConstant.ColumnType;
+
+		export import LabelAlignment = Self.GanttConstant.LabelAlignment;
+
+		export import ViewPreset = Self.GanttConstant.ViewPreset;
+
+		export import TimelineLabel = Self.GanttTimelineLabel;
+
+		enum GridLines {
+			NONE,
+			HORIZONTAL,
+			VERTICAL,
+			BOTH,
+		}
+
+		export import TaskColor = Self.GanttConstant.TaskColor;
+
+		export import TimelineUnit = Self.GanttConstant.TimelineUnit;
+
+		export import TaskType = Self.GanttConstant.TaskType;
+
+		export import TaskSide = Self.GanttConstant.TaskSide;
+
+	}
+
+	namespace GanttConstant {
+		enum ColumnType {
+			DEFAULT,
+			ROW_NUMBER,
+			TREE,
+		}
+
+		enum LabelAlignment {
+			START,
+			CENTER,
+			END,
+		}
+
+		enum ViewPreset {
+			DAY_HOUR,
+			WEEK_DAY,
+			WEEK_DAY_HOUR,
+			MONTH_DAY,
+			MONTH_DAY_HOUR,
+			MONTH_WEEK,
+			MONTH_WEEK_DAY,
+			YEAR_MONTH,
+			YEAR_MONTH_WEEK,
+		}
+
+		enum TimelineUnit {
+			YEAR,
+			MONTH,
+			WEEK,
+			DAY,
+			HOUR,
+			MINUTE,
+			SECOND,
+			MILLISECOND,
+		}
+
+		enum TaskColor {
+			NEUTRAL,
+			THEMED,
+			RED,
+			GREEN,
+			BLUE,
+			YELLOW,
+			PURPLE,
+			ORANGE,
+			PINK,
+			TURQUOISE,
+			BROWN,
+		}
+
+		enum TaskType {
+			LEAF,
+			PARENT,
+			MILESTONE,
+		}
+
+		enum TaskSide {
+			TOP,
+			BOTTOM,
+			START,
+			END,
+		}
+
+	}
+
+	export namespace GanttTimelineLabel {
+		function dateFormat(args: {format: string}): Self.GanttChart.TimelineLabelCallback;
+
+		function hour(args?: object): Self.GanttChart.TimelineLabelCallback;
+
+		function dayName(args?: {short?: boolean}): Self.GanttChart.TimelineLabelCallback;
+
+		function dayLetter(args?: object): Self.GanttChart.TimelineLabelCallback;
+
+		function dayNameWithDate(args?: {short?: boolean; dateFormat?: string}): Self.GanttChart.TimelineLabelCallback;
+
+		function dayNumber(args?: object): Self.GanttChart.TimelineLabelCallback;
+
+		function weekDateRange(args?: object): Self.GanttChart.TimelineLabelCallback;
+
+		function weekNumber(args?: object): Self.GanttChart.TimelineLabelCallback;
+
+	}
+
 	export enum GapSize {
 		NONE,
 		XXXXS,
@@ -6513,7 +7076,7 @@ declare module '@uif-js/component' {
 
 		compareValues(oldValue: any, newValue: any): boolean;
 
-		validateValue(args: object): void;
+		validateValue(args?: {currentValue?: any; newValue?: any; reason?: any}): Self.GridCell.ValidationResult;
 
 		autoSize(options?: {width?: boolean; height?: boolean}): void;
 
@@ -6605,9 +7168,18 @@ declare module '@uif-js/component' {
 		interface HelperButton {
 			icon: Self.Image.Source;
 
-			label: string;
+			label: (string | PackageCore.Translation);
 
 			action: Self.Button.ActionCallback;
+
+		}
+
+		interface ValidationResult {
+			status: Self.GridCell.Status;
+
+			message: (undefined | null | string | PackageCore.Translation);
+
+			reject: boolean;
 
 		}
 
@@ -6701,7 +7273,7 @@ declare module '@uif-js/component' {
 
 		level: number;
 
-		label: string;
+		label: (string | PackageCore.Translation);
 
 		binding: (string | object);
 
@@ -6823,7 +7395,7 @@ declare module '@uif-js/component' {
 
 		setImmediateUpdate(value: boolean): void;
 
-		setLabel(label: string): void;
+		setLabel(label: (string | PackageCore.Translation)): void;
 
 		setWidth(width: number, args?: {reason?: string}): void;
 
@@ -6891,7 +7463,7 @@ declare module '@uif-js/component' {
 
 			binding?: (string | object);
 
-			label?: string;
+			label?: (string | PackageCore.Translation);
 
 			dataGrid?: Self.DataGrid;
 
@@ -7183,7 +7755,7 @@ declare module '@uif-js/component' {
 	export class GridHeaderCell extends Self.GridCell {
 		constructor(options?: Self.GridHeaderCell.Options);
 
-		label: string;
+		label: (string | PackageCore.Translation);
 
 		mandatory: boolean;
 
@@ -7202,6 +7774,8 @@ declare module '@uif-js/component' {
 		verticalAlignment: Self.GridColumn.VerticalAlignment;
 
 		horizontalAlignment: Self.GridColumn.HorizontalAlignment;
+
+		validator: (Self.GridCell.ValidatorCallback | null);
 
 		setLabel(label: (string | PackageCore.Translation)): void;
 
@@ -8611,9 +9185,7 @@ declare module '@uif-js/component' {
 
 		getContext(type: string): any;
 
-		setContext(type: string, value: any): void;
-
-		createElementComponent(element: Element): PackageCore.ElementComponent;
+		setContext(type: (string | Record<string, any>), value: any): void;
 
 		static page(options?: {context?: object}): Self.Host;
 
@@ -9567,6 +10139,7 @@ declare module '@uif-js/component' {
 		enum VisualStyle {
 			DEFAULT,
 			EMBEDDED,
+			SYSTEM_SEARCH,
 		}
 
 		export import DataExchange = Self.ListDataExchange;
@@ -9637,7 +10210,7 @@ declare module '@uif-js/component' {
 
 			dataSource?: PackageCore.DataSource;
 
-			filter?: (dataSource: PackageCore.DataSource, text: string) => PackageCore.DataSource;
+			filter?: Self.ListBoxPicker.FilterCallback;
 
 			filterType?: Self.ListBoxPicker.FilterType;
 
@@ -9645,7 +10218,11 @@ declare module '@uif-js/component' {
 
 			caseSensitive?: boolean;
 
+			debounce?: number;
+
 		}
+
+		type FilterCallback = (dataSource: PackageCore.DataSource, text: string) => PackageCore.DataSource;
 
 		export import Reason = Self.Picker.Reason;
 
@@ -9769,6 +10346,19 @@ declare module '@uif-js/component' {
 	}
 
 	export namespace ListItem {
+		interface Options extends PackageCore.Component.Options {
+			listBox: Self.ListBox;
+
+			index: number;
+
+			level: number;
+
+			height: number;
+
+			dataEntry: PackageCore.DataStoreEntry;
+
+		}
+
 		interface EventTypes extends PackageCore.Component.EventTypes {
 			SELECTED_CHANGED: string;
 
@@ -9795,6 +10385,8 @@ declare module '@uif-js/component' {
 		enum VisualStyle {
 			ITEM,
 			GROUP,
+			PLAIN,
+			BLANK,
 		}
 
 	}
@@ -10524,7 +11116,7 @@ declare module '@uif-js/component' {
 
 		setRawText(rawText: globalThis.Array<string>, options?: {reason?: string; accept?: boolean}): void;
 
-		setSelection(options: {start: number; end: number; direction?: string; reason?: string}): boolean;
+		setSelection(options: {start: number; end: number; direction?: Self.MaskedTextBox.SelectionDirection; reason?: string}): boolean;
 
 		setCaretPosition(position: number): void;
 
@@ -10603,6 +11195,10 @@ declare module '@uif-js/component' {
 
 			end: number;
 
+			direction?: Self.MaskedTextBox.SelectionDirection;
+
+			text?: string;
+
 		}
 
 		interface EventTypes extends PackageCore.Component.EventTypes {
@@ -10654,6 +11250,8 @@ declare module '@uif-js/component' {
 		export import MaskedText = Self.MaskedText;
 
 		export import Size = Self.InputSize;
+
+		export import SelectionDirection = Self.TextSelection.Direction;
 
 	}
 
@@ -10817,6 +11415,8 @@ declare module '@uif-js/component' {
 		toggleMenu(args?: object): void;
 
 		static dropDown(options: Self.MenuButton.Options): Self.MenuButton;
+
+		static DropDown(props: Self.MenuButton.Options): PackageCore.JSX.Element;
 
 		static Event: Self.MenuButton.EventTypes;
 
@@ -11070,6 +11670,280 @@ declare module '@uif-js/component' {
 
 	}
 
+	export class MeterBar extends PackageCore.Component {
+		constructor(options?: (Self.MeterBar.Options));
+
+		type: Self.MeterBar.Type;
+
+		value: number;
+
+		min: number;
+
+		max: number;
+
+		step: number;
+
+		readOnly: boolean;
+
+		plotAreaColor: Self.MeterBar.ColorConfig;
+
+		plotAreaSize: Self.MeterBar.Size;
+
+		indicatorBarColor: Self.MeterBar.ColorConfig;
+
+		indicatorBarSize: Self.MeterBar.Size;
+
+		referenceLines: globalThis.Array<Self.MeterBar.ReferenceLine>;
+
+		referenceLinesSize: Self.MeterBar.Size;
+
+		onValueChanged: (Self.MeterBar.ValueChangedCallback | null);
+
+		onValueAccepted: (Self.MeterBar.ValueAcceptedCallback | null);
+
+		setValue(value: number, options: object): void;
+
+		acceptChanges(options: object): void;
+
+	}
+
+	export namespace MeterBar {
+		interface Options extends PackageCore.Component.Options {
+			type?: Self.MeterBar.Type;
+
+			value?: number;
+
+			min?: number;
+
+			max?: number;
+
+			readOnly?: boolean;
+
+			step?: number;
+
+			plotAreaColor?: Self.MeterBar.ColorConfig;
+
+			plotAreaSize?: Self.MeterBar.Size;
+
+			indicatorBarColor?: Self.MeterBar.ColorConfig;
+
+			indicatorBarSize?: Self.MeterBar.Size;
+
+			referenceLines?: globalThis.Array<Self.MeterBar.ReferenceLine>;
+
+			referenceLinesSize?: Self.MeterBar.Size;
+
+			onValueChanged?: Self.MeterBar.ValueChangedCallback;
+
+			onValueAccepted?: Self.MeterBar.ValueAcceptedCallback;
+
+		}
+
+		type ColorConfig = (Self.MeterBar.Color | Self.MeterBar.ValueColorCallback | globalThis.Array<Self.MeterBar.SegmentColor>);
+
+		interface SegmentColor {
+			min?: number;
+
+			max?: number;
+
+			color: Self.MeterBar.Color;
+
+		}
+
+		interface ReferenceLine {
+			value: number;
+
+			color: Self.MeterBar.Color;
+
+		}
+
+		type ValueColorCallback = (value: number) => Self.MeterBar.Color;
+
+		type ValueChangedCallback = (args: Self.MeterBar.ValueChangedCallbackArgs) => void;
+
+		interface ValueChangedCallbackArgs {
+			value: number;
+
+			previousValue: number;
+
+			reason: Self.MeterBar.Reason;
+
+		}
+
+		type ValueAcceptedCallback = (args: Self.MeterBar.ValueAcceptedCallbackArgs) => void;
+
+		interface ValueAcceptedCallbackArgs {
+			acceptedValue: number;
+
+			previousAcceptedValue: number;
+
+			reason: Self.MeterBar.Reason;
+
+		}
+
+		enum Type {
+			HORIZONTAL,
+			VERTICAL,
+		}
+
+		enum Size {
+			LARGE,
+			MEDIUM,
+			SMALL,
+		}
+
+		enum Color {
+			NEUTRAL,
+			INFO,
+			SUCCESS,
+			WARNING,
+			ERROR,
+		}
+
+		enum Reason {
+			VALUE_CHANGED,
+			VALUE_ACCEPTED,
+		}
+
+	}
+
+	export class MeterCircle extends PackageCore.Component {
+		constructor(options?: (Self.MeterCircle.Options));
+
+		type: Self.MeterCircle.Type;
+
+		value: number;
+
+		min: number;
+
+		max: number;
+
+		step: number;
+
+		readOnly: boolean;
+
+		plotAreaColor: Self.MeterCircle.ColorConfig;
+
+		plotAreaSize: Self.MeterCircle.Size;
+
+		indicatorBarColor: Self.MeterCircle.ColorConfig;
+
+		indicatorBarSize: Self.MeterCircle.Size;
+
+		referenceLines: globalThis.Array<Self.MeterCircle.ReferenceLine>;
+
+		referenceLinesSize: Self.MeterCircle.Size;
+
+		onValueChanged: (Self.MeterCircle.ValueChangedCallback | null);
+
+		onValueAccepted: (Self.MeterCircle.ValueAcceptedCallback | null);
+
+		setValue(value: number, options: object): void;
+
+		acceptChanges(options: object): void;
+
+	}
+
+	export namespace MeterCircle {
+		interface Options extends PackageCore.Component.Options {
+			type?: Self.MeterCircle.Type;
+
+			value?: number;
+
+			min?: number;
+
+			max?: number;
+
+			readOnly?: boolean;
+
+			step?: number;
+
+			plotAreaColor?: Self.MeterCircle.ColorConfig;
+
+			plotAreaSize?: Self.MeterCircle.Size;
+
+			indicatorBarColor?: Self.MeterCircle.ColorConfig;
+
+			indicatorBarSize?: Self.MeterCircle.Size;
+
+			referenceLines?: globalThis.Array<Self.MeterCircle.ReferenceLine>;
+
+			referenceLinesSize?: Self.MeterCircle.Size;
+
+			onValueChanged?: Self.MeterCircle.ValueChangedCallback;
+
+			onValueAccepted?: Self.MeterCircle.ValueAcceptedCallback;
+
+		}
+
+		type ColorConfig = (Self.MeterCircle.Color | Self.MeterCircle.ValueColorCallback | globalThis.Array<Self.MeterCircle.SegmentColor>);
+
+		interface SegmentColor {
+			min?: number;
+
+			max?: number;
+
+			color: Self.MeterCircle.Color;
+
+		}
+
+		interface ReferenceLine {
+			value: number;
+
+			color: Self.MeterCircle.Color;
+
+		}
+
+		type ValueColorCallback = (value: number) => Self.MeterCircle.Color;
+
+		type ValueChangedCallback = (args: Self.MeterCircle.ValueChangedCallbackArgs) => void;
+
+		interface ValueChangedCallbackArgs {
+			value: number;
+
+			previousValue: number;
+
+			reason: Self.MeterCircle.Reason;
+
+		}
+
+		type ValueAcceptedCallback = (args: Self.MeterCircle.ValueAcceptedCallbackArgs) => void;
+
+		interface ValueAcceptedCallbackArgs {
+			acceptedValue: number;
+
+			previousAcceptedValue: number;
+
+			reason: Self.MeterCircle.Reason;
+
+		}
+
+		enum Type {
+			CIRCULAR,
+			SEMI_CIRCULAR,
+		}
+
+		enum Size {
+			LARGE,
+			MEDIUM,
+			SMALL,
+		}
+
+		enum Color {
+			NEUTRAL,
+			INFO,
+			SUCCESS,
+			WARNING,
+			ERROR,
+		}
+
+		enum Reason {
+			VALUE_CHANGED,
+			VALUE_ACCEPTED,
+		}
+
+	}
+
 	export class Metric extends PackageCore.Component {
 		title: (string | number | PackageCore.Translation);
 
@@ -11103,10 +11977,6 @@ declare module '@uif-js/component' {
 
 	export class Modal extends Self.Window {
 		constructor(options: Self.Modal.Options);
-
-		hasTitleBar: boolean;
-
-		titleBar: object;
 
 		withTitleBar: boolean;
 
@@ -11320,6 +12190,8 @@ declare module '@uif-js/component' {
 			onSelectionChanged?: Self.MultiselectDropdown.SelectionChangedCallback;
 
 			comparator?: Self.MultiselectDropdown.ComparatorCallback;
+
+			clearFilterOnFocusOut?: boolean;
 
 		}
 
@@ -12088,6 +12960,8 @@ declare module '@uif-js/component' {
 
 			order?: globalThis.Array<Self.Pagination.Section>;
 
+			selectedPageIndex?: number;
+
 			onPageSelected?: Self.Pagination.PageSelectedCallback;
 
 		}
@@ -12339,16 +13213,6 @@ declare module '@uif-js/component' {
 
 	export class Popover extends Self.Window {
 		constructor(options: Self.Popover.Options);
-
-		/**
-		 * @deprecated
-		 */
-		hasTitleBar: boolean;
-
-		/**
-		 * @deprecated
-		 */
-		titleBar: object;
 
 		closeButton: boolean;
 
@@ -13176,6 +14040,8 @@ declare module '@uif-js/component' {
 
 			EDITOR_RESIZED: string;
 
+			SELECTION_CHANGED: string;
+
 		}
 
 		enum VisualStyle {
@@ -13367,6 +14233,8 @@ declare module '@uif-js/component' {
 
 		justification: Self.ScrollTabList.Justification;
 
+		tabSpacer: (boolean | null);
+
 		position: Self.ScrollTabList.Position;
 
 		stripePosition: Self.ScrollTabList.StripePosition;
@@ -13375,7 +14243,11 @@ declare module '@uif-js/component' {
 
 		hierarchy: Self.ScrollTabList.Hierarchy;
 
+		divider: boolean;
+
 		selectedValue: Self.Tab;
+
+		decorator: (PackageCore.Decorator | null);
 
 		tabIndex(tab: Self.Tab): (number | null);
 
@@ -13386,6 +14258,8 @@ declare module '@uif-js/component' {
 		setHierarchy(hierarchy: Self.ScrollTabList.Hierarchy): void;
 
 		setJustification(justification: Self.ScrollTabList.Justification): void;
+
+		setTabSpacer(value: (boolean | null)): void;
 
 		move(item: Self.Tab, options?: {index: number; reason?: string}): void;
 
@@ -13401,7 +14275,13 @@ declare module '@uif-js/component' {
 
 			hierarchy?: Self.ScrollTabList.Hierarchy;
 
+			divider?: boolean;
+
 			reorder?: boolean;
+
+			tabSpacer?: boolean;
+
+			decorator?: PackageCore.Decorator;
 
 			items?: globalThis.Array<Self.Tab>;
 
@@ -13523,6 +14403,7 @@ declare module '@uif-js/component' {
 		MENU,
 		SUB_TAB,
 		TAB,
+		SUBLIST,
 	}
 
 	enum SearchItemType {
@@ -13645,16 +14526,13 @@ declare module '@uif-js/component' {
 
 		theme: PackageCore.Theme;
 
+		supportedThemes: globalThis.Array<PackageCore.Theme.Name>;
+
 		systemHeader: (PackageCore.Component | null);
 
 		applicationHeader: (PackageCore.Component | PackageCore.Presenter | null);
 
 		content: (PackageCore.Presenter | PackageCore.Component | PackageCore.JSX.Element | null);
-
-		/**
-		 * @deprecated
-		 */
-		contentRoot: HTMLElement;
 
 		setContent(content: (PackageCore.Presenter | PackageCore.Component | null)): void;
 
@@ -13682,6 +14560,8 @@ declare module '@uif-js/component' {
 
 			layout?: Self.Shell.LayoutType;
 
+			supportedThemes?: globalThis.Array<PackageCore.Theme.Name>;
+
 		}
 
 		export import Layout = Self.ShellLayout;
@@ -13693,7 +14573,7 @@ declare module '@uif-js/component' {
 
 	}
 
-	function ShellLayout(props: {contentId: string; systemHeader?: (PackageCore.Component | PackageCore.JSX.Element); applicationHeader?: (PackageCore.Component | PackageCore.JSX.Element); children?: (PackageCore.Component | PackageCore.JSX.Element); appLayout?: boolean}): PackageCore.JSX.Element;
+	function ShellLayout(props?: {systemHeader?: (PackageCore.Component | PackageCore.JSX.Element); applicationHeader?: (PackageCore.Component | PackageCore.JSX.Element); children?: (PackageCore.Component | PackageCore.JSX.Element); appLayout?: boolean}): PackageCore.JSX.Element;
 
 	export class ShuttleUI extends PackageCore.Component {
 		constructor(options?: Self.ShuttleUI.Options);
@@ -14539,7 +15419,7 @@ declare module '@uif-js/component' {
 
 		action: Self.Button.ActionCallback;
 
-		label: string;
+		label: (null | string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		hasLabel: boolean;
 
@@ -14557,25 +15437,25 @@ declare module '@uif-js/component' {
 
 		menuOpened: boolean;
 
-		menu: (globalThis.Array<any> | Self.Menu);
+		menu: (globalThis.Array<Self.MenuItem.ItemDefinition> | Self.Menu.Options);
 
 		openOnHover: boolean;
 
 		toggled: boolean;
 
-		setLabel(label: string): void;
+		setLabel(label: (null | string | number | PackageCore.Translation | PackageCore.Component)): void;
 
-		setIcon(icon: object): void;
+		setIcon(icon: (PackageCore.ImageMetadata | null)): void;
 
-		setIconPosition(position: Self.Button.IconPosition): void;
+		setIconPosition(position: Self.SplitButton.IconPosition): void;
 
-		setSize(size: Self.Button.Size): void;
+		setSize(size: Self.SplitButton.Size): void;
 
-		setType(type: Self.Button.Size): void;
+		setType(type: Self.SplitButton.Type): void;
 
-		setHierarchy(hierarchy: Self.Button.Hierarchy): void;
+		setHierarchy(hierarchy: Self.SplitButton.Hierarchy): void;
 
-		setMenu(menu: (globalThis.Array<any> | Self.Menu)): void;
+		setMenu(menu: (globalThis.Array<Self.MenuItem.ItemDefinition> | Self.Menu.Options)): void;
 
 		openMenu(args?: object): void;
 
@@ -14599,7 +15479,7 @@ declare module '@uif-js/component' {
 
 			label?: (null | string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-			menu: (globalThis.Array<any> | Self.Menu);
+			menu: (globalThis.Array<Self.MenuItem.ItemDefinition> | Self.Menu.Options);
 
 			size?: Self.SplitButton.Size;
 
@@ -15206,8 +16086,6 @@ declare module '@uif-js/component' {
 
 		orientation: Self.Stepper.Orientation;
 
-		labelPosition: Self.Stepper.LabelPosition;
-
 		descriptionPosition: Self.Stepper.DescriptionPosition;
 
 		separatorSize: Self.Stepper.SeparatorSize;
@@ -15218,31 +16096,11 @@ declare module '@uif-js/component' {
 
 		defaultItemOptions: object;
 
-		/**
-		 * @deprecated
-		 */
-		currentStep: (Self.StepperItem | null);
-
-		/**
-		 * @deprecated
-		 */
-		stretch: boolean;
-
-		/**
-		 * @deprecated
-		 */
-		activated: boolean;
-
 		onSelectionChanged: (Self.Stepper.SelectionChangedCallback | null);
 
-		setItems(items: globalThis.Array<object>, activeStep?: number): void;
+		setItems(items: globalThis.Array<object>): void;
 
 		setSelectedStepIndex(index: number, reason: (string | symbol)): void;
-
-		/**
-		 * @deprecated
-		 */
-		setStretch(value: boolean): void;
 
 		static Horizontal(props: Self.Stepper.Options): PackageCore.JSX.Element;
 
@@ -15300,8 +16158,6 @@ declare module '@uif-js/component' {
 
 		export import Orientation = Self.StepperItem.Orientation;
 
-		export import LabelPosition = Self.StepperItem.LabelPosition;
-
 		export import DescriptionPosition = Self.StepperItem.DescriptionPosition;
 
 		export import SeparatorSize = Self.StepperItem.SeparatorSize;
@@ -15323,23 +16179,11 @@ declare module '@uif-js/component' {
 
 		label: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-		/**
-		 * @deprecated
-		 */
-		name: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
-
 		description: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
-
-		/**
-		 * @deprecated
-		 */
-		message: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		children: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		orientation: Self.StepperItem.Orientation;
-
-		labelPosition: Self.StepperItem.LabelPosition;
 
 		descriptionPosition: Self.StepperItem.DescriptionPosition;
 
@@ -15353,11 +16197,6 @@ declare module '@uif-js/component' {
 
 		selected: boolean;
 
-		/**
-		 * @deprecated
-		 */
-		activated: boolean;
-
 		optional: boolean;
 
 		onActivate: (item: Self.StepperItem, index: number) => boolean;
@@ -15366,11 +16205,6 @@ declare module '@uif-js/component' {
 
 		index: number;
 
-		/**
-		 * @deprecated
-		 */
-		ordinal: number;
-
 		static Event: Self.StepperItem.EventTypes;
 
 	}
@@ -15378,8 +16212,6 @@ declare module '@uif-js/component' {
 	export namespace StepperItem {
 		interface Options extends PackageCore.Component.Options {
 			label?: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
-
-			message?: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 			orientation?: Self.StepperItem.Orientation;
 
@@ -15424,16 +16256,6 @@ declare module '@uif-js/component' {
 		}
 
 		enum DescriptionPosition {
-			TOP,
-			BOTTOM,
-			START,
-			END,
-		}
-
-		/**
-		 * @deprecated
-		 */
-		enum LabelPosition {
 			TOP,
 			BOTTOM,
 			START,
@@ -15677,7 +16499,7 @@ declare module '@uif-js/component' {
 	export class Tab extends PackageCore.Component {
 		constructor(options?: Self.Tab.Options);
 
-		label: (string | PackageCore.Translation);
+		label: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		labelEditor: (Self.InlineEditor | null);
 
@@ -15685,9 +16507,9 @@ declare module '@uif-js/component' {
 
 		icon: object;
 
-		contextControls: globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>;
+		contextControls: (PackageCore.Component | PackageCore.JSX.Element | globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>);
 
-		actionControls: globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>;
+		actionControls: (PackageCore.Component | PackageCore.JSX.Element | globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>);
 
 		value: any;
 
@@ -15709,7 +16531,7 @@ declare module '@uif-js/component' {
 
 		dropAfter: boolean;
 
-		setLabel(label: string, reason?: string): void;
+		setLabel(label: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element), reason?: string): void;
 
 		setIcon(icon: (PackageCore.ImageMetadata | null)): void;
 
@@ -15729,11 +16551,11 @@ declare module '@uif-js/component' {
 
 			icon?: Self.Image.Source;
 
-			label: (string | PackageCore.Translation);
+			label: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-			contextControls?: globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>;
+			contextControls?: (PackageCore.Component | PackageCore.JSX.Element | globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>);
 
-			actionControls?: globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>;
+			actionControls?: (PackageCore.Component | PackageCore.JSX.Element | globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>);
 
 			selected?: boolean;
 
@@ -15821,6 +16643,8 @@ declare module '@uif-js/component' {
 
 		hierarchy: Self.TabPanel.Hierarchy;
 
+		divider: boolean;
+
 		selectedValue: any;
 
 		selectedComponent: PackageCore.Component;
@@ -15835,7 +16659,11 @@ declare module '@uif-js/component' {
 
 		contentGap: (Self.TabPanel.GapSize | Self.TabPanel.GapSizeObject);
 
+		tabSpacer: (boolean | null);
+
 		decorator: (PackageCore.Decorator | null);
+
+		tabsDecorator: (PackageCore.Decorator | null);
 
 		defaultItemOptions: Self.TabPanel.ItemProps;
 
@@ -15875,7 +16703,11 @@ declare module '@uif-js/component' {
 
 		setContentGap(value: Self.TabPanel.GapSize): void;
 
+		setTabSpacer(value: boolean): void;
+
 		setDecorator(decorator: (PackageCore.Decorator | null)): void;
+
+		setTabsDecorator(decorator: (PackageCore.Decorator | null)): void;
 
 		getTab(component: PackageCore.Component): (Self.Tab | null);
 
@@ -15893,11 +16725,11 @@ declare module '@uif-js/component' {
 
 			icon?: Self.Image.Source;
 
-			label?: (string | PackageCore.Translation);
+			label?: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-			contextControls?: globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>;
+			contextControls?: (PackageCore.Component | PackageCore.JSX.Element | globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>);
 
-			actionControls?: globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>;
+			actionControls?: (PackageCore.Component | PackageCore.JSX.Element | globalThis.Array<(PackageCore.Component | PackageCore.JSX.Element)>);
 
 			closable?: boolean;
 
@@ -15961,11 +16793,17 @@ declare module '@uif-js/component' {
 
 			contentGap?: (Self.TabPanel.GapSize | Self.TabPanel.GapSizeObject);
 
+			tabSpacer?: boolean;
+
+			divider?: boolean;
+
 			defaultItemOptions?: Self.TabPanel.ItemProps;
 
 			tabListOptions?: Self.ScrollTabList.Options;
 
 			decorator?: PackageCore.Decorator;
+
+			tabsDecorator?: PackageCore.Decorator;
 
 			element?: Self.TabPanel.Element;
 
@@ -16494,6 +17332,10 @@ declare module '@uif-js/component' {
 
 			end: number;
 
+			direction?: Self.TextArea.SelectionDirection;
+
+			text?: string;
+
 		}
 
 		type FormatterCallback = (args: {text: string; valid: boolean}) => string;
@@ -16550,10 +17392,7 @@ declare module '@uif-js/component' {
 			VERTICAL,
 		}
 
-		enum SelectionDirection {
-			FORWARD,
-			BACKWARD,
-		}
+		export import SelectionDirection = Self.TextSelection.Direction;
 
 		export import Size = Self.InputSize;
 
@@ -16667,8 +17506,6 @@ declare module '@uif-js/component' {
 		inputSize: number;
 
 		type: Self.TextBox.Type;
-
-		input: PackageCore.Component;
 
 		inputId: string;
 
@@ -16849,6 +17686,10 @@ declare module '@uif-js/component' {
 
 			end: number;
 
+			direction?: Self.TextBox.SelectionDirection;
+
+			text?: string;
+
 		}
 
 		interface EventTypes extends PackageCore.Component.EventTypes {
@@ -16914,10 +17755,7 @@ declare module '@uif-js/component' {
 			URL,
 		}
 
-		enum SelectionDirection {
-			FORWARD,
-			BACKWARD,
-		}
+		export import SelectionDirection = Self.TextSelection.Direction;
 
 		export import Size = Self.InputSize;
 
@@ -16999,7 +17837,7 @@ declare module '@uif-js/component' {
 	}
 
 	class TextSelection {
-		constructor(start: number, end: number, direction?: Self.TextSelection.Direction);
+		constructor(start: number, end: number, direction?: Self.TextSelection.Direction, text?: string);
 
 	}
 
@@ -17019,6 +17857,8 @@ declare module '@uif-js/component' {
 	export function ThemeRoot(props: {theme: PackageCore.Theme; children?: PackageCore.VDom.Children}): PackageCore.JSX.Element;
 
 	function ThemeRootContent(props: {children?: PackageCore.VDom.Children}): PackageCore.JSX.Element;
+
+	export function ThemeSelector(props: {supportedThemes?: globalThis.Array<PackageCore.Theme.Name>; children?: PackageCore.VDom.Children}): PackageCore.JSX.Element;
 
 	export class TimePicker extends PackageCore.Component implements PackageCore.InputComponent {
 		constructor(options?: Self.TimePicker.Options);
@@ -17313,14 +18153,6 @@ declare module '@uif-js/component' {
 			INTERVAL,
 		}
 
-		/**
-		 * @deprecated Not used internally anymore
-		 */
-		enum TimePart {
-			START,
-			END,
-		}
-
 	}
 
 	export class TimeRangePicker extends Self.Picker {
@@ -17346,7 +18178,7 @@ declare module '@uif-js/component' {
 
 		children: PackageCore.VDom.Children;
 
-		selectedValues: globalThis.Array<any>;
+		selectedValues: globalThis.Array<Self.ToggleGroup.Value>;
 
 		type: Self.ToggleGroup.Type;
 
@@ -17358,7 +18190,7 @@ declare module '@uif-js/component' {
 
 		onSelectionChanged: (Self.ToggleGroup.SelectionChangedCallback | null);
 
-		select(values: globalThis.Array<any>, options?: {triggerIndex?: (number | null); triggerValue?: any; triggerButton?: (Self.Button | null); reason?: (string | symbol)}): void;
+		select(values: (Self.ToggleGroup.Value | globalThis.Array<Self.ToggleGroup.Value>), options?: {triggerIndex?: (number | null); triggerValue?: any; triggerButton?: (Self.Button | null); reason?: (string | symbol)}): void;
 
 		private parseChildren(children: PackageCore.VDom.Children): globalThis.Array<Self.ToggleGroup.Button>;
 
@@ -17408,7 +18240,7 @@ declare module '@uif-js/component' {
 
 			value: any;
 
-			badge: (boolean | string | number | Self.Button.BadgeDefinition);
+			badge?: (boolean | string | number | Self.Button.BadgeDefinition);
 
 		}
 
@@ -17424,14 +18256,16 @@ declare module '@uif-js/component' {
 
 		}
 
+		type Value = (string | number | symbol);
+
 		interface Options extends PackageCore.Component.Options {
-			buttons: globalThis.Array<Self.ToggleGroup.Button>;
+			buttons?: globalThis.Array<Self.ToggleGroup.Button>;
 
 			defaultButtonOptions?: Self.ToggleGroup.Button;
 
 			layout?: Self.ToggleGroup.Layout;
 
-			selectedValues: (string | globalThis.Array<string>);
+			selectedValues?: (Self.ToggleGroup.Value | globalThis.Array<Self.ToggleGroup.Value>);
 
 			toggleStrategy?: Self.ToggleGroup.ToggleStrategy;
 
@@ -17450,9 +18284,9 @@ declare module '@uif-js/component' {
 
 			triggerButton: (Self.Button | null);
 
-			selectedValues: globalThis.Array<any>;
+			selectedValues: globalThis.Array<Self.ToggleGroup.Value>;
 
-			previousSelectedValues: globalThis.Array<any>;
+			previousSelectedValues: globalThis.Array<Self.ToggleGroup.Value>;
 
 			reason: Self.ToggleGroup.Reason;
 
@@ -17628,6 +18462,8 @@ declare module '@uif-js/component' {
 
 		constructor(options?: (string | PackageCore.JSX.Element | Self.Tooltip.Options));
 
+		component: (PackageCore.Component | Element | null);
+
 		content: (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | null);
 
 		contentGap: (Self.Tooltip.GapSize | Self.Tooltip.GapSizeObject);
@@ -17642,7 +18478,9 @@ declare module '@uif-js/component' {
 
 		status: PackageCore.Component.Status;
 
-		attachTo(component: PackageCore.Component): void;
+		size: Self.Tooltip.Size;
+
+		attachTo(component: (PackageCore.Component | Element)): void;
 
 		detach(): void;
 
@@ -17650,13 +18488,15 @@ declare module '@uif-js/component' {
 
 		processMessage(next: PackageCore.RoutedMessage.Handler, message: PackageCore.RoutedMessage, result: PackageCore.RoutedMessage.Result): void;
 
-		open(options?: PackageCore.PositionHelper.Options & {component?: PackageCore.Component; reason?: string}): void;
+		open(options?: PackageCore.PositionHelper.Options & {component?: (PackageCore.Component | Element); reason?: string}): void;
 
 		close(options?: {reason?: string}): void;
 
+		resize(): void;
+
 		dispose(): void;
 
-		private _detachCloseTimer(): void;
+		private detachCloseTimer(): void;
 
 		static show(options: Self.Tooltip.Options): void;
 
@@ -17664,15 +18504,17 @@ declare module '@uif-js/component' {
 
 		static Event: Self.Tooltip.EventTypes;
 
+		static Target(props: {tooltip?: Self.Tooltip; target?: PackageCore.VDomRef}): PackageCore.JSX.Element;
+
 	}
 
 	export namespace Tooltip {
 		interface Options extends PackageCore.Component.Options {
-			closeStrategy?: (window: Self.Window) => PackageCore.RoutedMessage.Filter;
+			closeStrategy?: Self.Window.CloseStrategyHandler;
 
 			closeTimeout?: number;
 
-			component?: PackageCore.Component;
+			component?: (PackageCore.Component | Element);
 
 			content: (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | null);
 
@@ -17686,7 +18528,11 @@ declare module '@uif-js/component' {
 
 			status?: PackageCore.Component.Status;
 
+			size?: Self.Tooltip.Size;
+
 			visualStyle?: string;
+
+			anchorStyle?: Self.Window.AnchorVisualStyleCallback;
 
 			on?: PackageCore.EventSource.ListenerMap;
 
@@ -17724,6 +18570,8 @@ declare module '@uif-js/component' {
 			toCursorOrTarget,
 		}
 
+		export import Size = Self.Popover.Size;
+
 		export import OpenReason = Self.TooltipOpenReason;
 
 		export import OpenStrategy = Self.TooltipOpenStrategy;
@@ -17732,7 +18580,7 @@ declare module '@uif-js/component' {
 
 		enum VisualStyle {
 			TOOLTIP,
-			POPUP,
+			POPOVER,
 		}
 
 		export import GapSize = Self.Popover.GapSize;
@@ -18494,7 +19342,7 @@ declare module '@uif-js/component' {
 
 		parentWindow: (Self.Window | null);
 
-		owner: (PackageCore.Component | PackageCore.VDomRef | null);
+		owner: (PackageCore.Component | PackageCore.VDomRef | Element);
 
 		childWindows: globalThis.Array<Self.Window>;
 
@@ -18530,11 +19378,11 @@ declare module '@uif-js/component' {
 
 		position(options?: (Self.Window.PositionArgs | null), updateSize?: boolean): void;
 
-		private _setRootElementStyle(position: PackageCore.Rectangle): void;
+		private setRootElementStyle(position: PackageCore.Rectangle): void;
 
-		private _alignToDocumentBody(coordinates: PackageCore.PositionHelper.FrameDescription): PackageCore.Rectangle;
+		private alignToDocumentBody(coordinates: PackageCore.PositionHelper.FrameDescription): PackageCore.Rectangle;
 
-		private _getPositionOptions(options: PackageCore.PositionHelper.Options, measuredSize: object): PackageCore.PositionHelper.Options;
+		private getPositionOptions(options: PackageCore.PositionHelper.Options, measuredSize: object): PackageCore.PositionHelper.Options;
 
 		static findManagingWindow(): void;
 
@@ -18554,7 +19402,7 @@ declare module '@uif-js/component' {
 
 			buttonsJustification?: Self.Window.ButtonsJustification;
 
-			closeStrategy?: Self.WindowCloseStrategy.Handler;
+			closeStrategy?: Self.Window.CloseStrategyHandler;
 
 			content?: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
@@ -18570,7 +19418,7 @@ declare module '@uif-js/component' {
 
 			modal?: boolean;
 
-			owner: (PackageCore.Component | PackageCore.VDomRef);
+			owner: (PackageCore.Component | PackageCore.VDomRef | Element);
 
 			position?: Self.Window.PositionArgs;
 
@@ -18582,10 +19430,12 @@ declare module '@uif-js/component' {
 
 			withAnchor?: boolean;
 
+			anchorStyle?: Self.Window.AnchorVisualStyleCallback;
+
 		}
 
 		interface OpenArgs {
-			closeStrategy?: Self.WindowCloseStrategy.Handler;
+			closeStrategy?: Self.Window.CloseStrategyHandler;
 
 			position?: Self.Window.PositionArgs;
 
@@ -18633,6 +19483,10 @@ declare module '@uif-js/component' {
 
 		}
 
+		type AnchorVisualStyleCallback = (theme: PackageCore.Theme) => PackageCore.Style;
+
+		type CloseStrategyHandler = (window: Self.Window) => PackageCore.RoutedMessage.Filter;
+
 		interface EventTypes extends PackageCore.Component.EventTypes {
 			OPENING: string;
 
@@ -18653,8 +19507,8 @@ declare module '@uif-js/component' {
 		}
 
 		enum VisualStyle {
-			FRAME,
-			POPUP,
+			MODAL,
+			POPOVER,
 			PICKER,
 			TOOLTIP,
 		}
@@ -18769,35 +19623,33 @@ declare module '@uif-js/component' {
 	export class WindowCloseStrategy {
 		static DEFAULT_MOUSE_DELAY: number;
 
-		static focusOutside(component: (PackageCore.Component | null), options: (object | null)): Self.WindowCloseStrategy.Handler;
+		static focusOutside(component: (PackageCore.Component | null), options: (object | null)): Self.Window.CloseStrategyHandler;
 
-		static mouseOutside(component: (PackageCore.Component | null), options: (object | null)): Self.WindowCloseStrategy.Handler;
+		static mouseOutside(component: (PackageCore.Component | null), options: (object | null)): Self.Window.CloseStrategyHandler;
 
-		static clickOutside(component: (PackageCore.Component | null), options: (object | null)): Self.WindowCloseStrategy.Handler;
+		static clickOutside(component: (PackageCore.Component | null), options: (object | null)): Self.Window.CloseStrategyHandler;
 
-		static scrollOutside(component: (PackageCore.Component | null), options: (object | null)): Self.WindowCloseStrategy.Handler;
+		static scrollOutside(component: (PackageCore.Component | null), options: (object | null)): Self.Window.CloseStrategyHandler;
 
-		static key(key: PackageCore.KeyCode, options: (object | null)): Self.WindowCloseStrategy.Handler;
+		static key(key: PackageCore.KeyCode, options: (object | null)): Self.Window.CloseStrategyHandler;
 
-		static escape(): Self.WindowCloseStrategy.Handler;
+		static escape(): Self.Window.CloseStrategyHandler;
 
-		static none(): Self.WindowCloseStrategy.Handler;
+		static none(): Self.Window.CloseStrategyHandler;
 
-		static anyOf(strategies: globalThis.Array<Self.WindowCloseStrategy.Handler>): Self.WindowCloseStrategy.Handler;
+		static anyOf(strategies: globalThis.Array<Self.Window.CloseStrategyHandler>): Self.Window.CloseStrategyHandler;
 
-		static custom(options: object): Self.WindowCloseStrategy.Handler;
+		static custom(options: object): Self.Window.CloseStrategyHandler;
 
-		static default(options: object): Self.WindowCloseStrategy.Handler;
+		static default(options: object): Self.Window.CloseStrategyHandler;
 
-		static popover(component: (PackageCore.Component | null), options: (object | null)): Self.WindowCloseStrategy.Handler;
+		static popover(component?: PackageCore.Component, options?: object): Self.Window.CloseStrategyHandler;
 
-		static focusedOrOver(component: (PackageCore.Component | null), options?: object): Self.WindowCloseStrategy.Handler;
+		static focusedOrOver(component: (PackageCore.Component | null), options?: object): Self.Window.CloseStrategyHandler;
 
 	}
 
 	export namespace WindowCloseStrategy {
-		type Handler = (window: Self.Window) => PackageCore.RoutedMessage.Filter;
-
 	}
 
 	class WindowDragger {
@@ -18827,9 +19679,9 @@ declare module '@uif-js/component' {
 
 		draggable: boolean;
 
-		setTitle(title: (string | number | PackageCore.Translation)): void;
+		onButton: Self.WindowTitleBar.ButtonCallback;
 
-		static Event: Self.WindowTitleBar.EventTypes;
+		onMove: Self.WindowTitleBar.MoveCallback;
 
 	}
 
@@ -18845,16 +19697,20 @@ declare module '@uif-js/component' {
 
 			draggable?: boolean;
 
-		}
+			onButton?: Self.WindowTitleBar.ButtonCallback;
 
-		interface EventTypes extends PackageCore.Component.EventTypes {
-			ICON_CLICKED: string;
-
-			BUTTON_CLICKED: string;
-
-			MOVE: string;
+			onMove?: Self.WindowTitleBar.MoveCallback;
 
 		}
+
+		type ButtonCallback = (args: Self.WindowTitleBar.ButtonCallbackArgs) => void;
+
+		interface ButtonCallbackArgs {
+			button: Self.WindowTitleBar.Button;
+
+		}
+
+		type MoveCallback = (coordinates: PackageCore.PointerMessage.Coordinates) => void;
 
 		enum VisualStyle {
 			DEFAULT,
