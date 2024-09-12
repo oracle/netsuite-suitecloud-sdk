@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.1
+
+- Fix for GitHub issue 841
+- Fix for privatekeypath
+
 ## 2.0.0
 
 - Upgrade to OAuth 2.0 authorization protocol
