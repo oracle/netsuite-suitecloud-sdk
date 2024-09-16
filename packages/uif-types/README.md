@@ -1,4 +1,4 @@
-<p align="left"><a href="#"><img width="250" src="resources/netsuite_logo_simplified.png"></a></p>
+<p align="left"><a href="#"><img width="250" src="netsuite_logo_simplified.png"></a></p>
 
 # NetSuite UI Framework TypeScript Type Declarations
 This package provides TypeScript type declarations for the NetSuite UI Framework (UIF). Type declarations describe the
