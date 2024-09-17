@@ -19,9 +19,6 @@
 		"url": "git+https://github.com/oracle/netsuite-suitecloud-sdk.git",
 		"directory": "packages/vscode-extension"
 	},
-	"files": [
-		"**/*.vsix"
-	],
 	"engines": {
 		"vscode": "^1.91.1"
 	},

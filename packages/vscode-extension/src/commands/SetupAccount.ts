@@ -302,7 +302,7 @@ export default class SetupAccount extends BaseAction {
 			authid: authId,
 			account: accountId,
 			certificateid: certificateId,
-			privatekeypath: privateKeyFilePath[0].fsPath,
+			privatekeypath: `"${privateKeyFilePath[0].fsPath}"`,
 			domain: url,
 		};
 
