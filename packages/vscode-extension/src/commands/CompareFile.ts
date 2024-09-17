@@ -14,7 +14,6 @@ import { actionResultStatus, ApplicationConstants, ProjectInfoService } from '..
 import FileImportCommon from './FileImportCommon';
 
 export default class CompareFile extends FileImportCommon {
-	private static readonly ACCOUNT_COPY_BASE_NAME = 'accountCopy';
 	private static readonly COMMAND_NAME = 'comparefile';
 	private static readonly SCHEME = 'suitecloud';
 	private static readonly TEMP_FOLDER_PREFIX = 'suitecloud-vscode-extension-compare-file-';
@@ -47,25 +46,26 @@ export default class CompareFile extends FileImportCommon {
 
 	protected async execute() {
 		const activeFilePath = this.activeFile!;
-		const tempFolderPath = fs.mkdtempSync(path.join(os.tmpdir(), CompareFile.TEMP_FOLDER_PREFIX));
-
-		this.copyManifestFileToTempFolder(tempFolderPath);
-		this.copyProjectJsonToTempFolder(tempFolderPath);
+		// create temp project folder to import file to be compared
+		const tempProjectFolderPath = fs.mkdtempSync(path.join(os.tmpdir(), CompareFile.TEMP_FOLDER_PREFIX));
+		// temp project prepartion to import file
+		this.copyManifestFileToTempFolder(tempProjectFolderPath);
+		this.copyProjectJsonToTempFolder(tempProjectFolderPath);
 		const activeFileRelativePath = activeFilePath.split(this.getFileCabinetFolderPath())[1]?.replace(/\\/g, '/');
-		const importFilePath = this.getImportFilePath(tempFolderPath, activeFilePath, activeFileRelativePath);
+		const importFilePath = this.getImportFilePath(tempProjectFolderPath, activeFilePath, activeFileRelativePath);
 
-		const selectedFilesPaths = [];
-		selectedFilesPaths.push(activeFileRelativePath);
-
-		const commandArgs = {
-			paths: selectedFilesPaths,
+		// file:import args preparation and trigger
+		const fileImportArgs = {
+			paths: [activeFileRelativePath],
 			excludeproperties: 'true',
 			calledfromcomparefiles: 'true',
 		};
-
-		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, tempFolderPath);
+		const commandActionPromise = this.runSuiteCloudCommand(fileImportArgs, tempProjectFolderPath);
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(COMPARE_FILE.COMPARING_FILE), true, commandActionPromise);
+		
+		// file:import result
 		const actionResult = await commandActionPromise;
+		
 		if (actionResult.status === actionResultStatus.SUCCESS && actionResult.data) {
 			if (actionResult.data.results[0].loaded) {
 				vscode.commands.executeCommand(
@@ -89,14 +89,13 @@ export default class CompareFile extends FileImportCommon {
 
 	private getImportedFileUri(importFilePath: string): Uri {
 		const scheme = CompareFile.SCHEME;
-		const provider = new (class implements vscode.TextDocumentContentProvider {
+		const provider = new class implements vscode.TextDocumentContentProvider {
 			provideTextDocumentContent(uri: vscode.Uri): string {
-				return fs.readFileSync(importFilePath, 'utf-8');
+				return fs.readFileSync(uri.fsPath, 'utf-8');
 			}
-		})();
+		};
 		vscode.workspace.registerTextDocumentContentProvider(scheme, provider);
-		const accountCopyExtension = path.extname(importFilePath);
-		const schemeUri = `${scheme}: ${CompareFile.ACCOUNT_COPY_BASE_NAME}.${accountCopyExtension}`;
+		const schemeUri = `${scheme}:${importFilePath}`;
 		return vscode.Uri.parse(schemeUri);
 	}
 
