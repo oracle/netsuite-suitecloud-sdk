@@ -19,12 +19,14 @@ The following software is required to work with SuiteCloud CLI for Node.js:
 Read the full list of prerequisites in [SuiteCloud CLI for Node.js Installation Prerequisites](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558708810.html).
 
 ## Supported Versions
-You should use the latest version of the SuiteCloud CLI for Node.js available in NPM. The table below is informative and correlates CLI versions in NPM and NetSuite versions.
+To ensure that you get the latest features and bug fixes, you should use the latest version of the SuiteCloud CLI for Node.js available in NPM. 
 
-| Version in NPM | Version in NetSuite |
-|:--------------:|:-------------------:|
-| 2.0.0  | 2024.2  |
-| 1.9.X  | 2024.1  |
+The following table shows the CLI versions currently available in NPM.
+
+| CLI Versions Available in NPM | Available Since | Compatible NetSuite Version |
+|:-----------------------------:|:---------------:|:---------------------------:|
+| 2.0.X | 2024.2 | 2024.1 and 2024.2 |
+| 1.9.X | 2024.1 | 2024.1 and 2024.2 |
 
 ## Installation
 Since CLI for Node.js is a development tool, use a global instance to install it by running the following command:
