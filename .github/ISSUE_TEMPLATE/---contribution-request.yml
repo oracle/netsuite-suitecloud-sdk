@@ -8,14 +8,6 @@ body:
         
         ---
   - type: input
-    id: contributor-name
-    attributes:
-      label: Contributor Name
-      description: Please provide your full name or the name you would like us to use.
-      placeholder: "Your Name"
-    validations:
-      required: false
-  - type: input
     id: contact-email
     attributes:
       label: Contact Email
