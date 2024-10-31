@@ -1,0 +1,66 @@
+name: Contribution Request
+description: Request for contributing to the repository
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your interest in contributing to our project! To proceed with your contribution request, please fill out the details below. This will help us better understand your proposal and provide you with the necessary guidance.
+        
+        ---
+  - type: input
+    id: contact-email
+    attributes:
+      label: Contact Email
+      description: Your email address for us to reach out, if needed.
+      placeholder: "you@example.com"
+    validations:
+      required: false
+  - type: dropdown
+    id: contribution-type
+    attributes:
+      label: Type of Contribution
+      options:
+        - Bug Fix
+        - Feature Request
+        - Documentation Improvement
+        - Code Enhancement
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product
+      description: Select the product for which you want to make a contribution.
+      options:
+        - SuiteCloud CLI
+        - SuiteCloud Extension for VSCode
+        - SuiteCloud Unit Testing
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: contribution-description
+    attributes:
+      label: Contribution Description
+      description: Please describe the contribution you would like to make.
+      placeholder: "Describe your idea or proposal in detail."
+    validations:
+      required: true
+  - type: input
+    id: prerequisites-acknowledgment
+    attributes:
+      label: Prerequisites
+      description: |
+        Please confirm that you have reviewed our contributing guidelines and registered in the Oracle system for contributions.
+      placeholder: "Yes, I have completed the prerequisites."
+    validations:
+      required: true
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional Information
+      description: |
+        Any additional information or context you'd like to share regarding your contribution request. You can also include links to relevant resources or documentation.
+    validations:
+      required: false
