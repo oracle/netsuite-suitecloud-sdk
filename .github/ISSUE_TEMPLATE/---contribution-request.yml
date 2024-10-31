@@ -14,7 +14,7 @@ body:
       description: Please provide your full name or the name you would like us to use.
       placeholder: "Your Name"
     validations:
-      required: true
+      required: false
   - type: input
     id: contact-email
     attributes:
@@ -22,7 +22,7 @@ body:
       description: Your email address for us to reach out, if needed.
       placeholder: "you@example.com"
     validations:
-      required: true
+      required: false
   - type: dropdown
     id: contribution-type
     attributes:
