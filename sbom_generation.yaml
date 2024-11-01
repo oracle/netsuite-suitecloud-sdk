@@ -18,7 +18,7 @@ steps:
   - type: Command
     name: "Install node-cli & unit-testing packages"
     command: |
-      npm install --ignore-scripts
+      rm package-lock.json && npm install --ignore-scripts
   - type: Command
     name: "Install cyclonedx globally"
     command: |
@@ -31,7 +31,7 @@ steps:
   - type: Command
     name: "Install vscode extension package"
     command: |
-      cd packages/vscode-extension && npm install --ignore-scripts
+      cd packages/vscode-extension && rm package-lock.json && npm install --ignore-scripts
   - type: Command
     name: "Run cyclonedx for vscode-extension package"
     command: |
