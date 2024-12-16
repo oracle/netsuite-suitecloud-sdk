@@ -185,6 +185,7 @@
 	"COMMAND_SETUPACCOUNT_QUESTIONS_CHOICES_SELECT_AUTHID_EXISTING_AUTH_ID_URL_NOT_PRODUCTION": "| {0}",
 	"COMMAND_SETUPACCOUNT_QUESTIONS_URL": "Enter your NetSuite domain:",
 	"COMMAND_SETUPACCOUNT_MESSAGES_CANCEL_SETUP": "The setupaccount process has been canceled.",
+	"COMMAND_SETUPACCOUNT_MESSAGES_ROTATE_PASSWORD_WARNING": "Authentication is currently using the credentials key in fallback mode. If you choose to continue using fallback mode, you should update the key regularly, ideally every week.",
 	"COMMAND_SETUPACCOUNT_MESSAGES_SELECT_CONFIGURED_AUTHID": "Select a configured authentication ID:",
 	"COMMAND_SETUPACCOUNT_OUTPUT_NEW_OAUTH": "The account has been authenticated for the following company and role: {0} [{1}]. This project will use the authentication ID \"{2}\" as default. If you want to change your default credentials, run \"suitecloud account:setup\" again.",
 	"COMMAND_SETUPACCOUNT_OUTPUT_REUSED_AUTH_ID": "This project will use the authentication ID \"{0}\" as default for the following company and role: {1} [{2}]. If you want to change your default credentials, run \"suitecloud account:setup\" again.",

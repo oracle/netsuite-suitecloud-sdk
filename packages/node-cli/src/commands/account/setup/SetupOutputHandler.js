@@ -7,7 +7,7 @@ const BaseOutputHandler = require('../../base/BaseOutputHandler');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 
 const {
-	COMMAND_SETUPACCOUNT: { OUTPUT },
+	COMMAND_SETUPACCOUNT: { MESSAGES, OUTPUT },
 	UTILS: { AUTHENTICATION },
 } = require('../../../services/TranslationKeys');
 
@@ -47,6 +47,11 @@ module.exports = class SetupOutputHandler extends BaseOutputHandler {
 
 		this._log.result(resultMessage);
 		this._log.result(NodeTranslationService.getMessage(AUTHENTICATION.SUCCESS_SETUP));
+
+		if (actionResult.isSuccess() && process.env.SUITECLOUD_FALLBACK_PASSKEY) {
+			this._log.warning(NodeTranslationService.getMessage(MESSAGES.ROTATE_PASSWORD_WARNING));
+		}
+
 		return actionResult;
 	}
 };
