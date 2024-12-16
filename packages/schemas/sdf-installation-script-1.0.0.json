@@ -1,0 +1,62 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPSDF-9727-json-schemas/packages/schemas/sdf-installation-script-1.0.0.json",
+	"title": "SDF Installation",
+	"description": "SDF Installation Schema Definition",
+	"type": "object",
+	"properties": {
+		"SdfInstallationScript": {
+			"$ref": "#/$defs/sdfInstallationScriptProperties"
+		}
+	},
+	"required": [
+		"SdfInstallationScript"
+	],
+	"additionalProperties": false,
+	"$defs": {
+		"sdfInstallationScriptProperties": {
+			"type": "object",
+			"properties": {
+				"description": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"isInactive": {
+					"enum": ["T", "F", true, false]
+				},
+				"name": {
+					"type": "string",
+					"maxLength": 40
+				},
+				"notifyAdmins": {
+					"enum": ["T", "F", true, false]
+				},
+				"notifyEmails": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"notifyOwner": {
+					"enum": ["T", "F", true, false]
+				},
+				"notifyUser": {
+					"enum": ["T", "F", true, false]
+				},
+				"scriptFile": {
+					"type": "string",
+					"pattern": ".*\\.js]$"
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 40,
+					"pattern": "^customscript.*$"
+				}
+			},
+			"required": [
+				"name",
+				"scriptFile",
+				"@scriptId"
+			],
+			"additionalProperties": false
+		}
+	}
+}

@@ -1,0 +1,103 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPSDF-9727-json-schemas/packages/schemas/integration-1.0.0.json",
+	"title": "Integration Record",
+	"description": "Integration Record Schema Definition",
+	"type": "object",
+	"properties": {
+		"Integration": {
+			"$ref": "#/$defs/integrationProperties"
+		}
+	},
+	"required": [
+		"Integration"
+	],
+	"additionalProperties": false,
+	"$defs": {
+		"integrationProperties": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"applicationId": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"authenticationFlowType": {
+					"type": "string"
+				},
+				"refreshTokenExpiration": {
+					"type": "integer"
+				},
+				"refreshTokenRotationPeriod": {
+					"type": "integer"
+				},
+				"promptPolicy": {
+					"type": "string"
+				},
+				"redirectUris": {
+					"type": "object",
+					"properties": {
+						"redirectUri": {
+							"type": "array",
+							"items": { "$ref": "#/$defs/redirectUriProperties" }
+						}
+					},
+					"additionalProperties":false
+				},
+				"acgCertificates": {
+					"type": "object",
+					"properties": {
+						"acgCertificate": {
+							"type": "array",
+							"items": { "$ref": "#/$defs/acgCertificateProperties" }
+						}
+					},
+					"additionalProperties":false
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 99,
+					"pattern": "^custinteg.*$"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"name",
+				"authenticationFlowType",
+				"@scriptId"
+			]
+		},
+		"redirectUriProperties":{
+			"type": "object",
+			"properties": {
+				"value": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"value"
+			],
+			"additionalProperties": false
+		},
+		"acgCertificateProperties":{
+			"type": "object",
+			"properties": {
+				"certificate": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"certificate",
+				"name"
+			],
+			"additionalProperties": false
+		}
+	}
+}

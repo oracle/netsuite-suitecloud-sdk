@@ -1,0 +1,47 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPSDF-9727-json-schemas/packages/schemas/suite-cloud-ui-app-1.0.0.json",
+	"title": "SuiteCloud UI App",
+	"description": "SuiteCloud UI App Schema Definition",
+	"type": "object",
+	"properties": {
+		"SuiteCloudUiApp": {
+			"$ref": "#/$defs/suiteCloudUiAppProperties"
+		}
+	},
+	"required": [
+		"SuiteCloudUiApp"
+	],
+	"additionalProperties": false,
+	"$defs": {
+		"suiteCloudUiAppProperties": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"maxLength": 100
+				},
+				"version": {
+					"type": "string",
+					"maxLength": 100
+				},
+				"url": {
+					"type": "string",
+					"maxLength": 100
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 99,
+					"pattern": "^custuiapp.*$"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"name",
+				"version",
+				"url",
+				"@scriptId"
+			]
+		}
+	}
+}

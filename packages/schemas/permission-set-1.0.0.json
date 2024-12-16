@@ -1,0 +1,67 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPSDF-9727-json-schemas/packages/schemas/permission-set-1.0.0.json",
+	"title": "Permission Set",
+	"description": "Permission Set Schema Definition",
+	"type": "object",
+	"properties": {
+		"PermissionSet": {
+			"$ref": "#/$defs/permissionSetProperties"
+		}
+	},
+	"required": [
+		"PermissionSet"
+	],
+	"additionalProperties": false,
+	"$defs": {
+		"permissionSetProperties": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"maxLength": 128
+				},
+				"description": {
+					"type": "string",
+					"maxLength": 1000
+				},
+				"recordTypePermissionAssignments": {
+					"type": "object",
+					"properties": {
+						"recordTypePermissionAssignment": {
+							"type": "array",
+							"items": { "$ref": "#/$defs/recordTypePermissionAssignmentProperties" }
+						}
+					},
+					"additionalProperties":false
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 128,
+					"pattern": "^caf_.*$"
+				}
+			},
+			"required": [
+				"name",
+				"@scriptId"
+			],
+			"additionalProperties": false
+		},
+		"recordTypePermissionAssignmentProperties":{
+			"type": "object",
+			"properties": {
+				"permissibleRecordType": {
+					"type": "string"
+				},
+				"accessMode": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"permissibleRecordType",
+				"accessMode"
+			],
+			"additionalProperties": false
+		}
+	}
+}

@@ -1,0 +1,77 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPSDF-9727-json-schemas/packages/schemas/dataset-builder-plugin-1.0.0.json",
+	"title": "Dataset Builder Plugin",
+	"description": "Dataset Builder Plugin Schema Definition",
+	"type": "object",
+	"properties": {
+		"DatasetBuilderPlugin": {
+			"$ref": "#/$defs/datasetBuilderPluginProperties"
+		}
+	},
+	"required": [
+		"DatasetBuilderPlugin"
+	],
+	"additionalProperties": false,
+	"$defs": {
+		"datasetBuilderPluginProperties": {
+			"type": "object",
+			"properties": {
+				"runtimeVersion": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"isInactive": {
+					"enum": ["T", "F", true, false]
+				},
+				"name": {
+					"type": "string",
+					"maxLength": 40
+				},
+				"notifyAdmins": {
+					"enum": ["T", "F", true, false]
+				},
+				"notifyEmails": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"notifyGroup": {
+					"type": "string"
+				},
+				"notifyOwner": {
+					"enum": ["T", "F", true, false]
+				},
+				"notifyUser": {
+					"enum": ["T", "F", true, false]
+				},
+				"owner": {
+					"type": "string"
+				},
+				"scriptFile": {
+					"type": "string",
+					"pattern": ".*\\.js]$"
+				},
+				"logLevel": {
+					"type": "string"
+				},
+				"status": {
+					"type": "string"
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 40,
+					"pattern": "^customscript.*$"
+				}
+			},
+			"required": [
+				"name",
+				"scriptFile",
+				"@scriptId"
+			],
+			"additionalProperties": false
+		}
+	}
+}

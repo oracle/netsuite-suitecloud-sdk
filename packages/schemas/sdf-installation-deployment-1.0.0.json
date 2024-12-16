@@ -1,0 +1,53 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPSDF-9727-json-schemas/packages/schemas/sdf-installation-deployment-1.0.0.json",
+	"title": "SDF Installation Deployment",
+	"description": "SDF Installation Deployment Schema Definition",
+	"type": "object",
+	"properties": {
+		"SdfInstallationDeployment": {
+			"$ref": "#/$defs/sdfInstallationDeploymentProperties"
+		}
+	},
+	"required": [
+		"SdfInstallationDeployment"
+	],
+	"additionalProperties": false,
+	"$defs": {
+		"sdfInstallationDeploymentProperties": {
+			"type": "object",
+			"properties": {
+				"isDeployed": {
+					"enum": ["T", "F", true, false]
+				},
+				"status": {
+					"type": "string"
+				},
+				"logLevel": {
+					"type": "string"
+				},
+				"permissionElevation": {
+					"type": "string"
+				},
+				"script": {
+					"type": "string"
+				},
+				"title": {
+					"type": "string"
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 40,
+					"pattern": "^customdeploy.*$"
+				}
+			},
+			"required": [
+				"status",
+				"script",
+				"title",
+				"@scriptId"
+			],
+			"additionalProperties": false
+		}
+	}
+}
