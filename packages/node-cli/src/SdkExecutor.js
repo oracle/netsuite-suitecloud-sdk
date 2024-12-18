@@ -8,6 +8,7 @@ const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
+	SDK_FILE_ENCODING,
 	SDK_REQUIRED_JAVA_VERSION,
 } = require('./ApplicationConstants');
 const path = require('path');
@@ -15,7 +16,6 @@ const FileUtils = require('./utils/FileUtils');
 const spawn = require('child_process').spawn;
 const CLISettingsService = require('./services/settings/CLISettingsService');
 const EnvironmentInformationService = require('./services/EnvironmentInformationService');
-const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
 const SdkErrorCodes = require('./SdkErrorCodes');
@@ -110,7 +110,7 @@ module.exports = class SdkExecutor {
 		}
 		const quotedSdkJarPath = `"${this._sdkPath}"`;
 
-		const vmOptions = `${integrationModeOption} ${clientPlatform} ${clientPlatformVersionOption} ${customVmOptions}`;
+		const vmOptions = `${integrationModeOption} ${clientPlatform} ${clientPlatformVersionOption} ${customVmOptions} ${SDK_FILE_ENCODING}`;
 		const jvmCommand = `java -jar ${vmOptions} ${quotedSdkJarPath} ${executionContext.getCommand()} ${cliParams}`;
 
 		return spawn(jvmCommand, [], { shell: true });
