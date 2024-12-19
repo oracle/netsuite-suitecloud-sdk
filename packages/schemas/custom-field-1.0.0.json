@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
-	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPSDF-9727-json-schemas/packages/schemas/custom-field-1.0.0.json",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/master/packages/schemas/custom-field-1.0.0.json",
 	"title": "Custom Field",
 	"description": "Custom Field Schema Definition",
 	"type": "object",
