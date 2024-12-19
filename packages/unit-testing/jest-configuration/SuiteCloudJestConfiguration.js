@@ -910,6 +910,7 @@ class SuiteCloudAdvancedJestConfiguration {
 		this.projectFolder = this._getProjectFolder(options.projectFolder);
 		this.projectType = options.projectType;
 		this.customStubs = options.customStubs;
+		this.rootDir = options.rootDir;
 		if (this.customStubs == null) {
 			this.customStubs = [];
 		}
@@ -942,8 +943,10 @@ class SuiteCloudAdvancedJestConfiguration {
 
 	_generateStubsModuleNameMapperEntries() {
 		const stubs = {};
+		const rootDirPrefix = this.rootDir ? this.rootDir : '<rootDir>';
+		
 		const forEachFn = (stub) => {
-			stubs[`^${stub.module}$`] = stub.path;
+			stubs[`^${stub.module}$`] = stub.path.replace('<rootDir>', rootDirPrefix);
 		};
 		CORE_STUBS.forEach(forEachFn);
 		this.customStubs.forEach(forEachFn);
@@ -956,13 +959,20 @@ class SuiteCloudAdvancedJestConfiguration {
 		suiteScriptsFolder[SUITESCRIPT_FOLDER_REGEX] = this._getSuiteScriptFolderPath();
 
 		const customizedModuleNameMapper = Object.assign({}, this._generateStubsModuleNameMapperEntries(), suiteScriptsFolder);
-		return {
+		
+		const config = {
 			transformIgnorePatterns: [`/node_modules/(?!${nodeModulesToTransform})`],
 			transform: {
-				'^.+\\.js$': `<rootDir>/node_modules/${TESTING_FRAMEWORK_PATH}/jest-configuration/SuiteCloudJestTransformer.js`,
+				'^.+\\.js$': `${this.rootDir || '<rootDir>'}/node_modules/${TESTING_FRAMEWORK_PATH}/jest-configuration/SuiteCloudJestTransformer.js`,
 			},
 			moduleNameMapper: customizedModuleNameMapper,
 		};
+
+		if (this.rootDir) {
+			config.rootDir = this.rootDir;
+		}
+
+		return config;
 	}
 }
 
