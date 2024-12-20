@@ -94,7 +94,32 @@ module.exports = SuiteCloudJestConfiguration.build({
 });
 ```
 
->💡 The `rootDir` property is optional. If not specified, the root directory for Jest configuration will be the current working directory. If you are using a monorepo, you can specify a custom root directory for Jest configuration as `../..` and it will be able to find the `node_modules` folder from the root of the monorepo.
+>💡 The `rootDir` property is optional. If not specified, the root directory for Jest configuration will be the current working directory. If you are using a monorepo, you can specify a custom root directory for Jest configuration to help Jest find the `node_modules` folder.
+
+Here's how to configure `rootDir` in different project structures:
+
+```
+Standard Project Structure:
+└── my-netsuite-project/        👈 rootDir: "."
+    ├── node_modules/
+    ├── src/
+    ├── __tests__/
+    └── jest.config.js
+
+Monorepo Structure (e.g., Turborepo):
+└── monorepo/                   
+    ├── node_modules/           
+    ├── apps/
+    │   └── my-suiteapp/       👈 rootDir: "../.."
+    │       ├── src/
+    │       ├── __tests__/
+    │       └── jest.config.js
+    └── packages/
+        └── shared/            👈 rootDir: "../.."
+            ├── src/
+            ├── __tests__/
+            └── jest.config.js
+```
 
 ## SuiteCloud Unit Testing Examples
 
