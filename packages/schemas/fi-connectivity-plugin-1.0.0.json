@@ -52,7 +52,7 @@
 				},
 				"scriptFile": {
 					"type": "string",
-					"pattern": ".*\\.js]$"
+					"pattern": "^\\[.*\\.js\\]$"
 				},
 				"logLevel": {
 					"type": "string"

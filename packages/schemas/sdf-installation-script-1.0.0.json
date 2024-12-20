@@ -43,7 +43,7 @@
 				},
 				"scriptFile": {
 					"type": "string",
-					"pattern": ".*\\.js]$"
+					"pattern": "^\\[.*\\.js\\]$"
 				},
 				"@scriptId": {
 					"type": "string",
