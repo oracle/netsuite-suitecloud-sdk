@@ -77,9 +77,9 @@ The `jest.config.js` file must follow a specific structure. Depending on your Su
 const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
-  projectFolder: 'src', // or your SuiteCloud project folder
-  projectType: SuiteCloudJestConfiguration.ProjectType.ACP,
-  rootDir: '.', // optional: specify a custom root directory for Jest configuration
+    projectFolder: 'src', // or your SuiteCloud project folder
+    projectType: SuiteCloudJestConfiguration.ProjectType.ACP,
+    rootDir: '.' // optional: automatically detected in monorepos
 });
 ```
 
@@ -88,15 +88,21 @@ module.exports = SuiteCloudJestConfiguration.build({
 const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
-  projectFolder: 'src', // or your SuiteCloud project folder
-  projectType: SuiteCloudJestConfiguration.ProjectType.SUITEAPP,
-  rootDir: '.', // optional: specify a custom root directory for Jest configuration
+    projectFolder: 'src', // or your SuiteCloud project folder
+    projectType: SuiteCloudJestConfiguration.ProjectType.SUITEAPP,
+    rootDir: '.' // optional: automatically detected in monorepos
 });
 ```
 
->💡 The `rootDir` property is optional. If not specified, the root directory for Jest configuration will be the current working directory. If you are using a monorepo, you can specify a custom root directory for Jest configuration to help Jest find the `node_modules` folder.
+### Project Structure and Root Directory Configuration
 
-Here's how to configure `rootDir` in different project structures:
+The `rootDir` property is optional with enhanced workspace detection. The configuration automatically:
+- Detects common monorepo/workspace setups (pnpm, Yarn/npm workspaces, Lerna)
+- Defaults to current directory in standalone projects
+- Configures proper module resolution across workspaces
+- Scopes test execution to the current package directory
+
+Example project structures:
 
 ```
 Standard Project Structure:
@@ -106,20 +112,22 @@ Standard Project Structure:
     ├── __tests__/
     └── jest.config.js
 
-Monorepo Structure (e.g., Turborepo):
+Monorepo Structure:
 └── monorepo/                   
     ├── node_modules/           
-    ├── apps/
-    │   └── my-suiteapp/       👈 rootDir: "../.."
-    │       ├── src/
-    │       ├── __tests__/
-    │       └── jest.config.js
+    ├── package.json           # With workspaces configuration
     └── packages/
-        └── shared/            👈 rootDir: "../.."
+        └── my-suiteapp/       👈 rootDir automatically detected
             ├── src/
             ├── __tests__/
             └── jest.config.js
 ```
+
+When working in a monorepo:
+- Tests are automatically scoped to your current package directory
+- Module resolution is configured across the workspace
+- No manual rootDir configuration is required
+- Supports pnpm, Yarn/npm workspaces, and Lerna configurations
 
 ## SuiteCloud Unit Testing Examples
 
