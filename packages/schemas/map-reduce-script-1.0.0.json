@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"MapReduceScript": {
-			"$ref": "#/$defs/mapReduceScriptProperties"
-		}
-	},
-	"required": [
-		"MapReduceScript"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"mapReduceScriptProperties": {
 			"type": "object",
 			"properties": {
 				"runtimeVersion": {
@@ -64,5 +55,9 @@
 			],
 			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"MapReduceScript"
+	],
+	"additionalProperties": false
 }

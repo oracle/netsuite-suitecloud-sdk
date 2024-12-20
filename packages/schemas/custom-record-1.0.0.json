@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"CustomRecord": {
-			"$ref": "#/$defs/customRecordProperties"
-		}
-	},
-	"required": [
-		"CustomRecord"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"customRecordProperties": {
 			"type": "object",
 			"properties": {
 				"name": {
@@ -30,7 +21,25 @@
 					"properties": {
 						"line": {
 							"type": "array",
-							"items": { "$ref": "#/$defs/lineProperties" }
+							"items": {
+								"type": "object",
+								"properties": {
+									"field": {
+										"type": "string"
+									},
+									"direction": {
+										"type": "string"
+									},
+									"sequenceNumber": {
+										"type": "integer"
+									}
+								},
+								"required": [
+									"field",
+									"direction"
+								],
+								"additionalProperties":false
+							}
 						}
 					},
 					"additionalProperties":false
@@ -46,25 +55,10 @@
 				"name",
 				"@scriptId"
 			]
-		},
-		"lineProperties":{
-			"type": "object",
-			"properties": {
-				"field": {
-					"type": "string"
-				},
-				"direction": {
-					"type": "string"
-				},
-				"sequenceNumber": {
-					"type": "integer"
-				}
-			},
-			"required": [
-				"field",
-				"direction"
-			],
-			"additionalProperties":false
 		}
-	}
+	},
+	"required": [
+		"CustomRecord"
+	],
+	"additionalProperties": false
 }

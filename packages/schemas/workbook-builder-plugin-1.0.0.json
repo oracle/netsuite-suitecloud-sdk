@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"WorkbookBuilderPlugin": {
-			"$ref": "#/$defs/workbookBuilderPluginProperties"
-		}
-	},
-	"required": [
-		"WorkbookBuilderPlugin"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"workbookBuilderPluginProperties": {
 			"type": "object",
 			"properties": {
 				"runtimeVersion": {
@@ -73,5 +64,9 @@
 			],
 			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"WorkbookBuilderPlugin"
+	],
+	"additionalProperties": false
 }

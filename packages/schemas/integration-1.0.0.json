@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"Integration": {
-			"$ref": "#/$defs/integrationProperties"
-		}
-	},
-	"required": [
-		"Integration"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"integrationProperties": {
 			"type": "object",
 			"properties": {
 				"name": {
@@ -43,7 +34,18 @@
 					"properties": {
 						"redirectUri": {
 							"type": "array",
-							"items": { "$ref": "#/$defs/redirectUriProperties" }
+							"items": {
+								"type": "object",
+								"properties": {
+									"value": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"value"
+								],
+								"additionalProperties": false
+							}
 						}
 					},
 					"additionalProperties":false
@@ -53,7 +55,22 @@
 					"properties": {
 						"acgCertificate": {
 							"type": "array",
-							"items": { "$ref": "#/$defs/acgCertificateProperties" }
+							"items": {
+								"type": "object",
+								"properties": {
+									"certificate": {
+										"type": "string"
+									},
+									"name": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"certificate",
+									"name"
+								],
+								"additionalProperties": false
+							}
 						}
 					},
 					"additionalProperties":false
@@ -70,34 +87,10 @@
 				"authenticationFlowType",
 				"@scriptId"
 			]
-		},
-		"redirectUriProperties":{
-			"type": "object",
-			"properties": {
-				"value": {
-					"type": "string"
-				}
-			},
-			"required": [
-				"value"
-			],
-			"additionalProperties": false
-		},
-		"acgCertificateProperties":{
-			"type": "object",
-			"properties": {
-				"certificate": {
-					"type": "string"
-				},
-				"name": {
-					"type": "string"
-				}
-			},
-			"required": [
-				"certificate",
-				"name"
-			],
-			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"Integration"
+	],
+	"additionalProperties": false
 }

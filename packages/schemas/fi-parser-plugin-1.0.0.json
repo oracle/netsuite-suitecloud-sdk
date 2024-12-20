@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"FiParserPlugin": {
-			"$ref": "#/$defs/fiParserPluginProperties"
-		}
-	},
-	"required": [
-		"FiParserPlugin"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"fiParserPluginProperties": {
 			"type": "object",
 			"properties": {
 				"runtimeVersion": {
@@ -73,5 +64,9 @@
 			],
 			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"FiParserPlugin"
+	],
+	"additionalProperties": false
 }

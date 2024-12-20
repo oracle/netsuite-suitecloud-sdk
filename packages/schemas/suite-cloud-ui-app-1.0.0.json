@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"SuiteCloudUiApp": {
-			"$ref": "#/$defs/suiteCloudUiAppProperties"
-		}
-	},
-	"required": [
-		"SuiteCloudUiApp"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"suiteCloudUiAppProperties": {
 			"type": "object",
 			"properties": {
 				"name": {
@@ -35,13 +26,17 @@
 					"pattern": "^custuiapp.*$"
 				}
 			},
-			"additionalProperties": false,
 			"required": [
 				"name",
 				"version",
 				"url",
 				"@scriptId"
-			]
+			],
+			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"SuiteCloudUiApp"
+	],
+	"additionalProperties": false
 }

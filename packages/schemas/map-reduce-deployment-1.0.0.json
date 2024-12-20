@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"MapReduceDeployment": {
-			"$ref": "#/$defs/mapReduceDeploymentProperties"
-		}
-	},
-	"required": [
-		"MapReduceDeployment"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"mapReduceDeploymentProperties": {
 			"type": "object",
 			"properties": {
 				"isDeployed": {
@@ -35,7 +26,7 @@
 				"period": {
 					"type": "integer",
 					"minimum": 1,
-   					"maximum": 1000
+					"maximum": 1000
 				},
 				"startDate": {
 					"type": "string"
@@ -119,5 +110,9 @@
 			],
 			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"MapReduceDeployment"
+	],
+	"additionalProperties": false
 }

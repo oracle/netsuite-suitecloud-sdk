@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"DatasetBuilderPlugin": {
-			"$ref": "#/$defs/datasetBuilderPluginProperties"
-		}
-	},
-	"required": [
-		"DatasetBuilderPlugin"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"datasetBuilderPluginProperties": {
 			"type": "object",
 			"properties": {
 				"runtimeVersion": {
@@ -73,5 +64,9 @@
 			],
 			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"DatasetBuilderPlugin"
+	],
+	"additionalProperties": false
 }

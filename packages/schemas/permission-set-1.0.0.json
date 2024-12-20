@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"PermissionSet": {
-			"$ref": "#/$defs/permissionSetProperties"
-		}
-	},
-	"required": [
-		"PermissionSet"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"permissionSetProperties": {
 			"type": "object",
 			"properties": {
 				"name": {
@@ -30,7 +21,22 @@
 					"properties": {
 						"recordTypePermissionAssignment": {
 							"type": "array",
-							"items": { "$ref": "#/$defs/recordTypePermissionAssignmentProperties" }
+							"items": {
+								"type": "object",
+								"properties": {
+									"permissibleRecordType": {
+										"type": "string"
+									},
+									"accessMode": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"permissibleRecordType",
+									"accessMode"
+								],
+								"additionalProperties": false
+							}
 						}
 					},
 					"additionalProperties":false
@@ -46,22 +52,10 @@
 				"@scriptId"
 			],
 			"additionalProperties": false
-		},
-		"recordTypePermissionAssignmentProperties":{
-			"type": "object",
-			"properties": {
-				"permissibleRecordType": {
-					"type": "string"
-				},
-				"accessMode": {
-					"type": "string"
-				}
-			},
-			"required": [
-				"permissibleRecordType",
-				"accessMode"
-			],
-			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"PermissionSet"
+	],
+	"additionalProperties": false
 }

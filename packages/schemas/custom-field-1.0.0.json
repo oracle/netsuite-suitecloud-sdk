@@ -45,20 +45,6 @@
 					"additionalProperties":false
 				}
 			},
-			"if": {
-				"properties": {
-					"fieldType": {
-						"const": "SELECT"
-					}
-				}
-			},
-			"then": {
-				"properties": {
-					"required": [
-						"selectRecordType"
-					]
-				}
-			},
 			"required": [
 				"label",
 				"fieldType",

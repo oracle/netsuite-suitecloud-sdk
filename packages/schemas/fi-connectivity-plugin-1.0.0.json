@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"FiConnectivityPlugin": {
-			"$ref": "#/$defs/fiConnectivityPluginProperties"
-		}
-	},
-	"required": [
-		"FiConnectivityPlugin"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"fiConnectivityPluginProperties": {
 			"type": "object",
 			"properties": {
 				"runtimeVersion": {
@@ -73,5 +64,9 @@
 			],
 			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"FiConnectivityPlugin"
+	],
+	"additionalProperties": false
 }
