@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"SdfInstallationScript": {
-			"$ref": "#/$defs/sdfInstallationScriptProperties"
-		}
-	},
-	"required": [
-		"SdfInstallationScript"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"sdfInstallationScriptProperties": {
 			"type": "object",
 			"properties": {
 				"description": {
@@ -58,5 +49,9 @@
 			],
 			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"SdfInstallationScript"
+	],
+	"additionalProperties": false
 }
