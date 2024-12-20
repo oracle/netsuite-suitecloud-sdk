@@ -6,15 +6,6 @@
 	"type": "object",
 	"properties": {
 		"CustomField": {
-			"$ref": "#/$defs/customFieldProperties"
-		}
-	},
-	"required": [
-		"CustomField"
-	],
-	"additionalProperties": false,
-	"$defs": {
-		"customFieldProperties": {
 			"type": "object",
 			"properties": {
 				"label": {
@@ -30,28 +21,30 @@
 				"segment": {
 					"type": "boolean"
 				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 30,
+					"pattern": "^f_.*$"
+				},
 				"applications": {
 					"type": "object",
 					"properties": {
 						"application": {
 							"type": "array",
-							"items": { "$ref": "#/$defs/applicationProperties" }
+							"items": {
+								"type": "object",
+								"properties": {
+									"recordType": {
+										"type": "string"
+									}
+								},
+								"additionalProperties":false
+							}
 						}
 					},
 					"additionalProperties":false
-				},
-				"@scriptId": {
-					"type": "string",
-					"maxLength": 30,
-					"pattern": "^f_.*$"
 				}
 			},
-			"required": [
-				"label",
-				"fieldType",
-				"@scriptId"
-			],
-			"additionalProperties": false,
 			"if": {
 				"properties": {
 					"fieldType": {
@@ -65,16 +58,17 @@
 						"selectRecordType"
 					]
 				}
-			}
-		},
-		"applicationProperties":{
-			"type": "object",
-			"properties": {
-				"recordType": {
-					"type": "string"
-				}
 			},
-			"additionalProperties":false
+			"required": [
+				"label",
+				"fieldType",
+				"@scriptId"
+			],
+			"additionalProperties": false
 		}
-	}
+	},
+	"required": [
+		"CustomField"
+	],
+	"additionalProperties": false
 }
