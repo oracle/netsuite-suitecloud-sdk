@@ -22,24 +22,24 @@
 					"maxLength": 999
 				},
 				"isInactive": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"name": {
 					"type": "string",
 					"maxLength": 40
 				},
 				"notifyAdmins": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"notifyEmails": {
 					"type": "string",
 					"maxLength": 999
 				},
 				"notifyOwner": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"notifyUser": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"scriptFile": {
 					"type": "string",

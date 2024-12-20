@@ -18,7 +18,7 @@
 			"type": "object",
 			"properties": {
 				"isDeployed": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"status": {
 					"type": "string"
@@ -50,25 +50,25 @@
 					"type": "string"
 				},
 				"monday": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"tuesday": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"wednesday": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"thursday": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"friday": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"saturday": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"sunday": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"dayOfWeek": {
 					"type": "string"
@@ -83,7 +83,7 @@
 					"type": "string"
 				},
 				"noEndDate": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"script": {
 					"type": "string"
@@ -98,7 +98,7 @@
 					"type": "string"
 				},
 				"queueAllStagesAtOnce": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"yieldAfterMins": {
 					"type": "string"

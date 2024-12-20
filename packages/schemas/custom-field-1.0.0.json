@@ -28,7 +28,7 @@
 					"type": "string"
 				},
 				"segment": {
-					"enum": ["T", "F", true, false]
+					"type": "boolean"
 				},
 				"applications": {
 					"type": "object",
