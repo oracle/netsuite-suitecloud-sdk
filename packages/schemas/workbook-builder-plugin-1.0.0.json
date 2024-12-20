@@ -1,0 +1,72 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/master/packages/schemas/workbook-builder-plugin-1.0.0.json",
+	"title": "Workbook Builder Plugin",
+	"description": "Workbook Builder Plugin Schema Definition",
+	"type": "object",
+	"properties": {
+		"WorkbookBuilderPlugin": {
+			"type": "object",
+			"properties": {
+				"runtimeVersion": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"isInactive": {
+					"type": "boolean"
+				},
+				"name": {
+					"type": "string",
+					"maxLength": 40
+				},
+				"notifyAdmins": {
+					"type": "boolean"
+				},
+				"notifyEmails": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"notifyGroup": {
+					"type": "string"
+				},
+				"notifyOwner": {
+					"type": "boolean"
+				},
+				"notifyUser": {
+					"type": "boolean"
+				},
+				"owner": {
+					"type": "string"
+				},
+				"scriptFile": {
+					"type": "string",
+					"pattern": "^\\[.*\\.js\\]$"
+				},
+				"logLevel": {
+					"type": "string"
+				},
+				"status": {
+					"type": "string"
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 40,
+					"pattern": "^customscript.*$"
+				}
+			},
+			"required": [
+				"name",
+				"scriptFile",
+				"@scriptId"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"WorkbookBuilderPlugin"
+	],
+	"additionalProperties": false
+}

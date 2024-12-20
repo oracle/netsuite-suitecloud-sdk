@@ -1,0 +1,118 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/master/packages/schemas/map-reduce-deployment-1.0.0.json",
+	"title": "Map Reduce Deployment",
+	"description": "Map Reduce Deployment Schema Definition",
+	"type": "object",
+	"properties": {
+		"MapReduceDeployment": {
+			"type": "object",
+			"properties": {
+				"isDeployed": {
+					"type": "boolean"
+				},
+				"status": {
+					"type": "string"
+				},
+				"logLevel": {
+					"type": "string"
+				},
+				"permissionElevation": {
+					"type": "string"
+				},
+				"frequency": {
+					"type": "string"
+				},
+				"period": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 1000
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"startTime": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"repeat": {
+					"type": "string"
+				},
+				"monday": {
+					"type": "boolean"
+				},
+				"tuesday": {
+					"type": "boolean"
+				},
+				"wednesday": {
+					"type": "boolean"
+				},
+				"thursday": {
+					"type": "boolean"
+				},
+				"friday": {
+					"type": "boolean"
+				},
+				"saturday": {
+					"type": "boolean"
+				},
+				"sunday": {
+					"type": "boolean"
+				},
+				"dayOfWeek": {
+					"type": "string"
+				},
+				"orderOfWeekInMonth": {
+					"type": "string"
+				},
+				"dayOfMonth": {
+					"type": "string"
+				},
+				"monthOfYear": {
+					"type": "string"
+				},
+				"noEndDate": {
+					"type": "boolean"
+				},
+				"script": {
+					"type": "string"
+				},
+				"title": {
+					"type": "string"
+				},
+				"bufferSize": {
+					"type": "string"
+				},
+				"concurrencyLimit": {
+					"type": "string"
+				},
+				"queueAllStagesAtOnce": {
+					"type": "boolean"
+				},
+				"yieldAfterMins": {
+					"type": "string"
+				},
+				"priority": {
+					"type": "string"
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 40,
+					"pattern": "^customdeploy.*$"
+				}
+			},
+			"required": [
+				"status",
+				"script",
+				"@scriptId"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"MapReduceDeployment"
+	],
+	"additionalProperties": false
+}
