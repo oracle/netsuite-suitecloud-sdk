@@ -45,6 +45,16 @@
 					"additionalProperties":false
 				}
 			},
+			"if": {
+				"properties": {
+					"fieldType": {
+						"enum": ["SELECT"]
+					}
+				}
+			},
+			"then": {
+				"required": ["selectRecordType"]
+			},
 			"required": [
 				"label",
 				"fieldType",
