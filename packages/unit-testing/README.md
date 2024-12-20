@@ -77,8 +77,9 @@ The `jest.config.js` file must follow a specific structure. Depending on your Su
 const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
-  projectFolder: 'src', //or your SuiteCloud project folder
+  projectFolder: 'src', // or your SuiteCloud project folder
   projectType: SuiteCloudJestConfiguration.ProjectType.ACP,
+  rootDir: '.', // optional: specify a custom root directory for Jest configuration
 });
 ```
 
@@ -87,10 +88,13 @@ module.exports = SuiteCloudJestConfiguration.build({
 const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jest-configuration/SuiteCloudJestConfiguration");
 
 module.exports = SuiteCloudJestConfiguration.build({
-  projectFolder: 'src', //or your SuiteCloud project folder
+  projectFolder: 'src', // or your SuiteCloud project folder
   projectType: SuiteCloudJestConfiguration.ProjectType.SUITEAPP,
+  rootDir: '.', // optional: specify a custom root directory for Jest configuration
 });
 ```
+
+>💡 The `rootDir` property is optional. If not specified, the root directory for Jest configuration will be the current working directory. If you are using a monorepo, you can specify a custom root directory for Jest configuration as `../..` and it will be able to find the `node_modules` folder from the root of the monorepo.
 
 ## SuiteCloud Unit Testing Examples
 
@@ -133,6 +137,7 @@ const SuiteCloudJestConfiguration = require("@oracle/suitecloud-unit-testing/jes
 module.exports = SuiteCloudJestConfiguration.build({
 	projectFolder: 'src',
 	projectType: SuiteCloudJestConfiguration.ProjectType.ACP,
+	rootDir: '.'
 });
 ```
 
