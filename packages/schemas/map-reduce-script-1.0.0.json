@@ -1,0 +1,63 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/master/packages/schemas/map-reduce-script-1.0.0.json",
+	"title": "Map Reduce Script",
+	"description": "Map Reduce Script Schema Definition",
+	"type": "object",
+	"properties": {
+		"MapReduceScript": {
+			"type": "object",
+			"properties": {
+				"runtimeVersion": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"isInactive": {
+					"type": "boolean"
+				},
+				"name": {
+					"type": "string",
+					"maxLength": 40
+				},
+				"notifyAdmins": {
+					"type": "boolean"
+				},
+				"notifyEmails": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"notifyGroup": {
+					"type": "string"
+				},
+				"notifyOwner": {
+					"type": "boolean"
+				},
+				"owner": {
+					"type": "string"
+				},
+				"scriptFile": {
+					"type": "string",
+					"pattern": "^\\[.*\\.js\\]$"
+				},
+				"@scriptId": {
+					"type": "string",
+					"maxLength": 40,
+					"pattern": "^customscript.*$"
+				}
+			},
+			"required": [
+				"name",
+				"scriptFile",
+				"@scriptId"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"MapReduceScript"
+	],
+	"additionalProperties": false
+}
