@@ -20,5 +20,6 @@
 	},
 	"bugs": {
 		"url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"
-	}
+	},
+	"private": true
 }
