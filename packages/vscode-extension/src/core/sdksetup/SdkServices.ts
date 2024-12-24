@@ -34,18 +34,19 @@ export async function installIfNeeded() {
 function validateJavaVersion() {
 	const environmentInformationService = new EnvironmentInformationService();
 	const installedJavaVersion = environmentInformationService.getInstalledJavaVersionString();
-	const requiredJavaVersion = `${ApplicationConstants.SDK_REQUIRED_JAVA_VERSION}`;
-	if (installedJavaVersion.startsWith(requiredJavaVersion)) {
-		return;
+	for (const compatibleJavaVersion of ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS) {
+		if (installedJavaVersion.startsWith(compatibleJavaVersion)) {
+			return;
+		}
 	}
 
 	let errorMessage;
 	if (installedJavaVersion === '') {
-		errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_INSTALLED}`, requiredJavaVersion);
+		errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_INSTALLED}`, ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 		messageService.showErrorMessage(errorMessage);
 		throw errorMessage;
 	}
-	errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_COMPATIBLE}`, installedJavaVersion, requiredJavaVersion);
+	errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_COMPATIBLE}`, installedJavaVersion, ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 	messageService.showErrorMessage(errorMessage);
 	throw errorMessage;
 }

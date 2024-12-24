@@ -4,13 +4,16 @@
  */
 'use strict';
 const spawn = require('child_process').spawnSync;
-const { SDK_REQUIRED_JAVA_VERSION } = require('../ApplicationConstants');
+const { SDK_COMPATIBLE_JAVA_VERSIONS } = require('../ApplicationConstants');
 
 module.exports = class EnvironmentInformationService {
 	isInstalledJavaVersionValid() {
 		const installedJavaVersion = this.getInstalledJavaVersionString();
 		if (installedJavaVersion) {
-			return installedJavaVersion.startsWith(SDK_REQUIRED_JAVA_VERSION);
+			for (const compatibleJavaVersion of SDK_COMPATIBLE_JAVA_VERSIONS) {
+				if (installedJavaVersion.startsWith(compatibleJavaVersion)) return true;
+			}
+			return false;
 		}
 		// in case there is no java installed or not available from path
 		return false;
