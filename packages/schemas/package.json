@@ -1,0 +1,25 @@
+{
+	"name": "@oracle/netsuite-schemas",
+	"version": "1.0.0",
+	"description": "JSON schema declarations",
+	"publisher": "Oracle",
+	"license": "UPL-1.0",
+	"keywords": [
+		"NetSuite",
+		"SuiteCloud",
+		"SDF",
+		"SuiteApp"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/oracle/netsuite-suitecloud-sdk.git",
+		"directory": "packages/schemas"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"bugs": {
+		"url": "https://github.com/oracle/netsuite-suitecloud-sdk/issues"
+	},
+	"private": true
+}
