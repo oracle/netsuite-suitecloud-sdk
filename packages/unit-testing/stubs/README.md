@@ -373,14 +373,21 @@ describe('Record Operations', () => {
         jest.clearAllMocks();
     });
 
-    it('should mock record loading', () => {
-        const mockRecord = {
-            getValue: jest.fn().mockReturnValue('test'),
-            setValue: jest.fn()
-        };
-        record.load.mockReturnValue(mockRecord);
-        
-        // Your test code here
+    it('should perform record operations', () => {
+        // given
+        record.load.mockReturnValue(Record);
+        Record.save.mockReturnValue(123);
+
+        // when
+        const loadedRecord = record.load({ type: 'salesorder', id: 123 });
+        loadedRecord.setValue({ fieldId: 'memo', value: 'test memo' });
+        const savedId = loadedRecord.save();
+
+        // then
+        expect(record.load).toHaveBeenCalledWith({ type: 'salesorder', id: 123 });
+        expect(Record.setValue).toHaveBeenCalledWith({ fieldId: 'memo', value: 'test memo' });
+        expect(Record.save).toHaveBeenCalled();
+        expect(savedId).toBe(123);
     });
 });
 ```
@@ -392,24 +399,55 @@ describe('Record Operations', () => {
 ```javascript
 import search from 'N/search';
 import SearchInstance from 'N/search/instance';
+import SearchResultSet from 'N/search/resultSet';
 
 jest.mock('N/search');
 jest.mock('N/search/instance');
+jest.mock('N/search/resultSet');
 
 describe('Search Operations', () => {
-    it('should mock search results', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should perform search operations', () => {
+        // given
+        search.create.mockReturnValue(SearchInstance);
+        SearchInstance.run.mockReturnValue(SearchResultSet);
+        
         const mockResults = [
-            { id: '1', getValue: jest.fn() },
-            { id: '2', getValue: jest.fn() }
+            { id: '1', getValue: jest.fn().mockReturnValue('SO123') },
+            { id: '2', getValue: jest.fn().mockReturnValue('SO124') }
         ];
-        search.create.mockReturnValue({
-            run: () => ({
-                each: jest.fn((callback) => {
-                    mockResults.forEach(callback);
-                    return true;
-                })
-            })
+        
+        SearchResultSet.each.mockImplementation(callback => {
+            mockResults.forEach(result => callback(result));
+            return true;
         });
+
+        // when
+        const searchInstance = search.create({
+            type: 'salesorder',
+            filters: [],
+            columns: ['tranid']
+        });
+        
+        const resultSet = searchInstance.run();
+        const tranIds = [];
+        
+        resultSet.each(result => {
+            tranIds.push(result.getValue({ name: 'tranid' }));
+            return true;
+        });
+
+        // then
+        expect(search.create).toHaveBeenCalledWith({
+            type: 'salesorder',
+            filters: [],
+            columns: ['tranid']
+        });
+        expect(SearchInstance.run).toHaveBeenCalled();
+        expect(tranIds).toEqual(['SO123', 'SO124']);
     });
 });
 ```
@@ -420,16 +458,37 @@ describe('Search Operations', () => {
 
 ```javascript
 import crypto from 'N/crypto';
+import Cipher from 'N/crypto/cipher';
 
 jest.mock('N/crypto');
+jest.mock('N/crypto/cipher');
 
 describe('Crypto Operations', () => {
-    it('should mock encryption', () => {
-        const mockCipher = {
-            update: jest.fn(),
-            final: jest.fn().mockReturnValue({ iv: 'test', ciphertext: 'encrypted' })
-        };
-        crypto.createCipher.mockReturnValue(mockCipher);
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should perform crypto operations', () => {
+        // given
+        crypto.createCipher.mockReturnValue(Cipher);
+        Cipher.final.mockReturnValue({ iv: 'test-iv', ciphertext: 'encrypted-data' });
+
+        // when
+        const cipher = crypto.createCipher({
+            algorithm: crypto.EncryptionAlg.AES,
+            key: 'mykey'
+        });
+        
+        cipher.update({ input: 'test data' });
+        const result = cipher.final();
+
+        // then
+        expect(crypto.createCipher).toHaveBeenCalledWith({
+            algorithm: crypto.EncryptionAlg.AES,
+            key: 'mykey'
+        });
+        expect(Cipher.update).toHaveBeenCalledWith({ input: 'test data' });
+        expect(result).toEqual({ iv: 'test-iv', ciphertext: 'encrypted-data' });
     });
 });
 ```
