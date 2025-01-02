@@ -78,7 +78,8 @@
 				"@scriptId": {
 					"type": "string",
 					"maxLength": 99,
-					"pattern": "^custinteg.*$"
+					"pattern": "^custinteg.*$",
+					"default": "custinteg"
 				}
 			},
 			"additionalProperties": false,

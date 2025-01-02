@@ -100,7 +100,8 @@
 				"@scriptId": {
 					"type": "string",
 					"maxLength": 40,
-					"pattern": "^customdeploy.*$"
+					"pattern": "^customdeploy.*$",
+					"default": "customdeploy"
 				}
 			},
 			"required": [

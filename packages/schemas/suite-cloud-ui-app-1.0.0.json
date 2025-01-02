@@ -23,7 +23,8 @@
 				"@scriptId": {
 					"type": "string",
 					"maxLength": 99,
-					"pattern": "^custuiapp.*$"
+					"pattern": "^custuiapp.*$",
+					"default": "custuiapp"
 				}
 			},
 			"required": [

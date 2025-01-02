@@ -47,7 +47,8 @@
 				"@scriptId": {
 					"type": "string",
 					"maxLength": 40,
-					"pattern": "^r_.*$"
+					"pattern": "^r_.*$",
+					"default": "r_"
 				}
 			},
 			"additionalProperties": false,

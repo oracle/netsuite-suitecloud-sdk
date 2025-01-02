@@ -44,7 +44,8 @@
 				"@scriptId": {
 					"type": "string",
 					"maxLength": 128,
-					"pattern": "^caf_.*$"
+					"pattern": "^caf_.*$",
+					"default": "caf_"
 				}
 			},
 			"required": [

@@ -24,7 +24,8 @@
 				"@scriptId": {
 					"type": "string",
 					"maxLength": 30,
-					"pattern": "^f_.*$"
+					"pattern": "^f_.*$",
+					"default": "f_"
 				},
 				"applications": {
 					"type": "object",

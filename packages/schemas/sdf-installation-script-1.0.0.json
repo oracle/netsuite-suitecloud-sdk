@@ -39,7 +39,8 @@
 				"@scriptId": {
 					"type": "string",
 					"maxLength": 40,
-					"pattern": "^customscript.*$"
+					"pattern": "^customscript.*$",
+					"default": "customscript"
 				}
 			},
 			"required": [
