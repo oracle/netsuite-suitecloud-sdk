@@ -134,6 +134,10 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
+		if (process.env.SUITECLOUD_CI_PASSKEY) {
+			this.messageService.showCommandError(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.BROWSER_BASED_NOT_ALLOWED));
+			return;
+		}
 		const authId = await this.getNewAuthId(accountCredentialsList);
 		if (!authId) {
 			return;
