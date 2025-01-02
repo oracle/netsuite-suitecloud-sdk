@@ -136,6 +136,7 @@
 	"MANAGE_ACCOUNTS_ENTER_AUTH_ID": "Enter an authentication ID:",
 	"MANAGE_ACCOUNTS_ENTER_URL": "Specify the domain if you want to use a customized NetSuite domain. Otherwise, press Enter.",
 	"MANAGE_ACCOUNTS_ERROR_NOT_IN_PROJECT": "Can't set the default authentication ID if not in a project.",
+	"MANAGE_ACCOUNTS_WARNING_ROTATE_PASSWORD": "Authentication is currently using the credentials key in fallback mode. If you choose to continue using fallback mode, you   should update the key regularly, ideally every week.",
 	"MANAGE_ACCOUNTS_LOADING": "Loading the configured authentication IDs in this machine...",
 	"MANAGE_ACCOUNTS_M2M_ENTER_ACCOUNT_ID": "Enter the account ID:",
 	"MANAGE_ACCOUTNS_M2M_ENTER_CERTIFICATE_ID": "Enter the certificate ID:",
