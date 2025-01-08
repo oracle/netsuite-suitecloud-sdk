@@ -134,6 +134,10 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
+		if (process.env.SUITECLOUD_CI_PASSKEY) {
+			this.messageService.showCommandError(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.BROWSER_BASED_NOT_ALLOWED));
+			return;
+		}
 		const authId = await this.getNewAuthId(accountCredentialsList);
 		if (!authId) {
 			return;
@@ -188,6 +192,10 @@ export default class SetupAccount extends BaseAction {
 
 		const actionResult = await authenticatePromise;
 		this.handleAuthenticateActionResult(actionResult);
+
+		if (actionResult.status === actionResultStatus.SUCCESS && process.env.SUITECLOUD_FALLBACK_PASSKEY) {
+			this.messageService.showCommandWarning(this.translationService.getMessage(MANAGE_ACCOUNTS.WARNING.ROTATE_PASSWORD_WARNING));
+		}
 	}
 
 	private async getNewAuthId(accountCredentialsList: AuthListData) {
