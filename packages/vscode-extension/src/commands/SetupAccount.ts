@@ -191,12 +191,11 @@ export default class SetupAccount extends BaseAction {
 		);
 
 		const actionResult = await authenticatePromise;
+		this.handleAuthenticateActionResult(actionResult);
 
-		let warning;
 		if (actionResult.status === actionResultStatus.SUCCESS && process.env.SUITECLOUD_FALLBACK_PASSKEY) {
-			warning = this.translationService.getMessage(MANAGE_ACCOUNTS.WARNING.ROTATE_PASSWORD_WARNING);
+			this.messageService.showCommandWarning(this.translationService.getMessage(MANAGE_ACCOUNTS.WARNING.ROTATE_PASSWORD_WARNING));
 		}
-		this.handleAuthenticateActionResult(actionResult, warning);
 	}
 
 	private async getNewAuthId(accountCredentialsList: AuthListData) {
@@ -334,7 +333,7 @@ export default class SetupAccount extends BaseAction {
 		this.handleAuthenticateActionResult(actionResult);
 	}
 
-	private handleAuthenticateActionResult(actionResult: AuthenticateActionResult, warning?: string): void {
+	private handleAuthenticateActionResult(actionResult: AuthenticateActionResult): void {
 		if (actionResult.status === actionResultStatus.SUCCESS) {
 			this.vsConsoleLogger.result(
 				this.translationService.getMessage(
@@ -342,16 +341,14 @@ export default class SetupAccount extends BaseAction {
 					actionResult.accountInfo.companyName,
 					actionResult.accountInfo.roleName,
 					actionResult.authId,
-				),
+				)
 			);
 			this.messageService.showCommandInfo(this.translationService.getMessage(MANAGE_ACCOUNTS.SELECT_AUTH_ID.SUCCESS, actionResult.authId));
 		} else {
 			actionResult.errorMessages.forEach((e) => this.vsConsoleLogger.error(e));
 			this.messageService.showCommandError();
 		}
-		if (warning) {
-			this.messageService.showCommandWarning(warning);
-		}
+
 		this.vsConsoleLogger.info('');
 	}
 
