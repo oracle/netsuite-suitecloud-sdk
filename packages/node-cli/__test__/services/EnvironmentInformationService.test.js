@@ -9,7 +9,7 @@ jest.mock('child_process', () => {
 		spawnSync: mockSpawnSyncFn,
 	};
 });
-jest.mock('../../src/ApplicationConstants', () => ({ SDK_REQUIRED_JAVA_VERSION: '11' }));
+jest.mock('../../src/ApplicationConstants', () => ({ SDK_COMPATIBLE_JAVA_VERSIONS: ['11'] }));
 
 describe('getInstalledJavaVersionString() method', () => {
 	it.each([
