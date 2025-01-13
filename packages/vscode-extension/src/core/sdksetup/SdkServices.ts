@@ -42,11 +42,11 @@ function validateJavaVersion() {
 
 	let errorMessage;
 	if (installedJavaVersion === '') {
-		errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_INSTALLED}`, ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS.join(' or '));
+		errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_INSTALLED}`, ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 		messageService.showErrorMessage(errorMessage);
 		throw errorMessage;
 	}
-	errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_COMPATIBLE}`, installedJavaVersion, ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS.join(' or '));
+	errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_COMPATIBLE}`, installedJavaVersion, ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 	messageService.showErrorMessage(errorMessage);
 	throw errorMessage;
 }

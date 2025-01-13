@@ -157,8 +157,8 @@ module.exports = class SdkExecutor {
 
 		this._CLISettingsService.setJavaVersionValid(false);
 		if (javaVersionInstalled === '') {
-			return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED, SDK_COMPATIBLE_JAVA_VERSIONS.join(' or '));
+			return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED, SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 		}
-		return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE, javaVersionInstalled, SDK_COMPATIBLE_JAVA_VERSIONS.join(' or '));
+		return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE, javaVersionInstalled, SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 	}
 };
