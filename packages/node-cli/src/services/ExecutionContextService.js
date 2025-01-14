@@ -28,29 +28,29 @@ const ExecutionMode = {
 };
 
 const validateMachineToMachineAuthIsAllowed = () => {
-	let executionMode = getExecutionMode();
+	const executionMode = getExecutionMode();
 	if (!(executionMode === ExecutionMode.CI || executionMode === ExecutionMode.AUTH_CI_SETUP)) {
 		throw NodeTranslationService.getMessage(MACHINE_TO_MACHINE_NOT_ALLOWED);
 	}
 };
 
 const validateBrowserBasedAuthIsAllowed = () => {
-	let executionMode = getExecutionMode();
+	const executionMode = getExecutionMode();
 	if (!(executionMode === ExecutionMode.DEV_MACHINE || executionMode === ExecutionMode.DEV_MACHINE_FALLBACK_PASSKEY)) {
 		throw NodeTranslationService.getMessage(BROWSER_BASED_NOT_ALLOWED);
 	}
 };
 const getBrowserBasedWarningMessages = () => {
-	let executionMode = getExecutionMode();
+	const executionMode = getExecutionMode();
 	if (executionMode === ExecutionMode.DEV_MACHINE_FALLBACK_PASSKEY) {
 		return NodeTranslationService.getMessage(ROTATE_PASSWORD_WARNING);
 	}
 };
 
 const getExecutionMode = () => {
-	let envFallBackPassKey = process.env.SUITECLOUD_FALLBACK_PASSKEY;
-	let envCiPassKey = process.env.SUITECLOUD_CI_PASSKEY;
-	let envCi = process.env.SUITECLOUD_CI;
+	const envFallBackPassKey = process.env.SUITECLOUD_FALLBACK_PASSKEY;
+	const envCiPassKey = process.env.SUITECLOUD_CI_PASSKEY;
+	const envCi = process.env.SUITECLOUD_CI;
 
 	if (envCi && envCi !== '0') {
 		//CI
@@ -72,11 +72,11 @@ const getExecutionMode = () => {
 };
 
 const getSuiteCloudEnvVariableList = () => {
-	let envFallBackPassKey = process.env.SUITECLOUD_FALLBACK_PASSKEY;
-	let envCiPassKey = process.env.SUITECLOUD_CI_PASSKEY;
-	let envCi = process.env.SUITECLOUD_CI;
+	const envFallBackPassKey = process.env.SUITECLOUD_FALLBACK_PASSKEY;
+	const envCiPassKey = process.env.SUITECLOUD_CI_PASSKEY;
+	const envCi = process.env.SUITECLOUD_CI;
 
-	let variables = [];
+	const variables = [];
 	if (envCi && envCi !== '0') {
 		variables.push('SUITECLOUD_CI');
 	}

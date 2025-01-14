@@ -115,8 +115,8 @@ export default class SetupAccount extends BaseAction {
 		try {
 			validatorFunction();
 		} catch (err: any) {
-				this.messageService.showCommandError(err);
-				return false;
+			this.messageService.showCommandError(err);
+			return false;
 		}
 		return true;
 	}
