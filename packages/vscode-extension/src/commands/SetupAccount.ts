@@ -203,7 +203,7 @@ export default class SetupAccount extends BaseAction {
 		const actionResult = await authenticatePromise;
 		this.handleAuthenticateActionResult(actionResult);
 
-		let warning = ExecutionContextService.getBrowserBasedWarningMessages();
+		const warning = ExecutionContextService.getBrowserBasedWarningMessages();
 		if (warning) {
 			this.messageService.showCommandWarning(warning);
 		}
