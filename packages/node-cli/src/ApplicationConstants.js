@@ -60,4 +60,9 @@ module.exports = {
 			CREATE_INSTALLATION_PREFERENCES: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515948480.html',
 		},
 	},
+	ENV_VARS: {
+		SUITECLOUD_CI: 'SUITECLOUD_CI',
+		SUITECLOUD_CI_PASSKEY: 'SUITECLOUD_CI_PASSKEY',
+		SUITECLOUD_FALLBACK_PASSKEY: 'SUITECLOUD_FALLBACK_PASSKEY'
+	}
 };

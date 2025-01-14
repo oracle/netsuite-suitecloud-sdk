@@ -18,6 +18,14 @@ const {
 
 } = require('./TranslationKeys');
 
+const {
+	ENV_VARS: {
+		SUITECLOUD_CI,
+		SUITECLOUD_CI_PASSKEY,
+		SUITECLOUD_FALLBACK_PASSKEY
+	}
+} = require('../ApplicationConstants');
+
 const NodeTranslationService = require('./NodeTranslationService');
 
 const ExecutionMode = {
@@ -48,9 +56,9 @@ const getBrowserBasedWarningMessages = () => {
 };
 
 const getExecutionMode = () => {
-	const envFallBackPassKey = process.env.SUITECLOUD_FALLBACK_PASSKEY;
-	const envCiPassKey = process.env.SUITECLOUD_CI_PASSKEY;
-	const envCi = process.env.SUITECLOUD_CI;
+	const envFallBackPassKey = process.env[SUITECLOUD_FALLBACK_PASSKEY];
+	const envCiPassKey = process.env[SUITECLOUD_CI_PASSKEY];
+	const envCi = process.env[SUITECLOUD_CI];
 
 	if (envCi && envCi !== '0') {
 		//CI
@@ -72,19 +80,19 @@ const getExecutionMode = () => {
 };
 
 const getSuiteCloudEnvVariableList = () => {
-	const envFallBackPassKey = process.env.SUITECLOUD_FALLBACK_PASSKEY;
-	const envCiPassKey = process.env.SUITECLOUD_CI_PASSKEY;
-	const envCi = process.env.SUITECLOUD_CI;
+	const envFallBackPassKey = process.env[SUITECLOUD_FALLBACK_PASSKEY];
+	const envCiPassKey = process.env[SUITECLOUD_CI_PASSKEY];
+	const envCi = process.env[SUITECLOUD_CI];
 
 	const variables = [];
 	if (envCi && envCi !== '0') {
-		variables.push('SUITECLOUD_CI');
+		variables.push(SUITECLOUD_CI);
 	}
 	if (envCiPassKey) {
-		variables.push('SUITECLOUD_CI_PASSKEY');
+		variables.push(SUITECLOUD_CI_PASSKEY);
 	}
 	if (envFallBackPassKey) {
-		variables.push('SUITECLOUD_FALLBACK_PASSKEY');
+		variables.push(SUITECLOUD_FALLBACK_PASSKEY);
 	}
 	return variables.join(', ');
 };
