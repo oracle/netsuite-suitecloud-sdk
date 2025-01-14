@@ -60,8 +60,8 @@ describe('parse()', () => {
 			expect(consoleLoggerResultMock).toHaveBeenNthCalledWith(1, 'The account has been authenticated for the following company and role: companyName [roleName]. This project will use the authentication ID "authId" as default. If you want to change your default credentials, run "suitecloud account:setup" again.',);
 			expect(consoleLoggerResultMock).toHaveBeenNthCalledWith(2, 'The account has been successfully set up.')
 			expect(consoleoggerWarningMock).toHaveBeenNthCalledWith(1, 'Authentication is currently using the credentials passkey in fallback mode. If you choose to continue using fallback mode, you should update the passkey regularly.\n' +
-				' For enhanced security, consider setting up secure storage in your system.\n' +
-				' For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=article_1024042128.html#subsect_83104357122.');
+				'For enhanced security, consider setting up secure storage in your system.\n' +
+				'For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=article_1024042128.html#subsect_83104357122.');
 		});
 	});
 

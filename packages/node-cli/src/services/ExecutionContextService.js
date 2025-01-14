@@ -23,7 +23,11 @@ const {
 		SUITECLOUD_CI,
 		SUITECLOUD_CI_PASSKEY,
 		SUITECLOUD_FALLBACK_PASSKEY
-	}
+	},
+
+	LINKS: {
+		ERRORS: { AUTHENTICATION_INFO },
+	},
 } = require('../ApplicationConstants');
 
 const NodeTranslationService = require('./NodeTranslationService');
@@ -38,20 +42,21 @@ const ExecutionMode = {
 const validateMachineToMachineAuthIsAllowed = () => {
 	const executionMode = getExecutionMode();
 	if (!(executionMode === ExecutionMode.CI || executionMode === ExecutionMode.AUTH_CI_SETUP)) {
-		throw NodeTranslationService.getMessage(MACHINE_TO_MACHINE_NOT_ALLOWED);
+		throw NodeTranslationService.getMessage(MACHINE_TO_MACHINE_NOT_ALLOWED, AUTHENTICATION_INFO);
 	}
 };
 
 const validateBrowserBasedAuthIsAllowed = () => {
 	const executionMode = getExecutionMode();
 	if (!(executionMode === ExecutionMode.DEV_MACHINE || executionMode === ExecutionMode.DEV_MACHINE_FALLBACK_PASSKEY)) {
-		throw NodeTranslationService.getMessage(BROWSER_BASED_NOT_ALLOWED);
+		throw NodeTranslationService.getMessage(BROWSER_BASED_NOT_ALLOWED, AUTHENTICATION_INFO);
 	}
 };
+
 const getBrowserBasedWarningMessages = () => {
 	const executionMode = getExecutionMode();
 	if (executionMode === ExecutionMode.DEV_MACHINE_FALLBACK_PASSKEY) {
-		return NodeTranslationService.getMessage(ROTATE_PASSWORD_WARNING);
+		return NodeTranslationService.getMessage(ROTATE_PASSWORD_WARNING, AUTHENTICATION_INFO);
 	}
 };
 
@@ -76,7 +81,7 @@ const getExecutionMode = () => {
 		}
 	}
 	//Default is non consistent states
-	throw NodeTranslationService.getMessage(NON_CONSISTENT_AUTH_STATE, getSuiteCloudEnvVariableList());
+	throw NodeTranslationService.getMessage(NON_CONSISTENT_AUTH_STATE, getSuiteCloudEnvVariableList(), AUTHENTICATION_INFO);
 };
 
 const getSuiteCloudEnvVariableList = () => {
