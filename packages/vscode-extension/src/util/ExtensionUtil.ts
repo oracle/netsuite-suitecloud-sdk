@@ -31,6 +31,11 @@ export const FileCabinetService = require('@oracle/suitecloud-cli/src/services/F
 export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
 export const ProjectInfoService = require('@oracle/suitecloud-cli/src/services/ProjectInfoService');
 export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
+export const ExecutionContextService :{
+	validateBrowserBasedAuthIsAllowed():void;
+	validateMachineToMachineAuthIsAllowed(): void;
+	getBrowserBasedWarningMessages() : string | void;
+} = require('@oracle/suitecloud-cli/src/services/ExecutionContextService');
 export const AuthenticationUtils: {
 	[key: string]: any;
 	getProjectDefaultAuthId(projectFolder?: string): string;

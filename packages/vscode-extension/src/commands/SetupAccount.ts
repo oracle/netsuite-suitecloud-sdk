@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode';
-import { actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext, InteractiveAnswersValidator } from '../util/ExtensionUtil';
+import { actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext, InteractiveAnswersValidator, ExecutionContextService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
@@ -101,10 +101,24 @@ export default class SetupAccount extends BaseAction {
 		if (!selected) {
 			return;
 		} else if (selected.option === UiOption.new_authid_browser) {
-			await this.handleBrowserAuth(accountCredentialsList);
+			if (this.validateSupportedMode(ExecutionContextService.validateBrowserBasedAuthIsAllowed)) {
+				await this.handleBrowserAuth(accountCredentialsList);
+			}
 		} else if (selected.option === UiOption.new_authid_m2m) {
-			await this.handleM2m(accountCredentialsList);
+			if (this.validateSupportedMode(ExecutionContextService.validateMachineToMachineAuthIsAllowed)) {
+				await this.handleM2m(accountCredentialsList);
+			}
 		}
+	}
+
+	private validateSupportedMode(validatorFunction: () => void): boolean {
+		try {
+			validatorFunction();
+		} catch (err: any) {
+			this.messageService.showCommandError(err);
+			return false;
+		}
+		return true;
 	}
 
 	private async getNewAuthIdOption() {
@@ -134,10 +148,6 @@ export default class SetupAccount extends BaseAction {
 	}
 
 	private async handleBrowserAuth(accountCredentialsList: AuthListData) {
-		if (process.env.SUITECLOUD_CI_PASSKEY) {
-			this.messageService.showCommandError(this.translationService.getMessage(MANAGE_ACCOUNTS.ERROR.BROWSER_BASED_NOT_ALLOWED));
-			return;
-		}
 		const authId = await this.getNewAuthId(accountCredentialsList);
 		if (!authId) {
 			return;
@@ -193,8 +203,9 @@ export default class SetupAccount extends BaseAction {
 		const actionResult = await authenticatePromise;
 		this.handleAuthenticateActionResult(actionResult);
 
-		if (actionResult.status === actionResultStatus.SUCCESS && process.env.SUITECLOUD_FALLBACK_PASSKEY) {
-			this.messageService.showCommandWarning(this.translationService.getMessage(MANAGE_ACCOUNTS.WARNING.ROTATE_PASSWORD_WARNING));
+		const warning = ExecutionContextService.getBrowserBasedWarningMessages();
+		if (warning) {
+			this.messageService.showCommandWarning(warning);
 		}
 	}
 

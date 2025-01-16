@@ -59,5 +59,13 @@ module.exports = {
 			CREATE_LOCKING_XML: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html',
 			CREATE_INSTALLATION_PREFERENCES: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515948480.html',
 		},
+		ERRORS: {
+			AUTHENTICATION_INFO: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=article_0113125121.html'
+		}
 	},
+	ENV_VARS: {
+		SUITECLOUD_CI: 'SUITECLOUD_CI',
+		SUITECLOUD_CI_PASSKEY: 'SUITECLOUD_CI_PASSKEY',
+		SUITECLOUD_FALLBACK_PASSKEY: 'SUITECLOUD_FALLBACK_PASSKEY'
+	}
 };
