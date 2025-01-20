@@ -106,11 +106,23 @@ declare module '@uif-js/core' {
 
 		title: string;
 
+		favicon: (string | null);
+
+		setFavicon(url: string, options?: object, type?: Self.AppContext.FaviconType): void;
+
+		private setFaviconProperties(favicon: HTMLElement, url: string, type: Self.AppContext.FaviconType): void;
+
 		registerBeforeEnd(handler: () => boolean): {remove: () => void};
 
 	}
 
 	export namespace AppContext {
+		enum FaviconType {
+			ICO,
+			PNG,
+			GIF,
+		}
+
 	}
 
 	export enum AriaProperty {
@@ -405,11 +417,13 @@ declare module '@uif-js/core' {
 
 		function commonSuffixLength(left: globalThis.Array<any>, right: globalThis.Array<any>, comparator?: (left: any, right: any) => boolean): void;
 
+		function somePair<T>(array: globalThis.Array<T>, predicate: (left: T, right: T) => boolean): void;
+
 		const EMPTY: globalThis.Array<any>;
 
 	}
 
-	export class ArrayDataSource implements Self.MutableDataSource, Self.EventSource {
+	export class ArrayDataSource<T = any> implements Self.MutableDataSource<T>, Self.EventSource {
 		on(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): Self.EventSource.Handle;
 
 		off(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): void;
@@ -422,49 +436,49 @@ declare module '@uif-js/core' {
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
-		constructor(array?: globalThis.Array<any>);
+		constructor(array?: globalThis.Array<T>);
 
 		length: number;
 
 		empty: boolean;
 
-		[Symbol.iterator](): any;
+		[Symbol.iterator](): Iterator<T>;
 
-		firstItem: (any | null);
+		firstItem: (T | null);
 
-		lastItem: (any | null);
+		lastItem: (T | null);
 
-		query(args: Self.DataSource.QueryArguments, onResult: (args: {items: globalThis.Array<any>}) => void, onError?: (error: any) => void): void;
+		query(args: Self.DataSource.QueryArguments, onResult: (args: {items: globalThis.Array<T>}) => void, onError?: (error: any) => void): void;
 
-		add(args: {item?: any; items?: globalThis.Array<any>; index?: number; reason?: string}): object;
+		add(args: {item?: T; items?: globalThis.Array<T>; index?: number; reason?: string}): Self.MutableDataSource.AddResult<T>;
 
-		remove(args: {item?: any; items?: globalThis.Array<any>; index?: number; count?: number; reason?: string}): object;
+		remove(args: {item?: T; items?: globalThis.Array<T>; index?: number; count?: number; reason?: string}): Self.MutableDataSource.RemoveResult<T>;
 
 		clear(): void;
 
-		move(args: {sourceIndex: number; targetIndex: number; count?: number; reason?: string}): object;
+		move(args: {sourceIndex: number; targetIndex: number; count?: number; reason?: string}): Self.MutableDataSource.MoveResult<T>;
 
-		forEach(callback: (item: any, index: number) => void): void;
+		forEach(callback: (item: T, index: number) => void): void;
 
-		filter(filter: (item: any, index: number) => boolean): Self.ArrayDataSource;
+		filter(filter: (item: T, index: number) => boolean): Self.ArrayDataSource;
 
-		map(transform: (item: any, index: number) => any): Self.ArrayDataSource;
+		map<O>(transform: (item: T, index: number) => O): Self.ArrayDataSource<O>;
 
-		sort(comparator: (left: any, right: any) => number): Self.ArrayDataSource;
+		sort(comparator: (left: T, right: T) => number): Self.ArrayDataSource<T>;
 
-		itemAtIndex(index: number): any;
+		itemAtIndex(index: number): T;
 
-		toArray(): globalThis.Array<any>;
+		toArray(): globalThis.Array<T>;
 
-		indexOf(item: any): (number | null);
+		indexOf(item: T): (number | null);
 
-		contains(item: any): boolean;
+		contains(item: T): boolean;
 
-		containsMatching(predicate: (item: any) => boolean): boolean;
+		containsMatching(predicate: (item: T) => boolean): boolean;
 
-		findFirst(predicate: (item: any) => boolean): {found: boolean; item: (any | null); index: (number | null)};
+		findFirst(predicate: (item: T) => boolean): {found: boolean; item: (T | null); index: (number | null)};
 
-		findLast(predicate: (item: any) => boolean): {found: boolean; item: (any | null); index: (number | null)};
+		findLast(predicate: (item: T) => boolean): {found: boolean; item: (T | null); index: (number | null)};
 
 	}
 
@@ -593,7 +607,7 @@ declare module '@uif-js/core' {
 	}
 
 	export class Color {
-		constructor(color: Self.Color.Definition, type?: Self.Color.Model);
+		constructor(color: Self.Color.Definition, type?: Self.Color.Model, options?: {assert?: boolean});
 
 		hex: Self.Color.HEXObject;
 
@@ -606,6 +620,8 @@ declare module '@uif-js/core' {
 		hsv: Self.Color.HSVObject;
 
 		hwb: Self.Color.HWBObject;
+
+		lab: Self.Color.LABObject;
 
 		grayscale: Self.Color.GrayscaleObject;
 
@@ -699,41 +715,45 @@ declare module '@uif-js/core' {
 
 		private _zeroToOneChannelToPercent(channel: number): number;
 
-		static rgbToHex(rgb: Self.Color.RGB, withAlpha?: boolean): Self.Color.HEX;
+		static rgbToHex(rgb: Self.Color.RGB, withAlpha?: boolean, options?: {assert?: boolean}): Self.Color.HEX;
 
-		static rgbToCmyk(rgb: Self.Color.RGB): Self.Color.CMYK;
+		static rgbToCmyk(rgb: Self.Color.RGB, options?: {assert?: boolean}): Self.Color.CMYK;
 
-		static rgbToHsl(rgb: Self.Color.RGB): Self.Color.HSL;
+		static rgbToHsl(rgb: Self.Color.RGB, options?: {assert?: boolean}): Self.Color.HSL;
 
-		static rgbToHsv(rgb: Self.Color.RGB): Self.Color.HSV;
+		static rgbToHsv(rgb: Self.Color.RGB, options?: {assert?: boolean}): Self.Color.HSV;
 
-		static rgbToGrayscaleLuminosity(rgb: Self.Color.RGB): number;
+		static rgbToGrayscaleLuminosity(rgb: Self.Color.RGB, options?: {assert?: boolean}): number;
 
-		static rgbToGrayscaleLightness(rgb: Self.Color.RGB): number;
+		static rgbToGrayscaleLightness(rgb: Self.Color.RGB, options?: {assert?: boolean}): number;
 
-		static rgbToGrayscaleAverage(rgb: Self.Color.RGB): number;
+		static rgbToGrayscaleAverage(rgb: Self.Color.RGB, options?: {assert?: boolean}): number;
 
-		static hexToRgb(hex: Self.Color.HEX): Self.Color.RGB;
+		static rgbToLab(rgb: Self.Color.RGB, options?: {assert?: boolean}): Self.Color.LAB;
 
-		static shortHexToLong(hex: Self.Color.HEX): Self.Color.HEX;
+		static hexToRgb(hex: Self.Color.HEX, options?: {assert?: boolean}): Self.Color.RGB;
 
-		static getAlphaFromHex(hex: Self.Color.HEX): number;
+		static shortHexToLong(hex: Self.Color.HEX, options?: {assert?: boolean}): Self.Color.HEX;
 
-		static getHexWithoutAlpha(hex: Self.Color.HEX): Self.Color.HEX;
+		static getAlphaFromHex(hex: Self.Color.HEX, options?: {assert?: boolean}): number;
 
-		static cmykToRgb(cmyk: Self.Color.CMYK): Self.Color.RGB;
+		static getHexWithoutAlpha(hex: Self.Color.HEX, options?: {assert?: boolean}): Self.Color.HEX;
 
-		static hslToRgb(hsl: Self.Color.HSL): Self.Color.RGB;
+		static cmykToRgb(cmyk: Self.Color.CMYK, options?: {assert?: boolean}): Self.Color.RGB;
 
-		static hsvToRgb(hsv: Self.Color.HSV): Self.Color.RGB;
+		static hslToRgb(hsl: Self.Color.HSL, options?: {assert?: boolean}): Self.Color.RGB;
 
-		static hsvToHsl(hsv: Self.Color.HSV): Self.Color.HSL;
+		static hsvToRgb(hsv: Self.Color.HSV, options?: {assert?: boolean}): Self.Color.RGB;
 
-		static hsvToHwb(hsv: Self.Color.HSV): Self.Color.HWB;
+		static hsvToHsl(hsv: Self.Color.HSV, options?: {assert?: boolean}): Self.Color.HSL;
 
-		static hslToHsv(hsl: Self.Color.HSL): Self.Color.HSV;
+		static hsvToHwb(hsv: Self.Color.HSV, options?: {assert?: boolean}): Self.Color.HWB;
 
-		static hwbToHsv(hwb: Self.Color.HWB): Self.Color.HSV;
+		static hslToHsv(hsl: Self.Color.HSL, options?: {assert?: boolean}): Self.Color.HSV;
+
+		static hwbToHsv(hwb: Self.Color.HWB, options?: {assert?: boolean}): Self.Color.HSV;
+
+		static labToRgb(lab: Self.Color.LAB, options?: {assert?: boolean}): Self.Color.RGB;
 
 		static isHex(hex: Self.Color.HEX): boolean;
 
@@ -747,6 +767,8 @@ declare module '@uif-js/core' {
 
 		static isHwb(hwb: Self.Color.HWB): boolean;
 
+		static isLab(lab: Self.Color.LAB): boolean;
+
 		static assertHex(hex: any): void;
 
 		static assertRgb(rgb: any): void;
@@ -758,6 +780,10 @@ declare module '@uif-js/core' {
 		static assertHsv(hsv: any): void;
 
 		static assertHwb(hwb: any): void;
+
+		static assertLab(lab: any): void;
+
+		static assert(color: any, model: Self.Color.Model): void;
 
 		static hex(hex: Self.Color.HEX): Self.Color;
 
@@ -771,6 +797,8 @@ declare module '@uif-js/core' {
 
 		static hwb(hueOrColorObject: (number | Self.Color.HWB), whiteness?: number, blackness?: number, alpha?: number): Self.Color;
 
+		static lab(lightnessOrLabObject: (number | Self.Color.LAB), a?: number, b?: number, alpha?: number): Self.Color;
+
 		static grayscale(grayscaleOrColorObject: (number | {grayscale: number; alpha: number}), alpha?: number): Self.Color;
 
 		static contrastRatio(color1: Self.Color, color2: Self.Color): number;
@@ -781,7 +809,9 @@ declare module '@uif-js/core' {
 
 		static isEqual(color1: (Self.Color | Self.Color.HEX | null), color2: (Self.Color | Self.Color.HEX | null)): boolean;
 
-		static mix(color1: Self.Color, color2: Self.Color, weight?: number): void;
+		static mix(color1: Self.Color, color2: Self.Color, weight?: number): Self.Color;
+
+		static perceivedColorDifference(color1: Self.Color, color2: Self.Color): number;
 
 		static copy(color: Self.Color): Self.Color;
 
@@ -856,6 +886,17 @@ declare module '@uif-js/core' {
 			b: number;
 
 			a?: number;
+
+		}
+
+		interface LAB {
+			l: number;
+
+			a: number;
+
+			b: number;
+
+			alpha?: number;
 
 		}
 
@@ -966,6 +1007,23 @@ declare module '@uif-js/core' {
 
 		}
 
+		interface LABObject {
+			object: {l: number; a: number; b: number; alpha: number};
+
+			lightness: number;
+
+			a: number;
+
+			b: number;
+
+			array: globalThis.Array<number>;
+
+			cssString: string;
+
+			cssStringWithAlpha: string;
+
+		}
+
 		interface GrayscaleObject {
 			average: number;
 
@@ -988,6 +1046,7 @@ declare module '@uif-js/core' {
 			HSL,
 			HSV,
 			HWB,
+			LAB,
 		}
 
 		enum Palette {
@@ -1788,6 +1847,8 @@ declare module '@uif-js/core' {
 
 		static WINDOW: string;
 
+		static PROMOTION: string;
+
 		static new(name: string): string;
 
 	}
@@ -1986,14 +2047,14 @@ declare module '@uif-js/core' {
 	export namespace DataExchangeManager {
 	}
 
-	export interface DataSource extends Self.EventSource {
-		query(args: Self.DataSource.QueryArguments, resolve: (args: {items: globalThis.Array<any>}) => void, reject?: (error: any) => void): void;
+	export interface DataSource<T = any> extends Self.EventSource {
+		query(args: Self.DataSource.QueryArguments<T>, resolve: (args: {items: globalThis.Array<T>}) => void, reject?: (error: any) => void): void;
 
 	}
 
 	export namespace DataSource {
-		interface QueryArguments {
-			item?: any;
+		interface QueryArguments<T = any> {
+			item?: T;
 
 			index?: number;
 
@@ -2003,7 +2064,7 @@ declare module '@uif-js/core' {
 
 		}
 
-		type QueryCallback = (args: Self.DataSource.QueryArguments, resolve: (args: {items: globalThis.Array<any>}) => void, reject: (error: any) => void) => void;
+		type QueryCallback<T = any> = (args: Self.DataSource.QueryArguments<T>, resolve: (args: {items: globalThis.Array<T>}) => void, reject: (error: any) => void) => void;
 
 		interface EventType {
 			UPDATED: string;
@@ -2014,11 +2075,11 @@ declare module '@uif-js/core' {
 
 		function is(value: any): boolean;
 
-		function queryPromise(dataSource: Self.DataSource, args?: Self.DataSource.QueryArguments): globalThis.Promise<{items: globalThis.Array<any>}>;
+		function queryPromise<T = any>(dataSource: Self.DataSource<T>, args?: Self.DataSource.QueryArguments<T>): globalThis.Promise<{items: globalThis.Array<T>}>;
 
-		function create(query: (args: Self.DataSource.QueryArguments, resolve: (args: {items: globalThis.Array<any>}) => void, reject: (error: any) => void) => void): Self.GenericDataSource;
+		function create<T = any>(query: (args: Self.DataSource.QueryArguments<T>, resolve: (args: {items: globalThis.Array<T>}) => void, reject: (error: any) => void) => void): Self.GenericDataSource<T>;
 
-		function queryAll(dataSource: Self.DataSource): globalThis.Promise<globalThis.Array<any>>;
+		function queryAll<T = any>(dataSource: Self.DataSource<T>): globalThis.Promise<globalThis.Array<T>>;
 
 		enum UpdateType {
 			ADD,
@@ -2955,7 +3016,7 @@ declare module '@uif-js/core' {
 
 	}
 
-	class GenericDataSource implements Self.DataSource, Self.EventSource {
+	class GenericDataSource<T = any> implements Self.DataSource<T>, Self.EventSource {
 		on(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): Self.EventSource.Handle;
 
 		off(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): void;
@@ -2968,9 +3029,9 @@ declare module '@uif-js/core' {
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
-		constructor(query: Self.DataSource.QueryCallback);
+		constructor(query: Self.DataSource.QueryCallback<T>);
 
-		query(args: object, resolve: (args: {items: globalThis.Array<any>}) => void, reject: (error: any) => void): void;
+		query(args: object, resolve: (args: {items: globalThis.Array<T>}) => void, reject: (error: any) => void): void;
 
 	}
 
@@ -3639,7 +3700,7 @@ declare module '@uif-js/core' {
 
 	}
 
-	export function JsxRoute(props?: {path?: string; exact?: boolean}): Self.JSX.Element;
+	export function JsxRoute(props?: {path?: string; content?: Self.Router.RouteContentCallback; exact?: boolean}): Self.JSX.Element;
 
 	export enum KeyCode {
 		BACKSPACE,
@@ -3868,7 +3929,7 @@ declare module '@uif-js/core' {
 
 	}
 
-	export class LazyDataSource implements Self.DataSource, Self.EventSource {
+	export class LazyDataSource<T = any> implements Self.DataSource<T>, Self.EventSource {
 		on(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): Self.EventSource.Handle;
 
 		off(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): void;
@@ -3881,28 +3942,28 @@ declare module '@uif-js/core' {
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
-		constructor(provider: Self.LazyDataSource.Provider);
+		constructor(provider: Self.LazyDataSource.Provider<T>);
 
-		dataSource: (Self.DataSource | null);
+		dataSource: (Self.DataSource<T> | null);
 
 		loaded: boolean;
 
-		query(args: Self.DataSource.QueryArguments, onResult: (args: {items: globalThis.Array<any>}) => void, onError?: (error: any) => void): void;
+		query(args: Self.DataSource.QueryArguments<T>, onResult: (args: {items: globalThis.Array<T>}) => void, onError?: (error: any) => void): void;
 
-		transform(transform: (item: any) => any): Self.LazyDataSource;
+		transform<O = any>(transform: (item: T) => O): Self.LazyDataSource<O>;
 
-		filter(predicate: (item: any) => boolean): Self.LazyDataSource;
+		filter(predicate: (item: T) => boolean): Self.LazyDataSource<T>;
 
-		map(transform: (item: any, index: number) => any): Self.LazyDataSource;
+		map<O = any>(transform: (item: T, index: number) => O): Self.LazyDataSource<O>;
 
-		sort(comparator: (left: any, right: any) => number): Self.LazyDataSource;
+		sort(comparator: (left: T, right: T) => number): Self.LazyDataSource<T>;
 
-		load(): globalThis.Promise<Self.DataSource>;
+		load(): globalThis.Promise<Self.DataSource<T>>;
 
 	}
 
 	export namespace LazyDataSource {
-		type Provider = () => (globalThis.Array<any> | Self.DataSource | globalThis.Promise<(globalThis.Array<any> | Self.DataSource)>);
+		type Provider<T = any> = () => (globalThis.Array<T> | Self.DataSource<T> | globalThis.Promise<(globalThis.Array<T> | Self.DataSource<T>)>);
 
 	}
 
@@ -4189,16 +4250,57 @@ declare module '@uif-js/core' {
 		RIGHT,
 	}
 
-	export interface MutableDataSource extends Self.DataSource {
-		add(args: {parent?: any; item?: any; items?: globalThis.Array<any>; index?: number; reason?: string}): object;
+	export interface MutableDataSource<T = any> extends Self.DataSource<T> {
+		add(args: {parent?: T; item?: T; items?: globalThis.Array<T>; index?: number; reason?: string}): Self.MutableDataSource.AddResult<T>;
 
-		remove(args: {parent?: any; item?: any; items?: globalThis.Array<any>; index?: number; count?: number; reason?: string}): object;
+		remove(args: {parent?: T; item?: T; items?: globalThis.Array<T>; index?: number; count?: number; reason?: string}): Self.MutableDataSource.RemoveResult<T>;
 
-		move(args: {sourceParent?: number; sourceIndex: number; targetParent?: number; targetIndex: number; count?: number; reason?: string}): object;
+		move(args: {sourceParent?: T; sourceIndex: number; targetParent?: T; targetIndex: number; count?: number; reason?: string}): Self.MutableDataSource.MoveResult<T>;
 
 	}
 
 	export namespace MutableDataSource {
+		interface AddResult<T> {
+			parent?: T;
+
+			index: number;
+
+			items: globalThis.Array<T>;
+
+			reason?: string;
+
+		}
+
+		interface RemoveResult<T> {
+			parent?: T;
+
+			index: number;
+
+			count: number;
+
+			items: globalThis.Array<T>;
+
+			reason?: string;
+
+		}
+
+		interface MoveResult<T> {
+			sourceParent?: T;
+
+			sourceIndex: number;
+
+			targetParent?: T;
+
+			targetIndex: number;
+
+			count: number;
+
+			items: globalThis.Array<T>;
+
+			reason?: string;
+
+		}
+
 	}
 
 	export class Navigator {
@@ -4700,7 +4802,7 @@ declare module '@uif-js/core' {
 
 			strategy?: Self.PositionHelper.Strategy;
 
-			target?: (string | HTMLElement | Self.PositionHelper.Point | Self.Rectangle);
+			target?: (string | HTMLElement | Self.PositionHelper.Point | Self.Rectangle | Self.PositionHelper.TargetPoint);
 
 		}
 
@@ -4742,6 +4844,15 @@ declare module '@uif-js/core' {
 			left: number;
 
 			top: number;
+
+		}
+
+		interface TargetPoint {
+			left: number;
+
+			top: number;
+
+			element: Element;
 
 		}
 
@@ -5032,6 +5143,8 @@ declare module '@uif-js/core' {
 
 		const CUSTOMER: Self.ImageMetadata;
 
+		const DATASET: Self.ImageMetadata;
+
 		const EMAIL: Self.ImageMetadata;
 
 		const EMPLOYEE: Self.ImageMetadata;
@@ -5095,6 +5208,8 @@ declare module '@uif-js/core' {
 		const TRANSFER: Self.ImageMetadata;
 
 		const WEEKLY_TIME: Self.ImageMetadata;
+
+		const WORKBOOK: Self.ImageMetadata;
 
 		const WORK_ORDER: Self.ImageMetadata;
 
@@ -5195,6 +5310,9 @@ declare module '@uif-js/core' {
 
 	}
 
+	export enum RedwoodColorSet {
+	}
+
 	enum RedwoodIcon {
 		AI_SPARKLE,
 		ICO_ACCOUNTS_PAYABLE,
@@ -5218,6 +5336,7 @@ declare module '@uif-js/core' {
 		ICO_BANK,
 		ICO_BAR_CHART,
 		ICO_BINARY,
+		ICO_BOOK,
 		ICO_BUILD,
 		ICO_BUILDER,
 		ICO_CALCULATOR,
@@ -5257,6 +5376,7 @@ declare module '@uif-js/core' {
 		ICO_CHEVRON_RIGHT,
 		ICO_CHEVRON_RIGHT_END,
 		ICO_CHEVRON_UP,
+		ICO_CHEVRON_UP_DOWN,
 		ICO_CHEVRON_UP_END,
 		ICO_CIRCLE,
 		ICO_CIRCLE_S,
@@ -5282,6 +5402,7 @@ declare module '@uif-js/core' {
 		ICO_DOCUMENTS,
 		ICO_DOCUMENT_LINK,
 		ICO_DOWNLOAD,
+		ICO_DOWN_PARENT,
 		ICO_DO_NOT_ENTER,
 		ICO_DRAG_CORNER,
 		ICO_DRAG_H,
@@ -5320,6 +5441,7 @@ declare module '@uif-js/core' {
 		ICO_FUNCTION_ALT,
 		ICO_FUTURE_READY,
 		ICO_GRID_CONTAINER_H,
+		ICO_GRID_VIEW_LARGE,
 		ICO_HAPPY_FILLED,
 		ICO_HASHTAG,
 		ICO_HEART,
@@ -5406,6 +5528,7 @@ declare module '@uif-js/core' {
 		ICO_SUBSIDIARY,
 		ICO_SUCCESS,
 		ICO_SWITCH_OFF,
+		ICO_SWITCH_ON,
 		ICO_SYNC,
 		ICO_TABLES,
 		ICO_TABLES_PIVOT,
@@ -5417,11 +5540,13 @@ declare module '@uif-js/core' {
 		ICO_TIME_OFF,
 		ICO_TRANSFER_MONEY,
 		ICO_TRASH,
+		ICO_UNDO,
 		ICO_UNDO_ALT,
 		ICO_UNGROUP,
 		ICO_UNHAPPY_FILLED,
 		ICO_UNLINK,
 		ICO_UPLOAD,
+		ICO_UP_PARENT,
 		ICO_VERYHAPPY_FILLED,
 		ICO_VERYUNHAPPY_FILLED,
 		ICO_VIEW,
@@ -5443,6 +5568,7 @@ declare module '@uif-js/core' {
 		CONTACT,
 		CREDIT_CARD,
 		CUSTOMER,
+		DATASET,
 		EMAIL,
 		EMPLOYEE,
 		ESTIMATE,
@@ -5475,6 +5601,7 @@ declare module '@uif-js/core' {
 		TRANSACTION,
 		TRANSFER,
 		WEEKLY_TIME,
+		WORKBOOK,
 		WORK_ORDER,
 	}
 
@@ -5492,11 +5619,24 @@ declare module '@uif-js/core' {
 
 		densityHigh: boolean;
 
+		colorSet: Self.RedwoodTheme.ColorSet;
+
+		static forColorSet(colorSet: Self.RedwoodTheme.ColorSet): Self.RedwoodTheme;
+
+		static colorSets: globalThis.Array<number>;
+
 	}
 
 	export namespace RedwoodTheme {
 		interface Options extends Self.Theme.Options {
 			density?: Self.RedwoodTheme.Density;
+
+			colorSet?: Self.RedwoodTheme.ColorSet;
+
+		}
+
+		interface ColorSetDefinition {
+			primary: string;
 
 		}
 
@@ -5511,6 +5651,8 @@ declare module '@uif-js/core' {
 			HIGH,
 			NETSUITE,
 		}
+
+		export import ColorSet = Self.RedwoodColorSet;
 
 	}
 
@@ -5557,6 +5699,7 @@ declare module '@uif-js/core' {
 		CALCULATE_DURATION,
 		CALENDAR,
 		CALL,
+		CARD_VIEW,
 		CARET_DOWN_REDWOOD,
 		CASH_IN_TRANSIT,
 		CHART,
@@ -5577,6 +5720,7 @@ declare module '@uif-js/core' {
 		CHEVRON_LEFT,
 		CHEVRON_RIGHT,
 		CHEVRON_UP,
+		CHEVRON_UP_DOWN,
 		CLOCK,
 		CLOSE,
 		COLLAPSE,
@@ -5758,6 +5902,8 @@ declare module '@uif-js/core' {
 		SUM,
 		SUMMARIZE,
 		SWITCH,
+		SWITCH_OFF,
+		SWITCH_ON,
 		TABLE_COLUMNS,
 		TABLE_ROWS,
 		TABLE_VALUES,
@@ -5781,6 +5927,7 @@ declare module '@uif-js/core' {
 		VIEW_PARTIAL,
 		VIEW_SHOW,
 		WIDTH,
+		WORKBOOK,
 		WRAP_LINE,
 		XAXIS,
 		YAXIS,
@@ -5798,6 +5945,7 @@ declare module '@uif-js/core' {
 		CONTACT,
 		CREDIT_CARD,
 		CUSTOMER,
+		DATASET,
 		EMAIL,
 		EMPLOYEE,
 		ESTIMATE,
@@ -5830,6 +5978,7 @@ declare module '@uif-js/core' {
 		TRANSACTION,
 		TRANSFER,
 		WEEKLY_TIME,
+		WORKBOOK,
 		WORK_ORDER,
 	}
 
@@ -5889,6 +6038,10 @@ declare module '@uif-js/core' {
 		R24_2,
 		R25_1,
 		R25_2,
+		R26_1,
+		R26_2,
+		R27_1,
+		R27_2,
 		current,
 		incoming,
 	}
@@ -6092,6 +6245,8 @@ declare module '@uif-js/core' {
 
 		}
 
+		type RouteContentCallback = (args: any) => (Self.JSX.Element | string | number | null);
+
 		interface EventTypes {
 			ROUTE_RECOGNIZED: string;
 
@@ -6255,6 +6410,13 @@ declare module '@uif-js/core' {
 			NoSync,
 			HorizontalSync,
 			VerticalSync,
+		}
+
+		enum ScrollToMode {
+			AUTO,
+			START,
+			END,
+			CENTER,
 		}
 
 	}
@@ -6740,6 +6902,8 @@ declare module '@uif-js/core' {
 
 		const CASH_IN_TRANSIT: Self.ImageMetadata;
 
+		const CARD_VIEW: Self.ImageMetadata;
+
 		const CARET_DOWN_REDWOOD: Self.ImageMetadata;
 
 		const CHART: Self.ImageMetadata;
@@ -6777,6 +6941,8 @@ declare module '@uif-js/core' {
 		const CHEVRON_RIGHT: Self.ImageMetadata;
 
 		const CHEVRON_UP: Self.ImageMetadata;
+
+		const CHEVRON_UP_DOWN: Self.ImageMetadata;
 
 		const CLOCK: Self.ImageMetadata;
 
@@ -7140,6 +7306,10 @@ declare module '@uif-js/core' {
 
 		const SWITCH: Self.ImageMetadata;
 
+		const SWITCH_ON: Self.ImageMetadata;
+
+		const SWITCH_OFF: Self.ImageMetadata;
+
 		const TABLE_COLUMNS: Self.ImageMetadata;
 
 		const TABLE_ROWS: Self.ImageMetadata;
@@ -7186,6 +7356,8 @@ declare module '@uif-js/core' {
 
 		const WIDTH: Self.ImageMetadata;
 
+		const WORKBOOK: Self.ImageMetadata;
+
 		const WRAP_LINE: Self.ImageMetadata;
 
 		const XAXIS: Self.ImageMetadata;
@@ -7214,6 +7386,10 @@ declare module '@uif-js/core' {
 		dragAndDropStyle: Self.Style;
 
 		cssVariablesStyle: Self.Style;
+
+		isRefreshed: boolean;
+
+		isRedwood: boolean;
 
 		getComponentStyles(Component: (((...args: globalThis.Array<any>) => any) | object), provider?: (theme: Self.Theme) => object): object;
 
@@ -7288,6 +7464,7 @@ declare module '@uif-js/core' {
 		CALENDAR,
 		CALL,
 		CASH_IN_TRANSIT,
+		CARD_VIEW,
 		CARET_DOWN_REDWOOD,
 		CHART,
 		CHART_AREA,
@@ -7307,6 +7484,7 @@ declare module '@uif-js/core' {
 		CHEVRON_LEFT,
 		CHEVRON_RIGHT,
 		CHEVRON_UP,
+		CHEVRON_UP_DOWN,
 		CLOCK,
 		CLOSE,
 		COLLAPSE,
@@ -7488,6 +7666,8 @@ declare module '@uif-js/core' {
 		SUM,
 		SUMMARIZE,
 		SWITCH,
+		SWITCH_ON,
+		SWITCH_OFF,
 		TABLE_COLUMNS,
 		TABLE_ROWS,
 		TABLE_VALUES,
@@ -7511,6 +7691,7 @@ declare module '@uif-js/core' {
 		VIEW_PARTIAL,
 		VIEW_SHOW,
 		WIDTH,
+		WORKBOOK,
 		WRAP_LINE,
 		XAXIS,
 		YAXIS,
@@ -7670,7 +7851,7 @@ declare module '@uif-js/core' {
 	export namespace Translation {
 	}
 
-	export class TreeDataSource implements Self.MutableDataSource, Self.EventSource {
+	export class TreeDataSource<T = any> implements Self.MutableDataSource<T>, Self.EventSource {
 		on(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): Self.EventSource.Handle;
 
 		off(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): void;
@@ -7683,30 +7864,30 @@ declare module '@uif-js/core' {
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
-		constructor(options: {data: globalThis.Array<any>; childAccessor?: (string | Self.TreeDataSource.ChildAccessorCallback)});
+		constructor(options: {data: globalThis.Array<any>; childAccessor?: (string | Self.TreeDataSource.ChildAccessorCallback<T>)});
 
-		data: globalThis.Array<any>;
+		data: globalThis.Array<T>;
 
-		query(args: Self.DataSource.QueryArguments, resolve: (args: {items: globalThis.Array<any>}) => void, reject?: (error: any) => void): void;
+		query(args: Self.DataSource.QueryArguments, resolve: (args: {items: globalThis.Array<T>}) => void, reject?: (error: any) => void): void;
 
-		setData(data: globalThis.Array<any>): void;
+		setData(data: globalThis.Array<T>): void;
 
-		itemAtIndexPath(indexPath: globalThis.Array<number>): any;
+		itemAtIndexPath(indexPath: globalThis.Array<number>): T;
 
-		add(args: {parent?: any; item?: any; items?: globalThis.Array<any>; index?: number; reason?: string}): object;
+		add(args: {parent?: T; item?: T; items?: globalThis.Array<any>; index?: number; reason?: string}): Self.MutableDataSource.AddResult<T>;
 
-		remove(args: {parent?: any; item?: any; items?: globalThis.Array<any>; index?: number; count?: number; reason?: string}): object;
+		remove(args: {parent?: T; item?: T; items?: globalThis.Array<T>; index?: number; count?: number; reason?: string}): Self.MutableDataSource.RemoveResult<T>;
 
-		clear(args?: {parent?: any}): void;
+		clear(args?: {parent?: T}): void;
 
-		move(args: {sourceParent?: number; sourceIndex: number; targetParent?: number; targetIndex: number; count?: number; reason?: string}): object;
+		move(args: {sourceParent?: T; sourceIndex: number; targetParent?: T; targetIndex: number; count?: number; reason?: string}): Self.MutableDataSource.MoveResult<T>;
 
-		filter(filter: (item: any) => boolean): Self.GenericDataSource;
+		filter(filter: (item: T) => boolean): Self.GenericDataSource;
 
 	}
 
 	export namespace TreeDataSource {
-		type ChildAccessorCallback = (args: {dataItem: any}, resolve: (items: globalThis.Array<any>) => void, reject: (error: any) => void) => void;
+		type ChildAccessorCallback<T = any> = (args: {dataItem: T}, resolve: (items: globalThis.Array<T>) => void, reject: (error: any) => void) => void;
 
 	}
 
@@ -7788,11 +7969,11 @@ declare module '@uif-js/core' {
 
 		const NoValue: Self.Type.Matcher;
 
-		function Optional(): Self.Type.Matcher;
+		function Optional(type: Self.Type.Matcher): Self.Type.Matcher;
 
-		function AnyOf(...types: globalThis.Array<any>): Self.Type.Matcher;
+		function AnyOf(...types: globalThis.Array<Self.Type.Matcher>): Self.Type.Matcher;
 
-		function NoneOf(...types: globalThis.Array<any>): Self.Type.Matcher;
+		function NoneOf(...types: globalThis.Array<Self.Type.Matcher>): Self.Type.Matcher;
 
 		function Enum(enumObject: object, enumName?: string): Self.Type.Matcher;
 
