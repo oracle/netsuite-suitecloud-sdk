@@ -26,7 +26,10 @@ const {
 	},
 
 	LINKS: {
-		ERRORS: { AUTHENTICATION_INFO },
+		ERRORS: {
+			AUTHENTICATION_INFO,
+			AUTHENTICATION_FALLBACK_INFO,
+		},
 	},
 } = require('../ApplicationConstants');
 
@@ -56,7 +59,7 @@ const validateBrowserBasedAuthIsAllowed = () => {
 const getBrowserBasedWarningMessages = () => {
 	const executionMode = getExecutionMode();
 	if (executionMode === ExecutionMode.DEV_MACHINE_FALLBACK_PASSKEY) {
-		return NodeTranslationService.getMessage(ROTATE_PASSWORD_WARNING, AUTHENTICATION_INFO);
+		return NodeTranslationService.getMessage(ROTATE_PASSWORD_WARNING, AUTHENTICATION_FALLBACK_INFO);
 	}
 };
 

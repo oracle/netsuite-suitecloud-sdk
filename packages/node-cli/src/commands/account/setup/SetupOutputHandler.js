@@ -11,6 +11,14 @@ const {
 	UTILS: { AUTHENTICATION },
 } = require('../../../services/TranslationKeys');
 
+const {
+	LINKS: {
+		ERRORS: {
+			AUTHENTICATION_FALLBACK_INFO,
+		},
+	}
+} = require('../../../ApplicationConstants');
+
 const AUTH_MODE = {
 	OAUTH: 'OAUTH',
 	SAVE_TOKEN: 'SAVE_TOKEN',
@@ -49,7 +57,7 @@ module.exports = class SetupOutputHandler extends BaseOutputHandler {
 		this._log.result(NodeTranslationService.getMessage(AUTHENTICATION.SUCCESS_SETUP));
 
 		if (actionResult.isSuccess() && process.env.SUITECLOUD_FALLBACK_PASSKEY) {
-			this._log.warning(NodeTranslationService.getMessage(MESSAGES.ROTATE_PASSWORD_WARNING));
+			this._log.warning(NodeTranslationService.getMessage(MESSAGES.ROTATE_PASSWORD_WARNING, AUTHENTICATION_FALLBACK_INFO));
 		}
 
 		return actionResult;
