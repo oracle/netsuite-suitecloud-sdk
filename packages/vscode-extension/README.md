@@ -13,8 +13,8 @@ Read more about SuiteCloud SDK and SDF in <a href="https://docs.oracle.com/en/cl
 
 ## Installation Prerequisites
 The following software is required to work with SuiteCloud Extension for Visual Studio Code:
-- Oracle JDK version 17
-- VS Code version 1.91.1 or higher
+- Oracle JDK version 17 or 21
+- VS Code version 1.96.0 or higher
 
 Read the detailed list of prerequisites in <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159223197655.html" rel="noopener noreferrer" target=blank>Installation Prerequisites for SuiteCloud Extension for Visual Studio Code</a>.
 
@@ -25,8 +25,8 @@ The following table shows the extension versions currently available in the Mark
 
 | Extension Versions Available in the Marketplace | Available Since | Compatible NetSuite Version |
 |:-----------------------------------------------:|:---------------:|:---------------------------:|
+| 3.0.0 | 2025.1 | 2024.2 and 2025.1 |
 | 2.0.X | 2024.2 | 2024.1 and 2024.2 |
-| 1.6.X | 2024.1 | 2024.1 and 2024.2 |
 
 ## Installing SuiteCloud Extension for Visual Studio Code
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
@@ -77,7 +77,6 @@ To add an account, follow these steps:
     Your account is successfully set up.
 
   
-
 To set an account as default for a project, follow these steps:
 1. Open the Command Palette.
 2. Enter **SuiteCloud** and from the dropdown list, select **SuiteCloud: Set Up Account**.
@@ -116,8 +115,8 @@ To read more about what you can do with SuiteCloud Extension for Visual Studio C
 SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
 
 ## Release Notes & Documentation
-To read the 2024.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2024.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
+To read the 2025.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2025.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_3798389663.html).
 - Read the SuiteCloud Extension for Visual Studio Code documentation in [NetSuite's Help Center](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/book_159223417590.html).
 
@@ -125,6 +124,6 @@ To read the 2024.2 NetSuite's release notes and documentation, check the followi
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## License
-Copyright (c) 2022, 2023, 2024 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
+Copyright (c) 2022, 2023, 2024, 2025 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
 
 By installing SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.

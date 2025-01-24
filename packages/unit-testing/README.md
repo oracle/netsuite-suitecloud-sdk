@@ -20,7 +20,7 @@ For more information about the available SuitScript 2.x modules, see [SuiteScrip
 For more information about all the mockable stubs, see the CORE_STUBS list in  [SuiteCloudJestConfiguration.js](./jest-configuration/SuiteCloudJestConfiguration.js).
 
 ## Prerequisites
-- Node.js version 20 LTS
+- Node.js version 22 LTS
 - Having a SuiteCloud project
 
 ## Getting Started
@@ -325,4 +325,4 @@ describe('Sample test with user defined http module stub', () => {
 Suitecloud Unit Testing is an open source project. Pull requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
-Copyright (c) 2023, 2024 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2023, 2024, 2025 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
