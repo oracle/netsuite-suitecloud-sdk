@@ -2,7 +2,6 @@
 
 ## 3.0.0
 - Secure Credentials Storage for SuiteCloud SDK
-- Removal of OAuth 1.0 Token-Based Authentication support in SuiteCloud SDK
 
 ## 2.0.1
 
