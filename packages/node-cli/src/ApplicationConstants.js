@@ -60,7 +60,8 @@ module.exports = {
 			CREATE_INSTALLATION_PREFERENCES: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515948480.html',
 		},
 		ERRORS: {
-			AUTHENTICATION_INFO: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=article_0113125121.html'
+			AUTHENTICATION_INFO: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=article_0113125121.html',
+			AUTHENTICATION_FALLBACK_INFO: 'https://system.netsuite.com/app/help/helpcenter.nl?fid=article_1024042128.html#subsect_83104357122'
 		}
 	},
 	ENV_VARS: {
