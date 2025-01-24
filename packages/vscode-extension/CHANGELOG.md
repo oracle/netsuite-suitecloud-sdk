@@ -1,6 +1,7 @@
 # Change Log
 
 ## 3.0.0
+
 - Secure Credentials Storage for SuiteCloud SDK
 
 ## 2.0.1
