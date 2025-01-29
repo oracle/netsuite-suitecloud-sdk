@@ -9,19 +9,23 @@
 			"type": "object",
 			"properties": {
 				"isDeployed": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": true
 				},
 				"status": {
-					"type": "string"
+					"type": "string",
+					"enum": ["TESTING", "RELEASED", "NOTSCHEDULED", "SCHEDULED", "INPROGRESS", "INQUEUE", "COMPLETED"]
 				},
 				"logLevel": {
-					"type": "string"
+					"type": "string",
+					"enum": ["AUDIT", "DEBUG", "EMERGENCY", "ERROR", "INTERNAL", "SYSTEM"]
 				},
 				"permissionElevation": {
 					"type": "string"
 				},
 				"frequency": {
-					"type": "string"
+					"type": "string",
+					"enum": ["NONE", "DAY", "WEEK", "MONTH", "YEAR"]
 				},
 				"period": {
 					"type": "integer",
@@ -38,43 +42,56 @@
 					"type": "string"
 				},
 				"repeat": {
-					"type": "string"
+					"type": "string",
+					"enum": ["PT15M", "PT30M", "PT1H", "PT2H", "PT4H", "PT6H", "PT8H", "PT12H"]
 				},
 				"monday": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"tuesday": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"wednesday": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"thursday": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"friday": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"saturday": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"sunday": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"dayOfWeek": {
-					"type": "string"
+					"type": "string",
+					"enum": ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
 				},
 				"orderOfWeekInMonth": {
-					"type": "string"
+					"type": "string",
+					"enum": ["FIRST", "SECOND", "THIRD", "FOURTH", "LAST"]
 				},
 				"dayOfMonth": {
-					"type": "string"
+					"type": "string",
+					"enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
 				},
 				"monthOfYear": {
-					"type": "string"
+					"type": "string",
+					"enum": ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
 				},
 				"noEndDate": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": true
 				},
 				"script": {
 					"type": "string"
@@ -83,31 +100,37 @@
 					"type": "string"
 				},
 				"bufferSize": {
-					"type": "string"
+					"type": "string",
+					"default": "1"
 				},
 				"concurrencyLimit": {
-					"type": "string"
+					"type": "string",
+					"default": "1"
 				},
 				"queueAllStagesAtOnce": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": true
 				},
 				"yieldAfterMins": {
-					"type": "string"
+					"type": "string",
+					"default": "60"
 				},
 				"priority": {
-					"type": "string"
+					"type": "string",
+					"enum": ["HIGH", "STANDARD", "NORMAL"],
+					"default": "STANDARD"
 				},
-				"@scriptId": {
+				"scriptId": {
 					"type": "string",
 					"maxLength": 40,
-					"pattern": "^customdeploy.*$",
+					"pattern": "^customdeploy.+$",
 					"default": "customdeploy"
 				}
 			},
 			"required": [
 				"status",
 				"script",
-				"@scriptId"
+				"scriptId"
 			],
 			"additionalProperties": false
 		}
