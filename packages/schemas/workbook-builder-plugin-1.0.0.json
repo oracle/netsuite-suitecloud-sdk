@@ -26,7 +26,8 @@
 					"maxLength": 40
 				},
 				"notifyAdmins": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"notifyEmails": {
 					"type": "string",
@@ -36,10 +37,12 @@
 					"type": "string"
 				},
 				"notifyOwner": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": true
 				},
 				"notifyUser": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"owner": {
 					"type": "string"

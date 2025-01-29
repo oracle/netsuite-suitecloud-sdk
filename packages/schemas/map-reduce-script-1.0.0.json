@@ -18,7 +18,8 @@
 					"maxLength": 999
 				},
 				"isInactive": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"name": {
 					"type": "string",
@@ -39,6 +40,10 @@
 				"notifyOwner": {
 					"type": "boolean",
 					"default": true
+				},
+				"notifyUser": {
+					"type": "boolean",
+					"default": false
 				},
 				"owner": {
 					"type": "string"
