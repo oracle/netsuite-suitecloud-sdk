@@ -10,6 +10,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 60
 				},
 				"applicationId": {
@@ -42,7 +43,8 @@
 								"type": "object",
 								"properties": {
 									"value": {
-										"type": "string"
+										"type": "string",
+										"minLength": 1
 									}
 								},
 								"required": [
@@ -63,10 +65,12 @@
 								"type": "object",
 								"properties": {
 									"certificate": {
-										"type": "string"
+										"type": "string",
+										"minLength": 1
 									},
 									"name": {
-										"type": "string"
+										"type": "string",
+										"minLength": 1
 									}
 								},
 								"required": [

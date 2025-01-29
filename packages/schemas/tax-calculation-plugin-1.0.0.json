@@ -22,6 +22,7 @@
 				},
 				"name": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 40
 				},
 				"notifyAdmins": {
@@ -58,17 +59,17 @@
 				"permissionElevation": {
 					"type": "string"
 				},
-				"@scriptId": {
+				"scriptId": {
 					"type": "string",
 					"maxLength": 40,
-					"pattern": "^customscript.*$",
+					"pattern": "^customscript.+$",
 					"default": "customscript"
 				}
 			},
 			"required": [
 				"name",
 				"scriptFile",
-				"@scriptId"
+				"scriptId"
 			],
 			"additionalProperties": false
 		}

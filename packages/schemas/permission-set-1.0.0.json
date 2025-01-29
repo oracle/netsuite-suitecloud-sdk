@@ -10,6 +10,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 128
 				},
 				"description": {
@@ -25,7 +26,8 @@
 								"type": "object",
 								"properties": {
 									"permissibleRecordType": {
-										"type": "string"
+										"type": "string",
+										"minLength": 1
 									},
 									"accessMode": {
 										"type": "string",

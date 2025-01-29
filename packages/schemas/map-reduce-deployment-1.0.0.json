@@ -94,7 +94,8 @@
 					"default": true
 				},
 				"script": {
-					"type": "string"
+					"type": "string",
+					"minLength": 1
 				},
 				"title": {
 					"type": "string"

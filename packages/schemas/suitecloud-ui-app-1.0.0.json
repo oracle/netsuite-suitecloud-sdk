@@ -10,20 +10,23 @@
 			"properties": {
 				"name": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 100
 				},
 				"version": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 100
 				},
 				"url": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 100
 				},
-				"@scriptId": {
+				"scriptId": {
 					"type": "string",
 					"maxLength": 99,
-					"pattern": "^custuiapp.*$",
+					"pattern": "^custuiapp.+$",
 					"default": "custuiapp"
 				}
 			},
@@ -31,7 +34,7 @@
 				"name",
 				"version",
 				"url",
-				"@scriptId"
+				"scriptId"
 			],
 			"additionalProperties": false
 		}
