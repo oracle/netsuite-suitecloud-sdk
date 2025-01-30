@@ -165,7 +165,7 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_NEW_NAME": "Enter a new name for the authentication ID:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_CREDENTIALS": "Select an authentication ID (a custom alias you give to a specific account-role combination) to see its details:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",
-	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": " You will remove the credentials locally, but the tokens will still be valid in the account until its expiration. Do you want to proceed?",
+	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the tokens are not revoked in the account. Do you want to proceed?",
 
 	"COMMAND_OPTIONS_HELP": "Displays help for the command.",
 	"COMMAND_OPTIONS_INTERACTIVE_HELP": "Runs the {0} command in interactive mode.",

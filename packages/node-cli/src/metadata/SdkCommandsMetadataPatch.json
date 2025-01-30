@@ -8,7 +8,7 @@
 				"description": "Prints a list of all the configured authentication IDs. Usage: account:manageauth --list."
 			},
 			"remove": {
-				"description": "Removes an authentication ID. Usage: account:manageauth --remove {authenticationID}."
+				"description": "Removes an authentication ID. The tokens are not revoked in the account. Usage: account:manageauth --remove {authenticationID}."
 			},
 			"rename": {
 				"description": "Renames an authentication ID. You must specify it together with the renameto option. Usage: account:manageauth --rename {authenticationID} --renameto {newAuthenticationID}."
