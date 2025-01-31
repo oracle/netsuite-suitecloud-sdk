@@ -55,8 +55,7 @@ export default class MessageService {
 	showWarningMessageDismiss(warningMessage: string, includeProjectName = true) {
 		window.showWarningMessage(
 			includeProjectName ? this.addProjectNameToMessage(warningMessage) : warningMessage,
-			this.translationService.getMessage(BUTTONS.DISMISS),
-		);
+			this.translationService.getMessage(BUTTONS.DISMISS));
 	}
 
 	showErrorMessage(errorMessage: string) {
