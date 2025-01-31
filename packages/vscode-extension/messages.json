@@ -12,6 +12,7 @@
 
 	"BUTTONS_RESTART_NOW": "Restart Now",
 	"BUTTONS_SEE_DETAILS": "See Details",
+	"BUTTON_DISMISS": "Dismiss",
 
 	"COMMAND_ERROR": "Something went wrong with '{0}'.",
 	"COMMAND_SUCCESS": "'{0}' has been successfully executed.",
