@@ -165,7 +165,7 @@
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_NEW_NAME": "Enter a new name for the authentication ID:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_CREDENTIALS": "Select an authentication ID (a custom alias you give to a specific account-role combination) to see its details:",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_SELECT_ACTION": "Select one of the following actions:",
-	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the TBA tokens will still be valid in the account. Do you want to proceed?",
+	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_VERIFY_REMOVE": "You will remove the credentials locally, but the tokens are not revoked in the account. Do you want to proceed?",
 
 	"COMMAND_OPTIONS_HELP": "Displays help for the command.",
 	"COMMAND_OPTIONS_INTERACTIVE_HELP": "Runs the {0} command in interactive mode.",
@@ -259,7 +259,6 @@
 	"ERRORS_RUN_SETUP_ACCOUNT": "Run \"suitecloud account:setup\" to restore the account configuration for the project.",
 	"ERRORS_SCRUMBOX_URL_NOT_FOUND": "The {0} domain does not exist. Check the NetSuite domain and try again.\n\n{1}",
 	"ERRORS_SDKEXECUTOR_NO_JAR_FILE_FOUND": "There is no JAR file in your CLI for Node.js. Run \"npm install\" from \"{0}\" to install the JAR file.",
-	"ERRORS_SDKEXECUTOR_NO_TBA_FOR_ACCOUNT_AND_ROLE": "The email, NetSuite domain, account ID, and role combination in your account.json file have not been set up for token-based authentication (TBA). Run \"suitecloud account:setup\" to set up TBA.",
 	"ERRORS_SDKEXECUTOR_RUNNING_COMMAND": "There was an internal error while running the command. Details: {0}",
 	"ERRORS_SDKEXECUTOR_SDK_ERROR": "ERROR: SDK exited with code {0}\n{1}",
 	"ERRORS_SDK_SETTINGS_FILE_WRONG_JSON_SYNTAX": "Your {0} file is not valid. Ensure the content of the file is correct, or delete the file.\n{1}",
