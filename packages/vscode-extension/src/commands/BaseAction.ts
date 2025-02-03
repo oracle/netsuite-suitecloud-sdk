@@ -54,12 +54,11 @@ export default abstract class BaseAction {
 
 			if (this.commandMetadata.isSetupRequired) {
 				const defaultAuthId = this.getDefaultAuthId();
-				if (defaultAuthId !== '') {
-					await this.checkAndRefreshAuthorizationIfNeeded(defaultAuthId);
-				} else {
+				if (!defaultAuthId) {
 					showSetupAccountWarningMessage();
 					return;
 				}
+				await this.checkAndRefreshAuthorizationIfNeeded(defaultAuthId);
 			}
 
 			return this.execute();

@@ -18,7 +18,6 @@ const EnvironmentInformationService = require('./services/EnvironmentInformation
 const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
-const SdkErrorCodes = require('./SdkErrorCodes');
 const ExecutionEnvironmentContext = require('./ExecutionEnvironmentContext');
 
 const DATA_EVENT = 'data';
@@ -72,9 +71,6 @@ module.exports = class SdkExecutor {
 			if (code === 0) {
 				try {
 					const output = isIntegrationMode ? JSON.parse(lastSdkOutput) : lastSdkOutput;
-					if (isIntegrationMode && output.errorCode && output.errorCode === SdkErrorCodes.NO_TBA_SET_FOR_ACCOUNT) {
-						reject(NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_TBA_FOR_ACCOUNT_AND_ROLE));
-					}
 					resolve(output);
 				} catch (error) {
 					reject(NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error));
