@@ -171,7 +171,7 @@ export default class ManageAuth extends BaseAction {
 			CANCEL: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CANCEL),
 		};
 		const removeAnswer = await window.showQuickPick([REMOVE_ANSWER.CONTINUE, REMOVE_ANSWER.CANCEL], {
-			placeHolder: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CONFIRMATION_MESSAGE, selectedAuhtID.authId),
+			placeHolder: this.translationService.getMessage(MANAGE_AUTH.REMOVE.CONFIRMATION_MESSAGE),
 			ignoreFocusOut: true,
 			canPickMany: false,
 		});

@@ -121,7 +121,7 @@
 	"MANAGE_AUTH_GENERAL_SELECT_AUTH_ID_TO_MANAGE": "Select the auth ID you want to manage:",
 	"MANAGE_AUTH_GENERAL_SELECT_OPTION_FOR_AUTH_ID": "Select one of the following options for {0}:",
 	"MANAGE_AUTH_REMOVE_CANCEL": "Cancel",
-	"MANAGE_AUTH_REMOVE_CONFIRMATION_MESSAGE": "This auth ID will be removed locally but still be valid in your account: {0}.",
+	"MANAGE_AUTH_REMOVE_CONFIRMATION_MESSAGE": "The auth ID will be removed locally but the tokens are not revoked in the account.",
 	"MANAGE_AUTH_REMOVE_CONTINUE": "Continue",
 	"MANAGE_AUTH_REMOVE_REMOVING_AUTH_ID": "Removing auhtID...",
 	"MANAGE_AUTH_RENAME_ENTER_NEW_AUTH_ID": "Enter the new auth ID.",
