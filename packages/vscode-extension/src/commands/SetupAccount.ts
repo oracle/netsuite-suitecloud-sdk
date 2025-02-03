@@ -205,7 +205,7 @@ export default class SetupAccount extends BaseAction {
 
 		const warning = ExecutionContextService.getBrowserBasedWarningMessages();
 		if (warning) {
-			this.messageService.showWarningMessageDismiss(warning);
+			this.messageService.showWarningMessageWithOk(warning);
 		}
 	}
 
