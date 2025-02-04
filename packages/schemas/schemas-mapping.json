@@ -1,0 +1,57 @@
+{
+    "schemas": [
+      {
+        "fileMatch": ["f_*.json, f_*.yaml, f_*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/custom-field-1.0.0.json"
+      },
+      {
+        "fileMatch": ["r_*.json, r_*.yaml, r_*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/custom-record-1.0.0.json"
+      },
+      {
+        "fileMatch": ["customscript-ds*.json, customscript-ds*.yaml, customscript-ds*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/dataset-builder-plugin-1.0.0.json"
+      },
+      {
+       "fileMatch": ["customscript-fp*.json, customscript-fp*.yaml, customscript-fp*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/fi-parser-plugin-1.0.0.json"
+      },
+      {
+        "fileMatch": ["custinteg*.json, custinteg*.yaml, custinteg*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/integration-1.0.0.json"
+      },
+      {
+        "fileMatch": ["customdeploy*.json, customdeploy*.yaml, customdeploy*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/map-reduce-deployment-1.0.0.json"
+      },
+      {
+       "fileMatch": ["customscript-mrs*.json, customscript-mrs*.yaml, customscript-mrs*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/map-reduce-script-1.0.0.json"
+      },
+      {
+        "fileMatch": ["caf_*.json, caf_*.yaml, caf_*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/permission-set-1.0.0.json"
+      },
+      {
+        "fileMatch": ["customscript-sid*.json, customscript-sid*.yaml, customscript-sid*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/sdf-installation-deployment-1.0.0.json"
+      },
+      {
+        "fileMatch": ["custsecret*.json, custsecret*.yaml, custsecret*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/secret-1.0.0.json"
+      },
+      {
+        "fileMatch": ["custuiapp*.json, custuiapp*.yaml, custuiapp*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/suitecloud-ui-app-1.0.0.json"
+      },
+      {
+        "fileMatch": ["customscript-tc*.json, customscript-tcp*.yaml, customscript-tcp*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/tax-calculation-plugin-1.0.0.json"
+      },
+      {
+        "fileMatch": ["customscript-wb*.json, customscript-wbp*.yaml, customscript-wbp*.yml"],
+        "url": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/feature/PDPSDF-9727-json-schemas-changes/packages/schemas/workbook-builder-plugin-1.0.0.json"
+      }
+      
+    ]
+  }
