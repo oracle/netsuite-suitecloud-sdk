@@ -22,6 +22,7 @@ export const ANSWERS = {
 export const BUTTONS = {
 	RESTART_NOW: 'BUTTONS_RESTART_NOW',
 	SEE_DETAILS: 'BUTTONS_SEE_DETAILS',
+	OK: 'BUTTONS_OK'
 };
 
 export const COMMAND = {

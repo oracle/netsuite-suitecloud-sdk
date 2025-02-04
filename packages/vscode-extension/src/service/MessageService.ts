@@ -52,6 +52,12 @@ export default class MessageService {
 			);
 	}
 
+	showWarningMessageWithOk(warningMessage: string, includeProjectName = true) {
+		window.showWarningMessage(
+			includeProjectName ? this.addProjectNameToMessage(warningMessage) : warningMessage,
+			this.translationService.getMessage(BUTTONS.OK));
+	}
+
 	showErrorMessage(errorMessage: string) {
 		window.showErrorMessage(this.addProjectNameToMessage(errorMessage));
 	}

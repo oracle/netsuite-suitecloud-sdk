@@ -115,7 +115,7 @@ export default class SetupAccount extends BaseAction {
 		try {
 			validatorFunction();
 		} catch (err: any) {
-			this.messageService.showCommandError(err);
+			this.messageService.showErrorMessage(err);
 			return false;
 		}
 		return true;
@@ -205,7 +205,7 @@ export default class SetupAccount extends BaseAction {
 
 		const warning = ExecutionContextService.getBrowserBasedWarningMessages();
 		if (warning) {
-			this.messageService.showCommandWarning(warning);
+			this.messageService.showWarningMessageWithOk(warning);
 		}
 	}
 
