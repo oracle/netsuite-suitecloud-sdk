@@ -10,6 +10,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 199
 				},
 				"description": {
@@ -25,10 +26,12 @@
 								"type": "object",
 								"properties": {
 									"field": {
-										"type": "string"
+										"type": "string",
+										"enum": ["ACCOUNT.ACCTNAME", "ACCOUNT.ACCTNUMBER"]
 									},
 									"direction": {
-										"type": "string"
+										"type": "string",
+										"enum": ["ASCENDING", "DESCENDING"]
 									},
 									"sequenceNumber": {
 										"type": "integer"
@@ -44,16 +47,17 @@
 					},
 					"additionalProperties":false
 				},
-				"@scriptId": {
+				"scriptId": {
 					"type": "string",
 					"maxLength": 40,
-					"pattern": "^r_.*$"
+					"pattern": "^r_.+$",
+					"default": "r_"
 				}
 			},
 			"additionalProperties": false,
 			"required": [
 				"name",
-				"@scriptId"
+				"scriptId"
 			]
 		}
 	},

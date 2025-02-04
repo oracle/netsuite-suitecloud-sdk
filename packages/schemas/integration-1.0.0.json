@@ -9,16 +9,20 @@
 			"type": "object",
 			"properties": {
 				"name": {
-					"type": "string"
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 60
 				},
 				"applicationId": {
 					"type": "string"
 				},
 				"description": {
-					"type": "string"
+					"type": "string",
+					"maxLength": 500
 				},
 				"authenticationFlowType": {
-					"type": "string"
+					"type": "string",
+					"enum": ["AUTHORIZATION_CODE_CONFIDENTIAL_CLIENT", "AUTHORIZATION_CODE_CLIENT_ASSERTION", "CLIENT_CREDENTIALS", "AUTHORIZATION_CODE_PUBLIC_CLIENT"]
 				},
 				"refreshTokenExpiration": {
 					"type": "integer"
@@ -27,7 +31,8 @@
 					"type": "integer"
 				},
 				"promptPolicy": {
-					"type": "string"
+					"type": "string",
+					"enum": ["NEVER", "ASK_FIRST_TIME", "ASK_ALWAYS"]
 				},
 				"redirectUris": {
 					"type": "object",
@@ -38,7 +43,8 @@
 								"type": "object",
 								"properties": {
 									"value": {
-										"type": "string"
+										"type": "string",
+										"minLength": 1
 									}
 								},
 								"required": [
@@ -59,10 +65,12 @@
 								"type": "object",
 								"properties": {
 									"certificate": {
-										"type": "string"
+										"type": "string",
+										"minLength": 1
 									},
 									"name": {
-										"type": "string"
+										"type": "string",
+										"minLength": 1
 									}
 								},
 								"required": [
@@ -75,17 +83,18 @@
 					},
 					"additionalProperties":false
 				},
-				"@scriptId": {
+				"scriptId": {
 					"type": "string",
 					"maxLength": 99,
-					"pattern": "^custinteg.*$"
+					"pattern": "^custinteg.+$",
+					"default": "custinteg"
 				}
 			},
 			"additionalProperties": false,
 			"required": [
 				"name",
 				"authenticationFlowType",
-				"@scriptId"
+				"scriptId"
 			]
 		}
 	},

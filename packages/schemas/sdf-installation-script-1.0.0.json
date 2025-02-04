@@ -17,35 +17,43 @@
 				},
 				"name": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 40
 				},
 				"notifyAdmins": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"notifyEmails": {
 					"type": "string",
 					"maxLength": 999
 				},
+				"notifyGroup": {
+					"type": "string"
+				},
 				"notifyOwner": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": true
 				},
 				"notifyUser": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": false
 				},
 				"scriptFile": {
 					"type": "string",
 					"pattern": "^\\[.*\\.js\\]$"
 				},
-				"@scriptId": {
+				"scriptId": {
 					"type": "string",
 					"maxLength": 40,
-					"pattern": "^customscript.*$"
+					"pattern": "^customscript.+$",
+					"default": "customscript"
 				}
 			},
 			"required": [
 				"name",
 				"scriptFile",
-				"@scriptId"
+				"scriptId"
 			],
 			"additionalProperties": false
 		}

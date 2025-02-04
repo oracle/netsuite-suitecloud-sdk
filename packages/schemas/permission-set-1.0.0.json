@@ -10,6 +10,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
+					"minLength": 1,
 					"maxLength": 128
 				},
 				"description": {
@@ -25,10 +26,12 @@
 								"type": "object",
 								"properties": {
 									"permissibleRecordType": {
-										"type": "string"
+										"type": "string",
+										"minLength": 1
 									},
 									"accessMode": {
-										"type": "string"
+										"type": "string",
+										"enum": ["CREATE", "READ", "UPDATE", "DELETE"]
 									}
 								},
 								"required": [
@@ -41,15 +44,16 @@
 					},
 					"additionalProperties":false
 				},
-				"@scriptId": {
+				"scriptId": {
 					"type": "string",
 					"maxLength": 128,
-					"pattern": "^caf_.*$"
+					"pattern": "^caf_.+$",
+					"default": "caf_"
 				}
 			},
 			"required": [
 				"name",
-				"@scriptId"
+				"scriptId"
 			],
 			"additionalProperties": false
 		}

@@ -9,34 +9,40 @@
 			"type": "object",
 			"properties": {
 				"isDeployed": {
-					"type": "boolean"
+					"type": "boolean",
+					"default": true
 				},
 				"status": {
-					"type": "string"
+					"type": "string",
+					"enum": ["TESTING", "RELEASED", "NOTSCHEDULED", "SCHEDULED", "INPROGRESS", "INQUEUE", "COMPLETED"]
 				},
 				"logLevel": {
-					"type": "string"
+					"type": "string",
+					"enum": ["AUDIT", "DEBUG", "EMERGENCY", "ERROR", "INTERNAL", "SYSTEM"]
 				},
 				"permissionElevation": {
 					"type": "string"
 				},
 				"script": {
-					"type": "string"
+					"type": "string",
+					"minLength": 1
 				},
 				"title": {
-					"type": "string"
+					"type": "string",
+					"minLength": 1
 				},
-				"@scriptId": {
+				"scriptId": {
 					"type": "string",
 					"maxLength": 40,
-					"pattern": "^customdeploy.*$"
+					"pattern": "^customdeploy.+$",
+					"default": "customdeploy"
 				}
 			},
 			"required": [
 				"status",
 				"script",
 				"title",
-				"@scriptId"
+				"scriptId"
 			],
 			"additionalProperties": false
 		}
