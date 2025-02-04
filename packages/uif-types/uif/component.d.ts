@@ -369,6 +369,8 @@ declare module '@uif-js/component' {
 
 		logoutButtonOptions: Self.Button.Options;
 
+		environment: Self.AdminDocsSystemHeader.Environment;
+
 	}
 
 	namespace AdminDocsSystemHeader {
@@ -381,6 +383,17 @@ declare module '@uif-js/component' {
 
 			logoutButtonOptions?: Self.Button.Options;
 
+			environment?: Self.SystemHeader.Environment;
+
+		}
+
+		enum Environment {
+			PRODUCTION,
+			RELEASE_PREVIEW,
+			SANDBOX,
+			F,
+			SNAP,
+			DEBUGGER,
 		}
 
 	}
@@ -1118,6 +1131,65 @@ declare module '@uif-js/component' {
 
 	}
 
+	export class Banner extends PackageCore.Component {
+		constructor(options?: Self.Banner.Options);
+
+		button: (Self.Button.Options | null);
+
+		color: Self.Banner.Color;
+
+		content: (PackageCore.Component | PackageCore.JSX.Element);
+
+		closeAction: (Self.Button.ActionCallback | null);
+
+		dontShowAgainAction: (Self.Button.ActionCallback | null);
+
+		imageUrl: (string | null);
+
+		title: (null | string | number | PackageCore.Translation);
+
+		showControls: boolean;
+
+	}
+
+	export namespace Banner {
+		interface Options extends PackageCore.Component.Options {
+			content: (PackageCore.Component | PackageCore.JSX.Element);
+
+			title?: (string | number | PackageCore.Translation);
+
+			imageUrl?: string;
+
+			color?: Self.Banner.Color;
+
+			showControls?: boolean;
+
+			centerImage?: boolean;
+
+			button?: Self.Button.Options;
+
+			dontShowAgainAction?: Self.CheckBox.ActionCallback;
+
+			closeAction?: Self.Button.ActionCallback;
+
+		}
+
+		enum Color {
+			NEUTRAL,
+			BLUE,
+			PURPLE,
+			TURQUOISE,
+			PINK,
+			ORANGE,
+		}
+
+		enum I18n {
+			DONT_SHOW_AGAIN,
+			CLOSE,
+		}
+
+	}
+
 	export class BannerMessage extends PackageCore.Component {
 		constructor(options?: Self.BannerMessage.Options);
 
@@ -1517,6 +1589,7 @@ declare module '@uif-js/component' {
 		}
 
 		enum Size {
+			SMALLER,
 			SMALL,
 			MEDIUM,
 			LARGE,
@@ -2798,7 +2871,6 @@ declare module '@uif-js/component' {
 
 		enum VisualStyle {
 			CHECK,
-			TOGGLE,
 		}
 
 		enum LabelPosition {
@@ -3458,9 +3530,9 @@ declare module '@uif-js/component' {
 
 	export namespace ColorPicker {
 		interface Options extends PackageCore.Component.Options {
-			color: (PackageCore.Color | PackageCore.Color.HEX | null);
+			color?: (PackageCore.Color | PackageCore.Color.HEX | null);
 
-			colorSelector: Self.ColorSelector.Options;
+			colorSelector?: Self.ColorSelector.Options;
 
 			displayType?: Self.ColorPicker.DisplayType;
 
@@ -3468,7 +3540,7 @@ declare module '@uif-js/component' {
 
 			mode?: Self.ColorPicker.Mode;
 
-			palettes: globalThis.Array<Self.ColorPalette.PaletteConfig>;
+			palettes?: globalThis.Array<Self.ColorPalette.PaletteConfig>;
 
 			size?: Self.ColorPicker.Size;
 
@@ -3563,15 +3635,17 @@ declare module '@uif-js/component' {
 		interface Options extends PackageCore.Component.Options {
 			collapseWithLastPalette?: boolean;
 
-			color: (PackageCore.Color | PackageCore.Color.HEX | null);
+			color?: (PackageCore.Color | PackageCore.Color.HEX | null);
 
-			colorCanvas: Self.ColorCanvas.Options;
+			colorCanvas?: Self.ColorCanvas.Options;
 
-			colorModifier: Self.ColorModifier.Options;
+			colorModifier?: Self.ColorModifier.Options;
 
-			colorPalette: Self.ColorPalette.Options;
+			colorPalette?: Self.ColorPalette.Options;
 
-			mode: Self.ColorSelector.Mode;
+			mode?: Self.ColorSelector.Mode;
+
+			palettes?: globalThis.Array<Self.ColorPalette.PaletteConfig>;
 
 			onColorChanged?: Self.ColorSelector.ColorChangedCallback;
 
@@ -3906,7 +3980,7 @@ declare module '@uif-js/component' {
 
 		dataLoader: (Self.Loader | null);
 
-		placeholder: (string | PackageCore.Translation | PackageCore.Component);
+		placeholder: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		actionBar: (PackageCore.Component | PackageCore.JSX.Element | null);
 
@@ -3931,6 +4005,8 @@ declare module '@uif-js/component' {
 		scrollOffset: {x: number; y: number};
 
 		scrollability: PackageCore.Scrollable.Scrollability;
+
+		highlightRowsOnHover: boolean;
 
 		onSort: Self.DataGrid.SortCallback;
 
@@ -4151,7 +4227,7 @@ declare module '@uif-js/component' {
 
 			paging?: boolean;
 
-			placeholder?: (string | PackageCore.Translation | PackageCore.Component);
+			placeholder?: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 			preload?: Self.DataGrid.Preload;
 
@@ -4160,6 +4236,8 @@ declare module '@uif-js/component' {
 			resizableRows?: boolean;
 
 			rowCursor?: boolean;
+
+			highlightRowsOnHover?: boolean;
 
 			rowDragSource?: PackageCore.DataExchange.DragSourceProvider;
 
@@ -5140,7 +5218,7 @@ declare module '@uif-js/component' {
 	}
 
 	export class EllipsisTooltip {
-		constructor(options?: Self.EllipsisTooltip.Options);
+		constructor(options?: Self.EllipsisTooltip.Options & {content?: (string | PackageCore.Component | PackageCore.JSX.Element)});
 
 		shown: boolean;
 
@@ -5151,6 +5229,8 @@ declare module '@uif-js/component' {
 		show(): void;
 
 		hide(): void;
+
+		private getComponents(): void;
 
 	}
 
@@ -5227,11 +5307,24 @@ declare module '@uif-js/component' {
 		enum Color {
 			DEFAULT,
 			NEUTRAL,
-			THEMED,
-			INFO,
 			SUCCESS,
 			WARNING,
+			DANGER,
+			INFO,
+			TEAL,
+			ORANGE,
+			TURQUOISE,
+			TAUPE,
+			GREEN,
+			PINK,
+			BROWN,
+			LILAC,
+			YELLOW,
+			PURPLE,
+			BLUE,
+			PINE,
 			ERROR,
+			THEMED,
 		}
 
 		enum Reason {
@@ -5456,7 +5549,7 @@ declare module '@uif-js/component' {
 	export class FilePicker extends PackageCore.Component implements PackageCore.InputComponent {
 		constructor(options?: Self.FilePicker.Options);
 
-		fileTypes: (string | globalThis.Array<string>);
+		fileTypes: globalThis.Array<string>;
 
 		multiSelect: boolean;
 
@@ -5464,7 +5557,7 @@ declare module '@uif-js/component' {
 
 		emptyText: string;
 
-		labelText: (((files: globalThis.Array<File>) => string) | null);
+		labelText: (Self.FilePicker.LabelTextCallback | null);
 
 		valueValidator: (Self.FilePicker.ValueValidatorCallback | null);
 
@@ -5490,7 +5583,9 @@ declare module '@uif-js/component' {
 
 		onFilesChanged: (Self.FilePicker.FilesChangedCallback | null);
 
-		setFileTypes(value: (string | globalThis.Array<string>)): void;
+		setSelectedFiles(files: globalThis.Array<File>, options?: {validate?: boolean; showValidationMessage?: boolean; reason?: string}): globalThis.Promise<void>;
+
+		setFileTypes(value: globalThis.Array<string>): void;
 
 		setMultiSelect(value: boolean): void;
 
@@ -5504,7 +5599,7 @@ declare module '@uif-js/component' {
 
 		setLabel(value: (files: globalThis.Array<File>) => string): void;
 
-		setValueValidator(value: Self.FilePicker.ValueValidatorCallback): void;
+		setValueValidator(value: (Self.FilePicker.ValueValidatorCallback | null)): void;
 
 		setAcceptInvalidValue(value: boolean): void;
 
@@ -5514,21 +5609,13 @@ declare module '@uif-js/component' {
 
 		clear(options?: {reason?: string}): void;
 
-		private _getAcceptValue(): string;
+		private validate(files: globalThis.Array<File>, options?: {showMessage?: boolean}): (globalThis.Promise<boolean> | boolean);
 
-		private _createTooltip(): void;
+		private renderInput(): void;
 
-		private _updateFiles(options: {files: globalThis.Array<File>; reason?: string}): void;
+		private renderButton(): void;
 
-		private _validate(files: globalThis.Array<File>): globalThis.Promise<any>;
-
-		private _setFiles(options: {files: globalThis.Array<File>; reason: string}): globalThis.Promise<any>;
-
-		private _renderInput(): void;
-
-		private _renderButton(): void;
-
-		private _renderClearButton(): void;
+		private renderClearButton(): void;
 
 		static Event: Self.FilePicker.EventTypes;
 
@@ -5536,6 +5623,8 @@ declare module '@uif-js/component' {
 
 	export namespace FilePicker {
 		interface Options extends PackageCore.Component.Options {
+			selectedFiles?: globalThis.Array<File>;
+
 			acceptInvalidValue?: boolean;
 
 			buttonOptions?: Self.Button.Options;
@@ -5548,7 +5637,7 @@ declare module '@uif-js/component' {
 
 			fileTypes?: globalThis.Array<string>;
 
-			labelText?: (files: globalThis.Array<File>) => string;
+			labelText?: Self.FilePicker.LabelTextCallback;
 
 			messageTimeout?: number;
 
@@ -5575,24 +5664,19 @@ declare module '@uif-js/component' {
 
 		}
 
-		type ValueValidatorCallback = (previousFiles: globalThis.Array<File>, newFiles: globalThis.Array<File>) => (globalThis.Promise<boolean> | boolean);
-
-		interface EventTypes extends PackageCore.Component.EventTypes {
-			FILES_CHANGED: string;
-
-		}
-
-		interface Validation {
-			acceptInvalidValue?: boolean;
-
-			valueValidator?: Self.FilePicker.ValueValidatorCallback;
-
-		}
+		type ValueValidatorCallback = (previousFiles: globalThis.Array<File>, newFiles: globalThis.Array<File>) => (globalThis.Promise<(boolean | Self.FilePicker.ValidationResult)> | Self.FilePicker.ValidationResult | boolean);
 
 		interface ValidationResult {
 			valid: boolean;
 
 			message: string;
+
+		}
+
+		type LabelTextCallback = (files: globalThis.Array<File>) => (string | PackageCore.Translation);
+
+		interface EventTypes extends PackageCore.Component.EventTypes {
+			FILES_CHANGED: string;
 
 		}
 
@@ -5939,13 +6023,13 @@ declare module '@uif-js/component' {
 
 		function createTextBoxFilter(options: {automationId?: string; id: string; label: string; binding?: string; filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: string; matchingOperator?: Self.FilterFactoryConstant.TextBoxFilterMatchingOperator}): Self.FilterFactory.Filter;
 
-		function createDropdownFilter(options: {automationId?: string; id: string; label: string; dataProvider: () => PackageCore.DataSource; valueMember: string; displayMember: string; binding?: string; filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: object}): Self.FilterFactory.Filter;
+		function createDropdownFilter(options: {automationId?: string; id: string; label: string; dataProvider: () => PackageCore.DataSource; valueMember: string; displayMember: string; binding?: string; filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: any}): Self.FilterFactory.Filter;
 
-		function createMultiselectDropdownFilter(options: {automationId?: string; id: string; label: string; dataProvider: () => PackageCore.DataSource; valueMember: string; displayMember: string; binding?: string; filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: globalThis.Array<object>}): Self.FilterFactory.Filter;
+		function createMultiselectDropdownFilter(options: {automationId?: string; id: string; label: string; dataProvider: () => PackageCore.DataSource; valueMember: string; displayMember: string; binding?: string; filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: globalThis.Array<any>}): Self.FilterFactory.Filter;
 
 		function createDateFilter(options: {automationId?: string; id: string; label: string; binding?: (string | ((item: any) => PackageCore.Date)); filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: PackageCore.Date}): Self.FilterFactory.Filter;
 
-		function createDateRangeFilter(options: {automationId?: string; id: string; label: string; binding?: (string | ((item: any) => PackageCore.Date)); filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: {rangeStart: PackageCore.Date; rangeEnd: PackageCore.Date}}): Self.FilterFactory.Filter;
+		function createDateRangeFilter(options: {automationId?: string; id: string; label: string; binding?: (string | ((item: any) => PackageCore.Date)); filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: Self.DateRange.Range}): Self.FilterFactory.Filter;
 
 		function createTimeFilter(options: {id: string; label: string; binding?: (string | ((item: any) => PackageCore.Time)); format?: string; filterPredicate?: Self.FilterFactory.FilterPredicateCallback; value?: PackageCore.Time}): Self.FilterFactory.Filter;
 
@@ -5983,13 +6067,19 @@ declare module '@uif-js/component' {
 	export class FilterPanel extends PackageCore.Component {
 		constructor(options: Self.FilterPanel.Options);
 
-		state: object;
+		state: globalThis.Array<Self.FilterPanel.FilterState>;
 
-		filters: globalThis.Array<Self.FilterPanel.Filter>;
+		filters: globalThis.Array<Self.FilterPanel.FilterDefinition>;
 
 		filtersVisibilityToggle: Self.Button;
 
 		showClearAll: boolean;
+
+		orientation: Self.FilterPanel.Orientation;
+
+		getState(): globalThis.Array<Self.FilterPanel.FilterState>;
+
+		getActiveFiltersCount(): number;
 
 		isAnyFilterActive(): boolean;
 
@@ -5998,14 +6088,27 @@ declare module '@uif-js/component' {
 	}
 
 	export namespace FilterPanel {
-		interface Filter {
-			filterChip: Self.FilterChip;
+		interface Options extends PackageCore.Component.Options {
+			filters: globalThis.Array<Self.FilterPanel.FilterDefinition>;
 
-			id: any;
+			orientation?: Self.FilterPanel.Orientation;
+
+			showClearAll?: boolean;
+
+			horizontalExpansionEnabled?: boolean;
 
 		}
 
-		interface Options extends PackageCore.Component.Options {
+		interface FilterDefinition {
+			id: any;
+
+			filterChip: Self.FilterChip;
+
+		}
+
+		interface FilterState extends Self.FilterPanel.FilterDefinition {
+			value: any;
+
 		}
 
 		interface EventTypes extends PackageCore.Component.EventTypes {
@@ -6027,7 +6130,7 @@ declare module '@uif-js/component' {
 
 	}
 
-	export function FixedLayout(props?: {children?: PackageCore.VDom.Children}): PackageCore.JSX.Element;
+	export function FixedLayout(props?: {topContent?: (PackageCore.Component | PackageCore.JSX.Element | null); children?: PackageCore.VDom.Children}): PackageCore.JSX.Element;
 
 	export class FormContext {
 	}
@@ -6170,21 +6273,35 @@ declare module '@uif-js/component' {
 
 		rowHeight: (number | null);
 
+		resizableStartColumnRegion: boolean;
+
+		resizableEndColumnRegion: boolean;
+
+		startColumnRegionMaxWidth: (number | null);
+
+		endColumnRegionMaxWidth: (number | null);
+
 		expanded: boolean;
 
 		firstDayOfWeek: (number | null);
 
 		showCriticalPath: boolean;
 
+		showBaselines: boolean;
+
 		viewPreset: (Self.GanttChart.ViewPreset | Self.GanttChart.ViewPresetConfig);
 
-		taskColor: Self.GanttChart.TaskColor;
+		taskColor: (Self.GanttChart.TaskColor | Self.GanttChart.TaskCustomColor | PackageCore.Color | Self.GanttChart.TaskColorCallback);
 
 		taskHorizontalMargin: number;
 
 		taskVerticalMargin: number;
 
+		taskMinimumWidth: number;
+
 		gridLines: Self.GanttChart.GridLines;
+
+		resourceGridLines: boolean;
 
 		gridColumnContent: (Self.GanttChart.GridColumnContentCallback | null);
 
@@ -6194,11 +6311,35 @@ declare module '@uif-js/component' {
 
 		taskLabel: (Self.GanttChart.TaskLabelCallback | null);
 
+		taskStyle: (string | PackageCore.Style | object | Self.GanttChart.TaskStyleCallback | null);
+
+		taskPosition: (Self.GanttChart.TaskPositionCallback | null);
+
+		taskOuterLabel: (Self.GanttChart.TaskOuterLabelCallback | null);
+
+		dragTaskPosition: (Self.GanttChart.DragTaskPositionCallback | null);
+
+		baselineHeight: number;
+
+		baselineColor: (PackageCore.Color | Self.GanttChart.BaselineColorCallback | null);
+
+		baselineStyle: (string | PackageCore.Style | object | Self.GanttChart.BaselineStyleCallback | null);
+
+		baselineTooltip: (Self.GanttChart.BaselineTooltipCallback | null);
+
 		expandedResources: (globalThis.Array<Self.GanttChart.Id> | globalThis.Set<Self.GanttChart.Id> | null);
 
 		timelineTooltip: (Self.GanttChart.TimelineTooltipCallback | null);
 
+		taskResizeTooltip: (Self.GanttChart.TaskResizeTooltipCallback | null);
+
+		taskResizeValidator: (Self.GanttChart.TaskResizeValidatorCallback | null);
+
+		taskDragTooltip: (Self.GanttChart.TaskDragTooltipCallback | null);
+
 		dropValidator: Self.GanttChart.DropValidatorCallback;
+
+		dropPlaceholder: (Self.GanttChart.DropPlaceholder | null);
 
 		onTaskClick: (Self.GanttChart.TaskClickCallback | null);
 
@@ -6210,7 +6351,11 @@ declare module '@uif-js/component' {
 
 		onTaskMoved: (Self.GanttChart.TaskMovedCallback | null);
 
+		onTaskDropPlaceholderUpdate: (Self.GanttChart.TaskDropPlaceholderUpdateCallback | null);
+
 		onResourceExpanded: (Self.GanttChart.ResourceExpandedCallback | null);
+
+		scrollTo(args: {resourceId?: Self.GanttChart.Id; date?: PackageCore.Date; mode?: Self.GanttChart.ScrollToMode}): void;
 
 		static weekendIntervals(startDate: PackageCore.Date, endDate: PackageCore.Date, options: Partial<Self.GanttChart.CalendarIntervalDefinition>): globalThis.Array<Self.GanttChart.CalendarIntervalDefinition>;
 
@@ -6252,17 +6397,39 @@ declare module '@uif-js/component' {
 
 			taskVerticalMargin?: number;
 
+			taskMinimumWidth?: number;
+
 			rowHeight?: number;
+
+			resizableStartColumnRegion?: boolean;
+
+			resizableEndColumnRegion?: boolean;
+
+			startColumnRegionMaxWidth?: (number | null);
+
+			endColumnRegionMaxWidth?: (number | null);
 
 			firstDayOfWeek?: number;
 
 			showCriticalPath?: boolean;
 
+			showBaselines?: boolean;
+
+			baselineHeight?: number;
+
+			baselineColor?: (PackageCore.Color | Self.GanttChart.BaselineColorCallback);
+
+			baselineStyle?: (string | PackageCore.Style | object | Self.GanttChart.BaselineStyleCallback);
+
+			baselineTooltip?: Self.GanttChart.BaselineTooltipCallback;
+
 			viewPreset?: (Self.GanttChart.ViewPreset | Self.GanttChart.ViewPresetConfig);
 
-			taskColor?: Self.GanttChart.TaskColor;
+			taskColor?: (Self.GanttChart.TaskColor | Self.GanttChart.TaskCustomColor | PackageCore.Color | Self.GanttChart.TaskColorCallback);
 
 			gridLines?: Self.GanttChart.GridLines;
+
+			resourceGridLines?: boolean;
 
 			gridColumnContent?: Self.GanttChart.GridColumnContentCallback;
 
@@ -6276,7 +6443,21 @@ declare module '@uif-js/component' {
 
 			taskTooltip?: Self.GanttChart.TaskTooltipCallback;
 
+			taskResizeTooltip?: Self.GanttChart.TaskResizeTooltipCallback;
+
+			taskDragTooltip?: Self.GanttChart.TaskDragTooltipCallback;
+
+			taskResizeValidator?: Self.GanttChart.TaskResizeValidatorCallback;
+
 			taskLabel?: Self.GanttChart.TaskLabelCallback;
+
+			taskStyle?: (string | PackageCore.Style | object | Self.GanttChart.TaskStyleCallback);
+
+			taskPosition?: Self.GanttChart.TaskPositionCallback;
+
+			taskOuterLabel?: Self.GanttChart.TaskOuterLabelCallback;
+
+			dragTaskPosition?: Self.GanttChart.DragTaskPositionCallback;
 
 			onTaskClick?: Self.GanttChart.TaskClickCallback;
 
@@ -6289,6 +6470,8 @@ declare module '@uif-js/component' {
 			onTaskResized?: Self.GanttChart.TaskResizedCallback;
 
 			onTaskMoved?: Self.GanttChart.TaskMovedCallback;
+
+			onTaskDropPlaceholderUpdate?: Self.GanttChart.TaskDropPlaceholderUpdateCallback;
 
 			timelineTooltip?: Self.GanttChart.TimelineTooltipCallback;
 
@@ -6313,6 +6496,8 @@ declare module '@uif-js/component' {
 
 			region?: Self.GanttChart.ColumnRegion;
 
+			resourceTooltip?: Self.GanttChart.ResourceTooltipCallback;
+
 			width?: number;
 
 		}
@@ -6322,7 +6507,7 @@ declare module '@uif-js/component' {
 
 			height?: number;
 
-			taskColor?: Self.GanttChart.TaskColor;
+			taskColor?: (Self.GanttChart.TaskColor | Self.GanttChart.TaskCustomColor | PackageCore.Color);
 
 			calendar?: Self.GanttChart.Id;
 
@@ -6337,11 +6522,11 @@ declare module '@uif-js/component' {
 
 			startDate: PackageCore.Date;
 
-			endDate: PackageCore.Date;
+			endDate?: PackageCore.Date;
 
 			type?: Self.GanttChart.TaskType;
 
-			color?: Self.GanttChart.TaskColor;
+			color?: (Self.GanttChart.TaskColor | Self.GanttChart.TaskCustomColor | PackageCore.Color);
 
 			percentDone?: number;
 
@@ -6349,7 +6534,24 @@ declare module '@uif-js/component' {
 
 			draggable?: boolean;
 
+			baselines?: globalThis.Array<Self.GanttChart.BaselineDefinition>;
+
 			label?: (string | Self.GanttChart.TaskLabelCallback);
+
+			style?: (string | PackageCore.Style | object);
+
+		}
+
+		interface BaselineDefinition {
+			id: Self.GanttChart.Id;
+
+			startDate: PackageCore.Date;
+
+			endDate?: PackageCore.Date;
+
+			color?: PackageCore.Color;
+
+			style?: (string | PackageCore.Style | object);
 
 		}
 
@@ -6415,6 +6617,31 @@ declare module '@uif-js/component' {
 
 		}
 
+		type ResourceTooltipCallback = (args: Self.GanttChart.ResourceTooltipCallbackArgs) => (string | PackageCore.JSX.Element | null);
+
+		interface ResourceTooltipCallbackArgs {
+			column: Self.GanttChart.ColumnDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		interface TaskCustomColor {
+			color: PackageCore.Color;
+
+			done?: PackageCore.Color;
+
+		}
+
+		type TaskColorCallback = (args: Self.GanttChart.TaskColorCallbackArgs) => (Self.GanttChart.TaskColor | Self.GanttChart.TaskCustomColor | PackageCore.Color | null);
+
+		interface TaskColorCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
 		type TaskLabelCallback = (args: Self.GanttChart.TaskLabelCallbackArgs) => (string | number | PackageCore.JSX.Element);
 
 		interface TaskLabelCallbackArgs {
@@ -6424,7 +6651,27 @@ declare module '@uif-js/component' {
 
 		}
 
-		type TaskClickCallback = (args: Self.GanttChart.TaskClickCallbackArgs) => (boolean | null);
+		type TaskOuterLabelCallback = (args: Self.GanttChart.TaskOuterLabelCallbackArgs) => Self.GanttChart.TaskOuterLabelConfig;
+
+		interface TaskOuterLabelCallbackArgs {
+			resource: Self.GanttChart.ResourceDefinition;
+
+			task: Self.GanttChart.TaskDefinition;
+
+		}
+
+		interface TaskOuterLabelConfig {
+			before?: (string | number | PackageCore.JSX.Element);
+
+			after?: (string | number | PackageCore.JSX.Element);
+
+			above?: (string | number | PackageCore.JSX.Element);
+
+			below?: (string | number | PackageCore.JSX.Element);
+
+		}
+
+		type TaskClickCallback = (args: Self.GanttChart.TaskClickCallbackArgs) => (boolean | void);
 
 		interface TaskClickCallbackArgs {
 			resource: Self.GanttChart.ResourceDefinition;
@@ -6447,12 +6694,57 @@ declare module '@uif-js/component' {
 
 		}
 
-		type TaskTooltipCallback = (args: Self.GanttChart.TaskTooltipCallbackArgs) => (PackageCore.JSX.Element | null);
+		type TaskTooltipCallback = (args: Self.GanttChart.TaskTooltipCallbackArgs) => (string | PackageCore.JSX.Element | null);
 
 		interface TaskTooltipCallbackArgs {
 			resource: Self.GanttChart.ResourceDefinition;
 
 			task: Self.GanttChart.TaskDefinition;
+
+		}
+
+		type TaskStyleCallback = (args: Self.GanttChart.TaskStyleCallbackArgs) => (string | PackageCore.Style | object | null);
+
+		interface TaskStyleCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		type TaskPositionCallback = (args: Self.GanttChart.TaskPositionCallbackArgs) => Self.GanttChart.TaskPositionCallbackResult;
+
+		interface TaskPositionCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		interface TaskPositionCallbackResult {
+			top: number;
+
+			height: number;
+
+		}
+
+		type DragTaskPositionCallback = (args: Self.GanttChart.DragTaskPositionCallbackArgs) => Self.GanttChart.DragTaskPositionCallbackResult;
+
+		interface DragTaskPositionCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+			startDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
+
+		}
+
+		interface DragTaskPositionCallbackResult {
+			top: number;
+
+			height: number;
 
 		}
 
@@ -6500,6 +6792,57 @@ declare module '@uif-js/component' {
 			endDate: PackageCore.Date;
 
 			previousEndDate: PackageCore.Date;
+
+		}
+
+		type BaselineColorCallback = (args: Self.GanttChart.BaselineColorCallbackArgs) => (PackageCore.Color | null);
+
+		interface BaselineColorCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			baseline: Self.GanttChart.BaselineDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		type BaselineStyleCallback = (args: Self.GanttChart.BaselineStyleCallbackArgs) => (string | PackageCore.Style | object | null);
+
+		interface BaselineStyleCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			baseline: Self.GanttChart.BaselineDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		type BaselineTooltipCallback = (args: Self.GanttChart.BaselineTooltipCallbackArgs) => (string | PackageCore.JSX.Element | null);
+
+		interface BaselineTooltipCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			baseline: Self.GanttChart.BaselineDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+		}
+
+		type TaskDropPlaceholderUpdateCallback = (args: Self.GanttChart.TaskDropPlaceholderUpdateCallbackArgs) => void;
+
+		interface TaskDropPlaceholderUpdateCallbackArgs {
+			placeholder: (Self.GanttChart.DropPlaceholder | null);
+
+		}
+
+		interface DropPlaceholder {
+			task: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+			startDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
 
 		}
 
@@ -6552,6 +6895,45 @@ declare module '@uif-js/component' {
 			formatService: PackageCore.FormatService;
 
 			firstDayOfWeek: number;
+
+		}
+
+		type TaskResizeTooltipCallback = (args: Self.GanttChart.TaskResizeTooltipCallbackArgs) => (string | PackageCore.JSX.Element | null);
+
+		interface TaskResizeTooltipCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+			startDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
+
+		}
+
+		type TaskResizeValidatorCallback = (args: Self.GanttChart.TaskResizeTooltipCallbackArgs) => boolean;
+
+		interface TaskResizeValidatorCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+			startDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
+
+		}
+
+		type TaskDragTooltipCallback = (args: Self.GanttChart.TaskDragTooltipCallbackArgs) => (string | PackageCore.JSX.Element | null);
+
+		interface TaskDragTooltipCallbackArgs {
+			task: Self.GanttChart.TaskDefinition;
+
+			resource: Self.GanttChart.ResourceDefinition;
+
+			startDate: PackageCore.Date;
+
+			endDate: PackageCore.Date;
 
 		}
 
@@ -6695,6 +7077,10 @@ declare module '@uif-js/component' {
 
 		export import TaskSide = Self.GanttConstant.TaskSide;
 
+		export import TaskLabelLocation = Self.GanttConstant.TaskLabelLocation;
+
+		export import ScrollToMode = PackageCore.ScrollController.ScrollToMode;
+
 	}
 
 	namespace GanttConstant {
@@ -6735,16 +7121,24 @@ declare module '@uif-js/component' {
 
 		enum TaskColor {
 			NEUTRAL,
-			THEMED,
-			RED,
+			SUCCESS,
+			WARNING,
+			DANGER,
+			INFO,
+			TEAL,
+			ORANGE,
+			TURQUOISE,
+			TAUPE,
 			GREEN,
-			BLUE,
+			PINK,
+			BROWN,
+			LILAC,
 			YELLOW,
 			PURPLE,
-			ORANGE,
-			PINK,
-			TURQUOISE,
-			BROWN,
+			BLUE,
+			PINE,
+			THEMED,
+			RED,
 		}
 
 		enum TaskType {
@@ -6758,6 +7152,13 @@ declare module '@uif-js/component' {
 			BOTTOM,
 			START,
 			END,
+		}
+
+		enum TaskLabelLocation {
+			ABOVE,
+			BELOW,
+			BEFORE,
+			AFTER,
 		}
 
 	}
@@ -7357,6 +7758,12 @@ declare module '@uif-js/component' {
 
 		mandatory: boolean;
 
+		searchable: boolean;
+
+		searchPredicate: (Self.GridColumn.SearchPredicateCallback | null);
+
+		sortComparatorProvider: (Self.GridColumn.SortComparatorProviderCallback | null);
+
 		createCell(args: object): Self.GridCell;
 
 		createHeaderCell(args: any): Self.GridHeaderCell;
@@ -7547,6 +7954,12 @@ declare module '@uif-js/component' {
 
 			headerHelperButtonMode?: boolean;
 
+			searchable?: boolean;
+
+			searchPredicate?: Self.GridColumn.SearchPredicateCallback;
+
+			sortComparatorProvider?: Self.GridColumn.SortComparatorProviderCallback;
+
 			on?: PackageCore.EventSource.ListenerMap;
 
 		}
@@ -7554,6 +7967,28 @@ declare module '@uif-js/component' {
 		type WidgetOptionsCallback<T> = (args: {cell: Self.GridCell; external: boolean; columnOptions: T}) => T;
 
 		type HelperButtonProvider = (cell: Self.GridCell) => (globalThis.Array<Self.GridCell.HelperButton> | globalThis.Array<Self.Button>);
+
+		type SearchPredicateCallback = (args: Self.GridColumn.SearchPredicateCallbackArgs) => boolean;
+
+		interface SearchPredicateCallbackArgs {
+			column: Self.GridColumn;
+
+			dataItem: any;
+
+			value: any;
+
+			phrase: string;
+
+		}
+
+		type SortComparatorProviderCallback = (args: Self.GridColumn.SortComparatorProviderCallbackArgs) => PackageCore.Comparator.Function;
+
+		interface SortComparatorProviderCallbackArgs {
+			column: Self.GridColumn;
+
+			direction: Self.GridColumn.SortDirection;
+
+		}
 
 		interface EventTypes {
 			COLUMNS_ADDED: string;
@@ -8781,7 +9216,7 @@ declare module '@uif-js/component' {
 
 	export namespace GridSyntheticCell {
 		interface Options extends Self.GridCell.Options {
-			content: (Self.GridSyntheticCell.ContentCallback | PackageCore.Component);
+			content: (Self.GridSyntheticCell.ContentCallback | PackageCore.JSX.Element | PackageCore.Component);
 
 			copyValueProvider?: (cell: Self.GridSyntheticCell) => (string | Element);
 
@@ -9005,25 +9440,7 @@ declare module '@uif-js/component' {
 
 	}
 
-	export interface HeaderMenuOptions {
-		icon?: Self.Image.Source;
-
-		label?: Self.NetsuiteSystemHeader.HeaderMenuLabel;
-
-		menuItems?: globalThis.Array<Self.MenuItem>;
-
-		url?: string;
-
-	}
-
 	export namespace HeaderNavigationEvent {
-	}
-
-	export interface HeaderNavigationOptions {
-		getDynamicItems?: () => globalThis.Promise<any>;
-
-		items?: globalThis.Array<Self.MenuItem>;
-
 	}
 
 	export class Heading extends PackageCore.Component {
@@ -9487,19 +9904,25 @@ declare module '@uif-js/component' {
 		}
 
 		enum Color {
-			INFO,
+			NONE,
+			NEUTRAL,
 			SUCCESS,
 			WARNING,
 			DANGER,
-			PURPLE,
-			YELLOW,
+			INFO,
+			TEAL,
+			ORANGE,
+			TURQUOISE,
+			TAUPE,
 			GREEN,
 			PINK,
-			TURQUOISE,
 			BROWN,
-			NEUTRAL,
+			LILAC,
+			YELLOW,
+			PURPLE,
+			BLUE,
+			PINE,
 			THEMED,
-			FOCUS,
 		}
 
 		enum TrendDirection {
@@ -9510,6 +9933,7 @@ declare module '@uif-js/component' {
 		enum Justification {
 			START,
 			CENTER,
+			END,
 		}
 
 	}
@@ -9662,7 +10086,7 @@ declare module '@uif-js/component' {
 
 		label: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-		color: Self.Legend.Color;
+		color: (Self.Legend.Color | PackageCore.Color | string);
 
 		shape: Self.Legend.Shape;
 
@@ -9674,7 +10098,7 @@ declare module '@uif-js/component' {
 		interface Options extends PackageCore.Component.Options {
 			label?: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
-			color?: Self.Legend.Color;
+			color?: (Self.Legend.Color | PackageCore.Color | string);
 
 			shape?: Self.Legend.Shape;
 
@@ -9684,16 +10108,23 @@ declare module '@uif-js/component' {
 
 		enum Color {
 			NEUTRAL,
-			INFO,
 			SUCCESS,
 			WARNING,
-			ERROR,
-			PURPLE,
-			YELLOW,
+			DANGER,
+			INFO,
+			TEAL,
+			ORANGE,
+			TURQUOISE,
+			TAUPE,
 			GREEN,
 			PINK,
-			TURQUOISE,
 			BROWN,
+			LILAC,
+			YELLOW,
+			PURPLE,
+			BLUE,
+			PINE,
+			ERROR,
 			LIGHT_BLUE,
 		}
 
@@ -9943,7 +10374,7 @@ declare module '@uif-js/component' {
 
 		empty: boolean;
 
-		placeholder: (string | PackageCore.Translation | PackageCore.Component);
+		placeholder: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		virtualization: boolean;
 
@@ -10005,7 +10436,7 @@ declare module '@uif-js/component' {
 
 		getNextSelectableItem(from: Self.ListItem, step: number, circular: boolean): (Self.ListItem | null);
 
-		setPlaceholder(value: string): void;
+		setPlaceholder(value: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element)): void;
 
 		setDropPlaceholderIndex(index: number): void;
 
@@ -10035,7 +10466,7 @@ declare module '@uif-js/component' {
 
 			multiSelect?: boolean;
 
-			placeholder?: (string | PackageCore.Translation | PackageCore.Component);
+			placeholder?: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 			selectable?: boolean;
 
@@ -10736,7 +11167,9 @@ declare module '@uif-js/component' {
 		interface ColumnOptions extends Self.GridColumn.Options {
 			searchable?: boolean;
 
-			searchPredicate?: (phrase: string, item: any, formatService: PackageCore.FormatService) => boolean;
+			searchPredicate?: Self.GridColumn.SearchPredicateCallback;
+
+			sortComparatorProvider?: Self.GridColumn.SortComparatorProviderCallback;
 
 		}
 
@@ -10771,6 +11204,8 @@ declare module '@uif-js/component' {
 			TEXT_AREA,
 			EDIT_VIEW,
 			IMAGE,
+			ACTION,
+			TEMPLATED,
 		}
 
 		function create(columnType: Self.ListViewColumnFactory.ColumnType, columnOptions: object, widgetOptions?: object): object;
@@ -10882,6 +11317,8 @@ declare module '@uif-js/component' {
 		embedded: boolean;
 
 		parentBorderSize: number;
+
+		coverParent: boolean;
 
 		setIcon(icon: Self.Image.Source): void;
 
@@ -11338,6 +11775,8 @@ declare module '@uif-js/component' {
 
 			orientation?: Self.Menu.Orientation;
 
+			scrollControl?: Self.Menu.ScrollControl;
+
 			role?: Self.Menu.Role;
 
 			size?: Self.Menu.Size;
@@ -11372,6 +11811,8 @@ declare module '@uif-js/component' {
 			ITEM,
 			GROUP,
 		}
+
+		export import ScrollControl = Self.ScrollPanel.ScrollControl;
 
 	}
 
@@ -12456,6 +12897,14 @@ declare module '@uif-js/component' {
 
 		headerAlignment: Self.NavigationDrawer.HeaderAlignment;
 
+		onSelectedValueChanged: Self.NavigationDrawer.SelectedValueChangedCallback;
+
+		width: (number | string | null);
+
+		selectActiveRoute: boolean;
+
+		onBeforeItemSelected: Self.NavigationDrawer.BeforeItemSelectedCallback;
+
 		setSelectedItem(selectedItem: (Self.NavigationDrawerItem | null), options: {reason?: (string | symbol)}): void;
 
 		setSelectedValue(value: any, options: {reason?: (string | symbol)}): void;
@@ -12492,6 +12941,14 @@ declare module '@uif-js/component' {
 
 			selectedValue?: any;
 
+			width?: (number | string);
+
+			selectActiveRoute?: boolean;
+
+			onSelectedValueChanged?: Self.NavigationDrawer.SelectedValueChangedCallback;
+
+			onBeforeItemSelected?: Self.NavigationDrawer.BeforeItemSelectedCallback;
+
 		}
 
 		interface ItemOptions {
@@ -12525,6 +12982,24 @@ declare module '@uif-js/component' {
 
 		}
 
+		type SelectedValueChangedCallback = (args: Self.NavigationDrawer.SelectedValueChangedCallbackArgs) => void;
+
+		interface SelectedValueChangedCallbackArgs {
+			value: any;
+
+			previousValue: any;
+
+			reason: (string | symbol);
+
+		}
+
+		type BeforeItemSelectedCallback = (args: Self.NavigationDrawer.BeforeItemSelectedCallbackArgs) => boolean;
+
+		interface BeforeItemSelectedCallbackArgs {
+			value: any;
+
+		}
+
 		interface EventTypes extends PackageCore.Component.EventTypes {
 			SELECTED_VALUE_CHANGED: symbol;
 
@@ -12543,6 +13018,7 @@ declare module '@uif-js/component' {
 		enum Reason {
 			CALL,
 			UPDATE,
+			ROUTE_UPDATE,
 		}
 
 		enum HeaderAlignment {
@@ -12595,6 +13071,10 @@ declare module '@uif-js/component' {
 		parent: (Self.NavigationDrawerItem | null);
 
 		content: (PackageCore.Component | PackageCore.JSX.Element);
+
+		separatorTop: boolean;
+
+		separatorBottom: boolean;
 
 		setSelected(selected: boolean, reason: symbol): void;
 
@@ -12666,6 +13146,12 @@ declare module '@uif-js/component' {
 	export class NetsuiteSystemHeader extends PackageCore.Component {
 		constructor(options?: Self.NetsuiteSystemHeader.Options);
 
+		logos: globalThis.Array<PackageCore.JSX.Element>;
+
+		environment: Self.NetsuiteSystemHeader.Environment;
+
+		roleColor: Self.NetsuiteSystemHeader.RoleColor;
+
 	}
 
 	export namespace NetsuiteSystemHeader {
@@ -12676,13 +13162,62 @@ declare module '@uif-js/component' {
 
 			logos?: globalThis.Array<PackageCore.JSX.Element>;
 
-			navigationMenuOptions?: Self.HeaderNavigationOptions;
+			navigationMenuOptions?: Self.NetsuiteSystemHeader.HeaderNavigationOptions;
 
-			quickMenuOptions?: Self.HeaderMenuOptions;
+			quickMenuOptions?: Self.NetsuiteSystemHeader.HeaderMenuOptions;
 
-			roleMenuOptions?: Self.HeaderMenuOptions;
+			roleMenuOptions?: Self.NetsuiteSystemHeader.HeaderMenuOptions;
 
-			searchOptions?: Self.SystemSearch.Options;
+			searchOptions?: Self.NetsuiteSystemHeader.HeaderSearchOptions;
+
+			languageSelectorOptions?: Self.NetsuiteSystemHeader.LanguageSelectorOptions;
+
+			roleColor?: Self.NetsuiteSystemHeader.RoleColor;
+
+			environment?: Self.NetsuiteSystemHeader.Environment;
+
+		}
+
+		interface HeaderMenuOptions {
+			icon?: Self.Image.Source;
+
+			label?: Self.NetsuiteSystemHeader.HeaderMenuLabel;
+
+			menuItems?: globalThis.Array<Self.MenuItem>;
+
+			url?: string;
+
+		}
+
+		interface HeaderSearchOptions {
+			options?: Self.SystemSearch.Options;
+
+			systemSearch?: Self.SystemSearch;
+
+			placeholder?: string;
+
+		}
+
+		interface LanguageSelectorOptions {
+			languages?: globalThis.Array<Self.NetsuiteSystemHeader.LanguageOption>;
+
+			selectedLanguage?: Self.NetsuiteSystemHeader.LanguageOption;
+
+			onLanguageChange?: () => void;
+
+		}
+
+		interface LanguageOption {
+			id?: string;
+
+			value?: string;
+
+		}
+
+		interface HeaderNavigationOptions {
+			getDynamicItems?: () => globalThis.Promise<any>;
+
+			items?: globalThis.Array<Self.MenuItem>;
 
 		}
 
@@ -12693,14 +13228,40 @@ declare module '@uif-js/component' {
 
 		}
 
-	}
+		enum Icons {
+			SANDBOX,
+			RELEASE_PREVIEW,
+			HELP,
+			FEEDBACK,
+			CREATE_NEW_RECORD,
+			SIGN_OUT,
+			CURRENT_ROLE,
+			ROLES,
+		}
 
-	export interface NetsuiteSystemHeaderSearchOptions {
-		options?: Self.SystemSearch.Options;
+		enum RoleColor {
+			DEFAULT,
+			BLACK,
+			GRAY,
+			BROWN,
+			ORANGE,
+			MOSS_GREEN,
+			GREEN,
+			LIGHT_BLUE,
+			TURQUOISE,
+			PURPLE,
+			PINK,
+			RED,
+		}
 
-		systemSearch?: Self.SystemSearch;
-
-		placeholder?: string;
+		enum Environment {
+			PRODUCTION,
+			RELEASE_PREVIEW,
+			SANDBOX,
+			F,
+			SNAP,
+			DEBUGGER,
+		}
 
 	}
 
@@ -13266,6 +13827,8 @@ declare module '@uif-js/component' {
 
 		export import GapSize = Self.Window.GapSize;
 
+		export import Position = Self.Window.Position;
+
 	}
 
 	export class Portlet extends PackageCore.Component {
@@ -13320,19 +13883,24 @@ declare module '@uif-js/component' {
 
 		enum Color {
 			NONE,
-			THEMED,
-			DANGER,
-			WARNING,
-			INFO,
+			NEUTRAL,
 			SUCCESS,
-			PURPLE,
-			YELLOW,
+			WARNING,
+			DANGER,
+			INFO,
+			TEAL,
+			ORANGE,
+			TURQUOISE,
+			TAUPE,
 			GREEN,
 			PINK,
-			TURQUOISE,
 			BROWN,
-			PRIMARY,
-			FOCUS,
+			LILAC,
+			YELLOW,
+			PURPLE,
+			BLUE,
+			PINE,
+			THEMED,
 		}
 
 	}
@@ -13343,6 +13911,12 @@ declare module '@uif-js/component' {
 	}
 
 	namespace ProjectParser {
+	}
+
+	export class PromotionService {
+	}
+
+	export namespace PromotionService {
 	}
 
 	export class RadioButton extends PackageCore.Component {
@@ -13383,7 +13957,7 @@ declare module '@uif-js/component' {
 
 		static Event: Self.RadioButton.EventTypes;
 
-		static Group: PackageCore.JSX.Element;
+		static Group(props?: Self.RadioButtonGroup.Options): PackageCore.JSX.Element;
 
 	}
 
@@ -13391,7 +13965,7 @@ declare module '@uif-js/component' {
 		interface Options extends PackageCore.Component.Options {
 			clickableLabel?: boolean;
 
-			group: Self.RadioGroup;
+			group?: Self.RadioGroup;
 
 			label?: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
@@ -13788,12 +14362,14 @@ declare module '@uif-js/component' {
 		}
 
 		enum Color {
-			DEFAULT,
+			NEUTRAL,
 			SUCCESS,
 			WARNING,
-			ERROR,
+			DANGER,
 			INFO,
 			ACCENT,
+			ERROR,
+			DEFAULT,
 		}
 
 		enum I18n {
@@ -13846,18 +14422,23 @@ declare module '@uif-js/component' {
 
 		enum Color {
 			NEUTRAL,
-			THEMED,
-			DANGER,
-			WARNING,
-			INFO,
 			SUCCESS,
-			PURPLE,
-			YELLOW,
+			WARNING,
+			DANGER,
+			INFO,
+			TEAL,
+			ORANGE,
+			TURQUOISE,
+			TAUPE,
 			GREEN,
 			PINK,
-			TURQUOISE,
 			BROWN,
-			FOCUS,
+			LILAC,
+			YELLOW,
+			PURPLE,
+			BLUE,
+			PINE,
+			THEMED,
 		}
 
 	}
@@ -14010,6 +14591,8 @@ declare module '@uif-js/component' {
 
 			placeholder?: (string | PackageCore.Translation);
 
+			allowChangeEditorMode?: boolean;
+
 			editorMode?: EditorMode;
 
 			resizable?: boolean;
@@ -14104,7 +14687,7 @@ declare module '@uif-js/component' {
 
 	}
 
-	export function ScrollLayout(props?: {children?: PackageCore.VDom.Children}): PackageCore.JSX.Element;
+	export function ScrollLayout(props?: {topContent?: (PackageCore.Component | PackageCore.JSX.Element | null); children?: PackageCore.VDom.Children}): PackageCore.JSX.Element;
 
 	export class ScrollPanel extends PackageCore.Component {
 		constructor(options: Self.ScrollPanel.Options);
@@ -14534,7 +15117,11 @@ declare module '@uif-js/component' {
 
 		content: (PackageCore.Presenter | PackageCore.Component | PackageCore.JSX.Element | null);
 
+		topContent: (PackageCore.Component | PackageCore.JSX.Element | null);
+
 		setContent(content: (PackageCore.Presenter | PackageCore.Component | null)): void;
+
+		setTopContent(topContent: (PackageCore.Component | PackageCore.JSX.Element | null)): void;
 
 		setTheme(theme: PackageCore.Theme): void;
 
@@ -14551,6 +15138,8 @@ declare module '@uif-js/component' {
 			host: Self.Host;
 
 			applicationHeader?: (PackageCore.Presenter | PackageCore.Component);
+
+			topCcontent?: (PackageCore.Component | PackageCore.JSX.Element | null);
 
 			content?: (PackageCore.Presenter | PackageCore.Component | PackageCore.JSX.Element);
 
@@ -14573,7 +15162,7 @@ declare module '@uif-js/component' {
 
 	}
 
-	function ShellLayout(props?: {systemHeader?: (PackageCore.Component | PackageCore.JSX.Element); applicationHeader?: (PackageCore.Component | PackageCore.JSX.Element); children?: (PackageCore.Component | PackageCore.JSX.Element); appLayout?: boolean}): PackageCore.JSX.Element;
+	function ShellLayout(props?: {systemHeader?: (PackageCore.Component | PackageCore.JSX.Element); applicationHeader?: (PackageCore.Component | PackageCore.JSX.Element); topContent?: (PackageCore.VDom.Element | Comment | null); children?: (PackageCore.Component | PackageCore.JSX.Element); appLayout?: boolean}): PackageCore.JSX.Element;
 
 	export class ShuttleUI extends PackageCore.Component {
 		constructor(options?: Self.ShuttleUI.Options);
@@ -16390,6 +16979,8 @@ declare module '@uif-js/component' {
 
 		inputAttributes: PackageCore.HtmlAttributeList;
 
+		size: Self.Switch.Size;
+
 		setValue(value: boolean, options?: {reason?: (string | symbol)}): void;
 
 		toggle(options?: object): void;
@@ -16415,6 +17006,8 @@ declare module '@uif-js/component' {
 			label?: (string | number | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 			labelPosition?: Self.Switch.LabelPosition;
+
+			size?: Self.Switch.Size;
 
 		}
 
@@ -16447,9 +17040,13 @@ declare module '@uif-js/component' {
 			BELOW,
 		}
 
+		enum Size {
+			M,
+			S,
+		}
+
 		enum VisualStyle {
 			STANDALONE,
-			EMBEDDED,
 		}
 
 	}
@@ -16461,6 +17058,8 @@ declare module '@uif-js/component' {
 
 		withSeparator: boolean;
 
+		environment: Self.SystemHeader.Environment;
+
 	}
 
 	namespace SystemHeader {
@@ -16469,6 +17068,17 @@ declare module '@uif-js/component' {
 
 			withSeparator?: boolean;
 
+			environment?: Self.SystemHeader.Environment;
+
+		}
+
+		enum Environment {
+			PRODUCTION,
+			RELEASE_PREVIEW,
+			SANDBOX,
+			F,
+			SNAP,
+			DEBUGGER,
 		}
 
 	}
@@ -16491,6 +17101,8 @@ declare module '@uif-js/component' {
 			globalSearch?: object;
 
 			pageSearch?: object;
+
+			shortcut?: globalThis.Array<globalThis.Array<string>>;
 
 		}
 
@@ -17139,6 +17751,7 @@ declare module '@uif-js/component' {
 			L,
 			XL,
 			XXL,
+			XXXL,
 		}
 
 		enum Weight {
@@ -17150,6 +17763,7 @@ declare module '@uif-js/component' {
 		enum Color {
 			PRIMARY,
 			SECONDARY,
+			PLACEHOLDER,
 		}
 
 		enum Type {
@@ -18464,7 +19078,7 @@ declare module '@uif-js/component' {
 
 		component: (PackageCore.Component | Element | null);
 
-		content: (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | null);
+		content: (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | Self.Tooltip.ContentCallback | null);
 
 		contentGap: (Self.Tooltip.GapSize | Self.Tooltip.GapSizeObject);
 
@@ -18484,7 +19098,7 @@ declare module '@uif-js/component' {
 
 		detach(): void;
 
-		setContent(content: (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | null)): void;
+		setContent(content: (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | Self.Tooltip.ContentCallback | null)): void;
 
 		processMessage(next: PackageCore.RoutedMessage.Handler, message: PackageCore.RoutedMessage, result: PackageCore.RoutedMessage.Result): void;
 
@@ -18516,7 +19130,7 @@ declare module '@uif-js/component' {
 
 			component?: (PackageCore.Component | Element);
 
-			content: (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | null);
+			content: (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | Self.Tooltip.ContentCallback | null);
 
 			contentGap?: (Self.Tooltip.GapSize | Self.Tooltip.GapSizeObject);
 
@@ -18537,6 +19151,8 @@ declare module '@uif-js/component' {
 			on?: PackageCore.EventSource.ListenerMap;
 
 		}
+
+		type ContentCallback = () => (PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | null);
 
 		interface GapSizeObject {
 			top?: Self.Tooltip.GapSize;
@@ -19023,7 +19639,7 @@ declare module '@uif-js/component' {
 
 		visibleEmpty: boolean;
 
-		placeholder: (string | PackageCore.Translation | PackageCore.Component);
+		placeholder: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 		virtualization: boolean;
 
@@ -19097,7 +19713,7 @@ declare module '@uif-js/component' {
 
 		setMoveSelectionWithCursor(value: boolean): void;
 
-		setPlaceholder(value: (string | PackageCore.Translation | PackageCore.Component)): void;
+		setPlaceholder(value: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element)): void;
 
 		setPreload(value: Self.TreeView.Preload): void;
 
@@ -19183,7 +19799,7 @@ declare module '@uif-js/component' {
 
 			multiSelect?: boolean;
 
-			placeholder?: (string | PackageCore.Translation | PackageCore.Component);
+			placeholder?: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element);
 
 			preload?: Self.TreeView.Preload;
 
@@ -19321,12 +19937,30 @@ declare module '@uif-js/component' {
 	namespace VirtualTreeContainer {
 	}
 
+	export enum VisualizationColor {
+		NEUTRAL,
+		SUCCESS,
+		WARNING,
+		DANGER,
+		INFO,
+		TEAL,
+		ORANGE,
+		TURQUOISE,
+		TAUPE,
+		GREEN,
+		PINK,
+		BROWN,
+		LILAC,
+		YELLOW,
+		PURPLE,
+		BLUE,
+		PINE,
+	}
+
 	export abstract class Window extends PackageCore.Component implements PackageCore.Portal {
 		protected constructor(options: Self.Window.Options);
 
 		content: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element | null);
-
-		contentPadding: boolean;
 
 		contentGap: (Self.Window.GapSize | Self.Window.GapSizeObject);
 
@@ -19361,6 +19995,8 @@ declare module '@uif-js/component' {
 		state: Self.Window.State;
 
 		resizable: boolean;
+
+		pointerEvents: boolean;
 
 		open(options?: Self.Window.OpenArgs): void;
 
@@ -19432,6 +20068,8 @@ declare module '@uif-js/component' {
 
 			anchorStyle?: Self.Window.AnchorVisualStyleCallback;
 
+			pointerEvents?: boolean;
+
 		}
 
 		interface OpenArgs {
@@ -19464,7 +20102,7 @@ declare module '@uif-js/component' {
 
 			strategy?: PackageCore.PositionHelper.Strategy;
 
-			target?: (PackageCore.VDomRef | PackageCore.Component | Element | string | PackageCore.PositionHelper.Point | PackageCore.Rectangle);
+			target?: (PackageCore.VDomRef | PackageCore.Component | Element | string | PackageCore.PositionHelper.Point | PackageCore.Rectangle | PackageCore.PositionHelper.TargetPoint);
 
 		}
 
@@ -19532,6 +20170,8 @@ declare module '@uif-js/component' {
 		export import ButtonsJustification = Self.WindowBody.ButtonsJustification;
 
 		export import GapSize = Self.GapSize;
+
+		export import Position = PackageCore.PositionHelper;
 
 		enum defaultPopupOptions {
 			autoResize,
@@ -19723,5 +20363,9 @@ declare module '@uif-js/component' {
 		}
 
 	}
+
+	export function createActionColumn(columnOptions: Self.ActionColumn.Options): Self.ActionColumn.Options;
+
+	export function createTemplatedColumn(columnOptions: Self.TemplatedColumn.Options): Self.TemplatedColumn.Options;
 
 }
