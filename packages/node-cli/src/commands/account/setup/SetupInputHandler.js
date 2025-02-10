@@ -10,6 +10,7 @@ const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
+const { validateBrowserBasedAuthIsAllowed } = require('../../../services/ExecutionContextService');
 const {
 	DOMAIN
 } = require('../../../ApplicationConstants');
@@ -50,7 +51,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 
 	async getParameters(params) {
 		this._projectInfoService.checkWorkingDirectoryContainsValidProject(this._commandMetadata.name);
-
+		validateBrowserBasedAuthIsAllowed();
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (!authIDActionResult.isSuccess()) {
 			throw authIDActionResult.errorMessages;

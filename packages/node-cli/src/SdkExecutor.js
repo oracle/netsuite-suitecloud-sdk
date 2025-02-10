@@ -8,7 +8,7 @@ const {
 	SDK_INTEGRATION_MODE_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
-	SDK_REQUIRED_JAVA_VERSION,
+	SDK_COMPATIBLE_JAVA_VERSIONS,
 } = require('./ApplicationConstants');
 const path = require('path');
 const FileUtils = require('./utils/FileUtils');
@@ -18,7 +18,6 @@ const EnvironmentInformationService = require('./services/EnvironmentInformation
 const url = require('url');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const { ERRORS } = require('./services/TranslationKeys');
-const SdkErrorCodes = require('./SdkErrorCodes');
 const ExecutionEnvironmentContext = require('./ExecutionEnvironmentContext');
 
 const DATA_EVENT = 'data';
@@ -72,9 +71,6 @@ module.exports = class SdkExecutor {
 			if (code === 0) {
 				try {
 					const output = isIntegrationMode ? JSON.parse(lastSdkOutput) : lastSdkOutput;
-					if (isIntegrationMode && output.errorCode && output.errorCode === SdkErrorCodes.NO_TBA_SET_FOR_ACCOUNT) {
-						reject(NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.NO_TBA_FOR_ACCOUNT_AND_ROLE));
-					}
 					resolve(output);
 				} catch (error) {
 					reject(NodeTranslationService.getMessage(ERRORS.SDKEXECUTOR.RUNNING_COMMAND, error));
@@ -148,15 +144,17 @@ module.exports = class SdkExecutor {
 
 	_checkIfJavaVersionIssue() {
 		const javaVersionInstalled = this._environmentInformationService.getInstalledJavaVersionString();
-		if (javaVersionInstalled.startsWith(SDK_REQUIRED_JAVA_VERSION)) {
-			this._CLISettingsService.setJavaVersionValid(true);
-			return;
+		for (const compatibleJavaVersion of SDK_COMPATIBLE_JAVA_VERSIONS) {
+			if (javaVersionInstalled.startsWith(compatibleJavaVersion)) {
+				this._CLISettingsService.setJavaVersionValid(true);
+				return;
+			}
 		}
 
 		this._CLISettingsService.setJavaVersionValid(false);
 		if (javaVersionInstalled === '') {
-			return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED, SDK_REQUIRED_JAVA_VERSION);
+			return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_VERSION_NOT_INSTALLED, SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 		}
-		return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE, javaVersionInstalled, SDK_REQUIRED_JAVA_VERSION);
+		return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_VERSION_NOT_COMPATIBLE, javaVersionInstalled, SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 	}
 };

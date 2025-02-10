@@ -8,6 +8,7 @@ const BaseAction = require('../../base/BaseAction');
 const { authenticateCi } = require('../../../utils/AuthenticationUtils');
 const { DOMAIN: { PRODUCTION: { GENERIC_NETSUITE_DOMAIN } } } = require('../../../ApplicationConstants');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
+const { validateMachineToMachineAuthIsAllowed } = require('../../../services/ExecutionContextService');
 
 const COMMAND = {
 	OPTIONS: {
@@ -41,6 +42,7 @@ module.exports = class AccountSetupCiAction extends BaseAction {
 		if (params[COMMAND.OPTIONS.DOMAIN] === GENERIC_NETSUITE_DOMAIN) {
 			delete params[COMMAND.OPTIONS.DOMAIN];
 		}
+		validateMachineToMachineAuthIsAllowed();
 		return await authenticateCi(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
 	}
 };

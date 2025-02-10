@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode';
-import { actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext, InteractiveAnswersValidator } from '../util/ExtensionUtil';
+import { actionResultStatus, AuthenticationUtils, ExecutionEnvironmentContext, InteractiveAnswersValidator, ExecutionContextService } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { window, QuickPickItem, MessageItem } from 'vscode';
 import { AuthListData, ActionResult, AuthenticateActionResult } from '../types/ActionResult';
@@ -101,10 +101,24 @@ export default class SetupAccount extends BaseAction {
 		if (!selected) {
 			return;
 		} else if (selected.option === UiOption.new_authid_browser) {
-			await this.handleBrowserAuth(accountCredentialsList);
+			if (this.validateSupportedMode(ExecutionContextService.validateBrowserBasedAuthIsAllowed)) {
+				await this.handleBrowserAuth(accountCredentialsList);
+			}
 		} else if (selected.option === UiOption.new_authid_m2m) {
-			await this.handleM2m(accountCredentialsList);
+			if (this.validateSupportedMode(ExecutionContextService.validateMachineToMachineAuthIsAllowed)) {
+				await this.handleM2m(accountCredentialsList);
+			}
 		}
+	}
+
+	private validateSupportedMode(validatorFunction: () => void): boolean {
+		try {
+			validatorFunction();
+		} catch (err: any) {
+			this.messageService.showErrorMessage(err);
+			return false;
+		}
+		return true;
 	}
 
 	private async getNewAuthIdOption() {
@@ -188,6 +202,11 @@ export default class SetupAccount extends BaseAction {
 
 		const actionResult = await authenticatePromise;
 		this.handleAuthenticateActionResult(actionResult);
+
+		const warning = ExecutionContextService.getBrowserBasedWarningMessages();
+		if (warning) {
+			this.messageService.showWarningMessageWithOk(warning);
+		}
 	}
 
 	private async getNewAuthId(accountCredentialsList: AuthListData) {

@@ -12,6 +12,7 @@
 
 	"BUTTONS_RESTART_NOW": "Restart Now",
 	"BUTTONS_SEE_DETAILS": "See Details",
+	"BUTTONS_OK": "Ok",
 
 	"COMMAND_ERROR": "Something went wrong with '{0}'.",
 	"COMMAND_SUCCESS": "'{0}' has been successfully executed.",
@@ -60,8 +61,8 @@
 	"ERRORS_MISSING_MANIFEST_FILE_CONTEXT_MENU_FILE": "No manifest.xml file was found in \"{0}\". Make sure the selected file or folder belongs to a valid project structure before running this command. For more information about the project structure, see {1}.",
 	"ERRORS_NO_ACTIVE_FILE": "Before running this command, select a file from the current workspace and make it active in the editor.",
 	"ERRORS_NO_ACTIVE_WORKSPACE": "The active file in the editor does not belong to the current workspace. Before running this command, select a file from the current workspace and make it active in the editor.",
-	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install Oracle JDK version {1}.",
-	"ERRORS_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install Oracle JDK version {0} to run SuiteCloud Extension for Visual Studio Code.",
+	"ERRORS_SDK_JAVA_VERSION_NOT_COMPATIBLE": "Your Java version {0} is not compatible with SuiteCloud Extension for Visual Studio Code. Install any of the following Oracle JDK versions: {1}.",
+	"ERRORS_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install any of the following Oracle JDK versions: {0}, to run SuiteCloud Extension for Visual Studio Code.",
 
 	"EXTENSION_INSTALLATION_ERROR_GENERAL_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
 	"EXTENSION_INSTALLATION_ERROR_SDK_INVALID": "Close and open the editor to try again.",
@@ -121,7 +122,7 @@
 	"MANAGE_AUTH_GENERAL_SELECT_AUTH_ID_TO_MANAGE": "Select the auth ID you want to manage:",
 	"MANAGE_AUTH_GENERAL_SELECT_OPTION_FOR_AUTH_ID": "Select one of the following options for {0}:",
 	"MANAGE_AUTH_REMOVE_CANCEL": "Cancel",
-	"MANAGE_AUTH_REMOVE_CONFIRMATION_MESSAGE": "This auth ID will be removed locally but still be valid in your account: {0}.",
+	"MANAGE_AUTH_REMOVE_CONFIRMATION_MESSAGE": "The auth ID will be removed locally but the tokens are not revoked in the account.",
 	"MANAGE_AUTH_REMOVE_CONTINUE": "Continue",
 	"MANAGE_AUTH_REMOVE_REMOVING_AUTH_ID": "Removing auhtID...",
 	"MANAGE_AUTH_RENAME_ENTER_NEW_AUTH_ID": "Enter the new auth ID.",

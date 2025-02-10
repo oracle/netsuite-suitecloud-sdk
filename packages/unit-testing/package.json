@@ -1,6 +1,6 @@
 {
 	"name": "@oracle/suitecloud-unit-testing",
-	"version": "1.6.0",
+	"version": "1.7.0",
 	"license": "UPL-1.0",
 	"repository": {
 		"type": "git",
@@ -19,7 +19,7 @@
 	},
 	"main": "jest-configuration/SuiteCloudJestConfiguration.js",
 	"dependencies": {
-		"@babel/preset-env": "7.24.8",
+		"@babel/preset-env": "7.26.0",
 		"babel-jest": "29.7.0",
 		"babel-plugin-transform-amd-to-commonjs": "1.6.0",
 		"xml2js": "0.6.2"
