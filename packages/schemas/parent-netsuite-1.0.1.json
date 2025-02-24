@@ -9,7 +9,7 @@
       "type": "object",
       "properties": {
         "CustomField": {
-          "$ref": "custom-field-1.0.0.json#/properties"
+
         },
         "$schema": {
           "type": "string",
