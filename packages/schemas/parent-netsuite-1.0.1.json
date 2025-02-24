@@ -4,22 +4,67 @@
   "title": "Parent schema definition",
   "description": "Parent schema definition",
   "type": "object",
-  "oneOf": [
-    {
+  "properties": {
+    "PermissionSet": {
       "type": "object",
       "properties": {
-        "CustomField": {
-
-        },
-        "$schema": {
+        "name": {
           "type": "string",
-          "description": "The schema to verify this document against."
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "recordTypePermissionAssignments": {
+          "type": "object",
+          "properties": {
+            "recordTypePermissionAssignment": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "permissibleRecordType": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "accessMode": {
+                    "type": "string",
+                    "enum": [
+                      "CREATE",
+                      "READ",
+                      "UPDATE",
+                      "DELETE"
+                    ]
+                  }
+                },
+                "required": [
+                  "permissibleRecordType",
+                  "accessMode"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "scriptId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^caf_.+$",
+          "default": "caf_"
         }
       },
       "required": [
-        "CustomField"
+        "name",
+        "scriptId"
       ],
       "additionalProperties": false
     }
-  ]
+  },
+  "required": [
+    "PermissionSet"
+  ],
+  "additionalProperties": false
 }
