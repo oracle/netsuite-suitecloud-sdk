@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/parent-netsuite-1.0.3.json",
-  "title": "Parent schema definition",
-  "description": "Parent schema definition",
+  "title": "Custom Field",
+  "description": "Custom Field Schema Definition",
   "type": "object",
   "oneOf": [
 
@@ -259,7 +259,7 @@
       },
       "required": ["WorkbookBuilderPlugin"],
       "additionalProperties": false
-    },
+    }
 
   ]
 }
