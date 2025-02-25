@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/parent-netsuite-1.0.2.json",
+  "title": "Parent schema definition",
+  "description": "Parent schema definition",
+  "type": "object",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/custom-field-1.0.0.json#/properties/CustomField"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "CustomField"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/custom-record-1.0.0.json#/properties/CustomRecord"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "CustomRecord"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/dataset-builder-plugin-1.0.0.json#/properties/DatasetBuilderPlugin"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "DatasetBuilderPlugin"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/fi-connectivity-plugin-1.0.0.json#/properties/FiConnectivityPlugin"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "FiConnectivityPlugin"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/fi-parser-plugin-1.0.0.json#/properties/FiParserPlugin"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "FiParserPlugin"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/integration-1.0.0.json#/properties/Integration"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "Integration"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/map-reduce-deployment-1.0.0.json#/properties/MapReduceDeployment"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "MapReduceDeployment"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/map-reduce-script-1.0.0.json#/properties/MapReduceScript"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "MapReduceScript"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/package.json#/properties/"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        ""
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/parent-netsuite-1.0.0.json#/properties/CustomField"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "CustomField"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/parent-netsuite-1.0.1.json#/properties/CustomField"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "CustomField"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/permission-set-1.0.0.json#/properties/PermissionSet"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "PermissionSet"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/sdf-installation-deployment-1.0.0.json#/properties/SdfInstallationDeployment"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "SdfInstallationDeployment"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/sdf-installation-script-1.0.0.json#/properties/SdfInstallationScript"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "SdfInstallationScript"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/secret-1.0.0.json#/properties/Secret"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "Secret"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/suitecloud-ui-app-1.0.0.json#/properties/SuiteCloudUiApp"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "SuiteCloudUiApp"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/tax-calculation-plugin-1.0.0.json#/properties/TaxCalculationPlugin"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "TaxCalculationPlugin"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "CustomField": {
+          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/workbook-builder-plugin-1.0.0.json#/properties/WorkbookBuilderPlugin"
+        },
+        "$schema": {
+          "type": "string",
+          "description": "The schema to verify this document against."
+        }
+      },
+      "required": [
+        "WorkbookBuilderPlugin"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}
