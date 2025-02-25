@@ -137,22 +137,6 @@
       "type": "object",
       "properties": {
         "CustomField": {
-          "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/package.json#/properties/"
-        },
-        "$schema": {
-          "type": "string",
-          "description": "The schema to verify this document against."
-        }
-      },
-      "required": [
-        ""
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "CustomField": {
           "$ref": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/feature/PDPDEVTOOL-6007-schemas_for_suitecloud_tools/packages/schemas/parent-netsuite-1.0.0.json#/properties/CustomField"
         },
         "$schema": {
