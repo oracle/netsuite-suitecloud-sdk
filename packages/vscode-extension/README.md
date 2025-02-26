@@ -26,7 +26,7 @@ The following table shows the extension versions currently available in the Mark
 | Extension Versions Available in the Marketplace | Available Since | Compatible NetSuite Version |
 |:-----------------------------------------------:|:---------------:|:---------------------------:|
 | 3.0.0 | 2025.1 | 2024.2 and 2025.1 |
-| 2.0.X | 2024.2 | 2024.1 and 2024.2 |
+| 2.0.X | 2024.2 | 2024.2 and 2025.1 |
 
 ## Installing SuiteCloud Extension for Visual Studio Code
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
@@ -124,6 +124,6 @@ To read the 2025.1 NetSuite's release notes and documentation, check the followi
 SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## License
-Copyright (c) 2022, 2023, 2024, 2025 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
+Copyright (c) 2021, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE.txt) for details.
 
 By installing SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
