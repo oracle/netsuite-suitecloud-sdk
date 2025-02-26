@@ -26,7 +26,7 @@ The following table shows the CLI versions currently available in NPM.
 | CLI Versions Available in NPM | Available Since | Compatible NetSuite Version |
 |:-----------------------------:|:---------------:|:---------------------------:|
 | 3.0.X | 2025.1 | 2024.2 and 2025.1 |
-| 2.0.X | 2024.2 | 2024.1 and 2024.2 |
+| 2.0.X | 2024.2 | 2024.2 and 2025.1 |
 
 ## Installation
 Since CLI for Node.js is a development tool, use a global instance to install it by running the following command:
@@ -101,6 +101,6 @@ To read the 2025.1 NetSuite's release notes and documentation, check the followi
 SuiteCloud CLI for Node.js is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
 
 ## [License](/LICENSE.txt)
-Copyright (c) 2022, 2023, 2024, 2025 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
 
 By installing SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
