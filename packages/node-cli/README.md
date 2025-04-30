@@ -78,7 +78,7 @@ Read the detailed documentation for all the commands in [SuiteCloud CLI for Node
 ## Getting Started
 🎞 To see how to install and set up CLI for Node.js, watch the following video:
 
-<video src='https://videohub.oracle.com/media/Setting+Up+CLI+for+Nodej.s/0_091fc2ca' width=400>
+[Setting up CLI for Node.js](https://videohub.oracle.com/media/Setting+Up+CLI+for+Nodej.s/0_091fc2ca)
 
 
 Create a new project in an empty folder by running the following command:
