@@ -5,6 +5,8 @@
  */
 'use strict';
 
+console.log('⚡ Running LOCAL linked version of SuiteCloud CLI');
+
 const CLI = require('./CLI');
 const CommandsMetadataService = require('./core/CommandsMetadataService');
 const CommandActionExecutor = require('./core/CommandActionExecutor');
@@ -26,7 +28,7 @@ const cliInstance = new CLI({
 		cliConfigurationService: new CLIConfigurationService(),
 		commandsMetadataService: commandsMetadataServiceSingleton,
 		log: NodeConsoleLogger,
-		sdkPath: sdkPath
+		sdkPath: sdkPath,
 	}),
 });
 

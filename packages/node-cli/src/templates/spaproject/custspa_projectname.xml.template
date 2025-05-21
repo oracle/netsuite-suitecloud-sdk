@@ -1,0 +1,13 @@
+<singlepageapp scriptid="custspa_{{projectName}}">
+  <name>{{projectName}}</name>
+  <description>This is an SPA template project</description>
+  <url>{{projectName}}</url>
+  <folder>[{{projectPath}}/{{projectName}}/]</folder>
+  <clientscriptfile>[{{projectPath}}/{{projectName}}/SpaClient.js]</clientscriptfile>
+  <serverscriptfile>[{{projectPath}}/{{projectName}}/SpaServer.js]</serverscriptfile>
+  <assetsfolder>[{{projectPath}}/{{projectName}}/assets/]</assetsfolder>
+  <loglevel>ERROR</loglevel>
+  <audienceallroles>F</audienceallroles>
+  <audienceroles></audienceroles>
+  <executeas></executeas>
+</singlepageapp>

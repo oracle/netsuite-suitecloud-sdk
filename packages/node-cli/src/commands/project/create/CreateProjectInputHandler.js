@@ -30,16 +30,18 @@ const {
 } = require('../../../validation/InteractiveAnswersValidator');
 
 const COMMAND_OPTIONS = {
+	CREATE_SPA: 'createspa',
+	INCLUDE_UNIT_TESTING: 'includeunittesting',
 	OVERWRITE: 'overwrite',
 	PARENT_DIRECTORY: 'parentdirectory',
+	PROJECT_ABSOLUTE_PATH: 'projectabsolutepath',
+	PROJECT_FOLDER_NAME: 'projectfoldername',
 	PROJECT_ID: 'projectid',
 	PROJECT_NAME: 'projectname',
 	PROJECT_VERSION: 'projectversion',
 	PUBLISHER_ID: 'publisherid',
+	SPA_PROJECT_NAME: 'spaprojectname',
 	TYPE: 'type',
-	INCLUDE_UNIT_TESTING: 'includeunittesting',
-	PROJECT_ABSOLUTE_PATH: 'projectabsolutepath',
-	PROJECT_FOLDER_NAME: 'projectfoldername',
 };
 
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
@@ -118,6 +120,28 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 					{ name: NodeTranslationService.getMessage(NO), value: false },
 				],
 			},
+			{
+				type: CommandUtils.INQUIRER_TYPES.LIST,
+				name: COMMAND_OPTIONS.CREATE_SPA,
+				message: NodeTranslationService.getMessage(QUESTIONS.CREATE_SPA),
+				default: 0,
+				choices: [
+					{ name: NodeTranslationService.getMessage(YES), value: true },
+					{ name: NodeTranslationService.getMessage(NO), value: false },
+				],
+			},
+			{
+				when: function (response) {
+					return response[COMMAND_OPTIONS.CREATE_SPA];
+				},
+				type: CommandUtils.INQUIRER_TYPES.INPUT,
+				name: COMMAND_OPTIONS.SPA_PROJECT_NAME,
+				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_SPA_PROJECT_NAME),
+				validate: (fieldValue) =>
+					showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces, (fieldValue) =>
+						validateFieldIsLowerCase(COMMAND_OPTIONS.SPA_PROJECT_NAME, fieldValue)
+					),
+			},
 		]);
 
 		const projectFolderName = this._getProjectFolderName(answers);
@@ -156,7 +180,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	_getProjectFolderName(params) {
 		switch (params[COMMAND_OPTIONS.TYPE]) {
 			case ApplicationConstants.PROJECT_SUITEAPP:
-				return (params[COMMAND_OPTIONS.PUBLISHER_ID] && params[COMMAND_OPTIONS.PROJECT_ID])
+				return params[COMMAND_OPTIONS.PUBLISHER_ID] && params[COMMAND_OPTIONS.PROJECT_ID]
 					? params[COMMAND_OPTIONS.PUBLISHER_ID] + '.' + params[COMMAND_OPTIONS.PROJECT_ID]
 					: 'not_specified';
 			case ApplicationConstants.PROJECT_ACP:
