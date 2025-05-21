@@ -523,13 +523,8 @@ module.exports = class CreateProjectAction extends BaseAction {
 	}
 
 	_createMyCustomFolder(params) {
-		this._log.info('Creating custom folder...');
-		this._log.info('parent directory: ' + params[COMMAND_OPTIONS.PARENT_DIRECTORY]);
-		// if (params.withcustomfolder) {
 		const customFolderPath = path.join(params[COMMAND_OPTIONS.PARENT_DIRECTORY], 'mycustomfolder');
 		this._fileSystemService.createFolderFromAbsolutePath(customFolderPath);
-		this._log.info('✅ Created custom folder: ' + customFolderPath);
-		// }
 	}
 
 	async _runNpmInstall(projectAbsolutePath) {
