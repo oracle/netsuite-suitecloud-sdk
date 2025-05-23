@@ -41,7 +41,40 @@ const PACKAGE_JSON_DEFAULT_VERSION = '1.0.0';
 const PACKAGE_JSON_REPLACE_STRING_VERSION = '{{version}}';
 
 const SOURCE_FOLDER = 'src';
+const OBJECTS_FOLDER = 'Objects';
 const UNIT_TEST_TEST_FOLDER = '__tests__';
+
+const SPA_SUITEAPPS_FOLDER = 'SuiteApps';
+const SPA_ASSETS_FOLDER = 'assets';
+const SPA_PROJECT_NAME_REPLACE_STRING = '{{projectName}}';
+const SPA_PROJECT_PATH_REPLACE_STRING = '{{projectPath}}';
+const SPA_SPA_CLIENT_TEMPLATE_KEY = 'spaclient';
+const SPA_SPA_CLIENT_FILENAME = 'SpaClient';
+const SPA_SPA_CLIENT_EXTENSION = 'tsx';
+const SPA_SPA_SERVER_TEMPLATE_KEY = 'spaserver';
+const SPA_SPA_SERVER_FILENAME = 'SpaServer';
+const SPA_SPA_SERVER_EXTENSION = 'ts';
+const SPA_HELLO_WORLD_TEMPLATE_KEY = 'helloworld';
+const SPA_HELLO_WORLD_FILENAME = 'HelloWorld';
+const SPA_HELLO_WORLD_EXTENSION = 'tsx';
+const SPA_CUSTSPA_TEMPLATE_KEY = 'custspa';
+const SPA_CUSTSPA_FILENAME = 'custspa_';
+const SPA_CUSTSPA_EXTENSION = 'xml';
+const SPA_GULPFILE_TEMPLATE_KEY = 'gulpfile';
+const SPA_GULPFILE_FILENAME = 'gulpfile';
+const SPA_GULPFILE_EXTENSION = 'mjs';
+const SPA_ESLINT_TEMPLATE_KEY = 'eslint';
+const SPA_ESLINT_FILENAME = 'eslint.config';
+const SPA_ESLINT_EXTENSION = 'mjs';
+const SPA_TS_CONFIG_TEMPLATE_KEY = 'tsconfig';
+const SPA_TS_CONFIG_FILENAME = 'tsconfig';
+const SPA_TS_CONFIG_EXTENSION = 'json';
+const SPA_TS_CONFIG_TEMPLATE_KEY_TEST = 'tsconfigtest';
+const SPA_TS_CONFIG_FILENAME_TEST = 'tsconfig.test';
+const SPA_TS_CONFIG_EXTENSION_TEST = 'json';
+const SPA_PACKAGE_TEMPLATE_KEY = 'package';
+const SPA_PACKAGE_FILENAME = 'package';
+const SPA_PACKAGE_EXTENSION = 'json';
 
 const CLI_CONFIG_TEMPLATE_KEY = 'cliconfig';
 const GITIGNORE_TEMPLATE_KEY = 'gitignore';
@@ -65,15 +98,17 @@ const UNIT_TEST_JSCONFIG_FILENAME = 'jsconfig';
 const UNIT_TEST_JSCONFIG_EXTENSION = 'json';
 
 const COMMAND_OPTIONS = {
+	CREATE_SPA: 'createspa',
+	INCLUDE_UNIT_TESTING: 'includeunittesting',
 	OVERWRITE: 'overwrite',
 	PARENT_DIRECTORY: 'parentdirectory',
+	PROJECT_FOLDER_NAME: 'projectfoldername',
 	PROJECT_ID: 'projectid',
 	PROJECT_NAME: 'projectname',
 	PROJECT_VERSION: 'projectversion',
 	PUBLISHER_ID: 'publisherid',
+	SPA_PROJECT_NAME: 'spaprojectname',
 	TYPE: 'type',
-	INCLUDE_UNIT_TESTING: 'includeunittesting',
-	PROJECT_FOLDER_NAME: 'projectfoldername',
 };
 
 module.exports = class CreateProjectAction extends BaseAction {
@@ -138,25 +173,40 @@ module.exports = class CreateProjectAction extends BaseAction {
 
 			const projectName = params[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = this._getIncludeUnitTestingBoolean(params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]);
+			const createSpa = this._getCreateSpaBoolean(params[COMMAND_OPTIONS.CREATE_SPA]);
+			const spaProjectName = params[COMMAND_OPTIONS.SPA_PROJECT_NAME];
+
 			//fixing project name for not interactive output before building results
 			const commandParameters = { ...createProjectParams, [`${COMMAND_OPTIONS.PROJECT_NAME}`]: params[COMMAND_OPTIONS.PROJECT_NAME] };
 
 			return createProjectActionData.operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 				? CreateProjectActionResult.Builder.withData(createProjectActionData.operationResult.data)
-					.withResultMessage(createProjectActionData.operationResult.resultMessage)
-					.withProjectType(projectType)
-					.withProjectName(projectName)
-					.withProjectDirectory(createProjectActionData.projectDirectory)
-					.withUnitTesting(includeUnitTesting)
-					.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
-					.withCommandParameters(commandParameters)
-					.build()
+						.withResultMessage(createProjectActionData.operationResult.resultMessage)
+						.withProjectType(projectType)
+						.withProjectName(projectName)
+						.withProjectDirectory(createProjectActionData.projectDirectory)
+						.withUnitTesting(includeUnitTesting)
+						.withSpaProject(createSpa)
+						.withSpaProjectName(spaProjectName)
+						.withNpmPackageInitialized(createProjectActionData.npmInstallSuccess)
+						.withCommandParameters(commandParameters)
+						.build()
 				: CreateProjectActionResult.Builder.withErrors(createProjectActionData.operationResult.errorMessages)
-					.withCommandParameters(commandParameters)
-					.build();
+						.withCommandParameters(commandParameters)
+						.build();
 		} catch (error) {
 			return CreateProjectActionResult.Builder.withErrors([unwrapExceptionMessage(error)]).build();
 		}
+	}
+
+	withIncludeSpa(includeSpa) {
+		this.includeSpa = includeSpa;
+		return this;
+	}
+
+	withSpaProjectName(spaProjectName) {
+		this.spaProjectName = spaProjectName;
+		return this;
 	}
 
 	createProject(executionContextCreateProject, params, projectAbsolutePath, projectFolderName, manifestFilePath) {
@@ -185,6 +235,17 @@ module.exports = class CreateProjectAction extends BaseAction {
 				}
 				this._fileSystemService.replaceStringInFile(manifestFilePath, SOURCE_FOLDER, params[COMMAND_OPTIONS.PROJECT_NAME]);
 				let npmInstallSuccess;
+
+				//SPA
+				const createSpa = this._getCreateSpaBoolean(params[COMMAND_OPTIONS.CREATE_SPA]);
+				if (createSpa) {
+					this._log.info(NodeTranslationService.getMessage(MESSAGES.SETUP_SPA_PROJECT));
+					await this._createSpaFiles(params[COMMAND_OPTIONS.SPA_PROJECT_NAME], projectAbsolutePath);
+					// this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
+					// npmInstallSuccess = await this._runNpmInstall(this._getSpaProjectFolderSource(projectAbsolutePath));
+				}
+
+				//Unit Testing
 				let includeUnitTesting = this._getIncludeUnitTestingBoolean(params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]);
 				if (includeUnitTesting) {
 					this._log.info(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV));
@@ -236,6 +297,143 @@ module.exports = class CreateProjectAction extends BaseAction {
 				// if --type parameter isn't correct, it doesn't matter the project folder name. It will throw a validation error later
 				return 'not_specified';
 		}
+	}
+
+	_getCreateSpaBoolean(createSpaParam) {
+		return typeof createSpaParam === 'string' ? createSpaParam.toLowerCase() === 'true' : Boolean(createSpaParam);
+	}
+
+	_getSpaProjectFolderSource(projectAbsolutePath) {
+		return path.join(projectAbsolutePath, SOURCE_FOLDER);
+	}
+
+	_getSpaProjectFolderSourceObjects(projectAbsolutePath) {
+		return path.join(projectAbsolutePath, SOURCE_FOLDER, OBJECTS_FOLDER);
+	}
+
+	_getSpaProjectFolderSuiteApps(projectAbsolutePath) {
+		return path.join(projectAbsolutePath, SOURCE_FOLDER, SPA_SUITEAPPS_FOLDER);
+	}
+
+	_getSpaProjectFolderProjectName(projectAbsolutePath, projectName) {
+		return path.join(projectAbsolutePath, SOURCE_FOLDER, SPA_SUITEAPPS_FOLDER, projectName);
+	}
+
+	async _createSpaFiles(projectName, projectAbsolutePath) {
+		const spaProjectFolderSource = this._getSpaProjectFolderSource(projectAbsolutePath);
+		const spaProjectFolderProjectName = this._getSpaProjectFolderProjectName(projectAbsolutePath, projectName);
+		const spaProjectFolderSourceObjects = this._getSpaProjectFolderSourceObjects(projectAbsolutePath);
+
+		await this._createSpaFolders(projectName, projectAbsolutePath);
+		await this._createSpaClientFile(spaProjectFolderProjectName);
+		await this._createSpaServerFile(spaProjectFolderProjectName);
+		await this._createHelloWorldFile(spaProjectFolderProjectName);
+		await this._createCustspaFile(projectName, spaProjectFolderSourceObjects);
+		await this._createGulpFile(spaProjectFolderSource);
+		await this._createEslintFile(spaProjectFolderSource);
+		await this._createTsConfigFile(spaProjectFolderSource);
+		await this._createTsConfigTestFile(spaProjectFolderSource);
+		await this._createPackageFile(projectName, spaProjectFolderSource);
+	}
+
+	async _createSpaFolders(projectName, projectAbsolutePath) {
+		const spaProjectFolderSource = this._getSpaProjectFolderSource(projectAbsolutePath);
+		const spaProjectFolderSuiteApps = this._getSpaProjectFolderSuiteApps(projectAbsolutePath);
+		const spaProjectFolderProjectName = this._getSpaProjectFolderProjectName(projectAbsolutePath, projectName);
+
+		await this._fileSystemService.createFolder(spaProjectFolderSource, SPA_SUITEAPPS_FOLDER); //SuiteApps folder
+		await this._fileSystemService.createFolder(spaProjectFolderSuiteApps, projectName); //Project Name folder
+		await this._fileSystemService.createFolder(spaProjectFolderProjectName, SPA_ASSETS_FOLDER); //Assets folder
+	}
+
+	async _createSpaClientFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_SPA_CLIENT_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_SPA_CLIENT_FILENAME,
+			fileExtension: SPA_SPA_CLIENT_EXTENSION,
+		});
+	}
+
+	async _createSpaServerFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_SPA_SERVER_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_SPA_SERVER_FILENAME,
+			fileExtension: SPA_SPA_SERVER_EXTENSION,
+		});
+	}
+
+	async _createHelloWorldFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_HELLO_WORLD_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_HELLO_WORLD_FILENAME,
+			fileExtension: SPA_HELLO_WORLD_EXTENSION,
+		});
+	}
+
+	async _createCustspaFile(projectName, projectAbsolutePath) {
+		const spaProjectFolderProjectName = '/' + SPA_SUITEAPPS_FOLDER;
+
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_CUSTSPA_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_CUSTSPA_FILENAME + projectName,
+			fileExtension: SPA_CUSTSPA_EXTENSION,
+		});
+
+		const custSpaFilePath = path.join(projectAbsolutePath, SPA_CUSTSPA_FILENAME + projectName + '.' + SPA_CUSTSPA_EXTENSION);
+		await this._fileSystemService.replaceStringInFile(custSpaFilePath, SPA_PROJECT_NAME_REPLACE_STRING, projectName);
+		await this._fileSystemService.replaceStringInFile(custSpaFilePath, SPA_PROJECT_PATH_REPLACE_STRING, spaProjectFolderProjectName);
+	}
+
+	async _createGulpFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_GULPFILE_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_GULPFILE_FILENAME,
+			fileExtension: SPA_GULPFILE_EXTENSION,
+		});
+	}
+
+	async _createEslintFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_ESLINT_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_ESLINT_FILENAME,
+			fileExtension: SPA_ESLINT_EXTENSION,
+		});
+	}
+
+	async _createTsConfigFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_TS_CONFIG_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_TS_CONFIG_FILENAME,
+			fileExtension: SPA_TS_CONFIG_EXTENSION,
+		});
+	}
+
+	async _createTsConfigTestFile(projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_TS_CONFIG_TEMPLATE_KEY_TEST],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_TS_CONFIG_FILENAME_TEST,
+			fileExtension: SPA_TS_CONFIG_EXTENSION_TEST,
+		});
+	}
+
+	async _createPackageFile(projectName, projectAbsolutePath) {
+		await this._fileSystemService.createFileFromTemplate({
+			template: TemplateKeys.SPA_PROJECT[SPA_PACKAGE_TEMPLATE_KEY],
+			destinationFolder: projectAbsolutePath,
+			fileName: SPA_PACKAGE_FILENAME,
+			fileExtension: SPA_PACKAGE_EXTENSION,
+		});
+
+		const packageJsonFilePath = path.join(projectAbsolutePath, SPA_PACKAGE_FILENAME + '.' + SPA_PACKAGE_EXTENSION);
+		await this._fileSystemService.replaceStringInFile(packageJsonFilePath, SPA_PROJECT_NAME_REPLACE_STRING, projectName);
 	}
 
 	async _createUnitTestFiles(type, projectName, projectVersion, projectAbsolutePath) {
@@ -322,6 +520,11 @@ module.exports = class CreateProjectAction extends BaseAction {
 			fileName: UNIT_TEST_JSCONFIG_FILENAME,
 			fileExtension: UNIT_TEST_JSCONFIG_EXTENSION,
 		});
+	}
+
+	_createMyCustomFolder(params) {
+		const customFolderPath = path.join(params[COMMAND_OPTIONS.PARENT_DIRECTORY], 'mycustomfolder');
+		this._fileSystemService.createFolderFromAbsolutePath(customFolderPath);
 	}
 
 	async _runNpmInstall(projectAbsolutePath) {

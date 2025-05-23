@@ -13,6 +13,8 @@ class CreateProjectActionResult extends ActionResult {
 		this._projectName = parameters.projectName;
 		this._projectDirectory = parameters.projectDirectory;
 		this._includeUnitTesting = parameters.includeUnitTesting;
+		this._createSpa = parameters.createSpa;
+		this._spaProjectName = parameters.spaProjectName;
 		this._npmPackageInitialized = parameters.npmPackageInitialized;
 	}
 
@@ -38,6 +40,14 @@ class CreateProjectActionResult extends ActionResult {
 
 	get includeUnitTesting() {
 		return this._includeUnitTesting;
+	}
+
+	get createSpa() {
+		return this._createSpa;
+	}
+
+	get spaProjectName() {
+		return this._spaProjectName;
 	}
 
 	get npmPackageInitialized() {
@@ -74,6 +84,16 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 		return this;
 	}
 
+	withSpaProject(createSpa) {
+		this.createSpa = createSpa;
+		return this;
+	}
+
+	withSpaProjectName(spaProjectName) {
+		this.spaProjectName = spaProjectName;
+		return this;
+	}
+
 	withNpmPackageInitialized(npmPackageInitialized) {
 		this.npmPackageInitialized = npmPackageInitialized;
 		return this;
@@ -89,6 +109,8 @@ class CreateProjectActionResultBuilder extends ActionResultBuilder {
 			...(this.projectName && { projectName: this.projectName }),
 			...(this.projectDirectory && { projectDirectory: this.projectDirectory }),
 			...(this.includeUnitTesting && { includeUnitTesting: this.includeUnitTesting }),
+			...(this.createSpa && { createSpa: this.createSpa }),
+			...(this.spaProjectName && { spaProjectName: this.spaProjectName }),
 			...(this.npmPackageInitialized && { npmPackageInitialized: this.npmPackageInitialized }),
 			...(this.projectFolder && { projectFolder: this.projectFolder }),
 			...(this.commandParameters && { commandParameters: this.commandParameters }),

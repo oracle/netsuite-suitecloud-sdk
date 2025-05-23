@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "module": "es2022",
+        "target": "es2022",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "newLine": "LF",
+        "rootDir": "./",
+        "outDir": "build",
+        "lib": ["es2022", "dom"],
+        "jsx": "react-jsx",
+        "jsxImportSource": "@uif-js/core",
+        "sourceMap": false,
+        "strictNullChecks": true,
+        "typeRoots": [
+            "node_modules/@types",
+            "node_modules/@oracle/netsuite-uif-types"
+        ],
+        "paths": {
+            "N": ["./node_modules/@hitc/netsuite-types/N"],
+            "N/*": ["./node_modules/@hitc/netsuite-types/N/*"]
+        },
+    },
+    "include": [
+        "./src/SuiteApps/**/*",
+        "./test/unit/**/*"
+    ]
+}
