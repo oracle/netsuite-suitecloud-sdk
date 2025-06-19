@@ -15,7 +15,7 @@ const path = require('path');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutor = require('../SdkExecutor');
-const { lineBreak } = require('../loggers/LoggerConstants')
+const { lineBreak } = require('../loggers/LoggerOsConstants')
 const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
 const SdkOperationResult = require('../utils/SdkOperationResult')
 

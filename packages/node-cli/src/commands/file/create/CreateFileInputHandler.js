@@ -4,7 +4,11 @@
  */
 'use strict';
 
-const { prompt, Separator } = require('inquirer');
+const loadInquirerUtils = async () => {
+    const { InquirerPrompt, InquirerSeparator } = await import('../../../utils/InquirerUtils.mjs');
+    return { InquirerPrompt, InquirerSeparator };
+};
+const InquirerLib = loadInquirerUtils();
 const path = require('path');
 const { FOLDERS } = require('../../../ApplicationConstants');
 const {
@@ -53,15 +57,15 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
     }
 
     async getParameters(params) {
-        const answers = await prompt([
-            this._questionSelectSuiteScriptType(),
+        const answers = await (await InquirerLib).InquirerPrompt.prompt([
+            await this._questionSelectSuiteScriptType(),
             this._questionAddSuiteScriptModules(),
-            this._questionSelectSuiteScriptModules(),
+            await this._questionSelectSuiteScriptModules(),
             this._questionSelectDestinationFolder(),
 
         ]);
 
-        const nameAnswer = await prompt(this._questionEnterName(answers[ANSWER_NAMES.PARENT_PATH]));
+        const nameAnswer =  await (await InquirerLib).InquirerPrompt.prompt(this._questionEnterName(answers[ANSWER_NAMES.PARENT_PATH]));
         answers[ANSWER_NAMES.NAME] = nameAnswer[ANSWER_NAMES.NAME];
 
         delete answers[ANSWER_NAMES.ADD_SUITESCRIPT_MODULES];
@@ -69,7 +73,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
         return answers;
     }
 
-    _questionSelectSuiteScriptType() {
+    async _questionSelectSuiteScriptType() {
         return {
             type: CommandUtils.INQUIRER_TYPES.LIST,
             name: ANSWER_NAMES.TYPE,
@@ -80,7 +84,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
                     name: suiteScriptType.name,
                     value: suiteScriptType.id,
                 })),
-                new Separator(),
+                new (await InquirerLib).InquirerSeparator.Separator(),
             ],
         };
     }
@@ -98,7 +102,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
         };
     }
 
-    _questionSelectSuiteScriptModules() {
+     async _questionSelectSuiteScriptModules() {
         return {
             when: function (response) {
                 return response[ANSWER_NAMES.ADD_SUITESCRIPT_MODULES];
@@ -112,7 +116,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
                     name: suiteScriptModule.id,
                     value: suiteScriptModule.id,
                 })),
-                new Separator(),
+                new (await InquirerLib).InquirerSeparator.Separator(),
             ],
             validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
         };

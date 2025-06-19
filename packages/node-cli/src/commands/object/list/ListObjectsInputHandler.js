@@ -4,7 +4,12 @@
  */
 'use strict';
 
-const { prompt, Separator } = require('inquirer');
+const loadInquirerUtils = async () => {
+	const {InquirerPrompt, InquirerSeparator} = await import('../../../utils/InquirerUtils.mjs')
+	return {InquirerPrompt, InquirerSeparator};
+};
+const InquirerLib = loadInquirerUtils();
+
 const CommandUtils = require('../../../utils/CommandUtils');
 const OBJECT_TYPES = require('../../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
@@ -106,7 +111,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 					name: customObject.name,
 					value: customObject.value.type,
 				})),
-				new Separator(),
+				new (await InquirerLib).InquirerSeparator.Separator(),
 			],
 
 			validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
@@ -142,7 +147,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 			validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 		};
 		questions.push(questionScriptId);
-		let answers = await prompt(questions);
+		let answers = await (await InquirerLib).InquirerPrompt.prompt(questions);
 		return answers;
 	}
 };

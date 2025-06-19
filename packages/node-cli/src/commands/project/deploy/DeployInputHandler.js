@@ -4,7 +4,11 @@
  */
 'use strict';
 
-const { prompt } = require('inquirer');
+const loadInquirerUtils = async () => {
+	return await import('../../../utils/InquirerUtils.mjs')
+};
+const InquirerLib = loadInquirerUtils();
+
 const CommandUtils = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
@@ -44,7 +48,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 		const isSuiteAppProject = this._projectType === PROJECT_SUITEAPP;
 		const isACProject = this._projectType === PROJECT_ACP;
 
-		const answers = await prompt([
+		const answers =  await (await InquirerLib).InquirerPrompt.prompt([
 			{
 				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
 				type: CommandUtils.INQUIRER_TYPES.LIST,

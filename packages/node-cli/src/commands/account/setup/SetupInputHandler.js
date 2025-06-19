@@ -4,8 +4,18 @@
  */
 'use strict';
 
-const { prompt, Separator } = require('inquirer');
-const chalk = require('chalk');
+const loadLoggerConstants = async () => {
+	const { COLORS, BOLD } = await import('../../../loggers/LoggerFontConstants.mjs');
+	return { COLORS, BOLD };
+};
+const LoggerConstants = loadLoggerConstants();
+
+const loadInquirerUtils = async () => {
+	const { InquirerPrompt, InquirerSeparator } = await import('../../../utils/InquirerUtils.mjs');
+	return { InquirerPrompt, InquirerSeparator };
+};
+const InquirerLib = loadInquirerUtils();
+
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
@@ -75,12 +85,12 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		let authIdAnswer;
 		let authIDs = Object.keys(authIDActionResult.data);
 		if (authIDs.length > 0) {
-			choices.push({
-				name: chalk.bold(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
+		choices.push({
+				name: (await LoggerConstants).BOLD(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
 				value: CREATE_NEW_AUTH,
 			});
-			choices.push(new Separator());
-			choices.push(new Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
+			choices.push(new (await InquirerLib).InquirerSeparator.Separator());
+			choices.push(new (await InquirerLib).InquirerSeparator.Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 			authIDs.forEach((authID) => {
 				const accountCredentials = authIDActionResult.data[authID];
 				// just fixed the isNotProductionUrl because of new credentials format, but the previous version was always false
@@ -107,15 +117,15 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 					value: { authId: authID, accountInfo: accountCredentials.accountInfo },
 				});
 			});
-			choices.push(new Separator());
-			authIdAnswer = await prompt([
-				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
-					name: ANSWERS.SELECTED_AUTH_ID,
-					message: NodeTranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
-					choices: choices,
-				},
-			]);
+			    choices.push(new (await InquirerLib).InquirerSeparator.Separator());
+				authIdAnswer = await (await InquirerLib).InquirerPrompt.prompt([
+					{
+						type: CommandUtils.INQUIRER_TYPES.LIST,
+						name: ANSWERS.SELECTED_AUTH_ID,
+						message: NodeTranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
+						choices: choices,
+					},
+				]);
 		} else {
 			// There was no previous authIDs
 			authIdAnswer = {
@@ -126,7 +136,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	}
 
 	async getParamsCreateNewAuthId(params, authIDActionResult) {
-		const newAuthenticationAnswers = await prompt([
+		const newAuthenticationAnswers = await (await InquirerLib).InquirerPrompt.prompt([
 			{
 				when: params && params.dev !== undefined && params.dev,
 				type: CommandUtils.INQUIRER_TYPES.INPUT,

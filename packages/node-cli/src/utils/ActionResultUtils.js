@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { lineBreak } = require('../loggers/LoggerConstants');
+const { lineBreak } = require('../loggers/LoggerOsConstants');
 const disableInIntegrationMode = 'disableInIntegrationMode';
 
 module.exports = {

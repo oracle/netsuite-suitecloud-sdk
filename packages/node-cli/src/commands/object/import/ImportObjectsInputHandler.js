@@ -5,12 +5,17 @@
 'use strict';
 
 const { join } = require('path');
-const { prompt, Separator } = require('inquirer');
+
+const loadInquirerUtils = async () => {
+	const {InquirerPrompt, InquirerSeparator} = await import('../../../utils/InquirerUtils.mjs')
+	return {InquirerPrompt, InquirerSeparator};
+};
+const InquirerLib = loadInquirerUtils();
 const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
-const { lineBreak } = require('../../../loggers/LoggerConstants');
+const { lineBreak } = require('../../../loggers/LoggerOsConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
@@ -68,8 +73,8 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const listObjectQuestions = this._generateListObjectQuestions();
-		const listObjectAnswers = await prompt(listObjectQuestions);
+		const listObjectQuestions = await this._generateListObjectQuestions();
+		const listObjectAnswers = await (await InquirerLib).InquirerPrompt.prompt(listObjectQuestions);
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
 		const executionContextForListObjects = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
@@ -101,13 +106,13 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		let overwriteConfirmationAnswer;
 		try {
 			const selectionObjectQuestions = this._generateSelectionObjectQuestions(listObjectsResult);
-			selectionObjectAnswers = await prompt(selectionObjectQuestions);
+			selectionObjectAnswers = await (await InquirerLib).InquirerPrompt.prompt(selectionObjectQuestions);
 
 			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
-			answersAfterObjectSelection = await prompt(questionsAfterObjectSelection);
+			answersAfterObjectSelection = await (await InquirerLib).InquirerPrompt.prompt(questionsAfterObjectSelection);
 
 			const overwriteConfirmationQuestion = this._generateOverwriteConfirmationQuestion(answersAfterObjectSelection);
-			overwriteConfirmationAnswer = await prompt(overwriteConfirmationQuestion);
+			overwriteConfirmationAnswer = await (await InquirerLib).InquirerPrompt.prompt((overwriteConfirmationQuestion));
 		} catch (error) {
 			throw NodeTranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, lineBreak, error);
 		}
@@ -118,7 +123,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		return answers;
 	}
 
-	_generateListObjectQuestions() {
+	async _generateListObjectQuestions() {
 		const questions = [];
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
 			const specifySuiteApp = {
@@ -171,7 +176,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 					name: customObject.name,
 					value: customObject.value.type,
 				})),
-				new Separator(),
+				new (await InquirerLib).InquirerSeparator.Separator(),
 			],
 			validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};

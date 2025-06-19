@@ -10,7 +10,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const CommandUtils = require('../utils/CommandUtils');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
-const { lineBreak } = require('../loggers/LoggerConstants');
+const { lineBreak } = require('../loggers/LoggerOsConstants');
 const {
 	COMMAND_IMPORTFILES: { MESSAGES },
 	COMMAND_LISTFILES: { LOADING_FOLDERS, GETTING_INERNAL_ERROR: GETTING_INTERNAL_ERROR },

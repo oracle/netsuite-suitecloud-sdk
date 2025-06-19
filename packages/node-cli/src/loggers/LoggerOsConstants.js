@@ -4,17 +4,9 @@
  */
 'use strict';
 
-const chalk = require('chalk');
 const os = require('os');
 
 module.exports = {
-	COLORS: {
-		DEFAULT: chalk.white,
-		RESULT: chalk.green,
-		ERROR: chalk.red,
-		INFO: chalk.cyan,
-		WARNING: chalk.yellow,
-	},
 	padding: '\u0020\u0020\u0020\u0020', //4 spaces
 	lineBreak: os.EOL,
 };

@@ -4,7 +4,11 @@
  */
 'use strict';
 const path = require('path');
-const { prompt, Separator } = require('inquirer');
+const loadInquirerUtils = async () => {
+	const {InquirerPrompt, InquirerSeparator} = await import('../../../utils/InquirerUtils.mjs')
+	return {InquirerPrompt, InquirerSeparator};
+};
+const InquirerLib = loadInquirerUtils();
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const FileSystemService = require('../../../services/FileSystemService');
@@ -97,7 +101,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 	}
 
 	async _getSelectedScriptIds(filteredObjects) {
-		filteredObjects.push(new Separator());
+		filteredObjects.push(new (await InquirerLib).InquirerSeparator.Separator());
 		const selectObjectsToUpdateQuestion = {
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 			name: ANSWERS_NAMES.SCRIPT_ID_LIST,
@@ -106,13 +110,13 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 			choices: filteredObjects,
 			validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
-		const answers = await prompt([selectObjectsToUpdateQuestion]);
+		const answers = await (await InquirerLib).InquirerPrompt.prompt([selectObjectsToUpdateQuestion]);
 
 		return answers[ANSWERS_NAMES.SCRIPT_ID_LIST];
 	}
 
 	async _questionFilterByScriptId() {
-		return await prompt([
+		return await (await InquirerLib).InquirerPrompt.prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.FILTER_BY_SCRIPT_ID,
@@ -146,7 +150,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 				{ name: NodeTranslationService.getMessage(NO), value: false },
 			],
 		};
-		const answer = await prompt([includeCustomInstancesQuestions]);
+		const answer = await (await InquirerLib).InquirerPrompt.prompt([includeCustomInstancesQuestions]);
 		return answer[ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES];
 	}
 
@@ -164,7 +168,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 				{ name: NodeTranslationService.getMessage(NO), value: false },
 			],
 		};
-		const answers = await prompt([overwriteObjectsQuestion]);
+		const answers = await (await InquirerLib).InquirerPrompt.prompt([overwriteObjectsQuestion]);
 		return answers[ANSWERS_NAMES.OVERWRITE_OBJECTS];
 	}
 };

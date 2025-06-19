@@ -5,7 +5,11 @@
 'use strict';
 
 const CommandUtils = require('../../../utils/CommandUtils');
-const { prompt } = require('inquirer');
+const loadInquirerUtils = async () => {
+	const { InquirerPrompt } = await import('../../../utils/InquirerUtils.mjs');
+	return { InquirerPrompt };
+};
+const InquirerLib = loadInquirerUtils();
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const AccountFileCabinetService = require('../../../services/AccountFileCabinetService');
@@ -57,7 +61,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		}
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
-		const selectFolderAnswer = await prompt([selectFolderQuestion]);
+		const selectFolderAnswer = await (await InquirerLib).InquirerPrompt.prompt([selectFolderQuestion]);
 		const listFilesResult = await accountFileCabinetService.listFiles(selectFolderAnswer.folder);
 
 		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
@@ -68,9 +72,9 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
-		const selectFilesAnswer = await prompt(selectFilesQuestions);
+		const selectFilesAnswer = await (await InquirerLib).InquirerPrompt.prompt(selectFilesQuestions);
 
-		const overwriteAnswer = await prompt([this._generateOverwriteQuestion()]);
+		const overwriteAnswer = await (await InquirerLib).InquirerPrompt.prompt([this._generateOverwriteQuestion()]);
 		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}

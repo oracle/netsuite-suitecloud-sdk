@@ -18,7 +18,7 @@ const path = require('path');
 const NodeTranslationService = require('./NodeTranslationService');
 const xml2js = require('xml2js');
 const assert = require('assert');
-const { lineBreak } = require('../loggers/LoggerConstants');
+const { lineBreak } = require('../loggers/LoggerOsConstants');
 
 const MANIFEST_TAG_XML_PATH = '/manifest';
 const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
