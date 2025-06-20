@@ -6,11 +6,6 @@
 
 const { join } = require('path');
 
-const loadInquirerUtils = async () => {
-	const {InquirerPrompt, InquirerSeparator} = await import('../../../utils/InquirerUtils.mjs')
-	return {InquirerPrompt, InquirerSeparator};
-};
-const InquirerLib = loadInquirerUtils();
 const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
@@ -73,8 +68,9 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
+		await this.initInquirer();
 		const listObjectQuestions = await this._generateListObjectQuestions();
-		const listObjectAnswers = await (await InquirerLib).InquirerPrompt.prompt(listObjectQuestions);
+		const listObjectAnswers = await this.prompt(listObjectQuestions);
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
 		const executionContextForListObjects = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
@@ -106,13 +102,13 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		let overwriteConfirmationAnswer;
 		try {
 			const selectionObjectQuestions = this._generateSelectionObjectQuestions(listObjectsResult);
-			selectionObjectAnswers = await (await InquirerLib).InquirerPrompt.prompt(selectionObjectQuestions);
+			selectionObjectAnswers = await this.prompt(selectionObjectQuestions);
 
 			const questionsAfterObjectSelection = this._generateQuestionsAfterObjectSelection(selectionObjectAnswers);
-			answersAfterObjectSelection = await (await InquirerLib).InquirerPrompt.prompt(questionsAfterObjectSelection);
+			answersAfterObjectSelection = await this.prompt(questionsAfterObjectSelection);
 
 			const overwriteConfirmationQuestion = this._generateOverwriteConfirmationQuestion(answersAfterObjectSelection);
-			overwriteConfirmationAnswer = await (await InquirerLib).InquirerPrompt.prompt((overwriteConfirmationQuestion));
+			overwriteConfirmationAnswer = await this.prompt((overwriteConfirmationQuestion));
 		} catch (error) {
 			throw NodeTranslationService.getMessage(PROMPTING_INTERACTIVE_QUESTIONS_FAILED, lineBreak, error);
 		}
@@ -176,7 +172,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 					name: customObject.name,
 					value: customObject.value.type,
 				})),
-				new (await InquirerLib).InquirerSeparator.Separator(),
+				new this.separator(),
 			],
 			validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};

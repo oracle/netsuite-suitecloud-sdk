@@ -4,11 +4,6 @@
  */
 'use strict';
 
-const loadInquirerUtils = async () => {
-	const { InquirerPrompt } = await import('../../../utils/InquirerUtils.mjs');
-	return { InquirerPrompt };
-};
-const InquirerLib = loadInquirerUtils();
 const CommandUtils = require('../../../utils/CommandUtils');
 const AccountFileCabinetService = require('../../../services/AccountFileCabinetService');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
@@ -46,7 +41,8 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 			};
 		});
 
-		return (await InquirerLib).InquirerPrompt.prompt([
+		await this.initInquirer();
+		return this.prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: this._commandMetadata.options.folder.name,

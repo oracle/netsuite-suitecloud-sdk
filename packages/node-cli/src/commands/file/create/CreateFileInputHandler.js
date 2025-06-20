@@ -3,12 +3,6 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
-
-const loadInquirerUtils = async () => {
-    const { InquirerPrompt, InquirerSeparator } = await import('../../../utils/InquirerUtils.mjs');
-    return { InquirerPrompt, InquirerSeparator };
-};
-const InquirerLib = loadInquirerUtils();
 const path = require('path');
 const { FOLDERS } = require('../../../ApplicationConstants');
 const {
@@ -57,7 +51,8 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
     }
 
     async getParameters(params) {
-        const answers = await (await InquirerLib).InquirerPrompt.prompt([
+        await this.initInquirer();
+        const answers = await this.prompt([
             await this._questionSelectSuiteScriptType(),
             this._questionAddSuiteScriptModules(),
             await this._questionSelectSuiteScriptModules(),
@@ -65,7 +60,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
 
         ]);
 
-        const nameAnswer =  await (await InquirerLib).InquirerPrompt.prompt(this._questionEnterName(answers[ANSWER_NAMES.PARENT_PATH]));
+        const nameAnswer = await this.prompt(this._questionEnterName(answers[ANSWER_NAMES.PARENT_PATH]));
         answers[ANSWER_NAMES.NAME] = nameAnswer[ANSWER_NAMES.NAME];
 
         delete answers[ANSWER_NAMES.ADD_SUITESCRIPT_MODULES];
@@ -84,7 +79,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
                     name: suiteScriptType.name,
                     value: suiteScriptType.id,
                 })),
-                new (await InquirerLib).InquirerSeparator.Separator(),
+                new this.separator(),
             ],
         };
     }
@@ -102,9 +97,9 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
         };
     }
 
-     async _questionSelectSuiteScriptModules() {
+    async _questionSelectSuiteScriptModules() {
         return {
-            when: function (response) {
+            when: function(response) {
                 return response[ANSWER_NAMES.ADD_SUITESCRIPT_MODULES];
             },
             type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
@@ -112,11 +107,11 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             message: NodeTranslationService.getMessage(QUESTIONS.SELECT_SUITESCRIPT_MODULES),
             pageSize: 15,
             choices: [
-                ...SUITESCRIPT_MODULES.map(( suiteScriptModule) => ({
+                ...SUITESCRIPT_MODULES.map((suiteScriptModule) => ({
                     name: suiteScriptModule.id,
                     value: suiteScriptModule.id,
                 })),
-                new (await InquirerLib).InquirerSeparator.Separator(),
+                new this.separator(),
             ],
             validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
         };

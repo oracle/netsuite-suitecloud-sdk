@@ -4,18 +4,11 @@
  */
 'use strict';
 
-const loadLoggerConstants = async () => {
-	const { COLORS, BOLD } = await import('../../../loggers/LoggerFontConstants.mjs');
+const loadLoggerFontFormatter = async () => {
+	const { COLORS, BOLD } = await import('../../../loggers/LoggerFontFormatter.mjs');
 	return { COLORS, BOLD };
 };
-const LoggerConstants = loadLoggerConstants();
-
-const loadInquirerUtils = async () => {
-	const { InquirerPrompt, InquirerSeparator } = await import('../../../utils/InquirerUtils.mjs');
-	return { InquirerPrompt, InquirerSeparator };
-};
-const InquirerLib = loadInquirerUtils();
-
+const fontFormatterPromise = loadLoggerFontFormatter();
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
@@ -60,6 +53,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
+		await this.initInquirer();
 		this._projectInfoService.checkWorkingDirectoryContainsValidProject(this._commandMetadata.name);
 		validateBrowserBasedAuthIsAllowed();
 		const authIDActionResult = await getAuthIds(this._sdkPath);
@@ -86,11 +80,11 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		let authIDs = Object.keys(authIDActionResult.data);
 		if (authIDs.length > 0) {
 		choices.push({
-				name: (await LoggerConstants).BOLD(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
+				name: (await fontFormatterPromise).BOLD(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
 				value: CREATE_NEW_AUTH,
 			});
-			choices.push(new (await InquirerLib).InquirerSeparator.Separator());
-			choices.push(new (await InquirerLib).InquirerSeparator.Separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
+			choices.push(new this.separator());
+			choices.push(new this.separator(NodeTranslationService.getMessage(MESSAGES.SELECT_CONFIGURED_AUTHID)));
 			authIDs.forEach((authID) => {
 				const accountCredentials = authIDActionResult.data[authID];
 				// just fixed the isNotProductionUrl because of new credentials format, but the previous version was always false
@@ -117,15 +111,15 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 					value: { authId: authID, accountInfo: accountCredentials.accountInfo },
 				});
 			});
-			    choices.push(new (await InquirerLib).InquirerSeparator.Separator());
-				authIdAnswer = await (await InquirerLib).InquirerPrompt.prompt([
-					{
-						type: CommandUtils.INQUIRER_TYPES.LIST,
-						name: ANSWERS.SELECTED_AUTH_ID,
-						message: NodeTranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
-						choices: choices,
-					},
-				]);
+			choices.push(new this.separator());
+			authIdAnswer = await this.prompt([
+				{
+					type: CommandUtils.INQUIRER_TYPES.LIST,
+					name: ANSWERS.SELECTED_AUTH_ID,
+					message: NodeTranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
+					choices: choices,
+				},
+			]);
 		} else {
 			// There was no previous authIDs
 			authIdAnswer = {
@@ -136,7 +130,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 	}
 
 	async getParamsCreateNewAuthId(params, authIDActionResult) {
-		const newAuthenticationAnswers = await (await InquirerLib).InquirerPrompt.prompt([
+		const newAuthenticationAnswers = await this.prompt([
 			{
 				when: params && params.dev !== undefined && params.dev,
 				type: CommandUtils.INQUIRER_TYPES.INPUT,

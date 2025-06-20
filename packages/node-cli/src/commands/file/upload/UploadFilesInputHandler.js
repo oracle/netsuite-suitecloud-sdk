@@ -4,11 +4,6 @@
  */
 'use strict';
 
-const loadInquirerUtils = async () => {
-	const { InquirerPrompt } = await import('../../../utils/InquirerUtils.mjs');
-	return { InquirerPrompt };
-};
-const InquirerLib = loadInquirerUtils();
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const FileCabinetService = require('../../../services/FileCabinetService');
@@ -44,14 +39,15 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
+		await this.initInquirer();
 		const selectFolderQuestion = this._generateSelectFolderQuestion();
 
-		const selectFolderAnswer = await (await InquirerLib).InquirerPrompt.prompt(selectFolderQuestion);
+		const selectFolderAnswer = await this.prompt(selectFolderQuestion);
 
 		const selectFilesQuestion = this._generateSelectFilesQuestion(selectFolderAnswer.selectedFolder);
-		const selectFilesAnswer = await (await InquirerLib).InquirerPrompt.prompt(selectFilesQuestion);
+		const selectFilesAnswer = await this.prompt(selectFilesQuestion);
 
-		const overwriteAnswer = await (await InquirerLib).InquirerPrompt.prompt([this._generateOverwriteQuestion()]);
+		const overwriteAnswer = await this.prompt([this._generateOverwriteQuestion()]);
 		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_UPLOAD);
 		}

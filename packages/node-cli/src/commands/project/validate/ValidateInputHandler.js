@@ -5,10 +5,6 @@
 
 'use strict';
 
-const loadInquirerUtils = async () => {
-	return await import('../../../utils/InquirerUtils.mjs')
-};
-const InquirerLib = loadInquirerUtils();
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
@@ -37,7 +33,8 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const answers = await (await InquirerLib).InquirerPrompt.prompt([
+		await this.initInquirer();
+		const answers = await this.prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.SERVER,

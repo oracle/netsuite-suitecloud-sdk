@@ -11,11 +11,6 @@ const AccountCredentialsFormatter = require('../../../utils/AccountCredentialsFo
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { MANAGE_ACTION } = require('../../../services/actionresult/ManageAccountActionResult');
 const { DOMAIN } = require('../../../ApplicationConstants');
-const loadInquirerUtils = async () => {
-	const { InquirerPrompt, InquirerSeparator } = await import('../../../utils/InquirerUtils.mjs');
-	return { InquirerPrompt, InquirerSeparator };
-};
-const InquirerLib = loadInquirerUtils();
 
 const {
 	showValidationResults,
@@ -60,19 +55,21 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		if (!this._runInInteractiveMode) {
 			return params;
 		}
+
+		await this.initInquirer();
 		let answers;
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (!authIDActionResult.isSuccess()) {
 			throw authIDActionResult.errorMessages;
 		}
-		answers = await this._selectAuthID(authIDActionResult.data, (await InquirerLib).InquirerPrompt.prompt);
+		answers = await this._selectAuthID(authIDActionResult.data, this.prompt);
 		this._log.info(AccountCredentialsFormatter.getInfoString(answers[ANSWERS_NAMES.SELECTED_AUTH_ID]));
 		const selectedAuthID = answers[ANSWERS_NAMES.SELECTED_AUTH_ID].authId;
-		answers[ANSWERS_NAMES.ACTION] = await this._selectAction((await InquirerLib).InquirerPrompt.prompt);
+		answers[ANSWERS_NAMES.ACTION] = await this._selectAction(this.prompt);
 		if (answers[ANSWERS_NAMES.ACTION] === MANAGE_ACTION.RENAME) {
-			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName((await InquirerLib).InquirerPrompt.prompt, authIDActionResult.data, selectedAuthID);
+			answers[ANSWERS_NAMES.RENAMETO] = await this._introduceNewName(this.prompt, authIDActionResult.data, selectedAuthID);
 		} else if (answers[ANSWERS_NAMES.ACTION] === MANAGE_ACTION.REMOVE) {
-			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove((await InquirerLib).InquirerPrompt.prompt);
+			answers[ANSWERS_NAMES.REMOVE] = await this._confirmRemove(this.prompt);
 		}
 
 		return this._extractAnswers(answers);
@@ -119,7 +116,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 				value: { authId: authID, accountInfo: accountCredential.accountInfo, domain: accountCredential.hostInfo.hostName },
 			});
 		});
-		choices.push(new (await InquirerLib).InquirerSeparator.Separator());
+		choices.push(new this.separator());
 		return await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,

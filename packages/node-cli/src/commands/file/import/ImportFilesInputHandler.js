@@ -5,11 +5,6 @@
 'use strict';
 
 const CommandUtils = require('../../../utils/CommandUtils');
-const loadInquirerUtils = async () => {
-	const { InquirerPrompt } = await import('../../../utils/InquirerUtils.mjs');
-	return { InquirerPrompt };
-};
-const InquirerLib = loadInquirerUtils();
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const AccountFileCabinetService = require('../../../services/AccountFileCabinetService');
@@ -53,6 +48,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 			throw NodeTranslationService.getMessage(ERRORS.IS_SUITEAPP);
 		}
 
+		await this.initInquirer();
 		const accountFileCabinetService = new AccountFileCabinetService(this._sdkPath, this._executionEnvironmentContext, this._authId);
 		
 		const listFoldersResult = await accountFileCabinetService.getAccountFileCabinetFolders();
@@ -61,7 +57,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		}
 
 		const selectFolderQuestion = this._generateSelectFolderQuestion(listFoldersResult);
-		const selectFolderAnswer = await (await InquirerLib).InquirerPrompt.prompt([selectFolderQuestion]);
+		const selectFolderAnswer = await this.prompt([selectFolderQuestion]);
 		const listFilesResult = await accountFileCabinetService.listFiles(selectFolderAnswer.folder);
 
 		if (listFilesResult.status === SdkOperationResultUtils.STATUS.ERROR) {
@@ -72,9 +68,9 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 		}
 
 		const selectFilesQuestions = this._generateSelectFilesQuestions(listFilesResult);
-		const selectFilesAnswer = await (await InquirerLib).InquirerPrompt.prompt(selectFilesQuestions);
+		const selectFilesAnswer = await this.prompt(selectFilesQuestions);
 
-		const overwriteAnswer = await (await InquirerLib).InquirerPrompt.prompt([this._generateOverwriteQuestion()]);
+		const overwriteAnswer = await this.prompt([this._generateOverwriteQuestion()]);
 		if (overwriteAnswer[COMMAND_ANSWERS.OVERWRITE_FILES] === false) {
 			throw NodeTranslationService.getMessage(MESSAGES.CANCEL_IMPORT);
 		}

@@ -4,12 +4,6 @@
  */
 'use strict';
 
-const loadInquirerUtils = async () => {
-	const {InquirerPrompt, InquirerSeparator} = await import('../../../utils/InquirerUtils.mjs')
-	return {InquirerPrompt, InquirerSeparator};
-};
-const InquirerLib = loadInquirerUtils();
-
 const CommandUtils = require('../../../utils/CommandUtils');
 const OBJECT_TYPES = require('../../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
@@ -44,6 +38,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
+		await this.initInquirer();
 		const questions = [];
 		//create a class to see type based on manifest.
 		if (this._projectInfoService.getProjectType() === PROJECT_SUITEAPP) {
@@ -111,7 +106,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 					name: customObject.name,
 					value: customObject.value.type,
 				})),
-				new (await InquirerLib).InquirerSeparator.Separator(),
+				new this.separator(),
 			],
 
 			validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
@@ -147,7 +142,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 			validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty),
 		};
 		questions.push(questionScriptId);
-		let answers = await (await InquirerLib).InquirerPrompt.prompt(questions);
+		let answers = await this.prompt(questions);
 		return answers;
 	}
 };

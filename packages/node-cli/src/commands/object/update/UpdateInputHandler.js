@@ -4,11 +4,6 @@
  */
 'use strict';
 const path = require('path');
-const loadInquirerUtils = async () => {
-	const {InquirerPrompt, InquirerSeparator} = await import('../../../utils/InquirerUtils.mjs')
-	return {InquirerPrompt, InquirerSeparator};
-};
-const InquirerLib = loadInquirerUtils();
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const FileSystemService = require('../../../services/FileSystemService');
@@ -50,6 +45,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
+		await this.initInquirer();
 		const foundXMLFiles = this._searchFilesFromObjectsFolder();
 		let filteredObjectsList = await this._getObjectsToSelect(foundXMLFiles);
 		const selectedScriptIds = await this._getSelectedScriptIds(filteredObjectsList);
@@ -101,7 +97,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 	}
 
 	async _getSelectedScriptIds(filteredObjects) {
-		filteredObjects.push(new (await InquirerLib).InquirerSeparator.Separator());
+		filteredObjects.push(new this.separator());
 		const selectObjectsToUpdateQuestion = {
 			type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
 			name: ANSWERS_NAMES.SCRIPT_ID_LIST,
@@ -110,13 +106,13 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 			choices: filteredObjects,
 			validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 		};
-		const answers = await (await InquirerLib).InquirerPrompt.prompt([selectObjectsToUpdateQuestion]);
+		const answers = await this.prompt([selectObjectsToUpdateQuestion]);
 
 		return answers[ANSWERS_NAMES.SCRIPT_ID_LIST];
 	}
 
 	async _questionFilterByScriptId() {
-		return await (await InquirerLib).InquirerPrompt.prompt([
+		return await this.prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.FILTER_BY_SCRIPT_ID,
@@ -150,7 +146,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 				{ name: NodeTranslationService.getMessage(NO), value: false },
 			],
 		};
-		const answer = await (await InquirerLib).InquirerPrompt.prompt([includeCustomInstancesQuestions]);
+		const answer = await this.prompt([includeCustomInstancesQuestions]);
 		return answer[ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES];
 	}
 
@@ -168,7 +164,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 				{ name: NodeTranslationService.getMessage(NO), value: false },
 			],
 		};
-		const answers = await (await InquirerLib).InquirerPrompt.prompt([overwriteObjectsQuestion]);
+		const answers = await this.prompt([overwriteObjectsQuestion]);
 		return answers[ANSWERS_NAMES.OVERWRITE_OBJECTS];
 	}
 };

@@ -4,11 +4,6 @@
  */
 'use strict';
 
-const loadInquirerUtils = async () => {
-	const { InquirerPrompt } = await import('../../../utils/InquirerUtils.mjs');
-	return { InquirerPrompt };
-};
-const InquirerLib = loadInquirerUtils();
 const path = require('path');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
@@ -57,7 +52,8 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	}
 
 	async getParameters(params) {
-		const answers = await (await InquirerLib).InquirerPrompt.prompt([
+		await this.initInquirer();
+		const answers = await this.prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.TYPE,
@@ -128,7 +124,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 		const projectAbsolutePath = path.join(this._executionPath, projectFolderName);
 
 		if (this._fileSystemService.folderExists(projectAbsolutePath) && !this._fileSystemService.isFolderEmpty(projectAbsolutePath)) {
-			const overwriteAnswer = await (await InquirerLib).InquirerPrompt.prompt([
+			const overwriteAnswer = await this.prompt([
 				{
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: COMMAND_OPTIONS.OVERWRITE,
