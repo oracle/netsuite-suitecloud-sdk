@@ -6,6 +6,10 @@
 /** http libraries */
 const http = require('node:http');
 const https = require('node:https');
+const EventEmitter = require('events');
+
+/** Events */
+const AUTH_REFRESH_MANUAL_EVENT = "authRefreshManual";
 
 /** Authentication methods */
 const {
@@ -32,14 +36,28 @@ const TARGET_SERVER_PORT = 443;
 
 /** Http codes */
 const UNAUTHORIZED_RESPONSE = 401;
-const FORBIDDEN_RESPONSE = 401;
+const FORBIDDEN_RESPONSE = 403;
 const INTERNAL_SERVER_ERROR_RESPONSE = 500;
 
 /** Time to refresh authorization */
 const MS_TO_REFRESH = 60 * 60 * 1000; // 3600000 milliseconds in one hour
 
-module.exports = class DevAssistProxyService {
+/**
+ * Token status, UP_TO_DATE is the default standard.
+ * When manual refresh is needed the response output is need to authenticate message
+ * One the user has been authenticated externally, vscode will move to MANUAL_REFRESH_NEEDED_APPLIED
+ * When MANUAL_REFRESH_NEEDED_APPLIED is detected, the credentials are reloaded and set UP_TO_DATE again
+ * @type {Readonly<{MANUAL_REFRESH_NEEDED_APPLIED: string, UP_TO_DATE: string, MANUAL_REFRESH_NEEDED: string}>}
+ */
+const Status = Object.freeze({
+	UP_TO_DATE: 'UP_TO_DATE',
+	MANUAL_REFRESH_NEEDED: 'MANUAL_REFRESH_NEEDED',
+	MANUAL_REFRESH_NEEDED_APPLIED: 'MANUAL_REFRESH_NEEDED_APPLIED'
+});
+
+class DevAssistProxyService extends EventEmitter {
 	constructor(sdkPath, executionEnvironmentContext) {
+		super();
 		this._sdkPath = sdkPath;
 		this._executionEnvironmentContext = executionEnvironmentContext;
 		/** These are the variables we are going to use to store instance data */
@@ -48,6 +66,7 @@ module.exports = class DevAssistProxyService {
 		this._targetHost = undefined;
 		this._authId = undefined;
 		this._lastCheckedTimestamp = undefined;
+		this._isManualRefreshNeeded = undefined;
 	}
 
 	/**
@@ -55,7 +74,7 @@ module.exports = class DevAssistProxyService {
 	 * @returns {Promise<{hostName: string, accessToken: string}>}
 	 * @private
 	 */
-	async _retrieveAccessToken() {
+	async _retrieveCredentials() {
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 
 		if (!authIDActionResult.isSuccess()) {
@@ -79,6 +98,7 @@ module.exports = class DevAssistProxyService {
 	async _forceRefreshAuth() {
 		let inspectAuthOperationResult = await checkIfReauthorizationIsNeeded(this._authId, this._sdkPath, this._executionEnvironmentContext);
 		if (!inspectAuthOperationResult.isSuccess()) {
+			//TODO send special message The remote server returned an error:\n\n\nReceived fatal alert: internal_error; when not being able to connect, for instance vpn disconnected
 			throw inspectAuthOperationResult.errorMessages;
 		}
 
@@ -89,11 +109,14 @@ module.exports = class DevAssistProxyService {
 			//force refresh
 			let result = await forceRefreshAuthorization(this._authId, this._sdkPath, this._executionEnvironmentContext);
 			if (result.status === 'ERROR') {
-				if (result.errorMessages && result.errorMessages.length > 0) {
+				/*if (result.errorMessages && result.errorMessages.length > 0) {
 					throw result.errorMessages[0];
 				} else {
-					throw NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.NEED_TO_REAUTHENTICATE);
-				}
+					//throw NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.NEED_TO_REAUTHENTICATE);
+				}*/
+				//We are going to change the state and return an undefined access token
+				this._isManualRefreshNeeded = Status.MANUAL_REFRESH_NEEDED;
+				return undefined;
 			}
 			return result.data.accessToken;
 		}
@@ -106,7 +129,12 @@ module.exports = class DevAssistProxyService {
 	 * @private
 	 */
 	_buildOptions(req) {
-		const authorization = 'Bearer ' + this._accessToken;
+		//if token needs to be re authorized manually we use a dummy authorization in order to trigger
+		//the UNAUTHORIZED error response into cline and show our personalized message
+		const authorization = (this._isManualRefreshNeeded === Status.UP_TO_DATE) ?
+			'Bearer ' + this._accessToken
+			: '';
+
 		const options = {
 			hostname: this._targetHost,
 			port: TARGET_SERVER_PORT,
@@ -146,6 +174,8 @@ module.exports = class DevAssistProxyService {
 			if (serverResponse.statusCode === UNAUTHORIZED_RESPONSE) {
 				//401 make appear the sign-in to cline button, so we use instead 403
 				this._writeResponseMessage(clineResponse, FORBIDDEN_RESPONSE, NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.NEED_TO_REAUTHENTICATE));
+				//Emit the need to reauthorize message
+				this.emit(AUTH_REFRESH_MANUAL_EVENT, { message: 'Auth Token needs been refreshed manually.' });
 			} else {
 				clineResponse.writeHead(serverResponse.statusCode || INTERNAL_SERVER_ERROR_RESPONSE, serverResponse.headers);
 				serverResponse.pipe(clineResponse, { end: true });
@@ -162,7 +192,19 @@ module.exports = class DevAssistProxyService {
 	}
 
 	async _refreshAuthIfNeeded() {
-		if (!this._lastCheckedTimestamp) {
+
+		if (this._isManualRefreshNeeded === Status.MANUAL_REFRESH_NEEDED) {
+			//Needs manual refresh. Do not do anything.
+			console.log('Manual refresh needed');
+			return;
+		} else if (this._isManualRefreshNeeded === Status.MANUAL_REFRESH_NEEDED_APPLIED) {
+			//Manual refresh has been applied. Load the new credentials and reset the state.
+			let { accessToken } = await this._retrieveCredentials();
+			this._accessToken = accessToken;
+			this._lastCheckedTimestamp = Date.now();
+			console.log('Manual refresh applied');
+			this._isManualRefreshNeeded = Status.UP_TO_DATE;
+		} else if (!this._lastCheckedTimestamp) {
 			//First time checked
 			console.log('Token is going to be refreshed');
 			this._accessToken = await this._forceRefreshAuth();
@@ -191,7 +233,15 @@ module.exports = class DevAssistProxyService {
 		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 	}
 
+	/**
+	 * starts the listener.
+	 * It can return an error, for instance when it cannot connect to the auth server or the parameters being incorrect
+	 * @param authId
+	 * @param proxyPort
+	 * @returns {Promise<void>}
+	 */
 	async start(authId, proxyPort) {
+
 
 		//Parameters validation
 		if (!authId) {
@@ -208,13 +258,16 @@ module.exports = class DevAssistProxyService {
 			throw NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.PORT_MUST_BE_NUMBER);
 		}
 
-		await this._refreshAuthIfNeeded();
-
-
 		//Retrieve from authId accessToken and target host
-		let { accessToken, hostName } = await this._retrieveAccessToken();
+		let { hostName } = await this._retrieveCredentials();
 		this._targetHost = hostName;
-		this._accessToken = accessToken;
+
+		//Default state, no need of manual reauthorize
+		this._isManualRefreshNeeded = Status.UP_TO_DATE;
+		//reset last refreshed time
+		this._lastCheckedTimestamp = undefined;
+
+		await this._refreshAuthIfNeeded();
 
 		this._localProxy = http.createServer();
 
@@ -235,6 +288,10 @@ module.exports = class DevAssistProxyService {
 		});
 	}
 
+	/**
+	 * Stops server
+	 * @returns {Promise<void>}
+	 */
 	async stop() {
 		if (this._localProxy) {
 			this._localProxy.close(() => {
@@ -246,4 +303,17 @@ module.exports = class DevAssistProxyService {
 		}
 	}
 
-};
+	/** gets refresh status*/
+	getRefreshStatus(){
+		return this._isManualRefreshNeeded;
+	}
+
+	/** Sets refresh status */
+	setRefreshStatus(newStatus){
+		this._isManualRefreshNeeded = newStatus;
+		console.log('Refresh status changed to:'+this._isManualRefreshNeeded);
+	}
+
+}
+
+module.exports = {DevAssistProxyService, Status, AUTH_REFRESH_MANUAL_EVENT };
