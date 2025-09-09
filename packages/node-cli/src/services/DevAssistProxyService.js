@@ -289,7 +289,7 @@ class DevAssistProxyService extends EventEmitter {
 	}
 
 	/**
-	 * Stops server
+	 * Stops servernp
 	 * @returns {Promise<void>}
 	 */
 	async stop() {
