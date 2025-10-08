@@ -42,7 +42,6 @@ class AccountSetupCiValidation {
 				this._commandMetadata
 			);
 		}
-
 	}
 
 	/**
