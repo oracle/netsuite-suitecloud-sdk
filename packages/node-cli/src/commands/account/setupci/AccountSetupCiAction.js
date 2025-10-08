@@ -36,10 +36,12 @@ module.exports = class AccountSetupCiAction extends BaseAction {
 		}
 
 		validateMachineToMachineAuthIsAllowed();
-		this._validator.validateActionParametersByMode(params);
-		this._validator.validateAuthIDFormat(this._getAuthId(params), this._isSetupMode(params));
 
-		if (this._isSetupMode(params)) {
+		const isSetupMode = this._isSetupMode(params);
+		this._validator.validateActionParametersByMode(params, isSetupMode);
+		this._validator.validateAuthIDFormat(this._getAuthId(params), isSetupMode);
+
+		if (isSetupMode) {
 			return await authenticateCi(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
 		} else {
 			return await selectAuthenticationCI(this._getAuthId(params), this._sdkPath, this._executionPath);

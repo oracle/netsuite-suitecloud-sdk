@@ -50,11 +50,12 @@ class AccountSetupCiValidation {
 	 * and the setup mode --authid <authI> --certificateid <certId>--privatekeypath <privatekeypath> -account <account> -domain <domain>
 	 * all mandatory except domain which is optional.
 	 * @param params
+	 * @param isSetupMode
 	 */
-	validateActionParametersByMode(params) {
+	validateActionParametersByMode(params, isSetupMode) {
 		assert(this._commandMetadata);
 		assert(this._commandMetadata.options);
-		const validationErrors = this._isSetupMode(params) ?
+		const validationErrors = isSetupMode ?
 			this._validateActionParametersSetupMode(params) :
 			this._validateActionParametersSelectMode(params);
 
@@ -93,10 +94,6 @@ class AccountSetupCiValidation {
 		return Object.keys(params)
 			.filter(paramKey => paramKey !== OPTIONS.SELECT)
 			.map(notAllowedParam => NodeTranslationService.getMessage(ERRORS.IS_NOT_ALLOWED_SELECT_MODE, notAllowedParam));
-	}
-
-	_isSetupMode(params) {
-		return (!params[OPTIONS.SELECT]);
 	}
 
 }
