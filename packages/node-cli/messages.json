@@ -172,6 +172,7 @@
 	"COMMAND_OPTIONS_IS_MANDATORY": "\"{0}\" option is mandatory.",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS": "There are validation errors:",
 	"COMMAND_OPTIONS_VALIDATION_ERRORS_INTERACTIVE_SUGGESTION": "You can use the interactive mode by running \"suitecloud {0} -i\"",
+    "COMMAND_OPTIONS_VALIDATION_SHOW_ERROR_MESSAGE": "{0}: {1}",
 
 	"COMMAND_PACKAGE_LOCAL_VALIDATION_NOT_EXECUTED": "The project is being packaged without validation. Make sure the project is validated.",
 	"COMMAND_PACKAGE_PACKAGING": "Packaging...",

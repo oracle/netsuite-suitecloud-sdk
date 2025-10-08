@@ -8,6 +8,7 @@ const {
 const assert = require('assert');
 const { throwValidationException } = require('../../../utils/ExceptionUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
+const TRANSLATION_KEYS = require('../../../services/TranslationKeys');
 const {
 	ACCOUNT_SETUP_CI: {
 		COMMAND: {
@@ -24,7 +25,7 @@ class AccountSetupCiValidation {
 		this._runInInteractiveMode = runInInteractiveMode;
 	}
 
-	validateAuthIDFormat(authId) {
+	validateAuthIDFormat(authId, isSetupMode) {
 		const validateResult = showValidationResults(
 			authId,
 			validateFieldIsNotEmpty,
@@ -32,9 +33,16 @@ class AccountSetupCiValidation {
 			validateAlphanumericHyphenUnderscore,
 			validateMaximumLength,
 		);
-		if (typeof validateResult === 'string') {
-			throw validateResult;
+		if (validateResult !== true) {
+			throwValidationException(
+				[NodeTranslationService.getMessage(TRANSLATION_KEYS.COMMAND_OPTIONS.VALIDATION_SHOW_ERROR_MESSAGE,
+					isSetupMode ? OPTIONS.AUTHID : OPTIONS.SELECT, validateResult
+				)],
+				false,
+				this._commandMetadata
+			);
 		}
+
 	}
 
 	/**

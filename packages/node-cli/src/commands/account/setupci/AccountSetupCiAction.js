@@ -37,7 +37,7 @@ module.exports = class AccountSetupCiAction extends BaseAction {
 
 		validateMachineToMachineAuthIsAllowed();
 		this._validator.validateActionParametersByMode(params);
-		this._validator.validateAuthIDFormat(this._getAuthId(params));
+		this._validator.validateAuthIDFormat(this._getAuthId(params), this._isSetupMode(params));
 
 		if (this._isSetupMode(params)) {
 			return await authenticateCi(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
