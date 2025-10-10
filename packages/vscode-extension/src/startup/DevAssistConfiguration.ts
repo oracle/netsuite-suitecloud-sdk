@@ -161,7 +161,9 @@ const showDevAssistStartUpNotification = () => {
     const buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[] = [
         {
             buttonMessage: translationService.getMessage(DEVASSIST_SERVICE.STARTUP.BUTTON.OPEN_SETTINGS),
-            buttonAction: openDevAssistSettings
+			buttonAction: () => {
+				openDevAssistSettings();
+			},
         },
         {
             buttonMessage: translationService.getMessage(DEVASSIST_SERVICE.STARTUP.BUTTON.DONT_SHOW_AGAIN),
@@ -184,7 +186,7 @@ const showStartDevAssistProblemNotification = (errorStage: string, error: string
             buttonMessage: translationService.getMessage(DEVASSIST_SERVICE.IS_STOPPED.NOTIFICATION_BUTTON),
             buttonAction: () => {
                 // show suitecloud output and devassist settings
-                output.show()
+                output.show();
                 openDevAssistSettings();
             },
         },
@@ -192,7 +194,7 @@ const showStartDevAssistProblemNotification = (errorStage: string, error: string
     vsNotificationService.showCommandErrorWithSpecificButtonsAndActions(errorMessage, buttonsAndActions);
 }
 
-const openDevAssistSettings = () => {
+const openDevAssistSettings = (): void => {
     vscode.commands.executeCommand(
         'workbench.action.openWorkspaceSettings',
         DEVASSIST.CONFIG_KEYS.devAssistSection
