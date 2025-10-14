@@ -104,7 +104,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		this._localProxy.on('error', (error) => {
 			if (error.code === 'EADDRINUSE') {
-				const errorMsg = `Port ${proxyPort} is already in use.`;
+				const errorMsg = `Port ${proxyPort} is already being used. Choose a different port and try again.`;
 				console.error(errorMsg);
 				const emitObject = { message: errorMsg, authId: this._authId };
 				this.emit(EVENTS.ALREADY_USED_PORT, emitObject);

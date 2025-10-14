@@ -126,7 +126,7 @@ const initializeDevAssistService = (devAssistStatusBar: vscode.StatusBarItem) =>
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.SERVER_ERROR, (emitParams: { authId: string, message: string }) => {
         // just forwarding info into suitecloud output for now
         vsLogger.error(translationService.getMessage(DEVASSIST_SERVICE.SERVER_ERROR.OUTPUT, emitParams.message));
-        // add line sepparator
+        // add line separator
         vsLogger.error('');
     });
 
