@@ -32,7 +32,8 @@ const devAssistConfigStatus: { current: devAssistConfig, previous: devAssistConf
 
 const PROXY_SERVICE_EVENTS = {
     REAUTHORIZE: 'authRefreshManual',
-    SERVER_ERROR: 'serverError'
+    SERVER_ERROR: 'serverError',
+    ALREADY_USED_PORT: 'alreadyUsedPort'
 }
 
 const executionEnvironmentContext = new ExecutionEnvironmentContext({
@@ -127,6 +128,12 @@ const initializeDevAssistService = (devAssistStatusBar: vscode.StatusBarItem) =>
         vsLogger.error(translationService.getMessage(DEVASSIST_SERVICE.SERVER_ERROR.OUTPUT, emitParams.message));
         // add line sepparator
         vsLogger.error('');
+    });
+
+    devAssistProxyService.on(PROXY_SERVICE_EVENTS.ALREADY_USED_PORT, (emitParams: { authId: string, message: string }) => {
+        vsLogger.error(translationService.getMessage(DEVASSIST_SERVICE.SERVER_ERROR.OUTPUT, emitParams.message));
+        vsLogger.error('');
+        showStartDevAssistProblemNotification('alreadyUsedPort', emitParams.message, devAssistStatusBar)
     });
 };
 

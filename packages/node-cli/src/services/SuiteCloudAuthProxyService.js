@@ -13,6 +13,7 @@ const EventEmitter = require('events');
 const EVENTS = {
 	SERVER_ERROR: 'serverError',
 	AUTH_REFRESH_MANUAL_EVENT: 'authRefreshManual',
+	ALREADY_USED_PORT: 'alreadyUsedPort'
 };
 
 /** Authentication methods */
@@ -99,6 +100,15 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._localProxy.listen(proxyPort, LOCAL_HOSTNAME, () => {
 			const localURL = `http://${LOCAL_HOSTNAME}:${proxyPort}`;
 			console.log(`SuiteCloud Proxy server listening on ${localURL}`);
+		});
+
+		this._localProxy.on('error', (error) => {
+			if (error.code === 'EADDRINUSE') {
+				const errorMsg = `Port ${proxyPort} is already in use.`;
+				console.error(errorMsg);
+				const emitObject = { message: errorMsg, authId: this._authId };
+				this.emit(EVENTS.ALREADY_USED_PORT, emitObject);
+			}
 		});
 	}
 
