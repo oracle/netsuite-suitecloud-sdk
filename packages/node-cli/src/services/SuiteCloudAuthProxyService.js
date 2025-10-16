@@ -106,22 +106,13 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._localProxy.on('error', (error) => {
 			if (error.code === 'EADDRINUSE') {
 				const errorMsg = NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.ALREADY_USED_PORT, proxyPort);
-				console.error(errorMsg);
-				const emitObject = { message: errorMsg, authId: this._authId };
-				this.emit(EVENTS.ALREADY_USED_PORT, emitObject);
+				this._handleListeningPortError(errorMsg, EVENTS.ALREADY_USED_PORT);
 			} else {
 				const errorMsg = NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.LISTENING_PORT_ERROR, proxyPort);
-				console.error(errorMsg);
-				const emitObject = { message: errorMsg, authId: this._authId };
-				this.emit(EVENTS.LISTENING_PORT_ERROR, emitObject);
+				this._handleListeningPortError(errorMsg, EVENTS.LISTENING_PORT_ERROR);
 			}
 		});
 	}
-
-	_logAndEmitListeningPortError(errorCode, port) {
-
-	}
-
 
 	/**
 	 * Public method that stops the proxy
@@ -143,6 +134,12 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		const { accessToken } = await this._retrieveCredentials();
 		this._accessToken = accessToken;
 		console.log('access token refreshed');
+	}
+
+	_handleListeningPortError(errorMsg, event) {
+		console.error(errorMsg);
+		const emitObject = { message: errorMsg, authId: this._authId };
+		this.emit(event, emitObject);
 	}
 
 	/**
