@@ -13,7 +13,8 @@ const EventEmitter = require('events');
 const EVENTS = {
 	SERVER_ERROR: 'serverError',
 	AUTH_REFRESH_MANUAL_EVENT: 'authRefreshManual',
-	ALREADY_USED_PORT: 'alreadyUsedPort'
+	ALREADY_USED_PORT: 'alreadyUsedPort',
+	LISTENING_PORT_ERROR: 'listeningPortError'
 };
 
 /** Authentication methods */
@@ -104,13 +105,23 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		this._localProxy.on('error', (error) => {
 			if (error.code === 'EADDRINUSE') {
-				const errorMsg = `Port ${proxyPort} is already being used. Choose a different port and try again.`;
+				const errorMsg = NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.ALREADY_USED_PORT, proxyPort);
 				console.error(errorMsg);
 				const emitObject = { message: errorMsg, authId: this._authId };
 				this.emit(EVENTS.ALREADY_USED_PORT, emitObject);
+			} else {
+				const errorMsg = NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.LISTENING_PORT_ERROR, proxyPort);
+				console.error(errorMsg);
+				const emitObject = { message: errorMsg, authId: this._authId };
+				this.emit(EVENTS.LISTENING_PORT_ERROR, emitObject);
 			}
 		});
 	}
+
+	_logAndEmitListeningPortError(errorCode, port) {
+
+	}
+
 
 	/**
 	 * Public method that stops the proxy
