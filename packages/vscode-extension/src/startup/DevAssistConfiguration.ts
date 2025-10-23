@@ -134,13 +134,13 @@ const initializeDevAssistService = (devAssistStatusBar: vscode.StatusBarItem) =>
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.ALREADY_USED_PORT, (emitParams: { authId: string, message: string }) => {
         vsLogger.error(translationService.getMessage(DEVASSIST_SERVICE.SERVER_ERROR.OUTPUT, emitParams.message));
         vsLogger.error('');
-        showStartDevAssistProblemNotification('alreadyUsedPort', emitParams.message, devAssistStatusBar)
+        showStartDevAssistProblemNotification(PROXY_SERVICE_EVENTS.ALREADY_USED_PORT, emitParams.message, devAssistStatusBar)
     });
 
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.LISTENING_PORT_ERROR, (emitParams: { authId: string, message: string }) => {
         vsLogger.error(translationService.getMessage(DEVASSIST_SERVICE.SERVER_ERROR.OUTPUT, emitParams.message));
         vsLogger.error('');
-        showStartDevAssistProblemNotification('listeningPortError', emitParams.message, devAssistStatusBar)
+        showStartDevAssistProblemNotification(PROXY_SERVICE_EVENTS.LISTENING_PORT_ERROR, emitParams.message, devAssistStatusBar)
     });
 
 };

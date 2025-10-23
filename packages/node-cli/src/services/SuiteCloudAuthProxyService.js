@@ -108,7 +108,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				const errorMsg = NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.ALREADY_USED_PORT, proxyPort);
 				this._handleListeningPortError(errorMsg, EVENTS.ALREADY_USED_PORT);
 			} else {
-				const errorMsg = NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.LISTENING_PORT_ERROR, proxyPort);
+				const errorMsg = NodeTranslationService.getMessage(DEV_ASSIST_PROXY_SERVICE.LISTENING_PORT_ERROR, proxyPort, error.message ?? '');
 				this._handleListeningPortError(errorMsg, EVENTS.LISTENING_PORT_ERROR);
 			}
 		});
@@ -228,7 +228,6 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 					//Message shown to cline
 					this._writeResponseMessage(response, refreshOperationResult.responseStatusCode, refreshOperationResult.errorMessage);
 					proxyResponse.pipe(response, { end: true });
-
 				}
 			} else {
 				response.writeHead(proxyResponse.statusCode || HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR, proxyResponse.headers);
