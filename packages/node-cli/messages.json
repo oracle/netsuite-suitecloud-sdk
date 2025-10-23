@@ -291,7 +291,7 @@
 	"DEV_ASSIST_PROXY_SERVICE_NOT_EXISTING_AUTH_ID" : "AuthId {0} is not available",
 	"DEV_ASSIST_PROXY_SERVICE_NEED_TO_REAUTHENTICATE" : "Manual re-authentication is needed. You’ll need to sign in again to continue.",
 	"DEV_ASSIST_PROXY_SERVICE_ALREADY_USED_PORT" : "Port {0} is already being used. Choose a different port and try again.",
-	"DEV_ASSIST_PROXY_SERVICE_LISTENING_PORT_ERROR" : "There was a problem using port {0}. Select a different port and try again.",
+	"DEV_ASSIST_PROXY_SERVICE_LISTENING_PORT_ERROR" : "There was a problem using port {0}. Select a different port and try again. {1}",
 
 	"UNIT_TEST_TEST_FAILED": "The tests failed.",
 	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures. The deployment will not continue.",
