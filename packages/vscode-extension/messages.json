@@ -58,15 +58,15 @@
 	"DEVASSIST_SERVICE_IS_DISABLED_OUTPUT": "SuiteCloud Dev Assist has been disabled.",
 	"DEVASSIST_SERVICE_IS_RUNNING_NOTIFICATION": "SuiteCloud Dev Assist service is running. Use Cline Base URL to: {0}",
 	"DEVASSIST_SERVICE_IS_RUNNING_OUTPUT": "SuiteCloud Dev Assist service is now running at {0} and is using the {1} auth ID.\nUse this Cline Base URL {2}.",
-	"DEVASSIST_SERVICE_IS_RUNNING_STATUSBAR": "SuiteCloud Dev Assist is running",
+	"DEVASSIST_SERVICE_IS_RUNNING_STATUSBAR": "Dev Assist: running",
 	"DEVASSIST_SERVICE_IS_STOPPED_NOTIFICATION": "Something went wrong with SuiteCloud Dev Assist service.",
 	"DEVASSIST_SERVICE_IS_STOPPED_NOTIFICATION_BUTTON": "See Details",
 	"DEVASSIST_SERVICE_IS_STOPPED_OUTPUT": "There was a problem when starting SuiteCloud Dev Assist service.\n{0}",
 	"DEVASSIST_SERVICE_SERVER_ERROR_OUTPUT": "A server error has occurred while running SuiteCloud Dev Assist service.\nError: {0}",
-	"DEVASSIST_SERVICE_IS_STOPPED_STATUSBAR": "SuiteCloud Dev Assist has stopped",
+	"DEVASSIST_SERVICE_IS_STOPPED_STATUSBAR": "Dev Assist: stopped",
 	"DEVASSIST_SERVICE_STARTUP_BUTTON_DONT_SHOW_AGAIN": "Don't show again",
 	"DEVASSIST_SERVICE_STARTUP_BUTTON_OPEN_SETTINGS": "Open Settings",
-	"DEVASSIST_SERVICE_STARTUP_MESSAGE": "SuiteCloud Dev Assist service is here. Open settings and start using it.",
+	"DEVASSIST_SERVICE_STARTUP_MESSAGE": "SuiteCloud Dev Assist is here. Open settings and start using it.",
 	"DEVASSIST_SERVICE_STATUSBAR_TOOLTIP": "Shows SuiteCloud Dev Assist status",
 
 

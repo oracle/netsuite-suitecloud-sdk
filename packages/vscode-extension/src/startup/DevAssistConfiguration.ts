@@ -247,12 +247,14 @@ const devAssistConfigStatusHasEffectivelyChanged = (): boolean => {
     return true;
 }
 
+// How to update: https://stackoverflow.com/questions/59161682/how-to-set-the-custom-icons-logos-in-the-status-bar-setstatusbarmessage-of-v
+// using FontFoge App and importing the logo.svg into a template_font.woff
 const setSuccessDevAssistStausBarMessage = (devAssistStatusBar: vscode.StatusBarItem): void => {
-    devAssistStatusBar.text = `$(terminal-view-icon) ${translationService.getMessage(DEVASSIST_SERVICE.IS_RUNNING.STATUSBAR)}`;
+    devAssistStatusBar.text = `$(netsuite-mobius-colorless-icon)  ${translationService.getMessage(DEVASSIST_SERVICE.IS_RUNNING.STATUSBAR)}`;
     devAssistStatusBar.backgroundColor = undefined;
 }
 const setErrorDevAssistStausBarMessage = (devAssistStatusBar: vscode.StatusBarItem): void => {
-    devAssistStatusBar.text = `$(ports-stop-forward-icon) ${translationService.getMessage(DEVASSIST_SERVICE.IS_STOPPED.STATUSBAR)}`;
+    devAssistStatusBar.text = `$(netsuite-mobius-colorless-icon)  ${translationService.getMessage(DEVASSIST_SERVICE.IS_STOPPED.STATUSBAR)}`;
     devAssistStatusBar.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground')
 }
 

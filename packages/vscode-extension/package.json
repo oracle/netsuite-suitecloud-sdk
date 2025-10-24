@@ -219,6 +219,15 @@
 					"description": "Don't want to get a welcome notification for SuiteCloud Dev Assist? Check this box."
 				}
 			}
+		},
+		"icons": {
+			"netsuite-mobius-colorless-icon": {
+				"description": "NetSuite Logo Text Icon",
+				"default": {
+					"fontPath": "resources/icon/suitecloud.woff",
+					"fontCharacter": "\\E900"
+				}
+			}
 		}
 	},
 	"scripts": {
