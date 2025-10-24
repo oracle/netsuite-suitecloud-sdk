@@ -224,7 +224,7 @@
 			"netsuite-mobius-colorless-icon": {
 				"description": "NetSuite Logo Text Icon",
 				"default": {
-					"fontPath": "resources/icon/suitecloud.woff",
+					"fontPath": "resources/icon/SuiteCloudSDKTextIcons.woff",
 					"fontCharacter": "\\E900"
 				}
 			}
