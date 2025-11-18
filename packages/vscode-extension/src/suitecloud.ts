@@ -30,6 +30,7 @@ import { devAssistConfigurationChangeHandler, startDevAssistProxyIfEnabled } fro
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
 import { createAuthIDStatusBar, createDevAssistStatusBar, createSuiteCloudProjectStatusBar, updateAuthIDStatusBarIfNeeded, updateStatusBars } from './startup/StatusBarItemsFunctions';
 import { openDevAssistFeedbackForm } from './webviews/FeedbackFormWebviewController';
+import { generateApiKey } from './util/APIKeyGenerator';
 
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
@@ -92,6 +93,49 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('suitecloud.opendevassistfeedbackform',
 			() => openDevAssistFeedbackForm(context)
+		)
+	);
+
+	// Command to create and store Develoepr Assistant service API Key
+	context.subscriptions.push(
+		vscode.commands.registerCommand('suitecloud.createdevassistapikey',
+			() => {
+				// do what is required to store Devleoper Assistant API Key
+				vscode.workspace
+				const apiKey = generateApiKey()
+				// Show the key in a modal with "Copy" action
+				const message =
+					'A new API key for Developer Assistant has been generated.\n\n' +
+					'To enable CLINE to communicate securely with your Developer Assistant service, please copy this key and enter it into the CLINE extension base URL.\n\n' +
+					'The API key will be also stored securely and used automatically to start your SutieCloud Developer Assistant service.\n\n' +
+					'Keep this key confidential and do not share it.';
+				vscode.window.showInformationMessage(
+					`${message}\n\nAPI Key: ${apiKey}`,
+					{ modal: true },
+					'Copy'
+				).then(async selection => {
+					if (selection === 'Copy') {
+						await context.secrets.store('devassistApiKey', apiKey)
+						vscode.env.clipboard.writeText(apiKey);
+						vscode.window.showInformationMessage('API key copied to clipboard!');
+					}
+				});
+			}
+		)
+	);
+
+	// TODO: reomve this command
+	// Command to check Develoepr Assistant service API Key
+	context.subscriptions.push(
+		vscode.commands.registerCommand('suitecloud.showdevassistapikey',
+			async () => {
+				// do what is required to store Devleoper Assistant API Key
+				vscode.workspace
+				const apiKey = await context.secrets.get('devassistApiKey');
+				// Show previously stored key
+				const message = `This is the stored API key for Developer Assistant: ${apiKey}`;
+				vscode.window.showInformationMessage(message, { modal: true },);
+			}
 		)
 	);
 

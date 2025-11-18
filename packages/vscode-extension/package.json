@@ -117,6 +117,16 @@
               "title": "Open DevAssist Feedback Form",
               "category": "SuiteCloud",
               "enablement": "false"
+            },
+            {
+              "command": "suitecloud.createdevassistapikey",
+              "title": "Create Developer Assistant Service API Key",
+              "category": "SuiteCloud"
+            },
+            {
+              "command": "suitecloud.showdevassistapikey",
+              "title": "Show stored Developer Assistant Service API Key - TODO: delete this command",
+              "category": "SuiteCloud"
             }
 		],
 		"keybindings": [
