@@ -79,26 +79,8 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		this._localProxy.addListener('request', async (request, response) => {
 
-			// Authentication filter: check authorization header if an API key is configured
-			if (this._apiKey) {
-				const authHeader = request.headers['authorization'];
-				if (authHeader !== `Bearer ${this._apiKey}`) {
-					const unauthorizedMessage = 'Unauthorized: Missing or invalid API Key'
-					this._writeResponseMessage(response, 401, unauthorizedMessage);
-					this.emit(EVENTS.UNAUTHORIZED_REQUEST, this._buildEmitObject(unauthorizedMessage))
-					return;
-				}
-			}
-
-			// Allowed path filter: check allowed prefix if configured
-			if (this._allowedPathPrefix) {
-				if (!request.url.startsWith(this._allowedPathPrefix)) {
-					const pathNotAllowedMessage = 'Forbidden: Path not allowed';
-					this._writeResponseMessage(response, 403, pathNotAllowedMessage);
-					this.emit(EVENTS.NOT_ALLOWED_PATH, this._buildEmitObject(pathNotAllowedMessage))
-					return;
-				}
-			}
+			// Validate incoming request (auth & allowed path) in a dedicated method
+			if (!this.validateIncomingRequest(request, response)) return;
 
 			const requestOptions = this._buildRequestOptions(request);
 
@@ -195,6 +177,36 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			accessToken: authIDActionResult.data[this._authId].token.accessToken,
 			hostName: authIDActionResult.data[this._authId].hostInfo.hostName,
 		};
+	}
+
+	/**
+	 * Validates an incoming proxy request for authentication and path prefix.
+	 * Responds and emits the correct events on failure.
+	 * @param {http.IncomingMessage} request
+	 * @param {http.ServerResponse} response
+	 * @returns {boolean} true if valid, false if rejected
+	 */
+	validateIncomingRequest(request, response) {
+		// Authentication filter: check authorization header if an API key is configured
+		if (this._apiKey) {
+			const authHeader = request.headers['authorization'];
+			if (authHeader !== `Bearer ${this._apiKey}`) {
+				const unauthorizedMessage = 'Unauthorized: Missing or invalid API Key';
+				this._writeResponseMessage(response, 401, unauthorizedMessage);
+				this.emit(EVENTS.UNAUTHORIZED_REQUEST, this._buildEmitObject(unauthorizedMessage));
+				return false;
+			}
+		}
+		// Allowed path filter: check allowed prefix if configured
+		if (this._allowedPathPrefix) {
+			if (!request.url.startsWith(this._allowedPathPrefix)) {
+				const pathNotAllowedMessage = 'Forbidden: Path not allowed';
+				this._writeResponseMessage(response, 403, pathNotAllowedMessage);
+				this.emit(EVENTS.NOT_ALLOWED_PATH, this._buildEmitObject(pathNotAllowedMessage));
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -362,6 +374,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			requestOptions.headers.authorization = 'Bearer ' + this._accessToken;
 		}
 	}
+
 
 	/**
 	 * Write JSON response message
