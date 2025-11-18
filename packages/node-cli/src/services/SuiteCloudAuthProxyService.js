@@ -14,7 +14,9 @@ const EVENTS = {
 	SERVER_ERROR: 'serverError',
 	SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
 	AUTH_REFRESH_MANUAL_EVENT: 'authRefreshManual',
-	PROXY_ERROR: 'proxyError'
+	PROXY_ERROR: 'proxyError',
+	UNAUTHORIZED_REQUEST: 'unauthorized_request',
+	NOT_ALLOWED_PATH: 'notAllowedPath'
 };
 
 /** Authentication methods */
@@ -41,10 +43,12 @@ const LOCAL_HOSTNAME = '127.0.0.1';
 const TARGET_SERVER_PORT = 443;
 
 class SuiteCloudAuthProxyService extends EventEmitter {
-	constructor(sdkPath, executionEnvironmentContext) {
+	constructor(sdkPath, executionEnvironmentContext, apiKey, allowedPathPrefix) {
 		super();
 		this._sdkPath = sdkPath;
 		this._executionEnvironmentContext = executionEnvironmentContext;
+		this._apiKey = apiKey;
+		this._allowedPathPrefix = allowedPathPrefix;
 		/** These are the variables we are going to use to store instance data */
 		this._accessToken = undefined;
 		this._localProxy = undefined;
@@ -75,9 +79,30 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		this._localProxy.addListener('request', async (request, response) => {
 
+			// Authentication filter: check authorization header if an API key is configured
+			if (this._apiKey) {
+				const authHeader = request.headers['authorization'];
+				if (authHeader !== `Bearer ${this._apiKey}`) {
+					const unauthorizedMessage = 'Unauthorized: Missing or invalid API Key'
+					this._writeResponseMessage(response, 401, unauthorizedMessage);
+					this.emit(EVENTS.UNAUTHORIZED_REQUEST, this._buildEmitObject(unauthorizedMessage))
+					return;
+				}
+			}
+
+			// Allowed path filter: check allowed prefix if configured
+			if (this._allowedPathPrefix) {
+				if (!request.url.startsWith(this._allowedPathPrefix)) {
+					const pathNotAllowedMessage = 'Forbidden: Path not allowed';
+					this._writeResponseMessage(response, 403, pathNotAllowedMessage);
+					this.emit(EVENTS.NOT_ALLOWED_PATH, this._buildEmitObject(pathNotAllowedMessage))
+					return;
+				}
+			}
+
 			const requestOptions = this._buildRequestOptions(request);
 
-			//Save body
+			// Save body
 			const bodyChunks = [];
 			request.on('data', function (chunk) {
 				bodyChunks.push(chunk);
