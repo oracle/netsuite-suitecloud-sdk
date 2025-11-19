@@ -56,7 +56,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	installIfNeeded().then(() => {
 		sdkDependenciesDownloadedAndValidated = true;
 		showSetupAccountWarningMessageIfNeeded();
-		startDevAssistProxyIfEnabled(devAssistStatusBar)
+		startDevAssistProxyIfEnabled(context, devAssistStatusBar)
 	});
 
 	// initialize status bars
@@ -115,7 +115,7 @@ export async function activate(context: vscode.ExtensionContext) {
 					'Copy'
 				).then(async selection => {
 					if (selection === 'Copy') {
-						await context.secrets.store('devassistApiKey', apiKey)
+						await context.secrets.store(DEVASSIST.SECRET_KEY, apiKey)
 						vscode.env.clipboard.writeText(apiKey);
 						vscode.window.showInformationMessage('API key copied to clipboard!');
 					}
@@ -131,7 +131,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			async () => {
 				// do what is required to store Devleoper Assistant API Key
 				vscode.workspace
-				const apiKey = await context.secrets.get('devassistApiKey');
+				const apiKey = await context.secrets.get(DEVASSIST.SECRET_KEY);
 				// Show previously stored key
 				const message = `This is the stored API key for Developer Assistant: ${apiKey}`;
 				vscode.window.showInformationMessage(message, { modal: true },);
@@ -143,7 +143,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.window.onDidChangeActiveTextEditor((textEditor) => updateStatusBars(textEditor, suitecloudProjectStatusBar, authIDStatusBar)),
 		vscode.workspace.createFileSystemWatcher(`**/${FILES.PROJECT_JSON}`).onDidChange((uri) => updateAuthIDStatusBarIfNeeded(uri, authIDStatusBar)),
-		vscode.workspace.onDidChangeConfiguration((configurationChangeEvent => devAssistConfigurationChangeHandler(configurationChangeEvent, devAssistStatusBar)))
+		vscode.workspace.onDidChangeConfiguration((configurationChangeEvent => devAssistConfigurationChangeHandler(configurationChangeEvent, context, devAssistStatusBar)))
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)

@@ -48,7 +48,7 @@ const vsNotificationService = new MessageService('DevAssistService');
 const translationService = new VSTranslationService();
 
 
-export const startDevAssistProxyIfEnabled = async (devAssistStatusBar: vscode.StatusBarItem) => {
+export const startDevAssistProxyIfEnabled = async (extensionContext: vscode.ExtensionContext ,devAssistStatusBar: vscode.StatusBarItem) => {
     updateDevAssistConfigStatus();
 
     if (!devAssistConfigStatus.current.startupNotificationDisabled && !devAssistConfigStatus.current.proxyEnabled) {
@@ -58,7 +58,7 @@ export const startDevAssistProxyIfEnabled = async (devAssistStatusBar: vscode.St
     if (devAssistConfigStatus.current.proxyEnabled) {
         try {
             devAssistStatusBar.show();
-            initializeDevAssistService(devAssistStatusBar);
+            await initializeDevAssistService(extensionContext, devAssistStatusBar);
             await startDevAssistService(devAssistConfigStatus.current.authID, devAssistConfigStatus.current.localPort, devAssistStatusBar);
         } catch (error) {
             showStartDevAssistProblemNotification('startup', error as string, devAssistStatusBar);
@@ -72,7 +72,7 @@ export const startDevAssistProxyIfEnabled = async (devAssistStatusBar: vscode.St
     vsLogger.info('');
 }
 
-export const devAssistConfigurationChangeHandler = async (configurationChangeEvent: vscode.ConfigurationChangeEvent, devAssistStatusBar: vscode.StatusBarItem) => {
+export const devAssistConfigurationChangeHandler = async (configurationChangeEvent: vscode.ConfigurationChangeEvent, extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     if (configurationChangeEvent.affectsConfiguration(DEVASSIST.CONFIG_KEYS.devAssistSection)) {
         updateDevAssistConfigStatus();
 
@@ -87,7 +87,7 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
                 if (devAssistProxyService) {
                     devAssistProxyService?.stop();
                 } else {
-                    initializeDevAssistService(devAssistStatusBar);
+                    await initializeDevAssistService(extensionContext, devAssistStatusBar);
                 }
                 await startDevAssistService(devAssistConfigStatus.current.authID, devAssistConfigStatus.current.localPort, devAssistStatusBar);
             } catch (error) {
@@ -102,8 +102,14 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
     }
 };
 
-const initializeDevAssistService = (devAssistStatusBar: vscode.StatusBarItem) => {
-    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext);
+const initializeDevAssistService = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
+    // check if API Key is available
+    const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
+    if (devassistApiKey === undefined || true) {
+        throw "Developer Assistant API Key is not ready. Trigger 'SuiteCloud: Create Developer Assistant service API Key' command and try to start service again."
+    }
+
+    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, devassistApiKey);
 
     // adding listener to trigger manual reauthentication from vscode
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.REAUTHORIZE, async (emitParams: { authId: string, message: string }) => {

@@ -49,5 +49,6 @@ export const DEVASSIST = {
 		LOCALHOST_IP: '127.0.0.1',
 		BASE_PATH: '/api/internal/devassist',
 		FEEDBACK_PATH: '/api/internal/devassist/feedback',
-	}
+	},
+	SECRET_KEY: 'DEVASSIT_API_KEY'
 }
