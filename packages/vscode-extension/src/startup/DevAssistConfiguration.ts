@@ -105,11 +105,11 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
 const initializeDevAssistService = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     // check if API Key is available
     const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
-    if (devassistApiKey === undefined || true) {
+    if (devassistApiKey === undefined) {
         throw "Developer Assistant API Key is not ready. Trigger 'SuiteCloud: Create Developer Assistant service API Key' command and try to start service again."
     }
 
-    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, devassistApiKey);
+    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, devassistApiKey, '/api/internal/devassist/');
 
     // adding listener to trigger manual reauthentication from vscode
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.REAUTHORIZE, async (emitParams: { authId: string, message: string }) => {

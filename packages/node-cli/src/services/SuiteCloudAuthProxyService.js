@@ -190,9 +190,13 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		// Authentication filter: check authorization header if an API key is configured
 		if (this._apiKey) {
 			const authHeader = request.headers['authorization'];
+			console.log('--->>>   SuiteCloudAuthProxyService.validateIncomingRequest.  <<<---');
+			
+			console.log({authHeader, proxyApiKey: this._apiKey})
 			if (authHeader !== `Bearer ${this._apiKey}`) {
 				const unauthorizedMessage = 'Unauthorized: Missing or invalid API Key';
-				this._writeResponseMessage(response, 401, unauthorizedMessage);
+				this._writeResponseMessage(response, 407, unauthorizedMessage);
+				// this._writeResponseMessage(response, HTTP_RESPONSE_CODE.FORBIDDEN, unauthorizedMessage);
 				this.emit(EVENTS.UNAUTHORIZED_REQUEST, this._buildEmitObject(unauthorizedMessage));
 				return false;
 			}
