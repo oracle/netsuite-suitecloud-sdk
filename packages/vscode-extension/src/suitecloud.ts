@@ -26,7 +26,7 @@ import Validate from './commands/Validate';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
-import { devAssistConfigurationChangeHandler, startDevAssistProxyIfEnabled } from './startup/DevAssistConfiguration';
+import { devAssistConfigurationChangeHandler, devAssistSecretApiKeyChangeHandler, startDevAssistProxyIfEnabled } from './startup/DevAssistConfiguration';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
 import { createAuthIDStatusBar, createDevAssistStatusBar, createSuiteCloudProjectStatusBar, updateAuthIDStatusBarIfNeeded, updateStatusBars } from './startup/StatusBarItemsFunctions';
 import { openDevAssistFeedbackForm } from './webviews/FeedbackFormWebviewController';
@@ -143,7 +143,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.window.onDidChangeActiveTextEditor((textEditor) => updateStatusBars(textEditor, suitecloudProjectStatusBar, authIDStatusBar)),
 		vscode.workspace.createFileSystemWatcher(`**/${FILES.PROJECT_JSON}`).onDidChange((uri) => updateAuthIDStatusBarIfNeeded(uri, authIDStatusBar)),
-		vscode.workspace.onDidChangeConfiguration((configurationChangeEvent => devAssistConfigurationChangeHandler(configurationChangeEvent, context, devAssistStatusBar)))
+		vscode.workspace.onDidChangeConfiguration((configurationChangeEvent => devAssistConfigurationChangeHandler(configurationChangeEvent, context, devAssistStatusBar))),
+		context.secrets.onDidChange((secretChangeEvent: vscode.SecretStorageChangeEvent) => devAssistSecretApiKeyChangeHandler(secretChangeEvent, context, devAssistStatusBar))
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)

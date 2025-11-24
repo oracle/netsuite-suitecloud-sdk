@@ -75,6 +75,7 @@
 	"DEVASSIST_SERVICE_OUTPUT_PROXY_ERROR": "There was a problem while running SuiteCloud Developer Assistant service.\n{0}",
 	"DEVASSIST_SERVICE_OUTPUT_SERVER_ERROR": "There was a server error while running SuiteCloud Developer Assistant service.\n{0}",
 	"DEVASSIST_SERVICE_OUTPUT_SERVER_ERROR_ON_REFRESH": "There was a problem refreshing credentials while running SuiteCloud Developer Assistant service.\n{0}",
+	"DEVASSIST_SERVICE_OUTPUT_UNAUTHORIZED_PROXY_REQUEST": "There was a problem while processing a SuiteCloud Developer Assistant request.\nThe Developer Assistant API Key is incorrect, generate a new one try it again.",
 	"DEVASSIST_SERVICE_IS_DISABLED_NOTIFICATION": "SuiteCloud Developer Assistant service has been disabled.",
 	"DEVASSIST_SERVICE_IS_DISABLED_OUTPUT": "SuiteCloud Developer Assistant service has been disabled.",
 	"DEVASSIST_SERVICE_IS_RUNNING_NOTIFICATION": "SuiteCloud Developer Assistant service is running. Use Cline Base URL to: {0}",

@@ -15,8 +15,8 @@ const EVENTS = {
 	SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
 	AUTH_REFRESH_MANUAL_EVENT: 'authRefreshManual',
 	PROXY_ERROR: 'proxyError',
-	UNAUTHORIZED_REQUEST: 'unauthorized_request',
-	NOT_ALLOWED_PATH: 'notAllowedPath'
+	UNAUTHORIZED_PROXY_REQUEST: 'unauthorizedProxyRequest',
+	REQUEST_PATH_NOT_ALLOWED: 'requestPathNotAllowed'
 };
 
 /** Authentication methods */
@@ -195,9 +195,11 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			console.log({authHeader, proxyApiKey: this._apiKey})
 			if (authHeader !== `Bearer ${this._apiKey}`) {
 				const unauthorizedMessage = 'Unauthorized: Missing or invalid API Key';
-				this._writeResponseMessage(response, 407, unauthorizedMessage);
+				// TODO explore different http response code options
+				// using 400 as CLINE is hiddiing the allowedPathPrefix when using 407-Proxy Authentication Required
+				this._writeResponseMessage(response, 400, unauthorizedMessage);
 				// this._writeResponseMessage(response, HTTP_RESPONSE_CODE.FORBIDDEN, unauthorizedMessage);
-				this.emit(EVENTS.UNAUTHORIZED_REQUEST, this._buildEmitObject(unauthorizedMessage));
+				this.emit(EVENTS.UNAUTHORIZED_PROXY_REQUEST, this._buildEmitObject(unauthorizedMessage));
 				return false;
 			}
 		}
@@ -205,8 +207,8 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		if (this._allowedPathPrefix) {
 			if (!request.url.startsWith(this._allowedPathPrefix)) {
 				const pathNotAllowedMessage = 'Forbidden: Path not allowed';
-				this._writeResponseMessage(response, 403, pathNotAllowedMessage);
-				this.emit(EVENTS.NOT_ALLOWED_PATH, this._buildEmitObject(pathNotAllowedMessage));
+				this._writeResponseMessage(response, HTTP_RESPONSE_CODE.FORBIDDEN, pathNotAllowedMessage);
+				this.emit(EVENTS.REQUEST_PATH_NOT_ALLOWED, this._buildEmitObject(pathNotAllowedMessage));
 				return false;
 			}
 		}

@@ -34,7 +34,9 @@ const PROXY_SERVICE_EVENTS = {
     REAUTHORIZE: 'authRefreshManual',
     SERVER_ERROR: 'serverError',
     PROXY_ERROR: 'proxyError',
-    SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh'
+    SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
+    REQUEST_PATH_NOT_ALLOWED: 'requestPathNotAllowed',
+    UNAUTHORIZED_PROXY_REQUEST: 'unauthorizedProxyRequest',
 }
 
 const executionEnvironmentContext = new ExecutionEnvironmentContext({
@@ -48,7 +50,7 @@ const vsNotificationService = new MessageService('DevAssistService');
 const translationService = new VSTranslationService();
 
 
-export const startDevAssistProxyIfEnabled = async (extensionContext: vscode.ExtensionContext ,devAssistStatusBar: vscode.StatusBarItem) => {
+export const startDevAssistProxyIfEnabled = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     updateDevAssistConfigStatus();
 
     if (!devAssistConfigStatus.current.startupNotificationDisabled && !devAssistConfigStatus.current.proxyEnabled) {
@@ -102,11 +104,30 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
     }
 };
 
+export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vscode.SecretStorageChangeEvent, extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
+    const currentConfig: devAssistConfig = getDevAssistCurrentSettings();
+    if (secretChangeEvent.key === DEVASSIST.SECRET_KEY && currentConfig.proxyEnabled) {
+        initializeDevAssistService(extensionContext, devAssistStatusBar)
+    }
+};
+
 const initializeDevAssistService = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     // check if API Key is available
     const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
+    console.log('This is the apiKey from initializeDevAssistService');
+    console.log({devassistApiKey});
+    
+    
     if (devassistApiKey === undefined) {
-        throw "Developer Assistant API Key is not ready. Trigger 'SuiteCloud: Create Developer Assistant service API Key' command and try to start service again."
+        // we could be starting the here the creation of the devassist apiKey by triggering the command.
+        const createApiKeyCommandResult = await triggerCreateNewApiKeyCommand();
+        if (!createApiKeyCommandResult) {
+            // disable devassist service via setting change to force user to do it again if required
+            const devAssistConfigSection = vscode.workspace.getConfiguration(DEVASSIST.CONFIG_KEYS.devAssistSection);
+            devAssistConfigSection.update(DEVASSIST.CONFIG_KEYS.proxyEnabled, false);
+
+            throw "Developer Assistant API Key is not ready. Trigger 'SuiteCloud: Create Developer Assistant service API Key' command and try to start service again."
+        }
     }
 
     devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, devassistApiKey, '/api/internal/devassist/');
@@ -146,6 +167,12 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, (emitParams: { authId: string, message: string }) => {
         const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.SERVER_ERROR_ON_REFRESH, emitParams.message);
         showDevAssistEmitProblemNotification(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, errorMessage, devAssistStatusBar);
+        vsLogger.error('');
+    });
+
+    devAssistProxyService.on(PROXY_SERVICE_EVENTS.UNAUTHORIZED_PROXY_REQUEST, (emitParams: { authId: string, message: string }) => {
+        const outputErrorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.UNAUTHORIZED_PROXY_REQUEST, emitParams.message);
+        showDevAssistApiKeyProblem(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, outputErrorMessage, devAssistStatusBar);
         vsLogger.error('');
     });
 
@@ -216,6 +243,12 @@ const showDevAssistIsRunningNotification = (proxyUrl : string) => {
 	vsNotificationService.showCommandInfoWithSpecificButtonsAndActions(infoMessage, buttonsAndActions);
 }
 
+// stoped status bar
+// logs into output
+//      (DEVASSIST_SERVICE.IS_STOPPED.OUTPUT, error)
+// show notifcation
+//      (DEVASSIST_SERVICE.IS_STOPPED.NOTIFICATION)
+//      with See Detials button (opens output and devassistSettings)
 const showStartDevAssistProblemNotification = (errorStage: string, error: string, devAssistStatusBar: vscode.StatusBarItem) => {
     // console.log(`There was a problem when starting DevAssist service. (${errorStage})\n${error}`)
     setErrorDevAssistStausBarMessage(devAssistStatusBar);
@@ -235,6 +268,11 @@ const showStartDevAssistProblemNotification = (errorStage: string, error: string
     vsNotificationService.showCommandErrorWithSpecificButtonsAndActions(errorMessage, buttonsAndActions);
 }
 
+// logs into output
+//      emitError
+// show notifcation
+//      (DEVASSIST_SERVICE.IS_STOPPED.NOTIFICATION)
+//      with See Detials button (opens output)
 const showDevAssistEmitProblemLog = (errorStage: string, emitError: string, devAssistStatusBar: vscode.StatusBarItem) => {
     vsLogger.printTimestamp();
     vsLogger.error(emitError);
@@ -248,6 +286,31 @@ const showDevAssistEmitProblemLog = (errorStage: string, emitError: string, devA
     vsNotificationService.showCommandErrorWithSpecificButtonsAndActions(errorMessage, buttonsAndActions);
 };
 
+
+// logs into output
+//      outputErrorMessge
+// show notifcation
+//      something about wrong API key
+//      with See Detials button (opens output)
+const showDevAssistApiKeyProblem = (errorStage: string, outputErrorMessge: string, devAssistStatusBar: vscode.StatusBarItem) => {
+    vsLogger.printTimestamp();
+    vsLogger.error(outputErrorMessge);
+    // const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.IS_STOPPED.NOTIFICATION);
+    const buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[] = [
+        {
+            buttonMessage: 'Create new API Key',
+            buttonAction: () => triggerCreateNewApiKeyCommand()
+        },
+    ];
+    vsNotificationService.showCommandErrorWithSpecificButtonsAndActions(outputErrorMessge, buttonsAndActions);
+};
+
+// stoped status bar
+// logs into output
+//      emitError
+// show notifcation
+//      (DEVASSIST_SERVICE.IS_STOPPED.NOTIFICATION)
+//      with See Detials button (opens output)
 const showDevAssistEmitProblemNotification = (errorStage: string, emitError: string, devAssistStatusBar: vscode.StatusBarItem) => {
     // console.log(`There was a problem when starting DevAssist service. (${errorStage})\n${error}`)
     setErrorDevAssistStausBarMessage(devAssistStatusBar)
@@ -272,6 +335,10 @@ const openDevAssistSettings = () => {
         'workbench.action.openWorkspaceSettings',
         DEVASSIST.CONFIG_KEYS.devAssistSection
     );
+}
+
+const triggerCreateNewApiKeyCommand = () => {
+    return vscode.commands.executeCommand('suitecloud.createdevassistapikey');
 }
 
 const updateDevAssistConfigStatus = (): void => {
