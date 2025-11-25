@@ -87,7 +87,7 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
             devAssistStatusBar.show();
             try {
                 if (devAssistProxyService) {
-                    devAssistProxyService?.stop();
+                    await devAssistProxyService?.stop();
                 } else {
                     await initializeDevAssistService(extensionContext, devAssistStatusBar);
                 }
@@ -98,7 +98,7 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
             // add extra line to differenciate logs
             vsLogger.info('');
         } else { // devAssistConfigStatus.current.proxyEnabled === false
-            stopDevAssistService(devAssistStatusBar);
+            await stopDevAssistService(devAssistStatusBar);
             devAssistStatusBar.hide();
         }
     }
@@ -107,7 +107,13 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
 export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vscode.SecretStorageChangeEvent, extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     const currentConfig: devAssistConfig = getDevAssistCurrentSettings();
     if (secretChangeEvent.key === DEVASSIST.SECRET_KEY && currentConfig.proxyEnabled) {
-        initializeDevAssistService(extensionContext, devAssistStatusBar)
+        if (devAssistProxyService) {
+            const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
+            devAssistProxyService.updateApiKey(devassistApiKey);
+        }
+        else (
+            await initializeDevAssistService(extensionContext, devAssistStatusBar)
+        )
     }
 };
 
@@ -141,7 +147,7 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
             updateDevAssistConfigStatus();
             try {
                 // TODO: we could be using something like devAsssitProxy.reloadAccessToken() to avoid extra forceRefresh in next cline request
-                stopDevAssistService(devAssistStatusBar);
+                await stopDevAssistService(devAssistStatusBar);
                 await startDevAssistService(devAssistConfigStatus.current.authID, devAssistConfigStatus.current.localPort, devAssistStatusBar);
             } catch (error) {
                 showStartDevAssistProblemNotification('afterManualRefresh', error as string, devAssistStatusBar);
@@ -193,8 +199,8 @@ const PROXY_URL = DEVASSIST.PROXY_URL;
 const getProxyUrl = (port: number) => `${PROXY_URL.SCHEME}${PROXY_URL.LOCALHOST_IP}:${port}${PROXY_URL.BASE_PATH}`;
 const getProxyUrlWithoutPath = (port: number) => `${PROXY_URL.SCHEME}${PROXY_URL.LOCALHOST_IP}:${port}`;
 
-const stopDevAssistService = (devAssistStatusBar: vscode.StatusBarItem) => {
-    devAssistProxyService?.stop();
+const stopDevAssistService = async (devAssistStatusBar: vscode.StatusBarItem) => {
+    await devAssistProxyService?.stop();
 
     setErrorDevAssistStausBarMessage(devAssistStatusBar);
     // only notify that devassist service has been disabled in the transition from enabled to disabled

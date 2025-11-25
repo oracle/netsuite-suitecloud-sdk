@@ -74,7 +74,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._targetHost = hostName;
 		this._accessToken = accessToken;
 
-		this.stop();
+		await this.stop();
 		this._localProxy = http.createServer();
 
 		this._localProxy.addListener('request', async (request, response) => {
@@ -112,16 +112,39 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 	}
 
 	/**
-	 * Public method that stops the proxy
+	 * Public method that stops the proxy and returns a Promise resolved when it's fully closed
 	 */
-	stop() {
+	async stop() {
 		if (this._localProxy) {
-			this._localProxy.close(() => console.log('SuiteCloud Proxy server stopped.'));
+			// Wrap the close callback in a Promise
+			const closePromise = new Promise((resolve, reject) => {
+				this._localProxy.close(err => {
+					if (err) {
+						reject(err);
+					} else {
+						console.log('SuiteCloud Proxy server stopped.');
+						resolve();
+					}
+				});
+			});
+
+			await closePromise;
 			this._localProxy = null;
 		} else {
 			console.log('No server instance to stop.');
 		}
 	}
+
+	/**
+	 * Updates the stored API key, which is used to authenticate and filter incoming requests to the local server.
+	 *
+	 * @param {string} newApiKey - The new API key to set for request filtering.
+	 * @returns {void}
+	 */
+	updateApiKey(newApiKey) {
+		this._apiKey = newApiKey;
+	}
+
 
 	/**
 	 * For being used after manual authentication. It refreshes the access token from credentials.
@@ -190,9 +213,9 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		// Authentication filter: check authorization header if an API key is configured
 		if (this._apiKey) {
 			const authHeader = request.headers['authorization'];
+			// TODO remove console logs
 			console.log('--->>>   SuiteCloudAuthProxyService.validateIncomingRequest.  <<<---');
-			
-			console.log({authHeader, proxyApiKey: this._apiKey})
+			console.log({ authHeader, proxyApiKey: this._apiKey })
 			if (authHeader !== `Bearer ${this._apiKey}`) {
 				const unauthorizedMessage = 'Unauthorized: Missing or invalid API Key';
 				// TODO explore different http response code options
