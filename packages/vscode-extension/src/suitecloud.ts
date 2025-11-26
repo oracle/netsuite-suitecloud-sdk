@@ -10,6 +10,7 @@ import { DEVASSIST, FILES } from './ApplicationConstants';
 import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
 import CompareFile from './commands/CompareFile';
+import { createDevAssistApiKeyCommand } from './commands/CreateDevAssistApiKey';
 import CreateFile from './commands/CreateFile';
 import CreateProject from './commands/CreateProject';
 import Deploy from './commands/Deploy';
@@ -23,7 +24,6 @@ import UpdateFile from './commands/UpdateFile';
 import UpdateObject from './commands/UpdateObject';
 import UploadFile from './commands/UploadFile';
 import Validate from './commands/Validate';
-import { createDevAssistApiKeyCommand } from './commands/CreateDevAssistApiKey';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
@@ -31,7 +31,6 @@ import { devAssistConfigurationChangeHandler, devAssistSecretApiKeyChangeHandler
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
 import { createAuthIDStatusBar, createDevAssistStatusBar, createSuiteCloudProjectStatusBar, updateAuthIDStatusBarIfNeeded, updateStatusBars } from './startup/StatusBarItemsFunctions';
 import { openDevAssistFeedbackForm } from './webviews/FeedbackFormWebviewController';
-import { generateApiKey } from './util/APIKeyGenerator';
 
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';

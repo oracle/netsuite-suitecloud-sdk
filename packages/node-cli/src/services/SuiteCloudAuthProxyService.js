@@ -79,8 +79,10 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		this._localProxy.addListener('request', async (request, response) => {
 
-			// Validate incoming request (auth & allowed path) in a dedicated method
-			if (!this.validateIncomingRequest(request, response)) return;
+			// Validate incoming request (apiKey & allowed path) in a dedicated method
+			if (!this._isValidIncomingRequest(request, response)) {
+				return;
+			}
 
 			const requestOptions = this._buildRequestOptions(request);
 
@@ -203,13 +205,13 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 	}
 
 	/**
-	 * Validates an incoming proxy request for authentication and path prefix.
+	 * Validates an incoming proxy request for apiKey & allowed path.
 	 * Responds and emits the correct events on failure.
 	 * @param {http.IncomingMessage} request
 	 * @param {http.ServerResponse} response
 	 * @returns {boolean} true if valid, false if rejected
 	 */
-	validateIncomingRequest(request, response) {
+	_isValidIncomingRequest(request, response) {
 		// Authentication filter: check authorization header if an API key is configured
 		if (this._apiKey) {
 			const authHeader = request.headers['authorization'];
@@ -221,7 +223,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				// TODO explore different http response code options
 				// using 400 as CLINE is hiddiing the allowedPathPrefix when using 407-Proxy Authentication Required
 				this._writeResponseMessage(response, 400, unauthorizedMessage);
-				const emitData = { message: unauthorizedMessage, authId: this._authId, requestUrl: request.url};
+				const emitData = { message: unauthorizedMessage, authId: this._authId, requestUrl: request.url };
 				this.emit(EVENTS.UNAUTHORIZED_PROXY_REQUEST, emitData);
 				return false;
 			}
