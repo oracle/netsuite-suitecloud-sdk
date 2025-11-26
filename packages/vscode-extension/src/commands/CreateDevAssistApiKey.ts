@@ -7,6 +7,10 @@ import * as vscode from 'vscode';
 import { DEVASSIST } from '../ApplicationConstants';
 import { generateApiKey } from '../util/APIKeyGenerator';
 import { DEVASSIST_SERVICE } from '../service/TranslationKeys';
+import { VSTranslationService } from '../service/VSTranslationService';
+
+
+const translationService = new VSTranslationService();
 
 /**
  * Registers the suitecloud.createdevassistapikey command.
@@ -30,16 +34,16 @@ export async function createDevAssistApiKeyCommand(extensionContext: vscode.Exte
         `\n\nAPI Key: ${apiKey}`;
 
 
+    const copyButtonText = translationService.getMessage(DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.COPY_BUTTON)
     // Show the modal with "Copy" action
     const selection = await vscode.window.showInformationMessage(
         mainMessage,
         { modal: true },
-        // DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.COPY_BUTTON
-        'Copy'
+        copyButtonText
     );
 
     // DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.COPY_BUTTON
-    if (selection === 'Copy') {
+    if (selection === copyButtonText) {
         // confirmation message
         await extensionContext.secrets.store(DEVASSIST.SECRET_KEY, apiKey);
         vscode.env.clipboard.writeText(apiKey);
