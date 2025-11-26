@@ -85,22 +85,16 @@ export async function activate(context: vscode.ExtensionContext) {
 		register('suitecloud.validate', new Validate())
 	);
 
-	// this command is used to open devAssist settings by clicking on devAssistStatusBar
-	context.subscriptions.push(vscode.commands.registerCommand('suitecloud.opensettings',
-		() => vscode.commands.executeCommand('workbench.action.openWorkspaceSettings', DEVASSIST.CONFIG_KEYS.devAssistSection))
-	);
-
-	// DevAssist Feedback Form WebView
+	// register more commands
 	context.subscriptions.push(
+		// this command is used to open devAssist settings by clicking on devAssistStatusBar
+		vscode.commands.registerCommand('suitecloud.opensettings',
+			() => vscode.commands.executeCommand('workbench.action.openWorkspaceSettings', DEVASSIST.CONFIG_KEYS.devAssistSection)),
+		// DevAssist Feedback Form WebView
 		vscode.commands.registerCommand('suitecloud.opendevassistfeedbackform',
-			() => openDevAssistFeedbackForm(context)
-		)
-	);
-
-	// Command to create and store Developer Assistant service API Key
-	context.subscriptions.push(
-		vscode.commands.registerCommand(
-			'suitecloud.createdevassistapikey',
+			() => openDevAssistFeedbackForm(context)),
+		// Command to create and store Developer Assistant service API Key
+		vscode.commands.registerCommand('suitecloud.createdevassistapikey',
 			() => createDevAssistApiKeyCommand(context)
 		)
 	);
