@@ -221,8 +221,8 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				// TODO explore different http response code options
 				// using 400 as CLINE is hiddiing the allowedPathPrefix when using 407-Proxy Authentication Required
 				this._writeResponseMessage(response, 400, unauthorizedMessage);
-				// this._writeResponseMessage(response, HTTP_RESPONSE_CODE.FORBIDDEN, unauthorizedMessage);
-				this.emit(EVENTS.UNAUTHORIZED_PROXY_REQUEST, this._buildEmitObject(unauthorizedMessage));
+				const emitData = { message: unauthorizedMessage, authId: this._authId, requestUrl: request.url};
+				this.emit(EVENTS.UNAUTHORIZED_PROXY_REQUEST, emitData);
 				return false;
 			}
 		}

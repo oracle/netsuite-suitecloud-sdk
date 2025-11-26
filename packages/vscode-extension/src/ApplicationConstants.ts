@@ -44,11 +44,12 @@ export const DEVASSIST = {
 		authID: 'authid-to-be-used-by-dev-assist',
 		startupNotificationDisabled: false,
 	},
+	MODELS_PATH: '/api/internal/devassist/models',
 	PROXY_URL: {
 		SCHEME: 'http://',
 		LOCALHOST_IP: '127.0.0.1',
 		BASE_PATH: '/api/internal/devassist',
 		FEEDBACK_PATH: '/api/internal/devassist/feedback',
 	},
-	SECRET_KEY: 'DEVASSIT_API_KEY'
+	SECRET_KEY: 'DEVASSIT_API_KEY',
 }

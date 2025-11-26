@@ -120,10 +120,6 @@ export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vsco
 const initializeDevAssistService = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     // check if API Key is available
     const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
-    console.log('This is the apiKey from initializeDevAssistService');
-    console.log({devassistApiKey});
-    
-    
     if (devassistApiKey === undefined) {
         // we could be starting the here the creation of the devassist apiKey by triggering the command.
         const createApiKeyCommandResult = await triggerCreateNewApiKeyCommand();
@@ -170,13 +166,19 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
         vsLogger.error('');
     });
 
-    devAssistProxyService.on(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, (emitParams: { authId: string, message: string }) => {
+    devAssistProxyService.on(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, (emitParams: { authId: string, message: string, requestUrl?: string}) => {
         const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.SERVER_ERROR_ON_REFRESH, emitParams.message);
         showDevAssistEmitProblemNotification(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, errorMessage, devAssistStatusBar);
         vsLogger.error('');
     });
 
-    devAssistProxyService.on(PROXY_SERVICE_EVENTS.UNAUTHORIZED_PROXY_REQUEST, (emitParams: { authId: string, message: string }) => {
+    devAssistProxyService.on(PROXY_SERVICE_EVENTS.UNAUTHORIZED_PROXY_REQUEST, (emitParams: { authId: string, message: string, requestUrl?: string}) => {
+        if ( emitParams?.requestUrl === DEVASSIST.MODELS_PATH) {
+            // CLINE is perfmorming a "/models" request each time its configuraiton is open or setting is modified (on each character typing input)
+            // we want to avoid showing the warning in this case
+            console.log('Received unauthorized /models request.');
+            return;
+        }
         const outputErrorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.UNAUTHORIZED_PROXY_REQUEST, emitParams.message);
         showDevAssistApiKeyProblem(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, outputErrorMessage, devAssistStatusBar);
         vsLogger.error('');
@@ -301,7 +303,6 @@ const showDevAssistEmitProblemLog = (errorStage: string, emitError: string, devA
 const showDevAssistApiKeyProblem = (errorStage: string, outputErrorMessge: string, devAssistStatusBar: vscode.StatusBarItem) => {
     vsLogger.printTimestamp();
     vsLogger.error(outputErrorMessge);
-    // const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.IS_STOPPED.NOTIFICATION);
     const buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[] = [
         {
             buttonMessage: 'Create new API Key',
