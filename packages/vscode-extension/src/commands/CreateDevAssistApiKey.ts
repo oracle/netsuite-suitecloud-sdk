@@ -6,6 +6,7 @@
 import * as vscode from 'vscode';
 import { DEVASSIST } from '../ApplicationConstants';
 import { generateApiKey } from '../util/APIKeyGenerator';
+import { DEVASSIST_SERVICE } from '../service/TranslationKeys';
 
 /**
  * Registers the suitecloud.createdevassistapikey command.
@@ -19,23 +20,33 @@ export async function createDevAssistApiKeyCommand(extensionContext: vscode.Exte
     // Generate the API key
     const apiKey = generateApiKey();
 
-    // Compose the message to display
-    const message =
+    // Compose the message to display - 
+    // DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.MAIN_MESSAGE
+    const mainMessage =
         'A new API key for Developer Assistant has been generated.\n\n' +
         'To enable CLINE to communicate securely with your Developer Assistant service, please copy this key and enter it into the CLINE extension base URL.\n\n' +
         'The API key will also be stored securely and used automatically to start your SuiteCloud Developer Assistant service.\n\n' +
-        'Keep this key confidential and do not share it.';
+        'Keep this key confidential and do not share it.'+
+        `\n\nAPI Key: ${apiKey}`;
+
 
     // Show the modal with "Copy" action
     const selection = await vscode.window.showInformationMessage(
-        `${message}\n\nAPI Key: ${apiKey}`,
+        mainMessage,
         { modal: true },
+        // DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.COPY_BUTTON
         'Copy'
     );
 
+    // DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.COPY_BUTTON
     if (selection === 'Copy') {
+        // confirmation message
         await extensionContext.secrets.store(DEVASSIST.SECRET_KEY, apiKey);
         vscode.env.clipboard.writeText(apiKey);
+        // DEVASSIST_SERVICE.CREATE_API_KEY.CONFIRMATION_MESSGE
         vscode.window.showInformationMessage('API key copied to clipboard!');
+    } else {
+        //  DEVASSIST_SERVICE.CREATE_API_KEY.CANCELED_MESSAGE
+        vscode.window.showInformationMessage('API key creation canceled.');
     }
 }
