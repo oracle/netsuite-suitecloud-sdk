@@ -23,6 +23,7 @@ import UpdateFile from './commands/UpdateFile';
 import UpdateObject from './commands/UpdateObject';
 import UploadFile from './commands/UploadFile';
 import Validate from './commands/Validate';
+import { createDevAssistApiKeyCommand } from './commands/CreateDevAssistApiKey';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
@@ -96,31 +97,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		)
 	);
 
-	// Command to create and store Develoepr Assistant service API Key
+	// Command to create and store Developer Assistant service API Key
 	context.subscriptions.push(
-		vscode.commands.registerCommand('suitecloud.createdevassistapikey',
-			() => {
-				// do what is required to store Devleoper Assistant API Key
-				vscode.workspace
-				const apiKey = generateApiKey()
-				// Show the key in a modal with "Copy" action
-				const message =
-					'A new API key for Developer Assistant has been generated.\n\n' +
-					'To enable CLINE to communicate securely with your Developer Assistant service, please copy this key and enter it into the CLINE extension base URL.\n\n' +
-					'The API key will be also stored securely and used automatically to start your SutieCloud Developer Assistant service.\n\n' +
-					'Keep this key confidential and do not share it.';
-				vscode.window.showInformationMessage(
-					`${message}\n\nAPI Key: ${apiKey}`,
-					{ modal: true },
-					'Copy'
-				).then(async selection => {
-					if (selection === 'Copy') {
-						await context.secrets.store(DEVASSIST.SECRET_KEY, apiKey)
-						vscode.env.clipboard.writeText(apiKey);
-						vscode.window.showInformationMessage('API key copied to clipboard!');
-					}
-				});
-			}
+		vscode.commands.registerCommand(
+			'suitecloud.createdevassistapikey',
+			() => createDevAssistApiKeyCommand(context)
 		)
 	);
 
