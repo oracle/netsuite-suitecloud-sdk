@@ -293,6 +293,7 @@
 	"SUITECLOUD_AUTH_PROXY_SERVICE_NEED_TO_REAUTHENTICATE" : "Manual authentication is needed. Sign in again to continue.",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_ALREADY_USED_PORT" : "Port {0} is already being used. Choose a different port and try again.\n{1}",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_INTERNAL_PROXY_SERVER_ERROR" : "There was an internal problem in the SuiteCloud client server while listening on the port {0}.\n{1}",
+	"SUITECLOUD_AUTH_PROXY_SERVICE_REQUEST_PATH_NOT_ALLOWED_ERROR" : "Invalid request. The request path must start with {0}.",
 
 	"UNIT_TEST_TEST_FAILED": "The tests failed.",
 	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures. The deployment will not continue.",

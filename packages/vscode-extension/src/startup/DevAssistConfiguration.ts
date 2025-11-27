@@ -37,6 +37,7 @@ const PROXY_SERVICE_EVENTS = {
     SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
     REQUEST_PATH_NOT_ALLOWED: 'requestPathNotAllowed',
     UNAUTHORIZED_PROXY_REQUEST: 'unauthorizedProxyRequest',
+    // PATH_NOT_ALLOWED_ERROR: 'pathNotAllowedError',
 }
 
 const executionEnvironmentContext = new ExecutionEnvironmentContext({
@@ -63,6 +64,7 @@ export const startDevAssistProxyIfEnabled = async (extensionContext: vscode.Exte
             await initializeDevAssistService(extensionContext, devAssistStatusBar);
             await startDevAssistService(devAssistConfigStatus.current.authID, devAssistConfigStatus.current.localPort, devAssistStatusBar);
         } catch (error) {
+            console.log(error);         
             showStartDevAssistProblemNotification('startup', error as string, devAssistStatusBar);
         }
     } else {
@@ -132,7 +134,7 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
         }
     }
 
-    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, devassistApiKey, '/api/internal/devassist/');
+    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, devassistApiKey, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX);
 
     // adding listener to trigger manual reauthentication from vscode
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.REAUTHORIZE, async (emitParams: { authId: string, message: string }) => {
@@ -166,7 +168,14 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
         vsLogger.error('');
     });
 
-    devAssistProxyService.on(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, (emitParams: { authId: string, message: string, requestUrl?: string}) => {
+    devAssistProxyService.on(PROXY_SERVICE_EVENTS.REQUEST_PATH_NOT_ALLOWED, (emitParams: { authId: string, message: string }) => {
+        const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.PATH_NOT_ALLOWED_ERROR,
+            getProxyUrl(devAssistConfigStatus.current.localPort));
+        showDevAssistEmitProblemLog(PROXY_SERVICE_EVENTS.REQUEST_PATH_NOT_ALLOWED, errorMessage, devAssistStatusBar);
+        vsLogger.error('');
+    });
+
+    devAssistProxyService.on(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, (emitParams: { authId: string, message: string }) => {
         const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.SERVER_ERROR_ON_REFRESH, emitParams.message);
         showDevAssistEmitProblemNotification(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, errorMessage, devAssistStatusBar);
         vsLogger.error('');
@@ -281,9 +290,9 @@ const showStartDevAssistProblemNotification = (errorStage: string, error: string
 // show notifcation
 //      (DEVASSIST_SERVICE.IS_STOPPED.NOTIFICATION)
 //      with See Detials button (opens output)
-const showDevAssistEmitProblemLog = (errorStage: string, emitError: string, devAssistStatusBar: vscode.StatusBarItem) => {
+const showDevAssistEmitProblemLog = (errorStage: string, outputError: string, devAssistStatusBar: vscode.StatusBarItem) => {
     vsLogger.printTimestamp();
-    vsLogger.error(emitError);
+    vsLogger.error(outputError);
     const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.IS_STOPPED.NOTIFICATION);
     const buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[] = [
         {

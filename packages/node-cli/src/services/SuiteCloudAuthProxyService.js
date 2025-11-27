@@ -11,12 +11,12 @@ const EventEmitter = require('events');
 
 /** Events */
 const EVENTS = {
-	SERVER_ERROR: 'serverError',
-	SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
 	AUTH_REFRESH_MANUAL_EVENT: 'authRefreshManual',
 	PROXY_ERROR: 'proxyError',
+	REQUEST_PATH_NOT_ALLOWED: 'requestPathNotAllowed',
+	SERVER_ERROR: 'serverError',
+	SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
 	UNAUTHORIZED_PROXY_REQUEST: 'unauthorizedProxyRequest',
-	REQUEST_PATH_NOT_ALLOWED: 'requestPathNotAllowed'
 };
 
 /** Authentication methods */
@@ -43,6 +43,7 @@ const LOCAL_HOSTNAME = '127.0.0.1';
 const TARGET_SERVER_PORT = 443;
 
 class SuiteCloudAuthProxyService extends EventEmitter {
+
 	constructor(sdkPath, executionEnvironmentContext, apiKey, allowedPathPrefix) {
 		super();
 		this._sdkPath = sdkPath;
@@ -81,7 +82,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 			// Validate incoming request (apiKey & allowed path) in a dedicated method
 			if (!this._isValidIncomingRequest(request, response)) {
-				return;
+				return
 			}
 
 			const requestOptions = this._buildRequestOptions(request);
@@ -228,12 +229,16 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				return false;
 			}
 		}
+
 		// Allowed path filter: check allowed prefix if configured
 		if (this._allowedPathPrefix) {
 			if (!request.url.startsWith(this._allowedPathPrefix)) {
-				const pathNotAllowedMessage = 'Forbidden: Path not allowed';
-				this._writeResponseMessage(response, HTTP_RESPONSE_CODE.FORBIDDEN, pathNotAllowedMessage);
-				this.emit(EVENTS.REQUEST_PATH_NOT_ALLOWED, this._buildEmitObject(pathNotAllowedMessage));
+				const errorMessage = NodeTranslationService.
+					getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.REQUEST_PATH_NOT_ALLOWED_ERROR, this._allowedPathPrefix);
+
+				this._writeResponseMessage(response, HTTP_RESPONSE_CODE.FORBIDDEN, errorMessage);
+
+				this._handleListeningErrors(errorMessage, EVENTS.REQUEST_PATH_NOT_ALLOWED);
 				return false;
 			}
 		}

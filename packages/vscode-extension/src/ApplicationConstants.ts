@@ -30,7 +30,8 @@ export const ACP_UNRESTRICTED_FOLDERS: string[] = [
 ];
 
 export const DEVASSIST = {
-	// should be in sycn with vscode-extension package.json config properties
+	ALLOWED_PROXY_PATH_PREFIX: '/api/internal/devassist/',
+	// CONFIG_KEYS should be in sycn with vscode-extension package.json config properties
 	CONFIG_KEYS: {
 		devAssistSection: 'suitecloud.developerAssistant',
 		proxyEnabled: 'enable',
@@ -52,4 +53,4 @@ export const DEVASSIST = {
 		FEEDBACK_PATH: '/api/internal/devassist/feedback',
 	},
 	SECRET_KEY: 'DEVASSIT_API_KEY',
-}
+};
