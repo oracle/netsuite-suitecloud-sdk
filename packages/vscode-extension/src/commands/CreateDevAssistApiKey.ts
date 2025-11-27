@@ -20,18 +20,19 @@ const translationService = new VSTranslationService();
 /**
  * Command handler for suitecloud.createdevassistapikey
  */
-export async function createDevAssistApiKeyCommand(extensionContext: vscode.ExtensionContext): Promise<void> {
+export async function createDevAssistApiKeyCommand(extensionContext: vscode.ExtensionContext): Promise<string | undefined> {
     // Generate the API key
     const apiKey = generateApiKey();
 
     // Compose the message to display - 
     // DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.MAIN_MESSAGE
     const mainMessage =
-        'A new API key for Developer Assistant has been generated.\n\n' +
-        'To enable CLINE to communicate securely with your Developer Assistant service, please copy this key and enter it into the CLINE extension base URL.\n\n' +
-        'The API key will also be stored securely and used automatically to start your SuiteCloud Developer Assistant service.\n\n' +
-        'Keep this key confidential and do not share it.'+
-        `\n\nAPI Key: ${apiKey}`;
+        `A new API key for Developer Assistant has been created:\n\n` +
+        apiKey + '\n\n' +
+        'Paste the API key into the "OpenAI Compatible API Key" field in CLINE settings.\n\n' +
+        'When your Developer Assistant service starts, copy the base URL from the VS Code output panel into the "Base URL" field in CLINE settings.\n\n'+
+        'Keep this key confidential and do not share it.';
+
 
 
     const copyButtonText = translationService.getMessage(DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.COPY_BUTTON)
@@ -48,9 +49,11 @@ export async function createDevAssistApiKeyCommand(extensionContext: vscode.Exte
         await extensionContext.secrets.store(DEVASSIST.SECRET_KEY, apiKey);
         vscode.env.clipboard.writeText(apiKey);
         // DEVASSIST_SERVICE.CREATE_API_KEY.CONFIRMATION_MESSGE
-        vscode.window.showInformationMessage('API key copied to clipboard!');
+        vscode.window.showInformationMessage('API key copied to clipboard.');
+        return apiKey;
     } else {
         //  DEVASSIST_SERVICE.CREATE_API_KEY.CANCELED_MESSAGE
         vscode.window.showInformationMessage('API key creation canceled.');
+        return;
     }
 }

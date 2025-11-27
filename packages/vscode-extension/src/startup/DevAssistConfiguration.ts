@@ -122,7 +122,7 @@ export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vsco
 const initializeDevAssistService = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     // check if API Key is available
     const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
-    if (devassistApiKey === undefined) {
+    if (devassistApiKey === undefined || devassistApiKey === null) {
         // we could be starting the here the creation of the devassist apiKey by triggering the command.
         const createApiKeyCommandResult = await triggerCreateNewApiKeyCommand();
         if (!createApiKeyCommandResult) {
@@ -130,7 +130,7 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
             const devAssistConfigSection = vscode.workspace.getConfiguration(DEVASSIST.CONFIG_KEYS.devAssistSection);
             devAssistConfigSection.update(DEVASSIST.CONFIG_KEYS.proxyEnabled, false);
 
-            throw "Developer Assistant API Key is not ready. Trigger 'SuiteCloud: Create Developer Assistant service API Key' command and try to start service again."
+            throw "Developer Assistant service API Key was not created. Enable Developer Assistant service again to generate an API Key."
         }
     }
 

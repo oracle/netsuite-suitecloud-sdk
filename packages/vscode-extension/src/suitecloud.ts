@@ -101,13 +101,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	// TODO: reomve this command
 	// Command to check Develoepr Assistant service API Key
 	context.subscriptions.push(
-		vscode.commands.registerCommand('suitecloud.showdevassistapikey',
+		vscode.commands.registerCommand('suitecloud.deletedevassistapikey',
 			async () => {
-				// do what is required to store Devleoper Assistant API Key
-				vscode.workspace
 				const apiKey = await context.secrets.get(DEVASSIST.SECRET_KEY);
+				// delete Devleoper Assistant API Key
+				await context.secrets.delete(DEVASSIST.SECRET_KEY);
 				// Show previously stored key
-				const message = `This is the stored API key for Developer Assistant: ${apiKey}`;
+				const message = `This is the deleted API key for Developer Assistant: ${apiKey}`;
 				vscode.window.showInformationMessage(message, { modal: true },);
 			}
 		)

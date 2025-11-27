@@ -121,11 +121,12 @@
             {
               "command": "suitecloud.createdevassistapikey",
               "title": "Create Developer Assistant Service API Key",
-              "category": "SuiteCloud"
+              "category": "SuiteCloud",
+              "enablement": "false"
             },
             {
-              "command": "suitecloud.showdevassistapikey",
-              "title": "Show stored Developer Assistant Service API Key - TODO: delete this command",
+              "command": "suitecloud.deletedevassistapikey",
+              "title": "Delete stored Developer Assistant Service API Key - TODO: delete this command",
               "category": "SuiteCloud"
             }
 		],
