@@ -136,12 +136,19 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
 
     devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX, devassistApiKey);
 
-    // adding listener to trigger manual reauthentication from vscode
+    // Set up all event listeners in one place
+    addListenersToDevAssistProxyService(devAssistProxyService, devAssistStatusBar);
+};
+
+/**
+ * Attaches all event listeners to the devAssistProxyService instance.
+ * Handles authentication, error, and proxy events.
+ */
+const addListenersToDevAssistProxyService = (devAssistProxyService: SuiteCloudAuthProxyService, devAssistStatusBar: vscode.StatusBarItem) => {
+    // Listener to trigger manual reauthentication from vscode
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.REAUTHORIZE, async (emitParams: { authId: string, message: string }) => {
-        // trigger refresh on emited authID 
         const refreshIsSuccessful = await refreshAuthorizationWithNotifications(emitParams.authId);
         if (refreshIsSuccessful) {
-            // edgy case: user might have changed configured authid while waiting for the manual refresh to complete
             updateDevAssistConfigStatus();
             try {
                 // TODO: we could be using something like devAsssitProxy.reloadAccessToken() to avoid extra forceRefresh in next cline request
@@ -150,20 +157,19 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
             } catch (error) {
                 showStartDevAssistProblemNotification('afterManualRefresh', error as string, devAssistStatusBar);
             }
-            // add line separator
             vsLogger.error('');
         }
     });
 
-    // adding listener to forward ServerError from SuiteCloudAuthProxy to vscode suitecloud output
+    // Listener to forward ServerError from SuiteCloudAuthProxy to vscode SuiteCloud output
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.SERVER_ERROR, (emitParams: { authId: string, message: string }) => {
-		const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.SERVER_ERROR, emitParams.message);
-		showDevAssistEmitProblemLog(PROXY_SERVICE_EVENTS.SERVER_ERROR, errorMessage, devAssistStatusBar);
+        const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.SERVER_ERROR, emitParams.message);
+        showDevAssistEmitProblemLog(PROXY_SERVICE_EVENTS.SERVER_ERROR, errorMessage, devAssistStatusBar);
         vsLogger.error('');
-	});
+    });
 
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.PROXY_ERROR, (emitParams: { authId: string, message: string }) => {
-		const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.PROXY_ERROR, emitParams.message);
+        const errorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.PROXY_ERROR, emitParams.message);
         showDevAssistEmitProblemNotification(PROXY_SERVICE_EVENTS.PROXY_ERROR, errorMessage, devAssistStatusBar);
         vsLogger.error('');
     });
@@ -181,9 +187,9 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
         vsLogger.error('');
     });
 
-    devAssistProxyService.on(PROXY_SERVICE_EVENTS.UNAUTHORIZED_PROXY_REQUEST, (emitParams: { authId: string, message: string, requestUrl?: string}) => {
-        if ( emitParams?.requestUrl === DEVASSIST.MODELS_PATH) {
-            // CLINE is perfmorming a "/models" request each time its configuraiton is open or setting is modified (on each character typing input)
+    devAssistProxyService.on(PROXY_SERVICE_EVENTS.UNAUTHORIZED_PROXY_REQUEST, (emitParams: { authId: string, message: string, requestUrl?: string }) => {
+        if (emitParams?.requestUrl === DEVASSIST.MODELS_PATH) {
+            // CLINE is performing a "/models" request each time its configuration is open or setting is modified (on each character typing input)
             // we want to avoid showing the warning in this case
             console.log('Received unauthorized /models request.');
             return;
@@ -192,7 +198,6 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
         showDevAssistApiKeyProblem(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, outputErrorMessage, devAssistStatusBar);
         vsLogger.error('');
     });
-
 };
 
 const startDevAssistService = async (devAssistAuthID: string, localPort: number, devAssistStatusBar: vscode.StatusBarItem) => {

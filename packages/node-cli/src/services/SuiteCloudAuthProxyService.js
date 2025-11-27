@@ -223,7 +223,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				const unauthorizedMessage = 'Unauthorized: Missing or invalid API Key';
 				// TODO explore different http response code options
 				// using 400 as CLINE is hiddiing the allowedPathPrefix when using 407-Proxy Authentication Required
-				this._writeResponseMessage(response, 400, unauthorizedMessage);
+				this._writeResponseMessage(response, 401, unauthorizedMessage);
 				const emitData = { message: unauthorizedMessage, authId: this._authId, requestUrl: request.url };
 				this.emit(EVENTS.UNAUTHORIZED_PROXY_REQUEST, emitData);
 				return false;
