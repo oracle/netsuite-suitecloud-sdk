@@ -134,7 +134,7 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
         }
     }
 
-    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, devassistApiKey, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX);
+    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX, devassistApiKey);
 
     // adding listener to trigger manual reauthentication from vscode
     devAssistProxyService.on(PROXY_SERVICE_EVENTS.REAUTHORIZE, async (emitParams: { authId: string, message: string }) => {

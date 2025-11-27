@@ -44,5 +44,5 @@ export interface SuiteCloudAuthProxyServiceInstance extends EventEmitter {
 	updateApiKey(newApiKey?: string): void;
 }
 export interface SuiteCloudAuthProxyServiceConstructor {
-	new(sdkPath: string, executionEnvironmentContext: ExecutionEnvironmentContextInstance, apiKey?: string, allowedPathPrefix?: string): SuiteCloudAuthProxyServiceInstance;
+	new(sdkPath: string, executionEnvironmentContext: ExecutionEnvironmentContextInstance, allowedPathPrefix?: string, apiKey?: string): SuiteCloudAuthProxyServiceInstance;
 }

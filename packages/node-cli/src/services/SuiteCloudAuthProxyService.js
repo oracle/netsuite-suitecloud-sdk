@@ -44,12 +44,12 @@ const TARGET_SERVER_PORT = 443;
 
 class SuiteCloudAuthProxyService extends EventEmitter {
 
-	constructor(sdkPath, executionEnvironmentContext, apiKey, allowedPathPrefix) {
+	constructor(sdkPath, executionEnvironmentContext, allowedPathPrefix, apiKey) {
 		super();
 		this._sdkPath = sdkPath;
 		this._executionEnvironmentContext = executionEnvironmentContext;
-		this._apiKey = apiKey;
 		this._allowedPathPrefix = allowedPathPrefix;
+		this._apiKey = apiKey;
 		/** These are the variables we are going to use to store instance data */
 		this._accessToken = undefined;
 		this._localProxy = undefined;
