@@ -49,6 +49,7 @@ let devAssistProxyService: SuiteCloudAuthProxyService;
 const vsLogger: VSConsoleLogger = new VSConsoleLogger();
 const vsNotificationService = new MessageService('DevAssistService');
 const translationService = new VSTranslationService();
+let awaitingApiKeyCreation = false;
 
 
 export const startDevAssistProxyIfEnabled = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
@@ -64,13 +65,17 @@ export const startDevAssistProxyIfEnabled = async (extensionContext: vscode.Exte
             await initializeDevAssistService(extensionContext, devAssistStatusBar);
             await startDevAssistService(devAssistConfigStatus.current.authID, devAssistConfigStatus.current.localPort, devAssistStatusBar);
         } catch (error) {
-            console.log(error);         
+            console.log(error);
             showStartDevAssistProblemNotification('startup', error as string, devAssistStatusBar);
         }
     } else {
         // TODO: We might want to propose to configure and enable service
         vsLogger.printTimestamp();
-        vsLogger.info(translationService.getMessage(DEVASSIST_SERVICE.IS_DISABLED.OUTPUT));
+        // TODO find the appropriate message
+        // we should be using a different message here, current: "SuiteCloud Developer Assistant service has been disabled."
+        // vsLogger.info(translationService.getMessage(DEVASSIST_SERVICE.IS_DISABLED.OUTPUT));
+        // it should be something like: "SuiteCloud Developer Assistant service is not enabled.\n{how to activate devassist instructions}"
+        vsLogger.info("SuiteCloud Developer Assistant service is not enabled.\n{how to activate devassist instructions}");
     }
     // add extra line to differenciate logs
     vsLogger.info('');
@@ -100,7 +105,11 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
             // add extra line to differenciate logs
             vsLogger.info('');
         } else { // devAssistConfigStatus.current.proxyEnabled === false
-            await stopDevAssistService(devAssistStatusBar);
+            if (devAssistProxyService) {
+                // only try to stop the service if has been initialized
+                // this check is usefull for initial stages when no apiKey is present
+                await stopDevAssistService(devAssistStatusBar);
+            }
             devAssistStatusBar.hide();
         }
     }
@@ -108,7 +117,7 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
 
 export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vscode.SecretStorageChangeEvent, extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     const currentConfig: devAssistConfig = getDevAssistCurrentSettings();
-    if (secretChangeEvent.key === DEVASSIST.SECRET_KEY && currentConfig.proxyEnabled) {
+    if (secretChangeEvent.key === DEVASSIST.SECRET_KEY && currentConfig.proxyEnabled && !awaitingApiKeyCreation) {
         if (devAssistProxyService) {
             const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
             devAssistProxyService.updateApiKey(devassistApiKey);
@@ -122,22 +131,41 @@ export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vsco
 const initializeDevAssistService = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     // check if API Key is available
     const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
-    if (devassistApiKey === undefined || devassistApiKey === null) {
-        // we could be starting the here the creation of the devassist apiKey by triggering the command.
+
+    // this should only happen when no secret is available (initial devassist setup)
+    if (!devassistApiKey) {
+        // starting the here the creation of the devassist apiKey if no secret is available
+
+        awaitingApiKeyCreation = true;
+        // if the user saves the new apiKey the devAssistSecretApiKeyChangeHandler will be called 
+        // using awaitingApiKeyCreation status to block undesired call to initializeDevAssistService
         const createApiKeyCommandResult = await triggerCreateNewApiKeyCommand();
+        awaitingApiKeyCreation = false;
+        // no apiKey was created
         if (!createApiKeyCommandResult) {
             // disable devassist service via setting change to force user to do it again if required
             const devAssistConfigSection = vscode.workspace.getConfiguration(DEVASSIST.CONFIG_KEYS.devAssistSection);
             devAssistConfigSection.update(DEVASSIST.CONFIG_KEYS.proxyEnabled, false);
 
-            throw "Developer Assistant service API Key was not created. Enable Developer Assistant service again to generate an API Key."
+            throw "Developer Assistant service API Key was not created. Enable Developer Assistant service again to generate the required API Key."
         }
+
+        // apiKey was created by triggerCreateNewApiKeyCommand
+        // there is no way a devAssistProxyService could be created without devassistApiKey
+        devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX, createApiKeyCommandResult as string);
+        // Set up all event listeners in one place
+        addListenersToDevAssistProxyService(devAssistProxyService, devAssistStatusBar);
+        return
     }
 
-    devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX, devassistApiKey);
-
-    // Set up all event listeners in one place
-    addListenersToDevAssistProxyService(devAssistProxyService, devAssistStatusBar);
+    if (devAssistProxyService) {
+        // if an existing instance was already created just update the
+        devAssistProxyService.updateApiKey(devassistApiKey)
+    } else {
+        devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX, devassistApiKey);
+        // Set up all event listeners in one place
+        addListenersToDevAssistProxyService(devAssistProxyService, devAssistStatusBar);
+    }
 };
 
 /**
@@ -195,7 +223,7 @@ const addListenersToDevAssistProxyService = (devAssistProxyService: SuiteCloudAu
             return;
         }
         const outputErrorMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.OUTPUT.UNAUTHORIZED_PROXY_REQUEST, emitParams.message);
-        showDevAssistApiKeyProblem(PROXY_SERVICE_EVENTS.SERVER_ERROR_ON_REFRESH, outputErrorMessage, devAssistStatusBar);
+        showDevAssistApiKeyProblem(PROXY_SERVICE_EVENTS.UNAUTHORIZED_PROXY_REQUEST, outputErrorMessage, devAssistStatusBar);
         vsLogger.error('');
     });
 };
@@ -203,9 +231,9 @@ const addListenersToDevAssistProxyService = (devAssistProxyService: SuiteCloudAu
 const startDevAssistService = async (devAssistAuthID: string, localPort: number, devAssistStatusBar: vscode.StatusBarItem) => {
     await devAssistProxyService.start(devAssistAuthID, localPort);
 
-	const proxyUrl = getProxyUrl(localPort);
+    const proxyUrl = getProxyUrl(localPort);
     setSuccessDevAssistStausBarMessage(devAssistStatusBar);
-	showDevAssistIsRunningNotification(proxyUrl);
+    showDevAssistIsRunningNotification(proxyUrl);
 
     vsLogger.printTimestamp();
     vsLogger.info(translationService.getMessage(DEVASSIST_SERVICE.IS_RUNNING.OUTPUT, getProxyUrlWithoutPath(localPort), devAssistAuthID, proxyUrl));
@@ -248,21 +276,21 @@ const showDevAssistStartUpNotification = () => {
     vsNotificationService.showCommandInfoWithSpecificButtonsAndActions(infoMessage, buttonsAndActions);
 }
 
-const showDevAssistIsRunningNotification = (proxyUrl : string) => {
-	const infoMessage: string = translationService.getMessage(DEVASSIST_SERVICE.IS_RUNNING.NOTIFICATION, proxyUrl);
-	const buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[] = [
-		{
-			buttonMessage: translationService.getMessage(BUTTONS.SEE_DETAILS),
-			buttonAction: vsNotificationService.showOutput
-		},
-		{
-			buttonMessage: translationService.getMessage(BUTTONS.GIVE_FEEDBACK),
-			buttonAction: () => {
-				vscode.commands.executeCommand('suitecloud.opendevassistfeedbackform')
-			}
-		},
-	];
-	vsNotificationService.showCommandInfoWithSpecificButtonsAndActions(infoMessage, buttonsAndActions);
+const showDevAssistIsRunningNotification = (proxyUrl: string) => {
+    const infoMessage: string = translationService.getMessage(DEVASSIST_SERVICE.IS_RUNNING.NOTIFICATION, proxyUrl);
+    const buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[] = [
+        {
+            buttonMessage: translationService.getMessage(BUTTONS.SEE_DETAILS),
+            buttonAction: vsNotificationService.showOutput
+        },
+        {
+            buttonMessage: translationService.getMessage(BUTTONS.GIVE_FEEDBACK),
+            buttonAction: () => {
+                vscode.commands.executeCommand('suitecloud.opendevassistfeedbackform')
+            }
+        },
+    ];
+    vsNotificationService.showCommandInfoWithSpecificButtonsAndActions(infoMessage, buttonsAndActions);
 }
 
 // stoped status bar
