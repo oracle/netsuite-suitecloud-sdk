@@ -220,10 +220,10 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			console.log('--->>>   SuiteCloudAuthProxyService.validateIncomingRequest.  <<<---');
 			console.log({ authHeader, proxyApiKey: this._apiKey })
 			if (authHeader !== `Bearer ${this._apiKey}`) {
-				const unauthorizedMessage = 'Unauthorized: Missing or invalid API Key';
-				// TODO explore different http response code options
-				// using 400 as CLINE is hiddiing the allowedPathPrefix when using 407-Proxy Authentication Required
-				this._writeResponseMessage(response, 401, unauthorizedMessage);
+				const unauthorizedMessage = NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.UNAUTHORIZED_PROXY_REQUEST);
+				// using 401-Unauthorized http response code as CLINE won't activate the retry mechanism with it
+				// not using 407-Proxy Authentication Required as CLINE activates the retry mechanism with it
+				this._writeResponseMessage(response, HTTP_RESPONSE_CODE.UNAUTHORIZED, unauthorizedMessage);
 				const emitData = { message: unauthorizedMessage, authId: this._authId, requestUrl: request.url };
 				this.emit(EVENTS.UNAUTHORIZED_PROXY_REQUEST, emitData);
 				return false;

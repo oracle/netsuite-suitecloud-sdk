@@ -75,7 +75,7 @@ export const startDevAssistProxyIfEnabled = async (extensionContext: vscode.Exte
         // we should be using a different message here, current: "SuiteCloud Developer Assistant service has been disabled."
         // vsLogger.info(translationService.getMessage(DEVASSIST_SERVICE.IS_DISABLED.OUTPUT));
         // it should be something like: "SuiteCloud Developer Assistant service is not enabled.\n{how to activate devassist instructions}"
-        vsLogger.info("SuiteCloud Developer Assistant service is not enabled.\n{how to activate devassist instructions}");
+        vsLogger.info(translationService.getMessage(DEVASSIST_SERVICE.STARTUP.SERVICE_NOT_ENABLED_OUTPUT_MESSAGE));
     }
     // add extra line to differenciate logs
     vsLogger.info('');
@@ -146,12 +146,14 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
             // disable devassist service via setting change to force user to do it again if required
             const devAssistConfigSection = vscode.workspace.getConfiguration(DEVASSIST.CONFIG_KEYS.devAssistSection);
             devAssistConfigSection.update(DEVASSIST.CONFIG_KEYS.proxyEnabled, false);
-
-            throw "Developer Assistant service API Key was not created. Enable Developer Assistant service again to generate the required API Key."
+            
+            // throw to stop initialization flow
+            const initialApiKeyCreationError = translationService.getMessage(DEVASSIST_SERVICE.CREATE_API_KEY.INITIAL_CREATION_ERROR)
+            throw initialApiKeyCreationError;
         }
 
         // apiKey was created by triggerCreateNewApiKeyCommand
-        // there is no way a devAssistProxyService could be created without devassistApiKey
+        // there should no no way a devAssistProxyService could be created without devassistApiKey
         devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX, createApiKeyCommandResult as string);
         // Set up all event listeners in one place
         addListenersToDevAssistProxyService(devAssistProxyService, devAssistStatusBar);
@@ -345,9 +347,10 @@ const showDevAssistEmitProblemLog = (errorStage: string, outputError: string, de
 const showDevAssistApiKeyProblem = (errorStage: string, outputErrorMessge: string, devAssistStatusBar: vscode.StatusBarItem) => {
     vsLogger.printTimestamp();
     vsLogger.error(outputErrorMessge);
+    const newApiKeyButtonMessage = translationService.getMessage(DEVASSIST_SERVICE.EMIT_ERROR.BUTTON.CREATE_NEW_API_KEY);
     const buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[] = [
         {
-            buttonMessage: 'Create new API Key',
+            buttonMessage: newApiKeyButtonMessage,
             buttonAction: () => triggerCreateNewApiKeyCommand()
         },
     ];
