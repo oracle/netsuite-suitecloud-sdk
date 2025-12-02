@@ -118,24 +118,29 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 	 * Public method that stops the proxy and returns a Promise resolved when it's fully closed
 	 */
 	async stop() {
-		if (this._localProxy) {
+		// when having a "listen EADDRINUSE: address already in use 127.0.0.1:49285" the server instance exists but is not listening
+		// to avoid "Error [ERR_SERVER_NOT_RUNNING]: Server is not running." at close time there is the need to check if server is activelly listening
+		if (this._localProxy && this._localProxy.listening) {
 			// Wrap the close callback in a Promise
 			const closePromise = new Promise((resolve, reject) => {
-				this._localProxy.close(err => {
-					if (err) {
-						reject(err);
+				this._localProxy.close(error => {
+					if (error) {
+						console.error('Error occurred while stopping SuiteCloud Auth Proxy server.')
+						console.error(error)
+						reject(error);
 					} else {
-						console.log('SuiteCloud Proxy server stopped.');
+						console.log('SuiteCloud Auth Proxy server stopped.');
 						resolve();
 					}
 				});
 			});
 
 			await closePromise;
-			this._localProxy = null;
 		} else {
 			console.log('No server instance to stop.');
 		}
+		
+		this._localProxy = null;
 	}
 
 	/**
