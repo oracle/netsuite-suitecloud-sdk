@@ -60,7 +60,7 @@
 	"DEVASSIST_SERVICE_CREATE_API_KEY_CANCELED_MESSAGE": "API key generation canceled. ",
 	"DEVASSIST_SERVICE_CREATE_API_KEY_CONFIRMATION_MESSGE": "API key copied to clipboard. ",
 	"DEVASSIST_SERVICE_CREATE_API_KEY_INITIAL_CREATION_ERROR": "The API key was not generated. Enable SuiteCloud Developer Assistant service again to generate the required API key.",
-	"DEVASSIST_SERVICE_CREATE_API_KEY_MODAL_MAIN_MESSAGE": "A new API key has been generated for SuiteCloud Developer Assistant:\n\n{0}\n\nPaste the API key into the OpenAI Compatible API Key field in Cline settings.\n\nWhen your SuiteCloud Developer Assistant service starts, copy the base URL from the SuiteCloud output panel into the Base URL field in Cline settings.\n\nKeep this API key confidential and do not share it.",
+	"DEVASSIST_SERVICE_CREATE_API_KEY_MODAL_MAIN_MESSAGE": "A new API key has been generated for SuiteCloud Developer Assistant:\n\n{0}\n\nPaste the API key into the OpenAI Compatible API Key field in Cline settings.\n\nWhen your SuiteCloud Developer Assistant service starts, copy the base URL from the SuiteCloud output panel into the Base URL field in Cline settings if you haven't already.\n\nKeep this API key confidential and do not share it.",
 	"DEVASSIST_SERVICE_CREATE_API_KEY_MODAL_COPY_BUTTON": "Copy API Key",
 
 	"DEVASSIST_SERVICE_EMIT_ERROR_EMIT_ERROR_BUTTON_CREATE_NEW_API_KEY": "Generate New API Key",
@@ -95,7 +95,7 @@
 	"DEVASSIST_SERVICE_IS_STOPPED_STATUSBAR": "Dev Assist: stopped",
 	"DEVASSIST_SERVICE_SERVER_ERROR_OUTPUT": "A server error has occurred while running SuiteCloud Developer Assistant service.\nError: {0}",
 	"DEVASSIST_SERVICE_STARTUP_MESSAGE": "SuiteCloud Developer Assistant is here. Open settings to start using it.",
-	"SERVICE_NOT_ENABLED_OUTPUT_MESSAGE": "SuiteCloud Developer Assistant service is not enabled.\n{how to activate devassist hint}",
+	"SERVICE_NOT_ENABLED_OUTPUT_MESSAGE": "SuiteCloud Developer Assistant service is not enabled.\nTo enable it, open Settings (use Cmd+, / Ctrl+,), then go to Extensions > SuiteCloud.",
 	"DEVASSIST_SERVICE_STATUSBAR_TOOLTIP": "Shows the status of SuiteCloud Developer Assistant service.",
 
 	"DISMISS": "Dismiss",
