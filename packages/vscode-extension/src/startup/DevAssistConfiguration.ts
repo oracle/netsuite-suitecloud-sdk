@@ -116,9 +116,9 @@ export const devAssistConfigurationChangeHandler = async (configurationChangeEve
 
 export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vscode.SecretStorageChangeEvent, extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     const currentConfig: devAssistConfig = getDevAssistCurrentSettings();
-    if (secretChangeEvent.key === DEVASSIST.SECRET_KEY && currentConfig.proxyEnabled && !awaitingApiKeyCreation) {
+    if (secretChangeEvent.key === DEVASSIST.SECRET_STORAGE_KEY_ID && currentConfig.proxyEnabled && !awaitingApiKeyCreation) {
         if (devAssistProxyService) {
-            const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
+            const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
             devAssistProxyService.updateApiKey(devassistApiKey);
         }
         else (
@@ -129,7 +129,7 @@ export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vsco
 
 const initializeDevAssistService = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
     // check if API Key is available
-    const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_KEY);
+    const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
 
     // this should only happen when no secret is available (initial devassist setup)
     if (!devassistApiKey) {

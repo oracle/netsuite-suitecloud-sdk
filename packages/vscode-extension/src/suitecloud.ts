@@ -10,7 +10,7 @@ import { DEVASSIST, FILES } from './ApplicationConstants';
 import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
 import CompareFile from './commands/CompareFile';
-import { createDevAssistApiKeyCommand } from './commands/CreateDevAssistApiKey';
+import { createDevAssistApiKey } from './commands/CreateDevAssistApiKey';
 import CreateFile from './commands/CreateFile';
 import CreateProject from './commands/CreateProject';
 import Deploy from './commands/Deploy';
@@ -94,18 +94,18 @@ export async function activate(context: vscode.ExtensionContext) {
 			() => openDevAssistFeedbackForm(context)),
 		// Command to create and store Developer Assistant service API Key
 		vscode.commands.registerCommand('suitecloud.createdevassistapikey',
-			() => createDevAssistApiKeyCommand(context)
+			() => createDevAssistApiKey(context)
 		)
 	);
 
 	// TODO: reomve this command
-	// Command to check Develoepr Assistant service API Key
+	// Command to check Developer Assistant service API Key
 	context.subscriptions.push(
 		vscode.commands.registerCommand('suitecloud.deletedevassistapikey',
 			async () => {
-				const apiKey = await context.secrets.get(DEVASSIST.SECRET_KEY);
-				// delete Devleoper Assistant API Key
-				await context.secrets.delete(DEVASSIST.SECRET_KEY);
+				const apiKey = await context.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
+				// delete Developer Assistant API Key
+				await context.secrets.delete(DEVASSIST.SECRET_STORAGE_KEY_ID);
 				// Show previously stored key
 				const message = `This is the deleted API key for Developer Assistant: ${apiKey}`;
 				vscode.window.showInformationMessage(message, { modal: true },);

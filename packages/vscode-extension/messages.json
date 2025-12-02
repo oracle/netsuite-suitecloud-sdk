@@ -57,8 +57,8 @@
 	"DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the deployment process",
 	"DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning and continue the deployment process",
 
-	"DEVASSIST_SERVICE_CREATE_API_KEY_CANCELED_MESSAGE": "API key generation canceled. ",
-	"DEVASSIST_SERVICE_CREATE_API_KEY_CONFIRMATION_MESSGE": "API key copied to clipboard. ",
+	"DEVASSIST_SERVICE_CREATE_API_KEY_CANCELED_MESSAGE": "API key generation canceled.",
+	"DEVASSIST_SERVICE_CREATE_API_KEY_CONFIRMATION_MESSAGE": "API key copied to clipboard.",
 	"DEVASSIST_SERVICE_CREATE_API_KEY_INITIAL_CREATION_ERROR": "The API key was not generated. Enable SuiteCloud Developer Assistant service again to generate the required API key.",
 	"DEVASSIST_SERVICE_CREATE_API_KEY_MODAL_MAIN_MESSAGE": "A new API key has been generated for SuiteCloud Developer Assistant:\n\n{0}\n\nPaste the API key into the OpenAI Compatible API Key field in Cline settings.\n\nWhen your SuiteCloud Developer Assistant service starts, copy the base URL from the SuiteCloud output panel into the Base URL field in Cline settings if you haven't already.\n\nKeep this API key confidential and do not share it.",
 	"DEVASSIST_SERVICE_CREATE_API_KEY_MODAL_COPY_BUTTON": "Copy API Key",

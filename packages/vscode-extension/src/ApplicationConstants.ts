@@ -52,5 +52,5 @@ export const DEVASSIST = {
 		BASE_PATH: '/api/internal/devassist',
 		FEEDBACK_PATH: '/api/internal/devassist/feedback',
 	},
-	SECRET_KEY: 'DEVASSIT_API_KEY',
+	SECRET_STORAGE_KEY_ID: 'DEVASSIT_SECRET_STORAGE_KEY_ID',
 };
