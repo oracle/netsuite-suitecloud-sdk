@@ -31,13 +31,12 @@ const devAssistConfigStatus: { current: devAssistConfig, previous: devAssistConf
 }
 
 const PROXY_SERVICE_EVENTS = {
-    REAUTHORIZE: 'authRefreshManual',
-    SERVER_ERROR: 'serverError',
     PROXY_ERROR: 'proxyError',
-    SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
+    REAUTHORIZE: 'manualAuthRefreshRequired',
     REQUEST_PATH_NOT_ALLOWED: 'requestPathNotAllowed',
+    SERVER_ERROR: 'serverError',
+    SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
     UNAUTHORIZED_PROXY_REQUEST: 'unauthorizedProxyRequest',
-    // PATH_NOT_ALLOWED_ERROR: 'pathNotAllowedError',
 }
 
 const executionEnvironmentContext = new ExecutionEnvironmentContext({

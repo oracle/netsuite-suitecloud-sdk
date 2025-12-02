@@ -11,13 +11,19 @@ const EventEmitter = require('events');
 
 /** Events */
 const EVENTS = {
-	AUTH_REFRESH_MANUAL_EVENT: 'authRefreshManual',
-	PROXY_ERROR: 'proxyError',
-	REQUEST_PATH_NOT_ALLOWED: 'requestPathNotAllowed',
-	SERVER_ERROR: 'serverError',
-	SERVER_ERROR_ON_REFRESH: 'serverErrorOnRefresh',
-	UNAUTHORIZED_PROXY_REQUEST: 'unauthorizedProxyRequest',
-};
+	PROXY_ERROR: {  
+		DEFAULT: 'proxyError',  
+        MANUAL_AUTH_REFRESH_REQUIRED: 'manualAuthRefreshRequired'  
+    },  
+    REQUEST_ERROR: {  
+		PATH_NOT_ALLOWED: 'requestPathNotAllowed',  
+        UNAUTHORIZED: 'unauthorizedProxyRequest'  
+    },  
+	SERVER_ERROR: {  
+		DEFAULT: 'serverError',  
+		ON_AUTH_REFRESH: 'serverErrorOnRefresh',  
+	},  
+}  
 
 /** Authentication methods */
 const {
@@ -80,7 +86,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		this._localProxy.addListener('request', async (request, response) => {
 
-			// Validate incoming request (apiKey & allowed path) in a dedicated method
+			// Validate incoming request (Api Key & Request Path)
 			if (!this._isValidIncomingRequest(request, response)) {
 				return
 			}
@@ -110,7 +116,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			const errorMessage = (error.code === 'EADDRINUSE') ?
 				NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.ALREADY_USED_PORT, proxyPort, error.message ?? '')
 				: NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.INTERNAL_PROXY_SERVER_ERROR, proxyPort, error.message ?? '');
-			this._handleListeningErrors(errorMessage, EVENTS.PROXY_ERROR);
+			this._handleListeningErrors(errorMessage, EVENTS.PROXY_ERROR.DEFAULT);
 		});
 	}
 
@@ -139,7 +145,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		} else {
 			console.log('No server instance to stop.');
 		}
-		
+
 		this._localProxy = null;
 	}
 
@@ -221,31 +227,26 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		// Authentication filter: check authorization header if an API key is configured
 		if (this._apiKey) {
 			const authHeader = request.headers['authorization'];
-			// TODO remove console logs
-			console.log('--->>>   SuiteCloudAuthProxyService.validateIncomingRequest.  <<<---');
-			console.log({ authHeader, proxyApiKey: this._apiKey })
 			if (authHeader !== `Bearer ${this._apiKey}`) {
 				const unauthorizedMessage = NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.UNAUTHORIZED_PROXY_REQUEST);
 				// using 401-Unauthorized http response code as CLINE won't activate the retry mechanism with it
 				// not using 407-Proxy Authentication Required as CLINE activates the retry mechanism with it
 				this._writeResponseMessage(response, HTTP_RESPONSE_CODE.UNAUTHORIZED, unauthorizedMessage);
 				const emitData = { message: unauthorizedMessage, authId: this._authId, requestUrl: request.url };
-				this.emit(EVENTS.UNAUTHORIZED_PROXY_REQUEST, emitData);
+				this.emit(EVENTS.REQUEST_ERROR.UNAUTHORIZED, emitData);
 				return false;
 			}
 		}
 
 		// Allowed path filter: check allowed prefix if configured
-		if (this._allowedPathPrefix) {
-			if (!request.url.startsWith(this._allowedPathPrefix)) {
-				const errorMessage = NodeTranslationService.
-					getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.REQUEST_PATH_NOT_ALLOWED_ERROR, this._allowedPathPrefix);
+		if (this._allowedPathPrefix && !request.url.startsWith(this._allowedPathPrefix)) {
+			const errorMessage = NodeTranslationService.
+				getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.REQUEST_PATH_NOT_ALLOWED_ERROR, this._allowedPathPrefix);
 
-				this._writeResponseMessage(response, HTTP_RESPONSE_CODE.FORBIDDEN, errorMessage);
+			this._writeResponseMessage(response, HTTP_RESPONSE_CODE.FORBIDDEN, errorMessage);
 
-				this._handleListeningErrors(errorMessage, EVENTS.REQUEST_PATH_NOT_ALLOWED);
-				return false;
-			}
+			this._handleListeningErrors(errorMessage, EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED);
+			return false;
 		}
 		return true;
 	}
@@ -305,7 +306,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		proxyRequest.on('error', (err) => {
 			console.error('Proxy request error:', err);
 			response.writeHead(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-			this.emit(EVENTS.SERVER_ERROR, this._buildEmitObject(err.message));
+			this.emit(EVENTS.SERVER_ERROR.DEFAULT, this._buildEmitObject(err.message));
 			//TODO Review this message and see confluence error pages and review with the tech writers
 			response.end('SuiteCloud Proxy error: ' + err.message);
 		});
@@ -333,7 +334,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		if (!inspectAuthOperationResult.isSuccess()) {
 			const errorMsg = this._cleanText(inspectAuthOperationResult.errorMessages.join('. '));
 
-			refreshInfo.emitEventName = EVENTS.SERVER_ERROR_ON_REFRESH;
+			refreshInfo.emitEventName = EVENTS.SERVER_ERROR.ON_AUTH_REFRESH;
 			refreshInfo.errorMessage = errorMsg;
 			refreshInfo.responseStatusCode = HTTP_RESPONSE_CODE.FORBIDDEN;
 
@@ -345,7 +346,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		if (inspectAuthData[AUTHORIZATION_PROPERTIES_KEYS.NEEDS_REAUTHORIZATION]) {
 			const errorMsg = NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.NEED_TO_REAUTHENTICATE);
 
-			refreshInfo.emitEventName = EVENTS.AUTH_REFRESH_MANUAL_EVENT;
+			refreshInfo.emitEventName = EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED;
 			refreshInfo.errorMessage = errorMsg;
 			refreshInfo.responseStatusCode = HTTP_RESPONSE_CODE.FORBIDDEN;
 
@@ -358,7 +359,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			//Refresh unsuccessful
 			const errorMsg = this._cleanText(forceRefreshOperationResult.errorMessages.join('. '));
 
-			refreshInfo.emitEventName = EVENTS.AUTH_REFRESH_MANUAL_EVENT;
+			refreshInfo.emitEventName = EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED;
 			refreshInfo.errorMessage = errorMsg;
 			refreshInfo.responseStatusCode = HTTP_RESPONSE_CODE.FORBIDDEN;
 
