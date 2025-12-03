@@ -68,12 +68,7 @@ export const startDevAssistProxyIfEnabled = async (extensionContext: vscode.Exte
             showStartDevAssistProblemNotification('startup', error as string, devAssistStatusBar);
         }
     } else {
-        // TODO: We might want to propose to configure and enable service
         vsLogger.printTimestamp();
-        // TODO find the appropriate message
-        // we should be using a different message here, current: "SuiteCloud Developer Assistant service has been disabled."
-        // vsLogger.info(translationService.getMessage(DEVASSIST_SERVICE.IS_DISABLED.OUTPUT));
-        // it should be something like: "SuiteCloud Developer Assistant service is not enabled.\n{how to activate devassist instructions}"
         vsLogger.info(translationService.getMessage(DEVASSIST_SERVICE.STARTUP.SERVICE_NOT_ENABLED_OUTPUT_MESSAGE));
     }
     // add extra line to differenciate logs
@@ -128,16 +123,12 @@ export const devAssistSecretApiKeyChangeHandler = async (secretChangeEvent: vsco
 };
 
 const initializeDevAssistService = async (extensionContext: vscode.ExtensionContext, devAssistStatusBar: vscode.StatusBarItem) => {
-    // check if API Key is available
     const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
 
-    // this should only happen when no secret is available (initial devassist setup)
     if (!devassistApiKey) {
-        // starting the here the creation of the devassist apiKey if no secret is available
-
+        // when no devassistApiKey secret is available (only at initial devassist setup), attempt to setup a new one
+        // and block service intialization on devAssistSecretApiKeyChangeHandler while this asynchronous code awaits to be resolved
         awaitingApiKeyCreation = true;
-        // if the user saves the new apiKey the devAssistSecretApiKeyChangeHandler will be called 
-        // using awaitingApiKeyCreation status to block undesired call to initializeDevAssistService
         const createApiKeyCommandResult = await triggerCreateNewApiKeyCommand();
         awaitingApiKeyCreation = false;
         // no apiKey was created
@@ -146,25 +137,21 @@ const initializeDevAssistService = async (extensionContext: vscode.ExtensionCont
             const devAssistConfigSection = vscode.workspace.getConfiguration(DEVASSIST.CONFIG_KEYS.devAssistSection);
             devAssistConfigSection.update(DEVASSIST.CONFIG_KEYS.proxyEnabled, false);
             
-            // throw to stop initialization flow
+            // throw to stop initialization and start flow
             const initialApiKeyCreationError = translationService.getMessage(DEVASSIST_SERVICE.CREATE_API_KEY.INITIAL_CREATION_ERROR)
             throw initialApiKeyCreationError;
         }
 
         // apiKey was created by triggerCreateNewApiKeyCommand
-        // there should no no way a devAssistProxyService could be created without devassistApiKey
         devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX, createApiKeyCommandResult as string);
-        // Set up all event listeners in one place
         addListenersToDevAssistProxyService(devAssistProxyService, devAssistStatusBar);
         return
     }
 
     if (devAssistProxyService) {
-        // if an existing instance was already created just update the
         devAssistProxyService.updateApiKey(devassistApiKey)
     } else {
         devAssistProxyService = new SuiteCloudAuthProxyService(getSdkPath(), executionEnvironmentContext, DEVASSIST.ALLOWED_PROXY_PATH_PREFIX, devassistApiKey);
-        // Set up all event listeners in one place
         addListenersToDevAssistProxyService(devAssistProxyService, devAssistStatusBar);
     }
 };
@@ -293,6 +280,18 @@ const showDevAssistIsRunningNotification = (proxyUrl: string) => {
     ];
     vsNotificationService.showCommandInfoWithSpecificButtonsAndActions(infoMessage, buttonsAndActions);
 }
+
+// TODO: refactor showNotificaiton methods into a generic one like:
+// const showNotificationGeneric = (notificationConfig: {
+//     stopSatusBar: boolean,
+//     outputMessage: string,
+//     notificationMessage: string,
+//     notificationType: 'info'|'error'
+//     buttonsAndActions: {}
+// }) => { 
+//     //method body
+//     }
+
 
 // stoped status bar
 // logs into output
