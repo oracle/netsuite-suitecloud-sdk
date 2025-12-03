@@ -55,7 +55,7 @@ const VALID_FEEDBACK_TOPICS = [
 
 let feedbackFormPanel: vscode.WebviewPanel | undefined;
 let mediaService: MediaFileService;
-export const openDevAssistFeedbackForm = (context: vscode.ExtensionContext) => {
+export const openDevAssistFeedbackForm = (extensionContext: vscode.ExtensionContext) => {
 
 	// if one FeedbackForm is already open, reveal it instead of creating a new one
 	if (feedbackFormPanel) {
@@ -63,7 +63,7 @@ export const openDevAssistFeedbackForm = (context: vscode.ExtensionContext) => {
 		return;
 	}
 
-	mediaService = new MediaFileService(context);
+	mediaService = new MediaFileService(extensionContext);
 	feedbackFormPanel = vscode.window.createWebviewPanel(
 		'devassistfeedbackform',
 		'SuiteCloud Developer Assistant Feedback',
@@ -85,21 +85,21 @@ export const openDevAssistFeedbackForm = (context: vscode.ExtensionContext) => {
 	feedbackFormPanel.onDidDispose(
 		() => { feedbackFormPanel = undefined; },
 		null,
-		context.subscriptions,
+		extensionContext.subscriptions,
 	);
 
 	// Handle messages/events sent from HTML to this Webview controller
 	feedbackFormPanel.webview.onDidReceiveMessage(
-		(htmlEventMessage) => handleHtmlEventMessage(htmlEventMessage, cssWebviewUri),
+		(htmlEventMessage) => handleHtmlEventMessage(htmlEventMessage, cssWebviewUri, extensionContext),
 		undefined,
-		context.subscriptions,
+		extensionContext.subscriptions,
 	);
 };
 
-const handleHtmlEventMessage = async (htmlEventMessage : HtmlEventMessage, cssWebviewUri : string) : Promise<void> => {
+const handleHtmlEventMessage = async (htmlEventMessage : HtmlEventMessage, cssWebviewUri : string, extensionContext: vscode.ExtensionContext) : Promise<void> => {
 	switch (htmlEventMessage.eventType) {
 		case FEEDBACK_FORM_EVENTS.HTML_PAGE.SUBMIT_FEEDBACK:
-			await handleSubmitFeedbackFormEvent(htmlEventMessage.eventData!, cssWebviewUri);
+			await handleSubmitFeedbackFormEvent(htmlEventMessage.eventData!, cssWebviewUri, extensionContext);
 			break;
 
 		case FEEDBACK_FORM_EVENTS.HTML_PAGE.OPEN_NEW_FEEDBACK_FORM:
@@ -112,7 +112,7 @@ const handleHtmlEventMessage = async (htmlEventMessage : HtmlEventMessage, cssWe
 	}
 }
 
-const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWebviewUri : string) => {
+const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWebviewUri : string, extensionContext: vscode.ExtensionContext) => {
 
 	// validate Feedback Form Data
 	const validationResult = validateFormData(formData);
@@ -127,9 +127,14 @@ const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWeb
 	try {
 		const currentProxySettings = getDevAssistCurrentSettings();
 		const requestBody = JSON.stringify(formData);
+		const apiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
+		const authzHeaderValue = `Bearer ${apiKey}`;
 		const response = await fetch(`${PROXY_URL.SCHEME}${PROXY_URL.LOCALHOST_IP}:${currentProxySettings.localPort}${PROXY_URL.FEEDBACK_PATH}`, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: { 
+				'Content-Type': 'application/json',
+				'authorization': authzHeaderValue
+			 },
 			body: requestBody
 		});
 
