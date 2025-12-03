@@ -127,13 +127,12 @@ const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWeb
 	try {
 		const currentProxySettings = getDevAssistCurrentSettings();
 		const requestBody = JSON.stringify(formData);
-		const apiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
-		const authzHeaderValue = `Bearer ${apiKey}`;
+		const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
 		const response = await fetch(`${PROXY_URL.SCHEME}${PROXY_URL.LOCALHOST_IP}:${currentProxySettings.localPort}${PROXY_URL.FEEDBACK_PATH}`, {
 			method: 'POST',
 			headers: { 
 				'Content-Type': 'application/json',
-				'authorization': authzHeaderValue
+				'authorization':`Bearer ${devassistApiKey}`
 			 },
 			body: requestBody
 		});
