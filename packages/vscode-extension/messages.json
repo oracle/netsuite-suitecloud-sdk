@@ -95,7 +95,7 @@
 	"DEVASSIST_SERVICE_IS_STOPPED_STATUSBAR": "Dev Assist: stopped",
 	"DEVASSIST_SERVICE_SERVER_ERROR_OUTPUT": "A server error has occurred while running SuiteCloud Developer Assistant service.\nError: {0}",
 	"DEVASSIST_SERVICE_STARTUP_MESSAGE": "SuiteCloud Developer Assistant is here. Open settings to start using it.",
-	"DEVASSIST_SERVICE_STARTUP_SERVICE_NOT_ENABLED_OUTPUT_MESSAGE": "SuiteCloud Developer Assistant service is not enabled.\nTo enable it, open Settings (use Cmd+, / Ctrl+,), then go to Extensions > SuiteCloud.",
+	"DEVASSIST_SERVICE_STARTUP_SERVICE_NOT_ENABLED_OUTPUT_MESSAGE": "SuiteCloud Developer Assistant service is not enabled.\nTo enable it, open Settings (use Cmd+, / Ctrl+,), then go to Extensions > SuiteCloud and select the Workspace tab.",
 	"DEVASSIST_SERVICE_STATUSBAR_TOOLTIP": "Shows the status of SuiteCloud Developer Assistant service.",
 
 	"DISMISS": "Dismiss",
