@@ -123,11 +123,6 @@
               "title": "Create Developer Assistant Service API Key",
               "category": "SuiteCloud",
               "enablement": "false"
-            },
-            {
-              "command": "suitecloud.deletedevassistapikey",
-              "title": "Delete stored Developer Assistant Service API Key - TODO: delete this command",
-              "category": "SuiteCloud"
             }
 		],
 		"keybindings": [
@@ -215,7 +210,7 @@
 					"order": 0,
 					"type": "string",
 					"default": "authid-to-be-used-by-dev-assist",
-					"markdownDescription": "Choose which NetSuite account credentials you want SuiteCloud Developer Assistant service to use. Not sure which auth IDs you have? Run `SuiteCloud: Manage Accounts` to list them.\n\nWant more information on setting up a NetSuite account? See [NetSuite Help Center](https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=section_160147609118.html)."
+					"markdownDescription": "Choose which NetSuite account credentials you want SuiteCloud Developer Assistant service to use. Not sure which auth IDs you have? Open the Command Palette in VS Code, then type and run `SuiteCloud: Manage Accounts` to list them.\n\nWant more information on setting up a NetSuite account? See [NetSuite Help Center](https://nlcorp.app.netsuite.com/app/help/helpcenter.nl?fid=section_160147609118.html)."
 				},
 				"suitecloud.developerAssistant.localPort": {
 					"order": 1,

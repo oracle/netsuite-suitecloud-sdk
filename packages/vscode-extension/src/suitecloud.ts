@@ -98,21 +98,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		)
 	);
 
-	// TODO: reomve this command
-	// Command to check Developer Assistant service API Key
-	context.subscriptions.push(
-		vscode.commands.registerCommand('suitecloud.deletedevassistapikey',
-			async () => {
-				const apiKey = await context.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
-				// delete Developer Assistant API Key
-				await context.secrets.delete(DEVASSIST.SECRET_STORAGE_KEY_ID);
-				// Show previously stored key
-				const message = `This is the deleted API key for Developer Assistant: ${apiKey}`;
-				vscode.window.showInformationMessage(message, { modal: true },);
-			}
-		)
-	);
-
 	// add watchers needed to update the status bars
 	context.subscriptions.push(
 		vscode.window.onDidChangeActiveTextEditor((textEditor) => updateStatusBars(textEditor, suitecloudProjectStatusBar, authIDStatusBar)),
