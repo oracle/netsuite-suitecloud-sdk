@@ -12,7 +12,7 @@
 	"publisher": "Oracle",
 	"license": "UPL-1.0",
 	"private": true,
-	"version": "3.1.1",
+	"version": "3.1.2",
 	"icon": "resources/extension_icon_dark.png",
 	"repository": {
 		"type": "git",
@@ -248,7 +248,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^3.1.1"
+		"@oracle/suitecloud-cli": "^3.1.2"
 	},
 	"devDependencies": {
 		"@types/mocha": "10.0.10",
