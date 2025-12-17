@@ -304,6 +304,15 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			headers: { ...request.headers, host, authorization },
 		};
 
+		// added to get "stream responses" from netsuite devassist backend
+		const DEVASSIST_CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions'
+		if (DEVASSIST_CHAT_COMPLETIONS_PATH.match(request.url)) {
+			requestOptions.headers = {
+				...requestOptions.headers,
+				Accept: 'text/event-stream'
+			};
+		}		
+
 		// Add agent for insecure connections when connecting to runboxes
 		if (this._targetHost && this._targetHost.includes('vm.eng')) {
 			requestOptions.agent = new https.Agent({
