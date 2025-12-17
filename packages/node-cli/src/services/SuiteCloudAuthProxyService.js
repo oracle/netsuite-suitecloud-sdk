@@ -44,6 +44,7 @@ const {
 
 const MAX_RETRY_ATTEMPTS = 1;
 const LOCAL_HOSTNAME = '127.0.0.1';
+const DEVASSIST_CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions'
 
 /** Target server port */
 const TARGET_SERVER_PORT = 443;
@@ -305,8 +306,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		};
 
 		// added to get "stream responses" from netsuite devassist backend
-		const DEVASSIST_CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions'
-		if (DEVASSIST_CHAT_COMPLETIONS_PATH.match(request.url)) {
+		if (request?.url.startsWith(DEVASSIST_CHAT_COMPLETIONS_PATH)) {
 			requestOptions.headers = {
 				...requestOptions.headers,
 				Accept: 'text/event-stream'
