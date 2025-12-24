@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.1.2
+
+- Minor enhancements
+
+## 3.1.1
+
+- Fix for **SuiteCloud: Create Project** command
+
 ## 3.1.0
 
 - New SuiteCloud Developer Assistant feature

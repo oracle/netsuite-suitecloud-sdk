@@ -2,10 +2,10 @@
 
 # SuiteCloud Unit Testing
 <p>
-    <a href="https://www.npmjs.com/package/@oracle/suitecloud-unit-testing">
-        <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-unit-testing.svg" alt="npm-unit-testing"/>
-	<img src="https://img.shields.io/npm/v/@oracle/suitecloud-unit-testing.svg" alt="npm-unit-testing"/>
-    </a>
+   <a href="https://www.npmjs.com/package/@oracle/suitecloud-unit-testing">
+      <img src="https://img.shields.io/npm/dm/@oracle/suitecloud-unit-testing.svg" alt="npm-unit-testing"/>
+      <img src="https://img.shields.io/npm/v/@oracle/suitecloud-unit-testing.svg" alt="npm-unit-testing"/>
+   </a>
 </p>
 
 Suitecloud Unit Testing allows you to use unit testing with [Jest](https://jestjs.io/) for your SuiteCloud projects.
@@ -42,7 +42,7 @@ However, if you want to configure SuiteCloud Unit Testing manually, do the follo
         }
     }
     ```
-5. From the root of your SuiteCloud project folder, run the followig command:
+5. From the root of your SuiteCloud project folder, run the following command:
     ```
     npm install --save-dev @oracle/suitecloud-unit-testing jest
     ```
@@ -50,7 +50,7 @@ However, if you want to configure SuiteCloud Unit Testing manually, do the follo
 7. Create a `sample-test.js` file, inside of the `__tests__` folder, with the following content:
     ```javascript
     describe('Basic jest test with simple assert', () => {
-        it('should assert stings are equal', () => {
+        it('should assert strings are equal', () => {
             const a = 'foobar';
             const b = 'foobar';
             expect(a).toMatch(b);
@@ -62,7 +62,7 @@ to run your test. You should see an output similar to the following:
     ```
     PASS  __tests__/sample-test.js
     Basic jest test with simple assert
-        √ should assert stings are equal (2ms)
+        √ should assert strings are equal (2ms)
     ```
 
 **You successfully ran your first test for a SuiteCloud project!**

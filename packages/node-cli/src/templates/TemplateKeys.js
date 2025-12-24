@@ -13,7 +13,7 @@ module.exports = {
 	},
 	PROJECTCONFIGS: {
 		cliconfig: require.resolve('./projectconfigs/suitecloud.config.js'),
-		gitignore: require.resolve('./projectconfigs/default_gitignore')
+		gitignore: require.resolve('./projectconfigs/default_gitignore.template')
 	},
 	UNIT_TEST: {
 		cliconfig: require.resolve('./unittest/suitecloud.config.js.template'),

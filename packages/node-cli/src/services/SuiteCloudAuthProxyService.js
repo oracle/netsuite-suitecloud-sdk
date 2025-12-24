@@ -44,6 +44,7 @@ const {
 
 const MAX_RETRY_ATTEMPTS = 1;
 const LOCAL_HOSTNAME = '127.0.0.1';
+const DEVASSIST_CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions'
 
 /** Target server port */
 const TARGET_SERVER_PORT = 443;
@@ -303,6 +304,14 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			method: request.method,
 			headers: { ...request.headers, host, authorization },
 		};
+
+		// added to get "stream responses" from netsuite devassist backend
+		if (request?.url.startsWith(DEVASSIST_CHAT_COMPLETIONS_PATH)) {
+			requestOptions.headers = {
+				...requestOptions.headers,
+				Accept: 'text/event-stream'
+			};
+		}		
 
 		// Add agent for insecure connections when connecting to runboxes
 		if (this._targetHost && this._targetHost.includes('vm.eng')) {
