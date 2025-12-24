@@ -1,6 +1,6 @@
 {
 	"name": "@oracle/suitecloud-cli",
-	"version": "3.1.2",
+	"version": "3.2.0",
 	"license": "UPL-1.0",
 	"description": "SuiteCloud CLI for Node.js",
 	"keywords": [
@@ -22,9 +22,9 @@
 	},
 	"main": "./src/suitecloud.js",
 	"preferGlobal": true,
-	"nsCompatibleVersion": "2025.2",
-	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/25.2",
-	"sdkFilename": "cli-2025.2.1.jar",
+	"nsCompatibleVersion": "2026.1",
+	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/26.1",
+	"sdkFilename": "cli-2026.1.0.jar",
 	"bin": {
 		"suitecloud": "src/suitecloud.js"
 	},
