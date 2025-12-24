@@ -1,0 +1,68 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/master/packages/schemas/custom-record-1.0.0.json",
+	"title": "Custom Record",
+	"description": "Custom Record Schema Definition",
+	"type": "object",
+	"properties": {
+		"CustomRecord": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 199
+				},
+				"description": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"sort": {
+					"type": "object",
+					"properties": {
+						"line": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"field": {
+										"type": "string",
+										"enum": ["ACCOUNT.ACCTNAME", "ACCOUNT.ACCTNUMBER"]
+									},
+									"direction": {
+										"type": "string",
+										"enum": ["ASCENDING", "DESCENDING"]
+									},
+									"sequenceNumber": {
+										"type": "integer"
+									}
+								},
+								"required": [
+									"field",
+									"direction"
+								],
+								"additionalProperties":false
+							}
+						}
+					},
+					"additionalProperties":false
+				},
+				"scriptId": {
+					"type": "string",
+					"maxLength": 40,
+					"pattern": "^r_.+$",
+					"default": "r_"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"name",
+				"scriptId"
+			]
+		}
+	},
+	"required": [
+		"CustomRecord"
+	],
+	"additionalProperties": false
+}

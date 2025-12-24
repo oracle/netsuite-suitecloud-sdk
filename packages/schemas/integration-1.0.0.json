@@ -1,0 +1,105 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/master/packages/schemas/integration-1.0.0.json",
+	"title": "Integration Record",
+	"description": "Integration Record Schema Definition",
+	"type": "object",
+	"properties": {
+		"Integration": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 60
+				},
+				"applicationId": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string",
+					"maxLength": 500
+				},
+				"authenticationFlowType": {
+					"type": "string",
+					"enum": ["AUTHORIZATION_CODE_CONFIDENTIAL_CLIENT", "AUTHORIZATION_CODE_CLIENT_ASSERTION", "CLIENT_CREDENTIALS", "AUTHORIZATION_CODE_PUBLIC_CLIENT"]
+				},
+				"refreshTokenExpiration": {
+					"type": "integer"
+				},
+				"refreshTokenRotationPeriod": {
+					"type": "integer"
+				},
+				"promptPolicy": {
+					"type": "string",
+					"enum": ["NEVER", "ASK_FIRST_TIME", "ASK_ALWAYS"]
+				},
+				"redirectUris": {
+					"type": "object",
+					"properties": {
+						"redirectUri": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"value": {
+										"type": "string",
+										"minLength": 1
+									}
+								},
+								"required": [
+									"value"
+								],
+								"additionalProperties": false
+							}
+						}
+					},
+					"additionalProperties":false
+				},
+				"acgCertificates": {
+					"type": "object",
+					"properties": {
+						"acgCertificate": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"certificate": {
+										"type": "string",
+										"minLength": 1
+									},
+									"name": {
+										"type": "string",
+										"minLength": 1
+									}
+								},
+								"required": [
+									"certificate",
+									"name"
+								],
+								"additionalProperties": false
+							}
+						}
+					},
+					"additionalProperties":false
+				},
+				"scriptId": {
+					"type": "string",
+					"maxLength": 99,
+					"pattern": "^custinteg.+$",
+					"default": "custinteg"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"name",
+				"authenticationFlowType",
+				"scriptId"
+			]
+		}
+	},
+	"required": [
+		"Integration"
+	],
+	"additionalProperties": false
+}

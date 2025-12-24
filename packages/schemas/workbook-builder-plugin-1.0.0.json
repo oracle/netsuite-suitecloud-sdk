@@ -1,0 +1,81 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/master/packages/schemas/workbook-builder-plugin-1.0.0.json",
+	"title": "Workbook Builder Plugin",
+	"description": "Workbook Builder Plugin Schema Definition",
+	"type": "object",
+	"properties": {
+		"WorkbookBuilderPlugin": {
+			"type": "object",
+			"properties": {
+				"runtimeVersion": {
+					"type": "string",
+					"enum": ["NSEv1"],
+					"default": "NSEv1"
+				},
+				"description": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"isInactive": {
+					"type": "boolean"
+				},
+				"name": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 40
+				},
+				"notifyAdmins": {
+					"type": "boolean",
+					"default": false
+				},
+				"notifyEmails": {
+					"type": "string",
+					"maxLength": 999
+				},
+				"notifyGroup": {
+					"type": "string"
+				},
+				"notifyOwner": {
+					"type": "boolean",
+					"default": true
+				},
+				"notifyUser": {
+					"type": "boolean",
+					"default": false
+				},
+				"owner": {
+					"type": "string"
+				},
+				"scriptFile": {
+					"type": "string",
+					"pattern": "^\\[.*\\.js\\]$"
+				},
+				"status": {
+					"type": "string",
+					"enum": ["TESTING", "RELEASED", "NOTSCHEDULED", "SCHEDULED", "INPROGRESS", "INQUEUE", "COMPLETED"]
+				},
+				"logLevel": {
+					"type": "string",
+					"enum": ["AUDIT", "DEBUG", "EMERGENCY", "ERROR", "INTERNAL", "SYSTEM"]
+				},
+				"scriptId": {
+					"type": "string",
+					"maxLength": 40,
+					"pattern": "^customscript.+$",
+					"default": "customscript"
+				}
+			},
+			"required": [
+				"name",
+				"scriptFile",
+				"scriptId"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"WorkbookBuilderPlugin"
+	],
+	"additionalProperties": false
+}
