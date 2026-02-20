@@ -5,7 +5,7 @@
 
 'use strict';
 
-const { prompt } = require('inquirer');
+const { default: { prompt } } = require('inquirer');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
@@ -40,7 +40,7 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.SERVER,
 				message: NodeTranslationService.getMessage(QUESTIONS.SERVER_SIDE),
-				default: 0,
+				default: true,
 				choices: [
 					{
 						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.ACCOUNT),
@@ -57,7 +57,7 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
-				default: 1,
+				default: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
 				choices: [
 					{
 						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.WARNING),
@@ -74,7 +74,7 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_INSTALLATION_PREFERENCES),
-				default: 0,
+				default: false,
 				choices: [
 					{
 						name: NodeTranslationService.getMessage(NO),

@@ -5,12 +5,12 @@
 'use strict';
 
 const { join } = require('path');
-const { prompt, Separator } = require('inquirer');
+const { default : { prompt, Separator } } = require('inquirer');
 const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
-const { lineBreak } = require('../../../loggers/LoggerConstants');
+const { lineBreak } = require('../../../loggers/LoggerOsConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const SdkExecutor = require('../../../SdkExecutor');
@@ -125,7 +125,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.SPECIFY_SUITEAPP,
 				message: NodeTranslationService.getMessage(QUESTIONS.SPECIFIC_APPID),
-				default: 0,
+				default: true,
 				choices: [
 					{ name: NodeTranslationService.getMessage(YES), value: true },
 					{ name: NodeTranslationService.getMessage(NO), value: false },
@@ -150,7 +150,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.SPECIFY_OBJECT_TYPE,
 			message: NodeTranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
-			default: 0,
+			default: false,
 			choices: [
 				{ name: NodeTranslationService.getMessage(YES), value: false },
 				{ name: NodeTranslationService.getMessage(NO), value: true },
@@ -232,7 +232,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: ANSWERS_NAMES.IMPORT_REFERENCED_SUITESCRIPTS,
 				message: NodeTranslationService.getMessage(QUESTIONS.IMPORT_REFERENCED_SUITESCRIPTS),
-				default: 0,
+				default: true,
 				choices: [
 					{ name: NodeTranslationService.getMessage(YES), value: true },
 					{ name: NodeTranslationService.getMessage(NO), value: false },
@@ -282,7 +282,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
 			message: NodeTranslationService.getMessage(overwriteConfirmationMessageKey),
-			default: 0,
+			default: true,
 			choices: [
 				{ name: NodeTranslationService.getMessage(YES), value: true },
 				{ name: NodeTranslationService.getMessage(NO), value: false },

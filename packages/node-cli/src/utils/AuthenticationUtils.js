@@ -6,8 +6,12 @@
 
 const FileUtils = require('./FileUtils');
 const NodeTranslationService = require('../services/NodeTranslationService');
-const { ERRORS, UTILS } = require('../services/TranslationKeys');
-const { FILES } = require('../ApplicationConstants');
+const {
+	ERRORS,
+	UTILS,
+	COMMAND_SETUPACCOUNTCI: { ERRORS: { NOT_EXISTING_AUTH_ID } },
+} = require('../services/TranslationKeys');
+const { FILES} = require('../ApplicationConstants');
 const { ActionResult } = require('../services/actionresult/ActionResult');
 const AuthenticateActionResult = require('../services/actionresult/AuthenticateActionResult');
 const { executeWithSpinner } = require('../ui/CliSpinner');
@@ -15,7 +19,7 @@ const path = require('path');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
 const SdkExecutor = require('../SdkExecutor');
-const { lineBreak } = require('../loggers/LoggerConstants')
+const { lineBreak } = require('../loggers/LoggerOsConstants')
 const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
 const SdkOperationResult = require('../utils/SdkOperationResult')
 
@@ -58,6 +62,12 @@ const COMMANDS = {
 	},
 	REFRESH_AUTHORIZATION: {
 		SDK_COMMAND: 'refreshauthorization',
+		PARAMS: {
+			AUTH_ID: 'authid',
+		}
+	},
+	FORCE_REFRESH_AUTHORIZATION: {
+		SDK_COMMAND: 'forcerefreshauthorization',
 		PARAMS: {
 			AUTH_ID: 'authid',
 		}
@@ -175,12 +185,32 @@ async function authenticateCi(params, sdkPath, projectFolder, executionEnvironme
 		.build();
 }
 
+async function selectAuthenticationCI(authId, sdkPath, projectFolder) {
+	//Validate authId exists into the CI file
+	const authIDActionResult = await getAuthIds(sdkPath);
+	if (!authIDActionResult.isSuccess()) {
+		throw authIDActionResult.errorMessages;
+	}
+	const authIDs = Object.keys(authIDActionResult.data);
+
+	if (authIDs.includes(authId)) {
+		setDefaultAuthentication(projectFolder, authId);
+		return AuthenticateActionResult.Builder.success()
+			.withMode(COMMANDS.AUTHENTICATE.MODES.REUSE)
+			.withAuthId(authId)
+			.withAccountInfo(authIDActionResult.data[authId].accountInfo)
+			.build();
+	} else {
+		throw NodeTranslationService.getMessage(NOT_EXISTING_AUTH_ID, authId);
+	}
+}
+
 /**
  * 
  * @param {String} authid 
  * @param {String} sdkPath 
  * @param {ExecutionEnvironmentContext} executionEnvironmentContext 
- * @returns {SdkOperationResult}
+ * @returns {Promise<SdkOperationResult>}
  */
 async function checkIfReauthorizationIsNeeded(authid, sdkPath, executionEnvironmentContext) {
 	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
@@ -198,7 +228,7 @@ async function checkIfReauthorizationIsNeeded(authid, sdkPath, executionEnvironm
  * @param {String} authid 
  * @param {String} sdkPath 
  * @param {ExecutionEnvironmentContext} executionEnvironmentContext 
- * @returns {SdkOperationResult}
+ * @returns {Promise<SdkOperationResult>}
  */
 async function refreshAuthorization(authid, sdkPath, executionEnvironmentContext) {
 	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
@@ -214,4 +244,26 @@ async function refreshAuthorization(authid, sdkPath, executionEnvironmentContext
 	return new SdkOperationResult(result);
 }
 
-module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, authenticateWithOauth, authenticateCi, checkIfReauthorizationIsNeeded, refreshAuthorization };
+/**
+ * 
+ * @param {String} authid 
+ * @param {String} sdkPath 
+ * @param {ExecutionEnvironmentContext} executionEnvironmentContext 
+ * @returns {Promise<SdkOperationResult>} with data that contains the refreshed accessToken
+ */
+async function forceRefreshAuthorization(authid, sdkPath, executionEnvironmentContext) {
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+	const reauthorizeAuthContext = SdkExecutionContext.Builder
+		.forCommand(COMMANDS.FORCE_REFRESH_AUTHORIZATION.SDK_COMMAND)
+		.addParam(COMMANDS.FORCE_REFRESH_AUTHORIZATION.PARAMS.AUTH_ID, authid)
+		.integration()
+		.build();
+	const result = await executeWithSpinner({
+		action: sdkExecutor.execute(reauthorizeAuthContext),
+		message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.AUTHORIZING)
+	});
+	
+	return new SdkOperationResult(result);
+}
+
+module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, authenticateWithOauth, authenticateCi, selectAuthenticationCI, checkIfReauthorizationIsNeeded, refreshAuthorization, forceRefreshAuthorization, COMMANDS};

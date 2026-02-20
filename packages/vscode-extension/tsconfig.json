@@ -1,15 +1,23 @@
 {
+	/* Following order from https://www.typescriptlang.org/tsconfig/ */
 	"compilerOptions": {
+		/* Type Checking */
+		"strict": true, // enable all strict type-checking options 
+		/* Modules */
 		"module": "commonjs",
-		"target": "es6",
+		"resolveJsonModule": true,
+		"rootDir": "src",
+		/* Emit */
 		"outDir": "dist",
+		"sourceMap": true,
+		/* Language and Environment */
 		"lib": [
 			"es6"
 		],
-		"resolveJsonModule": true,
-		"sourceMap": true,
-		"rootDir": "src",
-		"strict": true   /* enable all strict type-checking options */
+		"target": "es6",
+		/* Completeness */
+		"skipLibCheck": true,
+
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
 		// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */

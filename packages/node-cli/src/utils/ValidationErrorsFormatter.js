@@ -6,7 +6,7 @@
 
 const NodeTranslationService = require('../services/NodeTranslationService');
 const TRANSLATION_KEYS = require('../services/TranslationKeys');
-const { lineBreak } = require('../loggers/LoggerConstants');
+const { lineBreak } = require('../loggers/LoggerOsConstants');
 const assert = require('assert');
 
 class ValidationErrorsFormatter {

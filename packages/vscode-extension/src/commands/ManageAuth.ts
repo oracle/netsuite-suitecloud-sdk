@@ -37,7 +37,7 @@ export default class ManageAuth extends BaseAction {
 		// do not show project folder name in the console output
 		// or in any other info message
 		// AuthIDs management is independent from it
-		this.vsConsoleLogger.hiddeInitialProjectFolerNameDetails();
+		this.vsConsoleLogger.hideInitialProjectFolderNameDetails();
 
 		const authIDsMapPromise = AuthenticationUtils.getAuthIds(getSdkPath());
 		this.messageService.showStatusBarMessage(this.translationService.getMessage(MANAGE_ACCOUNTS.LOADING), true, authIDsMapPromise);

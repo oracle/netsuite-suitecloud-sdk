@@ -11,7 +11,7 @@ const AccountCredentialsFormatter = require('../../../utils/AccountCredentialsFo
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { MANAGE_ACTION } = require('../../../services/actionresult/ManageAccountActionResult');
 const { DOMAIN } = require('../../../ApplicationConstants');
-const { prompt, Separator } = require('inquirer');
+const { default : { prompt, Separator } } = require('inquirer');
 const {
 	showValidationResults,
 	validateAuthIDNotInList,
@@ -159,13 +159,14 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 			name: ANSWERS_NAMES.RENAMETO,
 			message: NodeTranslationService.getMessage(QUESTIONS.NEW_NAME),
 			filter: (fieldValue) => fieldValue.trim(),
+			//fieldValue needs the trim because filter is executed AFTER validate
 			validate: (fieldValue) =>
 				showValidationResults(
-					fieldValue,
+					fieldValue.trim(),
 					validateFieldIsNotEmpty,
 					validateFieldHasNoSpaces,
-					(fieldValue) => validateSameAuthID(fieldValue, originalAuthId),
-					(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDMap)),
+					(fieldValue) => validateSameAuthID(fieldValue.trim(), originalAuthId),
+					(fieldValue) => validateAuthIDNotInList(fieldValue.trim(), Object.keys(authIDMap)),
 					validateAlphanumericHyphenUnderscore,
 					validateMaximumLength
 				),

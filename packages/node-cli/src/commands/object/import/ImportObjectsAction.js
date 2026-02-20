@@ -94,7 +94,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 					scriptIdArray = params[ANSWERS_NAMES.SCRIPT_ID];
 				}
 
-				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
+				await this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 			}
 
 			delete params[ANSWERS_NAMES.SCRIPT_ID];

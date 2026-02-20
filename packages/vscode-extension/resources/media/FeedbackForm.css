@@ -1,0 +1,229 @@
+:root {
+    --gap: 12px;
+    --radius: 12px;
+    --border: #e5e7eb;
+    --text: #111827;
+    --muted: #6b7280
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: #f8fafc;
+    margin: 0;
+    padding: 24px
+}
+
+.card {
+    max-width: 760px;
+    margin: auto;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .05)
+}
+
+.card header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border)
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0
+}
+
+.content {
+    padding: 20px 24px;
+    display: grid;
+    gap: var(--gap)
+}
+
+label {
+    font-weight: 600
+}
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    resize: vertical;
+    font: inherit
+}
+
+fieldset {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px
+}
+
+legend {
+    padding: 0 6px;
+    color: var(--muted)
+}
+
+.checks {
+    display: grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 14px;
+    margin-top: 6px
+}
+
+.checks label {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.checks input {
+    transform: translateY(1px)
+}
+
+.stars {
+    display: inline-flex;
+    flex-direction: row-reverse; /* shows stars in correct LTR order */
+    gap: 6px;
+    width: fit-content;
+}
+.stars input {
+    display: none;
+}
+.star {
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 1;
+    filter: grayscale(.6);
+    transition: transform .05s ease;
+}
+.star::before {
+    content: "☆";
+}
+/* On hover, fill all stars to the left (and including hovered) */
+.stars label.star:hover,
+.stars label.star:hover ~ label.star {
+    transform: scale(1.25);
+}
+.stars label.star:hover::before,
+.stars label.star:hover ~ label.star::before {
+    content: "★";
+    color: #f59e0b;
+    filter: none;
+}
+.stars label.star:hover,
+.stars label.star:hover ~ label.star {
+    color: #f59e0b;
+    filter: none;
+}
+
+/* On checked, fill all stars to the left (and including selected) */
+.stars input:checked ~ label.star::before,
+.stars input:checked ~ label.star {
+    content: "★";
+    color: #f59e0b;
+    filter: none;
+}
+
+.row {
+    display: grid;
+    gap: 6px
+}
+
+button {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: #111827;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer
+}
+
+button.secondary {
+    background: #fff;
+    color: #111827
+}
+
+.note {
+    color: var(--muted);
+    font-size: 12px
+}
+
+pre {
+    background: #0b1020;
+    color: #d1d5db;
+    padding: 12px;
+    border-radius: 10px;
+    overflow: auto;
+    max-height: 240px
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 8px
+}
+
+#alert-container {
+    position: fixed;
+    z-index: 9999;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column-reverse; /* new alerts on top */
+    gap: 12px;
+    max-width: 860px;
+    margin-left: 64px;
+    pointer-events: none;
+}
+.toast-alert {
+    display: flex;
+    align-items: start;
+    background: #e7f5ff;
+    color: #155577;
+    border-left: 4px solid #228be6;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+    margin: 0;
+    padding: 16px 44px 16px 16px;
+    font-size: 15px;
+    position: relative;
+    min-width: 220px;
+    max-width: 100%;
+    pointer-events: auto;
+}
+.toast-alert.toast-info {
+    background: #e7f5ff;
+    border-color: #228be6;
+    color: #155577;
+}
+.toast-alert.toast-error {
+    background: #ffceca;
+    border-color: #ff4d4f;
+    color: #a8071a;
+}
+.toast-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 19px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.65;
+    transition: opacity 0.19s;
+}
+.toast-close:hover {
+    opacity: 1;
+}

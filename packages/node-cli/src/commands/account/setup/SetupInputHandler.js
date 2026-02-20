@@ -4,8 +4,12 @@
  */
 'use strict';
 
-const { prompt, Separator } = require('inquirer');
-const chalk = require('chalk');
+const loadLoggerFontFormatter = async () => {
+	const { COLORS, BOLD } = await import('../../../loggers/LoggerFontFormatter.mjs');
+	return { COLORS, BOLD };
+};
+const fontFormatterPromise = loadLoggerFontFormatter();
+const { default : { prompt, Separator } } = require('inquirer');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
@@ -75,8 +79,8 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 		let authIdAnswer;
 		let authIDs = Object.keys(authIDActionResult.data);
 		if (authIDs.length > 0) {
-			choices.push({
-				name: chalk.bold(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
+		choices.push({
+				name: (await fontFormatterPromise).BOLD(NodeTranslationService.getMessage(QUESTIONS_CHOICES.SELECT_AUTHID.NEW_AUTH_ID)),
 				value: CREATE_NEW_AUTH,
 			});
 			choices.push(new Separator());
@@ -133,7 +137,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 				name: ANSWERS.URL,
 				message: NodeTranslationService.getMessage(QUESTIONS.URL),
 				filter: (fieldValue) => fieldValue.trim(),
-				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateFieldHasNoSpaces),
+				validate: (fieldValue) => showValidationResults(fieldValue.trim(), validateFieldIsNotEmpty, validateFieldHasNoSpaces),
 
 			},
 			{
@@ -143,10 +147,10 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 				filter: (answer) => answer.trim(),
 				validate: (fieldValue) =>
 					showValidationResults(
-						fieldValue,
+						fieldValue.trim(),
 						validateFieldIsNotEmpty,
 						validateFieldHasNoSpaces,
-						(fieldValue) => validateAuthIDNotInList(fieldValue, Object.keys(authIDActionResult.data)),
+						(fieldValue) => validateAuthIDNotInList(fieldValue.trim(), Object.keys(authIDActionResult.data)),
 						validateAlphanumericHyphenUnderscore,
 						validateMaximumLength
 					),

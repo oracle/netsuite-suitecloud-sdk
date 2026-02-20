@@ -75,7 +75,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 			}
 
 			if (!this._calledFromCompareFiles && !this._calledFromUpdate && this._runInInteractiveMode === false) {
-				this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
+				await this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 			}
 
 			if (this._calledFromCompareFiles) {

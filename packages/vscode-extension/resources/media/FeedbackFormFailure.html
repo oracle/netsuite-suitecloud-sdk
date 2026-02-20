@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>DevAssist Feedback</title>
+	<link rel="stylesheet" href="{{CSS_FILE.css}}">
+</head>
+<body>
+	<div class="card" role="region" aria-labelledby="title">
+		<header>
+			<h1 id="title">SuiteCloud Developer Assistant Feedback</h1>
+			<p class="note">
+				Take a moment to share your thoughts on the SuiteCloud Developer Assistant.</p>
+		</header>
+		<div class="content">
+			<label>Woah! Something went wrong when submitting your feedback.<br>
+				Please try again later.</label>
+
+			<div class="actions">
+				<button type="button" id="closeBtn">Close</button>
+			</div>
+		</div>
+	</div>
+	<script>
+		const vscode = acquireVsCodeApi();
+
+		// Internal PageEvent Handlers (generated within the HTML and handled here)
+		const closeBtn = document.getElementById('closeBtn');
+		closeBtn.addEventListener('click', () => {
+
+			// send Close Page event, from HTML to Webview controller
+			vscode.postMessage({ eventType: 'CLOSE_WEBVIEW' });
+		});
+	</script>
+</body>
+</html>

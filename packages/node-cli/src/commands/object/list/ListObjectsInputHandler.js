@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { prompt, Separator } = require('inquirer');
+const { default : { prompt, Separator } } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
 const OBJECT_TYPES = require('../../../metadata/ObjectTypesMetadata');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
@@ -48,7 +48,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_QUESTIONS_NAMES.SPECIFY_SUITEAPP,
 				message,
-				default: 0,
+				default: true,
 				choices: [
 					{
 						name: NodeTranslationService.getMessage(YES),
@@ -79,7 +79,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_QUESTIONS_NAMES.TYPE_ALL,
 			message: NodeTranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
-			default: 0,
+			default: true,
 			choices: [
 				{
 					name: NodeTranslationService.getMessage(YES),

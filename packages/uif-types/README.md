@@ -1,11 +1,11 @@
-<p align="left"><a href="#"><img width="250" src="netsuite_logo_simplified.png"></a></p>
+<p align="left"><a href="#"><img width="250" src="Netsuite-logo-ocean-150-bg.png"></a></p>
 
 # NetSuite UI Framework TypeScript Type Declarations
 This package provides TypeScript type declarations for the NetSuite UI Framework (UIF). Type declarations describe the
-classes, methods, properties and other APIs included in the framework. Type declarations allow the TypeScript compiler to validate the usage of these APIs and provide you with a rich IntelliSense experience in various IDEs.
+classes, methods, properties, and other APIs included in the framework. Type declarations allow the TypeScript compiler to validate the usage of these APIs and provide you with a rich IntelliSense experience in various IDEs.
 
 ## Prerequisites
-- You will need a SuiteApp project in TypeScript using the NetSuite UI Framework
+You will need a SuiteApp project in TypeScript using the NetSuite UI Framework.
 
 ## Versioning
 The NetSuite UI Framework and its TypeScript type declarations follow a versioning scheme where a new major version is released every 6 months. These major versions correspond to NetSuite versions as shown in the following table.
@@ -15,17 +15,18 @@ The NetSuite UI Framework and its TypeScript type declarations follow a versioni
 |     5.0.X      |      2024.1      |
 |     6.0.X      |      2024.2      |
 |     7.0.X      |      2025.1      |
+|     8.0.X      |      2025.2      |
 
 ## Installation
-To use the NetSuite UI Framework TypeScript type declarations follow these steps
+To use the NetSuite UI Framework TypeScript type declarations, follow these steps:
 1. Add the `@oracle/netsuite-uif-types` dependency to `devDependencies` in your `package.json` and specify an appropriate version based on the NetSuite version you will be developing against. Make sure that a `typescript` dependency is included as well.
 ```json
 "devDependencies": {
-    "@oracle/netsuite-uif-types": "^7.0.0",
+    "@oracle/netsuite-uif-types": "^8.0.0",
     "typescript": "^5.2.0"
 }
 ```
-2. Open your `tsconfig.json` and include `@oracle/netsuite-uif-types` as an additional type root
+2. Open your `tsconfig.json` and include `@oracle/netsuite-uif-types` as an additional type root.
 ```json
 "compilerOptions": {
     "typeRoots": {
@@ -34,7 +35,7 @@ To use the NetSuite UI Framework TypeScript type declarations follow these steps
     }
 }
 ```
-3. Install the new dependencies
+3. Install the new dependencies.
 ```shell
 npm i
 ```

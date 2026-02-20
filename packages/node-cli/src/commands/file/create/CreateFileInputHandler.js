@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { prompt, Separator } = require('inquirer');
+const { default : { prompt, Separator } } = require('inquirer');
 const path = require('path');
 const { FOLDERS } = require('../../../ApplicationConstants');
 const {
@@ -90,7 +90,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             type: CommandUtils.INQUIRER_TYPES.LIST,
             name: ANSWER_NAMES.ADD_SUITESCRIPT_MODULES,
             message: NodeTranslationService.getMessage(QUESTIONS.ADD_SUITESCRIPT_MODULES),
-            default: 0,
+            default: true,
             choices: [
                 { name: NodeTranslationService.getMessage(YES), value: true },
                 { name: NodeTranslationService.getMessage(NO), value: false },
@@ -100,7 +100,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
 
     _questionSelectSuiteScriptModules() {
         return {
-            when: function (response) {
+            when: function(response) {
                 return response[ANSWER_NAMES.ADD_SUITESCRIPT_MODULES];
             },
             type: CommandUtils.INQUIRER_TYPES.CHECKBOX,
@@ -108,7 +108,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             message: NodeTranslationService.getMessage(QUESTIONS.SELECT_SUITESCRIPT_MODULES),
             pageSize: 15,
             choices: [
-                ...SUITESCRIPT_MODULES.map(( suiteScriptModule) => ({
+                ...SUITESCRIPT_MODULES.map((suiteScriptModule) => ({
                     name: suiteScriptModule.id,
                     value: suiteScriptModule.id,
                 })),
@@ -137,10 +137,10 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             message: NodeTranslationService.getMessage(QUESTIONS.ENTER_NAME),
             filter: (fieldValue) => fieldValue.trim(),
             validate: (fieldValue) => showValidationResults(
-                fieldValue,
+                fieldValue.trim(),
                 validateFieldIsNotEmpty,
                 validateFileName,
-                (fieldValue) => validateSuiteScriptFileDoesNotExist(parentAbsolutePath, fieldValue)
+                (fieldValue) => validateSuiteScriptFileDoesNotExist(parentAbsolutePath, fieldValue.trim())
             ),
         };
     }

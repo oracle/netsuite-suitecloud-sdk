@@ -28,3 +28,29 @@ export const ACP_UNRESTRICTED_FOLDERS: string[] = [
 	FOLDERS.TEMPLATES_MARKETING_TEMPLATES,
 	FOLDERS.WEB_SITE_HOSTING_FILES,
 ];
+
+export const DEVASSIST = {
+	ALLOWED_PROXY_PATH_PREFIX: '/api/internal/devassist/',
+	// CONFIG_KEYS should be in sycn with vscode-extension package.json config properties
+	CONFIG_KEYS: {
+		devAssistSection: 'suitecloud.developerAssistant',
+		proxyEnabled: 'enable',
+		auhtID: 'authID',
+		localPort: 'localPort',
+		startupNotificationDisabled: 'disableWelcomeNotification'
+	},
+	DEFAULT_VALUES: {
+		proxyEnabled: false,
+		localPort: 8181,
+		authID: 'authid-to-be-used-by-dev-assist',
+		startupNotificationDisabled: false,
+	},
+	MODELS_PATH: '/api/internal/devassist/models',
+	PROXY_URL: {
+		SCHEME: 'http://',
+		LOCALHOST_IP: '127.0.0.1',
+		BASE_PATH: '/api/internal/devassist',
+		FEEDBACK_PATH: '/api/internal/devassist/feedback',
+	},
+	SECRET_STORAGE_KEY_ID: 'DEVASSIT_SECRET_STORAGE_KEY_ID',
+};

@@ -5,10 +5,7 @@
 'use strict';
 
 const fs = require('fs');
-const NodeTranslationService = require('../services/NodeTranslationService');
-const { ERRORS } = require('../services/TranslationKeys');
 const UTF8 = 'utf8';
-
 
 class FileUtils {
 	create(fileName, object) {
@@ -16,7 +13,10 @@ class FileUtils {
 
 		fs.writeFileSync(fileName, content, UTF8, function (error) {
 			if (error) {
-				throw NodeTranslationService.getMessage(ERRORS.WRITING_FILE, fileName, JSON.stringify(error));
+				// Using hardcoded message to avoid circular dependency as NodeTranslationService imports FileUtils
+				// TODO restore: throw NodeTranslationService.getMessage(ERRORS.WRITING_FILE, fileName, JSON.stringify(error));
+				// when NodeTranslationService is refactored to use node require to retrieve messages.json file
+				throw `There was a problem while creating the file ${fileName}.\n  Error: ${error}`
 			}
 		});
 	}

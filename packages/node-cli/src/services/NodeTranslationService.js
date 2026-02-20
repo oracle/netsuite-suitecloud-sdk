@@ -13,6 +13,8 @@ class NodeTranslationService extends TranslationService {
 	constructor() {
 		super();
 		const filePath = path.join(__dirname, DEFAULT_MESSAGES_FILE);
+		// TODO refactor: use node require instead of FileUtils.readAsJson the initialize this._MESSAGES.
+		// Once the refactor is done FileUtils will be able to use NodeTranslationService again without a circular dependency.
 		this._MESSAGES = FileUtils.readAsJson(filePath);
 	}
 }

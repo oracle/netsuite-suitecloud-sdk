@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { lineBreak } = require('../../loggers/LoggerConstants');
+const { lineBreak } = require('../../loggers/LoggerOsConstants');
 const FileUtils = require('../../utils/FileUtils');
 const path = require('path');
 const NodeTranslationService = require('./../../services/NodeTranslationService');

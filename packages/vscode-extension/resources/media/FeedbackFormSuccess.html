@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>DevAssist Feedback</title>
+	<link rel="stylesheet" href="{{CSS_FILE.css}}">
+</head>
+<body>
+	<div class="card" role="region" aria-labelledby="title">
+		<header>
+			<h1 id="title">SuiteCloud Developer Assistant Feedback</h1>
+			<p class="note">
+				Take a moment to share your thoughts on the SuiteCloud Developer Assistant.</p>
+		</header>
+		<div class="content">
+			<label>Thank you for your feedback. You can close this window.</label>
+			<div class="actions">
+				<button type="button" id="newFeedbackFormBtn">Submit More Feedback</button>
+				<button type="button" class="secondary" id="closeBtn">Close</button>
+			</div>
+		</div>
+	</div>
+	<script>
+		const vscode = acquireVsCodeApi();
+
+		// Internal PageEvent Handlers (generated within the HTML and handled here)
+		const closeBtn = document.getElementById('closeBtn');
+		closeBtn.addEventListener('click', () => {
+
+			// send Close Page event, from HTML to Webview controller
+			vscode.postMessage({ eventType: 'CLOSE_WEBVIEW' });
+		});
+
+		const newFeedbackFormBtn = document.getElementById('newFeedbackFormBtn');
+		newFeedbackFormBtn.addEventListener('click', () => {
+
+			// send OpenNewFeedbackFormPage event, from HTML to Webview controller
+			vscode.postMessage({ eventType: 'OPEN_NEW_FEEDBACK_FORM' });
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>DevAssist Feedback</title>
+	<link rel="stylesheet" href="{{CSS_FILE.css}}">
+</head>
+<body>
+	<div class="card" role="region" aria-labelledby="title">
+		<header>
+			<h1 id="title">SuiteCloud Developer Assistant Feedback</h1>
+			<p class="note">Take a moment to share your thoughts on the SuiteCloud Developer Assistant.</p>
+		</header>
+		<form class="content" id="feedbackForm">
+			<div class="row">
+				<label for="feedback">Your feedback</label>
+				<textarea id="feedback" name="feedback" maxlength="1000"
+						  placeholder="What worked well? What should be improved? Any suggestions?"></textarea>
+			</div>
+
+			<fieldset>
+				<legend>This feedback is about</legend>
+				<div class="checks">
+					<label><input type="checkbox" name="topics" value="CodeExplanation">Code explanation</label>
+					<label><input type="checkbox" name="topics" value="SDFObjectGeneration">SDF custom objects generation </label>
+					<label><input type="checkbox" name="topics" value="SuiteScriptCodeGeneration">SuiteScript code generation</label>
+					<label><input type="checkbox" name="topics" value="UnitTesting">Unit testing</label>
+					<label><input type="checkbox" name="topics" value="Other">Other</label>
+				</div>
+			</fieldset>
+
+			<div class="row" aria-labelledby="ratingLabel">
+				<label id="ratingLabel">
+					Rate your overall satisfaction (1-5)</label>
+				<div class="stars" role="radiogroup" aria-label="Star rating">
+					<input type="radio" id="star5" name="rating" value="5"/>
+					<label class="star" for="star5" aria-label="5 stars"></label>
+					<input type="radio" id="star4" name="rating" value="4" />
+					<label class="star" for="star4" aria-label="4 stars"></label>
+					<input type="radio" id="star3" name="rating" value="3" />
+					<label class="star" for="star3" aria-label="3 stars"></label>
+					<input type="radio" id="star2" name="rating" value="2" />
+					<label class="star" for="star2" aria-label="2 stars"></label>
+					<input type="radio" id="star1" name="rating" value="1" />
+					<label class="star" for="star1" aria-label="1 star"></label>
+				</div>
+			</div>
+
+			<div class="actions">
+				<button type="submit">Submit</button>
+				<button type="button" class="secondary" id="cancelBtn"
+						title="Close this Feedback form page without sending feedback">Cancel
+				</button>
+			</div>
+		</form>
+	</div>
+	<div id="alert-container"></div>
+	<script>
+		const vscode = acquireVsCodeApi();
+
+		// Internal PageEvent Handlers (generated within the HTML and handled here)
+		const form = document.getElementById('feedbackForm');
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			// send User Feedback, from HTML to Webview controller
+			const data = collectUserFeedbackData();
+			vscode.postMessage({ eventType: 'SUBMIT_FEEDBACK', eventData: data });
+		});
+
+		const cancelBtn = document.getElementById('cancelBtn');
+		cancelBtn.addEventListener('click', () => {
+
+			// send Close Page event, from HTML to Webview controller
+			vscode.postMessage({ eventType: 'CLOSE_WEBVIEW' });
+		});
+
+		// Listen to VSCode Events generated on the SuiteCloud Extension (via webview.postMessage)
+		window.addEventListener('message', message => {
+			const { eventType, eventData } = message.data;
+
+			// received RENDER_TOAST_MESSAGE from WebviewController
+			if (eventType === 'RENDER_TOAST_MESSAGE') {
+				if (eventData.toastMessageLevel === 'info') {
+					showNewToastMessage(eventData.toastMessageContent, 'info', 0);
+				}
+				else if (eventData.toastMessageLevel === 'error') {
+					showNewToastMessage(eventData.toastMessageContent, 'error', 0);
+				}
+			}
+		});
+
+		function collectUserFeedbackData() {
+			return {
+				feedback: document.getElementById('feedback').value.trim(),
+				topics: Array.from(document.querySelectorAll('input[name="topics"]:checked')).map(el => el.value),
+				rating: Number((document.querySelector('input[name="rating"]:checked') || {}).value || 0)
+			};
+		}
+
+		function showNewToastMessage(message, type = 'info', timeout = 0) {
+			const container = document.getElementById('alert-container');
+			if (!container) return;
+			const alertDiv = document.createElement('div');
+			alertDiv.className = 'toast-alert toast-' + type;
+			alertDiv.setAttribute('role', 'alert');
+			alertDiv.setAttribute('aria-live', 'polite');
+			alertDiv.innerHTML =
+				`<span style="flex:1">${message}</span>
+					<button class="toast-close" aria-label="Close" tabindex="0">&times;</button>`;
+			const closeBtn = alertDiv.querySelector('.toast-close');
+			let dismissed = false;
+
+			function removeToastMessage() {
+				if (dismissed) return;
+				dismissed = true;
+				alertDiv.style.transition = 'opacity 180ms';
+				alertDiv.style.opacity = 0;
+				setTimeout(() => container.removeChild(alertDiv), 180);
+			}
+
+			closeBtn.addEventListener('click', removeToastMessage);
+			alertDiv.addEventListener('keydown', e => {
+				if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') removeToastMessage();
+			});
+			container.appendChild(alertDiv);
+			if (timeout !== 0) setTimeout(removeToastMessage, timeout);
+		}
+	</script>
+</body>
+</html>

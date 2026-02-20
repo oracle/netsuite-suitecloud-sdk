@@ -5,8 +5,12 @@
 'use strict';
 const BaseOutputHandler = require('../../base/BaseOutputHandler');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
+const {
+	COMMAND_SETUPACCOUNTCI: { OUTPUT: { SELECT_DEFAULT_ACCOUNT, NEW_OAUTH } },
+	UTILS,
+} = require('../../../services/TranslationKeys');
 
-const { COMMAND_SETUPACCOUNTCI, UTILS } = require('../../../services/TranslationKeys');
+const { COMMANDS: { AUTHENTICATE: { MODES: { REUSE } } } } = require('../../../utils/AuthenticationUtils');
 
 module.exports = class AccountSetupCiOutputHandler extends BaseOutputHandler {
 	constructor(options) {
@@ -14,15 +18,23 @@ module.exports = class AccountSetupCiOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
-		const resultMessage = NodeTranslationService.getMessage(
-			COMMAND_SETUPACCOUNTCI.OUTPUT.NEW_OAUTH,
-			actionResult.accountInfo.companyName,
-			actionResult.accountInfo.roleName,
-			actionResult.authId
-		);
 
-		this._log.result(resultMessage);
-		this._log.result(NodeTranslationService.getMessage(UTILS.AUTHENTICATION.SUCCESS_SETUP));
+		if (actionResult.mode === REUSE) {
+			//SELECT mode
+			this._log.result(NodeTranslationService.getMessage(
+				SELECT_DEFAULT_ACCOUNT,
+				actionResult.authId,
+			));
+		} else {
+			//SETUP mode
+			this._log.result(NodeTranslationService.getMessage(
+				NEW_OAUTH,
+				actionResult.accountInfo.companyName,
+				actionResult.accountInfo.roleName,
+				actionResult.authId,
+			));
+			this._log.result(NodeTranslationService.getMessage(UTILS.AUTHENTICATION.SUCCESS_SETUP));
+		}
 		return actionResult;
 	}
 };

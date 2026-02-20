@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { prompt } = require('inquirer');
+const { default: { prompt } } = require('inquirer');
 const path = require('path');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
@@ -58,7 +58,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.TYPE,
 				message: NodeTranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
-				default: 0,
+				default: ApplicationConstants.PROJECT_ACP,
 				choices: [
 					{
 						name: ACP_PROJECT_TYPE_DISPLAY,
@@ -75,7 +75,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				name: COMMAND_OPTIONS.PROJECT_NAME,
 				message: NodeTranslationService.getMessage(QUESTIONS.ENTER_PROJECT_NAME),
 				filter: (fieldValue) => fieldValue.trim(),
-				validate: (fieldValue) => showValidationResults(fieldValue, validateFieldIsNotEmpty, validateAlphanumericHyphenUnderscoreExtended),
+				validate: (fieldValue) => showValidationResults(fieldValue.trim(), validateFieldIsNotEmpty, validateAlphanumericHyphenUnderscoreExtended),
 			},
 			{
 				when: function (response) {
@@ -112,7 +112,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.INCLUDE_UNIT_TESTING,
 				message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_UNIT_TESTING),
-				default: 0,
+				default: true,
 				choices: [
 					{ name: NodeTranslationService.getMessage(YES), value: true },
 					{ name: NodeTranslationService.getMessage(NO), value: false },
@@ -129,7 +129,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 					type: CommandUtils.INQUIRER_TYPES.LIST,
 					name: COMMAND_OPTIONS.OVERWRITE,
 					message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_PROJECT, projectAbsolutePath),
-					default: 0,
+					default: false,
 					choices: [
 						{ name: NodeTranslationService.getMessage(NO), value: false },
 						{ name: NodeTranslationService.getMessage(YES), value: true },

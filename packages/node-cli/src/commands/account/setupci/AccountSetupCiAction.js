@@ -5,44 +5,54 @@
 'use strict';
 
 const BaseAction = require('../../base/BaseAction');
-const { authenticateCi } = require('../../../utils/AuthenticationUtils');
+const { authenticateCi, selectAuthenticationCI } = require('../../../utils/AuthenticationUtils');
 const { DOMAIN: { PRODUCTION: { GENERIC_NETSUITE_DOMAIN } } } = require('../../../ApplicationConstants');
+const { ACCOUNT_SETUP_CI: { COMMAND: { OPTIONS } } } = require('./AccountSetupCiConstants');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { validateMachineToMachineAuthIsAllowed } = require('../../../services/ExecutionContextService');
-
-const COMMAND = {
-	OPTIONS: {
-		ACCOUNT: 'account',
-		AUTHID: 'authid',
-		CERTIFCATEID: 'certificateid',
-		PRIVATEKEYPATH: 'privatekeypath',
-		DOMAIN: 'domain'
-
-	},
-	SDK_COMMAND: 'authenticateci',
-};
+const AccountSetupCiValidation = require('./AccountSetupCiValidation');
 
 module.exports = class AccountSetupCiAction extends BaseAction {
-	
+
 	constructor(options) {
 		super(options);
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
+		this._validator = new AccountSetupCiValidation(this._commandMetadata, this._runInInteractiveMode);
 	}
 
 	preExecute(params) {
 		this._projectInfoService.checkWorkingDirectoryContainsValidProject(this._commandMetadata.name);
-		
-		if (params[COMMAND.OPTIONS.ACCOUNT]) {
-			params[COMMAND.OPTIONS.ACCOUNT] = params[COMMAND.OPTIONS.ACCOUNT].toUpperCase();
+
+		if (params[OPTIONS.ACCOUNT]) {
+			params[OPTIONS.ACCOUNT] = params[OPTIONS.ACCOUNT].toUpperCase();
 		}
+
 		return params;
 	}
 
 	async execute(params) {
-		if (params[COMMAND.OPTIONS.DOMAIN] === GENERIC_NETSUITE_DOMAIN) {
-			delete params[COMMAND.OPTIONS.DOMAIN];
+		if (params[OPTIONS.DOMAIN] === GENERIC_NETSUITE_DOMAIN) {
+			delete params[OPTIONS.DOMAIN];
 		}
+
 		validateMachineToMachineAuthIsAllowed();
-		return await authenticateCi(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
+
+		const isSetupMode = this._isSetupMode(params);
+		this._validator.validateActionParametersByMode(params, isSetupMode);
+		this._validator.validateAuthIDFormat(this._getAuthId(params), isSetupMode);
+
+		if (isSetupMode) {
+			return await authenticateCi(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
+		} else {
+			return await selectAuthenticationCI(this._getAuthId(params), this._sdkPath, this._executionPath);
+		}
 	}
-};
+
+	_isSetupMode(params) {
+		return (!params[OPTIONS.SELECT]);
+	}
+
+	_getAuthId(params) {
+		return this._isSetupMode(params) ? params[OPTIONS.AUTHID] : params[OPTIONS.SELECT];
+	}
+}

@@ -11,6 +11,12 @@ class TranslationService {
 		});
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @param params
+	 * @returns string
+	 */
 	getMessage(key, ...params) {
 		let message = this._MESSAGES[key];
 		if (params && params.length > 0) {

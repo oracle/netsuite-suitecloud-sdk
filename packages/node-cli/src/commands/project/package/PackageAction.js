@@ -46,7 +46,7 @@ module.exports = class PackageAction extends BaseAction {
 
 		const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand).integration().addParams(sdkParams).build();
 
-		this._log.warning(NodeTranslationService.getMessage(COMMAND_PACKAGE.LOCAL_VALIDATION_NOT_EXECUTED));
+		await this._log.warning(NodeTranslationService.getMessage(COMMAND_PACKAGE.LOCAL_VALIDATION_NOT_EXECUTED));
 
 		const operationResult = await executeWithSpinner({
 			action: this._sdkExecutor.execute(executionContext),

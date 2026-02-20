@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { prompt } = require('inquirer');
+const { default: { prompt} } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
 const AccountFileCabinetService = require('../../../services/AccountFileCabinetService');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');

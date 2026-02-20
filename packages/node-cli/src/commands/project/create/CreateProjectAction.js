@@ -162,7 +162,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 	createProject(executionContextCreateProject, params, projectAbsolutePath, projectFolderName, manifestFilePath) {
 		return async (resolve, reject) => {
 			try {
-				this._log.info(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE));
+				await this._log.info(NodeTranslationService.getMessage(MESSAGES.CREATING_PROJECT_STRUCTURE));
 				if (params[COMMAND_OPTIONS.OVERWRITE]) {
 					this._fileSystemService.emptyFolderRecursive(projectAbsolutePath);
 				}
@@ -187,7 +187,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 				let npmInstallSuccess;
 				let includeUnitTesting = this._getIncludeUnitTestingBoolean(params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]);
 				if (includeUnitTesting) {
-					this._log.info(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV));
+					await this._log.info(NodeTranslationService.getMessage(MESSAGES.SETUP_TEST_ENV));
 					await this._createUnitTestFiles(
 						params[COMMAND_OPTIONS.TYPE],
 						params[COMMAND_OPTIONS.PROJECT_NAME],
@@ -195,7 +195,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 						projectAbsolutePath
 					);
 
-					this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
+					await this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
 					npmInstallSuccess = await this._runNpmInstall(projectAbsolutePath);
 				} else {
 					await this._createDefaultSuiteCloudConfigFile(projectAbsolutePath);

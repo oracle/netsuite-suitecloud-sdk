@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { FILES } from '../ApplicationConstants';
 import { commandsInfoMap } from '../commandsMap';
-import { STATUS_BARS } from '../service/TranslationKeys';
+import { DEVASSIST_SERVICE, STATUS_BARS } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
 
 const translationService = new VSTranslationService();
@@ -32,6 +32,21 @@ export function createAuthIDStatusBar(): vscode.StatusBarItem {
 	authIDStatusBar.hide();
 
 	return authIDStatusBar;
+}
+
+/**
+ * Create the status bar item used to display DevAssist service status
+ *
+ * @returns {vscode.StatusBarItem} The authID status bar item
+ */
+export function createDevAssistStatusBar(): vscode.StatusBarItem {
+	const devAssistStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, STATUS_BAR_PRIORITY - 2);
+	devAssistStatusBar.tooltip = translationService.getMessage(DEVASSIST_SERVICE.STATUSBAR_TOOLTIP);
+	// this devAssistStatusBar visibility is controlled by DevAssistConfiguration.ts (startDevAssistProxyIfEnabled, devAssistConfigurationChangeHandler)
+	// initially hidden because devassist service could be disabled 
+	devAssistStatusBar.hide();
+	devAssistStatusBar.command ='suitecloud.opensettings';
+	return devAssistStatusBar;
 }
 
 /**

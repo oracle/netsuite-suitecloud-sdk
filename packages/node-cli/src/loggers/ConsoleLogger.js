@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { padding } = require('./LoggerConstants');
+const { padding } = require('./LoggerOsConstants');
 
 class ConsoleLogger {
 	constructor() {}

@@ -8,7 +8,7 @@ const assert = require('assert');
 const NodeTranslationService = require('./../services/NodeTranslationService');
 const { ERRORS, CLI, COMMAND_REFRESH_AUTHORIZATION } = require('../services/TranslationKeys');
 const { ActionResult } = require('../services/actionresult/ActionResult');
-const { lineBreak } = require('../loggers/LoggerConstants');
+const { lineBreak } = require('../loggers/LoggerOsConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/ExceptionUtils');
 const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
@@ -112,13 +112,13 @@ module.exports = class CommandActionExecutor {
 		}
 		const inspectAuthzData = inspectAuthzOperationResult.data;
 		if (inspectAuthzData[AUTHORIZATION_PROPERTIES_KEYS.NEEDS_REAUTHORIZATION]) {
-			this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.CREDENTIALS_NEED_TO_BE_REFRESHED, defaultAuthId));
+			await this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.CREDENTIALS_NEED_TO_BE_REFRESHED, defaultAuthId));
 			const refreshAuthzOperationResult = await refreshAuthorization(defaultAuthId, this._sdkPath, this._executionEnvironmentContext);
 
 			if (!refreshAuthzOperationResult.isSuccess()) {
 				throw refreshAuthzOperationResult.errorMessages;
 			}
-			this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.AUTHORIZATION_REFRESH_COMPLETED));
+			await this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.AUTHORIZATION_REFRESH_COMPLETED));
 		}
 	}
 

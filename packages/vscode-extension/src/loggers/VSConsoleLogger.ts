@@ -34,13 +34,13 @@ export default class VSConsoleLogger extends ConsoleLogger {
 		}
 	}
 
-	hiddeInitialProjectFolerNameDetails() {
+	public hideInitialProjectFolderNameDetails() {
 		this.hideProjectFolderName = true;
 	}
 
 	// Output from VSCode doesn't accept colors, for the moment we would pring in default white
 	// We could explore some workarounds in future like creating a Terminal, importing a new library or just implment it ourselves
-	println(message: string): void {
+	private println(message: string): void {
 		if (this.addExecutionDetailsToLog && message !== '') {
 			output.appendLine(this.getExecutionDetails());
 			this.addExecutionDetailsToLog = false;
@@ -49,20 +49,30 @@ export default class VSConsoleLogger extends ConsoleLogger {
 		output.appendLine(message);
 	}
 
-	info(message: string): void {
+	public info(message: string): void {
 		this.println(message);
 	}
 
-	result(message: string): void {
+	public result(message: string): void {
 		this.println(message);
 	}
 
-	warning(message: string): void {
+	public warning(message: string): void {
 		this.println(message);
 	}
 
-	error(message: string): void {
+	public error(message: string): void {
 		this.println(message);
+	}
+
+	/**
+	 * Logs the current timestamp ("YYYY-MM-DD hh:mm:ss").
+	 *
+	 * Use this method to preface specific logs outside the execution context of SuiteCloud commands (classes where no execution details are available).
+	 */
+	public printTimestamp() : void {
+		this.addExecutionDetailsToLog = false;
+		this.println(getTimestamp());
 	}
 
 	// TODO: SdkExecutor.js should reject in a structured way that contains error codes

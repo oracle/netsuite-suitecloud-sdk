@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { prompt } = require('inquirer');
+const { default: { prompt } } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
@@ -50,7 +50,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_INSTALLATION_PREFERENCES),
-				default: 1,
+				default: false,
 				choices: [
 					{ name: NodeTranslationService.getMessage(YES), value: true },
 					{ name: NodeTranslationService.getMessage(NO), value: false },
@@ -61,7 +61,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
-				default: 1,
+				default: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
 				choices: [
 					{
 						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_SPECIFIC_VALUES.DISPLAY_WARNING),
@@ -77,7 +77,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND.FLAGS.VALIDATE,
 				message: NodeTranslationService.getMessage(QUESTIONS.PERFORM_LOCAL_VALIDATION),
-				default: 0,
+				default: true,
 				choices: [
 					{ name: NodeTranslationService.getMessage(YES), value: true },
 					{ name: NodeTranslationService.getMessage(NO), value: false },

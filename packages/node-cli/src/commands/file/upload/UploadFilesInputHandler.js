@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { prompt } = require('inquirer');
+const { default: { prompt } } = require('inquirer');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const FileCabinetService = require('../../../services/FileCabinetService');
@@ -115,7 +115,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
 			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
-			default: 0,
+			default: true,
 			choices: [
 				{ name: NodeTranslationService.getMessage(YES), value: true },
 				{ name: NodeTranslationService.getMessage(NO), value: false },

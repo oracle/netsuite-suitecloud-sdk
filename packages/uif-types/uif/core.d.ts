@@ -476,9 +476,13 @@ declare module '@uif-js/core' {
 
 		containsMatching(predicate: (item: T) => boolean): boolean;
 
+		find(predicate: (item: T, index: number) => boolean): (T | null);
+
 		findFirst(predicate: (item: T) => boolean): {found: boolean; item: (T | null); index: (number | null)};
 
 		findLast(predicate: (item: T) => boolean): {found: boolean; item: (T | null); index: (number | null)};
+
+		slice(startIndex: number, endIndex?: number): Self.ArrayDataSource;
 
 	}
 
@@ -509,6 +513,14 @@ declare module '@uif-js/core' {
 	export namespace Async {
 		function delay(timeout: number): globalThis.Promise<any>;
 
+	}
+
+	export interface BloomComponent {
+		bloom: boolean;
+
+	}
+
+	export namespace BloomComponent {
 	}
 
 	export class BrowserConsoleReporter extends Self.LogReporter {
@@ -1324,13 +1336,13 @@ declare module '@uif-js/core' {
 
 		protected _validateProp(name: string, value: any): void;
 
-		protected _notifyContentUpdate(): void;
+		protected _notifyContentUpdate(args?: object): void;
 
 		private _addChildComponent(component: Self.Component): void;
 
 		private _removeChildComponent(component: Self.Component): void;
 
-		protected _refresh(): void;
+		protected _refresh(args?: object): void;
 
 		private _handleDidRender(): void;
 
@@ -2475,6 +2487,18 @@ declare module '@uif-js/core' {
 			M,
 			L,
 			XL,
+			SPACING1X,
+			SPACING2X,
+			SPACING3X,
+			SPACING4X,
+			SPACING5X,
+			SPACING6X,
+			SPACING7X,
+			SPACING8X,
+			SPACING9X,
+			SPACING10X,
+			SPACING11X,
+			SPACING12X,
 			TINY,
 			SMALL,
 			MEDIUM,
@@ -2491,6 +2515,18 @@ declare module '@uif-js/core' {
 			M,
 			L,
 			XL,
+			SPACING1X,
+			SPACING2X,
+			SPACING3X,
+			SPACING4X,
+			SPACING5X,
+			SPACING6X,
+			SPACING7X,
+			SPACING8X,
+			SPACING9X,
+			SPACING10X,
+			SPACING11X,
+			SPACING12X,
 			TINY,
 			SMALL,
 			MEDIUM,
@@ -2571,8 +2607,6 @@ declare module '@uif-js/core' {
 		screenInfo: Self.DeviceMetadataService.ScreenInfo;
 
 		private _setMediaQueries(): void;
-
-		private _getDeviceType(): void;
 
 		private _getScreenInfo(): void;
 
@@ -3038,7 +3072,7 @@ declare module '@uif-js/core' {
 	namespace GenericDataSource {
 	}
 
-	export function HashRouter(props?: object): Self.JSX.Element;
+	export function HashRouter(props?: {children?: Self.VDom.Children}): Self.JSX.Element;
 
 	export class HierarchicalMap {
 		constructor(parent?: Self.HierarchicalMap);
@@ -3269,7 +3303,7 @@ declare module '@uif-js/core' {
 	}
 
 	export class I18n {
-		constructor(options?: object);
+		constructor(options?: Self.I18n.Options);
 
 		dateFormat: string;
 
@@ -3287,6 +3321,8 @@ declare module '@uif-js/core' {
 
 		language: string;
 
+		choiceFormat: (RegExp | boolean);
+
 		get(args: (string | Self.I18n.GetParam)): string;
 
 		set(args: {key?: string; text?: string}): Self.I18n;
@@ -3295,7 +3331,7 @@ declare module '@uif-js/core' {
 
 		clear(): Self.I18n;
 
-		addBundle(bundle: object): Self.I18n;
+		addBundle(bundle: Self.I18n.TranslationBundle): Self.I18n;
 
 		compare(left: string, right: string): number;
 
@@ -3306,6 +3342,33 @@ declare module '@uif-js/core' {
 	}
 
 	export namespace I18n {
+		interface Options {
+			rtl?: boolean;
+
+			language?: string;
+
+			firstDayOfWeek?: number;
+
+			dateFormat?: string;
+
+			timeFormat?: string;
+
+			choiceFormatPattern?: (RegExp | boolean);
+
+			amPmLabels?: globalThis.Array<string>;
+
+			monthLabels?: {short: globalThis.Array<string>; long: globalThis.Array<string>};
+
+			dayLabels?: {short: globalThis.Array<string>; long: globalThis.Array<string>};
+
+			missingTranslationWarning?: boolean;
+
+			translations?: Self.I18n.TranslationBundle;
+
+		}
+
+		type TranslationBundle = Record<string, string>;
+
 		interface GetParam {
 			key: string;
 
@@ -3598,7 +3661,7 @@ declare module '@uif-js/core' {
 	}
 
 	export namespace ImmutableUpdate {
-		function of(base: object, recipe: (draft: any) => any, plugins?: globalThis.Array<any>): any;
+		function of<T extends object>(base: T, recipe: (draft: T) => (void | T), plugins?: globalThis.Array<any>): T;
 
 	}
 
@@ -3700,7 +3763,7 @@ declare module '@uif-js/core' {
 
 	}
 
-	export function JsxRoute(props?: {path?: string; content?: Self.Router.RouteContentCallback; exact?: boolean}): Self.JSX.Element;
+	export function JsxRoute(props?: {children?: Self.VDom.Children; path?: string; content?: Self.Router.RouteContentCallback; exact?: boolean}): Self.JSX.Element;
 
 	export enum KeyCode {
 		BACKSPACE,
@@ -4569,9 +4632,9 @@ declare module '@uif-js/core' {
 	export namespace PageMessageDispatcher {
 	}
 
-	export function ParamRouter(props: {name: string}): Self.JSX.Element;
+	export function ParamRouter(props: {name: string; children?: Self.VDom.Children}): Self.JSX.Element;
 
-	export function PathRouter(props?: {basename?: string}): Self.JSX.Element;
+	export function PathRouter(props?: {basename?: string; children?: Self.VDom.Children}): Self.JSX.Element;
 
 	export class PersistingFormatter extends Self.LogFormatter {
 		constructor();
@@ -4767,17 +4830,17 @@ declare module '@uif-js/core' {
 		}
 
 		interface SizeOptions {
-			height: number;
+			height?: number;
 
-			maxHeight: number;
+			minHeight?: number;
 
-			maxWidth: number;
+			maxHeight?: number;
 
-			minHeight: number;
+			width?: number;
 
-			minWidth: number;
+			minWidth?: number;
 
-			width: number;
+			maxWidth?: number;
 
 		}
 
@@ -5313,6 +5376,11 @@ declare module '@uif-js/core' {
 	export enum RedwoodColorSet {
 	}
 
+	export enum RedwoodDensity {
+		STANDARD,
+		COMPACT,
+	}
+
 	enum RedwoodIcon {
 		AI_SPARKLE,
 		ICO_ACCOUNTS_PAYABLE,
@@ -5423,6 +5491,7 @@ declare module '@uif-js/core' {
 		ICO_END_NODE,
 		ICO_ENTER_IDENTIFIER,
 		ICO_ERROR,
+		ICO_ERROR_S,
 		ICO_EVENT_AVAILABLE,
 		ICO_EXPAND,
 		ICO_EXPORT,
@@ -5452,6 +5521,7 @@ declare module '@uif-js/core' {
 		ICO_HIGHLIGHT_ROWS,
 		ICO_HOME,
 		ICO_INFORMATION,
+		ICO_INFORMATION_S,
 		ICO_INPUT_NUMBER,
 		ICO_INVENTORY_COST_REVALUATION,
 		ICO_ITEM_OVERVIEW,
@@ -5481,9 +5551,11 @@ declare module '@uif-js/core' {
 		ICO_OVERFLOW_VERT,
 		ICO_PAGINATION,
 		ICO_PARTNERS,
+		ICO_PAUSE,
 		ICO_PIN,
 		ICO_PIN_COLUMNS,
 		ICO_PIN_ROWS,
+		ICO_PLAY,
 		ICO_PLAYLIST_ADD_CHECK,
 		ICO_PLUS,
 		ICO_PLUS_SQUARE,
@@ -5523,10 +5595,12 @@ declare module '@uif-js/core' {
 		ICO_SQUARE,
 		ICO_STAR,
 		ICO_STAR_FULL,
+		ICO_STOP,
 		ICO_STOPWATCH,
 		ICO_SUBDIRECTORY_ARROW_UP_RIGHT,
 		ICO_SUBSIDIARY,
 		ICO_SUCCESS,
+		ICO_SUCCESS_S,
 		ICO_SWITCH_OFF,
 		ICO_SWITCH_ON,
 		ICO_SYNC,
@@ -5553,6 +5627,7 @@ declare module '@uif-js/core' {
 		ICO_VIEW_HIDE,
 		ICO_VIEW_PARTIAL,
 		ICO_WARNING,
+		ICO_WARNING_S,
 		ICO_WRAP_LINE,
 		ICO_WRENCH,
 		ICO_ZOOM_IN,
@@ -5605,21 +5680,40 @@ declare module '@uif-js/core' {
 		WORK_ORDER,
 	}
 
+	export enum RedwoodScale {
+		SM,
+		MD,
+		LG,
+		NETSUITE,
+	}
+
 	enum RedwoodSystemIconMapping {
 	}
 
 	export class RedwoodTheme extends Self.Theme {
 		constructor(options?: Self.RedwoodTheme.Options);
 
+		scale: Self.RedwoodTheme.Scale;
+
+		scaleNS: boolean;
+
+		scaleSM: boolean;
+
+		scaleMD: boolean;
+
+		scaleLG: boolean;
+
 		density: Self.RedwoodTheme.Density;
 
-		densityNS: boolean;
+		densityStandard: boolean;
 
-		densityLow: boolean;
-
-		densityHigh: boolean;
+		densityCompact: boolean;
 
 		colorSet: Self.RedwoodTheme.ColorSet;
+
+		rootSize: number;
+
+		getScaleStyle(scale: Self.RedwoodScale, styles: Record<(Self.RedwoodScale | string), Self.Style>): Self.Style;
 
 		static forColorSet(colorSet: Self.RedwoodTheme.ColorSet): Self.RedwoodTheme;
 
@@ -5629,6 +5723,8 @@ declare module '@uif-js/core' {
 
 	export namespace RedwoodTheme {
 		interface Options extends Self.Theme.Options {
+			scale?: Self.RedwoodTheme.Scale;
+
 			density?: Self.RedwoodTheme.Density;
 
 			colorSet?: Self.RedwoodTheme.ColorSet;
@@ -5646,11 +5742,9 @@ declare module '@uif-js/core' {
 
 		export import SystemIconMapping = Self.RedwoodSystemIconMapping;
 
-		enum Density {
-			LOW,
-			HIGH,
-			NETSUITE,
-		}
+		export import Scale = Self.RedwoodScale;
+
+		export import Density = Self.RedwoodDensity;
 
 		export import ColorSet = Self.RedwoodColorSet;
 
@@ -5846,6 +5940,7 @@ declare module '@uif-js/core' {
 		PAGINATION,
 		PARENT_RECORD,
 		PARTNERS,
+		PAUSE,
 		PAYABLES,
 		PERFORMANCE,
 		PERSON,
@@ -5853,6 +5948,7 @@ declare module '@uif-js/core' {
 		PIN_COLUMNS,
 		PIN_ROWS,
 		PIVOT_TABLE,
+		PLAY,
 		POLYMORPH,
 		PREVIEW,
 		PRINT,
@@ -5896,8 +5992,15 @@ declare module '@uif-js/core' {
 		START_DATE,
 		STAR_FILLED,
 		STAR_OUTLINE,
+		STATUS_ERROR,
+		STATUS_ERROR_FILLED,
+		STATUS_INFO,
+		STATUS_INFO_FILLED,
 		STATUS_SUCCESS,
+		STATUS_SUCCESS_FILLED,
 		STATUS_WARNING,
+		STATUS_WARNING_FILLED,
+		STOP,
 		SUBSIDIARIES,
 		SUM,
 		SUMMARIZE,
@@ -6805,7 +6908,9 @@ declare module '@uif-js/core' {
 	}
 
 	export class Style {
-		constructor(id: string, rules: globalThis.Array<string>);
+		constructor(id: string, style: (string | null));
+
+		toString(): string;
 
 		static is(value: any): boolean;
 
@@ -7194,6 +7299,8 @@ declare module '@uif-js/core' {
 
 		const PARTNERS: Self.ImageMetadata;
 
+		const PAUSE: Self.ImageMetadata;
+
 		const PAYABLES: Self.ImageMetadata;
 
 		const PERFORMANCE: Self.ImageMetadata;
@@ -7207,6 +7314,8 @@ declare module '@uif-js/core' {
 		const PIN_ROWS: Self.ImageMetadata;
 
 		const PIVOT_TABLE: Self.ImageMetadata;
+
+		const PLAY: Self.ImageMetadata;
 
 		const POLYMORPH: Self.ImageMetadata;
 
@@ -7297,6 +7406,20 @@ declare module '@uif-js/core' {
 		const STATUS_SUCCESS: Self.ImageMetadata;
 
 		const STATUS_WARNING: Self.ImageMetadata;
+
+		const STATUS_ERROR: Self.ImageMetadata;
+
+		const STATUS_INFO: Self.ImageMetadata;
+
+		const STATUS_SUCCESS_FILLED: Self.ImageMetadata;
+
+		const STATUS_WARNING_FILLED: Self.ImageMetadata;
+
+		const STATUS_ERROR_FILLED: Self.ImageMetadata;
+
+		const STATUS_INFO_FILLED: Self.ImageMetadata;
+
+		const STOP: Self.ImageMetadata;
 
 		const SUBSIDIARIES: Self.ImageMetadata;
 
@@ -7610,6 +7733,7 @@ declare module '@uif-js/core' {
 		PAGINATION,
 		PARENT_RECORD,
 		PARTNERS,
+		PAUSE,
 		PAYABLES,
 		PERFORMANCE,
 		PERSON,
@@ -7617,6 +7741,7 @@ declare module '@uif-js/core' {
 		PIN_COLUMNS,
 		PIN_ROWS,
 		PIVOT_TABLE,
+		PLAY,
 		POLYMORPH,
 		PREVIEW,
 		PRINT,
@@ -7662,6 +7787,13 @@ declare module '@uif-js/core' {
 		STAR_OUTLINE,
 		STATUS_SUCCESS,
 		STATUS_WARNING,
+		STATUS_ERROR,
+		STATUS_INFO,
+		STATUS_SUCCESS_FILLED,
+		STATUS_WARNING_FILLED,
+		STATUS_ERROR_FILLED,
+		STATUS_INFO_FILLED,
+		STOP,
 		SUBSIDIARIES,
 		SUM,
 		SUMMARIZE,
@@ -7868,6 +8000,8 @@ declare module '@uif-js/core' {
 
 		data: globalThis.Array<T>;
 
+		length: number;
+
 		query(args: Self.DataSource.QueryArguments, resolve: (args: {items: globalThis.Array<T>}) => void, reject?: (error: any) => void): void;
 
 		setData(data: globalThis.Array<T>): void;
@@ -8071,6 +8205,49 @@ declare module '@uif-js/core' {
 
 	}
 
+	class UserAgent {
+		constructor(userAgent: string);
+
+		private getDevice(userAgent: string): Self.UserAgent.Device;
+
+		private getDeviceType(userAgent: string): Self.UserAgent.DeviceType;
+
+		private getOS(userAgent: string): Self.UserAgent.OSType;
+
+		device: Self.UserAgent.Device;
+
+		deviceType: Self.UserAgent.DeviceType;
+
+		osType: Self.UserAgent.OSType;
+
+		static current(): Self.UserAgent;
+
+	}
+
+	namespace UserAgent {
+		enum OSType {
+			MACOS,
+			IOS,
+			ANDROID,
+			WINDOWS,
+			LINUX,
+		}
+
+		enum DeviceType {
+			PHONE,
+			TABLET,
+			DESKTOP,
+			UNKNOWN,
+		}
+
+		enum Device {
+			IPHONE,
+			IPAD,
+			UNKNOWN,
+		}
+
+	}
+
 	export class UserMessageHandle implements Self.EventSource {
 		on(eventName: (Self.EventSource.EventName | globalThis.Array<Self.EventSource.EventName> | Self.EventSource.ListenerMap), listener?: Self.EventSource.Listener): Self.EventSource.Handle;
 
@@ -8139,7 +8316,9 @@ declare module '@uif-js/core' {
 
 		success(args: Self.UserMessageService.MessageOptions): Self.UserMessageHandle;
 
-		createChild(args: {displayTypes?: globalThis.Array<Self.UserMessageService.DisplayType>; bannerPanel?: PackageComponent.BannerPanel; growlPanel?: PackageComponent.GrowlPanel}): void;
+		neutral(args: Self.UserMessageService.MessageOptions): Self.UserMessageHandle;
+
+		createChild(args: {displayTypes?: globalThis.Array<Self.UserMessageService.DisplayType>; bannerPanel?: PackageComponent.BannerPanel; growlPanel?: PackageComponent.GrowlPanel}): Self.UserMessageService;
 
 		static Event: Self.UserMessageService.EventTypes;
 
@@ -8190,6 +8369,7 @@ declare module '@uif-js/core' {
 			SUCCESS,
 			WARNING,
 			ERROR,
+			NEUTRAL,
 		}
 
 		enum DisplayType {
@@ -8202,7 +8382,7 @@ declare module '@uif-js/core' {
 	export function VDom(type: (string | ((props?: object) => Self.VDomElement)), config?: object, children?: Self.VDom.Children): Self.VDomElement;
 
 	export namespace VDom {
-		type Node = (string | number | Self.VDomElement | null);
+		type Node = (string | number | Self.VDomElement | Self.Component | Self.Translation | null);
 
 		type Children = (Self.VDom.Node | globalThis.Array<Self.VDom.Node>);
 

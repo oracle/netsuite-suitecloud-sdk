@@ -49,7 +49,7 @@ export default class MessageService {
 	showWarningMessage(warningMessage: string, includeProjectName = true) {
 		window.showWarningMessage(
 			includeProjectName ? this.addProjectNameToMessage(warningMessage) : warningMessage
-			);
+		);
 	}
 
 	showWarningMessageWithOk(warningMessage: string, includeProjectName = true) {
@@ -110,9 +110,40 @@ export default class MessageService {
 			.then(this.showOutputIfClicked);
 	}
 
-	private showOutputIfClicked(message?: string) {
+	showCommandInfoWithSpecificButtonsAndActions(infoMessage: string, buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[]) {
+		window
+			.showInformationMessage(
+				infoMessage,
+				...buttonsAndActions.map(button => button.buttonMessage)
+			)
+			.then((selectedButton?: string) => {
+				if (selectedButton) {
+					buttonsAndActions.find(button => button.buttonMessage === selectedButton)?.buttonAction();
+				}
+			})
+	}
+
+	showCommandErrorWithSpecificButtonsAndActions(errorMessage: string, buttonsAndActions: { buttonMessage: string, buttonAction: () => void }[]) {
+		window
+			.showErrorMessage(
+				errorMessage,
+				...buttonsAndActions.map(button => button.buttonMessage)
+			)
+			.then((selectedButton?: string) => {
+				if (selectedButton) {
+					buttonsAndActions.find(button => button.buttonMessage === selectedButton)?.buttonAction();
+				}
+			})
+	}
+
+	private showOutputIfClicked = (message?: string) => {
 		if (message) {
-			output.show();
+			this.showOutput();
 		}
 	}
+
+	public showOutput = () => {
+		output.show();
+	}
+
 }

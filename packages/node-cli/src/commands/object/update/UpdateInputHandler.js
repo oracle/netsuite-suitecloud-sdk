@@ -4,7 +4,7 @@
  */
 'use strict';
 const path = require('path');
-const { prompt, Separator } = require('inquirer');
+const { default : { prompt, Separator } } = require('inquirer');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const FileSystemService = require('../../../services/FileSystemService');
@@ -158,7 +158,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 			type: CommandUtils.INQUIRER_TYPES.LIST,
 			name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
 			message: message,
-			default: 0,
+			default: true,
 			choices: [
 				{ name: NodeTranslationService.getMessage(YES), value: true },
 				{ name: NodeTranslationService.getMessage(NO), value: false },

@@ -105,7 +105,7 @@ function save(options: http.RequestOptions | https.RequestOptions, file: fs.Writ
 		getFn(options, (response) => {
 			const contentType = response.headers['content-type'];
 			if (!contentType || !VALID_JAR_CONTENT_TYPES.includes(contentType)) {
-				throw VSTranslationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_NOT_AVAILABLE);
+				throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_NOT_AVAILABLE);
 			}
 			response.pipe(file);
 			file.on('finish', () => {

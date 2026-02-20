@@ -3,10 +3,10 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
-import { ConsoleLogger } from '../util/ExtensionUtil';
 import MessageService from './MessageService';
 import { IMPORT_OBJECTS, LIST_OBJECTS } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
+import VSConsoleLogger from '../loggers/VSConsoleLogger';
 
 const IMPORT_OBJECT_COMMAND_NAME = 'object:import';
 const LIST_OBJECT_COMMAND_NAME = 'object:list';
@@ -27,7 +27,7 @@ export default class CustomObjectService {
 		scriptIds: string[],
 		includeReferencedFiles: boolean,
 		executionPath: string,
-		consoleLogger: typeof ConsoleLogger
+		consoleLogger: VSConsoleLogger
 	) {
 		this.executionPath = executionPath;
 		//We choose 'ALL' types because it is chosen before which scriptIds should be imported and not by type
@@ -49,7 +49,7 @@ export default class CustomObjectService {
 		return commandActionPromise;
 	}
 
-	async listObjects(appId: string, types: string[], scriptId: string, executionPath: string, consoleLogger: typeof ConsoleLogger) {
+	async listObjects(appId: string, types: string[], scriptId: string, executionPath: string, consoleLogger: VSConsoleLogger) {
 		this.executionPath = executionPath;
 		let commandArgs: any = { type: types.join(' ') };
 
@@ -66,7 +66,7 @@ export default class CustomObjectService {
 		return commandActionPromise;
 	}
 
-	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}, command: string, consoleLogger: typeof ConsoleLogger) {
+	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}, command: string, consoleLogger: VSConsoleLogger) {
 		return new SuiteCloudRunner(consoleLogger, this.executionPath).run({
 			commandName: command,
 			arguments: args,
