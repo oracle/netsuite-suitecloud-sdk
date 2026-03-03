@@ -32,8 +32,8 @@ This directory contains all the available stubs for SuiteScript 2.x modules. Eac
   - `getCache()` - Get named, scoped cache
   - Scope types: PRIVATE, PROTECTED, PUBLIC
 - `N/cache/instance` - Cache instance management
-  - Methods: get(), put(), remove()
   - Properties: name, scope
+  - Methods: get(), put(), remove()
 </details>
 
 <details>
