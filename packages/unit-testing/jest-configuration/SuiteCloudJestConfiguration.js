@@ -6,6 +6,7 @@ const CORE_STUBS_PATH = `${TESTING_FRAMEWORK_PATH}/stubs`;
 const nodeModulesToTransform = [CORE_STUBS_PATH].join('|');
 const SUITESCRIPT_FOLDER_REGEX = '^SuiteScripts(.*)$';
 const ProjectInfoService = require('../services/ProjectInfoService');
+const fs = require('fs');
 
 const PROJECT_TYPE = {
 	SUITEAPP: 'SUITEAPP',
@@ -909,12 +910,26 @@ class SuiteCloudAdvancedJestConfiguration {
 		assert(options.projectType, "The 'projectType' property must be specified to generate a SuiteCloud Jest configuration");
 		this.projectFolder = this._getProjectFolder(options.projectFolder);
 		this.projectType = options.projectType;
-		this.customStubs = options.customStubs;
-		if (this.customStubs == null) {
-			this.customStubs = [];
-		}
-
+		this.customStubs = options.customStubs || [];
+		this.rootDir = this._detectWorkspaceRoot() || options.rootDir;
+		
 		this.projectInfoService = new ProjectInfoService(this.projectFolder);
+	}
+
+	_detectWorkspaceRoot() {
+		let currentDir = process.cwd();
+		for (let i = 0; i < 5; i++) {
+			if (fs.existsSync(`${currentDir}/pnpm-workspace.yaml`) ||
+				fs.existsSync(`${currentDir}/lerna.json`) ||
+				(fs.existsSync(`${currentDir}/package.json`) && 
+				 JSON.parse(fs.readFileSync(`${currentDir}/package.json`)).workspaces)) {
+				return currentDir;
+			}
+			const parentDir = path.dirname(currentDir);
+			if (parentDir === currentDir) break;
+			currentDir = parentDir;
+		}
+		return null;
 	}
 
 	_getProjectFolder(projectFolder) {
@@ -942,8 +957,10 @@ class SuiteCloudAdvancedJestConfiguration {
 
 	_generateStubsModuleNameMapperEntries() {
 		const stubs = {};
+		const rootDirPrefix = this.rootDir ? this.rootDir : '<rootDir>';
+		
 		const forEachFn = (stub) => {
-			stubs[`^${stub.module}$`] = stub.path;
+			stubs[`^${stub.module}$`] = stub.path.replace('<rootDir>', rootDirPrefix);
 		};
 		CORE_STUBS.forEach(forEachFn);
 		this.customStubs.forEach(forEachFn);
@@ -956,13 +973,21 @@ class SuiteCloudAdvancedJestConfiguration {
 		suiteScriptsFolder[SUITESCRIPT_FOLDER_REGEX] = this._getSuiteScriptFolderPath();
 
 		const customizedModuleNameMapper = Object.assign({}, this._generateStubsModuleNameMapperEntries(), suiteScriptsFolder);
-		return {
+		
+		const config = {
 			transformIgnorePatterns: [`/node_modules/(?!${nodeModulesToTransform})`],
 			transform: {
-				'^.+\\.js$': `<rootDir>/node_modules/${TESTING_FRAMEWORK_PATH}/jest-configuration/SuiteCloudJestTransformer.js`,
+				'^.+\\.js$': `${this.rootDir || '<rootDir>'}/node_modules/${TESTING_FRAMEWORK_PATH}/jest-configuration/SuiteCloudJestTransformer.js`,
 			},
 			moduleNameMapper: customizedModuleNameMapper,
+			roots: [process.cwd()]
 		};
+
+		if (this.rootDir) {
+			config.rootDir = this.rootDir;
+		}
+
+		return config;
 	}
 }
 
