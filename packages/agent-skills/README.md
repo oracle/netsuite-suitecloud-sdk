@@ -14,9 +14,9 @@ Each skill is self-contained and follows a consistent structure so agents can di
 
 ### Included Skills
 
-- [netsuite-ai-connector-guardrails](./packages/agent-skills/netsuite-ai-connector-guardrails:): Provides guardrails and domain guidance for AI-to-NetSuite sessions—enforcing correct tool selection, safe SuiteQL usage, consistent output formatting, and proper multi-subsidiary and currency handling through the NetSuite AI Service Connector.
-- [netsuite-sdf-roles-and-permissions](./packages/agent-skills/netsuite-sdf-roles-and-permissions): Helps generate and review SDF permission configurations (for example, customrole XML and script deployment permissions) and validates permission IDs/levels using NetSuite reference data.
-- [netsuite-uif-spa-reference](./packages/agent-skills/netsuite-uif-spa-reference): Helps build, modify, and debug NetSuite UIF SPA components by providing API/type lookup for @uif-js/core and @uif-js/component (constructors, methods, props, enums, hooks, and component options).
+- [netsuite-ai-connector-guardrails](./netsuite-ai-connector-guardrails/SKILL.md): Provides guardrails and domain guidance for AI-to-NetSuite sessions—enforcing correct tool selection, safe SuiteQL usage, consistent output formatting, and proper multi-subsidiary and currency handling through the NetSuite AI Service Connector.
+- [netsuite-sdf-roles-and-permissions](./netsuite-sdf-roles-and-permissions/SKILL.md): Helps generate and review SDF permission configurations (for example, customrole XML and script deployment permissions) and validates permission IDs/levels using NetSuite reference data.
+- [netsuite-uif-spa-reference](./netsuite-uif-spa-reference/SKILL.md): Helps build, modify, and debug NetSuite UIF SPA components by providing API/type lookup for @uif-js/core and @uif-js/component (constructors, methods, props, enums, hooks, and component options).
 
  
 ## Skill Structure
@@ -92,7 +92,7 @@ When adding or updating a skill:
 4. Prefer local reference files over remote URLs for reproducibility.
 
 ## Contributing
-SuiteCloud Agent Skills is an open source project. Pull requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
+SuiteCloud Agent Skills is an open source project. Pull requests are currently not being accepted. See [Contributing](../../CONTRIBUTING.md) for details.
 
-## [License](/LICENSE.txt)
+## [License](../../LICENSE.txt)
 Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
