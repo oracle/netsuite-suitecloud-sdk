@@ -30,7 +30,7 @@ Each skill lives in its own folder and includes:
 
 ## Installation
 
-Install the SuiteCloud Agent Skills package globally:
+Install the skills package globally. This is a CLI for the open agents skills ecosystem.
 ```
 npm i skills -g
 ```
@@ -43,6 +43,8 @@ npx skills add oracle/netsuite-suitecloud-sdk --list
 Install a specific skill (recommended) for a specific agent (for example, Codex) in a project or globally:
 ```
 npx skills add oracle/netsuite-suitecloud-sdk --skill netsuite-uif-spa-reference -a codex
+```
+```
 npx skills add oracle/netsuite-suitecloud-sdk --skill netsuite-uif-spa-reference -a codex -g
 ```
 
