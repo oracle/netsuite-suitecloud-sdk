@@ -17,7 +17,6 @@ Each skill is self-contained and follows a consistent structure so agents can di
 - [netsuite-ai-connector-guardrails](./netsuite-ai-connector-guardrails/SKILL.md): Provides guardrails and domain guidance for AI-to-NetSuite sessions—enforcing correct tool selection, safe SuiteQL usage, consistent output formatting, and proper multi-subsidiary and currency handling through the NetSuite AI Service Connector.
 - [netsuite-sdf-roles-and-permissions](./netsuite-sdf-roles-and-permissions/SKILL.md): Helps generate and review SDF permission configurations (for example, customrole XML and script deployment permissions) and validates permission IDs/levels using NetSuite reference data.
 - [netsuite-uif-spa-reference](./netsuite-uif-spa-reference/SKILL.md): Helps build, modify, and debug NetSuite UIF SPA components by providing API/type lookup for @uif-js/core and @uif-js/component (constructors, methods, props, enums, hooks, and component options).
-
  
 ## Skill Structure
 
@@ -72,6 +71,23 @@ Remove a skill:
 npx skills remove netsuite-uif-spa-reference
 npx skills remove netsuite-uif-spa-reference -a codex
 ```
+
+## How to Use the Skills
+
+After installing a skill for Codex (`-a codex`), reference it directly in your prompt.
+
+Prompt pattern:
+```
+Use $<skill-name> to <task>.
+```
+
+Example:
+```
+Use $netsuite-uif-spa-reference to build a UIF SPA component with a data table and filters.
+```
+
+**Tip:** Include the exact skill name and your project context (goal, files, constraints) so Codex can apply the skill effectively.
+
 
 ## Design Principles
 
