@@ -1861,6 +1861,10 @@ declare module '@uif-js/core' {
 
 		static PROMOTION: string;
 
+		static FIELD: string;
+
+		static ENVIRONMENT: string;
+
 		static new(name: string): string;
 
 	}
@@ -5610,7 +5614,9 @@ declare module '@uif-js/core' {
 		ICO_TEXT,
 		ICO_THEMATIC_MAP,
 		ICO_THUMBS_DOWN,
+		ICO_THUMBS_DOWN_S,
 		ICO_THUMBS_UP,
+		ICO_THUMBS_UP_S,
 		ICO_TIME_OFF,
 		ICO_TRANSFER_MONEY,
 		ICO_TRASH,
@@ -5860,7 +5866,9 @@ declare module '@uif-js/core' {
 		EXTEND_HANDLE,
 		FAILED,
 		FEEDBACK_NEGATIVE,
+		FEEDBACK_NEGATIVE_FILLED,
 		FEEDBACK_POSITIVE,
+		FEEDBACK_POSITIVE_FILLED,
 		FILE_CSV,
 		FILE_EXCEL,
 		FILE_PDF,
@@ -6120,6 +6128,7 @@ declare module '@uif-js/core' {
 	}
 
 	enum RefreshedToken {
+		rootSize,
 		colorWhite,
 		colorBlack,
 	}
@@ -7139,7 +7148,11 @@ declare module '@uif-js/core' {
 
 		const FEEDBACK_NEGATIVE: Self.ImageMetadata;
 
+		const FEEDBACK_NEGATIVE_FILLED: Self.ImageMetadata;
+
 		const FEEDBACK_POSITIVE: Self.ImageMetadata;
+
+		const FEEDBACK_POSITIVE_FILLED: Self.ImageMetadata;
 
 		const FILE_CSV: Self.ImageMetadata;
 
@@ -7653,7 +7666,9 @@ declare module '@uif-js/core' {
 		EXTEND_HANDLE,
 		FAILED,
 		FEEDBACK_NEGATIVE,
+		FEEDBACK_NEGATIVE_FILLED,
 		FEEDBACK_POSITIVE,
+		FEEDBACK_POSITIVE_FILLED,
 		FILE_CSV,
 		FILE_EXCEL,
 		FILE_PDF,
@@ -8400,9 +8415,9 @@ declare module '@uif-js/core' {
 
 		function domElementProps(element: HTMLElement, options: {withIds?: boolean}): object;
 
-		function fromDom(element: Element, options: {withIds?: boolean}): Self.VDomElement;
+		function fromDom(element: Element, options?: {withIds?: boolean}): Self.VDomElement;
 
-		function fromString(string: string): Self.VDomElement;
+		function fromString(string: string, options?: {withIds?: boolean}): Self.VDomElement;
 
 		function children(children: Self.VDom.Children, omitEmpty?: boolean): globalThis.Array<Self.VDom.Node>;
 
@@ -8658,6 +8673,11 @@ declare module '@uif-js/core' {
 	}
 
 	export namespace WindowManager {
+	}
+
+	export namespace WindowMessage {
+		function send(payload: any): void;
+
 	}
 
 	function dateParser(tokenList: RegExp, string: string, format: string, options?: object): object;
