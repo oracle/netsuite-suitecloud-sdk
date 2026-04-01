@@ -307,6 +307,7 @@
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 	"UTILS_ERRORS_COMMAND": "There was an error with the {0} command. {1}",
+    "PROXY_GENERATE_KEY_SUCCESS_KEY_GENERATED" : "New proxy key {0} generated, store securely and remember to update it in your third party tool of choice.",
 
 	"YES": "Yes"
 }
