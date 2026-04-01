@@ -1,5 +1,5 @@
 ---
-name: netsuite-ai-connector-guardrails
+name: netsuite-ai-connector-instructions
 description: NetSuite Intelligence skill — teaches AI the correct tool selection order, output formatting, domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails for any AI + NetSuite AI Service Connector session.
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
