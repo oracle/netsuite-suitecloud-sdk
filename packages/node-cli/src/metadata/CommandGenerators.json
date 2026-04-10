@@ -75,6 +75,11 @@
 		"generator": "commands/project/validate/ValidateCommand"
 	},
 	{
+		"commandName": "proxy:start",
+		"supportsInteractiveMode": true,
+		"generator": "commands/proxy/start/ProxyStartCommand"
+	},
+	{
 		"commandName": "object:create",
 		"supportsInteractiveMode": true,
 		"generator": "commands/object/create/CreateObjectCommand"
