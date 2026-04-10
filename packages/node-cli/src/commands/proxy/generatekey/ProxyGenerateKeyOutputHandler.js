@@ -6,9 +6,7 @@
 const BaseOutputHandler = require('../../base/BaseOutputHandler');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 
-const {
-	PROXY: { GENERATE_KEY: { SUCCESS_KEY_GENERATED } },
-} = require('../../../services/TranslationKeys');
+const { COMMAND_PROXY_GENERATEKEY : { SUCCESS_KEY_GENERATED } } = require('../../../services/TranslationKeys');
 
 module.exports = class ProxyGenerateKeyOutputHandler extends BaseOutputHandler {
 	constructor(options) {
@@ -16,11 +14,10 @@ module.exports = class ProxyGenerateKeyOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
-		if (actionResult.isSuccess()) {
-			this._log.result(NodeTranslationService.getMessage(SUCCESS_KEY_GENERATED, actionResult.data.apiKey));
-		} else {
-			this.parseError(actionResult);
-		}
+
+		const proxyKeyGenerated = NodeTranslationService.getMessage(SUCCESS_KEY_GENERATED, actionResult.data.apiKey);
+		this._log.result(proxyKeyGenerated);
+
 		return actionResult;
 	}
 };

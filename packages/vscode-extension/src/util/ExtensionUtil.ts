@@ -96,3 +96,7 @@ export const InteractiveAnswersValidator: {
 	validateFolderDoesNotExist(path: string): boolean;
 	validateFileName(fileName: string): boolean;
 } = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
+
+export const APIKeyGenerator : {
+	generateApiKey(length?: number) : any;
+} = require('@oracle/suitecloud-cli/src/utils/APIKeyGenerator.js');
