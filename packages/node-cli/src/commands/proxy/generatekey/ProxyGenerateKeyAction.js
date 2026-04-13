@@ -21,9 +21,10 @@ module.exports = class ProxyGenerateKeyAction extends BaseAction {
 	async execute() {
 		try {
 			const newApiKey = APIKeyGenerator.generateApiKey();
+			const existingFileContent = await readClientAPIKeyFileContents(this._sdkExecutor);
 			const clientApiKeyFileContents = ClientApiKeyDTO.Builder
-				.fromRawString(await readClientAPIKeyFileContents())
-				.withProxyKey(newApiKey)
+				.fromRawString(existingFileContent.data)
+				.withNewProxyKey(newApiKey)
 				.build();
 
 			const writeOperationResult = await writeClientAPIKeyFileContents(

@@ -8,6 +8,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const { UTILS: { CLIENT_API_KEY_UTILS }, } = require('../services/TranslationKeys');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkExecutionContext = require('../SdkExecutionContext');
+const SdkOperationResultUtils = require('./SdkOperationResultUtils');
 
 const COMMANDS = {
 	CLIENT_API_KEY: {
@@ -32,12 +33,17 @@ async function readClientAPIKeyFileContents(sdkExecutor) {
 		.integration()
 		.build();
 
-	return await executeWithSpinner({
+	const operationResult = await executeWithSpinner({
 		action: sdkExecutor.execute(executionContext),
 		message: NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.READING_FILE_CONTENTS),
 	}).catch((error) => {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), error];
-	})
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS, error),];
+	});
+
+	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS, operationResult.errorMessages)];
+	}
+	return operationResult;
 }
 
 /**

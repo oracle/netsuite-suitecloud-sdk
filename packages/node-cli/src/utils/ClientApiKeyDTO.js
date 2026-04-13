@@ -30,14 +30,17 @@ class ClientApiKeyDTOBuilder {
 
 	fromRawString(stringifiedData) {
 		try {
-			this.data = JSON.parse(stringifiedData);
+			this.data = !stringifiedData
+				? {}
+				: JSON.parse(stringifiedData);
 		} catch (error) {
 			throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.INVALID_FILE_CONTENTS), error];
 		}
+
 		return this;
 	}
 
-	withProxyKey(apiKey, creationDate = new Date().toISOString()) {
+	withNewProxyKey(apiKey, creationDate = new Date().toISOString()) {
 		this.data = {
 			[PROXY_KEY]: {
 				creationDate,
