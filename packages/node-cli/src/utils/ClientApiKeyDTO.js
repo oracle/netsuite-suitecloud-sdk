@@ -8,6 +8,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const { UTILS: { CLIENT_API_KEY_UTILS }, } = require('../services/TranslationKeys');
 
 const PROXY_KEY_ID = 'PROXY_KEY';
+const PROXY_KEY_CREATION_DATE_ID = 'creationDate'
 const PROXY_KEY_API_KEY_ID = 'proxyAPIKey';
 
 /**
@@ -62,11 +63,9 @@ class ClientApiKeyDTOBuilder {
 	}
 
 	withNewProxyKey(proxyAPIKey, creationDate = new Date().toISOString()) {
-		this.data = {
-			[PROXY_KEY_ID]: {
-				creationDate,
-				proxyAPIKey,
-			},
+		this.data[PROXY_KEY_ID] = {
+			[PROXY_KEY_CREATION_DATE_ID] : creationDate,
+			[PROXY_KEY_API_KEY_ID] : proxyAPIKey,
 		};
 		return this;
 	}
