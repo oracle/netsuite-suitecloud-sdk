@@ -15,7 +15,7 @@ module.exports = class ProxyGenerateKeyOutputHandler extends BaseOutputHandler {
 
 	parse(actionResult) {
 
-		const proxyKeyGenerated = NodeTranslationService.getMessage(SUCCESS_KEY_GENERATED, actionResult.data.apiKey);
+		const proxyKeyGenerated = NodeTranslationService.getMessage(SUCCESS_KEY_GENERATED, actionResult.data["proxyAPIKey"]);
 		this._log.result(proxyKeyGenerated);
 
 		return actionResult;

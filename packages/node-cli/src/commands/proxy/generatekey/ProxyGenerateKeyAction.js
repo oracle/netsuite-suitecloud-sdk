@@ -29,11 +29,11 @@ module.exports = class ProxyGenerateKeyAction extends BaseAction {
 
 			const writeOperationResult = await writeClientAPIKeyFileContents(
 				this._sdkExecutor,
-				clientApiKeyFileContents.toNormalizedString()
+				clientApiKeyFileContents.toCommandlineCompatibleString()
 			);
 
 			return writeOperationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-				? ActionResult.Builder.withData({ newApiKey }).build()
+				? ActionResult.Builder.withData({ "proxyAPIKey": newApiKey }).build()
 				: ActionResult.Builder.withErrors(
 					[NodeTranslationService.getMessage(UNABLE_TO_GENERATE_KEY), writeOperationResult.errorMessages]).build();
 

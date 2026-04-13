@@ -16,7 +16,7 @@ const COMMANDS = {
 			SDK_COMMAND: 'readclientapikeycontent',
 		},
 		WRITE_FILE_CONTENT: {
-			SDK_COMMAND: 'writeclientapicontent',
+			SDK_COMMAND: 'writeclientapikeycontent',
 			PARAMS: {
 				CONTENT: 'content'
 			}
@@ -26,7 +26,7 @@ const COMMANDS = {
 
 /**
  * @param {SdkExecutor} sdkExecutor
- * @returns {Promise<SdkOperationResult>}
+ * @returns {Promise<SdkOperationResult>} which contains the contents of 'client_api_key.p12' as string, within the .data parameter
  */
 async function readClientAPIKeyFileContents(sdkExecutor) {
 	const executionContext = SdkExecutionContext.Builder.forCommand(COMMANDS.CLIENT_API_KEY.READ_FILE_CONTENT.SDK_COMMAND)
@@ -48,13 +48,13 @@ async function readClientAPIKeyFileContents(sdkExecutor) {
 
 /**
  * @param {SdkExecutor} sdkExecutor
- * @param {string} newStringifiedFileContent must not contain any '"' double quote character to avoid shell quoting/escaping issues
+ * @param {string} newFileContent must start and end with '"' double quote character, but the rest of in-between "' should be escaped '\"' to avoid shell quoting/escaping issues
  * @returns {Promise<SdkOperationResult>}
  */
-async function writeClientAPIKeyFileContents(sdkExecutor, newStringifiedFileContent) {
+async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
 	const executionContext = SdkExecutionContext.Builder.forCommand(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.SDK_COMMAND)
 		.integration()
-		.addParam(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.PARAMS.CONTENT, newStringifiedFileContent)
+		.addParam(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.PARAMS.CONTENT, newFileContent)
 		.build();
 
 	return await executeWithSpinner({
