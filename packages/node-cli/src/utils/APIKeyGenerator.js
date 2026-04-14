@@ -12,8 +12,8 @@ const crypto = require('crypto');
  * @param {number} length Number of random bytes (default 32 = 64 hex chars).
  * @returns {string} Hex-encoded API key.
  */
-async function generateApiKey(length = 32) {
+function generateAPIKey(length = 32) {
 		return crypto.randomBytes(length).toString('hex');
 }
 
-module.exports = { generateApiKey };
+module.exports = { generateAPIKey };

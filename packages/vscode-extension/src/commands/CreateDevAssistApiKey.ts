@@ -18,7 +18,7 @@ const translationService = new VSTranslationService();
  * This command generates and stores a Developer Assistant API Key,
  */
 export async function createDevAssistApiKey(extensionContext: vscode.ExtensionContext): Promise<string | undefined> {
-    const apiKey = APIKeyGenerator.generateApiKey();
+    const apiKey = APIKeyGenerator.generateAPIKey();
 
     const modalMessage = translationService.getMessage(DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.MAIN_MESSAGE, apiKey);
     const copyButtonText = translationService.getMessage(DEVASSIST_SERVICE.CREATE_API_KEY.MODAL.COPY_BUTTON)

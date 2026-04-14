@@ -37,11 +37,11 @@ async function readClientAPIKeyFileContents(sdkExecutor) {
 		action: sdkExecutor.execute(executionContext),
 		message: NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.READING_FILE_CONTENTS),
 	}).catch((error) => {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS, error),];
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), error];
 	});
 
 	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS, operationResult.errorMessages)];
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), operationResult.errorMessages];
 	}
 	return operationResult;
 }
@@ -57,12 +57,17 @@ async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
 		.addParam(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.PARAMS.CONTENT, newFileContent)
 		.build();
 
-	return await executeWithSpinner({
+	const operationResult = await executeWithSpinner({
 		action: sdkExecutor.execute(executionContext),
 		message: NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.WRITING_FILE_CONTENTS),
 	}).catch((error) => {
 		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.WRITING_FILE_CONTENTS), error];
-	})
+	});
+
+	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.WRITING_FILE_CONTENTS), operationResult.errorMessages];
+	}
+	return operationResult;
 }
 
 module.exports = { readClientAPIKeyFileContents, writeClientAPIKeyFileContents };

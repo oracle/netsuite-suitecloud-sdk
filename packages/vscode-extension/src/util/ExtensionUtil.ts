@@ -98,5 +98,5 @@ export const InteractiveAnswersValidator: {
 } = require('@oracle/suitecloud-cli/src/validation/InteractiveAnswersValidator');
 
 export const APIKeyGenerator : {
-	generateApiKey(length?: number) : any;
+	generateAPIKey(length?: number) : any;
 } = require('@oracle/suitecloud-cli/src/utils/APIKeyGenerator.js');
