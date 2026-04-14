@@ -6,7 +6,7 @@
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const BaseAction = require('../../base/BaseAction');
-const APIKeyGenerator = require('../../../utils/APIKeyGenerator');
+const { generateApiKey } = require('../../../utils/APIKeyGenerator');
 const ClientApiKeyDTO = require('../../../utils/ClientApiKeyDTO');
 const { readClientAPIKeyFileContents, writeClientAPIKeyFileContents } = require('../../../utils/ClientApiKeyUtils');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
@@ -20,7 +20,7 @@ module.exports = class ProxyGenerateKeyAction extends BaseAction {
 
 	async execute() {
 		try {
-			const newApiKey = APIKeyGenerator.generateApiKey();
+			const newApiKey = generateApiKey();
 			const existingFileContent = await readClientAPIKeyFileContents(this._sdkExecutor);
 			const clientApiKeyFileContents = ClientApiKeyDTO.Builder
 				.fromRawString(existingFileContent.data)
