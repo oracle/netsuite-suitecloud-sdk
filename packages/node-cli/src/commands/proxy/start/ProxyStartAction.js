@@ -11,7 +11,8 @@ const SdkExecutionContext = require('../../../SdkExecutionContext');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const BaseAction = require('../../base/BaseAction');
 const { SuiteCloudAuthProxyService, EVENTS } = require('../../../services/SuiteCloudAuthProxyService');
-const { COMMAND_PROXY_START } = require('../../../services/TranslationKeys');
+const { COMMAND_PROXY_START, COMMAND_REFRESH_AUTHORIZATION } = require('../../../services/TranslationKeys');
+const { refreshAuthorization } = require('../../../utils/AuthenticationUtils');
 const ProxyApiKeyExtractor = require('./ProxyApiKeyExtractor');
 
 const COMMAND = {
@@ -32,6 +33,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 	constructor(options) {
 		super(options);
 		this._proxyService = null;
+		this._manualRefreshInFlight = null;
 	}
 
 	preExecute(params) {
@@ -106,11 +108,38 @@ module.exports = class ProxyStartAction extends BaseAction {
 
 	_registerProxyEvents() {
 		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, ({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, ({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, this._handleManualAuthRefreshRequired.bind(this));
 		this._proxyService.on(EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.REQUEST_ERROR.UNAUTHORIZED, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, ({ message }) => this._log.error(message));
+	}
+
+	async _handleManualAuthRefreshRequired({ message, authId }) {
+		this._log.error(message);
+		if (this._manualRefreshInFlight) {
+			await this._manualRefreshInFlight;
+			return;
+		}
+
+		this._manualRefreshInFlight = (async () => {
+			await this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.CREDENTIALS_NEED_TO_BE_REFRESHED, authId));
+			const refreshAuthzOperationResult = await refreshAuthorization(authId, this._sdkPath, this._executionEnvironmentContext);
+
+			if (!refreshAuthzOperationResult.isSuccess()) {
+				this._log.error(refreshAuthzOperationResult.errorMessages);
+				return;
+			}
+
+			await this._proxyService.reloadAccessToken();
+			await this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.AUTHORIZATION_REFRESH_COMPLETED));
+		})().catch((error) => {
+			this._log.error(error);
+		}).finally(() => {
+			this._manualRefreshInFlight = null;
+		});
+
+		await this._manualRefreshInFlight;
 	}
 
 	_registerShutdownHandlers() {
