@@ -118,6 +118,9 @@ module.exports = class ProxyStartAction extends BaseAction {
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.LISTENING_ON, localURL));
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOP_INSTRUCTIONS));
 		});
+		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, () => {
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOPPED));
+		});
 	}
 
 	async _handleManualAuthRefreshRequired({ message, authId }) {

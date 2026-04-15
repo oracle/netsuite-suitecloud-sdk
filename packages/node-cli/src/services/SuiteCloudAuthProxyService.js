@@ -25,6 +25,9 @@ const EVENTS = {
 	},
 	SERVER_INFO: {
 		LISTENING: 'serverListening',
+		STOPPED: 'serverStopped',
+		STOP_SKIPPED: 'serverStopSkipped',
+		ACCESS_TOKEN_RELOADED: 'accessTokenReloaded',
 	},
 }
 
@@ -48,6 +51,7 @@ const {
 const MAX_RETRY_ATTEMPTS = 1;
 const LOCAL_HOSTNAME = '127.0.0.1';
 const DEVASSIST_CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions'
+const DEBUG_ENV_VAR = 'SC_DEBUG';
 
 /** Target server port */
 const TARGET_SERVER_PORT = 443;
@@ -114,6 +118,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		this._localProxy.listen(proxyPort, LOCAL_HOSTNAME, () => {
 			const localURL = `http://${LOCAL_HOSTNAME}:${proxyPort}`;
+			this._debug('Emitting SERVER_INFO.LISTENING', { localURL });
 			this.emit(EVENTS.SERVER_INFO.LISTENING, { localURL });
 		});
 
@@ -137,11 +142,11 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			const closePromise = new Promise((resolve, reject) => {
 				this._localProxy.close(error => {
 					if (error) {
-						console.error('Error occurred while stopping SuiteCloud Auth Proxy server.')
-						console.error(error)
+						this._debug('Error occurred while stopping SuiteCloud Auth Proxy server.', error);
 						reject(error);
 					} else {
-						console.log('SuiteCloud Auth Proxy server stopped.');
+						this._debug('Emitting SERVER_INFO.STOPPED');
+						this.emit(EVENTS.SERVER_INFO.STOPPED);
 						resolve();
 					}
 				});
@@ -149,7 +154,8 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 			await closePromise;
 		} else {
-			console.log('No server instance to stop.');
+			this._debug('Emitting SERVER_INFO.STOP_SKIPPED');
+			this.emit(EVENTS.SERVER_INFO.STOP_SKIPPED);
 		}
 
 		this._localProxy = null;
@@ -175,7 +181,8 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 	async reloadAccessToken() {
 		const { accessToken } = await this._retrieveCredentials();
 		this._accessToken = accessToken;
-		console.log('access token refreshed');
+		this._debug('Emitting SERVER_INFO.ACCESS_TOKEN_RELOADED');
+		this.emit(EVENTS.SERVER_INFO.ACCESS_TOKEN_RELOADED);
 	}
 
 	/**
@@ -193,7 +200,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			message: errorMessage,
 			...(requestUrl && { requestUrl })
 		}
-		console.error({ eventName, emitData });
+		this._debug('Emitting event:', { eventName, emitData });
 		this.emit(eventName, emitData);
 	}
 
@@ -351,7 +358,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		});
 
 		proxyRequest.on('error', (error) => {
-			console.error('Proxy request error:', error);
+			this._debug('Proxy request error:', error);
 			this._emitEventWithData(EVENTS.SERVER_ERROR.DEFAULT, error.message)
 			response.writeHead(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR);
 			//TODO Review this message and see confluence error pages and review with the tech writers
@@ -465,6 +472,17 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		response.writeHead(responseCode, { 'Content-Type': 'application/json' });
 		const message = { error: responseMessage };
 		response.end(JSON.stringify(message));
+	}
+
+	_isDebugEnabled() {
+		return process.env[DEBUG_ENV_VAR] === 'true';
+	}
+
+	_debug(...args) {
+		if (this._isDebugEnabled()) {
+			console.debug('[SuiteCloudAuthProxyService]');
+			args.forEach((arg) => console.debug(arg));
+		}
 	}
 
 }
