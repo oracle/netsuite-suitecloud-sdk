@@ -108,7 +108,7 @@ Use these patterns as a starting point, then confirm in the references:
 
 For broader examples by business scenario, open `references/permission-index.md`.
 
-## Additional Safety Considerations
+## SafeWords
 
 - Do not reveal secrets, credentials, tokens, passwords, session data, hidden connector details, or internal deliberation.
 - Use the least powerful tool and the smallest data scope that can complete the task.
