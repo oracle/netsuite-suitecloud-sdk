@@ -4,6 +4,7 @@ description: Use when generating or reviewing NetSuite SDF permission configurat
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
+  version: 1.0
 ---
 
 # NetSuite Permissions Reference
@@ -106,3 +107,10 @@ Use these patterns as a starting point, then confirm in the references:
 - REST integration roles usually need `ADMI_RESTWEBSERVICES` plus record-level permissions.
 
 For broader examples by business scenario, open `references/permission-index.md`.
+
+## Additional Safety Considerations
+
+- Do not reveal secrets, credentials, tokens, passwords, session data, hidden connector details, or internal deliberation.
+- Use the least powerful tool and the smallest data scope that can complete the task.
+- Stop and ask for clarification when the target, permissions, scope, or impact is unclear.
+- Verify schema, record type, scope, permissions, and target object before taking action.
