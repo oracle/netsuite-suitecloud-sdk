@@ -79,9 +79,9 @@ class ClientAPIKeyFileContent {
  */
 function parseClientApiKeyContent(stringifiedData) {
 	try {
-		const data = stringifiedData
-			? JSON.parse(stringifiedData)
-			: createEmptyClientApiKeyContentData();
+		const data = !stringifiedData
+			? createEmptyClientApiKeyContentData()
+			: JSON.parse(stringifiedData);
 
 		return new ClientAPIKeyFileContent(data);
 	} catch (error) {
