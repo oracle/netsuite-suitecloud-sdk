@@ -6,6 +6,45 @@ jest.mock('../../../../src/utils/AuthenticationUtils', () => ({
 
 const ProxyStartAction = require('../../../../src/commands/proxy/start/ProxyStartAction');
 const { refreshAuthorization } = require('../../../../src/utils/AuthenticationUtils');
+const { SuiteCloudAuthProxyService, EVENTS } = require('../../../../src/services/SuiteCloudAuthProxyService');
+
+describe('ProxyStartAction execute()', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+	};
+
+	let action;
+	let proxyStartSpy;
+
+	beforeEach(() => {
+		jest.clearAllMocks();
+		action = new ProxyStartAction({
+			log,
+			sdkPath: '/tmp/fake-sdk-path',
+			executionEnvironmentContext: { env: 'test' },
+		});
+
+		action._readClientAPIContents = jest.fn().mockResolvedValue({ apiKey: 'fake-api-key' });
+		action._registerShutdownHandlers = jest.fn();
+		proxyStartSpy = jest.spyOn(SuiteCloudAuthProxyService.prototype, 'start').mockImplementation(function () {
+			this.emit(EVENTS.SERVER_INFO.LISTENING, { localURL: 'http://127.0.0.1:8383' });
+			return Promise.resolve();
+		});
+	});
+
+	afterEach(() => {
+		proxyStartSpy.mockRestore();
+	});
+
+	it('should show stop instructions after proxy starts successfully', async () => {
+		await action.execute({ authid: 'defaultAuth', port: 8383 });
+
+		expect(proxyStartSpy).toHaveBeenCalledWith('defaultAuth', 8383);
+		expect(log.info).toHaveBeenCalledWith('SuiteCloud Proxy server listening on http://127.0.0.1:8383');
+		expect(log.info).toHaveBeenCalledWith('Press Ctrl+C to stop the proxy.');
+	});
+});
 
 describe('ProxyStartAction _handleManualAuthRefreshRequired()', () => {
 	const log = {

@@ -179,7 +179,9 @@
 
 	"COMMAND_PROXY_START_QUESTIONS_SELECT_AUTH_ID": "Select the authentication ID to run the proxy:",
 	"COMMAND_PROXY_START_QUESTIONS_PORT": "Enter the local proxy port (1024-65535):",
+	"COMMAND_PROXY_START_MESSAGES_LISTENING_ON": "SuiteCloud Proxy server listening on {0}",
 	"COMMAND_PROXY_START_MESSAGES_READING_CLIENT_API_CONTENTS": "Reading Client API contents...",
+	"COMMAND_PROXY_START_MESSAGES_STOP_INSTRUCTIONS": "Press Ctrl+C to stop the proxy.",
 	"COMMAND_PROXY_START_MESSAGES_STOPPING": "Stopping proxy. Waiting for active requests to finish...",
 	"COMMAND_PROXY_START_MESSAGES_STARTED": "Proxy started successfully with auth ID \"{0}\" on port {1}.",
 	"COMMAND_PROXY_START_ERRORS_PORT_MUST_BE_NUMBER": "The port must be a valid number.",

@@ -23,6 +23,9 @@ const EVENTS = {
 		DEFAULT: 'serverError',
 		ON_AUTH_REFRESH: 'serverErrorOnRefresh',
 	},
+	SERVER_INFO: {
+		LISTENING: 'serverListening',
+	},
 }
 
 /** Authentication methods */
@@ -111,7 +114,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		this._localProxy.listen(proxyPort, LOCAL_HOSTNAME, () => {
 			const localURL = `http://${LOCAL_HOSTNAME}:${proxyPort}`;
-			console.log(`SuiteCloud Proxy server listening on ${localURL}`);
+			this.emit(EVENTS.SERVER_INFO.LISTENING, { localURL });
 		});
 
 		this._localProxy.on('error', (error) => {
