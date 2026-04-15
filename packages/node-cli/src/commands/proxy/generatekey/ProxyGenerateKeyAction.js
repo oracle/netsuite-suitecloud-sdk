@@ -7,7 +7,7 @@
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const BaseAction = require('../../base/BaseAction');
 const { generateAPIKey } = require('../../../utils/APIKeyGenerator');
-const ClientApiKeyDTO = require('../../../utils/ClientApiKeyDTO');
+const { parseClientApiKeyContent, setProxyKey } = require('../../../utils/ClientAPIKeyFileContent');
 const { readClientAPIKeyFileContents, writeClientAPIKeyFileContents } = require('../../../utils/ClientApiKeyUtils');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const { COMMAND_PROXY_GENERATEKEY : { ERRORS : { UNABLE_TO_GENERATE_KEY } } } = require('../../../services/TranslationKeys');
@@ -21,11 +21,9 @@ module.exports = class ProxyGenerateKeyAction extends BaseAction {
 	async execute() {
 		try {
 			const newApiKey = generateAPIKey();
-			const existingFileContent = await readClientAPIKeyFileContents(this._sdkExecutor);
-			const clientApiKeyFileContents = ClientApiKeyDTO.Builder
-				.fromRawString(existingFileContent.data)
-				.withNewProxyKey(newApiKey)
-				.build();
+			const readOperationResult = await readClientAPIKeyFileContents(this._sdkExecutor);
+			const clientApiKeyFileContents = parseClientApiKeyContent(readOperationResult.data);
+			clientApiKeyFileContents.setDefaultProxyKey(newApiKey);
 
 			const writeOperationResult = await writeClientAPIKeyFileContents(
 				this._sdkExecutor,
