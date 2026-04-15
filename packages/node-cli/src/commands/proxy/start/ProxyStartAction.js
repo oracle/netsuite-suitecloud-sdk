@@ -34,6 +34,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 		super(options);
 		this._proxyService = null;
 		this._manualRefreshInFlight = null;
+		this._isShuttingDown = false;
 	}
 
 	preExecute(params) {
@@ -143,13 +144,26 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_registerShutdownHandlers() {
-		const stopProxy = async () => {
-			if (this._proxyService) {
-				await this._proxyService.stop();
+		const shutdown = async () => {
+			if (this._isShuttingDown) {
+				return;
+			}
+
+			this._isShuttingDown = true;
+
+			try {
+				if (this._proxyService) {
+					await this._proxyService.stop();
+				}
+				process.exit(0);
+			} catch (error) {
+				this._log.error(error);
+				process.exit(1);
 			}
 		};
 
-		process.on('SIGINT', stopProxy);
-		process.on('SIGTERM', stopProxy);
+		process.on('SIGINT', shutdown); // Ctrl+C on Linux, macOS, and Windows terminals.
+		process.on('SIGTERM', shutdown); // Termination requests from the OS, shell, or process managers.
+		process.on('SIGBREAK', shutdown); // Ctrl+Break on Windows terminals.
 	}
 };
