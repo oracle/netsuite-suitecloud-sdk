@@ -153,6 +153,9 @@ module.exports = class ProxyStartAction extends BaseAction {
 
 			try {
 				if (this._proxyService) {
+					// Ensure shutdown feedback starts on a new line instead of being appended to terminal '^C' echo.
+					process.stdout.write('\n');
+					await this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOPPING));
 					await this._proxyService.stop();
 				}
 				process.exit(0);

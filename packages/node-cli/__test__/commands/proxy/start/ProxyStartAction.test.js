@@ -94,3 +94,66 @@ describe('ProxyStartAction _handleManualAuthRefreshRequired()', () => {
 		expect(action._proxyService.reloadAccessToken).toHaveBeenCalledTimes(1);
 	});
 });
+
+describe('ProxyStartAction _registerShutdownHandlers()', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+	};
+
+	let action;
+	let processOnSpy;
+	let processExitSpy;
+	let processStdoutWriteSpy;
+	let signalHandlers;
+
+	beforeEach(() => {
+		jest.clearAllMocks();
+		signalHandlers = {};
+
+		action = new ProxyStartAction({
+			log,
+			sdkPath: '/tmp/fake-sdk-path',
+			executionEnvironmentContext: { env: 'test' },
+		});
+		action._proxyService = {
+			stop: jest.fn().mockResolvedValue(),
+		};
+
+		processOnSpy = jest.spyOn(process, 'on').mockImplementation((signal, handler) => {
+			signalHandlers[signal] = handler;
+			return process;
+		});
+		processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {});
+		processStdoutWriteSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+	});
+
+	afterEach(() => {
+		processOnSpy.mockRestore();
+		processExitSpy.mockRestore();
+		processStdoutWriteSpy.mockRestore();
+	});
+
+	it('should log stopping message before stopping proxy during shutdown', async () => {
+		action._registerShutdownHandlers();
+
+		await signalHandlers.SIGINT();
+
+		expect(processStdoutWriteSpy).toHaveBeenCalledWith('\n');
+		expect(log.info).toHaveBeenCalledWith('Stopping proxy. Waiting for active requests to finish...');
+		expect(action._proxyService.stop).toHaveBeenCalledTimes(1);
+		expect(processExitSpy).toHaveBeenCalledWith(0);
+	});
+
+	it('should execute shutdown only once when multiple signals are received', async () => {
+		action._registerShutdownHandlers();
+
+		await signalHandlers.SIGINT();
+		await signalHandlers.SIGTERM();
+
+		expect(processStdoutWriteSpy).toHaveBeenCalledTimes(1);
+		expect(log.info).toHaveBeenCalledTimes(1);
+		expect(action._proxyService.stop).toHaveBeenCalledTimes(1);
+		expect(processExitSpy).toHaveBeenCalledTimes(1);
+	});
+});
