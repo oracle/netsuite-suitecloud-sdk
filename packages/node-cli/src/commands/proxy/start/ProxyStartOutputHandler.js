@@ -11,7 +11,7 @@ const { COMMAND_PROXY_START } = require('../../../services/TranslationKeys');
 module.exports = class ProxyStartOutputHandler extends BaseOutputHandler {
 	parse(actionResult) {
 		if (actionResult?.data?.authId && actionResult?.data?.port) {
-			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STARTED, actionResult.data.authId, actionResult.data.port));
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STARTED, actionResult.data.authId, actionResult.data.port));
 		}
 		return actionResult;
 	}
