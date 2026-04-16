@@ -123,6 +123,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_BASE_URL, port));
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_KEY));
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_MODEL_ID));
+			this._log.info('');
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOP_INSTRUCTIONS));
 		});
 		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, () => {

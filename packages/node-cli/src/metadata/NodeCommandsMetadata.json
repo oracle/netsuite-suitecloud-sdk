@@ -20,6 +20,7 @@
 		"name": "proxy:start",
 		"description": "Starts a local SuiteCloud proxy server for SDA access.",
 		"isSetupRequired": false,
+		"hideInteractiveHint": true,
 		"forceInteractiveMode": false,
 		"options": {
 			"authid": {
