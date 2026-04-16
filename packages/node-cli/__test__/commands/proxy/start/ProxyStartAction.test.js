@@ -41,8 +41,8 @@ describe('ProxyStartAction execute()', () => {
 		await action.execute({ authid: 'defaultAuth', port: 8383 });
 
 		expect(proxyStartSpy).toHaveBeenCalledWith('defaultAuth', 8383);
-		expect(log.info).toHaveBeenNthCalledWith(1, 'Checking for running server on port 8383 on 127.0.0.1.');
-		expect(log.info).toHaveBeenNthCalledWith(2, 'SuiteCloud proxy is running correctly with auth ID "defaultAuth"!');
+		expect(log.info).toHaveBeenNthCalledWith(1, 'Checking availability on port 8383.');
+		expect(log.info).toHaveBeenNthCalledWith(2, 'SuiteCloud Developer Assistant proxy is running on port 8383 with auth ID "defaultAuth".');
 		expect(log.info).toHaveBeenNthCalledWith(3, '');
 		expect(log.info).toHaveBeenNthCalledWith(4, 'To use it on this machine, configure your Coding Agent as follows:');
 		expect(log.info).toHaveBeenNthCalledWith(5, '  * API Provider: OpenAI Compatible');

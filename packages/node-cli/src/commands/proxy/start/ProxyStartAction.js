@@ -116,7 +116,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, () => {
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CHECKING_SERVER, port));
-			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.RUNNING_WITH_AUTH_ID, authId));
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.RUNNING_WITH_AUTH_ID, authId, port));
 			this._log.info('');
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CONFIGURE_AGENT_HEADER));
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_PROVIDER));
