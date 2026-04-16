@@ -26,7 +26,6 @@ describe('ProxyStartAction execute()', () => {
 			executionEnvironmentContext: { env: 'test' },
 		});
 
-		action._readClientAPIContents = jest.fn().mockResolvedValue({ apiKey: 'fake-api-key' });
 		action._registerShutdownHandlers = jest.fn();
 		proxyStartSpy = jest.spyOn(SuiteCloudAuthProxyService.prototype, 'start').mockImplementation(function () {
 			this.emit(EVENTS.SERVER_INFO.LISTENING, { localURL: 'http://127.0.0.1:8383' });
@@ -39,7 +38,7 @@ describe('ProxyStartAction execute()', () => {
 	});
 
 	it('should show stop instructions after proxy starts successfully', async () => {
-		await action.execute({ authid: 'defaultAuth', port: 8383 });
+		await action.execute({ authid: 'defaultAuth', port: 8383, apiKey: 'fake-api-key' });
 
 		expect(proxyStartSpy).toHaveBeenCalledWith('defaultAuth', 8383);
 		expect(log.info).toHaveBeenNthCalledWith(1, 'Checking availability on port 8383.');

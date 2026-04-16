@@ -10,6 +10,7 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { COMMAND_PROXY_START, COMMAND_SETUPACCOUNT } = require('../../../services/TranslationKeys');
+const { resolveClientApiKey } = require('./ProxyApiKeyResolver');
 
 const COMMAND = {
 	OPTIONS: {
@@ -25,9 +26,10 @@ const PORT_RANGE = {
 
 module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	async getParameters(params) {
-		if (!this._runInInteractiveMode) {
-			return params;
-		}
+		const apiKeyParams = await resolveClientApiKey({
+			sdkPath: this._sdkPath,
+			executionEnvironmentContext: this._executionEnvironmentContext,
+		});
 
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (!authIDActionResult.isSuccess()) {
@@ -53,6 +55,7 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 
 		return {
 			...params,
+			...apiKeyParams,
 			...answers,
 		};
 	}

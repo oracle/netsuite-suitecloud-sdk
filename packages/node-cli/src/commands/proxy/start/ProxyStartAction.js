@@ -6,14 +6,11 @@
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const BaseAction = require('../../base/BaseAction');
 const { SuiteCloudAuthProxyService, EVENTS } = require('../../../services/SuiteCloudAuthProxyService');
 const { COMMAND_PROXY_START, COMMAND_REFRESH_AUTHORIZATION } = require('../../../services/TranslationKeys');
 const { refreshAuthorization } = require('../../../utils/AuthenticationUtils');
-const ProxyApiKeyExtractor = require('./ProxyApiKeyExtractor');
+const { resolveClientApiKey } = require('./ProxyApiKeyResolver');
 
 const COMMAND = {
 	OPTIONS: {
@@ -26,8 +23,6 @@ const PORT_RANGE = {
 	MIN: 1024,
 	MAX: 65535,
 };
-
-const READ_CLIENT_API_CONTENT_CLI_COMMAND = 'readclientapikeycontent';
 
 module.exports = class ProxyStartAction extends BaseAction {
 	constructor(options) {
@@ -51,8 +46,10 @@ module.exports = class ProxyStartAction extends BaseAction {
 		try {
 			const authId = params[COMMAND.OPTIONS.AUTH_ID];
 			const port = params[COMMAND.OPTIONS.PORT];
-
-			const { apiKey } = await this._readClientAPIContents();
+			const apiKey = params.apiKey || (await resolveClientApiKey({
+				sdkPath: this._sdkPath,
+				executionEnvironmentContext: this._executionEnvironmentContext,
+			})).apiKey;
 
 			this._proxyService = new SuiteCloudAuthProxyService(this._sdkPath, this._executionEnvironmentContext, undefined, apiKey);
 			this._registerProxyEvents(authId, port);
@@ -83,28 +80,6 @@ module.exports = class ProxyStartAction extends BaseAction {
 	_validatePortAvailability(port) {
 		// TODO PDPDEVTOOL-6392: validate if port is already in use before starting the proxy.
 		return true;
-	}
-
-	async _readClientAPIContents() {
-		const executionContext = SdkExecutionContext.Builder.forCommand(READ_CLIENT_API_CONTENT_CLI_COMMAND)
-			.integration()
-			.addFlags([])
-			.build();
-
-		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContext),
-			message: NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.READING_CLIENT_API_CONTENTS),
-		});
-
-		if (operationResult.errorMessages && operationResult.errorMessages.length > 0) {
-			throw operationResult.errorMessages;
-		}
-
-		if (operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS) {
-			return ProxyApiKeyExtractor.extractApiKey(operationResult.data);
-		}
-
-		throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.READING_CLIENT_API_CONTENTS);
 	}
 
 	_registerProxyEvents(authId, port) {
