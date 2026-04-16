@@ -27,7 +27,7 @@ const PORT_RANGE = {
 	MAX: 65535,
 };
 
-const READ_CLIENT_API_CONTENT_CLI_COMMAND = 'readsdaapikeycontent';
+const READ_CLIENT_API_CONTENT_CLI_COMMAND = 'readclientapikeycontent';
 
 module.exports = class ProxyStartAction extends BaseAction {
 	constructor(options) {
@@ -55,7 +55,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 			const { apiKey } = await this._readClientAPIContents();
 
 			this._proxyService = new SuiteCloudAuthProxyService(this._sdkPath, this._executionEnvironmentContext, undefined, apiKey);
-			this._registerProxyEvents();
+			this._registerProxyEvents(authId, port);
 			this._registerShutdownHandlers();
 
 			await this._proxyService.start(authId, port);
@@ -107,15 +107,22 @@ module.exports = class ProxyStartAction extends BaseAction {
 		throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.READING_CLIENT_API_CONTENTS);
 	}
 
-	_registerProxyEvents() {
+	_registerProxyEvents(authId, port) {
 		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, this._handleManualAuthRefreshRequired.bind(this));
 		this._proxyService.on(EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.REQUEST_ERROR.UNAUTHORIZED, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, ({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, ({ localURL }) => {
-			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.LISTENING_ON, localURL));
+		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, () => {
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CHECKING_SERVER, port));
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.RUNNING_WITH_AUTH_ID, authId));
+			this._log.info('');
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CONFIGURE_AGENT_HEADER));
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_PROVIDER));
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_BASE_URL, port));
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_KEY));
+			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_MODEL_ID));
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOP_INSTRUCTIONS));
 		});
 		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, () => {
