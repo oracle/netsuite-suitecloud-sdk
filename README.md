@@ -5,7 +5,6 @@ SuiteCloud Software Development Kit (SuiteCloud SDK) are the set of tools that l
 
 In this GitHub repository, the following SuiteCloud SDK tools and packages are available:
 
-
 - [SuiteCloud Agent Skills](./packages/agent-skills/)
 
 - [SuiteCloud CLI for Node.js](./packages/node-cli)<a href="https://www.npmjs.com/package/@oracle/suitecloud-cli">
@@ -35,11 +34,11 @@ To read the 2025.2 NetSuite's release notes and documentation, check the followi
 
 
 ## Contributing
-This project welcomes contributions from the community. Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md)
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](./CONTRIBUTING.md).
 
 
 ## Security
-Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
+If you think you've found a security vulnerability, do not open a GitHub issue. Instead, consult the [security guide](./SECURITY.md) for our responsible vulnerability disclosure process.
 
 
 ## License

@@ -1,7 +1,6 @@
 <p align="left"><a href="#"><img width="250" src="resources/Netsuite-logo-ocean-150-bg.png"></a></p>
 
 # SuiteCloud Extension for Visual Studio Code
-
 <a href="https://marketplace.visualstudio.com/items?itemName=Oracle.suitecloud-vscode-extension">
   <img src="https://img.shields.io/visual-studio-marketplace/i/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
   <img src="https://img.shields.io/visual-studio-marketplace/v/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
@@ -88,7 +87,6 @@ The selected account is set as default for the project.
 </p>
 
 ## SuiteCloud Commands
-
 The following SuiteCloud commands are available through the Command Palette:
 
 | Command | Description |
@@ -112,7 +110,6 @@ The following SuiteCloud commands are available through the Command Palette:
 To read more about what you can do with SuiteCloud Extension for Visual Studio Code, visit <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_159223173518.html" rel="noopener noreferrer" target=blank>SuiteCloud Extension for Visual Studio Code Usage</a>.
 
 ## SuiteCloud Developer Assistant Using Cline in SuiteCloud Extension for VS Code
-
 You can now configure the SuiteCloud Developer Assistant using Cline in SuiteCloud Extension for Visual Studio Code (VS Code). SuiteCloud Developer Assistant is an AI-powered coding assistant designed for SuiteCloud developers. Integrated with Visual Studio Code through the Cline extension, it uses advanced language models specialized for SuiteCloud and SuiteScript to support NetSuite customization tasks. With SuiteCloud Developer Assistant, you can:
   * Get real-time, context-aware coding assistance within your SuiteCloud projects
   * Generate SuiteScript 2.1 code based on your input
@@ -158,8 +155,9 @@ To read the 2025.2 NetSuite's release notes and documentation, check the followi
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_3798389663.html).
 - Read the SuiteCloud Extension for Visual Studio Code documentation in [NetSuite's Help Center](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/book_159223417590.html).
 
+
 ## Contributing
-SuiteCloud Extension for Visual Studio Code is an open source project. Pull Requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](./CONTRIBUTING.md).
 
 ## License
 Copyright (c) 2021, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](./LICENSE) for details.
