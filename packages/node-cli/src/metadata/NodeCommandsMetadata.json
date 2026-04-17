@@ -15,5 +15,13 @@
 				"disableInIntegrationMode": false
 			}
 		}
+	},
+	"file:compare": {
+		"name": "file:compare",
+		"alias": "fc",
+		"description": "Compares a local file with the corresponding file in your NetSuite account and shows the differences.",
+		"isSetupRequired": true,
+		"forceInteractiveMode": true,
+		"options": {}
 	}
 }
