@@ -197,7 +197,7 @@
 	"COMMAND_PROXY_START_ERRORS_PORT_ALREADY_IN_USE": "Port {0} is already in use.",
 	"COMMAND_PROXY_START_ERRORS_READING_CLIENT_API_CONTENTS": "Error reading Client API contents.",
 	"COMMAND_PROXY_START_ERRORS_INVALID_PROXY_KEY_PAYLOAD": "Could not parse proxy key payload from SDK output.",
-	"COMMAND_PROXY_START_ERRORS_MISSING_API_KEY": "The proxy key payload does not contain a valid apiKey value.",
+	"COMMAND_PROXY_START_ERRORS_MISSING_API_KEY": "No client API key was found. Run \"suitecloud proxy:generatekey\" and try again.",
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 

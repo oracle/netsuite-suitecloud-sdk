@@ -12,6 +12,14 @@ const API_KEY_PROPERTY = 'apiKey';
 
 module.exports = class ProxyApiKeyExtractor {
 	static extractApiKey(rawProxyKeyPayload) {
+		if (rawProxyKeyPayload === undefined || rawProxyKeyPayload === null) {
+			throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.MISSING_API_KEY);
+		}
+
+		if (typeof rawProxyKeyPayload === 'string' && !rawProxyKeyPayload.trim()) {
+			throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.MISSING_API_KEY);
+		}
+
 		const parsedPayload = this._parsePayload(rawProxyKeyPayload);
 		if (!parsedPayload || typeof parsedPayload !== 'object') {
 			throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.INVALID_PROXY_KEY_PAYLOAD);
