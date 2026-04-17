@@ -58,7 +58,7 @@ class ClientAPIKeyFileContent {
 	 * @returns {void}
 	 */
 	setDefaultProxyKey(proxyAPIKey, creationDate = new Date().toISOString()) {
-		if (!this._containsDefaultProxyKeyValue()) {
+		if (!this._containsValidRequiredFields()) {
 			throw NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.INVALID_FILE_CONTENTS);
 		}
 
@@ -78,12 +78,17 @@ class ClientAPIKeyFileContent {
 		return JSON.stringify(this.data);
 	}
 
+	_containsValidRequiredFields() {
+		return Boolean(this.data[FILE_FIELDS.DEFAULT_KEY])
+			&& Boolean(this.data[FILE_FIELDS.KEYS]);
+	}
+
 	_containsDefaultProxyKeyValue() {
-		if (!this.data[FILE_FIELDS.DEFAULT_KEY]) {
+		if (this._containsValidRequiredFields()) {
 			return false;
 		}
 		const defaultKeyName = this.data[FILE_FIELDS.DEFAULT_KEY];
-		return Boolean(this.data[FILE_FIELDS.KEYS]?.[defaultKeyName]?.[KEY_FIELDS.VALUE]);
+		return Boolean(this.data[FILE_FIELDS.KEYS][defaultKeyName]?.[KEY_FIELDS.VALUE]);
 	}
 }
 
