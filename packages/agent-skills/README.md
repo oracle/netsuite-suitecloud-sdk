@@ -14,9 +14,11 @@ Each skill is self-contained and follows a consistent structure so agents can di
 
 ### Included Skills
 
-- [netsuite-ai-connector-instructions](./netsuite-ai-connector-instructions/SKILL.md): Provides guardrails and domain guidance for AI-to-NetSuite sessions—enforcing correct tool selection, safe SuiteQL usage, consistent output formatting, and proper multi-subsidiary and currency handling through the NetSuite AI Service Connector.
-- [netsuite-sdf-roles-and-permissions](./netsuite-sdf-roles-and-permissions/SKILL.md): Helps generate and review SDF permission configurations (for example, customrole XML and script deployment permissions) and validates permission IDs/levels using NetSuite reference data.
-- [netsuite-uif-spa-reference](./netsuite-uif-spa-reference/SKILL.md): Helps build, modify, and debug NetSuite UIF SPA components by providing API/type lookup for @uif-js/core and @uif-js/component (constructors, methods, props, enums, hooks, and component options).
+- [netsuite-ai-connector-instructions](./netsuite-ai-connector-instructions): Provides guardrails and domain guidance for AI-to-NetSuite sessions—enforcing correct tool selection, safe SuiteQL usage, consistent output formatting, and proper multi-subsidiary and currency handling through the NetSuite AI Service Connector.
+- [netsuite-sdf-project-documentation](./netsuite-sdf-project-documentation): Helps generate and maintain enterprise-grade documentation for NetSuite SDF projects by analyzing SuiteScript files, SDF object XML, and `manifest.xml`, then producing standardized outputs (for example, `README.md`, architecture diagrams in Mermaid/ASCII, deployment/runbooks, and troubleshooting tables). Can integrate with post-deployment documentation workflows when automation (for example, hooks) is available.
+- [netsuite-sdf-roles-and-permissions](./netsuite-sdf-roles-and-permissions): Helps generate and review SDF permission configurations (for example, customrole XML and script deployment permissions) and validates permission IDs/levels using NetSuite reference data.
+- [netsuite-suitescript-records-reference](./netsuite-suitescript-records-reference): Provides a SuiteScript-focused reference for NetSuite records and fields, enabling lookup of field IDs, data types, required/optional status, and search capabilities across all 272 NetSuite record types to ensure correct field usage when building SuiteScript solutions.
+- [netsuite-uif-spa-reference](./netsuite-uif-spa-reference): Helps build, modify, and debug NetSuite UIF SPA components by providing API/type lookup for `@uif-js/core` and `@uif-js/component` (constructors, methods, props, enums, hooks, and component options).
  
 ## Skill Structure
 
@@ -50,12 +52,16 @@ npx skills add oracle/netsuite-suitecloud-sdk --skill netsuite-uif-spa-reference
 Install all skills (in a project or globally):
 ```
 npx skills add oracle/netsuite-suitecloud-sdk
+```
+```
 npx skills add oracle/netsuite-suitecloud-sdk -g
 ```
 
 List the installed skills (in a project or globally):
 ```
 npx skills ls
+```
+```
 npx skills ls -g
 ```
 
@@ -63,12 +69,16 @@ Update skills:
 If you installed the skills, you can check for updates from the recorded source and update from the same source:
 ```
 npx skills check
+```
+```
 npx skills update
 ```
 
 Remove a skill:
 ```
 npx skills remove netsuite-uif-spa-reference
+```
+```
 npx skills remove netsuite-uif-spa-reference -a codex
 ```
 
@@ -110,7 +120,10 @@ When adding or updating a skill:
 4. Prefer local reference files over remote URLs for reproducibility.
 
 ## Contributing
-SuiteCloud Agent Skills is an open source project. Pull requests are currently not being accepted. See [Contributing](../../CONTRIBUTING.md) for details.
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](./CONTRIBUTING.md).
+
+## Security
+If you think you've found a security vulnerability, do not open a GitHub issue. Instead, consult the [security guide](./SECURITY.md) for our responsible vulnerability disclosure process.
 
 ## [License](../../LICENSE.txt)
 Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
