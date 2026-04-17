@@ -96,7 +96,7 @@ These skills are intended to work across multiple agent runtimes that support ag
 When adding or updating a skill:
 
 1. Keep frontmatter valid and concise.
-2. Use action-oriented names where possible (for example, gerund style like `building-...`).
+2. Stay compliant with the [agentskills.io specification](https://agentskills.io/specification).
 3. Write tool-agnostic instructions.
 4. Prefer local reference files over remote URLs for reproducibility.
 
