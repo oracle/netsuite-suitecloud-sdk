@@ -1,4 +1,4 @@
-# Contributing to This repository
+# Contributing to This Repository
 
 We welcome contributions! There are multiple ways to contribute.
 
