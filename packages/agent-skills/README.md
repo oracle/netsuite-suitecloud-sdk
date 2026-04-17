@@ -95,10 +95,11 @@ These skills are intended to work across multiple agent runtimes that support ag
 ## Authoring Guidelines
 When adding or updating a skill:
 
-1. Keep frontmatter valid and concise.
-2. Stay compliant with the [agentskills.io specification](https://agentskills.io/specification).
-3. Write tool-agnostic instructions.
-4. Prefer local reference files over remote URLs for reproducibility.
+1. Name your skill with the `netsuite` prefix: it must start with `netsuite` (lowercase), then `-` or `_`, then a short descriptive name. For example, `netsuite-create-invoice`.
+2. Keep frontmatter valid and concise.
+3. Stay compliant with the [agentskills.io specification](https://agentskills.io/specification).
+4. Write tool-agnostic instructions.
+5. Prefer local reference files over remote URLs for reproducibility.
 
 ## Contributing
 This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](./CONTRIBUTING.md).
