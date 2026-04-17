@@ -7,7 +7,7 @@
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const BaseAction = require('../../base/BaseAction');
 const { generateAPIKey } = require('../../../utils/APIKeyGenerator');
-const { parseClientApiKeyContent, setProxyKey } = require('../../../utils/ClientAPIKeyFileContent');
+const { parseClientApiKeyContent } = require('../../../utils/ClientAPIKeyFileContent');
 const { readClientAPIKeyFileContents, writeClientAPIKeyFileContents } = require('../../../utils/ClientApiKeyUtils');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const { COMMAND_PROXY_GENERATEKEY : { ERRORS : { UNABLE_TO_GENERATE_KEY } } } = require('../../../services/TranslationKeys');
@@ -27,7 +27,7 @@ module.exports = class ProxyGenerateKeyAction extends BaseAction {
 
 			const writeOperationResult = await writeClientAPIKeyFileContents(
 				this._sdkExecutor,
-				clientApiKeyFileContents.toCommandlineCompatibleString()
+				clientApiKeyFileContents.toJsonString()
 			);
 
 			return writeOperationResult.status === SdkOperationResultUtils.STATUS.SUCCESS

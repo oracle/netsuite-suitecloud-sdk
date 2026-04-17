@@ -48,13 +48,15 @@ async function readClientAPIKeyFileContents(sdkExecutor) {
 
 /**
  * @param {SdkExecutor} sdkExecutor
- * @param {string} newFileContent must start and end with '"' double quote character, but the rest of in-between "' should be escaped '\"' to avoid shell quoting/escaping issues
+ * @param {string} newFileContent raw JSON string to persist in client_api_key.p12
  * @returns {Promise<SdkOperationResult>}
  */
 async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
 	const executionContext = SdkExecutionContext.Builder.forCommand(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.SDK_COMMAND)
 		.integration()
-		.addParam(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.PARAMS.CONTENT, newFileContent)
+		// The SDK executor still assembles a shell command string, so keep that escaping
+		// localized here instead of on the data model object itself.
+		.addParam(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.PARAMS.CONTENT, formatForSdkCommandlineArgument(newFileContent))
 		.build();
 
 	const operationResult = await executeWithSpinner({
@@ -70,4 +72,11 @@ async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
 	return operationResult;
 }
 
-module.exports = { readClientAPIKeyFileContents, writeClientAPIKeyFileContents };
+function formatForSdkCommandlineArgument(fileContent) {
+	return '"' + fileContent.replaceAll('"', String.raw`\"`) + '"';
+}
+
+module.exports = {
+	readClientAPIKeyFileContents,
+	writeClientAPIKeyFileContents,
+};

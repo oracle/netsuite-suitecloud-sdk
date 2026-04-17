@@ -44,16 +44,23 @@ class ClientAPIKeyFileContent {
 	}
 
 	getDefaultProxyKeyValue() {
+		if (!this._containsDefaultProxyKeyValue()) {
+			return "";
+		}
+
 		const defaultKeyName = this.data[FILE_FIELDS.DEFAULT_KEY];
 		return this.data[FILE_FIELDS.KEYS][defaultKeyName][KEY_FIELDS.VALUE];
 	}
 
 	/**
 	 * @param {string} proxyAPIKey must be 32 bytes long.
-	 * @param {string} creationDate must represent a DateTime string following the ISO standard format "YYY7-MM-DDThh:mm:ss.SSSZ".
+	 * @param {string} creationDate must represent a DateTime string following the ISO standard format "YYYY-MM-DDThh:mm:ss.SSSZ".
 	 * @returns {void}
 	 */
 	setDefaultProxyKey(proxyAPIKey, creationDate = new Date().toISOString()) {
+		if (!this._containsDefaultProxyKeyValue()) {
+			throw NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.INVALID_FILE_CONTENTS);
+		}
 
 		const defaultKeyName = this.data[FILE_FIELDS.DEFAULT_KEY];
 		this.data[FILE_FIELDS.KEYS][defaultKeyName] = {
@@ -63,11 +70,20 @@ class ClientAPIKeyFileContent {
 	}
 
 	/**
-	 * Returns the internal structure of a ClientApiKey Object that can be passed as a Commandline argument.
-	 * @returns {string} stringified JSON which starts and ends with double_quote and contains no double_quotes in between.
+	 * Returns the raw JSON contents that should be persisted into client_api_key.p12.
+	 * Transport-specific escaping belongs at the SDK execution boundary.
+	 * @returns {string}
 	 */
-	toCommandlineCompatibleString() {
-		return '"' + JSON.stringify(this.data).replaceAll('"', String.raw`\"`) + '"';
+	toJsonString() {
+		return JSON.stringify(this.data);
+	}
+
+	_containsDefaultProxyKeyValue() {
+		if (!this.data[FILE_FIELDS.DEFAULT_KEY]) {
+			return false;
+		}
+		const defaultKeyName = this.data[FILE_FIELDS.DEFAULT_KEY];
+		return Boolean(this.data[FILE_FIELDS.KEYS]?.[defaultKeyName]?.[KEY_FIELDS.VALUE]);
 	}
 }
 

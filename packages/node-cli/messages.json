@@ -177,8 +177,8 @@
 	"COMMAND_PACKAGE_LOCAL_VALIDATION_NOT_EXECUTED": "The project is being packaged without validation. Make sure the project is validated.",
 	"COMMAND_PACKAGE_PACKAGING": "Packaging...",
 
-	"COMMAND_PROXY_GENERATEKEY_ERROR_UNABLE_TO_GENERATE_KEY": "Unable to generate new Proxy key.",
-	"COMMAND_PROXY_GENERATEKEY_SUCCESS_KEY_GENERATED": "New proxy key \"{0}\" generated, store securely and remember to update it in your third party tool of choice.\nThis Passkey will never be shown again, so if you forget it you will need to generate a new one by triggering this command again.",
+	"COMMAND_PROXY_GENERATEKEY_ERROR_UNABLE_TO_GENERATE_KEY": "Unable to generate a new proxy API key.",
+	"COMMAND_PROXY_GENERATEKEY_SUCCESS_KEY_GENERATED": "New proxy API key generated: \"{0}\" generated, store securely and remember to update it in your third party tool of choice.\nThis Passkey will never be shown again, so if you forget it you will need to generate a new one by triggering this command again.",
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
@@ -310,11 +310,11 @@
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 	"UTILS_ERRORS_COMMAND": "There was an error with the {0} command. {1}",
-	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_INVALID_FILE_CONTENTS": "Client API key file's contents must be a valid format. Please, delete client_api_key.p12 file and try again.",
-	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_READING_FILE_CONTENTS": "Error reading Client API key file's contents.",
-	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_WRITING_FILE_CONTENTS": "Error writing Client API key file's contents.",
-	"UTILS_CLIENT_API_KEY_UTILS_READING_FILE_CONTENTS": "Reading Client API key file's contents...",
-	"UTILS_CLIENT_API_KEY_UTILS_WRITING_FILE_CONTENTS": "Writing Client API key file's contents...",
+	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_INVALID_FILE_CONTENTS": "The Client API Key file contents are not in a valid format. Delete \"client_api_key.p12\" and try again.",
+	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_READING_FILE_CONTENTS": "Error reading the Client API Key file contents.",
+	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_WRITING_FILE_CONTENTS": "Error writing the Client API Key file contents.",
+	"UTILS_CLIENT_API_KEY_UTILS_READING_FILE_CONTENTS": "Reading the Client API Key file contents...",
+	"UTILS_CLIENT_API_KEY_UTILS_WRITING_FILE_CONTENTS": "Writing the Client API Key file contents...",
 
 	"YES": "Yes"
 }
