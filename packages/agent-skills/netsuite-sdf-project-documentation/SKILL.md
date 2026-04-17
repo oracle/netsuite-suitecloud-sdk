@@ -132,7 +132,7 @@ The solution [key capability 1], [key capability 2], and [key capability 3].
 
 ### 2. Architecture Diagram Template
 
-```markdown
+````markdown
 ## 2. Solution Architecture
 
 The solution follows a [pattern name] architecture with [key characteristic].
@@ -156,11 +156,11 @@ The solution follows a [pattern name] architecture with [key characteristic].
 │                                                              │
 └─────────────────────────────────────────────────────────────┘
 ```
-```
+````
 
 ### 3. Module Table Template
 
-```markdown
+````markdown
 ## 3. Module Descriptions
 
 | Module | File | Purpose |
@@ -181,13 +181,13 @@ src/
     ├── [customscript_xxx.xml]  # [Script type] Definition
     └── [customrecord_xxx.xml]  # Custom Record Definition
 ```
-```
+````
 
 ### 4. SuiteQL Documentation Template
 
 When documenting SuiteQL queries, use this format:
 
-```markdown
+````markdown
 ### [Query Purpose]
 
 ```sql
@@ -209,7 +209,7 @@ ORDER BY [sort columns]
 - `[Table2]` - [What it contains]
 
 **Security Note:** Keep full SQL for documentation value, but redact sensitive literals such as API keys, tokens, passwords, auth/session secrets, and raw PII.
-```
+````
 
 ### 5. Script Entry Points Template
 
@@ -231,7 +231,7 @@ ORDER BY [sort columns]
 
 ### 6. Deployment Table Template
 
-```markdown
+````markdown
 ## Script Deployments
 
 | Script | Deployment ID | Type | URL/Trigger |
@@ -244,7 +244,7 @@ ORDER BY [sort columns]
 ```
 /app/site/hosting/scriptlet.nl?script=[scriptid]&deploy=[deployid]&param1={value}
 ```
-```
+````
 
 ### 7. Troubleshooting Template
 
