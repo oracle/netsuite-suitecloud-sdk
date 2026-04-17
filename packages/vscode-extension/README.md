@@ -157,9 +157,9 @@ To read the 2025.2 NetSuite's release notes and documentation, check the followi
 
 
 ## Contributing
-This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](./CONTRIBUTING.md).
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](/CONTRIBUTING.md).
 
 ## License
-Copyright (c) 2021, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](./LICENSE) for details.
+Copyright (c) 2021, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), version 1.0. See [License](/LICENSE) for details.
 
 By installing SuiteCloud Extension for Visual Studio Code, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.

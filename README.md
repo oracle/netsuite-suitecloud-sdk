@@ -34,7 +34,7 @@ To read the 2025.2 NetSuite's release notes and documentation, check the followi
 
 
 ## Contributing
-This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](./CONTRIBUTING.md).
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](/CONTRIBUTING.md).
 
 
 ## Security
