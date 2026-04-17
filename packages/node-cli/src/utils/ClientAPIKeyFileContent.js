@@ -79,8 +79,7 @@ class ClientAPIKeyFileContent {
 	}
 
 	_containsValidRequiredFields() {
-		return Boolean(this.data[FILE_FIELDS.DEFAULT_KEY])
-			&& Boolean(this.data[FILE_FIELDS.KEYS]);
+		return Boolean(this.data[FILE_FIELDS.DEFAULT_KEY]) && Boolean(this.data[FILE_FIELDS.KEYS]);
 	}
 
 	_containsDefaultProxyKeyValue() {
