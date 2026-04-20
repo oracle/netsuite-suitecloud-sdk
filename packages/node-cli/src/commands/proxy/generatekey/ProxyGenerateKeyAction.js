@@ -8,7 +8,7 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const BaseAction = require('../../base/BaseAction');
 const { generateAPIKey } = require('../../../utils/APIKeyGenerator');
 const { ClientAPIKeyObjectWrapper } = require('../../../utils/ClientAPIKeyObjectWrapper');
-const { readClientAPIKeyFileContents, writeClientAPIKeyFileContents } = require('../../../utils/ClientApiKeyUtils');
+const { readClientAPIKeyFileContents, writeClientAPIKeyFileContents } = require('../../../utils/ClientAPIKeyUtils');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const { COMMAND_PROXY_GENERATEKEY : { ERRORS : { UNABLE_TO_GENERATE_KEY } } } = require('../../../services/TranslationKeys');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
@@ -23,8 +23,7 @@ module.exports = class ProxyGenerateKeyAction extends BaseAction {
 			const newApiKey = generateAPIKey();
 			const readOperationResult = await readClientAPIKeyFileContents(this._sdkExecutor);
 			const clientApiKeyObjectWrapper = new ClientAPIKeyObjectWrapper(readOperationResult.data);
-			clientApiKeyObjectWrapper.setDefaultProxyKey(newApiKey);
-			ClientAPIKeyObjectWrapper._createDefaultJson()
+			clientApiKeyObjectWrapper.setDefaultKeyValue(newApiKey);
 
 			const writeOperationResult = await writeClientAPIKeyFileContents(
 				this._sdkExecutor,

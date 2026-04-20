@@ -178,7 +178,7 @@
 	"COMMAND_PACKAGE_PACKAGING": "Packaging...",
 
 	"COMMAND_PROXY_GENERATEKEY_ERROR_UNABLE_TO_GENERATE_KEY": "Unable to generate a new proxy API key.",
-	"COMMAND_PROXY_GENERATEKEY_SUCCESS_KEY_GENERATED": "New proxy API key generated: \"{0}\" generated, store securely and remember to update it in your third party tool of choice.\nThis Passkey will never be shown again, so if you forget it you will need to generate a new one by triggering this command again.",
+	"COMMAND_PROXY_GENERATEKEY_SUCCESS_KEY_GENERATED": "New proxy API key generated: \"{0}\" generated, store securely and remember to update it in your third party tool of choice.\nThis proxy API key will never be shown again, so if you forget it you will need to generate a new one by triggering this command again.",
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 

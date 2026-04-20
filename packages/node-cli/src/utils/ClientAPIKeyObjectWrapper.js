@@ -5,7 +5,7 @@
 'use strict';
 
 const NodeTranslationService = require('../services/NodeTranslationService');
-const { UTILS: { CLIENT_API_KEY_UTILS }, } = require('../services/TranslationKeys');
+const { UTILS: { CLIENT_API_KEY_UTILS } } = require('../services/TranslationKeys');
 
 const FILE_FIELDS = {
 	SCHEMA_VERSION: 'schemaVersion',
@@ -18,25 +18,18 @@ const KEY_FIELDS = {
 	VALUE: 'value',
 };
 
-const CURRENT_SCHEMA_VERSION = 1;
-const DEFAULT_PROXY_KEY_NAME = 'proxyKey';
-
-/**
- *
- * Class that represents the contents of 'client_api_key.p12'
- * The expected 'client_api_key.p12' file content/format goes as follows:
- *		{
- *			"schemaVersion": 1,
- *			"defaultKey": "proxyKey",
- *			"keys": {
- *				"proxyKey": {
- *					"creationDate": "2026-04-13T12:46:52.577Z",
- *					"value": "3d3dfe3ec58eb9b9826f4546de20f96f99f6b7ed1fcdcaaa5f3c252eb69dce56"
- *				}
- *			}
- *		}
- *
- */
+ const EMPTY_CLIENT_API_KEY_JSON = `
+ 	{
+		"schemaVersion": 1,
+		"defaultKey": "proxyKey",
+		"keys": {
+			"proxyKey": {
+				"creationDate": "",
+				"value": ""
+			}
+		}
+	}
+`
 
 class ClientAPIKeyObjectWrapper {
 
@@ -50,26 +43,43 @@ class ClientAPIKeyObjectWrapper {
 	constructor(jsonString) {
 
 		try {
-			this._json = jsonString
+			this._objectData = jsonString
 				? JSON.parse(jsonString)
-				: _createEmptyClientAPIKeyJson();
+				: JSON.parse(EMPTY_CLIENT_API_KEY_JSON);
+
+			this._validateObjectStructure();
 
 		} catch (error) {
 			throw NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.INVALID_FILE_CONTENTS);
 		}
+	}
 
-		if (!this._validateObjectStructure()) {
-			throw NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.INVALID_FILE_CONTENTS);
+	_validateObjectStructure() {
+		if (!this._objectData.hasOwnProperty(FILE_FIELDS.DEFAULT_KEY)) {
+			throw "ClientAPIKey object must contain a 'defaultKey' field.";
+		}
+
+		if (!this._objectData.hasOwnProperty(FILE_FIELDS.KEYS)) {
+			throw "ClientAPIKey object must contain a 'keys' object.";
+		}
+
+		const defaultKeyValue = this._objectData[FILE_FIELDS.DEFAULT_KEY];
+		if (!this._objectData[FILE_FIELDS.KEYS].hasOwnProperty(defaultKeyValue)) {
+			throw "ClientAPIKey object must contain an inner 'keys.defaultKeyValue' object.";
+		}
+
+		if (!this._objectData[FILE_FIELDS.KEYS][defaultKeyValue].hasOwnProperty(KEY_FIELDS.VALUE)) {
+			throw "The inner 'keys.defaultKeyValue' object must contain a 'value' field.";
 		}
 	}
 
 	/**
-	 * Returns the value of the key_id specified within the defaultKey.
-	 * @returns {string} corresponding to the key value. Can be empty if the client_api_key.p12 din
+	 * Returns the proxy_key value specified within the defaultKey.
+	 * @returns {string} Can be empty if the client_api_key.p12 was newly generated.
 	 */
-	getDefaultProxyKeyValue() {
-		const defaultKeyName = this._json[FILE_FIELDS.DEFAULT_KEY];
-		return this._json[FILE_FIELDS.KEYS][defaultKeyName][KEY_FIELDS.VALUE];
+	getDefaultKeyValue() {
+		const defaultKeyName = this._objectData[FILE_FIELDS.DEFAULT_KEY];
+		return this._objectData[FILE_FIELDS.KEYS][defaultKeyName][KEY_FIELDS.VALUE];
 	}
 
 	/**
@@ -77,10 +87,10 @@ class ClientAPIKeyObjectWrapper {
 	 * @param {string} creationDate must represent a DateTime string following the ISO standard format "YYYY-MM-DDThh:mm:ss.SSSZ".
 	 * @returns {void}
 	 */
-	setDefaultProxyKey(proxyAPIKey, creationDate = new Date().toISOString()) {
+	setDefaultKeyValue(proxyAPIKey, creationDate = new Date().toISOString()) {
 
-		const defaultKeyName = this._json[FILE_FIELDS.DEFAULT_KEY];
-		this._json[FILE_FIELDS.KEYS][defaultKeyName] = {
+		const defaultKeyName = this._objectData[FILE_FIELDS.DEFAULT_KEY];
+		this._objectData[FILE_FIELDS.KEYS][defaultKeyName] = {
 			[KEY_FIELDS.CREATION_DATE] : creationDate,
 			[KEY_FIELDS.VALUE] : proxyAPIKey,
 		};
@@ -88,36 +98,14 @@ class ClientAPIKeyObjectWrapper {
 
 	/**
 	 * Returns the raw JSON contents that should be persisted into client_api_key.p12.
-	 * Transport-specific escaping (making the string Command-line compatible) belongs at the SDK execution boundary.
+	 * Transport-specific escaping (making the string Command-line compatible) belongs at ClientAPIKeyUtils.js.
 	 * @returns {string}
 	 */
 	toJsonString() {
-		return JSON.stringify(this._json);
+		return JSON.stringify(this._objectData);
 	}
-
-	_validateObjectStructure() {
-		if (!Boolean(this._json[FILE_FIELDS.DEFAULT_KEY]) || !Boolean(this._json[FILE_FIELDS.KEYS])) {
-			return false;
-		}
-		const defaultKeyName = this._json[FILE_FIELDS.DEFAULT_KEY];
-		const defaultKeyValue = this._json[FILE_FIELDS.KEYS][defaultKeyName]?.[KEY_FIELDS.VALUE];
-		return Boolean(defaultKeyValue) || defaultKeyValue === "";
-	}
-}
-
-function _createEmptyClientAPIKeyJson() {
-	return {
-		[FILE_FIELDS.SCHEMA_VERSION] : CURRENT_SCHEMA_VERSION,
-		[FILE_FIELDS.DEFAULT_KEY] : DEFAULT_PROXY_KEY_NAME,
-		[FILE_FIELDS.KEYS] : {
-			[DEFAULT_PROXY_KEY_NAME] : {
-				[KEY_FIELDS.CREATION_DATE] : "",
-				[KEY_FIELDS.VALUE] : "",
-			}
-		}
-	};
 }
 
 module.exports = {
-	ClientAPIKeyObjectWrapper: ClientAPIKeyObjectWrapper
+	ClientAPIKeyObjectWrapper
 };
