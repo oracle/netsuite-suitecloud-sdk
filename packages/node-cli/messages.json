@@ -310,7 +310,7 @@
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 	"UTILS_ERRORS_COMMAND": "There was an error with the {0} command. {1}",
-	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_INVALID_FILE_CONTENTS": "The Client API Key file contents are not in a valid format. Delete \"client_api_key.p12\" and try again.",
+	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_INVALID_FILE_CONTENTS": "The Client API Key file contents are not in a valid format. Delete the \"client_api_key.p12\" file and try again.",
 	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_READING_FILE_CONTENTS": "Error reading the Client API Key file contents.",
 	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_WRITING_FILE_CONTENTS": "Error writing the Client API Key file contents.",
 	"UTILS_CLIENT_API_KEY_UTILS_READING_FILE_CONTENTS": "Reading the Client API Key file contents...",
