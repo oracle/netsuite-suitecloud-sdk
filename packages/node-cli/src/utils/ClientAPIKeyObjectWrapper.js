@@ -4,8 +4,13 @@
  */
 'use strict';
 
+const path = require('path');
+const HOME_PATH = require('os').homedir();
 const NodeTranslationService = require('../services/NodeTranslationService');
+const { FILES, FOLDERS } = require('../ApplicationConstants');
 const { UTILS: { CLIENT_API_KEY_UTILS } } = require('../services/TranslationKeys');
+
+const CLIENT_API_KEY_FILEPATH = path.join(HOME_PATH, FOLDERS.SUITECLOUD_SDK, FILES.CLIENT_API_KEY);
 
 const FILE_FIELDS = {
 	SCHEMA_VERSION: 'schemaVersion',
@@ -18,7 +23,7 @@ const KEY_FIELDS = {
 	VALUE: 'value',
 };
 
- const EMPTY_CLIENT_API_KEY_JSON = `
+const EMPTY_CLIENT_API_KEY_JSON = `
  	{
 		"schemaVersion": 1,
 		"defaultKey": "proxyKey",
@@ -50,7 +55,7 @@ class ClientAPIKeyObjectWrapper {
 			this._validateObjectStructure();
 
 		} catch (error) {
-			throw NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.INVALID_FILE_CONTENTS);
+			throw NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.INVALID_FILE_CONTENTS, CLIENT_API_KEY_FILEPATH);
 		}
 	}
 

@@ -19,6 +19,7 @@ module.exports = {
 	SDK_CLIENT_PLATFORM_JVM_OPTION: '-DclientPlatform',
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION: '-DclientPlatformVersion',
 	FILES: {
+		CLIENT_API_KEY: 'client_api_key.p12',
 		PROJECT_JSON: 'project.json',
 		HIDING_PREFERENCE: 'hiding.xml',
 		LOCKING_PREFERENCE: 'locking.xml',
