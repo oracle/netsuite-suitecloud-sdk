@@ -19,7 +19,6 @@ module.exports = class ProxyGenerateKeyAction extends BaseAction {
 	}
 
 	async execute() {
-		console.log(this._sdkPath);
 		try {
 			const newApiKey = generateAPIKey();
 			const readOperationResult = await readClientAPIKeyFileContents(this._sdkExecutor);
