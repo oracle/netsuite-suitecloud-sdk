@@ -789,7 +789,7 @@
 		"name": "proxy:generatekey",
 		"sdkCommand": "generatekey",
 		"usage": "",
-		"description": "Generates a new key for proxy authentication.",
+		"description": "Generates a new API key for proxy authentication.",
 		"isSetupRequired": false,
 		"options": {}
 	}
