@@ -8,6 +8,33 @@ const ProxyStartAction = require('../../../../src/commands/proxy/start/ProxyStar
 const { refreshAuthorization } = require('../../../../src/utils/AuthenticationUtils');
 const { SuiteCloudAuthProxyService, EVENTS } = require('../../../../src/services/SuiteCloudAuthProxyService');
 
+describe('ProxyStartAction preExecute()', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+		result: jest.fn(),
+	};
+
+	let action;
+
+	beforeEach(() => {
+		jest.clearAllMocks();
+		action = new ProxyStartAction({
+			log,
+			sdkPath: '/tmp/fake-sdk-path',
+			executionEnvironmentContext: { env: 'test' },
+		});
+	});
+
+	it('should throw the combined port validation message when port is not a number', () => {
+		expect(() => action.preExecute({ port: 'abc' })).toThrow('The port must be a valid number between 1024 and 65535.');
+	});
+
+	it('should throw the combined port validation message when port is outside the allowed range', () => {
+		expect(() => action.preExecute({ port: 1000 })).toThrow('The port must be a valid number between 1024 and 65535.');
+	});
+});
+
 describe('ProxyStartAction execute()', () => {
 	const log = {
 		error: jest.fn(),

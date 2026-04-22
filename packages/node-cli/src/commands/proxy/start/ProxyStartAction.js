@@ -65,16 +65,20 @@ module.exports = class ProxyStartAction extends BaseAction {
 
 	_validatePort(port) {
 		if (Number.isNaN(port)) {
-			throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_MUST_BE_NUMBER);
+			throw this._getInvalidPortMessage();
 		}
 
 		if (port < PORT_RANGE.MIN || port > PORT_RANGE.MAX) {
-			throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_OUT_OF_RANGE, PORT_RANGE.MIN, PORT_RANGE.MAX);
+			throw this._getInvalidPortMessage();
 		}
 
 		if (!this._validatePortAvailability(port)) {
 			throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_ALREADY_IN_USE, port);
 		}
+	}
+
+	_getInvalidPortMessage() {
+		return NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_MUST_BE_NUMBER, PORT_RANGE.MIN, PORT_RANGE.MAX);
 	}
 
 	_validatePortAvailability(port) {

@@ -24,6 +24,8 @@ const PORT_RANGE = {
 	MAX: 65535,
 };
 
+const DEFAULT_PORT = 8181;
+
 module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	async getParameters(params) {
 		const apiKeyParams = await resolveClientApiKey({
@@ -47,7 +49,7 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
 				name: COMMAND.OPTIONS.PORT,
 				message: NodeTranslationService.getMessage(COMMAND_PROXY_START.QUESTIONS.PORT),
-				default: params[COMMAND.OPTIONS.PORT],
+				default: params[COMMAND.OPTIONS.PORT] || DEFAULT_PORT,
 				filter: (value) => Number(value),
 				validate: (value) => this._validatePortInput(value),
 			},
@@ -81,13 +83,17 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	_validatePortInput(value) {
 		const port = Number(value);
 		if (Number.isNaN(port)) {
-			return NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_MUST_BE_NUMBER);
+			return this._getInvalidPortMessage();
 		}
 
 		if (port < PORT_RANGE.MIN || port > PORT_RANGE.MAX) {
-			return NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_OUT_OF_RANGE, PORT_RANGE.MIN, PORT_RANGE.MAX);
+			return this._getInvalidPortMessage();
 		}
 
 		return true;
+	}
+
+	_getInvalidPortMessage() {
+		return NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_MUST_BE_NUMBER, PORT_RANGE.MIN, PORT_RANGE.MAX);
 	}
 };
