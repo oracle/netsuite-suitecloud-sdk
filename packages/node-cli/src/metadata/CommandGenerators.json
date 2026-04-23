@@ -75,6 +75,11 @@
 		"generator": "commands/project/validate/ValidateCommand"
 	},
 	{
+		"commandName": "proxy:generatekey",
+		"supportsInteractiveMode": false,
+		"generator": "commands/proxy/generatekey/ProxyGenerateKeyCommand"
+	},
+	{
 		"commandName": "object:create",
 		"supportsInteractiveMode": true,
 		"generator": "commands/object/create/CreateObjectCommand"
