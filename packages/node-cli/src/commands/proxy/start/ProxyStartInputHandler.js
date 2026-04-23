@@ -65,7 +65,6 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	_toAuthIdChoices(authIdData) {
 		const authIds = Object.keys(authIdData).sort();
 		const choices = [];
-		choices.push(new Separator(NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.MESSAGES.SELECT_CONFIGURED_AUTHID)));
 
 		authIds.forEach((authId) => {
 			const credentials = authIdData[authId];
