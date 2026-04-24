@@ -24,6 +24,8 @@ const PORT_RANGE = {
 	MAX: 65535,
 };
 
+const ALLOWED_PROXY_PATH_PREFIX = '/api/internal/devassist/';
+
 module.exports = class ProxyStartAction extends BaseAction {
 	constructor(options) {
 		super(options);
@@ -51,7 +53,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 				executionEnvironmentContext: this._executionEnvironmentContext,
 			})).apiKey;
 
-			this._proxyService = new SuiteCloudAuthProxyService(this._sdkPath, this._executionEnvironmentContext, undefined, apiKey);
+			this._proxyService = new SuiteCloudAuthProxyService(this._sdkPath, this._executionEnvironmentContext, ALLOWED_PROXY_PATH_PREFIX, apiKey);
 			this._registerProxyEvents(authId, port);
 			this._registerShutdownHandlers();
 
@@ -94,7 +96,6 @@ module.exports = class ProxyStartAction extends BaseAction {
 		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, () => {
-			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CHECKING_SERVER, port));
 			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.RUNNING_WITH_AUTH_ID, authId, port));
 			this._log.info('');
 			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CONFIGURE_AGENT_HEADER));
@@ -111,13 +112,13 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	async _handleManualAuthRefreshRequired({ message, authId }) {
-		this._log.error(message);
 		if (this._manualRefreshInFlight) {
 			await this._manualRefreshInFlight;
 			return;
 		}
 
 		this._manualRefreshInFlight = (async () => {
+			this._log.error(message);
 			await this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.CREDENTIALS_NEED_TO_BE_REFRESHED, authId));
 			const refreshAuthzOperationResult = await refreshAuthorization(authId, this._sdkPath, this._executionEnvironmentContext);
 
