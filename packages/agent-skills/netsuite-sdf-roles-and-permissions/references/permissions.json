@@ -1,8 +1,8 @@
 {
   "metadata": {
     "source": "https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_N3236764.html",
-    "totalPermissions": 684,
-    "uniquePermissionIds": 673,
+    "totalPermissions": 680,
+    "uniquePermissionIds": 669,
     "categories": 5,
     "description": "NetSuite permission names and IDs for SDF object XML permkey validation. Some IDs appear multiple times with different display names (aliases). totalPermissions includes all name variants; uniquePermissionIds counts distinct IDs."
   },
@@ -16,9 +16,6 @@
         {"name": "Manage Accounting Periods", "id": "ADMI_ACCTPERIODS"},
         {"name": "Set Up Accounting", "id": "ADMI_ACCTSETUP"},
         {"name": "Accounting Preferences", "id": "ADMI_ACCTSETUP"},
-        {"name": "Admindocs EU", "id": "ADMI_ADMINDOCSEU"},
-        {"name": "Admindocs NA", "id": "ADMI_ADMINDOCSNA"},
-        {"name": "Admindocs OTHER", "id": "ADMI_ADMINDOCSOTHER"},
         {"name": "Set Up ACH Processing", "id": "ADMI_ACH"},
         {"name": "Advanced Order Management", "id": "ADMI_ADVANCED_ORDER_MANAGEMENT"},
         {"name": "Advanced PDF/HTML Templates", "id": "ADMI_ADVANCED_TEMPLATES"},
@@ -221,8 +218,7 @@
         {"name": "View Web Services Logs", "id": "ADMI_WEBSERVICESLOG"},
         {"name": "Set Up SOAP Web Services", "id": "ADMI_WEBSERVICESSETUP"},
         {"name": "Set Up Web Services", "id": "ADMI_WEBSERVICESSETUP"},
-        {"name": "Workflow", "id": "ADMI_WORKFLOW"},
-        {"name": "Admindocs", "id": "ADMINDOCS"}
+        {"name": "Workflow", "id": "ADMI_WORKFLOW"}
       ]
     },
     "LIST": {
