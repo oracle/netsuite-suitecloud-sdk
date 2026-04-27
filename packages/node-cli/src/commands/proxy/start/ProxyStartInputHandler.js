@@ -5,12 +5,13 @@
 'use strict';
 
 const { default: { prompt, Separator } } = require('inquirer');
+const SdkExecutor = require('../../../SdkExecutor');
 const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
+const { resolveClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
 const { COMMAND_PROXY_START, COMMAND_SETUPACCOUNT } = require('../../../services/TranslationKeys');
-const { resolveClientApiKey } = require('./ProxyApiKeyResolver');
 
 const COMMAND = {
 	OPTIONS: {
@@ -28,10 +29,8 @@ const DEFAULT_PORT = 8181;
 
 module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	async getParameters(params) {
-		const apiKeyParams = await resolveClientApiKey({
-			sdkPath: this._sdkPath,
-			executionEnvironmentContext: this._executionEnvironmentContext,
-		});
+		const sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
+		const apiKeyParams = await resolveClientApiKey(sdkExecutor);
 
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (!authIDActionResult.isSuccess()) {

@@ -5,10 +5,11 @@
 'use strict';
 
 const NodeTranslationService = require('../services/NodeTranslationService');
-const { UTILS: { CLIENT_API_KEY_UTILS }, } = require('../services/TranslationKeys');
+const { UTILS: { CLIENT_API_KEY_UTILS }, COMMAND_PROXY_START } = require('../services/TranslationKeys');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('./SdkOperationResultUtils');
+const { ClientAPIKeyObjectWrapper } = require('./ClientAPIKeyObjectWrapper');
 
 const COMMANDS = {
 	CLIENT_API_KEY: {
@@ -72,11 +73,33 @@ async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
 	return operationResult;
 }
 
+/**
+ * Resolves the default client API key used to authenticate requests sent to the local proxy server.
+ *
+ * @param {SdkExecutor} sdkExecutor
+ * @returns {Promise<{apiKey: string}>} An object containing the resolved API key.
+ * @throws {string|Array<string>} Throws translated/SDK errors when the key file cannot be read or parsed.
+ */
+async function resolveClientApiKey(sdkExecutor) {
+	const readOperationResult = await readClientAPIKeyFileContents(sdkExecutor);
+	const clientApiKeyObjectWrapper = new ClientAPIKeyObjectWrapper(readOperationResult.data);
+	const apiKey = clientApiKeyObjectWrapper.getDefaultKeyValue();
+
+	if (typeof apiKey !== 'string' || !apiKey.trim()) {
+		throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.MISSING_API_KEY);
+	}
+
+	return {
+		apiKey,
+	};
+}
+
 function formatForSdkCommandlineArgument(fileContent) {
 	return '"' + fileContent.replaceAll('"', String.raw`\"`) + '"';
 }
 
 module.exports = {
 	readClientAPIKeyFileContents,
+	resolveClientApiKey,
 	writeClientAPIKeyFileContents,
 };

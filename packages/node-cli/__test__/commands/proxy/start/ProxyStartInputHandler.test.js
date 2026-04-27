@@ -17,13 +17,13 @@ jest.mock('../../../../src/utils/AuthenticationUtils', () => ({
 	getAuthIds: jest.fn(),
 }));
 
-jest.mock('../../../../src/commands/proxy/start/ProxyApiKeyResolver', () => ({
+jest.mock('../../../../src/utils/ClientAPIKeyUtils', () => ({
 	resolveClientApiKey: jest.fn(),
 }));
 
 const ProxyStartInputHandler = require('../../../../src/commands/proxy/start/ProxyStartInputHandler');
 const { getAuthIds } = require('../../../../src/utils/AuthenticationUtils');
-const { resolveClientApiKey } = require('../../../../src/commands/proxy/start/ProxyApiKeyResolver');
+const { resolveClientApiKey } = require('../../../../src/utils/ClientAPIKeyUtils');
 
 describe('ProxyStartInputHandler getParameters()', () => {
 	let inputHandler;
