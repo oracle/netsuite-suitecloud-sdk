@@ -177,6 +177,9 @@
 	"COMMAND_PACKAGE_LOCAL_VALIDATION_NOT_EXECUTED": "The project is being packaged without validation. Make sure the project is validated.",
 	"COMMAND_PACKAGE_PACKAGING": "Packaging...",
 
+	"COMMAND_PROXY_GENERATEKEY_ERROR_UNABLE_TO_GENERATE_KEY": "Unable to generate a new API key for proxy authentication.",
+	"COMMAND_PROXY_GENERATEKEY_SUCCESS_KEY_GENERATED": "New API key for proxy authentication generated: \"{0}\". Store it securely and update it in your third-party tool of choice.\nThis API key will never be shown again, so if you forget it, you will need to generate a new one by running this command again.",
+
 	"COMMAND_PROXY_START_QUESTIONS_SELECT_AUTH_ID": "Select a configured authentication ID to run the proxy:",
 	"COMMAND_PROXY_START_QUESTIONS_PORT": "Enter the local proxy port:",
 	"COMMAND_PROXY_START_MESSAGES_CONFIGURE_AGENT_HEADER": "To use it on this machine, configure your third-party tool as follows:",
@@ -327,6 +330,11 @@
 	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs in this machine...",
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
+	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_INVALID_FILE_CONTENTS": "The Client API Key file contents are not in a valid format. Delete the \"{0}\" file and try again.",
+	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_READING_FILE_CONTENTS": "Error reading the Client API Key file contents.",
+	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_WRITING_FILE_CONTENTS": "Error writing the Client API Key file contents.",
+	"UTILS_CLIENT_API_KEY_UTILS_READING_FILE_CONTENTS": "Reading the Client API Key file contents...",
+	"UTILS_CLIENT_API_KEY_UTILS_WRITING_FILE_CONTENTS": "Writing the Client API Key file contents...",
 	"UTILS_ERRORS_COMMAND": "There was an error with the {0} command. {1}",
 
 	"YES": "Yes"
