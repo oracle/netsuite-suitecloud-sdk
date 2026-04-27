@@ -70,7 +70,7 @@ Default to least privilege. Treat `FULL` as exceptional and justify it explicitl
 
 ### 5. Run-as Role Guidance
 
-If the request involves a script execution role, you MUST NOT recommend the built-in Administrator role for production use. Prefer a dedicated custom role with only the permissions the script needs. If the user explicitly asks for Administrator, explain that it is not recommended for production use and provide the least-privilege custom role recommendation instead.
+If the request involves a script execution role, you MUST NOT recommend the built-in Administrator role for production use. Prefer a dedicated role with only the permissions the script needs. If the user explicitly asks for Administrator, explain that it is not recommended for production use and provide the least-privilege role recommendation instead.
 
 ## Review Checklist
 
