@@ -5,7 +5,6 @@
 'use strict';
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const SdkExecutor = require('../../../SdkExecutor');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const BaseAction = require('../../base/BaseAction');
 const { SuiteCloudAuthProxyService, EVENTS } = require('../../../services/SuiteCloudAuthProxyService');
@@ -49,7 +48,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 		try {
 			const authId = params[COMMAND.OPTIONS.AUTH_ID];
 			const port = params[COMMAND.OPTIONS.PORT];
-			const apiKey = params.apiKey || (await this._resolveApiKeyFromClientFile()).apiKey;
+			const apiKey = params.apiKey || (await resolveClientApiKey(this._sdkExecutor)).apiKey;
 
 			this._proxyService = new SuiteCloudAuthProxyService(this._sdkPath, this._executionEnvironmentContext, ALLOWED_PROXY_PATH_PREFIX, apiKey);
 			this._registerProxyEvents(authId, port);
@@ -61,11 +60,6 @@ module.exports = class ProxyStartAction extends BaseAction {
 		} catch (error) {
 			return ActionResult.Builder.withErrors([error]).build();
 		}
-	}
-
-	async _resolveApiKeyFromClientFile() {
-		const sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
-		return resolveClientApiKey(sdkExecutor);
 	}
 
 	_validatePort(port) {
@@ -170,8 +164,8 @@ module.exports = class ProxyStartAction extends BaseAction {
 			}
 		};
 
-		process.on('SIGINT', shutdown); // Ctrl+C on Linux, macOS, and Windows terminals.
-		process.on('SIGTERM', shutdown); // Termination requests from the OS, shell, or process managers.
-		process.on('SIGBREAK', shutdown); // Ctrl+Break on Windows terminals.
+		process.on('SIGINT', shutdown); 	// Ctrl+C on Linux, macOS, and Windows terminals.
+		process.on('SIGTERM', shutdown); 	// Termination requests from the OS, shell, or process managers.
+		process.on('SIGBREAK', shutdown); 	// Ctrl+Break on Windows terminals.
 	}
 };
