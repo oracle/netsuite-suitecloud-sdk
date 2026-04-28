@@ -87,16 +87,16 @@ module.exports = class ProxyStartAction extends BaseAction {
 
 	_registerProxyEvents(authId, port) {
 		// Dedicated handlers for events with custom behavior.
-		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, 	this._handleManualAuthRefreshRequired.bind(this));
-		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, 					this._handleServerListening.bind(this, authId, port));
-		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, 						this._handleServerStopped.bind(this));
+		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, this._handleManualAuthRefreshRequired.bind(this));
+		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, this._handleServerListening.bind(this, authId, port));
+		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, this._handleServerStopped.bind(this));
 
 		// Forward error events directly to CLI output.
-		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, 						({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED, 			({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.REQUEST_ERROR.UNAUTHORIZED, 				({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, 						({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, 				({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, ({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED, ({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.REQUEST_ERROR.UNAUTHORIZED, ({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, ({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, ({ message }) => this._log.error(message));
 	}
 
 	async _handleManualAuthRefreshRequired({ message, authId }) {
