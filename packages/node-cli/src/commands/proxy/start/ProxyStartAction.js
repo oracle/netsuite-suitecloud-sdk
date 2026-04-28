@@ -92,28 +92,17 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_registerProxyEvents(authId, port) {
-		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, ({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, this._handleManualAuthRefreshRequired.bind(this));
-		this._proxyService.on(EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED, ({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.REQUEST_ERROR.UNAUTHORIZED, ({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, ({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, ({ message }) => this._log.error(message));
-		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, this._handleServerListening.bind(this, authId, port));
-		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, () => {
-			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOPPED));
-		});
-	}
+		// Dedicated handlers for events with custom behavior.
+		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, 	this._handleManualAuthRefreshRequired.bind(this));
+		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, 					this._handleServerListening.bind(this, authId, port));
+		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, 						this._handleServerStopped.bind(this));
 
-	_handleServerListening(authId, port) {
-		this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.RUNNING_WITH_AUTH_ID, authId, port));
-		this._log.info('');
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CONFIGURE_AGENT_HEADER));
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_PROVIDER));
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_BASE_URL, port));
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_KEY));
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_MODEL_ID));
-		this._log.info('');
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOP_INSTRUCTIONS));
+		// Forward error events directly to CLI output.
+		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, 						({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED, 			({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.REQUEST_ERROR.UNAUTHORIZED, 				({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, 						({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, 				({ message }) => this._log.error(message));
 	}
 
 	async _handleManualAuthRefreshRequired({ message, authId }) {
@@ -141,6 +130,22 @@ module.exports = class ProxyStartAction extends BaseAction {
 		});
 
 		await this._manualRefreshInFlight;
+	}
+
+	_handleServerListening(authId, port) {
+		this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.RUNNING_WITH_AUTH_ID, authId, port));
+		this._log.info('');
+		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CONFIGURE_AGENT_HEADER));
+		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_PROVIDER));
+		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_BASE_URL, port));
+		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_KEY));
+		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_MODEL_ID));
+		this._log.info('');
+		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOP_INSTRUCTIONS));
+	}
+
+	_handleServerStopped() {
+		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOPPED));
 	}
 
 	_registerShutdownHandlers() {
