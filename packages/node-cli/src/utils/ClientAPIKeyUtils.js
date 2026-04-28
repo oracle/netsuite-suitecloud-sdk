@@ -80,7 +80,7 @@ async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
  * @returns {Promise<{apiKey: string}>} An object containing the resolved API key.
  * @throws {string|Array<string>} Throws translated/SDK errors when the key file cannot be read or parsed.
  */
-async function resolveClientApiKey(sdkExecutor) {
+async function resolveDefaultClientApiKey(sdkExecutor) {
 	const readOperationResult = await readClientAPIKeyFileContents(sdkExecutor);
 	const clientApiKeyObjectWrapper = new ClientAPIKeyObjectWrapper(readOperationResult.data);
 	const apiKey = clientApiKeyObjectWrapper.getDefaultKeyValue();
@@ -100,6 +100,6 @@ function formatForSdkCommandlineArgument(fileContent) {
 
 module.exports = {
 	readClientAPIKeyFileContents,
-	resolveClientApiKey,
+	resolveDefaultClientApiKey,
 	writeClientAPIKeyFileContents,
 };

@@ -18,12 +18,12 @@ jest.mock('../../../../src/utils/AuthenticationUtils', () => ({
 }));
 
 jest.mock('../../../../src/utils/ClientAPIKeyUtils', () => ({
-	resolveClientApiKey: jest.fn(),
+	resolveDefaultClientApiKey: jest.fn(),
 }));
 
 const ProxyStartInputHandler = require('../../../../src/commands/proxy/start/ProxyStartInputHandler');
 const { getAuthIds } = require('../../../../src/utils/AuthenticationUtils');
-const { resolveClientApiKey } = require('../../../../src/utils/ClientAPIKeyUtils');
+const { resolveDefaultClientApiKey } = require('../../../../src/utils/ClientAPIKeyUtils');
 
 describe('ProxyStartInputHandler getParameters()', () => {
 	let inputHandler;
@@ -35,7 +35,7 @@ describe('ProxyStartInputHandler getParameters()', () => {
 			executionEnvironmentContext: { env: 'test' },
 		});
 
-		resolveClientApiKey.mockResolvedValue({ apiKey: 'fake-api-key' });
+		resolveDefaultClientApiKey.mockResolvedValue({ apiKey: 'fake-api-key' });
 		getAuthIds.mockResolvedValue({
 			isSuccess: () => true,
 			data: {

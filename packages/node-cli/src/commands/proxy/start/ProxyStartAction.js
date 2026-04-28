@@ -10,7 +10,7 @@ const BaseAction = require('../../base/BaseAction');
 const { SuiteCloudAuthProxyService, EVENTS } = require('../../../services/SuiteCloudAuthProxyService');
 const { COMMAND_PROXY_START, COMMAND_REFRESH_AUTHORIZATION } = require('../../../services/TranslationKeys');
 const { refreshAuthorization } = require('../../../utils/AuthenticationUtils');
-const { resolveClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
+const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
 
 const COMMAND = {
 	OPTIONS: {
@@ -48,7 +48,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 		try {
 			const authId = params[COMMAND.OPTIONS.AUTH_ID];
 			const port = params[COMMAND.OPTIONS.PORT];
-			const apiKey = params.apiKey || (await resolveClientApiKey(this._sdkExecutor)).apiKey;
+			const apiKey = params.apiKey || (await resolveDefaultClientApiKey(this._sdkExecutor)).apiKey;
 
 			this._proxyService = new SuiteCloudAuthProxyService(this._sdkPath, this._executionEnvironmentContext, ALLOWED_PROXY_PATH_PREFIX, apiKey);
 			this._registerProxyEvents(authId, port);

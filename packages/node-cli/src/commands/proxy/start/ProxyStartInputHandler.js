@@ -10,7 +10,7 @@ const BaseInputHandler = require('../../base/BaseInputHandler');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
-const { resolveClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
+const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
 const { COMMAND_PROXY_START, COMMAND_SETUPACCOUNT } = require('../../../services/TranslationKeys');
 
 const COMMAND = {
@@ -30,7 +30,7 @@ const DEFAULT_PORT = 8181;
 module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	async getParameters(params) {
 		const sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
-		const apiKeyParams = await resolveClientApiKey(sdkExecutor);
+		const apiKeyParams = await resolveDefaultClientApiKey(sdkExecutor);
 
 		const authIDActionResult = await getAuthIds(this._sdkPath);
 		if (!authIDActionResult.isSuccess()) {
