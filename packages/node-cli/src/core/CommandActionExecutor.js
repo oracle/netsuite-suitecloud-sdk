@@ -79,7 +79,7 @@ module.exports = class CommandActionExecutor {
 			// src/commands/Command.js, run(inputParams) => execution flow for all commands
 			const actionResult = await command.run(overriddenArguments)
 
-			if (context.runInInteractiveMode) {
+			if (context.runInInteractiveMode && commandMetadata.hideInteractiveHint !== true) {
 				// generate non-interactive equivalent
 				const notInteractiveCommand = ActionResultUtils.extractNotInteractiveCommand(commandName, commandMetadata, actionResult);
 				this._log.info(NodeTranslationService.getMessage(CLI.SHOW_NOT_INTERACTIVE_COMMAND_MESSAGE, notInteractiveCommand));
