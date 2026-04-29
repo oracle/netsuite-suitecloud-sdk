@@ -11,7 +11,7 @@ const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
-const { COMMAND_PROXY_START, COMMAND_SETUPACCOUNT } = require('../../../services/TranslationKeys');
+const { COMMAND_PROXY_START, COMMAND_SETUPACCOUNT, COMMAND_MANAGE_ACCOUNT } = require('../../../services/TranslationKeys');
 
 const COMMAND = {
 	OPTIONS: {
@@ -63,6 +63,10 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 
 	_toAuthIdChoices(authIdData) {
 		const authIds = Object.keys(authIdData).sort();
+		if (authIds.length <= 0) {
+			throw NodeTranslationService.getMessage(COMMAND_MANAGE_ACCOUNT.ERRORS.CREDENTIALS_EMPTY);
+		}
+
 		const choices = [];
 
 		authIds.forEach((authId) => {

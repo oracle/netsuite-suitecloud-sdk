@@ -5,7 +5,7 @@
 'use strict';
 
 const NodeTranslationService = require('../services/NodeTranslationService');
-const { UTILS: { CLIENT_API_KEY_UTILS }, COMMAND_PROXY_START } = require('../services/TranslationKeys');
+const { UTILS: { CLIENT_API_KEY_UTILS } } = require('../services/TranslationKeys');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('./SdkOperationResultUtils');
@@ -86,7 +86,7 @@ async function resolveDefaultClientApiKey(sdkExecutor) {
 	const apiKey = clientApiKeyObjectWrapper.getDefaultKeyValue();
 
 	if (typeof apiKey !== 'string' || !apiKey.trim()) {
-		throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.MISSING_API_KEY);
+		throw NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.MISSING_API_KEY);
 	}
 
 	return {

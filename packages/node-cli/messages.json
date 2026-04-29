@@ -139,7 +139,7 @@
 	"COMMAND_LISTOBJECTS_SUCCESS_OBJECTS_IMPORTED": "The following objects were found in your account:",
 	"COMMAND_LISTOBJECTS_SUCCESS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 
-	"COMMAND_MANAGE_ACCOUNT_ERROR_CREDENTIALS_EMPTY": "There is no authentication ID (a custom alias you give to a specific account-role combination) configured for this account-role combination. Run \"suitecloud account:setup\" to set up a NetSuite account to use with SuiteCloud CLI for Node.js.",
+	"COMMAND_MANAGE_ACCOUNT_ERROR_CREDENTIALS_EMPTY": "No authentication IDs are available for selection in interactive mode.\nRun \"suitecloud account:setup\" to configure a NetSuite account for use with SuiteCloud CLI for Node.js.",
 	"COMMAND_MANAGE_ACCOUNT_ERROR_CREDENTIALS_NOT_FOUND": "The \"{0}\" authentication ID is not available. Check your authentication credentials and try again.",
 	"COMMAND_MANAGE_ACCOUNT_ERROR_OPTION_NOT_SPECIFIED": "You have not specified any option. Run \"suitecloud account:manageauth --help\" to check which options are available.",
 	"COMMAND_MANAGE_ACCOUNT_ERROR_BROWSER_BASED_NOT_ALLOWED": "Browser-based authentication is not allowed for the current execution context.\nFor more information, see {0}.",
@@ -199,7 +199,6 @@
 	"COMMAND_PROXY_START_ERRORS_PORT_ALREADY_IN_USE": "Port {0} is already in use.",
 	"COMMAND_PROXY_START_ERRORS_READING_CLIENT_API_CONTENTS": "Error reading Client API contents.",
 	"COMMAND_PROXY_START_ERRORS_INVALID_PROXY_KEY_PAYLOAD": "Could not parse proxy key payload from SDK output.",
-	"COMMAND_PROXY_START_ERRORS_MISSING_API_KEY": "No client API key was found. Run \"suitecloud proxy:generatekey\" and try again.",
 
 	"COMMAND_SDK_WRAPPER_EXECUTING_COMMAND": "Executing {0}...",
 
@@ -315,7 +314,7 @@
 	"SUITECLOUD_AUTH_PROXY_SERVICE_MISSING_AUTH_ID": "It looks like we're missing your auth ID. Add it and we'll continue.",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_MISSING_PORT": "It looks like we're missing the port. Enter it and we'll continue.",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_NEED_TO_REAUTHENTICATE" : "Manual authentication is needed. Sign in again to continue.",
-	"SUITECLOUD_AUTH_PROXY_SERVICE_NOT_EXISTING_AUTH_ID" : "We couldn't find the auth ID \"{0}\". Check it and we'll continue.",
+	"SUITECLOUD_AUTH_PROXY_SERVICE_NOT_EXISTING_AUTH_ID" : "The \"{0}\" authentication ID is not available. Check your authentication credentials and try again.",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_PORT_MUST_BE_NUMBER" : "The required parameter port must be a number. Correct it and we'll continue.",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_REQUEST_PATH_NOT_ALLOWED_ERROR" : "Invalid request. The request path must start with {0}.",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_UNAUTHORIZED_PROXY_REQUEST": "Unauthorized: The API key is missing or invalid.",
@@ -331,6 +330,7 @@
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",
 	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_INVALID_FILE_CONTENTS": "The Client API Key file contents are not in a valid format. Delete the \"{0}\" file and try again.",
+	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_MISSING_API_KEY": "No API key was found. Run \"suitecloud proxy:generatekey\" and try again.",
 	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_READING_FILE_CONTENTS": "Error reading the Client API Key file contents.",
 	"UTILS_CLIENT_API_KEY_UTILS_ERRORS_WRITING_FILE_CONTENTS": "Error writing the Client API Key file contents.",
 	"UTILS_CLIENT_API_KEY_UTILS_READING_FILE_CONTENTS": "Reading the Client API Key file contents...",

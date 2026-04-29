@@ -63,4 +63,14 @@ describe('ProxyStartInputHandler getParameters()', () => {
 		const questions = mockPrompt.mock.calls[0][0];
 		expect(questions[1].default).toBe(8383);
 	});
+
+	it('should throw when there are no configured auth IDs', async () => {
+		getAuthIds.mockResolvedValue({
+			isSuccess: () => true,
+			data: {},
+		});
+
+		await expect(inputHandler.getParameters({})).rejects.toBeTruthy();
+		expect(mockPrompt).not.toHaveBeenCalled();
+	});
 });
