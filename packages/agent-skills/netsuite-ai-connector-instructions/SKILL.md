@@ -50,7 +50,7 @@ Has user confirmed a custom SuiteQL query is acceptable?
 - ALWAYS call `ns_getSubsidiaries` when `has_subsidiary_filter: true` on a report
 - ALWAYS call `ns_getRecordTypeMetadata` before any create or update
 - ALWAYS call `ns_getSuiteQLMetadata` before any custom SuiteQL query
-- ALWAYS set `externalId` to a new UUIDv4 on every `ns_createRecord` call
+- ALWAYS set `externalId` on every `ns_createRecord` call when the record type supports it, using a unique value from the connector's external ID strategy
 - NEVER skip `ROWNUM <= 1000` on any SuiteQL query
 - NEVER run SuiteQL query without user confirmation
 - NEVER auto-retry a failed `ns_createRecord` — ask user to verify in NetSuite first
@@ -315,7 +315,7 @@ ORDER BY t.trandate DESC
 | Report not found           | Try alternate names → try saved searches → ask user for custom name |
 | No data returned           | Loosen date range → remove filters → suggest alternative scope |
 | Permission denied          | Don't show raw error → tell user which role/permission is needed |
-| Record create fails        | Don't auto-retry → ask user to verify in NetSuite → new UUIDv4 on retry |
+| Record create fails        | Don't auto-retry → ask user to verify in NetSuite → use a new unique `externalId` on retry |
 | Unexpected outlier         | Flag: *"This figure looks unusual — please verify in your NetSuite UI"* |
 | Multi-subsidiary conflict  | Ask: *"Which subsidiary, or consolidated results?"* |
 | SuiteQL syntax error       | Fix query using metadata, retry once → if still failing, suggest saved search |
@@ -344,7 +344,7 @@ NUMBERS:  $2.1M  |  $342.5K  |  12.3%  |  full in tables
 LINKS:    hyperlink every transaction + entity  |  color #36677D
 ARTIFACT: 3+ metrics OR 10+ rows OR dashboard/report/compare request
 REDWOOD:  #003764 headers  #D64700 alerts  #3D7A41 positive  #B95C00 warning
-CREATES:  always externalId=UUIDv4  |  never auto-retry on failure
+CREATES:  always set externalId when supported  |  use a unique externalId  |  never auto-retry on failure
 SUITEQL:  user must confirm  |  ROWNUM<=1000  |  NVL all amounts
 ```
 

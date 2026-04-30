@@ -70,7 +70,7 @@ Default to least privilege. Treat `FULL` as exceptional and justify it explicitl
 
 ### 5. Run-as Role Guidance
 
-If the request involves a script execution role, avoid recommending the built-in Administrator role for production use. Prefer a dedicated role with only the permissions the script needs.
+If the request involves a script execution role, you MUST NOT recommend the built-in Administrator role for production use. Prefer a dedicated role with only the permissions the script needs. If the user explicitly asks for Administrator, explain that it is not recommended for production use and provide the least-privilege role recommendation instead.
 
 ## Review Checklist
 
@@ -91,6 +91,7 @@ When answering with a permission recommendation or review result:
 - State the recommended `permlevel`.
 - Explain why that level is sufficient.
 - Call out any related permissions that may also be required.
+- Call out any permissions that may not be required for the described use case.
 - Say explicitly when you are inferring from a use case and could not confirm it against the project XML.
 
 ## Common Inference Patterns
