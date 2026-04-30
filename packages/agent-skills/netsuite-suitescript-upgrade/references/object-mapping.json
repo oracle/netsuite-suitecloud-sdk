@@ -1,0 +1,719 @@
+{
+  "version": "1.0.0",
+  "source": "Oracle SuiteScript 1.0 to 2.1 Object Map",
+  "generatedDate": "2026-02-18",
+  "objects": [
+    {
+      "ss1Object": "nlobjAssistant",
+      "ss2Class": "serverWidget.Assistant",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Build wizard-style UIs in Suitelets",
+      "methods": [
+        { "ss1Method": "addField(name, type, label, source, group)", "ss2Method": "Assistant.addField(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addFieldGroup(name, label)", "ss2Method": "Assistant.addFieldGroup(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addStep(name, label)", "ss2Method": "Assistant.addStep(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addSubList(name, type, label)", "ss2Method": "Assistant.addSublist(options)", "notes": "SubList renamed to Sublist (lowercase L)" },
+        { "ss1Method": "getAllFields()", "ss2Method": "Assistant.getFieldIds()", "notes": "Renamed" },
+        { "ss1Method": "getAllFieldGroups()", "ss2Method": "Assistant.getFieldGroupIds()", "notes": "Renamed" },
+        { "ss1Method": "getAllSteps()", "ss2Method": "Assistant.getSteps()", "notes": "Renamed" },
+        { "ss1Method": "getAllSubLists()", "ss2Method": "Assistant.getSublistIds()", "notes": "Renamed" },
+        { "ss1Method": "getCurrentStep()", "ss2Method": "Assistant.currentStep", "notes": "Property instead of method" },
+        { "ss1Method": "getField(name)", "ss2Method": "Assistant.getField(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getFieldGroup(name)", "ss2Method": "Assistant.getFieldGroup(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getLastAction()", "ss2Method": "Assistant.getLastAction()", "notes": "Same" },
+        { "ss1Method": "getLastStep()", "ss2Method": "Assistant.getLastStep()", "notes": "Same" },
+        { "ss1Method": "getNextStep()", "ss2Method": "Assistant.getNextStep()", "notes": "Same" },
+        { "ss1Method": "getStep(name)", "ss2Method": "Assistant.getStep(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getSubList(name)", "ss2Method": "Assistant.getSublist(options)", "notes": "Renamed SubList to Sublist" },
+        { "ss1Method": "hasError()", "ss2Method": "Assistant.hasErrorHtml()", "notes": "Renamed" },
+        { "ss1Method": "isFinished()", "ss2Method": "Assistant.isFinished()", "notes": "Same" },
+        { "ss1Method": "sendRedirect(response)", "ss2Method": "Assistant.sendRedirect(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setCurrentStep(step)", "ss2Method": "Assistant.currentStep = step", "notes": "Property instead of setter" },
+        { "ss1Method": "setError(html)", "ss2Method": "Assistant.errorHtml = html", "notes": "Property instead of setter" },
+        { "ss1Method": "setFieldValues(values)", "ss2Method": "Assistant.updateDefaultValues(values)", "notes": "Renamed" },
+        { "ss1Method": "setFinished(html)", "ss2Method": "Assistant.finishedHtml = html", "notes": "Property instead of setter" },
+        { "ss1Method": "setNumbered(hasStepNumber)", "ss2Method": "Assistant.hideStepNumber = !hasStepNumber", "notes": "Property with INVERTED logic" },
+        { "ss1Method": "setOrdered(ordered)", "ss2Method": "Assistant.isNotOrdered = !ordered", "notes": "Property with INVERTED logic" },
+        { "ss1Method": "setScript(script)", "ss2Method": "Assistant.clientScriptFileId / Assistant.clientScriptModulePath", "notes": "Two properties: use fileId or modulePath" },
+        { "ss1Method": "setShortcut(show)", "ss2Method": "Assistant.hideAddToShortcutsLink = !show", "notes": "Property with INVERTED logic" },
+        { "ss1Method": "setSplash(title, text1, text2)", "ss2Method": "Assistant.setSplash(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setTitle(title)", "ss2Method": "Assistant.title = title", "notes": "Property instead of setter" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjAssistantStep",
+      "ss2Class": "serverWidget.AssistantStep",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Individual step in an Assistant wizard",
+      "methods": [
+        { "ss1Method": "getAllFields()", "ss2Method": "AssistantStep.getFieldIds()", "notes": "Renamed" },
+        { "ss1Method": "getAllLineItemFields(group)", "ss2Method": "AssistantStep.getSublistFieldIds(options)", "notes": "LineItem renamed to Sublist" },
+        { "ss1Method": "getAllLineItems()", "ss2Method": "AssistantStep.getSubmittedSublistIds()", "notes": "Renamed" },
+        { "ss1Method": "getFieldValue(name)", "ss2Method": "AssistantStep.getValue(options)", "notes": "Renamed" },
+        { "ss1Method": "getFieldValues(name)", "ss2Method": "AssistantStep.getValue(options)", "notes": "Returns array for multi-select" },
+        { "ss1Method": "getLineItemCount(group)", "ss2Method": "AssistantStep.getLineCount(options)", "notes": "Renamed" },
+        { "ss1Method": "getLineItemValue(group, name, line)", "ss2Method": "AssistantStep.getSublistValue(options)", "notes": "LineItem renamed to Sublist" },
+        { "ss1Method": "getStepNumber()", "ss2Method": "AssistantStep.stepNumber", "notes": "Property instead of method" },
+        { "ss1Method": "setHelpText(help)", "ss2Method": "AssistantStep.helpText = help", "notes": "Property instead of setter" },
+        { "ss1Method": "setLabel(label)", "ss2Method": "AssistantStep.label = label", "notes": "Property instead of setter" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjButton",
+      "ss2Class": "serverWidget.Button",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Button in a form or sublist",
+      "methods": [
+        { "ss1Method": "setDisabled(disabled)", "ss2Method": "Button.isDisabled = disabled", "notes": "Property instead of setter" },
+        { "ss1Method": "setLabel(label)", "ss2Method": "Button.label = label", "notes": "Property instead of setter" },
+        { "ss1Method": "setVisible(visible)", "ss2Method": "Button.isHidden = !visible", "notes": "Property with INVERTED logic" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjColumn",
+      "ss2Class": "serverWidget.ListColumn",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Column in a List or Portlet",
+      "methods": [
+        { "ss1Method": "addParamToURL(param, value, dynamic)", "ss2Method": "ListColumn.addParamToURL(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setLabel(label)", "ss2Method": "ListColumn.label = label", "notes": "Property instead of setter" },
+        { "ss1Method": "setURL(url, dynamic)", "ss2Method": "ListColumn.setURL(options)", "notes": "Options object pattern" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjConfiguration",
+      "ss2Class": "record.Record",
+      "ss2Module": "N/record",
+      "notes": "Company configuration. Load via config.load() from N/config; returns a standard Record object.",
+      "methods": [
+        { "ss1Method": "getAllFields()", "ss2Method": "Record.getFields()", "notes": "Renamed" },
+        { "ss1Method": "getField(fldnam)", "ss2Method": "Record.getField(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getFieldText(name)", "ss2Method": "Record.getText(options)", "notes": "Renamed" },
+        { "ss1Method": "getFieldTexts(name)", "ss2Method": "Record.getText(options)", "notes": "Returns array for multi-select" },
+        { "ss1Method": "getFieldValue(name)", "ss2Method": "Record.getValue(options)", "notes": "Renamed" },
+        { "ss1Method": "getFieldValues(name)", "ss2Method": "Record.getValue(options)", "notes": "Returns array for multi-select" },
+        { "ss1Method": "getType()", "ss2Method": "Record.type", "notes": "Property instead of method" },
+        { "ss1Method": "setFieldText(name, text)", "ss2Method": "Record.setText(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setFieldTexts(name, text)", "ss2Method": "Record.setText(options)", "notes": "Pass array for multi-select" },
+        { "ss1Method": "setFieldValue(name, value)", "ss2Method": "Record.setValue(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setFieldValues(name, value)", "ss2Method": "Record.setValue(options)", "notes": "Pass array for multi-select" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjContext",
+      "ss2Class": "runtime.Script / runtime.Session / runtime.User",
+      "ss2Module": "N/runtime",
+      "notes": "Split into three separate objects: Script (deployment info, params), Session (session storage), User (role, dept, etc.)",
+      "methods": [
+        { "ss1Method": "getCompany()", "ss2Method": "runtime.accountId", "notes": "Module-level property" },
+        { "ss1Method": "getDepartment()", "ss2Method": "runtime.getCurrentUser().department", "notes": "Property on User object" },
+        { "ss1Method": "getDeploymentId()", "ss2Method": "runtime.getCurrentScript().deploymentId", "notes": "Property on Script object" },
+        { "ss1Method": "getEmail()", "ss2Method": "runtime.getCurrentUser().email", "notes": "Property on User object" },
+        { "ss1Method": "getEnvironment()", "ss2Method": "runtime.envType", "notes": "Module-level property; uses runtime.EnvType enum" },
+        { "ss1Method": "getExecutionContext()", "ss2Method": "runtime.executionContext", "notes": "Module-level property; uses runtime.ContextType enum" },
+        { "ss1Method": "getFeature(name)", "ss2Method": "runtime.isFeatureInEffect(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getLocation()", "ss2Method": "runtime.getCurrentUser().location", "notes": "Property on User object" },
+        { "ss1Method": "getLogLevel()", "ss2Method": "runtime.getCurrentScript().logLevel", "notes": "Property on Script object" },
+        { "ss1Method": "getName()", "ss2Method": "runtime.getCurrentUser().name", "notes": "Property on User object" },
+        { "ss1Method": "getPercentComplete()", "ss2Method": "runtime.getCurrentScript().percentComplete", "notes": "Property on Script object" },
+        { "ss1Method": "getPermission(name)", "ss2Method": "runtime.getCurrentUser().getPermission(options)", "notes": "Method on User object" },
+        { "ss1Method": "getPreference(name)", "ss2Method": "runtime.getCurrentUser().getPreference(options)", "notes": "Method on User object" },
+        { "ss1Method": "getQueueCount()", "ss2Method": "runtime.queueCount", "notes": "Module-level property" },
+        { "ss1Method": "getRemainingUsage()", "ss2Method": "runtime.getCurrentScript().getRemainingUsage()", "notes": "Method on Script object" },
+        { "ss1Method": "getRole()", "ss2Method": "runtime.getCurrentUser().role", "notes": "Property on User object" },
+        { "ss1Method": "getRoleCenter()", "ss2Method": "runtime.getCurrentUser().roleCenter", "notes": "Property on User object" },
+        { "ss1Method": "getRoleId()", "ss2Method": "runtime.getCurrentUser().roleId", "notes": "Property on User object" },
+        { "ss1Method": "getScriptId()", "ss2Method": "runtime.getCurrentScript().id", "notes": "Property on Script object" },
+        { "ss1Method": "getSessionObject(name)", "ss2Method": "runtime.getCurrentSession().get(options)", "notes": "Method on Session object" },
+        { "ss1Method": "getSetting(type, name)", "ss2Method": "Depends on type: SCRIPT→Script.getParameter(), SESSION→Session.get(), FEATURE→runtime.isFeatureInEffect(), PERMISSION→User.getPermission()", "notes": "Split across multiple methods based on setting type" },
+        { "ss1Method": "getSubsidiary()", "ss2Method": "runtime.getCurrentUser().subsidiary", "notes": "Property on User object" },
+        { "ss1Method": "getUser()", "ss2Method": "runtime.getCurrentUser().id", "notes": "Property on User object" },
+        { "ss1Method": "getVersion()", "ss2Method": "runtime.version", "notes": "Module-level property" },
+        { "ss1Method": "setPercentComplete(pct)", "ss2Method": "runtime.getCurrentScript().percentComplete = pct", "notes": "Writable property on Script object" },
+        { "ss1Method": "setSessionObject(name, value)", "ss2Method": "runtime.getCurrentSession().set(options)", "notes": "Method on Session object" },
+        { "ss1Method": "setSetting(type, name, value)", "ss2Method": "runtime.getCurrentSession().set(options)", "notes": "Only SESSION type supported for writing" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjCredentialBuilder",
+      "ss2Class": "https.SecureString",
+      "ss2Module": "N/https",
+      "notes": "Build secure strings for HTTPS authentication",
+      "methods": [
+        { "ss1Method": "append(string)", "ss2Method": "SecureString.appendSecureString(options) / SecureString.appendString(options)", "notes": "Separate methods for secure vs plain strings" },
+        { "ss1Method": "base64()", "ss2Method": "SecureString.convertEncoding(options)", "notes": "Use encoding options" },
+        { "ss1Method": "replace(string1, string2)", "ss2Method": "SecureString.replaceString(options)", "notes": "Renamed" },
+        { "ss1Method": "sha256()", "ss2Method": "SecureString.hash(options)", "notes": "Uses hash options with algorithm param" },
+        { "ss1Method": "utf8()", "ss2Method": "SecureString.convertEncoding(options)", "notes": "Use encoding options" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjCSVImport",
+      "ss2Class": "task.CsvImportTask",
+      "ss2Module": "N/task",
+      "notes": "CSV import task configuration",
+      "methods": [
+        { "ss1Method": "setLinkedFile(sublist, file)", "ss2Method": "CsvImportTask.linkedFiles", "notes": "Property instead of setter" },
+        { "ss1Method": "setMapping(savedImport)", "ss2Method": "CsvImportTask.mappingId", "notes": "Property instead of setter" },
+        { "ss1Method": "setOption(option, value)", "ss2Method": "CsvImportTask.name", "notes": "Property instead of setter" },
+        { "ss1Method": "setPrimaryFile(file)", "ss2Method": "CsvImportTask.importFile", "notes": "Property instead of setter" },
+        { "ss1Method": "setQueue(string)", "ss2Method": "CsvImportTask.queueId", "notes": "Property instead of setter" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjDuplicateJobRequest",
+      "ss2Class": "task.EntityDeduplicationTask",
+      "ss2Module": "N/task",
+      "notes": "Entity deduplication task configuration",
+      "methods": [
+        { "ss1Method": "setEntityType(entityType)", "ss2Method": "EntityDeduplicationTask.entityType", "notes": "Property instead of setter" },
+        { "ss1Method": "setMasterId(masterID)", "ss2Method": "EntityDeduplicationTask.masterRecordId", "notes": "Renamed; property" },
+        { "ss1Method": "setMasterSelectionMode(mode)", "ss2Method": "EntityDeduplicationTask.masterSelectionMode", "notes": "Property instead of setter" },
+        { "ss1Method": "setOperation(operation)", "ss2Method": "EntityDeduplicationTask.dedupeMode", "notes": "Renamed; property" },
+        { "ss1Method": "setRecords(dupeRecords)", "ss2Method": "EntityDeduplicationTask.recordIds", "notes": "Renamed; property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjEmailMerger",
+      "ss2Class": "render.EmailMergeResult",
+      "ss2Module": "N/render",
+      "notes": "Email merge replaced by single render.mergeEmail() call that returns result directly",
+      "methods": [
+        { "ss1Method": "merge()", "ss2Method": "render.mergeEmail(options)", "notes": "Merge is automatic; called at module level" },
+        { "ss1Method": "setCustomRecord(recordType, recordId)", "ss2Method": "render.mergeEmail({customRecord: {type, id}})", "notes": "Parameter in mergeEmail options" },
+        { "ss1Method": "setEntity(entityType, entityId)", "ss2Method": "render.mergeEmail({entity: {type, id}})", "notes": "Parameter in mergeEmail options" },
+        { "ss1Method": "setRecipient(recipientType, recipientId)", "ss2Method": "render.mergeEmail({recipient: {type, id}})", "notes": "Parameter in mergeEmail options" },
+        { "ss1Method": "setSupportCase(caseId)", "ss2Method": "render.mergeEmail({supportCaseId: id})", "notes": "Parameter in mergeEmail options" },
+        { "ss1Method": "setTransaction(transactionId)", "ss2Method": "render.mergeEmail({transactionId: id})", "notes": "Parameter in mergeEmail options" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjError",
+      "ss2Class": "error.SuiteScriptError",
+      "ss2Module": "N/error",
+      "notes": "SuiteScript error object. Also see error.UserEventError for user event-specific errors.",
+      "methods": [
+        { "ss1Method": "getCode()", "ss2Method": "SuiteScriptError.name", "notes": "Property; renamed from code to name" },
+        { "ss1Method": "getDetails()", "ss2Method": "SuiteScriptError.message", "notes": "Property; renamed from details to message" },
+        { "ss1Method": "getId()", "ss2Method": "SuiteScriptError.id", "notes": "Property" },
+        { "ss1Method": "getInternalId()", "ss2Method": "SuiteScriptError.id", "notes": "Property; same as getId()" },
+        { "ss1Method": "getStackTrace()", "ss2Method": "SuiteScriptError.stack", "notes": "Property; returns a string[]" },
+        { "ss1Method": "getUserEvent()", "ss2Method": "(no equivalent)", "notes": "No SS2 equivalent" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjField",
+      "ss2Class": "serverWidget.Field / record.Field",
+      "ss2Module": "N/ui/serverWidget, N/record",
+      "notes": "Split into two: serverWidget.Field for UI forms, record.Field for record metadata. Context determines which class.",
+      "methods": [
+        { "ss1Method": "addSelectOption(value, text, selected)", "ss2Method": "serverWidget.Field.addSelectOption(options)", "notes": "UI forms only" },
+        { "ss1Method": "getLabel()", "ss2Method": "Field.label", "notes": "Property" },
+        { "ss1Method": "getName()", "ss2Method": "Field.id", "notes": "Renamed to id" },
+        { "ss1Method": "getSelectOptions()", "ss2Method": "record.Field.getSelectOptions(options)", "notes": "Record field; returns array of {value, text}" },
+        { "ss1Method": "getType()", "ss2Method": "Field.type", "notes": "Property" },
+        { "ss1Method": "isDisabled()", "ss2Method": "Field.isDisabled", "notes": "Property (read/write)" },
+        { "ss1Method": "isMandatory()", "ss2Method": "Field.isMandatory", "notes": "Property (read/write)" },
+        { "ss1Method": "isVisible()", "ss2Method": "Field.isVisible", "notes": "Property" },
+        { "ss1Method": "setAlias(alias)", "ss2Method": "serverWidget.Field.alias = alias", "notes": "Property" },
+        { "ss1Method": "setBreakType(breaktype)", "ss2Method": "serverWidget.Field.updateBreakType(options)", "notes": "Method on UI field" },
+        { "ss1Method": "setDefaultValue(value)", "ss2Method": "serverWidget.Field.defaultValue = value", "notes": "Property" },
+        { "ss1Method": "setDisplaySize(width, height)", "ss2Method": "serverWidget.Field.updateDisplaySize(options)", "notes": "Method on UI field" },
+        { "ss1Method": "setDisplayType(type)", "ss2Method": "serverWidget.Field.updateDisplayType(options)", "notes": "Method on UI field" },
+        { "ss1Method": "setHelpText(help, inline)", "ss2Method": "serverWidget.Field.setHelpText(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setLabel(label)", "ss2Method": "Field.label = label", "notes": "Property" },
+        { "ss1Method": "setLayoutType(type, breaktype)", "ss2Method": "serverWidget.Field.updateLayoutType(options)", "notes": "Method on UI field" },
+        { "ss1Method": "setLinkText(text)", "ss2Method": "serverWidget.Field.linkText = text", "notes": "Property" },
+        { "ss1Method": "setMandatory(mandatory)", "ss2Method": "Field.isMandatory = mandatory", "notes": "Property" },
+        { "ss1Method": "setMaxLength(maxlength)", "ss2Method": "serverWidget.Field.maxLength = maxlength", "notes": "Property" },
+        { "ss1Method": "setPadding(padding)", "ss2Method": "serverWidget.Field.padding = padding", "notes": "Property" },
+        { "ss1Method": "setRichTextHeight(height)", "ss2Method": "serverWidget.Field.richTextHeight = height", "notes": "Property" },
+        { "ss1Method": "setRichTextWidth(width)", "ss2Method": "serverWidget.Field.richTextWidth = width", "notes": "Property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjFieldGroup",
+      "ss2Class": "serverWidget.FieldGroup",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Group of fields on a form",
+      "methods": [
+        { "ss1Method": "setCollapsible(collapsible, hidden)", "ss2Method": "FieldGroup.isCollapsible = collapsible", "notes": "Property; hidden state handled separately" },
+        { "ss1Method": "setLabel(label)", "ss2Method": "FieldGroup.label = label", "notes": "Property" },
+        { "ss1Method": "setShowBorder(show)", "ss2Method": "FieldGroup.isBorderHidden = !show", "notes": "Property with INVERTED logic" },
+        { "ss1Method": "setSingleColumn(column)", "ss2Method": "FieldGroup.isSingleColumn = column", "notes": "Property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjFile",
+      "ss2Class": "file.File",
+      "ss2Module": "N/file",
+      "notes": "File Cabinet file object",
+      "methods": [
+        { "ss1Method": "getDescription()", "ss2Method": "File.description", "notes": "Property" },
+        { "ss1Method": "getFolder()", "ss2Method": "File.folder", "notes": "Property" },
+        { "ss1Method": "getId()", "ss2Method": "File.id", "notes": "Property" },
+        { "ss1Method": "getName()", "ss2Method": "File.name", "notes": "Property" },
+        { "ss1Method": "getSize()", "ss2Method": "File.size", "notes": "Property" },
+        { "ss1Method": "getType()", "ss2Method": "File.fileType", "notes": "Property; renamed; uses file.Type enum" },
+        { "ss1Method": "getURL()", "ss2Method": "File.url", "notes": "Property" },
+        { "ss1Method": "getValue()", "ss2Method": "File.getContents()", "notes": "Renamed from getValue to getContents" },
+        { "ss1Method": "isInactive()", "ss2Method": "File.isInactive", "notes": "Property" },
+        { "ss1Method": "isOnline()", "ss2Method": "File.isOnline", "notes": "Property" },
+        { "ss1Method": "setDescription(description)", "ss2Method": "File.description = description", "notes": "Property" },
+        { "ss1Method": "setEncoding(encodingType)", "ss2Method": "File.encoding = encodingType", "notes": "Property" },
+        { "ss1Method": "setFolder(id)", "ss2Method": "File.folder = id", "notes": "Property" },
+        { "ss1Method": "setIsInactive(inactive)", "ss2Method": "File.isInactive = inactive", "notes": "Property" },
+        { "ss1Method": "setIsOnline(online)", "ss2Method": "File.isOnline = online", "notes": "Property" },
+        { "ss1Method": "setName(name)", "ss2Method": "File.name = name", "notes": "Property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjForm",
+      "ss2Class": "serverWidget.Form",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Suitelet form UI",
+      "methods": [
+        { "ss1Method": "addButton(name, label, script)", "ss2Method": "Form.addButton(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addCredentialField(id, label, website, scriptId, value, entityMatch, tab)", "ss2Method": "Form.addCredentialField(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addField(name, type, label, sourceOrRadio, tab)", "ss2Method": "Form.addField(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addFieldGroup(name, label, tab)", "ss2Method": "Form.addFieldGroup(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addPageLink(type, title, url)", "ss2Method": "Form.addPageLink(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addSubList(name, type, label, tab)", "ss2Method": "Form.addSublist(options)", "notes": "SubList renamed to Sublist" },
+        { "ss1Method": "addSubmitButton(label)", "ss2Method": "Form.addSubmitButton(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addSubTab(name, label, tab)", "ss2Method": "Form.addSubtab(options)", "notes": "SubTab renamed to Subtab" },
+        { "ss1Method": "addTab(name, label)", "ss2Method": "Form.addTab(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getButton(name)", "ss2Method": "Form.getButton(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getField(name, radio)", "ss2Method": "Form.getField(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getSubList(name)", "ss2Method": "Form.getSublist(options)", "notes": "SubList renamed to Sublist" },
+        { "ss1Method": "getSubTab(name)", "ss2Method": "Form.getSubtab(options)", "notes": "SubTab renamed to Subtab" },
+        { "ss1Method": "getTab(name)", "ss2Method": "Form.getTab(options)", "notes": "Options object pattern" },
+        { "ss1Method": "getTabs()", "ss2Method": "Form.getTabs()", "notes": "Same" },
+        { "ss1Method": "insertField(field, nextfld)", "ss2Method": "Form.insertField(options)", "notes": "Options object pattern" },
+        { "ss1Method": "insertSubList(sublist, nextsub)", "ss2Method": "Form.insertSublist(options)", "notes": "SubList renamed to Sublist" },
+        { "ss1Method": "insertSubTab(subtab, nextsub)", "ss2Method": "Form.insertSubtab(options)", "notes": "SubTab renamed to Subtab" },
+        { "ss1Method": "insertTab(tab, nexttab)", "ss2Method": "Form.insertTab(options)", "notes": "Options object pattern" },
+        { "ss1Method": "removeButton(name)", "ss2Method": "Form.removeButton(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setFieldValues(values)", "ss2Method": "Form.updateDefaultValues(options)", "notes": "Renamed" },
+        { "ss1Method": "setScript(script)", "ss2Method": "Form.clientScriptFileId / Form.clientScriptModulePath", "notes": "Two properties: use fileId or modulePath" },
+        { "ss1Method": "setTitle(title)", "ss2Method": "Form.title = title", "notes": "Property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjFuture",
+      "ss2Class": "task.EntityDeduplicationTaskStatus",
+      "ss2Module": "N/task",
+      "notes": "Status of an entity deduplication task",
+      "methods": [
+        { "ss1Method": "isCancelled()", "ss2Method": "No direct equivalent", "notes": "EntityDeduplicationTaskStatus does not expose a cancelled status; inspect the available status values instead" },
+        { "ss1Method": "isDone()", "ss2Method": "EntityDeduplicationTaskStatus.status === task.TaskStatus.COMPLETE", "notes": "Check status property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjJobManager",
+      "ss2Class": "task (module)",
+      "ss2Module": "N/task",
+      "notes": "Job management replaced by a task module pattern: create → configure → submit → checkStatus",
+      "methods": [
+        { "ss1Method": "createJobRequest()", "ss2Method": "task.create({taskType: task.TaskType.ENTITY_DEDUPLICATION})", "notes": "Create task directly" },
+        { "ss1Method": "getFuture()", "ss2Method": "task.checkStatus({taskId: string})", "notes": "Check task status" },
+        { "ss1Method": "submit(request)", "ss2Method": "EntityDeduplicationTask.submit()", "notes": "Call submit() on task object" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjList",
+      "ss2Class": "serverWidget.List",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Suitelet list UI",
+      "methods": [
+        { "ss1Method": "addButton(name, label, script)", "ss2Method": "List.addButton(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addColumn(name, type, label, align)", "ss2Method": "List.addColumn(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addEditColumn(column, showView, showHrefCol)", "ss2Method": "List.addEditColumn(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addPageLink(type, title, url)", "ss2Method": "List.addPageLink(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addRow(row)", "ss2Method": "List.addRow(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addRows(rows)", "ss2Method": "List.addRows(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setScript(script)", "ss2Method": "List.clientScriptFileId / List.clientScriptModulePath", "notes": "Two properties" },
+        { "ss1Method": "setStyle(style)", "ss2Method": "List.style = style", "notes": "Property" },
+        { "ss1Method": "setTitle(title)", "ss2Method": "List.title = title", "notes": "Property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjLogin",
+      "ss2Class": "(auth module functions)",
+      "ss2Module": "N/auth",
+      "notes": "No equivalent object; use auth module functions directly",
+      "methods": [
+        { "ss1Method": "changeEmail(currentPassword, newEmail, justThisAccount)", "ss2Method": "auth.changeEmail(options)", "notes": "Module-level function" },
+        { "ss1Method": "changePassword(currentPassword, newPassword)", "ss2Method": "auth.changePassword(options)", "notes": "Module-level function" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjMergeResult",
+      "ss2Class": "render.EmailMergeResult",
+      "ss2Module": "N/render",
+      "notes": "Result of email template merge",
+      "methods": [
+        { "ss1Method": "getBody()", "ss2Method": "EmailMergeResult.body", "notes": "Property" },
+        { "ss1Method": "getSubject()", "ss2Method": "EmailMergeResult.subject", "notes": "Property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjPortlet",
+      "ss2Class": "Portlet",
+      "ss2Module": "N/portlet (via script context)",
+      "notes": "Dashboard portlet in Portlet script type",
+      "methods": [
+        { "ss1Method": "addColumn(name, type, label, just)", "ss2Method": "Portlet.addColumn(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addEditColumn(column, showView, showHrefCol)", "ss2Method": "Portlet.addEditColumn(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addField(name, type, label, source)", "ss2Method": "Portlet.addField(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addLine(text, url, indent)", "ss2Method": "Portlet.addLine(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addRow(row)", "ss2Method": "Portlet.addRow(options)", "notes": "Options object pattern" },
+        { "ss1Method": "addRows(rows)", "ss2Method": "Portlet.addRows(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setHtml(html)", "ss2Method": "Portlet.html = html", "notes": "Property" },
+        { "ss1Method": "setRefreshInterval(n)", "ss2Method": "(no equivalent)", "notes": "No SS2 equivalent" },
+        { "ss1Method": "setScript(scriptid)", "ss2Method": "Portlet.clientScriptFileId / Portlet.clientScriptModulePath", "notes": "Two properties" },
+        { "ss1Method": "setSubmitButton(url, label, target)", "ss2Method": "Portlet.setSubmitButton(options)", "notes": "Options object pattern" },
+        { "ss1Method": "setTitle(title)", "ss2Method": "Portlet.title = title", "notes": "Property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjRecord",
+      "ss2Class": "record.Record",
+      "ss2Module": "N/record",
+      "ss2ClientClass": "currentRecord.CurrentRecord",
+      "ss2ClientModule": "N/currentRecord",
+      "notes": "Server-side vs client-side distinction is new in SS2. Use N/record for server scripts, N/currentRecord for client scripts.",
+      "methods": [
+        { "ss1Method": "commitLineItem(group)", "ss2Method": "Record.commitLine({sublistId})", "notes": "Dynamic mode only" },
+        { "ss1Method": "createCurrentLineItemSubrecord(sublist, fldname)", "ss2Method": "Record.getCurrentSublistSubrecord({sublistId, fieldId})", "notes": "Subrecord paradigm different in SS2" },
+        { "ss1Method": "createSubrecord(fldname)", "ss2Method": "Record.getSubrecord({fieldId})", "notes": "Subrecord paradigm different in SS2" },
+        { "ss1Method": "editCurrentLineItemSubrecord(sublist, fldname)", "ss2Method": "Record.getCurrentSublistSubrecord({sublistId, fieldId})", "notes": "No create/edit/view distinction in SS2" },
+        { "ss1Method": "editSubrecord(fldname)", "ss2Method": "Record.getSubrecord({fieldId})", "notes": "No create/edit/view distinction in SS2" },
+        { "ss1Method": "findLineItemMatrixValue(group, fldnam, column, val)", "ss2Method": "Record.findMatrixSublistLineWithValue(options)", "notes": "Renamed" },
+        { "ss1Method": "findLineItemValue(group, fldnam, value)", "ss2Method": "Record.findSublistLineWithValue(options)", "notes": "Returns 0-based index" },
+        { "ss1Method": "getAllFields()", "ss2Method": "Record.getFields()", "notes": "Renamed" },
+        { "ss1Method": "getAllLineItemFields(group)", "ss2Method": "Record.getSublistFields({sublistId})", "notes": "Renamed" },
+        { "ss1Method": "getCurrentLineItemMatrixValue(group, fldnam, column)", "ss2Method": "Record.getCurrentMatrixSublistValue(options)", "notes": "Renamed" },
+        { "ss1Method": "getCurrentLineItemValue(type, fldnam)", "ss2Method": "Record.getCurrentSublistValue(options)", "notes": "Dynamic mode; renamed" },
+        { "ss1Method": "getCurrentLineItemValues(type, fldname)", "ss2Method": "Record.getCurrentSublistValue(options)", "notes": "Returns array for multi-select" },
+        { "ss1Method": "getField(fldnam)", "ss2Method": "Record.getField({fieldId})", "notes": "Options object" },
+        { "ss1Method": "getFieldText(name)", "ss2Method": "Record.getText({fieldId})", "notes": "Renamed" },
+        { "ss1Method": "getFieldTexts(name)", "ss2Method": "Record.getText({fieldId})", "notes": "Returns array" },
+        { "ss1Method": "getFieldValue(name)", "ss2Method": "Record.getValue({fieldId})", "notes": "Renamed" },
+        { "ss1Method": "getFieldValues(name)", "ss2Method": "Record.getValue({fieldId})", "notes": "Returns array" },
+        { "ss1Method": "getId()", "ss2Method": "Record.id", "notes": "Property" },
+        { "ss1Method": "getLineItemCount(group)", "ss2Method": "Record.getLineCount({sublistId})", "notes": "Renamed" },
+        { "ss1Method": "getLineItemField(group, fldnam, linenum)", "ss2Method": "Record.getSublistField({sublistId, fieldId, line})", "notes": "0-based line index" },
+        { "ss1Method": "getLineItemMatrixField(group, fldnam, linenum, column)", "ss2Method": "Record.getMatrixSublistField(options)", "notes": "0-based line index" },
+        { "ss1Method": "getLineItemMatrixValue(group, fldnam, linenum, column)", "ss2Method": "Record.getMatrixSublistValue(options)", "notes": "0-based line index" },
+        { "ss1Method": "getLineItemText(group, fldnam, linenum)", "ss2Method": "Record.getSublistText({sublistId, fieldId, line})", "notes": "0-based line index" },
+        { "ss1Method": "getLineItemValue(group, name, linenum)", "ss2Method": "Record.getSublistValue({sublistId, fieldId, line})", "notes": "0-based line index" },
+        { "ss1Method": "getLineItemValues(type, fldname, linenum)", "ss2Method": "Record.getSublistValue(options)", "notes": "Returns array; 0-based" },
+        { "ss1Method": "getMatrixCount(group, fldnam)", "ss2Method": "Record.getMatrixHeaderCount(options)", "notes": "Renamed" },
+        { "ss1Method": "getMatrixField(group, fldname, column)", "ss2Method": "Record.getMatrixHeaderField(options)", "notes": "Renamed" },
+        { "ss1Method": "getMatrixValue(group, fldnam, column)", "ss2Method": "Record.getMatrixHeaderValue(options)", "notes": "Renamed" },
+        { "ss1Method": "getRecordType()", "ss2Method": "Record.type", "notes": "Property" },
+        { "ss1Method": "insertLineItem(group, linenum)", "ss2Method": "Record.insertLine({sublistId, line})", "notes": "0-based line index" },
+        { "ss1Method": "removeCurrentLineItemSubrecord(sublist, fldname)", "ss2Method": "Record.removeCurrentSublistSubrecord(options)", "notes": "Subrecord paradigm different" },
+        { "ss1Method": "removeLineItem(group, linenum)", "ss2Method": "Record.removeLine({sublistId, line})", "notes": "0-based line index" },
+        { "ss1Method": "removeSubrecord(fldname)", "ss2Method": "Record.removeSubrecord({fieldId})", "notes": "" },
+        { "ss1Method": "selectLineItem(group, linenum)", "ss2Method": "Record.selectLine({sublistId, line})", "notes": "Dynamic mode; 0-based" },
+        { "ss1Method": "selectNewLineItem(group)", "ss2Method": "Record.selectNewLine({sublistId})", "notes": "Dynamic mode" },
+        { "ss1Method": "setCurrentLineItemMatrixValue(group, fldnam, column, value)", "ss2Method": "Record.setCurrentMatrixSublistValue(options)", "notes": "Dynamic mode" },
+        { "ss1Method": "setCurrentLineItemValue(group, name, value)", "ss2Method": "Record.setCurrentSublistValue(options)", "notes": "Dynamic mode" },
+        { "ss1Method": "setFieldText(name, text)", "ss2Method": "Record.setText({fieldId, text})", "notes": "Options object" },
+        { "ss1Method": "setFieldTexts(name, text)", "ss2Method": "Record.setText({fieldId, text})", "notes": "Pass array" },
+        { "ss1Method": "setFieldValue(name, value)", "ss2Method": "Record.setValue({fieldId, value})", "notes": "Options object" },
+        { "ss1Method": "setFieldValues(name, value)", "ss2Method": "Record.setValue({fieldId, value})", "notes": "Pass array" },
+        { "ss1Method": "setLineItemValue(group, name, linenum, value)", "ss2Method": "Record.setSublistValue({sublistId, fieldId, line, value})", "notes": "Standard mode; 0-based" },
+        { "ss1Method": "setMatrixValue(group, fldnam, column, value)", "ss2Method": "Record.setMatrixHeaderValue(options)", "notes": "" },
+        { "ss1Method": "viewCurrentLineItemSubrecord(sublist, fldname)", "ss2Method": "Record.getCurrentSublistSubrecord(options)", "notes": "No create/edit/view distinction" },
+        { "ss1Method": "viewLineItemSubrecord(sublist, fldname, linenum)", "ss2Method": "Record.getSublistSubrecord({sublistId, fieldId, line})", "notes": "0-based line index" },
+        { "ss1Method": "viewSubrecord(fldname)", "ss2Method": "Record.getSubrecord({fieldId})", "notes": "No create/edit/view distinction" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjRequest",
+      "ss2Class": "http.ServerRequest",
+      "ss2Module": "N/http",
+      "notes": "Incoming HTTP request in Suitelet/RESTlet scripts",
+      "methods": [
+        { "ss1Method": "getAllHeaders()", "ss2Method": "ServerRequest.headers", "notes": "Read-only property (Object)" },
+        { "ss1Method": "getAllParameters()", "ss2Method": "ServerRequest.parameters", "notes": "Read-only property (Object)" },
+        { "ss1Method": "getBody()", "ss2Method": "ServerRequest.body", "notes": "Read-only property" },
+        { "ss1Method": "getFile(id)", "ss2Method": "ServerRequest.files", "notes": "Read-only property (Object)" },
+        { "ss1Method": "getHeader(name)", "ss2Method": "ServerRequest.headers[name]", "notes": "Access via headers object" },
+        { "ss1Method": "getLineItemCount(group)", "ss2Method": "ServerRequest.getLineCount({group})", "notes": "Options object" },
+        { "ss1Method": "getLineItemValue(group, name, line)", "ss2Method": "ServerRequest.getSublistValue({group, name, line})", "notes": "Renamed" },
+        { "ss1Method": "getMethod()", "ss2Method": "ServerRequest.method", "notes": "Read-only property" },
+        { "ss1Method": "getParameter(name)", "ss2Method": "ServerRequest.parameters[name]", "notes": "Access via parameters object" },
+        { "ss1Method": "getParameterValues(name)", "ss2Method": "ServerRequest.parameters[name]", "notes": "Returns array if multiple values" },
+        { "ss1Method": "getURL()", "ss2Method": "ServerRequest.url", "notes": "Read-only property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjResponse",
+      "ss2Class": "http.ServerResponse / http.ClientResponse",
+      "ss2Module": "N/http",
+      "notes": "Split into ServerResponse (writing responses in Suitelets) and ClientResponse (reading HTTP call results)",
+      "methods": [
+        { "ss1Method": "addHeader(name, value)", "ss2Method": "ServerResponse.addHeader(options)", "notes": "ServerResponse only" },
+        { "ss1Method": "getAllHeaders()", "ss2Method": "ServerResponse.getHeader(options) / ClientResponse.headers", "notes": "Different access patterns" },
+        { "ss1Method": "getBody()", "ss2Method": "ClientResponse.body", "notes": "ClientResponse property" },
+        { "ss1Method": "getCode()", "ss2Method": "ClientResponse.code", "notes": "ClientResponse property" },
+        { "ss1Method": "getError()", "ss2Method": "(no equivalent)", "notes": "No SS2 equivalent" },
+        { "ss1Method": "getHeader(name)", "ss2Method": "ServerResponse.getHeader(options)", "notes": "Options object" },
+        { "ss1Method": "getHeaders(name)", "ss2Method": "ServerResponse.getHeader(options)", "notes": "Returns array for multiple headers" },
+        { "ss1Method": "renderPDF(xmlString)", "ss2Method": "ServerResponse.renderPdf(options)", "notes": "Renamed" },
+        { "ss1Method": "setCDNCacheable(type)", "ss2Method": "ServerResponse.setCdnCacheable(options)", "notes": "Renamed (camelCase)" },
+        { "ss1Method": "setContentType(type, name, disposition)", "ss2Method": "(no direct equivalent)", "notes": "Use setHeader() to set Content-Type" },
+        { "ss1Method": "setEncoding(encodingType)", "ss2Method": "(no direct equivalent)", "notes": "UTF-8 by default in SS2" },
+        { "ss1Method": "setHeader(name, value)", "ss2Method": "ServerResponse.setHeader(options)", "notes": "Options object" },
+        { "ss1Method": "sendRedirect(type, identifier, id, editmode, parameters)", "ss2Method": "ServerResponse.sendRedirect(options)", "notes": "Options object" },
+        { "ss1Method": "write(output)", "ss2Method": "ServerResponse.write(options)", "notes": "Options object (use {output: string})" },
+        { "ss1Method": "writeLine(output)", "ss2Method": "ServerResponse.writeLine(options)", "notes": "Options object" },
+        { "ss1Method": "writePage(pageobject)", "ss2Method": "ServerResponse.writePage(options)", "notes": "Options object; accepts Form, List, or Assistant" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjSearch",
+      "ss2Class": "search.Search",
+      "ss2Module": "N/search",
+      "notes": "Saved search object",
+      "methods": [
+        { "ss1Method": "addColumn(column)", "ss2Method": "Search.columns.push(column)", "notes": "Property (array)" },
+        { "ss1Method": "addColumns(columns)", "ss2Method": "Search.columns = Search.columns.concat(columns)", "notes": "Property (array)" },
+        { "ss1Method": "addFilter(filter)", "ss2Method": "Search.filters.push(filter)", "notes": "Property (array)" },
+        { "ss1Method": "addFilters(filters)", "ss2Method": "Search.filters = Search.filters.concat(filters)", "notes": "Property (array)" },
+        { "ss1Method": "deleteSearch()", "ss2Method": "search.delete({id})", "notes": "Module-level function" },
+        { "ss1Method": "getColumns()", "ss2Method": "Search.columns", "notes": "Property" },
+        { "ss1Method": "getFilterExpression()", "ss2Method": "Search.filterExpression", "notes": "Property" },
+        { "ss1Method": "getFilters()", "ss2Method": "Search.filters", "notes": "Property" },
+        { "ss1Method": "getId()", "ss2Method": "Search.searchId", "notes": "Property; renamed" },
+        { "ss1Method": "getIsPublic()", "ss2Method": "Search.isPublic", "notes": "Property" },
+        { "ss1Method": "getScriptId()", "ss2Method": "Search.id", "notes": "Property; renamed" },
+        { "ss1Method": "getSearchType()", "ss2Method": "Search.searchType", "notes": "Property" },
+        { "ss1Method": "runSearch()", "ss2Method": "Search.run()", "notes": "Returns search.ResultSet" },
+        { "ss1Method": "saveSearch(title, scriptId)", "ss2Method": "Search.save()", "notes": "Set title and id before calling save()" },
+        { "ss1Method": "setColumns(columns)", "ss2Method": "Search.columns = columns", "notes": "Property" },
+        { "ss1Method": "setFilterExpression(filterExpression)", "ss2Method": "Search.filterExpression = filterExpression", "notes": "Property" },
+        { "ss1Method": "setFilters(filters)", "ss2Method": "Search.filters = filters", "notes": "Property" },
+        { "ss1Method": "setIsPublic(type)", "ss2Method": "Search.isPublic = type", "notes": "Property" },
+        { "ss1Method": "setRedirectURLToSearch()", "ss2Method": "redirect.toSavedSearch(options) / redirect.toSearch(options)", "notes": "Use N/redirect module" },
+        { "ss1Method": "setRedirectURLToSearchResults()", "ss2Method": "redirect.toSearchResult(options) / redirect.toSavedSearchResult(options)", "notes": "Use N/redirect module" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjSearchColumn",
+      "ss2Class": "search.Column",
+      "ss2Module": "N/search",
+      "notes": "Search column definition. Created via search.createColumn(options).",
+      "methods": [
+        { "ss1Method": "nlobjSearchColumn(name, join, summary)", "ss2Method": "search.createColumn({name, join, summary, sort, formula, function, label})", "notes": "Constructor replaced by factory function" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjSearchFilter",
+      "ss2Class": "search.Filter",
+      "ss2Module": "N/search",
+      "notes": "Search filter definition. Created via search.createFilter(options).",
+      "methods": [
+        { "ss1Method": "nlobjSearchFilter(name, join, operator, value1, value2)", "ss2Method": "search.createFilter({name, join, operator, values, summary, formula})", "notes": "Constructor replaced by factory function" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjSearchResult",
+      "ss2Class": "search.Result",
+      "ss2Module": "N/search",
+      "notes": "Individual search result row",
+      "methods": [
+        { "ss1Method": "getAllColumns()", "ss2Method": "Result.columns", "notes": "Property" },
+        { "ss1Method": "getId()", "ss2Method": "Result.id", "notes": "Property" },
+        { "ss1Method": "getRecordType()", "ss2Method": "Result.recordType", "notes": "Property" },
+        { "ss1Method": "getText(column)", "ss2Method": "Result.getText({name, join, summary})", "notes": "Options object or Column object" },
+        { "ss1Method": "getValue(column)", "ss2Method": "Result.getValue({name, join, summary})", "notes": "Options object or Column object" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjSearchResultSet",
+      "ss2Class": "search.ResultSet",
+      "ss2Module": "N/search",
+      "notes": "Set of search results. Key difference: SS2 uses iterator/range pattern.",
+      "methods": [
+        { "ss1Method": "forEachResult(callback)", "ss2Method": "ResultSet.each(callback)", "notes": "Renamed; callback must return true to continue" },
+        { "ss1Method": "getColumns()", "ss2Method": "ResultSet.columns", "notes": "Property" },
+        { "ss1Method": "getResults(start, end)", "ss2Method": "ResultSet.getRange({start, end})", "notes": "Options object; max 1000 results per call" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjSelectOption",
+      "ss2Class": "record.Field / currentRecord.Field",
+      "ss2Module": "N/record, N/currentRecord",
+      "notes": "Select options are accessed via Field.getSelectOptions(), which returns an array of {value, text} objects",
+      "methods": [
+        { "ss1Method": "getId()", "ss2Method": "selectOption.value", "notes": "Property on returned option object" },
+        { "ss1Method": "getText()", "ss2Method": "selectOption.text", "notes": "Property on returned option object" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjSubList",
+      "ss2Class": "serverWidget.Sublist",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Sublist in a Suitelet form. Note: SubList renamed to Sublist (lowercase L) throughout SS2.",
+      "methods": [
+        { "ss1Method": "addButton(name, label, script)", "ss2Method": "Sublist.addButton(options)", "notes": "Options object" },
+        { "ss1Method": "addField(name, type, label, source)", "ss2Method": "Sublist.addField(options)", "notes": "Options object" },
+        { "ss1Method": "addMarkAllButtons()", "ss2Method": "Sublist.addMarkAllButtons()", "notes": "Same" },
+        { "ss1Method": "addRefreshButton()", "ss2Method": "Sublist.addRefreshButton()", "notes": "Same" },
+        { "ss1Method": "getLineItemCount()", "ss2Method": "Sublist.lineCount", "notes": "Property" },
+        { "ss1Method": "getLineItemValue(group, fldnam, linenum)", "ss2Method": "Sublist.getSublistValue({id, line})", "notes": "Renamed; options object" },
+        { "ss1Method": "setAmountField(field)", "ss2Method": "Sublist.updateTotallingFieldId(options)", "notes": "Renamed" },
+        { "ss1Method": "setDisplayType(type)", "ss2Method": "Sublist.displayType = type", "notes": "Property" },
+        { "ss1Method": "setHelpText(help)", "ss2Method": "Sublist.helpText = help", "notes": "Property" },
+        { "ss1Method": "setLabel(label)", "ss2Method": "Sublist.label = label", "notes": "Property" },
+        { "ss1Method": "setLineItemValue(name, linenum, value)", "ss2Method": "Sublist.setSublistValue({id, line, value})", "notes": "Renamed; options object" },
+        { "ss1Method": "setLineItemValues(values)", "ss2Method": "(no equivalent)", "notes": "No batch set; use setSublistValue() in a loop" },
+        { "ss1Method": "setUniqueField(name)", "ss2Method": "Sublist.updateUniqueFieldId(options)", "notes": "Renamed" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjSubrecord",
+      "ss2Class": "record.Record",
+      "ss2Module": "N/record",
+      "notes": "Subrecords return standard Record objects in SS2. No separate commit/cancel. Changes auto-commit when the parent record saves.",
+      "methods": [
+        { "ss1Method": "cancel()", "ss2Method": "(no equivalent)", "notes": "Subrecords auto-managed in SS2; no explicit cancel" },
+        { "ss1Method": "commit()", "ss2Method": "(no equivalent)", "notes": "Subrecords auto-commit when parent record.save() is called" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjTab",
+      "ss2Class": "serverWidget.Tab",
+      "ss2Module": "N/ui/serverWidget",
+      "notes": "Tab in a Suitelet form",
+      "methods": [
+        { "ss1Method": "setLabel(label)", "ss2Method": "Tab.label = label", "notes": "Property" },
+        { "ss1Method": "setHelpText(help)", "ss2Method": "Tab.helpText = help", "notes": "Property" }
+      ]
+    },
+    {
+      "ss1Object": "nlobjTemplateRenderer",
+      "ss2Class": "render.TemplateRenderer",
+      "ss2Module": "N/render",
+      "notes": "Template renderer for generating PDFs and HTML",
+      "methods": [
+        { "ss1Method": "addRecord(var, record)", "ss2Method": "TemplateRenderer.addRecord(options)", "notes": "Options object" },
+        { "ss1Method": "addSearchResults(var, searchResult)", "ss2Method": "TemplateRenderer.addSearchResults(options)", "notes": "Options object" },
+        { "ss1Method": "renderToResponse(response)", "ss2Method": "TemplateRenderer.renderToResponse(options)", "notes": "Options object" },
+        { "ss1Method": "renderToString()", "ss2Method": "TemplateRenderer.renderAsString()", "notes": "Renamed from renderToString to renderAsString" },
+        { "ss1Method": "setTemplate(template)", "ss2Method": "TemplateRenderer.templateContent = template", "notes": "Property" }
+      ]
+    }
+  ],
+  "unmappedObjectMethods": [
+    {
+      "ss1Object": "nlobjCredentialBuilder",
+      "ss1Method": "replace(string1, string2)",
+      "reason": "No SS2.1 equivalent for string replacement in SecureString",
+      "workaround": "Perform string replacement in plain text before creating SecureString, or use SecureString.replaceString() for partial support",
+      "severity": "workaround_available"
+    },
+    {
+      "ss1Object": "nlobjPortlet",
+      "ss1Method": "setRefreshInterval(n)",
+      "reason": "Functionality removed in SS2.1 Portlet",
+      "workaround": "No workaround; portlet refresh interval not supported",
+      "severity": "removed"
+    },
+    {
+      "ss1Object": "nlobjRecord",
+      "ss1Method": "getCurrentLineItemDateTimeValue(type, fieldId, timeZone)",
+      "reason": "DateTime timezone handling moved to N/format module",
+      "workaround": "Use getCurrentSublistValue() then format.parse()/format.format() from N/format for timezone conversion",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Object": "nlobjRecord",
+      "ss1Method": "getDateTimeValue(fieldId, timeZone)",
+      "reason": "DateTime timezone handling moved to N/format module",
+      "workaround": "Use getValue() then format.parse()/format.format() from N/format",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Object": "nlobjRecord",
+      "ss1Method": "getLineItemDateTimeValue(type, fieldId, lineNum, timeZone)",
+      "reason": "DateTime timezone handling moved to N/format module",
+      "workaround": "Use getSublistValue() then format.parse()/format.format() from N/format",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Object": "nlobjRecord",
+      "ss1Method": "setCurrentLineItemDateTimeValue(type, fieldId, dateTime, timeZone)",
+      "reason": "DateTime timezone handling moved to N/format module",
+      "workaround": "Use format.format() to create formatted string, then setCurrentSublistValue()",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Object": "nlobjRecord",
+      "ss1Method": "setDateTimeValue(fieldId, dateTime, timeZone)",
+      "reason": "DateTime timezone handling moved to N/format module",
+      "workaround": "Use format.format() to create formatted string, then setValue()",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Object": "nlobjRecord",
+      "ss1Method": "setLineItemDateTimeValue(type, fieldId, lineNum, dateTime, timeZone)",
+      "reason": "DateTime timezone handling moved to N/format module",
+      "workaround": "Use format.format() to create formatted string, then setSublistValue()",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Object": "nlobjResponse",
+      "ss1Method": "getError()",
+      "reason": "No equivalent in SS2 response objects",
+      "workaround": "Check ClientResponse.code for HTTP status codes; use try/catch for error handling",
+      "severity": "removed"
+    },
+    {
+      "ss1Object": "nlobjResponse",
+      "ss1Method": "setContentType(type, name, disposition)",
+      "reason": "No direct equivalent method",
+      "workaround": "Use ServerResponse.setHeader({name: 'Content-Type', value: type}) and Content-Disposition header",
+      "severity": "workaround_available"
+    },
+    {
+      "ss1Object": "nlobjResponse",
+      "ss1Method": "setEncoding(encodingType)",
+      "reason": "UTF-8 is default in SS2; encoding rarely needs changing",
+      "workaround": "Use ServerResponse.setHeader() to set encoding if needed",
+      "severity": "workaround_available"
+    },
+    {
+      "ss1Object": "nlobjSubList",
+      "ss1Method": "setLineItemValues(values)",
+      "reason": "No batch set method in SS2",
+      "workaround": "Use Sublist.setSublistValue() in a loop for each value",
+      "severity": "workaround_available"
+    },
+    {
+      "ss1Object": "nlobjSubrecord",
+      "ss1Method": "cancel()",
+      "reason": "Subrecord paradigm fundamentally different in SS2",
+      "workaround": "Subrecords auto-managed in SS2.1. To discard changes, don't call parent record.save(). See SuiteScript 2.1 Scripting Subrecords.",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Object": "nlobjSubrecord",
+      "ss1Method": "commit()",
+      "reason": "Subrecord paradigm fundamentally different in SS2",
+      "workaround": "Subrecords auto-commit when parent record.save() is called. No explicit commit needed.",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Object": "nlobjError",
+      "ss1Method": "getUserEvent()",
+      "reason": "No equivalent in SS2 error objects",
+      "workaround": "Use error.UserEventError class for user event-specific errors, or check context in user event script",
+      "severity": "removed"
+    }
+  ]
+}
