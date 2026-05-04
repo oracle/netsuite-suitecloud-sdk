@@ -11,20 +11,13 @@ const { SuiteCloudAuthProxyService, EVENTS } = require('../../../services/SuiteC
 const { COMMAND_PROXY_START, COMMAND_REFRESH_AUTHORIZATION } = require('../../../services/TranslationKeys');
 const { refreshAuthorization } = require('../../../utils/AuthenticationUtils');
 const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
-
-const COMMAND = {
-	OPTIONS: {
-		AUTH_ID: 'authid',
-		PORT: 'port',
+const {
+	PROXY_START: {
+		COMMAND: { OPTIONS },
+		ALLOWED_PROXY_PATH_PREFIX,
 	},
-};
-
-const PORT_RANGE = {
-	MIN: 1024,
-	MAX: 65535,
-};
-
-const ALLOWED_PROXY_PATH_PREFIX = '/api/internal/devassist/';
+} = require('./ProxyStartConstants');
+const { isValidProxyStartPort, getInvalidProxyStartPortMessage } = require('./ProxyStartValidation');
 
 module.exports = class ProxyStartAction extends BaseAction {
 	constructor(options) {
@@ -40,8 +33,8 @@ module.exports = class ProxyStartAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			const authId = params[COMMAND.OPTIONS.AUTH_ID];
-			const port = Number(params[COMMAND.OPTIONS.PORT]);
+			const authId = params[OPTIONS.AUTH_ID];
+			const port = Number(params[OPTIONS.PORT]);
 			this._validatePort(port);
 			const apiKey = params.apiKey || (await resolveDefaultClientApiKey(this._sdkExecutor)).apiKey;
 
@@ -58,21 +51,13 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_validatePort(port) {
-		if (Number.isNaN(port)) {
-			throw this._getInvalidPortMessage();
-		}
-
-		if (port < PORT_RANGE.MIN || port > PORT_RANGE.MAX) {
-			throw this._getInvalidPortMessage();
+		if (!isValidProxyStartPort(port)) {
+			throw getInvalidProxyStartPortMessage();
 		}
 
 		if (!this._validatePortAvailability(port)) {
 			throw NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_ALREADY_IN_USE, port);
 		}
-	}
-
-	_getInvalidPortMessage() {
-		return NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_MUST_BE_NUMBER, PORT_RANGE.MIN, PORT_RANGE.MAX);
 	}
 
 	_validatePortAvailability(port) {

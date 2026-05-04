@@ -12,20 +12,13 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
 const { COMMAND_PROXY_START, COMMAND_SETUPACCOUNT, COMMAND_MANAGE_ACCOUNT } = require('../../../services/TranslationKeys');
-
-const COMMAND = {
-	OPTIONS: {
-		AUTH_ID: 'authid',
-		PORT: 'port',
+const {
+	PROXY_START: {
+		COMMAND: { OPTIONS },
+		DEFAULT_PORT,
 	},
-};
-
-const PORT_RANGE = {
-	MIN: 1024,
-	MAX: 65535,
-};
-
-const DEFAULT_PORT = 8181;
+} = require('./ProxyStartConstants');
+const { isValidProxyStartPort, getInvalidProxyStartPortMessage } = require('./ProxyStartValidation');
 
 module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	async getParameters(params) {
@@ -40,15 +33,15 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 		const answers = await prompt([
 			{
 				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND.OPTIONS.AUTH_ID,
+				name: OPTIONS.AUTH_ID,
 				message: NodeTranslationService.getMessage(COMMAND_PROXY_START.QUESTIONS.SELECT_AUTH_ID),
 				choices: this._toAuthIdChoices(authIDActionResult.data),
 			},
 			{
 				type: CommandUtils.INQUIRER_TYPES.INPUT,
-				name: COMMAND.OPTIONS.PORT,
+				name: OPTIONS.PORT,
 				message: NodeTranslationService.getMessage(COMMAND_PROXY_START.QUESTIONS.PORT),
-				default: params[COMMAND.OPTIONS.PORT] || DEFAULT_PORT,
+				default: params[OPTIONS.PORT] || DEFAULT_PORT,
 				filter: (value) => Number(value),
 				validate: (value) => this._validatePortInput(value),
 			},
@@ -83,19 +76,10 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	}
 
 	_validatePortInput(value) {
-		const port = Number(value);
-		if (Number.isNaN(port)) {
-			return this._getInvalidPortMessage();
-		}
-
-		if (port < PORT_RANGE.MIN || port > PORT_RANGE.MAX) {
-			return this._getInvalidPortMessage();
+		if (!isValidProxyStartPort(value)) {
+			return getInvalidProxyStartPortMessage();
 		}
 
 		return true;
-	}
-
-	_getInvalidPortMessage() {
-		return NodeTranslationService.getMessage(COMMAND_PROXY_START.ERRORS.PORT_MUST_BE_NUMBER, PORT_RANGE.MIN, PORT_RANGE.MAX);
 	}
 };
