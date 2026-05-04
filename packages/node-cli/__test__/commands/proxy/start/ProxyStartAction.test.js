@@ -5,6 +5,7 @@ jest.mock('../../../../src/utils/AuthenticationUtils', () => ({
 }));
 
 const ProxyStartAction = require('../../../../src/commands/proxy/start/ProxyStartAction');
+const ProxyStartCommand = require('../../../../src/commands/proxy/start/ProxyStartCommand');
 const { refreshAuthorization } = require('../../../../src/utils/AuthenticationUtils');
 const { SuiteCloudAuthProxyService, EVENTS } = require('../../../../src/services/SuiteCloudAuthProxyService');
 
@@ -26,12 +27,10 @@ describe('ProxyStartAction preExecute()', () => {
 		});
 	});
 
-	it('should throw the combined port validation message when port is not a number', () => {
-		expect(() => action.preExecute({ port: 'abc' })).toThrow('The port must be a valid number between 1024 and 65535.');
-	});
+	it('should return params without validating port', () => {
+		const params = { port: 'abc' };
 
-	it('should throw the combined port validation message when port is outside the allowed range', () => {
-		expect(() => action.preExecute({ port: 1000 })).toThrow('The port must be a valid number between 1024 and 65535.');
+		expect(action.preExecute(params)).toEqual(params);
 	});
 });
 
@@ -77,6 +76,59 @@ describe('ProxyStartAction execute()', () => {
 		expect(log.info).toHaveBeenNthCalledWith(6, '  * Model ID: NetSuite');
 		expect(log.info).toHaveBeenNthCalledWith(7, '');
 		expect(log.info).toHaveBeenNthCalledWith(8, 'Press Ctrl+C to stop the proxy.');
+	});
+
+	it('should return error action result when port is not a number', async () => {
+		const actionResult = await action.execute({ authid: 'defaultAuth', port: 'abc', apiKey: 'fake-api-key' });
+
+		expect(actionResult.isSuccess()).toBe(false);
+		expect(actionResult.errorMessages).toEqual(['The port must be a valid number between 1024 and 65535.']);
+		expect(proxyStartSpy).not.toHaveBeenCalled();
+	});
+
+	it('should return error action result when port is outside allowed range', async () => {
+		const actionResult = await action.execute({ authid: 'defaultAuth', port: 1000, apiKey: 'fake-api-key' });
+
+		expect(actionResult.isSuccess()).toBe(false);
+		expect(actionResult.errorMessages).toEqual(['The port must be a valid number between 1024 and 65535.']);
+		expect(proxyStartSpy).not.toHaveBeenCalled();
+	});
+});
+
+describe('ProxyStart command validation output', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+		result: jest.fn(),
+	};
+
+	it('should show mandatory options validation output and interactive suggestion when options are missing', async () => {
+		const command = ProxyStartCommand.create({
+			commandMetadata: {
+				name: 'proxy:start',
+				supportsInteractiveMode: true,
+				options: {
+					authid: {
+						name: 'authid',
+						mandatory: true,
+					},
+					port: {
+						name: 'port',
+						mandatory: true,
+					},
+				},
+			},
+			projectFolder: '/tmp/fake-project-folder',
+			runInInteractiveMode: false,
+			log,
+			sdkPath: '/tmp/fake-sdk-path',
+			executionEnvironmentContext: { env: 'test' },
+		});
+
+		await expect(command.run({})).rejects.toMatchObject({
+			_defaultMessage: 'There are validation errors:\n"authid" option is mandatory.\n"port" option is mandatory.',
+			_infoMessage: 'You can use the interactive mode by running "suitecloud proxy:start -i"',
+		});
 	});
 });
 

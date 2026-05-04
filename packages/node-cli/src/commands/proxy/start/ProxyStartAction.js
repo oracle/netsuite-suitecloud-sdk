@@ -35,19 +35,14 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		const port = Number(params[COMMAND.OPTIONS.PORT]);
-		this._validatePort(port);
-
-		return {
-			...params,
-			[COMMAND.OPTIONS.PORT]: port,
-		};
+		return params;
 	}
 
 	async execute(params) {
 		try {
 			const authId = params[COMMAND.OPTIONS.AUTH_ID];
-			const port = params[COMMAND.OPTIONS.PORT];
+			const port = Number(params[COMMAND.OPTIONS.PORT]);
+			this._validatePort(port);
 			const apiKey = params.apiKey || (await resolveDefaultClientApiKey(this._sdkExecutor)).apiKey;
 
 			this._proxyService = new SuiteCloudAuthProxyService(this._sdkPath, this._executionEnvironmentContext, ALLOWED_PROXY_PATH_PREFIX, apiKey);
