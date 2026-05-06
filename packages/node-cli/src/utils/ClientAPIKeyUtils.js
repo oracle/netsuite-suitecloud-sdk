@@ -38,11 +38,11 @@ async function readClientAPIKeyFileContents(sdkExecutor) {
 		action: sdkExecutor.execute(executionContext),
 		message: NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.READING_FILE_CONTENTS),
 	}).catch((error) => {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), error];
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), error].join('\n');
 	});
 
 	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), operationResult.errorMessages];
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), ...operationResult.errorMessages].join('\n');
 	}
 	return operationResult;
 }
@@ -68,7 +68,7 @@ async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
 	});
 
 	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.WRITING_FILE_CONTENTS), operationResult.errorMessages];
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.WRITING_FILE_CONTENTS), ...operationResult.errorMessages].join('\n');
 	}
 	return operationResult;
 }

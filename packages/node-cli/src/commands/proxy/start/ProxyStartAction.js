@@ -46,7 +46,8 @@ module.exports = class ProxyStartAction extends BaseAction {
 
 			return ActionResult.Builder.withData({ authId, port }).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			const errorMessagesArray = Array.isArray(error) ? error : [error];  
+			return ActionResult.Builder.withErrors(errorMessagesArray).build();
 		}
 	}
 
@@ -72,7 +73,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, this._handleServerStopped.bind(this));
 
 		// Forward error events directly to CLI output.
-		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, ({ message }) => this._log.error(message));
+		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, ({ message, reject }) => reject(this._log.error(message)));
 		this._proxyService.on(EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.REQUEST_ERROR.UNAUTHORIZED, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, ({ message }) => this._log.error(message));
@@ -133,7 +134,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 			try {
 				if (this._proxyService) {
 					// Ensure shutdown feedback starts on a new line instead of being appended to terminal '^C' echo.
-					process.stdout.write('\n');
+					await this._log.info('');
 					await this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOPPING));
 					await this._proxyService.stop();
 				}
