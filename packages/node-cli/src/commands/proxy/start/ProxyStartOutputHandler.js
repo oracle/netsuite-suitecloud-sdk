@@ -11,7 +11,16 @@ const { COMMAND_PROXY_START } = require('../../../services/TranslationKeys');
 module.exports = class ProxyStartOutputHandler extends BaseOutputHandler {
 	parse(actionResult) {
 		if (actionResult?.data?.authId && actionResult?.data?.port) {
-			this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STARTED, actionResult.data.authId, actionResult.data.port));
+			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.RUNNING_WITH_AUTH_ID, actionResult.data.authId, actionResult.data.port));
+			this._log.result('');
+			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CONFIGURE_AGENT_HEADER));
+			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_PROVIDER));
+			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_BASE_URL, actionResult.data.port));
+			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_KEY));
+			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_MODEL_ID));
+			this._log.result('');
+			this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOP_INSTRUCTIONS));
+			this._log.result('');
 		}
 		return actionResult;
 	}

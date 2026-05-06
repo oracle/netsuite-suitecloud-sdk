@@ -8,6 +8,7 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const BaseAction = require('../../base/BaseAction');
 const { SuiteCloudAuthProxyService, EVENTS } = require('../../../services/SuiteCloudAuthProxyService');
+const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { COMMAND_PROXY_START, COMMAND_REFRESH_AUTHORIZATION } = require('../../../services/TranslationKeys');
 const { refreshAuthorization } = require('../../../utils/AuthenticationUtils');
 const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
@@ -25,6 +26,12 @@ module.exports = class ProxyStartAction extends BaseAction {
 		this._proxyService = null;
 		this._manualRefreshInFlight = null;
 		this._isShuttingDown = false;
+		this._proxyReadiness = {
+			promise: null,
+			resolve: null,
+			reject: null,
+			settled: false,
+		};
 	}
 
 	preExecute(params) {
@@ -38,16 +45,35 @@ module.exports = class ProxyStartAction extends BaseAction {
 			this._validatePort(port);
 			const apiKey = params.apiKey || (await resolveDefaultClientApiKey(this._sdkExecutor)).apiKey;
 
+			// IMPORTANT: create proxy readiness promise before start().
+			// This promise is settled by proxy events: LISTENING => resolve, PROXY_ERROR => reject.
+			// We await it so command success is gated on actual proxy readiness to accept requests.
+			// It must be initialized first to avoid missing very early event emissions.
+			this._createProxyReadinessPromise();
 			this._proxyService = new SuiteCloudAuthProxyService(this._sdkPath, this._executionEnvironmentContext, ALLOWED_PROXY_PATH_PREFIX, apiKey);
-			this._registerProxyEvents(authId, port);
+			this._registerProxyEvents();
 			this._registerShutdownHandlers();
 
 			await this._proxyService.start(authId, port);
+			
+			// NOTE: this readiness promise usually resolves very quickly once the server begins listening.
+			// Even if spinner visibility is brief, awaiting it guarantees successful ActionResult is produced
+			// only after the LISTENING event confirms the proxy is ready to accept incoming requests.
+			await executeWithSpinner({
+				action: this._proxyReadiness.promise,
+				message: NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STARTED, authId, port),
+			});
 
-			return ActionResult.Builder.withData({ authId, port }).build();
+			return ActionResult.Builder
+				.withData({ authId, port })
+				.withCommandParameters(params)
+				.build();
 		} catch (error) {
 			const errorMessagesArray = Array.isArray(error) ? error : [error];  
-			return ActionResult.Builder.withErrors(errorMessagesArray).build();
+			return ActionResult.Builder
+				.withErrors(errorMessagesArray)
+				.withCommandParameters(params)
+				.build();
 		}
 	}
 
@@ -66,18 +92,53 @@ module.exports = class ProxyStartAction extends BaseAction {
 		return true;
 	}
 
-	_registerProxyEvents(authId, port) {
+	_createProxyReadinessPromise() {
+		this._proxyReadiness.settled = false;
+		this._proxyReadiness.promise = new Promise((resolve, reject) => {
+			this._proxyReadiness.resolve = resolve;
+			this._proxyReadiness.reject = reject;
+		});
+	}
+
+	_markProxyReadyIfPending() {
+		if (this._proxyReadiness.settled) {
+			return;
+		}
+
+		this._proxyReadiness.settled = true;
+		this._proxyReadiness.resolve();
+	}
+
+	_markProxyNotReadyIfPending(errorMessage) {
+		if (this._proxyReadiness.settled) {
+			return;
+		}
+
+		this._proxyReadiness.settled = true;
+		this._proxyReadiness.reject(errorMessage);
+	}
+
+	_registerProxyEvents() {
 		// Dedicated handlers for events with custom behavior.
 		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, this._handleManualAuthRefreshRequired.bind(this));
-		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, this._handleServerListening.bind(this, authId, port));
+		this._proxyService.on(EVENTS.SERVER_INFO.LISTENING, this._handleServerListening.bind(this));
 		this._proxyService.on(EVENTS.SERVER_INFO.STOPPED, this._handleServerStopped.bind(this));
 
 		// Forward error events directly to CLI output.
-		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, ({ message, reject }) => reject(this._log.error(message)));
+		this._proxyService.on(EVENTS.PROXY_ERROR.DEFAULT, this._handleProxyErrorDefault.bind(this));
 		this._proxyService.on(EVENTS.REQUEST_ERROR.PATH_NOT_ALLOWED, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.REQUEST_ERROR.UNAUTHORIZED, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_ERROR.DEFAULT, ({ message }) => this._log.error(message));
 		this._proxyService.on(EVENTS.SERVER_ERROR.ON_AUTH_REFRESH, ({ message }) => this._log.error(message));
+	}
+
+	_handleProxyErrorDefault({ message }) {
+		if (!this._proxyReadiness.settled) {
+			this._markProxyNotReadyIfPending(message);
+			return;
+		}
+
+		this._log.error(message);
 	}
 
 	async _handleManualAuthRefreshRequired({ message, authId }) {
@@ -107,16 +168,8 @@ module.exports = class ProxyStartAction extends BaseAction {
 		await this._manualRefreshInFlight;
 	}
 
-	_handleServerListening(authId, port) {
-		this._log.result(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.RUNNING_WITH_AUTH_ID, authId, port));
-		this._log.info('');
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.CONFIGURE_AGENT_HEADER));
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_PROVIDER));
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_BASE_URL, port));
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_API_KEY));
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.GUIDE_MODEL_ID));
-		this._log.info('');
-		this._log.info(NodeTranslationService.getMessage(COMMAND_PROXY_START.MESSAGES.STOP_INSTRUCTIONS));
+	_handleServerListening() {
+		this._markProxyReadyIfPending();
 	}
 
 	_handleServerStopped() {
