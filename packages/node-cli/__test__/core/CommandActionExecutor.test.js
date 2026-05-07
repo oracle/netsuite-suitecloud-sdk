@@ -89,8 +89,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 		mockCommandUserExtensionOnCompleted.mockClear();
 		mockCommandUserExtensionOnError.mockClear();
-		mockConsoleLogger.info.mockClear();
-		mockConsoleLogger.error.mockClear();
 	});
 
 	let error = null;
