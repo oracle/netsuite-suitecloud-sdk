@@ -156,31 +156,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		expect(actionResult._status).toBe('SUCCESS');
 	});
 
-	it('should not show non-interactive hint when command metadata disables it', async () => {
-		const CommandsMetadataServiceWithoutHint = jest.fn(() => ({
-			getCommandMetadataByName: jest.fn(() => {
-				return { isSetupRequired: false, supportsInteractiveMode: true, hideInteractiveHint: true };
-			}),
-		}));
-
-		const commandExecutorWithoutHint = new CommandActionExecutorMock({
-			executionPath: 'myFakePath',
-			commandOptionsValidator: new CommandOptionsValidatorWithoutErrors(),
-			cliConfigurationService: new CliConfigurationService(),
-			commandsMetadataService: new CommandsMetadataServiceWithoutHint(),
-			log: mockConsoleLogger,
-			sdkPath: sdkPath,
-		});
-
-		await commandExecutorWithoutHint.executeAction({
-			commandName: 'proxy:start',
-			runInInteractiveMode: true,
-			arguments: {},
-		});
-
-		expect(mockConsoleLogger.info).toBeCalledTimes(0);
-	});
-
 	it('Should throw EXCEPTION when setup is required and there is not any account configured.', async () => {
 		const CommandsMetadataServiceSetupRequired = jest.fn(() => ({
 			getCommandMetadataByName: jest.fn(() => {

@@ -20,7 +20,6 @@
 		"name": "proxy:start",
 		"description": "Starts a local proxy for SuiteCloud Developer Assistant service.",
 		"isSetupRequired": false,
-		"hideInteractiveHint": false,
 		"forceInteractiveMode": false,
 		"options": {
 			"authid": {
