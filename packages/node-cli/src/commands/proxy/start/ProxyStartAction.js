@@ -30,7 +30,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 			promise: null,
 			resolve: null,
 			reject: null,
-			settled: false,
+			isSettled: false,
 		};
 	}
 
@@ -93,28 +93,28 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_createProxyReadinessPromise() {
-		this._proxyReadiness.settled = false;
+		this._proxyReadiness.isSettled = false;
 		this._proxyReadiness.promise = new Promise((resolve, reject) => {
 			this._proxyReadiness.resolve = resolve;
 			this._proxyReadiness.reject = reject;
 		});
 	}
 
-	_markProxyReadyIfPending() {
-		if (this._proxyReadiness.settled) {
+	_resolveProxyReadinessOnce() {
+		if (this._proxyReadiness.isSettled) {
 			return;
 		}
 
-		this._proxyReadiness.settled = true;
+		this._proxyReadiness.isSettled = true;
 		this._proxyReadiness.resolve();
 	}
 
-	_markProxyNotReadyIfPending(errorMessage) {
-		if (this._proxyReadiness.settled) {
+	_rejectProxyReadinessOnce(errorMessage) {
+		if (this._proxyReadiness.isSettled) {
 			return;
 		}
 
-		this._proxyReadiness.settled = true;
+		this._proxyReadiness.isSettled = true;
 		this._proxyReadiness.reject(errorMessage);
 	}
 
@@ -133,8 +133,8 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_handleProxyErrorDefault({ message }) {
-		if (!this._proxyReadiness.settled) {
-			this._markProxyNotReadyIfPending(message);
+		if (!this._proxyReadiness.isSettled) {
+			this._rejectProxyReadinessOnce(message);
 			return;
 		}
 
@@ -169,7 +169,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_handleServerListening() {
-		this._markProxyReadyIfPending();
+		this._resolveProxyReadinessOnce();
 	}
 
 	_handleServerStopped() {
