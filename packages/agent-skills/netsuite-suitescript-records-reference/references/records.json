@@ -97914,37 +97914,5 @@
       "serverScriptable": true,
       "internalId": "estimate"
     }
-  },
-  "metadata": {
-    "totalLetters": 23,
-    "totalRecords": 275,
-    "lettersIncluded": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "I",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "O",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "Z"
-    ],
-    "earliestScrape": "2026-01-13T18:38:54.334Z",
-    "latestScrape": "2026-01-14T20:12:35.167Z",
-    "source": "https://system.netsuite.com/help/helpcenter/en_US/srbrowser/Browser2025_2/script/record/"
   }
 }
