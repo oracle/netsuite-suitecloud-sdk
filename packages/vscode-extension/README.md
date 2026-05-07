@@ -3,8 +3,8 @@
 # SuiteCloud Extension for Visual Studio Code
 
 <a href="https://marketplace.visualstudio.com/items?itemName=Oracle.suitecloud-vscode-extension">
-  <img src="https://img.shields.io/visual-studio-marketplace/i/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
-  <img src="https://img.shields.io/visual-studio-marketplace/v/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
+  <img src="https://vsmarketplacebadges.dev/installs-short/Oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
+  <img src="https://vsmarketplacebadges.dev/version-short/Oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
 </a>
 
 SuiteCloud Extension for Visual Studio Code is part of the SuiteCloud Software Development Kit (SuiteCloud SDK), a set of tools to customize your NetSuite accounts. SuiteCloud Extension for Visual Studio Code allows you to customize your SuiteCloud projects for NetSuite. The available SuiteCloud projects include **SuiteApp projects**—self-contained, standalone projects that you can publish in the SuiteApp Marketplace for other users to download and install, and **Account Customization Projects**—intended for customizations on accounts you own, such as your production, development, and sandbox accounts.

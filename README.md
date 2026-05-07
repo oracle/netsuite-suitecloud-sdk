@@ -10,8 +10,8 @@ In this GitHub repository, the following SuiteCloud SDK tools and packages are a
 </a>
 
 - [SuiteCloud Extension for Visual Studio Code](./packages/vscode-extension)<a href="https://marketplace.visualstudio.com/items?itemName=Oracle.suitecloud-vscode-extension">
-    <img src="https://img.shields.io/visual-studio-marketplace/i/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
-    <img src="https://img.shields.io/visual-studio-marketplace/v/oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
+    <img src="https://vsmarketplacebadges.dev/installs-short/Oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
+    <img src="https://vsmarketplacebadges.dev/version-short/Oracle.suitecloud-vscode-extension.svg" alt="suitecloud-extension"/>
 </a>
 
 - [SuiteCloud Unit Testing](./packages/unit-testing)<a href="https://www.npmjs.com/package/@oracle/suitecloud-unit-testing">
