@@ -1,14 +1,15 @@
 /*
- ** Copyright (c) 2024 Oracle and/or its affiliates.  All rights reserved.
+ ** Copyright (c) 2026 Oracle and/or its affiliates.  All rights reserved.
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 'use strict';
 
 const NodeTranslationService = require('../services/NodeTranslationService');
-const { UTILS: { CLIENT_API_KEY_UTILS }, } = require('../services/TranslationKeys');
+const { UTILS: { CLIENT_API_KEY_UTILS } } = require('../services/TranslationKeys');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const SdkExecutionContext = require('../SdkExecutionContext');
 const SdkOperationResultUtils = require('./SdkOperationResultUtils');
+const { ClientAPIKeyObjectWrapper } = require('./ClientAPIKeyObjectWrapper');
 
 const COMMANDS = {
 	CLIENT_API_KEY: {
@@ -37,11 +38,11 @@ async function readClientAPIKeyFileContents(sdkExecutor) {
 		action: sdkExecutor.execute(executionContext),
 		message: NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.READING_FILE_CONTENTS),
 	}).catch((error) => {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), error];
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), error].join('\n');
 	});
 
 	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), operationResult.errorMessages];
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.READING_FILE_CONTENTS), ...operationResult.errorMessages].join('\n');
 	}
 	return operationResult;
 }
@@ -67,9 +68,30 @@ async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
 	});
 
 	if (operationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
-		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.WRITING_FILE_CONTENTS), operationResult.errorMessages];
+		throw [NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.WRITING_FILE_CONTENTS), ...operationResult.errorMessages].join('\n');
 	}
 	return operationResult;
+}
+
+/**
+ * Resolves the default client API key used to authenticate requests sent to the local proxy server.
+ *
+ * @param {SdkExecutor} sdkExecutor
+ * @returns {Promise<{apiKey: string}>} An object containing the resolved API key.
+ * @throws {string|Array<string>} Throws translated/SDK errors when the key file cannot be read or parsed.
+ */
+async function resolveDefaultClientApiKey(sdkExecutor) {
+	const readOperationResult = await readClientAPIKeyFileContents(sdkExecutor);
+	const clientApiKeyObjectWrapper = new ClientAPIKeyObjectWrapper(readOperationResult.data);
+	const apiKey = clientApiKeyObjectWrapper.getDefaultKeyValue();
+
+	if (typeof apiKey !== 'string' || !apiKey.trim()) {
+		throw NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.MISSING_API_KEY);
+	}
+
+	return {
+		apiKey,
+	};
 }
 
 function formatForSdkCommandlineArgument(fileContent) {
@@ -78,5 +100,6 @@ function formatForSdkCommandlineArgument(fileContent) {
 
 module.exports = {
 	readClientAPIKeyFileContents,
+	resolveDefaultClientApiKey,
 	writeClientAPIKeyFileContents,
 };

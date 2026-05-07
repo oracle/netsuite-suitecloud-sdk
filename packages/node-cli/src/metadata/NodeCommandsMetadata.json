@@ -15,5 +15,27 @@
 				"disableInIntegrationMode": false
 			}
 		}
+	},
+	"proxy:start": {
+		"name": "proxy:start",
+		"description": "Starts a local proxy for SuiteCloud Developer Assistant service.",
+		"isSetupRequired": false,
+		"forceInteractiveMode": false,
+		"options": {
+			"authid": {
+				"name": "authid",
+				"description": "References the custom alias you give to a specific account-role combination.",
+				"type": "SINGLE",
+				"mandatory": true,
+				"disableInIntegrationMode": false
+			},
+			"port": {
+				"name": "port",
+				"description": "Specifies the local port for SuiteCloud Developer Assistant service. Valid range: 1024-65535.",
+				"type": "SINGLE",
+				"mandatory": true,
+				"disableInIntegrationMode": false
+			}
+		}
 	}
 }

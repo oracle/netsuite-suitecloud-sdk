@@ -1,0 +1,355 @@
+/*
+ ** Copyright (c) 2026 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+'use strict';
+
+jest.mock('../../../../src/utils/AuthenticationUtils', () => ({
+	refreshAuthorization: jest.fn(),
+}));
+
+jest.mock('../../../../src/ui/CliSpinner', () => ({
+	executeWithSpinner: jest.fn().mockImplementation(({ action }) => action),
+}));
+
+const ProxyStartAction = require('../../../../src/commands/proxy/start/ProxyStartAction');
+const ProxyStartCommand = require('../../../../src/commands/proxy/start/ProxyStartCommand');
+const ProxyStartOutputHandler = require('../../../../src/commands/proxy/start/ProxyStartOutputHandler');
+const { refreshAuthorization } = require('../../../../src/utils/AuthenticationUtils');
+const { executeWithSpinner } = require('../../../../src/ui/CliSpinner');
+const { SuiteCloudAuthProxyService, EVENTS } = require('../../../../src/services/SuiteCloudAuthProxyService');
+
+describe('ProxyStartAction preExecute()', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+		result: jest.fn(),
+	};
+
+	let action;
+
+	beforeEach(() => {
+		jest.clearAllMocks();
+		action = new ProxyStartAction({
+			log,
+			sdkPath: '/tmp/fake-sdk-path',
+			executionEnvironmentContext: { env: 'test' },
+		});
+	});
+
+	it('should return params without validating port', () => {
+		const params = { port: 'abc' };
+
+		expect(action.preExecute(params)).toEqual(params);
+	});
+});
+
+describe('ProxyStartAction execute()', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+		result: jest.fn(),
+	};
+
+	let action;
+	let proxyStartSpy;
+
+	beforeEach(() => {
+		jest.clearAllMocks();
+		action = new ProxyStartAction({
+			log,
+			sdkPath: '/tmp/fake-sdk-path',
+			executionEnvironmentContext: { env: 'test' },
+		});
+
+		action._registerShutdownHandlers = jest.fn();
+		proxyStartSpy = jest.spyOn(SuiteCloudAuthProxyService.prototype, 'start').mockImplementation(function () {
+			this.emit(EVENTS.SERVER_INFO.LISTENING, { localURL: 'http://127.0.0.1:8383' });
+			return Promise.resolve();
+		});
+	});
+
+	afterEach(() => {
+		proxyStartSpy.mockRestore();
+	});
+
+	it('should resolve startup when listening event is emitted and return successful actionResult', async () => {
+		const actionResult = await action.execute({ authid: 'defaultAuth', port: 8383, apiKey: 'fake-api-key' });
+
+		expect(proxyStartSpy).toHaveBeenCalledWith('defaultAuth', 8383);
+		expect(executeWithSpinner).toHaveBeenCalledTimes(1);
+		expect(executeWithSpinner).toHaveBeenCalledWith(expect.objectContaining({
+			message: 'Starting proxy for SuiteCloud Developer Assistant service...',
+		}));
+		expect(actionResult.isSuccess()).toBe(true);
+		expect(actionResult.data).toEqual({ authId: 'defaultAuth', port: 8383 });
+		expect(log.result).not.toHaveBeenCalled();
+	});
+
+	it('should return error action result when proxy startup emits default error before listening', async () => {
+		proxyStartSpy.mockRestore();
+		proxyStartSpy = jest.spyOn(SuiteCloudAuthProxyService.prototype, 'start').mockImplementation(function () {
+			this.emit(EVENTS.PROXY_ERROR.DEFAULT, { message: 'startup failed' });
+			return Promise.resolve();
+		});
+
+		const actionResult = await action.execute({ authid: 'defaultAuth', port: 8383, apiKey: 'fake-api-key' });
+
+		expect(actionResult.isSuccess()).toBe(false);
+		expect(actionResult.errorMessages).toEqual(['startup failed']);
+		expect(log.error).not.toHaveBeenCalledWith('startup failed');
+	});
+
+	it('should keep successful startup result if default proxy error is emitted after listening', async () => {
+		proxyStartSpy.mockRestore();
+		proxyStartSpy = jest.spyOn(SuiteCloudAuthProxyService.prototype, 'start').mockImplementation(function () {
+			this.emit(EVENTS.SERVER_INFO.LISTENING, { localURL: 'http://127.0.0.1:8383' });
+			this.emit(EVENTS.PROXY_ERROR.DEFAULT, { message: 'runtime error after startup' });
+			return Promise.resolve();
+		});
+
+		const actionResult = await action.execute({ authid: 'defaultAuth', port: 8383, apiKey: 'fake-api-key' });
+
+		expect(actionResult.isSuccess()).toBe(true);
+		expect(actionResult.data).toEqual({ authId: 'defaultAuth', port: 8383 });
+		expect(log.error).toHaveBeenCalledWith('runtime error after startup');
+	});
+
+	it('should return error action result when port is not a number', async () => {
+		const actionResult = await action.execute({ authid: 'defaultAuth', port: 'abc', apiKey: 'fake-api-key' });
+
+		expect(actionResult.isSuccess()).toBe(false);
+		expect(actionResult.errorMessages).toEqual(['The port must be a valid number between 1024 and 65535.']);
+		expect(proxyStartSpy).not.toHaveBeenCalled();
+	});
+
+	it('should return error action result when port is outside allowed range', async () => {
+		const actionResult = await action.execute({ authid: 'defaultAuth', port: 1000, apiKey: 'fake-api-key' });
+
+		expect(actionResult.isSuccess()).toBe(false);
+		expect(actionResult.errorMessages).toEqual(['The port must be a valid number between 1024 and 65535.']);
+		expect(proxyStartSpy).not.toHaveBeenCalled();
+	});
+});
+
+describe('ProxyStart command validation output', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+		result: jest.fn(),
+	};
+
+	it('should show mandatory options validation output and interactive suggestion when options are missing', async () => {
+		const command = ProxyStartCommand.create({
+			commandMetadata: {
+				name: 'proxy:start',
+				supportsInteractiveMode: true,
+				options: {
+					authid: {
+						name: 'authid',
+						mandatory: true,
+					},
+					port: {
+						name: 'port',
+						mandatory: true,
+					},
+				},
+			},
+			projectFolder: '/tmp/fake-project-folder',
+			runInInteractiveMode: false,
+			log,
+			sdkPath: '/tmp/fake-sdk-path',
+			executionEnvironmentContext: { env: 'test' },
+		});
+
+		await expect(command.run({})).rejects.toMatchObject({
+			_defaultMessage: 'There are validation errors:\n"authid" option is mandatory.\n"port" option is mandatory.',
+			_infoMessage: 'You can use the interactive mode by running "suitecloud proxy:start -i"',
+		});
+	});
+});
+
+describe('ProxyStartAction _handleManualAuthRefreshRequired()', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+	};
+
+	const executionEnvironmentContext = { env: 'test' };
+	const sdkPath = '/tmp/fake-sdk-path';
+
+	let action;
+
+	beforeEach(() => {
+		jest.clearAllMocks();
+		action = new ProxyStartAction({
+			log,
+			sdkPath,
+			executionEnvironmentContext,
+		});
+		action._proxyService = {
+			reloadAccessToken: jest.fn().mockResolvedValue(),
+		};
+	});
+
+	it('should trigger refresh authorization and reload proxy access token when successful', async () => {
+		refreshAuthorization.mockResolvedValue({
+			isSuccess: () => true,
+		});
+
+		await action._handleManualAuthRefreshRequired({
+			message: 'manual refresh required',
+			authId: 'defaultAuth',
+		});
+
+		expect(log.error).toHaveBeenCalledWith('manual refresh required');
+		expect(refreshAuthorization).toHaveBeenCalledWith('defaultAuth', sdkPath, executionEnvironmentContext);
+		expect(action._proxyService.reloadAccessToken).toHaveBeenCalledTimes(1);
+		expect(log.info).toHaveBeenCalledTimes(2);
+	});
+
+	it('should log refresh operation errors and skip reloading token when refresh fails', async () => {
+		refreshAuthorization.mockResolvedValue({
+			isSuccess: () => false,
+			errorMessages: ['refresh failed'],
+		});
+
+		await action._handleManualAuthRefreshRequired({
+			message: 'manual refresh required',
+			authId: 'defaultAuth',
+		});
+
+		expect(refreshAuthorization).toHaveBeenCalledWith('defaultAuth', sdkPath, executionEnvironmentContext);
+		expect(log.error).toHaveBeenCalledWith(['refresh failed']);
+		expect(action._proxyService.reloadAccessToken).not.toHaveBeenCalled();
+	});
+
+	it('should not start a second refreshAuthorization while one is in progress', async () => {
+		let resolveRefresh;
+		refreshAuthorization.mockImplementation(
+			() => new Promise((resolve) => {
+				resolveRefresh = resolve;
+			})
+		);
+
+		const firstCall = action._handleManualAuthRefreshRequired({
+			message: 'manual refresh required',
+			authId: 'defaultAuth',
+		});
+
+		const secondCall = action._handleManualAuthRefreshRequired({
+			message: 'manual refresh required',
+			authId: 'defaultAuth',
+		});
+
+		await Promise.resolve();
+
+		expect(refreshAuthorization).toHaveBeenCalledTimes(1);
+
+		resolveRefresh({
+			isSuccess: () => true,
+		});
+
+		await Promise.all([firstCall, secondCall]);
+
+		expect(refreshAuthorization).toHaveBeenCalledTimes(1);
+		expect(action._proxyService.reloadAccessToken).toHaveBeenCalledTimes(1);
+	});
+});
+
+describe('ProxyStartOutputHandler parse()', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+		result: jest.fn(),
+	};
+
+	let outputHandler;
+
+	beforeEach(() => {
+		jest.clearAllMocks();
+		outputHandler = new ProxyStartOutputHandler({ log });
+	});
+
+	it('should render running guidance and stop instructions on success', () => {
+		const actionResult = {
+			data: {
+				authId: 'defaultAuth',
+				port: 8383,
+			},
+		};
+
+		const result = outputHandler.parse(actionResult);
+
+		expect(result).toBe(actionResult);
+		expect(log.result).toHaveBeenNthCalledWith(1, 'SuiteCloud Developer Assistant service is now running on port 8383 and using the auth ID defaultAuth.');
+		expect(log.result).toHaveBeenNthCalledWith(2, '');
+		expect(log.result).toHaveBeenNthCalledWith(3, 'To use it on this machine, configure your third-party tool as follows:');
+		expect(log.result).toHaveBeenNthCalledWith(4, '  * API Provider: OpenAI Compatible');
+		expect(log.result).toHaveBeenNthCalledWith(5, '  * Base URL: http://127.0.0.1:8383/api/internal/devassist');
+		expect(log.result).toHaveBeenNthCalledWith(6, '  * API Key: Paste the API key generated by "suitecloud proxy:generatekey"');
+		expect(log.result).toHaveBeenNthCalledWith(7, '  * Model ID: NetSuite');
+		expect(log.result).toHaveBeenNthCalledWith(8, '');
+		expect(log.result).toHaveBeenNthCalledWith(9, 'Press Ctrl+C to stop the proxy.');
+		expect(log.result).toHaveBeenNthCalledWith(10, '');
+	});
+});
+
+describe('ProxyStartAction _registerShutdownHandlers()', () => {
+	const log = {
+		error: jest.fn(),
+		info: jest.fn(),
+	};
+
+	let action;
+	let processOnSpy;
+	let processExitSpy;
+	let signalHandlers;
+
+	beforeEach(() => {
+		jest.clearAllMocks();
+		signalHandlers = {};
+
+		action = new ProxyStartAction({
+			log,
+			sdkPath: '/tmp/fake-sdk-path',
+			executionEnvironmentContext: { env: 'test' },
+		});
+		action._proxyService = {
+			stop: jest.fn().mockResolvedValue(),
+		};
+
+		processOnSpy = jest.spyOn(process, 'on').mockImplementation((signal, handler) => {
+			signalHandlers[signal] = handler;
+			return process;
+		});
+		processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {});
+	});
+
+	afterEach(() => {
+		processOnSpy.mockRestore();
+		processExitSpy.mockRestore();
+	});
+
+	it('should log stopping message before stopping proxy during shutdown', async () => {
+		action._registerShutdownHandlers();
+
+		await signalHandlers.SIGINT();
+
+		expect(log.info).toHaveBeenNthCalledWith(1, '');
+		expect(log.info).toHaveBeenCalledWith('Stopping proxy. Waiting for active requests to finish...');
+		expect(action._proxyService.stop).toHaveBeenCalledTimes(1);
+		expect(processExitSpy).toHaveBeenCalledWith(0);
+	});
+
+	it('should execute shutdown only once when multiple signals are received', async () => {
+		action._registerShutdownHandlers();
+
+		await signalHandlers.SIGINT();
+		await signalHandlers.SIGTERM();
+
+		expect(log.info).toHaveBeenCalledTimes(2);
+		expect(action._proxyService.stop).toHaveBeenCalledTimes(1);
+		expect(processExitSpy).toHaveBeenCalledTimes(1);
+	});
+});
