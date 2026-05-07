@@ -100,24 +100,6 @@ module.exports = class ProxyStartAction extends BaseAction {
 		});
 	}
 
-	_resolveProxyReadinessOnce() {
-		if (this._proxyReadiness.isSettled) {
-			return;
-		}
-
-		this._proxyReadiness.isSettled = true;
-		this._proxyReadiness.resolve();
-	}
-
-	_rejectProxyReadinessOnce(errorMessage) {
-		if (this._proxyReadiness.isSettled) {
-			return;
-		}
-
-		this._proxyReadiness.isSettled = true;
-		this._proxyReadiness.reject(errorMessage);
-	}
-
 	_registerProxyEvents() {
 		// Dedicated handlers for events with custom behavior.
 		this._proxyService.on(EVENTS.PROXY_ERROR.MANUAL_AUTH_REFRESH_REQUIRED, this._handleManualAuthRefreshRequired.bind(this));
@@ -133,11 +115,14 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_handleProxyErrorDefault({ message }) {
+		// During startup, PROXY_ERROR settles readiness as failure (only first event wins).
 		if (!this._proxyReadiness.isSettled) {
-			this._rejectProxyReadinessOnce(message);
+			this._proxyReadiness.isSettled = true;
+			this._proxyReadiness.reject(message);
 			return;
 		}
 
+		// After readiness has been settled, treat as runtime proxy error.
 		this._log.error(message);
 	}
 
@@ -169,7 +154,13 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_handleServerListening() {
-		this._resolveProxyReadinessOnce();
+		// LISTENING settles readiness as success (only first event wins).
+		if (this._proxyReadiness.isSettled) {
+			return;
+		}
+
+		this._proxyReadiness.isSettled = true;
+		this._proxyReadiness.resolve();
 	}
 
 	_handleServerStopped() {
