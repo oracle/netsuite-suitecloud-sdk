@@ -1,0 +1,34 @@
+# CODEOWNERS
+# Assigns default reviewers for pull requests by path.
+# GitHub uses the last matching rule, so keep broad rules first and specific overrides later.
+
+# Default owners for anything not matched below.
+* @oracle/netsuite-suitecloud-node-cli-contributors @alisyed-19
+
+# GitHub configuration and repo-level automation.
+/.github/ @alisyed-19
+/.github/workflows/ @alisyed-19
+
+# Shared assets and docs.
+/resources/ @oracle/docs
+
+# SuiteCloud Agent Skills.
+/packages/agent-skills/ @NinjaColder @Montsant19 @oracle/netsuite-suitecloud-secondary-contributors
+
+# SuiteCloud CLI for Node.js.
+/packages/node-cli/ @oracle/netsuite-suitecloud-node-cli-contributors
+
+# SuiteCloud Extension for Visual Studio Code.
+/packages/vscode-extension/ @oracle/netsuite-suitecloud-node-cli-contributors
+
+# SuiteCloud Unit Testing.
+/packages/unit-testing/ @oracle/netsuite-suitecloud-node-cli-contributors
+
+# UIF Types.
+/packages/uif-types/ @odanek @oracle/netsuite-suitecloud-node-cli-contributors
+
+# Optional finer-grained ownership inside Agent Skills.
+# These rules override /packages/agent-skills/ when those paths exist.
+/packages/agent-skills/netsuite-sdf-project-documentation/ @oracle/docs @oracle/suitecloud-platform
+/packages/agent-skills/netsuite-suitescript-records-reference/ @oracle/netsuite-suitecloud-node-cli-contributors
+/packages/agent-skills/netsuite-uif-spa-reference/ @oracle/netsuite-suitecloud-node-cli-contributors
