@@ -128,7 +128,7 @@ The skill also activates when the agent detects these code patterns:
 - Writing or reviewing RESTlet scripts (`@NScriptType Restlet`)
 - Writing or reviewing Suitelets that generate HTML (`response.write`, `INLINEHTML`)
 - Client scripts with DOM manipulation (`innerHTML`, `document.write`, `eval`)
-- SuiteQL queries being constructed (`query.runSuiteQL`, `N/query`)
+- SuiteQL queries being constructed (`query.runSuiteQL`, `query.runSuiteQLPaged`, `N/query`)
 - File operations (`N/file`, `file.create`, `file.load`)
 - External HTTP calls (`N/https`, `https.post`, `https.get`)
 - Cryptographic operations (`N/crypto`, `createHash`, `createCipher`)
@@ -422,7 +422,7 @@ define(['N/query'], (query) => {
 define(['N/query'], (query) => {
     const onRequest = (context) => {
         const name = context.request.parameters.customerName;
-        // SAFE: params array escapes all values; injection is impossible
+        // SAFE: values are passed separately through params
         const sql = "SELECT id, companyname FROM customer WHERE companyname = ?";
         const results = query.runSuiteQL({ query: sql, params: [name] });
         context.response.write(JSON.stringify(results.asMappedResults()));
@@ -430,6 +430,11 @@ define(['N/query'], (query) => {
     return { onRequest };
 });
 ```
+
+Use `?` placeholders plus `params` for `query.runSuiteQL`,
+`query.runSuiteQLPaged`, and their promise variants. Paged SuiteQL queries must
+still bind values through `params`; do not concatenate user-controlled values
+into the query string.
 
 ---
 
@@ -2577,7 +2582,7 @@ handles user input, renders HTML, queries data, or communicates with external sy
 ### Input and Data Handling
 
 - [ ] All user input validated and sanitized before use
-- [ ] SuiteQL uses parameterized queries with `?` placeholders (never string concatenation)
+- [ ] SuiteQL uses `?` placeholders with `params` for `runSuiteQL`, `runSuiteQLPaged`, and promise variants
 - [ ] Dynamic identifiers (column names, table names) validated against allowlists
 - [ ] Request body schema validated (required fields, types, lengths)
 - [ ] Mass assignment prevented (only expected fields picked from request body)
@@ -2717,7 +2722,20 @@ define(['N/query'], (query) => {
         );
     };
 
-    return { getCustomer, searchOrders, getCustomersByIds };
+    const getCustomerPagesByIds = (ids) => {
+        const PAGE_SIZE = 100; // NetSuite runSuiteQLPaged pageSize range: 5-1000.
+        const placeholders = ids.map(() => '?').join(', ');
+        return query.runSuiteQLPaged({
+            query: `SELECT id, companyname
+                    FROM customer
+                    WHERE id IN (${placeholders})
+                    ORDER BY id`,
+            params: ids,
+            pageSize: PAGE_SIZE
+        });
+    };
+
+    return { getCustomer, searchOrders, getCustomersByIds, getCustomerPagesByIds };
 });
 ```
 
