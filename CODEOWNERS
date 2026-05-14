@@ -9,8 +9,6 @@
 /.github/ @alisyed-19
 /.github/workflows/ @alisyed-19
 
-# Shared assets and docs.
-/resources/ @oracle/docs
 
 # SuiteCloud Agent Skills.
 /packages/agent-skills/ @NinjaColder @Montsant19 @oracle/netsuite-suitecloud-secondary-contributors
@@ -29,6 +27,6 @@
 
 # Optional finer-grained ownership inside Agent Skills.
 # These rules override /packages/agent-skills/ when those paths exist.
-/packages/agent-skills/netsuite-sdf-project-documentation/ @oracle/docs @oracle/suitecloud-platform
+/packages/agent-skills/netsuite-sdf-project-documentation/ @NinjaColder @Montsant19 @vic-nik
 /packages/agent-skills/netsuite-suitescript-records-reference/ @oracle/netsuite-suitecloud-node-cli-contributors
 /packages/agent-skills/netsuite-uif-spa-reference/ @oracle/netsuite-suitecloud-node-cli-contributors
