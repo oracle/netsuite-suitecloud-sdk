@@ -56,3 +56,4 @@ module.exports = class AccountSetupCiAction extends BaseAction {
 		return this._isSetupMode(params) ? params[OPTIONS.AUTHID] : params[OPTIONS.SELECT];
 	}
 }
+
