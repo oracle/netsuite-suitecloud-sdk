@@ -40,10 +40,16 @@ const {
 const {
 	AUTHORIZATION_PROPERTIES_KEYS,
 	HTTP_RESPONSE_CODE,
+	SUITECLOUD_PROXY_SERVICE: {
+		REGEX_SYSTEM_URL,
+		REGEX_ACCOUNT_SPECIFIC_URL,
+		REGEX_SUITETALK_API_PRODUCTION_URL,
+	},
 } = require('../ApplicationConstants');
 
 /** Message literal service method */
 const NodeTranslationService = require('./NodeTranslationService');
+const ProxyService = require('./ProxyService');
 const {
 	SUITECLOUD_AUTH_PROXY_SERVICE,
 } = require('./TranslationKeys');
@@ -64,6 +70,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._executionEnvironmentContext = executionEnvironmentContext;
 		this._allowedPathPrefix = allowedPathPrefix;
 		this._apiKey = apiKey;
+		this._proxyService = new ProxyService();
 		/** These are the variables we are going to use to store instance data */
 		this._accessToken = undefined;
 		this._localProxy = undefined;
@@ -312,7 +319,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			port: TARGET_SERVER_PORT,
 			path: request.url,
 			method: request.method,
-			headers: { ...request.headers, host, authorization },
+			headers: { ...request.headers, host, authorization }
 		};
 
 		// added to get "stream responses" from netsuite devassist backend
@@ -321,10 +328,13 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				...requestOptions.headers,
 				Accept: 'text/event-stream'
 			};
-		}		
+		}
 
-		// Add agent for insecure connections when connecting to runboxes
-		if (this._targetHost && this._targetHost.includes('vm.eng')) {
+		if (this._isProductionUrl(this._targetHost)) {
+			//Add proxy agent for production in order to work properly with vpn
+			requestOptions.agent = this._proxyService.getProxyAgent();
+		} else {
+			//Add agent for insecure connections when connecting to runboxes
 			requestOptions.agent = new https.Agent({
 				rejectUnauthorized: false,
 			});
@@ -483,6 +493,14 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			console.debug('[SuiteCloudAuthProxyService]');
 			args.forEach((arg) => console.debug(arg));
 		}
+	}
+
+	_isProductionUrl(url) {
+		return (
+			REGEX_SYSTEM_URL.test(url) ||
+			REGEX_ACCOUNT_SPECIFIC_URL.test(url) ||
+			REGEX_SUITETALK_API_PRODUCTION_URL.test(url)
+		);
 	}
 
 }
