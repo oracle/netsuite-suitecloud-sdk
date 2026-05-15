@@ -69,6 +69,10 @@ define(['N/error'], function (error) {
 
 ### HTML Encoding Helper
 
+For larger Suitelet HTML fragments, prefer an inline FTL template rendered with
+`N/render` and `<#ftl output_format="HTML" auto_esc=true>`. Keep custom helpers
+as fallback/shared-library patterns for raw output boundaries.
+
 ```javascript
 function encodeHTML(str) {
     return String(str)
@@ -86,6 +90,23 @@ form.addField({
     label: 'Message'
 }).defaultValue = '<p>' + encodeHTML(userInput) + '</p>';
 ```
+
+```javascript
+var renderer = render.create();
+renderer.templateContent = [
+    '<#ftl output_format="HTML" auto_esc=true>',
+    '<p>${data.message}</p>'
+].join('\n');
+renderer.addCustomDataSource({
+    format: render.DataSource.OBJECT,
+    alias: 'data',
+    data: { message: userInput || '' }
+});
+var html = renderer.renderAsString(); // response.write(html) or INLINEHTML.defaultValue
+```
+
+Use `N/xml.escape({ xmlText: val })` only for simple XML/HTML markup escaping;
+do not use it as a JavaScript, URL, CSS, DOM, or trusted-HTML sanitizer.
 
 ---
 

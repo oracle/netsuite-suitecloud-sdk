@@ -880,6 +880,13 @@ define([], () => {
 });
 ```
 
+For Suitelet HTML, also consider `N/render` TemplateRenderer with an inline FTL
+template and `<#ftl output_format="HTML" auto_esc=true>` when TemplateRenderer is
+available and the code is replacing string-built `response.write()` output or
+`INLINEHTML.defaultValue`. `N/xml.escape` can be referenced for simple XML/HTML
+markup escaping, but do not treat it as a universal XSS encoder for JavaScript,
+URL, CSS, DOM sink, or trusted-HTML contexts.
+
 ---
 
 #### OSCP-011: Stored XSS via Unencoded Database Values
@@ -2591,6 +2598,8 @@ handles user input, renders HTML, queries data, or communicates with external sy
 ### Output and Rendering
 
 - [ ] Output is context-encoded for the target context (HTML, URL, JS, CSS, attribute)
+- [ ] Suitelet HTML uses `serverWidget`, FTL auto-escaping, or explicit escaping at raw output boundaries
+- [ ] `N/xml.escape` is limited to simple XML/HTML markup escaping, not JS/URL/CSS/DOM contexts
 - [ ] No `eval()`, `new Function()`, or string-form `setTimeout`/`setInterval`
 - [ ] No `innerHTML` with unsanitized content (use `textContent` for untrusted data)
 - [ ] `postMessage` uses specific origin (never `'*'`)
@@ -2941,7 +2950,7 @@ define(['N/log'], (log) => {
 |------|---------------|--------|
 | `references/01-injection-prevention.md` | A03:2021 | SuiteQL injection, command injection, CRLF, LDAP injection, template literal injection, saved search filter injection |
 | `references/02-authentication-session.md` | A07:2021 | Credential storage, TBA security, session fixation, session timeout, cookie attributes, OAuth 2.0, password policies |
-| `references/03-xss-output-encoding.md` | A03:2021 | Reflected XSS, stored XSS, DOM XSS, five-context encoding, CSP defense-in-depth, N/encode misuse, encoding utility library |
+| `references/03-xss-output-encoding.md` | A03:2021 | Reflected XSS, stored XSS, DOM XSS, five-context encoding, FTL templates, N/xml.escape, CSP defense-in-depth, N/encode misuse |
 | `references/04-access-control.md` | A01:2021 | RBAC, IDOR, function-level authz, runasrole, horizontal/vertical escalation, record-level permissions, deployment audience |
 | `references/05-security-misconfiguration.md` | A05:2021 | Error messages, debug mode, log levels, security headers, default credentials, test endpoints, SDF manifest, environment values |
 | `references/06-cryptography-data-protection.md` | A02:2021 | N/crypto, SHA-256+, password hashing, AES-256, key management, data at rest, HTTPS enforcement, PII masking, CSPRNG |
