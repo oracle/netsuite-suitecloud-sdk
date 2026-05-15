@@ -111,6 +111,61 @@ define(['N/ui/serverWidget'], (serverWidget) => {
 > encode user-supplied data placed into INLINEHTML fields. Use `FieldType.TEXT` or
 > `FieldType.TEXTAREA` for automatically safe text display.
 
+### Example 2a: Inline FTL Template for Suitelet HTML
+
+`N/render` TemplateRenderer can use inline FreeMarker Template Language (FTL)
+content and render it to a string. For Suitelet HTML, this is a practical
+replacement for string-built `response.write()` output or
+`INLINEHTML.defaultValue` when the template declares HTML output and auto-escaping.
+
+```javascript
+// ===== GOOD: Inline FTL template with HTML auto-escaping =====
+/**
+ * @NApiVersion 2.1
+ * @NScriptType Suitelet
+ */
+define(['N/render', 'N/ui/serverWidget'], (render, serverWidget) => {
+    const renderGreetingHtml = (name) => {
+        const renderer = render.create();
+        renderer.templateContent = [
+            '<#ftl output_format="HTML" auto_esc=true>',
+            '<h1>Hello, ${data.name}!</h1>'
+        ].join('\n');
+        renderer.addCustomDataSource({
+            format: render.DataSource.OBJECT,
+            alias: 'data',
+            data: { name: name || '' }
+        });
+        return renderer.renderAsString();
+    };
+
+    const onRequest = (context) => {
+        const name = context.request.parameters.name;
+
+        if (context.request.parameters.inline === 'T') {
+            const form = serverWidget.createForm({ title: 'Greeting' });
+            const field = form.addField({
+                id: 'custpage_greeting',
+                type: serverWidget.FieldType.INLINEHTML,
+                label: 'Greeting'
+            });
+            field.defaultValue = renderGreetingHtml(name);
+            context.response.writePage(form);
+            return;
+        }
+
+        context.response.write(renderGreetingHtml(name));
+    };
+
+    return { onRequest };
+});
+```
+
+Use `N/xml.escape({ xmlText: value })` for simple XML/HTML markup escaping when
+you must write a small raw markup fragment. It should not replace
+context-specific handling for JavaScript strings, URLs, CSS, DOM sinks, or raw
+trusted HTML.
+
 ---
 
 ## 2. Stored XSS via Record Fields
@@ -699,6 +754,8 @@ define(['./lib/encoding'], (enc) => {
 - [ ] **Encoding is context-appropriate** (HTML body, attribute, JS, URL, CSS).
 - [ ] **serverWidget** is preferred over raw HTML for Suitelet forms.
 - [ ] **INLINEHTML fields** still encode user data (they render raw HTML).
+- [ ] **FTL templates** use `output_format="HTML"` with `auto_esc=true` when rendering user data.
+- [ ] **N/xml.escape** is limited to simple XML/HTML markup escaping and is not used for JS, URL, CSS, DOM sink, or trusted-HTML contexts.
 - [ ] **Client scripts** use `textContent` instead of `innerHTML` for untrusted data.
 - [ ] **eval(), new Function(), setTimeout(string)** are never used with user input.
 - [ ] **CSP headers** are set as defense-in-depth.
@@ -712,10 +769,14 @@ define(['./lib/encoding'], (enc) => {
 
 ---
 
-## Related OWASP Resources
+## Related Resources
 
 - [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
 - [OWASP DOM-Based XSS Prevention](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)
 - [OWASP Content Security Policy Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
 - [CWE-79: Cross-Site Scripting](https://cwe.mitre.org/data/definitions/79.html)
 - [CWE-116: Improper Encoding or Escaping of Output](https://cwe.mitre.org/data/definitions/116.html)
+- [Oracle NetSuite N/xml Module](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4344917661.html)
+- [Oracle NetSuite xml.escape(options)](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4392331185.html)
+- [Oracle NetSuite N/render Module](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4412042824.html)
+- [FreeMarker Auto-Escaping and Output Formats](https://freemarker.apache.org/docs/dgui_misc_autoescaping.html)

@@ -19,7 +19,9 @@ template rendering.
 ## 1. SQL Injection in SuiteQL
 
 SuiteQL is NetSuite's SQL-like query language. When queries are built using string
-concatenation with user input, they become vulnerable to SQL injection.
+concatenation with user input, they become vulnerable to SQL injection. Use `?`
+placeholders plus `params` for `query.runSuiteQL`, `query.runSuiteQLPaged`, and
+their promise variants.
 
 ### Example 1: Basic SuiteQL Injection
 
@@ -62,7 +64,7 @@ define(['N/query'], (query) => {
             params: [customerId]
         });
 
-        // The params array safely escapes all values before execution.
+        // The params array binds values separately from the query structure.
         // Even if customerId is "1 OR 1=1", it is treated as a literal string.
     };
 
@@ -95,6 +97,27 @@ define(['N/query'], (query) => {
         return query.runSuiteQL({
             query: sql,
             params: statusList
+        });
+    };
+});
+```
+
+```javascript
+// ===== GOOD: Paged dynamic list query with parameter placeholders =====
+define(['N/query'], (query) => {
+    const getCustomerPagesByIds = (ids) => {
+        const PAGE_SIZE = 100; // NetSuite runSuiteQLPaged pageSize range: 5-1000.
+        // SAFE: Use one placeholder per value and pass values through params.
+        const placeholders = ids.map(() => '?').join(', ');
+        const sql = `SELECT id, companyname, email
+                     FROM customer
+                     WHERE id IN (${placeholders})
+                     ORDER BY id`;
+
+        return query.runSuiteQLPaged({
+            query: sql,
+            params: ids,
+            pageSize: PAGE_SIZE
         });
     };
 });
@@ -423,7 +446,7 @@ define(['N/search'], (search) => {
 
 Use this checklist when reviewing SuiteScript code for injection vulnerabilities:
 
-- [ ] **SuiteQL queries use parameterized placeholders (`?`)** with the `params` array.
+- [ ] **SuiteQL queries use parameterized placeholders (`?`)** with `params` for `runSuiteQL`, `runSuiteQLPaged`, and promise variants.
 - [ ] **No string concatenation or template literals** build SQL with user input.
 - [ ] **Dynamic identifiers** (column/table names) are validated against an allowlist.
 - [ ] **HTTP header values** are stripped of `\r`, `\n`, and `\x00` characters.
@@ -461,12 +484,26 @@ query.runSuiteQL({
     params: ids
 });
 
+// Paged SuiteQL uses the same placeholders and params pattern
+const PAGE_SIZE = 100; // NetSuite runSuiteQLPaged pageSize range: 5-1000.
+query.runSuiteQLPaged({
+    query: `SELECT id, companyname
+            FROM customer
+            WHERE id IN (${placeholders})
+            ORDER BY id`,
+    params: ids,
+    pageSize: PAGE_SIZE
+});
+
 // LIKE with parameter (the % is part of the value, not the query)
 query.runSuiteQL({
     query: 'SELECT id, companyname FROM customer WHERE companyname LIKE ?',
     params: [`%${searchTerm}%`]
 });
 ```
+
+The promise variants use the same query text and `params` rules; only the call
+style changes.
 
 ---
 
