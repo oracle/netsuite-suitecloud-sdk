@@ -35,6 +35,11 @@
 		"generator": "commands/file/upload/UploadFilesCommand"
 	},
 	{
+		"commandName": "file:compare",
+		"supportsInteractiveMode": true,
+		"generator": "commands/file/compare/CompareFilesCommand"
+	},
+	{
 		"commandName": "object:import",
 		"supportsInteractiveMode": true,
 		"generator": "commands/object/import/ImportObjectsCommand"
