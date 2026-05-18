@@ -40,16 +40,12 @@ const {
 const {
 	AUTHORIZATION_PROPERTIES_KEYS,
 	HTTP_RESPONSE_CODE,
-	SUITECLOUD_PROXY_SERVICE: {
-		REGEX_SYSTEM_URL,
-		REGEX_ACCOUNT_SPECIFIC_URL,
-		REGEX_SUITETALK_API_PRODUCTION_URL,
-	},
 } = require('../ApplicationConstants');
+const UriUtils = require('../utils/UriUtils');
 
 /** Message literal service method */
 const NodeTranslationService = require('./NodeTranslationService');
-const ProxyService = require('./ProxyService');
+const ProxyService = require('./ProxyAgentService');
 const {
 	SUITECLOUD_AUTH_PROXY_SERVICE,
 } = require('./TranslationKeys');
@@ -70,7 +66,6 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._executionEnvironmentContext = executionEnvironmentContext;
 		this._allowedPathPrefix = allowedPathPrefix;
 		this._apiKey = apiKey;
-		this._proxyService = new ProxyService();
 		/** These are the variables we are going to use to store instance data */
 		this._accessToken = undefined;
 		this._localProxy = undefined;
@@ -330,9 +325,9 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			};
 		}
 
-		if (this._isProductionUrl(this._targetHost)) {
+		if (UriUtils.isProductionUrl(this._targetHost)) {
 			//Add proxy agent for production in order to work properly with vpn
-			requestOptions.agent = this._proxyService.getProxyAgent();
+			requestOptions.agent = ProxyService.getProxyAgent(this._targetHost);
 		} else {
 			//Add agent for insecure connections when connecting to runboxes
 			requestOptions.agent = new https.Agent({
@@ -493,14 +488,6 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			console.debug('[SuiteCloudAuthProxyService]');
 			args.forEach((arg) => console.debug(arg));
 		}
-	}
-
-	_isProductionUrl(url) {
-		return (
-			REGEX_SYSTEM_URL.test(url) ||
-			REGEX_ACCOUNT_SPECIFIC_URL.test(url) ||
-			REGEX_SUITETALK_API_PRODUCTION_URL.test(url)
-		);
 	}
 
 }
