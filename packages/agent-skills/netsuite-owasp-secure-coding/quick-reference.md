@@ -65,9 +65,13 @@ define(['N/error'], function (error) {
 | JavaScript string | JS string encode (escape `\ ' " /`) | `val.replace(/\\/g,'\\\\').replace(/'/g,"\\'")` |
 | URL parameter | Percent-encode | `encodeURIComponent(val)` |
 | CSS value | Strip non-alphanumeric or allowlist | Reject values containing `expression(`, `url(`, `\\` |
-| SuiteQL value | Parameterized query (never concat) | `query.runSuiteQL({ query: q, params: [val] })` |
+| SuiteQL value | Parameterized query (never concat) | `query.runSuiteQL({ query: q, params: [val] })` or `query.runSuiteQLPaged({ query: q, params: [val], pageSize: PAGE_SIZE })`; page size range is `5-1000` |
 
 ### HTML Encoding Helper
+
+For larger Suitelet HTML fragments, prefer an inline FTL template rendered with
+`N/render` and `<#ftl output_format="HTML" auto_esc=true>`. Keep custom helpers
+as fallback/shared-library patterns for raw output boundaries.
 
 ```javascript
 function encodeHTML(str) {
@@ -86,6 +90,23 @@ form.addField({
     label: 'Message'
 }).defaultValue = '<p>' + encodeHTML(userInput) + '</p>';
 ```
+
+```javascript
+var renderer = render.create();
+renderer.templateContent = [
+    '<#ftl output_format="HTML" auto_esc=true>',
+    '<p>${data.message}</p>'
+].join('\n');
+renderer.addCustomDataSource({
+    format: render.DataSource.OBJECT,
+    alias: 'data',
+    data: { message: userInput || '' }
+});
+var html = renderer.renderAsString(); // response.write(html) or INLINEHTML.defaultValue
+```
+
+Use `N/xml.escape({ xmlText: val })` only for simple XML/HTML markup escaping;
+do not use it as a JavaScript, URL, CSS, DOM, or trusted-HTML sanitizer.
 
 ---
 
@@ -106,6 +127,9 @@ query.runSuiteQL({ query: sql });
 const sql = "SELECT id, companyname FROM customer WHERE companyname = ?";
 const results = query.runSuiteQL({ query: sql, params: [customerName] });
 ```
+
+The same `?` placeholders and `params` rule applies to `runSuiteQLPaged` and to
+promise variants.
 
 ### Multi-Parameter Example
 
@@ -132,6 +156,26 @@ const ids = [101, 202, 303];
 const placeholders = ids.map(function () { return '?'; }).join(', ');
 const sql = "SELECT id, companyname FROM customer WHERE id IN (" + placeholders + ")";
 const results = query.runSuiteQL({ query: sql, params: ids });
+```
+
+### Paged IN-Clause Pattern
+
+```javascript
+const ids = [101, 202, 303];
+const placeholders = ids.map(function () { return '?'; }).join(', ');
+const sql = [
+    "SELECT id, companyname",
+    "FROM customer",
+    "WHERE id IN (" + placeholders + ")",
+    "ORDER BY id"
+].join(' ');
+
+const PAGE_SIZE = 100; // NetSuite runSuiteQLPaged pageSize range: 5-1000.
+const pagedResults = query.runSuiteQLPaged({
+    query: sql,
+    params: ids,
+    pageSize: PAGE_SIZE
+});
 ```
 
 ---
@@ -588,7 +632,7 @@ All 48 OWASP Secure Coding Practices (OSCP) pitfalls in a single lookup table.
 
 | ID | Title | Severity | One-Line Fix |
 |----|-------|----------|-------------|
-| P01 | SQL injection via string concatenation | Critical | Use parameterized queries with `?` placeholders. |
+| P01 | SQL injection via string concatenation | Critical | Use `?` placeholders with `params`, including for paged and promise SuiteQL calls. |
 | P02 | Unvalidated input passed to record operations | High | Validate type, range, and format before use. |
 | P03 | Missing output encoding in Suitelet HTML | High | Encode all dynamic values for the output context. |
 | P04 | Raw user input in inline script blocks | High | JS-encode values inserted into script contexts. |
