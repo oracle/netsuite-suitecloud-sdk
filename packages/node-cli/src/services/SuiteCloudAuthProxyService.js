@@ -41,9 +41,11 @@ const {
 	AUTHORIZATION_PROPERTIES_KEYS,
 	HTTP_RESPONSE_CODE,
 } = require('../ApplicationConstants');
+const UriUtils = require('../utils/UriUtils');
 
 /** Message literal service method */
 const NodeTranslationService = require('./NodeTranslationService');
+const ProxyService = require('./ProxyAgentService');
 const {
 	SUITECLOUD_AUTH_PROXY_SERVICE,
 } = require('./TranslationKeys');
@@ -100,7 +102,13 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				return
 			}
 
-			const requestOptions = this._buildRequestOptions(request);
+			let requestOptions;
+			try {
+				requestOptions = this._buildRequestOptions(request);
+			} catch (error) {
+				this._localProxy.emit('error', error);
+				return;
+			}
 
 			// Save body
 			const bodyChunks = [];
@@ -312,7 +320,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			port: TARGET_SERVER_PORT,
 			path: request.url,
 			method: request.method,
-			headers: { ...request.headers, host, authorization },
+			headers: { ...request.headers, host, authorization }
 		};
 
 		// added to get "stream responses" from netsuite devassist backend
@@ -321,10 +329,13 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				...requestOptions.headers,
 				Accept: 'text/event-stream'
 			};
-		}		
+		}
 
-		// Add agent for insecure connections when connecting to runboxes
-		if (this._targetHost && this._targetHost.includes('vm.eng')) {
+		if (UriUtils.sProductionDomain(this._targetHost)) {
+			//Add proxy agent for production in order to work properly with vpn
+			requestOptions.agent = ProxyService.getProxyAgent(UriUtils.getSuiteCloudProxyValueFromEnvVariables());
+		} else {
+			//Add agent for insecure connections when connecting to runboxes
 			requestOptions.agent = new https.Agent({
 				rejectUnauthorized: false,
 			});
