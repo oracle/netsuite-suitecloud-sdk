@@ -1,9 +1,5 @@
 # Change Log
 
-## 3.1.3
-
-- Fix for security vulnerabilities for third-party libraries
-
 ## 3.1.2
 
 - Minor enhancements
