@@ -315,6 +315,7 @@
 	"SUITECLOUD_AUTH_PROXY_SERVICE_UNAUTHORIZED_PROXY_REQUEST": "Unauthorized: The API key is missing or invalid.",
 
 	"PROXY_AGENT_SERVICE_INVALID_PROXY_CONFIGURATION": "Invalid proxy configuration in environment variable \"{0}\". Received: {1}",
+	"PROXY_AGENT_SERVICE_UNSUPPORTED_PROXY_PROTOCOL": "Invalid proxy configuration in environment variable \"{0}\". Proxy URL \"{1}\" must use the http or https protocol.",
 
 	"UNIT_TEST_TEST_FAILED": "The tests failed.",
 	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures. The deployment will not continue.",

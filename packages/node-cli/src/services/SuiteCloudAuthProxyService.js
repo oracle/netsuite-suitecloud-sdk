@@ -45,7 +45,8 @@ const UriUtils = require('../utils/UriUtils');
 
 /** Message literal service method */
 const NodeTranslationService = require('./NodeTranslationService');
-const ProxyService = require('./ProxyAgentService');
+const ProxyService = require('./proxy/ProxyAgentService');
+const ProxyEnvironmentUtils = require('./proxy/ProxyEnvironmentUtils');
 const {
 	SUITECLOUD_AUTH_PROXY_SERVICE,
 } = require('./TranslationKeys');
@@ -331,9 +332,9 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			};
 		}
 
-		if (UriUtils.sProductionDomain(this._targetHost)) {
+		if (UriUtils.isProductionDomain(this._targetHost)) {
 			//Add proxy agent for production in order to work properly with vpn
-			requestOptions.agent = ProxyService.getProxyAgent(UriUtils.getSuiteCloudProxyValueFromEnvVariables());
+			requestOptions.agent = ProxyService.getProxyAgent(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv());
 		} else {
 			//Add agent for insecure connections when connecting to runboxes
 			requestOptions.agent = new https.Agent({

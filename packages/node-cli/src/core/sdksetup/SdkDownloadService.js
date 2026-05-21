@@ -18,14 +18,14 @@ const HOME_PATH = require('os').homedir();
 const { FOLDERS } = require('../../ApplicationConstants');
 
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
-const UriUtils = require('../../utils/UriUtils');
+const ProxyEnvironmentUtils = require('../../services/proxy/ProxyEnvironmentUtils');
 
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 
 const { SDK_DOWNLOAD_SERVICE } = require('../../services/TranslationKeys');
 
-const ProxyService = require('../../services/ProxyAgentService');
+const ProxyService = require('../../services/proxy/ProxyAgentService');
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 const ERROR_CODE = -1;
@@ -43,7 +43,7 @@ class SdkDownloadService {
 
 		const fullURL = `${SdkProperties.getDownloadURL()}/${SdkProperties.getSdkFileName()}`;
 		const destinationFilePath = path.join(sdkDirectory, SdkProperties.getSdkFileName());
-		const proxy =  UriUtils.getAllProxyValuesFromEnvVariables()
+		const proxy =  ProxyEnvironmentUtils.resolveSdkDownloadProxyFromEnv()
 		const skipProxy = SdkProperties.configFileExists();
 
 		try {
