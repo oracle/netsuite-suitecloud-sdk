@@ -12,14 +12,12 @@ const {
 	}
 } = require('../ApplicationConstants');
 
-class UriUtils {
-	static isProductionDomain(url) {
-		return (
-			REGEX_SYSTEM_URL.test(url) ||
-			REGEX_ACCOUNT_SPECIFIC_URL.test(url) ||
-			REGEX_SUITETALK_API_PRODUCTION_URL.test(url)
-		);
-	}
+function isProductionDomain(url) {
+	return (
+		REGEX_SYSTEM_URL.test(url) ||
+		REGEX_ACCOUNT_SPECIFIC_URL.test(url) ||
+		REGEX_SUITETALK_API_PRODUCTION_URL.test(url)
+	);
 }
 
-module.exports = UriUtils;
+module.exports = { isProductionDomain };

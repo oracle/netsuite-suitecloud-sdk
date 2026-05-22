@@ -9,6 +9,8 @@ const {
 	PROXY_AGENT_SERVICE,
 } = require('../TranslationKeys');
 
+const DEFAULT_INVALID_URL_CODE = 'ERR_INVALID_URL';
+
 function validateUriProxy(configuredProxy) {
 	let parsedProxyUri;
 	try {
@@ -33,12 +35,25 @@ function validateUriProxy(configuredProxy) {
 				configuredProxy.proxyUri,
 			),
 		);
-		proxyError.code = 'ERR_INVALID_URL';
+		proxyError.code = DEFAULT_INVALID_URL_CODE;
+		throw proxyError;
+	}
+
+	if (!parsedProxyUri.port || Number.isNaN(Number(parsedProxyUri.port))) {
+		const proxyError = new Error(
+			NodeTranslationService.getMessage(
+				PROXY_AGENT_SERVICE.INVALID_PROXY_CONFIGURATION,
+				configuredProxy.envVarName,
+				configuredProxy.proxyUri,
+			),
+		);
+		proxyError.code = DEFAULT_INVALID_URL_CODE;
 		throw proxyError;
 	}
 }
 
-//TODO We should consider standard proxy variables
+//TODO We should consider standard proxy variables instead
+//http_proxy, HTTP_PROXY, https_proxy and HTTPS_PROXY
 function resolveRuntimeProxyFromEnv() {
 	if (process.env[ENV_VARS.SUITECLOUD_PROXY]) {
 		return {

@@ -41,7 +41,7 @@ const {
 	AUTHORIZATION_PROPERTIES_KEYS,
 	HTTP_RESPONSE_CODE,
 } = require('../ApplicationConstants');
-const UriUtils = require('../utils/UriUtils');
+const { isProductionDomain } = require('../utils/UriUtils');
 
 /** Message literal service method */
 const NodeTranslationService = require('./NodeTranslationService');
@@ -92,6 +92,10 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		const { accessToken, hostName } = await this._retrieveCredentials();
 		this._targetHost = hostName;
 		this._accessToken = accessToken;
+
+		if (isProductionDomain(this._targetHost)) {
+			ProxyEnvironmentUtils.validateUriProxy(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv());
+		}
 
 		await this.stop();
 		this._localProxy = http.createServer();
@@ -332,7 +336,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			};
 		}
 
-		if (UriUtils.isProductionDomain(this._targetHost)) {
+		if (isProductionDomain(this._targetHost)) {
 			//Add proxy agent for production in order to work properly with vpn
 			requestOptions.agent = ProxyService.getProxyAgent(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv());
 		} else {
