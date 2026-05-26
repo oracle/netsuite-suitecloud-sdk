@@ -41,9 +41,12 @@ const {
 	AUTHORIZATION_PROPERTIES_KEYS,
 	HTTP_RESPONSE_CODE,
 } = require('../ApplicationConstants');
+const { isProductionDomain } = require('../utils/UriUtils');
 
 /** Message literal service method */
 const NodeTranslationService = require('./NodeTranslationService');
+const ProxyService = require('./proxy/ProxyAgentService');
+const ProxyEnvironmentUtils = require('./proxy/ProxyEnvironmentUtils');
 const {
 	SUITECLOUD_AUTH_PROXY_SERVICE,
 } = require('./TranslationKeys');
@@ -90,6 +93,10 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._targetHost = hostName;
 		this._accessToken = accessToken;
 
+		if (isProductionDomain(this._targetHost)) {
+			ProxyEnvironmentUtils.validateProxyUri(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv());
+		}
+
 		await this.stop();
 		this._localProxy = http.createServer();
 
@@ -97,7 +104,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 			// Validate incoming request (Api Key & Request Path)
 			if (!this._isValidAndFilterIncomingRequest(request, response)) {
-				return
+				return;
 			}
 
 			const requestOptions = this._buildRequestOptions(request);
@@ -312,7 +319,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			port: TARGET_SERVER_PORT,
 			path: request.url,
 			method: request.method,
-			headers: { ...request.headers, host, authorization },
+			headers: { ...request.headers, host, authorization }
 		};
 
 		// added to get "stream responses" from netsuite devassist backend
@@ -321,10 +328,13 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 				...requestOptions.headers,
 				Accept: 'text/event-stream'
 			};
-		}		
+		}
 
-		// Add agent for insecure connections when connecting to runboxes
-		if (this._targetHost && this._targetHost.includes('vm.eng')) {
+		if (isProductionDomain(this._targetHost)) {
+			//Add proxy agent for production in order to work properly with vpn
+			requestOptions.agent = ProxyService.getProxyAgent(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv());
+		} else {
+			//Add agent for insecure connections when connecting to runboxes
 			requestOptions.agent = new https.Agent({
 				rejectUnauthorized: false,
 			});
