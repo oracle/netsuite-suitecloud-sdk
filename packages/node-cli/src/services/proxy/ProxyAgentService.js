@@ -18,7 +18,7 @@ function getProxyAgent(configuredProxy) {
 		return undefined;
 	}
 
-	ProxyEnvironmentUtils.validateUriProxy(configuredProxy);
+	ProxyEnvironmentUtils.validateProxyUri(configuredProxy);
 
 	return new https.Agent({
 		proxyEnv: {

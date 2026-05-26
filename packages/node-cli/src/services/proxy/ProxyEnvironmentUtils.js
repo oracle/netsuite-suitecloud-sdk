@@ -19,7 +19,7 @@ const DEFAULT_INVALID_URL_CODE = 'ERR_INVALID_URL';
  * @throws {Error} When `proxyUri` is invalid, uses an unsupported protocol, or does not include a valid port.
  * The thrown error message includes the source environment variable name and configured value.
  */
-function validateUriProxy(configuredProxy) {
+function validateProxyUri(configuredProxy) {
 	let parsedProxyUri;
 	try {
 		parsedProxyUri = new URL(configuredProxy.proxyUri);
@@ -47,7 +47,7 @@ function validateUriProxy(configuredProxy) {
 		throw proxyError;
 	}
 
-	if (!parsedProxyUri.port || Number.isNaN(Number(parsedProxyUri.port))) {
+	if (!hasExplicitPort(configuredProxy.proxyUri)) {
 		const proxyError = new Error(
 			NodeTranslationService.getMessage(
 				PROXY_AGENT_SERVICE.INVALID_PROXY_CONFIGURATION,
@@ -58,6 +58,10 @@ function validateUriProxy(configuredProxy) {
 		proxyError.code = DEFAULT_INVALID_URL_CODE;
 		throw proxyError;
 	}
+}
+
+function hasExplicitPort(uri) {
+	return /^[a-zA-Z]+:\/\/[^:/]+:\d+$/.test(uri);
 }
 
 //TODO We should consider standard proxy variables instead: http_proxy, HTTP_PROXY, https_proxy and HTTPS_PROXY
@@ -108,4 +112,4 @@ function resolveSdkDownloadProxyFromEnv() {
 	return undefined;
 }
 
-module.exports = { validateUriProxy, resolveRuntimeProxyFromEnv, resolveSdkDownloadProxyFromEnv };
+module.exports = { validateProxyUri, resolveRuntimeProxyFromEnv, resolveSdkDownloadProxyFromEnv };
