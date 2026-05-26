@@ -1,4 +1,4 @@
-Copyright (c) 2022 Oracle and/or its affiliates.
+nCopyright (c) 2022 Oracle and/or its affiliates.
 
 Oracle Free Use Terms and Conditions
 

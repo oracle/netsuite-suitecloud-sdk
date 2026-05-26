@@ -11,6 +11,8 @@
 
 # transpiled .js files
 packages/**/dist
+packages/sdk-core/build/
+packages/sdk-core/*.tsbuildinfo
 
 # coverage reports
 **/coverage/**
