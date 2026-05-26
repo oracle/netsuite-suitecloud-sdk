@@ -1,0 +1,46 @@
+{
+  "name": "@oracle/suitecloud-sdk-core",
+  "version": "0.0.0",
+  "license": "UPL-1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch"
+  },
+  "dependencies": {
+    "xml2js": "0.6.2"
+  },
+  "devDependencies": {
+    "typescript": "5.7.3",
+    "@types/node": "22.10.2"
+  },
+  "main": "./build/index.js",
+  "exports": {
+    ".": "./build/index.js",
+    "./commands/account/setupci/SetupAccountCiHandler": "./build/commands/account/setupci/SetupAccountCiHandler.js",
+    "./commands/account/setup/SetupAccountHandler": "./build/commands/account/setup/SetupAccountHandler.js",
+    "./commands/account/manageauth/ManageAuthHandler": "./build/commands/account/manageauth/ManageAuthHandler.js",
+    "./commands/project/create/CreateProjectHandler": "./build/commands/project/create/CreateProjectHandler.js",
+    "./commands/project/create/CreateProjectExecutor": "./build/commands/project/create/CreateProjectExecutor.js",
+    "./commands/project/deploy/DeployHandler": "./build/commands/project/deploy/DeployHandler.js",
+    "./commands/project/package/PackageHandler": "./build/commands/project/package/PackageHandler.js",
+    "./commands/project/package/PackageProjectExecutor": "./build/commands/project/package/PackageProjectExecutor.js",
+    "./commands/project/validate/ValidateHandler": "./build/commands/project/validate/ValidateHandler.js",
+    "./commands/project/adddependencies/AddDependenciesHandler": "./build/commands/project/adddependencies/AddDependenciesHandler.js",
+    "./commands/project/ProjectCommandExecutor": "./build/commands/project/ProjectCommandExecutor.js",
+    "./commands/file/FileCommandExecutor": "./build/commands/file/FileCommandExecutor.js",
+    "./commands/file/list/ListFilesHandler": "./build/commands/file/list/ListFilesHandler.js",
+    "./commands/file/create/CreateFileHandler": "./build/commands/file/create/CreateFileHandler.js",
+    "./commands/file/create/CreateFileExecutor": "./build/commands/file/create/CreateFileExecutor.js",
+    "./commands/file/upload/UploadFilesHandler": "./build/commands/file/upload/UploadFilesHandler.js",
+    "./commands/file/import/ImportFilesHandler": "./build/commands/file/import/ImportFilesHandler.js",
+    "./package.json": "./package.json",
+    "./commands/object/ObjectCommandExecutor": "./build/commands/object/ObjectCommandExecutor.js",
+    "./commands/object/list/ListObjectsHandler": "./build/commands/object/list/ListObjectsHandler.js",
+    "./commands/object/import/ImportObjectsHandler": "./build/commands/object/import/ImportObjectsHandler.js",
+    "./commands/object/update/UpdateObjectsHandler": "./build/commands/object/update/UpdateObjectsHandler.js",
+    "./commands/proxy/generatekey/ProxyGenerateKeyHandler": "./build/commands/proxy/generatekey/ProxyGenerateKeyHandler.js",
+    "./commands/proxy/start/ProxyStartHandler": "./build/commands/proxy/start/ProxyStartHandler.js",
+    "./auth/AuthSessionManager": "./build/auth/AuthSessionManager.js"
+  }
+}
