@@ -4,12 +4,17 @@
  */
 'use strict';
 
-const SdkExecutionContext = require('../SdkExecutionContext');
-const SdkExecutor = require('../SdkExecutor');
 const NodeTranslationService = require('../services/NodeTranslationService');
 const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
-const CommandUtils = require('../utils/CommandUtils');
-const SdkOperationResultUtils = require('../utils/SdkOperationResultUtils');
+const {
+	executeListFilesCommand,
+	executeListFoldersCommand,
+} = require('@oracle/suitecloud-sdk-core/commands/file/list/ListFilesHandler');
+const {
+	getAuthCredentialsForProjectCommand,
+	refreshAuthCredentialsForProjectCommand,
+	shouldRetryProjectCommandAuth,
+} = require('../utils/ProjectAuthUtils');
 const { lineBreak } = require('../loggers/LoggerOsConstants');
 const {
 	COMMAND_IMPORTFILES: { MESSAGES },
@@ -18,69 +23,89 @@ const {
 
 const INTERMEDIATE_COMMANDS = {
 	LISTFILES: {
-		SDK_COMMAND: 'listfiles',
 		FILES_REFERENCE: 'File Cabinet files',
-		OPTIONS: {
-			AUTH_ID: 'authid',
-			FOLDER: 'folder',
-		},
 	},
 	LISTFOLDERS: {
-		SDK_COMMAND: 'listfolders',
 		FOLDERS_REFERENCE: 'File Cabinet folders',
-		OPTIONS: {
-			AUTH_ID: 'authid',
-		},
 	},
 };
 
 module.exports = class AccountFileCabinetService {
 	constructor(sdkPath, executionEnvironmentContext, authId) {
-		this._sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+		this._sdkPath = sdkPath;
+		this._executionEnvironmentContext = executionEnvironmentContext;
 		this._authId = authId;
 	}
 
 	async getAccountFileCabinetFolders() {
-		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFOLDERS.SDK_COMMAND)
-			.integration()
-			.addParam(INTERMEDIATE_COMMANDS.LISTFOLDERS.OPTIONS.AUTH_ID, this._authId)
-			.build();
-
 		let listFoldersResult;
 		try {
 			listFoldersResult = await executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContext),
+				action: this._executeWithAuthRetry(async (authCredentials) =>
+					executeListFoldersCommand({
+						hostName: authCredentials.hostName,
+						accessToken: authCredentials.accessToken,
+						userAgent: this._getUserAgent(),
+					})
+				),
 				message: NodeTranslationService.getMessage(LOADING_FOLDERS),
 			});
 		} catch (error) {
 			throw NodeTranslationService.getMessage(GETTING_INTERNAL_ERROR, INTERMEDIATE_COMMANDS.LISTFOLDERS.FOLDERS_REFERENCE, lineBreak, error);
 		}
 
-		if (listFoldersResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		if (listFoldersResult.status === 'ERROR') {
 			throw listFoldersResult.errorMessages;
 		}
 		return listFoldersResult.data;
 	}
 
 	async listFiles(selectedFolder) {
-		// quote folder path to preserve spaces
-		const listFilesParams = {};
-		listFilesParams[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.FOLDER] = CommandUtils.quoteString(selectedFolder);
-		listFilesParams[INTERMEDIATE_COMMANDS.LISTFILES.OPTIONS.AUTH_ID] = this._authId;
-
-		const executionContext = SdkExecutionContext.Builder.forCommand(INTERMEDIATE_COMMANDS.LISTFILES.SDK_COMMAND)
-			.integration()
-			.addParams(listFilesParams)
-			.build();
-		
 		try {
 			return await executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContext),
+				action: this._executeWithAuthRetry(async (authCredentials) =>
+					executeListFilesCommand({
+						hostName: authCredentials.hostName,
+						accessToken: authCredentials.accessToken,
+						folderPath: selectedFolder,
+						userAgent: this._getUserAgent(),
+					})
+				),
 				message: NodeTranslationService.getMessage(MESSAGES.LOADING_FILES),
 			});
 		} catch (error) {
 			throw NodeTranslationService.getMessage(GETTING_INTERNAL_ERROR, INTERMEDIATE_COMMANDS.LISTFILES.FILES_REFERENCE, lineBreak, error);
 		}
 
+	}
+
+	async _executeWithAuthRetry(operation) {
+		let authCredentials = await getAuthCredentialsForProjectCommand(this._sdkPath, this._authId);
+		let operationResult = await operation(authCredentials);
+
+		if (!shouldRetryProjectCommandAuth(operationResult)) {
+			return operationResult;
+		}
+
+		authCredentials = await refreshAuthCredentialsForProjectCommand(
+			this._sdkPath,
+			this._authId,
+			this._executionEnvironmentContext
+		);
+		operationResult = await operation(authCredentials);
+		return operationResult;
+	}
+
+	_getUserAgent() {
+		if (!this._executionEnvironmentContext) {
+			return undefined;
+		}
+		const platform = this._executionEnvironmentContext.getPlatform && this._executionEnvironmentContext.getPlatform();
+		const platformVersion =
+			this._executionEnvironmentContext.getPlatformVersion && this._executionEnvironmentContext.getPlatformVersion();
+		if (!platform || !platformVersion) {
+			return undefined;
+		}
+		return `${platform}/${platformVersion}`;
 	}
 };

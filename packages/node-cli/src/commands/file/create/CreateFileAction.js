@@ -4,80 +4,49 @@
  */
 'use strict';
 
-const path = require('path');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const { FOLDERS } = require('../../../ApplicationConstants');
 const BaseAction = require('../../base/BaseAction');
-const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
+const {
+	normalizeCreateFileParams,
+	buildCreateFileResultData,
+} = require('@oracle/suitecloud-sdk-core/commands/file/create/CreateFileHandler');
+const {
+	executeCreateFile,
+	FILE_CREATE_STATUS,
+} = require('@oracle/suitecloud-sdk-core/commands/file/create/CreateFileExecutor');
 
 const {
 	COMMAND_CREATEFILE: { MESSAGES },
 } = require('../../../services/TranslationKeys');
 
-const COMMAND_OPTIONS = {
-	MODULE: 'module',
-	PATH: 'path',
-	PROJECT: 'project',
-	TYPE: 'type',
-};
-const JS_EXTENSION = '.js';
-
 module.exports = class CreateFileAction extends BaseAction {
 	preExecute(params) {
-		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-
-		if (this._runInInteractiveMode) {
-			params[COMMAND_OPTIONS.PATH] = params.parentPath + params.name;
-		}
-		if (params.hasOwnProperty(COMMAND_OPTIONS.PATH)) {
-			if (!params[COMMAND_OPTIONS.PATH].endsWith(JS_EXTENSION)) {
-				params[COMMAND_OPTIONS.PATH] = params[COMMAND_OPTIONS.PATH] + JS_EXTENSION;
-			}
-			params[COMMAND_OPTIONS.PATH] = CommandUtils.quoteString(params[COMMAND_OPTIONS.PATH]);
-		}
-
-		if (params.hasOwnProperty(COMMAND_OPTIONS.MODULE)) {
-			if (Array.isArray(params[COMMAND_OPTIONS.MODULE])) {
-				params[COMMAND_OPTIONS.MODULE] = params[COMMAND_OPTIONS.MODULE].map(CommandUtils.quoteString).join(' ');
-			} else {
-				params[COMMAND_OPTIONS.MODULE] = CommandUtils.quoteString(params[COMMAND_OPTIONS.MODULE]);
-			}
-		}
-
-		delete params.parentPath;
-		delete params.name;
-
-		return params;
+		return normalizeCreateFileParams(params, this._projectFolder, this._runInInteractiveMode);
 	}
 
 	async execute(params) {
-		const executionContextCreateFile = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-			.integration()
-			.addParams(params)
-			.build();
-
 		const operationResult = await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextCreateFile),
+			action: executeCreateFile({
+				projectFolder: this._projectFolder,
+				path: params.path,
+				type: params.type,
+				module: params.module,
+			}),
 			message: NodeTranslationService.getMessage(MESSAGES.CREATING_FILE),
 		});
 
-		if (operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS) {
-			const suiteScriptFileAbsolutePath = path.join(
-				this._projectFolder,
-				FOLDERS.FILE_CABINET,
-				CommandUtils.unquoteString(params[COMMAND_OPTIONS.PATH])
-			);
+		if (operationResult.status === FILE_CREATE_STATUS.SUCCESS) {
+			const resultData = buildCreateFileResultData(this._projectFolder, params);
+			const suiteScriptFileAbsolutePath = resultData.suiteScriptFileAbsolutePath;
 
 			let resultMessage = NodeTranslationService.getMessage(MESSAGES.SUITESCRIPT_FILE_CREATED, suiteScriptFileAbsolutePath);
-			if (params.hasOwnProperty(COMMAND_OPTIONS.MODULE)) {
+			if (resultData.modulesSummary) {
 				resultMessage = NodeTranslationService.getMessage(
 					MESSAGES.SUITESCRIPT_FILE_CREATED_WITH_MODULES,
 					suiteScriptFileAbsolutePath,
-					params[COMMAND_OPTIONS.MODULE].split(' ').join(', ')
+					resultData.modulesSummary
 				);
 			}
 
