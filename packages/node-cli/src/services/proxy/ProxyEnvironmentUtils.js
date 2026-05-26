@@ -11,6 +11,14 @@ const {
 
 const DEFAULT_INVALID_URL_CODE = 'ERR_INVALID_URL';
 
+/**
+ * validates the Uri from the Proxy is correct.
+ *
+ * @param {{ proxyUri: string, envVarName: string }} configuredProxy Proxy configuration to validate. envVarName
+ * is the environment variable where the value is retrieved. proxyUri is the value itself.
+ * @throws {Error} When `proxyUri` is invalid, uses an unsupported protocol, or does not include a valid port.
+ * The thrown error message includes the source environment variable name and configured value.
+ */
 function validateUriProxy(configuredProxy) {
 	let parsedProxyUri;
 	try {
@@ -52,8 +60,12 @@ function validateUriProxy(configuredProxy) {
 	}
 }
 
-//TODO We should consider standard proxy variables instead
-//http_proxy, HTTP_PROXY, https_proxy and HTTPS_PROXY
+//TODO We should consider standard proxy variables instead: http_proxy, HTTP_PROXY, https_proxy and HTTPS_PROXY
+/**
+ * Resolves the proxy configuration used by the CLI at runtime from environment SUITECLOUD_PROXY.
+ *
+ * @returns {{ proxyUri: string, envVarName: string } | undefined} The resolved proxy configuration, or `undefined` when no runtime proxy is configured.
+ */
 function resolveRuntimeProxyFromEnv() {
 	if (process.env[ENV_VARS.SUITECLOUD_PROXY]) {
 		return {
@@ -64,6 +76,16 @@ function resolveRuntimeProxyFromEnv() {
 	return undefined;
 }
 
+/**
+ * Resolves the proxy configuration used for SDK downloads from supported environment variables.
+ *
+ * Resolution order:
+ * 1. `SUITECLOUD_PROXY`
+ * 2. `NPM_CONFIG_HTTPS_PROXY`
+ * 3. `NPM_CONFIG_PROXY`
+ *
+ * @returns {{ proxyUri: string, envVarName: string } | undefined} The first matching proxy configuration, or `undefined` when no supported proxy variable is set.
+ */
 function resolveSdkDownloadProxyFromEnv() {
 	if (process.env[ENV_VARS.SUITECLOUD_PROXY]) {
 		return {

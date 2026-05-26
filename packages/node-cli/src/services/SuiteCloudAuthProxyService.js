@@ -104,16 +104,10 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 			// Validate incoming request (Api Key & Request Path)
 			if (!this._isValidAndFilterIncomingRequest(request, response)) {
-				return
-			}
-
-			let requestOptions;
-			try {
-				requestOptions = this._buildRequestOptions(request);
-			} catch (error) {
-				this._localProxy.emit('error', error);
 				return;
 			}
+
+			const requestOptions = this._buildRequestOptions(request);
 
 			// Save body
 			const bodyChunks = [];

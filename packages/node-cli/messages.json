@@ -314,8 +314,8 @@
 	"SUITECLOUD_AUTH_PROXY_SERVICE_REQUEST_PATH_NOT_ALLOWED_ERROR" : "Invalid request. The request path must start with {0}.",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_UNAUTHORIZED_PROXY_REQUEST": "Unauthorized: The API key is missing or invalid.",
 
-	"PROXY_AGENT_SERVICE_INVALID_PROXY_CONFIGURATION": "The {0} environment variable must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80. Received: {1}",
-	"PROXY_AGENT_SERVICE_UNSUPPORTED_PROXY_PROTOCOL": "You specified an unsupported protocol for the {0} environment variable. Enter a proxy URL with either the http or https protocol. Received: {1}",
+	"PROXY_AGENT_SERVICE_INVALID_PROXY_CONFIGURATION": "The {0} environment variable must contain a protocol, a hostname, and a port. For example, http://my-proxy-domain:80.\nReceived: {1}",
+	"PROXY_AGENT_SERVICE_UNSUPPORTED_PROXY_PROTOCOL": "You specified an unsupported protocol for the {0} environment variable. Enter a proxy URL with either the http or https protocol.\nReceived: {1}",
 
 	"UNIT_TEST_TEST_FAILED": "The tests failed.",
 	"UNIT_TEST_TEST_FAILURES_PRESENT": "There are some Test failures. The deployment will not continue.",

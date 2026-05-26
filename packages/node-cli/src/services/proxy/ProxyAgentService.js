@@ -7,6 +7,12 @@
 const https = require('node:https');
 const ProxyEnvironmentUtils = require('./ProxyEnvironmentUtils');
 
+/**
+ * Returns an HTTPS agent configured to use the provided proxy URI for both HTTP and HTTPS requests.
+ *
+ * @param {{ proxyUri: string } | undefined} configuredProxy Proxy settings to validate and apply.
+ * @returns {https.Agent | undefined} The configured HTTPS agent, or `undefined` if no proxy was provided.
+ */
 function getProxyAgent(configuredProxy) {
 	if (!configuredProxy) {
 		return undefined;

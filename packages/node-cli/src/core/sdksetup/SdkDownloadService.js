@@ -43,7 +43,7 @@ class SdkDownloadService {
 
 		const fullURL = `${SdkProperties.getDownloadURL()}/${SdkProperties.getSdkFileName()}`;
 		const destinationFilePath = path.join(sdkDirectory, SdkProperties.getSdkFileName());
-		const proxy =  ProxyEnvironmentUtils.resolveSdkDownloadProxyFromEnv()
+		const proxy =  ProxyEnvironmentUtils.resolveSdkDownloadProxyFromEnv();
 		const skipProxy = SdkProperties.configFileExists();
 
 		try {
