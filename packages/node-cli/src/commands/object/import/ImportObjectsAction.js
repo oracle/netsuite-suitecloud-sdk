@@ -7,16 +7,25 @@
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
+const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
 const BaseAction = require('../../base/BaseAction');
 const {
 	COMMAND_IMPORTOBJECTS: { MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');
-const SdkExecutor = require('../../../SdkExecutor');
+const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
+const {
+	executeImportObjectsCommand,
+} = require('@oracle/suitecloud-sdk-core/commands/object/import/ImportObjectsHandler');
+const {
+	executeListObjectsCommand,
+	parseObjectTypes,
+} = require('@oracle/suitecloud-sdk-core/commands/object/list/ListObjectsHandler');
+const {
+	executeWithAuthRetry,
+	shouldRetryAuthByResult,
+} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
@@ -38,20 +47,12 @@ const COMMAND_FLAGS = {
 	EXCLUDE_FILES: 'excludefiles',
 };
 
-const LIST_OBJECTS_COMMAND_NAME = 'object:list';
 const IMPORT_OBJECTS_COMMAND_TYPE_PARAM_ALL = 'ALL';
 const IMPORT_OBJECTS_COMMAND_SCRIPT_ID_PARAM_ALL = 'ALL';
 const NUMBER_OF_SCRIPTS = 8;
 const MAX_PARALLEL_EXECUTIONS = 4;
 
 module.exports = class ImportObjectsAction extends BaseAction {
-	constructor(options) {
-		super(options);
-
-		const commandsMetadataService = new CommandsMetadataService();
-		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
-	}
-
 	preExecute(answers) {
 		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
 		answers[ANSWERS_NAMES.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
@@ -110,18 +111,8 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 			for (let i = 0; i < numberOfSdkCalls; i++) {
 				const partialScriptIds = scriptIdArray.slice(i * NUMBER_OF_SCRIPTS, (i + 1) * NUMBER_OF_SCRIPTS);
-				const partialScriptIdsString = partialScriptIds.join(' ');
-				const partialExecutionContextForImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-					.integration()
-					.addFlags(flags)
-					.addParams(sdkParams)
-					.addParam(ANSWERS_NAMES.SCRIPT_ID, partialScriptIdsString)
-					.build();
-
-				const sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
 				arrayOfPromises.push(
-					sdkExecutor
-						.execute(partialExecutionContextForImportObjects)
+					this._executeImportObjectsChunkWithAuthRetry(sdkParams, partialScriptIds, flags)
 						.then(this._parsePartialResult.bind({ partialScriptIds, operationResultData }))
 				);
 				if (i % MAX_PARALLEL_EXECUTIONS === (MAX_PARALLEL_EXECUTIONS - 1)) {
@@ -150,7 +141,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 				.build();
 
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error])
+			return ActionResult.Builder.withErrors(toErrorMessages(error))
 				.withCommandParameters(commandParams)
 				.withCommandFlags(flags)
 				.build();
@@ -158,7 +149,7 @@ module.exports = class ImportObjectsAction extends BaseAction {
 	}
 
 	_parsePartialResult(partialOperationResult) {
-		if (partialOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		if (partialOperationResult.status === 'ERROR') {
 			this.operationResultData.errorImports = this.operationResultData.errorImports.concat({
 				scriptIds: this.partialScriptIds,
 				reason: partialOperationResult.errorMessages[0],
@@ -197,20 +188,12 @@ module.exports = class ImportObjectsAction extends BaseAction {
 		if (appId) {
 			sdkParams.appid = appId;
 		}
-
-		const executionContext = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
-			.integration()
-			.addParams(sdkParams)
-			.build();
-
-		const actionListObjects = this._sdkExecutor.execute(executionContext);
-
 		const listObjectsOperationResult = await executeWithSpinner({
-			action: actionListObjects,
+			action: this._executeListObjectsWithAuthRetry(sdkParams),
 			message: NodeTranslationService.getMessage(MESSAGES.LOADING_OBJECTS),
 		});
 
-		if (listObjectsOperationResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		if (listObjectsOperationResult.status === 'ERROR') {
 			throw listObjectsOperationResult.errorMessages;
 		}
 
@@ -223,4 +206,73 @@ module.exports = class ImportObjectsAction extends BaseAction {
 		return listObjectsOperationResultData;
 	}
 
+	async _executeImportObjectsChunkWithAuthRetry(sdkParams, partialScriptIds, flags) {
+		const authId = sdkParams[ANSWERS_NAMES.AUTH_ID];
+		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
+		return executeWithAuthRetry({
+			authId,
+			authSessionProvider,
+			shouldRetryAuth: shouldRetryAuthByResult,
+			executeWithAuthSession: (authCredentials) => executeImportObjectsCommand({
+				hostName: authCredentials.hostName,
+				accessToken: authCredentials.accessToken,
+				projectFolder: unquote(sdkParams[ANSWERS_NAMES.PROJECT_FOLDER]),
+				targetFolder: resolveTargetFolder(this._projectFolder, sdkParams[ANSWERS_NAMES.DESTINATION_FOLDER]),
+				scriptIds: partialScriptIds,
+				objectType: sdkParams[ANSWERS_NAMES.OBJECT_TYPE],
+				appId: sdkParams[ANSWERS_NAMES.APP_ID],
+				excludeFiles: flags.includes(COMMAND_FLAGS.EXCLUDE_FILES),
+				userAgent: getUserAgent(this._executionEnvironmentContext),
+			}),
+		});
+	}
+
+	async _executeListObjectsWithAuthRetry(sdkParams) {
+		const authId = sdkParams[ANSWERS_NAMES.AUTH_ID];
+		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
+		return executeWithAuthRetry({
+			authId,
+			authSessionProvider,
+			shouldRetryAuth: shouldRetryAuthByResult,
+			executeWithAuthSession: (authCredentials) => executeListObjectsCommand({
+				hostName: authCredentials.hostName,
+				accessToken: authCredentials.accessToken,
+				appId: sdkParams[ANSWERS_NAMES.APP_ID],
+				scriptIdContains: sdkParams[ANSWERS_NAMES.SCRIPT_ID],
+				objectTypes: parseObjectTypes(sdkParams[ANSWERS_NAMES.OBJECT_TYPE]),
+				userAgent: getUserAgent(this._executionEnvironmentContext),
+			}),
+		});
+	}
 };
+
+function resolveTargetFolder(projectFolder, destinationFolder) {
+	const normalizedDestinationFolder = unquote(destinationFolder);
+	if (!normalizedDestinationFolder) {
+		return projectFolder;
+	}
+	if (normalizedDestinationFolder.startsWith('/')) {
+		return `${projectFolder}${normalizedDestinationFolder}`;
+	}
+	return `${projectFolder}/${normalizedDestinationFolder}`;
+}
+
+function unquote(value) {
+	if (typeof value === 'string' && value.length > 1 && value.startsWith('"') && value.endsWith('"')) {
+		return value.slice(1, -1);
+	}
+	return value;
+}
+
+function getUserAgent(executionEnvironmentContext) {
+	if (!executionEnvironmentContext) {
+		return undefined;
+	}
+	const platform = executionEnvironmentContext.getPlatform && executionEnvironmentContext.getPlatform();
+	const platformVersion =
+		executionEnvironmentContext.getPlatformVersion && executionEnvironmentContext.getPlatformVersion();
+	if (!platform || !platformVersion) {
+		return undefined;
+	}
+	return `${platform}/${platformVersion}`;
+}
