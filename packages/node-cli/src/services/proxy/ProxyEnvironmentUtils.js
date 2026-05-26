@@ -47,6 +47,7 @@ function validateProxyUri(configuredProxy) {
 		throw proxyError;
 	}
 
+	//We perform this validation because the Java CLI requires a URL with the port explicitly specified.
 	if (!hasExplicitPort(configuredProxy.proxyUri)) {
 		const proxyError = new Error(
 			NodeTranslationService.getMessage(
@@ -61,7 +62,7 @@ function validateProxyUri(configuredProxy) {
 }
 
 function hasExplicitPort(uri) {
-	return /^[a-zA-Z]+:\/\/[^:/]+:\d+$/.test(uri);
+	return /^[a-zA-Z][a-zA-Z\d+.-]*:\/\/[^/?#]*:\d+\/?$/.test(uri);
 }
 
 //TODO We should consider standard proxy variables instead: http_proxy, HTTP_PROXY, https_proxy and HTTPS_PROXY
