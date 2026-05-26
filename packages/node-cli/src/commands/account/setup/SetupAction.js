@@ -7,6 +7,9 @@
 const BaseAction = require('../../base/BaseAction');
 const AuthenticateActionResult = require('../../../services/actionresult/AuthenticateActionResult');
 const { setDefaultAuthentication, authenticateWithOauth } = require('../../../utils/AuthenticationUtils');
+const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
+const { DOMAIN: { PRODUCTION: { GENERIC_NETSUITE_DOMAIN } } } = require('../../../ApplicationConstants');
+const { normalizeSetupParams } = require('@oracle/suitecloud-sdk-core/commands/account/setup/SetupAccountHandler');
 
 const AUTH_MODE = {
 	OAUTH: 'OAUTH',
@@ -21,7 +24,8 @@ module.exports = class SetupAction extends BaseAction {
 	async execute(params) {
 		try {
 			if (params.mode === AUTH_MODE.OAUTH) {
-				return await authenticateWithOauth(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
+				const normalizedParams = normalizeSetupParams(params, GENERIC_NETSUITE_DOMAIN);
+				return await authenticateWithOauth(normalizedParams, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
 			} else if (params.mode === AUTH_MODE.REUSE) {
 				const authId = params.authentication.authId;
 				const accountInfo = params.authentication.accountInfo;
@@ -33,7 +37,7 @@ module.exports = class SetupAction extends BaseAction {
 					.build();
 			}
 		} catch (error) {
-			return AuthenticateActionResult.Builder.withErrors([error]).build();
+			return AuthenticateActionResult.Builder.withErrors(toErrorMessages(error)).build();
 		}
 	}
 };

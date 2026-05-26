@@ -12,6 +12,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
 const { COMMAND_PROXY_START, COMMAND_SETUPACCOUNT, COMMAND_MANAGE_ACCOUNT } = require('../../../services/TranslationKeys');
+const { buildProxyStartAuthIdChoices } = require('@oracle/suitecloud-sdk-core/commands/proxy/start/ProxyStartHandler');
 const {
 	PROXY_START: {
 		COMMAND: { OPTIONS },
@@ -55,19 +56,18 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 	}
 
 	_toAuthIdChoices(authIdData) {
-		const authIds = Object.keys(authIdData).sort();
-		if (authIds.length <= 0) {
+		const authIdChoices = buildProxyStartAuthIdChoices(authIdData);
+		if (authIdChoices.length <= 0) {
 			throw NodeTranslationService.getMessage(COMMAND_MANAGE_ACCOUNT.ERRORS.CREDENTIALS_EMPTY);
 		}
 
 		const choices = [];
 
-		authIds.forEach((authId) => {
-			const credentials = authIdData[authId];
-			const accountInfo = `${credentials.accountInfo.companyName} [${credentials.accountInfo.roleName}]`;
+		authIdChoices.forEach((choiceData) => {
+			const accountInfo = `${choiceData.companyName} [${choiceData.roleName}]`;
 			choices.push({
-				name: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID, authId, accountInfo, ''),
-				value: authId,
+				name: NodeTranslationService.getMessage(COMMAND_SETUPACCOUNT.QUESTIONS_CHOICES.SELECT_AUTHID.EXISTING_AUTH_ID, choiceData.authId, accountInfo, ''),
+				value: choiceData.authId,
 			});
 		});
 
