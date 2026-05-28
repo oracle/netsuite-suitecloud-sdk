@@ -14,7 +14,7 @@ module.exports = {
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	SDK_COMPATIBLE_JAVA_VERSIONS: ['17', '21'],
-	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode --add-opens java.base/java.io=ALL-UNNAMED',
+	SDK_INTEGRATION_MODE_JVM_OPTIONS: ['-DintegrationMode', '--add-opens', 'java.base/java.io=ALL-UNNAMED'],
 	SDK_CLIENT_PLATFORM: 'SuiteCloudCLIforNode.js',
 	SDK_CLIENT_PLATFORM_JVM_OPTION: '-DclientPlatform',
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION: '-DclientPlatformVersion',
