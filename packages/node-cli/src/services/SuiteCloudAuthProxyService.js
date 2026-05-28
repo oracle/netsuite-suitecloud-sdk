@@ -94,7 +94,10 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._accessToken = accessToken;
 
 		if (isProductionDomain(this._targetHost)) {
-			ProxyEnvironmentUtils.validateProxyUri(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv());
+			const resolvedProxy = ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv();
+			if (resolvedProxy) {
+				ProxyEnvironmentUtils.validateProxyUri(resolvedProxy);
+			}
 		}
 
 		await this.stop();
