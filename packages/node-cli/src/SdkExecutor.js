@@ -110,15 +110,7 @@ module.exports = class SdkExecutor {
 		args.push(clientPlatformVersionOption);
 
 		const customVmOptions = this._CLISettingsService.getCustomVmOptions();
-		if (customVmOptions) {
-			Object.keys(customVmOptions).forEach((vmOptionKey) => {
-				if (customVmOptions[vmOptionKey] === '') {
-					args.push(vmOptionKey);
-				} else {
-					args.push(`${vmOptionKey}=${customVmOptions[vmOptionKey].trim()}`);
-				}
-			});
-		}
+		this._addCustomVmOptions(args, customVmOptions);
 
 		args.push(
 			'-jar',
@@ -126,15 +118,7 @@ module.exports = class SdkExecutor {
 			executionContext.getCommand());
 
 		const params = executionContext.getParams();
-		for (const param in params) {
-			if (Object.hasOwn(params, param)) {
-				this._validateAllowedCharacters(params[param], param);
-				args.push(param);
-				if (params[param]) {
-					args.push(typeof params[param] === 'string' ? CommandUtils.unquoteString(params[param]) : params[param]);
-				}
-			}
-		}
+		this._addExecutionParams(args, params);
 
 		const flags = executionContext.getFlags();
 		if (flags && Array.isArray(flags)) {
@@ -144,15 +128,43 @@ module.exports = class SdkExecutor {
 		return spawn('java', args, { shell: false });
 	}
 
+	_addCustomVmOptions(args, customVmOptions) {
+		if (!customVmOptions) {
+			return;
+		}
+
+		Object.entries(customVmOptions).forEach(([vmOptionKey, vmOptionValue]) => {
+			this._validateAllowedCharacters(vmOptionKey, vmOptionKey);
+			this._validateAllowedCharacters(vmOptionValue, vmOptionKey);
+			if (vmOptionValue === '') {
+				args.push(vmOptionKey);
+			} else {
+				args.push(`${vmOptionKey}=${String(vmOptionValue).trim()}`);
+			}
+		});
+	}
+
+	_addExecutionParams(args, params) {
+		for (const param in params) {
+			if (Object.hasOwn(params, param)) {
+				this._validateAllowedCharacters(params[param], param);
+				args.push(param);
+				if (params[param]) {
+					args.push(typeof params[param] === 'string' ? CommandUtils.unquoteString(params[param]) : params[param]);
+				}
+			}
+		}
+	}
+
 	_validateAllowedCharacters(value, fieldName = 'argument') {
 		if (value === undefined || value === null) {
 			return;
 		}
 
 		const stringValue = String(value);
-		const allowedPattern = /^[a-zA-Z0-9._:/\\\-=\s]+$/;
+		const unsafeCharactersPattern = /[\u0000-\u001F\u007F<>|;&$`]/;
 
-		if (!allowedPattern.test(CommandUtils.unquoteString(stringValue))) {
+		if (unsafeCharactersPattern.test(stringValue)) {
 			throw NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_UNSAFE_CHARACTERS_IN_PARAMETERS, fieldName, stringValue);
 		}
 	}
