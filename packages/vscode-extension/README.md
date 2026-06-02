@@ -149,12 +149,14 @@ Want more information? See <a href="https://docs.oracle.com/en/cloud/saas/netsui
 
 <a href="https://videohub.oracle.com/media/Setting+Up+SuiteCloud+Developer+Assistant+in+Visual+Studio+Code/1_0wbrln2u"><img src="resources/video_setting_up_suitecloud_developer_assistant.png" alt="Setting up SuiteCloud Developer Assistant in Visual Studio Code" width="400"></a>
 
+>**Note:** You can now use SuiteCloud Developer Assistant with other tools (IDEs and CLIs) and AI Coding Assistants. For more information, see [Setting Up SuiteCloud Developer Assistant with Other Third-Party Tools and AI Coding Assistants](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_0430105109.html).
+
 ## Using SuiteCloud Extension for Visual Studio Code with SuiteCloud CLI for Node.js
 SuiteCloud CLI for Node.js is compatible with your Visual Studio Code integrated terminal, so you can run SuiteCloud CLI for Node.js commands directly there, independently from VS Code. To read more about it, visit <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/book_1558706016.html" rel="noopener noreferrer" target=blank>SuiteCloud CLI for Node.js</a>. 
 
 ## Release Notes & Documentation
-To read the 2025.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2025.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
+To read the 2026.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2026.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_3798389663.html).
 - Read the SuiteCloud Extension for Visual Studio Code documentation in [NetSuite's Help Center](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/book_159223417590.html).
 

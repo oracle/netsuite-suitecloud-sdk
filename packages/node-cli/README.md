@@ -68,6 +68,8 @@ suitecloud <command> <option> <argument>
 |[`project:deploy`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156044636320.html)|Deploys the folder containing the project.|
 |[`project:package`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159550971388.html)|Generates a ZIP file from your project, respecting the structure specified in the deploy.xml file.|
 |[`project:validate`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156049843194.html)|Validates the folder containing the SuiteCloud project.|
+|[`proxy:generatekey`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_26100955155.html)|Generates a new API key for proxy authentication.|
+|[`proxy:start`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_9101043487.html)|Starts a local proxy for the SuiteCloud Developer Assistant service.|
 
 To check the help for a specific command, run the following command:
 ```
@@ -93,8 +95,8 @@ suitecloud account:setup
 ```
 
 ## Release Notes & Documentation
-To read the 2025.2 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
-- Read the release notes for NetSuite 2025.2 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
+To read the 2026.1 NetSuite's release notes and documentation, check the following sections of NetSuite's Help Center:
+- Read the release notes for NetSuite 2026.1 in [SuiteCloud SDK Release Notes](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558730192.html).
 - Read the latest updates under SuiteCloud SDK in the [Help Center Weekly Updates](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_3798389663.html).
 - Read the CLI for Node.js documentation in [SuiteCloud CLI for Node.js Guide](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_1558708800.html).
 
