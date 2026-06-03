@@ -1,4 +1,31 @@
 {
+	"file:compare": {
+		"name": "file:compare",
+		"description": "Compares a local file with the version currently deployed in the File Cabinet of your account, showing a line-by-line diff.",
+		"isSetupRequired": true,
+		"options": {
+			"path": {
+				"name": "path",
+				"option": "path",
+				"description": "Specifies the File Cabinet path of the file to compare. For example, \"/SuiteScripts/file.js\".",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "\"/SuiteScripts/file.js\"",
+				"defaultOption": true,
+				"disableInIntegrationMode": false
+			},
+			"authid": {
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			}
+		}
+	},
 	"account:setup": {
 		"name": "account:setup",
 		"alias": "sa",
