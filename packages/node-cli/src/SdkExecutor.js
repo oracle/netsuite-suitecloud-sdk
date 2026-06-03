@@ -212,13 +212,16 @@ module.exports = class SdkExecutor {
 		if (value === undefined || value === null) {
 			return [];
 		}
-		const javaQuotedGroupsPattern = /^(\s*"[^"]+"\s*)+$/;
+		//We need to split words. Words are text groups separated by spaces. They can be surrounded by "" or not.
+		//If they are surrounded by "" they may have spaces inside.
+		const javaQuotedGroupsPattern = /^(?:"[^"]*"|[^"\s]+)(?:\s+(?:"[^"]*"|[^"\s]+))*$/;
 
-		if ((!isMultipleParam) || (!javaQuotedGroupsPattern.test(value))) {
+		const trimmedValue = value.trim();
+		if ((!isMultipleParam) || (!javaQuotedGroupsPattern.test(trimmedValue))) {
 			return [value];
 		}
 
-		return value.match(/"[^"]+"/g);
+		return trimmedValue.match(/"[^"]*"|[^"\s]+/g);
 	}
 
 	_checkIfJavaVersionIssue() {
