@@ -38,6 +38,14 @@ class NodeConsoleLogger extends ConsoleLogger {
 		});
 	}
 
+	// Prints a message verbatim, with no color applied. It is still chained on the font formatter promise so that
+	// its output stays ordered relative to the colored info()/result()/error()/warning() calls.
+	println(message) {
+		return fontFormatterPromise.then(() => {
+			console.log(message);
+		});
+	}
+
 	_println(message, color) {
 		console.log(color(message));
 	}
