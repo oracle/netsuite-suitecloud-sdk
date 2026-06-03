@@ -28,11 +28,12 @@ const CLOSE_EVENT = 'close';
 const UTF8 = 'utf8';
 
 module.exports = class SdkExecutor {
-	constructor(sdkPath, executionEnvironmentContext) {
+	constructor(sdkPath, executionEnvironmentContext, commandMetadata) {
 		this._sdkPath = sdkPath;
 
 		this._CLISettingsService = new CLISettingsService();
 		this._environmentInformationService = new EnvironmentInformationService();
+		this._commandMetadata = commandMetadata;
 		this.childProcess = null;
 
 		if (executionEnvironmentContext) {
@@ -155,21 +156,25 @@ module.exports = class SdkExecutor {
 			if (Object.hasOwn(params, param)) {
 				args.push(param);
 				if (params[param]) {
-					this._validateAllowedCharacters(params[param], this._getExecutionParamAllowedParamsErrorMessage(param, params[param]));
-					//TODO do validation for key/value
-					if (typeof params[param] === 'string') {
-						const paramsValue = params[param];
-						const splitParam = this._splitParameters(paramsValue);
+					const paramValue = params[param];
+					if (typeof paramValue === 'string') {
+						const isMultipleParam = this._isMultipleParam(param);
+						const splitParam = this._splitParameters(paramValue, isMultipleParam);
 						for (const splitParamValue of splitParam) {
+							this._validateAllowedCharacters(splitParamValue, this._getExecutionParamAllowedParamsErrorMessage(param, splitParamValue));
 							args.push(CommandUtils.unquoteString(splitParamValue));
 						}
 					} else {
-						//TODO do validation here
-						args.push(params[param]);
+						args.push(paramValue);
 					}
 				}
 			}
 		}
+	}
+
+	_isMultipleParam(param) {
+		const normalizedParam = param.startsWith('-') ? param.replace(/^-+/, '') : param;
+		return this._commandMetadata?.options?.[normalizedParam]?.type === 'MULTIPLE';
 	}
 
 	_validateAllowedCharacters(value, errorMessage) {
@@ -203,17 +208,16 @@ module.exports = class SdkExecutor {
 			SDK_EXECUTOR_NON_ALLOWED_CONTROL_PARAMETERS, SDK_EXECUTOR_NON_ALLOWED_SYMBOLS);
 	}
 
-
-	_splitParameters(value) {
+	_splitParameters(value, isMultipleParam) {
 		if (value === undefined || value === null) {
 			return [];
 		}
-
 		const javaQuotedGroupsPattern = /^(\s*"[^"]+"\s*)+$/;
 
-		if (!javaQuotedGroupsPattern.test(value)) {
+		if ((!isMultipleParam) || (!javaQuotedGroupsPattern.test(value))) {
 			return [value];
 		}
+
 		return value.match(/"[^"]+"/g);
 	}
 
