@@ -84,5 +84,7 @@ module.exports = {
 		REGEX_ACCOUNT_SPECIFIC_URL : /^[\w-]+\.app\.netsuite\.com$/,
 		REGEX_SUITETALK_API_PRODUCTION_URL : /^[\w-]+\.suitetalk\.api\.netsuite\.com$/
 	},
-	SDK_EXECUTOR_NON_ALLOWED_PARAMETERS : /[\u0000-\u001F\u007F<>|;&$`]/
+	SDK_EXECUTOR_NON_ALLOWED_PARAMETERS_REGEX : /[\u0000-\u001F\u007F<>|;&$`]/,
+	SDK_EXECUTOR_NON_ALLOWED_CONTROL_PARAMETERS : '(U+0000-U+001F, U+007F)',
+	SDK_EXECUTOR_NON_ALLOWED_SYMBOLS : '(<>|;&$`'
 };

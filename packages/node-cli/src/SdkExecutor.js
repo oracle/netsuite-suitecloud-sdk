@@ -9,6 +9,9 @@ const {
 	SDK_CLIENT_PLATFORM_JVM_OPTION,
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION,
 	SDK_COMPATIBLE_JAVA_VERSIONS,
+	SDK_EXECUTOR_NON_ALLOWED_PARAMETERS_REGEX,
+	SDK_EXECUTOR_NON_ALLOWED_CONTROL_PARAMETERS,
+	SDK_EXECUTOR_NON_ALLOWED_SYMBOLS
 } = require('./ApplicationConstants');
 const path = require('path');
 const FileUtils = require('./utils/FileUtils');
@@ -32,10 +35,10 @@ module.exports = class SdkExecutor {
 		this._environmentInformationService = new EnvironmentInformationService();
 		this.childProcess = null;
 
-		if (!executionEnvironmentContext) {
-			this._executionEnvironmentContext = new ExecutionEnvironmentContext();
-		} else {
+		if (executionEnvironmentContext) {
 			this._executionEnvironmentContext = executionEnvironmentContext;
+		} else {
+			this._executionEnvironmentContext = new ExecutionEnvironmentContext();
 		}
 	}
 
@@ -125,6 +128,8 @@ module.exports = class SdkExecutor {
 			args.push(...flags);
 		}
 
+		args.forEach((arg) => this._validateAllowedCharacters(arg, this._getExecutionParamAllowedGenericErrorMessage(arg)));
+
 		return spawn('java', args, { shell: false });
 	}
 
@@ -134,8 +139,9 @@ module.exports = class SdkExecutor {
 		}
 
 		Object.entries(customVmOptions).forEach(([vmOptionKey, vmOptionValue]) => {
-			this._validateAllowedCharacters(vmOptionKey, vmOptionKey);
-			this._validateAllowedCharacters(vmOptionValue, vmOptionKey);
+			this._validateAllowedCharacters(vmOptionKey, this._getExecutionParamAllowedCustomVMOptionsNameErrorMessage(vmOptionKey));
+			this._validateAllowedCharacters(vmOptionValue, this._getExecutionParamAllowedCustomVMOptionsValueErrorMessage(vmOptionKey, vmOptionValue));
+
 			if (vmOptionValue === '') {
 				args.push(vmOptionKey);
 			} else {
@@ -147,26 +153,68 @@ module.exports = class SdkExecutor {
 	_addExecutionParams(args, params) {
 		for (const param in params) {
 			if (Object.hasOwn(params, param)) {
-				this._validateAllowedCharacters(params[param], param);
 				args.push(param);
 				if (params[param]) {
-					args.push(typeof params[param] === 'string' ? CommandUtils.unquoteString(params[param]) : params[param]);
+					this._validateAllowedCharacters(params[param], this._getExecutionParamAllowedParamsErrorMessage(param, params[param]));
+					//TODO do validation for key/value
+					if (typeof params[param] === 'string') {
+						const paramsValue = params[param];
+						const splitParam = this._splitParameters(paramsValue);
+						for (const splitParamValue of splitParam) {
+							args.push(CommandUtils.unquoteString(splitParamValue));
+						}
+					} else {
+						//TODO do validation here
+						args.push(params[param]);
+					}
 				}
 			}
 		}
 	}
 
-	_validateAllowedCharacters(value, fieldName = 'argument') {
+	_validateAllowedCharacters(value, errorMessage) {
 		if (value === undefined || value === null) {
 			return;
 		}
 
 		const stringValue = String(value);
-		const unsafeCharactersPattern = /[\u0000-\u001F\u007F<>|;&$`]/;
-
-		if (unsafeCharactersPattern.test(stringValue)) {
-			throw NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_UNSAFE_CHARACTERS_IN_PARAMETERS, fieldName, stringValue);
+		if (SDK_EXECUTOR_NON_ALLOWED_PARAMETERS_REGEX.test(stringValue)) {
+			throw errorMessage;
 		}
+	}
+
+	_getExecutionParamAllowedParamsErrorMessage(name, value) {
+		return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_UNSAFE_CHARACTERS_IN_PARAMETER, value,
+			name, SDK_EXECUTOR_NON_ALLOWED_CONTROL_PARAMETERS, SDK_EXECUTOR_NON_ALLOWED_SYMBOLS);
+	}
+
+	_getExecutionParamAllowedCustomVMOptionsNameErrorMessage(name) {
+		return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_UNSAFE_CHARACTERS_IN_VM_OPTIONS_NAME, name,
+			SDK_EXECUTOR_NON_ALLOWED_CONTROL_PARAMETERS, SDK_EXECUTOR_NON_ALLOWED_SYMBOLS);
+	}
+
+	_getExecutionParamAllowedCustomVMOptionsValueErrorMessage(name, value) {
+		return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_UNSAFE_CHARACTERS_IN_VM_OPTIONS_VALUE, value,
+			name, SDK_EXECUTOR_NON_ALLOWED_CONTROL_PARAMETERS, SDK_EXECUTOR_NON_ALLOWED_SYMBOLS);
+	}
+
+	_getExecutionParamAllowedGenericErrorMessage(value) {
+		return NodeTranslationService.getMessage(ERRORS.CLI_SDK_JAVA_UNSAFE_CHARACTERS_GENERIC, value,
+			SDK_EXECUTOR_NON_ALLOWED_CONTROL_PARAMETERS, SDK_EXECUTOR_NON_ALLOWED_SYMBOLS);
+	}
+
+
+	_splitParameters(value) {
+		if (value === undefined || value === null) {
+			return [];
+		}
+
+		const javaQuotedGroupsPattern = /^(\s*"[^"]+"\s*)+$/;
+
+		if (!javaQuotedGroupsPattern.test(value)) {
+			return [value];
+		}
+		return value.match(/"[^"]+"/g);
 	}
 
 	_checkIfJavaVersionIssue() {
