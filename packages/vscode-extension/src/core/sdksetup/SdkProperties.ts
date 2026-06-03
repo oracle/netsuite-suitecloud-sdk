@@ -42,6 +42,15 @@ export function getSdkFilename(): string {
 	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkFilename;
 }
 
+export function getSdkSha256(): string {
+	if (extensionConfigJsonFileExists()) {
+		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
+		return extensionConfigJsonFile.sdkSha256;
+	}
+
+	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkSha256;
+}
+
 export function getSdkDownloadFullUrl(): string {
 	return getSdkDownloadUrl() + '/' + getSdkFilename();
 }

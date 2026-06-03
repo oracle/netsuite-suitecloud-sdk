@@ -1,0 +1,40 @@
+/*
+ ** Copyright (c) 2024 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+'use strict';
+
+const crypto = require('crypto');
+const fs = require('fs');
+
+const NodeTranslationService = require('../../services/NodeTranslationService');
+const { SDK_DOWNLOAD_SERVICE } = require('../../services/TranslationKeys');
+
+const SHA256_PATTERN = /^[a-fA-F0-9]{64}$/;
+
+class SdkArtifactVerifier {
+	verify(sdkPath, expectedSha256) {
+		const normalizedExpectedSha256 = this._normalizeExpectedSha256(expectedSha256);
+		const actualSha256 = this.calculateSha256(sdkPath);
+
+		if (actualSha256 !== normalizedExpectedSha256) {
+			throw new Error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.CHECKSUM_MISMATCH));
+		}
+
+		return true;
+	}
+
+	calculateSha256(sdkPath) {
+		return crypto.createHash('sha256').update(fs.readFileSync(sdkPath)).digest('hex');
+	}
+
+	_normalizeExpectedSha256(expectedSha256) {
+		if (typeof expectedSha256 !== 'string' || !SHA256_PATTERN.test(expectedSha256.trim())) {
+			throw new Error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.MISSING_CHECKSUM));
+		}
+
+		return expectedSha256.trim().toLowerCase();
+	}
+}
+
+module.exports = new SdkArtifactVerifier();

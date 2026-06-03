@@ -7,7 +7,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
-import * as http from 'http';
 import { homedir } from 'os';
 import { parse } from 'url';
 import { VSTranslationService } from '../../service/VSTranslationService';
@@ -15,7 +14,8 @@ import { ERRORS, EXTENSION_INSTALLATION } from '../../service/TranslationKeys';
 import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
 import { ApplicationConstants, EnvironmentInformationService, FileSystemService } from '../../util/ExtensionUtil';
-import { getSdkDownloadFullUrl, getSdkPath, getSdkFilename, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER } from './SdkProperties';
+import { verifySdkArtifact } from './SdkArtifactVerifier';
+import { getSdkDownloadFullUrl, getSdkPath, getSdkFilename, getSdkSha256, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER } from './SdkProperties';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
@@ -26,7 +26,7 @@ const fileSystemService = new FileSystemService();
 export async function installIfNeeded() {
 	validateJavaVersion();
 
-	if (!fs.existsSync(path.join(getSdkPath())) || !(await validateSdk(path.join(getSdkPath())))) {
+	if (!fs.existsSync(path.join(getSdkPath())) || !isSdkArtifactTrusted(path.join(getSdkPath())) || !(await validateSdk(path.join(getSdkPath())))) {
 		await install();
 	}
 }
@@ -73,9 +73,12 @@ async function install() {
 
 async function downloadFile(url: string, sdkDirectory: string) {
 	const sdkDestinationFile = path.join(sdkDirectory, getSdkFilename());
+	const temporarySdkDestinationFile = `${sdkDestinationFile}.tmp`;
 	const parsedUrl = parse(url);
 
-	removeJarFilesFrom(sdkDirectory);
+	if (parsedUrl.protocol !== 'https:') {
+		throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.WRONG_DOWNLOAD_URL_PROTOCOL);
+	}
 
 	const options = {
 		method: 'GET',
@@ -86,26 +89,29 @@ async function downloadFile(url: string, sdkDirectory: string) {
 
 	let file: fs.WriteStream | undefined;
 	try {
-		file = fs.createWriteStream(sdkDestinationFile);
+		file = fs.createWriteStream(temporarySdkDestinationFile);
 		const sdk = await save(options, file);
 		file.close();
-		if (!(await validateSdk(sdk))) {
+		verifySdkArtifact(sdk, getSdkSha256());
+		fs.renameSync(temporarySdkDestinationFile, sdkDestinationFile);
+		if (!(await validateSdk(sdkDestinationFile))) {
 			throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_INVALID);
 		}
 	} finally {
 		if (file) {
 			file.close();
 		}
+		removeFileIfExists(temporarySdkDestinationFile);
 	}
 }
 
-function save(options: http.RequestOptions | https.RequestOptions, file: fs.WriteStream): Promise<string> {
-	let getFn = options.protocol === 'https:' ? https.get : http.get;
+function save(options: https.RequestOptions, file: fs.WriteStream): Promise<string> {
 	return new Promise((resolve, reject) => {
-		getFn(options, (response) => {
+		https.get(options, (response) => {
 			const contentType = response.headers['content-type'];
-			if (!contentType || !VALID_JAR_CONTENT_TYPES.includes(contentType)) {
-				throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_NOT_AVAILABLE);
+			if (!isSuccessStatusCode(response.statusCode) || !isValidJarContentType(contentType)) {
+				reject(translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_NOT_AVAILABLE));
+				return;
 			}
 			response.pipe(file);
 			file.on('finish', () => {
@@ -117,9 +123,25 @@ function save(options: http.RequestOptions | https.RequestOptions, file: fs.Writ
 	});
 }
 
-function removeJarFilesFrom(folder: string) {
-	// remove all JAR files before writing response to file
-	fs.readdirSync(folder)
-		.filter((file) => /[.]jar$/.test(file))
-		.map((file) => fs.unlinkSync(path.join(folder, file)));
+function removeFileIfExists(filePath: string) {
+	if (fs.existsSync(filePath)) {
+		fs.unlinkSync(filePath);
+	}
+}
+
+function isSdkArtifactTrusted(sdkPath: string) {
+	try {
+		return verifySdkArtifact(sdkPath, getSdkSha256());
+	} catch (error) {
+		removeFileIfExists(sdkPath);
+		return false;
+	}
+}
+
+function isSuccessStatusCode(statusCode: number | undefined) {
+	return statusCode !== undefined && statusCode >= 200 && statusCode < 300;
+}
+
+function isValidJarContentType(contentType: string | undefined) {
+	return contentType !== undefined && VALID_JAR_CONTENT_TYPES.includes(contentType.split(';')[0].trim());
 }
