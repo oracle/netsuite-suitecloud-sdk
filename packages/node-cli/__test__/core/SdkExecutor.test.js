@@ -1,49 +1,32 @@
+/*
+ ** Copyright (c) 2026 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+'use strict';
+
 const SdkExecutor = require('../../src/SdkExecutor');
 
-describe('SdkExecutor _splitParameters(value)', () => {
-	let sdkExecutor;
+describe('SdkExecutor', () => {
+	describe('_splitParameters()', () => {
+		let sdkExecutor;
 
-	beforeEach(() => {
-		sdkExecutor = new SdkExecutor('fake-sdk-path.jar');
-	});
+		beforeEach(() => {
+			sdkExecutor = new SdkExecutor('fake-sdk-path.jar');
+		});
 
-	it('should return an empty array when value is undefined', () => {
-		expect(sdkExecutor._splitParameters(undefined)).toStrictEqual([]);
-	});
-
-	it('should return an empty array when value is null', () => {
-		expect(sdkExecutor._splitParameters(null)).toStrictEqual([]);
-	});
-
-	it('should return an empty array when value is an empty string', () => {
-		expect(sdkExecutor._splitParameters('')).toStrictEqual([]);
-	});
-
-	it('should return an empty array when value contains only whitespace', () => {
-		expect(sdkExecutor._splitParameters('   ')).toStrictEqual([]);
-	});
-
-	it('should split values separated by whitespace', () => {
-		expect(sdkExecutor._splitParameters('one two three')).toStrictEqual(['one', 'two', 'three']);
-	});
-
-	it('should preserve double-quoted groups as a single value', () => {
-		expect(sdkExecutor._splitParameters('one "two three" four')).toStrictEqual(['one', '"two three"', 'four']);
-	});
-
-	it('should return a single double-quoted group as one value', () => {
-		expect(sdkExecutor._splitParameters('"one two"')).toStrictEqual(['"one two"']);
-	});
-
-	it('should trim outer whitespace before splitting', () => {
-		expect(sdkExecutor._splitParameters('  one  "two three"   four  ')).toStrictEqual(['one', '"two three"', 'four']);
-	});
-
-	it('should return the original value when the quoted group is unterminated', () => {
-		expect(sdkExecutor._splitParameters('abc "unterminated')).toStrictEqual(['abc "unterminated']);
-	});
-
-	it('should return the original value when quotes appear in an invalid token', () => {
-		expect(sdkExecutor._splitParameters('abc "bad"quote')).toStrictEqual(['abc "bad"quote']);
+		it.each([
+			['undefined value', undefined, []],
+			['null value', null, []],
+			['empty string', '', []],
+			['whitespace only', '   ', []],
+			['whitespace-separated values', 'one two three', ['one', 'two', 'three']],
+			['double-quoted group preserved as a single value', 'one "two three" four', ['one', '"two three"', 'four']],
+			['single double-quoted group', '"one two"', ['"one two"']],
+			['outer whitespace trimmed before splitting', '  one  "two three"   four  ', ['one', '"two three"', 'four']],
+			['unterminated quoted group returns original value', 'abc "unterminated', ['abc "unterminated']],
+			['quotes inside invalid token return original value', 'abc "bad"quote', ['abc "bad"quote']],
+		])('should return expected result for %s', (_, value, expected) => {
+			expect(sdkExecutor._splitParameters(value)).toStrictEqual(expected);
+		});
 	});
 });
