@@ -3,7 +3,7 @@
 
 # ide
 **/.idea/**
-# **/.vscode/**
+**/.vscode/**
 
 # transpiled .js files
 packages/**/dist
