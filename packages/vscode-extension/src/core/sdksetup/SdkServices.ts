@@ -15,7 +15,7 @@ import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
 import { ApplicationConstants, EnvironmentInformationService, FileSystemService } from '../../util/ExtensionUtil';
 import { verifySdkArtifact } from './SdkArtifactVerifier';
-import { getSdkDownloadFullUrl, getSdkPath, getSdkFilename, getSdkSha256, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER } from './SdkProperties';
+import { getSdkDownloadFullUrl, getSdkPath, getSdkFilename, getSdkSha256, isUnverifiedSdkArtifactAllowed, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER } from './SdkProperties';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
@@ -26,7 +26,8 @@ const fileSystemService = new FileSystemService();
 export async function installIfNeeded() {
 	validateJavaVersion();
 
-	if (!fs.existsSync(path.join(getSdkPath())) || !isSdkArtifactTrusted(path.join(getSdkPath())) || !(await validateSdk(path.join(getSdkPath())))) {
+	const sdkPath = path.join(getSdkPath());
+	if (!fs.existsSync(sdkPath) || !isSdkArtifactTrusted(sdkPath) || !(await validateSdk(sdkPath))) {
 		await install();
 	}
 }
@@ -92,7 +93,7 @@ async function downloadFile(url: string, sdkDirectory: string) {
 		file = fs.createWriteStream(temporarySdkDestinationFile);
 		const sdk = await save(options, file);
 		file.close();
-		verifySdkArtifact(sdk, getSdkSha256());
+		verifySdkArtifactIfNeeded(sdk);
 		fs.renameSync(temporarySdkDestinationFile, sdkDestinationFile);
 		if (!(await validateSdk(sdkDestinationFile))) {
 			throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_INVALID);
@@ -130,11 +131,21 @@ function removeFileIfExists(filePath: string) {
 }
 
 function isSdkArtifactTrusted(sdkPath: string) {
+	if (isUnverifiedSdkArtifactAllowed()) {
+		return true;
+	}
+
 	try {
 		return verifySdkArtifact(sdkPath, getSdkSha256());
 	} catch (error) {
 		removeFileIfExists(sdkPath);
 		return false;
+	}
+}
+
+function verifySdkArtifactIfNeeded(sdkPath: string) {
+	if (!isUnverifiedSdkArtifactAllowed()) {
+		verifySdkArtifact(sdkPath, getSdkSha256());
 	}
 }
 

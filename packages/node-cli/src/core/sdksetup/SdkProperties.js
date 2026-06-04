@@ -32,6 +32,10 @@ class SdkProperties {
 		return this._sdkMetadata.sdkSha256;
 	}
 
+	isUnverifiedSdkArtifactAllowed() {
+		return this._sdkMetadata.allowUnverifiedSdkArtifact === true;
+	}
+
 	isCustomSdkMetadataUsed() {
 		return this._isCustomSdkMetadataUsed;
 	}

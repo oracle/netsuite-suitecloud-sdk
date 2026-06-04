@@ -51,6 +51,15 @@ export function getSdkSha256(): string {
 	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkSha256;
 }
 
+export function isUnverifiedSdkArtifactAllowed(): boolean {
+	if (extensionConfigJsonFileExists()) {
+		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
+		return extensionConfigJsonFile.allowUnverifiedSdkArtifact === true;
+	}
+
+	return require(SUITECLOUD_CLI_PACKAGE_JSON).allowUnverifiedSdkArtifact === true;
+}
+
 export function getSdkDownloadFullUrl(): string {
 	return getSdkDownloadUrl() + '/' + getSdkFilename();
 }
