@@ -27,8 +27,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch suitecloud project:deploy",
-            "program": "${workspaceFolder}\\packages\\node-cli\\src\\suitecloud.js",
-            "cwd": "C:\\NetSuiteProjects\\SuiteCloudProjectPath",
+            "program": "${workspaceFolder}/packages/node-cli/src/suitecloud.js",
+            "cwd": "/path/to/your/suitecloud/project",
             "args": ["project:deploy"],
             "outputCapture": "std",
             "console": "integratedTerminal"
