@@ -14,7 +14,7 @@ module.exports = {
 	NODE_COMMANDS_METADATA_FILE: 'metadata/NodeCommandsMetadata.json',
 	COMMAND_GENERATORS_METADATA_FILE: 'metadata/CommandGenerators.json',
 	SDK_COMPATIBLE_JAVA_VERSIONS: ['17', '21'],
-	SDK_INTEGRATION_MODE_JVM_OPTION: '-DintegrationMode --add-opens java.base/java.io=ALL-UNNAMED',
+	SDK_INTEGRATION_MODE_JVM_OPTIONS: ['-DintegrationMode', '--add-opens', 'java.base/java.io=ALL-UNNAMED'],
 	SDK_CLIENT_PLATFORM: 'SuiteCloudCLIforNode.js',
 	SDK_CLIENT_PLATFORM_JVM_OPTION: '-DclientPlatform',
 	SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION: '-DclientPlatformVersion',
@@ -75,4 +75,12 @@ module.exports = {
 		INTERNAL_SERVER_ERROR: 500,
 		SERVICE_UNAVAILABLE: 503,
 	},
+	SUITECLOUD_PROXY_SERVICE: {
+		REGEX_SYSTEM_URL : /^system\.netsuite\.com$/,
+		REGEX_ACCOUNT_SPECIFIC_URL : /^[\w-]+\.app\.netsuite\.com$/,
+		REGEX_SUITETALK_API_PRODUCTION_URL : /^[\w-]+\.suitetalk\.api\.netsuite\.com$/
+	},
+	SDK_EXECUTOR_NON_ALLOWED_PARAMETERS_REGEX : /[\u0000-\u001F\u007F<>|;&$`]/,
+	SDK_EXECUTOR_NON_ALLOWED_CONTROL_PARAMETERS : '(U+0000-U+001F, U+007F)',
+	SDK_EXECUTOR_NON_ALLOWED_SYMBOLS : '(<>|;&$`'
 };
