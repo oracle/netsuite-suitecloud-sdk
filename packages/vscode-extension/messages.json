@@ -109,9 +109,7 @@
 	"ERRORS_SDK_JAVA_VERSION_NOT_INSTALLED": "Java is not installed on this machine. Install any of the following Oracle JDK versions: {0}, to run SuiteCloud Extension for Visual Studio Code.",
 
 	"EXTENSION_INSTALLATION_ERROR_GENERAL_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
-	"EXTENSION_INSTALLATION_ERROR_SDK_CHECKSUM_MISMATCH": "SuiteCloud SDK dependency integrity verification failed. The downloaded JAR file does not match the expected SHA-256 checksum.",
 	"EXTENSION_INSTALLATION_ERROR_SDK_INVALID": "Close and open the editor to try again.",
-	"EXTENSION_INSTALLATION_ERROR_SDK_MISSING_CHECKSUM": "SuiteCloud SDK dependency integrity verification failed. The expected SHA-256 checksum is missing or invalid.",
 	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
 	"EXTENSION_INSTALLATION_ERROR_WRONG_DOWNLOAD_URL_PROTOCOL": "Invalid SDK JAR file download URL protocol. Only https: is allowed.",
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
