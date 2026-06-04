@@ -1,5 +1,7 @@
 # Change Log
 
+## 3.1.3
+
 - Fix for ERC issues 883772, 883774, 883777. 
 
 ## 3.1.2
