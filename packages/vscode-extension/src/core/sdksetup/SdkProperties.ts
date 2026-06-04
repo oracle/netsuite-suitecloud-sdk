@@ -14,19 +14,14 @@ export const VSCODE_SDK_FOLDER = 'vscode';
 const SUITECLOUD_CLI_PACKAGE_JSON = '@oracle/suitecloud-cli/package.json';
 const EXTENSION_CONFIG_JSON_FILENAME = 'extension.config.json';
 const EXTENSION_CONFIG_JSON_FILE = './' + EXTENSION_CONFIG_JSON_FILENAME;
+const SUITECLOUD_CLI_PACKAGE_METADATA = require(SUITECLOUD_CLI_PACKAGE_JSON);
+const EXTENSION_CONFIG_JSON_FILE_PATH = resolve(__dirname, EXTENSION_CONFIG_JSON_FILENAME);
+const IS_CUSTOM_SDK_METADATA_USED = existsSync(EXTENSION_CONFIG_JSON_FILE_PATH);
+// Load the SDK artifact metadata used to download and verify the bundled SDK dependency.
+const SDK_METADATA = IS_CUSTOM_SDK_METADATA_USED ? require(EXTENSION_CONFIG_JSON_FILE) : SUITECLOUD_CLI_PACKAGE_METADATA;
 
 function getSdkDownloadUrl(): string {
-	if (extensionConfigJsonFileExists()) {
-		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
-		return extensionConfigJsonFile.sdkDownloadUrl;
-	}
-
-	const suiteCloudCliModulePackageJsonPath = require.resolve(SUITECLOUD_CLI_PACKAGE_JSON);
-	return require(suiteCloudCliModulePackageJsonPath).sdkDownloadUrl;
-}
-
-function extensionConfigJsonFileExists(): boolean {
-	return existsSync(resolve(__dirname, EXTENSION_CONFIG_JSON_FILENAME));
+	return SDK_METADATA.sdkDownloadUrl;
 }
 
 export function getSdkPath(): string {
@@ -34,25 +29,15 @@ export function getSdkPath(): string {
 }
 
 export function getSdkFilename(): string {
-	if (extensionConfigJsonFileExists()) {
-		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
-		return extensionConfigJsonFile.sdkFilename;
-	}
-
-	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkFilename;
+	return SDK_METADATA.sdkFilename;
 }
 
 export function getSdkSha256(): string {
-	if (extensionConfigJsonFileExists()) {
-		const extensionConfigJsonFile = require(EXTENSION_CONFIG_JSON_FILE);
-		return extensionConfigJsonFile.sdkSha256;
-	}
-
-	return require(SUITECLOUD_CLI_PACKAGE_JSON).sdkSha256;
+	return SDK_METADATA.sdkSha256;
 }
 
 export function isCustomSdkMetadataUsed(): boolean {
-	return extensionConfigJsonFileExists();
+	return IS_CUSTOM_SDK_METADATA_USED;
 }
 
 export function getSdkDownloadFullUrl(): string {

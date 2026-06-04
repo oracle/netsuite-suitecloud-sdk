@@ -13,15 +13,16 @@ import { VSTranslationService } from '../../service/VSTranslationService';
 import { ERRORS, EXTENSION_INSTALLATION } from '../../service/TranslationKeys';
 import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
-import { ApplicationConstants, EnvironmentInformationService, FileSystemService } from '../../util/ExtensionUtil';
-import { verifySdkArtifact } from './SdkArtifactVerifier';
+import { ApplicationConstants, EnvironmentInformationService, FileSystemService, SdkArtifactVerifier } from '../../util/ExtensionUtil';
 import * as SdkProperties from './SdkProperties';
+import type { SdkArtifactVerificationProperties } from '../../types/JavascriptNodeCli';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
 const messageService = new MessageService();
 const translationService = new VSTranslationService();
 const fileSystemService = new FileSystemService();
+const sdkProperties = SdkProperties satisfies SdkArtifactVerificationProperties;
 
 export async function installIfNeeded() {
 	validateJavaVersion();
@@ -93,7 +94,7 @@ async function downloadFile(url: string, sdkDirectory: string) {
 		file = fs.createWriteStream(temporarySdkDestinationFile);
 		const sdk = await save(options, file);
 		file.close();
-		verifySdkArtifact(sdk, SdkProperties);
+		SdkArtifactVerifier.verify(sdk, sdkProperties);
 		fs.renameSync(temporarySdkDestinationFile, sdkDestinationFile);
 		if (!(await validateSdk(sdkDestinationFile))) {
 			throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_INVALID);
@@ -132,7 +133,7 @@ function removeFileIfExists(filePath: string) {
 
 function isSdkArtifactTrusted(sdkPath: string) {
 	try {
-		return verifySdkArtifact(sdkPath, SdkProperties);
+		return SdkArtifactVerifier.verify(sdkPath, sdkProperties);
 	} catch (error) {
 		removeFileIfExists(sdkPath);
 		return false;

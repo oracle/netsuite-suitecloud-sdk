@@ -37,6 +37,15 @@ export interface ExecutionEnvironmentContextConstructor {
 	new(params?: { platform?: string, platformVersion?: string }): ExecutionEnvironmentContextInstance;
 }
 
+export interface SdkArtifactVerificationProperties {
+	getSdkSha256(): string;
+	isCustomSdkMetadataUsed(): boolean;
+}
+export interface SdkArtifactVerifierInstance {
+	verify(sdkPath: string, sdkProperties: SdkArtifactVerificationProperties): boolean;
+	calculateSha256(sdkPath: string): string;
+}
+
 export interface SuiteCloudAuthProxyServiceInstance extends EventEmitter {
 	start(authId: string, localProxyPort: number): Promise<void>;
 	stop(): Promise<void>;
