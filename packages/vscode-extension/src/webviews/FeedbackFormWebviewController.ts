@@ -55,6 +55,15 @@ const VALID_FEEDBACK_TOPICS = [
 
 let feedbackFormPanel: vscode.WebviewPanel | undefined;
 let mediaService: MediaFileService;
+const generateNonce = () => {
+	const nonceCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let nonce = '';
+	for (let index = 0; index < 32; index++) {
+		nonce += nonceCharacters.charAt(Math.floor(Math.random() * nonceCharacters.length));
+	}
+	return nonce;
+};
+
 export const openDevAssistFeedbackForm = (extensionContext: vscode.ExtensionContext) => {
 
 	// if one FeedbackForm is already open, reveal it instead of creating a new one
@@ -78,8 +87,15 @@ export const openDevAssistFeedbackForm = (extensionContext: vscode.ExtensionCont
 
 	// calculate cssUri as a proper Webview File Path and generate HTML content with it
 	const cssFilePath = mediaService.getMediaFileFullPath(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.CSS);
-	const cssWebviewUri = feedbackFormPanel?.webview.asWebviewUri(vscode.Uri.file(cssFilePath)).toString();
-	feedbackFormPanel.webview.html = mediaService.generateHTMLContentFromMediaFile(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.HTML, cssWebviewUri);
+	const cssWebviewUri = feedbackFormPanel.webview.asWebviewUri(vscode.Uri.file(cssFilePath)).toString();
+	const scriptNonce = generateNonce();
+	const renderFeedbackPage = (htmlFileName : string) => mediaService.generateHTMLContentFromMediaFile(
+		htmlFileName,
+		cssWebviewUri,
+		feedbackFormPanel!.webview.cspSource,
+		scriptNonce,
+	);
+	feedbackFormPanel.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.HTML);
 
 	// Clean up the reference when the WebviewPanel is closed
 	feedbackFormPanel.onDidDispose(
@@ -90,20 +106,24 @@ export const openDevAssistFeedbackForm = (extensionContext: vscode.ExtensionCont
 
 	// Handle messages/events sent from HTML to this Webview controller
 	feedbackFormPanel.webview.onDidReceiveMessage(
-		(htmlEventMessage) => handleHtmlEventMessage(htmlEventMessage, cssWebviewUri, extensionContext),
+		(htmlEventMessage) => handleHtmlEventMessage(htmlEventMessage, renderFeedbackPage, extensionContext),
 		undefined,
 		extensionContext.subscriptions,
 	);
 };
 
-const handleHtmlEventMessage = async (htmlEventMessage : HtmlEventMessage, cssWebviewUri : string, extensionContext: vscode.ExtensionContext) : Promise<void> => {
+const handleHtmlEventMessage = async (
+	htmlEventMessage : HtmlEventMessage,
+	renderFeedbackPage : (htmlFileName : string) => string,
+	extensionContext: vscode.ExtensionContext,
+) : Promise<void> => {
 	switch (htmlEventMessage.eventType) {
 		case FEEDBACK_FORM_EVENTS.HTML_PAGE.SUBMIT_FEEDBACK:
-			await handleSubmitFeedbackFormEvent(htmlEventMessage.eventData!, cssWebviewUri, extensionContext);
+			await handleSubmitFeedbackFormEvent(htmlEventMessage.eventData!, renderFeedbackPage, extensionContext);
 			break;
 
 		case FEEDBACK_FORM_EVENTS.HTML_PAGE.OPEN_NEW_FEEDBACK_FORM:
-			feedbackFormPanel!.webview.html = mediaService.generateHTMLContentFromMediaFile(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.HTML, cssWebviewUri);
+			feedbackFormPanel!.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.HTML);
 			break;
 
 		case FEEDBACK_FORM_EVENTS.HTML_PAGE.CLOSE:
@@ -112,7 +132,11 @@ const handleHtmlEventMessage = async (htmlEventMessage : HtmlEventMessage, cssWe
 	}
 }
 
-const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWebviewUri : string, extensionContext: vscode.ExtensionContext) => {
+const handleSubmitFeedbackFormEvent = async (
+	formData : FeedbackFormData,
+	renderFeedbackPage : (htmlFileName : string) => string,
+	extensionContext: vscode.ExtensionContext,
+) => {
 
 	// validate Feedback Form Data
 	const validationResult = validateFormData(formData);
@@ -121,7 +145,7 @@ const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWeb
 		return;
 	}
 
-	feedbackFormPanel!.webview.html = mediaService.generateHTMLContentFromMediaFile(FEEDBACK_FORM_FILE_NAMES.SUBMITTING_HTML, cssWebviewUri);
+	feedbackFormPanel!.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.SUBMITTING_HTML);
 
 	// Send request to NetSuite Backend through Proxy
 	try {
@@ -141,7 +165,7 @@ const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWeb
 			vsLogger.printTimestamp();
 			vsLogger.info(translationService.getMessage(DEVASSIST_SERVICE.FEEDBACK_FORM.SUBMIT_SUCCESS));
 			vsLogger.info('');
-			feedbackFormPanel!.webview.html = mediaService.generateHTMLContentFromMediaFile(FEEDBACK_FORM_FILE_NAMES.SUCCESS_HTML, cssWebviewUri);
+			feedbackFormPanel!.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.SUCCESS_HTML);
 		}
 		else {
 			// SERVER_ERROR (but proxy is running, a response was received)
@@ -151,13 +175,13 @@ const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWeb
 			// "Manual reauthentication is needed" proxy event
 			if (response.status === ApplicationConstants.HTTP_RESPONSE_CODE.FORBIDDEN) {
 				const responseBody : any = await response.json();
-				feedbackFormPanel!.webview.html = mediaService.generateHTMLContentFromMediaFile(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.HTML, cssWebviewUri);
+				feedbackFormPanel!.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.HTML);
 				await sendErrorEventToHtml(translationService.getMessage(DEVASSIST_SERVICE.FEEDBACK_FORM.SUBMITTING_ERROR_REAUTHORIZE_TOAST, responseBody.error));
 				vsLogger.error(responseBody.error);
 
 			}
 			else {
-				feedbackFormPanel!.webview.html = mediaService.generateHTMLContentFromMediaFile(FEEDBACK_FORM_FILE_NAMES.FAILURE_HTML, cssWebviewUri);
+				feedbackFormPanel!.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.FAILURE_HTML);
 			}
 			vsLogger.error('');
 		}
@@ -169,7 +193,7 @@ const handleSubmitFeedbackFormEvent = async (formData : FeedbackFormData, cssWeb
 
 		// TODO: Find a way to not delete the user input when swaping HTML / clicking out
 		// 	-> https://code.visualstudio.com/api/extension-guides/webview#getstate-and-setstate
-		feedbackFormPanel!.webview.html = mediaService.generateHTMLContentFromMediaFile(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.HTML, cssWebviewUri);
+		feedbackFormPanel!.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.MAIN_PAGE.HTML);
 		await sendErrorEventToHtml(translationService.getMessage(DEVASSIST_SERVICE.FEEDBACK_FORM.SUBMITTING_ERROR_TOAST));
 	}
 }
