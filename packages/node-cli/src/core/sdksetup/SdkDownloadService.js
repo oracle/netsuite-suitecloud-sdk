@@ -49,7 +49,7 @@ class SdkDownloadService {
 
 		try {
 			await this._downloadJarFilePromise(fullURL, temporaryDestinationFilePath, proxy, skipProxy);
-			this._verifySdkArtifactIfNeeded(temporaryDestinationFilePath);
+			SdkArtifactVerifier.verify(temporaryDestinationFilePath, SdkProperties);
 			this._removeFileIfExists(destinationFilePath);
 			fs.renameSync(temporaryDestinationFilePath, destinationFilePath);
 		} catch (error) {
@@ -112,12 +112,6 @@ class SdkDownloadService {
 	_removeFileIfExists(filePath) {
 		if (fs.existsSync(filePath)) {
 			fs.unlinkSync(filePath);
-		}
-	}
-
-	_verifySdkArtifactIfNeeded(sdkPath) {
-		if (!SdkProperties.isUnverifiedSdkArtifactAllowed()) {
-			SdkArtifactVerifier.verify(sdkPath, SdkProperties.getSdkSha256());
 		}
 	}
 

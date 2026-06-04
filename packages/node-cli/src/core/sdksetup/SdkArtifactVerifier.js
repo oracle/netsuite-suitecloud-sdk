@@ -13,8 +13,12 @@ const { SDK_DOWNLOAD_SERVICE } = require('../../services/TranslationKeys');
 const SHA256_PATTERN = /^[a-fA-F0-9]{64}$/;
 
 class SdkArtifactVerifier {
-	verify(sdkPath, expectedSha256) {
-		const normalizedExpectedSha256 = this._normalizeExpectedSha256(expectedSha256);
+	verify(sdkPath, sdkProperties) {
+		if (sdkProperties.isCustomSdkMetadataUsed()) {
+			return true;
+		}
+
+		const normalizedExpectedSha256 = this._normalizeExpectedSha256(sdkProperties.getSdkSha256());
 		const actualSha256 = this.calculateSha256(sdkPath);
 
 		if (actualSha256 !== normalizedExpectedSha256) {

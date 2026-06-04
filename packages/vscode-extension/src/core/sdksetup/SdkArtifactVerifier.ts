@@ -13,8 +13,17 @@ const SHA256_PATTERN = /^[a-fA-F0-9]{64}$/;
 
 const translationService = new VSTranslationService();
 
-export function verifySdkArtifact(sdkPath: string, expectedSha256: string): boolean {
-	const normalizedExpectedSha256 = normalizeExpectedSha256(expectedSha256);
+interface SdkArtifactMetadataProvider {
+	getSdkSha256(): string;
+	isCustomSdkMetadataUsed(): boolean;
+}
+
+export function verifySdkArtifact(sdkPath: string, sdkProperties: SdkArtifactMetadataProvider): boolean {
+	if (sdkProperties.isCustomSdkMetadataUsed()) {
+		return true;
+	}
+
+	const normalizedExpectedSha256 = normalizeExpectedSha256(sdkProperties.getSdkSha256());
 	const actualSha256 = calculateSha256(sdkPath);
 
 	if (actualSha256 !== normalizedExpectedSha256) {

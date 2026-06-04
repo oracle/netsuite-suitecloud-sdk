@@ -15,7 +15,7 @@ import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
 import { ApplicationConstants, EnvironmentInformationService, FileSystemService } from '../../util/ExtensionUtil';
 import { verifySdkArtifact } from './SdkArtifactVerifier';
-import { getSdkDownloadFullUrl, getSdkPath, getSdkFilename, getSdkSha256, isUnverifiedSdkArtifactAllowed, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER } from './SdkProperties';
+import * as SdkProperties from './SdkProperties';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
@@ -26,7 +26,7 @@ const fileSystemService = new FileSystemService();
 export async function installIfNeeded() {
 	validateJavaVersion();
 
-	const sdkPath = path.join(getSdkPath());
+	const sdkPath = path.join(SdkProperties.getSdkPath());
 	if (!fs.existsSync(sdkPath) || !isSdkArtifactTrusted(sdkPath) || !(await validateSdk(sdkPath))) {
 		await install();
 	}
@@ -53,9 +53,9 @@ function validateJavaVersion() {
 }
 
 async function install() {
-	const sdkParentDirectory = fileSystemService.createFolder(homedir(), SUITECLOUD_FOLDER);
-	const sdkDirectory = fileSystemService.createFolder(sdkParentDirectory, VSCODE_SDK_FOLDER);
-	const fullUrl = getSdkDownloadFullUrl();
+	const sdkParentDirectory = fileSystemService.createFolder(homedir(), SdkProperties.SUITECLOUD_FOLDER);
+	const sdkDirectory = fileSystemService.createFolder(sdkParentDirectory, SdkProperties.VSCODE_SDK_FOLDER);
+	const fullUrl = SdkProperties.getSdkDownloadFullUrl();
 
 	try {
 		const downloadFilePromise = downloadFile(fullUrl, sdkDirectory);
@@ -73,7 +73,7 @@ async function install() {
 }
 
 async function downloadFile(url: string, sdkDirectory: string) {
-	const sdkDestinationFile = path.join(sdkDirectory, getSdkFilename());
+	const sdkDestinationFile = path.join(sdkDirectory, SdkProperties.getSdkFilename());
 	const temporarySdkDestinationFile = `${sdkDestinationFile}.tmp`;
 	const parsedUrl = parse(url);
 
@@ -93,7 +93,7 @@ async function downloadFile(url: string, sdkDirectory: string) {
 		file = fs.createWriteStream(temporarySdkDestinationFile);
 		const sdk = await save(options, file);
 		file.close();
-		verifySdkArtifactIfNeeded(sdk);
+		verifySdkArtifact(sdk, SdkProperties);
 		fs.renameSync(temporarySdkDestinationFile, sdkDestinationFile);
 		if (!(await validateSdk(sdkDestinationFile))) {
 			throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_INVALID);
@@ -131,21 +131,11 @@ function removeFileIfExists(filePath: string) {
 }
 
 function isSdkArtifactTrusted(sdkPath: string) {
-	if (isUnverifiedSdkArtifactAllowed()) {
-		return true;
-	}
-
 	try {
-		return verifySdkArtifact(sdkPath, getSdkSha256());
+		return verifySdkArtifact(sdkPath, SdkProperties);
 	} catch (error) {
 		removeFileIfExists(sdkPath);
 		return false;
-	}
-}
-
-function verifySdkArtifactIfNeeded(sdkPath: string) {
-	if (!isUnverifiedSdkArtifactAllowed()) {
-		verifySdkArtifact(sdkPath, getSdkSha256());
 	}
 }
 

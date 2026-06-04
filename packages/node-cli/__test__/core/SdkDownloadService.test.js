@@ -5,8 +5,10 @@
 'use strict';
 
 jest.mock('../../src/core/sdksetup/SdkProperties', () => ({
+	getDownloadURL: jest.fn(),
+	getSdkFileName: jest.fn(),
 	getSdkSha256: jest.fn(),
-	isUnverifiedSdkArtifactAllowed: jest.fn(),
+	isCustomSdkMetadataUsed: jest.fn(),
 }));
 
 jest.mock('../../src/core/sdksetup/SdkArtifactVerifier', () => ({
@@ -16,38 +18,47 @@ jest.mock('../../src/core/sdksetup/SdkArtifactVerifier', () => ({
 const SdkProperties = require('../../src/core/sdksetup/SdkProperties');
 const SdkArtifactVerifier = require('../../src/core/sdksetup/SdkArtifactVerifier');
 const SdkDownloadService = require('../../src/core/sdksetup/SdkDownloadService');
+const fs = require('fs');
 
 describe('SdkDownloadService', () => {
-	const sdkPath = '/tmp/sdk.jar';
+	const sdkParentDirectory = '/tmp/.suitecloud-sdk';
+	const sdkDirectory = '/tmp/.suitecloud-sdk/node-cli';
+	const sdkFilename = 'sdk.jar';
+	const sdkDownloadUrl = 'https://example.com/sdk';
 
 	beforeEach(() => {
 		jest.clearAllMocks();
+		SdkProperties.getDownloadURL.mockReturnValue(sdkDownloadUrl);
+		SdkProperties.getSdkFileName.mockReturnValue(sdkFilename);
+		SdkProperties.isCustomSdkMetadataUsed.mockReturnValue(false);
+		SdkDownloadService._fileSystemService.createFolder = jest
+			.fn()
+			.mockReturnValueOnce(sdkParentDirectory)
+			.mockReturnValueOnce(sdkDirectory);
+		jest.spyOn(SdkDownloadService, '_removeJarFilesFrom').mockImplementation(() => {});
+		jest.spyOn(SdkDownloadService, '_downloadJarFilePromise').mockResolvedValue();
+		jest.spyOn(SdkDownloadService, '_removeFileIfExists').mockImplementation(() => {});
+		jest.spyOn(fs, 'renameSync').mockImplementation(() => {});
 	});
 
-	it('verifies SDK artifacts when unverified artifacts are not allowed', () => {
-		SdkProperties.isUnverifiedSdkArtifactAllowed.mockReturnValue(false);
-		SdkProperties.getSdkSha256.mockReturnValue('expected-sha256');
-
-		SdkDownloadService._verifySdkArtifactIfNeeded(sdkPath);
-
-		expect(SdkArtifactVerifier.verify).toHaveBeenCalledWith(sdkPath, 'expected-sha256');
+	afterEach(() => {
+		jest.restoreAllMocks();
 	});
 
-	it('does not verify SDK artifacts when unverified artifacts are explicitly allowed', () => {
-		SdkProperties.isUnverifiedSdkArtifactAllowed.mockReturnValue(true);
+	it('delegates SDK artifact verification to SdkArtifactVerifier with SDK properties', async () => {
+		const temporarySdkPath = `${sdkDirectory}/${sdkFilename}.tmp`;
+		const finalSdkPath = `${sdkDirectory}/${sdkFilename}`;
 
-		SdkDownloadService._verifySdkArtifactIfNeeded(sdkPath);
+		await SdkDownloadService.download();
 
-		expect(SdkArtifactVerifier.verify).not.toHaveBeenCalled();
-		expect(SdkProperties.getSdkSha256).not.toHaveBeenCalled();
-	});
-
-	it('fails on missing SHA-256 metadata when unverified artifacts are not allowed', () => {
-		SdkProperties.isUnverifiedSdkArtifactAllowed.mockReturnValue(false);
-		SdkArtifactVerifier.verify.mockImplementation(() => {
-			throw new Error('missing checksum');
-		});
-
-		expect(() => SdkDownloadService._verifySdkArtifactIfNeeded(sdkPath)).toThrow('missing checksum');
+		expect(SdkDownloadService._downloadJarFilePromise).toHaveBeenCalledWith(
+			`${sdkDownloadUrl}/${sdkFilename}`,
+			temporarySdkPath,
+			undefined,
+			false
+		);
+		expect(SdkArtifactVerifier.verify).toHaveBeenCalledWith(temporarySdkPath, SdkProperties);
+		expect(SdkDownloadService._removeFileIfExists).toHaveBeenCalledWith(finalSdkPath);
+		expect(fs.renameSync).toHaveBeenCalledWith(temporarySdkPath, finalSdkPath);
 	});
 });
