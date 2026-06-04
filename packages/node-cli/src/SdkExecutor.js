@@ -206,16 +206,22 @@ module.exports = class SdkExecutor {
 		if (value === undefined || value === null) {
 			return [];
 		}
-		//We need to split words. Words are text groups separated by spaces. They can be surrounded by "" or not.
-		//If they are surrounded by "" they may have spaces inside.
-		const javaQuotedGroupsPattern = /^(?:"[^"]*"|[^"\s]+)(?:\s+(?:"[^"]*"|[^"\s]+))*$/;
 
 		const trimmedValue = value.trim();
-		if (!javaQuotedGroupsPattern.test(trimmedValue)) {
+
+		if (trimmedValue === "") {
+			return [];
+		}
+		//We need to split words. Words are text groups separated by spaces. They can be surrounded by "" or not.
+		//If they are surrounded by "" they may have spaces inside.
+		const validParameterValueListPattern  = /^(?:"[^"]*"|[^"\s]+)(?:\s+(?:"[^"]*"|[^"\s]+))*$/;
+		const parameterValueTokenPattern  = /"[^"]*"|[^"\s]+/g;
+
+		if (!validParameterValueListPattern.test(trimmedValue)) {
 			return [value];
 		}
 
-		return trimmedValue.match(/"[^"]*"|[^"\s]+/g);
+		return trimmedValue.match(parameterValueTokenPattern);
 	}
 
 	_checkIfJavaVersionIssue() {
