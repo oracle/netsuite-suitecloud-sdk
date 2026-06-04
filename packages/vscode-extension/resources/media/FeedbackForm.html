@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="Content-Security-Policy"
+		  content="default-src 'none'; style-src {{CSP_SOURCE}}; script-src 'nonce-{{SCRIPT_NONCE}}';">
 	<title>DevAssist Feedback</title>
 	<link rel="stylesheet" href="{{CSS_FILE.css}}">
 </head>
@@ -55,7 +57,7 @@
 		</form>
 	</div>
 	<div id="alert-container"></div>
-	<script>
+	<script nonce="{{SCRIPT_NONCE}}">
 		const vscode = acquireVsCodeApi();
 
 		// Internal PageEvent Handlers (generated within the HTML and handled here)
@@ -105,10 +107,16 @@
 			alertDiv.className = 'toast-alert toast-' + type;
 			alertDiv.setAttribute('role', 'alert');
 			alertDiv.setAttribute('aria-live', 'polite');
-			alertDiv.innerHTML =
-				`<span style="flex:1">${message}</span>
-					<button class="toast-close" aria-label="Close" tabindex="0">&times;</button>`;
-			const closeBtn = alertDiv.querySelector('.toast-close');
+			const messageSpan = document.createElement('span');
+			messageSpan.style.flex = '1';
+			messageSpan.textContent = message;
+			const closeBtn = document.createElement('button');
+			closeBtn.className = 'toast-close';
+			closeBtn.setAttribute('aria-label', 'Close');
+			closeBtn.setAttribute('tabindex', '0');
+			closeBtn.textContent = '\u00D7';
+			alertDiv.appendChild(messageSpan);
+			alertDiv.appendChild(closeBtn);
 			let dismissed = false;
 
 			function removeToastMessage() {
