@@ -43,7 +43,6 @@ export interface SdkArtifactVerificationProperties {
 }
 export interface SdkArtifactVerifierInstance {
 	verify(sdkPath: string, sdkProperties: SdkArtifactVerificationProperties): boolean;
-	calculateSha256(sdkPath: string): string;
 }
 
 export interface SuiteCloudAuthProxyServiceInstance extends EventEmitter {

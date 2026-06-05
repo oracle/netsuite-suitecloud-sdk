@@ -19,7 +19,7 @@ class SdkArtifactVerifier {
 		}
 
 		const normalizedExpectedSha256 = this._normalizeExpectedSha256(sdkProperties.getSdkSha256());
-		const actualSha256 = this.calculateSha256(sdkPath);
+		const actualSha256 = this._calculateSha256(sdkPath);
 
 		if (actualSha256 !== normalizedExpectedSha256) {
 			throw new Error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.CHECKSUM_MISMATCH));
@@ -28,7 +28,7 @@ class SdkArtifactVerifier {
 		return true;
 	}
 
-	calculateSha256(sdkPath) {
+	_calculateSha256(sdkPath) {
 		return crypto.createHash('sha256').update(fs.readFileSync(sdkPath)).digest('hex');
 	}
 
