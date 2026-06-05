@@ -50,10 +50,10 @@ class SdkDownloadService {
 		try {
 			await this._downloadJarFilePromise(fullURL, temporaryDestinationFilePath, proxy, skipProxy);
 			SdkArtifactVerifier.verify(temporaryDestinationFilePath, SdkProperties);
-			this._removeFileIfExists(destinationFilePath);
+			this._fileSystemService.deleteFileIfExists(destinationFilePath);
 			fs.renameSync(temporaryDestinationFilePath, destinationFilePath);
 		} catch (error) {
-			this._removeFileIfExists(temporaryDestinationFilePath);
+			this._fileSystemService.deleteFileIfExists(temporaryDestinationFilePath);
 			console.error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.ERROR, fullURL, unwrapExceptionMessage(error)));
 			process.exit(ERROR_CODE);
 		}
@@ -107,12 +107,6 @@ class SdkDownloadService {
 		fs.readdirSync(folder)
 			.filter((file) => /[.]jar$/.test(file))
 			.map((file) => fs.unlinkSync(path.join(folder, file)));
-	}
-
-	_removeFileIfExists(filePath) {
-		if (fs.existsSync(filePath)) {
-			fs.unlinkSync(filePath);
-		}
 	}
 
 	_isValidJarContentType(contentType) {

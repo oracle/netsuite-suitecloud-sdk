@@ -37,7 +37,7 @@ describe('SdkDownloadService', () => {
 			.mockReturnValueOnce(sdkDirectory);
 		jest.spyOn(SdkDownloadService, '_removeJarFilesFrom').mockImplementation(() => {});
 		jest.spyOn(SdkDownloadService, '_downloadJarFilePromise').mockResolvedValue();
-		jest.spyOn(SdkDownloadService, '_removeFileIfExists').mockImplementation(() => {});
+		SdkDownloadService._fileSystemService.deleteFileIfExists = jest.fn();
 		jest.spyOn(fs, 'renameSync').mockImplementation(() => {});
 	});
 
@@ -58,7 +58,7 @@ describe('SdkDownloadService', () => {
 			false
 		);
 		expect(SdkArtifactVerifier.verify).toHaveBeenCalledWith(temporarySdkPath, SdkProperties);
-		expect(SdkDownloadService._removeFileIfExists).toHaveBeenCalledWith(finalSdkPath);
+		expect(SdkDownloadService._fileSystemService.deleteFileIfExists).toHaveBeenCalledWith(finalSdkPath);
 		expect(fs.renameSync).toHaveBeenCalledWith(temporarySdkPath, finalSdkPath);
 	});
 });
