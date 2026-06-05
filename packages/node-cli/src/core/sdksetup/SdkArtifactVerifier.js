@@ -16,18 +16,22 @@ const HEX = 'hex';
 
 class SdkArtifactVerifier {
 	verify(sdkPath, sdkProperties) {
-		if (sdkProperties.isCustomSdkMetadataUsed()) {
-			return true;
+		if (this._shouldVerifyChecksum(sdkProperties)) {
+			this._verifyChecksum(sdkPath, sdkProperties);
 		}
+	}
 
+	_shouldVerifyChecksum(sdkProperties) {
+		return !sdkProperties.isCustomSdkMetadataUsed();
+	}
+
+	_verifyChecksum(sdkPath, sdkProperties) {
 		const normalizedExpectedSha256 = this._normalizeExpectedSha256(sdkProperties.getSdkSha256());
 		const actualSha256 = this._calculateSha256(sdkPath);
 
 		if (actualSha256 !== normalizedExpectedSha256) {
 			throw new Error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.CHECKSUM_MISMATCH));
 		}
-
-		return true;
 	}
 
 	_calculateSha256(sdkPath) {

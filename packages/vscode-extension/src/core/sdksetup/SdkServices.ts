@@ -133,7 +133,8 @@ function removeFileIfExists(filePath: string) {
 
 function isSdkArtifactTrusted(sdkPath: string) {
 	try {
-		return SdkArtifactVerifier.verify(sdkPath, sdkProperties);
+		SdkArtifactVerifier.verify(sdkPath, sdkProperties);
+		return true;
 	} catch (error) {
 		removeFileIfExists(sdkPath);
 		return false;

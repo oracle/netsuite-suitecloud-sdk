@@ -28,11 +28,11 @@ describe('SdkArtifactVerifier', () => {
 	});
 
 	it('verifies an artifact that matches the expected SHA-256 checksum', () => {
-		expect(SdkArtifactVerifier.verify(testFile, createSdkProperties({ sha256: expectedSha256 }))).toBe(true);
+		expect(() => SdkArtifactVerifier.verify(testFile, createSdkProperties({ sha256: expectedSha256 }))).not.toThrow();
 	});
 
 	it('normalizes uppercase SHA-256 checksums', () => {
-		expect(SdkArtifactVerifier.verify(testFile, createSdkProperties({ sha256: expectedSha256.toUpperCase() }))).toBe(true);
+		expect(() => SdkArtifactVerifier.verify(testFile, createSdkProperties({ sha256: expectedSha256.toUpperCase() }))).not.toThrow();
 	});
 
 	it('rejects an artifact that does not match the expected SHA-256 checksum', () => {
@@ -46,7 +46,7 @@ describe('SdkArtifactVerifier', () => {
 	});
 
 	it('skips SHA-256 verification when custom SDK metadata is used', () => {
-		expect(SdkArtifactVerifier.verify(testFile, createSdkProperties({ customSdkMetadataUsed: true }))).toBe(true);
+		expect(() => SdkArtifactVerifier.verify(testFile, createSdkProperties({ customSdkMetadataUsed: true }))).not.toThrow();
 	});
 });
 

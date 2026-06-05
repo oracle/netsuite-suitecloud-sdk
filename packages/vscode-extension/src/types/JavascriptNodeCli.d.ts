@@ -42,7 +42,7 @@ export interface SdkArtifactVerificationProperties {
 	isCustomSdkMetadataUsed(): boolean;
 }
 export interface SdkArtifactVerifierInstance {
-	verify(sdkPath: string, sdkProperties: SdkArtifactVerificationProperties): boolean;
+	verify(sdkPath: string, sdkProperties: SdkArtifactVerificationProperties): void;
 }
 
 export interface SuiteCloudAuthProxyServiceInstance extends EventEmitter {
