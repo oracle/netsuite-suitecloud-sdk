@@ -11,6 +11,8 @@ const NodeTranslationService = require('../../services/NodeTranslationService');
 const { SDK_DOWNLOAD_SERVICE } = require('../../services/TranslationKeys');
 
 const SHA256_PATTERN = /^[a-fA-F0-9]{64}$/;
+const SHA256 = 'sha256';
+const HEX = 'hex';
 
 class SdkArtifactVerifier {
 	verify(sdkPath, sdkProperties) {
@@ -29,7 +31,7 @@ class SdkArtifactVerifier {
 	}
 
 	_calculateSha256(sdkPath) {
-		return crypto.createHash('sha256').update(fs.readFileSync(sdkPath)).digest('hex');
+		return crypto.createHash(SHA256).update(fs.readFileSync(sdkPath)).digest(HEX);
 	}
 
 	_normalizeExpectedSha256(expectedSha256) {
