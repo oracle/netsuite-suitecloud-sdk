@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
 import { homedir } from 'os';
-import { parse } from 'url';
+import { URL } from 'url';
 import { VSTranslationService } from '../../service/VSTranslationService';
 import { ERRORS, EXTENSION_INSTALLATION } from '../../service/TranslationKeys';
 import MessageService from '../../service/MessageService';
@@ -76,17 +76,17 @@ async function install() {
 async function downloadFile(url: string, sdkDirectory: string) {
 	const sdkDestinationFile = path.join(sdkDirectory, SdkProperties.getSdkFilename());
 	const temporarySdkDestinationFile = `${sdkDestinationFile}.tmp`;
-	const parsedUrl = parse(url);
+	const sdkDownloadUrlObject = new URL(url);
 
-	if (parsedUrl.protocol !== 'https:') {
+	if (sdkDownloadUrlObject.protocol !== 'https:') {
 		throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.WRONG_DOWNLOAD_URL_PROTOCOL);
 	}
 
 	const options = {
 		method: 'GET',
-		protocol: parsedUrl.protocol,
-		host: parsedUrl.host,
-		path: parsedUrl.path,
+		protocol: sdkDownloadUrlObject.protocol,
+		host: sdkDownloadUrlObject.host,
+		path: sdkDownloadUrlObject.pathname,
 	};
 
 	let file: fs.WriteStream | undefined;
