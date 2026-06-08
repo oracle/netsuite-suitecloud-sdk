@@ -304,9 +304,11 @@
 	"NO": "No",
 
 	"SDK_DOWNLOAD_SERVICE_ERROR": "There was an error when downloading SuiteCloud SDK dependency from {0}\n{1}",
+	"SDK_DOWNLOAD_SERVICE_CHECKSUM_MISMATCH": "SuiteCloud SDK dependency integrity verification failed. The downloaded JAR file doesn't match the expected SHA-256 checksum.",
 	"SDK_DOWNLOAD_SERVICE_FILE_NOT_AVAILABLE_ERROR": "The JAR file is not available from this URL.",
 	"SDK_DOWNLOAD_SERVICE_GET_TIMEOUT": "GET request timeout.",
-	"SDK_DOWNLOAD_SERVICE_WRONG_DOWNLOAD_URL_PROTOCOL": "Invalid SDK jar file download url protocol. Only http: or https: are allowed.",
+	"SDK_DOWNLOAD_SERVICE_MISSING_CHECKSUM": "SuiteCloud SDK dependency integrity verification failed. The expected SHA-256 checksum is missing or invalid.",
+	"SDK_DOWNLOAD_SERVICE_WRONG_DOWNLOAD_URL_PROTOCOL": "Invalid SDK JAR file download URL protocol. Only https: is allowed.",
 
 	"SUITECLOUD_AUTH_PROXY_SERVICE_ALREADY_USED_PORT" : "Port {0} is already being used. Choose a different port and try again.\n{1}",
 	"SUITECLOUD_AUTH_PROXY_SERVICE_INTERNAL_PROXY_SERVER_ERROR" : "There was an internal problem in the SuiteCloud client server while listening on the port {0}.\n{1}",

@@ -7,26 +7,28 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
-import * as http from 'http';
 import { homedir } from 'os';
-import { parse } from 'url';
+import { URL } from 'url';
 import { VSTranslationService } from '../../service/VSTranslationService';
 import { ERRORS, EXTENSION_INSTALLATION } from '../../service/TranslationKeys';
 import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
-import { ApplicationConstants, EnvironmentInformationService, FileSystemService } from '../../util/ExtensionUtil';
-import { getSdkDownloadFullUrl, getSdkPath, getSdkFilename, SUITECLOUD_FOLDER, VSCODE_SDK_FOLDER } from './SdkProperties';
+import { ApplicationConstants, EnvironmentInformationService, FileSystemService, SdkArtifactVerifier } from '../../util/ExtensionUtil';
+import * as SdkProperties from './SdkProperties';
+import type { SdkArtifactVerificationProperties } from '../../types/JavascriptNodeCli';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 
 const messageService = new MessageService();
 const translationService = new VSTranslationService();
 const fileSystemService = new FileSystemService();
+const sdkProperties = SdkProperties satisfies SdkArtifactVerificationProperties;
 
 export async function installIfNeeded() {
 	validateJavaVersion();
 
-	if (!fs.existsSync(path.join(getSdkPath())) || !(await validateSdk(path.join(getSdkPath())))) {
+	const sdkPath = path.join(SdkProperties.getSdkPath());
+	if (!fs.existsSync(sdkPath) || !isSdkArtifactTrusted(sdkPath) || !(await validateSdk(sdkPath))) {
 		await install();
 	}
 }
@@ -52,9 +54,9 @@ function validateJavaVersion() {
 }
 
 async function install() {
-	const sdkParentDirectory = fileSystemService.createFolder(homedir(), SUITECLOUD_FOLDER);
-	const sdkDirectory = fileSystemService.createFolder(sdkParentDirectory, VSCODE_SDK_FOLDER);
-	const fullUrl = getSdkDownloadFullUrl();
+	const sdkParentDirectory = fileSystemService.createFolder(homedir(), SdkProperties.SUITECLOUD_FOLDER);
+	const sdkDirectory = fileSystemService.createFolder(sdkParentDirectory, SdkProperties.VSCODE_SDK_FOLDER);
+	const fullUrl = SdkProperties.getSdkDownloadFullUrl();
 
 	try {
 		const downloadFilePromise = downloadFile(fullUrl, sdkDirectory);
@@ -72,40 +74,43 @@ async function install() {
 }
 
 async function downloadFile(url: string, sdkDirectory: string) {
-	const sdkDestinationFile = path.join(sdkDirectory, getSdkFilename());
-	const parsedUrl = parse(url);
+	const sdkDestinationFile = path.join(sdkDirectory, SdkProperties.getSdkFilename());
+	const temporarySdkDestinationFile = `${sdkDestinationFile}.tmp`;
+	const sdkDownloadUrlObject = new URL(url);
 
-	removeJarFilesFrom(sdkDirectory);
+	if (sdkDownloadUrlObject.protocol !== 'https:') {
+		throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.WRONG_DOWNLOAD_URL_PROTOCOL);
+	}
 
 	const options = {
 		method: 'GET',
-		protocol: parsedUrl.protocol,
-		host: parsedUrl.host,
-		path: parsedUrl.path,
+		protocol: sdkDownloadUrlObject.protocol,
+		host: sdkDownloadUrlObject.host,
+		path: sdkDownloadUrlObject.pathname,
 	};
 
 	let file: fs.WriteStream | undefined;
 	try {
-		file = fs.createWriteStream(sdkDestinationFile);
+		file = fs.createWriteStream(temporarySdkDestinationFile);
 		const sdk = await save(options, file);
 		file.close();
-		if (!(await validateSdk(sdk))) {
+		SdkArtifactVerifier.verify(sdk, sdkProperties);
+		fs.renameSync(temporarySdkDestinationFile, sdkDestinationFile);
+		if (!(await validateSdk(sdkDestinationFile))) {
 			throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_INVALID);
 		}
 	} finally {
-		if (file) {
-			file.close();
-		}
+		removeFileIfExists(temporarySdkDestinationFile);
 	}
 }
 
-function save(options: http.RequestOptions | https.RequestOptions, file: fs.WriteStream): Promise<string> {
-	let getFn = options.protocol === 'https:' ? https.get : http.get;
+function save(options: https.RequestOptions, file: fs.WriteStream): Promise<string> {
 	return new Promise((resolve, reject) => {
-		getFn(options, (response) => {
+		https.get(options, (response) => {
 			const contentType = response.headers['content-type'];
-			if (!contentType || !VALID_JAR_CONTENT_TYPES.includes(contentType)) {
-				throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_NOT_AVAILABLE);
+			if (!isSuccessStatusCode(response.statusCode) || !isValidJarContentType(contentType)) {
+				reject(translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_NOT_AVAILABLE));
+				return;
 			}
 			response.pipe(file);
 			file.on('finish', () => {
@@ -117,9 +122,27 @@ function save(options: http.RequestOptions | https.RequestOptions, file: fs.Writ
 	});
 }
 
-function removeJarFilesFrom(folder: string) {
-	// remove all JAR files before writing response to file
-	fs.readdirSync(folder)
-		.filter((file) => /[.]jar$/.test(file))
-		.map((file) => fs.unlinkSync(path.join(folder, file)));
+function removeFileIfExists(filePath: string) {
+	if (fs.existsSync(filePath)) {
+		fs.unlinkSync(filePath);
+	}
+}
+
+function isSdkArtifactTrusted(sdkPath: string) {
+	try {
+		SdkArtifactVerifier.verify(sdkPath, sdkProperties);
+		return true;
+	} catch (error) {
+		removeFileIfExists(sdkPath);
+		return false;
+	}
+}
+
+function isSuccessStatusCode(statusCode: number | undefined) {
+	// HTTP 2xx status codes indicate a successful response.
+	return statusCode !== undefined && statusCode >= 200 && statusCode < 300;
+}
+
+function isValidJarContentType(contentType: string | undefined) {
+	return contentType !== undefined && VALID_JAR_CONTENT_TYPES.includes(contentType.split(';')[0].trim());
 }
