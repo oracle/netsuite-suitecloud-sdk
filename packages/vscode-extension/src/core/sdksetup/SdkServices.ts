@@ -100,9 +100,6 @@ async function downloadFile(url: string, sdkDirectory: string) {
 			throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_INVALID);
 		}
 	} finally {
-		if (file) {
-			file.close();
-		}
 		removeFileIfExists(temporarySdkDestinationFile);
 	}
 }
