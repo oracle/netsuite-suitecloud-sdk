@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import type { ActionResult, AuthListData } from '../types/ActionResult';
-import type { ConsoleLoggerConstructor, ExecutionEnvironmentContextConstructor, ExecutionEnvironmentContextInstance, SdkOperationResult, SuiteCloudAuthProxyServiceConstructor } from '../types/JavascriptNodeCli';
+import type { ConsoleLoggerConstructor, ExecutionEnvironmentContextConstructor, ExecutionEnvironmentContextInstance, SdkArtifactVerifierInstance, SdkOperationResult, SuiteCloudAuthProxyServiceConstructor } from '../types/JavascriptNodeCli';
 
 
 export const SUITESCRIPT_TYPES: { id: string; name: string }[] = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptTypesMetadata');
@@ -36,6 +36,7 @@ export const FileCabinetService = require('@oracle/suitecloud-cli/src/services/F
 export const FileSystemService = require('@oracle/suitecloud-cli/src/services/FileSystemService');
 export const ProjectInfoService = require('@oracle/suitecloud-cli/src/services/ProjectInfoService');
 export const TranslationService = require('@oracle/suitecloud-cli/src/services/TranslationService');
+export const SdkArtifactVerifier: SdkArtifactVerifierInstance = require('@oracle/suitecloud-cli/src/core/sdksetup/SdkArtifactVerifier');
 export const ExecutionContextService: {
 	validateBrowserBasedAuthIsAllowed(): void;
 	validateMachineToMachineAuthIsAllowed(): void;

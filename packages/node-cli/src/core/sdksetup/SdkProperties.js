@@ -8,39 +8,32 @@ const path = require('path');
 const fs = require('fs');
 const HOME_PATH = require('os').homedir();
 
-const ROOT_DIRECTORY = path.dirname(path.resolve(__dirname, '../../'));
-const PACKAGE_FILE = `${ROOT_DIRECTORY}/package.json`;
 const CONFIG_FILE = './config.json';
 const { FOLDERS } = require('../../ApplicationConstants');
-const { sdkFilename } = require(PACKAGE_FILE);
-
-let CONFIG_FILE_CACHE = null;
+const PACKAGE_METADATA = require('../../../package.json');
 
 class SdkProperties {
 	constructor() {
-		this._loadCache();
+		const configFilePath = path.resolve(__dirname, CONFIG_FILE);
+		// Load the SDK artifact metadata used to download and verify the bundled SDK dependency.
+		this._isCustomSdkMetadataUsed = fs.existsSync(configFilePath);
+		this._sdkMetadata = this._isCustomSdkMetadataUsed ? require(CONFIG_FILE) : PACKAGE_METADATA;
 	}
 
 	getDownloadURL() {
-		// read config.js file if exists or use package.json
-		const configFile = this.configFileExists() ? CONFIG_FILE_CACHE : require(PACKAGE_FILE);
-		return configFile.sdkDownloadUrl;
+		return this._sdkMetadata.sdkDownloadUrl;
 	}
 
 	getSdkFileName() {
-		// read config.js file if exists or use package.json
-		const sdkFileName = this.configFileExists() ? CONFIG_FILE_CACHE.sdkFilename : sdkFilename
-		return sdkFileName;
+		return this._sdkMetadata.sdkFilename;
 	}
 
-	configFileExists() {
-		return CONFIG_FILE_CACHE !== null;
+	getSdkSha256() {
+		return this._sdkMetadata.sdkSha256;
 	}
 
-	_loadCache() {
-		if (fs.existsSync(path.resolve(__dirname, CONFIG_FILE))) {
-			CONFIG_FILE_CACHE = require(CONFIG_FILE);
-		}
+	isCustomSdkMetadataUsed() {
+		return this._isCustomSdkMetadataUsed;
 	}
 
 	getSdkPath() {
