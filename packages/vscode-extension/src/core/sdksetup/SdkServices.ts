@@ -139,6 +139,7 @@ function isSdkArtifactTrusted(sdkPath: string) {
 }
 
 function isSuccessStatusCode(statusCode: number | undefined) {
+	// HTTP 2xx status codes indicate a successful response.
 	return statusCode !== undefined && statusCode >= 200 && statusCode < 300;
 }
 
