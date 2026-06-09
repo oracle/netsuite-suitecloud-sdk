@@ -181,7 +181,7 @@ ORDER BY ABS(act.actual_amount - NVL(pln.budget_amount, 0)) DESC
   no matches. Verify that budget amounts are loaded for the requested period before
   concluding there is no budget. Fall back to Pattern B and surface the gap to the user.
 - `variance_pct` returns NULL when the budget is zero to avoid division-by-zero. Present
-  NULL variance percentages as `N/A â€” no budget` in output.
+  NULL variance percentages as `N/A — no budget` in output.
 - For income accounts, a positive `variance_amount` means revenue beat plan. For expense
   accounts, a positive `variance_amount` means spend exceeded plan. Apply sign
   interpretation before presenting results.
