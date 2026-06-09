@@ -119,6 +119,14 @@ module.exports = class FileSystemService {
 		}
 	}
 
+	deleteFileIfExists(filePath) {
+		assert(filePath);
+
+		if (existsSync(filePath)) {
+			unlinkSync(filePath);
+		}
+	}
+
 	deleteFolderRecursive(folderPath) {
 		assert(folderPath);
 

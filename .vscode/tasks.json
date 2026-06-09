@@ -3,24 +3,22 @@
     "tasks": [
         {
             "type": "npm",
+            "script": "compile",
+            "path": "packages/vscode-extension",
+            "problemMatcher": "$tsc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "npm",
             "script": "watch",
+            "path": "packages/vscode-extension",
             "problemMatcher": "$tsc-watch",
             "isBackground": true,
             "presentation": {
                 "reveal": "never"
-            },
-            "group": "build"
-        },
-        {
-            "type": "typescript",
-            "tsconfig": "packages/vscode-extension/tsconfig.json",
-            "option": "watch",
-            "problemMatcher": [
-                "$tsc-watch"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
             }
         }
     ]
