@@ -111,6 +111,7 @@
 	"EXTENSION_INSTALLATION_ERROR_GENERAL_ERROR": "There was an error when downloading SuiteCloud SDK dependencies from {0}\n{1}",
 	"EXTENSION_INSTALLATION_ERROR_SDK_INVALID": "Close and open the editor to try again.",
 	"EXTENSION_INSTALLATION_ERROR_SDK_NOT_AVAILABLE": "The JAR file is not available from this URL.",
+	"EXTENSION_INSTALLATION_ERROR_WRONG_DOWNLOAD_URL_PROTOCOL": "Invalid SDK JAR file download URL protocol. Only https: is allowed.",
 	"EXTENSION_INSTALLATION_IN_PROGRESS": "Downloading SuiteCloud SDK dependencies...",
 	"EXTENSION_INSTALLATION_SUCCESS_SDK_DOWNLOADED": "SuiteCloud SDK dependencies downloaded successfully.",
 	"EXTENSION_PROJECT_STARTUP_BUTTON_RUN_SUITECLOUD_SETUP_ACCOUNT": "SuiteCloud: {0}",

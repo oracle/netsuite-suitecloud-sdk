@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import { ApplicationConstants } from '../../util/ExtensionUtil';
 
 const clientPlatformVersionOption = `${ApplicationConstants.SDK_CLIENT_PLATFORM_VERSION_JVM_OPTION}=${process.versions.node}`;
-const vmOptions = `${ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTION} ${clientPlatformVersionOption}`;
+const vmOptions = `${ApplicationConstants.SDK_INTEGRATION_MODE_JVM_OPTIONS.join(' ')} ${clientPlatformVersionOption}`;
 
 export function validateSdk(sdkPath: string) {
 
