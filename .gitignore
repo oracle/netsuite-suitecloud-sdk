@@ -5,6 +5,10 @@
 **/.idea/**
 **/.vscode/**
 
+# macOS
+.DS_Store
+**/.DS_Store
+
 # transpiled .js files
 packages/**/dist
 
