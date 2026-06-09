@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.1.3
+
+- Fix for security vulnerabilities
+
 ## 3.1.2
 
 - Minor enhancements

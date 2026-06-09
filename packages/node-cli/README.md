@@ -25,9 +25,10 @@ The following table shows the CLI versions currently available in NPM.
 
 | CLI Versions Available in NPM | 
 |:-----------------------------:|
+| 3.1.4 |
 | 3.1.3 |
 | 3.1.2 |
-| 3.1.1 |
+
 
 
 ## Installation
