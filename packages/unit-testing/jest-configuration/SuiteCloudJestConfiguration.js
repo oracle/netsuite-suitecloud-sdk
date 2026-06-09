@@ -278,6 +278,38 @@ const CORE_STUBS = [
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/log/log.js`,
 	},
 	{
+		module: 'N/pgp',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/pgp/pgp.js`,
+	},
+	{
+		module: 'N/pgp/config',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/pgp/Config.js`,
+	},
+	{
+		module: 'N/pgp/key',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/pgp/Key.js`,
+	},
+	{
+		module: 'N/pgp/keyId',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/pgp/KeyId.js`,
+	},
+	{
+		module: 'N/pgp/message',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/pgp/Message.js`,
+	},
+	{
+		module: 'N/pgp/messageData',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/pgp/MessageData.js`,
+	},
+	{
+		module: 'N/pgp/verification',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/pgp/Verification.js`,
+	},
+	{
+		module: 'N/pgp/verificationSignature',
+		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/pgp/VerificationSignature.js`,
+	},
+	{
 		module: 'N/piremoval',
 		path: `<rootDir>/node_modules/${CORE_STUBS_PATH}/piremoval/piremoval.js`,
 	},
