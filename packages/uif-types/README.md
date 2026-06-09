@@ -41,7 +41,7 @@ npm i
 ```
 
 ## Contributing
-This project is not currently accepting external contributions. For bugs or enhancement requests, please file a GitHub issue. If you think you’ve found a security vulnerability, do not raise a GitHub issue and follow the instructions in our [security policy](https://github.com/oracle/netsuite-suitecloud-sdk/blob/master/SECURITY.md).
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](/CONTRIBUTING.md).
 
 ## License
 Copyright (c) 2024 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.

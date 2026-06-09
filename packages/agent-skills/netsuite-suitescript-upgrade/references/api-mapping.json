@@ -1,0 +1,1984 @@
+{
+  "version": "1.0.0",
+  "source": "Oracle SuiteScript 1.0 to 2.1 API Map",
+  "generatedDate": "2026-02-18",
+  "modules": {
+    "N/record": { "description": "Create, read, update, delete records", "importName": "record" },
+    "N/currentRecord": { "description": "Access current record in client scripts", "importName": "currentRecord" },
+    "N/search": { "description": "Create and run saved searches", "importName": "search" },
+    "N/file": { "description": "Read, create, and delete files in the File Cabinet", "importName": "file" },
+    "N/format": { "description": "Parse and format dates, numbers, and currencies", "importName": "format" },
+    "N/email": { "description": "Send email and campaign messages", "importName": "email" },
+    "N/error": { "description": "Create and handle SuiteScript errors", "importName": "error" },
+    "N/runtime": { "description": "Access script, session, and user context", "importName": "runtime" },
+    "N/log": { "description": "Log execution details for debugging", "importName": "log" },
+    "N/http": { "description": "Make HTTP requests (client and server)", "importName": "http" },
+    "N/https": { "description": "Make HTTPS requests with credentials", "importName": "https" },
+    "N/url": { "description": "Resolve URLs for records, scripts, and task links", "importName": "url" },
+    "N/redirect": { "description": "Redirect users to records, suitelets, and search results", "importName": "redirect" },
+    "N/render": { "description": "Render PDFs, email templates, and print records", "importName": "render" },
+    "N/xml": { "description": "Parse, validate, and transform XML documents", "importName": "xml" },
+    "N/task": { "description": "Schedule scripts, CSV imports, and async tasks", "importName": "task" },
+    "N/workflow": { "description": "Initiate and trigger workflow actions", "importName": "workflow" },
+    "N/ui/serverWidget": { "description": "Build Suitelet forms, assistants, and lists", "importName": "serverWidget" },
+    "N/config": { "description": "Load company configuration records", "importName": "config" },
+    "N/crypto": { "description": "Hashing, HMAC, encryption, and password checking", "importName": "crypto" },
+    "N/encode": { "description": "Encode and decode strings (Base64, UTF-8, hex)", "importName": "encode" },
+    "N/currency": { "description": "Get exchange rates between currencies", "importName": "currency" },
+    "N/auth": { "description": "Change email and password for current user", "importName": "auth" },
+    "N/transaction": { "description": "Void transactions", "importName": "transaction" },
+    "N/portlet": { "description": "Portlet refresh in dashboard scripts", "importName": "portlet" },
+    "N/sso": { "description": "Generate SuiteSignOn tokens (DEPRECATED as of 2025.1)", "importName": "sso" }
+  },
+  "mappings": [
+    {
+      "ss1Function": "nlapiAttachRecord",
+      "ss1Signature": "nlapiAttachRecord(type, id, type2, id2, attributes)",
+      "ss2Module": "N/record",
+      "ss2Method": "record.attach",
+      "ss2Signature": "record.attach({record: {type: string, id: number}, to: {type: string, id: number}, attributes: Object})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "record.type", "notes": "Nested in record object" },
+        { "ss1Param": "id", "ss2Param": "record.id", "notes": "Nested in record object" },
+        { "ss1Param": "type2", "ss2Param": "to.type", "notes": "Nested in to object" },
+        { "ss1Param": "id2", "ss2Param": "to.id", "notes": "Nested in to object" }
+      ],
+      "breakingChanges": ["Options object replaces positional parameters"],
+      "notes": "Attach one record to another",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCancelLineItem",
+      "ss1Signature": "nlapiCancelLineItem(type)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.cancelLine",
+      "ss2Signature": "cancelLine({sublistId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Client-side only in SS2. Also available on Record for dynamic mode.",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiCheckPasswordField",
+      "ss1Signature": "nlapiCheckPasswordField(type, id, value, field, sublist, line)",
+      "ss2Module": "N/crypto",
+      "ss2Method": "crypto.checkPasswordField",
+      "ss2Signature": "crypto.checkPasswordField({recordType: string, recordId: number, value: string, fieldId: string, sublistId: string, line: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "recordType", "notes": "Renamed" },
+        { "ss1Param": "id", "ss2Param": "recordId", "notes": "Renamed" },
+        { "ss1Param": "field", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "sublist", "ss2Param": "sublistId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Moved to N/crypto module",
+      "category": "crypto",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCommitLineItem",
+      "ss1Signature": "nlapiCommitLineItem(type)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.commitLine",
+      "ss2Signature": "commitLine({sublistId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Client-side. Also available on Record in dynamic mode.",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiCopyRecord",
+      "ss1Signature": "nlapiCopyRecord(type, id, initializeValues)",
+      "ss2Module": "N/record",
+      "ss2Method": "record.copy",
+      "ss2Signature": "record.copy({type: string, id: number, isDynamic: boolean, defaultValues: Object})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same" },
+        { "ss1Param": "initializeValues", "ss2Param": "defaultValues", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns record.Record instead of nlobjRecord"],
+      "notes": "Copy an existing record",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateAssistant",
+      "ss1Signature": "nlapiCreateAssistant(title, hideHeader)",
+      "ss2Module": "N/ui/serverWidget",
+      "ss2Method": "serverWidget.createAssistant",
+      "ss2Signature": "serverWidget.createAssistant({title: string, hideNavBar: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "title", "ss2Param": "title", "notes": "Same" },
+        { "ss1Param": "hideHeader", "ss2Param": "hideNavBar", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns serverWidget.Assistant instead of nlobjAssistant"],
+      "notes": "Create assistant (wizard) UI",
+      "category": "ui",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateCSVImport",
+      "ss1Signature": "nlapiCreateCSVImport()",
+      "ss2Module": "N/task",
+      "ss2Method": "task.create",
+      "ss2Signature": "task.create({taskType: task.TaskType.CSV_IMPORT})",
+      "parameterChanges": [],
+      "breakingChanges": ["Returns task.CsvImportTask instead of nlobjCSVImport"],
+      "notes": "CSV import now managed via task module",
+      "category": "task",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateCurrentLineItemSubrecord",
+      "ss1Signature": "nlapiCreateCurrentLineItemSubrecord(sublist, fldname)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getCurrentSublistSubrecord",
+      "ss2Signature": "getCurrentSublistSubrecord({sublistId: string, fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "sublist", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Subrecord paradigm completely different in SS2 - no separate commit/cancel"],
+      "notes": "Subrecords auto-commit when parent saves in SS2",
+      "category": "subrecord",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiCreateEmailMerger",
+      "ss1Signature": "nlapiCreateEmailMerger(templateId)",
+      "ss2Module": "N/render",
+      "ss2Method": "render.mergeEmail",
+      "ss2Signature": "render.mergeEmail({templateId: number, entity: Object, recipient: Object, supportCaseId: number, transactionId: number, customRecord: Object})",
+      "parameterChanges": [
+        { "ss1Param": "templateId", "ss2Param": "templateId", "notes": "Same, but now part of options object" }
+      ],
+      "breakingChanges": ["Returns render.EmailMergeResult directly instead of nlobjEmailMerger"],
+      "notes": "Merge happens in one call instead of build-then-merge pattern",
+      "category": "render",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateError",
+      "ss1Signature": "nlapiCreateError(code, details, suppressNotification)",
+      "ss2Module": "N/error",
+      "ss2Method": "error.create",
+      "ss2Signature": "error.create({name: string, message: string, notifyOff: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "code", "ss2Param": "name", "notes": "Renamed" },
+        { "ss1Param": "details", "ss2Param": "message", "notes": "Renamed" },
+        { "ss1Param": "suppressNotification", "ss2Param": "notifyOff", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns error.SuiteScriptError instead of nlobjError"],
+      "notes": "Dedicated error module in SS2",
+      "category": "error",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiCreateFile",
+      "ss1Signature": "nlapiCreateFile(name, type, contents)",
+      "ss2Module": "N/file",
+      "ss2Method": "file.create",
+      "ss2Signature": "file.create({name: string, fileType: file.Type, contents: string, folder: number})",
+      "parameterChanges": [
+        { "ss1Param": "name", "ss2Param": "name", "notes": "Same" },
+        { "ss1Param": "type", "ss2Param": "fileType", "notes": "Renamed; uses file.Type enum" },
+        { "ss1Param": "contents", "ss2Param": "contents", "notes": "Same" }
+      ],
+      "breakingChanges": ["Returns file.File instead of nlobjFile"],
+      "notes": "The folder parameter is required in SS2.",
+      "category": "file",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateForm",
+      "ss1Signature": "nlapiCreateForm(title, hideNavbar)",
+      "ss2Module": "N/ui/serverWidget",
+      "ss2Method": "serverWidget.createForm",
+      "ss2Signature": "serverWidget.createForm({title: string, hideNavBar: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "title", "ss2Param": "title", "notes": "Same" },
+        { "ss1Param": "hideNavbar", "ss2Param": "hideNavBar", "notes": "Renamed (camelCase)" }
+      ],
+      "breakingChanges": ["Returns serverWidget.Form instead of nlobjForm"],
+      "notes": "Create Suitelet form UI",
+      "category": "ui",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateList",
+      "ss1Signature": "nlapiCreateList(title, hideNavbar)",
+      "ss2Module": "N/ui/serverWidget",
+      "ss2Method": "serverWidget.createList",
+      "ss2Signature": "serverWidget.createList({title: string, hideNavBar: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "title", "ss2Param": "title", "notes": "Same" },
+        { "ss1Param": "hideNavbar", "ss2Param": "hideNavBar", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns serverWidget.List instead of nlobjList"],
+      "notes": "Create list UI in Suitelet",
+      "category": "ui",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateRecord",
+      "ss1Signature": "nlapiCreateRecord(type, initializeValues)",
+      "ss2Module": "N/record",
+      "ss2Method": "record.create",
+      "ss2Signature": "record.create({type: string, isDynamic: boolean, defaultValues: Object})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "initializeValues", "ss2Param": "defaultValues", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns record.Record instead of nlobjRecord"],
+      "notes": "isDynamic is new in SS2 (controls standard vs dynamic mode)",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateSearch",
+      "ss1Signature": "nlapiCreateSearch(type, filters, columns)",
+      "ss2Module": "N/search",
+      "ss2Method": "search.create",
+      "ss2Signature": "search.create({type: string, filters: Array, columns: Array, title: string, id: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "filters", "ss2Param": "filters", "notes": "Same; also supports filter expressions" },
+        { "ss1Param": "columns", "ss2Param": "columns", "notes": "Same" }
+      ],
+      "breakingChanges": ["Returns search.Search instead of nlobjSearch"],
+      "notes": "SS2 also supports filterExpression syntax",
+      "category": "search",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiCreateSubrecord",
+      "ss1Signature": "nlapiCreateSubrecord(fldname)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getSubrecord",
+      "ss2Signature": "getSubrecord({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Subrecord paradigm completely different in SS2"],
+      "notes": "SS2 subrecords auto-commit when the parent record is saved.",
+      "category": "subrecord",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiCreateTemplateRenderer",
+      "ss1Signature": "nlapiCreateTemplateRenderer()",
+      "ss2Module": "N/render",
+      "ss2Method": "render.create",
+      "ss2Signature": "render.create()",
+      "parameterChanges": [],
+      "breakingChanges": ["Returns render.TemplateRenderer instead of nlobjTemplateRenderer"],
+      "notes": "Create template renderer for PDF generation",
+      "category": "render",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiDateToString",
+      "ss1Signature": "nlapiDateToString(d, format)",
+      "ss2Module": "N/format",
+      "ss2Method": "format.format",
+      "ss2Signature": "format.format({value: Date, type: format.Type})",
+      "parameterChanges": [
+        { "ss1Param": "d", "ss2Param": "value", "notes": "Renamed" },
+        { "ss1Param": "format", "ss2Param": "type", "notes": "Uses format.Type enum" }
+      ],
+      "breakingChanges": [],
+      "notes": "Format Date object to string",
+      "category": "format",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiDeleteFile",
+      "ss1Signature": "nlapiDeleteFile(id)",
+      "ss2Module": "N/file",
+      "ss2Method": "file.delete",
+      "ss2Signature": "file.delete({id: number})",
+      "parameterChanges": [
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same" }
+      ],
+      "breakingChanges": [],
+      "notes": "Delete file from File Cabinet",
+      "category": "file",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiDeleteRecord",
+      "ss1Signature": "nlapiDeleteRecord(type, id)",
+      "ss2Module": "N/record",
+      "ss2Method": "record.delete",
+      "ss2Signature": "record.delete({type: string, id: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same" }
+      ],
+      "breakingChanges": [],
+      "notes": "Delete a record by type and ID",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiDetachRecord",
+      "ss1Signature": "nlapiDetachRecord(type, id, type2, id2, attributes)",
+      "ss2Module": "N/record",
+      "ss2Method": "record.detach",
+      "ss2Signature": "record.detach({record: {type: string, id: number}, from: {type: string, id: number}, attributes: Object})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "record.type", "notes": "Nested in record object" },
+        { "ss1Param": "id", "ss2Param": "record.id", "notes": "Nested in record object" },
+        { "ss1Param": "type2", "ss2Param": "from.type", "notes": "Nested in from object" },
+        { "ss1Param": "id2", "ss2Param": "from.id", "notes": "Nested in from object" }
+      ],
+      "breakingChanges": ["Options object replaces positional parameters"],
+      "notes": "Detach one record from another",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiDisableField",
+      "ss1Signature": "nlapiDisableField(fldnam, val)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "Field.isDisabled",
+      "ss2Signature": "field.isDisabled = true|false",
+      "parameterChanges": [
+        { "ss1Param": "fldnam", "ss2Param": "getField({fieldId})", "notes": "Get field first, then set property" },
+        { "ss1Param": "val", "ss2Param": "isDisabled", "notes": "Now a property, not method param" }
+      ],
+      "breakingChanges": ["Method replaced by property on Field object"],
+      "notes": "Two-step: get field via currentRecord.getField(), then set isDisabled property",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiDisableLineItemField",
+      "ss1Signature": "nlapiDisableLineItemField(type, fldnam, val)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "Field.isDisabled",
+      "ss2Signature": "field.isDisabled = true|false",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Used to get sublist field" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Used to get sublist field" },
+        { "ss1Param": "val", "ss2Param": "isDisabled", "notes": "Now a property" }
+      ],
+      "breakingChanges": ["Method replaced by property on Field object"],
+      "notes": "Get field via getSublistField(), then set isDisabled property",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiEditCurrentLineItemSubrecord",
+      "ss1Signature": "nlapiEditCurrentLineItemSubrecord(sublist, fldname)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getCurrentSublistSubrecord",
+      "ss2Signature": "getCurrentSublistSubrecord({sublistId: string, fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "sublist", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Subrecord paradigm different in SS2"],
+      "notes": "No separate create/edit/view distinction in SS2",
+      "category": "subrecord",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiEditSubrecord",
+      "ss1Signature": "nlapiEditSubrecord(fldname)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getSubrecord",
+      "ss2Signature": "getSubrecord({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Subrecord paradigm different in SS2"],
+      "notes": "No separate create/edit/view distinction in SS2",
+      "category": "subrecord",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiEscapeXML",
+      "ss1Signature": "nlapiEscapeXML(text)",
+      "ss2Module": "N/xml",
+      "ss2Method": "xml.escape",
+      "ss2Signature": "xml.escape({xmlText: string})",
+      "parameterChanges": [
+        { "ss1Param": "text", "ss2Param": "xmlText", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Escape special XML characters",
+      "category": "xml",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiExchangeRate",
+      "ss1Signature": "nlapiExchangeRate(sourceCurrency, targetCurrency, effectiveDate)",
+      "ss2Module": "N/currency",
+      "ss2Method": "currency.exchangeRate",
+      "ss2Signature": "currency.exchangeRate({source: string, target: string, date: Date})",
+      "parameterChanges": [
+        { "ss1Param": "sourceCurrency", "ss2Param": "source", "notes": "Shortened" },
+        { "ss1Param": "targetCurrency", "ss2Param": "target", "notes": "Shortened" },
+        { "ss1Param": "effectiveDate", "ss2Param": "date", "notes": "Shortened" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get exchange rate between currencies",
+      "category": "currency",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiFindLineItemMatrixValue",
+      "ss1Signature": "nlapiFindLineItemMatrixValue(type, fldnam, val, column)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.findMatrixSublistLineWithValue",
+      "ss2Signature": "findMatrixSublistLineWithValue({sublistId: string, fieldId: string, value: string, column: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "val", "ss2Param": "value", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Find line in matrix sublist by value",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiFindLineItemValue",
+      "ss1Signature": "nlapiFindLineItemValue(type, fldnam, val)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.findSublistLineWithValue",
+      "ss2Signature": "findSublistLineWithValue({sublistId: string, fieldId: string, value: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "val", "ss2Param": "value", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns 0-based index in SS2 vs 1-based in SS1"],
+      "notes": "Find sublist line number by field value",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiFormatCurrency",
+      "ss1Signature": "nlapiFormatCurrency(str)",
+      "ss2Module": "N/format",
+      "ss2Method": "format.format",
+      "ss2Signature": "format.format({value: number, type: format.Type.CURRENCY})",
+      "parameterChanges": [
+        { "ss1Param": "str", "ss2Param": "value", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Format a number as currency string",
+      "category": "format",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetContext",
+      "ss1Signature": "nlapiGetContext()",
+      "ss2Module": "N/runtime",
+      "ss2Method": "runtime.getCurrentScript / runtime.getCurrentSession / runtime.getCurrentUser",
+      "ss2Signature": "runtime.getCurrentScript() | runtime.getCurrentSession() | runtime.getCurrentUser()",
+      "parameterChanges": [],
+      "breakingChanges": ["Single context object split into Script, Session, and User objects"],
+      "notes": "Functionality split: Script (deployment, params), Session (session vars), User (role, dept, etc.)",
+      "category": "runtime",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetCurrentLineItemIndex",
+      "ss1Signature": "nlapiGetCurrentLineItemIndex(type)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getCurrentSublistIndex",
+      "ss2Signature": "getCurrentSublistIndex({sublistId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns 0-based index in SS2 vs 1-based in SS1"],
+      "notes": "Get current line index in sublist",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetCurrentLineItemMatrixValue",
+      "ss1Signature": "nlapiGetCurrentLineItemMatrixValue(type, fldnam, column)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getCurrentMatrixSublistValue",
+      "ss2Signature": "getCurrentMatrixSublistValue({sublistId: string, fieldId: string, column: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get matrix value on current line",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetCurrentLineItemText",
+      "ss1Signature": "nlapiGetCurrentLineItemText(type, fldnam)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getCurrentSublistText",
+      "ss2Signature": "getCurrentSublistText({sublistId: string, fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get display text of field on current line",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetCurrentLineItemValue",
+      "ss1Signature": "nlapiGetCurrentLineItemValue(type, fldnam)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getCurrentSublistValue",
+      "ss2Signature": "getCurrentSublistValue({sublistId: string, fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get value of field on current line",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetCurrentLineItemValues",
+      "ss1Signature": "nlapiGetCurrentLineItemValues(type, fldnam)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getCurrentSublistValue",
+      "ss2Signature": "getCurrentSublistValue({sublistId: string, fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Returns array for multi-select fields",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetDepartment",
+      "ss1Signature": "nlapiGetDepartment()",
+      "ss2Module": "N/runtime",
+      "ss2Method": "runtime.getCurrentUser().department",
+      "ss2Signature": "runtime.getCurrentUser().department",
+      "parameterChanges": [],
+      "breakingChanges": ["Property on User object instead of global function"],
+      "notes": "Access via runtime.getCurrentUser().department",
+      "category": "runtime",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetField",
+      "ss1Signature": "nlapiGetField(fldnam)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getField",
+      "ss2Signature": "getField({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Client-side field access",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetFieldText",
+      "ss1Signature": "nlapiGetFieldText(fldnam)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getText",
+      "ss2Signature": "getText({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get display text of a field (client-side)",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetFieldTexts",
+      "ss1Signature": "nlapiGetFieldTexts(fldnam)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getText",
+      "ss2Signature": "getText({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Returns array for multi-select fields",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetFieldValue",
+      "ss1Signature": "nlapiGetFieldValue(fldnam)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getValue",
+      "ss2Signature": "getValue({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get internal value of a field (client-side)",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetFieldValues",
+      "ss1Signature": "nlapiGetFieldValues(fldnam)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getValue",
+      "ss2Signature": "getValue({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Returns array for multi-select fields",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetJobManager",
+      "ss1Signature": "nlapiGetJobManager(jobType)",
+      "ss2Module": "N/task",
+      "ss2Method": "task.create",
+      "ss2Signature": "task.create({taskType: task.TaskType})",
+      "parameterChanges": [
+        { "ss1Param": "jobType", "ss2Param": "taskType", "notes": "Renamed; uses task.TaskType enum" }
+      ],
+      "breakingChanges": ["Job manager pattern replaced by task module"],
+      "notes": "Entity deduplication and merge operations via task module",
+      "category": "task",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiGetLineItemCount",
+      "ss1Signature": "nlapiGetLineItemCount(type)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getLineCount",
+      "ss2Signature": "getLineCount({sublistId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Also available on Record object",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetLineItemField",
+      "ss1Signature": "nlapiGetLineItemField(type, fldnam, linenum)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.getSublistField",
+      "ss2Signature": "getSublistField({sublistId: string, fieldId: string, line: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "Renamed; 0-based in SS2 vs 1-based in SS1" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Get field object on a specific sublist line",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetLineItemMatrixField",
+      "ss1Signature": "nlapiGetLineItemMatrixField(type, fldnam, linenum, column)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getMatrixSublistField",
+      "ss2Signature": "getMatrixSublistField({sublistId: string, fieldId: string, line: number, column: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "0-based in SS2" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Get matrix field on specific sublist line",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetLineItemMatrixValue",
+      "ss1Signature": "nlapiGetLineItemMatrixValue(type, fldnam, linenum, column)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getMatrixSublistValue",
+      "ss2Signature": "getMatrixSublistValue({sublistId: string, fieldId: string, line: number, column: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "0-based in SS2" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Get matrix value on specific line",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetLineItemText",
+      "ss1Signature": "nlapiGetLineItemText(type, fldnam, linenum)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getSublistText",
+      "ss2Signature": "getSublistText({sublistId: string, fieldId: string, line: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "0-based in SS2" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Get display text of sublist field",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetLineItemValue",
+      "ss1Signature": "nlapiGetLineItemValue(type, fldnam, linenum)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getSublistValue",
+      "ss2Signature": "getSublistValue({sublistId: string, fieldId: string, line: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "0-based in SS2" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Get internal value of sublist field",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetLineItemValues",
+      "ss1Signature": "nlapiGetLineItemValues(type, fldname, linenum)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getSublistValue",
+      "ss2Signature": "getSublistValue({sublistId: string, fieldId: string, line: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "0-based in SS2" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Returns array for multi-select fields",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetLocation",
+      "ss1Signature": "nlapiGetLocation()",
+      "ss2Module": "N/runtime",
+      "ss2Method": "runtime.getCurrentUser().location",
+      "ss2Signature": "runtime.getCurrentUser().location",
+      "parameterChanges": [],
+      "breakingChanges": ["Property on User object instead of global function"],
+      "notes": "Access via runtime.getCurrentUser().location",
+      "category": "runtime",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetLogin",
+      "ss1Signature": "nlapiGetLogin()",
+      "ss2Module": "N/auth",
+      "ss2Method": "auth.changeEmail / auth.changePassword",
+      "ss2Signature": "auth.changeEmail(options) | auth.changePassword(options)",
+      "parameterChanges": [],
+      "breakingChanges": ["No login object; use auth module methods directly"],
+      "notes": "No equivalent login object; auth methods called directly",
+      "category": "auth",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiGetMatrixCount",
+      "ss1Signature": "nlapiGetMatrixCount(type, fldnam)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getMatrixHeaderCount",
+      "ss2Signature": "getMatrixHeaderCount({sublistId: string, fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get number of matrix columns",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetMatrixField",
+      "ss1Signature": "nlapiGetMatrixField(type, fldnam, column)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getMatrixHeaderField",
+      "ss2Signature": "getMatrixHeaderField({sublistId: string, fieldId: string, column: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get matrix header field object",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetMatrixValue",
+      "ss1Signature": "nlapiGetMatrixValue(type, fldnam, column)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getMatrixHeaderValue",
+      "ss2Signature": "getMatrixHeaderValue({sublistId: string, fieldId: string, column: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Get matrix header value",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetNewRecord",
+      "ss1Signature": "nlapiGetNewRecord()",
+      "ss2Module": "N/record",
+      "ss2Method": "scriptContext.newRecord",
+      "ss2Signature": "scriptContext.newRecord (property on user event context)",
+      "parameterChanges": [],
+      "breakingChanges": ["Accessed via context parameter in user event entry points"],
+      "notes": "Available in beforeLoad, beforeSubmit, afterSubmit user event scripts",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiGetOldRecord",
+      "ss1Signature": "nlapiGetOldRecord()",
+      "ss2Module": "N/record",
+      "ss2Method": "scriptContext.oldRecord",
+      "ss2Signature": "scriptContext.oldRecord (property on user event context)",
+      "parameterChanges": [],
+      "breakingChanges": ["Accessed via context parameter in user event entry points"],
+      "notes": "Available in beforeSubmit and afterSubmit user event scripts",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiGetRecordId",
+      "ss1Signature": "nlapiGetRecordId()",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "currentRecord.get().id",
+      "ss2Signature": "currentRecord.get().id (read-only property)",
+      "parameterChanges": [],
+      "breakingChanges": ["Property instead of global function"],
+      "notes": "Access via currentRecord.get().id in client scripts",
+      "category": "record",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetRecordType",
+      "ss1Signature": "nlapiGetRecordType()",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "currentRecord.get().type",
+      "ss2Signature": "currentRecord.get().type (read-only property)",
+      "parameterChanges": [],
+      "breakingChanges": ["Property instead of global function"],
+      "notes": "Access via currentRecord.get().type in client scripts",
+      "category": "record",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiGetRole",
+      "ss1Signature": "nlapiGetRole()",
+      "ss2Module": "N/runtime",
+      "ss2Method": "runtime.getCurrentUser().role",
+      "ss2Signature": "runtime.getCurrentUser().role",
+      "parameterChanges": [],
+      "breakingChanges": ["Property on User object instead of global function"],
+      "notes": "Access via runtime.getCurrentUser().role",
+      "category": "runtime",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetSubsidiary",
+      "ss1Signature": "nlapiGetSubsidiary()",
+      "ss2Module": "N/runtime",
+      "ss2Method": "runtime.getCurrentUser().subsidiary",
+      "ss2Signature": "runtime.getCurrentUser().subsidiary",
+      "parameterChanges": [],
+      "breakingChanges": ["Property on User object instead of global function"],
+      "notes": "Access via runtime.getCurrentUser().subsidiary",
+      "category": "runtime",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiGetUser",
+      "ss1Signature": "nlapiGetUser()",
+      "ss2Module": "N/runtime",
+      "ss2Method": "runtime.getCurrentUser",
+      "ss2Signature": "runtime.getCurrentUser()",
+      "parameterChanges": [],
+      "breakingChanges": ["Returns User object with .id, .name, .role, etc."],
+      "notes": "Returns runtime.User object; use .id for user internal ID",
+      "category": "runtime",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiInitiateWorkflow",
+      "ss1Signature": "nlapiInitiateWorkflow(recordtype, id, workflowid, initialvalues)",
+      "ss2Module": "N/workflow",
+      "ss2Method": "workflow.initiate",
+      "ss2Signature": "workflow.initiate({recordType: string, recordId: number, workflowId: number|string, defaultValues: Object})",
+      "parameterChanges": [
+        { "ss1Param": "recordtype", "ss2Param": "recordType", "notes": "camelCase" },
+        { "ss1Param": "id", "ss2Param": "recordId", "notes": "Renamed" },
+        { "ss1Param": "workflowid", "ss2Param": "workflowId", "notes": "camelCase" },
+        { "ss1Param": "initialvalues", "ss2Param": "defaultValues", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Initiate a workflow on a record",
+      "category": "workflow",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiInitiateWorkflowAsync",
+      "ss1Signature": "nlapiInitiateWorkflowAsync(recordtype, id, workflowid, initialValues)",
+      "ss2Module": "N/task",
+      "ss2Method": "task.create({taskType: task.TaskType.WORKFLOW_TRIGGER})",
+      "ss2Signature": "task.create({taskType: task.TaskType.WORKFLOW_TRIGGER, ...options})",
+      "parameterChanges": [
+        { "ss1Param": "recordtype", "ss2Param": "recordType", "notes": "camelCase" },
+        { "ss1Param": "id", "ss2Param": "recordId", "notes": "Renamed" },
+        { "ss1Param": "workflowid", "ss2Param": "workflowId", "notes": "camelCase" }
+      ],
+      "breakingChanges": ["Uses task module instead of direct async call"],
+      "notes": "Async workflow trigger via task module",
+      "category": "workflow",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiInsertLineItem",
+      "ss1Signature": "nlapiInsertLineItem(type, line)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.insertLine",
+      "ss2Signature": "insertLine({sublistId: string, line: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "line", "ss2Param": "line", "notes": "0-based in SS2 vs 1-based in SS1" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Insert a new line into a sublist",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiInsertLineItemOption",
+      "ss1Signature": "nlapiInsertLineItemOption(type, fldnam, value, text, selected)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "Field.insertSelectOption",
+      "ss2Signature": "field.insertSelectOption({value: string, text: string, isSelected: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "value", "ss2Param": "value", "notes": "Same" },
+        { "ss1Param": "text", "ss2Param": "text", "notes": "Same" },
+        { "ss1Param": "selected", "ss2Param": "isSelected", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Must get Field object first via getSublistField()"],
+      "notes": "Get field via getSublistField(), then call insertSelectOption()",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiInsertSelectOption",
+      "ss1Signature": "nlapiInsertSelectOption(fldnam, value, text, selected)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "Field.insertSelectOption",
+      "ss2Signature": "field.insertSelectOption({value: string, text: string, isSelected: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "value", "ss2Param": "value", "notes": "Same" },
+        { "ss1Param": "text", "ss2Param": "text", "notes": "Same" },
+        { "ss1Param": "selected", "ss2Param": "isSelected", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Must get Field object first via getField()"],
+      "notes": "Get field via getField(), then call insertSelectOption()",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiIsLineItemChanged",
+      "ss1Signature": "nlapiIsLineItemChanged(type)",
+      "ss2Module": "N/record",
+      "ss2Method": "Sublist.isChanged",
+      "ss2Signature": "sublist.isChanged (read-only property)",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Used to get Sublist object" }
+      ],
+      "breakingChanges": ["Property on Sublist object instead of global function"],
+      "notes": "Get sublist via getSublist(), then check isChanged property",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiLoadConfiguration",
+      "ss1Signature": "nlapiLoadConfiguration(type)",
+      "ss2Module": "N/config",
+      "ss2Method": "config.load",
+      "ss2Signature": "config.load({type: config.Type})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Uses config.Type enum" }
+      ],
+      "breakingChanges": ["Returns record.Record instead of nlobjConfiguration"],
+      "notes": "Load company configuration; returns Record object",
+      "category": "config",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiLoadFile",
+      "ss1Signature": "nlapiLoadFile(id)",
+      "ss2Module": "N/file",
+      "ss2Method": "file.load",
+      "ss2Signature": "file.load({id: number|string})",
+      "parameterChanges": [
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same; also accepts file path string" }
+      ],
+      "breakingChanges": ["Returns file.File instead of nlobjFile"],
+      "notes": "Load file from File Cabinet by ID or path",
+      "category": "file",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiLoadRecord",
+      "ss1Signature": "nlapiLoadRecord(type, id, initializeValues)",
+      "ss2Module": "N/record",
+      "ss2Method": "record.load",
+      "ss2Signature": "record.load({type: string, id: number, isDynamic: boolean, defaultValues: Object})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same" },
+        { "ss1Param": "initializeValues", "ss2Param": "defaultValues", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns record.Record instead of nlobjRecord"],
+      "notes": "isDynamic is new in SS2",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiLoadSearch",
+      "ss1Signature": "nlapiLoadSearch(type, id)",
+      "ss2Module": "N/search",
+      "ss2Method": "search.load",
+      "ss2Signature": "search.load({id: string, type: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same" }
+      ],
+      "breakingChanges": ["Returns search.Search instead of nlobjSearch"],
+      "notes": "Load a saved search",
+      "category": "search",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiLogExecution",
+      "ss1Signature": "nlapiLogExecution(type, title, details)",
+      "ss2Module": "N/log",
+      "ss2Method": "log.audit / log.debug / log.emergency / log.error",
+      "ss2Signature": "log.debug({title: string, details: *}) | log.audit({title: string, details: *}) | log.error({title: string, details: *}) | log.emergency({title: string, details: *})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "(method name)", "notes": "Log level determines which method to call" },
+        { "ss1Param": "title", "ss2Param": "title", "notes": "Same" },
+        { "ss1Param": "details", "ss2Param": "details", "notes": "Same; accepts any type in SS2" }
+      ],
+      "breakingChanges": ["Single function split into level-specific methods"],
+      "notes": "Separate methods per level: log.debug, log.audit, log.error, log.emergency",
+      "category": "log",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiLookupField",
+      "ss1Signature": "nlapiLookupField(type, id, fields, text)",
+      "ss2Module": "N/search",
+      "ss2Method": "search.lookupFields",
+      "ss2Signature": "search.lookupFields({type: string, id: number, columns: string|string[]})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same" },
+        { "ss1Param": "fields", "ss2Param": "columns", "notes": "Renamed" },
+        { "ss1Param": "text", "ss2Param": "(N/A)", "notes": "No text param; results include both value and text" }
+      ],
+      "breakingChanges": ["Returns object with arrays for each field value"],
+      "notes": "Returns data in {fieldId: [value]} format; text fields are returned as nested objects.",
+      "category": "search",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiOutboundSSO",
+      "ss1Signature": "nlapiOutboundSSO(id)",
+      "ss2Module": "N/sso",
+      "ss2Method": "sso.generateSuiteSignOnToken",
+      "ss2Signature": "sso.generateSuiteSignOnToken({suiteSignOnId: string})",
+      "parameterChanges": [
+        { "ss1Param": "id", "ss2Param": "suiteSignOnId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["N/sso module DEPRECATED as of NetSuite 2025.1"],
+      "notes": "DEPRECATED: SuiteSignOn feature and N/sso module no longer supported as of 2025.1",
+      "category": "auth",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiPrintRecord",
+      "ss1Signature": "nlapiPrintRecord(type, id, mode, properties)",
+      "ss2Module": "N/render",
+      "ss2Method": "render.transaction / render.statement / render.packingSlip / render.pickingTicket / render.bom",
+      "ss2Signature": "render.transaction({entityId: number, printMode: render.PrintMode}) (and similar for other types)",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "(method name)", "notes": "Record type determines which method" },
+        { "ss1Param": "id", "ss2Param": "entityId", "notes": "Renamed" },
+        { "ss1Param": "mode", "ss2Param": "printMode", "notes": "Uses render.PrintMode enum" }
+      ],
+      "breakingChanges": ["Single function split into type-specific methods"],
+      "notes": "Separate methods: render.transaction, render.statement, render.packingSlip, render.pickingTicket, render.bom",
+      "category": "render",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiRefreshPortlet",
+      "ss1Signature": "nlapiRefreshPortlet()",
+      "ss2Module": "N/portlet",
+      "ss2Method": "portlet.refresh",
+      "ss2Signature": "portlet.refresh()",
+      "parameterChanges": [],
+      "breakingChanges": [],
+      "notes": "Refresh dashboard portlet",
+      "category": "ui",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiRemoveCurrentLineItemSubrecord",
+      "ss1Signature": "nlapiRemoveCurrentLineItemSubrecord(sublist, fldname)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.removeCurrentSublistSubrecord",
+      "ss2Signature": "removeCurrentSublistSubrecord({sublistId: string, fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "sublist", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Subrecord paradigm different in SS2"],
+      "notes": "Remove subrecord on current line",
+      "category": "subrecord",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiRemoveLineItem",
+      "ss1Signature": "nlapiRemoveLineItem(type, line)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.removeLine",
+      "ss2Signature": "removeLine({sublistId: string, line: number, ignoreRecalc: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "line", "ss2Param": "line", "notes": "0-based in SS2 vs 1-based in SS1" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Remove a line from sublist. Also available on Record.",
+      "category": "sublist",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiRemoveLineItemOption",
+      "ss1Signature": "nlapiRemoveLineItemOption(type, fldnam, value)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "Field.removeSelectOption",
+      "ss2Signature": "field.removeSelectOption({value: string})",
+      "parameterChanges": [
+        { "ss1Param": "value", "ss2Param": "value", "notes": "Same" }
+      ],
+      "breakingChanges": ["Must get Field object first"],
+      "notes": "Get field via getSublistField(), then call removeSelectOption()",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiRemoveSelectOption",
+      "ss1Signature": "nlapiRemoveSelectOption(fldnam, value)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "Field.removeSelectOption",
+      "ss2Signature": "field.removeSelectOption({value: string})",
+      "parameterChanges": [
+        { "ss1Param": "value", "ss2Param": "value", "notes": "Same" }
+      ],
+      "breakingChanges": ["Must get Field object first"],
+      "notes": "Get field via getField(), then call removeSelectOption()",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiRemoveSubrecord",
+      "ss1Signature": "nlapiRemoveSubrecord(fldname)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.removeSubrecord",
+      "ss2Signature": "removeSubrecord({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Remove body-level subrecord",
+      "category": "subrecord",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiRequestURL",
+      "ss1Signature": "nlapiRequestURL(url, postdata, headers, callback, httpMethod)",
+      "ss2Module": "N/http",
+      "ss2Method": "http.get / http.post / http.put / http.delete / http.request",
+      "ss2Signature": "http.get({url: string, headers: Object}) | http.post({url: string, body: string, headers: Object}) | http.request({method: http.Method, url: string, body: string, headers: Object})",
+      "parameterChanges": [
+        { "ss1Param": "url", "ss2Param": "url", "notes": "Same" },
+        { "ss1Param": "postdata", "ss2Param": "body", "notes": "Renamed" },
+        { "ss1Param": "headers", "ss2Param": "headers", "notes": "Same" },
+        { "ss1Param": "callback", "ss2Param": "(N/A)", "notes": "Use N/https for async; or promise pattern" },
+        { "ss1Param": "httpMethod", "ss2Param": "(method name)", "notes": "HTTP method determines which function to call" }
+      ],
+      "breakingChanges": ["Single function split into method-specific functions", "Returns http.ClientResponse instead of nlobjResponse"],
+      "notes": "Separate functions per HTTP method: http.get, http.post, http.put, http.delete, http.request",
+      "category": "http",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiRequestURLWithCredentials",
+      "ss1Signature": "nlapiRequestURLWithCredentials(credentials, url, postdata, headers, httpMethod)",
+      "ss2Module": "N/https",
+      "ss2Method": "https.get / https.post / https.put / https.delete / https.request",
+      "ss2Signature": "https.get({url: string, headers: Object, credentials: Object}) (and similar for other methods)",
+      "parameterChanges": [
+        { "ss1Param": "credentials", "ss2Param": "credentials", "notes": "Different format in SS2" },
+        { "ss1Param": "url", "ss2Param": "url", "notes": "Same" },
+        { "ss1Param": "postdata", "ss2Param": "body", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Server-side only", "Returns https.ClientResponse"],
+      "notes": "HTTPS with token-based authentication. Server scripts only.",
+      "category": "http",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiResizePortlet",
+      "ss1Signature": "nlapiResizePortlet()",
+      "ss2Module": "N/portlet",
+      "ss2Method": "portlet.resize",
+      "ss2Signature": "portlet.resize()",
+      "parameterChanges": [],
+      "breakingChanges": [],
+      "notes": "Resize dashboard portlet",
+      "category": "ui",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiResolveURL",
+      "ss1Signature": "nlapiResolveURL(type, identifier, id, displayMode)",
+      "ss2Module": "N/url",
+      "ss2Method": "url.resolveRecord / url.resolveScript / url.resolveTaskLink",
+      "ss2Signature": "url.resolveRecord({recordType: string, recordId: number, isEditMode: boolean}) | url.resolveScript({scriptId: string, deploymentId: string, params: Object}) | url.resolveTaskLink({id: string, params: Object})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "(method name)", "notes": "URL type determines which method" },
+        { "ss1Param": "identifier", "ss2Param": "recordType|scriptId|id", "notes": "Renamed per method" },
+        { "ss1Param": "id", "ss2Param": "recordId|deploymentId", "notes": "Renamed per method" },
+        { "ss1Param": "displayMode", "ss2Param": "isEditMode", "notes": "Boolean in SS2" }
+      ],
+      "breakingChanges": ["Single function split into type-specific methods"],
+      "notes": "Separate methods: url.resolveRecord, url.resolveScript, url.resolveTaskLink",
+      "category": "url",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiScheduleScript",
+      "ss1Signature": "nlapiScheduleScript(scriptId, deployId, params)",
+      "ss2Module": "N/task",
+      "ss2Method": "task.create({taskType: task.TaskType.SCHEDULED_SCRIPT})",
+      "ss2Signature": "task.create({taskType: task.TaskType.SCHEDULED_SCRIPT, scriptId: string, deploymentId: string, params: Object}).submit()",
+      "parameterChanges": [
+        { "ss1Param": "scriptId", "ss2Param": "scriptId", "notes": "Same" },
+        { "ss1Param": "deployId", "ss2Param": "deploymentId", "notes": "Renamed" },
+        { "ss1Param": "params", "ss2Param": "params", "notes": "Same" }
+      ],
+      "breakingChanges": ["Two-step: create task then call submit()"],
+      "notes": "Create task with SCHEDULED_SCRIPT type, then call .submit()",
+      "category": "task",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSearchDuplicate",
+      "ss1Signature": "nlapiSearchDuplicate(type, fields, id)",
+      "ss2Module": "N/search",
+      "ss2Method": "search.duplicates",
+      "ss2Signature": "search.duplicates({type: string, fields: Object, id: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "fields", "ss2Param": "fields", "notes": "Same" },
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same" }
+      ],
+      "breakingChanges": [],
+      "notes": "Search for duplicate records",
+      "category": "search",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSearchGlobal",
+      "ss1Signature": "nlapiSearchGlobal(keywords)",
+      "ss2Module": "N/search",
+      "ss2Method": "search.global",
+      "ss2Signature": "search.global({keywords: string})",
+      "parameterChanges": [
+        { "ss1Param": "keywords", "ss2Param": "keywords", "notes": "Same" }
+      ],
+      "breakingChanges": [],
+      "notes": "Perform global keyword search",
+      "category": "search",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSearchRecord",
+      "ss1Signature": "nlapiSearchRecord(type, id, filters, columns)",
+      "ss2Module": "N/search",
+      "ss2Method": "search.create / search.load",
+      "ss2Signature": "search.create({type: string, filters: Array, columns: Array}).run().each(callback) | search.load({id: string}).run().each(callback)",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Used with search.load for saved searches" },
+        { "ss1Param": "filters", "ss2Param": "filters", "notes": "Same" },
+        { "ss1Param": "columns", "ss2Param": "columns", "notes": "Same" }
+      ],
+      "breakingChanges": ["Results accessed via run().each() or run().getRange() instead of direct array return", "No 1000-result limit with each() pattern"],
+      "notes": "SS2 uses iterator pattern: search.create().run().each(). Use getRange() for bounded results.",
+      "category": "search",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiSelectLineItem",
+      "ss1Signature": "nlapiSelectLineItem(type, linenum)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.selectLine",
+      "ss2Signature": "selectLine({sublistId: string, line: number})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "0-based in SS2 vs 1-based in SS1" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Select an existing line for editing",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSelectNewLineItem",
+      "ss1Signature": "nlapiSelectNewLineItem(type)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.selectNewLine",
+      "ss2Signature": "selectNewLine({sublistId: string})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Select a new blank line for data entry",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSelectNode",
+      "ss1Signature": "nlapiSelectNode(node, xpath)",
+      "ss2Module": "N/xml",
+      "ss2Method": "xml.XPath.select",
+      "ss2Signature": "xml.XPath.select({node: xml.Node, xpath: string})",
+      "parameterChanges": [
+        { "ss1Param": "node", "ss2Param": "node", "notes": "Same" },
+        { "ss1Param": "xpath", "ss2Param": "xpath", "notes": "Same" }
+      ],
+      "breakingChanges": ["Returns array; use [0] for single node"],
+      "notes": "Returns array of matching nodes",
+      "category": "xml",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiSelectNodes",
+      "ss1Signature": "nlapiSelectNodes(node, xpath)",
+      "ss2Module": "N/xml",
+      "ss2Method": "xml.XPath.select",
+      "ss2Signature": "xml.XPath.select({node: xml.Node, xpath: string})",
+      "parameterChanges": [
+        { "ss1Param": "node", "ss2Param": "node", "notes": "Same" },
+        { "ss1Param": "xpath", "ss2Param": "xpath", "notes": "Same" }
+      ],
+      "breakingChanges": [],
+      "notes": "Returns array of matching nodes",
+      "category": "xml",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiSelectValue",
+      "ss1Signature": "nlapiSelectValue(node, xpath)",
+      "ss2Module": "N/xml",
+      "ss2Method": "xml.XPath.select + Node.textContent",
+      "ss2Signature": "xml.XPath.select({node: xml.Node, xpath: string})[0].textContent",
+      "parameterChanges": [
+        { "ss1Param": "node", "ss2Param": "node", "notes": "Same" },
+        { "ss1Param": "xpath", "ss2Param": "xpath", "notes": "Same" }
+      ],
+      "breakingChanges": ["Two-step: select node, then access textContent property"],
+      "notes": "No direct equivalent; use XPath.select() then access .textContent",
+      "category": "xml",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiSelectValues",
+      "ss1Signature": "nlapiSelectValues(node, xpath)",
+      "ss2Module": "N/xml",
+      "ss2Method": "xml.XPath.select + Node.textContent",
+      "ss2Signature": "xml.XPath.select({node: xml.Node, xpath: string}).map(n => n.textContent)",
+      "parameterChanges": [
+        { "ss1Param": "node", "ss2Param": "node", "notes": "Same" },
+        { "ss1Param": "xpath", "ss2Param": "xpath", "notes": "Same" }
+      ],
+      "breakingChanges": ["Two-step: select nodes, then map textContent"],
+      "notes": "No direct equivalent; use XPath.select() then map .textContent",
+      "category": "xml",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiSendCampaignEmail",
+      "ss1Signature": "nlapiSendCampaignEmail(campaigneventid, recipientid)",
+      "ss2Module": "N/email",
+      "ss2Method": "email.sendCampaignEvent",
+      "ss2Signature": "email.sendCampaignEvent({campaignEventId: number, recipientId: number})",
+      "parameterChanges": [
+        { "ss1Param": "campaigneventid", "ss2Param": "campaignEventId", "notes": "camelCase" },
+        { "ss1Param": "recipientid", "ss2Param": "recipientId", "notes": "camelCase" }
+      ],
+      "breakingChanges": [],
+      "notes": "Send campaign email event",
+      "category": "email",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSendEmail",
+      "ss1Signature": "nlapiSendEmail(author, recipient, subject, body, cc, bcc, records, attachments)",
+      "ss2Module": "N/email",
+      "ss2Method": "email.send",
+      "ss2Signature": "email.send({author: number, recipients: string|string[], subject: string, body: string, cc: string[], bcc: string[], relatedRecords: Object, attachments: file.File[]})",
+      "parameterChanges": [
+        { "ss1Param": "author", "ss2Param": "author", "notes": "Same" },
+        { "ss1Param": "recipient", "ss2Param": "recipients", "notes": "Renamed; accepts array" },
+        { "ss1Param": "subject", "ss2Param": "subject", "notes": "Same" },
+        { "ss1Param": "body", "ss2Param": "body", "notes": "Same" },
+        { "ss1Param": "records", "ss2Param": "relatedRecords", "notes": "Renamed; different format" },
+        { "ss1Param": "attachments", "ss2Param": "attachments", "notes": "Uses file.File objects" }
+      ],
+      "breakingChanges": ["Attachments must be file.File objects"],
+      "notes": "Also has email.sendBulk() for bulk sending",
+      "category": "email",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSetCurrentLineItemMatrixValue",
+      "ss1Signature": "nlapiSetCurrentLineItemMatrixValue(type, fldnam, column, value, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setCurrentMatrixSublistValue",
+      "ss2Signature": "setCurrentMatrixSublistValue({sublistId: string, fieldId: string, column: number, value: *, ignoreFieldChange: boolean, fireSlavingSync: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "firefieldchanged", "ss2Param": "ignoreFieldChange", "notes": "Renamed and inverted logic" },
+        { "ss1Param": "synchronous", "ss2Param": "fireSlavingSync", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["ignoreFieldChange has inverted logic from firefieldchanged"],
+      "notes": "Set matrix value on current line",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetCurrentLineItemText",
+      "ss1Signature": "nlapiSetCurrentLineItemText(type, fldnam, text, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setCurrentSublistText",
+      "ss2Signature": "setCurrentSublistText({sublistId: string, fieldId: string, text: string, ignoreFieldChange: boolean, fireSlavingSync: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "firefieldchanged", "ss2Param": "ignoreFieldChange", "notes": "Inverted logic" }
+      ],
+      "breakingChanges": ["ignoreFieldChange has inverted logic"],
+      "notes": "Set display text on current sublist line",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetCurrentLineItemValue",
+      "ss1Signature": "nlapiSetCurrentLineItemValue(type, fldnam, value, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setCurrentSublistValue",
+      "ss2Signature": "setCurrentSublistValue({sublistId: string, fieldId: string, value: *, ignoreFieldChange: boolean, fireSlavingSync: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "firefieldchanged", "ss2Param": "ignoreFieldChange", "notes": "Inverted logic" }
+      ],
+      "breakingChanges": ["ignoreFieldChange has inverted logic"],
+      "notes": "Set value on current sublist line",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetCurrentLineItemValues",
+      "ss1Signature": "nlapiSetCurrentLineItemValues(type, fldnam, values, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setCurrentSublistValue",
+      "ss2Signature": "setCurrentSublistValue({sublistId: string, fieldId: string, value: *, ignoreFieldChange: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "values", "ss2Param": "value", "notes": "Pass array as value" }
+      ],
+      "breakingChanges": [],
+      "notes": "For multi-select fields, pass array as value",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetFieldText",
+      "ss1Signature": "nlapiSetFieldText(fldname, txt, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setText",
+      "ss2Signature": "setText({fieldId: string, text: string, ignoreFieldChange: boolean, fireSlavingSync: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "txt", "ss2Param": "text", "notes": "Renamed" },
+        { "ss1Param": "firefieldchanged", "ss2Param": "ignoreFieldChange", "notes": "Inverted logic" }
+      ],
+      "breakingChanges": ["ignoreFieldChange has inverted logic"],
+      "notes": "Set field display text (client-side)",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetFieldTexts",
+      "ss1Signature": "nlapiSetFieldTexts(fldname, txts, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setText",
+      "ss2Signature": "setText({fieldId: string, text: string[], ignoreFieldChange: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "txts", "ss2Param": "text", "notes": "Pass array for multi-select" }
+      ],
+      "breakingChanges": [],
+      "notes": "For multi-select fields",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetFieldValue",
+      "ss1Signature": "nlapiSetFieldValue(fldnam, value, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setValue",
+      "ss2Signature": "setValue({fieldId: string, value: *, ignoreFieldChange: boolean, fireSlavingSync: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "firefieldchanged", "ss2Param": "ignoreFieldChange", "notes": "Inverted logic" }
+      ],
+      "breakingChanges": ["ignoreFieldChange has inverted logic"],
+      "notes": "Set field value (client-side)",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetFieldValues",
+      "ss1Signature": "nlapiSetFieldValues(fldnam, value, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setValue",
+      "ss2Signature": "setValue({fieldId: string, value: *[], ignoreFieldChange: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "value", "ss2Param": "value", "notes": "Pass array for multi-select" }
+      ],
+      "breakingChanges": [],
+      "notes": "For multi-select fields",
+      "category": "field",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetLineItemValue",
+      "ss1Signature": "nlapiSetLineItemValue(type, fldnam, linenum, value)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.setSublistValue",
+      "ss2Signature": "setSublistValue({sublistId: string, fieldId: string, line: number, value: *})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "0-based in SS2" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Set value on committed sublist line (standard mode only)",
+      "category": "sublist",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSetMatrixValue",
+      "ss1Signature": "nlapiSetMatrixValue(type, fldnam, column, value, firefieldchanged, synchronous)",
+      "ss2Module": "N/currentRecord",
+      "ss2Method": "CurrentRecord.setMatrixHeaderValue",
+      "ss2Signature": "setMatrixHeaderValue({sublistId: string, fieldId: string, column: number, value: *, ignoreFieldChange: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldnam", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "firefieldchanged", "ss2Param": "ignoreFieldChange", "notes": "Inverted logic" }
+      ],
+      "breakingChanges": ["ignoreFieldChange has inverted logic"],
+      "notes": "Set matrix header value",
+      "category": "sublist",
+      "context": "client"
+    },
+    {
+      "ss1Function": "nlapiSetRedirectURL",
+      "ss1Signature": "nlapiSetRedirectURL(type, identifier, id, editmode, parameters)",
+      "ss2Module": "N/redirect",
+      "ss2Method": "redirect.toRecord / redirect.toSuitelet / redirect.toTaskLink / redirect.redirect",
+      "ss2Signature": "redirect.toRecord({type: string, id: number, isEditMode: boolean, parameters: Object}) | redirect.toSuitelet({scriptId: string, deploymentId: string, parameters: Object})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "(method name)", "notes": "Redirect type determines which method" },
+        { "ss1Param": "identifier", "ss2Param": "type|scriptId", "notes": "Renamed per method" },
+        { "ss1Param": "id", "ss2Param": "id|deploymentId", "notes": "Renamed per method" },
+        { "ss1Param": "editmode", "ss2Param": "isEditMode", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Single function split into type-specific methods"],
+      "notes": "Separate methods: redirect.toRecord, redirect.toSuitelet, redirect.toTaskLink, redirect.toSavedSearch, redirect.toSearchResult",
+      "category": "redirect",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiStringToDate",
+      "ss1Signature": "nlapiStringToDate(str, format)",
+      "ss2Module": "N/format",
+      "ss2Method": "format.parse",
+      "ss2Signature": "format.parse({value: string, type: format.Type})",
+      "parameterChanges": [
+        { "ss1Param": "str", "ss2Param": "value", "notes": "Renamed" },
+        { "ss1Param": "format", "ss2Param": "type", "notes": "Uses format.Type enum" }
+      ],
+      "breakingChanges": [],
+      "notes": "Parse string to Date object",
+      "category": "format",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiStringToXML",
+      "ss1Signature": "nlapiStringToXML(text)",
+      "ss2Module": "N/xml",
+      "ss2Method": "xml.Parser.fromString",
+      "ss2Signature": "xml.Parser.fromString({text: string})",
+      "parameterChanges": [
+        { "ss1Param": "text", "ss2Param": "text", "notes": "Same" }
+      ],
+      "breakingChanges": [],
+      "notes": "Parse XML string to XML Document",
+      "category": "xml",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiSubmitConfiguration",
+      "ss1Signature": "nlapiSubmitConfiguration(name)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.save",
+      "ss2Signature": "record.save()",
+      "parameterChanges": [],
+      "breakingChanges": ["Call save() on the Record object returned by config.load()"],
+      "notes": "Save configuration record obtained via config.load()",
+      "category": "config",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSubmitCSVImport",
+      "ss1Signature": "nlapiSubmitCSVImport(nlobjCSVImport)",
+      "ss2Module": "N/task",
+      "ss2Method": "CsvImportTask.submit",
+      "ss2Signature": "csvImportTask.submit()",
+      "parameterChanges": [],
+      "breakingChanges": ["Call submit() on CsvImportTask object"],
+      "notes": "Create task with task.create(), configure, then call .submit()",
+      "category": "task",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSubmitField",
+      "ss1Signature": "nlapiSubmitField(type, id, fields, values, doSourcing)",
+      "ss2Module": "N/record",
+      "ss2Method": "record.submitFields",
+      "ss2Signature": "record.submitFields({type: string, id: number, values: Object, options: {enableSourcing: boolean, ignoreMandatoryFields: boolean}})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "type", "notes": "Same" },
+        { "ss1Param": "id", "ss2Param": "id", "notes": "Same" },
+        { "ss1Param": "fields", "ss2Param": "values (keys)", "notes": "Field names are object keys" },
+        { "ss1Param": "values", "ss2Param": "values (values)", "notes": "Field values are object values" },
+        { "ss1Param": "doSourcing", "ss2Param": "options.enableSourcing", "notes": "Nested in options" }
+      ],
+      "breakingChanges": ["fields+values merged into single values object"],
+      "notes": "Update fields without loading record. Governance: 10 units (less than load+save of 30 units).",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSubmitFile",
+      "ss1Signature": "nlapiSubmitFile(file)",
+      "ss2Module": "N/file",
+      "ss2Method": "File.save",
+      "ss2Signature": "file.save()",
+      "parameterChanges": [],
+      "breakingChanges": ["Method on File object instead of global function"],
+      "notes": "Call save() on the file.File object",
+      "category": "file",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiSubmitRecord",
+      "ss1Signature": "nlapiSubmitRecord(record, doSourcing, ignoreMandatoryFields)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.save",
+      "ss2Signature": "record.save({enableSourcing: boolean, ignoreMandatoryFields: boolean})",
+      "parameterChanges": [
+        { "ss1Param": "doSourcing", "ss2Param": "enableSourcing", "notes": "Renamed" },
+        { "ss1Param": "ignoreMandatoryFields", "ss2Param": "ignoreMandatoryFields", "notes": "Same" }
+      ],
+      "breakingChanges": ["Method on Record object instead of global function"],
+      "notes": "Call save() on the record.Record object. Returns record internal ID.",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiTransformRecord",
+      "ss1Signature": "nlapiTransformRecord(type, id, transformType, transformValues)",
+      "ss2Module": "N/record",
+      "ss2Method": "record.transform",
+      "ss2Signature": "record.transform({fromType: string, fromId: number, toType: string, isDynamic: boolean, defaultValues: Object})",
+      "parameterChanges": [
+        { "ss1Param": "type", "ss2Param": "fromType", "notes": "Renamed" },
+        { "ss1Param": "id", "ss2Param": "fromId", "notes": "Renamed" },
+        { "ss1Param": "transformType", "ss2Param": "toType", "notes": "Renamed" },
+        { "ss1Param": "transformValues", "ss2Param": "defaultValues", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["Returns record.Record instead of nlobjRecord"],
+      "notes": "Transform one record type to another (for example, estimate to sales order)",
+      "category": "record",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiTriggerWorkflow",
+      "ss1Signature": "nlapiTriggerWorkflow(recordtype, id, workflowid, actionid, stateid)",
+      "ss2Module": "N/workflow",
+      "ss2Method": "workflow.trigger",
+      "ss2Signature": "workflow.trigger({recordType: string, recordId: number, workflowId: number|string, actionId: number|string, stateId: number|string})",
+      "parameterChanges": [
+        { "ss1Param": "recordtype", "ss2Param": "recordType", "notes": "camelCase" },
+        { "ss1Param": "id", "ss2Param": "recordId", "notes": "Renamed" },
+        { "ss1Param": "workflowid", "ss2Param": "workflowId", "notes": "camelCase" },
+        { "ss1Param": "actionid", "ss2Param": "actionId", "notes": "camelCase" },
+        { "ss1Param": "stateid", "ss2Param": "stateId", "notes": "camelCase" }
+      ],
+      "breakingChanges": [],
+      "notes": "Trigger a workflow action on a record",
+      "category": "workflow",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiValidateXML",
+      "ss1Signature": "nlapiValidateXML(xmlDocument, schemaDocument, schemaFolderId)",
+      "ss2Module": "N/xml",
+      "ss2Method": "xml.validate",
+      "ss2Signature": "xml.validate({xml: xml.Document, xsdFilePathOrId: string, importFolderPathOrId: string})",
+      "parameterChanges": [
+        { "ss1Param": "xmlDocument", "ss2Param": "xml", "notes": "Renamed" },
+        { "ss1Param": "schemaDocument", "ss2Param": "xsdFilePathOrId", "notes": "Renamed; accepts path or ID" },
+        { "ss1Param": "schemaFolderId", "ss2Param": "importFolderPathOrId", "notes": "Renamed; accepts path or ID" }
+      ],
+      "breakingChanges": [],
+      "notes": "Validate XML document against XSD schema",
+      "category": "xml",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiViewCurrentLineItemSubrecord",
+      "ss1Signature": "nlapiViewCurrentLineItemSubrecord(sublist, fldname)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getCurrentSublistSubrecord",
+      "ss2Signature": "getCurrentSublistSubrecord({sublistId: string, fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "sublist", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["No create/edit/view distinction in SS2"],
+      "notes": "All subrecord access uses the same method in SS2.",
+      "category": "subrecord",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiViewLineItemSubrecord",
+      "ss1Signature": "nlapiViewLineItemSubrecord(sublist, fldname, linenum)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getSublistSubrecord",
+      "ss2Signature": "getSublistSubrecord({sublistId: string, fieldId: string, line: number})",
+      "parameterChanges": [
+        { "ss1Param": "sublist", "ss2Param": "sublistId", "notes": "Renamed" },
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" },
+        { "ss1Param": "linenum", "ss2Param": "line", "notes": "0-based in SS2" }
+      ],
+      "breakingChanges": ["Line numbering changed from 1-based to 0-based"],
+      "notes": "Get subrecord on specific sublist line",
+      "category": "subrecord",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiViewSubrecord",
+      "ss1Signature": "nlapiViewSubrecord(fldname)",
+      "ss2Module": "N/record",
+      "ss2Method": "Record.getSubrecord",
+      "ss2Signature": "getSubrecord({fieldId: string})",
+      "parameterChanges": [
+        { "ss1Param": "fldname", "ss2Param": "fieldId", "notes": "Renamed" }
+      ],
+      "breakingChanges": ["No create/edit/view distinction in SS2"],
+      "notes": "All subrecord access uses getSubrecord() in SS2",
+      "category": "subrecord",
+      "context": "both"
+    },
+    {
+      "ss1Function": "nlapiVoidTransaction",
+      "ss1Signature": "nlapiVoidTransaction(transactionType, recordId)",
+      "ss2Module": "N/transaction",
+      "ss2Method": "transaction.void",
+      "ss2Signature": "transaction.void({type: string, id: number})",
+      "parameterChanges": [
+        { "ss1Param": "transactionType", "ss2Param": "type", "notes": "Shortened" },
+        { "ss1Param": "recordId", "ss2Param": "id", "notes": "Shortened" }
+      ],
+      "breakingChanges": [],
+      "notes": "Void a transaction record",
+      "category": "transaction",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiXMLToPDF",
+      "ss1Signature": "nlapiXMLToPDF(xmlstring)",
+      "ss2Module": "N/render",
+      "ss2Method": "render.xmlToPdf",
+      "ss2Signature": "render.xmlToPdf({xmlString: string})",
+      "parameterChanges": [
+        { "ss1Param": "xmlstring", "ss2Param": "xmlString", "notes": "camelCase" }
+      ],
+      "breakingChanges": ["Returns file.File instead of nlobjFile"],
+      "notes": "Also available via TemplateRenderer.renderAsPdf()",
+      "category": "render",
+      "context": "server"
+    },
+    {
+      "ss1Function": "nlapiXMLToString",
+      "ss1Signature": "nlapiXMLToString(xml)",
+      "ss2Module": "N/xml",
+      "ss2Method": "xml.Parser.toString",
+      "ss2Signature": "xml.Parser.toString({document: xml.Document})",
+      "parameterChanges": [
+        { "ss1Param": "xml", "ss2Param": "document", "notes": "Renamed" }
+      ],
+      "breakingChanges": [],
+      "notes": "Serialize XML Document to string",
+      "category": "xml",
+      "context": "both"
+    }
+  ],
+  "unmappedApis": [
+    {
+      "ss1Function": "nlapiAddDays",
+      "ss1Signature": "nlapiAddDays(d, days)",
+      "reason": "No direct SS2.1 method; native JavaScript handles this",
+      "workaround": "Use native JavaScript: var d = new Date(); d.setDate(d.getDate() + days);",
+      "severity": "use_native_js"
+    },
+    {
+      "ss1Function": "nlapiAddMonths",
+      "ss1Signature": "nlapiAddMonths(d, months)",
+      "reason": "No direct SS2.1 method; native JavaScript handles this",
+      "workaround": "Use native JavaScript: var d = new Date(); d.setMonth(d.getMonth() + months);",
+      "severity": "use_native_js"
+    },
+    {
+      "ss1Function": "nlapiEncrypt",
+      "ss1Signature": "nlapiEncrypt(s, algorithm, key)",
+      "reason": "Functionality split across N/crypto (hashing/HMAC) and N/encode (encoding)",
+      "workaround": "Use N/crypto module for hashing and encryption, N/encode module for Base64/hex encoding",
+      "severity": "split_across_modules"
+    },
+    {
+      "ss1Function": "nlapiGetCurrentLineItemDateTimeValue",
+      "ss1Signature": "nlapiGetCurrentLineItemDateTimeValue(type, fieldId, timeZone)",
+      "reason": "Mapping not intuitive (global function to module)",
+      "workaround": "Use getCurrentSublistValue() then format.parse() and format.format() from N/format module for timezone conversion",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Function": "nlapiGetDateTimeValue",
+      "ss1Signature": "nlapiGetDateTimeValue(fieldId, timeZone)",
+      "reason": "Mapping not intuitive (global function to module)",
+      "workaround": "Use getValue() then format.parse() and format.format() from N/format module for timezone conversion",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Function": "nlapiGetLineItemDateTimeValue",
+      "ss1Signature": "nlapiGetLineItemDateTimeValue(type, fieldId, lineNum, timeZone)",
+      "reason": "Mapping not intuitive (global function to module)",
+      "workaround": "Use getSublistValue() then format.parse() and format.format() from N/format module",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Function": "nlapiRefreshLineItems",
+      "ss1Signature": "nlapiRefreshLineItems(type)",
+      "reason": "No SS2.1 equivalent",
+      "workaround": "No direct workaround available",
+      "severity": "removed"
+    },
+    {
+      "ss1Function": "nlapiSendFax",
+      "ss1Signature": "nlapiSendFax(author, recipient, subject, body, records, attachments)",
+      "reason": "Fax functionality removed in SS2.1",
+      "workaround": "Use third-party fax integration or custom solution",
+      "severity": "removed"
+    },
+    {
+      "ss1Function": "nlapiSetCurrentLineItemDateTimeValue",
+      "ss1Signature": "nlapiSetCurrentLineItemDateTimeValue(type, fieldId, dateTime, timeZone)",
+      "reason": "Mapping not intuitive (global function to module)",
+      "workaround": "Use format.format() from N/format module to format the datetime string, then setCurrentSublistValue()",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Function": "nlapiSetDateTimeValue",
+      "ss1Signature": "nlapiSetDateTimeValue(fieldId, dateTime, timeZone)",
+      "reason": "Mapping not intuitive (global function to module)",
+      "workaround": "Use format.format() from N/format module to format the datetime string, then setValue()",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Function": "nlapiSetLineItemDateTimeValue",
+      "ss1Signature": "nlapiSetLineItemDateTimeValue(type, fieldId, lineNum, dateTime, timeZone)",
+      "reason": "Mapping not intuitive (global function to module)",
+      "workaround": "Use format.format() from N/format module to format the datetime string, then setSublistValue()",
+      "severity": "different_approach"
+    },
+    {
+      "ss1Function": "nlapiSetRecoveryPoint",
+      "ss1Signature": "nlapiSetRecoveryPoint()",
+      "reason": "Functionality no longer needed; SS2.1 Map/Reduce scripts handle yielding automatically",
+      "workaround": "Use Map/Reduce script type which automatically yields. Not required for Scheduled Scripts either.",
+      "severity": "removed"
+    },
+    {
+      "ss1Function": "nlapiYieldScript",
+      "ss1Signature": "nlapiYieldScript()",
+      "reason": "Functionality no longer needed; SS2.1 Map/Reduce scripts handle yielding automatically",
+      "workaround": "Use Map/Reduce script type which automatically yields. Check runtime.getCurrentScript().getRemainingUsage() for governance.",
+      "severity": "removed"
+    }
+  ]
+}
