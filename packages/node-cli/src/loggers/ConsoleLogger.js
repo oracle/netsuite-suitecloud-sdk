@@ -17,6 +17,9 @@ class ConsoleLogger {
 
 	error(message) {}
 
+	// Prints a message without applying any color. Useful for pre-formatted output such as diffs.
+	println(message) {}
+
 	getPadding(padCount) {
 		if (padCount) {
 			let paddings = '';

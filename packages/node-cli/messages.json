@@ -35,6 +35,16 @@
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_DEPENDENCIES_ADDED_TO_MANIFEST": "The following dependencies were added to the manifest:",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_NO_UNRESOLVED_DEPENDENCIES": "There are no dependencies to add to the manifest.xml file.",
 
+	"COMMAND_COMPAREFILE_ERRORS_PATH_REQUIRED": "You must specify the File Cabinet path of the file to compare. For example, \"/SuiteScripts/file.js\".",
+	"COMMAND_COMPAREFILE_ERRORS_NO_FOLDERS_FOUND": "No folders available.",
+	"COMMAND_COMPAREFILE_MESSAGES_COMPARING_FILE": "Comparing {0} with the version in the account...",
+	"COMMAND_COMPAREFILE_OUTPUT_DIFF_HEADER": "Differences for {0} (lines starting with \"-\" are in the account; lines starting with \"+\" are in your local project):",
+	"COMMAND_COMPAREFILE_OUTPUT_IDENTICAL": "No differences found. Your local file is identical to the version in the account: {0}",
+	"COMMAND_COMPAREFILE_OUTPUT_LOCAL_NOT_FOUND": "The file was not found in your local project. The account version is shown below as fully removed: {0}",
+	"COMMAND_COMPAREFILE_OUTPUT_NOT_IN_ACCOUNT": "The file does not exist in the account File Cabinet, so there is nothing to compare: {0}",
+	"COMMAND_COMPAREFILE_QUESTIONS_SELECT_FOLDER": "Select the File Cabinet folder of the file you want to compare.",
+	"COMMAND_COMPAREFILE_QUESTIONS_SELECT_FILE": "Select the file you want to compare with your local project.",
+
 	"COMMAND_CREATEFILE_ADD_SUITESCRIPT_MODULES": "Do you want to add SuiteScript modules to the file?",
 	"COMMAND_CREATEFILE_CHOOSE_SUITESCRIPT_TYPE": "What type of SuiteScript do you want to create?",
 	"COMMAND_CREATEFILE_ENTER_NAME": "Enter a name for the SuiteScript file.",
