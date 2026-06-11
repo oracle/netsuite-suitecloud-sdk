@@ -7,11 +7,11 @@
 const fs = require('fs');
 const path = require('path');
 const SdkProperties = require('./SdkProperties');
+const SdkArtifactVerifier = require('./SdkArtifactVerifier');
 
 const https = require('https');
-const http = require('http');
 const { URL } = require('url');
-const { ENCODING, EVENT, HEADER, PROTOCOL } = require('../../utils/http/HttpConstants');
+const { ENCODING, EVENT, HEADER } = require('../../utils/http/HttpConstants');
 
 const HOME_PATH = require('os').homedir();
 
@@ -43,12 +43,17 @@ class SdkDownloadService {
 
 		const fullURL = `${SdkProperties.getDownloadURL()}/${SdkProperties.getSdkFileName()}`;
 		const destinationFilePath = path.join(sdkDirectory, SdkProperties.getSdkFileName());
+		const temporaryDestinationFilePath = `${destinationFilePath}.tmp`;
 		const proxy =  ProxyEnvironmentUtils.resolveSdkDownloadProxyFromEnv();
-		const skipProxy = SdkProperties.configFileExists();
+		const skipProxy = SdkProperties.isCustomSdkMetadataUsed();
 
 		try {
-			await this._downloadJarFilePromise(fullURL, destinationFilePath, proxy, skipProxy);
+			await this._downloadJarFilePromise(fullURL, temporaryDestinationFilePath, proxy, skipProxy);
+			SdkArtifactVerifier.verify(temporaryDestinationFilePath, SdkProperties);
+			this._fileSystemService.deleteFileIfExists(destinationFilePath);
+			fs.renameSync(temporaryDestinationFilePath, destinationFilePath);
 		} catch (error) {
+			this._fileSystemService.deleteFileIfExists(temporaryDestinationFilePath);
 			console.error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.ERROR, fullURL, unwrapExceptionMessage(error)));
 			process.exit(ERROR_CODE);
 		}
@@ -63,25 +68,22 @@ class SdkDownloadService {
 			...(proxy && !skipProxy && { agent: ProxyService.getProxyAgent(proxy) }),
 		};
 
-		if (!/^http:$|^https:$/.test(downloadUrlProtocol)) {
+		if (!/^https:$/.test(downloadUrlProtocol)) {
 			throw new Error(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.WRONG_DOWNLOAD_URL_PROTOCOL));
 		}
 
-		const httpxModule = PROTOCOL.HTTP.match(downloadUrlObject.protocol) ? http : https;
-
 		return new Promise((resolve, reject) => {
-			const clientReq = httpxModule.get(downloadUrlObject, requestOptions, (response) => {
+			const clientReq = https.get(downloadUrlObject, requestOptions, (response) => {
 				const chunks = [];
 				response.on(EVENT.DATA, (chunk) => chunks.push(Buffer.from(chunk, ENCODING.BINARY)));
 
 				response.on(EVENT.END, () => {
-					if (!VALID_JAR_CONTENT_TYPES.includes(response.headers[HEADER.CONTENT_TYPE])) {
+					if (response.statusCode < 200 || response.statusCode >= 300 || !this._isValidJarContentType(response.headers[HEADER.CONTENT_TYPE])) {
 						reject(NodeTranslationService.getMessage(SDK_DOWNLOAD_SERVICE.FILE_NOT_AVAILABLE_ERROR));
+						return;
 					}
 
-					const jarFile = fs.createWriteStream(destinationFilePath);
-					jarFile.write(Buffer.concat(chunks), ENCODING.BINARY);
-					jarFile.end();
+					fs.writeFileSync(destinationFilePath, Buffer.concat(chunks), ENCODING.BINARY);
 					resolve();
 				});
 
@@ -105,6 +107,10 @@ class SdkDownloadService {
 		fs.readdirSync(folder)
 			.filter((file) => /[.]jar$/.test(file))
 			.map((file) => fs.unlinkSync(path.join(folder, file)));
+	}
+
+	_isValidJarContentType(contentType) {
+		return contentType && VALID_JAR_CONTENT_TYPES.includes(contentType.split(';')[0].trim());
 	}
 }
 
