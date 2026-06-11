@@ -1,10 +1,5 @@
 # Change Log
 
-
-## 3.1.2
-
-- Minor enhancements
-
 ## 3.1.1
 
 - Fix for **SuiteCloud: Create Project** command
