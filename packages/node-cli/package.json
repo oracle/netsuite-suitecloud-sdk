@@ -24,7 +24,7 @@
 	"preferGlobal": true,
 	"nsCompatibleVersion": "2026.1",
 	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/26.1",
-	"sdkFilename": "cli-2026.1.jar",
+	"sdkFilename": "cli-2026.1.0.jar",
 	"sdkSha256": "158038cfdc552e1af4b29aea86ff59ba8c0658ec950129339c1fbace4b1ad78b",
 	"bin": {
 		"suitecloud": "src/suitecloud.js"
