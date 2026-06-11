@@ -130,7 +130,6 @@ When working in a monorepo:
 - Supports pnpm, Yarn/npm workspaces, and Lerna configurations
 
 ## SuiteCloud Unit Testing Examples
-
 Here you can find two examples on how to use SuiteCloud Unit Testing with a SuiteCloud project.
 
 The first example covers testing for the **N/record** module, which is fully mocked in SuiteCloud Unit Testing. Whereas the second example covers the testing of a module that is not mocked in SuiteCloud Unit Testing, by using a custom stub.
@@ -138,7 +137,6 @@ The first example covers testing for the **N/record** module, which is fully moc
 >💡 You can manually mock any module that is still not supported in SuiteCloud Unit Testing.
 
 ### N/record Module Example
-
 This example follows the structure presented below:
 ```
 myAccountCustomizationProject
@@ -239,7 +237,6 @@ describe("Suitelet Test", () => {
 ```
 
 ### Custom Stub Example 
-
 This example follows the structure presented below:
 
 ```
@@ -360,7 +357,7 @@ describe('Sample test with user defined http module stub', () => {
 ```
 
 ## Contributing
-Suitecloud Unit Testing is an open source project. Pull requests are currently not being accepted. See [Contributing](/CONTRIBUTING.md) for details.
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](/CONTRIBUTING.md).
 
 ## [License](/LICENSE.txt)
 Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
