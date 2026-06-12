@@ -25,7 +25,7 @@
 	"nsCompatibleVersion": "2026.2",
 	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/26.2",
 	"sdkFilename": "cli-2026.2.0-SNAPSHOT.jar",
-	"sdkSha256": "0123456789001234567890abcdefghijklmnopqrstuvwxyzabcdefghijklmnop",
+	"sdkSha256": "0123456789001234567890abcdefffffffffffffffffffffffffffffffffffff",
 	"bin": {
 		"suitecloud": "src/suitecloud.js"
 	},
