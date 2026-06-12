@@ -55,8 +55,6 @@ async function readClientAPIKeyFileContents(sdkExecutor) {
 async function writeClientAPIKeyFileContents(sdkExecutor, newFileContent) {
 	const executionContext = SdkExecutionContext.Builder.forCommand(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.SDK_COMMAND)
 		.integration()
-		// The SDK executor still assembles a shell command string, so keep that escaping
-		// localized here instead of on the data model object itself.
 		.addParam(COMMANDS.CLIENT_API_KEY.WRITE_FILE_CONTENT.PARAMS.CONTENT, formatForSdkCommandlineArgument(newFileContent))
 		.build();
 
@@ -95,7 +93,7 @@ async function resolveDefaultClientApiKey(sdkExecutor) {
 }
 
 function formatForSdkCommandlineArgument(fileContent) {
-	return '"' + fileContent.replaceAll('"', String.raw`\"`) + '"';
+	return fileContent;
 }
 
 module.exports = {
