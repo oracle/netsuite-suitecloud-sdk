@@ -7,7 +7,7 @@ metadata:
   version: 1.0
 ---
 
-# NetSuite SDF Education Skill
+# Netsuite SuiteScript Learning Skill
 
 **Created by:** Oracle NetSuite
 
