@@ -262,7 +262,7 @@ Provide deep-dive explanations for specific concepts:
 - Client Script logging – `log.*` ignored, use `console.log()`
 
 #### Output Format for Explain Mode
-```markdown
+````markdown
 ## Concept: [Name]
 
 ### What It Is
@@ -299,7 +299,7 @@ Key points from the SAFE Guide:
 - [Point 2 from SAFE Guide]
 
 See: `netsuite-sdf-safe-guide/references/[XX-filename.md]`
-```
+````
 
 #### Concept-to-Principle Mapping
 
@@ -334,6 +334,7 @@ if (context.type !== context.UserEventType.VIEW)
 
 **LEARNING NOTES Comments** – Block explanations in JSDoc
 
+```javascript
 /**
  * beforeLoad Entry Point
  *
@@ -536,7 +537,7 @@ Topic-based learning from SAFE Guide references. This mode generates educational
 
 #### Output Format for Learn Mode
 
-```markdown
+````markdown
 ## Learning Topic: [Topic Name]
 
 ### Overview
@@ -574,11 +575,11 @@ Topic-based learning from SAFE Guide references. This mode generates educational
 ### Source
 Summarized from SAFE Guide Principle [X]: [Name]
 Reference file: `references/[XX-filename.md]`
-```
+````
 
 #### Example: `/suitescript-learning learn ncache`
 
-```markdown
+````markdown
 ## Learning Topic: N/cache for Concurrent Processing
 
 ### Overview
@@ -636,7 +637,7 @@ define(['N/cache'], (cache) => {
 ### Source
 Summarized from SAFE Guide Appendix: N/cache Sample Implementation
 Reference file: `netsuite-sdf-safe-guide/references/appendix-ncache-sample.md`
-```
+````
 
 ---
 
@@ -782,7 +783,7 @@ Generate comprehensive learning documentation for the entire project, including 
 
 #### Final Document Structure
 
-```markdown
+````markdown
 # [Project Name] – Learning Guide
 
 ## Project Overview
@@ -1033,7 +1034,7 @@ record.commitLine({ sublistId: 'item' });
 
 ## Next Steps
 [Suggestions for extending the project or learning more]
-```
+````
 
 ---
 
