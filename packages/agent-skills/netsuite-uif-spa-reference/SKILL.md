@@ -4,7 +4,7 @@ description: "Use when building, modifying, or debugging NetSuite UIF SPA compon
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
 ---
 
 # NetSuite UIF Reference

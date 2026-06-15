@@ -4,7 +4,7 @@ description: Interactive learning system for NetSuite SDF development. Features 
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
 ---
 
 # NetSuite SuiteScript Learning Skill
