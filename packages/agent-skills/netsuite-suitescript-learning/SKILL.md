@@ -31,6 +31,8 @@ Invoke this skill at any time by typing:
 /netsuite-suitescript-learning
 ```
 
+Note: `/netsuite-suitescript-learning` is the full skill command, while `/suitescript-learning` may be available as a client alias where supported.
+
 Or use specific mode commands:
 ```
 /netsuite-suitescript-learning learn [topic] # Learn a SAFE Guide topic
@@ -41,8 +43,8 @@ Or use specific mode commands:
 /netsuite-suitescript-learning final # Generate a comprehensive learning document
 ```
 
-### Automatic Activation (Recommended for Learning)
-For NetSuite SuiteCloud Development Framework (SDF) projects with embedded learning, add this skill to your project's `.claude/settings.local.json`:
+### Optional Claude Client Activation Example
+For Claude clients that support project skill preloading, you can add this skill to your project's `.claude/settings.local.json`:
 
 ```json
 {
@@ -55,7 +57,7 @@ For NetSuite SuiteCloud Development Framework (SDF) projects with embedded learn
 }
 ```
 
-With both skills enabled, Claude will:
+With both skills enabled, an assistant will:
 - Follow SDF best practices for all SDF components (scripts, custom records, workflows, etc.)
 - Automatically embed educational annotations in code as it's written
 - Generate quizzes and learning materials on request
@@ -123,6 +125,7 @@ Target:
 Options:
   --source=code Quiz questions from user's code only (quiz mode)
   --source=safe Quiz questions from SAFE Guide principles only (quiz mode)
+  --source=owasp Quiz questions from OWASP secure coding practices only (quiz mode)
   --source=both Quiz questions from both sources (default for quiz mode)
 ```
 
@@ -742,7 +745,7 @@ A: SQL Injection (OWASP A03:2021). The customer ID is concatenated directly into
 | `--source=code` | 40% Conceptual, 25% Code Prediction, 15% Error ID, 15% Best Practice, 5% Fill-in |
 | `--source=safe` | 40% Principle Application, 35% Governance Scenario, 25% Architecture Decision |
 | `--source=owasp` | 100% OWASP Security Application (Type 9) |
-| `--source=both` | Mix of all 8 types, weighted toward user's code patterns |
+| `--source=both` | Mix of all 9 types, weighted toward user's code patterns |
 
 #### Output Format for Quiz Mode
 ```markdown
