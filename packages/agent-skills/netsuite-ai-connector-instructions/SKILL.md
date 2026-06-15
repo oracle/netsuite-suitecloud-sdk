@@ -4,7 +4,7 @@ description: NetSuite Intelligence skill — teaches AI the correct tool selecti
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
 ---
 
 ## SYSTEM INSTRUCTION
