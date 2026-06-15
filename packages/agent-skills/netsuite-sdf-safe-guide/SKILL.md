@@ -37,10 +37,10 @@ Or use natural language triggers:
 - "Check my deployment XML" – Review and validate existing Object XML files.
 - "Review my SuiteScript" – Review code for best practices, pitfalls, and governance issues.
 
-### Optional Client Activation Example
-For NetSuite SuiteCloud Development Framework (SDF) projects, supported clients may preload this skill from project settings.
+### Optional Coding Assistant Activation Example
+For NetSuite SuiteCloud Development Framework (SDF) projects, supported coding assistants may preload this skill from project settings.
 
-Here is an example for Claude, which is one of the supported clients:
+Here is an example for Claude, which is one of the supported coding assistants:
 **Step 1:** Create or edit `.claude/settings.local.json` in your SDF project root:
 
 ```json
@@ -67,7 +67,7 @@ Here is an example for Claude, which is one of the supported clients:
 }
 ```
 
-With skill preloading configured in a supported client, an assistant will automatically apply SDF best practices when you:
+With skill preloading configured, an assistant will automatically apply SDF best practices when you:
 - Work on any NetSuite SDF project (SuiteApps or Account Customization projects).
 - Create or modify SuiteScript files (all 14 script types including Suitelets, RESTlets, User Event Scripts, etc.).
 - Work with Object XML files, custom records, custom fields, or other SDF objects.

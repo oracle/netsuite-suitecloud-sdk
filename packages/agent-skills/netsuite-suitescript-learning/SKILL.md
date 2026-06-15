@@ -31,7 +31,7 @@ Invoke this skill at any time by typing:
 /netsuite-suitescript-learning
 ```
 
-Note: `/netsuite-suitescript-learning` is the full skill command, while `/suitescript-learning` may be available as a client alias where supported.
+Note: `/netsuite-suitescript-learning` is the full skill command, while `/suitescript-learning` may be available as a coding assistant alias where supported.
 
 Or use specific mode commands:
 ```
@@ -43,8 +43,8 @@ Or use specific mode commands:
 /netsuite-suitescript-learning final # Generate a comprehensive learning document
 ```
 
-### Optional Claude Client Activation Example
-For Claude clients that support project skill preloading, you can add this skill to your project's `.claude/settings.local.json`:
+### Optional Coding Assistant Activation Example
+For Claude Code, add this to your project's `.claude/settings.local.json`:
 
 ```json
 {

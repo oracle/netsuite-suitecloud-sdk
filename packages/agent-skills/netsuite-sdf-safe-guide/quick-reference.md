@@ -33,7 +33,7 @@ Or use natural language triggers:
 - `create object for this script` – Generate Object XML for the current or specified file.
 - `check my deployment XML` – Review and validate existing Object XML files.
 
-### Optional Client Activation Example
+### Optional Coding Assistant Activation Example
 For Claude Code, add this to your project's `.claude/settings.local.json`:
 
 ```json
