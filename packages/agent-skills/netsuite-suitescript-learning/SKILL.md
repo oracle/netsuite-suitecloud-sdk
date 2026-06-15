@@ -301,7 +301,7 @@ Key points from the SAFE Guide:
 - [Point 1 from SAFE Guide]
 - [Point 2 from SAFE Guide]
 
-See: `netsuite-sdf-safe-guide/references/[XX-filename.md]`
+See: `../netsuite-sdf-safe-guide/references/[XX-filename.md]`
 ````
 
 #### Concept-to-Principle Mapping
@@ -533,7 +533,7 @@ Topic-based learning from SAFE Guide references. This mode generates educational
 
 #### How Learn Mode Works
 
-1. **Read SAFE Guide Reference**: Load the relevant reference file from `netsuite-sdf-safe-guide/references/`.
+1. **Read SAFE Guide Reference**: Load the `netsuite-sdf-safe-guide` skill first, then read the relevant reference file from `../netsuite-sdf-safe-guide/references/`.
 2. **Extract Key Concepts**: Identify the main principles, patterns, and examples.
 3. **Generate Summary**: Create a structured learning document with examples.
 4. **Include Quiz Questions**: Generate 2–3 quick questions to reinforce learning.
@@ -577,7 +577,7 @@ Topic-based learning from SAFE Guide references. This mode generates educational
 
 ### Source
 Summarized from SAFE Guide Principle [X]: [Name]
-Reference file: `references/[XX-filename.md]`
+Reference file: `../netsuite-sdf-safe-guide/references/[XX-filename.md]`
 ````
 
 #### Example: `/suitescript-learning learn ncache`
@@ -639,7 +639,7 @@ define(['N/cache'], (cache) => {
 
 ### Source
 Summarized from SAFE Guide Appendix: N/cache Sample Implementation
-Reference file: `netsuite-sdf-safe-guide/references/appendix-ncache-sample.md`
+Reference file: `../netsuite-sdf-safe-guide/references/appendices/appendix-ncache-sample.md`
 ````
 
 ---
@@ -854,7 +854,7 @@ Based on SAFE Guide principles, consider:
 3. [Performance optimization suggestion from Principle 3]
 
 ### Reference Files Consulted
-- `netsuite-sdf-safe-guide/references/[relevant-files.md]`
+- `../netsuite-sdf-safe-guide/references/[relevant-files.md]`
 
 ---
 
@@ -1265,8 +1265,10 @@ This section is a quick reference for all available learning topics in Learn Mod
 
 All SAFE Guide reference files are located at:
 ```
-netsuite-sdf-safe-guide/references/
+../netsuite-sdf-safe-guide/references/
 ```
+
+Load the `netsuite-sdf-safe-guide` skill first, then read files from its `references/` directory using sibling-relative paths.
 
 These files are automatically consulted when generating learning content, quizzes, and compliance reviews.
 
