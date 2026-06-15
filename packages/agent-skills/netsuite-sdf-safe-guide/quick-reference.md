@@ -2,7 +2,7 @@
 
 **Created by:** Oracle NetSuite
 
-**For Solution Consultants using VS Code with Claude Code or Cline**
+**For NetSuite Platform Developers and Solution Consultants using coding assistants such as Claude Code, Codex or Cline**
 
 ---
 
@@ -14,7 +14,7 @@ Comprehensive NetSuite SuiteCloud Development Framework (SDF) best practices gui
 - **Documents** common pitfalls and solutions.
 - **Guides** logging, permissions, and script deployment.
 
-Works with both:
+Works with supported coding assistants, including:
 - **Claude Code** (via Skills).
 - **Cline** (via `.clinerules`).
 
@@ -33,8 +33,8 @@ Or use natural language triggers:
 - `create object for this script` – Generate Object XML for the current or specified file.
 - `check my deployment XML` – Review and validate existing Object XML files.
 
-### Automatic Activation (Recommended)
-For NetSuite SuiteCloud Development Framework (SDF) projects, add this to your project's `.claude/settings.local.json`:
+### Optional Client Activation Example
+For Claude Code, add this to your project's `.claude/settings.local.json`:
 
 ```json
 {
@@ -47,7 +47,7 @@ For NetSuite SuiteCloud Development Framework (SDF) projects, add this to your p
 }
 ```
 
-With this configuration, Claude will automatically apply SDF best practices when you:
+With skill preloading configured, an assistant will automatically apply SDF best practices when you:
 - Work on any NetSuite SDF project (SuiteApps or Account Customization projects).
 - Create or modify SuiteScript files (all 14 script types, including Suitelets, RESTlets, etc.).
 - Work with Object XML files, custom records, custom fields, or other SDF objects.
@@ -60,12 +60,12 @@ Add a `.clinerules` file to your project root with the rule content.
 
 ## Quick Start
 
-### Using Claude Code
+### Claude Code Example
 ```
 generate objects
 ```
 
-### Using Cline
+### Cline Example
 ```
 generate objects
 ```
@@ -760,13 +760,19 @@ All server-side scripts require SERVERSIDESCRIPTING in manifest.xml:
 
 ## Installation
 
-### Claude Code Skill
-Copy skill file to:
+### Claude Code Skill Example
+For Claude Code, copy skill file to:
 ```
 ~/.claude/skills/netsuite-sdf-safe-guide/SKILL.md
 ```
 
-### Cline Rule
+### Codex Skill Example
+For Codex, copy skill file to:
+```
+~/.codex/skills/netsuite-sdf-safe-guide/SKILL.md
+```
+
+### Cline Rule Example
 Add `.clinerules` file to your project root with the rule content.
 
 ---
@@ -775,7 +781,7 @@ Add `.clinerules` file to your project root with the rule content.
 
 | File | Purpose |
 |------|---------|
-| `netsuite-sdf-safe-guide-skill.md` | Full skill documentation for Claude Code |
+| `netsuite-sdf-safe-guide-skill.md` | Full skill documentation for supported coding assistants |
 | `netsuite-object-generator.clinerules` | Rule file content for Cline users |
 | `NetSuite SDF Safe Guide – Quick Reference.md` | This quick reference guide |
 

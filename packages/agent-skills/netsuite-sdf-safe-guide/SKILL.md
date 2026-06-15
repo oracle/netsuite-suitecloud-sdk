@@ -1514,7 +1514,7 @@ CustomTools become MCP tools automatically through this lifecycle:
 5. **Return** — JS return value is serialized to JSON and sent back to the agent.
 
 The `<exposetoaiconnector>` flag controls visibility (renamed from `<exposeto3rdpartyagents>` in NetSuite 2026.1 — value semantics unchanged):
-- **`T`** — available to external MCP clients (Claude, etc.) AND NetSuite AI
+- **`T`** — available to external MCP clients AND NetSuite AI
 - **`F`** — only visible to NetSuite's built-in AI assistant
 
 The RPC schema IS the MCP tool definition — `name`, `description`, `inputSchema`, and `annotations` map 1:1. What you write in the schema is exactly what the AI agent sees.
@@ -1583,7 +1583,7 @@ Please try again.
 ```
 User: "I just created a new CustomTool script at /SuiteScripts/tools/emailvalidator.js. Can you create the object file?"
 
-Claude:
+Assistant:
 1. Reads /SuiteScripts/tools/emailvalidator.js.
 2. Parses @NScriptType CustomTool.
 3. Checks for /SuiteScripts/tools/emailvalidator_schema.json.
@@ -1596,7 +1596,7 @@ Claude:
 ```
 User: "Create an object for my client script at /SuiteScripts/customer_validation.js".
 
-Claude:
+Assistant:
 1. Reads the file.
 2. Parses @NScriptType ClientScript.
 3. Asks: "What record type should this ClientScript be deployed to?".
@@ -1609,7 +1609,7 @@ Claude:
 ```
 User: "I have 5 new scripts in /SuiteScripts/batch/ that need objects created".
 
-Claude:
+Assistant:
 1. Lists all .js files in /SuiteScripts/batch/.
 2. For each file:
    - Parse script type.
@@ -2713,7 +2713,7 @@ For detailed architectural guidance based on Oracle's SAFE Guide (SuiteApp Archi
 
 **After completing all file operations, display a Change Report summarizing every file touched.**
 
-### Instructions for Claude
+### Instructions for the Assistant
 
 1. **Before editing any file**: Read its current contents (or note that the file does not exist yet). Store this as the "before" state.
 2. **Perform edits**: Write or edit files as normal using the available tools.

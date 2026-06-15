@@ -358,7 +358,7 @@ The XML element was renamed from `<exposeto3rdpartyagents>` to `<exposetoaiconne
 
 | Value | Meaning |
 |-------|---------|
-| `T` | Available to external MCP clients (Claude, etc.) AND NetSuite AI |
+| `T` | Available to external MCP clients AND NetSuite AI |
 | `F` | Only available to NetSuite's built-in AI assistant |
 
 ---
