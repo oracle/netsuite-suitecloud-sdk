@@ -7,7 +7,7 @@ metadata:
   version: 1.0
 ---
 
-# Netsuite SuiteScript Learning Skill
+# NetSuite SuiteScript Learning Skill
 
 **Created by:** Oracle NetSuite
 
