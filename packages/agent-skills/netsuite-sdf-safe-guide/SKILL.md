@@ -4,7 +4,7 @@ description: Comprehensive NetSuite SDF best practices based on the SAFE Guide (
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
 ---
 
 # NetSuite SDF Safe Guide
@@ -37,9 +37,10 @@ Or use natural language triggers:
 - "Check my deployment XML" – Review and validate existing Object XML files.
 - "Review my SuiteScript" – Review code for best practices, pitfalls, and governance issues.
 
-### Automatic Activation (Recommended for SDF Projects)
-For NetSuite SuiteCloud Development Framework (SDF) projects, configure Claude to automatically use this skill by adding it to your project's settings file.
+### Optional Client Activation Example
+For NetSuite SuiteCloud Development Framework (SDF) projects, supported clients may preload this skill from project settings.
 
+Here is an example for Claude, which is one of the supported clients:
 **Step 1:** Create or edit `.claude/settings.local.json` in your SDF project root:
 
 ```json
@@ -66,7 +67,7 @@ For NetSuite SuiteCloud Development Framework (SDF) projects, configure Claude t
 }
 ```
 
-With this configuration, Claude will automatically apply SDF best practices when you:
+With skill preloading configured in a supported client, an assistant will automatically apply SDF best practices when you:
 - Work on any NetSuite SDF project (SuiteApps or Account Customization projects).
 - Create or modify SuiteScript files (all 14 script types including Suitelets, RESTlets, User Event Scripts, etc.).
 - Work with Object XML files, custom records, custom fields, or other SDF objects.
