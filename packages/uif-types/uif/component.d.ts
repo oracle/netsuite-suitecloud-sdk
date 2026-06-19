@@ -1322,6 +1322,21 @@ declare module '@uif-js/component' {
 
 	}
 
+	export class BloomLine extends PackageCore.Component {
+		constructor(options?: Self.BloomLine.Options);
+
+		animation: boolean;
+
+	}
+
+	export namespace BloomLine {
+		interface Options extends PackageCore.Component.Options {
+			animation?: boolean;
+
+		}
+
+	}
+
 	export class BloomPanel extends PackageCore.Component {
 		constructor(options?: Self.BloomPanel.Options);
 
@@ -1634,6 +1649,8 @@ declare module '@uif-js/component' {
 
 			onToggled?: Self.Button.ToggledCallback;
 
+			bloom?: boolean;
+
 		}
 
 		interface EventTypes extends PackageCore.Component.EventTypes {
@@ -1689,6 +1706,7 @@ declare module '@uif-js/component' {
 			GHOST,
 			DANGER,
 			LINK,
+			MONOCHROME,
 		}
 
 		enum ToggleType {
@@ -2451,6 +2469,10 @@ declare module '@uif-js/component' {
 
 		hasTools: boolean;
 
+		bloom: boolean;
+
+		bloomAnimation: boolean;
+
 		setAction(action: ((() => void) | null)): void;
 
 		setImage(image: (string | PackageCore.Url | Self.Image | null)): void;
@@ -2502,6 +2524,10 @@ declare module '@uif-js/component' {
 			action?: () => void;
 
 			contentGap?: (Self.Card.GapSize | Self.Card.GapSizeObject);
+
+			bloom?: boolean;
+
+			bloomAnimation?: boolean;
 
 		}
 
@@ -4564,6 +4590,8 @@ declare module '@uif-js/component' {
 
 			lockedLevels?: number;
 
+			stickySegments?: Self.DataGrid.StickySegments;
+
 			onSort?: Self.DataGrid.SortCallback;
 
 		}
@@ -4626,6 +4654,17 @@ declare module '@uif-js/component' {
 			column: Self.GridColumn;
 
 			direction: Self.DataGrid.SortDirection;
+
+		}
+
+		interface StickySegments {
+			header: boolean;
+
+			footer: boolean;
+
+			left: boolean;
+
+			right: boolean;
 
 		}
 
@@ -5211,6 +5250,11 @@ declare module '@uif-js/component' {
 		enum Reason {
 			DATE_CHANGED,
 			INTERVAL,
+		}
+
+		enum VisualStyle {
+			DEFAULT,
+			REDWOOD_FIELD,
 		}
 
 	}
@@ -5878,6 +5922,7 @@ declare module '@uif-js/component' {
 
 		enum VisualStyle {
 			DEFAULT,
+			REDWOOD_STANDALONE,
 		}
 
 	}
@@ -10837,6 +10882,8 @@ declare module '@uif-js/component' {
 
 		target: (string | Self.Link.Target | null);
 
+		download: (string | Self.Link.Download | null);
+
 		wrap: (boolean | number);
 
 		whitespace: boolean;
@@ -10848,6 +10895,8 @@ declare module '@uif-js/component' {
 		setRoute(route: (string | PackageCore.Route | Self.Link.Route)): void;
 
 		setTarget(target: (string | Self.Link.Target | null)): void;
+
+		setDownload(download: (string | Self.Link.Download | null)): void;
 
 		click(): void;
 
@@ -10877,6 +10926,8 @@ declare module '@uif-js/component' {
 
 			target?: Self.Link.Target;
 
+			download?: (string | Self.Link.Download | null);
+
 			url?: (string | PackageCore.Url);
 
 			route?: (string | PackageCore.Route | Self.Link.Route);
@@ -10897,6 +10948,10 @@ declare module '@uif-js/component' {
 			SELF,
 			PARENT,
 			TOP,
+		}
+
+		enum Download {
+			FILENAME_BY_RESPONSE_HEADER,
 		}
 
 	}
@@ -11560,6 +11615,8 @@ declare module '@uif-js/component' {
 	}
 
 	export class ListView extends PackageCore.Component {
+		constructor(options?: Self.ListView.Options);
+
 		dataProvider: (Self.ListView.StaticDataProvider | Self.ListView.PagedDataProvider);
 
 		dataSource: (PackageCore.DataSource | null);
@@ -12970,7 +13027,7 @@ declare module '@uif-js/component' {
 
 		}
 
-		type ItemDefinition = (Self.MenuItem.SubmenuItemDefinition | Self.MenuItem.ActionItemDefinition | Self.MenuItem.LinkItemDefinition);
+		type ItemDefinition = (Self.MenuItem.SubmenuItemDefinition | Self.MenuItem.ActionItemDefinition | Self.MenuItem.LinkItemDefinition | Self.MenuItem.CustomItemDefinition);
 
 	}
 
@@ -14230,6 +14287,7 @@ declare module '@uif-js/component' {
 		enum Icons {
 			SANDBOX,
 			RELEASE_PREVIEW,
+			NEXT_PREVIEW,
 			HELP,
 			FEEDBACK,
 			CREATE_NEW_RECORD,
@@ -14653,6 +14711,7 @@ declare module '@uif-js/component' {
 		enum VisualStyle {
 			STANDALONE,
 			EMBEDDED,
+			REDWOOD_FIELD,
 		}
 
 	}
@@ -14782,7 +14841,7 @@ declare module '@uif-js/component' {
 
 		size: Self.Popover.Size;
 
-		static withOk(args: Self.Popover.Options): void;
+		static withOk(args: Self.Popover.Options): Self.Popover;
 
 		static createAlert(args: Self.Popover.AlertOptions): Self.Popover;
 
@@ -15213,6 +15272,17 @@ declare module '@uif-js/component' {
 
 			noDataMessage?: (string | PackageCore.Translation);
 
+			search?: (Self.RadioGroupPicker.SearchBoxPredicate | Self.RadioGroupPicker.SearchBoxOptions);
+
+		}
+
+		type SearchBoxPredicate = (value: any, phrase: string) => boolean;
+
+		interface SearchBoxOptions {
+			predicate?: Self.RadioGroupPicker.SearchBoxPredicate;
+
+			textBox?: Self.TextBox.Options;
+
 		}
 
 	}
@@ -15601,11 +15671,17 @@ declare module '@uif-js/component' {
 
 		setText(text: string, options?: object): void;
 
+		insertText(text: string): void;
+
 		setMaxLength(maxLength: number): void;
 
 		setMaxLengthIndicator(value: boolean): void;
 
 		setEditorMode(editorMode: Self.RichTextEditor.EditorMode): void;
+
+		resize(width: (number | string), height: (number | string)): void;
+
+		getEditableElement(): void;
 
 		static Event: Self.RichTextEditor.EventTypes;
 
@@ -15621,9 +15697,15 @@ declare module '@uif-js/component' {
 
 			placeholder?: (string | PackageCore.Translation);
 
+			allowedHtmlTags?: RegExp;
+
 			allowChangeEditorMode?: boolean;
 
 			editorMode?: EditorMode;
+
+			width?: (number | string);
+
+			height?: (number | string);
 
 			resizable?: boolean;
 
@@ -15636,6 +15718,8 @@ declare module '@uif-js/component' {
 			onTextChanged?: Self.RichTextEditor.TextChangedCallback;
 
 			bloom?: boolean;
+
+			contentToolbar?: (PackageCore.Component | PackageCore.JSX.Element);
 
 		}
 
@@ -15655,6 +15739,8 @@ declare module '@uif-js/component' {
 
 			EDITOR_RESIZED: string;
 
+			EDITOR_MODE_CHANGED: string;
+
 			SELECTION_CHANGED: string;
 
 		}
@@ -15662,6 +15748,7 @@ declare module '@uif-js/component' {
 		enum VisualStyle {
 			DEFAULT,
 			EMBEDDED,
+			REDWOOD_FIELD,
 		}
 
 		enum ResizeDirection {
@@ -17035,6 +17122,8 @@ declare module '@uif-js/component' {
 
 		toggled: boolean;
 
+		bloom: boolean;
+
 		setLabel(label: (null | string | number | PackageCore.Translation | PackageCore.Component)): void;
 
 		setIcon(icon: (PackageCore.ImageMetadata | null)): void;
@@ -17076,6 +17165,8 @@ declare module '@uif-js/component' {
 			size?: Self.SplitButton.Size;
 
 			type?: Self.SplitButton.Type;
+
+			bloom?: boolean;
 
 		}
 
@@ -17211,7 +17302,7 @@ declare module '@uif-js/component' {
 
 		export import Orientation = Self.SplitPanelItem.Orientation;
 
-		export import ItemSize = Self.SplitPanelItem.Size;
+		export import ItemSize = Self.SplitPanelItemSize;
 
 		export import HandleStyle = Self.SplitPanelItem.HandleStyle;
 
@@ -17230,7 +17321,7 @@ declare module '@uif-js/component' {
 
 		value: any;
 
-		size: Self.SplitPanel.ItemSize;
+		size: (Self.SplitPanelItem.SizeOptions | string | number);
 
 		minSize: (string | number);
 
@@ -17297,12 +17388,7 @@ declare module '@uif-js/component' {
 			VERTICAL,
 		}
 
-		enum Size {
-			AUTO_SIZE,
-			INITIAL_SIZE,
-			FRACTION_SIZE,
-			CONTENT_SIZE,
-		}
+		export import Size = Self.SplitPanelItemSize;
 
 		enum HandleStyle {
 			GRAB_BEFORE,
@@ -17316,6 +17402,17 @@ declare module '@uif-js/component' {
 			START,
 			END,
 		}
+
+	}
+
+	export namespace SplitPanelItemSize {
+		const AUTO_SIZE: Self.SplitPanelItem.SizeOptions;
+
+		function INITIAL_SIZE(size: (number | string)): Self.SplitPanelItem.SizeOptions;
+
+		function FRACTION_SIZE(factor: number): Self.SplitPanelItem.SizeOptions;
+
+		const CONTENT_SIZE: Self.SplitPanelItem.SizeOptions;
 
 	}
 
@@ -17773,6 +17870,8 @@ declare module '@uif-js/component' {
 
 		descriptionPosition: Self.StepperItem.DescriptionPosition;
 
+		descriptionMaxWidth: number;
+
 		separatorSize: Self.StepperItem.SeparatorSize;
 
 		type: Self.StepperItem.Type;
@@ -17804,6 +17903,8 @@ declare module '@uif-js/component' {
 			orientation?: Self.StepperItem.Orientation;
 
 			descriptionPosition?: Self.StepperItem.DescriptionPosition;
+
+			descriptionMaxWidth?: number;
 
 			separatorSize?: Self.StepperItem.SeparatorSize;
 
@@ -18950,7 +19051,7 @@ declare module '@uif-js/component' {
 
 			onTextAccepted?: Self.TextArea.TextAcceptedCallback;
 
-			toolbar?: (PackageCore.Component | PackageCore.JSX.Element);
+			contentToolbar?: (PackageCore.Component | PackageCore.JSX.Element);
 
 			bloom?: boolean;
 
@@ -19808,6 +19909,11 @@ declare module '@uif-js/component' {
 		enum Reason {
 			TIME_CHANGED,
 			INTERVAL,
+		}
+
+		enum VisualStyle {
+			DEFAULT,
+			REDWOOD_FIELD,
 		}
 
 	}

@@ -11,7 +11,6 @@ const SdkArtifactVerifier = require('./SdkArtifactVerifier');
 
 const https = require('https');
 const { URL } = require('url');
-const ProxyAgent = require('../../utils/http/ProxyAgent');
 const { ENCODING, EVENT, HEADER } = require('../../utils/http/HttpConstants');
 
 const HOME_PATH = require('os').homedir();
@@ -19,11 +18,14 @@ const HOME_PATH = require('os').homedir();
 const { FOLDERS } = require('../../ApplicationConstants');
 
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
+const ProxyEnvironmentUtils = require('../../services/proxy/ProxyEnvironmentUtils');
 
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 
 const { SDK_DOWNLOAD_SERVICE } = require('../../services/TranslationKeys');
+
+const ProxyService = require('../../services/proxy/ProxyAgentService');
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 const ERROR_CODE = -1;
@@ -42,7 +44,7 @@ class SdkDownloadService {
 		const fullURL = `${SdkProperties.getDownloadURL()}/${SdkProperties.getSdkFileName()}`;
 		const destinationFilePath = path.join(sdkDirectory, SdkProperties.getSdkFileName());
 		const temporaryDestinationFilePath = `${destinationFilePath}.tmp`;
-		const proxy = process.env.SUITECLOUD_PROXY || process.env.npm_config_https_proxy || process.env.npm_config_proxy;
+		const proxy =  ProxyEnvironmentUtils.resolveSdkDownloadProxyFromEnv();
 		const skipProxy = SdkProperties.isCustomSdkMetadataUsed();
 
 		try {
@@ -63,7 +65,7 @@ class SdkDownloadService {
 
 		const requestOptions = {
 			encoding: ENCODING.BINARY,
-			...(proxy && !skipProxy && { agent: new ProxyAgent(proxy, { tunnel: true, timeout: 15000 }) }),
+			...(proxy && !skipProxy && { agent: ProxyService.getProxyAgent(proxy) }),
 		};
 
 		if (!/^https:$/.test(downloadUrlProtocol)) {
