@@ -5,30 +5,28 @@
 'use strict';
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
+const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
+const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
 const BaseAction = require('../../base/BaseAction');
+const {
+	prepareImportFilesParams,
+	addCompareFilesImportFlag,
+	addImportCallMetadata,
+	executeImportFilesCommand,
+} = require('@oracle/suitecloud-sdk-core/commands/file/import/ImportFilesHandler');
+const {
+	executeWithAuthRetry,
+	shouldRetryAuthByResult,
+} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');
 const CLIException = require('../../../CLIException');
-
-const COMMAND_OPTIONS = {
-	ALLOW_FOR_SUITEAPPS: 'allowforsuiteapps',
-	AUTH_ID: 'authid',
-	CALLED_FROM_COMPARE_FILES: 'calledfromcomparefiles',
-	CALLED_FROM_UPDATE: 'calledfromupdate',
-	FOLDER: 'folder',
-	PATHS: 'paths',
-	EXCLUDE_PROPERTIES: 'excludeproperties',
-	PROJECT: 'project',
-};
 
 module.exports = class ImportFilesAction extends BaseAction {
 	constructor(options) {
@@ -40,32 +38,15 @@ module.exports = class ImportFilesAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		const { PROJECT, PATHS, EXCLUDE_PROPERTIES, AUTH_ID } = COMMAND_OPTIONS;
-		params[PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		params[AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
-		if (params.hasOwnProperty(PATHS)) {
-			if (Array.isArray(params[PATHS])) {
-				params[PATHS] = params[PATHS].map(CommandUtils.quoteString).join(' ');
-			} else {
-				params[PATHS] = CommandUtils.quoteString(params[PATHS]);
-			}
-		}
-		if (params[EXCLUDE_PROPERTIES]) {
-			params[EXCLUDE_PROPERTIES] = '';
-		} else {
-			delete params[EXCLUDE_PROPERTIES];
-		}
+		const preparedImportParams = prepareImportFilesParams(
+			params,
+			this._projectFolder,
+			getProjectDefaultAuthId(this._executionPath)
+		);
+		this._calledFromCompareFiles = preparedImportParams.calledFromCompareFiles;
+		this._calledFromUpdate = preparedImportParams.calledFromUpdate;
 
-		if (params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES]) {
-			this._calledFromCompareFiles = true;
-			delete params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES];
-		}
-		if (params[COMMAND_OPTIONS.CALLED_FROM_UPDATE]) {
-			this._calledFromUpdate = true;
-			delete params[COMMAND_OPTIONS.CALLED_FROM_UPDATE];
-		}
-
-		return params;
+		return preparedImportParams.params;
 	}
 
 	async execute(params) {
@@ -78,36 +59,83 @@ module.exports = class ImportFilesAction extends BaseAction {
 				await this._log.info(NodeTranslationService.getMessage(WARNINGS.OVERRIDE));
 			}
 
-			if (this._calledFromCompareFiles) {
-				params[COMMAND_OPTIONS.ALLOW_FOR_SUITEAPPS] = '';
-			}
-
-			const executionContextImportObjects = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-				.integration()
-				.addParams(params)
-				.build();
+			const executionParams = this._calledFromCompareFiles ? addCompareFilesImportFlag(params) : params;
 
 			const operationResult = await executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContextImportObjects),
+				action: this._executeImportWithAuthRetry(executionParams),
 				message:  NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
-			if (this._calledFromCompareFiles) {
-				params[COMMAND_OPTIONS.CALLED_FROM_COMPARE_FILES] = true;
-			}
-			if (this._calledFromUpdate) {
-				params[COMMAND_OPTIONS.CALLED_FROM_UPDATE] = true;
-			}
+			const commandParameters = addImportCallMetadata(params, this._calledFromCompareFiles, this._calledFromUpdate);
 
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === 'SUCCESS'
 				? ActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
-						.withCommandParameters(params)
+						.withCommandParameters(commandParameters)
 						.build()
-				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(params).build();
+				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(commandParameters).build();
 		} catch (error) {
-			const errorMessage = error instanceof CLIException ? error.getErrorMessage() : error;
-			return ActionResult.Builder.withErrors([errorMessage]).build();
+			if (error instanceof CLIException) {
+				return ActionResult.Builder.withErrors([error.getErrorMessage()]).build();
+			}
+			return ActionResult.Builder.withErrors(toErrorMessages(error)).build();
 		}
 	}
+
+	async _executeImportWithAuthRetry(params) {
+		const authId = params.authid;
+		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
+		return executeWithAuthRetry({
+			authId,
+			authSessionProvider,
+			shouldRetryAuth: shouldRetryAuthByResult,
+			executeWithAuthSession: (authCredentials) => executeImportFilesCommand({
+				hostName: authCredentials.hostName,
+				accessToken: authCredentials.accessToken,
+				projectFolder: unquote(params.project),
+				filePaths: parseQuotedMultiValue(params.paths),
+				excludeProperties: Object.prototype.hasOwnProperty.call(params, 'excludeproperties'),
+				userAgent: getUserAgent(this._executionEnvironmentContext),
+			}),
+		});
+	}
 };
+
+function unquote(value) {
+	if (typeof value === 'string' && value.length > 1 && value.startsWith('"') && value.endsWith('"')) {
+		return value.slice(1, -1);
+	}
+	return value;
+}
+
+function parseQuotedMultiValue(value) {
+	if (!value) {
+		return [];
+	}
+	if (Array.isArray(value)) {
+		return value.map(unquote);
+	}
+	const normalizedValue = String(value);
+	const matches = normalizedValue.match(/"([^"]+)"/g);
+	if (matches) {
+		return matches.map((match) => unquote(match));
+	}
+	return normalizedValue
+		.trim()
+		.split(/\s+/)
+		.map(unquote)
+		.filter(Boolean);
+}
+
+function getUserAgent(executionEnvironmentContext) {
+	if (!executionEnvironmentContext) {
+		return undefined;
+	}
+	const platform = executionEnvironmentContext.getPlatform && executionEnvironmentContext.getPlatform();
+	const platformVersion =
+		executionEnvironmentContext.getPlatformVersion && executionEnvironmentContext.getPlatformVersion();
+	if (!platform || !platformVersion) {
+		return undefined;
+	}
+	return `${platform}/${platformVersion}`;
+}

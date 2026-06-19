@@ -5,13 +5,22 @@
 'use strict';
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
-const CommandUtils = require('../../../utils/CommandUtils');
-const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const BaseAction = require('../../base/BaseAction');
+const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
+const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
+const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
+const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
+const {
+	prepareListObjectsParams,
+	executeListObjectsCommand,
+	parseObjectTypes,
+} = require('@oracle/suitecloud-sdk-core/commands/object/list/ListObjectsHandler');
+const {
+	executeWithAuthRetry,
+	shouldRetryAuthByResult,
+} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
 
 const {
 	COMMAND_LISTOBJECTS: { LISTING_OBJECTS },
@@ -22,42 +31,57 @@ const COMMAND_PARAMETERS = {
 };
 
 module.exports = class ListObjectsAction extends BaseAction {
-	constructor(options) {
-		super(options);
-	}
-
 	preExecute(params) {
-		params[COMMAND_PARAMETERS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
-		return params;
+		return prepareListObjectsParams(params, getProjectDefaultAuthId(this._executionPath));
 	}
 
 	async execute(params) {
 		try {
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
-			if (Array.isArray(sdkParams.type)) {
-				sdkParams.type = sdkParams.type.join(' ');
-			}
-
-			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-				.integration()
-				.addParams(sdkParams)
-				.build();
-
-			const actionListObjects = this._sdkExecutor.execute(executionContext);
-
 			const operationResult = await executeWithSpinner({
-				action: actionListObjects,
+				action: this._executeListObjectsWithAuthRetry(sdkParams),
 				message: NodeTranslationService.getMessage(LISTING_OBJECTS),
 			});
 
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === 'SUCCESS'
 				? ActionResult.Builder.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.withCommandParameters(sdkParams)
 					.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(sdkParams).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			return ActionResult.Builder.withErrors(toErrorMessages(error)).build();
 		}
 	}
+
+	async _executeListObjectsWithAuthRetry(sdkParams) {
+		const authId = sdkParams[COMMAND_PARAMETERS.AUTH_ID];
+		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
+		return executeWithAuthRetry({
+			authId,
+			authSessionProvider,
+			shouldRetryAuth: shouldRetryAuthByResult,
+			executeWithAuthSession: (authCredentials) => executeListObjectsCommand({
+				hostName: authCredentials.hostName,
+				accessToken: authCredentials.accessToken,
+				appId: sdkParams.appid,
+				scriptIdContains: sdkParams.scriptid,
+				objectTypes: parseObjectTypes(sdkParams.type),
+				userAgent: getUserAgent(this._executionEnvironmentContext),
+			}),
+		});
+	}
 };
+
+function getUserAgent(executionEnvironmentContext) {
+	if (!executionEnvironmentContext) {
+		return undefined;
+	}
+	const platform = executionEnvironmentContext.getPlatform && executionEnvironmentContext.getPlatform();
+	const platformVersion =
+		executionEnvironmentContext.getPlatformVersion && executionEnvironmentContext.getPlatformVersion();
+	if (!platform || !platformVersion) {
+		return undefined;
+	}
+	return `${platform}/${platformVersion}`;
+}

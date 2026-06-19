@@ -4,14 +4,24 @@
  */
 'use strict';
 
+const path = require('path');
+const os = require('os');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const BaseAction = require('../../base/BaseAction');
-const { generateAPIKey } = require('../../../utils/APIKeyGenerator');
-const { ClientAPIKeyObjectWrapper } = require('../../../utils/ClientAPIKeyObjectWrapper');
 const { readClientAPIKeyFileContents, writeClientAPIKeyFileContents } = require('../../../utils/ClientAPIKeyUtils');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
-const { COMMAND_PROXY_GENERATEKEY : { ERRORS : { UNABLE_TO_GENERATE_KEY } } } = require('../../../services/TranslationKeys');
+const { FILES, FOLDERS } = require('../../../ApplicationConstants');
+const {
+	COMMAND_PROXY_GENERATEKEY : { ERRORS : { UNABLE_TO_GENERATE_KEY } },
+	UTILS: { CLIENT_API_KEY_UTILS },
+} = require('../../../services/TranslationKeys');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
+const {
+	buildProxyGenerateKeyResult,
+	PROXY_GENERATE_KEY_ERROR,
+} = require('@oracle/suitecloud-sdk-core/commands/proxy/generatekey/ProxyGenerateKeyHandler');
+
+const CLIENT_API_KEY_FILEPATH = path.join(os.homedir(), FOLDERS.SUITECLOUD_SDK, FILES.CLIENT_API_KEY);
 
 module.exports = class ProxyGenerateKeyAction extends BaseAction {
 	constructor(options) {
@@ -20,18 +30,26 @@ module.exports = class ProxyGenerateKeyAction extends BaseAction {
 
 	async execute() {
 		try {
-			const newApiKey = generateAPIKey();
 			const readOperationResult = await readClientAPIKeyFileContents(this._sdkExecutor);
-			const clientApiKeyObjectWrapper = new ClientAPIKeyObjectWrapper(readOperationResult.data);
-			clientApiKeyObjectWrapper.setDefaultKeyValue(newApiKey);
+			const generateKeyResult = buildProxyGenerateKeyResult(readOperationResult.data);
+			if (generateKeyResult.validationError) {
+				const validationMessage =
+					generateKeyResult.validationError.errorCode === PROXY_GENERATE_KEY_ERROR.INVALID_KEY_FILE_CONTENTS
+						? NodeTranslationService.getMessage(CLIENT_API_KEY_UTILS.ERRORS.INVALID_FILE_CONTENTS, CLIENT_API_KEY_FILEPATH)
+						: NodeTranslationService.getMessage(UNABLE_TO_GENERATE_KEY);
+				return ActionResult.Builder.withErrors([
+					NodeTranslationService.getMessage(UNABLE_TO_GENERATE_KEY),
+					validationMessage,
+				]).build();
+			}
 
 			const writeOperationResult = await writeClientAPIKeyFileContents(
 				this._sdkExecutor,
-				clientApiKeyObjectWrapper.toJsonString()
+				generateKeyResult.updatedClientApiKeyContent
 			);
 
 			return writeOperationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-				? ActionResult.Builder.withData({ "proxyAPIKey": newApiKey }).build()
+				? ActionResult.Builder.withData({ "proxyAPIKey": generateKeyResult.proxyAPIKey }).build()
 				: ActionResult.Builder.withErrors(
 					[NodeTranslationService.getMessage(UNABLE_TO_GENERATE_KEY), writeOperationResult.errorMessages]).build();
 

@@ -37,22 +37,6 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 
 		const answers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_OPTIONS.SERVER,
-				message: NodeTranslationService.getMessage(QUESTIONS.SERVER_SIDE),
-				default: true,
-				choices: [
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.ACCOUNT),
-						value: true,
-					},
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.LOCAL),
-						value: false,
-					},
-				],
-			},
-			{
 				when: this._projectInfoService.getProjectType() === PROJECT_ACP,
 				type: CommandUtils.INQUIRER_TYPES.LIST,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
@@ -87,6 +71,6 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 				],
 			},
 		]);
-		return { ...params, ...answers };
+		return { ...params, ...answers, [COMMAND_OPTIONS.SERVER]: true };
 	}
 };

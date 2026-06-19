@@ -27,7 +27,6 @@ const COMMAND = {
 	FLAGS: {
 		NO_PREVIEW: 'no_preview',
 		SKIP_WARNING: 'skip_warning',
-		VALIDATE: 'validate',
 		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	},
 };
@@ -73,16 +72,6 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 					},
 				],
 			},
-			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND.FLAGS.VALIDATE,
-				message: NodeTranslationService.getMessage(QUESTIONS.PERFORM_LOCAL_VALIDATION),
-				default: true,
-				choices: [
-					{ name: NodeTranslationService.getMessage(YES), value: true },
-					{ name: NodeTranslationService.getMessage(NO), value: false },
-				],
-			},
 		]);
 
 		if (isSuiteAppProject && !answers.hasOwnProperty(COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES)) {
@@ -95,6 +84,9 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 		}
 		answers[COMMAND.OPTIONS.PROJECT] = this._projectFolder;
 
-		return answers;
+		return {
+			...params,
+			...answers,
+		};
 	}
 };

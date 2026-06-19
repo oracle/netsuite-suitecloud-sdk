@@ -6,14 +6,10 @@
 
 const { join } = require('path');
 const { default : { prompt, Separator } } = require('inquirer');
-const CommandsMetadataService = require('../../../core/CommandsMetadataService');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
 const { lineBreak } = require('../../../loggers/LoggerOsConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const SdkExecutor = require('../../../SdkExecutor');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const FileSystemService = require('../../../services/FileSystemService');
 const CommandUtils = require('../../../utils/CommandUtils');
@@ -33,6 +29,15 @@ const {
 	validateScriptId,
 } = require('../../../validation/InteractiveAnswersValidator');
 const FileUtils = require('../../../utils/FileUtils');
+const {
+	getAuthCredentialsForProjectCommand,
+	refreshAuthCredentialsForProjectCommand,
+	shouldRetryProjectCommandAuth,
+} = require('../../../utils/ProjectAuthUtils');
+const {
+	executeListObjectsCommand,
+	parseObjectTypes,
+} = require('@oracle/suitecloud-sdk-core/commands/object/list/ListObjectsHandler');
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
@@ -50,20 +55,14 @@ const ANSWERS_NAMES = {
 	IMPORT_REFERENCED_SUITESCRIPTS: 'import_referenced_suitescripts',
 };
 
-const LIST_OBJECTS_COMMAND_NAME = 'object:list';
 const CUSTOM_SCRIPT_PREFIX = 'customscript';
 
 module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
 
-		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
-
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
-		const commandsMetadataService = new CommandsMetadataService();
-		this._listObjectsMetadata = commandsMetadataService.getCommandMetadataByName(LIST_OBJECTS_COMMAND_NAME);
 		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
 
@@ -72,22 +71,17 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		const listObjectAnswers = await prompt(listObjectQuestions);
 
 		const paramsForListObjects = this._arrangeAnswersForListObjects(listObjectAnswers);
-		const executionContextForListObjects = SdkExecutionContext.Builder.forCommand(this._listObjectsMetadata.sdkCommand)
-			.integration()
-			.addParams(paramsForListObjects)
-			.build();
-
 		let listObjectsResult;
 		try {
 			listObjectsResult = await executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContextForListObjects),
+				action: this._executeListObjectsWithAuthRetry(paramsForListObjects),
 				message: NodeTranslationService.getMessage(MESSAGES.LOADING_LIST_OF_OBJECTS),
 			});
 		} catch (error) {
 			throw NodeTranslationService.getMessage(ERRORS.CALLING_LIST_OBJECTS, lineBreak, error);
 		}
 
-		if (listObjectsResult.status === SdkOperationResultUtils.STATUS.ERROR) {
+		if (listObjectsResult.status === 'ERROR') {
 			throw listObjectsResult.errorMessages;
 		}
 		const { data } = listObjectsResult;
@@ -297,7 +291,18 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		if (answers[ANSWERS_NAMES.SPECIFY_OBJECT_TYPE]) {
 			answers[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.TYPE_CHOICES_ARRAY].join(' ');
 		}
-		return CommandUtils.extractCommandOptions(answers, this._listObjectsMetadata);
+		const arranged = {};
+		arranged[ANSWERS_NAMES.AUTH_ID] = answers[ANSWERS_NAMES.AUTH_ID];
+		if (answers[ANSWERS_NAMES.APP_ID]) {
+			arranged[ANSWERS_NAMES.APP_ID] = answers[ANSWERS_NAMES.APP_ID];
+		}
+		if (answers[ANSWERS_NAMES.SCRIPT_ID]) {
+			arranged[ANSWERS_NAMES.SCRIPT_ID] = answers[ANSWERS_NAMES.SCRIPT_ID];
+		}
+		if (answers[ANSWERS_NAMES.OBJECT_TYPE]) {
+			arranged[ANSWERS_NAMES.OBJECT_TYPE] = answers[ANSWERS_NAMES.OBJECT_TYPE];
+		}
+		return arranged;
 	}
 
 	_arrangeAnswersForImportObjects(answers) {
@@ -308,4 +313,48 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 
 		return answers;
 	}
+
+	async _executeListObjectsWithAuthRetry(paramsForListObjects) {
+		const authId = paramsForListObjects[ANSWERS_NAMES.AUTH_ID];
+		let authCredentials = await getAuthCredentialsForProjectCommand(this._sdkPath, authId);
+		let operationResult = await executeListObjectsCommand({
+			hostName: authCredentials.hostName,
+			accessToken: authCredentials.accessToken,
+			appId: paramsForListObjects[ANSWERS_NAMES.APP_ID],
+			scriptIdContains: paramsForListObjects[ANSWERS_NAMES.SCRIPT_ID],
+			objectTypes: parseObjectTypes(paramsForListObjects[ANSWERS_NAMES.OBJECT_TYPE]),
+			userAgent: getUserAgent(this._executionEnvironmentContext),
+		});
+
+		if (!shouldRetryProjectCommandAuth(operationResult)) {
+			return operationResult;
+		}
+
+		authCredentials = await refreshAuthCredentialsForProjectCommand(
+			this._sdkPath,
+			authId,
+			this._executionEnvironmentContext
+		);
+		return executeListObjectsCommand({
+			hostName: authCredentials.hostName,
+			accessToken: authCredentials.accessToken,
+			appId: paramsForListObjects[ANSWERS_NAMES.APP_ID],
+			scriptIdContains: paramsForListObjects[ANSWERS_NAMES.SCRIPT_ID],
+			objectTypes: parseObjectTypes(paramsForListObjects[ANSWERS_NAMES.OBJECT_TYPE]),
+			userAgent: getUserAgent(this._executionEnvironmentContext),
+		});
+	}
 };
+
+function getUserAgent(executionEnvironmentContext) {
+	if (!executionEnvironmentContext) {
+		return undefined;
+	}
+	const platform = executionEnvironmentContext.getPlatform && executionEnvironmentContext.getPlatform();
+	const platformVersion =
+		executionEnvironmentContext.getPlatformVersion && executionEnvironmentContext.getPlatformVersion();
+	if (!platform || !platformVersion) {
+		return undefined;
+	}
+	return `${platform}/${platformVersion}`;
+}

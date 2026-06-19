@@ -8,10 +8,18 @@ const BaseAction = require('../../base/BaseAction');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const CommandUtils = require('../../../utils/CommandUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
+const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
-const SdkExecutionContext = require('../../../SdkExecutionContext');
-const { STATUS } = require('../../../utils/SdkOperationResultUtils');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
+const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
+const {
+	executeUpdateObjectsCommand,
+	executeUpdateCustomRecordWithInstancesCommand,
+} = require('@oracle/suitecloud-sdk-core/commands/object/update/UpdateObjectsHandler');
+const {
+	executeWithAuthRetry,
+	shouldRetryAuthByResult,
+} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
 
 const {
 	COMMAND_UPDATE: { ERRORS, MESSAGES, OUTPUT },
@@ -31,13 +39,8 @@ const COMMAND_OPTIONS = {
 	SCRIPT_ID: 'scriptid',
 	INCLUDE_INSTANCES: 'includeinstances',
 };
-const COMMAND_UPDATE_CUSTOM_RECORD_WITH_INSTANCES = 'updatecustomrecordwithinstances';
 const CUSTOM_RECORD_PREFIX = 'customrecord';
 module.exports = class UpdateAction extends BaseAction {
-	constructor(options) {
-		super(options);
-	}
-
 	preExecute(params) {
 		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
@@ -73,14 +76,14 @@ module.exports = class UpdateAction extends BaseAction {
 			const updateObjectsResult = await this._updateObjects(sdkParams);
 			const allResults = updateCustomRecordsWithInstancesResult.concat(updateObjectsResult.data);
 
-			return updateObjectsResult.status === STATUS.SUCCESS
+			return updateObjectsResult.status === 'SUCCESS'
 				? ActionResult.Builder.withData(allResults)
 						.withResultMessage(updateObjectsResult.resultMessage)
 						.withCommandParameters(sdkParams)
 						.build()
 				: ActionResult.Builder.withErrors(updateObjectsResult.errorMessages).withCommandParameters(sdkParams).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			return ActionResult.Builder.withErrors(toErrorMessages(error)).build();
 		}
 	}
 
@@ -95,7 +98,7 @@ module.exports = class UpdateAction extends BaseAction {
 		for (const scriptId of customRecordScriptIds) {
 			const updateCustomRecordResult = await this._executeCommandUpdateCustomRecordWithInstances(params, scriptId);
 			let resultMessage;
-			if (updateCustomRecordResult.status === STATUS.ERROR) {
+			if (updateCustomRecordResult.status === 'ERROR') {
 				resultMessage = updateCustomRecordResult.errorMessages;
 				this._log.warning(`${this._log.getPadding(1)}- ${NodeTranslationService.getMessage(ERRORS.CUSTOM_RECORD, scriptId, resultMessage)}`);
 			} else {
@@ -113,27 +116,80 @@ module.exports = class UpdateAction extends BaseAction {
 	}
 
 	async _executeCommandUpdateCustomRecordWithInstances(params, scriptId) {
-		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(COMMAND_UPDATE_CUSTOM_RECORD_WITH_INSTANCES)
-			.integration()
-			.addParam(COMMAND_OPTIONS.AUTH_ID, params[COMMAND_OPTIONS.AUTH_ID])
-			.addParam(COMMAND_OPTIONS.PROJECT, params[COMMAND_OPTIONS.PROJECT])
-			.addParam(COMMAND_OPTIONS.SCRIPT_ID, scriptId)
-			.build();
-		return await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForUpdate),
+		return executeWithSpinner({
+			action: this._executeUpdateCustomRecordsWithAuthRetry(params, scriptId),
 			message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECT_WITH_CUSTOM_INSTANCES, scriptId),
 		});
 	}
 
 	async _updateObjects(sdkParams) {
-		const executionContextForUpdate = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-			.integration()
-			.addParams(sdkParams)
-			.build();
-
-		return await executeWithSpinner({
-			action: this._sdkExecutor.execute(executionContextForUpdate),
+		return executeWithSpinner({
+			action: this._executeUpdateObjectsWithAuthRetry(sdkParams),
 			message: NodeTranslationService.getMessage(MESSAGES.UPDATING_OBJECTS),
 		});
 	}
+
+	async _executeUpdateObjectsWithAuthRetry(sdkParams) {
+		const authId = sdkParams[COMMAND_OPTIONS.AUTH_ID];
+		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
+		return executeWithAuthRetry({
+			authId,
+			authSessionProvider,
+			shouldRetryAuth: shouldRetryAuthByResult,
+			executeWithAuthSession: (authCredentials) => executeUpdateObjectsCommand({
+				hostName: authCredentials.hostName,
+				accessToken: authCredentials.accessToken,
+				projectFolder: unquote(sdkParams[COMMAND_OPTIONS.PROJECT]),
+				scriptIds: parseScriptIds(sdkParams[COMMAND_OPTIONS.SCRIPT_ID]),
+				userAgent: getUserAgent(this._executionEnvironmentContext),
+			}),
+		});
+	}
+
+	async _executeUpdateCustomRecordsWithAuthRetry(params, scriptId) {
+		const authId = params[COMMAND_OPTIONS.AUTH_ID];
+		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
+		return executeWithAuthRetry({
+			authId,
+			authSessionProvider,
+			shouldRetryAuth: shouldRetryAuthByResult,
+			executeWithAuthSession: (authCredentials) => executeUpdateCustomRecordWithInstancesCommand({
+				hostName: authCredentials.hostName,
+				accessToken: authCredentials.accessToken,
+				projectFolder: unquote(params[COMMAND_OPTIONS.PROJECT]),
+				scriptId,
+				userAgent: getUserAgent(this._executionEnvironmentContext),
+			}),
+		});
+	}
 };
+
+function unquote(value) {
+	if (typeof value === 'string' && value.length > 1 && value.startsWith('"') && value.endsWith('"')) {
+		return value.slice(1, -1);
+	}
+	return value;
+}
+
+function parseScriptIds(value) {
+	if (!value) {
+		return [];
+	}
+	if (Array.isArray(value)) {
+		return value;
+	}
+	return String(value).split(/\s+/).filter(Boolean);
+}
+
+function getUserAgent(executionEnvironmentContext) {
+	if (!executionEnvironmentContext) {
+		return undefined;
+	}
+	const platform = executionEnvironmentContext.getPlatform && executionEnvironmentContext.getPlatform();
+	const platformVersion =
+		executionEnvironmentContext.getPlatformVersion && executionEnvironmentContext.getPlatformVersion();
+	if (!platform || !platformVersion) {
+		return undefined;
+	}
+	return `${platform}/${platformVersion}`;
+}

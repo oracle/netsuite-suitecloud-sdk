@@ -5,23 +5,24 @@
 'use strict';
 
 const BaseAction = require('../../base/BaseAction');
-const CommandUtils = require('../../../utils/CommandUtils');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
+const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
+const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
+const {
+	prepareUploadFilesParams,
+	executeUploadFilesCommand,
+} = require('@oracle/suitecloud-sdk-core/commands/file/upload/UploadFilesHandler');
+const {
+	executeWithAuthRetry,
+	shouldRetryAuthByResult,
+} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
 
 const {
 	COMMAND_UPLOADFILES: { MESSAGES },
 } = require('../../../services/TranslationKeys');
-
-const COMMAND_OPTIONS = {
-	PATHS: 'paths',
-	PROJECT: 'project',
-	AUTH_ID: 'authid',
-};
 
 module.exports = class UploadFilesAction extends BaseAction {
 	constructor(options) {
@@ -29,32 +30,20 @@ module.exports = class UploadFilesAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		const { PATHS } = COMMAND_OPTIONS;
-
-		if (params.hasOwnProperty(PATHS)) {
-			if (Array.isArray(params[PATHS])) {
-				params[PATHS] = params[PATHS].map(CommandUtils.quoteString).join(' ');
-			} else {
-				params[PATHS] = CommandUtils.quoteString(params[PATHS]);
-			}
-		}
-		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
-		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
-		return params;
+		return prepareUploadFilesParams(
+			params,
+			this._projectFolder,
+			getProjectDefaultAuthId(this._executionPath)
+		);
 	}
 
 	async execute(params) {
 		try {
-			const executionContextUploadFiles = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-				.integration()
-				.addParams(params)
-				.build();
-
 			const operationResult = await executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContextUploadFiles),
+				action: this._executeUploadWithAuthRetry(params),
 				message: NodeTranslationService.getMessage(MESSAGES.UPLOADING_FILES),
 			});
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === 'SUCCESS'
 				? ActionResult.Builder.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
 					.withProjectFolder(this._projectFolder)
@@ -62,7 +51,63 @@ module.exports = class UploadFilesAction extends BaseAction {
 					.build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(params).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors([error]).build();
+			return ActionResult.Builder.withErrors(toErrorMessages(error)).build();
 		}
 	}
+
+	async _executeUploadWithAuthRetry(params) {
+		const authId = params.authid;
+		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
+		return executeWithAuthRetry({
+			authId,
+			authSessionProvider,
+			shouldRetryAuth: shouldRetryAuthByResult,
+			executeWithAuthSession: (authCredentials) => executeUploadFilesCommand({
+				hostName: authCredentials.hostName,
+				accessToken: authCredentials.accessToken,
+				projectFolder: unquote(params.project),
+				filePaths: parseQuotedMultiValue(params.paths),
+				userAgent: getUserAgent(this._executionEnvironmentContext),
+			}),
+		});
+	}
 };
+
+function unquote(value) {
+	if (typeof value === 'string' && value.length > 1 && value.startsWith('"') && value.endsWith('"')) {
+		return value.slice(1, -1);
+	}
+	return value;
+}
+
+function parseQuotedMultiValue(value) {
+	if (!value) {
+		return [];
+	}
+	if (Array.isArray(value)) {
+		return value.map(unquote);
+	}
+	const normalizedValue = String(value);
+	const matches = normalizedValue.match(/"([^"]+)"/g);
+	if (matches) {
+		return matches.map((match) => unquote(match));
+	}
+	return normalizedValue
+		.trim()
+		.split(/\s+/)
+		.map(unquote)
+		.filter(Boolean);
+}
+
+function getUserAgent(executionEnvironmentContext) {
+	if (!executionEnvironmentContext) {
+		return undefined;
+	}
+	const platform = executionEnvironmentContext.getPlatform && executionEnvironmentContext.getPlatform();
+	const platformVersion =
+		executionEnvironmentContext.getPlatformVersion && executionEnvironmentContext.getPlatformVersion();
+	if (!platform || !platformVersion) {
+		return undefined;
+	}
+	return `${platform}/${platformVersion}`;
+}

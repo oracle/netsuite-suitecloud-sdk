@@ -206,4 +206,10 @@ module.exports = class ProjectInfoService {
 			throw new CLIException(errorMessage);
 		}
 	}
+
+	checkWorkingDirectoryContainsFile(commandName, fileName) {
+		if (!FileUtils.exists(path.join(this._projectFolder, fileName))) {
+			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, fileName, this._projectFolder, commandName));
+		}
+	}
 };

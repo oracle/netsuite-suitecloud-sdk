@@ -41,6 +41,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 	const CliConfigurationService = jest.fn(() => ({
 		initialize: jest.fn(() => {}),
+		validateProjectContext: jest.fn(() => {}),
 		getProjectFolder: jest.fn(() => {}),
 		getCommandUserExtension: jest.fn(() => {
 			return new CommandUserExtension();

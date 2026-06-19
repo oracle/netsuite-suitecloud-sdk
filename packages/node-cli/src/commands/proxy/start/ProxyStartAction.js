@@ -13,9 +13,15 @@ const { COMMAND_PROXY_START, COMMAND_REFRESH_AUTHORIZATION } = require('../../..
 const { refreshAuthorization } = require('../../../utils/AuthenticationUtils');
 const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
 const {
+	validateProxyStartPort,
+	normalizeProxyStartPort,
+	buildProxyStartActionData,
+} = require('@oracle/suitecloud-sdk-core/commands/proxy/start/ProxyStartHandler');
+const {
 	PROXY_START: {
 		COMMAND: { OPTIONS },
 		ALLOWED_PROXY_PATH_PREFIX,
+		PORT_RANGE,
 	},
 } = require('./ProxyStartConstants');
 const { isValidProxyStartPort, getInvalidProxyStartPortMessage } = require('./ProxyStartValidation');
@@ -41,7 +47,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 	async execute(params) {
 		try {
 			const authId = params[OPTIONS.AUTH_ID];
-			const port = Number(params[OPTIONS.PORT]);
+			const port = normalizeProxyStartPort(params[OPTIONS.PORT]);
 			this._validatePort(port);
 			const apiKey = params.apiKey || (await resolveDefaultClientApiKey(this._sdkExecutor)).apiKey;
 
@@ -65,7 +71,7 @@ module.exports = class ProxyStartAction extends BaseAction {
 			});
 
 			return ActionResult.Builder
-				.withData({ authId, port })
+				.withData(buildProxyStartActionData(authId, port))
 				.withCommandParameters(params)
 				.build();
 		} catch (error) {
@@ -78,6 +84,11 @@ module.exports = class ProxyStartAction extends BaseAction {
 	}
 
 	_validatePort(port) {
+		const coreValidation = validateProxyStartPort(port, PORT_RANGE.MIN, PORT_RANGE.MAX);
+		if (!coreValidation.isValid) {
+			throw getInvalidProxyStartPortMessage();
+		}
+
 		if (!isValidProxyStartPort(port)) {
 			throw getInvalidProxyStartPortMessage();
 		}

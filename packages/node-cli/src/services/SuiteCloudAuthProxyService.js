@@ -33,7 +33,7 @@ const EVENTS = {
 
 /** Authentication methods */
 const {
-	getAuthIds,
+	getAuthCredentialsById,
 	checkIfReauthorizationIsNeeded,
 	forceRefreshAuthorization,
 } = require('../utils/AuthenticationUtils');
@@ -240,19 +240,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 	 * @private
 	 */
 	async _retrieveCredentials() {
-		const authIDActionResult = await getAuthIds(this._sdkPath);
-
-		if (!authIDActionResult.isSuccess()) {
-			throw authIDActionResult.errorMessages;
-		}
-
-		if (!authIDActionResult.data.hasOwnProperty(this._authId)) {
-			throw NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.NOT_EXISTING_AUTH_ID, this._authId);
-		}
-		return {
-			accessToken: authIDActionResult.data[this._authId].token.accessToken,
-			hostName: authIDActionResult.data[this._authId].hostInfo.hostName,
-		};
+		return getAuthCredentialsById(this._authId, this._sdkPath, this._executionEnvironmentContext);
 	}
 
 	/**

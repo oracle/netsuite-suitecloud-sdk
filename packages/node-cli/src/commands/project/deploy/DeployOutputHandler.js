@@ -12,6 +12,12 @@ const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const {
 	COMMAND_DEPLOY: { MESSAGES },
 } = require('../../../services/TranslationKeys');
+const {
+	isRawOutputRequested,
+	logCommandOutput,
+	logCommandErrors,
+	logRawOutput,
+} = require('../ProjectCommandOutputFormatter');
 
 module.exports = class DeployOutputHandler extends BaseOutputHandler {
 	constructor(options) {
@@ -19,6 +25,11 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 	}
 
 	parse(actionResult) {
+		if (isRawOutputRequested(actionResult)) {
+			logRawOutput(this._log, actionResult.data, false);
+			return actionResult;
+		}
+
 		this._showApplyInstallationPreferencesOptionMessage(
 			actionResult.projectType,
 			actionResult.appliedInstallationPreferences,
@@ -31,9 +42,20 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 		if (actionResult.resultMessage) {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 		}
-		if (Array.isArray(actionResult.data)) {
-			actionResult.data.forEach((message) => this._log.result(message));
+		logCommandOutput(this._log, actionResult.data);
+		return actionResult;
+	}
+
+	parseError(actionResult) {
+		if (isRawOutputRequested(actionResult)) {
+			const rawErrorPayload = Array.isArray(actionResult.errorMessages) && actionResult.errorMessages.length === 1
+				? actionResult.errorMessages[0]
+				: actionResult.errorMessages;
+			logRawOutput(this._log, rawErrorPayload, true);
+			return actionResult;
 		}
+
+		logCommandErrors(this._log, actionResult.errorMessages);
 		return actionResult;
 	}
 

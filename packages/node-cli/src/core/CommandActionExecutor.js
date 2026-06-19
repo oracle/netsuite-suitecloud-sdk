@@ -48,6 +48,7 @@ module.exports = class CommandActionExecutor {
 			const commandName = context.commandName;
 			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(commandName);
 			this._cliConfigurationService.initialize(this._executionPath);
+			this._cliConfigurationService.validateProjectContext(commandName);
 			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
 			commandUserExtension = this._cliConfigurationService.getCommandUserExtension(commandName);
 			const runInInteractiveMode = context.runInInteractiveMode;
