@@ -22,10 +22,10 @@
 	},
 	"main": "./src/suitecloud.js",
 	"preferGlobal": true,
-	"nsCompatibleVersion": "2026.1",
-	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/25.2",
-	"sdkFilename": "cli-2025.2.1.jar",
-	"sdkSha256": "08fb80d9f9336ca2aee0d208ec16f74e08c72768e527a0ae604adf595cf1c5ca",
+	"nsCompatibleVersion": "2026.2",
+	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/26.2",
+	"sdkFilename": "cli-2026.2.0-SNAPSHOT.jar",
+	"sdkSha256": "0123456789001234567890abcdefffffffffffffffffffffffffffffffffffff",
 	"bin": {
 		"suitecloud": "src/suitecloud.js"
 	},
