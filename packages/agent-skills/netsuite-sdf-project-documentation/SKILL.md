@@ -111,33 +111,30 @@ For each `.xml` file:
 
 ### 1. Executive Summary Template
 
-```markdown
-## 1. Executive Summary
+#### 1. Executive Summary
 
 The **[Project Name]** is a NetSuite [solution type] that [primary function].
 The solution [key capability 1], [key capability 2], and [key capability 3].
 
-### Key Features
+##### Key Features
 
 - **[Feature Name]:** [One-line description of what it does and why it matters]
 - **[Feature Name]:** [Description]
 - **[Feature Name]:** [Description]
 
-### Business Value
+##### Business Value
 
 - [Quantifiable benefit or efficiency gain]
 - [Risk reduction or compliance benefit]
 - [User experience improvement]
-```
 
 ### 2. Architecture Diagram Template
 
-````markdown
-## 2. Solution Architecture
+#### 2. Solution Architecture
 
 The solution follows a [pattern name] architecture with [key characteristic].
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    [Top Level Container]                    │
 ├─────────────────────────────────────────────────────────────┤
@@ -156,20 +153,18 @@ The solution follows a [pattern name] architecture with [key characteristic].
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
-````
 
 ### 3. Module Table Template
 
-````markdown
-## 3. Module Descriptions
+#### 3. Module Descriptions
 
 | Module | File | Purpose |
 |--------|------|---------|
 | **[Display Name]** | `[filename.js]` | [Role description]. [Key responsibilities]. |
 
-### File Structure
+##### File Structure
 
-```
+```text
 src/
 ├── FileCabinet/
 │   └── SuiteApps/
@@ -181,14 +176,12 @@ src/
     ├── [customscript_xxx.xml]  # [Script type] Definition
     └── [customrecord_xxx.xml]  # Custom Record Definition
 ```
-````
 
 ### 4. SuiteQL Documentation Template
 
 When documenting SuiteQL queries, use this format:
 
-````markdown
-### [Query Purpose]
+#### [Query Purpose]
 
 ```sql
 SELECT
@@ -209,14 +202,12 @@ ORDER BY [sort columns]
 - `[Table2]` - [What it contains]
 
 **Security Note:** Keep full SQL for documentation value, but redact sensitive literals such as API keys, tokens, passwords, auth/session secrets, and raw PII.
-````
 
 ### 5. Script Entry Points Template
 
-```markdown
-## Script Entry Points
+#### Script Entry Points
 
-### [Script Name] ([Script Type])
+##### [Script Name] ([Script Type])
 
 | Entry Point | Function | Trigger | Purpose |
 |-------------|----------|---------|---------|
@@ -227,42 +218,37 @@ ORDER BY [sort columns]
 **Context Objects Used:**
 - `context.type` - [How it's used]
 - `context.newRecord` - [How it's used]
-```
 
 ### 6. Deployment Table Template
 
-````markdown
-## Script Deployments
+#### Script Deployments
 
 | Script | Deployment ID | Type | URL/Trigger |
 |--------|---------------|------|-------------|
 | [Script Name] | `customdeploy_xxx` | [Suitelet/etc] | [URL pattern or trigger] |
 
-### URL Patterns
+##### URL Patterns
 
 **[Suitelet Name]:**
-```
+```text
 /app/site/hosting/scriptlet.nl?script=[scriptid]&deploy=[deployid]&param1={value}
 ```
-````
 
 ### 7. Troubleshooting Template
 
-```markdown
-## Troubleshooting
+#### Troubleshooting
 
 | Issue | Cause | Resolution |
 |-------|-------|------------|
 | [Symptom user sees] | [Root cause] | [Step-by-step fix] |
 | [Error message] | [Why it occurs] | [How to resolve] |
 
-### Viewing Execution Logs
+##### Viewing Execution Logs
 
 1. Go to **Customization > Scripting > Script Deployments**.
 2. Find deployment: `[customdeploy_xxx]`.
 3. Click the **Execution Log** tab.
 4. Filter by type: **Error**.
-```
 
 ---
 
