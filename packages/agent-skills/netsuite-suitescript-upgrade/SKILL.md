@@ -26,6 +26,7 @@ Backed by comprehensive reference data:
 - **13 unmapped APIs** with native JavaScript or alternative workarounds
 - **All script type entry point changes** (User Event, Client, Suitelet, RESTlet, Scheduled, Map/Reduce, etc.)
 - **16 categories of breaking behavioral changes** with before/after examples
+- **SuiteScript 2.0/2.x compatibility rules** aligned with the Babel converter in `C:\webdev\suitescript-converter`
 
 ## How to Use This Skill
 
@@ -130,6 +131,36 @@ A file is a SuiteScript 1.0 script if it matches **any** of these patterns:
 
 3. Count indicators to determine confidence level
 ```
+
+### Generated Legacy Code Safeguard
+
+If an SS2.0, SS2.x, or SS2.1 script contains SS1.0 syntax only inside string literals, template literals, generated file content, or HTML/client payload text, do not classify that string content as executable SS1.0 source and do not rewrite the string body automatically. Report it as generated legacy content or a deployment/runtime risk in the conversion report, including the containing file and the generated target if discoverable.
+
+---
+
+## SuiteScript 2.0/2.x Compatibility Path
+
+Existing SuiteScript 2.0 and 2.x scripts follow a different conversion path than SuiteScript 1.0 scripts.
+
+Use the SS2.x compatibility path when a file:
+- Has `@NApiVersion 2.0`, `@NApiVersion 2.x`, or `@NApiVersion 2.X`
+- Uses an AMD `define()` module
+- Already uses `N/*` modules rather than SS1.0 global `nlapi*` / `nlobj*` APIs
+
+For these files, preserve the existing SuiteScript 2.x API/module structure and apply the compatibility rules in `references/suitescript-2x-compatibility-rules.md`.
+
+Do not apply the SS1.0 API/object mapping workflow to a clean SS2.0/2.x script. Use SS1.0 mapping only if mixed remnants such as `nlapi*` or `nlobj*` are still present.
+
+The 2.x compatibility path covers:
+- `@NApiVersion` normalization to `2.1`
+- Legacy JavaScript syntax accepted by SS2.0 but rejected by SS2.1
+- Built-in behavior differences for `JSON.parse`, `parseInt`, `Error`, and date formatting
+- RESTlet POST return behavior
+- SuiteScript API calls at define-callback evaluation time
+- Script-type entrypoint validation
+- Helper dependency injection and deployment of `SuiteScriptConverter/SSConverterHelper.js` only when `JSON.parse` or one-argument `parseInt` compatibility rewrites are used
+- Fallback entrypoint injection as a separate manual-review item when a known script type returns no valid entrypoint
+- SDF plugin deployment blockers such as `platformextensionplugin`, which must be reported for manual review and not rewritten automatically
 
 ---
 
@@ -297,24 +328,30 @@ Read a SuiteScript 1.0, 2.0, or 2.x file and produce a complete SS2.1 conversion
 
 #### Process
 
-1. **Run analysis** (the same as analyze mode) to understand the script
-2. **Detect script type** and determine entry point pattern from `references/script-type-changes.md`
-3. **Build the define() module list** from detected `nlapi*` usage using the module mapping table
-4. **Convert all `nlapi*` function calls** using `references/api-mapping.json` (125+ mappings)
-5. **Convert all `nlobj*` objects** using `references/object-mapping.json` (34 objects, 331 methods)
-6. **Apply breaking changes** from `references/breaking-changes.md`:
-   - 1-based → 0-based sublist indexing
-   - Positional parameters → options objects
-   - String comparisons → enum values
-   - Getter/setter methods → properties
-   - Inverted boolean logic (setVisible → isHidden)
-   - Recovery point → Map/Reduce pattern
-7. **Handle unmapped APIs** using workarounds from `references/unmapped-apis.md`
-8. **Add JSDoc annotations** (`@NApiVersion 2.1`, `@NScriptType`)
-9. **Restructure entry points** to the return object pattern
-10. **Modernize JavaScript** (var→const/let, string concat→template literals, indexOf→includes)
-11. **Generate deployment XML** update notes (reference `netsuite-sdf-leading-practices` for full XML)
-12. **Produce migration notes** listing every change made
+1. **Classify the input version** using the detection logic.
+2. **If the file is SS1.0**, use the full SS1.0 migration workflow:
+   - Detect script type and determine entry point pattern from `references/script-type-changes.md`
+   - Build the define() module list from detected `nlapi*` usage using the module mapping table
+   - Convert all `nlapi*` function calls using `references/api-mapping.json` (125+ mappings)
+   - Convert all `nlobj*` objects using `references/object-mapping.json` (34 objects, 331 methods)
+   - Apply SS1.0 breaking changes from `references/breaking-changes.md`
+   - Handle unmapped APIs using workarounds from `references/unmapped-apis.md`
+   - Add JSDoc annotations (`@NApiVersion 2.1`, `@NScriptType`)
+   - Restructure entry points to the return object pattern
+   - Modernize JavaScript where safe
+3. **If the file is SS2.0 or SS2.x**, use the compatibility workflow in `references/suitescript-2x-compatibility-rules.md`:
+   - Normalize `@NApiVersion` to `2.1`
+   - Apply parser compatibility rewrites for conditional catch, `for each`, and reserved identifiers
+   - Preserve runtime behavior for const reassignment, `JSON.parse`, Error properties, date formatting, `parseInt`, and RESTlet POST returns, using `SSConverterHelper` only for `JSON.parse` and one-argument `parseInt` rewrites
+   - Defer SuiteScript API-backed top-level values and returned module properties that would execute at define-callback evaluation time
+   - Ensure the returned module object has a valid entrypoint for the declared script type; if a fallback entrypoint is injected, flag it for manual review
+   - Remove `.js` suffixes from non-`N/*` define dependencies
+   - Add the relative `SSConverterHelper` dependency and `SuiteScriptConverter/SSConverterHelper.js` deployment notes only when helper-backed rules are used; do not add it for fallback entrypoint injection, API factory rewrites, RESTlet wrapping, date formatting, Error constructor rewrites, or dependency cleanup
+   - Report SDF plugin deployment blockers such as `platformextensionplugin`; mention `plugintypeimpl` only as a possible manual remediation path and do not rewrite plugin object XML automatically
+4. **If mixed SS1.0 and SS2.x patterns are present**, report the mixed state and convert all SS1.0 remnants directly to SS2.1 APIs while also applying SS2.x compatibility rules.
+5. **If SS1.0 syntax appears only inside generated strings**, report generated legacy content instead of rewriting those string bodies as executable source.
+6. **Generate deployment XML** update notes (reference `netsuite-sdf-leading-practices` for full XML).
+7. **Produce a conversion report** using the report shape below.
 
 #### Module Identification Table
 
@@ -431,6 +468,40 @@ for (let i = 0; i < lineCount; i++) {  // [7] 1-based → 0-based indexing
         line: i                         // [9] Was: line i+1 (1-based)
     });
 }
+```
+
+---
+
+#### Required Conversion Report
+
+Every conversion or normalization must include a concise report after the converted file or change summary.
+
+```markdown
+### Conversion Report
+
+| Field | Value |
+|-------|-------|
+| Source version | SuiteScript 1.0 / 2.0 / 2.x / mixed |
+| Target version | SuiteScript 2.1 |
+| Conversion path | SS1.0 full migration / SS2.x compatibility normalization / mixed |
+| Original preservation | Overwritten / preserved as `*_old.js` / not written |
+
+### Transformations Applied
+- [List API mappings, object mappings, Babel compatibility rules, or "version tag only"]
+
+### Helper Dependencies
+- `SSConverterHelper`: Required / Not required
+- Reason: `JSON.parse` compatibility / one-argument `parseInt` compatibility / none
+- Deployment note: [helper file and deploy.xml coverage, if required]
+
+### Manual Review Items
+- Injected fallback entrypoints: [list or none]
+- Plugin blockers: [for example, `platformextensionplugin`, or none]
+- Generated legacy string content: [container file and pattern, or none]
+- Skipped or non-deterministic items: [list or none]
+
+### Deployment Notes
+- [Script XML, helper deployment, manifest, SuiteApp blocker, and Sandbox testing notes]
 ```
 
 ---
@@ -600,9 +671,18 @@ const entity = rec.getValue({ fieldId: 'entity' });
 
 ### 4. Validate Mode (`validate`)
 
-Check a supposedly converted SS2.1 script for leftover 1.0 patterns, incomplete conversions, and common conversion bugs.
+Check a converted SS2.1 script for leftover 1.0 patterns, incomplete conversions, and SuiteScript 2.x compatibility issues.
 
-#### Validation Checks
+#### Validation Paths
+
+Use the validation path that matches the source file:
+- **SS1.0 or mixed conversion**: run the SS1.0/mixed conversion checks below.
+- **SS2.0/2.x normalization**: run the SuiteScript 2.x compatibility checks below and the checklist in `references/suitescript-2x-compatibility-rules.md`.
+- **Unknown source**: run both sets of checks, then classify findings by source pattern.
+
+Do not fail a clean SS2.0/2.x normalization because it preserves an existing AMD `define()` wrapper, existing `N/*` dependencies, or local function names that are returned under valid entrypoint keys.
+
+#### SS1.0/Mixed Conversion Checks
 
 | # | Check | Pattern | Severity |
 |---|-------|---------|----------|
@@ -627,6 +707,31 @@ Check a supposedly converted SS2.1 script for leftover 1.0 patterns, incomplete 
 | 19 | **Governance check missing** | Long-running scripts without `getRemainingUsage()` checks | Low |
 | 20 | **@NApiVersion 2.0 or 2.x** | Target version is not SS2.1 | Critical |
 
+#### SuiteScript 2.x Compatibility Checks
+
+| # | Check | Pattern | Severity |
+|---|-------|---------|----------|
+| 1 | **Non-2.1 API version** | `@NApiVersion 2.0`, `2.x`, or `2.X` remains | Critical |
+| 2 | **Missing AMD wrapper** | SS2.x input without `define()` | Critical |
+| 3 | **Conditional catch remains** | `catch (e if condition)` | Critical |
+| 4 | **Rhino for-each remains** | `for each (... in ...)` | High |
+| 5 | **Reserved identifiers remain** | ECMAScript reserved words used as identifiers | Medium |
+| 6 | **Const reassignment not preserved** | Assignment to a `const` binding without the compatibility `try/catch` rewrite | Medium |
+| 7 | **Legacy JSON.parse not handled** | `JSON.parse(...)` remains after SS2.x compatibility conversion | Medium |
+| 8 | **One-argument parseInt not handled** | `parseInt(value)` without explicit radix or helper rewrite | Medium |
+| 9 | **Helper calls missing dependency** | `ssConverterHelper.*` used but no dependency path ending in `SSConverterHelper` exists in `define()` | High |
+| 10 | **Helper deployment note missing** | Helper dependency exists but deployed helper file `SuiteScriptConverter/SSConverterHelper.js` is not noted | Medium |
+| 11 | **RESTlet post return not stringified** | `@NScriptType Restlet` with direct `post` returns not wrapped in `JSON.stringify(...)` | Medium |
+| 12 | **Define-time API evaluation** | Top-level declarations execute SuiteScript API calls from define dependencies | High |
+| 13 | **Returned API-backed property not deferred** | Returned non-function property depends on an API binding instead of a factory | High |
+| 14 | **Missing valid entrypoint** | Returned module object has no valid key for the declared `@NScriptType` | Critical |
+| 15 | **Injected fallback not reviewed** | No-op fallback entrypoint exists without a manual-review note | High |
+| 16 | **`.js` dependency suffix remains** | Non-`N/*` dependency string in `define([...])` ends with `.js` | Low |
+| 17 | **Helper used without helper-backed rewrite** | `SSConverterHelper` dependency exists but no `ssConverterHelper.jsonParse_legacySS20(...)` or `ssConverterHelper.parseInt_legacySS20(...)` call exists | Medium |
+| 18 | **Plugin deployment blocker** | SDF object XML contains `platformextensionplugin` or a known SuiteScript 2.1-incompatible plugin definition | High |
+| 19 | **Generated legacy string content not reported** | SS1.0-looking `nlapi*`, `nlobj*`, or `@NApiVersion 1.0` appears only inside string/template content without a manual-review note | Medium |
+| 20 | **Conversion report missing required sections** | Report omits helper status, fallback review, plugin blockers, generated legacy content, skipped items, or deployment notes | Medium |
+
 #### Output Format for Validate Mode
 
 ```markdown
@@ -637,6 +742,7 @@ Check a supposedly converted SS2.1 script for leftover 1.0 patterns, incomplete 
 - **@NScriptType**: UserEventScript ✅
 - **define() wrapper**: Present ✅
 - **Return object**: Present ✅
+- **Validation Path**: SS1.0/mixed conversion / SS2.x compatibility
 
 ### Issues Found ([total])
 
@@ -665,14 +771,21 @@ Check a supposedly converted SS2.1 script for leftover 1.0 patterns, incomplete 
 |---|------|-------|-------|-----|
 | 5 | * | var usage | 8 instances of `var` | Replace with `const` or `let` |
 
+#### SuiteScript 2.x Compatibility ([count])
+
+| # | Line | Issue | Found | Fix |
+|---|------|-------|-------|-----|
+| 6 | 31 | One-argument parseInt | `parseInt(accountNumber)` | Use `ssConverterHelper.parseInt_legacySS20(accountNumber)` and include helper deployment notes |
+
 ### Summary
 - **Critical**: [N] issues — must fix before deployment
 - **High**: [N] issues — likely bugs if not fixed
 - **Medium**: [N] issues — code will work but is not idiomatic SS2.1
 - **Low**: [N] issues — style improvements
+- **SS2.x compatibility**: [N] issues — validate against `references/suitescript-2x-compatibility-rules.md`
 
 ### Validation Result: [PASS / FAIL]
-[FAIL if any Critical or High issues remain]
+[FAIL if any Critical or High issues remain, including SS2.x compatibility issues]
 ```
 
 ---
@@ -1086,6 +1199,7 @@ All reference data is stored in the `references/` directory relative to this ski
 | `breaking-changes.md` | ~26 KB | 16 categories of breaking behavioral changes with before/after examples |
 | `unmapped-apis.md` | ~15 KB | 13 `nlapi*` functions with no direct SS2.1 equivalent + workarounds |
 | `conversion-guide.md` | ~31 KB | Step-by-step conversion process with complete before/after example |
+| `suitescript-2x-compatibility-rules.md` | ~12 KB | Babel-aligned SuiteScript 2.0/2.x to 2.1 compatibility rules |
 
 ### Using the Reference Files
 
@@ -1110,6 +1224,16 @@ All reference data is stored in the `references/` directory relative to this ski
 2. Find the section for your script type.
 3. Compare SS1.0 and SS2.1 patterns.
 4. Review the "Key Differences" table and "Gotchas" list.
+```
+
+**To normalize an existing SS2.0 or SS2.x script:**
+```
+1. Open suitescript-2x-compatibility-rules.md.
+2. Confirm the file is an AMD define() module with @NApiVersion 2.0 or 2.x.
+3. Apply the rule order from that file before making style-only modernization changes.
+4. If `JSON.parse` or one-argument `parseInt` rewrites are used, include helper dependency and deployment notes.
+5. Flag injected fallback entrypoints for manual review as a separate non-helper item.
+6. Report plugin deployment blockers such as `platformextensionplugin`; do not automatically rewrite them to `plugintypeimpl`.
 ```
 
 ### Module Reference (26 Modules)
@@ -1440,6 +1564,16 @@ This file contains both SS1.0 and SuiteScript 2.x patterns:
 
 This is not valid — SS1.0 and SuiteScript 2.x APIs cannot be mixed in the same file.
 The file needs complete conversion to SuiteScript 2.1.
+```
+
+### If SS1.0 Syntax Is Found Inside Generated Strings
+
+```
+This file is already SuiteScript 2.x/2.1, but it generates legacy SuiteScript 1.0 content as a string:
+- Container file: [file path]
+- Generated content pattern: [nlapi*/nlobj*/@NApiVersion 1.0 string excerpt]
+
+Do not rewrite the string body automatically. Report it as generated legacy content or deployment/runtime risk and ask for manual confirmation before changing generated output semantics.
 ```
 
 ---
