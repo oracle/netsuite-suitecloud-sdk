@@ -3,6 +3,8 @@
 
 > Comprehensive guide to behavioral changes that break SS1.0 code when migrating to SS2.1.
 > Each section includes before/after examples and the common migration mistake to avoid.
+>
+> Note: This file is primarily the SS1.0 -> SS2.1 breaking-change catalog. For existing SuiteScript 2.0/2.x AMD modules, preserve the existing API/module structure and use `suitescript-2x-compatibility-rules.md` for Babel-aligned compatibility rewrites. Do not apply SS1.0 API/object rewrite rules to clean SS2.x scripts.
 
 ---
 
@@ -49,6 +51,10 @@ define(['N/search', 'N/log'], (search, log) => {
 ### Common Mistake
 
 Forgetting to include a module in the `define()` dependency array but calling it in the function body. This produces a `ReferenceError` at runtime, not a compile-time error.
+
+### SuiteScript 2.x Compatibility Note
+
+If the input already uses `define()` and `N/*` dependencies, do not rebuild the module wrapper as if it were SS1.0. For SS2.0/2.x, apply only targeted compatibility rules such as deferring API-backed top-level values and removing `.js` suffixes from non-`N/*` define dependencies. See `suitescript-2x-compatibility-rules.md`.
 
 ```javascript
 // WRONG — N/record not loaded
@@ -275,6 +281,10 @@ const dateTime = format.format({
 
 Using `nlapiAddDays` or `nlapiAddMonths`; these have no SS2.1 equivalent. Use native JavaScript Date manipulation:
 
+### SuiteScript 2.x Compatibility Note
+
+Existing SS2.0/2.x scripts may rely on legacy long-date formatting behavior for `.toLocalDateString(...)`. The Babel-compatible rule rewrites no-argument and locale calls to `Intl.DateTimeFormat` with long month/day/year formatting and ignores extra options. Use `suitescript-2x-compatibility-rules.md`; do not treat this as an SS1.0 date API migration.
+
 ```javascript
 // WRONG — no SS2.1 equivalent
 const future = nlapiAddMonths(new Date(), 3);
@@ -353,6 +363,10 @@ define(['N/record', 'N/error', 'N/log'], (record, error, log) => {
 ### Common Mistake
 
 Using `e.getCode()` on a SS2.1 error; it's not a function, it's a property:
+
+### SuiteScript 2.x Compatibility Note
+
+For existing SS2.0/2.x scripts, the Babel-compatible path also preserves native `Error` constructor serialization behavior by making `message`, `fileName`, and `lineNumber` enumerable. That is separate from SS1.0 `nlobjError` migration. See `suitescript-2x-compatibility-rules.md`.
 
 ```javascript
 // WRONG — getCode() is a SS1.0 method
@@ -589,6 +603,10 @@ const afterSubmit = (context) => {
 ### Common Mistake
 
 Not renaming `log` or `util` variables during conversion. This shadows SS2.1 globals and can break logging or utility calls.
+
+### SuiteScript 2.x Compatibility Note
+
+For SS2.0/2.x compatibility, the reserved-identifier rewrite is broader than `log` and `util`: ECMAScript reserved identifiers are rewritten to `__ss2_reserved_<name>` while object property names are preserved. See `suitescript-2x-compatibility-rules.md`.
 
 ---
 
@@ -904,3 +922,19 @@ define(['N/redirect'], (redirect) => {
 ### Common Mistake
 
 Calling `redirect` methods in contexts where they're not available (for example, Scheduled Scripts). Redirects are only valid in Suitelets and User Event scripts.
+
+---
+
+## SuiteScript 2.x Compatibility Cross-Reference
+
+The sections above document SS1.0 migration breaking changes. For existing SuiteScript 2.0/2.x AMD modules, review `suitescript-2x-compatibility-rules.md` for:
+
+- Parser compatibility: conditional catch, Rhino `for each`, and reserved identifiers
+- Runtime compatibility: const reassignment, `JSON.parse`, one-argument `parseInt`, native Error serialization, and long date formatting
+- RESTlet `post` return stringification
+- Define-callback API evaluation deferral and API enum factories
+- Returned module property factories and `this.prop` call rewrites
+- Missing script-type entrypoint fallback injection
+- Non-`N/*` dependency `.js` suffix removal
+- Helper dependency injection and deployment of `SuiteScriptConverter/SSConverterHelper.js` only for `JSON.parse` and one-argument `parseInt` compatibility rewrites
+- Report-only safeguards for plugin deployment blockers and generated SS1.0-looking string content
