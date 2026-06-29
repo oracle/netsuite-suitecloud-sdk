@@ -10,6 +10,20 @@
 
 Before converting, evaluate the script's migration complexity.
 
+### Choose the Conversion Path
+
+SuiteScript 1.0 and SuiteScript 2.0/2.x inputs use different conversion paths.
+
+| Input | Primary conversion path | Reference |
+|-------|-------------------------|-----------|
+| SuiteScript 1.0 | Full API, object, entrypoint, and deployment migration | This guide, `api-mapping.json`, `object-mapping.json`, `script-type-changes.md`, `breaking-changes.md`, `unmapped-apis.md` |
+| SuiteScript 2.0 or 2.x AMD module | Compatibility normalization while preserving existing `N/*` module/API structure | `suitescript-2x-compatibility-rules.md` |
+| Mixed SS1.0 and SS2.x patterns | Convert SS1.0 remnants directly to SS2.1 APIs, then apply SS2.x compatibility rules | Both paths |
+
+Do not apply the SS1.0 API/object mapping workflow to a clean SuiteScript 2.0 or 2.x script that already uses `define()` and `N/*` modules.
+
+If SS1.0 syntax appears only inside string literals, template literals, generated file content, or HTML/client payload text emitted by an SS2.x/2.1 script, classify it as generated legacy content. Report the risk and do not rewrite the string body automatically.
+
 ### Complexity Scoring
 
 | Factor | Low (1 pt) | Medium (2 pts) | High (3 pts) |
@@ -29,6 +43,8 @@ Before converting, evaluate the script's migration complexity.
 
 ### Pre-Conversion Checklist
 
+For SuiteScript 1.0 files:
+
 - [ ] Identify all `nlapi*` function calls in the script
 - [ ] Identify all `nlobj*` object usage
 - [ ] List all script parameters (script record deployments)
@@ -40,11 +56,28 @@ Before converting, evaluate the script's migration complexity.
 - [ ] Review error handling patterns (`nlobjError` vs try/catch)
 - [ ] Note the script type and all deployed entry point functions
 
+For SuiteScript 2.0/2.x files:
+
+- [ ] Confirm the file has `@NApiVersion 2.0`, `2.x`, or `2.X`
+- [ ] Confirm the file is an AMD `define()` module
+- [ ] Check for conditional `catch (e if ...)` syntax
+- [ ] Check for Rhino `for each` loops
+- [ ] Check for reserved words used as identifiers
+- [ ] Check for `JSON.parse(...)` and one-argument `parseInt(...)`
+- [ ] Check for RESTlet `post` return behavior
+- [ ] Check for SuiteScript API calls that execute while the define callback is evaluated
+- [ ] Check that the returned module object has at least one valid entrypoint for its `@NScriptType`
+- [ ] Check non-`N/*` define dependencies for `.js` suffixes
+- [ ] Check SDF object XML for plugin deployment blockers such as `platformextensionplugin`; report them for manual review and do not rewrite them automatically
+- [ ] Check whether any SS1.0-looking code is generated as string content; report it as generated legacy content instead of converting it as executable source
+
 ---
 
 ## Step 2: Preparation — Setting Up the SS2.1 File Structure
 
 SuiteScript 2.1 is the only valid target for this skill. Existing SuiteScript 2.0 or ambiguous 2.x scripts must be upgraded to `@NApiVersion 2.1`; SuiteScript 1.0 scripts must be fully converted to 2.1 APIs and structure.
+
+For clean SuiteScript 2.0/2.x files, do not rebuild the module from scratch unless the existing structure is invalid. Preserve the existing `define()` dependencies, return object, and `N/*` API calls, then apply the compatibility rules in `suitescript-2x-compatibility-rules.md`.
 
 ### 2a. Create the File Header
 
@@ -94,9 +127,57 @@ Use `@NApiVersion 2.1` (not 2.0 or 2.x) to enable modern JavaScript features:
 
 ---
 
+## Step 2d: SuiteScript 2.0/2.x Compatibility Workflow
+
+Use this workflow for existing SuiteScript 2.0 or 2.x AMD modules.
+
+1. Normalize `@NApiVersion` to `2.1`.
+2. Apply parser compatibility rewrites for conditional catch, `for each`, and reserved identifiers.
+3. Preserve runtime behavior for const reassignment, `JSON.parse`, Error properties, date formatting, one-argument `parseInt`, and RESTlet `post` return values.
+4. Defer SuiteScript API-backed top-level values and returned module properties that would execute at define-callback evaluation time.
+5. Ensure the returned module object has a valid entrypoint for the declared script type; flag injected fallback entrypoints for manual review.
+6. Remove `.js` suffixes from non-`N/*` define dependencies.
+7. Add helper dependency and deployment notes only if `JSON.parse` or one-argument `parseInt` rewrites are used.
+
+See `suitescript-2x-compatibility-rules.md` for the full Babel-aligned rule matrix and before/after behavior.
+
+### Helper Module Behavior
+
+The SuiteScript 2.x converter injects a relative `define()` dependency ending in `SuiteScriptConverter/SSConverterHelper` without the `.js` suffix, and creates/deploys `SuiteScriptConverter/SSConverterHelper.js`, only when helper-backed behavior is needed.
+
+Helper-backed rules:
+- `JSON.parse(...)` becomes `ssConverterHelper.jsonParse_legacySS20(...)`
+- One-argument `parseInt(x)` becomes `ssConverterHelper.parseInt_legacySS20(x)`
+
+Fallback entrypoint injection is not helper-backed behavior. Do not add `SSConverterHelper` only because a fallback entrypoint, API factory, RESTlet `post` wrapper, date formatting rewrite, Error constructor rewrite, or dependency cleanup rule was applied.
+
+When helper calls exist:
+- The converted script must include the relative helper dependency in `define([...])`
+- `SuiteScriptConverter/SSConverterHelper.js` must be included in the File Cabinet deployment
+- `deploy.xml` must include either the helper directory or a parent path that covers it
+
+### File Preservation Behavior
+
+When using the Babel converter:
+- If only the `@NApiVersion` tag changes, the original script is overwritten in place.
+- If any non-trivial compatibility transformation is applied, the original script is preserved as `*_old.js`.
+- The converted script is written at the original script path.
+- Conversion reports list applied transformations and manual-review deployment items.
+- Injected fallback entrypoints are highlighted for manual review.
+
+### Conversion Report Contents
+
+Every SuiteScript 2.x normalization report must include:
+- Source and target version
+- Conversion path and original preservation behavior
+- Transformations applied
+- Helper dependency status and deployment notes
+- Manual-review items: injected fallback entrypoints, plugin blockers, generated legacy string content, and skipped/non-deterministic items
+- Deployment notes for script XML, helper file, deploy.xml, manifest, SuiteApp blockers, and Sandbox testing
+
 ## Step 3: Module Identification
 
-Map every `nlapi*` function to its required `N/*` module.
+Map every `nlapi*` function to its required `N/*` module. This step applies to SuiteScript 1.0 files and mixed files with SS1.0 remnants. Clean SuiteScript 2.0/2.x files should keep their existing `N/*` dependency structure unless a compatibility rule requires a targeted dependency change.
 
 ### Common Module Mappings
 
@@ -509,6 +590,7 @@ try {
 2. **Module dependency check**: Verify all required modules are in the `define()` array
 3. **Reserved word scan**: Search for `log` and `util` used as variable names
 4. **Index audit**: Confirm all sublist operations use 0-based indexing
+5. **SS2.x compatibility scan**: For converted 2.0/2.x files, review `suitescript-2x-compatibility-rules.md` checks, especially helper injection for `JSON.parse` / one-argument `parseInt`, define-time API access, RESTlet `post` returns, and injected fallback entrypoints.
 
 ### Functional Testing
 
@@ -582,6 +664,9 @@ Recommended structure for migration:
 - [ ] Update `scriptfile` path in script record XML
 - [ ] Remove entry point function name fields (SS2.1 uses return object)
 - [ ] Verify script parameters are compatible
+- [ ] If `ssConverterHelper.jsonParse_legacySS20(...)` or `ssConverterHelper.parseInt_legacySS20(...)` calls are present, verify `SuiteScriptConverter/SSConverterHelper.js` is deployed
+- [ ] If helper deployment is required, verify `deploy.xml` covers the helper path
+- [ ] Report plugin deployment blockers such as `platformextensionplugin`; mention `plugintypeimpl` only as a possible manual remediation path
 - [ ] Test in Sandbox before deploying to Production
 - [ ] Keep SS1.0 files as backup until conversion is validated
 - [ ] Update any SuiteApp manifest references
