@@ -1,0 +1,10 @@
+{
+  "name": "suitecloud-plugin-for-claude-code",
+  "description": "SuiteCloud Plugin for Claude Code",
+  "version": "1.0.0",
+  "author": {
+    "name": "Oracle NetSuite"
+  },
+  "license": "The Universal Permissive License (UPL), Version 1.0",
+  "keywords": ["netsuite", "suitecloud", "suitescript", "suiteapp", "sdf"]
+}

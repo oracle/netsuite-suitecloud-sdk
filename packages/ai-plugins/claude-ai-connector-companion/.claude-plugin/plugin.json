@@ -1,0 +1,10 @@
+{
+  "name": "netsuite-ai-connector-companion-for-claude",
+  "description": "NetSuite AI Connector Companion for Claude",
+  "version": "1.0.0",
+  "author": {
+    "name": "Oracle Netsuite"
+  },
+  "license": "The Universal Permissive License (UPL), Version 1.0",
+  "keywords": ["netsuite"]
+}

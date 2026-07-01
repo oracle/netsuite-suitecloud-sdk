@@ -1,0 +1,1 @@
+# This folder contains sources and files shared by multiple AI Plugins
