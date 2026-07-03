@@ -1,23 +1,4 @@
 {
-	"project:adddependencies": {
-		"options": {
-			"all": {
-				"disableInIntegrationMode": false
-			},
-			"feature": {
-				"disableInIntegrationMode": false
-			},
-			"file": {
-				"disableInIntegrationMode": false
-			},
-			"object": {
-				"disableInIntegrationMode": false
-			},
-			"project": {
-				"mandatory": false
-			}
-		}
-	},
 	"account:manageauth": {
 		"options": {
 			"info": {
