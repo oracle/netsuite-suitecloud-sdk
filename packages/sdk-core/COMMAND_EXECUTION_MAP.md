@@ -21,7 +21,7 @@ This is a concise runtime map for current command execution paths.
 | `project:preview` (`deploy --dryrun`) | User -> `[node-cli] CommandActionExecutor` preflight -> `[node-cli] DeployAction._preview` -> `[sdk-core] AuthSessionManager` -> `[sdk-core] ProjectCommandExecutor (PREVIEW)` -> output | `Java (auth/secure)` |
 | `project:create` | User -> `[node-cli] CreateProjectAction` -> `[sdk-core] CreateProjectHandler` + `[sdk-core] CreateProjectWorkflowExecutor/CreateProjectExecutor` -> local project structure -> output | none (normal path) |
 | `project:package` | User -> `[node-cli] CommandActionExecutor` preflight -> `[node-cli] PackageAction` -> `[sdk-core] PackageHandler` + `[sdk-core] PackageProjectExecutor` -> local zip packaging -> output | none (normal path) |
-| `project:adddependencies` | User -> `[node-cli] CommandActionExecutor` preflight -> `[node-cli] AddDependenciesAction` -> `[sdk-core] AddDependenciesHandler` (normalization/default `all=true`) -> `[java] _sdkExecutor.execute(...)` -> output | `Java (direct)` + `Java (auth/secure)` as needed |
+| `project:adddependencies` | User -> `[node-cli] CommandActionExecutor` preflight -> `[node-cli] AddDependenciesAction` -> `[java] _sdkExecutor.execute(...)` -> output | `Java (direct)` + `Java (auth/secure)` as needed |
 | `file:list` | User -> `[node-cli] CommandActionExecutor` preflight -> `[node-cli] ListFilesAction` -> `[sdk-core] AuthSessionManager` -> `[sdk-core] ListFilesHandler.executeListFilesCommand` -> output | `Java (auth/secure)` |
 | `file:import` | User -> `[node-cli] CommandActionExecutor` preflight -> `[node-cli] ImportFilesAction` -> `[sdk-core] AuthSessionManager` -> `[sdk-core] ImportFilesHandler.executeImportFilesCommand` -> output | `Java (auth/secure)` |
 | `file:upload` | User -> `[node-cli] CommandActionExecutor` preflight -> `[node-cli] UploadFilesAction` -> `[sdk-core] AuthSessionManager` -> `[sdk-core] UploadFilesHandler.executeUploadFilesCommand` -> output | `Java (auth/secure)` |
@@ -32,8 +32,8 @@ This is a concise runtime map for current command execution paths.
 | `object:create` | User -> `[node-cli] CreateObjectAction` -> local template/file creation -> output | none (normal path) |
 | `proxy:start` | User -> `[node-cli] ProxyStartAction` -> proxy service/events + refresh hooks -> output | `Java (auth/secure)` (auth refresh + key resolution path) |
 | `proxy:generatekey` | User -> `[node-cli] ProxyGenerateKeyAction` -> `[sdk-core] ProxyGenerateKeyHandler` (key content validation/update) -> `[java] key content read/write utils` -> output | `Java (auth/secure)` for key content persistence |
-| `account:setup` | User -> `[node-cli] SetupAction` -> `[sdk-core] SetupAccountHandler` (normalization) -> `[java] oauth auth flow` -> output | `Java (auth/secure)` |
-| `account:setupci` | User -> `[node-cli] AccountSetupCiAction` -> `[sdk-core] SetupAccountCiHandler` (normalization) -> `[java] CI auth/select flow` -> output | `Java (auth/secure)` |
+| `account:setup` | User -> `[node-cli] SetupAction` -> `[java] oauth auth flow` -> output | `Java (auth/secure)` |
+| `account:setupci` | User -> `[node-cli] AccountSetupCiAction` -> `[java] CI auth/select flow` -> output | `Java (auth/secure)` |
 | `account:manageauth` | User -> `[node-cli] ManageAccountAction` (+ `[sdk-core] ManageAuthHandler` option selection/sanitization) -> `[java] _sdkExecutor.execute(manageauth)` -> output | `Java (direct)` |
 
 ## Security intent

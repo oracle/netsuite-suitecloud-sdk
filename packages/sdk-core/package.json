@@ -17,8 +17,6 @@
   "main": "./build/index.js",
   "exports": {
     ".": "./build/index.js",
-    "./commands/account/setupci/SetupAccountCiHandler": "./build/commands/account/setupci/SetupAccountCiHandler.js",
-    "./commands/account/setup/SetupAccountHandler": "./build/commands/account/setup/SetupAccountHandler.js",
     "./commands/account/manageauth/ManageAuthHandler": "./build/commands/account/manageauth/ManageAuthHandler.js",
     "./commands/project/create/CreateProjectHandler": "./build/commands/project/create/CreateProjectHandler.js",
     "./commands/project/create/CreateProjectExecutor": "./build/commands/project/create/CreateProjectExecutor.js",
@@ -26,7 +24,6 @@
     "./commands/project/package/PackageHandler": "./build/commands/project/package/PackageHandler.js",
     "./commands/project/package/PackageProjectExecutor": "./build/commands/project/package/PackageProjectExecutor.js",
     "./commands/project/validate/ValidateHandler": "./build/commands/project/validate/ValidateHandler.js",
-    "./commands/project/adddependencies/AddDependenciesHandler": "./build/commands/project/adddependencies/AddDependenciesHandler.js",
     "./commands/project/ProjectCommandExecutor": "./build/commands/project/ProjectCommandExecutor.js",
     "./commands/file/FileCommandExecutor": "./build/commands/file/FileCommandExecutor.js",
     "./commands/file/list/ListFilesHandler": "./build/commands/file/list/ListFilesHandler.js",
