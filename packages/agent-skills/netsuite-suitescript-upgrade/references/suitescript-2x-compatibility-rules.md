@@ -142,8 +142,6 @@ Helper: No direct helper requirement. Individual runtime rules may require `SSCo
 
 Review: Low for order documentation; review individual rules by their own severity.
 
-Example source: implementation behavior.
-
 ### Rule names
 
 Defines: conversion reports use stable rule labels so reviewers can identify which compatibility behaviors changed a file.
@@ -169,8 +167,6 @@ Report labels:
 Helper: only `JSON_PARSING` and `PARSE_INT_TRAILING_ZEROS` require `SSConverterHelper`.
 
 Review: Low for label reporting; review each rule by its own severity.
-
-Example source: implementation behavior.
 
 ### Conditional catch
 
@@ -238,8 +234,6 @@ try {
 }
 ```
 
-Example source: unit test.
-
 ### Rhino `for each`
 
 Defines: replace Rhino `for each (... in ...)` loops with standard key iteration while preserving value iteration behavior.
@@ -290,8 +284,6 @@ for (let _key in _obj) {
     log.debug("value: ", value);
 }
 ```
-
-Example source: unit test.
 
 ### Reserved identifiers
 
@@ -357,8 +349,6 @@ define([], () => {
 });
 ```
 
-Example source: unit test.
-
 ### Version tag
 
 Defines: normalize existing SuiteScript 2.0 and 2.x AMD modules to the SuiteScript 2.1 target version.
@@ -408,8 +398,6 @@ Plugin implementation after:
  */
 define([], () => {});
 ```
-
-Example source: unit test.
 
 ### Const reassignment
 
@@ -467,8 +455,6 @@ try {
 }
 ```
 
-Example source: unit test.
-
 ### JSON parsing
 
 Defines: preserve SuiteScript 2.0 `JSON.parse` tolerance for trailing commas when normalizing code to SuiteScript 2.1.
@@ -514,8 +500,6 @@ Trailing comma behavior after:
 const jsonString = '{"arrayKey": [1,2,3,], "objectKey": { "innerProp": 1, }, }';
 const result = ssConverterHelper.jsonParse_legacySS20(jsonString);
 ```
-
-Example source: unit test.
 
 ### Error properties
 
@@ -564,8 +548,6 @@ define([], () => {
     firstError.message = "A message";
 });
 ```
-
-Example source: unit test.
 
 ### Date formatting
 
@@ -617,8 +599,6 @@ const formattedDate = new Intl.DateTimeFormat("de-DE", {
 }).format(someDate);
 ```
 
-Example source: unit test.
-
 ### parseInt
 
 Defines: preserve SuiteScript 2.0 one-argument `parseInt` behavior for zero-prefixed values when normalizing to SuiteScript 2.1.
@@ -662,8 +642,6 @@ const oneZero = ssConverterHelper.parseInt_legacySS20("08");
 const manyZeros = ssConverterHelper.parseInt_legacySS20("0003");
 const explicitRadix = parseInt("0003", 10);
 ```
-
-Example source: unit test.
 
 ### RESTlet POST returns
 
@@ -716,8 +694,6 @@ function post() {
     return JSON.stringify(JSON.stringify("flower"));
 }
 ```
-
-Example source: unit test.
 
 ### API enum factories
 
@@ -778,8 +754,6 @@ define(["N/someApi"], (someApi) => {
     return { state };
 });
 ```
-
-Example source: unit test.
 
 ### API-backed top-level factories
 
@@ -857,8 +831,6 @@ define(["N/url"], (url) => {
     return { get };
 });
 ```
-
-Example source: unit test.
 
 ### Returned module properties
 
@@ -945,8 +917,6 @@ define(["N/log"], (log) => {
 });
 ```
 
-Example source: unit test.
-
 ### Missing entrypoints
 
 Defines: keep converted files deployable when a known script type returns no supported entrypoint.
@@ -1030,8 +1000,6 @@ define([], function () {
 });
 ```
 
-Example source: unit test.
-
 ### Dependency cleanup
 
 Defines: normalize custom `define([...])` dependency strings for SuiteScript 2.1 module loading.
@@ -1080,8 +1048,6 @@ require(["./something.js"], function (something) {
 });
 ```
 
-Example source: unit test.
-
 ### Helper module
 
 Defines: add the shared compatibility helper only when a converted file uses helper-backed runtime behavior.
@@ -1128,8 +1094,6 @@ define([], function () {
 });
 ```
 
-Example source: unit test.
-
 ### File preservation and helper deployment coverage
 
 Defines: describe how converted files and helper deployment coverage are written during project conversion.
@@ -1169,8 +1133,6 @@ Already covered deployment path:
 <path>~/FileCabinet/SuiteApps/com.example.bundle/*</path>
 ```
 
-Example source: unit test.
-
 ### Report labels and review highlighting
 
 Defines: report converted files with stable rule labels, original-file preservation status, and explicit manual-review highlighting for injected fallback entrypoints.
@@ -1202,5 +1164,3 @@ TODO checks
 ```
 
 Rows are visually marked for review when fallback entrypoint injection was applied.
-
-Example source: converter behavior.
