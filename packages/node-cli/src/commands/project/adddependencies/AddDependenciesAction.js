@@ -9,15 +9,18 @@ const BaseAction = require('../../base/BaseAction');
 const SdkExecutionContext = require('../../../SdkExecutionContext');
 const executeWithSpinner = require('../../../ui/CliSpinner').executeWithSpinner;
 const NodeTranslationService = require('../../../services/NodeTranslationService');
+const CommandUtils = require('../../../utils/CommandUtils');
 const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
-const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
-const {
-	prepareAddDependenciesExecution,
-} = require('@oracle/suitecloud-sdk-core/commands/project/adddependencies/AddDependenciesHandler');
 
 const {
 	COMMAND_ADDDEPENDENCIES: { MESSAGES },
 } = require('../../../services/TranslationKeys');
+
+const COMMAND_OPTIONS = {
+	AUTH_ID: 'authid',
+	ALL: 'all',
+	PROJECT: 'project',
+};
 
 module.exports = class AddDependenciesAction extends BaseAction {
 	constructor(options) {
@@ -25,20 +28,16 @@ module.exports = class AddDependenciesAction extends BaseAction {
 	}
 
 	preExecute(params) {
-		const executionPlan = prepareAddDependenciesExecution(params, this._projectFolder);
-		params.__tsExecutionPlan = executionPlan;
+		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 		return params;
 	}
 
 	async execute(params) {
 		try {
-			const executionPlan = params.__tsExecutionPlan || prepareAddDependenciesExecution(params, this._projectFolder);
-			delete params.__tsExecutionPlan;
-
 			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
 				.integration()
-				.addParams(executionPlan.params)
-				.addFlags(executionPlan.flags)
+				.addParams(params)
+				.addFlag(COMMAND_OPTIONS.ALL)
 				.build();
 
 			const operationResult = await executeWithSpinner({
@@ -50,7 +49,7 @@ module.exports = class AddDependenciesAction extends BaseAction {
 				? ActionResult.Builder.withData(operationResult.data).withResultMessage(operationResult.resultMessage).build()
 				: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 		} catch (error) {
-			return ActionResult.Builder.withErrors(toErrorMessages(error)).build();
+			return ActionResult.Builder.withErrors([error]).build();
 		}
 	}
 };

@@ -198,11 +198,7 @@ export async function executeCreateProject(
 	}
 }
 
-async function createSuiteAppProject(
-	projectFolder: string,
-	input: CreateProjectExecutionInput,
-	projectName: string
-): Promise<void> {
+async function createSuiteAppProject(projectFolder: string,	input: CreateProjectExecutionInput,	projectName: string): Promise<void> {
 	const publisherId = String(input.publisherid ?? '');
 	const projectId = String(input.projectid ?? '');
 	const projectVersion = String(input.projectversion ?? '');

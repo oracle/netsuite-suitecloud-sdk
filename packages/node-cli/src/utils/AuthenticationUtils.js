@@ -82,37 +82,6 @@ const FLAGS = {
 	LIST: 'list'
 };
 
-function _sanitizeAuthIdEntry(authEntry) {
-	if (!authEntry || typeof authEntry !== 'object') {
-		return {};
-	}
-
-	return {
-		...(authEntry.accountInfo && { accountInfo: authEntry.accountInfo }),
-		...(authEntry.hostInfo && { hostInfo: authEntry.hostInfo }),
-		...(authEntry.domain && { domain: authEntry.domain }),
-	};
-}
-
-function _sanitizeAuthIdsData(authIdsData) {
-	if (!authIdsData || typeof authIdsData !== 'object') {
-		return {};
-	}
-
-	return Object.keys(authIdsData).reduce((sanitizedData, authId) => {
-		sanitizedData[authId] = _sanitizeAuthIdEntry(authIdsData[authId]);
-		return sanitizedData;
-	}, {});
-}
-
-function _extractHostNameFromManageAuthData(authData) {
-	if (!authData || typeof authData !== 'object') {
-		return undefined;
-	}
-
-	return authData.hostInfo?.hostName || authData.domain;
-}
-
 function setDefaultAuthentication(projectFolder, authId) {
 	try {
 		// nest the values into a DEFAULT_AUTH_ID_PROPERTY property
@@ -153,7 +122,7 @@ async function getAuthIds(sdkPath) {
 		return ActionResult.Builder.withErrors([error]).build();
 	});
 	return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
-		? ActionResult.Builder.withData(_sanitizeAuthIdsData(operationResult.data)).build()
+		? ActionResult.Builder.withData(operationResult.data).build()
 		: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
 }
 
@@ -169,7 +138,7 @@ async function getAuthInfo(authId, sdkPath, executionEnvironmentContext) {
 		return ActionResult.Builder.withErrors(sdkOperationResult.errorMessages).build();
 	}
 
-	return ActionResult.Builder.withData(_sanitizeAuthIdEntry(sdkOperationResult.data)).build();
+	return ActionResult.Builder.withData(sdkOperationResult.data).build();
 }
 
 async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken, executionEnvironmentContext) {
@@ -337,7 +306,7 @@ async function getAuthCredentialsById(authId, sdkPath, executionEnvironmentConte
 		throw authInfoResult.errorMessages;
 	}
 
-	const hostName = _extractHostNameFromManageAuthData(authInfoResult.data);
+	const hostName = authInfoResult.data?.hostInfo?.hostName;
 	if (!hostName) {
 		throw NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.NEED_TO_REAUTHENTICATE);
 	}

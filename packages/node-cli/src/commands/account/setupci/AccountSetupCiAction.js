@@ -11,7 +11,6 @@ const { ACCOUNT_SETUP_CI: { COMMAND: { OPTIONS } } } = require('./AccountSetupCi
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { validateMachineToMachineAuthIsAllowed } = require('../../../services/ExecutionContextService');
 const AccountSetupCiValidation = require('./AccountSetupCiValidation');
-const { normalizeSetupCiParams, getSetupCiAuthId } = require('@oracle/suitecloud-sdk-core/commands/account/setupci/SetupAccountCiHandler');
 
 module.exports = class AccountSetupCiAction extends BaseAction {
 
@@ -23,22 +22,29 @@ module.exports = class AccountSetupCiAction extends BaseAction {
 
 	preExecute(params) {
 		this._projectInfoService.checkWorkingDirectoryContainsValidProject(this._commandMetadata.name);
-		return normalizeSetupCiParams(params, GENERIC_NETSUITE_DOMAIN);
+
+		if (params[OPTIONS.ACCOUNT]) {
+			params[OPTIONS.ACCOUNT] = params[OPTIONS.ACCOUNT].toUpperCase();
+		}
+
+		return params;
 	}
 
 	async execute(params) {
-		const normalizedParams = normalizeSetupCiParams(params, GENERIC_NETSUITE_DOMAIN);
+		if (params[OPTIONS.DOMAIN] === GENERIC_NETSUITE_DOMAIN) {
+			delete params[OPTIONS.DOMAIN];
+		}
 
 		validateMachineToMachineAuthIsAllowed();
 
-		const isSetupMode = this._isSetupMode(normalizedParams);
-		this._validator.validateActionParametersByMode(normalizedParams, isSetupMode);
-		this._validator.validateAuthIDFormat(getSetupCiAuthId(normalizedParams, isSetupMode), isSetupMode);
+		const isSetupMode = this._isSetupMode(params);
+		this._validator.validateActionParametersByMode(params, isSetupMode);
+		this._validator.validateAuthIDFormat(this._getAuthId(params), isSetupMode);
 
 		if (isSetupMode) {
-			return await authenticateCi(normalizedParams, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
+			return await authenticateCi(params, this._sdkPath, this._executionPath, this._executionEnvironmentContext);
 		} else {
-			return await selectAuthenticationCI(getSetupCiAuthId(normalizedParams, isSetupMode), this._sdkPath, this._executionPath);
+			return await selectAuthenticationCI(this._getAuthId(params), this._sdkPath, this._executionPath);
 		}
 	}
 
@@ -46,4 +52,7 @@ module.exports = class AccountSetupCiAction extends BaseAction {
 		return (!params[OPTIONS.SELECT]);
 	}
 
+	_getAuthId(params) {
+		return this._isSetupMode(params) ? params[OPTIONS.AUTHID] : params[OPTIONS.SELECT];
+	}
 }
