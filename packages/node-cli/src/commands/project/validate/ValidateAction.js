@@ -17,16 +17,16 @@ const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
 const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
-const { prepareValidateExecution } = require('@oracle/suitecloud-sdk-core/commands/project/validate/ValidateHandler');
+const { prepareValidateExecution } = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeProjectCommand,
 	PROJECT_COMMAND,
 	SDK_OPERATION_STATUS,
-} = require('@oracle/suitecloud-sdk-core/commands/project/ProjectCommandExecutor');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
 	shouldRetryAuthByResult,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 const {
 	COMMAND_VALIDATE: { MESSAGES },

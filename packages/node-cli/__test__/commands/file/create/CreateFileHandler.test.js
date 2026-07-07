@@ -7,7 +7,7 @@
 const {
 	normalizeCreateFileParams,
 	buildCreateFileResultData,
-} = require('@oracle/suitecloud-sdk-core/commands/file/create/CreateFileHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('CreateFileHandler', () => {
 	it('should normalize interactive params and quote values', () => {

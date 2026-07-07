@@ -19,7 +19,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const {
 	buildProxyGenerateKeyResult,
 	PROXY_GENERATE_KEY_ERROR,
-} = require('@oracle/suitecloud-sdk-core/commands/proxy/generatekey/ProxyGenerateKeyHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 const CLIENT_API_KEY_FILEPATH = path.join(os.homedir(), FOLDERS.SUITECLOUD_SDK, FILES.CLIENT_API_KEY);
 

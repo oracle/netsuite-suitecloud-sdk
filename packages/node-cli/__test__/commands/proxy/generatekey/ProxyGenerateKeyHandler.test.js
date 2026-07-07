@@ -8,7 +8,7 @@ const {
 	PROXY_GENERATE_KEY_ERROR,
 	parseClientApiKeyContent,
 	buildProxyGenerateKeyResult,
-} = require('@oracle/suitecloud-sdk-core/commands/proxy/generatekey/ProxyGenerateKeyHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('ProxyGenerateKeyHandler', () => {
 	it('should create default structure when content is empty', () => {

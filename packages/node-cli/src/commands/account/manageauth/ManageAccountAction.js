@@ -18,7 +18,7 @@ const {
 	MANAGE_AUTH_VALIDATION_ERROR,
 	selectManageAuthAction,
 	prepareManageAuthActionData,
-} = require('@oracle/suitecloud-sdk-core/commands/account/manageauth/ManageAuthHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	COMMAND_MANAGE_ACCOUNT: { MESSAGES, ERRORS },
 } = require('../../../services/TranslationKeys');

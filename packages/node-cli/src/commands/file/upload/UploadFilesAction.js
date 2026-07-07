@@ -14,11 +14,11 @@ const { createCredentialSessionProvider } = require('../../../utils/AuthSessionP
 const {
 	prepareUploadFilesParams,
 	executeUploadFilesCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/file/upload/UploadFilesHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
 	shouldRetryAuthByResult,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 const {
 	COMMAND_UPLOADFILES: { MESSAGES },

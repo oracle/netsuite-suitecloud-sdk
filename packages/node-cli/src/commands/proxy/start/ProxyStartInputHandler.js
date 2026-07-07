@@ -12,7 +12,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const { getAuthIds } = require('../../../utils/AuthenticationUtils');
 const { resolveDefaultClientApiKey } = require('../../../utils/ClientAPIKeyUtils');
 const { COMMAND_PROXY_START, COMMAND_SETUPACCOUNT, COMMAND_MANAGE_ACCOUNT } = require('../../../services/TranslationKeys');
-const { buildProxyStartAuthIdChoices } = require('@oracle/suitecloud-sdk-core/commands/proxy/start/ProxyStartHandler');
+const { buildProxyStartAuthIdChoices } = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	PROXY_START: {
 		COMMAND: { OPTIONS },

@@ -11,11 +11,11 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const {
 	normalizeCreateFileParams,
 	buildCreateFileResultData,
-} = require('@oracle/suitecloud-sdk-core/commands/file/create/CreateFileHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeCreateFile,
 	FILE_CREATE_STATUS,
-} = require('@oracle/suitecloud-sdk-core/commands/file/create/CreateFileExecutor');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 const {
 	COMMAND_CREATEFILE: { MESSAGES },

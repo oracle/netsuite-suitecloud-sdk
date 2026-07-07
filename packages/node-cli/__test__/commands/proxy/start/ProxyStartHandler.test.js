@@ -8,7 +8,7 @@ const {
 	validateProxyStartPort,
 	normalizeProxyStartPort,
 	buildProxyStartAuthIdChoices,
-} = require('@oracle/suitecloud-sdk-core/commands/proxy/start/ProxyStartHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('ProxyStartHandler', () => {
 	it('should validate supported port range', () => {

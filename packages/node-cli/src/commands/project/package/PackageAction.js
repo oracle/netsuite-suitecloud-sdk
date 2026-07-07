@@ -14,7 +14,7 @@ const { COMMAND_PACKAGE } = require('../../../services/TranslationKeys');
 const {
 	preparePackageParams,
 	executePackageCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/project/package/PackageHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 module.exports = class PackageAction extends BaseAction {
 	preExecute(params) {

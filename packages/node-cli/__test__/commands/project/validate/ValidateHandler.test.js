@@ -7,7 +7,7 @@
 const {
 	VALIDATE_COMMAND,
 	prepareValidateExecution,
-} = require('@oracle/suitecloud-sdk-core/commands/project/validate/ValidateHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('ValidateHandler', () => {
 	it('should prepare server validation execution', () => {

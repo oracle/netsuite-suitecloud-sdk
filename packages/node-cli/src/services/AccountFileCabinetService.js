@@ -9,7 +9,7 @@ const executeWithSpinner = require('../ui/CliSpinner').executeWithSpinner;
 const {
 	executeListFilesCommand,
 	executeListFoldersCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/file/list/ListFilesHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	getAuthCredentialsForProjectCommand,
 	refreshAuthCredentialsForProjectCommand,

@@ -16,11 +16,11 @@ const {
 	prepareListObjectsParams,
 	executeListObjectsCommand,
 	parseObjectTypes,
-} = require('@oracle/suitecloud-sdk-core/commands/object/list/ListObjectsHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
 	shouldRetryAuthByResult,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 const {
 	COMMAND_LISTOBJECTS: { LISTING_OBJECTS },

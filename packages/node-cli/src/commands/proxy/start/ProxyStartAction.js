@@ -16,7 +16,7 @@ const {
 	validateProxyStartPort,
 	normalizeProxyStartPort,
 	buildProxyStartActionData,
-} = require('@oracle/suitecloud-sdk-core/commands/proxy/start/ProxyStartHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	PROXY_START: {
 		COMMAND: { OPTIONS },

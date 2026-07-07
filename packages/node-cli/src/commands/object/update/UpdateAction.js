@@ -15,11 +15,11 @@ const { createCredentialSessionProvider } = require('../../../utils/AuthSessionP
 const {
 	executeUpdateObjectsCommand,
 	executeUpdateCustomRecordWithInstancesCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/object/update/UpdateObjectsHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
 	shouldRetryAuthByResult,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 const {
 	COMMAND_UPDATE: { ERRORS, MESSAGES, OUTPUT },

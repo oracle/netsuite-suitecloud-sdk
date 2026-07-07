@@ -18,11 +18,11 @@ const {
 	addCompareFilesImportFlag,
 	addImportCallMetadata,
 	executeImportFilesCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/file/import/ImportFilesHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
 	shouldRetryAuthByResult,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 const {
 	COMMAND_IMPORTFILES: { ERRORS, MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');

@@ -17,15 +17,15 @@ const {
 const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
 const {
 	executeImportObjectsCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/object/import/ImportObjectsHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeListObjectsCommand,
 	parseObjectTypes,
-} = require('@oracle/suitecloud-sdk-core/commands/object/list/ListObjectsHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
 	shouldRetryAuthByResult,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',

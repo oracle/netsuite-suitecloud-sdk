@@ -4,13 +4,13 @@
  */
 'use strict';
 
-const { prepareListFilesParams } = require('@oracle/suitecloud-sdk-core/commands/file/list/ListFilesHandler');
-const { prepareUploadFilesParams } = require('@oracle/suitecloud-sdk-core/commands/file/upload/UploadFilesHandler');
+const { prepareListFilesParams } = require('@oracle/suitecloud-sdk-core').commands;
+const { prepareUploadFilesParams } = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	prepareImportFilesParams,
 	addCompareFilesImportFlag,
 	addImportCallMetadata,
-} = require('@oracle/suitecloud-sdk-core/commands/file/import/ImportFilesHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('FileHandlers', () => {
 	it('prepareListFilesParams should quote folder and set auth id', () => {
