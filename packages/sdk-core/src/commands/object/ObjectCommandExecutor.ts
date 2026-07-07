@@ -13,7 +13,7 @@ import { randomBytes } from 'node:crypto';
 import { parseStringPromise } from 'xml2js';
 
 import { executeImportFiles } from '../file/FileCommandExecutor';
-import { extractZipArchive } from '../../utils/ZipArchive';
+import { ZipperImpl } from '../../utils/Zipper';
 
 export const OBJECT_COMMAND_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -1078,7 +1078,7 @@ function createHttpsAgentForHost(hostName: string): Agent | undefined {
 }
 
 async function unzipArchive(zipFilePath: string, destinationFolder: string): Promise<void> {
-	await extractZipArchive(zipFilePath, destinationFolder);
+	await new ZipperImpl().unzip(zipFilePath, destinationFolder);
 }
 
 async function copyDirectoryContents(sourceFolder: string, destinationFolder: string): Promise<string[]> {

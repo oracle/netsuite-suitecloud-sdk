@@ -6,7 +6,7 @@
 
 import { join } from 'node:path';
 import { mkdir } from 'node:fs/promises';
-import { createZipArchiveFromEntries } from '../../../utils/ZipArchive';
+import { ZipperImpl } from '../../../utils/Zipper';
 import { createSdfProjectArchivePlan, type SdfManifestData } from './SdfProjectArchive';
 
 export const PACKAGE_PROJECT_OPERATION_STATUS = {
@@ -44,7 +44,7 @@ export async function executePackageProject(
 		const archivePlan = await createSdfProjectArchivePlan(input.projectFolder);
 		const targetZipFilePath = getTargetZipFilePath(archivePlan.manifest, input.destinationFolder);
 		await mkdir(input.destinationFolder, { recursive: true });
-		await createZipArchiveFromEntries(input.projectFolder, targetZipFilePath, archivePlan.entries);
+		await new ZipperImpl().zipEntries(input.projectFolder, targetZipFilePath, archivePlan.entries);
 
 		return {
 			status: PACKAGE_PROJECT_OPERATION_STATUS.SUCCESS,

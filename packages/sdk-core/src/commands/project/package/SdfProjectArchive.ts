@@ -7,7 +7,7 @@
 import { access, readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 import { parseStringPromise } from 'xml2js';
-import type { ZipArchiveEntrySource } from '../../../utils/ZipArchive';
+import type { EntryToZipSource } from '../../../utils/Zipper';
 
 const DEPLOY_FILENAME = 'deploy.xml';
 const MANIFEST_FILENAME = 'manifest.xml';
@@ -27,7 +27,7 @@ export type SdfManifestData = {
 
 export type SdfProjectArchivePlan = {
 	manifest: SdfManifestData;
-	entries: ZipArchiveEntrySource[];
+	entries: EntryToZipSource[];
 };
 
 export async function createSdfProjectArchivePlan(projectFolder: string): Promise<SdfProjectArchivePlan> {
@@ -38,7 +38,7 @@ export async function createSdfProjectArchivePlan(projectFolder: string): Promis
 	await validateOptionalApplicationFile(projectFolder);
 
 	const manifest = readManifestData(manifestRoot);
-	const entries: ZipArchiveEntrySource[] = [];
+	const entries: EntryToZipSource[] = [];
 	const seen = new Set<string>();
 	addEntry(entries, seen, DEPLOY_FILENAME);
 	addEntry(entries, seen, MANIFEST_FILENAME);
@@ -109,7 +109,7 @@ function readManifestData(manifest: XmlValue): SdfManifestData {
 async function addDeployPaths(
 	projectFolder: string,
 	paths: string[],
-	entries: ZipArchiveEntrySource[],
+	entries: EntryToZipSource[],
 	seen: Set<string>
 ): Promise<void> {
 	for (const deployPath of paths) {
@@ -128,7 +128,7 @@ async function addDeployPaths(
 async function addInstallationScripts(
 	projectFolder: string,
 	deploy: XmlValue,
-	entries: ZipArchiveEntrySource[],
+	entries: EntryToZipSource[],
 	seen: Set<string>
 ): Promise<void> {
 	for (const run of asArray(deploy.run)) {
@@ -158,7 +158,7 @@ async function addInstallationScripts(
 async function addFolderContents(
 	projectFolder: string,
 	relativeFolder: string,
-	entries: ZipArchiveEntrySource[],
+	entries: EntryToZipSource[],
 	seen: Set<string>
 ): Promise<void> {
 	if (!relativeFolder || hasUnsafePathSegment(relativeFolder)) {
@@ -199,7 +199,7 @@ function hasUnsafePathSegment(projectPath: string): boolean {
 	return projectPath.split('/').some((segment) => !segment || segment === '.' || segment === '..');
 }
 
-function addEntry(entries: ZipArchiveEntrySource[], seen: Set<string>, path: string, isDirectory = false): void {
+function addEntry(entries: EntryToZipSource[], seen: Set<string>, path: string, isDirectory = false): void {
 	const key = isDirectory ? `${path.replace(/\/$/, '')}/` : path.replace(/\/$/, '');
 	if (!seen.has(key)) {
 		entries.push({ path: key, isDirectory });

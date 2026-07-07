@@ -12,7 +12,7 @@ import { constants as fsConstants } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { parseStringPromise } from 'xml2js';
 
-import { extractZipArchive } from '../../utils/ZipArchive';
+import { ZipperImpl } from '../../utils/Zipper';
 
 export const FILE_COMMAND_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -684,7 +684,7 @@ function looksLikeIdeResponse(responseText: string): boolean {
 
 async function unzipArchive(zipFilePath: string, destinationFolder: string): Promise<void> {
 	try {
-		await extractZipArchive(zipFilePath, destinationFolder);
+		await new ZipperImpl().unzip(zipFilePath, destinationFolder);
 	} catch (error: unknown) {
 		throw new Error(`Unable to extract imported files: ${toErrorMessage(error)}`);
 	}

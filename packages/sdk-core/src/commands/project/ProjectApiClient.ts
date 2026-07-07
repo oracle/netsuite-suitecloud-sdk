@@ -11,7 +11,7 @@ import os from 'node:os';
 import fsPromises from 'node:fs/promises';
 
 import { ProjectCommandType } from './ProjectCommandTypes';
-import { createZipArchiveFromEntries } from '../../utils/ZipArchive';
+import { ZipperImpl } from '../../utils/Zipper';
 import { createSdfProjectArchivePlan } from './package/SdfProjectArchive';
 
 const PROJECT_API_PATH = '/api/internal/sdf/v1/projects';
@@ -36,7 +36,7 @@ export async function createDefaultProjectArchive(projectFolder: string): Promis
 	const projectArchivePath = path.join(os.tmpdir(), fileName);
 	try {
 		const archivePlan = await createSdfProjectArchivePlan(projectFolder);
-		await createZipArchiveFromEntries(projectFolder, projectArchivePath, archivePlan.entries);
+		await new ZipperImpl().zipEntries(projectFolder, projectArchivePath, archivePlan.entries);
 		return projectArchivePath;
 	} catch (error: any) {
 		throw new Error(`Unable to archive project folder "${projectFolder}": ${error.message}`);
