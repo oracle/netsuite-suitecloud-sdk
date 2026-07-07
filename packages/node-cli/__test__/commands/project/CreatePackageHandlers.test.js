@@ -8,8 +8,8 @@ const {
 	ensureCreateProjectLocation,
 	buildCreateProjectSdkParams,
 	toIncludeUnitTestingBoolean,
-} = require('@oracle/suitecloud-sdk-core/commands/project/create/CreateProjectHandler');
-const { preparePackageParams } = require('@oracle/suitecloud-sdk-core/commands/project/package/PackageHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
+const { preparePackageParams } = require('@oracle/suitecloud-sdk-core').commands;
 
 const PROJECT_SUITEAPP = 'SUITEAPP';
 const PROJECT_ACP = 'ACCOUNTCUSTOMIZATIONPROJECT';

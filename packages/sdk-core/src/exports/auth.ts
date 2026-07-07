@@ -4,7 +4,4 @@
  */
 'use strict';
 
-import * as auth from './exports/auth';
-import * as commands from './exports/commands';
-
-export { auth, commands };
+export { executeWithAuthRetry, shouldRetryAuthByResult } from '../auth/AuthSessionManager';

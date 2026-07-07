@@ -14,11 +14,11 @@ const BaseAction = require('../../base/BaseAction');
 const {
 	prepareListFilesParams,
 	executeListFilesCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/file/list/ListFilesHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
 	shouldRetryAuthByResult,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 const {
 	COMMAND_LISTFILES: { LOADING_FILES },
 } = require('../../../services/TranslationKeys');

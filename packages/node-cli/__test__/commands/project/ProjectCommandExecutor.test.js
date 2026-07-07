@@ -8,7 +8,7 @@ const {
 	executeProjectCommand,
 	PROJECT_COMMAND,
 	SDK_OPERATION_STATUS,
-} = require('@oracle/suitecloud-sdk-core/commands/project/ProjectCommandExecutor');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('ProjectCommandExecutor', () => {
 	it('should return successful sdk-like payload when server response is successful', async () => {

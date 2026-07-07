@@ -10,7 +10,7 @@ const { join } = require('node:path');
 const {
 	executeCreateFile,
 	FILE_CREATE_STATUS,
-} = require('@oracle/suitecloud-sdk-core/commands/file/create/CreateFileExecutor');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('CreateFileExecutor', () => {
 	let projectFolder;

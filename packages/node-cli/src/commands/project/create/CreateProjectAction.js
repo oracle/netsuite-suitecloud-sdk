@@ -14,7 +14,7 @@ const {
 	buildCreateProjectSdkParams,
 	toIncludeUnitTestingBoolean,
 	executeCreateProjectWorkflowCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/project/create/CreateProjectHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	COMMAND_CREATEPROJECT: { MESSAGES },
 } = require('../../../services/TranslationKeys');

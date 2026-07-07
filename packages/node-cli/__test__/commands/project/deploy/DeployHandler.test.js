@@ -11,7 +11,7 @@ const {
 	getPreviewCommandName,
 	prepareDeployExecution,
 	isApplyInstallationPreferencesForDeploy,
-} = require('@oracle/suitecloud-sdk-core/commands/project/deploy/DeployHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('DeployHandler', () => {
 	it('should prepare default deploy execution', () => {

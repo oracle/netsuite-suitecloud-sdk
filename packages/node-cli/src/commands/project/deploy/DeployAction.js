@@ -22,16 +22,16 @@ const {
 	DEPLOY_VALIDATION_ERROR,
 	prepareDeployExecution,
 	isApplyInstallationPreferencesForDeploy,
-} = require('@oracle/suitecloud-sdk-core/commands/project/deploy/DeployHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeProjectCommand,
 	PROJECT_COMMAND,
 	SDK_OPERATION_STATUS,
-} = require('@oracle/suitecloud-sdk-core/commands/project/ProjectCommandExecutor');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
 	shouldRetryAuthByResult,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 

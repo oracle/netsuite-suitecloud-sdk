@@ -10,7 +10,7 @@ const {
 	selectManageAuthAction,
 	prepareManageAuthInfoData,
 	prepareManageAuthActionData,
-} = require('@oracle/suitecloud-sdk-core/commands/account/manageauth/ManageAuthHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('ManageAuthHandler', () => {
 	it('should select list action', () => {

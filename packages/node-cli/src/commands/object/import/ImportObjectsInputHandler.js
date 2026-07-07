@@ -37,7 +37,7 @@ const {
 const {
 	executeListObjectsCommand,
 	parseObjectTypes,
-} = require('@oracle/suitecloud-sdk-core/commands/object/list/ListObjectsHandler');
+} = require('@oracle/suitecloud-sdk-core').commands;
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',

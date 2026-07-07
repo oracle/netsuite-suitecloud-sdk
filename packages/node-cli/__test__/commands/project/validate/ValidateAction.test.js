@@ -42,41 +42,48 @@ jest.mock('../../../../src/utils/AuthSessionProvider', () => ({
 	})),
 }));
 
-jest.mock('@oracle/suitecloud-sdk-core/auth/AuthSessionManager', () => ({
-	executeWithAuthRetry: jest.fn(async ({ authSessionProvider, executeWithAuthSession, authId, shouldRetryAuth }) => {
-		const firstSession = await authSessionProvider.resolveAuthSession(authId);
-		const firstResult = await executeWithAuthSession(firstSession);
-		if (shouldRetryAuth && shouldRetryAuth(firstResult)) {
-			const secondSession = await authSessionProvider.refreshAuthSession(authId);
-			return executeWithAuthSession(secondSession);
-		}
-		return firstResult;
-	}),
-	shouldRetryAuthByResult: jest.fn((operationResult) => operationResult && operationResult.status === 'ERROR' && operationResult.httpStatusCode === 401),
-}));
-
-jest.mock('@oracle/suitecloud-sdk-core/commands/project/ProjectCommandExecutor', () => ({
-	executeProjectCommand: jest.fn().mockResolvedValue({
-		status: 'SUCCESS',
-		data: ['Validated'],
-		resultMessage: 'Validation completed',
-	}),
-	PROJECT_COMMAND: {
-		VALIDATE: 'validate',
-	},
-	SDK_OPERATION_STATUS: {
-		SUCCESS: 'SUCCESS',
-		ERROR: 'ERROR',
-	},
-}));
+jest.mock('@oracle/suitecloud-sdk-core', () => {
+	const sdkCore = jest.requireActual('@oracle/suitecloud-sdk-core');
+	return {
+		...sdkCore,
+		auth: {
+			...sdkCore.auth,
+			executeWithAuthRetry: jest.fn(async ({ authSessionProvider, executeWithAuthSession, authId, shouldRetryAuth }) => {
+				const firstSession = await authSessionProvider.resolveAuthSession(authId);
+				const firstResult = await executeWithAuthSession(firstSession);
+				if (shouldRetryAuth && shouldRetryAuth(firstResult)) {
+					const secondSession = await authSessionProvider.refreshAuthSession(authId);
+					return executeWithAuthSession(secondSession);
+				}
+				return firstResult;
+			}),
+			shouldRetryAuthByResult: jest.fn((operationResult) => operationResult && operationResult.status === 'ERROR' && operationResult.httpStatusCode === 401),
+		},
+		commands: {
+			...sdkCore.commands,
+			executeProjectCommand: jest.fn().mockResolvedValue({
+				status: 'SUCCESS',
+				data: ['Validated'],
+				resultMessage: 'Validation completed',
+			}),
+			PROJECT_COMMAND: {
+				VALIDATE: 'validate',
+			},
+			SDK_OPERATION_STATUS: {
+				SUCCESS: 'SUCCESS',
+				ERROR: 'ERROR',
+			},
+		},
+	};
+});
 
 const ValidateAction = require('../../../../src/commands/project/validate/ValidateAction');
 const {
 	executeProjectCommand,
-} = require('@oracle/suitecloud-sdk-core/commands/project/ProjectCommandExecutor');
+} = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeWithAuthRetry,
-} = require('@oracle/suitecloud-sdk-core/auth/AuthSessionManager');
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 describe('ValidateAction', () => {
 	beforeEach(() => {
