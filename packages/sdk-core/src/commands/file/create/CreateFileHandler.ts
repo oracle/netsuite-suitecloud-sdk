@@ -4,7 +4,7 @@
  */
 'use strict';
 
-import path from 'path';
+import * as path from 'path';
 
 const JS_EXTENSION = '.js';
 
