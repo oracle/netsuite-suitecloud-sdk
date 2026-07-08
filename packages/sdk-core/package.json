@@ -7,10 +7,11 @@
     "build"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && npm run copy:resources",
+    "clean": "node scripts/clean-build.js",
+    "build": "npm run clean && tsc -p tsconfig.build.json && npm run copy:resources",
     "copy:resources": "node scripts/copy-resources.js",
     "prepack": "npm run build",
-    "build:watch": "npm run copy:resources && tsc -p tsconfig.build.json --watch"
+    "build:watch": "npm run clean && npm run copy:resources && tsc -p tsconfig.build.json --watch"
   },
   "dependencies": {
     "xml2js": "0.6.2"

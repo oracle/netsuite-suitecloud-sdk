@@ -8,7 +8,6 @@ import { spawn } from 'node:child_process';
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
-import { ErrorCodes, SdkError } from '../../../api/types/SdkError';
 import { TranslationKeys } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { loadTemplate, renderTemplate } from '../../../templates/TemplateLoader';
@@ -65,9 +64,8 @@ export async function executeCreateProjectWorkflow(
 		}
 
 		if (!createProjectResult.data) {
-			throw new SdkError(
-				translationService.getMessage(TranslationKeys.PROJECT_CREATE.ERROR.PATH_NOT_RETURNED),
-				ErrorCodes.PROJECT_CREATION_ERROR
+			throw new Error(
+				translationService.getMessage(TranslationKeys.PROJECT_CREATE.ERROR.PATH_NOT_RETURNED)
 			);
 		}
 		projectDirectory = dirname(createProjectResult.data);

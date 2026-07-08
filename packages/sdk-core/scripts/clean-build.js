@@ -4,4 +4,7 @@
  */
 'use strict';
 
-export { ErrorCodes, SdkError, type ErrorCode } from '../api/types/SdkError';
+const { rmSync } = require('node:fs');
+const { join } = require('node:path');
+
+rmSync(join(__dirname, '..', 'build'), { recursive: true, force: true });

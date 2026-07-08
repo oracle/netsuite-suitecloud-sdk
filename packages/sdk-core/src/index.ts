@@ -6,6 +6,5 @@
 
 import * as auth from './exports/auth';
 import * as commands from './exports/commands';
-import * as errors from './exports/errors';
 
-export { auth, commands, errors };
+export { auth, commands };

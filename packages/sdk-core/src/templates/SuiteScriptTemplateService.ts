@@ -6,7 +6,6 @@
 
 import { parseStringPromise } from 'xml2js';
 
-import { ErrorCodes, SdkError } from '../api/types/SdkError';
 import { TranslationKeys } from '../services/translation/TranslationKeys';
 import { translationService } from '../services/translation/TranslationService';
 import { loadTemplate, renderTemplate } from './TemplateLoader';
@@ -53,12 +52,11 @@ export async function generateSuiteScriptTemplate(
 	);
 
 	if (!selectedTemplate) {
-		throw new SdkError(
+		throw new Error(
 			translationService.getMessage(
 				TranslationKeys.SUITESCRIPT.ERROR.INVALID_TYPE,
 				templates.map(({ id }) => id).join(', ')
-			),
-			ErrorCodes.INVALID_SUITESCRIPT_TYPE
+			)
 		);
 	}
 
@@ -118,12 +116,11 @@ async function normalizeModules(moduleValue: string | string[] | undefined): Pro
 	}
 
 	if (invalidModules.length > 0) {
-		throw new SdkError(
+		throw new Error(
 			translationService.getMessage(
 				TranslationKeys.SUITESCRIPT.ERROR.INVALID_MODULES,
 				invalidModules.map((moduleId) => `"${moduleId}"`).join(', ')
-			),
-			ErrorCodes.INVALID_SUITESCRIPT_MODULE
+			)
 		);
 	}
 
