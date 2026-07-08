@@ -35,7 +35,7 @@ describe('CreateFileHandler', () => {
 			module: '"N/record" "N/search"',
 		});
 
-		expect(resultData.suiteScriptFileAbsolutePath).toContain('/tmp/project/src/SuiteScripts/MyScript.js');
+		expect(resultData.suiteScriptFileAbsolutePath).toContain('/tmp/project/FileCabinet/SuiteScripts/MyScript.js');
 		expect(resultData.modulesSummary).toBe('"N/record", "N/search"');
 	});
 });

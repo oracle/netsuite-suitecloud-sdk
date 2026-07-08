@@ -1,0 +1,14 @@
+{
+  "FILE_CREATE_ERROR_FILE_ALREADY_EXISTS": "The SuiteScript file already exists in \"{0}\".",
+  "FILE_CREATE_ERROR_INVALID_FILE_CABINET_PATH": "The file cabinet path \"{0}\" is invalid. It must refer to a file in a \"{1}\" folder or in any \"/Web Site Hosting Files\" subfolder. For example, \"{1}/file.js\".",
+  "FILE_CREATE_ERROR_PATH_OUTSIDE_FILE_CABINET": "Invalid path \"{0}\". Path must remain inside the project's FileCabinet folder.",
+  "PROJECT_CREATE_ERROR_FOLDER_NOT_EMPTY": "Folder exists and is not empty.",
+  "PROJECT_CREATE_ERROR_NAME_REQUIRED": "A project name is required to create a project.",
+  "PROJECT_CREATE_ERROR_PARENT_DIRECTORY_REQUIRED": "A parent directory is required to create a project.",
+  "PROJECT_CREATE_ERROR_PATH_NOT_RETURNED": "Project creation did not return the created project path.",
+  "PROJECT_CREATE_ERROR_SUITEAPP_FIELD_REQUIRED": "{0} is required to create a SuiteApp project.",
+  "PROJECT_CREATE_ERROR_TYPE_REQUIRED": "A project type is required to create a project.",
+  "PROJECT_CREATE_ERROR_UNSUPPORTED_TYPE": "Unsupported project type \"{0}\".",
+  "SUITESCRIPT_ERROR_INVALID_MODULES": "Invalid SuiteScript module specified: {0}. Only specify valid SuiteScript 2.x modules.",
+  "SUITESCRIPT_ERROR_INVALID_TYPE": "The specified type is not a valid SuiteScript type. The following are valid types: {0}"
+}

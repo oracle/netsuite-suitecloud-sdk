@@ -12,6 +12,7 @@ import {
 } from './CreateProjectExecutor';
 import {
 	executeCreateProjectWorkflow,
+	type CreateProjectWorkflowDependencies,
 	type CreateProjectWorkflowInput,
 	type CreateProjectWorkflowOperationResult,
 } from './CreateProjectWorkflowExecutor';
@@ -129,7 +130,8 @@ export async function executeCreateProjectCommand(
 }
 
 export async function executeCreateProjectWorkflowCommand(
-	input: CreateProjectWorkflowInput
+	input: CreateProjectWorkflowInput,
+	dependencies?: CreateProjectWorkflowDependencies
 ): Promise<CreateProjectWorkflowOperationResult> {
-	return executeCreateProjectWorkflow(input);
+	return executeCreateProjectWorkflow(input, dependencies);
 }

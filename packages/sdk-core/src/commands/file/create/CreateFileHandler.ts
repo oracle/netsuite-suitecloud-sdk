@@ -69,7 +69,11 @@ export function buildCreateFileResultData(projectFolder: string, normalizedParam
 	modulesSummary?: string;
 } {
 	const filePath = String(normalizedParams[CREATE_FILE_COMMAND_OPTIONS.PATH] || '');
-	const suiteScriptFileAbsolutePath = path.join(projectFolder, 'src', unquoteString(filePath));
+	const suiteScriptFileAbsolutePath = path.join(
+		projectFolder,
+		'FileCabinet',
+		unquoteString(filePath).replace(/^[/\\]+/, '')
+	);
 	const modules = normalizedParams[CREATE_FILE_COMMAND_OPTIONS.MODULE];
 
 	if (!modules) {
