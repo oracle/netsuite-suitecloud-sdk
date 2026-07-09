@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { access, mkdtemp, readFile, rm } = require('node:fs/promises');
+const { access, mkdtemp, readFile, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { dirname, join } = require('node:path');
 const {
@@ -166,6 +166,32 @@ describe('CreateProjectExecutor', () => {
 		);
 		expect(await readFile(join(projectAbsolutePath, 'suitecloud.config.js'), 'utf8')).toBe(
 			await readTemplate('project/suitecloud.config.js')
+		);
+	});
+
+	it('should replace the complete Node project wrapper when overwrite is enabled', async () => {
+		const projectAbsolutePath = join(temporaryFolder, 'overwrite-wrapper');
+		const input = {
+			createProjectParams: {
+				parentdirectory: projectAbsolutePath,
+				type: 'ACCOUNTCUSTOMIZATION',
+				projectname: 'src',
+			},
+			displayProjectName: 'My ACP',
+			includeUnitTesting: false,
+		};
+		expect((await executeCreateProjectWorkflow(input)).status).toBe(CREATE_PROJECT_OPERATION_STATUS.SUCCESS);
+		await writeFile(join(projectAbsolutePath, 'stale-file.txt'), 'stale', 'utf8');
+
+		const result = await executeCreateProjectWorkflow({
+			...input,
+			createProjectParams: { ...input.createProjectParams, overwrite: true },
+		});
+
+		expect(result.status).toBe(CREATE_PROJECT_OPERATION_STATUS.SUCCESS);
+		await expect(access(join(projectAbsolutePath, 'stale-file.txt'))).rejects.toMatchObject({ code: 'ENOENT' });
+		expect(await readFile(join(projectAbsolutePath, 'src', 'manifest.xml'), 'utf8')).toContain(
+			'<projectname>My ACP</projectname>'
 		);
 	});
 

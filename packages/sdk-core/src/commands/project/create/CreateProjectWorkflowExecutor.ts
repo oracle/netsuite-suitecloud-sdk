@@ -58,6 +58,9 @@ export async function executeCreateProjectWorkflow(
 ): Promise<CreateProjectWorkflowOperationResult> {
 	let projectDirectory: string | undefined;
 	try {
+		if (isOverwriteEnabled(input.createProjectParams.overwrite)) {
+			await rm(unquote(input.createProjectParams.parentdirectory), { recursive: true, force: true });
+		}
 		const createProjectResult = await executeCreateProject(input.createProjectParams);
 		if (createProjectResult.status === CREATE_PROJECT_OPERATION_STATUS.ERROR) {
 			return createProjectResult;
@@ -184,4 +187,12 @@ async function runNpmInstall(projectAbsolutePath: string): Promise<boolean> {
 
 function toErrorMessage(error: unknown): string {
 	return error instanceof Error ? error.message : String(error);
+}
+
+function isOverwriteEnabled(value: boolean | string | undefined): boolean {
+	return value === true || (typeof value === 'string' && value.trim().toLowerCase() === 'true');
+}
+
+function unquote(value: string): string {
+	return value.length > 1 && value.startsWith('"') && value.endsWith('"') ? value.slice(1, -1) : value;
 }
