@@ -9,12 +9,10 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 import os from 'node:os';
 import fsPromises from 'node:fs/promises';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
 
 import { ProjectCommandType } from './ProjectCommandTypes';
-
-const execFileAsync = promisify(execFile);
+import { ZipperImpl } from '../../utils/Zipper';
+import { createSdfProjectArchivePlan } from './package/SdfProjectArchive';
 
 const PROJECT_API_PATH = '/api/internal/sdf/v1/projects';
 const MULTIPART_EOL = '\r\n';
@@ -26,8 +24,6 @@ const BOOLEAN_TRUE_T = 'T';
 const BOOLEAN_FALSE_F = 'F';
 const ACCOUNT_SPECIFIC_VALUES_DEFAULT = 'ERROR';
 const PROJECT_ARCHIVE_PREFIX = 'suitecloud-project';
-const ZIP_BINARY_NAME = 'zip';
-const ZIP_EXCLUDES = ['.git/*', 'node_modules/*', '.DS_Store', 'build/*'];
 
 export type HttpResponse = {
 	statusCode: number;
@@ -38,15 +34,12 @@ export type HttpResponse = {
 export async function createDefaultProjectArchive(projectFolder: string): Promise<string> {
 	const fileName = `${PROJECT_ARCHIVE_PREFIX}-${Date.now()}-${crypto.randomBytes(4).toString('hex')}.zip`;
 	const projectArchivePath = path.join(os.tmpdir(), fileName);
-	const zipCommandArgs = ['-r', '-q', projectArchivePath, '.', '-x', ...ZIP_EXCLUDES];
-
 	try {
-		await execFileAsync(ZIP_BINARY_NAME, zipCommandArgs, { cwd: projectFolder });
+		const archivePlan = await createSdfProjectArchivePlan(projectFolder);
+		await new ZipperImpl().zipEntries(projectFolder, projectArchivePath, archivePlan.entries);
 		return projectArchivePath;
 	} catch (error: any) {
-		throw new Error(
-			`Unable to archive project folder "${projectFolder}". Verify "${ZIP_BINARY_NAME}" is installed and available in PATH.`
-		);
+		throw new Error(`Unable to archive project folder "${projectFolder}": ${error.message}`);
 	}
 }
 

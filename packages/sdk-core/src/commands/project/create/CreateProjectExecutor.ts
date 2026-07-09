@@ -5,7 +5,7 @@
 'use strict';
 
 import { join } from 'node:path';
-import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
+import { access, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 
 export const CREATE_PROJECT_OPERATION_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -308,7 +308,9 @@ function toBoolean(value: unknown): boolean {
 		return value;
 	}
 	if (typeof value === 'string') {
-		return value.trim().toLowerCase() === 'true';
+		// Keep accepting legacy empty-string flags so older callers can still request overwrite.
+		const normalizedValue = value.trim().toLowerCase();
+		return normalizedValue === 'true' || normalizedValue === '';
 	}
 	return false;
 }
