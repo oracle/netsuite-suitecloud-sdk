@@ -13,7 +13,7 @@ const {
 	ensureCreateProjectLocation,
 	buildCreateProjectSdkParams,
 	toIncludeUnitTestingBoolean,
-	executeCreateProjectWorkflowCommand,
+	executeCreateProjectWorkflow,
 } = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	COMMAND_CREATEPROJECT: { MESSAGES },
@@ -83,7 +83,7 @@ module.exports = class CreateProjectAction extends BaseAction {
 				await this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
 			}
 
-			const operationResult = await executeCreateProjectWorkflowCommand({
+			const operationResult = await executeCreateProjectWorkflow({
 				createProjectParams,
 				displayProjectName: projectName,
 				includeUnitTesting,

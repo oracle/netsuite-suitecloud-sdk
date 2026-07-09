@@ -10,7 +10,7 @@ const { dirname, join } = require('node:path');
 const {
 	CREATE_PROJECT_OPERATION_STATUS,
 	executeCreateProject,
-	executeCreateProjectWorkflowCommand,
+	executeCreateProjectWorkflow,
 } = require('@oracle/suitecloud-sdk-core').commands;
 
 const SDK_CORE_ROOT = dirname(require.resolve('@oracle/suitecloud-sdk-core/package.json'));
@@ -70,7 +70,7 @@ describe('CreateProjectExecutor', () => {
 		expect(result.status).toBe(CREATE_PROJECT_OPERATION_STATUS.SUCCESS);
 		const deployTemplate = await readTemplate('project/project_deploy_suiteapp.xml');
 		expect(await readFile(join(result.data, 'deploy.xml'), 'utf8')).toBe(
-			deployTemplate.replaceAll('${applicationId}', 'com.example.application')
+			deployTemplate.split('${applicationId}').join('com.example.application')
 		);
 		expect(await readFile(join(result.data, 'manifest.xml'), 'utf8')).toContain(
 			'<projectversion>2.1.0</projectversion>'
@@ -114,7 +114,7 @@ describe('CreateProjectExecutor', () => {
 	it('should create the Node project wrapper from sdk-core templates', async () => {
 		const projectAbsolutePath = join(temporaryFolder, 'wrapper');
 		const installDependencies = jest.fn().mockResolvedValue(true);
-		const result = await executeCreateProjectWorkflowCommand(
+		const result = await executeCreateProjectWorkflow(
 			{
 				createProjectParams: {
 					parentdirectory: projectAbsolutePath,
@@ -150,7 +150,7 @@ describe('CreateProjectExecutor', () => {
 
 	it('should create the default wrapper without unit testing', async () => {
 		const projectAbsolutePath = join(temporaryFolder, 'default-wrapper');
-		const result = await executeCreateProjectWorkflowCommand({
+		const result = await executeCreateProjectWorkflow({
 			createProjectParams: {
 				parentdirectory: projectAbsolutePath,
 				type: 'ACCOUNTCUSTOMIZATION',
@@ -171,7 +171,7 @@ describe('CreateProjectExecutor', () => {
 
 	it('should create a SuiteApp wrapper using the created project path', async () => {
 		const projectAbsolutePath = join(temporaryFolder, 'suiteapp-wrapper');
-		const result = await executeCreateProjectWorkflowCommand({
+		const result = await executeCreateProjectWorkflow({
 			createProjectParams: {
 				parentdirectory: projectAbsolutePath,
 				type: 'SUITEAPP',
@@ -194,7 +194,7 @@ describe('CreateProjectExecutor', () => {
 
 	it('should remove a partially scaffolded project when finalization fails', async () => {
 		const projectAbsolutePath = join(temporaryFolder, 'failed-wrapper');
-		const result = await executeCreateProjectWorkflowCommand(
+		const result = await executeCreateProjectWorkflow(
 			{
 				createProjectParams: {
 					parentdirectory: projectAbsolutePath,

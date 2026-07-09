@@ -74,15 +74,16 @@ describe('CreateFileExecutor', () => {
 			projectFolder,
 			path: '/SuiteApps/com.netsuite.311/client.js',
 			type: 'ClientScript',
-			module: '"n/record" "N/search"',
+			module: '"n/record" "N/search" "N/llm"',
 		});
 
 		expect(result.status).toBe(FILE_CREATE_STATUS.SUCCESS);
 		const content = await readFile(result.data.createdFileAbsolutePath, 'utf8');
-		expect(content).toContain("define(['N/record', 'N/search']");
+		expect(content).toContain("define(['N/record', 'N/search', 'N/llm']");
 		expect(content).toContain('@param{record} record');
 		expect(content).toContain('@param{search} search');
-		expect(content).toContain('function(record, search)');
+		expect(content).toContain('@param{llm} llm');
+		expect(content).toContain('function(record, search, llm)');
 	});
 
 	it('should reject unsupported script types', async () => {

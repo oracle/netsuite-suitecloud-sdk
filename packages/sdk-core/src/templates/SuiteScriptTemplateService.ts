@@ -4,67 +4,45 @@
  */
 'use strict';
 
-import { parseStringPromise } from 'xml2js';
-
 import { TranslationKeys } from '../services/translation/TranslationKeys';
 import { translationService } from '../services/translation/TranslationService';
+import {
+	DEFAULT_SUITESCRIPT_TEMPLATE_ID,
+	SUITESCRIPT_HEADER_FILENAME,
+	SUITESCRIPT_MODULES,
+	SUITESCRIPT_TEMPLATES,
+} from './SuiteScriptCatalog';
 import { loadTemplate, renderTemplate } from './TemplateLoader';
 
 const SUITESCRIPT_TEMPLATE_FOLDER = 'suitescript';
-const TEMPLATE_CATALOG_FILE = 'ss_2_x_templates.xml';
-const MODULE_CATALOG_FILE = 'suitescript_modules.xml';
-const DEFAULT_TEMPLATE_ID = 'CustomModule';
-
-type SuiteScriptTemplate = {
-	id: string;
-	headerFilename?: string;
-	bodyFilename: string;
-};
-
-type TemplateCatalog = {
-	configuration: {
-		templates: Array<{
-			template: Array<{
-				$: { id: string; headerFilename?: string };
-				types: Array<{ files: Array<{ $: { bodyFilename: string } }> }>;
-			}>;
-		}>;
-	};
-};
-
-type ModuleCatalog = {
-	ss_modules: {
-		ss_module: Array<{ $: { path: string } }>;
-	};
-};
-
-let templatesPromise: Promise<SuiteScriptTemplate[]> | undefined;
-let modulesPromise: Promise<string[]> | undefined;
+const templatesByLowercaseId = new Map(
+	SUITESCRIPT_TEMPLATES.map((template) => [template.id.toLowerCase(), template])
+);
+const modulesByLowercaseId = new Map(
+	SUITESCRIPT_MODULES.map((moduleId) => [moduleId.toLowerCase(), moduleId])
+);
 
 export async function generateSuiteScriptTemplate(
 	type: string | undefined,
 	moduleValue: string | string[] | undefined
 ): Promise<string> {
-	const templates = await getTemplates();
-	const requestedType = type || DEFAULT_TEMPLATE_ID;
-	const selectedTemplate = templates.find(
-		(template) => template.id.toLowerCase() === requestedType.toLowerCase()
-	);
+	const requestedType = type || DEFAULT_SUITESCRIPT_TEMPLATE_ID;
+	const selectedTemplate = templatesByLowercaseId.get(requestedType.toLowerCase());
 
 	if (!selectedTemplate) {
 		throw new Error(
 			translationService.getMessage(
 				TranslationKeys.SUITESCRIPT.ERROR.INVALID_TYPE,
-				templates.map(({ id }) => id).join(', ')
+				SUITESCRIPT_TEMPLATES.map(({ id }) => id).join(', ')
 			)
 		);
 	}
 
-	const modules = await normalizeModules(moduleValue);
-	const header = selectedTemplate.headerFilename
-		? await loadSuiteScriptTemplate(selectedTemplate.headerFilename)
-		: '';
-	const body = await loadSuiteScriptTemplate(selectedTemplate.bodyFilename);
+	const modules = normalizeModules(moduleValue);
+	const [header, body] = await Promise.all([
+		loadSuiteScriptTemplate(SUITESCRIPT_HEADER_FILENAME),
+		loadSuiteScriptTemplate(selectedTemplate.bodyFilename),
+	]);
 
 	return renderTemplate(header + body, {
 		modulesDefine: modules.map((moduleId) => `'${moduleId}'`).join(', '),
@@ -73,41 +51,13 @@ export async function generateSuiteScriptTemplate(
 	});
 }
 
-async function getTemplates(): Promise<SuiteScriptTemplate[]> {
-	if (!templatesPromise) {
-		templatesPromise = loadSuiteScriptTemplate(TEMPLATE_CATALOG_FILE).then(async (catalog) => {
-			const parsedCatalog = (await parseStringPromise(catalog)) as TemplateCatalog;
-			return parsedCatalog.configuration.templates[0].template.map((template) => ({
-				id: template.$.id,
-				headerFilename: template.$.headerFilename,
-				bodyFilename: template.types[0].files[0].$.bodyFilename,
-			}));
-		});
-	}
-	return templatesPromise;
-}
-
-async function getSupportedModules(): Promise<string[]> {
-	if (!modulesPromise) {
-		modulesPromise = loadSuiteScriptTemplate(MODULE_CATALOG_FILE).then(async (catalog) => {
-			const parsedCatalog = (await parseStringPromise(catalog)) as ModuleCatalog;
-			return parsedCatalog.ss_modules.ss_module.map((module) => module.$.path);
-		});
-	}
-	return modulesPromise;
-}
-
-async function normalizeModules(moduleValue: string | string[] | undefined): Promise<string[]> {
+function normalizeModules(moduleValue: string | string[] | undefined): string[] {
 	const requestedModules = parseModules(moduleValue);
-	const supportedModules = await getSupportedModules();
-	const supportedModulesByLowercaseId = new Map(
-		supportedModules.map((moduleId) => [moduleId.toLowerCase(), moduleId])
-	);
 	const normalizedModules: string[] = [];
 	const invalidModules: string[] = [];
 
 	for (const requestedModule of requestedModules) {
-		const supportedModule = supportedModulesByLowercaseId.get(requestedModule.toLowerCase());
+		const supportedModule = modulesByLowercaseId.get(requestedModule.toLowerCase());
 		if (supportedModule) {
 			normalizedModules.push(supportedModule);
 		} else {

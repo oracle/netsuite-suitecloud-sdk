@@ -9,6 +9,13 @@ import { join } from 'node:path';
 
 const TEMPLATE_ROOT = join(__dirname, '..', 'resources', 'templates');
 const templateCache = new Map<string, Promise<string>>();
+const XML_ENTITIES = [
+	['&', '&amp;'],
+	['<', '&lt;'],
+	['>', '&gt;'],
+	['"', '&quot;'],
+	["'", '&apos;'],
+] as const;
 
 export function loadTemplate(relativePath: string): Promise<string> {
 	let template = templateCache.get(relativePath);
@@ -21,9 +28,7 @@ export function loadTemplate(relativePath: string): Promise<string> {
 
 export function renderTemplate(template: string, values: Record<string, string>): string {
 	return Object.entries(values).reduce((content, [name, value]) => {
-		return content
-			.replaceAll(`\${${name}}`, value)
-			.replaceAll(`{{${name}}}`, value);
+		return replaceEvery(replaceEvery(content, `\${${name}}`, value), `{{${name}}}`, value);
 	}, template);
 }
 
@@ -35,10 +40,12 @@ export function setXmlElementValues(template: string, values: Record<string, str
 }
 
 function escapeXml(value: string): string {
-	return value
-		.replaceAll('&', '&amp;')
-		.replaceAll('<', '&lt;')
-		.replaceAll('>', '&gt;')
-		.replaceAll('"', '&quot;')
-		.replaceAll("'", '&apos;');
+	return XML_ENTITIES.reduce(
+		(escapedValue, [character, entity]) => replaceEvery(escapedValue, character, entity),
+		value
+	);
+}
+
+function replaceEvery(value: string, searchValue: string, replacement: string): string {
+	return value.split(searchValue).join(replacement);
 }

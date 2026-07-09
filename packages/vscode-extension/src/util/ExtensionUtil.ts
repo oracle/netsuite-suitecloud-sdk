@@ -5,9 +5,15 @@
 import type { ActionResult, AuthListData } from '../types/ActionResult';
 import type { ConsoleLoggerConstructor, ExecutionEnvironmentContextConstructor, ExecutionEnvironmentContextInstance, SdkArtifactVerifierInstance, SdkOperationResult, SuiteCloudAuthProxyServiceConstructor } from '../types/JavascriptNodeCli';
 
+const {
+	SUITESCRIPT_MODULES: CORE_SUITESCRIPT_MODULES,
+	SUITESCRIPT_TEMPLATES,
+} = require('@oracle/suitecloud-sdk-core').metadata;
 
-export const SUITESCRIPT_TYPES: { id: string; name: string }[] = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptTypesMetadata');
-export const SUITESCRIPT_MODULES: { id: string }[] = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptModulesMetadata');
+export const SUITESCRIPT_TYPES: { id: string; name: string }[] = SUITESCRIPT_TEMPLATES.map(
+	({ id, name }: { id: string; name: string }) => ({ id, name })
+);
+export const SUITESCRIPT_MODULES: { id: string }[] = CORE_SUITESCRIPT_MODULES.map((id: string) => ({ id }));
 
 export const objectTypes: {
 	name: string;

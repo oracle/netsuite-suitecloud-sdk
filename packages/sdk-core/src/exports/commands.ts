@@ -80,11 +80,10 @@ export {
 	buildCreateProjectSdkParams,
 	CREATE_PROJECT_COMMAND_OPTIONS,
 	ensureCreateProjectLocation,
-	executeCreateProjectCommand,
-	executeCreateProjectWorkflowCommand,
 	getProjectFolderName,
 	toIncludeUnitTestingBoolean,
 } from '../commands/project/create/CreateProjectHandler';
+export { executeCreateProjectWorkflow } from '../commands/project/create/CreateProjectWorkflowExecutor';
 export {
 	DEPLOY_COMMAND,
 	DEPLOY_MODE,

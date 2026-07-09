@@ -65,7 +65,7 @@ export async function executeCreateFile(input: ExecuteCreateFileInput): Promise<
 }
 
 function normalizeSuiteScriptPath(filePath: string): string {
-	const normalized = String(filePath || '').trim().replace(/^"|"$/g, '').replaceAll('\\', '/');
+	const normalized = String(filePath || '').trim().replace(/^"|"$/g, '').replace(/\\/g, '/');
 	return normalized.startsWith('/') ? normalized : `/${normalized}`;
 }
 

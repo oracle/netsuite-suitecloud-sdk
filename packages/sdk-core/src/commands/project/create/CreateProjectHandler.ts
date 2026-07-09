@@ -5,17 +5,6 @@
 'use strict';
 
 import { join } from 'node:path';
-import {
-	executeCreateProject,
-	type CreateProjectExecutionInput,
-	type CreateProjectOperationResult,
-} from './CreateProjectExecutor';
-import {
-	executeCreateProjectWorkflow,
-	type CreateProjectWorkflowDependencies,
-	type CreateProjectWorkflowInput,
-	type CreateProjectWorkflowOperationResult,
-} from './CreateProjectWorkflowExecutor';
 
 export const CREATE_PROJECT_COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
@@ -121,17 +110,4 @@ export function toIncludeUnitTestingBoolean(includeUnitTesting: boolean | string
 
 function quoteString(value: string): string {
 	return `"${value}"`;
-}
-
-export async function executeCreateProjectCommand(
-	input: CreateProjectExecutionInput
-): Promise<CreateProjectOperationResult> {
-	return executeCreateProject(input);
-}
-
-export async function executeCreateProjectWorkflowCommand(
-	input: CreateProjectWorkflowInput,
-	dependencies?: CreateProjectWorkflowDependencies
-): Promise<CreateProjectWorkflowOperationResult> {
-	return executeCreateProjectWorkflow(input, dependencies);
 }
