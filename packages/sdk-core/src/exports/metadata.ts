@@ -4,8 +4,9 @@
  */
 'use strict';
 
-import * as auth from './exports/auth';
-import * as commands from './exports/commands';
-import * as metadata from './exports/metadata';
-
-export { auth, commands, metadata };
+export {
+	DEFAULT_SUITESCRIPT_TEMPLATE_ID,
+	SUITESCRIPT_MODULES,
+	SUITESCRIPT_TEMPLATES,
+	type SuiteScriptTemplateDefinition,
+} from '../templates/SuiteScriptCatalog';

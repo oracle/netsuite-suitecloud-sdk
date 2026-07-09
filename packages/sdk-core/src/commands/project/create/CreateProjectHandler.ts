@@ -5,16 +5,7 @@
 'use strict';
 
 import { join } from 'node:path';
-import {
-	executeCreateProject,
-	type CreateProjectExecutionInput,
-	type CreateProjectOperationResult,
-} from './CreateProjectExecutor';
-import {
-	executeCreateProjectWorkflow,
-	type CreateProjectWorkflowInput,
-	type CreateProjectWorkflowOperationResult,
-} from './CreateProjectWorkflowExecutor';
+import type { CreateProjectExecutionInput } from './CreateProjectExecutor';
 
 export const CREATE_PROJECT_COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
@@ -91,15 +82,15 @@ export function buildCreateProjectSdkParams(
 	params: CreateProjectParams,
 	sourceFolderName: string,
 	projectTypeSuiteApp: string
-): Record<string, string> {
-	const createProjectParams: Record<string, string> = {
+): CreateProjectExecutionInput {
+	const createProjectParams: CreateProjectExecutionInput = {
 		parentdirectory: quoteString(String(params[CREATE_PROJECT_COMMAND_OPTIONS.PARENT_DIRECTORY])),
 		type: String(params[CREATE_PROJECT_COMMAND_OPTIONS.TYPE]),
 		projectname: sourceFolderName,
 	};
 
 	if (params[CREATE_PROJECT_COMMAND_OPTIONS.OVERWRITE]) {
-		createProjectParams.overwrite = '';
+		createProjectParams.overwrite = true;
 	}
 
 	if (params[CREATE_PROJECT_COMMAND_OPTIONS.TYPE] === projectTypeSuiteApp) {
@@ -120,16 +111,4 @@ export function toIncludeUnitTestingBoolean(includeUnitTesting: boolean | string
 
 function quoteString(value: string): string {
 	return `"${value}"`;
-}
-
-export async function executeCreateProjectCommand(
-	input: CreateProjectExecutionInput
-): Promise<CreateProjectOperationResult> {
-	return executeCreateProject(input);
-}
-
-export async function executeCreateProjectWorkflowCommand(
-	input: CreateProjectWorkflowInput
-): Promise<CreateProjectWorkflowOperationResult> {
-	return executeCreateProjectWorkflow(input);
 }
