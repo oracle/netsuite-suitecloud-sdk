@@ -27,8 +27,10 @@ const FileCabinetService = require('../../../services/FileCabinetService');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const CLIException = require('../../../CLIException');
-const SUITESCRIPT_MODULES = require('../../../metadata/SuiteScriptModulesMetadata');
-const SUITESCRIPT_TYPES = require('../../../metadata/SuiteScriptTypesMetadata');
+const {
+    SUITESCRIPT_MODULES,
+    SUITESCRIPT_TEMPLATES,
+} = require('@oracle/suitecloud-sdk-core').metadata;
 
 const ANSWER_NAMES = {
     ADD_SUITESCRIPT_MODULES: 'addSuiteScriptModules',
@@ -82,7 +84,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             message: NodeTranslationService.getMessage(QUESTIONS.CHOOSE_SUITESCRIPT_TYPE),
             pageSize: 15,
             choices: [
-                ...SUITESCRIPT_TYPES.map(( suiteScriptType) => ({
+                ...SUITESCRIPT_TEMPLATES.map((suiteScriptType) => ({
                     name: suiteScriptType.name,
                     value: suiteScriptType.id,
                 })),
@@ -115,8 +117,8 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             pageSize: 15,
             choices: [
                 ...SUITESCRIPT_MODULES.map((suiteScriptModule) => ({
-                    name: suiteScriptModule.id,
-                    value: suiteScriptModule.id,
+                    name: suiteScriptModule,
+                    value: suiteScriptModule,
                 })),
                 new Separator(),
             ],

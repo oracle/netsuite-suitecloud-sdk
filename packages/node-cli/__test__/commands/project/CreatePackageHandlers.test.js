@@ -49,7 +49,7 @@ describe('CreatePackageHandlers', () => {
 			parentdirectory: '"/tmp/workspace/com.test.demo"',
 			type: PROJECT_SUITEAPP,
 			projectname: 'src',
-			overwrite: '',
+			overwrite: true,
 			publisherid: 'com.test',
 			projectid: 'demo',
 			projectversion: '1.2.3',

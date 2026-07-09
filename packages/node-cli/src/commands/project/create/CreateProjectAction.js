@@ -13,7 +13,7 @@ const {
 	ensureCreateProjectLocation,
 	buildCreateProjectSdkParams,
 	toIncludeUnitTestingBoolean,
-	executeCreateProjectWorkflowCommand,
+	executeCreateProjectWorkflow,
 } = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	COMMAND_CREATEPROJECT: { MESSAGES },
@@ -42,7 +42,6 @@ const COMMAND_OPTIONS = {
 	PUBLISHER_ID: 'publisherid',
 	TYPE: 'type',
 	INCLUDE_UNIT_TESTING: 'includeunittesting',
-	PROJECT_FOLDER_NAME: 'projectfoldername',
 };
 
 module.exports = class CreateProjectAction extends BaseAction {
@@ -67,7 +66,6 @@ module.exports = class CreateProjectAction extends BaseAction {
 			}
 
 			const projectAbsolutePath = params[COMMAND_OPTIONS.PARENT_DIRECTORY];
-			const projectFolderName = params[COMMAND_OPTIONS.PROJECT_FOLDER_NAME];
 			const projectType = params[COMMAND_OPTIONS.TYPE];
 			const projectName = params[COMMAND_OPTIONS.PROJECT_NAME];
 			const includeUnitTesting = toIncludeUnitTestingBoolean(params[COMMAND_OPTIONS.INCLUDE_UNIT_TESTING]);
@@ -85,15 +83,10 @@ module.exports = class CreateProjectAction extends BaseAction {
 				await this._log.info(NodeTranslationService.getMessage(MESSAGES.INIT_NPM_DEPENDENCIES));
 			}
 
-			const operationResult = await executeCreateProjectWorkflowCommand({
+			const operationResult = await executeCreateProjectWorkflow({
 				createProjectParams,
-				projectAbsolutePath,
-				projectFolderName,
-				projectType,
-				projectName,
-				projectVersion: params[COMMAND_OPTIONS.PROJECT_VERSION],
+				displayProjectName: projectName,
 				includeUnitTesting,
-				projectTypeSuiteApp: ApplicationConstants.PROJECT_SUITEAPP,
 			});
 
 			if (operationResult.status === 'SUCCESS') {

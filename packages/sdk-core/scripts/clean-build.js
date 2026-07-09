@@ -4,8 +4,7 @@
  */
 'use strict';
 
-import * as auth from './exports/auth';
-import * as commands from './exports/commands';
-import * as metadata from './exports/metadata';
+const { rmSync } = require('node:fs');
+const { join } = require('node:path');
 
-export { auth, commands, metadata };
+rmSync(join(__dirname, '..', 'build'), { recursive: true, force: true });

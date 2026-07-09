@@ -3,9 +3,15 @@
   "version": "0.0.0",
   "license": "UPL-1.0",
   "private": true,
+  "files": [
+    "build"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "build:watch": "tsc -p tsconfig.build.json --watch"
+    "clean": "node scripts/clean-build.js",
+    "build": "npm run clean && tsc -p tsconfig.build.json && npm run copy:resources",
+    "copy:resources": "node scripts/copy-resources.js",
+    "prepack": "npm run build",
+    "build:watch": "npm run clean && npm run copy:resources && tsc -p tsconfig.build.json --watch"
   },
   "dependencies": {
     "xml2js": "0.6.2"

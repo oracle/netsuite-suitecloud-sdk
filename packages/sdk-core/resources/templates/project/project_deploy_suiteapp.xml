@@ -1,0 +1,11 @@
+<deploy>
+    <files>
+        <path>~/FileCabinet/SuiteApps/${applicationId}/*</path>
+    </files>
+    <objects>
+        <path>~/Objects/*</path>
+    </objects>
+    <translationimports>
+        <path>~/Translations/*</path>
+    </translationimports>
+</deploy>
