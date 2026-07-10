@@ -42,11 +42,10 @@ const {
 	HTTP_RESPONSE_CODE,
 } = require('../ApplicationConstants');
 const { isProductionDomain } = require('../utils/UriUtils');
+const { http: suiteCloudHttp } = require('@oracle/suitecloud-sdk-core');
 
 /** Message literal service method */
 const NodeTranslationService = require('./NodeTranslationService');
-const ProxyService = require('./proxy/ProxyAgentService');
-const ProxyEnvironmentUtils = require('./proxy/ProxyEnvironmentUtils');
 const {
 	SUITECLOUD_AUTH_PROXY_SERVICE,
 } = require('./TranslationKeys');
@@ -94,9 +93,9 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._accessToken = accessToken;
 
 		if (isProductionDomain(this._targetHost)) {
-			const resolvedProxy = ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv();
+			const resolvedProxy = suiteCloudHttp.resolveRuntimeProxyFromEnv();
 			if (resolvedProxy) {
-				ProxyEnvironmentUtils.validateProxyUri(resolvedProxy);
+				suiteCloudHttp.validateProxyUri(resolvedProxy);
 			}
 		}
 
@@ -323,7 +322,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 
 		if (isProductionDomain(this._targetHost)) {
 			//Add proxy agent for production in order to work properly with vpn
-			requestOptions.agent = ProxyService.getProxyAgent(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv());
+			requestOptions.agent = suiteCloudHttp.getProxyAgent(suiteCloudHttp.resolveRuntimeProxyFromEnv());
 		} else {
 			//Add agent for insecure connections when connecting to runboxes
 			requestOptions.agent = new https.Agent({

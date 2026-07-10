@@ -11,8 +11,6 @@ jest.mock('node:https', () => ({
 
 const https = require('node:https');
 const { http } = require('@oracle/suitecloud-sdk-core');
-const ProxyAgentService = require('../../../src/services/proxy/ProxyAgentService');
-const ProxyEnvironmentUtils = require('../../../src/services/proxy/ProxyEnvironmentUtils');
 
 const SUITECLOUD_PROXY = 'SUITECLOUD_PROXY';
 const NPM_CONFIG_HTTPS_PROXY = 'npm_config_https_proxy';
@@ -35,15 +33,22 @@ afterEach(() => {
 });
 
 describe('centralized SuiteCloud HTTPS proxy support', () => {
-	it('preserves the existing Node CLI proxy behavior in sdk-core', () => {
+	it('resolves runtime and SDK download proxy configuration', () => {
 		process.env[SUITECLOUD_PROXY] = 'http://proxy.example.com:8080';
 		process.env[NPM_CONFIG_HTTPS_PROXY] = 'http://https.example.com:8081';
 
-		expect(http.resolveRuntimeProxyFromEnv()).toEqual(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv());
-		expect(http.resolveSdkDownloadProxyFromEnv()).toEqual(ProxyEnvironmentUtils.resolveSdkDownloadProxyFromEnv());
-		expect(http.getProxyAgent(http.resolveRuntimeProxyFromEnv()).options.proxyEnv).toEqual(
-			ProxyAgentService.getProxyAgent(ProxyEnvironmentUtils.resolveRuntimeProxyFromEnv()).options.proxyEnv
-		);
+		expect(http.resolveRuntimeProxyFromEnv()).toEqual({
+			proxyUri: 'http://proxy.example.com:8080',
+			envVarName: SUITECLOUD_PROXY,
+		});
+		expect(http.resolveSdkDownloadProxyFromEnv()).toEqual({
+			proxyUri: 'http://proxy.example.com:8080',
+			envVarName: SUITECLOUD_PROXY,
+		});
+		expect(http.getProxyAgent(http.resolveRuntimeProxyFromEnv()).options.proxyEnv).toEqual({
+			HTTP_PROXY: 'http://proxy.example.com:8080',
+			HTTPS_PROXY: 'http://proxy.example.com:8080',
+		});
 	});
 
 	it('resolves SUITECLOUD_PROXY for runtime traffic', () => {
@@ -77,21 +82,7 @@ describe('centralized SuiteCloud HTTPS proxy support', () => {
 		['ftp://proxy.example.com:21', 'unsupported protocol'],
 		['https://proxy.example.com', 'valid proxy URL including a protocol, hostname, and port'],
 	])('rejects invalid proxy configuration %s', (proxyUri, expectedMessage) => {
-		let legacyError;
-		try {
-			ProxyEnvironmentUtils.validateProxyUri({ proxyUri, envVarName: SUITECLOUD_PROXY });
-		} catch (error) {
-			legacyError = error;
-		}
-		expect(legacyError.message).toContain(expectedMessage);
-
-		try {
-			http.validateProxyUri({ proxyUri, envVarName: SUITECLOUD_PROXY });
-			throw new Error('Expected proxy validation to fail.');
-		} catch (error) {
-			expect(error.message).toBe(legacyError.message);
-			expect(error.code).toBe(legacyError.code);
-		}
+		expect(() => http.validateProxyUri({ proxyUri, envVarName: SUITECLOUD_PROXY })).toThrow(expectedMessage);
 	});
 
 	it('uses SUITECLOUD_PROXY for production SuiteCloud requests', () => {
