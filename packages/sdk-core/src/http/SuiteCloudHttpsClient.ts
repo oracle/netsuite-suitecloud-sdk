@@ -8,10 +8,9 @@ import {
 	Agent,
 	request as httpsRequest,
 	type AgentOptions,
-	type ClientRequest,
-	type IncomingMessage,
 	type RequestOptions,
 } from 'node:https';
+import type { ClientRequest, IncomingMessage } from 'node:http';
 
 export const PROXY_ENVIRONMENT_VARIABLES = {
 	SUITECLOUD_PROXY: 'SUITECLOUD_PROXY',

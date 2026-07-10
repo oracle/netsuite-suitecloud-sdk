@@ -9,7 +9,6 @@
     "declaration": false,
     "sourceMap": true,
     "inlineSources": true,
-    "noCheck": true,
     "noEmitOnError": true,
     "strict": true,
     "esModuleInterop": true,

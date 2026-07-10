@@ -54,7 +54,7 @@ export function getPreviewCommandName(): string {
 
 export function prepareDeployExecution(params: DeployExecutionParams): DeployExecutionPlan {
 	const normalizedParams: DeployExecutionParams = { ...params };
-	let flags = [DEPLOY_COMMAND.FLAGS.NO_PREVIEW, DEPLOY_COMMAND.FLAGS.SKIP_WARNING];
+	let flags: string[] = [DEPLOY_COMMAND.FLAGS.NO_PREVIEW, DEPLOY_COMMAND.FLAGS.SKIP_WARNING];
 
 	if (normalizedParams[DEPLOY_COMMAND.FLAGS.VALIDATE]) {
 		delete normalizedParams[DEPLOY_COMMAND.FLAGS.VALIDATE];

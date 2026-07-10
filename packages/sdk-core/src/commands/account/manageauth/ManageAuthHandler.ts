@@ -144,7 +144,7 @@ export function sanitizeManageAuthListData(data: unknown): ManageAuthListResult 
 	return Object.entries(data as Record<string, ManageAuthInfoPayload>).reduce<ManageAuthListResult>(
 		(sanitized, [authId, authData]) => {
 			sanitized[authId] = {
-				...(authData?.accountInfo && { accountInfo: authData.accountInfo }),
+				...(authData?.accountInfo ? { accountInfo: authData.accountInfo } : {}),
 				...(authData?.hostInfo && { hostInfo: authData.hostInfo }),
 			};
 			return sanitized;
