@@ -17,6 +17,7 @@ const MANIFEST_FILENAME_ROOT = 'manifest';
 
 const APPLICATION_FILENAME = 'application.xml';
 const INSTALLATION_PREFERENCES_FOLDER = 'InstallationPreferences';
+const SDF_INSTALLATION_SCRIPT_ROOT = 'sdfinstallationscript';
 const PROJECT_TYPE_ACP = 'ACCOUNTCUSTOMIZATIONPROJECT';
 
 type XmlValue = Record<string, any>;
@@ -147,8 +148,12 @@ async function addInstallationScripts(
 					explicitArray: false,
 					trim: true,
 				});
-				const installationScript = parsed?.installationscript;
-				const scriptFile = asText(installationScript?.scriptfile);
+				const rootTag = getRootTag(parsed);
+				if (rootTag?.name !== SDF_INSTALLATION_SCRIPT_ROOT) {
+					continue;
+				}
+				const installationScript = rootTag.value;
+				const scriptFile = getReferenceValue(asText(installationScript?.scriptfile));
 				if (scriptFile) {
 					await addDeployPaths(projectFolder, [`~/FileCabinet${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`], entries, seen);
 				}
@@ -188,6 +193,21 @@ async function addFolderContents(
 
 function getPathValues(section: unknown): string[] {
 	return asArray(section).flatMap((item) => asArray(item?.path).map(asText)).filter(Boolean);
+}
+
+function getRootTag(value: unknown): { name: string; value: XmlValue } | undefined {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) {
+		return undefined;
+	}
+	const rootEntries = Object.entries(value);
+	if (rootEntries.length !== 1 || !rootEntries[0][1] || typeof rootEntries[0][1] !== 'object') {
+		return undefined;
+	}
+	return { name: rootEntries[0][0], value: rootEntries[0][1] as XmlValue };
+}
+
+function getReferenceValue(value: string): string {
+	return value.startsWith('[') && value.endsWith(']') ? value.slice(1, -1) : value;
 }
 
 function toProjectRelativePath(deployPath: string): string | undefined {
