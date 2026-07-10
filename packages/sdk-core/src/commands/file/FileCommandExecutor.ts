@@ -4,7 +4,7 @@
  */
 'use strict';
 
-import { Agent, request as httpsRequest, type RequestOptions } from 'node:https';
+import type { RequestOptions } from 'node:https';
 import { basename, dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { access, copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -13,6 +13,7 @@ import { execFile } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { promisify } from 'node:util';
 import { parseStringPromise } from 'xml2js';
+import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
 
 const execFileAsync = promisify(execFile);
 
@@ -83,7 +84,6 @@ const HEADER_CONTENT_LENGTH = 'Content-Length';
 const CONTENT_TYPE_FORM_URLENCODED = 'application/x-www-form-urlencoded';
 const CONTENT_TYPE_JSON = 'application/json';
 const CONTENT_TYPE_MULTIPART_PREFIX = 'multipart/form-data; boundary=';
-const VM_ENG_HOST_SUFFIX = 'vm.eng';
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 const UNZIP_BINARY_NAME = 'unzip';
 const MULTIPART_EOL = '\r\n';
@@ -623,11 +623,7 @@ async function sendHttpRequest(options: {
 			headers: requestHeaders,
 		};
 
-		if (options.hostName.includes(VM_ENG_HOST_SUFFIX)) {
-			requestOptions.agent = new Agent({ rejectUnauthorized: false });
-		}
-
-		const request = httpsRequest(requestOptions, (response) => {
+		const request = requestSuiteCloudHttps(options.hostName, requestOptions, (response) => {
 			const responseChunks: Buffer[] = [];
 			response.on('data', (chunk) => responseChunks.push(Buffer.from(chunk)));
 			response.on('end', () => {

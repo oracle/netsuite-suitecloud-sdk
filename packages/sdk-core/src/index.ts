@@ -6,6 +6,7 @@
 
 import * as auth from './exports/auth';
 import * as commands from './exports/commands';
+import * as http from './exports/http';
 import * as metadata from './exports/metadata';
 
-export { auth, commands, metadata };
+export { auth, commands, http, metadata };
