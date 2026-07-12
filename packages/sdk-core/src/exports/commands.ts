@@ -87,7 +87,6 @@ export { executeCreateProjectWorkflow } from '../commands/project/create/CreateP
 export {
 	DEPLOY_COMMAND,
 	DEPLOY_MODE,
-	DEPLOY_VALIDATION_ERROR,
 	getPreviewCommandName,
 	isApplyInstallationPreferencesForDeploy,
 	prepareDeployExecution,

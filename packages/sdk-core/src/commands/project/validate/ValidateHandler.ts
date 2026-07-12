@@ -8,14 +8,13 @@
 // - cli/.../handler/ValidateHandler.java
 export const VALIDATE_COMMAND = {
 	OPTIONS: {
-		SERVER: 'server',
 		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	},
 } as const;
 
 type ValidateExecutionParams = {
-	server?: boolean;
 	applyinstallprefs?: boolean;
+	server?: boolean;
 	[key: string]: unknown;
 };
 
@@ -29,14 +28,8 @@ type ValidateExecutionPlan = {
 export function prepareValidateExecution(params: ValidateExecutionParams): ValidateExecutionPlan {
 	const normalizedParams = { ...params };
 	const flags: string[] = [];
-	let isServerValidation = false;
 	let installationPreferencesApplied = false;
-
-	if (normalizedParams[VALIDATE_COMMAND.OPTIONS.SERVER]) {
-		flags.push(VALIDATE_COMMAND.OPTIONS.SERVER);
-		isServerValidation = true;
-		delete normalizedParams[VALIDATE_COMMAND.OPTIONS.SERVER];
-	}
+	delete normalizedParams.server;
 
 	if (normalizedParams[VALIDATE_COMMAND.OPTIONS.APPLY_INSTALLATION_PREFERENCES]) {
 		flags.push(VALIDATE_COMMAND.OPTIONS.APPLY_INSTALLATION_PREFERENCES);
@@ -47,7 +40,7 @@ export function prepareValidateExecution(params: ValidateExecutionParams): Valid
 	return {
 		params: normalizedParams,
 		flags,
-		isServerValidation,
+		isServerValidation: true,
 		installationPreferencesApplied,
 	};
 }
