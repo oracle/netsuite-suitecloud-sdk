@@ -29,16 +29,19 @@ const {
 } = require('@oracle/suitecloud-sdk-core').auth;
 
 const {
-	COMMAND_VALIDATE: { MESSAGES },
+	COMMAND_VALIDATE: { MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
-	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	JSON: 'json',
 	PROJECT: 'project',
 	AUTH_ID: 'authid',
+};
+
+const IGNORED_OPTIONS = {
+	SERVER: 'server',
 };
 
 module.exports = class ValidateAction extends BaseAction {
@@ -69,11 +72,10 @@ module.exports = class ValidateAction extends BaseAction {
 
 	async execute(params) {
 		try {
-			// Local validate is temporarily removed during TS-core migration.
-			const validateExecution = prepareValidateExecution({
-				...params,
-				[COMMAND_OPTIONS.SERVER]: true,
-			});
+			if (params[IGNORED_OPTIONS.SERVER]) {
+				await this._log.warning(NodeTranslationService.getMessage(WARNINGS.SERVER_OPTION_IGNORED));
+			}
+			const validateExecution = prepareValidateExecution(params);
 			const flags = validateExecution.flags;
 			const isServerValidation = validateExecution.isServerValidation;
 			const installationPreferencesApplied = validateExecution.installationPreferencesApplied;

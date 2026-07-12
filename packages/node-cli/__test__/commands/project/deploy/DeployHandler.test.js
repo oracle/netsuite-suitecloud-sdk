@@ -7,7 +7,6 @@
 const {
 	DEPLOY_MODE,
 	DEPLOY_COMMAND,
-	DEPLOY_VALIDATION_ERROR,
 	getPreviewCommandName,
 	prepareDeployExecution,
 	isApplyInstallationPreferencesForDeploy,
@@ -30,11 +29,12 @@ describe('DeployHandler', () => {
 		expect(execution.params).toEqual({ project: '"/tmp/project"' });
 	});
 
-	it('should fail when dryrun and validate are both provided', () => {
-		const execution = prepareDeployExecution({ dryrun: true, validate: true });
+	it('should ignore the validate option', () => {
+		const execution = prepareDeployExecution({ validate: true, project: '"/tmp/project"' });
 
-		expect(execution.mode).toBe(DEPLOY_MODE.PREVIEW);
-		expect(execution.validationError.errorCode).toBe(DEPLOY_VALIDATION_ERROR.VALIDATE_AND_DRYRUN_OPTIONS_PASSED);
+		expect(execution.mode).toBe(DEPLOY_MODE.DEPLOY);
+		expect(execution.flags).toEqual([DEPLOY_COMMAND.FLAGS.NO_PREVIEW, DEPLOY_COMMAND.FLAGS.SKIP_WARNING]);
+		expect(execution.params).toEqual({ project: '"/tmp/project"' });
 	});
 
 	it('should expose preview command name', () => {

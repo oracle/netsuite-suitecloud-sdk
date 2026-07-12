@@ -4,7 +4,6 @@
  */
 'use strict';
 
-const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const DeployActionResult = require('../../../services/actionresult/DeployActionResult');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
@@ -19,7 +18,6 @@ const { createCredentialSessionProvider } = require('../../../utils/AuthSessionP
 const {
 	DEPLOY_MODE,
 	DEPLOY_COMMAND,
-	DEPLOY_VALIDATION_ERROR,
 	prepareDeployExecution,
 	isApplyInstallationPreferencesForDeploy,
 } = require('@oracle/suitecloud-sdk-core').commands;
@@ -37,6 +35,10 @@ const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 
 const { COMMAND_DEPLOY } = require('../../../services/TranslationKeys');
 
+const IGNORED_OPTIONS = {
+	VALIDATE: 'validate',
+};
+
 const COMMAND = {
 	OPTIONS: {
 		AUTH_ID: 'authid',
@@ -49,7 +51,6 @@ const COMMAND = {
 		NO_PREVIEW: DEPLOY_COMMAND.FLAGS.NO_PREVIEW,
 		PREVIEW: DEPLOY_COMMAND.FLAGS.PREVIEW,
 		SKIP_WARNING: DEPLOY_COMMAND.FLAGS.SKIP_WARNING,
-		VALIDATE: DEPLOY_COMMAND.FLAGS.VALIDATE,
 		APPLY_INSTALLATION_PREFERENCES: DEPLOY_COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES,
 	},
 };
@@ -83,15 +84,10 @@ module.exports = class DeployAction extends (
 
 	async execute(params) {
 		try {
-			const deployExecution = prepareDeployExecution(params);
-			if (deployExecution.validationError) {
-				if (deployExecution.validationError.errorCode === DEPLOY_VALIDATION_ERROR.VALIDATE_AND_DRYRUN_OPTIONS_PASSED) {
-					return ActionResult.Builder
-						.withErrors([NodeTranslationService.getMessage(COMMAND_DEPLOY.ERRORS.VALIDATE_AND_DRYRUN_OPTIONS_PASSED)])
-						.build();
-				}
+			if (params[IGNORED_OPTIONS.VALIDATE]) {
+				await this._log.warning(NodeTranslationService.getMessage(COMMAND_DEPLOY.WARNINGS.VALIDATE_OPTION_IGNORED));
 			}
-
+			const deployExecution = prepareDeployExecution(params);
 			if (deployExecution.mode === DEPLOY_MODE.PREVIEW) {
 				return await this._preview(deployExecution.params, deployExecution.flags);
 			}
@@ -150,13 +146,11 @@ module.exports = class DeployAction extends (
 				),
 			});
 
-			const isServerValidation = !!sdkParams[COMMAND.FLAGS.VALIDATE];
 			const isApplyInstallationPreferences = isApplyInstallationPreferencesForDeploy(this._projectType, flags, PROJECT_SUITEAPP);
 
 			return operationResult.status === SDK_OPERATION_STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.withServerValidation(isServerValidation)
 					.withAppliedInstallationPreferences(isApplyInstallationPreferences)
 					.withProjectType(this._projectType)
 					.withProjectFolder(this._projectFolder)

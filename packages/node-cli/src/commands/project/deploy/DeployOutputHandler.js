@@ -36,9 +36,6 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 			actionResult.projectFolder
 		);
 
-		if (actionResult.withServerValidation) {
-			this._log.info(NodeTranslationService.getMessage(MESSAGES.LOCALLY_VALIDATED, actionResult.projectFolder));
-		}
 		if (actionResult.resultMessage) {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 		}

@@ -19,33 +19,23 @@ export const DEPLOY_COMMAND = {
 		NO_PREVIEW: 'no_preview',
 		PREVIEW: 'dryrun',
 		SKIP_WARNING: 'skip_warning',
-		VALIDATE: 'validate',
 		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	},
-} as const;
-
-export const DEPLOY_VALIDATION_ERROR = {
-	VALIDATE_AND_DRYRUN_OPTIONS_PASSED: 'VALIDATE_AND_DRYRUN_OPTIONS_PASSED',
 } as const;
 
 type DeployExecutionParams = {
 	no_preview?: boolean;
 	dryrun?: boolean;
 	skip_warning?: boolean;
-	validate?: boolean;
 	applyinstallprefs?: boolean;
+	validate?: boolean;
 	[key: string]: unknown;
-};
-
-type DeployValidationError = {
-	errorCode: typeof DEPLOY_VALIDATION_ERROR[keyof typeof DEPLOY_VALIDATION_ERROR];
 };
 
 type DeployExecutionPlan = {
 	mode: typeof DEPLOY_MODE[keyof typeof DEPLOY_MODE];
 	params: DeployExecutionParams;
 	flags: string[];
-	validationError?: DeployValidationError;
 };
 
 export function getPreviewCommandName(): string {
@@ -55,11 +45,7 @@ export function getPreviewCommandName(): string {
 export function prepareDeployExecution(params: DeployExecutionParams): DeployExecutionPlan {
 	const normalizedParams: DeployExecutionParams = { ...params };
 	let flags: string[] = [DEPLOY_COMMAND.FLAGS.NO_PREVIEW, DEPLOY_COMMAND.FLAGS.SKIP_WARNING];
-
-	if (normalizedParams[DEPLOY_COMMAND.FLAGS.VALIDATE]) {
-		delete normalizedParams[DEPLOY_COMMAND.FLAGS.VALIDATE];
-		flags.push(DEPLOY_COMMAND.FLAGS.VALIDATE);
-	}
+	delete normalizedParams.validate;
 
 	if (normalizedParams[DEPLOY_COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES]) {
 		delete normalizedParams[DEPLOY_COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES];
@@ -71,17 +57,6 @@ export function prepareDeployExecution(params: DeployExecutionParams): DeployExe
 		flags = flags.filter(
 			(flag) => flag !== DEPLOY_COMMAND.FLAGS.NO_PREVIEW && flag !== DEPLOY_COMMAND.FLAGS.SKIP_WARNING
 		);
-
-		if (flags.includes(DEPLOY_COMMAND.FLAGS.VALIDATE)) {
-			return {
-				mode: DEPLOY_MODE.PREVIEW,
-				params: normalizedParams,
-				flags,
-				validationError: {
-					errorCode: DEPLOY_VALIDATION_ERROR.VALIDATE_AND_DRYRUN_OPTIONS_PASSED,
-				},
-			};
-		}
 
 		return {
 			mode: DEPLOY_MODE.PREVIEW,
