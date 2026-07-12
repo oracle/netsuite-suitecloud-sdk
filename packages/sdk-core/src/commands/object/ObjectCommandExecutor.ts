@@ -4,6 +4,12 @@
  */
 'use strict';
 
-// Compatibility facade. Command consumers keep their existing import path while
-// the implementation lives behind the service boundary.
-export * from '../../services/object/ObjectCommandService';
+export * from '../../api/object/ObjectCommand';
+export {
+	executeImportObjects,
+	executeListObjects,
+} from '../../services/object/ObjectCommandService';
+export {
+	executeUpdateCustomRecordWithInstances,
+	executeUpdateObjects,
+} from '../../services/object/ObjectUpdateService';

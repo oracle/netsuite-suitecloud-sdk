@@ -37,4 +37,21 @@ describe('DeployAction ignored options', () => {
 		);
 		expect(result).toEqual({ status: 'SUCCESS' });
 	});
+
+	it('warns and preserves --dryrun preview when --validate is also provided', async () => {
+		const warning = jest.fn();
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: { name: 'project:deploy', options: {} },
+			executionPath: '/tmp/project',
+			log: { warning, info: jest.fn() },
+		});
+		deployAction._preview = jest.fn().mockResolvedValue({ status: 'SUCCESS' });
+
+		const result = await deployAction.execute({ dryrun: true, validate: true, project: '"/tmp/project"' });
+
+		expect(warning).toHaveBeenCalledWith('COMMAND_DEPLOY_WARNINGS_VALIDATE_OPTION_IGNORED');
+		expect(deployAction._preview).toHaveBeenCalledWith({ project: '"/tmp/project"' }, []);
+		expect(result).toEqual({ status: 'SUCCESS' });
+	});
 });

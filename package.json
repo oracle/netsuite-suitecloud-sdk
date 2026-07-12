@@ -5,7 +5,8 @@
 	"private": true,
 	"scripts": {
 		"build:sdk-core": "npm run build --workspace @oracle/suitecloud-sdk-core",
-		"build": "npm run build:sdk-core"
+		"build": "npm run build:sdk-core",
+		"pack:cli": "node scripts/pack-cli.js"
 	},
 	"workspaces": [
 		"packages/sdk-core",

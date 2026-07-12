@@ -10,6 +10,8 @@ import { unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
+import { TranslationKeys } from '../translation/TranslationKeys';
+import { translationService } from '../translation/TranslationService';
 
 export interface ProjectArchiveService {
 	create(projectFolder: string): Promise<string>;
@@ -32,7 +34,11 @@ export class DefaultProjectArchiveService implements ProjectArchiveService {
 			return projectArchivePath;
 		} catch {
 			throw new Error(
-				`Unable to archive project folder "${projectFolder}". Verify "${ZIP_BINARY_NAME}" is installed and available in PATH.`
+				translationService.getMessage(
+					TranslationKeys.PROJECT_COMMAND.ERROR.ARCHIVE_FAILED,
+					projectFolder,
+					ZIP_BINARY_NAME
+				)
 			);
 		}
 	}

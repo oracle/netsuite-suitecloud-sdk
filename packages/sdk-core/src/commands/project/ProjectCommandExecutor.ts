@@ -5,13 +5,13 @@
 'use strict';
 
 import {
-	createDefaultProjectAction,
 	ProjectAction,
 	type ProjectActionDependencies,
 	type ProjectActionInput,
 } from '../../actions/project/ProjectAction';
 import type { OperationResult } from '../../api/project/ProjectCommand';
 import { PROJECT_COMMAND, SDK_OPERATION_STATUS } from '../../api/project/ProjectCommand';
+import { createSdkCore } from '../../SdkCore';
 import {
 	createDefaultProjectArchive,
 	deleteFileQuietly,
@@ -35,7 +35,7 @@ export function executeProjectCommand(
 	legacyDependencies: LegacyDependencies = {}
 ): Promise<OperationResult> {
 	if (!hasLegacyDependencies(legacyDependencies)) {
-		return createDefaultProjectAction().execute(input);
+		return createSdkCore().project.execute(input);
 	}
 
 	const action = new ProjectAction({

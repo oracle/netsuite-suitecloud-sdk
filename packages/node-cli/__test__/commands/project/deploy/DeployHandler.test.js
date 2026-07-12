@@ -37,6 +37,14 @@ describe('DeployHandler', () => {
 		expect(execution.params).toEqual({ project: '"/tmp/project"' });
 	});
 
+	it('should preserve preview when validate is provided with dryrun', () => {
+		const execution = prepareDeployExecution({ dryrun: true, validate: true, project: '"/tmp/project"' });
+
+		expect(execution.mode).toBe(DEPLOY_MODE.PREVIEW);
+		expect(execution.flags).toEqual([]);
+		expect(execution.params).toEqual({ project: '"/tmp/project"' });
+	});
+
 	it('should expose preview command name', () => {
 		expect(getPreviewCommandName()).toBe('preview');
 	});

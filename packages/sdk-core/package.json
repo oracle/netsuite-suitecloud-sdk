@@ -1,6 +1,6 @@
 {
   "name": "@oracle/suitecloud-sdk-core",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "UPL-1.0",
   "private": true,
   "files": [
@@ -21,8 +21,10 @@
     "@types/node": "22.10.2"
   },
   "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": "./build/index.js",
+    "./public": "./build/public.js",
     "./package.json": "./package.json"
   }
 }

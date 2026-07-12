@@ -12,11 +12,10 @@ import {
 	SDK_OPERATION_STATUS,
 } from '../../api/project/ProjectCommand';
 import { normalizeProjectOperationResult } from '../../commands/project/ProjectResultNormalizer';
-import {
-	DefaultProjectArchiveService,
-	ProjectArchiveService,
-} from '../../services/project/ProjectArchiveService';
-import { DefaultProjectApiClient, ProjectApiClient } from '../../services/project/ProjectApiClient';
+import { ProjectArchiveService } from '../../services/project/ProjectArchiveService';
+import { ProjectApiClient } from '../../services/project/ProjectApiClient';
+import { TranslationKeys } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 
@@ -77,28 +76,23 @@ export class ProjectAction {
 	}
 }
 
-export function createDefaultProjectAction(): ProjectAction {
-	return new ProjectAction({
-		archiveService: new DefaultProjectArchiveService(),
-		apiClient: new DefaultProjectApiClient(),
-	});
-}
-
 function validateExecutionInput(input: ProjectActionInput): void {
 	if (!input) {
-		throw new Error('Project command execution input is required.');
+		throw new Error(translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.INPUT_REQUIRED));
 	}
 	if (!Object.values(PROJECT_COMMAND).includes(input.command)) {
-		throw new Error(`Unsupported project command "${input.command}".`);
+		throw new Error(
+			translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.UNSUPPORTED_COMMAND, input.command)
+		);
 	}
 	if (!input.projectFolder) {
-		throw new Error('A project folder is required for project command execution.');
+		throw new Error(translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.FOLDER_REQUIRED));
 	}
 	if (!input.hostName) {
-		throw new Error('A target host is required for project command execution.');
+		throw new Error(translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error('An access token is required for project command execution.');
+		throw new Error(translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }
 

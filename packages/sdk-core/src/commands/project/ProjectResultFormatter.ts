@@ -5,6 +5,8 @@
 'use strict';
 
 import { ProjectCommandSummaryContext, ProjectCommandType } from './ProjectCommandTypes';
+import { TranslationKeys } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 const STEP_STATUS_SUCCESSFUL = 'SUCCESSFUL';
 const STEP_STATUS_MARK_SUCCESS = '✔';
@@ -12,6 +14,9 @@ const STEP_STATUS_MARK_FAILED = '✖';
 const VALIDATION_RESULT_TYPE_WARNING = 'WARNING';
 const VALIDATION_RESULT_TYPE_ERROR = 'ERROR';
 const COMMAND_OUTPUT_SEPARATOR_LINE = '------------------------------------------------------------';
+const GENERAL_ISSUES_LABEL = translationService.getMessage(
+	TranslationKeys.PROJECT_COMMAND.OUTPUT.GENERAL
+);
 
 export function formatSdfProjectResultOutput(
 	command: ProjectCommandType,
@@ -25,11 +30,25 @@ export function formatSdfProjectResultOutput(
 	const validationLines = formatSdfProjectValidationResults(payload.validationResults);
 	const summaryMetadataLines = buildSummaryMetadataLines(payload, options);
 	const lines = [
-		`${command.toUpperCase()} SUMMARY`,
-		`Status: ${evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'}`,
-		`Steps: ${evaluationSummary.successfulSteps}/${evaluationSummary.totalSteps} successful`,
-		`Validation Results: ${evaluationSummary.errorResults} error(s), ${evaluationSummary.warningResults} warning(s)`,
-		`SDF Errors: ${evaluationSummary.hasEndpointError ? 'present' : 'none'}`,
+		translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.SUMMARY, command.toUpperCase()),
+		translationService.getMessage(
+			TranslationKeys.PROJECT_COMMAND.OUTPUT.STATUS,
+			evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'
+		),
+		translationService.getMessage(
+			TranslationKeys.PROJECT_COMMAND.OUTPUT.STEPS,
+			evaluationSummary.successfulSteps,
+			evaluationSummary.totalSteps
+		),
+		translationService.getMessage(
+			TranslationKeys.PROJECT_COMMAND.OUTPUT.VALIDATION_RESULTS,
+			evaluationSummary.errorResults,
+			evaluationSummary.warningResults
+		),
+		translationService.getMessage(
+			TranslationKeys.PROJECT_COMMAND.OUTPUT.SDF_ERRORS,
+			evaluationSummary.hasEndpointError ? 'present' : 'none'
+		),
 		...summaryMetadataLines,
 		COMMAND_OUTPUT_SEPARATOR_LINE,
 		...formatSdfProjectSteps(payload.steps),
@@ -119,7 +138,14 @@ function formatSdfProjectSteps(steps: unknown): string[] {
 			return lines;
 		}
 		const statusMark = step.status === STEP_STATUS_SUCCESSFUL ? STEP_STATUS_MARK_SUCCESS : STEP_STATUS_MARK_FAILED;
-		lines.push(`${statusMark} Step ${index + 1}: ${name}`);
+		lines.push(
+			translationService.getMessage(
+				TranslationKeys.PROJECT_COMMAND.OUTPUT.STEP,
+				statusMark,
+				index + 1,
+				name
+			)
+		);
 		return lines;
 	}, []);
 }
@@ -129,10 +155,13 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 	if (normalizedValidationResults.length === 0) {
 		return [];
 	}
-	const sections: string[] = ['', 'Issues by file:'];
+	const sections: string[] = [
+		'',
+		translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.ISSUES_BY_FILE),
+	];
 	const grouped = new Map<string, { errors: Set<string>; warnings: Set<string> }>();
 	normalizedValidationResults.forEach((result) => {
-		const fileKey = result.component || 'General';
+		const fileKey = result.component || GENERAL_ISSUES_LABEL;
 		if (!grouped.has(fileKey)) {
 			grouped.set(fileKey, { errors: new Set<string>(), warnings: new Set<string>() });
 		}
@@ -145,17 +174,33 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 	});
 
 	const orderedEntries = Array.from(grouped.entries()).sort((a, b) => {
-		if (a[0] === 'General') return -1;
-		if (b[0] === 'General') return 1;
+		if (a[0] === GENERAL_ISSUES_LABEL) return -1;
+		if (b[0] === GENERAL_ISSUES_LABEL) return 1;
 		return a[0].localeCompare(b[0]);
 	});
 
 	orderedEntries.forEach(([fileKey, bucket], index) => {
 		const errorCount = bucket.errors.size;
 		const warningCount = bucket.warnings.size;
-		sections.push(`${index + 1}. ${fileKey} (${errorCount} error(s), ${warningCount} warning(s))`);
-		Array.from(bucket.errors).forEach((message) => sections.push(`  - ERROR: ${message}`));
-		Array.from(bucket.warnings).forEach((message) => sections.push(`  - WARNING: ${message}`));
+		sections.push(
+			translationService.getMessage(
+				TranslationKeys.PROJECT_COMMAND.OUTPUT.ISSUES_FOR_FILE,
+				index + 1,
+				fileKey,
+				errorCount,
+				warningCount
+			)
+		);
+		Array.from(bucket.errors).forEach((message) =>
+			sections.push(
+				translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.ISSUE, 'ERROR', message)
+			)
+		);
+		Array.from(bucket.warnings).forEach((message) =>
+			sections.push(
+				translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.ISSUE, 'WARNING', message)
+			)
+		);
 		sections.push('');
 	});
 	if (sections[sections.length - 1] === '') {
@@ -181,14 +226,27 @@ function formatEndpointErrorSection(endpointErrorMessage: string, hasValidationL
 	}
 	const compactObjectValidationLines = extractCompactObjectValidationErrors(endpointErrorMessage);
 	if (compactObjectValidationLines.length > 0) {
-		return ['', 'Additional endpoint details:', ...compactObjectValidationLines];
+		return [
+			'',
+			translationService.getMessage(
+				TranslationKeys.PROJECT_COMMAND.OUTPUT.ADDITIONAL_ENDPOINT_DETAILS
+			),
+			...compactObjectValidationLines,
+		];
 	}
 
 	const firstMeaningfulLine = endpointErrorMessage
 		.split(/\r?\n/)
 		.map((line) => line.trim())
 		.find((line) => line.length > 0);
-	return firstMeaningfulLine ? [`ERROR: ${firstMeaningfulLine}`] : [];
+	return firstMeaningfulLine
+		? [
+				translationService.getMessage(
+					TranslationKeys.PROJECT_COMMAND.OUTPUT.ENDPOINT_ERROR,
+					firstMeaningfulLine
+				),
+			]
+		: [];
 }
 
 function extractCompactObjectValidationErrors(endpointErrorMessage: string): string[] {
@@ -217,7 +275,14 @@ function extractCompactObjectValidationErrors(endpointErrorMessage: string): str
 		}
 		const detailPreview = details.slice(0, 2).join(' | ');
 		const location = filePath ? ` @ ${filePath}` : '';
-		output.push(`- ${objectId}${location}${detailPreview ? ` -> ${detailPreview}` : ''}`);
+		output.push(
+			translationService.getMessage(
+				TranslationKeys.PROJECT_COMMAND.OUTPUT.ENDPOINT_OBJECT_DETAIL,
+				objectId,
+				location,
+				detailPreview ? ` -> ${detailPreview}` : ''
+			)
+		);
 		i = j - 1;
 	}
 	return output;
@@ -233,18 +298,43 @@ function buildSummaryMetadataLines(
 ): string[] {
 	const summaryContext = options.summaryContext || {};
 	const localTimestamp = normalizeTimestamp(summaryContext.localTimestamp) || new Date().toISOString();
-	const lines = [`Local Timestamp: ${localTimestamp}`];
+	const lines = [
+		translationService.getMessage(
+			TranslationKeys.PROJECT_COMMAND.OUTPUT.LOCAL_TIMESTAMP,
+			localTimestamp
+		),
+	];
 
 	if (summaryContext.accountName) {
-		lines.push(`Account: ${summaryContext.accountName}`);
+		lines.push(
+			translationService.getMessage(
+				TranslationKeys.PROJECT_COMMAND.OUTPUT.ACCOUNT,
+				summaryContext.accountName
+			)
+		);
 	}
 	if (summaryContext.roleName) {
-		lines.push(`Role: ${summaryContext.roleName}`);
+		lines.push(
+			translationService.getMessage(
+				TranslationKeys.PROJECT_COMMAND.OUTPUT.ROLE,
+				summaryContext.roleName
+			)
+		);
 	}
 	if (summaryContext.suiteAppId) {
-		lines.push(`SuiteApp ID: ${summaryContext.suiteAppId}`);
+		lines.push(
+			translationService.getMessage(
+				TranslationKeys.PROJECT_COMMAND.OUTPUT.SUITEAPP_ID,
+				summaryContext.suiteAppId
+			)
+		);
 	} else if (summaryContext.projectName) {
-		lines.push(`Project Name: ${summaryContext.projectName}`);
+		lines.push(
+			translationService.getMessage(
+				TranslationKeys.PROJECT_COMMAND.OUTPUT.PROJECT_NAME,
+				summaryContext.projectName
+			)
+		);
 	}
 
 	return lines;

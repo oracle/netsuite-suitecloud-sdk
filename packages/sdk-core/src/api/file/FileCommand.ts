@@ -4,20 +4,19 @@
  */
 'use strict';
 
+import {
+	type OperationResult,
+	type SdkOperationStatus,
+} from '../OperationResult';
+
 export const FILE_COMMAND_STATUS = {
 	SUCCESS: 'SUCCESS',
 	ERROR: 'ERROR',
-} as const;
+} as const satisfies Record<string, SdkOperationStatus>;
 
-export type FileCommandStatus = (typeof FILE_COMMAND_STATUS)[keyof typeof FILE_COMMAND_STATUS];
+export type FileCommandStatus = SdkOperationStatus;
 
-export type FileCommandOperationResult = {
-	status: FileCommandStatus;
-	data?: unknown;
-	resultMessage?: string;
-	httpStatusCode?: number;
-	errorMessages?: string[];
-};
+export type FileCommandOperationResult = OperationResult;
 
 export type FileCommandAuthInput = {
 	hostName: string;

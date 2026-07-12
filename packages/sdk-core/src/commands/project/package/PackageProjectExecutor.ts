@@ -9,20 +9,24 @@ import { mkdir, readFile } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 
+import {
+	type OperationResult,
+	type SdkOperationStatus,
+} from '../../../api/OperationResult';
+import { TranslationKeys } from '../../../services/translation/TranslationKeys';
+import { translationService } from '../../../services/translation/TranslationService';
+
 const execFileAsync = promisify(execFile);
 
 export const PACKAGE_PROJECT_OPERATION_STATUS = {
 	SUCCESS: 'SUCCESS',
 	ERROR: 'ERROR',
-} as const;
+} as const satisfies Record<string, SdkOperationStatus>;
 
 type PackageProjectOperationStatus = (typeof PACKAGE_PROJECT_OPERATION_STATUS)[keyof typeof PACKAGE_PROJECT_OPERATION_STATUS];
 
-export type PackageProjectOperationResult = {
+export type PackageProjectOperationResult = OperationResult<string> & {
 	status: PackageProjectOperationStatus;
-	data?: string;
-	resultMessage?: string;
-	errorMessages?: string[];
 };
 
 export type PackageProjectExecutionInput = {
@@ -40,10 +44,14 @@ export async function executePackageProject(
 ): Promise<PackageProjectOperationResult> {
 	try {
 		if (!input.projectFolder) {
-			return errorResult('A project folder is required for project packaging.');
+			return errorResult(
+				translationService.getMessage(TranslationKeys.PROJECT_PACKAGE.ERROR.PROJECT_FOLDER_REQUIRED)
+			);
 		}
 		if (!input.destinationFolder) {
-			return errorResult('A destination folder is required for project packaging.');
+			return errorResult(
+				translationService.getMessage(TranslationKeys.PROJECT_PACKAGE.ERROR.DESTINATION_FOLDER_REQUIRED)
+			);
 		}
 
 		await mkdir(input.destinationFolder, { recursive: true });
@@ -57,7 +65,10 @@ export async function executePackageProject(
 		return {
 			status: PACKAGE_PROJECT_OPERATION_STATUS.SUCCESS,
 			data: targetZipFilePath,
-			resultMessage: `The ${targetZipFilePath} file has been successfully created.`,
+			resultMessage: translationService.getMessage(
+				TranslationKeys.PROJECT_PACKAGE.RESULT.CREATED,
+				targetZipFilePath
+			),
 		};
 	} catch (error: unknown) {
 		return errorResult(toErrorMessage(error));

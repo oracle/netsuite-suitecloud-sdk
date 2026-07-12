@@ -4,19 +4,22 @@
  */
 'use strict';
 
+import {
+	SDK_OPERATION_STATUS,
+	type OperationResult as SharedOperationResult,
+	type SdkOperationStatus,
+} from '../OperationResult';
+
+export { SDK_OPERATION_STATUS };
+export type { SdkOperationStatus };
+
 export const PROJECT_COMMAND = {
 	DEPLOY: 'deploy',
 	PREVIEW: 'preview',
 	VALIDATE: 'validate',
 } as const;
 
-export const SDK_OPERATION_STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-} as const;
-
 export type ProjectCommandType = (typeof PROJECT_COMMAND)[keyof typeof PROJECT_COMMAND];
-export type SdkOperationStatus = (typeof SDK_OPERATION_STATUS)[keyof typeof SDK_OPERATION_STATUS];
 
 export type ProjectCommandSummaryContext = {
 	accountName?: string;
@@ -26,11 +29,4 @@ export type ProjectCommandSummaryContext = {
 	localTimestamp?: string;
 };
 
-export type OperationResult<T = unknown> = {
-	status: SdkOperationStatus;
-	data?: T;
-	resultMessage?: string;
-	httpStatusCode?: number;
-	errorCode?: string;
-	errorMessages?: string[];
-};
+export type OperationResult<T = unknown> = SharedOperationResult<T>;

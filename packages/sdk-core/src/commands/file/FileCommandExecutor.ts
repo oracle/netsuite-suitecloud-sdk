@@ -4,6 +4,10 @@
  */
 'use strict';
 
-// Compatibility facade. Command consumers keep their existing import path while
-// the implementation lives behind the service boundary.
-export * from '../../services/file/FileCommandService';
+export * from '../../api/file/FileCommand';
+export {
+	executeImportFiles,
+	executeListFiles,
+	executeListFolders,
+} from '../../services/file/FileCommandService';
+export { executeUploadFiles } from '../../services/file/UploadFilesService';

@@ -11,6 +11,8 @@ import {
 	type RequestOptions,
 } from 'node:https';
 import type { ClientRequest, IncomingMessage } from 'node:http';
+import { TranslationKeys } from '../services/translation/TranslationKeys';
+import { translationService } from '../services/translation/TranslationService';
 
 export const PROXY_ENVIRONMENT_VARIABLES = {
 	SUITECLOUD_PROXY: 'SUITECLOUD_PROXY',
@@ -47,8 +49,11 @@ export function validateProxyUri(configuredProxy: ProxyConfiguration): void {
 
 	if (![PROTOCOL_HTTP, PROTOCOL_HTTPS].includes(parsedProxyUri.protocol)) {
 		const proxyError = new Error(
-			`You specified an unsupported protocol for the ${configuredProxy.envVarName} environment variable. ` +
-				`Enter a proxy URL with either the http or https protocol.\nReceived: ${configuredProxy.proxyUri}.`
+			translationService.getMessage(
+				TranslationKeys.PROXY.ERROR.UNSUPPORTED_PROTOCOL,
+				configuredProxy.envVarName,
+				configuredProxy.proxyUri
+			)
 		) as Error & { code?: string };
 		proxyError.code = DEFAULT_INVALID_URL_CODE;
 		throw proxyError;
@@ -143,8 +148,11 @@ function createInvalidProxyConfigurationError(
 	code: string | undefined
 ): Error & { code?: string } {
 	const proxyError = new Error(
-		`The ${configuredProxy.envVarName} environment variable must contain a valid proxy URL including a protocol, ` +
-			`hostname, and port. For example, http://my-proxy-domain:80.\nReceived: ${configuredProxy.proxyUri}.`
+		translationService.getMessage(
+			TranslationKeys.PROXY.ERROR.INVALID_CONFIGURATION,
+			configuredProxy.envVarName,
+			configuredProxy.proxyUri
+		)
 	) as Error & { code?: string };
 	proxyError.code = code ?? DEFAULT_INVALID_URL_CODE;
 	return proxyError;

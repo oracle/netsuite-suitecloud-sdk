@@ -7,6 +7,10 @@
 import { access, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import {
+	type OperationResult,
+	type SdkOperationStatus,
+} from '../../../api/OperationResult';
 import { TranslationKeys } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { loadTemplate, renderTemplate, setXmlElementValues } from '../../../templates/TemplateLoader';
@@ -14,15 +18,13 @@ import { loadTemplate, renderTemplate, setXmlElementValues } from '../../../temp
 export const CREATE_PROJECT_OPERATION_STATUS = {
 	SUCCESS: 'SUCCESS',
 	ERROR: 'ERROR',
-} as const;
+} as const satisfies Record<string, SdkOperationStatus>;
 
 type CreateProjectOperationStatus =
 	(typeof CREATE_PROJECT_OPERATION_STATUS)[keyof typeof CREATE_PROJECT_OPERATION_STATUS];
 
-export type CreateProjectOperationResult = {
+export type CreateProjectOperationResult = OperationResult<string> & {
 	status: CreateProjectOperationStatus;
-	data?: string;
-	errorMessages?: string[];
 };
 
 export type CreateProjectExecutionInput = {
