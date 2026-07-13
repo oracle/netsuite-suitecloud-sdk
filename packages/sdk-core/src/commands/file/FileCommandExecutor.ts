@@ -9,13 +9,11 @@ import { basename, dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { access, copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { constants as fsConstants } from 'node:fs';
-import { execFile } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { promisify } from 'node:util';
 import { parseStringPromise } from 'xml2js';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
 
-const execFileAsync = promisify(execFile);
+import { ZipperImpl } from '../../utils/Zipper';
 
 export const FILE_COMMAND_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -85,7 +83,6 @@ const CONTENT_TYPE_FORM_URLENCODED = 'application/x-www-form-urlencoded';
 const CONTENT_TYPE_JSON = 'application/json';
 const CONTENT_TYPE_MULTIPART_PREFIX = 'multipart/form-data; boundary=';
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
-const UNZIP_BINARY_NAME = 'unzip';
 const MULTIPART_EOL = '\r\n';
 const UPLOAD_MULTIPART_FILE_FIELD_NAME = 'file';
 const FILE_CABINET_UPLOAD_QUERY_PARENT_FOLDER = 'parentFolder';
@@ -683,11 +680,9 @@ function looksLikeIdeResponse(responseText: string): boolean {
 
 async function unzipArchive(zipFilePath: string, destinationFolder: string): Promise<void> {
 	try {
-		await execFileAsync(UNZIP_BINARY_NAME, ['-o', zipFilePath, '-d', destinationFolder]);
+		await new ZipperImpl().unzip(zipFilePath, destinationFolder);
 	} catch (error: unknown) {
-		throw new Error(
-			`Unable to extract imported files. Verify "${UNZIP_BINARY_NAME}" is installed and available in PATH.`
-		);
+		throw new Error(`Unable to extract imported files: ${toErrorMessage(error)}`);
 	}
 }
 
