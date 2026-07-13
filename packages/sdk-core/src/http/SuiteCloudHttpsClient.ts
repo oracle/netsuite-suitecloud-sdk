@@ -7,94 +7,24 @@
 import {
 	Agent,
 	request as httpsRequest,
-	type AgentOptions,
 	type RequestOptions,
 } from 'node:https';
 import type { ClientRequest, IncomingMessage } from 'node:http';
-import { TranslationKeys } from '../services/translation/TranslationKeys';
-import { translationService } from '../services/translation/TranslationService';
+import { getProxyAgent } from './ProxyAgentService';
+import { resolveRuntimeProxyFromEnv, type ProxyEnvironment } from './ProxyEnvironmentUtils';
 
-export const PROXY_ENVIRONMENT_VARIABLES = {
-	SUITECLOUD_PROXY: 'SUITECLOUD_PROXY',
-	NPM_CONFIG_HTTPS_PROXY: 'npm_config_https_proxy',
-	NPM_CONFIG_PROXY: 'npm_config_proxy',
-} as const;
-
-export type ProxyConfiguration = {
-	proxyUri: string;
-	envVarName: string;
-};
-
-type ProxyEnvironment = NodeJS.ProcessEnv;
-
-const PROTOCOL_HTTP = 'http:';
-const PROTOCOL_HTTPS = 'https:';
-const DEFAULT_INVALID_URL_CODE = 'ERR_INVALID_URL';
+export { getProxyAgent } from './ProxyAgentService';
+export {
+	PROXY_ENVIRONMENT_VARIABLES,
+	resolveRuntimeProxyFromEnv,
+	resolveSdkDownloadProxyFromEnv,
+	validateProxyUri,
+} from './ProxyEnvironmentUtils';
+export type { ProxyConfiguration } from './ProxyEnvironmentUtils';
 const VM_ENG_HOST_SUFFIX = 'vm.eng';
 const REGEX_SYSTEM_URL = /^system\.netsuite\.com$/;
 const REGEX_ACCOUNT_SPECIFIC_URL = /^[\w-]+\.app\.netsuite\.com$/;
 const REGEX_SUITETALK_API_PRODUCTION_URL = /^[\w-]+\.suitetalk\.api\.netsuite\.com$/;
-
-/**
- * Validates a proxy URI using the same rules as the Java CLI and the existing Node CLI:
- * only HTTP(S) proxy URLs with an explicitly declared port are accepted.
- */
-export function validateProxyUri(configuredProxy: ProxyConfiguration): void {
-	let parsedProxyUri: URL;
-	try {
-		parsedProxyUri = new URL(configuredProxy.proxyUri);
-	} catch (error: unknown) {
-		throw createInvalidProxyConfigurationError(configuredProxy, getErrorCode(error));
-	}
-
-	if (![PROTOCOL_HTTP, PROTOCOL_HTTPS].includes(parsedProxyUri.protocol)) {
-		const proxyError = new Error(
-			translationService.getMessage(
-				TranslationKeys.PROXY.ERROR.UNSUPPORTED_PROTOCOL,
-				configuredProxy.envVarName,
-				configuredProxy.proxyUri
-			)
-		) as Error & { code?: string };
-		proxyError.code = DEFAULT_INVALID_URL_CODE;
-		throw proxyError;
-	}
-
-	if (!hasExplicitPort(configuredProxy.proxyUri)) {
-		throw createInvalidProxyConfigurationError(configuredProxy, DEFAULT_INVALID_URL_CODE);
-	}
-}
-
-/** Resolves the proxy used by runtime SuiteCloud requests. */
-export function resolveRuntimeProxyFromEnv(environment: ProxyEnvironment = process.env): ProxyConfiguration | undefined {
-	return readProxyConfiguration(environment, PROXY_ENVIRONMENT_VARIABLES.SUITECLOUD_PROXY);
-}
-
-/**
- * Resolves the proxy used for SDK downloads, preserving the established priority:
- * SUITECLOUD_PROXY, npm_config_https_proxy, then npm_config_proxy.
- */
-export function resolveSdkDownloadProxyFromEnv(environment: ProxyEnvironment = process.env): ProxyConfiguration | undefined {
-	return (
-		readProxyConfiguration(environment, PROXY_ENVIRONMENT_VARIABLES.SUITECLOUD_PROXY) ??
-		readProxyConfiguration(environment, PROXY_ENVIRONMENT_VARIABLES.NPM_CONFIG_HTTPS_PROXY) ??
-		readProxyConfiguration(environment, PROXY_ENVIRONMENT_VARIABLES.NPM_CONFIG_PROXY)
-	);
-}
-
-/** Creates an HTTPS agent for an explicitly supplied proxy configuration. */
-export function getProxyAgent(configuredProxy: ProxyConfiguration | undefined): Agent | undefined {
-	if (!configuredProxy) {
-		return undefined;
-	}
-
-	validateProxyUri(configuredProxy);
-	return new Agent({
-		proxyEnv: {
-			HTTP_PROXY: configuredProxy.proxyUri,
-			HTTPS_PROXY: configuredProxy.proxyUri,
-		},
-	} as AgentOptions);
-}
 
 /** Returns whether a hostname is one of the SuiteCloud production domains that supports SUITECLOUD_PROXY. */
 export function isProductionDomain(hostName: string): boolean {
@@ -132,34 +62,4 @@ export function requestSuiteCloudHttps(
 		},
 		responseListener
 	);
-}
-
-function hasExplicitPort(uri: string): boolean {
-	return /^[a-zA-Z][a-zA-Z\d+.-]*:\/\/[^/?#]*:\d+\/?$/.test(uri);
-}
-
-function readProxyConfiguration(environment: ProxyEnvironment, envVarName: string): ProxyConfiguration | undefined {
-	const proxyUri = environment[envVarName];
-	return proxyUri ? { proxyUri, envVarName } : undefined;
-}
-
-function createInvalidProxyConfigurationError(
-	configuredProxy: ProxyConfiguration,
-	code: string | undefined
-): Error & { code?: string } {
-	const proxyError = new Error(
-		translationService.getMessage(
-			TranslationKeys.PROXY.ERROR.INVALID_CONFIGURATION,
-			configuredProxy.envVarName,
-			configuredProxy.proxyUri
-		)
-	) as Error & { code?: string };
-	proxyError.code = code ?? DEFAULT_INVALID_URL_CODE;
-	return proxyError;
-}
-
-function getErrorCode(error: unknown): string | undefined {
-	return error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
-		? error.code
-		: undefined;
 }
