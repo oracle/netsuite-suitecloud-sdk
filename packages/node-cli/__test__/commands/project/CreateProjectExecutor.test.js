@@ -4,9 +4,17 @@
  */
 'use strict';
 
+const { EventEmitter } = require('node:events');
 const { access, mkdtemp, readFile, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { dirname, join } = require('node:path');
+
+const mockSpawn = jest.fn();
+jest.mock('node:child_process', () => ({
+	...jest.requireActual('node:child_process'),
+	spawn: mockSpawn,
+}));
+
 const {
 	CREATE_PROJECT_OPERATION_STATUS,
 	executeCreateProject,
@@ -20,6 +28,7 @@ describe('CreateProjectExecutor', () => {
 	let temporaryFolder;
 
 	beforeEach(async () => {
+		mockSpawn.mockReset();
 		temporaryFolder = await mkdtemp(join(tmpdir(), 'suitecloud-createproject-'));
 	});
 
@@ -146,6 +155,72 @@ describe('CreateProjectExecutor', () => {
 		expect(await readFile(join(projectAbsolutePath, 'jsconfig.json'), 'utf8')).toBe(
 			await readTemplate('project/unittest/jsconfig.json.template')
 		);
+	});
+
+	it('should run npm install through the Windows command interpreter', async () => {
+		const platformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
+		const originalComSpec = process.env.ComSpec;
+		const commandInterpreter = 'C:\\Windows\\System32\\cmd.exe';
+		const processResult = new EventEmitter();
+		mockSpawn.mockImplementation(() => {
+			setImmediate(() => processResult.emit('close', 0));
+			return processResult;
+		});
+		Object.defineProperty(process, 'platform', { ...platformDescriptor, value: 'win32' });
+		process.env.ComSpec = commandInterpreter;
+
+		try {
+			const projectAbsolutePath = join(temporaryFolder, 'windows-wrapper');
+			const result = await executeCreateProjectWorkflow({
+				createProjectParams: {
+					parentdirectory: projectAbsolutePath,
+					type: 'ACCOUNTCUSTOMIZATION',
+					projectname: 'src',
+				},
+				displayProjectName: 'My ACP',
+				includeUnitTesting: true,
+			});
+
+			expect(result.status).toBe(CREATE_PROJECT_OPERATION_STATUS.SUCCESS);
+			expect(result.npmInstallSuccess).toBe(true);
+			expect(mockSpawn).toHaveBeenCalledWith(
+				commandInterpreter,
+				['/d', '/s', '/c', 'npm.cmd install'],
+				{
+					cwd: projectAbsolutePath,
+					stdio: 'inherit',
+					windowsHide: true,
+				}
+			);
+		} finally {
+			Object.defineProperty(process, 'platform', platformDescriptor);
+			if (originalComSpec === undefined) {
+				delete process.env.ComSpec;
+			} else {
+				process.env.ComSpec = originalComSpec;
+			}
+		}
+	});
+
+	it('should preserve the created project when npm cannot be started', async () => {
+		const projectAbsolutePath = join(temporaryFolder, 'npm-start-failure-wrapper');
+		mockSpawn.mockImplementation(() => {
+			throw new Error('spawn EINVAL');
+		});
+
+		const result = await executeCreateProjectWorkflow({
+			createProjectParams: {
+				parentdirectory: projectAbsolutePath,
+				type: 'ACCOUNTCUSTOMIZATION',
+				projectname: 'src',
+			},
+			displayProjectName: 'My ACP',
+			includeUnitTesting: true,
+		});
+
+		expect(result.status).toBe(CREATE_PROJECT_OPERATION_STATUS.SUCCESS);
+		expect(result.npmInstallSuccess).toBe(false);
+		await expect(access(projectAbsolutePath)).resolves.toBeUndefined();
 	});
 
 	it('should create the default wrapper without unit testing', async () => {
