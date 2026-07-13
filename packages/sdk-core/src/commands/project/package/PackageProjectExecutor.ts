@@ -5,18 +5,19 @@
 'use strict';
 
 import { join } from 'node:path';
-import { mkdir, readFile } from 'node:fs/promises';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
+import { mkdir } from 'node:fs/promises';
 
 import {
 	type OperationResult,
 	type SdkOperationStatus,
 } from '../../../api/OperationResult';
+import { createZipArchive } from '../../../services/archive/ArchiveService';
+import {
+	createProjectArchivePlan,
+	type ProjectManifestData,
+} from '../../../services/project/ProjectArchivePlan';
 import { TranslationKeys } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
-
-const execFileAsync = promisify(execFile);
 
 export const PACKAGE_PROJECT_OPERATION_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -34,9 +35,6 @@ export type PackageProjectExecutionInput = {
 	destinationFolder: string;
 };
 
-const MANIFEST_FILENAME = 'manifest.xml';
-const ZIP_BINARY_NAME = 'zip';
-const ZIP_EXCLUDES = ['.git/*', 'node_modules/*', '.DS_Store', 'build/*'] as const;
 const PROJECT_TYPE_SUITEAPP = 'SUITEAPP';
 
 export async function executePackageProject(
@@ -54,13 +52,10 @@ export async function executePackageProject(
 			);
 		}
 
+		const archivePlan = await createProjectArchivePlan(input.projectFolder);
+		const targetZipFilePath = getTargetZipFilePath(archivePlan.manifest, input.destinationFolder);
 		await mkdir(input.destinationFolder, { recursive: true });
-		const targetZipFilePath = await getTargetZipFilePath(input.projectFolder, input.destinationFolder);
-		await execFileAsync(
-			ZIP_BINARY_NAME,
-			['-r', '-q', targetZipFilePath, '.', '-x', ...ZIP_EXCLUDES],
-			{ cwd: input.projectFolder }
-		);
+		await createZipArchive(input.projectFolder, targetZipFilePath, archivePlan.entries);
 
 		return {
 			status: PACKAGE_PROJECT_OPERATION_STATUS.SUCCESS,
@@ -75,8 +70,7 @@ export async function executePackageProject(
 	}
 }
 
-async function getTargetZipFilePath(projectFolder: string, destinationFolder: string): Promise<string> {
-	const manifestData = await readManifestData(projectFolder);
+function getTargetZipFilePath(manifestData: ProjectManifestData, destinationFolder: string): string {
 	const datePart = formatDatePart(new Date());
 
 	if (
@@ -91,30 +85,6 @@ async function getTargetZipFilePath(projectFolder: string, destinationFolder: st
 
 	const projectName = manifestData.projectName || 'suitecloud-project';
 	return join(destinationFolder, `${projectName}-${datePart}.zip`);
-}
-
-async function readManifestData(projectFolder: string): Promise<{
-	projectType: string;
-	projectName: string;
-	publisherId: string;
-	projectId: string;
-	projectVersion: string;
-}> {
-	const manifestFilePath = join(projectFolder, MANIFEST_FILENAME);
-	const manifestXml = await readFile(manifestFilePath, 'utf8');
-
-	return {
-		projectType: extractManifestValue(manifestXml, /<manifest[^>]*projecttype="([^"]*)"/i),
-		projectName: extractManifestValue(manifestXml, /<projectname>([^<]*)<\/projectname>/i),
-		publisherId: extractManifestValue(manifestXml, /<publisherid>([^<]*)<\/publisherid>/i),
-		projectId: extractManifestValue(manifestXml, /<projectid>([^<]*)<\/projectid>/i),
-		projectVersion: extractManifestValue(manifestXml, /<projectversion>([^<]*)<\/projectversion>/i),
-	};
-}
-
-function extractManifestValue(xml: string, regex: RegExp): string {
-	const match = xml.match(regex);
-	return match && match[1] ? match[1].trim() : '';
 }
 
 function formatDatePart(date: Date): string {

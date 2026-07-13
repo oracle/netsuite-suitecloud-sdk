@@ -4,12 +4,26 @@
  */
 'use strict';
 
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
+import {
+	ZipperImpl,
+	type EntryToZipSource,
+	type UnzipOptions,
+} from '../../utils/Zipper';
 
-const execFileAsync = promisify(execFile);
-const UNZIP_BINARY_NAME = 'unzip';
+const zipper = new ZipperImpl();
 
-export function extractZipArchive(zipFilePath: string, destinationFolder: string): Promise<unknown> {
-	return execFileAsync(UNZIP_BINARY_NAME, ['-o', zipFilePath, '-d', destinationFolder]);
+export function createZipArchive(
+	sourceDirectory: string,
+	destinationFile: string,
+	entries: readonly EntryToZipSource[]
+): Promise<string> {
+	return zipper.zipEntries(sourceDirectory, destinationFile, entries);
+}
+
+export function extractZipArchive(
+	archiveFile: string,
+	destinationDirectory: string,
+	options?: UnzipOptions
+): Promise<void> {
+	return zipper.unzip(archiveFile, destinationDirectory, options);
 }

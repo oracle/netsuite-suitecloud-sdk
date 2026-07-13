@@ -238,7 +238,12 @@ async function unzipArchive(zipFilePath: string, destinationFolder: string): Pro
 	try {
 		await extractZipArchive(zipFilePath, destinationFolder);
 	} catch (error: unknown) {
-		throw new Error(translationService.getMessage(TranslationKeys.FILE_COMMAND.ERROR.UNZIP_UNAVAILABLE));
+		throw new Error(
+			translationService.getMessage(
+				TranslationKeys.FILE_COMMAND.ERROR.UNZIP_FAILED,
+				toErrorMessage(error)
+			)
+		);
 	}
 }
 

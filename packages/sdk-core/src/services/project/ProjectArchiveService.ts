@@ -4,40 +4,37 @@
  */
 'use strict';
 
-import { execFile } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { promisify } from 'node:util';
+import { createZipArchive } from '../archive/ArchiveService';
 import { TranslationKeys } from '../translation/TranslationKeys';
 import { translationService } from '../translation/TranslationService';
+import { createProjectArchivePlan } from './ProjectArchivePlan';
 
 export interface ProjectArchiveService {
 	create(projectFolder: string): Promise<string>;
 	remove(archivePath: string): Promise<void>;
 }
 
-const execFileAsync = promisify(execFile);
 const PROJECT_ARCHIVE_PREFIX = 'suitecloud-project';
-const ZIP_BINARY_NAME = 'zip';
-const ZIP_EXCLUDES = ['.git/*', 'node_modules/*', '.DS_Store', 'build/*'];
 
 export class DefaultProjectArchiveService implements ProjectArchiveService {
 	async create(projectFolder: string): Promise<string> {
 		const fileName = `${PROJECT_ARCHIVE_PREFIX}-${Date.now()}-${randomBytes(4).toString('hex')}.zip`;
 		const projectArchivePath = join(tmpdir(), fileName);
-		const zipCommandArgs = ['-r', '-q', projectArchivePath, '.', '-x', ...ZIP_EXCLUDES];
 
 		try {
-			await execFileAsync(ZIP_BINARY_NAME, zipCommandArgs, { cwd: projectFolder });
+			const archivePlan = await createProjectArchivePlan(projectFolder);
+			await createZipArchive(projectFolder, projectArchivePath, archivePlan.entries);
 			return projectArchivePath;
-		} catch {
+		} catch (error: unknown) {
 			throw new Error(
 				translationService.getMessage(
 					TranslationKeys.PROJECT_COMMAND.ERROR.ARCHIVE_FAILED,
 					projectFolder,
-					ZIP_BINARY_NAME
+					toErrorMessage(error)
 				)
 			);
 		}
@@ -60,4 +57,8 @@ export function createDefaultProjectArchive(projectFolder: string): Promise<stri
 
 export function deleteFileQuietly(filepath: string): Promise<void> {
 	return defaultProjectArchiveService.remove(filepath);
+}
+
+function toErrorMessage(error: unknown): string {
+	return error instanceof Error ? error.message : String(error);
 }
