@@ -14,7 +14,7 @@ import { promisify } from 'node:util';
 
 import { ProjectCommandType } from './ProjectCommandTypes';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
-import { TranslationKeys } from '../../services/translation/TranslationKeys';
+import { PROJECT_API } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
 
 const execFileAsync = promisify(execFile);
@@ -48,7 +48,7 @@ export async function createDefaultProjectArchive(projectFolder: string): Promis
 		return projectArchivePath;
 	} catch (error: any) {
 		throw new Error(
-			translationService.getMessage(TranslationKeys.PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, ZIP_BINARY_NAME)
+			translationService.getMessage(PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, ZIP_BINARY_NAME)
 		);
 	}
 }
@@ -184,7 +184,7 @@ async function sendHttpsMultipartRequest(input: {
 
 		request.on('error', (error) => reject(error));
 		request.setTimeout(input.timeoutMs, () => {
-			request.destroy(new Error(translationService.getMessage(TranslationKeys.PROJECT_API.ERROR.REQUEST_TIMED_OUT)));
+			request.destroy(new Error(translationService.getMessage(PROJECT_API.ERROR.REQUEST_TIMED_OUT)));
 		});
 
 		request.write(input.payload.payload);

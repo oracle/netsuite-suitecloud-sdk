@@ -4,7 +4,7 @@
  */
 'use strict';
 
-import { TranslationKeys } from '../services/translation/TranslationKeys';
+import { UTILS } from '../services/translation/TranslationKeys';
 import { translationService } from '../services/translation/TranslationService';
 
 export const PROXY_ENVIRONMENT_VARIABLES = {
@@ -32,7 +32,7 @@ export function validateProxyUri(configuredProxy: ProxyConfiguration): void {
 	if (![PROTOCOL_HTTP, PROTOCOL_HTTPS].includes(parsedProxyUri.protocol)) {
 		const proxyError = new Error(
 			translationService.getMessage(
-				TranslationKeys.PROXY.ERROR.UNSUPPORTED_PROTOCOL,
+				UTILS.PROXY_CONFIG.ERROR.UNSUPPORTED_PROTOCOL,
 				configuredProxy.envVarName,
 				configuredProxy.proxyUri
 			)
@@ -70,7 +70,7 @@ function readProxyConfiguration(environment: ProxyEnvironment, envVarName: strin
 function createInvalidProxyConfigurationError(configuredProxy: ProxyConfiguration, code: string | undefined): Error & { code?: string } {
 	const proxyError = new Error(
 		translationService.getMessage(
-			TranslationKeys.PROXY.ERROR.INVALID_CONFIGURATION,
+			UTILS.PROXY_CONFIG.ERROR.INVALID_CONFIGURATION,
 			configuredProxy.envVarName,
 			configuredProxy.proxyUri
 		)

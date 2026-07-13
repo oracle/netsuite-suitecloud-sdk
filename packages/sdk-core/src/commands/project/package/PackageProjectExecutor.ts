@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { mkdir, readFile } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { TranslationKeys } from '../../../services/translation/TranslationKeys';
+import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 
 const execFileAsync = promisify(execFile);
@@ -42,10 +42,10 @@ export async function executePackageProject(
 ): Promise<PackageProjectOperationResult> {
 	try {
 		if (!input.projectFolder) {
-			return errorResult(translationService.getMessage(TranslationKeys.PROJECT_PACKAGE.ERROR.PROJECT_FOLDER_REQUIRED));
+			return errorResult(translationService.getMessage(PROJECT_PACKAGE.ERROR.PROJECT_FOLDER_REQUIRED));
 		}
 		if (!input.destinationFolder) {
-			return errorResult(translationService.getMessage(TranslationKeys.PROJECT_PACKAGE.ERROR.DESTINATION_FOLDER_REQUIRED));
+			return errorResult(translationService.getMessage(PROJECT_PACKAGE.ERROR.DESTINATION_FOLDER_REQUIRED));
 		}
 
 		await mkdir(input.destinationFolder, { recursive: true });
@@ -59,7 +59,7 @@ export async function executePackageProject(
 		return {
 			status: PACKAGE_PROJECT_OPERATION_STATUS.SUCCESS,
 			data: targetZipFilePath,
-			resultMessage: translationService.getMessage(TranslationKeys.PROJECT_PACKAGE.INFO.FILE_CREATED, targetZipFilePath),
+			resultMessage: translationService.getMessage(PROJECT_PACKAGE.INFO.FILE_CREATED, targetZipFilePath),
 		};
 	} catch (error: unknown) {
 		return errorResult(toErrorMessage(error));

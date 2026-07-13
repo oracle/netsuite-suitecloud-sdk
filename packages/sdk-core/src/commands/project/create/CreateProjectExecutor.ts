@@ -7,7 +7,7 @@
 import { access, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { TranslationKeys } from '../../../services/translation/TranslationKeys';
+import { PROJECT_CREATE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { loadTemplate, renderTemplate, setXmlElementValues } from '../../../templates/TemplateLoader';
 
@@ -78,18 +78,18 @@ export async function executeCreateProject(
 
 		if (!parentDirectory) {
 			return errorResult(
-				translationService.getMessage(TranslationKeys.PROJECT_CREATE.ERROR.PARENT_DIRECTORY_REQUIRED)
+				translationService.getMessage(PROJECT_CREATE.ERROR.PARENT_DIRECTORY_REQUIRED)
 			);
 		}
 		if (!projectType) {
-			return errorResult(translationService.getMessage(TranslationKeys.PROJECT_CREATE.ERROR.TYPE_REQUIRED));
+			return errorResult(translationService.getMessage(PROJECT_CREATE.ERROR.TYPE_REQUIRED));
 		}
 		if (!projectName) {
-			return errorResult(translationService.getMessage(TranslationKeys.PROJECT_CREATE.ERROR.NAME_REQUIRED));
+			return errorResult(translationService.getMessage(PROJECT_CREATE.ERROR.NAME_REQUIRED));
 		}
 		if (projectType !== PROJECT_TYPE_ACP && projectType !== PROJECT_TYPE_SUITEAPP) {
 			return errorResult(
-				translationService.getMessage(TranslationKeys.PROJECT_CREATE.ERROR.UNSUPPORTED_TYPE, projectType)
+				translationService.getMessage(PROJECT_CREATE.ERROR.UNSUPPORTED_TYPE, projectType)
 			);
 		}
 		if (projectType === PROJECT_TYPE_SUITEAPP) {
@@ -101,7 +101,7 @@ export async function executeCreateProject(
 			if (missingField) {
 				return errorResult(
 					translationService.getMessage(
-						TranslationKeys.PROJECT_CREATE.ERROR.SUITEAPP_FIELD_REQUIRED,
+						PROJECT_CREATE.ERROR.SUITEAPP_FIELD_REQUIRED,
 						String(missingField[0])
 					)
 				);
@@ -117,7 +117,7 @@ export async function executeCreateProject(
 			if (contents.length > 0) {
 				if (!overwrite) {
 					return errorResult(
-						translationService.getMessage(TranslationKeys.PROJECT_CREATE.ERROR.FOLDER_NOT_EMPTY)
+						translationService.getMessage(PROJECT_CREATE.ERROR.FOLDER_NOT_EMPTY)
 					);
 				}
 				await rm(targetProjectFolder, { recursive: true, force: true });
