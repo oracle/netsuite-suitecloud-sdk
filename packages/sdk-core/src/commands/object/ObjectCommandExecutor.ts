@@ -147,7 +147,6 @@ const CONTENT_TYPE_TEXT_XML = 'text/xml';
 const CONTENT_TYPE_JSON = 'application/json';
 const CONTENT_TYPE_OCTET_STREAM = 'application/octet-stream';
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
-const VM_ENG_HOST_SUFFIX = 'vm.eng';
 const ALL_LITERAL = 'ALL';
 const CUSTOM_SEGMENT_TYPE = 'customsegment';
 const CUSTOM_RECORD_TYPE = 'customrecordtype';
