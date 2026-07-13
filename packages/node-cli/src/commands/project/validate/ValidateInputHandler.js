@@ -20,7 +20,6 @@ const {
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
-	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	PROJECT: 'project',
@@ -71,6 +70,6 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 				],
 			},
 		]);
-		return { ...params, ...answers, [COMMAND_OPTIONS.SERVER]: true };
+		return { ...params, ...answers };
 	}
 };
