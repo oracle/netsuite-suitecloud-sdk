@@ -58,7 +58,9 @@ export async function executeUpdateObjects(
 		validateAuthInput(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
-				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_UPDATE_REQUIRED)
+				translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE
+				)
 			);
 		}
 
@@ -151,7 +153,9 @@ export async function executeUpdateCustomRecordWithInstances(
 		validateAuthInput(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
-				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_UPDATE_REQUIRED)
+				translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE
+				)
 			);
 		}
 		if (!input.scriptId?.trim()) {
@@ -273,7 +277,10 @@ async function mergeUpdatedObjectXml(
 		const sourceXmlFile = await findFileByName(unzipFolder, `${scriptId}.xml`);
 		if (!sourceXmlFile) {
 			return errorResultWithMessage(
-				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.SERVER_FILE_NOT_FOUND, scriptId)
+				translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.FILE_NOT_FOUND_IN_SERVER_RESPONSE,
+					scriptId
+				)
 			);
 		}
 		await copyFile(sourceXmlFile, targetXmlFile);
@@ -289,7 +296,7 @@ async function mergeUpdatedObjectXml(
 
 function validateAuthInput(input: ObjectCommandAuthInput): void {
 	if (!input.hostName) {
-		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.HOST_REQUIRED));
+		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
 		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.ACCESS_TOKEN_REQUIRED));

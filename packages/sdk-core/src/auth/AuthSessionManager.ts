@@ -72,15 +72,17 @@ function validateExecuteWithAuthRetryInput<T>(input: ExecuteWithAuthRetryInput<T
 		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.AUTH_ID_REQUIRED));
 	}
 	if (!input.authSessionProvider) {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.PROVIDER_REQUIRED));
+		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.SESSION_PROVIDER_REQUIRED));
 	}
 	if (typeof input.authSessionProvider.resolveAuthSession !== 'function') {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.RESOLVE_REQUIRED));
+		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.RESOLVE_AUTH_SESSION_REQUIRED));
 	}
 	if (typeof input.authSessionProvider.refreshAuthSession !== 'function') {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.REFRESH_REQUIRED));
+		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.REFRESH_AUTH_SESSION_REQUIRED));
 	}
 	if (typeof input.executeWithAuthSession !== 'function') {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.EXECUTE_REQUIRED));
+		throw new Error(
+			translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.EXECUTE_WITH_AUTH_SESSION_REQUIRED)
+		);
 	}
 }

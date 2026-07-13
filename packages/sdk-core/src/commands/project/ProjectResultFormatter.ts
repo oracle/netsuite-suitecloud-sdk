@@ -193,12 +193,12 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 		);
 		Array.from(bucket.errors).forEach((message) =>
 			sections.push(
-				translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.ISSUE, 'ERROR', message)
+				translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.VALIDATION_ERROR, message)
 			)
 		);
 		Array.from(bucket.warnings).forEach((message) =>
 			sections.push(
-				translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.ISSUE, 'WARNING', message)
+				translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.VALIDATION_WARNING, message)
 			)
 		);
 		sections.push('');

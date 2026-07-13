@@ -86,10 +86,12 @@ function validateExecutionInput(input: ProjectActionInput): void {
 		);
 	}
 	if (!input.projectFolder) {
-		throw new Error(translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.FOLDER_REQUIRED));
+		throw new Error(
+			translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.PROJECT_FOLDER_REQUIRED)
+		);
 	}
 	if (!input.hostName) {
-		throw new Error(translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.HOST_REQUIRED));
+		throw new Error(translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
 		throw new Error(translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.ACCESS_TOKEN_REQUIRED));

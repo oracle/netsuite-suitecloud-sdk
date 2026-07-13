@@ -143,7 +143,9 @@ export async function executeImportObjects(
 		validateAuthInput(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
-				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_IMPORT_REQUIRED),
+				translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_FOLDER_REQUIRED_FOR_IMPORT
+				),
 				undefined
 			);
 		}
@@ -271,7 +273,7 @@ async function resolveObjectsToImport(
 		if (listResult.status === OBJECT_COMMAND_STATUS.ERROR) {
 			throw new Error(
 				listResult.errorMessages?.[0] ??
-					translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.LIST_FAILED)
+					translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.LIST_CUSTOM_OBJECTS_FAILED)
 			);
 		}
 		return (listResult.data ?? []).map((item) => ({ type: item.type, scriptId: item.scriptId, appId: item.appId }));
@@ -298,7 +300,7 @@ async function resolveObjectsToImport(
 		if (listResult.status === OBJECT_COMMAND_STATUS.ERROR) {
 			throw new Error(
 				listResult.errorMessages?.[0] ??
-					translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.LIST_FAILED)
+					translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.LIST_CUSTOM_OBJECTS_FAILED)
 			);
 		}
 
@@ -421,7 +423,7 @@ async function unzipArchive(zipFilePath: string, destinationFolder: string): Pro
 
 function validateAuthInput(input: ObjectCommandAuthInput): void {
 	if (!input.hostName) {
-		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.HOST_REQUIRED));
+		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
 		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.ACCESS_TOKEN_REQUIRED));
