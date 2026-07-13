@@ -13,7 +13,7 @@ import {
 } from '../../../api/OperationResult';
 import { createZipArchive } from '../../../services/archive/ArchiveService';
 import {
-	createProjectArchivePlan,
+	createPackageArchivePlan,
 	type ProjectManifestData,
 } from '../../../services/project/ProjectArchivePlan';
 import { TranslationKeys } from '../../../services/translation/TranslationKeys';
@@ -52,7 +52,7 @@ export async function executePackageProject(
 			);
 		}
 
-		const archivePlan = await createProjectArchivePlan(input.projectFolder);
+		const archivePlan = await createPackageArchivePlan(input.projectFolder);
 		const targetZipFilePath = getTargetZipFilePath(archivePlan.manifest, input.destinationFolder);
 		await mkdir(input.destinationFolder, { recursive: true });
 		await createZipArchive(input.projectFolder, targetZipFilePath, archivePlan.entries);

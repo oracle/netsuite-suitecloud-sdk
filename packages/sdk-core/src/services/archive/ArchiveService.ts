@@ -5,25 +5,27 @@
 'use strict';
 
 import {
-	ZipperImpl,
-	type EntryToZipSource,
-	type UnzipOptions,
-} from '../../utils/Zipper';
+	AdmZipArchive,
+	type ArchiveEntry,
+	type ArchiveExtractionOptions,
+} from './ZipArchive';
 
-const zipper = new ZipperImpl();
+export type { ArchiveEntry, ArchiveExtractionOptions } from './ZipArchive';
+
+const archive = new AdmZipArchive();
 
 export function createZipArchive(
 	sourceDirectory: string,
 	destinationFile: string,
-	entries: readonly EntryToZipSource[]
+	entries: readonly ArchiveEntry[]
 ): Promise<string> {
-	return zipper.zipEntries(sourceDirectory, destinationFile, entries);
+	return archive.zipEntries(sourceDirectory, destinationFile, entries);
 }
 
 export function extractZipArchive(
 	archiveFile: string,
 	destinationDirectory: string,
-	options?: UnzipOptions
+	options?: ArchiveExtractionOptions
 ): Promise<void> {
-	return zipper.unzip(archiveFile, destinationDirectory, options);
+	return archive.unzip(archiveFile, destinationDirectory, options);
 }

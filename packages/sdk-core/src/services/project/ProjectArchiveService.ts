@@ -11,7 +11,7 @@ import { join } from 'node:path';
 import { createZipArchive } from '../archive/ArchiveService';
 import { TranslationKeys } from '../translation/TranslationKeys';
 import { translationService } from '../translation/TranslationService';
-import { createProjectArchivePlan } from './ProjectArchivePlan';
+import { createProjectUploadArchiveEntries } from './ProjectArchivePlan';
 
 export interface ProjectArchiveService {
 	create(projectFolder: string): Promise<string>;
@@ -26,8 +26,8 @@ export class DefaultProjectArchiveService implements ProjectArchiveService {
 		const projectArchivePath = join(tmpdir(), fileName);
 
 		try {
-			const archivePlan = await createProjectArchivePlan(projectFolder);
-			await createZipArchive(projectFolder, projectArchivePath, archivePlan.entries);
+			const archiveEntries = await createProjectUploadArchiveEntries(projectFolder);
+			await createZipArchive(projectFolder, projectArchivePath, archiveEntries);
 			return projectArchivePath;
 		} catch (error: unknown) {
 			throw new Error(
