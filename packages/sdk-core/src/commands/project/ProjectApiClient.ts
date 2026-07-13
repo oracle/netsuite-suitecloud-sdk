@@ -4,7 +4,7 @@
  */
 'use strict';
 
-import https from 'node:https';
+import type { RequestOptions } from 'node:https';
 import crypto from 'node:crypto';
 import path from 'node:path';
 import os from 'node:os';
@@ -12,6 +12,7 @@ import fsPromises from 'node:fs/promises';
 
 import { ProjectCommandType } from './ProjectCommandTypes';
 import { ZipperImpl } from '../../utils/Zipper';
+import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
 import { createSdfProjectArchivePlan } from './package/SdfProjectArchive';
 
 const PROJECT_API_PATH = '/api/internal/sdf/v1/projects';
@@ -147,7 +148,7 @@ async function sendHttpsMultipartRequest(input: {
 	timeoutMs: number;
 }): Promise<HttpResponse> {
 	return new Promise((resolve, reject) => {
-		const requestOptions: any = {
+		const requestOptions: RequestOptions = {
 			method: 'POST',
 			hostname: input.hostName,
 			port: 443,
@@ -160,11 +161,7 @@ async function sendHttpsMultipartRequest(input: {
 			},
 		};
 
-		if (input.hostName.includes('vm.eng')) {
-			requestOptions.agent = new https.Agent({ rejectUnauthorized: false });
-		}
-
-		const request = https.request(requestOptions, (response) => {
+		const request = requestSuiteCloudHttps(input.hostName, requestOptions, (response) => {
 			const bodyChunks: Buffer[] = [];
 			response.on('data', (chunk) => bodyChunks.push(Buffer.from(chunk)));
 			response.on('end', () => {

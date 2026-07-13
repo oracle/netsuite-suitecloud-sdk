@@ -4,7 +4,7 @@
  */
 'use strict';
 
-import { Agent, request as httpsRequest, type RequestOptions } from 'node:https';
+import type { RequestOptions } from 'node:https';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { access, copyFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
@@ -14,6 +14,7 @@ import { parseStringPromise } from 'xml2js';
 
 import { executeImportFiles } from '../file/FileCommandExecutor';
 import { ZipperImpl } from '../../utils/Zipper';
+import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
 
 export const OBJECT_COMMAND_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -1045,11 +1046,10 @@ async function sendFormRequest(input: {
 			[HEADER_SDF_ACTION]: input.actionName,
 			...(input.userAgent ? { [HEADER_USER_AGENT]: input.userAgent } : {}),
 		},
-		agent: createHttpsAgentForHost(input.hostName),
 	};
 
 	return new Promise((resolve, reject) => {
-		const request = httpsRequest(requestOptions, (response) => {
+		const request = requestSuiteCloudHttps(input.hostName, requestOptions, (response) => {
 			const chunks: Buffer[] = [];
 			response.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
 			response.on('end', () => {
@@ -1068,13 +1068,6 @@ async function sendFormRequest(input: {
 		request.write(requestBody);
 		request.end();
 	});
-}
-
-function createHttpsAgentForHost(hostName: string): Agent | undefined {
-	if (!hostName || !hostName.includes(VM_ENG_HOST_SUFFIX)) {
-		return undefined;
-	}
-	return new Agent({ rejectUnauthorized: false });
 }
 
 async function unzipArchive(zipFilePath: string, destinationFolder: string): Promise<void> {
