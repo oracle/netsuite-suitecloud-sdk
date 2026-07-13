@@ -43,9 +43,8 @@ export async function createDefaultProjectArchive(projectFolder: string): Promis
 		return projectArchivePath;
 	} catch (error: any) {
 		throw new Error(
-			translationService.getMessage(PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, ZIP_BINARY_NAME)
+			translationService.getMessage(PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, error.message)
 		);
-		throw new Error(`Unable to archive project folder "${projectFolder}": ${error.message}`);
 	}
 }
 

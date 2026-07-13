@@ -682,9 +682,8 @@ async function unzipArchive(zipFilePath: string, destinationFolder: string): Pro
 		await new ZipperImpl().unzip(zipFilePath, destinationFolder);
 	} catch (error: unknown) {
 		throw new Error(
-			getMessage(FILE_COMMAND.ERROR.UNZIP_IMPORT_FAILED, UNZIP_BINARY_NAME)
+			getMessage(FILE_COMMAND.ERROR.UNZIP_IMPORT_FAILED, toErrorMessage(error))
 		);
-		throw new Error(`Unable to extract imported files: ${toErrorMessage(error)}`);
 	}
 }
 
