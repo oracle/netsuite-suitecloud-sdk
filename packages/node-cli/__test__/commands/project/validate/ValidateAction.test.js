@@ -18,7 +18,7 @@ jest.mock('../../../../src/services/ProjectInfoService', () => {
 });
 
 jest.mock('../../../../src/services/NodeTranslationService', () => ({
-	getMessage: jest.fn(() => 'Validating'),
+	getMessage: jest.fn((key) => key),
 }));
 
 jest.mock('../../../../src/ui/CliSpinner', () => ({
@@ -91,7 +91,8 @@ describe('ValidateAction', () => {
 		executeWithAuthRetry.mockClear();
 	});
 
-	it('should force server validation mode and execute through TS core', async () => {
+	it('should use server validation by default and execute through TS core', async () => {
+		const warning = jest.fn();
 		const commandMetadata = {
 			name: 'project:validate',
 			sdkCommand: 'validate',
@@ -110,20 +111,21 @@ describe('ValidateAction', () => {
 			commandMetadata,
 			executionPath: '/tmp/project',
 			sdkPath: '/tmp/sdk.jar',
-			log: { warning: jest.fn(), info: jest.fn() },
+			log: { warning, info: jest.fn() },
 		});
 
 		const actionResult = await validateAction.execute({
 			project: '"/tmp/project"',
 			authid: 'myAuth',
-			server: false,
+			server: true,
 			applyinstallprefs: true,
 		});
 
 		expect(executeProjectCommand).toHaveBeenCalledTimes(1);
 		const executionInput = executeProjectCommand.mock.calls[0][0];
 		expect(executionInput.command).toBe('validate');
-		expect(executionInput.flags).toEqual(['server', 'applyinstallprefs']);
+		expect(executionInput.flags).toEqual(['applyinstallprefs']);
+		expect(warning).toHaveBeenCalledWith('COMMAND_VALIDATE_WARNINGS_SERVER_OPTION_IGNORED');
 		expect(actionResult.isServerValidation).toBe(true);
 		expect(actionResult.isSuccess()).toBe(true);
 	});
@@ -135,7 +137,6 @@ describe('ValidateAction', () => {
 			options: {
 				project: {},
 				authid: {},
-				server: {},
 				applyinstallprefs: {},
 				accountspecificvalues: {},
 				json: {},
@@ -178,7 +179,6 @@ describe('ValidateAction', () => {
 			options: {
 				project: {},
 				authid: {},
-				server: {},
 				applyinstallprefs: {},
 				accountspecificvalues: {},
 				json: {},

@@ -10,7 +10,7 @@ const {
 } = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('ValidateHandler', () => {
-	it('should prepare server validation execution', () => {
+	it('should prepare validation with installation preferences', () => {
 		const execution = prepareValidateExecution({
 			server: true,
 			applyinstallprefs: true,
@@ -18,7 +18,6 @@ describe('ValidateHandler', () => {
 		});
 
 		expect(execution.flags).toEqual([
-			VALIDATE_COMMAND.OPTIONS.SERVER,
 			VALIDATE_COMMAND.OPTIONS.APPLY_INSTALLATION_PREFERENCES,
 		]);
 		expect(execution.isServerValidation).toBe(true);
@@ -26,13 +25,13 @@ describe('ValidateHandler', () => {
 		expect(execution.params).toEqual({ project: '"/tmp/project"' });
 	});
 
-	it('should prepare local validation execution', () => {
+	it('should prepare server validation by default', () => {
 		const execution = prepareValidateExecution({
 			project: '"/tmp/project"',
 		});
 
 		expect(execution.flags).toEqual([]);
-		expect(execution.isServerValidation).toBe(false);
+		expect(execution.isServerValidation).toBe(true);
 		expect(execution.installationPreferencesApplied).toBe(false);
 		expect(execution.params).toEqual({ project: '"/tmp/project"' });
 	});

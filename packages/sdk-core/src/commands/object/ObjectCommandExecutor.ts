@@ -9,17 +9,14 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { access, copyFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { constants as fsConstants } from 'node:fs';
-import { execFile } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { promisify } from 'node:util';
 import { parseStringPromise } from 'xml2js';
 
 import { executeImportFiles } from '../file/FileCommandExecutor';
+import { ZipperImpl } from '../../utils/Zipper';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
 import { OBJECT_COMMAND } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
-
-const execFileAsync = promisify(execFile);
 
 export const OBJECT_COMMAND_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -152,7 +149,6 @@ const CONTENT_TYPE_TEXT_XML = 'text/xml';
 const CONTENT_TYPE_JSON = 'application/json';
 const CONTENT_TYPE_OCTET_STREAM = 'application/octet-stream';
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
-const UNZIP_BINARY_NAME = 'unzip';
 const ALL_LITERAL = 'ALL';
 const CUSTOM_SEGMENT_TYPE = 'customsegment';
 const CUSTOM_RECORD_TYPE = 'customrecordtype';
@@ -1091,7 +1087,7 @@ async function sendFormRequest(input: {
 }
 
 async function unzipArchive(zipFilePath: string, destinationFolder: string): Promise<void> {
-	await execFileAsync(UNZIP_BINARY_NAME, ['-o', zipFilePath, '-d', destinationFolder]);
+	await new ZipperImpl().unzip(zipFilePath, destinationFolder);
 }
 
 async function copyDirectoryContents(sourceFolder: string, destinationFolder: string): Promise<string[]> {
