@@ -19,9 +19,11 @@ import {
 } from './CreateProjectExecutor';
 
 const PLATFORM_WIN = 'win32';
+const COMMAND_INTERPRETER_WIN = 'cmd.exe';
 const COMMAND_NPM_WIN = 'npm.cmd';
 const COMMAND_NPM_UNIX = 'npm';
 const NPM_ARG_INSTALL = 'install';
+const COMMAND_INTERPRETER_ARGS_WIN = ['/d', '/s', '/c'];
 const SOURCE_FOLDER = 'src';
 const PROJECT_TYPE_SUITEAPP = 'SUITEAPP';
 const JEST_CONFIG_FILENAME = 'jest.config.js';
@@ -174,14 +176,22 @@ function escapeRegExp(value: string): string {
 
 async function runNpmInstall(projectAbsolutePath: string): Promise<boolean> {
 	return new Promise((resolve) => {
-		const npmBinary = process.platform === PLATFORM_WIN ? COMMAND_NPM_WIN : COMMAND_NPM_UNIX;
-		const processResult = spawn(npmBinary, [NPM_ARG_INSTALL], {
-			cwd: projectAbsolutePath,
-			stdio: 'inherit',
-			windowsHide: true,
-		});
-		processResult.on('close', (code) => resolve(code === 0));
-		processResult.on('error', () => resolve(false));
+		try {
+			const isWindows = process.platform === PLATFORM_WIN;
+			const command = isWindows ? process.env.ComSpec || COMMAND_INTERPRETER_WIN : COMMAND_NPM_UNIX;
+			const args = isWindows
+				? [...COMMAND_INTERPRETER_ARGS_WIN, `${COMMAND_NPM_WIN} ${NPM_ARG_INSTALL}`]
+				: [NPM_ARG_INSTALL];
+			const processResult = spawn(command, args, {
+				cwd: projectAbsolutePath,
+				stdio: 'inherit',
+				windowsHide: true,
+			});
+			processResult.on('close', (code) => resolve(code === 0));
+			processResult.on('error', () => resolve(false));
+		} catch {
+			resolve(false);
+		}
 	});
 }
 
