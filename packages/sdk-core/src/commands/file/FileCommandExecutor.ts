@@ -14,6 +14,8 @@ import { randomBytes } from 'node:crypto';
 import { promisify } from 'node:util';
 import { parseStringPromise } from 'xml2js';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
+import { TranslationKeys } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 const execFileAsync = promisify(execFile);
 
@@ -91,12 +93,6 @@ const UPLOAD_MULTIPART_FILE_FIELD_NAME = 'file';
 const FILE_CABINET_UPLOAD_QUERY_PARENT_FOLDER = 'parentFolder';
 const UPLOAD_RESULT_TYPE_SUCCESS = 'SUCCESS';
 const UPLOAD_RESULT_TYPE_ERROR = 'ERROR';
-const IMPORT_UNEXPECTED_ERROR_MESSAGE =
-	'Some files could not be imported.\nThere was an error when communicating with the server. Try importing a different set of files. If the problem persists, contact customer support.';
-const UNKNOWN_SERVER_RESPONSE_MESSAGE = 'Unable to recognize the response from server.';
-const NO_FILES_FOUND_MESSAGE = 'No files found.';
-const NO_FOLDERS_FOUND_MESSAGE = 'No folders found.';
-const UPLOAD_COMPLETED_MESSAGE = 'The uploading process has finished.';
 const FILE_CABINET_PATH_TEMPLATES = '/Templates';
 const ALLOWED_FILE_CABINET_PATHS = [
 	'/SuiteScripts',
@@ -120,7 +116,7 @@ export async function executeListFiles(input: ListFilesExecutionInput): Promise<
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: supportedFileList,
-			resultMessage: supportedFileList.length ? '' : NO_FILES_FOUND_MESSAGE,
+			resultMessage: supportedFileList.length ? '' : getMessage(TranslationKeys.FILE_COMMAND.INFO.NO_FILES_FOUND),
 		};
 	} catch (error: unknown) {
 		const statusCode = extractStatusCode(error);
@@ -130,7 +126,7 @@ export async function executeListFiles(input: ListFilesExecutionInput): Promise<
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: [],
-			resultMessage: NO_FILES_FOUND_MESSAGE,
+			resultMessage: getMessage(TranslationKeys.FILE_COMMAND.INFO.NO_FILES_FOUND),
 		};
 	}
 }
@@ -144,7 +140,7 @@ export async function executeListFolders(input: ListFoldersExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: folderList,
-			resultMessage: folderList.length ? '' : NO_FOLDERS_FOUND_MESSAGE,
+			resultMessage: folderList.length ? '' : getMessage(TranslationKeys.FILE_COMMAND.INFO.NO_FOLDERS_FOUND),
 		};
 	} catch (error: unknown) {
 		const statusCode = extractStatusCode(error);
@@ -154,14 +150,14 @@ export async function executeListFolders(input: ListFoldersExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: [],
-			resultMessage: NO_FOLDERS_FOUND_MESSAGE,
+			resultMessage: getMessage(TranslationKeys.FILE_COMMAND.INFO.NO_FOLDERS_FOUND),
 		};
 	}
 }
 
 export async function executeImportFiles(input: ImportFilesExecutionInput): Promise<FileCommandOperationResult> {
 	if (!Array.isArray(input.filePaths) || input.filePaths.length === 0) {
-		return errorResultWithMessage('Missing required file paths for file import.', undefined);
+		return errorResultWithMessage(getMessage(TranslationKeys.FILE_COMMAND.ERROR.IMPORT_FILE_PATHS_REQUIRED), undefined);
 	}
 
 	for (const filePath of input.filePaths) {
@@ -190,7 +186,10 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 		const responseText = importResponse.body.toString('utf8');
 		if (looksLikeIdeResponse(responseText)) {
 			const ideError = await extractIdeErrorMessage(responseText);
-			return errorResultWithMessage(ideError ?? UNKNOWN_SERVER_RESPONSE_MESSAGE, importResponse.statusCode);
+			return errorResultWithMessage(
+				ideError ?? getMessage(TranslationKeys.FILE_COMMAND.ERROR.UNKNOWN_SERVER_RESPONSE),
+				importResponse.statusCode
+			);
 		}
 
 		await writeFile(zipFilePath, importResponse.body);
@@ -201,7 +200,7 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 		const statusFilePath = join(unzipTargetFolder, IMPORT_FILES_STATUS_FILENAME);
 		const statusFileContents = await readOptionalFile(statusFilePath);
 		if (!statusFileContents) {
-			return errorResultWithMessage(IMPORT_UNEXPECTED_ERROR_MESSAGE, undefined);
+			return errorResultWithMessage(getMessage(TranslationKeys.FILE_COMMAND.WARNING.IMPORT_UNEXPECTED_ERROR), undefined);
 		}
 
 		const importStatus = await parseImportStatus(statusFileContents);
@@ -222,7 +221,7 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 
 export async function executeUploadFiles(input: UploadFilesExecutionInput): Promise<FileCommandOperationResult> {
 	if (!Array.isArray(input.filePaths) || input.filePaths.length === 0) {
-		return errorResultWithMessage('Missing required file paths for file upload.', undefined);
+		return errorResultWithMessage(getMessage(TranslationKeys.FILE_COMMAND.ERROR.UPLOAD_FILE_PATHS_REQUIRED), undefined);
 	}
 
 	try {
@@ -242,7 +241,7 @@ export async function executeUploadFiles(input: UploadFilesExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: uploadResults,
-			resultMessage: UPLOAD_COMPLETED_MESSAGE,
+			resultMessage: getMessage(TranslationKeys.FILE_COMMAND.INFO.UPLOAD_COMPLETED),
 		};
 	} catch (error: unknown) {
 		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
@@ -274,7 +273,7 @@ async function queryFileCabinetResources(
 
 	const responseText = response.body.toString('utf8');
 	if (!looksLikeIdeResponse(responseText)) {
-		throw new Error(UNKNOWN_SERVER_RESPONSE_MESSAGE);
+		throw new Error(getMessage(TranslationKeys.FILE_COMMAND.ERROR.UNKNOWN_SERVER_RESPONSE));
 	}
 
 	const ideError = await extractIdeErrorMessage(responseText);
@@ -307,7 +306,7 @@ async function uploadSingleFile(
 			data: {
 				file: { path: localFilePath },
 				type: UPLOAD_RESULT_TYPE_ERROR,
-				errorMessage: `The "${parentFolderPath}/${basename(localFilePath)}" path does not exist.`,
+				errorMessage: getMessage(TranslationKeys.FILE_COMMAND.ERROR.LOCAL_PATH_NOT_FOUND, parentFolderPath, basename(localFilePath)),
 			},
 		};
 	}
@@ -636,7 +635,7 @@ async function sendHttpRequest(options: {
 
 		request.on('error', reject);
 		request.setTimeout(options.timeoutMs, () => {
-			request.destroy(new Error('File command request timed out.'));
+			request.destroy(new Error(getMessage(TranslationKeys.FILE_COMMAND.ERROR.REQUEST_TIMED_OUT)));
 		});
 
 		if (options.body) {
@@ -650,7 +649,7 @@ async function sendHttpRequest(options: {
 function getHttpErrorMessage(response: HttpResponse): string {
 	const rawText = response.body.toString('utf8').trim();
 	if (!rawText) {
-		return `Request failed with status code ${response.statusCode}.`;
+		return getMessage(TranslationKeys.FILE_COMMAND.ERROR.REQUEST_FAILED_WITH_STATUS_CODE, response.statusCode);
 	}
 
 	try {
@@ -670,7 +669,7 @@ function getHttpErrorMessage(response: HttpResponse): string {
 	}
 
 	if (looksLikeIdeResponse(rawText)) {
-		return UNKNOWN_SERVER_RESPONSE_MESSAGE;
+		return getMessage(TranslationKeys.FILE_COMMAND.ERROR.UNKNOWN_SERVER_RESPONSE);
 	}
 
 	return rawText;
@@ -686,7 +685,7 @@ async function unzipArchive(zipFilePath: string, destinationFolder: string): Pro
 		await execFileAsync(UNZIP_BINARY_NAME, ['-o', zipFilePath, '-d', destinationFolder]);
 	} catch (error: unknown) {
 		throw new Error(
-			`Unable to extract imported files. Verify "${UNZIP_BINARY_NAME}" is installed and available in PATH.`
+			getMessage(TranslationKeys.FILE_COMMAND.ERROR.UNZIP_IMPORT_FAILED, UNZIP_BINARY_NAME)
 		);
 	}
 }
@@ -719,7 +718,11 @@ function isValidFileCabinetPath(fileCabinetPath: string): boolean {
 }
 
 function buildInvalidFileCabinetPathMessage(fileCabinetPath: string): string {
-	return `The "${fileCabinetPath}" path is invalid. The path can only start with: "${ALLOWED_FILE_CABINET_PATHS.join(',')}".`;
+	return getMessage(
+		TranslationKeys.FILE_COMMAND.ERROR.INVALID_FILE_CABINET_PATH,
+		fileCabinetPath,
+		ALLOWED_FILE_CABINET_PATHS.join(',')
+	);
 }
 
 function errorResultWithMessage(errorMessage: string, httpStatusCode: number | undefined): FileCommandOperationResult {
@@ -772,4 +775,8 @@ function asString(value: unknown): string {
 		return value[0];
 	}
 	return '';
+}
+
+function getMessage(key: Parameters<typeof translationService.getMessage>[0], ...params: Array<string | number>): string {
+	return translationService.getMessage(key, ...params);
 }

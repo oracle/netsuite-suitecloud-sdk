@@ -14,6 +14,8 @@ import { promisify } from 'node:util';
 
 import { ProjectCommandType } from './ProjectCommandTypes';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
+import { TranslationKeys } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 const execFileAsync = promisify(execFile);
 
@@ -46,7 +48,7 @@ export async function createDefaultProjectArchive(projectFolder: string): Promis
 		return projectArchivePath;
 	} catch (error: any) {
 		throw new Error(
-			`Unable to archive project folder "${projectFolder}". Verify "${ZIP_BINARY_NAME}" is installed and available in PATH.`
+			translationService.getMessage(TranslationKeys.PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, ZIP_BINARY_NAME)
 		);
 	}
 }
@@ -150,7 +152,7 @@ async function sendHttpsMultipartRequest(input: {
 	hostName: string;
 	pathname: string;
 	accessToken: string;
-	payload: { payload: Buffer; boundary: string };
+	payload: { payload: Buffer; boundary: string };COMPARE_FILE
 	boundary: string;
 	timeoutMs: number;
 }): Promise<HttpResponse> {
@@ -182,7 +184,7 @@ async function sendHttpsMultipartRequest(input: {
 
 		request.on('error', (error) => reject(error));
 		request.setTimeout(input.timeoutMs, () => {
-			request.destroy(new Error('Project command request timed out.'));
+			request.destroy(new Error(translationService.getMessage(TranslationKeys.PROJECT_API.ERROR.REQUEST_TIMED_OUT)));
 		});
 
 		request.write(input.payload.payload);
