@@ -17,6 +17,11 @@ const destinationFolder = resolve(repositoryRoot, process.argv[2] || 'dist');
 const stagingRoot = mkdtempSync(join(tmpdir(), 'suitecloud-cli-package-'));
 const stagedCliFolder = join(stagingRoot, 'package');
 const sdkCoreSourceFolder = join(repositoryRoot, 'packages', 'sdk-core');
+const stagedSdkCoreFolder = join(
+	stagedCliFolder,
+	'node_modules',
+	...sdkCorePackageName.split('/')
+);
 
 verifyPackageConfiguration();
 mkdirSync(destinationFolder, { recursive: true });
@@ -24,6 +29,7 @@ mkdirSync(destinationFolder, { recursive: true });
 try {
 	runNpm(['run', 'build:sdk-core']);
 	stageCliPackage();
+	installSdkCoreRuntimeDependencies();
 	runNpm(['pack', '--ignore-scripts', '--pack-destination', destinationFolder], stagedCliFolder);
 } finally {
 	rmSync(stagingRoot, { recursive: true, force: true });
@@ -48,11 +54,6 @@ function stageCliPackage() {
 		filter: (sourcePath) => sourcePath !== join(cliSourceFolder, 'node_modules'),
 	});
 
-	const stagedSdkCoreFolder = join(
-		stagedCliFolder,
-		'node_modules',
-		...sdkCorePackageName.split('/')
-	);
 	mkdirSync(stagedSdkCoreFolder, { recursive: true });
 	copyFileSync(
 		join(sdkCoreSourceFolder, 'package.json'),
@@ -61,6 +62,13 @@ function stageCliPackage() {
 	cpSync(join(sdkCoreSourceFolder, 'build'), join(stagedSdkCoreFolder, 'build'), {
 		recursive: true,
 	});
+}
+
+function installSdkCoreRuntimeDependencies() {
+	runNpm(
+		['install', '--omit=dev', '--ignore-scripts', '--package-lock=false'],
+		stagedSdkCoreFolder
+	);
 }
 
 function runNpm(args, workingDirectory = repositoryRoot) {
