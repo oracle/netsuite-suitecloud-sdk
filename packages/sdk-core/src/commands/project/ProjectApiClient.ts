@@ -147,7 +147,7 @@ async function sendHttpsMultipartRequest(input: {
 	hostName: string;
 	pathname: string;
 	accessToken: string;
-	payload: { payload: Buffer; boundary: string };COMPARE_FILE
+	payload: { payload: Buffer; boundary: string };
 	boundary: string;
 	timeoutMs: number;
 }): Promise<HttpResponse> {
