@@ -9,7 +9,7 @@ const ActionResultUtils = require('../../../utils/ActionResultUtils');
 
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const {
-	COMMAND_VALIDATE: { MESSAGES, OUTPUT },
+	COMMAND_VALIDATE: { MESSAGES },
 } = require('../../../services/TranslationKeys');
 const {
 	isRawOutputRequested,
@@ -37,7 +37,6 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 				actionResult.projectType,
 				actionResult.projectFolder
 			);
-			this._showLocalValidationResultData(actionResult.data);
 		}
 		ActionResultUtils.logResultMessage(actionResult, this._log);
 		return actionResult;
@@ -64,33 +63,5 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 				this._log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_INSTALLATION_PREFERENCES, projectFolder));
 			}
 		}
-	}
-
-	_showLocalValidationResultData(data) {
-		this._logValidationEntries(data.warnings, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_WARNING), this._log.warning.bind(this._log));
-		this._logValidationEntries(data.errors, NodeTranslationService.getMessage(OUTPUT.HEADING_LABEL_ERROR), this._log.error.bind(this._log));
-	}
-
-	_logValidationEntries(entries, headingLabel, log) {
-		const files = [];
-		entries.forEach((entry) => {
-			if (!files.includes(entry.filePath)) {
-				files.push(entry.filePath);
-			}
-		});
-
-		if (entries.length > 0) {
-			log(`${headingLabel}:`);
-		}
-
-		files.forEach((file) => {
-			const fileString = `    ${file}`;
-			log(fileString);
-			entries
-				.filter((entry) => entry.filePath === file)
-				.forEach((entry) => {
-					log(NodeTranslationService.getMessage(OUTPUT.VALIDATION_OUTPUT_MESSAGE, entry.lineNumber, entry.message));
-				});
-		});
 	}
 };
