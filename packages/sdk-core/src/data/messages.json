@@ -77,5 +77,15 @@
   "UTILS_PROXY_CONFIG_ERROR_INVALID_CONFIGURATION": "The {0} environment variable must contain a valid proxy URL including a protocol, hostname, and port. For example, http://my-proxy-domain:80.\nReceived: {1}.",
   "UTILS_PROXY_CONFIG_ERROR_UNSUPPORTED_PROTOCOL": "You specified an unsupported protocol for the {0} environment variable. Enter a proxy URL with either the http or https protocol.\nReceived: {1}.",
   "UTILS_SUITESCRIPT_TEMPLATE_SERVICE_ERROR_INVALID_MODULES": "Invalid SuiteScript module specified: {0}. Only specify valid SuiteScript 2.x modules.",
-  "UTILS_SUITESCRIPT_TEMPLATE_SERVICE_ERROR_INVALID_TYPE": "The specified type is not a valid SuiteScript type. The following are valid types: {0}"
+  "UTILS_SUITESCRIPT_TEMPLATE_SERVICE_ERROR_INVALID_TYPE": "The specified type is not a valid SuiteScript type. The following are valid types: {0}",
+  "UTILS_ZIPPER_ERROR_ARCHIVE_ENTRY_OUTSIDE_PROJECT": "Project archive entry is outside the project folder: \"{0}\".",
+  "UTILS_ZIPPER_ERROR_ARCHIVE_UNCOMPRESSED_SIZE_EXCEEDED": "ZIP archive uncompressed size exceeds the configured limit.",
+  "UTILS_ZIPPER_ERROR_ENTRY_PATH_TOO_LONG": "ZIP entry path is too long.",
+  "UTILS_ZIPPER_ERROR_ENTRY_UNCOMPRESSED_SIZE_EXCEEDED": "ZIP entry uncompressed size exceeds the configured limit: \"{0}\".",
+  "UTILS_ZIPPER_ERROR_ENTRY_UNCOMPRESSED_SIZE_METADATA_MISMATCH": "ZIP entry uncompressed size does not match metadata: \"{0}\".",
+  "UTILS_ZIPPER_ERROR_INVALID_ENTRY_PATH": "Invalid ZIP entry path: \"{0}\".",
+  "UTILS_ZIPPER_ERROR_INVALID_EXTRACTION_LIMIT": "Invalid ZIP extraction limit: {0}.",
+  "UTILS_ZIPPER_ERROR_READ_CONTENT_FAILED": "Unable to read content in {0}. Error: {1}",
+  "UTILS_ZIPPER_ERROR_SYMBOLIC_LINK_NOT_SUPPORTED": "ZIP symbolic link entries are not supported: \"{0}\".",
+  "UTILS_ZIPPER_ERROR_TOO_MANY_ENTRIES": "ZIP archive contains too many entries: {0}."
 }
