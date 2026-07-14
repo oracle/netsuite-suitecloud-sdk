@@ -21,6 +21,8 @@ import {
 } from '../../api/object/ObjectCommand';
 import { executeImportFiles } from '../file/FileCommandService';
 import { extractZipArchive } from '../archive/ArchiveService';
+import { TranslationKeys } from '../translation/TranslationKeys';
+import { translationService } from '../translation/TranslationService';
 import {
 	assertCreatablePathWithin,
 	assertPathWithin,
@@ -70,8 +72,12 @@ const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 const ALL_LITERAL = 'ALL';
 const CUSTOM_SEGMENT_PREFIX = 'customsegment';
 const SUITESCRIPTS_PREFIX = '/SuiteScripts/';
-const INVALID_REFERENCED_FILE_PATH_MESSAGE = 'The file path is invalid or not supported.';
-const NO_OBJECTS_IMPORTED_MESSAGE = 'No objects imported.';
+const INVALID_REFERENCED_FILE_PATH_MESSAGE = translationService.getMessage(
+	TranslationKeys.OBJECT_COMMAND.ERROR.INVALID_REFERENCED_FILE_PATH
+);
+const NO_OBJECTS_IMPORTED_MESSAGE = translationService.getMessage(
+	TranslationKeys.OBJECT_COMMAND.RESULT.NO_OBJECTS_IMPORTED
+);
 
 export async function executeListObjects(
 	input: ListObjectsExecutionInput
@@ -137,13 +143,15 @@ export async function executeImportObjects(
 		validateAuthInput(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
-				'A project folder is required for object import.',
+				translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_FOLDER_REQUIRED_FOR_IMPORT
+				),
 				undefined
 			);
 		}
 		if (!input.targetFolder) {
 			return errorResultWithMessage(
-				'A destination folder is required for object import.',
+				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.DESTINATION_FOLDER_REQUIRED),
 				undefined
 			);
 		}
@@ -213,7 +221,7 @@ export async function executeImportObjects(
 		const statusXml = await readOptionalFile(statusFilePath);
 		if (!statusXml) {
 			return errorResultWithMessage(
-				'Unable to recognize the response from server.',
+				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.UNKNOWN_SERVER_RESPONSE),
 				undefined
 			);
 		}
@@ -265,7 +273,7 @@ async function resolveObjectsToImport(
 		if (listResult.status === OBJECT_COMMAND_STATUS.ERROR) {
 			throw new Error(
 				listResult.errorMessages?.[0] ??
-					'Unable to list custom objects.'
+					translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.LIST_CUSTOM_OBJECTS_FAILED)
 			);
 		}
 		return (listResult.data ?? []).map((item) => ({ type: item.type, scriptId: item.scriptId, appId: item.appId }));
@@ -292,7 +300,7 @@ async function resolveObjectsToImport(
 		if (listResult.status === OBJECT_COMMAND_STATUS.ERROR) {
 			throw new Error(
 				listResult.errorMessages?.[0] ??
-					'Unable to list custom objects.'
+					translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.LIST_CUSTOM_OBJECTS_FAILED)
 			);
 		}
 
@@ -415,10 +423,10 @@ async function unzipArchive(zipFilePath: string, destinationFolder: string): Pro
 
 function validateAuthInput(input: ObjectCommandAuthInput): void {
 	if (!input.hostName) {
-		throw new Error('A target host is required for object command execution.');
+		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error('An access token is required for object command execution.');
+		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }
 
@@ -435,7 +443,7 @@ function errorResultWithMessage<T = unknown>(
 
 function toErrorMessage(error: unknown): string {
 	if (error instanceof PathOutsideRootError) {
-		return 'Objects must be placed under the Objects folder or any of its subfolders.';
+		return translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.DESTINATION_OUTSIDE_OBJECTS);
 	}
 	if (error instanceof Error) {
 		return error.message;

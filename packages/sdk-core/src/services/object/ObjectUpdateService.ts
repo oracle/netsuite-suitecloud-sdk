@@ -19,6 +19,8 @@ import {
 	type UpdateObjectsExecutionInput,
 } from '../../api/object/ObjectCommand';
 import { extractZipArchive } from '../archive/ArchiveService';
+import { TranslationKeys } from '../translation/TranslationKeys';
+import { translationService } from '../translation/TranslationService';
 import { getPackageRoot } from '../project/ProjectManifestService';
 import { getHttpErrorMessage, isIdeLikeResponse, sendFormRequest } from './ObjectCommandClient';
 import {
@@ -56,7 +58,9 @@ export async function executeUpdateObjects(
 		validateAuthInput(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
-				'A project folder is required for object update.'
+				translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE
+				)
 			);
 		}
 
@@ -68,7 +72,7 @@ export async function executeUpdateObjects(
 				results.push({
 					key: scriptId,
 					type: 'ERROR',
-					message: `The "${scriptId}" object does not exist.`,
+					message: translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.OBJECT_NOT_FOUND, scriptId),
 				});
 				continue;
 			}
@@ -108,7 +112,9 @@ export async function executeUpdateObjects(
 					results.push({
 						key: scriptId,
 						type: 'ERROR',
-						message: idePayload.errorMessage ?? 'Unable to update object from server.',
+						message: idePayload.errorMessage ?? translationService.getMessage(
+							TranslationKeys.OBJECT_COMMAND.ERROR.UPDATE_FROM_SERVER_FAILED
+						),
 					});
 					continue;
 				}
@@ -118,14 +124,16 @@ export async function executeUpdateObjects(
 					results.push({
 						key: scriptId,
 						type: 'ERROR',
-						message: updateResult.errorMessages[0] ?? 'Update failed.',
+						message: updateResult.errorMessages[0] ?? translationService.getMessage(
+							TranslationKeys.OBJECT_COMMAND.ERROR.UPDATE_FAILED
+						),
 					});
 					continue;
 				}
 				results.push({
 					key: scriptId,
 					type: 'SUCCESS',
-					message: `The "${scriptId}" object was updated.`,
+					message: translationService.getMessage(TranslationKeys.OBJECT_COMMAND.RESULT.OBJECT_UPDATED, scriptId),
 				});
 			} catch (error: unknown) {
 				results.push({ key: scriptId, type: 'ERROR', message: toErrorMessage(error) });
@@ -145,19 +153,21 @@ export async function executeUpdateCustomRecordWithInstances(
 		validateAuthInput(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
-				'A project folder is required for object update.'
+				translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE
+				)
 			);
 		}
 		if (!input.scriptId?.trim()) {
 			return errorResultWithMessage(
-				'A custom record script ID is required.'
+				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.CUSTOM_RECORD_SCRIPT_ID_REQUIRED)
 			);
 		}
 
 		const objectFile = await findObjectFileByScriptId(input.projectFolder, input.scriptId);
 		if (!objectFile) {
 			return errorResultWithMessage(
-				`The "${input.scriptId}" object does not exist.`
+				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.OBJECT_NOT_FOUND, input.scriptId)
 			);
 		}
 
@@ -186,7 +196,9 @@ export async function executeUpdateCustomRecordWithInstances(
 		if (isIdeLikeResponse(response, responseText)) {
 			const idePayload = await parseIdePayload(responseText);
 			return errorResultWithMessage(
-				idePayload.errorMessage ?? 'Unable to update custom record from server.',
+				idePayload.errorMessage ?? translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.UPDATE_CUSTOM_RECORD_FAILED
+				),
 				response.statusCode
 			);
 		}
@@ -205,7 +217,9 @@ export async function executeUpdateCustomRecordWithInstances(
 				.find((item) => item.id === input.scriptId && item.result?.code === 'FAILED');
 			if (failedStatus) {
 				return errorResultWithMessage(
-					failedStatus.result?.message ?? 'Unable to update custom record from server.'
+					failedStatus.result?.message ?? translationService.getMessage(
+						TranslationKeys.OBJECT_COMMAND.ERROR.UPDATE_CUSTOM_RECORD_FAILED
+					)
 				);
 			}
 			await rm(statusFilePath, { force: true });
@@ -213,12 +227,15 @@ export async function executeUpdateCustomRecordWithInstances(
 
 		if ((await copyDirectoryContents(unzipFolder, dirname(objectFile))).length === 0) {
 			return errorResultWithMessage(
-				`The "${input.scriptId}" object does not exist.`
+				translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.OBJECT_NOT_FOUND, input.scriptId)
 			);
 		}
 		return {
 			status: OBJECT_COMMAND_STATUS.SUCCESS,
-			data: `The "${input.scriptId}" object and its instances were updated.`,
+			data: translationService.getMessage(
+				TranslationKeys.OBJECT_COMMAND.RESULT.CUSTOM_RECORD_WITH_INSTANCES_UPDATED,
+				input.scriptId
+			),
 		};
 	} catch (error: unknown) {
 		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
@@ -249,7 +266,9 @@ async function mergeUpdatedObjectXml(
 			const statusItem = (await parseImportObjectStatus(statusXml)).find((item) => item.id === scriptId);
 			if (statusItem?.result?.code === 'FAILED') {
 				return errorResultWithMessage(
-					statusItem.result.message ?? 'Unable to update custom object from server.'
+					statusItem.result.message ?? translationService.getMessage(
+						TranslationKeys.OBJECT_COMMAND.ERROR.UPDATE_CUSTOM_OBJECT_FAILED
+					)
 				);
 			}
 			await rm(statusFilePath, { force: true });
@@ -258,7 +277,10 @@ async function mergeUpdatedObjectXml(
 		const sourceXmlFile = await findFileByName(unzipFolder, `${scriptId}.xml`);
 		if (!sourceXmlFile) {
 			return errorResultWithMessage(
-				`File "${scriptId}.xml" was not found in the server response.`
+				translationService.getMessage(
+					TranslationKeys.OBJECT_COMMAND.ERROR.FILE_NOT_FOUND_IN_SERVER_RESPONSE,
+					scriptId
+				)
 			);
 		}
 		await copyFile(sourceXmlFile, targetXmlFile);
@@ -274,10 +296,10 @@ async function mergeUpdatedObjectXml(
 
 function validateAuthInput(input: ObjectCommandAuthInput): void {
 	if (!input.hostName) {
-		throw new Error('A target host is required for object command execution.');
+		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error('An access token is required for object command execution.');
+		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }
 
