@@ -18,7 +18,7 @@ import {
 	PROJECT_COMMAND,
 	SDK_OPERATION_STATUS,
 } from './ProjectCommandTypes';
-import { PROJECT_COMMAND } from '../../services/translation/TranslationKeys';
+import { PROJECT } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
 
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
@@ -95,18 +95,18 @@ export async function executeProjectCommand(
 
 function validateExecutionInput(input: ProjectCommandExecutionInput): void {
 	if (!input) {
-		throw new Error(translationService.getMessage(PROJECT_COMMAND.ERROR.INPUT_REQUIRED));
+		throw new Error(translationService.getMessage(PROJECT.ERROR.INPUT_REQUIRED));
 	}
 	if (!Object.values(PROJECT_COMMAND).includes(input.command)) {
-		throw new Error(translationService.getMessage(PROJECT_COMMAND.ERROR.UNSUPPORTED_COMMAND, input.command));
+		throw new Error(translationService.getMessage(PROJECT.ERROR.UNSUPPORTED_COMMAND, input.command));
 	}
 	if (!input.projectFolder) {
-		throw new Error(translationService.getMessage(PROJECT_COMMAND.ERROR.PROJECT_FOLDER_REQUIRED));
+		throw new Error(translationService.getMessage(PROJECT.ERROR.PROJECT_FOLDER_REQUIRED));
 	}
 	if (!input.hostName) {
-		throw new Error(translationService.getMessage(PROJECT_COMMAND.ERROR.TARGET_HOST_REQUIRED));
+		throw new Error(translationService.getMessage(PROJECT.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error(translationService.getMessage(PROJECT_COMMAND.ERROR.ACCESS_TOKEN_REQUIRED));
+		throw new Error(translationService.getMessage(PROJECT.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }

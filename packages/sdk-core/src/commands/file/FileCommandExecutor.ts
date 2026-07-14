@@ -12,7 +12,7 @@ import { constants as fsConstants } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { parseStringPromise } from 'xml2js';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
-import { FILE_COMMAND } from '../../services/translation/TranslationKeys';
+import { FILE } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
 
 import { ZipperImpl } from '../../utils/Zipper';
@@ -113,7 +113,7 @@ export async function executeListFiles(input: ListFilesExecutionInput): Promise<
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: supportedFileList,
-			resultMessage: supportedFileList.length ? '' : getMessage(FILE_COMMAND.INFO.NO_FILES_FOUND),
+			resultMessage: supportedFileList.length ? '' : translationService.getMessage(FILE.INFO.NO_FILES_FOUND),
 		};
 	} catch (error: unknown) {
 		const statusCode = extractStatusCode(error);
@@ -123,7 +123,7 @@ export async function executeListFiles(input: ListFilesExecutionInput): Promise<
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: [],
-			resultMessage: getMessage(FILE_COMMAND.INFO.NO_FILES_FOUND),
+			resultMessage: translationService.getMessage(FILE.INFO.NO_FILES_FOUND),
 		};
 	}
 }
@@ -137,7 +137,7 @@ export async function executeListFolders(input: ListFoldersExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: folderList,
-			resultMessage: folderList.length ? '' : getMessage(FILE_COMMAND.INFO.NO_FOLDERS_FOUND),
+			resultMessage: folderList.length ? '' : translationService.getMessage(FILE.INFO.NO_FOLDERS_FOUND),
 		};
 	} catch (error: unknown) {
 		const statusCode = extractStatusCode(error);
@@ -147,14 +147,14 @@ export async function executeListFolders(input: ListFoldersExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: [],
-			resultMessage: getMessage(FILE_COMMAND.INFO.NO_FOLDERS_FOUND),
+			resultMessage: translationService.getMessage(FILE.INFO.NO_FOLDERS_FOUND),
 		};
 	}
 }
 
 export async function executeImportFiles(input: ImportFilesExecutionInput): Promise<FileCommandOperationResult> {
 	if (!Array.isArray(input.filePaths) || input.filePaths.length === 0) {
-		return errorResultWithMessage(getMessage(FILE_COMMAND.ERROR.IMPORT_FILE_PATHS_REQUIRED), undefined);
+		return errorResultWithMessage(translationService.getMessage(FILE.ERROR.IMPORT_FILE_PATHS_REQUIRED), undefined);
 	}
 
 	for (const filePath of input.filePaths) {
@@ -184,7 +184,7 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 		if (looksLikeIdeResponse(responseText)) {
 			const ideError = await extractIdeErrorMessage(responseText);
 			return errorResultWithMessage(
-				ideError ?? getMessage(FILE_COMMAND.ERROR.UNKNOWN_SERVER_RESPONSE),
+				ideError ?? translationService.getMessage(FILE.ERROR.UNKNOWN_SERVER_RESPONSE),
 				importResponse.statusCode
 			);
 		}
@@ -197,7 +197,7 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 		const statusFilePath = join(unzipTargetFolder, IMPORT_FILES_STATUS_FILENAME);
 		const statusFileContents = await readOptionalFile(statusFilePath);
 		if (!statusFileContents) {
-			return errorResultWithMessage(getMessage(FILE_COMMAND.WARNING.IMPORT_UNEXPECTED_ERROR), undefined);
+			return errorResultWithMessage(translationService.getMessage(FILE.WARNING.IMPORT_UNEXPECTED_ERROR), undefined);
 		}
 
 		const importStatus = await parseImportStatus(statusFileContents);
@@ -218,7 +218,7 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 
 export async function executeUploadFiles(input: UploadFilesExecutionInput): Promise<FileCommandOperationResult> {
 	if (!Array.isArray(input.filePaths) || input.filePaths.length === 0) {
-		return errorResultWithMessage(getMessage(FILE_COMMAND.ERROR.UPLOAD_FILE_PATHS_REQUIRED), undefined);
+		return errorResultWithMessage(translationService.getMessage(FILE.ERROR.UPLOAD_FILE_PATHS_REQUIRED), undefined);
 	}
 
 	try {
@@ -238,7 +238,7 @@ export async function executeUploadFiles(input: UploadFilesExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: uploadResults,
-			resultMessage: getMessage(FILE_COMMAND.INFO.UPLOAD_COMPLETED),
+			resultMessage: translationService.getMessage(FILE.INFO.UPLOAD_COMPLETED),
 		};
 	} catch (error: unknown) {
 		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
@@ -270,7 +270,7 @@ async function queryFileCabinetResources(
 
 	const responseText = response.body.toString('utf8');
 	if (!looksLikeIdeResponse(responseText)) {
-		throw new Error(getMessage(FILE_COMMAND.ERROR.UNKNOWN_SERVER_RESPONSE));
+		throw new Error(translationService.getMessage(FILE.ERROR.UNKNOWN_SERVER_RESPONSE));
 	}
 
 	const ideError = await extractIdeErrorMessage(responseText);
@@ -303,7 +303,7 @@ async function uploadSingleFile(
 			data: {
 				file: { path: localFilePath },
 				type: UPLOAD_RESULT_TYPE_ERROR,
-				errorMessage: getMessage(FILE_COMMAND.ERROR.LOCAL_PATH_NOT_FOUND, parentFolderPath, basename(localFilePath)),
+				errorMessage: translationService.getMessage(FILE.ERROR.LOCAL_PATH_NOT_FOUND, parentFolderPath, basename(localFilePath)),
 			},
 		};
 	}
@@ -632,7 +632,7 @@ async function sendHttpRequest(options: {
 
 		request.on('error', reject);
 		request.setTimeout(options.timeoutMs, () => {
-			request.destroy(new Error(getMessage(FILE_COMMAND.ERROR.REQUEST_TIMED_OUT)));
+			request.destroy(new Error(translationService.getMessage(FILE.ERROR.REQUEST_TIMED_OUT)));
 		});
 
 		if (options.body) {
@@ -646,7 +646,7 @@ async function sendHttpRequest(options: {
 function getHttpErrorMessage(response: HttpResponse): string {
 	const rawText = response.body.toString('utf8').trim();
 	if (!rawText) {
-		return getMessage(FILE_COMMAND.ERROR.REQUEST_FAILED_WITH_STATUS_CODE, response.statusCode);
+		return translationService.getMessage(FILE.ERROR.REQUEST_FAILED_WITH_STATUS_CODE, response.statusCode);
 	}
 
 	try {
@@ -666,7 +666,7 @@ function getHttpErrorMessage(response: HttpResponse): string {
 	}
 
 	if (looksLikeIdeResponse(rawText)) {
-		return getMessage(FILE_COMMAND.ERROR.UNKNOWN_SERVER_RESPONSE);
+		return translationService.getMessage(FILE.ERROR.UNKNOWN_SERVER_RESPONSE);
 	}
 
 	return rawText;
@@ -682,7 +682,7 @@ async function unzipArchive(zipFilePath: string, destinationFolder: string): Pro
 		await new ZipperImpl().unzip(zipFilePath, destinationFolder);
 	} catch (error: unknown) {
 		throw new Error(
-			getMessage(FILE_COMMAND.ERROR.UNZIP_IMPORT_FAILED, toErrorMessage(error))
+			translationService.getMessage(FILE.ERROR.UNZIP_IMPORT_FAILED, toErrorMessage(error))
 		);
 	}
 }
@@ -715,8 +715,8 @@ function isValidFileCabinetPath(fileCabinetPath: string): boolean {
 }
 
 function buildInvalidFileCabinetPathMessage(fileCabinetPath: string): string {
-	return getMessage(
-		FILE_COMMAND.ERROR.INVALID_FILE_CABINET_PATH,
+	return translationService.getMessage(
+		FILE.ERROR.INVALID_FILE_CABINET_PATH,
 		fileCabinetPath,
 		ALLOWED_FILE_CABINET_PATHS.join(',')
 	);
@@ -772,8 +772,4 @@ function asString(value: unknown): string {
 		return value[0];
 	}
 	return '';
-}
-
-function getMessage(key: Parameters<typeof translationService.getMessage>[0], ...params: Array<string | number>): string {
-	return translationService.getMessage(key, ...params);
 }
