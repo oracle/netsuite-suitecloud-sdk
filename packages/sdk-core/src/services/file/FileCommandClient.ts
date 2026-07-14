@@ -6,9 +6,6 @@
 
 import type { FileCommandAuthInput } from '../../api/file/FileCommand';
 import { sendSuiteCloudRequest } from '../http/SuiteCloudRequestService';
-import { TranslationKeys } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
-
 export type FileCommandHttpResponse = {
 	statusCode: number;
 	body: Buffer;
@@ -65,14 +62,14 @@ export async function sendIdeRequest(
 export function sendFileCommandRequest(options: FileCommandRequest): Promise<FileCommandHttpResponse> {
 	return sendSuiteCloudRequest({
 		...options,
-		timeoutMessage: translationService.getMessage(TranslationKeys.FILE_COMMAND.ERROR.REQUEST_TIMEOUT),
+		timeoutMessage: 'File command request timed out.',
 	});
 }
 
 export function getHttpErrorMessage(response: FileCommandHttpResponse): string {
 	const rawText = response.body.toString('utf8').trim();
 	if (!rawText) {
-		return translationService.getMessage(TranslationKeys.FILE_COMMAND.ERROR.REQUEST_FAILED, response.statusCode);
+		return `Request failed with status code ${response.statusCode}.`;
 	}
 
 	try {
@@ -92,7 +89,7 @@ export function getHttpErrorMessage(response: FileCommandHttpResponse): string {
 	}
 
 	if (looksLikeIdeResponse(rawText)) {
-		return translationService.getMessage(TranslationKeys.FILE_COMMAND.ERROR.UNKNOWN_SERVER_RESPONSE);
+		return 'Unable to recognize the response from server.';
 	}
 	return rawText;
 }

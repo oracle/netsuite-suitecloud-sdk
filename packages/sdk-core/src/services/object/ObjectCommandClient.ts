@@ -5,9 +5,6 @@
 'use strict';
 
 import { sendSuiteCloudRequest } from '../http/SuiteCloudRequestService';
-import { TranslationKeys } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
-
 export type ObjectCommandHttpResponse = {
 	statusCode: number;
 	body: Buffer;
@@ -62,7 +59,7 @@ export async function sendFormRequest(input: FormRequestInput): Promise<ObjectCo
 		},
 		body: Buffer.from(urlSearchParams.toString(), 'utf8'),
 		timeoutMs: input.timeoutMs,
-		timeoutMessage: translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.REQUEST_TIMEOUT),
+		timeoutMessage: 'Object command request timed out.',
 	});
 
 	return {
@@ -82,8 +79,5 @@ export function isIdeLikeResponse(response: ObjectCommandHttpResponse, responseT
 
 export function getHttpErrorMessage(response: ObjectCommandHttpResponse): string {
 	const responseText = response.body.toString('utf8').trim();
-	return responseText || translationService.getMessage(
-		TranslationKeys.OBJECT_COMMAND.ERROR.REQUEST_FAILED,
-		response.statusCode
-	);
+	return responseText || `HTTP ${response.statusCode}`;
 }

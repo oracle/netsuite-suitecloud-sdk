@@ -11,9 +11,6 @@ import {
 	ProjectCommandType,
 	SDK_OPERATION_STATUS,
 } from './ProjectCommandTypes';
-import { TranslationKeys } from '../../services/translation/TranslationKeys';
-import { translationService } from '../../services/translation/TranslationService';
-
 const RAW_OUTPUT_INDENT = 2;
 
 export function normalizeProjectOperationResult(
@@ -106,7 +103,7 @@ function normalizeErrorResult(parsedBody: any, statusCode: number, rawBody: stri
 
 	const fallbackMessage = rawBody.trim()
 		? rawBody
-		: translationService.getMessage(TranslationKeys.PROJECT_COMMAND.ERROR.REQUEST_FAILED, statusCode);
+		: `Project command request failed with status code ${statusCode}.`;
 	return {
 		status: SDK_OPERATION_STATUS.ERROR,
 		httpStatusCode: statusCode,

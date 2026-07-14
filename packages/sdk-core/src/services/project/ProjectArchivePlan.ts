@@ -8,9 +8,6 @@ import { access, readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 import { parseStringPromise } from 'xml2js';
 import type { ArchiveEntry } from '../archive/ArchiveService';
-import { TranslationKeys } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
-
 const DEPLOY_FILENAME = 'deploy.xml';
 const DEPLOY_FILENAME_ROOT = 'deploy';
 
@@ -83,11 +80,7 @@ async function readRequiredXmlRoot(projectFolder: string, filename: string, expe
 	} catch (error: any) {
 		if (error?.code === 'ENOENT') {
 			throw new Error(
-				translationService.getMessage(
-					TranslationKeys.PROJECT_ARCHIVE.ERROR.FILE_MISSING,
-					filename,
-					projectFolder
-				)
+				`Missing ${filename} in ${projectFolder}.`
 			);
 		}
 		throw error;
@@ -98,20 +91,12 @@ async function readRequiredXmlRoot(projectFolder: string, filename: string, expe
 		parsed = await parseStringPromise(contents, { explicitArray: false, trim: true, explicitRoot: true });
 	} catch (error: any) {
 		throw new Error(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_ARCHIVE.ERROR.XML_INVALID,
-				filename,
-				error?.message || String(error)
-			)
+			`Invalid ${filename}: ${error?.message || String(error)}`
 		);
 	}
 	if (!parsed || typeof parsed !== 'object' || !Object.prototype.hasOwnProperty.call(parsed, expectedRoot)) {
 		throw new Error(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_ARCHIVE.ERROR.XML_ROOT_INVALID,
-				filename,
-				expectedRoot
-			)
+			`Invalid ${filename}: expected <${expectedRoot}> as the root element.`
 		);
 	}
 	return parsed[expectedRoot] && typeof parsed[expectedRoot] === 'object' ? parsed[expectedRoot] : {};
@@ -126,11 +111,7 @@ async function validateOptionalApplicationFile(projectFolder: string): Promise<v
 		await parseStringPromise(await readFile(filepath, 'utf8'), { explicitArray: false, trim: true });
 	} catch (error: any) {
 		throw new Error(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_ARCHIVE.ERROR.XML_INVALID,
-				APPLICATION_FILENAME,
-				error?.message || String(error)
-			)
+			`Invalid ${APPLICATION_FILENAME}: ${error?.message || String(error)}`
 		);
 	}
 }

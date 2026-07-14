@@ -18,8 +18,6 @@ import {
 	PathOutsideRootError,
 	resolveSuiteCloudPath,
 } from '../project/ProjectPathResolver';
-import { TranslationKeys } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
 import {
 	getHttpErrorMessage,
 	sendFileCommandRequest,
@@ -44,7 +42,7 @@ const UPLOAD_RESULT_TYPE_ERROR = 'ERROR';
 export async function executeUploadFiles(input: UploadFilesExecutionInput): Promise<FileCommandOperationResult> {
 	if (!Array.isArray(input.filePaths) || input.filePaths.length === 0) {
 		return errorResultWithMessage(
-			translationService.getMessage(TranslationKeys.FILE_COMMAND.ERROR.UPLOAD_PATHS_REQUIRED)
+			'Missing required file paths for file upload.'
 		);
 	}
 
@@ -68,7 +66,7 @@ export async function executeUploadFiles(input: UploadFilesExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: uploadResults,
-			resultMessage: translationService.getMessage(TranslationKeys.FILE_COMMAND.RESULT.UPLOAD_COMPLETED),
+			resultMessage: 'The uploading process has finished.',
 		};
 	} catch (error: unknown) {
 		return errorResultWithMessage(toErrorMessage(error));
@@ -93,16 +91,13 @@ async function uploadSingleFile(
 			data: {
 				file: { path: localFilePath },
 				type: UPLOAD_RESULT_TYPE_ERROR,
-				errorMessage: translationService.getMessage(
-					TranslationKeys.FILE_COMMAND.ERROR.PATH_NOT_FOUND,
-					`${parentFolderPath}/${basename(localFilePath)}`
-				),
+				errorMessage: `The "${`${parentFolderPath}/${basename(localFilePath)}`}" path does not exist.`,
 			},
 		};
 	}
 	if (!localFileStats.isFile()) {
 		return errorResultWithMessage(
-			translationService.getMessage(TranslationKeys.FILE_COMMAND.ERROR.UPLOAD_DIRECTORY)
+			'You tried to upload a folder instead of a file.'
 		);
 	}
 
@@ -184,10 +179,7 @@ function errorResultWithMessage(errorMessage: string): FileCommandOperationResul
 
 function toErrorMessage(error: unknown): string {
 	if (error instanceof PathOutsideRootError) {
-		return translationService.getMessage(
-			TranslationKeys.FILE_COMMAND.ERROR.PATH_OUTSIDE_FILE_CABINET,
-			error.candidatePath
-		);
+		return `Invalid path "${error.candidatePath}". Path must remain inside the project's FileCabinet folder.`;
 	}
 	return error instanceof Error ? error.message : String(error);
 }

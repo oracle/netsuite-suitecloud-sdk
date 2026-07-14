@@ -5,18 +5,13 @@
 'use strict';
 
 import { ProjectCommandSummaryContext, ProjectCommandType } from './ProjectCommandTypes';
-import { TranslationKeys } from '../../services/translation/TranslationKeys';
-import { translationService } from '../../services/translation/TranslationService';
-
 const STEP_STATUS_SUCCESSFUL = 'SUCCESSFUL';
 const STEP_STATUS_MARK_SUCCESS = '✔';
 const STEP_STATUS_MARK_FAILED = '✖';
 const VALIDATION_RESULT_TYPE_WARNING = 'WARNING';
 const VALIDATION_RESULT_TYPE_ERROR = 'ERROR';
 const COMMAND_OUTPUT_SEPARATOR_LINE = '------------------------------------------------------------';
-const GENERAL_ISSUES_LABEL = translationService.getMessage(
-	TranslationKeys.PROJECT_COMMAND.OUTPUT.GENERAL
-);
+const GENERAL_ISSUES_LABEL = 'General';
 
 export function formatSdfProjectResultOutput(
 	command: ProjectCommandType,
@@ -30,25 +25,11 @@ export function formatSdfProjectResultOutput(
 	const validationLines = formatSdfProjectValidationResults(payload.validationResults);
 	const summaryMetadataLines = buildSummaryMetadataLines(payload, options);
 	const lines = [
-		translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.SUMMARY, command.toUpperCase()),
-		translationService.getMessage(
-			TranslationKeys.PROJECT_COMMAND.OUTPUT.STATUS,
-			evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'
-		),
-		translationService.getMessage(
-			TranslationKeys.PROJECT_COMMAND.OUTPUT.STEPS,
-			evaluationSummary.successfulSteps,
-			evaluationSummary.totalSteps
-		),
-		translationService.getMessage(
-			TranslationKeys.PROJECT_COMMAND.OUTPUT.VALIDATION_RESULTS,
-			evaluationSummary.errorResults,
-			evaluationSummary.warningResults
-		),
-		translationService.getMessage(
-			TranslationKeys.PROJECT_COMMAND.OUTPUT.SDF_ERRORS,
-			evaluationSummary.hasEndpointError ? 'present' : 'none'
-		),
+		`${command.toUpperCase()} SUMMARY`,
+		`Status: ${evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'}`,
+		`Steps: ${evaluationSummary.successfulSteps}/${evaluationSummary.totalSteps} successful`,
+		`Validation Results: ${evaluationSummary.errorResults} error(s), ${evaluationSummary.warningResults} warning(s)`,
+		`SDF Errors: ${evaluationSummary.hasEndpointError ? 'present' : 'none'}`,
 		...summaryMetadataLines,
 		COMMAND_OUTPUT_SEPARATOR_LINE,
 		...formatSdfProjectSteps(payload.steps),
@@ -139,12 +120,7 @@ function formatSdfProjectSteps(steps: unknown): string[] {
 		}
 		const statusMark = step.status === STEP_STATUS_SUCCESSFUL ? STEP_STATUS_MARK_SUCCESS : STEP_STATUS_MARK_FAILED;
 		lines.push(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_COMMAND.OUTPUT.STEP,
-				statusMark,
-				index + 1,
-				name
-			)
+			`${statusMark} Step ${index + 1}: ${name}`
 		);
 		return lines;
 	}, []);
@@ -157,7 +133,7 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 	}
 	const sections: string[] = [
 		'',
-		translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.ISSUES_BY_FILE),
+		'Issues by file:',
 	];
 	const grouped = new Map<string, { errors: Set<string>; warnings: Set<string> }>();
 	normalizedValidationResults.forEach((result) => {
@@ -183,22 +159,16 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 		const errorCount = bucket.errors.size;
 		const warningCount = bucket.warnings.size;
 		sections.push(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_COMMAND.OUTPUT.ISSUES_FOR_FILE,
-				index + 1,
-				fileKey,
-				errorCount,
-				warningCount
-			)
+			`${index + 1}. ${fileKey} (${errorCount} error(s), ${warningCount} warning(s))`
 		);
 		Array.from(bucket.errors).forEach((message) =>
 			sections.push(
-				translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.VALIDATION_ERROR, message)
+				`  - ERROR: ${message}`
 			)
 		);
 		Array.from(bucket.warnings).forEach((message) =>
 			sections.push(
-				translationService.getMessage(TranslationKeys.PROJECT_COMMAND.OUTPUT.VALIDATION_WARNING, message)
+				`  - WARNING: ${message}`
 			)
 		);
 		sections.push('');
@@ -228,9 +198,7 @@ function formatEndpointErrorSection(endpointErrorMessage: string, hasValidationL
 	if (compactObjectValidationLines.length > 0) {
 		return [
 			'',
-			translationService.getMessage(
-				TranslationKeys.PROJECT_COMMAND.OUTPUT.ADDITIONAL_ENDPOINT_DETAILS
-			),
+			'Additional endpoint details:',
 			...compactObjectValidationLines,
 		];
 	}
@@ -241,10 +209,7 @@ function formatEndpointErrorSection(endpointErrorMessage: string, hasValidationL
 		.find((line) => line.length > 0);
 	return firstMeaningfulLine
 		? [
-				translationService.getMessage(
-					TranslationKeys.PROJECT_COMMAND.OUTPUT.ENDPOINT_ERROR,
-					firstMeaningfulLine
-				),
+				`ERROR: ${firstMeaningfulLine}`,
 			]
 		: [];
 }
@@ -276,12 +241,7 @@ function extractCompactObjectValidationErrors(endpointErrorMessage: string): str
 		const detailPreview = details.slice(0, 2).join(' | ');
 		const location = filePath ? ` @ ${filePath}` : '';
 		output.push(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_COMMAND.OUTPUT.ENDPOINT_OBJECT_DETAIL,
-				objectId,
-				location,
-				detailPreview ? ` -> ${detailPreview}` : ''
-			)
+			`- ${objectId}${location}${detailPreview ? ` -> ${detailPreview}` : ''}`
 		);
 		i = j - 1;
 	}
@@ -299,41 +259,26 @@ function buildSummaryMetadataLines(
 	const summaryContext = options.summaryContext || {};
 	const localTimestamp = normalizeTimestamp(summaryContext.localTimestamp) || new Date().toISOString();
 	const lines = [
-		translationService.getMessage(
-			TranslationKeys.PROJECT_COMMAND.OUTPUT.LOCAL_TIMESTAMP,
-			localTimestamp
-		),
+		`Local Timestamp: ${localTimestamp}`,
 	];
 
 	if (summaryContext.accountName) {
 		lines.push(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_COMMAND.OUTPUT.ACCOUNT,
-				summaryContext.accountName
-			)
+			`Account: ${summaryContext.accountName}`
 		);
 	}
 	if (summaryContext.roleName) {
 		lines.push(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_COMMAND.OUTPUT.ROLE,
-				summaryContext.roleName
-			)
+			`Role: ${summaryContext.roleName}`
 		);
 	}
 	if (summaryContext.suiteAppId) {
 		lines.push(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_COMMAND.OUTPUT.SUITEAPP_ID,
-				summaryContext.suiteAppId
-			)
+			`SuiteApp ID: ${summaryContext.suiteAppId}`
 		);
 	} else if (summaryContext.projectName) {
 		lines.push(
-			translationService.getMessage(
-				TranslationKeys.PROJECT_COMMAND.OUTPUT.PROJECT_NAME,
-				summaryContext.projectName
-			)
+			`Project Name: ${summaryContext.projectName}`
 		);
 	}
 

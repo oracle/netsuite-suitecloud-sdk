@@ -9,8 +9,6 @@ import { unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createZipArchive } from '../archive/ArchiveService';
-import { TranslationKeys } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
 import { createProjectUploadArchiveEntries } from './ProjectArchivePlan';
 
 export interface ProjectArchiveService {
@@ -31,11 +29,7 @@ export class DefaultProjectArchiveService implements ProjectArchiveService {
 			return projectArchivePath;
 		} catch (error: unknown) {
 			throw new Error(
-				translationService.getMessage(
-					TranslationKeys.PROJECT_COMMAND.ERROR.ARCHIVE_FAILED,
-					projectFolder,
-					toErrorMessage(error)
-				)
+				`Unable to archive project folder "${projectFolder}": ${toErrorMessage(error)}`
 			);
 		}
 	}

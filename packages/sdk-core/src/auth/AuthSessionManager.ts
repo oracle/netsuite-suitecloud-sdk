@@ -4,9 +4,6 @@
  */
 'use strict';
 
-import { TranslationKeys } from '../services/translation/TranslationKeys';
-import { translationService } from '../services/translation/TranslationService';
-
 const AUTH_RETRY_HTTP_STATUS_CODES = new Set([401, 403]);
 const AUTH_RETRY_ERROR_PATTERNS = [/authenticat/i, /authoriz/i, /invalid login/i];
 
@@ -66,23 +63,23 @@ export async function executeWithAuthRetry<T>(input: ExecuteWithAuthRetryInput<T
 
 function validateExecuteWithAuthRetryInput<T>(input: ExecuteWithAuthRetryInput<T>): void {
 	if (!input) {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.INPUT_REQUIRED));
+		throw new Error('Auth retry execution input is required.');
 	}
 	if (!input.authId) {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.AUTH_ID_REQUIRED));
+		throw new Error('Auth ID is required for auth retry execution.');
 	}
 	if (!input.authSessionProvider) {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.SESSION_PROVIDER_REQUIRED));
+		throw new Error('Auth session provider is required for auth retry execution.');
 	}
 	if (typeof input.authSessionProvider.resolveAuthSession !== 'function') {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.RESOLVE_AUTH_SESSION_REQUIRED));
+		throw new Error('Auth session provider resolveAuthSession function is required.');
 	}
 	if (typeof input.authSessionProvider.refreshAuthSession !== 'function') {
-		throw new Error(translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.REFRESH_AUTH_SESSION_REQUIRED));
+		throw new Error('Auth session provider refreshAuthSession function is required.');
 	}
 	if (typeof input.executeWithAuthSession !== 'function') {
 		throw new Error(
-			translationService.getMessage(TranslationKeys.AUTH_RETRY.ERROR.EXECUTE_WITH_AUTH_SESSION_REQUIRED)
+			'executeWithAuthSession function is required.'
 		);
 	}
 }

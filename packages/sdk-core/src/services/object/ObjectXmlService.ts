@@ -12,9 +12,6 @@ import {
 	type ImportObjectsResult,
 	type ObjectImportResultItem,
 } from '../../api/object/ObjectCommand';
-import { TranslationKeys } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
-
 const CUSTOM_SEGMENT_TYPE = 'customsegment';
 const CUSTOM_RECORD_TYPE = 'customrecordtype';
 const CUSTOM_RECORD_PREFIX = 'customrecord';
@@ -131,7 +128,7 @@ export function extractRootTagName(xmlText: string): string {
 	const normalizedXml = xmlText.trim().replace(/^<\?xml[^>]*\?>/i, '').trim();
 	const tagMatch = normalizedXml.match(/^<([a-zA-Z0-9_:-]+)/);
 	if (!tagMatch) {
-		throw new Error(translationService.getMessage(TranslationKeys.OBJECT_COMMAND.ERROR.XML_ROOT_PARSE_FAILED));
+		throw new Error('Unable to parse object XML root tag.');
 	}
 	return tagMatch[1];
 }

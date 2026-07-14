@@ -16,9 +16,6 @@ import {
 	createPackageArchivePlan,
 	type ProjectManifestData,
 } from '../../../services/project/ProjectArchivePlan';
-import { TranslationKeys } from '../../../services/translation/TranslationKeys';
-import { translationService } from '../../../services/translation/TranslationService';
-
 export const PACKAGE_PROJECT_OPERATION_STATUS = {
 	SUCCESS: 'SUCCESS',
 	ERROR: 'ERROR',
@@ -43,12 +40,12 @@ export async function executePackageProject(
 	try {
 		if (!input.projectFolder) {
 			return errorResult(
-				translationService.getMessage(TranslationKeys.PROJECT_PACKAGE.ERROR.PROJECT_FOLDER_REQUIRED)
+				'A project folder is required for project packaging.'
 			);
 		}
 		if (!input.destinationFolder) {
 			return errorResult(
-				translationService.getMessage(TranslationKeys.PROJECT_PACKAGE.ERROR.DESTINATION_FOLDER_REQUIRED)
+				'A destination folder is required for project packaging.'
 			);
 		}
 
@@ -60,10 +57,7 @@ export async function executePackageProject(
 		return {
 			status: PACKAGE_PROJECT_OPERATION_STATUS.SUCCESS,
 			data: targetZipFilePath,
-			resultMessage: translationService.getMessage(
-				TranslationKeys.PROJECT_PACKAGE.RESULT.CREATED,
-				targetZipFilePath
-			),
+			resultMessage: `The ${targetZipFilePath} file has been successfully created.`,
 		};
 	} catch (error: unknown) {
 		return errorResult(toErrorMessage(error));
