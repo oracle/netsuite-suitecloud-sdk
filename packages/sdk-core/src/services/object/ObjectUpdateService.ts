@@ -20,6 +20,8 @@ import {
 } from '../../api/object/ObjectCommand';
 import { extractZipArchive } from '../archive/ArchiveService';
 import { getPackageRoot } from '../project/ProjectManifestService';
+import { OBJECT } from '../translation/TranslationKeys';
+import { translationService } from '../translation/TranslationService';
 import { getHttpErrorMessage, isIdeLikeResponse, sendFormRequest } from './ObjectCommandClient';
 import {
 	copyDirectoryContents,
@@ -56,7 +58,7 @@ export async function executeUpdateObjects(
 		validateAuthInput(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
-				'A project folder is required for object update.'
+				translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE)
 			);
 		}
 
@@ -68,7 +70,7 @@ export async function executeUpdateObjects(
 				results.push({
 					key: scriptId,
 					type: 'ERROR',
-					message: `The "${scriptId}" object does not exist.`,
+					message: translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, scriptId),
 				});
 				continue;
 			}
@@ -108,7 +110,7 @@ export async function executeUpdateObjects(
 					results.push({
 						key: scriptId,
 						type: 'ERROR',
-						message: idePayload.errorMessage ?? 'Unable to update object from server.',
+						message: idePayload.errorMessage ?? translationService.getMessage(OBJECT.ERROR.UPDATE_OBJECT_FAILED),
 					});
 					continue;
 				}
@@ -118,14 +120,14 @@ export async function executeUpdateObjects(
 					results.push({
 						key: scriptId,
 						type: 'ERROR',
-						message: updateResult.errorMessages[0] ?? 'Update failed.',
+						message: updateResult.errorMessages[0] ?? translationService.getMessage(OBJECT.ERROR.UPDATE_FAILED),
 					});
 					continue;
 				}
 				results.push({
 					key: scriptId,
 					type: 'SUCCESS',
-					message: `The "${scriptId}" object was updated.`,
+					message: translationService.getMessage(OBJECT.INFO.OBJECT_UPDATED, scriptId),
 				});
 			} catch (error: unknown) {
 				results.push({ key: scriptId, type: 'ERROR', message: toErrorMessage(error) });
@@ -145,19 +147,19 @@ export async function executeUpdateCustomRecordWithInstances(
 		validateAuthInput(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
-				'A project folder is required for object update.'
+				translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE)
 			);
 		}
 		if (!input.scriptId?.trim()) {
 			return errorResultWithMessage(
-				'A custom record script ID is required.'
+				translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_SCRIPT_ID_REQUIRED)
 			);
 		}
 
 		const objectFile = await findObjectFileByScriptId(input.projectFolder, input.scriptId);
 		if (!objectFile) {
 			return errorResultWithMessage(
-				`The "${input.scriptId}" object does not exist.`
+				translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId)
 			);
 		}
 
@@ -186,7 +188,7 @@ export async function executeUpdateCustomRecordWithInstances(
 		if (isIdeLikeResponse(response, responseText)) {
 			const idePayload = await parseIdePayload(responseText);
 			return errorResultWithMessage(
-				idePayload.errorMessage ?? 'Unable to update custom record from server.',
+				idePayload.errorMessage ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_UPDATE_FAILED),
 				response.statusCode
 			);
 		}
@@ -205,7 +207,7 @@ export async function executeUpdateCustomRecordWithInstances(
 				.find((item) => item.id === input.scriptId && item.result?.code === 'FAILED');
 			if (failedStatus) {
 				return errorResultWithMessage(
-					failedStatus.result?.message ?? 'Unable to update custom record from server.'
+					failedStatus.result?.message ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_UPDATE_FAILED)
 				);
 			}
 			await rm(statusFilePath, { force: true });
@@ -213,12 +215,12 @@ export async function executeUpdateCustomRecordWithInstances(
 
 		if ((await copyDirectoryContents(unzipFolder, dirname(objectFile))).length === 0) {
 			return errorResultWithMessage(
-				`The "${input.scriptId}" object does not exist.`
+				translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId)
 			);
 		}
 		return {
 			status: OBJECT_COMMAND_STATUS.SUCCESS,
-			data: `The "${input.scriptId}" object and its instances were updated.`,
+			data: translationService.getMessage(OBJECT.INFO.OBJECT_AND_INSTANCES_UPDATED, input.scriptId),
 		};
 	} catch (error: unknown) {
 		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
@@ -249,7 +251,7 @@ async function mergeUpdatedObjectXml(
 			const statusItem = (await parseImportObjectStatus(statusXml)).find((item) => item.id === scriptId);
 			if (statusItem?.result?.code === 'FAILED') {
 				return errorResultWithMessage(
-					statusItem.result.message ?? 'Unable to update custom object from server.'
+					statusItem.result.message ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_OBJECT_UPDATE_FAILED)
 				);
 			}
 			await rm(statusFilePath, { force: true });
@@ -258,7 +260,7 @@ async function mergeUpdatedObjectXml(
 		const sourceXmlFile = await findFileByName(unzipFolder, `${scriptId}.xml`);
 		if (!sourceXmlFile) {
 			return errorResultWithMessage(
-				`File "${scriptId}.xml" was not found in the server response.`
+				translationService.getMessage(OBJECT.ERROR.FILE_NOT_FOUND_IN_SERVER_RESPONSE, scriptId)
 			);
 		}
 		await copyFile(sourceXmlFile, targetXmlFile);
@@ -274,10 +276,10 @@ async function mergeUpdatedObjectXml(
 
 function validateAuthInput(input: ObjectCommandAuthInput): void {
 	if (!input.hostName) {
-		throw new Error('A target host is required for object command execution.');
+		throw new Error(translationService.getMessage(OBJECT.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error('An access token is required for object command execution.');
+		throw new Error(translationService.getMessage(OBJECT.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }
 

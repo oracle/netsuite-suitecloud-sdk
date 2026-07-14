@@ -17,6 +17,8 @@ import {
 	type ListFoldersExecutionInput,
 } from '../../api/file/FileCommand';
 import { extractZipArchive } from '../archive/ArchiveService';
+import { FILE } from '../translation/TranslationKeys';
+import { translationService } from '../translation/TranslationService';
 import {
 	isSuiteCloudPathWithinRoot,
 	PathOutsideRootError,
@@ -45,10 +47,6 @@ const IDE_ACTION_QUERY_FILE_STRUCTURE = 'ListFileStructure';
 const IDE_ACTION_IMPORT_FILES = 'ImportFiles';
 const SDF_ACTION_LIST_FILES = 'listfiles';
 const SDF_ACTION_IMPORT_FILES = 'importfiles';
-const IMPORT_UNEXPECTED_ERROR_MESSAGE = 'Some files could not be imported.\nThere was an error when communicating with the server. Try importing a different set of files. If the problem persists, contact customer support.';
-const UNKNOWN_SERVER_RESPONSE_MESSAGE = 'Unable to recognize the response from server.';
-const NO_FILES_FOUND_MESSAGE = 'No files found.';
-const NO_FOLDERS_FOUND_MESSAGE = 'No folders found.';
 const FILE_CABINET_PATH_TEMPLATES = '/Templates';
 const ALLOWED_FILE_CABINET_PATHS = [
 	'/SuiteScripts',
@@ -72,7 +70,7 @@ export async function executeListFiles(input: ListFilesExecutionInput): Promise<
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: supportedFileList,
-			resultMessage: supportedFileList.length ? '' : NO_FILES_FOUND_MESSAGE,
+			resultMessage: supportedFileList.length ? '' : translationService.getMessage(FILE.INFO.NO_FILES_FOUND),
 		};
 	} catch (error: unknown) {
 		const statusCode = extractStatusCode(error);
@@ -82,7 +80,7 @@ export async function executeListFiles(input: ListFilesExecutionInput): Promise<
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: [],
-			resultMessage: NO_FILES_FOUND_MESSAGE,
+			resultMessage: translationService.getMessage(FILE.INFO.NO_FILES_FOUND),
 		};
 	}
 }
@@ -96,7 +94,7 @@ export async function executeListFolders(input: ListFoldersExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: folderList,
-			resultMessage: folderList.length ? '' : NO_FOLDERS_FOUND_MESSAGE,
+			resultMessage: folderList.length ? '' : translationService.getMessage(FILE.INFO.NO_FOLDERS_FOUND),
 		};
 	} catch (error: unknown) {
 		const statusCode = extractStatusCode(error);
@@ -106,17 +104,14 @@ export async function executeListFolders(input: ListFoldersExecutionInput): Prom
 		return {
 			status: FILE_COMMAND_STATUS.SUCCESS,
 			data: [],
-			resultMessage: NO_FOLDERS_FOUND_MESSAGE,
+			resultMessage: translationService.getMessage(FILE.INFO.NO_FOLDERS_FOUND),
 		};
 	}
 }
 
 export async function executeImportFiles(input: ImportFilesExecutionInput): Promise<FileCommandOperationResult> {
 	if (!Array.isArray(input.filePaths) || input.filePaths.length === 0) {
-		return errorResultWithMessage(
-			'Missing required file paths for file import.',
-			undefined
-		);
+		return errorResultWithMessage(translationService.getMessage(FILE.ERROR.IMPORT_FILE_PATHS_REQUIRED), undefined);
 	}
 
 	for (const filePath of input.filePaths) {
@@ -145,7 +140,10 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 		const responseText = importResponse.body.toString('utf8');
 		if (looksLikeIdeResponse(responseText)) {
 			const ideError = await extractIdeErrorMessage(responseText);
-			return errorResultWithMessage(ideError ?? UNKNOWN_SERVER_RESPONSE_MESSAGE, importResponse.statusCode);
+			return errorResultWithMessage(
+				ideError ?? translationService.getMessage(FILE.ERROR.UNKNOWN_SERVER_RESPONSE),
+				importResponse.statusCode
+			);
 		}
 
 		await writeFile(zipFilePath, importResponse.body);
@@ -156,7 +154,7 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 		const statusFilePath = join(unzipTargetFolder, IMPORT_FILES_STATUS_FILENAME);
 		const statusFileContents = await readOptionalFile(statusFilePath);
 		if (!statusFileContents) {
-			return errorResultWithMessage(IMPORT_UNEXPECTED_ERROR_MESSAGE, undefined);
+			return errorResultWithMessage(translationService.getMessage(FILE.WARNING.IMPORT_UNEXPECTED_ERROR), undefined);
 		}
 
 		const importStatus = await parseImportStatus(statusFileContents);
@@ -200,7 +198,7 @@ async function queryFileCabinetResources(
 
 	const responseText = response.body.toString('utf8');
 	if (!looksLikeIdeResponse(responseText)) {
-		throw new Error(UNKNOWN_SERVER_RESPONSE_MESSAGE);
+		throw new Error(translationService.getMessage(FILE.ERROR.UNKNOWN_SERVER_RESPONSE));
 	}
 
 	const ideError = await extractIdeErrorMessage(responseText);
@@ -228,9 +226,7 @@ async function unzipArchive(zipFilePath: string, destinationFolder: string): Pro
 	try {
 		await extractZipArchive(zipFilePath, destinationFolder);
 	} catch (error: unknown) {
-		throw new Error(
-			`Unable to extract imported files: ${toErrorMessage(error)}`
-		);
+		throw new Error(translationService.getMessage(FILE.ERROR.UNZIP_IMPORT_FAILED, toErrorMessage(error)));
 	}
 }
 
@@ -264,7 +260,11 @@ function isValidFileCabinetPath(fileCabinetPath: string): boolean {
 }
 
 function buildInvalidFileCabinetPathMessage(fileCabinetPath: string): string {
-	return `The "${fileCabinetPath}" path is invalid. The path can only start with: "${ALLOWED_FILE_CABINET_PATHS.join(',')}".`;
+	return translationService.getMessage(
+		FILE.ERROR.INVALID_FILE_CABINET_PATH,
+		fileCabinetPath,
+		ALLOWED_FILE_CABINET_PATHS.join(',')
+	);
 }
 
 function errorResultWithMessage(errorMessage: string, httpStatusCode: number | undefined): FileCommandOperationResult {
@@ -284,7 +284,7 @@ function extractStatusCode(error: unknown): number | undefined {
 
 function toErrorMessage(error: unknown): string {
 	if (error instanceof PathOutsideRootError) {
-		return `Invalid path "${error.candidatePath}". Path must remain inside the project's FileCabinet folder.`;
+		return translationService.getMessage(FILE.ERROR.PATH_OUTSIDE_FILE_CABINET, error.candidatePath);
 	}
 	if (error instanceof Error) {
 		return error.message;

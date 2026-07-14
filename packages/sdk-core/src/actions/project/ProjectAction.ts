@@ -14,6 +14,9 @@ import {
 import { normalizeProjectOperationResult } from '../../commands/project/ProjectResultNormalizer';
 import { ProjectArchiveService } from '../../services/project/ProjectArchiveService';
 import { ProjectApiClient } from '../../services/project/ProjectApiClient';
+import { PROJECT } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
+
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 
 export type ProjectActionInput = {
@@ -75,23 +78,23 @@ export class ProjectAction {
 
 function validateExecutionInput(input: ProjectActionInput): void {
 	if (!input) {
-		throw new Error('Project command execution input is required.');
+		throw new Error(translationService.getMessage(PROJECT.ERROR.INPUT_REQUIRED));
 	}
 	if (!Object.values(PROJECT_COMMAND).includes(input.command)) {
 		throw new Error(
-			`Unsupported project command "${input.command}".`
+			translationService.getMessage(PROJECT.ERROR.UNSUPPORTED_COMMAND, input.command)
 		);
 	}
 	if (!input.projectFolder) {
 		throw new Error(
-			'A project folder is required for project command execution.'
+			translationService.getMessage(PROJECT.ERROR.PROJECT_FOLDER_REQUIRED)
 		);
 	}
 	if (!input.hostName) {
-		throw new Error('A target host is required for project command execution.');
+		throw new Error(translationService.getMessage(PROJECT.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error('An access token is required for project command execution.');
+		throw new Error(translationService.getMessage(PROJECT.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }
 

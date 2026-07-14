@@ -5,6 +5,9 @@
 'use strict';
 
 import { ProjectCommandSummaryContext, ProjectCommandType } from './ProjectCommandTypes';
+import { PROJECT_API } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
+
 const STEP_STATUS_SUCCESSFUL = 'SUCCESSFUL';
 const STEP_STATUS_MARK_SUCCESS = '✔';
 const STEP_STATUS_MARK_FAILED = '✖';
@@ -25,11 +28,15 @@ export function formatSdfProjectResultOutput(
 	const validationLines = formatSdfProjectValidationResults(payload.validationResults);
 	const summaryMetadataLines = buildSummaryMetadataLines(payload, options);
 	const lines = [
-		`${command.toUpperCase()} SUMMARY`,
-		`Status: ${evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'}`,
-		`Steps: ${evaluationSummary.successfulSteps}/${evaluationSummary.totalSteps} successful`,
-		`Validation Results: ${evaluationSummary.errorResults} error(s), ${evaluationSummary.warningResults} warning(s)`,
-		`SDF Errors: ${evaluationSummary.hasEndpointError ? 'present' : 'none'}`,
+		translationService.getMessage(PROJECT_API.RESULT.INFO.SUMMARY, command.toUpperCase()),
+		translationService.getMessage(PROJECT_API.RESULT.INFO.STATUS, evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'),
+		translationService.getMessage(PROJECT_API.RESULT.INFO.STEPS, evaluationSummary.successfulSteps, evaluationSummary.totalSteps),
+		translationService.getMessage(
+			PROJECT_API.RESULT.INFO.VALIDATION_RESULTS,
+			evaluationSummary.errorResults,
+			evaluationSummary.warningResults
+		),
+		translationService.getMessage(PROJECT_API.RESULT.INFO.SDF_ERRORS, evaluationSummary.hasEndpointError ? 'present' : 'none'),
 		...summaryMetadataLines,
 		COMMAND_OUTPUT_SEPARATOR_LINE,
 		...formatSdfProjectSteps(payload.steps),
@@ -119,9 +126,7 @@ function formatSdfProjectSteps(steps: unknown): string[] {
 			return lines;
 		}
 		const statusMark = step.status === STEP_STATUS_SUCCESSFUL ? STEP_STATUS_MARK_SUCCESS : STEP_STATUS_MARK_FAILED;
-		lines.push(
-			`${statusMark} Step ${index + 1}: ${name}`
-		);
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.STEP, statusMark, index + 1, name));
 		return lines;
 	}, []);
 }
@@ -131,10 +136,7 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 	if (normalizedValidationResults.length === 0) {
 		return [];
 	}
-	const sections: string[] = [
-		'',
-		'Issues by file:',
-	];
+	const sections: string[] = ['', translationService.getMessage(PROJECT_API.RESULT.INFO.ISSUES_BY_FILE)];
 	const grouped = new Map<string, { errors: Set<string>; warnings: Set<string> }>();
 	normalizedValidationResults.forEach((result) => {
 		const fileKey = result.component || GENERAL_ISSUES_LABEL;
@@ -162,14 +164,10 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 			`${index + 1}. ${fileKey} (${errorCount} error(s), ${warningCount} warning(s))`
 		);
 		Array.from(bucket.errors).forEach((message) =>
-			sections.push(
-				`  - ERROR: ${message}`
-			)
+			sections.push(translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_ERROR, message))
 		);
 		Array.from(bucket.warnings).forEach((message) =>
-			sections.push(
-				`  - WARNING: ${message}`
-			)
+			sections.push(translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_WARNING, message))
 		);
 		sections.push('');
 	});
@@ -196,11 +194,7 @@ function formatEndpointErrorSection(endpointErrorMessage: string, hasValidationL
 	}
 	const compactObjectValidationLines = extractCompactObjectValidationErrors(endpointErrorMessage);
 	if (compactObjectValidationLines.length > 0) {
-		return [
-			'',
-			'Additional endpoint details:',
-			...compactObjectValidationLines,
-		];
+		return ['', translationService.getMessage(PROJECT_API.RESULT.INFO.ADDITIONAL_ENDPOINT_DETAILS), ...compactObjectValidationLines];
 	}
 
 	const firstMeaningfulLine = endpointErrorMessage
@@ -208,9 +202,7 @@ function formatEndpointErrorSection(endpointErrorMessage: string, hasValidationL
 		.map((line) => line.trim())
 		.find((line) => line.length > 0);
 	return firstMeaningfulLine
-		? [
-				`ERROR: ${firstMeaningfulLine}`,
-			]
+		? [translationService.getMessage(PROJECT_API.RESULT.INFO.ERROR_LINE, firstMeaningfulLine)]
 		: [];
 }
 
@@ -258,28 +250,18 @@ function buildSummaryMetadataLines(
 ): string[] {
 	const summaryContext = options.summaryContext || {};
 	const localTimestamp = normalizeTimestamp(summaryContext.localTimestamp) || new Date().toISOString();
-	const lines = [
-		`Local Timestamp: ${localTimestamp}`,
-	];
+	const lines = [translationService.getMessage(PROJECT_API.RESULT.INFO.LOCAL_TIMESTAMP, localTimestamp)];
 
 	if (summaryContext.accountName) {
-		lines.push(
-			`Account: ${summaryContext.accountName}`
-		);
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.ACCOUNT, summaryContext.accountName));
 	}
 	if (summaryContext.roleName) {
-		lines.push(
-			`Role: ${summaryContext.roleName}`
-		);
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.ROLE, summaryContext.roleName));
 	}
 	if (summaryContext.suiteAppId) {
-		lines.push(
-			`SuiteApp ID: ${summaryContext.suiteAppId}`
-		);
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.SUITEAPP_ID, summaryContext.suiteAppId));
 	} else if (summaryContext.projectName) {
-		lines.push(
-			`Project Name: ${summaryContext.projectName}`
-		);
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.PROJECT_NAME, summaryContext.projectName));
 	}
 
 	return lines;

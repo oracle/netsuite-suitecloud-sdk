@@ -10,6 +10,9 @@ import type { RequestOptions } from 'node:https';
 import { basename } from 'node:path';
 import type { ProjectCommandType } from '../../api/project/ProjectCommand';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
+import { PROJECT_API } from '../translation/TranslationKeys';
+import { translationService } from '../translation/TranslationService';
+
 export type ProjectHttpResponse = {
 	statusCode: number;
 	body: string;
@@ -165,9 +168,7 @@ function sendHttpsMultipartRequest(input: {
 
 		clientRequest.on('error', reject);
 		clientRequest.setTimeout(input.timeoutMs, () => {
-			clientRequest.destroy(
-				new Error('Project command request timed out.')
-			);
+			clientRequest.destroy(new Error(translationService.getMessage(PROJECT_API.ERROR.REQUEST_TIMED_OUT)));
 		});
 		clientRequest.write(input.payload);
 		clientRequest.end();
