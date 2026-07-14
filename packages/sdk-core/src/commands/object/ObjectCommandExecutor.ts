@@ -221,10 +221,10 @@ export async function executeImportObjects(
 	try {
 		validateAuthInput(input);
 		if (!input.projectFolder) {
-			return errorResultWithMessage(getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_IMPORT), undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_IMPORT), undefined);
 		}
 		if (!input.targetFolder) {
-			return errorResultWithMessage(getMessage(OBJECT.ERROR.DESTINATION_FOLDER_REQUIRED_FOR_IMPORT), undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.DESTINATION_FOLDER_REQUIRED_FOR_IMPORT), undefined);
 		}
 
 		const scriptIds = normalizeScriptIds(input.scriptIds);
@@ -232,7 +232,7 @@ export async function executeImportObjects(
 			return {
 				status: OBJECT_COMMAND_STATUS.SUCCESS,
 				data: buildEmptyImportObjectsResult(),
-				resultMessage: getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
+				resultMessage: translationService.getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
 			};
 		}
 
@@ -241,7 +241,7 @@ export async function executeImportObjects(
 			return {
 				status: OBJECT_COMMAND_STATUS.SUCCESS,
 				data: buildEmptyImportObjectsResult(),
-				resultMessage: getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
+				resultMessage: translationService.getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
 			};
 		}
 
@@ -274,7 +274,7 @@ export async function executeImportObjects(
 			return {
 				status: OBJECT_COMMAND_STATUS.SUCCESS,
 				data: buildEmptyImportObjectsResult(),
-				resultMessage: getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
+				resultMessage: translationService.getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
 			};
 		}
 
@@ -288,7 +288,7 @@ export async function executeImportObjects(
 		const statusFilePath = join(unzipFolder, STATUS_XML_FILENAME);
 		const statusXml = await readOptionalFile(statusFilePath);
 		if (!statusXml) {
-			return errorResultWithMessage(getMessage(OBJECT.ERROR.UNKNOWN_SERVER_RESPONSE), undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.UNKNOWN_SERVER_RESPONSE), undefined);
 		}
 
 		await rm(statusFilePath, { force: true });
@@ -328,7 +328,7 @@ export async function executeUpdateObjects(
 	try {
 		validateAuthInput(input);
 		if (!input.projectFolder) {
-			return errorResultWithMessage(getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE), undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE), undefined);
 		}
 
 		packageRoot = await getPackageRoot(input.projectFolder);
@@ -340,7 +340,7 @@ export async function executeUpdateObjects(
 				results.push({
 					key: scriptId,
 					type: 'ERROR',
-					message: getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, scriptId),
+					message: translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, scriptId),
 				});
 				continue;
 			}
@@ -387,7 +387,7 @@ export async function executeUpdateObjects(
 					results.push({
 						key: scriptId,
 						type: 'ERROR',
-						message: idePayload.errorMessage ?? getMessage(OBJECT.ERROR.UPDATE_OBJECT_FAILED),
+						message: idePayload.errorMessage ?? translationService.getMessage(OBJECT.ERROR.UPDATE_OBJECT_FAILED),
 					});
 					continue;
 				}
@@ -397,7 +397,7 @@ export async function executeUpdateObjects(
 					results.push({
 						key: scriptId,
 						type: 'ERROR',
-						message: objectUpdateResult.errorMessages?.[0] ?? getMessage(OBJECT.ERROR.UPDATE_FAILED),
+						message: objectUpdateResult.errorMessages?.[0] ?? translationService.getMessage(OBJECT.ERROR.UPDATE_FAILED),
 					});
 					continue;
 				}
@@ -405,7 +405,7 @@ export async function executeUpdateObjects(
 				results.push({
 					key: scriptId,
 					type: 'SUCCESS',
-					message: getMessage(OBJECT.INFO.OBJECT_UPDATED, scriptId),
+					message: translationService.getMessage(OBJECT.INFO.OBJECT_UPDATED, scriptId),
 				});
 			} catch (error: unknown) {
 				results.push({
@@ -432,15 +432,15 @@ export async function executeUpdateCustomRecordWithInstances(
 	try {
 		validateAuthInput(input);
 		if (!input.projectFolder) {
-			return errorResultWithMessage(getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE), undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE), undefined);
 		}
 		if (!input.scriptId || !input.scriptId.trim()) {
-			return errorResultWithMessage(getMessage(OBJECT.ERROR.CUSTOM_RECORD_SCRIPT_ID_REQUIRED), undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_SCRIPT_ID_REQUIRED), undefined);
 		}
 
 		const objectFile = await findObjectFileByScriptId(input.projectFolder, input.scriptId);
 		if (!objectFile) {
-			return errorResultWithMessage(getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId), undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId), undefined);
 		}
 
 		const packageRoot = await getPackageRoot(input.projectFolder);
@@ -472,7 +472,7 @@ export async function executeUpdateCustomRecordWithInstances(
 		if (isIdeLikeResponse(response, responseText)) {
 			const idePayload = await parseIdePayload(responseText);
 			return errorResultWithMessage(
-				idePayload.errorMessage ?? getMessage(OBJECT.ERROR.CUSTOM_RECORD_UPDATE_FAILED),
+				idePayload.errorMessage ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_UPDATE_FAILED),
 				response.statusCode
 			);
 		}
@@ -491,7 +491,7 @@ export async function executeUpdateCustomRecordWithInstances(
 			const failedStatus = statusItems.find((item) => item.id === input.scriptId && item.result?.code === 'FAILED');
 			if (failedStatus) {
 				return errorResultWithMessage(
-					failedStatus.result?.message ?? getMessage(OBJECT.ERROR.CUSTOM_RECORD_UPDATE_FAILED),
+					failedStatus.result?.message ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_UPDATE_FAILED),
 					undefined
 				);
 			}
@@ -500,12 +500,12 @@ export async function executeUpdateCustomRecordWithInstances(
 
 		const copiedFiles = await copyDirectoryContents(unzipFolder, dirname(objectFile));
 		if (copiedFiles.length === 0) {
-			return errorResultWithMessage(getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId), undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId), undefined);
 		}
 
 		return {
 			status: OBJECT_COMMAND_STATUS.SUCCESS,
-			data: getMessage(OBJECT.INFO.OBJECT_AND_INSTANCES_UPDATED, input.scriptId),
+			data: translationService.getMessage(OBJECT.INFO.OBJECT_AND_INSTANCES_UPDATED, input.scriptId),
 		};
 	} catch (error: unknown) {
 		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
@@ -530,7 +530,7 @@ async function resolveObjectsToImport(
 			timeoutMs: input.timeoutMs,
 		});
 		if (listResult.status === OBJECT_COMMAND_STATUS.ERROR) {
-			throw new Error(listResult.errorMessages?.[0] ?? getMessage(OBJECT.ERROR.LIST_CUSTOM_OBJECTS_FAILED));
+			throw new Error(listResult.errorMessages?.[0] ?? translationService.getMessage(OBJECT.ERROR.LIST_CUSTOM_OBJECTS_FAILED));
 		}
 		return (listResult.data ?? []).map((item) => ({ type: item.type, scriptId: item.scriptId, appId: item.appId }));
 	}
@@ -554,7 +554,7 @@ async function resolveObjectsToImport(
 			timeoutMs: input.timeoutMs,
 		});
 		if (listResult.status === OBJECT_COMMAND_STATUS.ERROR) {
-			throw new Error(listResult.errorMessages?.[0] ?? getMessage(OBJECT.ERROR.LIST_CUSTOM_OBJECTS_FAILED));
+			throw new Error(listResult.errorMessages?.[0] ?? translationService.getMessage(OBJECT.ERROR.LIST_CUSTOM_OBJECTS_FAILED));
 		}
 
 		const exactObject = (listResult.data ?? []).find((item) => item.scriptId === scriptId);
@@ -744,7 +744,7 @@ async function enrichReferencedFileImports(
 			if (!scriptFilePath.startsWith(SUITESCRIPTS_PREFIX)) {
 				objectImport.referencedFileImportResult.failedImports.push({
 					path: scriptFilePath,
-					message: getMessage(OBJECT.ERROR.INVALID_REFERENCED_FILE_PATH),
+					message: translationService.getMessage(OBJECT.ERROR.INVALID_REFERENCED_FILE_PATH),
 				});
 				continue;
 			}
@@ -824,7 +824,7 @@ async function mergeUpdatedObjectXml(
 			const statusItem = statusItems.find((item) => item.id === scriptId);
 			if (statusItem?.result?.code === 'FAILED') {
 				return errorResultWithMessage(
-					statusItem.result.message ?? getMessage(OBJECT.ERROR.CUSTOM_OBJECT_UPDATE_FAILED),
+					statusItem.result.message ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_OBJECT_UPDATE_FAILED),
 					undefined
 				);
 			}
@@ -834,7 +834,7 @@ async function mergeUpdatedObjectXml(
 		const sourceXmlFile = await findFileByName(unzipFolder, `${scriptId}.xml`);
 		if (!sourceXmlFile) {
 			return errorResultWithMessage(
-				getMessage(OBJECT.ERROR.FILE_NOT_FOUND_IN_SERVER_RESPONSE, scriptId),
+				translationService.getMessage(OBJECT.ERROR.FILE_NOT_FOUND_IN_SERVER_RESPONSE, scriptId),
 				undefined
 			);
 		}
@@ -900,7 +900,7 @@ function extractRootTagName(xmlText: string): string {
 	const normalizedXml = xmlText.trim().replace(/^<\?xml[^>]*\?>/i, '').trim();
 	const tagMatch = normalizedXml.match(/^<([a-zA-Z0-9_:-]+)/);
 	if (!tagMatch) {
-		throw new Error(getMessage(OBJECT.ERROR.ROOT_TAG_PARSE_FAILED));
+		throw new Error(translationService.getMessage(OBJECT.ERROR.ROOT_TAG_PARSE_FAILED));
 	}
 	return tagMatch[1];
 }
@@ -1079,7 +1079,7 @@ async function sendFormRequest(input: {
 
 		request.on('error', reject);
 		request.setTimeout(input.timeoutMs, () => {
-			request.destroy(new Error(getMessage(OBJECT.ERROR.REQUEST_TIMED_OUT)));
+			request.destroy(new Error(translationService.getMessage(OBJECT.ERROR.REQUEST_TIMED_OUT)));
 		});
 		request.write(requestBody);
 		request.end();
@@ -1130,17 +1130,17 @@ async function removeDirectoryQuietly(directoryPath: string): Promise<void> {
 function getHttpErrorMessage(response: HttpResponse): string {
 	const responseText = response.body.toString('utf8').trim();
 	if (!responseText) {
-		return getMessage(OBJECT.ERROR.HTTP_STATUS, response.statusCode);
+		return translationService.getMessage(OBJECT.ERROR.HTTP_STATUS, response.statusCode);
 	}
 	return responseText;
 }
 
 function validateAuthInput(input: ObjectCommandAuthInput): void {
 	if (!input.hostName) {
-		throw new Error(getMessage(OBJECT.ERROR.TARGET_HOST_REQUIRED));
+		throw new Error(translationService.getMessage(OBJECT.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error(getMessage(OBJECT.ERROR.ACCESS_TOKEN_REQUIRED));
+		throw new Error(translationService.getMessage(OBJECT.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }
 
@@ -1175,10 +1175,6 @@ function stringOrUndefined(value: unknown): string | undefined {
 		return undefined;
 	}
 	return value;
-}
-
-function getMessage(key: Parameters<typeof translationService.getMessage>[0], ...params: Array<string | number>): string {
-	return translationService.getMessage(key, ...params);
 }
 
 function asArray<T>(value: T | T[] | undefined | null): T[] {

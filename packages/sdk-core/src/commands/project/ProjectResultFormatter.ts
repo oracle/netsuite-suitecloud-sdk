@@ -27,15 +27,15 @@ export function formatSdfProjectResultOutput(
 	const validationLines = formatSdfProjectValidationResults(payload.validationResults);
 	const summaryMetadataLines = buildSummaryMetadataLines(payload, options);
 	const lines = [
-		getMessage(PROJECT_API.RESULT.INFO.SUMMARY, command.toUpperCase()),
-		getMessage(PROJECT_API.RESULT.INFO.STATUS, evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'),
-		getMessage(PROJECT_API.RESULT.INFO.STEPS, evaluationSummary.successfulSteps, evaluationSummary.totalSteps),
-		getMessage(
+		translationService.getMessage(PROJECT_API.RESULT.INFO.SUMMARY, command.toUpperCase()),
+		translationService.getMessage(PROJECT_API.RESULT.INFO.STATUS, evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'),
+		translationService.getMessage(PROJECT_API.RESULT.INFO.STEPS, evaluationSummary.successfulSteps, evaluationSummary.totalSteps),
+		translationService.getMessage(
 			PROJECT_API.RESULT.INFO.VALIDATION_RESULTS,
 			evaluationSummary.errorResults,
 			evaluationSummary.warningResults
 		),
-		getMessage(PROJECT_API.RESULT.INFO.SDF_ERRORS, evaluationSummary.hasEndpointError ? 'present' : 'none'),
+		translationService.getMessage(PROJECT_API.RESULT.INFO.SDF_ERRORS, evaluationSummary.hasEndpointError ? 'present' : 'none'),
 		...summaryMetadataLines,
 		COMMAND_OUTPUT_SEPARATOR_LINE,
 		...formatSdfProjectSteps(payload.steps),
@@ -125,7 +125,7 @@ function formatSdfProjectSteps(steps: unknown): string[] {
 			return lines;
 		}
 		const statusMark = step.status === STEP_STATUS_SUCCESSFUL ? STEP_STATUS_MARK_SUCCESS : STEP_STATUS_MARK_FAILED;
-		lines.push(getMessage(PROJECT_API.RESULT.INFO.STEP, statusMark, index + 1, name));
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.STEP, statusMark, index + 1, name));
 		return lines;
 	}, []);
 }
@@ -135,7 +135,7 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 	if (normalizedValidationResults.length === 0) {
 		return [];
 	}
-	const sections: string[] = ['', getMessage(PROJECT_API.RESULT.INFO.ISSUES_BY_FILE)];
+	const sections: string[] = ['', translationService.getMessage(PROJECT_API.RESULT.INFO.ISSUES_BY_FILE)];
 	const grouped = new Map<string, { errors: Set<string>; warnings: Set<string> }>();
 	normalizedValidationResults.forEach((result) => {
 		const fileKey = result.component || 'General';
@@ -161,10 +161,10 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 		const warningCount = bucket.warnings.size;
 		sections.push(`${index + 1}. ${fileKey} (${errorCount} error(s), ${warningCount} warning(s))`);
 		Array.from(bucket.errors).forEach((message) =>
-			sections.push(getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_ERROR, message))
+			sections.push(translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_ERROR, message))
 		);
 		Array.from(bucket.warnings).forEach((message) =>
-			sections.push(getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_WARNING, message))
+			sections.push(translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_WARNING, message))
 		);
 		sections.push('');
 	});
@@ -191,14 +191,14 @@ function formatEndpointErrorSection(endpointErrorMessage: string, hasValidationL
 	}
 	const compactObjectValidationLines = extractCompactObjectValidationErrors(endpointErrorMessage);
 	if (compactObjectValidationLines.length > 0) {
-		return ['', getMessage(PROJECT_API.RESULT.INFO.ADDITIONAL_ENDPOINT_DETAILS), ...compactObjectValidationLines];
+		return ['', translationService.getMessage(PROJECT_API.RESULT.INFO.ADDITIONAL_ENDPOINT_DETAILS), ...compactObjectValidationLines];
 	}
 
 	const firstMeaningfulLine = endpointErrorMessage
 		.split(/\r?\n/)
 		.map((line) => line.trim())
 		.find((line) => line.length > 0);
-	return firstMeaningfulLine ? [getMessage(PROJECT_API.RESULT.INFO.ERROR_LINE, firstMeaningfulLine)] : [];
+	return firstMeaningfulLine ? [translationService.getMessage(PROJECT_API.RESULT.INFO.ERROR_LINE, firstMeaningfulLine)] : [];
 }
 
 function extractCompactObjectValidationErrors(endpointErrorMessage: string): string[] {
@@ -243,18 +243,18 @@ function buildSummaryMetadataLines(
 ): string[] {
 	const summaryContext = options.summaryContext || {};
 	const localTimestamp = normalizeTimestamp(summaryContext.localTimestamp) || new Date().toISOString();
-	const lines = [getMessage(PROJECT_API.RESULT.INFO.LOCAL_TIMESTAMP, localTimestamp)];
+	const lines = [translationService.getMessage(PROJECT_API.RESULT.INFO.LOCAL_TIMESTAMP, localTimestamp)];
 
 	if (summaryContext.accountName) {
-		lines.push(getMessage(PROJECT_API.RESULT.INFO.ACCOUNT, summaryContext.accountName));
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.ACCOUNT, summaryContext.accountName));
 	}
 	if (summaryContext.roleName) {
-		lines.push(getMessage(PROJECT_API.RESULT.INFO.ROLE, summaryContext.roleName));
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.ROLE, summaryContext.roleName));
 	}
 	if (summaryContext.suiteAppId) {
-		lines.push(getMessage(PROJECT_API.RESULT.INFO.SUITEAPP_ID, summaryContext.suiteAppId));
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.SUITEAPP_ID, summaryContext.suiteAppId));
 	} else if (summaryContext.projectName) {
-		lines.push(getMessage(PROJECT_API.RESULT.INFO.PROJECT_NAME, summaryContext.projectName));
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.PROJECT_NAME, summaryContext.projectName));
 	}
 
 	return lines;
@@ -300,8 +300,4 @@ function normalizeTimestamp(value: unknown): string | undefined {
 		return trimmedValue;
 	}
 	return parsedDate.toISOString();
-}
-
-function getMessage(key: Parameters<typeof translationService.getMessage>[0], ...params: Array<string | number>): string {
-	return translationService.getMessage(key, ...params);
 }
