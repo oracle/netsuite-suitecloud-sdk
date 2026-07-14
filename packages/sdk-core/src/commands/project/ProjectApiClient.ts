@@ -5,10 +5,10 @@
 'use strict';
 
 import type { RequestOptions } from 'node:https';
-import crypto from 'node:crypto';
-import path from 'node:path';
-import os from 'node:os';
-import fsPromises from 'node:fs/promises';
+import * as crypto from 'node:crypto';
+import * as path from 'node:path';
+import * as os from 'node:os';
+import * as fsPromises from 'node:fs/promises';
 
 import { ProjectCommandType } from './ProjectCommandTypes';
 import { ZipperImpl } from '../../utils/Zipper';
