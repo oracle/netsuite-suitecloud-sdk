@@ -7,7 +7,7 @@
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 
-import { TranslationKeys } from '../../../services/translation/TranslationKeys';
+import { FILE_CREATE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { generateSuiteScriptTemplate } from '../../../templates/SuiteScriptTemplateService';
 
@@ -99,7 +99,7 @@ function validateFileCabinetPath(pathValue: string, manifest: { projectType: str
 function invalidFileCabinetPathError(pathValue: string, requiredFolder: string): Error {
 	return new Error(
 		translationService.getMessage(
-			TranslationKeys.FILE_CREATE.ERROR.INVALID_FILE_CABINET_PATH,
+			FILE_CREATE.ERROR.INVALID_FILE_CABINET_PATH,
 			pathValue,
 			requiredFolder
 		)
@@ -108,7 +108,7 @@ function invalidFileCabinetPathError(pathValue: string, requiredFolder: string):
 
 function pathOutsideFileCabinetError(pathValue: string): Error {
 	return new Error(
-		translationService.getMessage(TranslationKeys.FILE_CREATE.ERROR.PATH_OUTSIDE_FILE_CABINET, pathValue)
+		translationService.getMessage(FILE_CREATE.ERROR.PATH_OUTSIDE_FILE_CABINET, pathValue)
 	);
 }
 
@@ -131,7 +131,7 @@ async function assertFileDoesNotExist(filePath: string): Promise<void> {
 	try {
 		await stat(filePath);
 		throw new Error(
-			translationService.getMessage(TranslationKeys.FILE_CREATE.ERROR.FILE_ALREADY_EXISTS, dirname(filePath))
+			translationService.getMessage(FILE_CREATE.ERROR.FILE_ALREADY_EXISTS, dirname(filePath))
 		);
 	} catch (error: unknown) {
 		const code = (error as NodeJS.ErrnoException)?.code;

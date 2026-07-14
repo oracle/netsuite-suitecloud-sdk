@@ -18,6 +18,8 @@ import {
 	PROJECT_COMMAND,
 	SDK_OPERATION_STATUS,
 } from './ProjectCommandTypes';
+import { PROJECT } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 
@@ -93,18 +95,18 @@ export async function executeProjectCommand(
 
 function validateExecutionInput(input: ProjectCommandExecutionInput): void {
 	if (!input) {
-		throw new Error('Project command execution input is required.');
+		throw new Error(translationService.getMessage(PROJECT.ERROR.INPUT_REQUIRED));
 	}
 	if (!Object.values(PROJECT_COMMAND).includes(input.command)) {
-		throw new Error(`Unsupported project command "${input.command}".`);
+		throw new Error(translationService.getMessage(PROJECT.ERROR.UNSUPPORTED_COMMAND, input.command));
 	}
 	if (!input.projectFolder) {
-		throw new Error('A project folder is required for project command execution.');
+		throw new Error(translationService.getMessage(PROJECT.ERROR.PROJECT_FOLDER_REQUIRED));
 	}
 	if (!input.hostName) {
-		throw new Error('A target host is required for project command execution.');
+		throw new Error(translationService.getMessage(PROJECT.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error('An access token is required for project command execution.');
+		throw new Error(translationService.getMessage(PROJECT.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }

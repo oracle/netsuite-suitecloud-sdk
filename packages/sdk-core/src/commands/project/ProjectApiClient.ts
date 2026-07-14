@@ -5,15 +5,17 @@
 'use strict';
 
 import type { RequestOptions } from 'node:https';
-import crypto from 'node:crypto';
-import path from 'node:path';
-import os from 'node:os';
-import fsPromises from 'node:fs/promises';
+import * as crypto from 'node:crypto';
+import * as path from 'node:path';
+import * as os from 'node:os';
+import * as fsPromises from 'node:fs/promises';
 
 import { ProjectCommandType } from './ProjectCommandTypes';
 import { ZipperImpl } from '../../utils/Zipper';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
 import { createSdfProjectArchivePlan } from './package/SdfProjectArchive';
+import { PROJECT_API } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 const PROJECT_API_PATH = '/api/internal/sdf/v1/projects';
 const MULTIPART_EOL = '\r\n';
@@ -40,7 +42,9 @@ export async function createDefaultProjectArchive(projectFolder: string): Promis
 		await new ZipperImpl().zipEntries(projectFolder, projectArchivePath, archivePlan.entries);
 		return projectArchivePath;
 	} catch (error: any) {
-		throw new Error(`Unable to archive project folder "${projectFolder}": ${error.message}`);
+		throw new Error(
+			translationService.getMessage(PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, error.message)
+		);
 	}
 }
 
@@ -175,7 +179,7 @@ async function sendHttpsMultipartRequest(input: {
 
 		request.on('error', (error) => reject(error));
 		request.setTimeout(input.timeoutMs, () => {
-			request.destroy(new Error('Project command request timed out.'));
+			request.destroy(new Error(translationService.getMessage(PROJECT_API.ERROR.REQUEST_TIMED_OUT)));
 		});
 
 		request.write(input.payload.payload);

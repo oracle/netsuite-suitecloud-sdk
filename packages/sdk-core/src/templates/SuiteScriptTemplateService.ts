@@ -4,7 +4,7 @@
  */
 'use strict';
 
-import { TranslationKeys } from '../services/translation/TranslationKeys';
+import { UTILS } from '../services/translation/TranslationKeys';
 import { translationService } from '../services/translation/TranslationService';
 import {
 	DEFAULT_SUITESCRIPT_TEMPLATE_ID,
@@ -32,7 +32,7 @@ export async function generateSuiteScriptTemplate(
 	if (!selectedTemplate) {
 		throw new Error(
 			translationService.getMessage(
-				TranslationKeys.SUITESCRIPT.ERROR.INVALID_TYPE,
+				UTILS.SUITESCRIPT_TEMPLATE_SERVICE.ERROR.INVALID_TYPE,
 				SUITESCRIPT_TEMPLATES.map(({ id }) => id).join(', ')
 			)
 		);
@@ -68,7 +68,7 @@ function normalizeModules(moduleValue: string | string[] | undefined): string[] 
 	if (invalidModules.length > 0) {
 		throw new Error(
 			translationService.getMessage(
-				TranslationKeys.SUITESCRIPT.ERROR.INVALID_MODULES,
+				UTILS.SUITESCRIPT_TEMPLATE_SERVICE.ERROR.INVALID_MODULES,
 				invalidModules.map((moduleId) => `"${moduleId}"`).join(', ')
 			)
 		);

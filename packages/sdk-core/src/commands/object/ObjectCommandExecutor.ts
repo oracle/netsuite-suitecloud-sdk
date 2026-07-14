@@ -15,6 +15,8 @@ import { parseStringPromise } from 'xml2js';
 import { executeImportFiles } from '../file/FileCommandExecutor';
 import { ZipperImpl } from '../../utils/Zipper';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
+import { OBJECT } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 export const OBJECT_COMMAND_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -153,7 +155,6 @@ const CUSTOM_RECORD_TYPE = 'customrecordtype';
 const CUSTOM_RECORD_PREFIX = 'customrecord';
 const CUSTOM_SEGMENT_PREFIX = 'customsegment';
 const SUITESCRIPTS_PREFIX = '/SuiteScripts/';
-const INVALID_REFERENCED_FILE_PATH_MESSAGE = 'The file path is invalid or not supported.';
 
 export async function executeListObjects(
 	input: ListObjectsExecutionInput
@@ -220,10 +221,10 @@ export async function executeImportObjects(
 	try {
 		validateAuthInput(input);
 		if (!input.projectFolder) {
-			return errorResultWithMessage('A project folder is required for object import.', undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_IMPORT), undefined);
 		}
 		if (!input.targetFolder) {
-			return errorResultWithMessage('A destination folder is required for object import.', undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.DESTINATION_FOLDER_REQUIRED_FOR_IMPORT), undefined);
 		}
 
 		const scriptIds = normalizeScriptIds(input.scriptIds);
@@ -231,7 +232,7 @@ export async function executeImportObjects(
 			return {
 				status: OBJECT_COMMAND_STATUS.SUCCESS,
 				data: buildEmptyImportObjectsResult(),
-				resultMessage: 'No objects imported.',
+				resultMessage: translationService.getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
 			};
 		}
 
@@ -240,7 +241,7 @@ export async function executeImportObjects(
 			return {
 				status: OBJECT_COMMAND_STATUS.SUCCESS,
 				data: buildEmptyImportObjectsResult(),
-				resultMessage: 'No objects imported.',
+				resultMessage: translationService.getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
 			};
 		}
 
@@ -273,7 +274,7 @@ export async function executeImportObjects(
 			return {
 				status: OBJECT_COMMAND_STATUS.SUCCESS,
 				data: buildEmptyImportObjectsResult(),
-				resultMessage: 'No objects imported.',
+				resultMessage: translationService.getMessage(OBJECT.INFO.NO_OBJECTS_IMPORTED),
 			};
 		}
 
@@ -287,7 +288,7 @@ export async function executeImportObjects(
 		const statusFilePath = join(unzipFolder, STATUS_XML_FILENAME);
 		const statusXml = await readOptionalFile(statusFilePath);
 		if (!statusXml) {
-			return errorResultWithMessage('Unable to recognize the response from server.', undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.UNKNOWN_SERVER_RESPONSE), undefined);
 		}
 
 		await rm(statusFilePath, { force: true });
@@ -327,7 +328,7 @@ export async function executeUpdateObjects(
 	try {
 		validateAuthInput(input);
 		if (!input.projectFolder) {
-			return errorResultWithMessage('A project folder is required for object update.', undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE), undefined);
 		}
 
 		packageRoot = await getPackageRoot(input.projectFolder);
@@ -339,7 +340,7 @@ export async function executeUpdateObjects(
 				results.push({
 					key: scriptId,
 					type: 'ERROR',
-					message: `The "${scriptId}" object does not exist.`,
+					message: translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, scriptId),
 				});
 				continue;
 			}
@@ -386,21 +387,25 @@ export async function executeUpdateObjects(
 					results.push({
 						key: scriptId,
 						type: 'ERROR',
-						message: idePayload.errorMessage ?? 'Unable to update object from server.',
+						message: idePayload.errorMessage ?? translationService.getMessage(OBJECT.ERROR.UPDATE_OBJECT_FAILED),
 					});
 					continue;
 				}
 
 				const objectUpdateResult = await mergeUpdatedObjectXml(response.body, objectFile, scriptId);
 				if (objectUpdateResult.status === OBJECT_COMMAND_STATUS.ERROR) {
-					results.push({ key: scriptId, type: 'ERROR', message: objectUpdateResult.errorMessages?.[0] ?? 'Update failed.' });
+					results.push({
+						key: scriptId,
+						type: 'ERROR',
+						message: objectUpdateResult.errorMessages?.[0] ?? translationService.getMessage(OBJECT.ERROR.UPDATE_FAILED),
+					});
 					continue;
 				}
 
 				results.push({
 					key: scriptId,
 					type: 'SUCCESS',
-					message: `The "${scriptId}" object was updated.`,
+					message: translationService.getMessage(OBJECT.INFO.OBJECT_UPDATED, scriptId),
 				});
 			} catch (error: unknown) {
 				results.push({
@@ -427,15 +432,15 @@ export async function executeUpdateCustomRecordWithInstances(
 	try {
 		validateAuthInput(input);
 		if (!input.projectFolder) {
-			return errorResultWithMessage('A project folder is required for object update.', undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_UPDATE), undefined);
 		}
 		if (!input.scriptId || !input.scriptId.trim()) {
-			return errorResultWithMessage('A custom record script ID is required.', undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_SCRIPT_ID_REQUIRED), undefined);
 		}
 
 		const objectFile = await findObjectFileByScriptId(input.projectFolder, input.scriptId);
 		if (!objectFile) {
-			return errorResultWithMessage(`The "${input.scriptId}" object does not exist.`, undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId), undefined);
 		}
 
 		const packageRoot = await getPackageRoot(input.projectFolder);
@@ -466,7 +471,10 @@ export async function executeUpdateCustomRecordWithInstances(
 		const responseText = response.body.toString('utf8');
 		if (isIdeLikeResponse(response, responseText)) {
 			const idePayload = await parseIdePayload(responseText);
-			return errorResultWithMessage(idePayload.errorMessage ?? 'Unable to update custom record from server.', response.statusCode);
+			return errorResultWithMessage(
+				idePayload.errorMessage ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_UPDATE_FAILED),
+				response.statusCode
+			);
 		}
 
 		tempDirectory = await mkdtemp(join(tmpdir(), 'suitecloud-update-custom-record-'));
@@ -482,19 +490,22 @@ export async function executeUpdateCustomRecordWithInstances(
 			const statusItems = await parseImportObjectStatus(statusXml);
 			const failedStatus = statusItems.find((item) => item.id === input.scriptId && item.result?.code === 'FAILED');
 			if (failedStatus) {
-				return errorResultWithMessage(failedStatus.result?.message ?? 'Unable to update custom record from server.', undefined);
+				return errorResultWithMessage(
+					failedStatus.result?.message ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_RECORD_UPDATE_FAILED),
+					undefined
+				);
 			}
 			await rm(statusFilePath, { force: true });
 		}
 
 		const copiedFiles = await copyDirectoryContents(unzipFolder, dirname(objectFile));
 		if (copiedFiles.length === 0) {
-			return errorResultWithMessage(`The "${input.scriptId}" object does not exist.`, undefined);
+			return errorResultWithMessage(translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId), undefined);
 		}
 
 		return {
 			status: OBJECT_COMMAND_STATUS.SUCCESS,
-			data: `The "${input.scriptId}" object and its instances were updated.`,
+			data: translationService.getMessage(OBJECT.INFO.OBJECT_AND_INSTANCES_UPDATED, input.scriptId),
 		};
 	} catch (error: unknown) {
 		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
@@ -519,7 +530,7 @@ async function resolveObjectsToImport(
 			timeoutMs: input.timeoutMs,
 		});
 		if (listResult.status === OBJECT_COMMAND_STATUS.ERROR) {
-			throw new Error(listResult.errorMessages?.[0] ?? 'Unable to list custom objects.');
+			throw new Error(listResult.errorMessages?.[0] ?? translationService.getMessage(OBJECT.ERROR.LIST_CUSTOM_OBJECTS_FAILED));
 		}
 		return (listResult.data ?? []).map((item) => ({ type: item.type, scriptId: item.scriptId, appId: item.appId }));
 	}
@@ -543,7 +554,7 @@ async function resolveObjectsToImport(
 			timeoutMs: input.timeoutMs,
 		});
 		if (listResult.status === OBJECT_COMMAND_STATUS.ERROR) {
-			throw new Error(listResult.errorMessages?.[0] ?? 'Unable to list custom objects.');
+			throw new Error(listResult.errorMessages?.[0] ?? translationService.getMessage(OBJECT.ERROR.LIST_CUSTOM_OBJECTS_FAILED));
 		}
 
 		const exactObject = (listResult.data ?? []).find((item) => item.scriptId === scriptId);
@@ -733,7 +744,7 @@ async function enrichReferencedFileImports(
 			if (!scriptFilePath.startsWith(SUITESCRIPTS_PREFIX)) {
 				objectImport.referencedFileImportResult.failedImports.push({
 					path: scriptFilePath,
-					message: INVALID_REFERENCED_FILE_PATH_MESSAGE,
+					message: translationService.getMessage(OBJECT.ERROR.INVALID_REFERENCED_FILE_PATH),
 				});
 				continue;
 			}
@@ -812,14 +823,20 @@ async function mergeUpdatedObjectXml(
 			const statusItems = await parseImportObjectStatus(statusXml);
 			const statusItem = statusItems.find((item) => item.id === scriptId);
 			if (statusItem?.result?.code === 'FAILED') {
-				return errorResultWithMessage(statusItem.result.message ?? 'Unable to update custom object from server.', undefined);
+				return errorResultWithMessage(
+					statusItem.result.message ?? translationService.getMessage(OBJECT.ERROR.CUSTOM_OBJECT_UPDATE_FAILED),
+					undefined
+				);
 			}
 			await rm(statusFilePath, { force: true });
 		}
 
 		const sourceXmlFile = await findFileByName(unzipFolder, `${scriptId}.xml`);
 		if (!sourceXmlFile) {
-			return errorResultWithMessage(`File "${scriptId}.xml" was not found in the server response.`, undefined);
+			return errorResultWithMessage(
+				translationService.getMessage(OBJECT.ERROR.FILE_NOT_FOUND_IN_SERVER_RESPONSE, scriptId),
+				undefined
+			);
 		}
 
 		await copyFile(sourceXmlFile, targetXmlFile);
@@ -883,7 +900,7 @@ function extractRootTagName(xmlText: string): string {
 	const normalizedXml = xmlText.trim().replace(/^<\?xml[^>]*\?>/i, '').trim();
 	const tagMatch = normalizedXml.match(/^<([a-zA-Z0-9_:-]+)/);
 	if (!tagMatch) {
-		throw new Error('Unable to parse object XML root tag.');
+		throw new Error(translationService.getMessage(OBJECT.ERROR.ROOT_TAG_PARSE_FAILED));
 	}
 	return tagMatch[1];
 }
@@ -1062,7 +1079,7 @@ async function sendFormRequest(input: {
 
 		request.on('error', reject);
 		request.setTimeout(input.timeoutMs, () => {
-			request.destroy(new Error('Object command request timed out.'));
+			request.destroy(new Error(translationService.getMessage(OBJECT.ERROR.REQUEST_TIMED_OUT)));
 		});
 		request.write(requestBody);
 		request.end();
@@ -1113,17 +1130,17 @@ async function removeDirectoryQuietly(directoryPath: string): Promise<void> {
 function getHttpErrorMessage(response: HttpResponse): string {
 	const responseText = response.body.toString('utf8').trim();
 	if (!responseText) {
-		return `HTTP ${response.statusCode}`;
+		return translationService.getMessage(OBJECT.ERROR.HTTP_STATUS, response.statusCode);
 	}
 	return responseText;
 }
 
 function validateAuthInput(input: ObjectCommandAuthInput): void {
 	if (!input.hostName) {
-		throw new Error('A target host is required for object command execution.');
+		throw new Error(translationService.getMessage(OBJECT.ERROR.TARGET_HOST_REQUIRED));
 	}
 	if (!input.accessToken) {
-		throw new Error('An access token is required for object command execution.');
+		throw new Error(translationService.getMessage(OBJECT.ERROR.ACCESS_TOKEN_REQUIRED));
 	}
 }
 

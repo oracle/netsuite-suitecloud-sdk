@@ -8,6 +8,8 @@ import { join } from 'node:path';
 import { mkdir } from 'node:fs/promises';
 import { ZipperImpl } from '../../../utils/Zipper';
 import { createSdfProjectArchivePlan, type SdfManifestData } from './SdfProjectArchive';
+import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
+import { translationService } from '../../../services/translation/TranslationService';
 
 export const PACKAGE_PROJECT_OPERATION_STATUS = {
 	SUCCESS: 'SUCCESS',
@@ -35,10 +37,10 @@ export async function executePackageProject(
 ): Promise<PackageProjectOperationResult> {
 	try {
 		if (!input.projectFolder) {
-			return errorResult('A project folder is required for project packaging.');
+			return errorResult(translationService.getMessage(PROJECT_PACKAGE.ERROR.PROJECT_FOLDER_REQUIRED));
 		}
 		if (!input.destinationFolder) {
-			return errorResult('A destination folder is required for project packaging.');
+			return errorResult(translationService.getMessage(PROJECT_PACKAGE.ERROR.DESTINATION_FOLDER_REQUIRED));
 		}
 
 		const archivePlan = await createSdfProjectArchivePlan(input.projectFolder);
@@ -49,7 +51,7 @@ export async function executePackageProject(
 		return {
 			status: PACKAGE_PROJECT_OPERATION_STATUS.SUCCESS,
 			data: targetZipFilePath,
-			resultMessage: `The ${targetZipFilePath} file has been successfully created.`,
+			resultMessage: translationService.getMessage(PROJECT_PACKAGE.INFO.FILE_CREATED, targetZipFilePath),
 		};
 	} catch (error: unknown) {
 		return errorResult(toErrorMessage(error));

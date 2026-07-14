@@ -7,6 +7,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { constants as fsConstants } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { UTILS } from '../services/translation/TranslationKeys';
+import { translationService } from '../services/translation/TranslationService';
 
 export interface Zipper {
 	zipEntries(sourceDirectory: string, destinationFile: string, entries: readonly EntryToZipSource[]): Promise<string>;
@@ -85,7 +87,7 @@ export class ZipperImpl implements Zipper {
 			const relativePath = getSafeZipEntryName(entry.path, { allowTrailingSlash: entry.isDirectory === true });
 			const absolutePath = path.resolve(sourceRoot, ...relativePath.split('/'));
 			if (!isPathWithinDirectory(absolutePath, sourceRoot)) {
-				throw new Error(`Project archive entry is outside the project folder: "${entry.path}".`);
+				throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ARCHIVE_ENTRY_OUTSIDE_PROJECT, entry.path));
 			}
 			return {
 				sourceDirectory: sourceRoot,
@@ -105,7 +107,7 @@ export class ZipperImpl implements Zipper {
 		const entries = archive.getEntries();
 		const entryCount = entries.length;
 		if (entryCount > limits.maxEntries) {
-			throw new Error(`ZIP archive contains too many entries: ${entryCount}.`);
+			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.TOO_MANY_ENTRIES, entryCount));
 		}
 
 		const validatedEntries = readValidatedZipEntryData(
@@ -140,7 +142,7 @@ export class ZipperImpl implements Zipper {
 					if (fileSystemError.code === 'EPERM' && fileSystemError.path) {
 						// EPERM: operation not permitted
 						// reject referencing the file/directory that couldn't be accessed
-						throw Error(`Unable to read content in ${fileSystemError.path}. Error: ${error}`);
+						throw Error(translationService.getMessage(UTILS.ZIPPER.ERROR.READ_CONTENT_FAILED, fileSystemError.path, errorToMessage(error)));
 					}
 
 					throw error;
@@ -200,22 +202,22 @@ function validateZipEntries(
 	return entries.map((entry) => {
 		const entryName = getSafeZipEntryName(entry.entryName.replace(/\\/g, '/'), { allowTrailingSlash: true });
 		if (Buffer.byteLength(entryName, 'utf8') > limits.maxEntryNameLength) {
-			throw new Error('ZIP entry path is too long.');
+			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ENTRY_PATH_TOO_LONG));
 		}
 		const unixMode = getEntryUnixMode(entry);
 		if ((unixMode & 0o170000) === fsConstants.S_IFLNK) {
-			throw new Error(`ZIP symbolic link entries are not supported: "${entryName}".`);
+			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.SYMBOLIC_LINK_NOT_SUPPORTED, entryName));
 		}
 
 		const isDirectory = entry.isDirectory;
 		const uncompressedSize = isDirectory ? 0 : getEntryUncompressedSize(entry);
 		if (uncompressedSize !== undefined && uncompressedSize > limits.maxEntryUncompressedSize) {
-			throw new Error(`ZIP entry uncompressed size exceeds the configured limit: "${entryName}".`);
+			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_EXCEEDED, entryName));
 		}
 		if (uncompressedSize !== undefined) {
 			totalUncompressedSize += uncompressedSize;
 			if (totalUncompressedSize > limits.maxTotalUncompressedSize) {
-				throw new Error('ZIP archive uncompressed size exceeds the configured limit.');
+				throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ARCHIVE_UNCOMPRESSED_SIZE_EXCEEDED));
 			}
 		}
 
@@ -241,14 +243,14 @@ function readValidatedZipEntryData(
 
 		const data = getEntryData(validatedEntry.entry);
 		if (data.length > limits.maxEntryUncompressedSize) {
-			throw new Error(`ZIP entry uncompressed size exceeds the configured limit: "${validatedEntry.entryName}".`);
+			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_EXCEEDED, validatedEntry.entryName));
 		}
 		if (validatedEntry.uncompressedSize !== undefined && data.length !== validatedEntry.uncompressedSize) {
-			throw new Error(`ZIP entry uncompressed size does not match metadata: "${validatedEntry.entryName}".`);
+			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_METADATA_MISMATCH, validatedEntry.entryName));
 		}
 		totalUncompressedSize += data.length;
 		if (totalUncompressedSize > limits.maxTotalUncompressedSize) {
-			throw new Error('ZIP archive uncompressed size exceeds the configured limit.');
+			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ARCHIVE_UNCOMPRESSED_SIZE_EXCEEDED));
 		}
 
 		return {
@@ -304,7 +306,7 @@ function getPositiveLimit(value: number | undefined, defaultValue: number, name:
 		return defaultValue;
 	}
 	if (!Number.isSafeInteger(value) || value <= 0) {
-		throw new Error(`Invalid ZIP extraction limit: ${name}.`);
+		throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_EXTRACTION_LIMIT, name));
 	}
 	return value;
 }
@@ -315,7 +317,7 @@ function getSafeTargetPath(destinationDirectory: string, entryName: string): str
 	const destinationRoot = path.resolve(destinationDirectory);
 	const targetPath = path.resolve(destinationRoot, ...parts.filter((part) => part !== ''));
 	if (targetPath !== destinationRoot && !targetPath.startsWith(`${destinationRoot}${path.sep}`)) {
-		throw new Error(`Invalid ZIP entry path: "${entryName}".`);
+		throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName));
 	}
 	return targetPath;
 }
@@ -335,11 +337,11 @@ function getSafeZipEntryName(entryName: string, options: { allowTrailingSlash?: 
 		? normalizedEntryName.replace(/\/+$/, '')
 		: normalizedEntryName.replace(/\/$/, '');
 	if (!safeEntryName || safeEntryName.includes('\0') || safeEntryName.startsWith('/') || /^[A-Za-z]:\//.test(safeEntryName)) {
-		throw new Error(`Invalid ZIP entry path: "${entryName}".`);
+		throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName));
 	}
 	const parts = safeEntryName.split('/');
 	if (parts.some((part) => !part || part === '.' || part === '..')) {
-		throw new Error(`Invalid ZIP entry path: "${entryName}".`);
+		throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName));
 	}
 	return safeEntryName;
 }
@@ -356,4 +358,8 @@ function toZipPath(filepath: string): string {
 
 function normalizePathForComparison(filepath: string): string {
 	return process.platform === 'win32' ? filepath.toLowerCase() : filepath;
+}
+
+function errorToMessage(error: unknown): string {
+	return error instanceof Error ? error.message : String(error);
 }
