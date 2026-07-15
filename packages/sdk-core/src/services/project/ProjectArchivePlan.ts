@@ -21,8 +21,6 @@ const APPLICATION_FILENAME = 'application.xml';
 const INSTALLATION_PREFERENCES_FOLDER = 'InstallationPreferences';
 const SDF_INSTALLATION_SCRIPT_ROOT = 'sdfinstallationscript';
 const PROJECT_TYPE_ACP = 'ACCOUNTCUSTOMIZATION';
-const PROJECT_UPLOAD_EXCLUDED_ROOTS = new Set(['.git', 'build', 'node_modules']);
-const PROJECT_UPLOAD_EXCLUDED_FILES = new Set(['.DS_Store']);
 
 type XmlValue = Record<string, any>;
 
@@ -59,20 +57,14 @@ export async function createPackageArchivePlan(projectFolder: string): Promise<P
 		await addDeployPaths(projectFolder, getPathValues(deployRoot.configuration), entries, seen);
 	} else {
 		await addFolderContents(projectFolder, INSTALLATION_PREFERENCES_FOLDER, entries, seen);
+		await addInstallationScripts(projectFolder, deployRoot, entries, seen);
 	}
 
 	await addDeployPaths(projectFolder, getPathValues(deployRoot.files), entries, seen);
 	await addDeployPaths(projectFolder, getPathValues(deployRoot.objects), entries, seen);
-	await addReferencedInstallationScriptFiles(projectFolder, entries, seen);
 	await addDeployPaths(projectFolder, getPathValues(deployRoot.translationimports), entries, seen);
 
 	return { manifest, entries };
-}
-
-export async function createProjectUploadArchiveEntries(projectFolder: string): Promise<ArchiveEntry[]> {
-	const entries: ArchiveEntry[] = [];
-	await addFolderContents(projectFolder, '', entries, new Set<string>(), true);
-	return entries;
 }
 
 async function readRequiredXmlRoot(projectFolder: string, filename: string, expectedRoot: string): Promise<XmlValue> {
@@ -152,39 +144,48 @@ async function addDeployPaths(
 	}
 }
 
-async function addReferencedInstallationScriptFiles(
+async function addInstallationScripts(
 	projectFolder: string,
+	deploy: XmlValue,
 	entries: ArchiveEntry[],
 	seen: Set<string>
 ): Promise<void> {
-	const objectPaths = entries
-		.filter((entry) => !entry.isDirectory && entry.path.startsWith('Objects/'))
-		.map((entry) => entry.path);
-
-	for (const objectPath of objectPaths) {
-		try {
-			const parsed = await parseStringPromise(
-				await readFile(join(projectFolder, ...objectPath.split('/')), 'utf8'),
-				{
-					explicitArray: false,
-					trim: true,
-				}
-			);
-			const rootTag = getRootTag(parsed);
-			if (rootTag?.name !== SDF_INSTALLATION_SCRIPT_ROOT) {
+	for (const run of asArray(deploy.run)) {
+		for (const script of asArray(run?.script)) {
+			const scriptPath = toProjectRelativePath(asText(script?.path));
+			if (
+				!scriptPath ||
+				scriptPath.endsWith('/*') ||
+				!(await isRegularFile(join(projectFolder, ...scriptPath.split('/'))))
+			) {
 				continue;
 			}
-			const scriptFile = getReferenceValue(asText(rootTag.value?.scriptfile));
-			if (scriptFile) {
-				await addDeployPaths(
-					projectFolder,
-					[`~/FileCabinet${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`],
-					entries,
-					seen
+
+			addEntry(entries, seen, scriptPath);
+			try {
+				const parsed = await parseStringPromise(
+					await readFile(join(projectFolder, ...scriptPath.split('/')), 'utf8'),
+					{
+						explicitArray: false,
+						trim: true,
+					}
 				);
+				const rootTag = getRootTag(parsed);
+				if (rootTag?.name !== SDF_INSTALLATION_SCRIPT_ROOT) {
+					continue;
+				}
+				const scriptFile = getReferenceValue(asText(rootTag.value?.scriptfile));
+				if (scriptFile) {
+					await addDeployPaths(
+						projectFolder,
+						[`~/FileCabinet${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`],
+						entries,
+						seen
+					);
+				}
+			} catch {
+				// Java packaging keeps the installation script and skips an unreadable or invalid referenced file.
 			}
-		} catch {
-			// Keep the selected object and skip an unreadable or invalid referenced script file.
 		}
 	}
 }
@@ -193,15 +194,12 @@ async function addFolderContents(
 	projectFolder: string,
 	relativeFolder: string,
 	entries: ArchiveEntry[],
-	seen: Set<string>,
-	isProjectUpload = false
+	seen: Set<string>
 ): Promise<void> {
-	if (relativeFolder && hasUnsafePathSegment(relativeFolder)) {
+	if (!relativeFolder || hasUnsafePathSegment(relativeFolder)) {
 		return;
 	}
-	const folder = relativeFolder
-		? resolve(projectFolder, ...relativeFolder.split('/'))
-		: resolve(projectFolder);
+	const folder = resolve(projectFolder, ...relativeFolder.split('/'));
 	if (!(await isDirectory(folder))) {
 		return;
 	}
@@ -210,21 +208,13 @@ async function addFolderContents(
 	for (const child of children) {
 		const fullPath = resolve(folder, child.name);
 		const entryPath = relative(projectFolder, fullPath).split(sep).join('/');
-		if (isProjectUpload && isExcludedProjectUploadEntry(entryPath, child.name)) {
-			continue;
-		}
 		if (child.isDirectory()) {
 			addEntry(entries, seen, entryPath, true);
-			await addFolderContents(projectFolder, entryPath, entries, seen, isProjectUpload);
+			await addFolderContents(projectFolder, entryPath, entries, seen);
 		} else if (child.isFile()) {
 			addEntry(entries, seen, entryPath);
 		}
 	}
-}
-
-function isExcludedProjectUploadEntry(entryPath: string, name: string): boolean {
-	const rootName = entryPath.split('/')[0];
-	return PROJECT_UPLOAD_EXCLUDED_ROOTS.has(rootName) || PROJECT_UPLOAD_EXCLUDED_FILES.has(name);
 }
 
 function getPathValues(section: unknown): string[] {

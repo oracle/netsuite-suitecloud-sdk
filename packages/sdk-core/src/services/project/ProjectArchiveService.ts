@@ -12,7 +12,7 @@ import type { ProjectArchiveService } from '../../actions/project/ProjectAction'
 import { createZipArchive } from '../archive/ZipArchive';
 import { PROJECT_API } from '../translation/TranslationKeys';
 import { translationService } from '../translation/TranslationService';
-import { createProjectUploadArchiveEntries } from './ProjectArchivePlan';
+import { createPackageArchivePlan } from './ProjectArchivePlan';
 
 const PROJECT_ARCHIVE_PREFIX = 'suitecloud-project';
 
@@ -22,8 +22,8 @@ export class DefaultProjectArchiveService implements ProjectArchiveService {
 		const projectArchivePath = join(tmpdir(), fileName);
 
 		try {
-			const archiveEntries = await createProjectUploadArchiveEntries(projectFolder);
-			await createZipArchive(projectFolder, projectArchivePath, archiveEntries);
+			const archivePlan = await createPackageArchivePlan(projectFolder);
+			await createZipArchive(projectFolder, projectArchivePath, archivePlan.entries);
 			return projectArchivePath;
 		} catch (error: unknown) {
 			throw new Error(
