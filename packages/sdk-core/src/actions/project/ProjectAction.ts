@@ -63,10 +63,9 @@ export class ProjectAction {
 	constructor(private readonly dependencies: ProjectActionDependencies) {}
 
 	async execute(input: ProjectActionInput): Promise<OperationResult> {
-		validateExecutionInput(input);
-
 		let projectArchivePath: string | undefined;
 		try {
+			validateExecutionInput(input);
 			projectArchivePath = await this.dependencies.archiveService.create(input.projectFolder);
 			const response = await this.dependencies.apiClient.send({
 				command: input.command,
@@ -93,7 +92,11 @@ export class ProjectAction {
 			};
 		} finally {
 			if (projectArchivePath) {
-				await this.dependencies.archiveService.remove(projectArchivePath);
+				try {
+					await this.dependencies.archiveService.remove(projectArchivePath);
+				} catch {
+					// Cleanup is best-effort and must not replace the command result.
+				}
 			}
 		}
 	}

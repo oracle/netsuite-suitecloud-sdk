@@ -10,7 +10,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { randomBytes } from 'node:crypto';
 import {
 	FILE_COMMAND_STATUS,
-	type FileCommandOperationResult,
+	type ImportFilesOperationResult,
 	type ImportFilesExecutionInput,
 } from '../../../api/file/FileCommand';
 import { extractZipArchive } from '../../../services/archive/ZipArchive';
@@ -30,7 +30,7 @@ const IMPORT_FILES_STATUS_FILENAME = 'status.xml';
 const IDE_ACTION_IMPORT_FILES = 'ImportFiles';
 const SDF_ACTION_IMPORT_FILES = 'importfiles';
 
-export async function executeImportFiles(input: ImportFilesExecutionInput): Promise<FileCommandOperationResult> {
+export async function executeImportFiles(input: ImportFilesExecutionInput): Promise<ImportFilesOperationResult> {
 	if (!Array.isArray(input.filePaths) || input.filePaths.length === 0) {
 		return errorResultWithMessage(translationService.getMessage(FILE.ERROR.IMPORT_FILE_PATHS_REQUIRED), undefined);
 	}
@@ -118,7 +118,7 @@ async function removeDirectoryQuietly(directoryPath: string): Promise<void> {
 	}
 }
 
-function errorResultWithMessage(errorMessage: string, httpStatusCode: number | undefined): FileCommandOperationResult {
+function errorResultWithMessage(errorMessage: string, httpStatusCode: number | undefined): ImportFilesOperationResult {
 	return {
 		status: FILE_COMMAND_STATUS.ERROR,
 		...(httpStatusCode ? { httpStatusCode } : {}),

@@ -7,13 +7,13 @@
 import { copyFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
+import type { ImportFileResult } from '../../../api/file/FileCommand';
 import {
 	assertCreatablePathWithin,
 	assertPathWithin,
 	assertRealPathWithin,
 	resolveSuiteCloudPath,
 } from '../../../services/project/ProjectPathResolver';
-import type { ImportFileResult } from '../FileCommandXml';
 
 const FILE_CABINET_ROOT_FOLDER = 'FileCabinet';
 

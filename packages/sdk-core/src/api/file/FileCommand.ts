@@ -6,8 +6,10 @@
 
 import {
 	SDK_OPERATION_STATUS,
+	type ErrorResult,
 	type OperationResult,
 	type SdkOperationStatus,
+	type SuccessResult,
 } from '../OperationResult';
 
 /** Compatibility alias for existing command consumers. */
@@ -15,7 +17,21 @@ export const FILE_COMMAND_STATUS = SDK_OPERATION_STATUS;
 
 export type FileCommandStatus = SdkOperationStatus;
 
-export type FileCommandOperationResult = OperationResult;
+export type FileCommandOperationResult<T = unknown> = OperationResult<T>;
+
+export type ImportFileResult = {
+	path: string;
+	loaded: boolean;
+	message: string;
+};
+
+export type ImportFilesResult = {
+	results: ImportFileResult[];
+};
+
+export type ImportFilesOperationResult =
+	| (SuccessResult<ImportFilesResult> & { data: ImportFilesResult })
+	| ErrorResult;
 
 export type FileCommandAuthInput = {
 	hostName: string;

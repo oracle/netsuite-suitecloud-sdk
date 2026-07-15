@@ -5,17 +5,15 @@
 'use strict';
 
 import { parseStringPromise } from 'xml2js';
+import type {
+	ImportFileResult,
+	ImportFilesResult,
+} from '../../api/file/FileCommand';
 
 export type FileCabinetFolderTree = {
 	name: string;
 	folders: FileCabinetFolderTree[];
 	files: string[];
-};
-
-export type ImportFileResult = {
-	path: string;
-	loaded: boolean;
-	message: string;
 };
 
 export function buildImportFilesXml(filePaths: string[], excludeProperties: boolean): string {
@@ -35,7 +33,7 @@ export function buildImportFilesXml(filePaths: string[], excludeProperties: bool
 	return `<media><files>${filesXml}</files></media>`;
 }
 
-export async function parseImportStatus(statusXml: string): Promise<{ results: ImportFileResult[] }> {
+export async function parseImportStatus(statusXml: string): Promise<ImportFilesResult> {
 	const parsedStatus = await parseStringPromise(statusXml, { explicitArray: false, trim: true });
 	const resultNodes = ensureArray(parsedStatus?.status?.result);
 	const results = resultNodes.map((resultNode) => ({

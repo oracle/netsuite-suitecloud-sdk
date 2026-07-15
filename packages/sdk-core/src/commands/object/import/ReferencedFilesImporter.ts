@@ -7,6 +7,7 @@
 import { readFile } from 'node:fs/promises';
 
 import { SDK_OPERATION_STATUS, type OperationResult } from '../../../api/OperationResult';
+import type { ImportFileResult } from '../../../api/file/FileCommand';
 import type {
 	ImportObjectsExecutionInput,
 	ObjectImportResultItem,
@@ -57,7 +58,7 @@ export async function importReferencedFiles(
 			};
 		}
 
-		appendImportResults(importResult.data, objectImport);
+		appendImportResults(importResult.data.results, objectImport);
 	}
 
 	return { status: SDK_OPERATION_STATUS.SUCCESS };
@@ -80,40 +81,19 @@ function collectValidPaths(
 	});
 }
 
-function appendImportResults(importData: unknown, objectImport: ObjectImportResultItem): void {
-	for (const rawItem of asArray(importData)) {
-		if (!isRecord(rawItem)) {
+function appendImportResults(importResults: ImportFileResult[], objectImport: ObjectImportResultItem): void {
+	for (const importResult of importResults) {
+		if (!importResult.path) {
 			continue;
 		}
 
-		const file = isRecord(rawItem.file) ? rawItem.file : undefined;
-		const filePath = asString(file?.path) ?? asString(rawItem.path);
-		if (!filePath) {
-			continue;
-		}
-
-		if (rawItem.type === SDK_OPERATION_STATUS.SUCCESS || rawItem.loaded === true) {
-			objectImport.referencedFileImportResult.successfulImports.push({ path: filePath });
+		if (importResult.loaded) {
+			objectImport.referencedFileImportResult.successfulImports.push({ path: importResult.path });
 		} else {
 			objectImport.referencedFileImportResult.failedImports.push({
-				path: filePath,
-				message: asString(rawItem.errorMessage) ?? asString(rawItem.message),
+				path: importResult.path,
+				message: importResult.message,
 			});
 		}
 	}
-}
-
-function asArray(value: unknown): unknown[] {
-	if (Array.isArray(value)) {
-		return value;
-	}
-	return value === undefined || value === null ? [] : [value];
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-	return typeof value === 'object' && value !== null;
-}
-
-function asString(value: unknown): string | undefined {
-	return typeof value === 'string' ? value : undefined;
 }

@@ -6,7 +6,7 @@
 
 import type {
 	FileCommandAuthInput,
-	FileCommandOperationResult,
+	ImportFilesOperationResult,
 } from '../../../api/file/FileCommand';
 import { executeImportFiles } from './ImportFilesExecutor';
 
@@ -107,6 +107,6 @@ function quoteString(value: string): string {
 
 export async function executeImportFilesCommand(
 	input: ImportFilesExecutionInput
-): Promise<FileCommandOperationResult> {
+): Promise<ImportFilesOperationResult> {
 	return executeImportFiles(input);
 }

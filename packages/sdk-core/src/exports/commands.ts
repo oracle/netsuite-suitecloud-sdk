@@ -15,6 +15,11 @@ export {
 	validateManageAuthOptions,
 } from '../commands/account/manageauth/ManageAuthHandler';
 export { FILE_COMMAND_STATUS } from '../api/file/FileCommand';
+export type {
+	ImportFileResult,
+	ImportFilesOperationResult,
+	ImportFilesResult,
+} from '../api/file/FileCommand';
 export { executeImportFiles } from '../commands/file/import/ImportFilesExecutor';
 export { executeListFiles, executeListFolders } from '../commands/file/list/ListFilesExecutor';
 export { executeUploadFiles } from '../commands/file/upload/UploadFilesExecutor';

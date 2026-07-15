@@ -72,8 +72,11 @@ function installSdkCoreRuntimeDependencies() {
 }
 
 function runNpm(args, workingDirectory = repositoryRoot) {
-	const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-	const result = spawnSync(npmCommand, args, {
+	const npmCliPath = process.env.npm_execpath;
+	if (!npmCliPath) {
+		throw new Error('The npm executable could not be resolved. Run this script through npm run pack:cli.');
+	}
+	const result = spawnSync(process.execPath, [npmCliPath, ...args], {
 		cwd: workingDirectory,
 		stdio: 'inherit',
 	});
