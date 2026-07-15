@@ -8,7 +8,7 @@ import { access, copyFile, mkdir, readFile, readdir, rm } from 'node:fs/promises
 import { constants as fsConstants } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-import { assertCreatablePathWithin, assertRealPathWithin } from '../project/ProjectPathResolver';
+import { assertCreatablePathWithin, assertRealPathWithin } from '../../services/project/ProjectPathResolver';
 
 const OBJECTS_FOLDER_NAME = 'Objects';
 const STATUS_XML_FILENAME = 'status.xml';

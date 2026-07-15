@@ -7,7 +7,7 @@
 import { access, readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 import { parseStringPromise } from 'xml2js';
-import type { ArchiveEntry } from '../archive/ArchiveService';
+import type { ArchiveEntry } from '../archive/ZipArchive';
 import { PROJECT_ARCHIVE } from '../translation/TranslationKeys';
 import { translationService } from '../translation/TranslationService';
 

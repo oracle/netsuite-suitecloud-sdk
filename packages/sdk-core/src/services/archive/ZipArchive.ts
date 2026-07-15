@@ -207,6 +207,24 @@ export class AdmZipArchive implements ZipArchive {
 	}
 }
 
+const defaultZipArchive = new AdmZipArchive();
+
+export function createZipArchive(
+	sourceDirectory: string,
+	destinationFile: string,
+	entries: readonly ArchiveEntry[]
+): Promise<string> {
+	return defaultZipArchive.zipEntries(sourceDirectory, destinationFile, entries);
+}
+
+export function extractZipArchive(
+	archiveFile: string,
+	destinationDirectory: string,
+	options?: ArchiveExtractionOptions
+): Promise<void> {
+	return defaultZipArchive.unzip(archiveFile, destinationDirectory, options);
+}
+
 function validateZipEntries(
 	entries: AdmZipEntry[],
 	destinationDirectory: string,

@@ -25,7 +25,6 @@
   "types": "./build/index.d.ts",
   "exports": {
     ".": "./build/index.js",
-    "./public": "./build/public.js",
     "./package.json": "./package.json"
   }
 }

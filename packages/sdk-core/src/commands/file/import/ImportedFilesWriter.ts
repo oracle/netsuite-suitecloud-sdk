@@ -12,8 +12,8 @@ import {
 	assertPathWithin,
 	assertRealPathWithin,
 	resolveSuiteCloudPath,
-} from '../project/ProjectPathResolver';
-import type { ImportFileResult } from './FileXmlService';
+} from '../../../services/project/ProjectPathResolver';
+import type { ImportFileResult } from '../FileCommandXml';
 
 const FILE_CABINET_ROOT_FOLDER = 'FileCabinet';
 

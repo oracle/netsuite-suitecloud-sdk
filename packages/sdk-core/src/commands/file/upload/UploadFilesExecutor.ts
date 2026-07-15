@@ -12,19 +12,19 @@ import {
 	FILE_COMMAND_STATUS,
 	type FileCommandOperationResult,
 	type UploadFilesExecutionInput,
-} from '../../api/file/FileCommand';
+} from '../../../api/file/FileCommand';
 import {
 	assertRealPathWithin,
 	PathOutsideRootError,
 	resolveSuiteCloudPath,
-} from '../project/ProjectPathResolver';
-import { FILE } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
+} from '../../../services/project/ProjectPathResolver';
+import { FILE } from '../../../services/translation/TranslationKeys';
+import { translationService } from '../../../services/translation/TranslationService';
 import {
 	getHttpErrorMessage,
 	sendFileCommandRequest,
 	type FileCommandHttpResponse,
-} from './FileCommandClient';
+} from '../FileCommandClient';
 
 const FILE_CABINET_UPLOAD_ENDPOINT_PATH = '/app/suiteapp/devframework/fileupload/filecabinetupload.nl';
 const FILE_CABINET_ROOT_FOLDER = 'FileCabinet';

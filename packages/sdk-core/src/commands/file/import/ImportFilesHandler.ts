@@ -4,11 +4,11 @@
  */
 'use strict';
 
-import {
-	executeImportFiles,
-	type FileCommandAuthInput,
-	type FileCommandOperationResult,
-} from '../FileCommandExecutor';
+import type {
+	FileCommandAuthInput,
+	FileCommandOperationResult,
+} from '../../../api/file/FileCommand';
+import { executeImportFiles } from './ImportFilesExecutor';
 
 export const IMPORT_FILES_COMMAND_OPTIONS = {
 	ALLOW_FOR_SUITEAPPS: 'allowforsuiteapps',

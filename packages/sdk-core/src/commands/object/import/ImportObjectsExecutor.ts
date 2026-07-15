@@ -6,7 +6,7 @@
 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { randomBytes } from 'node:crypto';
 
 import {
@@ -14,127 +14,55 @@ import {
 	type CustomObjectInfo,
 	type ImportObjectsExecutionInput,
 	type ImportObjectsResult,
-	type ListObjectsExecutionInput,
-	type ObjectCommandAuthInput,
 	type ObjectCommandOperationResult,
-	type ObjectImportResultItem,
-} from '../../api/object/ObjectCommand';
-import { executeImportFiles } from '../file/FileCommandService';
-import { extractZipArchive } from '../archive/ArchiveService';
+} from '../../../api/object/ObjectCommand';
+import { extractZipArchive } from '../../../services/archive/ZipArchive';
 import {
 	assertCreatablePathWithin,
 	assertPathWithin,
 	PathOutsideRootError,
-} from '../project/ProjectPathResolver';
-import { isSuiteAppProject } from '../project/ProjectManifestService';
-import { OBJECT } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
+} from '../../../services/project/ProjectPathResolver';
+import { isSuiteAppProject } from '../../../services/project/ProjectManifestService';
+import { OBJECT } from '../../../services/translation/TranslationKeys';
+import { translationService } from '../../../services/translation/TranslationService';
 import {
 	getHttpErrorMessage,
 	isIdeLikeResponse,
 	sendFormRequest,
-} from './ObjectCommandClient';
+	validateObjectCommandAuth,
+} from '../ObjectCommandClient';
 import {
 	copyDirectoryContents,
-	findObjectFileByScriptId,
 	readOptionalFile,
 	removeDirectory,
-} from './SdfObjectService';
+} from '../ObjectFiles';
 import {
 	buildCustomObjectsXml,
 	extractImportObjectsResult,
-	extractScriptFileReferences,
-	parseCustomObjectListXml,
 	parseIdePayload,
 	parseImportObjectStatus,
 	uniqueCustomObjects,
-} from './ObjectXmlService';
-
-export * from '../../api/object/ObjectCommand';
-export {
-	executeUpdateCustomRecordWithInstances,
-	executeUpdateObjects,
-} from './ObjectUpdateService';
+} from '../ObjectCommandXml';
+import { executeListObjects } from '../list/ListObjectsExecutor';
+import { importReferencedFiles } from './ReferencedFilesImporter';
 
 const IDE_ENDPOINT_PATH = '/app/ide/ide.nl';
 const OBJECTS_FOLDER_NAME = 'Objects';
 const STATUS_XML_FILENAME = 'status.xml';
-const ACTION_FETCH_CUSTOM_OBJECT_LIST = 'FetchCustomObjectList';
 const ACTION_FETCH_CUSTOM_OBJECT_XML = 'FetchCustomObjectXml';
 const IDE_ACTION_KEY = 'action';
-const IDE_PARAM_PACKAGE_ROOT = 'package_root';
-const IDE_PARAM_OBJECT_TYPE = 'object_type';
-const IDE_PARAM_SCRIPT_ID_CONTAINS = 'scriptid_contains';
 const IDE_PARAM_CUSTOM_OBJECTS = 'custom_objects';
-const SDF_ACTION_LIST_OBJECTS = 'listobjects';
 const SDF_ACTION_IMPORT_OBJECTS = 'importobjects';
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 const ALL_LITERAL = 'ALL';
 const CUSTOM_SEGMENT_PREFIX = 'customsegment';
-const SUITESCRIPTS_PREFIX = '/SuiteScripts/';
-
-export async function executeListObjects(
-	input: ListObjectsExecutionInput
-): Promise<ObjectCommandOperationResult<CustomObjectInfo[]>> {
-	try {
-		validateAuthInput(input);
-
-		const requestParams: Record<string, string | string[]> = {
-			[IDE_ACTION_KEY]: ACTION_FETCH_CUSTOM_OBJECT_LIST,
-		};
-
-		if (input.appId && input.appId.trim()) {
-			requestParams[IDE_PARAM_PACKAGE_ROOT] = input.appId.trim().toLowerCase();
-		}
-		if (input.scriptIdContains && input.scriptIdContains.trim()) {
-			requestParams[IDE_PARAM_SCRIPT_ID_CONTAINS] = input.scriptIdContains.trim().toLowerCase();
-		}
-		if (Array.isArray(input.objectTypes) && input.objectTypes.length > 0) {
-			requestParams[IDE_PARAM_OBJECT_TYPE] = input.objectTypes
-				.filter((type) => typeof type === 'string' && type.trim())
-				.map((type) => type.trim().toLowerCase());
-		}
-
-		const response = await sendFormRequest({
-			hostName: input.hostName,
-			accessToken: input.accessToken,
-			path: IDE_ENDPOINT_PATH,
-			actionName: SDF_ACTION_LIST_OBJECTS,
-			params: requestParams,
-			userAgent: input.userAgent,
-			timeoutMs: input.timeoutMs ?? DEFAULT_TIMEOUT_MS,
-		});
-
-		if (response.statusCode === 401 || response.statusCode === 403) {
-			return errorResultWithMessage(getHttpErrorMessage(response), response.statusCode);
-		}
-		if (response.statusCode < 200 || response.statusCode >= 300) {
-			return errorResultWithMessage(getHttpErrorMessage(response), response.statusCode);
-		}
-
-		const responseText = response.body.toString('utf8');
-		const idePayload = await parseIdePayload(responseText);
-		if (idePayload.errorMessage) {
-			return errorResultWithMessage(idePayload.errorMessage, response.statusCode);
-		}
-
-		const objects = idePayload.resultText ? await parseCustomObjectListXml(idePayload.resultText) : [];
-
-		return {
-			status: OBJECT_COMMAND_STATUS.SUCCESS,
-			data: objects,
-		};
-	} catch (error: unknown) {
-		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
-	}
-}
 
 export async function executeImportObjects(
 	input: ImportObjectsExecutionInput
 ): Promise<ObjectCommandOperationResult<ImportObjectsResult>> {
 	let tempDirectory: string | undefined;
 	try {
-		validateAuthInput(input);
+		validateObjectCommandAuth(input);
 		if (!input.projectFolder) {
 			return errorResultWithMessage(
 				translationService.getMessage(OBJECT.ERROR.PROJECT_FOLDER_REQUIRED_FOR_IMPORT),
@@ -227,7 +155,7 @@ export async function executeImportObjects(
 
 		const canImportReferencedFiles = !input.excludeFiles && !(await isSuiteAppProject(input.projectFolder));
 		if (canImportReferencedFiles) {
-			const referencedFilesResult = await enrichReferencedFileImports(
+			const referencedFilesResult = await importReferencedFiles(
 				{ ...input, targetFolder },
 				importResult.successfulImports
 			);
@@ -324,100 +252,8 @@ function normalizeScriptIds(scriptIds: string[] | undefined): string[] {
 		.filter((scriptId, index, array) => array.indexOf(scriptId) === index);
 }
 
-async function enrichReferencedFileImports(
-	input: ImportObjectsExecutionInput,
-	successfulObjectImports: ObjectImportResultItem[]
-): Promise<ObjectCommandOperationResult<ImportObjectsResult>> {
-	for (const objectImport of successfulObjectImports) {
-		const scriptId = objectImport.customObject.id;
-		const objectFile = await findObjectFileByScriptId(input.projectFolder, scriptId, input.targetFolder);
-		if (!objectFile) {
-			continue;
-		}
-
-		const objectContents = await readFile(objectFile, 'utf8');
-		const scriptFilePaths = extractScriptFileReferences(objectContents);
-		if (scriptFilePaths.length === 0) {
-			continue;
-		}
-
-		const validPaths: string[] = [];
-		for (const scriptFilePath of scriptFilePaths) {
-			if (!scriptFilePath.startsWith(SUITESCRIPTS_PREFIX)) {
-				objectImport.referencedFileImportResult.failedImports.push({
-					path: scriptFilePath,
-					message: translationService.getMessage(OBJECT.ERROR.INVALID_REFERENCED_FILE_PATH),
-				});
-				continue;
-			}
-			validPaths.push(scriptFilePath);
-		}
-
-		if (validPaths.length === 0) {
-			continue;
-		}
-
-		const importFilesResult = await executeImportFiles({
-			hostName: input.hostName,
-			accessToken: input.accessToken,
-			projectFolder: input.projectFolder,
-			filePaths: validPaths,
-			excludeProperties: false,
-			userAgent: input.userAgent,
-			timeoutMs: input.timeoutMs,
-		});
-
-		if (importFilesResult.status === 'ERROR') {
-			return {
-				status: OBJECT_COMMAND_STATUS.ERROR,
-				httpStatusCode: importFilesResult.httpStatusCode,
-				errorMessages: importFilesResult.errorMessages,
-			};
-		}
-
-		const importFileItems = asArray(
-			importFilesResult.data as Record<string, unknown> | Record<string, unknown>[] | undefined
-		);
-		for (const rawImportFileItem of importFileItems) {
-			const importFileItem = rawImportFileItem as {
-				file?: { path?: unknown };
-				path?: unknown;
-				type?: unknown;
-				loaded?: unknown;
-				errorMessage?: unknown;
-				message?: unknown;
-			};
-			const filePath = stringOrUndefined(importFileItem?.file?.path) ?? stringOrUndefined(importFileItem?.path);
-			if (!filePath) {
-				continue;
-			}
-			if (importFileItem?.type === 'SUCCESS' || importFileItem?.loaded === true) {
-				objectImport.referencedFileImportResult.successfulImports.push({ path: filePath });
-			} else {
-				objectImport.referencedFileImportResult.failedImports.push({
-					path: filePath,
-					message: stringOrUndefined(importFileItem?.errorMessage) ?? stringOrUndefined(importFileItem?.message),
-				});
-			}
-		}
-	}
-
-	return {
-		status: OBJECT_COMMAND_STATUS.SUCCESS,
-	};
-}
-
 async function unzipArchive(zipFilePath: string, destinationFolder: string): Promise<void> {
 	await extractZipArchive(zipFilePath, destinationFolder);
-}
-
-function validateAuthInput(input: ObjectCommandAuthInput): void {
-	if (!input.hostName) {
-		throw new Error(translationService.getMessage(OBJECT.ERROR.TARGET_HOST_REQUIRED));
-	}
-	if (!input.accessToken) {
-		throw new Error(translationService.getMessage(OBJECT.ERROR.ACCESS_TOKEN_REQUIRED));
-	}
 }
 
 function errorResultWithMessage<T = unknown>(
@@ -450,20 +286,6 @@ function extractStatusCode(error: unknown): number | undefined {
 
 function isObject(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null;
-}
-
-function stringOrUndefined(value: unknown): string | undefined {
-	if (typeof value !== 'string') {
-		return undefined;
-	}
-	return value;
-}
-
-function asArray<T>(value: T | T[] | undefined | null): T[] {
-	if (Array.isArray(value)) {
-		return value;
-	}
-	return value === undefined || value === null ? [] : [value];
 }
 
 function buildEmptyImportObjectsResult(): ImportObjectsResult {

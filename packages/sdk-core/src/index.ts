@@ -10,7 +10,3 @@ import * as http from './exports/http';
 import * as metadata from './exports/metadata';
 
 export { auth, commands, http, metadata };
-
-// Additive stable facade. Existing namespace exports remain available while
-// consumers migrate to the intentionally small public API.
-export * as publicApi from './public';

@@ -5,14 +5,13 @@
 'use strict';
 
 import {
+	SDK_OPERATION_STATUS,
 	type OperationResult,
 	type SdkOperationStatus,
 } from '../OperationResult';
 
-export const FILE_COMMAND_STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-} as const satisfies Record<string, SdkOperationStatus>;
+/** Compatibility alias for existing command consumers. */
+export const FILE_COMMAND_STATUS = SDK_OPERATION_STATUS;
 
 export type FileCommandStatus = SdkOperationStatus;
 

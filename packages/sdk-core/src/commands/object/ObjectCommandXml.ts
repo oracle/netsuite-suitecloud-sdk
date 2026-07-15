@@ -12,8 +12,8 @@ import {
 	type ImportObjectsResult,
 	type ObjectImportResultItem,
 } from '../../api/object/ObjectCommand';
-import { OBJECT } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
+import { OBJECT } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 const CUSTOM_SEGMENT_TYPE = 'customsegment';
 const CUSTOM_RECORD_TYPE = 'customrecordtype';

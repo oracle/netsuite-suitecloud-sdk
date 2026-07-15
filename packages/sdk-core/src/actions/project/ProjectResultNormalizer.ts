@@ -6,11 +6,11 @@
 
 import { evaluateSdfProjectPayload, formatSdfProjectResultOutput } from './ProjectResultFormatter';
 import {
-	OperationResult,
-	ProjectCommandSummaryContext,
-	ProjectCommandType,
 	SDK_OPERATION_STATUS,
-} from './ProjectCommandTypes';
+	type OperationResult,
+	type ProjectCommandSummaryContext,
+	type ProjectCommandType,
+} from '../../api/project/ProjectCommand';
 const RAW_OUTPUT_INDENT = 2;
 
 export function normalizeProjectOperationResult(

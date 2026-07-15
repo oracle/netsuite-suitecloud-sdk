@@ -18,10 +18,10 @@ const {
 } = require('../../../sdk-core/build/services/project/ProjectPathResolver');
 const {
 	executeUploadFiles,
-} = require('../../../sdk-core/build/services/file/FileCommandService');
+} = require('../../../sdk-core/build/commands/file/upload/UploadFilesExecutor');
 const {
 	executeImportObjects,
-} = require('../../../sdk-core/build/services/object/ObjectCommandService');
+} = require('../../../sdk-core/build/commands/object/import/ImportObjectsExecutor');
 
 describe('ProjectPathResolver', () => {
 	let temporaryRoot;

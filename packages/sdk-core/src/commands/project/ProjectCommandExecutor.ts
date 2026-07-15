@@ -10,47 +10,33 @@ import {
 	type ProjectActionInput,
 } from '../../actions/project/ProjectAction';
 import type { OperationResult } from '../../api/project/ProjectCommand';
-import { PROJECT_COMMAND, SDK_OPERATION_STATUS } from '../../api/project/ProjectCommand';
-import { createSdkCore } from '../../SdkCore';
 import {
 	createDefaultProjectArchive,
 	deleteFileQuietly,
 } from '../../services/project/ProjectArchiveService';
 import {
 	sendDefaultProjectRequest,
-	type ProjectHttpResponse,
 } from '../../services/project/ProjectApiClient';
 
-type LegacyDependencies = {
+type ProjectCommandDependencies = {
 	createProjectArchive?: ProjectActionDependencies['archiveService']['create'];
 	deleteFile?: ProjectActionDependencies['archiveService']['remove'];
 	sendProjectRequest?: ProjectActionDependencies['apiClient']['send'];
 };
 
-export { PROJECT_COMMAND, SDK_OPERATION_STATUS };
-export type { ProjectHttpResponse };
-
 export function executeProjectCommand(
 	input: ProjectActionInput,
-	legacyDependencies: LegacyDependencies = {}
+	dependencies: ProjectCommandDependencies = {}
 ): Promise<OperationResult> {
-	if (!hasLegacyDependencies(legacyDependencies)) {
-		return createSdkCore().project.execute(input);
-	}
-
 	const action = new ProjectAction({
 		archiveService: {
-			create: legacyDependencies.createProjectArchive || createDefaultProjectArchive,
-			remove: legacyDependencies.deleteFile || deleteFileQuietly,
+			create: dependencies.createProjectArchive ?? createDefaultProjectArchive,
+			remove: dependencies.deleteFile ?? deleteFileQuietly,
 		},
 		apiClient: {
-			send: legacyDependencies.sendProjectRequest || sendDefaultProjectRequest,
+			send: dependencies.sendProjectRequest ?? sendDefaultProjectRequest,
 		},
 	});
 
 	return action.execute(input);
-}
-
-function hasLegacyDependencies(dependencies: LegacyDependencies): boolean {
-	return Boolean(dependencies.createProjectArchive || dependencies.deleteFile || dependencies.sendProjectRequest);
 }

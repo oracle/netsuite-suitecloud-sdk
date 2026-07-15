@@ -4,7 +4,10 @@
  */
 'use strict';
 
-import { ProjectCommandSummaryContext, ProjectCommandType } from './ProjectCommandTypes';
+import type {
+	ProjectCommandSummaryContext,
+	ProjectCommandType,
+} from '../../api/project/ProjectCommand';
 import { PROJECT_API } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
 

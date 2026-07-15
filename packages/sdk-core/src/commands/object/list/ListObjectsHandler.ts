@@ -4,12 +4,12 @@
  */
 'use strict';
 
-import {
-	executeListObjects,
-	type ListObjectsExecutionInput,
-	type ObjectCommandOperationResult,
-	type CustomObjectInfo,
-} from '../ObjectCommandExecutor';
+import type {
+	CustomObjectInfo,
+	ListObjectsExecutionInput,
+	ObjectCommandOperationResult,
+} from '../../../api/object/ObjectCommand';
+import { executeListObjects } from './ListObjectsExecutor';
 
 export const LIST_OBJECTS_COMMAND_OPTIONS = {
 	AUTH_ID: 'authid',

@@ -7,24 +7,18 @@
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 
+import {
+	SDK_OPERATION_STATUS,
+	type OperationResult,
+} from '../../../api/OperationResult';
 import { FILE_CREATE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { generateSuiteScriptTemplate } from '../../../templates/SuiteScriptTemplateService';
 
-export const FILE_CREATE_STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-} as const;
+/** Compatibility alias for existing command consumers. */
+export const FILE_CREATE_STATUS = SDK_OPERATION_STATUS;
 
-type FileCreateStatus = typeof FILE_CREATE_STATUS[keyof typeof FILE_CREATE_STATUS];
-
-export type FileCreateResult = {
-	status: FileCreateStatus;
-	data?: {
-		createdFileAbsolutePath: string;
-	};
-	errorMessages?: string[];
-};
+export type FileCreateResult = OperationResult<{ createdFileAbsolutePath: string }>;
 
 type ExecuteCreateFileInput = {
 	projectFolder: string;

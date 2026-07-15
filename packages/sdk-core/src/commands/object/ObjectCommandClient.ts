@@ -4,9 +4,10 @@
  */
 'use strict';
 
-import { sendSuiteCloudRequest } from '../http/SuiteCloudRequestService';
-import { OBJECT } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
+import type { ObjectCommandAuthInput } from '../../api/object/ObjectCommand';
+import { sendSuiteCloudRequest } from '../../services/http/SuiteCloudRequestService';
+import { OBJECT } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 export type ObjectCommandHttpResponse = {
 	statusCode: number;
@@ -32,6 +33,15 @@ const CONTENT_TYPE_FORM_URLENCODED = 'application/x-www-form-urlencoded';
 const CONTENT_TYPE_TEXT_XML = 'text/xml';
 const CONTENT_TYPE_JSON = 'application/json';
 const CONTENT_TYPE_OCTET_STREAM = 'application/octet-stream';
+
+export function validateObjectCommandAuth(input: ObjectCommandAuthInput): void {
+	if (!input.hostName) {
+		throw new Error(translationService.getMessage(OBJECT.ERROR.TARGET_HOST_REQUIRED));
+	}
+	if (!input.accessToken) {
+		throw new Error(translationService.getMessage(OBJECT.ERROR.ACCESS_TOKEN_REQUIRED));
+	}
+}
 
 export async function sendFormRequest(input: FormRequestInput): Promise<ObjectCommandHttpResponse> {
 	const urlSearchParams = new URLSearchParams();

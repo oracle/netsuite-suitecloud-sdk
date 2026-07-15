@@ -8,15 +8,11 @@ import { randomBytes } from 'node:crypto';
 import { unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { createZipArchive } from '../archive/ArchiveService';
+import type { ProjectArchiveService } from '../../actions/project/ProjectAction';
+import { createZipArchive } from '../archive/ZipArchive';
 import { PROJECT_API } from '../translation/TranslationKeys';
 import { translationService } from '../translation/TranslationService';
 import { createProjectUploadArchiveEntries } from './ProjectArchivePlan';
-
-export interface ProjectArchiveService {
-	create(projectFolder: string): Promise<string>;
-	remove(archivePath: string): Promise<void>;
-}
 
 const PROJECT_ARCHIVE_PREFIX = 'suitecloud-project';
 

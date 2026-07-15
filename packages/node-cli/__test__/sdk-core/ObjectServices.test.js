@@ -10,15 +10,15 @@ const { join } = require('node:path');
 
 const {
 	buildCustomObjectsXml,
-} = require('../../../sdk-core/build/services/object/ObjectXmlService');
+} = require('../../../sdk-core/build/commands/object/ObjectCommandXml');
 const {
 	copyDirectoryContents,
-} = require('../../../sdk-core/build/services/object/SdfObjectService');
+} = require('../../../sdk-core/build/commands/object/ObjectFiles');
 const {
 	PathOutsideRootError,
 } = require('../../../sdk-core/build/services/project/ProjectPathResolver');
 
-describe('ObjectXmlService', () => {
+describe('ObjectCommandXml', () => {
 	it('generates the same custom-object request XML as Java', () => {
 		expect(buildCustomObjectsXml([
 			{ type: 'customsegment', scriptId: 'scriptId1', appId: 'appId' },
@@ -33,7 +33,7 @@ describe('ObjectXmlService', () => {
 	});
 });
 
-describe('SdfObjectService', () => {
+describe('ObjectFiles', () => {
 	let temporaryRoot;
 
 	beforeEach(async () => {

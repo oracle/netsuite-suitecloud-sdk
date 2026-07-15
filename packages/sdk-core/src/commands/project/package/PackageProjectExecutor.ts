@@ -8,10 +8,10 @@ import { join } from 'node:path';
 import { mkdir } from 'node:fs/promises';
 
 import {
+	SDK_OPERATION_STATUS,
 	type OperationResult,
-	type SdkOperationStatus,
 } from '../../../api/OperationResult';
-import { createZipArchive } from '../../../services/archive/ArchiveService';
+import { createZipArchive } from '../../../services/archive/ZipArchive';
 import {
 	createPackageArchivePlan,
 	type ProjectManifestData,
@@ -19,16 +19,10 @@ import {
 import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 
-export const PACKAGE_PROJECT_OPERATION_STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-} as const satisfies Record<string, SdkOperationStatus>;
+/** Compatibility alias for existing command consumers. */
+export const PACKAGE_PROJECT_OPERATION_STATUS = SDK_OPERATION_STATUS;
 
-type PackageProjectOperationStatus = (typeof PACKAGE_PROJECT_OPERATION_STATUS)[keyof typeof PACKAGE_PROJECT_OPERATION_STATUS];
-
-export type PackageProjectOperationResult = OperationResult<string> & {
-	status: PackageProjectOperationStatus;
-};
+export type PackageProjectOperationResult = OperationResult<string>;
 
 export type PackageProjectExecutionInput = {
 	projectFolder: string;

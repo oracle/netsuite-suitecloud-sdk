@@ -5,9 +5,9 @@
 'use strict';
 
 import type { FileCommandAuthInput } from '../../api/file/FileCommand';
-import { sendSuiteCloudRequest } from '../http/SuiteCloudRequestService';
-import { FILE } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
+import { sendSuiteCloudRequest } from '../../services/http/SuiteCloudRequestService';
+import { FILE } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 
 export type FileCommandHttpResponse = {
 	statusCode: number;

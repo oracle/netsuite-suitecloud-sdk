@@ -8,30 +8,15 @@ import { randomBytes } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import type { RequestOptions } from 'node:https';
 import { basename } from 'node:path';
+import type {
+	ProjectApiClient,
+	ProjectHttpResponse,
+	ProjectRequest,
+} from '../../actions/project/ProjectAction';
 import type { ProjectCommandType } from '../../api/project/ProjectCommand';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
 import { PROJECT_API } from '../translation/TranslationKeys';
 import { translationService } from '../translation/TranslationService';
-
-export type ProjectHttpResponse = {
-	statusCode: number;
-	body: string;
-	serverTimestamp?: string;
-};
-
-export type ProjectRequest = {
-	command: ProjectCommandType;
-	hostName: string;
-	accessToken: string;
-	projectArchivePath: string;
-	params: Record<string, unknown>;
-	flags: string[];
-	timeoutMs: number;
-};
-
-export interface ProjectApiClient {
-	send(request: ProjectRequest): Promise<ProjectHttpResponse>;
-}
 
 const PROJECT_API_PATH = '/api/internal/sdf/v1/projects';
 const MULTIPART_EOL = '\r\n';

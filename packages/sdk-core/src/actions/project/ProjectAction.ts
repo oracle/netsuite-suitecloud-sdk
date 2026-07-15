@@ -5,15 +5,13 @@
 'use strict';
 
 import {
-	OperationResult,
 	PROJECT_COMMAND,
-	ProjectCommandSummaryContext,
-	ProjectCommandType,
 	SDK_OPERATION_STATUS,
+	type OperationResult,
+	type ProjectCommandSummaryContext,
+	type ProjectCommandType,
 } from '../../api/project/ProjectCommand';
-import { normalizeProjectOperationResult } from '../../commands/project/ProjectResultNormalizer';
-import { ProjectArchiveService } from '../../services/project/ProjectArchiveService';
-import { ProjectApiClient } from '../../services/project/ProjectApiClient';
+import { normalizeProjectOperationResult } from './ProjectResultNormalizer';
 import { PROJECT } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
 
@@ -30,6 +28,31 @@ export type ProjectActionInput = {
 	timeoutMs?: number;
 	summaryContext?: ProjectCommandSummaryContext;
 };
+
+export type ProjectRequest = {
+	command: ProjectCommandType;
+	hostName: string;
+	accessToken: string;
+	projectArchivePath: string;
+	params: Record<string, unknown>;
+	flags: string[];
+	timeoutMs: number;
+};
+
+export type ProjectHttpResponse = {
+	statusCode: number;
+	body: string;
+	serverTimestamp?: string;
+};
+
+export interface ProjectArchiveService {
+	create(projectFolder: string): Promise<string>;
+	remove(archivePath: string): Promise<void>;
+}
+
+export interface ProjectApiClient {
+	send(request: ProjectRequest): Promise<ProjectHttpResponse>;
+}
 
 export type ProjectActionDependencies = {
 	archiveService: ProjectArchiveService;
