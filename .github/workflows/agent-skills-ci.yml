@@ -17,6 +17,62 @@ on:
       - 'packages/agent-skills/**'
 
 jobs:
+  detect-changed-skills:
+    runs-on: ubuntu-latest
+    outputs:
+      skills: ${{ steps.changed-skills.outputs.skills }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: changed-skills
+        name: Find changed skill directories
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            base="$BASE_SHA"
+          else
+            base="$BEFORE_SHA"
+          fi
+
+          if [[ -z "$base" || "$base" =~ ^0+$ ]]; then
+            changed_files=$(git ls-tree -r --name-only "$HEAD_SHA" -- packages/agent-skills/)
+          else
+            changed_files=$(git diff --name-only "$base" "$HEAD_SHA" -- packages/agent-skills/)
+          fi
+
+          skills=$(printf '%s\n' "$changed_files" \
+            | awk -F/ '$1 == "packages" && $2 == "agent-skills" && NF >= 4 { print $1 "/" $2 "/" $3 }' \
+            | sort -u \
+            | while read -r skill; do
+                [[ -f "$skill/SKILL.md" ]] && printf '%s\n' "$skill"
+              done \
+            | jq -Rsc 'split("\n") | map(select(length > 0))')
+
+          echo "skills=$skills" >> "$GITHUB_OUTPUT"
+
+  validate-marketplace:
+    needs: detect-changed-skills
+    if: needs.detect-changed-skills.outputs.skills != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        skill: ${{ fromJSON(needs.detect-changed-skills.outputs.skills) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate skill with Marketplace action
+        uses: Flash-Brew-Digital/validate-skill@v1
+        with:
+          path: ${{ matrix.skill }}
+          validate-references: "true"
+
   validate-test:
     runs-on: ubuntu-latest
     steps:
