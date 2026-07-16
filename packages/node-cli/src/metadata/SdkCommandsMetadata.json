@@ -325,7 +325,7 @@
 			"validate": {
 				"name": "validate",
 				"option": "validate",
-				"description": "This option has no effect because project deployment is validated on the server.",
+				"description": "The \"--validate\" option has no effect. Project deployment is always validated on the server.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",
@@ -777,7 +777,7 @@
 			"server": {
 				"name": "server",
 				"option": "server",
-				"description": "This option has no effect because project validation is performed on the server by default.",
+				"description": "The \"--server\" option has no effect. Project validation is always performed on the server.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",
