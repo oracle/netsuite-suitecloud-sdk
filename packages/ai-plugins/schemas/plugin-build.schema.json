@@ -1,0 +1,152 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://oracle.example/schemas/plugin-build.schema.json",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"version",
+		"platform",
+		"metadata",
+		"skills",
+		"commonLayers",
+		"inputs"
+	],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^[a-z0-9][a-z0-9-]*$"
+		},
+		"version": {
+			"type": "string"
+		},
+		"platform": {
+			"type": "string",
+			"enum": [
+				"claude",
+				"codex"
+			]
+		},
+		"metadata": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"name",
+				"description",
+				"authorName",
+				"license",
+				"keywords"
+			],
+			"properties": {
+				"name": {
+					"type": "string",
+					"minLength": 1
+				},
+				"description": {
+					"type": "string",
+					"minLength": 1
+				},
+				"authorName": {
+					"type": "string",
+					"minLength": 1
+				},
+				"authorUrl": {
+					"type": "string",
+					"format": "uri"
+				},
+				"license": {
+					"type": "string",
+					"minLength": 1
+				},
+				"keywords": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "string",
+						"minLength": 1
+					}
+				},
+				"homepage": {
+					"type": "string",
+					"format": "uri"
+				},
+				"repository": {
+					"type": "string",
+					"format": "uri"
+				},
+				"category": {
+					"type": "string"
+				},
+				"capabilities": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"shortDescription": {
+					"type": "string"
+				},
+				"longDescription": {
+					"type": "string"
+				},
+				"privacyPolicyUrl": {
+					"type": "string",
+					"format": "uri"
+				}
+			}
+		},
+		"skills": {
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"type": "string",
+				"minLength": 1
+			}
+		},
+		"commonLayers": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"minLength": 1
+			}
+		},
+		"inputs": {
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": [
+					"root",
+					"destination",
+					"include",
+					"exclude"
+				],
+				"properties": {
+					"root": {
+						"type": "string",
+						"minLength": 1
+					},
+					"destination": {
+						"type": "string"
+					},
+					"include": {
+						"type": "array",
+						"minItems": 1,
+						"items": {
+							"type": "string",
+							"minLength": 1
+						}
+					},
+					"exclude": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"minLength": 1
+						}
+					}
+				}
+			}
+		}
+	}
+}

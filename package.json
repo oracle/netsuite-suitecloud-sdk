@@ -4,6 +4,7 @@
 	"license": "UPL-1.0",
 	"private": true,
 	"workspaces": [
+		"packages/ai-plugins",
 		"packages/node-cli",
 		"packages/unit-testing"
 	]
