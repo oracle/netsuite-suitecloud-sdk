@@ -1,0 +1,49 @@
+{
+	"$schema": "../schemas/plugin-build.schema.json",
+	"id": "suitecloud-plugin-for-codex",
+	"version": "1.0.0",
+	"platform": "codex",
+	"metadata": {
+		"name": "NetSuite SuiteCloud",
+		"description": "NetSuite SuiteCloud development skills for SuiteScript and SDF workflows.",
+		"authorName": "Oracle NetSuite",
+		"authorUrl": "https://www.netsuite.com",
+		"license": "The Universal Permissive License (UPL), Version 1.0",
+		"keywords": [
+			"netsuite",
+			"suitecloud",
+			"suitescript",
+			"sdf"
+		],
+		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/ai-plugins",
+		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
+		"category": "Developer Tools",
+		"capabilities": [
+			"Read",
+			"Write"
+		],
+		"shortDescription": "NetSuite SuiteCloud development skills for SuiteScript and SDF workflows.",
+		"longDescription": "Bundles NetSuite SuiteCloud development skills for SuiteScript and SDF workflows."
+	},
+	"skills": [
+		"netsuite-owasp-secure-coding",
+		"netsuite-sdf-project-documentation",
+		"netsuite-sdf-roles-and-permissions",
+		"netsuite-sdf-safe-guide",
+		"netsuite-suitescript-learning",
+		"netsuite-suitescript-records-reference",
+		"netsuite-suitescript-upgrade",
+		"netsuite-uif-spa-reference"
+	],
+	"commonLayers": [],
+	"inputs": [
+		{
+			"root": "src",
+			"destination": ".",
+			"include": [
+				"README.md"
+			],
+			"exclude": []
+		}
+	]
+}

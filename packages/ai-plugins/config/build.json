@@ -1,0 +1,17 @@
+{
+	"version": 1,
+	"licenseFile": "../../LICENSE.txt",
+	"skillsRoot": "../agent-skills",
+	"commonLayersRoot": "./common",
+	"pluginDistRoot": "../../dist/ai-plugins",
+	"globalExcludes": [
+		"**/.DS_Store",
+		"**/Thumbs.db",
+		"**/*.swp",
+		"**/*.swo",
+		"**/*~",
+		"**/.git/**",
+		"**/node_modules/**",
+		"**/dist/**"
+	]
+}

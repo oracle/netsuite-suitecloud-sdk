@@ -1,0 +1,45 @@
+name: AI Plugins CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ai-plugins-ci.yml'
+      - 'package.json'
+      - '.gitignore'
+      - 'LICENSE.txt'
+      - 'packages/ai-plugins/**'
+      - 'packages/agent-skills/**'
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/ai-plugins-ci.yml'
+      - 'package.json'
+      - '.gitignore'
+      - 'LICENSE.txt'
+      - 'packages/ai-plugins/**'
+      - 'packages/agent-skills/**'
+
+jobs:
+  validate-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate plugin configuration
+        run: npm run validate --workspace @oracle/ai-plugins
+
+      - name: Run tests
+        run: npm run test --workspace @oracle/ai-plugins
+
+      - name: Build plugin directories
+        run: npm run build --workspace @oracle/ai-plugins
+
+      - name: Verify release output matches source build
+        run: npm run verify-release --workspace @oracle/ai-plugins

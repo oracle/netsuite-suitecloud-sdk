@@ -1,1 +1,0 @@
-# SuiteCloud Plugin for Claude Code

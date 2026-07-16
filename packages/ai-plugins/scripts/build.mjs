@@ -1,0 +1,15 @@
+import { buildPlugins } from './lib/plugin-builder.mjs';
+
+const args = process.argv.slice(2);
+const pluginArgIndex = args.indexOf('--plugin');
+const pluginName = pluginArgIndex >= 0 ? args[pluginArgIndex + 1] : null;
+
+if (pluginArgIndex >= 0 && !pluginName) {
+	throw new Error('--plugin requires a plugin source directory name or plugin id');
+}
+
+const results = await buildPlugins(pluginName ? [pluginName] : []);
+
+for (const result of results) {
+	console.log(`Built ${result.plugin.id} -> ${result.outputDir}`);
+}

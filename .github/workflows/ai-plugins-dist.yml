@@ -1,0 +1,133 @@
+name: Publish AI Plugins Dist
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate and build plugins
+        run: |
+          npm run validate --workspace @oracle/ai-plugins
+          npm run test --workspace @oracle/ai-plugins
+          npm run build --workspace @oracle/ai-plugins
+
+      - name: Publish generated plugin directories to ai-plugins-dist
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          default_branch="${GITHUB_REF_NAME}"
+          dist_branch="ai-plugins-dist"
+          worktree_dir="$(mktemp -d)"
+          previous_dir="$(mktemp -d)"
+          changed_plugins=()
+          publish_required=0
+
+          if git ls-remote --exit-code --heads origin "${dist_branch}" >/dev/null 2>&1; then
+            git fetch origin "${dist_branch}:${dist_branch}"
+            git worktree add "${worktree_dir}" "${dist_branch}"
+            cp -R "${worktree_dir}/." "${previous_dir}/" || true
+          else
+            git worktree add --detach "${worktree_dir}"
+            pushd "${worktree_dir}" >/dev/null
+            rm -rf ./*
+            git checkout --orphan "${dist_branch}"
+            popd >/dev/null
+          fi
+
+          while IFS= read -r plugin_dir; do
+            plugin_name="$(basename "${plugin_dir}")"
+            if ! diff -qr "${plugin_dir}" "${previous_dir}/${plugin_name}" >/dev/null 2>&1; then
+              node -e "
+                const fs = require('fs');
+                const path = require('path');
+
+                function manifestVersion(root) {
+                  const claude = path.join(root, '.claude-plugin', 'plugin.json');
+                  const codex = path.join(root, '.codex-plugin', 'plugin.json');
+                  const manifest = fs.existsSync(claude) ? claude : codex;
+                  return JSON.parse(fs.readFileSync(manifest, 'utf8')).version;
+                }
+
+                function compareSemver(left, right) {
+                  const leftParts = left.split(/[.+-]/);
+                  const rightParts = right.split(/[.+-]/);
+                  const length = Math.max(leftParts.length, rightParts.length);
+                  for (let index = 0; index < length; index += 1) {
+                    const leftPart = leftParts[index] ?? '0';
+                    const rightPart = rightParts[index] ?? '0';
+                    const leftNumber = Number(leftPart);
+                    const rightNumber = Number(rightPart);
+                    const leftComparable = Number.isNaN(leftNumber) ? leftPart : leftNumber;
+                    const rightComparable = Number.isNaN(rightNumber) ? rightPart : rightNumber;
+                    if (leftComparable > rightComparable) return 1;
+                    if (leftComparable < rightComparable) return -1;
+                  }
+                  return 0;
+                }
+
+                const currentDir = process.argv[1];
+                const previousDir = process.argv[2];
+                if (!fs.existsSync(previousDir)) process.exit(0);
+                const currentVersion = manifestVersion(currentDir);
+                const previousVersion = manifestVersion(previousDir);
+                if (compareSemver(currentVersion, previousVersion) <= 0) {
+                  console.error('Changed plugin content requires a higher version:', path.basename(currentDir), previousVersion, '->', currentVersion);
+                  process.exit(1);
+                }
+              " "${plugin_dir}" "${previous_dir}/${plugin_name}"
+              changed_plugins+=("${plugin_name}")
+              publish_required=1
+            fi
+          done < <(find dist/ai-plugins -mindepth 1 -maxdepth 1 -type d | sort)
+
+          while IFS= read -r previous_plugin_dir; do
+            previous_plugin_name="$(basename "${previous_plugin_dir}")"
+            if [ ! -d "dist/ai-plugins/${previous_plugin_name}" ]; then
+              publish_required=1
+            fi
+          done < <(find "${previous_dir}" -mindepth 1 -maxdepth 1 -type d ! -name .git | sort)
+
+          if [ "${publish_required}" -eq 0 ]; then
+            echo "No plugin content changes detected."
+            exit 0
+          fi
+
+          rm -rf "${worktree_dir:?}/"*
+          cp -R dist/ai-plugins/. "${worktree_dir}/"
+
+          cat > "${worktree_dir}/README.md" <<EOF
+          # AI Plugins Distribution
+
+          Generated plugin directories published from the \`${default_branch}\` branch source tree.
+          EOF
+
+          pushd "${worktree_dir}" >/dev/null
+          git add README.md .
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Publish AI plugins from ${GITHUB_SHA}"
+          git push origin HEAD:${dist_branch}
+
+          for plugin_name in "${changed_plugins[@]}"; do
+            version="$(
+              node -e "const fs=require('fs'); const path=require('path'); const root=process.argv[1]; const claude=path.join(root,'.claude-plugin','plugin.json'); const codex=path.join(root,'.codex-plugin','plugin.json'); const manifest=fs.existsSync(claude)?claude:codex; process.stdout.write(JSON.parse(fs.readFileSync(manifest,'utf8')).version);" \
+              "${plugin_name}"
+            )"
+            git tag -a "ai-plugin/${plugin_name}/v${version}" -m "Release ${plugin_name} v${version}" HEAD
+            git push origin "ai-plugin/${plugin_name}/v${version}"
+          done
+          popd >/dev/null
