@@ -14,7 +14,6 @@ const BaseAction = require('../../base/BaseAction');
 const {
 	COMMAND_IMPORTOBJECTS: { MESSAGES, WARNINGS },
 } = require('../../../services/TranslationKeys');
-const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
 const {
 	executeImportObjectsCommand,
 } = require('@oracle/suitecloud-sdk-core').commands;
@@ -53,6 +52,11 @@ const NUMBER_OF_SCRIPTS = 8;
 const MAX_PARALLEL_EXECUTIONS = 4;
 
 module.exports = class ImportObjectsAction extends BaseAction {
+	constructor(options) {
+		super(options);
+		this._authSessionProvider = options.authSessionProvider;
+	}
+
 	preExecute(answers) {
 		answers[ANSWERS_NAMES.PROJECT_FOLDER] = CommandUtils.quoteString(this._projectFolder);
 		answers[ANSWERS_NAMES.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
@@ -215,10 +219,9 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 	async _executeImportObjectsChunkWithAuthRetry(sdkParams, partialScriptIds, flags) {
 		const authId = sdkParams[ANSWERS_NAMES.AUTH_ID];
-		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
 		return executeWithAuthRetry({
 			authId,
-			authSessionProvider,
+			authSessionProvider: this._authSessionProvider,
 			shouldRetryAuth: shouldRetryAuthByResult,
 			executeWithAuthSession: (authCredentials) => executeImportObjectsCommand({
 				hostName: authCredentials.hostName,
@@ -236,10 +239,9 @@ module.exports = class ImportObjectsAction extends BaseAction {
 
 	async _executeListObjectsWithAuthRetry(sdkParams) {
 		const authId = sdkParams[ANSWERS_NAMES.AUTH_ID];
-		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
 		return executeWithAuthRetry({
 			authId,
-			authSessionProvider,
+			authSessionProvider: this._authSessionProvider,
 			shouldRetryAuth: shouldRetryAuthByResult,
 			executeWithAuthSession: (authCredentials) => executeListObjectsCommand({
 				hostName: authCredentials.hostName,

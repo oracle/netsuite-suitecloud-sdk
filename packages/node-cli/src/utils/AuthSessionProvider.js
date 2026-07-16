@@ -7,9 +7,55 @@
 const { getAuthCredentialsById } = require('./AuthenticationUtils');
 
 function createCredentialSessionProvider(sdkPath, executionEnvironmentContext) {
+	const sessions = new Map();
+	const refreshes = new Map();
+
 	return {
-		resolveAuthSession: async (authId) => getAuthCredentialsById(authId, sdkPath),
-		refreshAuthSession: async (authId) => getAuthCredentialsById(authId, sdkPath, executionEnvironmentContext),
+		resolveAuthSession(authId) {
+			const existingSession = sessions.get(authId);
+			if (existingSession) {
+				return existingSession;
+			}
+
+			const session = getAuthCredentialsById(authId, sdkPath).catch((error) => {
+				if (sessions.get(authId) === session) {
+					sessions.delete(authId);
+				}
+				throw error;
+			});
+			sessions.set(authId, session);
+			return session;
+		},
+
+		async refreshAuthSession(authId, rejectedSession) {
+			const currentSession = await sessions.get(authId);
+			if (
+				currentSession &&
+				rejectedSession &&
+				currentSession.accessToken !== rejectedSession.accessToken
+			) {
+				return currentSession;
+			}
+
+			const existingRefresh = refreshes.get(authId);
+			if (existingRefresh) {
+				return existingRefresh;
+			}
+
+			let refresh;
+			refresh = getAuthCredentialsById(authId, sdkPath, executionEnvironmentContext)
+				.then((refreshedSession) => {
+					sessions.set(authId, Promise.resolve(refreshedSession));
+					return refreshedSession;
+				})
+				.finally(() => {
+					if (refreshes.get(authId) === refresh) {
+						refreshes.delete(authId);
+					}
+				});
+			refreshes.set(authId, refresh);
+			return refresh;
+		},
 	};
 }
 

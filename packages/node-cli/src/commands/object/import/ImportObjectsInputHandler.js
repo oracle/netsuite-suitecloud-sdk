@@ -30,14 +30,13 @@ const {
 } = require('../../../validation/InteractiveAnswersValidator');
 const FileUtils = require('../../../utils/FileUtils');
 const {
-	getAuthCredentialsForProjectCommand,
-	refreshAuthCredentialsForProjectCommand,
-	shouldRetryProjectCommandAuth,
-} = require('../../../utils/ProjectAuthUtils');
-const {
 	executeListObjectsCommand,
 	parseObjectTypes,
 } = require('@oracle/suitecloud-sdk-core').commands;
+const {
+	executeWithAuthRetry,
+	shouldRetryAuthByResult,
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 const ANSWERS_NAMES = {
 	AUTH_ID: 'authid',
@@ -64,6 +63,7 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._fileSystemService = new FileSystemService();
 		this._authId = getProjectDefaultAuthId(this._executionPath);
+		this._authSessionProvider = options.authSessionProvider;
 	}
 
 	async getParameters(params) {
@@ -316,32 +316,18 @@ module.exports = class ImportObjectsInputHandler extends BaseInputHandler {
 
 	async _executeListObjectsWithAuthRetry(paramsForListObjects) {
 		const authId = paramsForListObjects[ANSWERS_NAMES.AUTH_ID];
-		let authCredentials = await getAuthCredentialsForProjectCommand(this._sdkPath, authId);
-		let operationResult = await executeListObjectsCommand({
-			hostName: authCredentials.hostName,
-			accessToken: authCredentials.accessToken,
-			appId: paramsForListObjects[ANSWERS_NAMES.APP_ID],
-			scriptIdContains: paramsForListObjects[ANSWERS_NAMES.SCRIPT_ID],
-			objectTypes: parseObjectTypes(paramsForListObjects[ANSWERS_NAMES.OBJECT_TYPE]),
-			userAgent: getUserAgent(this._executionEnvironmentContext),
-		});
-
-		if (!shouldRetryProjectCommandAuth(operationResult)) {
-			return operationResult;
-		}
-
-		authCredentials = await refreshAuthCredentialsForProjectCommand(
-			this._sdkPath,
+		return executeWithAuthRetry({
 			authId,
-			this._executionEnvironmentContext
-		);
-		return executeListObjectsCommand({
-			hostName: authCredentials.hostName,
-			accessToken: authCredentials.accessToken,
-			appId: paramsForListObjects[ANSWERS_NAMES.APP_ID],
-			scriptIdContains: paramsForListObjects[ANSWERS_NAMES.SCRIPT_ID],
-			objectTypes: parseObjectTypes(paramsForListObjects[ANSWERS_NAMES.OBJECT_TYPE]),
-			userAgent: getUserAgent(this._executionEnvironmentContext),
+			authSessionProvider: this._authSessionProvider,
+			shouldRetryAuth: shouldRetryAuthByResult,
+			executeWithAuthSession: (authCredentials) => executeListObjectsCommand({
+				hostName: authCredentials.hostName,
+				accessToken: authCredentials.accessToken,
+				appId: paramsForListObjects[ANSWERS_NAMES.APP_ID],
+				scriptIdContains: paramsForListObjects[ANSWERS_NAMES.SCRIPT_ID],
+				objectTypes: parseObjectTypes(paramsForListObjects[ANSWERS_NAMES.OBJECT_TYPE]),
+				userAgent: getUserAgent(this._executionEnvironmentContext),
+			}),
 		});
 	}
 };

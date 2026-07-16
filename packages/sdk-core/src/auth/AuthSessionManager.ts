@@ -22,7 +22,7 @@ type AuthSession = {
 
 type AuthSessionProvider = {
 	resolveAuthSession: (authId: string) => Promise<AuthSession>;
-	refreshAuthSession: (authId: string) => Promise<AuthSession>;
+	refreshAuthSession: (authId: string, rejectedSession: AuthSession) => Promise<AuthSession>;
 };
 
 type ExecuteWithAuthRetryInput<T> = {
@@ -59,7 +59,7 @@ export async function executeWithAuthRetry<T>(input: ExecuteWithAuthRetryInput<T
 		return result;
 	}
 
-	authSession = await input.authSessionProvider.refreshAuthSession(input.authId);
+	authSession = await input.authSessionProvider.refreshAuthSession(input.authId, authSession);
 	result = await input.executeWithAuthSession(authSession);
 	return result;
 }
