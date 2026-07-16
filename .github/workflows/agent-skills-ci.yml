@@ -27,7 +27,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --workspace @oracle/agent-skills
 
       - name: Validate Agent Skills
         run: npm run validate --workspace @oracle/agent-skills
