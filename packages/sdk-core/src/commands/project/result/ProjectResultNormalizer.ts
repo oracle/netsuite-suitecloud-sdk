@@ -10,7 +10,7 @@ import {
 	type OperationResult,
 	type ProjectCommandSummaryContext,
 	type ProjectCommandType,
-} from '../../api/project/ProjectCommand';
+} from '../../../api/project/ProjectCommand';
 const RAW_OUTPUT_INDENT = 2;
 
 export function normalizeProjectOperationResult(

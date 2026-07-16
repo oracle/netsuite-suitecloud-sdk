@@ -29,4 +29,16 @@ export type ProjectCommandSummaryContext = {
 	localTimestamp?: string;
 };
 
+export type ProjectCommandExecutionInput = {
+	command: ProjectCommandType;
+	projectFolder: string;
+	hostName: string;
+	accessToken: string;
+	params?: Record<string, unknown>;
+	flags?: string[];
+	rawOutput?: boolean;
+	timeoutMs?: number;
+	summaryContext?: ProjectCommandSummaryContext;
+};
+
 export type OperationResult<T = unknown> = SharedOperationResult<T>;

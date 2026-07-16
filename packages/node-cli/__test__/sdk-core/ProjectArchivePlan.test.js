@@ -10,10 +10,10 @@ const { join } = require('node:path');
 
 const {
 	createPackageArchivePlan,
-} = require('../../../sdk-core/build/services/project/ProjectArchivePlan');
+} = require('../../../sdk-core/build/commands/project/archive/ProjectArchivePlan');
 const {
-	DefaultProjectArchiveService,
-} = require('../../../sdk-core/build/services/project/ProjectArchiveService');
+	createProjectArchive,
+} = require('../../../sdk-core/build/commands/project/archive/ProjectArchive');
 const {
 	extractZipArchive,
 } = require('../../../sdk-core/build/services/archive/ZipArchive');
@@ -42,7 +42,7 @@ describe('ProjectArchivePlan', () => {
 	});
 
 	it('uses the deploy.xml archive plan for project endpoint uploads', async () => {
-		projectArchivePath = await new DefaultProjectArchiveService().create(projectFolder);
+		projectArchivePath = await createProjectArchive(projectFolder);
 		extractionFolder = await mkdtemp(join(tmpdir(), 'suitecloud-project-archive-extracted-'));
 		await extractZipArchive(projectArchivePath, extractionFolder);
 

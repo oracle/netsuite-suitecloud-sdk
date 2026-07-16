@@ -7,9 +7,9 @@
 import type {
 	ProjectCommandSummaryContext,
 	ProjectCommandType,
-} from '../../api/project/ProjectCommand';
-import { PROJECT_API } from '../../services/translation/TranslationKeys';
-import { translationService } from '../../services/translation/TranslationService';
+} from '../../../api/project/ProjectCommand';
+import { PROJECT_API } from '../../../services/translation/TranslationKeys';
+import { translationService } from '../../../services/translation/TranslationService';
 
 const STEP_STATUS_SUCCESSFUL = 'SUCCESSFUL';
 const STEP_STATUS_MARK_SUCCESS = '✔';

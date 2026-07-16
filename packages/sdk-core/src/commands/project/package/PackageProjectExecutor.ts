@@ -15,7 +15,7 @@ import { createZipArchive } from '../../../services/archive/ZipArchive';
 import {
 	createPackageArchivePlan,
 	type ProjectManifestData,
-} from '../../../services/project/ProjectArchivePlan';
+} from '../archive/ProjectArchivePlan';
 import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 

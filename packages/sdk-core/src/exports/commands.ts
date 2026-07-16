@@ -70,6 +70,12 @@ export {
 export { executeProjectCommand } from '../commands/project/ProjectCommandExecutor';
 export { SDK_OPERATION_STATUS } from '../api/OperationResult';
 export { PROJECT_COMMAND } from '../api/project/ProjectCommand';
+export type {
+	OperationResult as ProjectCommandOperationResult,
+	ProjectCommandExecutionInput,
+	ProjectCommandSummaryContext,
+	ProjectCommandType,
+} from '../api/project/ProjectCommand';
 export {
 	CREATE_PROJECT_OPERATION_STATUS,
 	executeCreateProject,

@@ -8,15 +8,26 @@ import { randomBytes } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import type { RequestOptions } from 'node:https';
 import { basename } from 'node:path';
-import type {
-	ProjectApiClient,
-	ProjectHttpResponse,
-	ProjectRequest,
-} from '../../actions/project/ProjectAction';
 import type { ProjectCommandType } from '../../api/project/ProjectCommand';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
-import { PROJECT_API } from '../translation/TranslationKeys';
-import { translationService } from '../translation/TranslationService';
+import { PROJECT_API } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
+
+export type ProjectCommandRequest = {
+	command: ProjectCommandType;
+	hostName: string;
+	accessToken: string;
+	projectArchivePath: string;
+	params: Record<string, unknown>;
+	flags: string[];
+	timeoutMs: number;
+};
+
+export type ProjectCommandHttpResponse = {
+	statusCode: number;
+	body: string;
+	serverTimestamp?: string;
+};
 
 const PROJECT_API_PATH = '/api/internal/sdf/v1/projects';
 const MULTIPART_EOL = '\r\n';
@@ -28,24 +39,18 @@ const BOOLEAN_TRUE_T = 'T';
 const BOOLEAN_FALSE_F = 'F';
 const ACCOUNT_SPECIFIC_VALUES_DEFAULT = 'ERROR';
 
-export class DefaultProjectApiClient implements ProjectApiClient {
-	async send(request: ProjectRequest): Promise<ProjectHttpResponse> {
-		const multipartPayload = await buildMultipartPayload(request.command, request.projectArchivePath);
-		return sendHttpsMultipartRequest({
-			hostName: request.hostName,
-			pathname: buildProjectRequestPath(request.params, request.flags),
-			accessToken: request.accessToken,
-			payload: multipartPayload.payload,
-			boundary: multipartPayload.boundary,
-			timeoutMs: request.timeoutMs,
-		});
-	}
-}
-
-const defaultProjectApiClient = new DefaultProjectApiClient();
-
-export function sendDefaultProjectRequest(request: ProjectRequest): Promise<ProjectHttpResponse> {
-	return defaultProjectApiClient.send(request);
+export async function sendProjectCommandRequest(
+	request: ProjectCommandRequest
+): Promise<ProjectCommandHttpResponse> {
+	const multipartPayload = await buildMultipartPayload(request.command, request.projectArchivePath);
+	return sendHttpsMultipartRequest({
+		hostName: request.hostName,
+		pathname: buildProjectRequestPath(request.params, request.flags),
+		accessToken: request.accessToken,
+		payload: multipartPayload.payload,
+		boundary: multipartPayload.boundary,
+		timeoutMs: request.timeoutMs,
+	});
 }
 
 function buildProjectRequestPath(params: Record<string, unknown>, flags: string[]): string {
@@ -124,7 +129,7 @@ function sendHttpsMultipartRequest(input: {
 	payload: Buffer;
 	boundary: string;
 	timeoutMs: number;
-}): Promise<ProjectHttpResponse> {
+}): Promise<ProjectCommandHttpResponse> {
 	return new Promise((resolve, reject) => {
 		const requestOptions: RequestOptions = {
 			method: 'POST',

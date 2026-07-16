@@ -5,38 +5,100 @@
 'use strict';
 
 import {
-	ProjectAction,
-	type ProjectActionDependencies,
-	type ProjectActionInput,
-} from '../../actions/project/ProjectAction';
-import type { OperationResult } from '../../api/project/ProjectCommand';
+	PROJECT_COMMAND,
+	SDK_OPERATION_STATUS,
+	type OperationResult,
+	type ProjectCommandExecutionInput,
+} from '../../api/project/ProjectCommand';
+import { PROJECT } from '../../services/translation/TranslationKeys';
+import { translationService } from '../../services/translation/TranslationService';
 import {
-	createDefaultProjectArchive,
-	deleteFileQuietly,
-} from '../../services/project/ProjectArchiveService';
+	createProjectArchive,
+	deleteProjectArchiveQuietly,
+} from './archive/ProjectArchive';
 import {
-	sendDefaultProjectRequest,
-} from '../../services/project/ProjectApiClient';
+	sendProjectCommandRequest,
+	type ProjectCommandHttpResponse,
+	type ProjectCommandRequest,
+} from './ProjectCommandClient';
+import { normalizeProjectOperationResult } from './result/ProjectResultNormalizer';
+
+const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 
 type ProjectCommandDependencies = {
-	createProjectArchive?: ProjectActionDependencies['archiveService']['create'];
-	deleteFile?: ProjectActionDependencies['archiveService']['remove'];
-	sendProjectRequest?: ProjectActionDependencies['apiClient']['send'];
+	createProjectArchive?: (projectFolder: string) => Promise<string>;
+	deleteFile?: (archivePath: string) => Promise<void>;
+	sendProjectRequest?: (request: ProjectCommandRequest) => Promise<ProjectCommandHttpResponse>;
 };
 
-export function executeProjectCommand(
-	input: ProjectActionInput,
+export async function executeProjectCommand(
+	input: ProjectCommandExecutionInput,
 	dependencies: ProjectCommandDependencies = {}
 ): Promise<OperationResult> {
-	const action = new ProjectAction({
-		archiveService: {
-			create: dependencies.createProjectArchive ?? createDefaultProjectArchive,
-			remove: dependencies.deleteFile ?? deleteFileQuietly,
-		},
-		apiClient: {
-			send: dependencies.sendProjectRequest ?? sendDefaultProjectRequest,
-		},
-	});
+	const createArchive = dependencies.createProjectArchive ?? createProjectArchive;
+	const removeArchive = dependencies.deleteFile ?? deleteProjectArchiveQuietly;
+	const sendRequest = dependencies.sendProjectRequest ?? sendProjectCommandRequest;
+	let projectArchivePath: string | undefined;
 
-	return action.execute(input);
+	try {
+		validateExecutionInput(input);
+		projectArchivePath = await createArchive(input.projectFolder);
+		const response = await sendRequest({
+			command: input.command,
+			hostName: input.hostName,
+			accessToken: input.accessToken,
+			projectArchivePath,
+			params: input.params || {},
+			flags: input.flags || [],
+			timeoutMs: input.timeoutMs || DEFAULT_TIMEOUT_MS,
+		});
+
+		return normalizeProjectOperationResult(
+			response.statusCode,
+			response.body,
+			input.command,
+			input.rawOutput === true,
+			input.summaryContext,
+			response.serverTimestamp
+		);
+	} catch (error: unknown) {
+		return {
+			status: SDK_OPERATION_STATUS.ERROR,
+			errorMessages: [toErrorMessage(error)],
+		};
+	} finally {
+		if (projectArchivePath) {
+			try {
+				await removeArchive(projectArchivePath);
+			} catch {
+				// Cleanup is best-effort and must not replace the command result.
+			}
+		}
+	}
+}
+
+function validateExecutionInput(input: ProjectCommandExecutionInput): void {
+	if (!input) {
+		throw new Error(translationService.getMessage(PROJECT.ERROR.INPUT_REQUIRED));
+	}
+	if (!Object.values(PROJECT_COMMAND).includes(input.command)) {
+		throw new Error(
+			translationService.getMessage(PROJECT.ERROR.UNSUPPORTED_COMMAND, input.command)
+		);
+	}
+	if (!input.projectFolder) {
+		throw new Error(
+			translationService.getMessage(PROJECT.ERROR.PROJECT_FOLDER_REQUIRED)
+		);
+	}
+	if (!input.hostName) {
+		throw new Error(translationService.getMessage(PROJECT.ERROR.TARGET_HOST_REQUIRED));
+	}
+	if (!input.accessToken) {
+		throw new Error(translationService.getMessage(PROJECT.ERROR.ACCESS_TOKEN_REQUIRED));
+	}
+}
+
+function toErrorMessage(error: unknown): string {
+	return error instanceof Error ? error.message : String(error);
 }
