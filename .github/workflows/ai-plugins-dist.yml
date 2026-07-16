@@ -18,8 +18,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Validate and build plugins
         run: |
+          npm run validate --workspace @oracle/agent-skills
           npm run validate --workspace @oracle/ai-plugins
           npm run test --workspace @oracle/ai-plugins
           npm run build --workspace @oracle/ai-plugins

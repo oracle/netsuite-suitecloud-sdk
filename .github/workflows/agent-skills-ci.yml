@@ -1,0 +1,36 @@
+name: Agent Skills CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/agent-skills-ci.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'packages/agent-skills/**'
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/agent-skills-ci.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'packages/agent-skills/**'
+
+jobs:
+  validate-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Agent Skills
+        run: npm run validate --workspace @oracle/agent-skills
+
+      - name: Run tests
+        run: npm run test --workspace @oracle/agent-skills

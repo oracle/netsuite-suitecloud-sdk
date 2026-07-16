@@ -5,6 +5,7 @@
 	"private": true,
 	"workspaces": [
 		"packages/ai-plugins",
+		"packages/agent-skills",
 		"packages/node-cli",
 		"packages/unit-testing"
 	]
