@@ -4,14 +4,16 @@
  */
 'use strict';
 
+import type {
+	ObjectCommandOperationResult,
+	UpdateCustomRecordWithInstancesExecutionInput,
+	UpdateObjectResultItem,
+	UpdateObjectsExecutionInput,
+} from '../../../api/object/ObjectCommand';
 import {
 	executeUpdateObjects,
-	executeUpdateCustomRecordWithInstances,
-	type ObjectCommandOperationResult,
-	type UpdateObjectResultItem,
-	type UpdateObjectsExecutionInput,
-	type UpdateCustomRecordWithInstancesExecutionInput,
-} from '../ObjectCommandExecutor';
+} from './UpdateObjectsExecutor';
+import { executeUpdateCustomRecordWithInstances } from './UpdateCustomRecordExecutor';
 
 export const UPDATE_OBJECTS_COMMAND_OPTIONS = {
 	AUTH_ID: 'authid',

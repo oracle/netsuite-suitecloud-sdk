@@ -22,7 +22,7 @@ type AuthSession = {
 
 type AuthSessionProvider = {
 	resolveAuthSession: (authId: string) => Promise<AuthSession>;
-	refreshAuthSession: (authId: string) => Promise<AuthSession>;
+	refreshAuthSession: (authId: string, rejectedSession: AuthSession) => Promise<AuthSession>;
 };
 
 type ExecuteWithAuthRetryInput<T> = {
@@ -59,7 +59,7 @@ export async function executeWithAuthRetry<T>(input: ExecuteWithAuthRetryInput<T
 		return result;
 	}
 
-	authSession = await input.authSessionProvider.refreshAuthSession(input.authId);
+	authSession = await input.authSessionProvider.refreshAuthSession(input.authId, authSession);
 	result = await input.executeWithAuthSession(authSession);
 	return result;
 }
@@ -81,6 +81,8 @@ function validateExecuteWithAuthRetryInput<T>(input: ExecuteWithAuthRetryInput<T
 		throw new Error(translationService.getMessage(UTILS.AUTHENTICATION.ERROR.REFRESH_AUTH_SESSION_REQUIRED));
 	}
 	if (typeof input.executeWithAuthSession !== 'function') {
-		throw new Error(translationService.getMessage(UTILS.AUTHENTICATION.ERROR.EXECUTE_WITH_AUTH_SESSION_REQUIRED));
+		throw new Error(
+			translationService.getMessage(UTILS.AUTHENTICATION.ERROR.EXECUTE_WITH_AUTH_SESSION_REQUIRED)
+		);
 	}
 }

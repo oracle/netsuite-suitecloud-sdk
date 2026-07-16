@@ -52,7 +52,7 @@ jest.mock('@oracle/suitecloud-sdk-core', () => {
 				const firstSession = await authSessionProvider.resolveAuthSession(authId);
 				const firstResult = await executeWithAuthSession(firstSession);
 				if (shouldRetryAuth && shouldRetryAuth(firstResult)) {
-					const secondSession = await authSessionProvider.refreshAuthSession(authId);
+					const secondSession = await authSessionProvider.refreshAuthSession(authId, firstSession);
 					return executeWithAuthSession(secondSession);
 				}
 				return firstResult;

@@ -14,6 +14,9 @@ packages/**/dist
 packages/sdk-core/build/
 packages/sdk-core/*.tsbuildinfo
 
+# packaged release artifacts
+/dist/
+
 # coverage reports
 **/coverage/**
 

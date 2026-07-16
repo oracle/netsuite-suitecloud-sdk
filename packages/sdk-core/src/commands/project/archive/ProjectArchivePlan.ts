@@ -7,7 +7,9 @@
 import { access, readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 import { parseStringPromise } from 'xml2js';
-import type { EntryToZipSource } from '../../../utils/Zipper';
+import type { ArchiveEntry } from '../../../services/archive/ZipArchive';
+import { PROJECT_ARCHIVE } from '../../../services/translation/TranslationKeys';
+import { translationService } from '../../../services/translation/TranslationService';
 
 const DEPLOY_FILENAME = 'deploy.xml';
 const DEPLOY_FILENAME_ROOT = 'deploy';
@@ -18,11 +20,11 @@ const MANIFEST_FILENAME_ROOT = 'manifest';
 const APPLICATION_FILENAME = 'application.xml';
 const INSTALLATION_PREFERENCES_FOLDER = 'InstallationPreferences';
 const SDF_INSTALLATION_SCRIPT_ROOT = 'sdfinstallationscript';
-const PROJECT_TYPE_ACP = 'ACCOUNTCUSTOMIZATIONPROJECT';
+const PROJECT_TYPE_ACP = 'ACCOUNTCUSTOMIZATION';
 
 type XmlValue = Record<string, any>;
 
-export type SdfManifestData = {
+export type ProjectManifestData = {
 	projectType: string;
 	projectName: string;
 	publisherId: string;
@@ -30,12 +32,12 @@ export type SdfManifestData = {
 	projectVersion: string;
 };
 
-export type SdfProjectArchivePlan = {
-	manifest: SdfManifestData;
-	entries: EntryToZipSource[];
+export type ProjectArchivePlan = {
+	manifest: ProjectManifestData;
+	entries: ArchiveEntry[];
 };
 
-export async function createSdfProjectArchivePlan(projectFolder: string): Promise<SdfProjectArchivePlan> {
+export async function createPackageArchivePlan(projectFolder: string): Promise<ProjectArchivePlan> {
 	const [manifestRoot, deployRoot] = await Promise.all([
 		readRequiredXmlRoot(projectFolder, MANIFEST_FILENAME, MANIFEST_FILENAME_ROOT),
 		readRequiredXmlRoot(projectFolder, DEPLOY_FILENAME, DEPLOY_FILENAME_ROOT),
@@ -43,7 +45,7 @@ export async function createSdfProjectArchivePlan(projectFolder: string): Promis
 	await validateOptionalApplicationFile(projectFolder);
 
 	const manifest = readManifestData(manifestRoot);
-	const entries: EntryToZipSource[] = [];
+	const entries: ArchiveEntry[] = [];
 	const seen = new Set<string>();
 	addEntry(entries, seen, DEPLOY_FILENAME);
 	addEntry(entries, seen, MANIFEST_FILENAME);
@@ -72,7 +74,9 @@ async function readRequiredXmlRoot(projectFolder: string, filename: string, expe
 		contents = await readFile(filepath, 'utf8');
 	} catch (error: any) {
 		if (error?.code === 'ENOENT') {
-			throw new Error(`Missing ${filename} in ${projectFolder}.`);
+			throw new Error(
+				translationService.getMessage(PROJECT_ARCHIVE.ERROR.FILE_MISSING, filename, projectFolder)
+			);
 		}
 		throw error;
 	}
@@ -81,10 +85,14 @@ async function readRequiredXmlRoot(projectFolder: string, filename: string, expe
 	try {
 		parsed = await parseStringPromise(contents, { explicitArray: false, trim: true, explicitRoot: true });
 	} catch (error: any) {
-		throw new Error(`Invalid ${filename}: ${error?.message || String(error)}`);
+		throw new Error(
+			translationService.getMessage(PROJECT_ARCHIVE.ERROR.XML_INVALID, filename, error?.message || String(error))
+		);
 	}
 	if (!parsed || typeof parsed !== 'object' || !Object.prototype.hasOwnProperty.call(parsed, expectedRoot)) {
-		throw new Error(`Invalid ${filename}: expected <${expectedRoot}> as the root element.`);
+		throw new Error(
+			translationService.getMessage(PROJECT_ARCHIVE.ERROR.XML_ROOT_INVALID, filename, expectedRoot)
+		);
 	}
 	return parsed[expectedRoot] && typeof parsed[expectedRoot] === 'object' ? parsed[expectedRoot] : {};
 }
@@ -97,11 +105,17 @@ async function validateOptionalApplicationFile(projectFolder: string): Promise<v
 	try {
 		await parseStringPromise(await readFile(filepath, 'utf8'), { explicitArray: false, trim: true });
 	} catch (error: any) {
-		throw new Error(`Invalid ${APPLICATION_FILENAME}: ${error?.message || String(error)}`);
+		throw new Error(
+			translationService.getMessage(
+				PROJECT_ARCHIVE.ERROR.XML_INVALID,
+				APPLICATION_FILENAME,
+				error?.message || String(error)
+			)
+		);
 	}
 }
 
-function readManifestData(manifest: XmlValue): SdfManifestData {
+function readManifestData(manifest: XmlValue): ProjectManifestData {
 	return {
 		projectType: asText(manifest.$?.projecttype),
 		projectName: asText(manifest.projectname),
@@ -114,7 +128,7 @@ function readManifestData(manifest: XmlValue): SdfManifestData {
 async function addDeployPaths(
 	projectFolder: string,
 	paths: string[],
-	entries: EntryToZipSource[],
+	entries: ArchiveEntry[],
 	seen: Set<string>
 ): Promise<void> {
 	for (const deployPath of paths) {
@@ -133,32 +147,44 @@ async function addDeployPaths(
 async function addInstallationScripts(
 	projectFolder: string,
 	deploy: XmlValue,
-	entries: EntryToZipSource[],
+	entries: ArchiveEntry[],
 	seen: Set<string>
 ): Promise<void> {
 	for (const run of asArray(deploy.run)) {
 		for (const script of asArray(run?.script)) {
 			const scriptPath = toProjectRelativePath(asText(script?.path));
-			if (!scriptPath || scriptPath.endsWith('/*') || !(await isRegularFile(join(projectFolder, ...scriptPath.split('/'))))) {
+			if (
+				!scriptPath ||
+				scriptPath.endsWith('/*') ||
+				!(await isRegularFile(join(projectFolder, ...scriptPath.split('/'))))
+			) {
 				continue;
 			}
+
 			addEntry(entries, seen, scriptPath);
 			try {
-				const parsed = await parseStringPromise(await readFile(join(projectFolder, ...scriptPath.split('/')), 'utf8'), {
-					explicitArray: false,
-					trim: true,
-				});
+				const parsed = await parseStringPromise(
+					await readFile(join(projectFolder, ...scriptPath.split('/')), 'utf8'),
+					{
+						explicitArray: false,
+						trim: true,
+					}
+				);
 				const rootTag = getRootTag(parsed);
 				if (rootTag?.name !== SDF_INSTALLATION_SCRIPT_ROOT) {
 					continue;
 				}
-				const installationScript = rootTag.value;
-				const scriptFile = getReferenceValue(asText(installationScript?.scriptfile));
+				const scriptFile = getReferenceValue(asText(rootTag.value?.scriptfile));
 				if (scriptFile) {
-					await addDeployPaths(projectFolder, [`~/FileCabinet${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`], entries, seen);
+					await addDeployPaths(
+						projectFolder,
+						[`~/FileCabinet${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`],
+						entries,
+						seen
+					);
 				}
 			} catch {
-				// Java packaging keeps the installation script and skips an unreadable or invalid referenced script file.
+				// Java packaging keeps the installation script and skips an unreadable or invalid referenced file.
 			}
 		}
 	}
@@ -167,7 +193,7 @@ async function addInstallationScripts(
 async function addFolderContents(
 	projectFolder: string,
 	relativeFolder: string,
-	entries: EntryToZipSource[],
+	entries: ArchiveEntry[],
 	seen: Set<string>
 ): Promise<void> {
 	if (!relativeFolder || hasUnsafePathSegment(relativeFolder)) {
@@ -192,7 +218,14 @@ async function addFolderContents(
 }
 
 function getPathValues(section: unknown): string[] {
-	return asArray(section).flatMap((item) => asArray(item?.path).map(asText)).filter(Boolean);
+	return asArray(section)
+		.filter(isXmlValue)
+		.flatMap((item) => asArray(item.path).map(asText))
+		.filter(Boolean);
+}
+
+function isXmlValue(value: unknown): value is XmlValue {
+	return !!value && typeof value === 'object' && !Array.isArray(value);
 }
 
 function getRootTag(value: unknown): { name: string; value: XmlValue } | undefined {
@@ -223,7 +256,7 @@ function hasUnsafePathSegment(projectPath: string): boolean {
 	return projectPath.split('/').some((segment) => !segment || segment === '.' || segment === '..');
 }
 
-function addEntry(entries: EntryToZipSource[], seen: Set<string>, path: string, isDirectory = false): void {
+function addEntry(entries: ArchiveEntry[], seen: Set<string>, path: string, isDirectory = false): void {
 	const key = isDirectory ? `${path.replace(/\/$/, '')}/` : path.replace(/\/$/, '');
 	if (!seen.has(key)) {
 		entries.push({ path: key, isDirectory });

@@ -4,9 +4,12 @@
  */
 'use strict';
 
-import { ProjectCommandSummaryContext, ProjectCommandType } from './ProjectCommandTypes';
-import { PROJECT_API } from '../../services/translation/TranslationKeys';
-import { translationService } from '../../services/translation/TranslationService';
+import type {
+	ProjectCommandSummaryContext,
+	ProjectCommandType,
+} from '../../../api/project/ProjectCommand';
+import { PROJECT_API } from '../../../services/translation/TranslationKeys';
+import { translationService } from '../../../services/translation/TranslationService';
 
 const STEP_STATUS_SUCCESSFUL = 'SUCCESSFUL';
 const STEP_STATUS_MARK_SUCCESS = '✔';
@@ -14,6 +17,7 @@ const STEP_STATUS_MARK_FAILED = '✖';
 const VALIDATION_RESULT_TYPE_WARNING = 'WARNING';
 const VALIDATION_RESULT_TYPE_ERROR = 'ERROR';
 const COMMAND_OUTPUT_SEPARATOR_LINE = '------------------------------------------------------------';
+const GENERAL_ISSUES_LABEL = 'General';
 
 export function formatSdfProjectResultOutput(
 	command: ProjectCommandType,
@@ -138,7 +142,7 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 	const sections: string[] = ['', translationService.getMessage(PROJECT_API.RESULT.INFO.ISSUES_BY_FILE)];
 	const grouped = new Map<string, { errors: Set<string>; warnings: Set<string> }>();
 	normalizedValidationResults.forEach((result) => {
-		const fileKey = result.component || 'General';
+		const fileKey = result.component || GENERAL_ISSUES_LABEL;
 		if (!grouped.has(fileKey)) {
 			grouped.set(fileKey, { errors: new Set<string>(), warnings: new Set<string>() });
 		}
@@ -151,15 +155,17 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 	});
 
 	const orderedEntries = Array.from(grouped.entries()).sort((a, b) => {
-		if (a[0] === 'General') return -1;
-		if (b[0] === 'General') return 1;
+		if (a[0] === GENERAL_ISSUES_LABEL) return -1;
+		if (b[0] === GENERAL_ISSUES_LABEL) return 1;
 		return a[0].localeCompare(b[0]);
 	});
 
 	orderedEntries.forEach(([fileKey, bucket], index) => {
 		const errorCount = bucket.errors.size;
 		const warningCount = bucket.warnings.size;
-		sections.push(`${index + 1}. ${fileKey} (${errorCount} error(s), ${warningCount} warning(s))`);
+		sections.push(
+			`${index + 1}. ${fileKey} (${errorCount} error(s), ${warningCount} warning(s))`
+		);
 		Array.from(bucket.errors).forEach((message) =>
 			sections.push(translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_ERROR, message))
 		);
@@ -198,7 +204,9 @@ function formatEndpointErrorSection(endpointErrorMessage: string, hasValidationL
 		.split(/\r?\n/)
 		.map((line) => line.trim())
 		.find((line) => line.length > 0);
-	return firstMeaningfulLine ? [translationService.getMessage(PROJECT_API.RESULT.INFO.ERROR_LINE, firstMeaningfulLine)] : [];
+	return firstMeaningfulLine
+		? [translationService.getMessage(PROJECT_API.RESULT.INFO.ERROR_LINE, firstMeaningfulLine)]
+		: [];
 }
 
 function extractCompactObjectValidationErrors(endpointErrorMessage: string): string[] {
@@ -227,7 +235,9 @@ function extractCompactObjectValidationErrors(endpointErrorMessage: string): str
 		}
 		const detailPreview = details.slice(0, 2).join(' | ');
 		const location = filePath ? ` @ ${filePath}` : '';
-		output.push(`- ${objectId}${location}${detailPreview ? ` -> ${detailPreview}` : ''}`);
+		output.push(
+			`- ${objectId}${location}${detailPreview ? ` -> ${detailPreview}` : ''}`
+		);
 		i = j - 1;
 	}
 	return output;

@@ -7,10 +7,9 @@
 import {
 	Agent,
 	request as httpsRequest,
-	type ClientRequest,
-	type IncomingMessage,
 	type RequestOptions,
 } from 'node:https';
+import type { ClientRequest, IncomingMessage } from 'node:http';
 import { getProxyAgent } from './ProxyAgentService';
 import { resolveRuntimeProxyFromEnv, type ProxyEnvironment } from './ProxyEnvironmentUtils';
 
@@ -26,7 +25,6 @@ const VM_ENG_HOST_SUFFIX = 'vm.eng';
 const REGEX_SYSTEM_URL = /^system\.netsuite\.com$/;
 const REGEX_ACCOUNT_SPECIFIC_URL = /^[\w-]+\.app\.netsuite\.com$/;
 const REGEX_SUITETALK_API_PRODUCTION_URL = /^[\w-]+\.suitetalk\.api\.netsuite\.com$/;
-
 
 /** Returns whether a hostname is one of the SuiteCloud production domains that supports SUITECLOUD_PROXY. */
 export function isProductionDomain(hostName: string): boolean {

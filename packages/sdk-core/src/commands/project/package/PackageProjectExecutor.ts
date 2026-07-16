@@ -6,24 +6,23 @@
 
 import { join } from 'node:path';
 import { mkdir } from 'node:fs/promises';
-import { ZipperImpl } from '../../../utils/Zipper';
-import { createSdfProjectArchivePlan, type SdfManifestData } from './SdfProjectArchive';
+
+import {
+	SDK_OPERATION_STATUS,
+	type OperationResult,
+} from '../../../api/OperationResult';
+import { createZipArchive } from '../../../services/archive/ZipArchive';
+import {
+	createPackageArchivePlan,
+	type ProjectManifestData,
+} from '../archive/ProjectArchivePlan';
 import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 
-export const PACKAGE_PROJECT_OPERATION_STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-} as const;
+/** Compatibility alias for existing command consumers. */
+export const PACKAGE_PROJECT_OPERATION_STATUS = SDK_OPERATION_STATUS;
 
-type PackageProjectOperationStatus = (typeof PACKAGE_PROJECT_OPERATION_STATUS)[keyof typeof PACKAGE_PROJECT_OPERATION_STATUS];
-
-export type PackageProjectOperationResult = {
-	status: PackageProjectOperationStatus;
-	data?: string;
-	resultMessage?: string;
-	errorMessages?: string[];
-};
+export type PackageProjectOperationResult = OperationResult<string>;
 
 export type PackageProjectExecutionInput = {
 	projectFolder: string;
@@ -37,16 +36,20 @@ export async function executePackageProject(
 ): Promise<PackageProjectOperationResult> {
 	try {
 		if (!input.projectFolder) {
-			return errorResult(translationService.getMessage(PROJECT_PACKAGE.ERROR.PROJECT_FOLDER_REQUIRED));
+			return errorResult(
+				translationService.getMessage(PROJECT_PACKAGE.ERROR.PROJECT_FOLDER_REQUIRED)
+			);
 		}
 		if (!input.destinationFolder) {
-			return errorResult(translationService.getMessage(PROJECT_PACKAGE.ERROR.DESTINATION_FOLDER_REQUIRED));
+			return errorResult(
+				translationService.getMessage(PROJECT_PACKAGE.ERROR.DESTINATION_FOLDER_REQUIRED)
+			);
 		}
 
-		const archivePlan = await createSdfProjectArchivePlan(input.projectFolder);
+		const archivePlan = await createPackageArchivePlan(input.projectFolder);
 		const targetZipFilePath = getTargetZipFilePath(archivePlan.manifest, input.destinationFolder);
 		await mkdir(input.destinationFolder, { recursive: true });
-		await new ZipperImpl().zipEntries(input.projectFolder, targetZipFilePath, archivePlan.entries);
+		await createZipArchive(input.projectFolder, targetZipFilePath, archivePlan.entries);
 
 		return {
 			status: PACKAGE_PROJECT_OPERATION_STATUS.SUCCESS,
@@ -58,7 +61,7 @@ export async function executePackageProject(
 	}
 }
 
-function getTargetZipFilePath(manifestData: SdfManifestData, destinationFolder: string): string {
+function getTargetZipFilePath(manifestData: ProjectManifestData, destinationFolder: string): string {
 	const datePart = formatDatePart(new Date());
 
 	if (

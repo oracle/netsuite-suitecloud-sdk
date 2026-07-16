@@ -7,28 +7,28 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { constants as fsConstants } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { UTILS } from '../services/translation/TranslationKeys';
-import { translationService } from '../services/translation/TranslationService';
+import { UTILS } from '../translation/TranslationKeys';
+import { translationService } from '../translation/TranslationService';
 
-export interface Zipper {
-	zipEntries(sourceDirectory: string, destinationFile: string, entries: readonly EntryToZipSource[]): Promise<string>;
+export interface ZipArchive {
+	zipEntries(sourceDirectory: string, destinationFile: string, entries: readonly ArchiveEntry[]): Promise<string>;
 
-	unzip(archiveFile: string, destinationDirectory: string, options?: UnzipOptions): Promise<void>;
+	unzip(archiveFile: string, destinationDirectory: string, options?: ArchiveExtractionOptions): Promise<void>;
 }
 
-export interface UnzipOptions {
+export interface ArchiveExtractionOptions {
 	maxEntries?: number;
 	maxTotalUncompressedSize?: number;
 	maxEntryUncompressedSize?: number;
 	maxEntryNameLength?: number;
 }
 
-export interface EntryToZipSource {
+export interface ArchiveEntry {
 	path: string;
 	isDirectory?: boolean;
 }
 
-export interface EntryToZip {
+interface ResolvedArchiveEntry {
 	sourceDirectory: string;
 	relativePath: string;
 	absolutePath: string;
@@ -36,7 +36,7 @@ export interface EntryToZip {
 	includeDirectoryContents?: boolean;
 }
 
-const AdmZip: new (filePath?: string) => AdmZipArchive = require('adm-zip');
+const AdmZip: new (filePath?: string) => AdmZipHandle = require('adm-zip');
 
 const DEFAULT_UNZIP_MAX_ENTRIES = 10000;
 const DEFAULT_UNZIP_MAX_TOTAL_UNCOMPRESSED_SIZE = 1024 * 1024 * 1024;
@@ -54,7 +54,7 @@ interface AdmZipEntry {
 	getData(): Buffer;
 }
 
-interface AdmZipArchive {
+interface AdmZipHandle {
 	addFile(entryName: string, content: Buffer, comment?: string, attr?: number | fs.Stats): void;
 
 	getEntries(): AdmZipEntry[];
@@ -76,18 +76,20 @@ interface ValidatedZipEntry {
 	data?: Buffer;
 }
 
-export class ZipperImpl implements Zipper {
+export class AdmZipArchive implements ZipArchive {
 	zipEntries(
 		sourceDirectory: string,
 		destinationFile: string,
-		entries: readonly EntryToZipSource[],
+		entries: readonly ArchiveEntry[],
 	): Promise<string> {
 		const sourceRoot = path.resolve(sourceDirectory);
 		const entriesToZip = entries.map((entry) => {
 			const relativePath = getSafeZipEntryName(entry.path, { allowTrailingSlash: entry.isDirectory === true });
 			const absolutePath = path.resolve(sourceRoot, ...relativePath.split('/'));
 			if (!isPathWithinDirectory(absolutePath, sourceRoot)) {
-				throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ARCHIVE_ENTRY_OUTSIDE_PROJECT, entry.path));
+				throw new Error(
+					translationService.getMessage(UTILS.ZIPPER.ERROR.ARCHIVE_ENTRY_OUTSIDE_PROJECT, entry.path)
+				);
 			}
 			return {
 				sourceDirectory: sourceRoot,
@@ -101,13 +103,19 @@ export class ZipperImpl implements Zipper {
 		return this.zip(entriesToZip, destinationFile);
 	}
 
-	async unzip(archiveFile: string, destinationDirectory: string, options: UnzipOptions = {}): Promise<void> {
+	async unzip(
+		archiveFile: string,
+		destinationDirectory: string,
+		options: ArchiveExtractionOptions = {}
+	): Promise<void> {
 		const limits = getUnzipLimits(options);
 		const archive = new AdmZip(archiveFile);
 		const entries = archive.getEntries();
 		const entryCount = entries.length;
 		if (entryCount > limits.maxEntries) {
-			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.TOO_MANY_ENTRIES, entryCount));
+			throw new Error(
+				translationService.getMessage(UTILS.ZIPPER.ERROR.TOO_MANY_ENTRIES, entryCount)
+			);
 		}
 
 		const validatedEntries = readValidatedZipEntryData(
@@ -125,7 +133,7 @@ export class ZipperImpl implements Zipper {
 		}
 	}
 
-	private async zip(entriesToZip: EntryToZip[], destinationFile: string): Promise<string> {
+	private async zip(entriesToZip: ResolvedArchiveEntry[], destinationFile: string): Promise<string> {
 		const finalDestinationFile = path.normalize(destinationFile);
 		const archive = new AdmZip();
 
@@ -142,7 +150,13 @@ export class ZipperImpl implements Zipper {
 					if (fileSystemError.code === 'EPERM' && fileSystemError.path) {
 						// EPERM: operation not permitted
 						// reject referencing the file/directory that couldn't be accessed
-						throw Error(translationService.getMessage(UTILS.ZIPPER.ERROR.READ_CONTENT_FAILED, fileSystemError.path, errorToMessage(error)));
+						throw Error(
+							translationService.getMessage(
+								UTILS.ZIPPER.ERROR.READ_CONTENT_FAILED,
+								fileSystemError.path,
+								errorToMessage(error)
+							)
+						);
 					}
 
 					throw error;
@@ -155,7 +169,7 @@ export class ZipperImpl implements Zipper {
 		return finalDestinationFile;
 	}
 
-	private addEntryToZip(archive: AdmZipArchive, entry: EntryToZip): void {
+	private addEntryToZip(archive: AdmZipHandle, entry: ResolvedArchiveEntry): void {
 		const entryStats = fs.lstatSync(entry.absolutePath);
 		if (entryStats.isFile()) {
 			archive.addFile(toZipPath(entry.relativePath), fs.readFileSync(entry.absolutePath), '', entryStats);
@@ -169,13 +183,13 @@ export class ZipperImpl implements Zipper {
 		}
 	}
 
-	private addDirectoryToZip(archive: AdmZipArchive, absoluteDirectoryPath: string, relativeDirectoryPath: string): void {
+	private addDirectoryToZip(archive: AdmZipHandle, absoluteDirectoryPath: string, relativeDirectoryPath: string): void {
 		const entryName = `${toZipPath(relativeDirectoryPath).replace(/\/$/, '')}/`;
 		archive.addFile(entryName, Buffer.alloc(0), '', fs.lstatSync(absoluteDirectoryPath));
 	}
 
 	private addDirectoryContentsToZip(
-		archive: AdmZipArchive,
+		archive: AdmZipHandle,
 		absoluteDirectoryPath: string,
 		relativeDirectoryPath: string,
 	): void {
@@ -193,10 +207,28 @@ export class ZipperImpl implements Zipper {
 	}
 }
 
+const defaultZipArchive = new AdmZipArchive();
+
+export function createZipArchive(
+	sourceDirectory: string,
+	destinationFile: string,
+	entries: readonly ArchiveEntry[]
+): Promise<string> {
+	return defaultZipArchive.zipEntries(sourceDirectory, destinationFile, entries);
+}
+
+export function extractZipArchive(
+	archiveFile: string,
+	destinationDirectory: string,
+	options?: ArchiveExtractionOptions
+): Promise<void> {
+	return defaultZipArchive.unzip(archiveFile, destinationDirectory, options);
+}
+
 function validateZipEntries(
 	entries: AdmZipEntry[],
 	destinationDirectory: string,
-	limits: Required<UnzipOptions>,
+	limits: Required<ArchiveExtractionOptions>,
 ): ValidatedZipEntry[] {
 	let totalUncompressedSize = 0;
 	return entries.map((entry) => {
@@ -206,13 +238,17 @@ function validateZipEntries(
 		}
 		const unixMode = getEntryUnixMode(entry);
 		if ((unixMode & 0o170000) === fsConstants.S_IFLNK) {
-			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.SYMBOLIC_LINK_NOT_SUPPORTED, entryName));
+			throw new Error(
+				translationService.getMessage(UTILS.ZIPPER.ERROR.SYMBOLIC_LINK_NOT_SUPPORTED, entryName)
+			);
 		}
 
 		const isDirectory = entry.isDirectory;
 		const uncompressedSize = isDirectory ? 0 : getEntryUncompressedSize(entry);
 		if (uncompressedSize !== undefined && uncompressedSize > limits.maxEntryUncompressedSize) {
-			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_EXCEEDED, entryName));
+			throw new Error(
+				translationService.getMessage(UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_EXCEEDED, entryName)
+			);
 		}
 		if (uncompressedSize !== undefined) {
 			totalUncompressedSize += uncompressedSize;
@@ -233,7 +269,7 @@ function validateZipEntries(
 
 function readValidatedZipEntryData(
 	validatedEntries: ValidatedZipEntry[],
-	limits: Required<UnzipOptions>,
+	limits: Required<ArchiveExtractionOptions>,
 ): ValidatedZipEntry[] {
 	let totalUncompressedSize = 0;
 	return validatedEntries.map((validatedEntry) => {
@@ -243,10 +279,20 @@ function readValidatedZipEntryData(
 
 		const data = getEntryData(validatedEntry.entry);
 		if (data.length > limits.maxEntryUncompressedSize) {
-			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_EXCEEDED, validatedEntry.entryName));
+			throw new Error(
+				translationService.getMessage(
+					UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_EXCEEDED,
+					validatedEntry.entryName
+				)
+			);
 		}
 		if (validatedEntry.uncompressedSize !== undefined && data.length !== validatedEntry.uncompressedSize) {
-			throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_METADATA_MISMATCH, validatedEntry.entryName));
+			throw new Error(
+				translationService.getMessage(
+					UTILS.ZIPPER.ERROR.ENTRY_UNCOMPRESSED_SIZE_METADATA_MISMATCH,
+					validatedEntry.entryName
+				)
+			);
 		}
 		totalUncompressedSize += data.length;
 		if (totalUncompressedSize > limits.maxTotalUncompressedSize) {
@@ -280,7 +326,7 @@ function getEntryData(entry: AdmZipEntry): Buffer {
 	return entry.getData();
 }
 
-function getUnzipLimits(options: UnzipOptions): Required<UnzipOptions> {
+function getUnzipLimits(options: ArchiveExtractionOptions): Required<ArchiveExtractionOptions> {
 	return {
 		maxEntries: getPositiveLimit(options.maxEntries, DEFAULT_UNZIP_MAX_ENTRIES, 'maxEntries'),
 		maxTotalUncompressedSize: getPositiveLimit(
@@ -306,7 +352,9 @@ function getPositiveLimit(value: number | undefined, defaultValue: number, name:
 		return defaultValue;
 	}
 	if (!Number.isSafeInteger(value) || value <= 0) {
-		throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_EXTRACTION_LIMIT, name));
+		throw new Error(
+			translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_EXTRACTION_LIMIT, name)
+		);
 	}
 	return value;
 }
@@ -317,7 +365,9 @@ function getSafeTargetPath(destinationDirectory: string, entryName: string): str
 	const destinationRoot = path.resolve(destinationDirectory);
 	const targetPath = path.resolve(destinationRoot, ...parts.filter((part) => part !== ''));
 	if (targetPath !== destinationRoot && !targetPath.startsWith(`${destinationRoot}${path.sep}`)) {
-		throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName));
+		throw new Error(
+			translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName)
+		);
 	}
 	return targetPath;
 }
@@ -337,11 +387,15 @@ function getSafeZipEntryName(entryName: string, options: { allowTrailingSlash?: 
 		? normalizedEntryName.replace(/\/+$/, '')
 		: normalizedEntryName.replace(/\/$/, '');
 	if (!safeEntryName || safeEntryName.includes('\0') || safeEntryName.startsWith('/') || /^[A-Za-z]:\//.test(safeEntryName)) {
-		throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName));
+		throw new Error(
+			translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName)
+		);
 	}
 	const parts = safeEntryName.split('/');
 	if (parts.some((part) => !part || part === '.' || part === '..')) {
-		throw new Error(translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName));
+		throw new Error(
+			translationService.getMessage(UTILS.ZIPPER.ERROR.INVALID_ENTRY_PATH, entryName)
+		);
 	}
 	return safeEntryName;
 }

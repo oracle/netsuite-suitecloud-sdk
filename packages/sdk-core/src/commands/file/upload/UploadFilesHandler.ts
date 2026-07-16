@@ -4,11 +4,11 @@
  */
 'use strict';
 
-import {
-	executeUploadFiles,
-	type FileCommandAuthInput,
-	type FileCommandOperationResult,
-} from '../FileCommandExecutor';
+import type {
+	FileCommandAuthInput,
+	FileCommandOperationResult,
+} from '../../../api/file/FileCommand';
+import { executeUploadFiles } from './UploadFilesExecutor';
 
 export const UPLOAD_FILES_COMMAND_OPTIONS = {
 	PATHS: 'paths',

@@ -4,12 +4,12 @@
  */
 'use strict';
 
-import {
-	executeImportObjects,
-	type ImportObjectsExecutionInput,
-	type ImportObjectsResult,
-	type ObjectCommandOperationResult,
-} from '../ObjectCommandExecutor';
+import type {
+	ImportObjectsExecutionInput,
+	ImportObjectsResult,
+	ObjectCommandOperationResult,
+} from '../../../api/object/ObjectCommand';
+import { executeImportObjects } from './ImportObjectsExecutor';
 
 export const IMPORT_OBJECTS_COMMAND_OPTIONS = {
 	AUTH_ID: 'authid',

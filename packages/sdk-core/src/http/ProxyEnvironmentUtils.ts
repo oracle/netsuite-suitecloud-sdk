@@ -67,7 +67,10 @@ function readProxyConfiguration(environment: ProxyEnvironment, envVarName: strin
 	return proxyUri ? { proxyUri, envVarName } : undefined;
 }
 
-function createInvalidProxyConfigurationError(configuredProxy: ProxyConfiguration, code: string | undefined): Error & { code?: string } {
+function createInvalidProxyConfigurationError(
+	configuredProxy: ProxyConfiguration,
+	code: string | undefined
+): Error & { code?: string } {
 	const proxyError = new Error(
 		translationService.getMessage(
 			UTILS.PROXY_CONFIG.ERROR.INVALID_CONFIGURATION,
@@ -80,5 +83,7 @@ function createInvalidProxyConfigurationError(configuredProxy: ProxyConfiguratio
 }
 
 function getErrorCode(error: unknown): string | undefined {
-	return error && typeof error === 'object' && 'code' in error && typeof error.code === 'string' ? error.code : undefined;
+	return error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
+		? error.code
+		: undefined;
 }

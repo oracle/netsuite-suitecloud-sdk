@@ -7,23 +7,18 @@
 import { access, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import {
+	SDK_OPERATION_STATUS,
+	type OperationResult,
+} from '../../../api/OperationResult';
 import { PROJECT_CREATE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { loadTemplate, renderTemplate, setXmlElementValues } from '../../../templates/TemplateLoader';
 
-export const CREATE_PROJECT_OPERATION_STATUS = {
-	SUCCESS: 'SUCCESS',
-	ERROR: 'ERROR',
-} as const;
+/** Compatibility alias for existing command consumers. */
+export const CREATE_PROJECT_OPERATION_STATUS = SDK_OPERATION_STATUS;
 
-type CreateProjectOperationStatus =
-	(typeof CREATE_PROJECT_OPERATION_STATUS)[keyof typeof CREATE_PROJECT_OPERATION_STATUS];
-
-export type CreateProjectOperationResult = {
-	status: CreateProjectOperationStatus;
-	data?: string;
-	errorMessages?: string[];
-};
+export type CreateProjectOperationResult = OperationResult<string>;
 
 export type CreateProjectExecutionInput = {
 	parentdirectory: string;

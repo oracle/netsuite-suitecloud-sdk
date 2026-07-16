@@ -11,6 +11,23 @@ const {
 } = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('ProjectCommandExecutor', () => {
+	it('should return an error result when execution input is missing', async () => {
+		const createProjectArchive = jest.fn();
+		const sendProjectRequest = jest.fn();
+		const result = await executeProjectCommand(null, {
+			createProjectArchive,
+			deleteFile: jest.fn(),
+			sendProjectRequest,
+		});
+
+		expect(result).toEqual({
+			status: SDK_OPERATION_STATUS.ERROR,
+			errorMessages: ['Project command execution input is required.'],
+		});
+		expect(createProjectArchive).not.toHaveBeenCalled();
+		expect(sendProjectRequest).not.toHaveBeenCalled();
+	});
+
 	it('should return successful sdk-like payload when server response is successful', async () => {
 		const deleteFile = jest.fn().mockResolvedValue(undefined);
 		const result = await executeProjectCommand(
@@ -40,6 +57,37 @@ describe('ProjectCommandExecutor', () => {
 			resultMessage: 'Deployment completed',
 		});
 		expect(deleteFile).toHaveBeenCalledWith('/tmp/project.zip');
+	});
+
+	it('should preserve a successful command result when archive cleanup fails', async () => {
+		const result = await executeProjectCommand(
+			{
+				command: PROJECT_COMMAND.DEPLOY,
+				projectFolder: '/tmp/project',
+				hostName: 'system.netsuite.com',
+				accessToken: 'token',
+			},
+			{
+				createProjectArchive: async () => '/tmp/project.zip',
+				deleteFile: async () => {
+					throw new Error('Cleanup failed');
+				},
+				sendProjectRequest: async () => ({
+					statusCode: 200,
+					body: JSON.stringify({
+						status: 'SUCCESS',
+						data: ['Deployed'],
+						resultMessage: 'Deployment completed',
+					}),
+				}),
+			}
+		);
+
+		expect(result).toEqual({
+			status: SDK_OPERATION_STATUS.SUCCESS,
+			data: ['Deployed'],
+			resultMessage: 'Deployment completed',
+		});
 	});
 
 	it('should normalize non-sdk successful payloads', async () => {
@@ -75,6 +123,29 @@ describe('ProjectCommandExecutor', () => {
 			{
 				createProjectArchive: async () => '/tmp/project.zip',
 				deleteFile: async () => undefined,
+				sendProjectRequest: async () => {
+					throw new Error('Network unavailable');
+				},
+			}
+		);
+
+		expect(result.status).toBe(SDK_OPERATION_STATUS.ERROR);
+		expect(result.errorMessages).toEqual(['Network unavailable']);
+	});
+
+	it('should preserve the request error when archive cleanup also fails', async () => {
+		const result = await executeProjectCommand(
+			{
+				command: PROJECT_COMMAND.VALIDATE,
+				projectFolder: '/tmp/project',
+				hostName: 'system.netsuite.com',
+				accessToken: 'token',
+			},
+			{
+				createProjectArchive: async () => '/tmp/project.zip',
+				deleteFile: async () => {
+					throw new Error('Cleanup failed');
+				},
 				sendProjectRequest: async () => {
 					throw new Error('Network unavailable');
 				},

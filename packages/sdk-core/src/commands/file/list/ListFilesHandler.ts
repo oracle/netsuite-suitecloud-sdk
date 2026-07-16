@@ -4,12 +4,11 @@
  */
 'use strict';
 
-import {
-	executeListFiles,
-	executeListFolders,
-	type FileCommandAuthInput,
-	type FileCommandOperationResult,
-} from '../FileCommandExecutor';
+import type {
+	FileCommandAuthInput,
+	FileCommandOperationResult,
+} from '../../../api/file/FileCommand';
+import { executeListFiles, executeListFolders } from './ListFilesExecutor';
 
 export const LIST_FILES_COMMAND_OPTIONS = {
 	AUTH_ID: 'authid',

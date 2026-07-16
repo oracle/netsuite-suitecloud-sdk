@@ -14,13 +14,15 @@ export {
 	selectManageAuthAction,
 	validateManageAuthOptions,
 } from '../commands/account/manageauth/ManageAuthHandler';
-export {
-	FILE_COMMAND_STATUS,
-	executeImportFiles,
-	executeListFiles,
-	executeListFolders,
-	executeUploadFiles,
-} from '../commands/file/FileCommandExecutor';
+export { FILE_COMMAND_STATUS } from '../api/file/FileCommand';
+export type {
+	ImportFileResult,
+	ImportFilesOperationResult,
+	ImportFilesResult,
+} from '../api/file/FileCommand';
+export { executeImportFiles } from '../commands/file/import/ImportFilesExecutor';
+export { executeListFiles, executeListFolders } from '../commands/file/list/ListFilesExecutor';
+export { executeUploadFiles } from '../commands/file/upload/UploadFilesExecutor';
 export { executeCreateFile, FILE_CREATE_STATUS } from '../commands/file/create/CreateFileExecutor';
 export {
 	buildCreateFileResultData,
@@ -45,13 +47,11 @@ export {
 	prepareUploadFilesParams,
 	UPLOAD_FILES_COMMAND_OPTIONS,
 } from '../commands/file/upload/UploadFilesHandler';
-export {
-	executeImportObjects,
-	executeListObjects,
-	executeUpdateCustomRecordWithInstances,
-	executeUpdateObjects,
-	OBJECT_COMMAND_STATUS,
-} from '../commands/object/ObjectCommandExecutor';
+export { OBJECT_COMMAND_STATUS } from '../api/object/ObjectCommand';
+export { executeImportObjects } from '../commands/object/import/ImportObjectsExecutor';
+export { executeListObjects } from '../commands/object/list/ListObjectsExecutor';
+export { executeUpdateObjects } from '../commands/object/update/UpdateObjectsExecutor';
+export { executeUpdateCustomRecordWithInstances } from '../commands/object/update/UpdateCustomRecordExecutor';
 export {
 	executeImportObjectsCommand,
 	IMPORT_OBJECTS_COMMAND_OPTIONS,
@@ -67,11 +67,15 @@ export {
 	executeUpdateObjectsCommand,
 	UPDATE_OBJECTS_COMMAND_OPTIONS,
 } from '../commands/object/update/UpdateObjectsHandler';
-export {
-	executeProjectCommand,
-	PROJECT_COMMAND,
-	SDK_OPERATION_STATUS,
-} from '../commands/project/ProjectCommandExecutor';
+export { executeProjectCommand } from '../commands/project/ProjectCommandExecutor';
+export { SDK_OPERATION_STATUS } from '../api/OperationResult';
+export { PROJECT_COMMAND } from '../api/project/ProjectCommand';
+export type {
+	OperationResult as ProjectCommandOperationResult,
+	ProjectCommandExecutionInput,
+	ProjectCommandSummaryContext,
+	ProjectCommandType,
+} from '../api/project/ProjectCommand';
 export {
 	CREATE_PROJECT_OPERATION_STATUS,
 	executeCreateProject,
