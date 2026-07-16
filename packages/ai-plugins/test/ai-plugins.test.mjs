@@ -47,8 +47,8 @@ test('buildPlugin generates manifest, README, license, and expected skill member
 
 	const manifest = JSON.parse(await fs.readFile(path.join(result.outputDir, '.codex-plugin', 'plugin.json'), 'utf8'));
 	assert.equal(manifest.skills, './skills/');
-	assert.equal(manifest.name, 'NetSuite AI Connector Companion');
-	assert.equal(manifest.interface.displayName, 'NetSuite AI Connector Companion');
+	assert.equal(manifest.name, 'netsuite-ai-connector-companion');
+	assert.equal(manifest.interface.displayName, 'netsuite-ai-connector-companion');
 });
 
 test('buildPlugin replaces stale output on repeated builds', async () => {
