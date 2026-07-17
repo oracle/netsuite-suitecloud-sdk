@@ -1,4 +1,4 @@
-# AI Plugin Builder
+# AI Plugins Workspace
 
 This workspace builds source-managed plugin directories for OpenAI and Anthropic distribution from `plugin.build.json` files.
 Each plugin declares its resources in its own `plugin.build.json`.
