@@ -87,7 +87,7 @@ module.exports = class ValidateAction extends BaseAction {
 				projectFolder,
 				sdkParams,
 				flags,
-				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
+					message: NodeTranslationService.getMessage(MESSAGES.VALIDATING, this._suiteAppId || this._projectName, getProjectDefaultAuthId(this._executionPath)),
 			});
 
 			return operationResult.status === SDK_OPERATION_STATUS.SUCCESS
@@ -113,35 +113,34 @@ module.exports = class ValidateAction extends BaseAction {
 	async _executeProjectCommandWithAuthRetry({ command, projectFolder, sdkParams, flags, message }) {
 		const authId = sdkParams[COMMAND_OPTIONS.AUTH_ID];
 		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
-		return executeWithAuthRetry({
-			authId,
-			authSessionProvider,
-			shouldRetryAuth: shouldRetryAuthByResult,
-			executeWithAuthSession: (authCredentials) => this._executeProjectCommand({
-				command,
-				projectFolder,
-				sdkParams,
-				flags,
-				message,
-				authCredentials,
+		return executeWithSpinner({
+			action: executeWithAuthRetry({
+				authId,
+				authSessionProvider,
+				shouldRetryAuth: shouldRetryAuthByResult,
+				executeWithAuthSession: (authCredentials) => this._executeProjectCommand({
+					command,
+					projectFolder,
+					sdkParams,
+					flags,
+					authCredentials,
+				}),
 			}),
+			message,
 		});
 	}
 
-	async _executeProjectCommand({ command, projectFolder, sdkParams, flags, message, authCredentials }) {
-		return executeWithSpinner({
-			action: executeProjectCommand({
-				command,
-				projectFolder,
-				hostName: authCredentials.hostName,
-				accessToken: authCredentials.accessToken,
-				rawOutput: isRawOutputRequested(sdkParams),
-				params: sdkParams,
-				flags,
-				userAgent: this._executionEnvironmentContext?.toUserAgentString?.(),
-				summaryContext: this._buildSummaryContext(authCredentials),
-			}),
-			message,
+	_executeProjectCommand({ command, projectFolder, sdkParams, flags, authCredentials }) {
+		return executeProjectCommand({
+			command,
+			projectFolder,
+			hostName: authCredentials.hostName,
+			accessToken: authCredentials.accessToken,
+			rawOutput: isRawOutputRequested(sdkParams),
+			params: sdkParams,
+			flags,
+			userAgent: this._executionEnvironmentContext?.toUserAgentString?.(),
+			summaryContext: this._buildSummaryContext(authCredentials),
 		});
 	}
 

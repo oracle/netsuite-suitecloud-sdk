@@ -14,6 +14,8 @@ jest.mock('../../../../src/services/ProjectInfoService', () => {
 	return jest.fn().mockImplementation(() => ({
 		getProjectType: () => 'SUITEAPP',
 		getProjectName: () => 'My Project',
+		getPublisherId: () => 'com.netsuite',
+		getProjectId: () => 'ts',
 	}));
 });
 
@@ -84,11 +86,16 @@ const {
 const {
 	executeWithAuthRetry,
 } = require('@oracle/suitecloud-sdk-core').auth;
+const {
+	executeWithSpinner,
+} = require('../../../../src/ui/CliSpinner');
+const NodeTranslationService = require('../../../../src/services/NodeTranslationService');
 
 describe('ValidateAction', () => {
 	beforeEach(() => {
 		executeProjectCommand.mockClear();
 		executeWithAuthRetry.mockClear();
+		executeWithSpinner.mockClear();
 	});
 
 	it('should use server validation by default and execute through TS core', async () => {
@@ -125,6 +132,13 @@ describe('ValidateAction', () => {
 		const executionInput = executeProjectCommand.mock.calls[0][0];
 		expect(executionInput.command).toBe('validate');
 		expect(executionInput.flags).toEqual(['applyinstallprefs']);
+		expect(executeWithSpinner).toHaveBeenCalledTimes(1);
+		expect(executeWithSpinner.mock.calls[0][0].message).toBe('COMMAND_VALIDATE_MESSAGES_VALIDATING');
+		expect(NodeTranslationService.getMessage).toHaveBeenCalledWith(
+			'COMMAND_VALIDATE_MESSAGES_VALIDATING',
+			'com.netsuite.ts',
+			'myAuth'
+		);
 		expect(warning).toHaveBeenCalledWith('COMMAND_VALIDATE_WARNINGS_SERVER_OPTION_IGNORED');
 		expect(actionResult.isServerValidation).toBe(true);
 		expect(actionResult.isSuccess()).toBe(true);
@@ -199,6 +213,7 @@ describe('ValidateAction', () => {
 		});
 
 		expect(executeProjectCommand).toHaveBeenCalledTimes(2);
+		expect(executeWithSpinner).toHaveBeenCalledTimes(1);
 		expect(executeProjectCommand.mock.calls[1][0].accessToken).toBe('refreshed-token');
 		expect(actionResult.isSuccess()).toBe(true);
 	});
