@@ -12,5 +12,9 @@
 		"packages/sdk-core",
 		"packages/node-cli",
 		"packages/unit-testing"
-	]
+	],
+	"overrides": {
+		"babel-plugin-istanbul": "^8.0.0",
+		"test-exclude": "^7.0.1"
+	}
 }
