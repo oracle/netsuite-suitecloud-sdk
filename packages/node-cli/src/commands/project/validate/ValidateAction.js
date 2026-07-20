@@ -5,6 +5,7 @@
 
 'use strict';
 
+const { resolve } = require('node:path');
 const BaseAction = require('../../base/BaseAction');
 const DeployActionResult = require('../../../services/actionresult/DeployActionResult');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
@@ -30,12 +31,14 @@ const {
 
 const {
 	COMMAND_VALIDATE: { MESSAGES, WARNINGS },
+	PROJECT_COMMAND_LOG,
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	JSON: 'json',
+	LOG: 'log',
 	PROJECT: 'project',
 	AUTH_ID: 'authid',
 };
@@ -113,7 +116,7 @@ module.exports = class ValidateAction extends BaseAction {
 	async _executeProjectCommandWithAuthRetry({ command, projectFolder, sdkParams, flags, message }) {
 		const authId = sdkParams[COMMAND_OPTIONS.AUTH_ID];
 		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
-		return executeWithSpinner({
+		const operationResult = await executeWithSpinner({
 			action: executeWithAuthRetry({
 				authId,
 				authSessionProvider,
@@ -128,6 +131,10 @@ module.exports = class ValidateAction extends BaseAction {
 			}),
 			message,
 		});
+		if (operationResult.logFilePath) {
+			this._log.info(NodeTranslationService.getMessage(PROJECT_COMMAND_LOG.MESSAGES.WRITING, operationResult.logFilePath));
+		}
+		return operationResult;
 	}
 
 	_executeProjectCommand({ command, projectFolder, sdkParams, flags, authCredentials }) {
@@ -137,6 +144,9 @@ module.exports = class ValidateAction extends BaseAction {
 			hostName: authCredentials.hostName,
 			accessToken: authCredentials.accessToken,
 			rawOutput: isRawOutputRequested(sdkParams),
+			logFileLocation: sdkParams[COMMAND_OPTIONS.LOG]
+				? resolve(this._executionPath, CommandUtils.unquoteString(sdkParams[COMMAND_OPTIONS.LOG]))
+				: undefined,
 			params: sdkParams,
 			flags,
 			userAgent: this._executionEnvironmentContext?.toUserAgentString?.(),

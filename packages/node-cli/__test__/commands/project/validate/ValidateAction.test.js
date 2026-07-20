@@ -4,6 +4,8 @@
  */
 'use strict';
 
+const { resolve } = require('node:path');
+
 jest.mock('../../../../src/SdkExecutor', () => {
 	return jest.fn().mockImplementation(() => ({
 		execute: jest.fn(),
@@ -173,6 +175,34 @@ describe('ValidateAction', () => {
 
 		const executionInput = executeProjectCommand.mock.calls[0][0];
 		expect(executionInput.rawOutput).toBe(true);
+	});
+
+	it('should write the validation result when --log is requested', async () => {
+		executeProjectCommand.mockResolvedValueOnce({
+			status: 'SUCCESS',
+			data: ['Validated'],
+			logFilePath: resolve('/tmp/project', 'validation.log'),
+		});
+		const info = jest.fn();
+		const validateAction = new ValidateAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: {
+				name: 'project:validate',
+				options: { project: {}, authid: {}, log: {} },
+			},
+			executionPath: '/tmp/project',
+			sdkPath: '/tmp/sdk.jar',
+			log: { warning: jest.fn(), info },
+		});
+
+		await validateAction.execute({
+			project: '"/tmp/project"',
+			authid: 'myAuth',
+			log: './validation.log',
+		});
+
+		expect(executeProjectCommand.mock.calls[0][0].logFileLocation).toBe(resolve('/tmp/project', 'validation.log'));
+		expect(info).toHaveBeenCalledWith('PROJECT_COMMAND_LOG_MESSAGES_WRITING');
 	});
 
 	it('should refresh credentials and retry once on authentication failure', async () => {

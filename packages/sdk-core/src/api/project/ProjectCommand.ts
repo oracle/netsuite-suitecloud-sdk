@@ -38,8 +38,11 @@ export type ProjectCommandExecutionInput = {
 	flags?: string[];
 	rawOutput?: boolean;
 	userAgent?: string;
+	logFileLocation?: string;
 	timeoutMs?: number;
 	summaryContext?: ProjectCommandSummaryContext;
 };
 
-export type OperationResult<T = unknown> = SharedOperationResult<T>;
+export type OperationResult<T = unknown> = SharedOperationResult<T> & {
+	logFilePath?: string;
+};

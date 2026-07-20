@@ -59,6 +59,39 @@ describe('ProjectCommandExecutor', () => {
 		expect(deleteFile).toHaveBeenCalledWith('/tmp/project.zip');
 	});
 
+	it('should persist the normalized result when a log location is provided', async () => {
+		const writeProjectLog = jest.fn().mockResolvedValue('/tmp/deploy.log');
+		const result = await executeProjectCommand(
+			{
+				command: PROJECT_COMMAND.DEPLOY,
+				projectFolder: '/tmp/project',
+				hostName: 'system.netsuite.com',
+				accessToken: 'token',
+				logFileLocation: '/tmp/deploy.log',
+			},
+			{
+				createProjectArchive: async () => '/tmp/project.zip',
+				deleteFile: async () => undefined,
+				sendProjectRequest: async () => ({
+					statusCode: 200,
+					body: JSON.stringify({ status: 'SUCCESS', data: ['Deployed'] }),
+				}),
+				writeProjectLog,
+			}
+		);
+
+		expect(writeProjectLog).toHaveBeenCalledWith({
+			command: PROJECT_COMMAND.DEPLOY,
+			logFileLocation: '/tmp/deploy.log',
+			operationResult: {
+				status: SDK_OPERATION_STATUS.SUCCESS,
+				data: ['Deployed'],
+				resultMessage: '',
+			},
+		});
+		expect(result.logFilePath).toBe('/tmp/deploy.log');
+	});
+
 	it('should preserve a successful command result when archive cleanup fails', async () => {
 		const result = await executeProjectCommand(
 			{

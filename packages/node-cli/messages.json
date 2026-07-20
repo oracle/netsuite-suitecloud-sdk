@@ -261,6 +261,7 @@
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "The following warnings were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_VALIDATION_OUTPUT_MESSAGE": "        - Line No. {0} - {1}",
+	"PROJECT_COMMAND_LOG_MESSAGES_WRITING": "Writing to log file {0}.",
 
 	"ERRORS_ADD_ERROR_LINE": "\nError: {0}",
 	"ERRORS_CANT_CREATE_FOLDER": "There was an error when creating the {0} folder. Verify that the path is correct.\nError code: {1}",

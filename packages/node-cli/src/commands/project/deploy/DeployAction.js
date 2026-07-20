@@ -4,6 +4,7 @@
  */
 'use strict';
 
+const { resolve } = require('node:path');
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const DeployActionResult = require('../../../services/actionresult/DeployActionResult');
 const CommandUtils = require('../../../utils/CommandUtils');
@@ -34,7 +35,7 @@ const {
 
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 
-const { COMMAND_DEPLOY } = require('../../../services/TranslationKeys');
+const { COMMAND_DEPLOY, PROJECT_COMMAND_LOG } = require('../../../services/TranslationKeys');
 
 const IGNORED_OPTIONS = {
 	VALIDATE: 'validate',
@@ -168,7 +169,7 @@ module.exports = class DeployAction extends (
 	async _executeProjectCommandWithAuthRetry({ command, projectFolder, sdkParams, flags, message }) {
 		const authId = sdkParams[COMMAND.OPTIONS.AUTH_ID];
 		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
-		return executeWithSpinner({
+		const operationResult = await executeWithSpinner({
 			action: executeWithAuthRetry({
 				authId,
 				authSessionProvider,
@@ -183,6 +184,10 @@ module.exports = class DeployAction extends (
 			}),
 			message,
 		});
+		if (operationResult.logFilePath) {
+			this._log.info(NodeTranslationService.getMessage(PROJECT_COMMAND_LOG.MESSAGES.WRITING, operationResult.logFilePath));
+		}
+		return operationResult;
 	}
 
 	_executeProjectCommand({ command, projectFolder, sdkParams, flags, authCredentials }) {
@@ -192,6 +197,9 @@ module.exports = class DeployAction extends (
 			hostName: authCredentials.hostName,
 			accessToken: authCredentials.accessToken,
 			rawOutput: isRawOutputRequested(sdkParams),
+			logFileLocation: sdkParams[COMMAND.OPTIONS.LOG]
+				? resolve(this._executionPath, CommandUtils.unquoteString(sdkParams[COMMAND.OPTIONS.LOG]))
+				: undefined,
 			params: sdkParams,
 			flags,
 			userAgent: this._executionEnvironmentContext?.toUserAgentString?.(),
