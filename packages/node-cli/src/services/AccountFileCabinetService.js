@@ -97,15 +97,6 @@ module.exports = class AccountFileCabinetService {
 	}
 
 	_getUserAgent() {
-		if (!this._executionEnvironmentContext) {
-			return undefined;
-		}
-		const platform = this._executionEnvironmentContext.getPlatform && this._executionEnvironmentContext.getPlatform();
-		const platformVersion =
-			this._executionEnvironmentContext.getPlatformVersion && this._executionEnvironmentContext.getPlatformVersion();
-		if (!platform || !platformVersion) {
-			return undefined;
-		}
-		return `${platform}/${platformVersion}`;
+		return this._executionEnvironmentContext?.toUserAgentString?.();
 	}
 };

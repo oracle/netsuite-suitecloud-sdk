@@ -138,6 +138,7 @@ module.exports = class ValidateAction extends BaseAction {
 				rawOutput: isRawOutputRequested(sdkParams),
 				params: sdkParams,
 				flags,
+				userAgent: this._executionEnvironmentContext?.toUserAgentString?.(),
 				summaryContext: this._buildSummaryContext(authCredentials),
 			}),
 			message,

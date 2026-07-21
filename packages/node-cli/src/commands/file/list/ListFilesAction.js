@@ -75,14 +75,5 @@ function unquote(value) {
 }
 
 function getUserAgent(executionEnvironmentContext) {
-	if (!executionEnvironmentContext) {
-		return undefined;
-	}
-	const platform = executionEnvironmentContext.getPlatform && executionEnvironmentContext.getPlatform();
-	const platformVersion =
-		executionEnvironmentContext.getPlatformVersion && executionEnvironmentContext.getPlatformVersion();
-	if (!platform || !platformVersion) {
-		return undefined;
-	}
-	return `${platform}/${platformVersion}`;
+	return executionEnvironmentContext?.toUserAgentString?.();
 }
