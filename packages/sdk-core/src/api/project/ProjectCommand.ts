@@ -37,6 +37,7 @@ export type ProjectCommandExecutionInput = {
 	params?: Record<string, unknown>;
 	flags?: string[];
 	rawOutput?: boolean;
+	userAgent?: string;
 	timeoutMs?: number;
 	summaryContext?: ProjectCommandSummaryContext;
 };

@@ -20,7 +20,7 @@ module.exports = class EnvironmentInformationService {
 	}
 
 	getInstalledJavaVersionString() {
-		const childProcess = spawn('java', ['-version'], { shell: true });
+		const childProcess = spawn('java', ['-version'], { shell: false });
 		const javaVersionOutput = childProcess.stderr.toString();
 		// The output should be similar to: java version "17.0.4" 2022-07-19 LTS
 		// It's expected to have the version surrounded by double quotes and only contain numbers and dots

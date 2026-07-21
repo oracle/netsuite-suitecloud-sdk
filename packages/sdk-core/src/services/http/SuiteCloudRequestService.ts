@@ -7,6 +7,7 @@
 import type { IncomingHttpHeaders } from 'node:http';
 import type { RequestOptions } from 'node:https';
 import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
+import { getSuiteCloudRequestTelemetry } from './SuiteCloudRequestTelemetry';
 
 export type SuiteCloudHttpResponse = {
 	statusCode: number;
@@ -28,8 +29,10 @@ export type SuiteCloudRequest = {
 /** Shared authenticated transport for SuiteCloud command services. */
 export function sendSuiteCloudRequest(input: SuiteCloudRequest): Promise<SuiteCloudHttpResponse> {
 	return new Promise((resolve, reject) => {
+		const telemetry = getSuiteCloudRequestTelemetry();
 		const headers: Record<string, string> = {
 			Authorization: `Bearer ${input.accessToken}`,
+			...(telemetry?.userAgent ? { 'User-Agent': telemetry.userAgent } : {}),
 			...input.headers,
 		};
 		if (input.body && !headers['Content-Length']) {

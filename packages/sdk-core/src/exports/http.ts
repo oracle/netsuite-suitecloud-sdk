@@ -15,3 +15,7 @@ export {
 	validateProxyUri,
 } from '../http/SuiteCloudHttpsClient';
 export type { ProxyConfiguration } from '../http/SuiteCloudHttpsClient';
+export {
+	getSuiteCloudRequestTelemetry,
+	runWithSuiteCloudRequestTelemetry,
+} from '../services/http/SuiteCloudRequestTelemetry';

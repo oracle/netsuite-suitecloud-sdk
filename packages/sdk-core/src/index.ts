@@ -8,5 +8,6 @@ import * as auth from './exports/auth';
 import * as commands from './exports/commands';
 import * as http from './exports/http';
 import * as metadata from './exports/metadata';
+import * as telemetry from './exports/telemetry';
 
-export { auth, commands, http, metadata };
+export { auth, commands, http, metadata, telemetry };

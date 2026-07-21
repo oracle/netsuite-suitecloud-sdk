@@ -15,6 +15,7 @@ const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
 const { checkIfReauthorizationIsNeeded, refreshAuthorization } = require('../utils/AuthenticationUtils');
 const { AUTHORIZATION_PROPERTIES_KEYS } = require('../ApplicationConstants');
+const { runWithSuiteCloudRequestTelemetry } = require('@oracle/suitecloud-sdk-core').http;
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -38,6 +39,11 @@ module.exports = class CommandActionExecutor {
 	}
 
 	async executeAction(context) {
+		const userAgent = this._executionEnvironmentContext?.toUserAgentString?.();
+		return runWithSuiteCloudRequestTelemetry({ userAgent }, () => this._executeAction(context));
+	}
+
+	async _executeAction(context) {
 		assert(context);
 		assert(context.arguments);
 		assert(context.commandName);

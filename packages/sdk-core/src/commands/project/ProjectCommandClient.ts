@@ -6,10 +6,9 @@
 
 import { randomBytes } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import type { RequestOptions } from 'node:https';
 import { basename } from 'node:path';
 import type { ProjectCommandType } from '../../api/project/ProjectCommand';
-import { requestSuiteCloudHttps } from '../../http/SuiteCloudHttpsClient';
+import { sendSuiteCloudRequest } from '../../services/http/SuiteCloudRequestService';
 import { PROJECT_API } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
 
@@ -20,6 +19,7 @@ export type ProjectCommandRequest = {
 	projectArchivePath: string;
 	params: Record<string, unknown>;
 	flags: string[];
+	userAgent?: string;
 	timeoutMs: number;
 };
 
@@ -38,6 +38,7 @@ const QUERY_PARAM_ACCOUNT_SPECIFIC_VALUES = 'accountspecificvalues';
 const BOOLEAN_TRUE_T = 'T';
 const BOOLEAN_FALSE_F = 'F';
 const ACCOUNT_SPECIFIC_VALUES_DEFAULT = 'ERROR';
+const HEADER_SDF_ACTION = 'Sdf-Action';
 
 export async function sendProjectCommandRequest(
 	request: ProjectCommandRequest
@@ -49,6 +50,8 @@ export async function sendProjectCommandRequest(
 		accessToken: request.accessToken,
 		payload: multipartPayload.payload,
 		boundary: multipartPayload.boundary,
+		userAgent: request.userAgent,
+		sdfAction: request.command,
 		timeoutMs: request.timeoutMs,
 	});
 }
@@ -128,41 +131,30 @@ function sendHttpsMultipartRequest(input: {
 	accessToken: string;
 	payload: Buffer;
 	boundary: string;
+	userAgent?: string;
+	sdfAction: string;
 	timeoutMs: number;
 }): Promise<ProjectCommandHttpResponse> {
-	return new Promise((resolve, reject) => {
-		const requestOptions: RequestOptions = {
-			method: 'POST',
-			hostname: input.hostName,
-			port: 443,
-			path: input.pathname,
-			headers: {
-				Authorization: `Bearer ${input.accessToken}`,
-				'Content-Type': `multipart/form-data; boundary=${input.boundary}`,
-				'Content-Length': input.payload.length,
-				Accept: 'application/json',
-			},
-		};
-
-		const clientRequest = requestSuiteCloudHttps(input.hostName, requestOptions, (response) => {
-			const bodyChunks: Buffer[] = [];
-			response.on('data', (chunk: Buffer | Uint8Array | string) => bodyChunks.push(Buffer.from(chunk)));
-			response.on('end', () => {
-				resolve({
-					statusCode: response.statusCode || 500,
-					body: Buffer.concat(bodyChunks).toString('utf8'),
-					serverTimestamp: asHeaderString(response.headers.date),
-				});
-			});
-		});
-
-		clientRequest.on('error', reject);
-		clientRequest.setTimeout(input.timeoutMs, () => {
-			clientRequest.destroy(new Error(translationService.getMessage(PROJECT_API.ERROR.REQUEST_TIMED_OUT)));
-		});
-		clientRequest.write(input.payload);
-		clientRequest.end();
-	});
+	return sendSuiteCloudRequest({
+		hostName: input.hostName,
+		accessToken: input.accessToken,
+		method: 'POST',
+		path: input.pathname,
+		headers: {
+			'Content-Type': `multipart/form-data; boundary=${input.boundary}`,
+			'Content-Length': String(input.payload.length),
+			Accept: 'application/json',
+			[HEADER_SDF_ACTION]: input.sdfAction,
+			...(input.userAgent ? { 'User-Agent': input.userAgent } : {}),
+		},
+		body: input.payload,
+		timeoutMs: input.timeoutMs,
+		timeoutMessage: translationService.getMessage(PROJECT_API.ERROR.REQUEST_TIMED_OUT),
+	}).then((response) => ({
+		statusCode: response.statusCode,
+		body: response.body.toString('utf8'),
+		serverTimestamp: asHeaderString(response.headers.date),
+	}));
 }
 
 function asHeaderString(value: string | string[] | undefined): string | undefined {

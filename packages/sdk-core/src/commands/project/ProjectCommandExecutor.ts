@@ -50,6 +50,7 @@ export async function executeProjectCommand(
 			projectArchivePath,
 			params: input.params || {},
 			flags: input.flags || [],
+			userAgent: input.userAgent,
 			timeoutMs: input.timeoutMs || DEFAULT_TIMEOUT_MS,
 		});
 
