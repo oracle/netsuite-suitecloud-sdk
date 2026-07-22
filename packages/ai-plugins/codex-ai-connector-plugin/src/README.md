@@ -5,6 +5,8 @@ This plug-in is compatible with ChatGPT and Codex and bundles two skills for Net
 - netsuite-ai-connector-instuctions
 - netsuite-finance-analyst skills
 
+The business user plugins require the NetSuite AI Connector Service to access NetSuite data. Use the plugins with the AI Connector Service to enable the skills to access your NetSuite data.
+
 ## Contributing
 This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](https://github.com/oracle/netsuite-suitecloud-sdk/blob/master/CONTRIBUTING.md).
 
