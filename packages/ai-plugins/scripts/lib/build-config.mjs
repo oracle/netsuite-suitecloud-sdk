@@ -163,12 +163,30 @@ function validatePluginConfigShape(pluginConfig, pluginDirectoryName) {
 }
 
 async function getPluginDirectories(packageRoot) {
-	const entries = await fs.readdir(packageRoot, { withFileTypes: true });
-	return entries
-		.filter((entry) => entry.isDirectory())
-		.map((entry) => entry.name)
-		.filter((name) => !['common', 'config', 'schemas', 'scripts', 'test'].includes(name))
-		.sort();
+	const excludedDirectories = new Set(['common', 'config', 'schemas', 'scripts', 'test']);
+	const directories = [];
+
+	async function walk(relativeDirectory = '') {
+		const absoluteDirectory = path.join(packageRoot, relativeDirectory);
+		const entries = await fs.readdir(absoluteDirectory, { withFileTypes: true });
+		for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+			if (!entry.isDirectory() || (relativeDirectory === '' && excludedDirectories.has(entry.name))) {
+				continue;
+			}
+
+			const relativePath = path.join(relativeDirectory, entry.name);
+			const pluginBuildPath = path.join(packageRoot, relativePath, 'plugin.build.json');
+			if (await fs.access(pluginBuildPath).then(() => true).catch(() => false)) {
+				directories.push(normalizePath(relativePath));
+				continue;
+			}
+
+			await walk(relativePath);
+		}
+	}
+
+	await walk();
+	return directories.sort();
 }
 
 export async function loadWorkspace(packageRoot = process.cwd()) {
@@ -222,6 +240,7 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 		plugins.push({
 			...pluginConfig,
 			sourceDirectoryName: pluginDirectoryName,
+			sourceKey: pluginDirectoryName,
 			pluginDirectory,
 			pluginBuildPath,
 		});
@@ -257,9 +276,21 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 }
 
 export function getPluginBySourceName(workspace, pluginName) {
-	const plugin = workspace.plugins.find(
-		(candidate) => candidate.sourceDirectoryName === pluginName || candidate.id === pluginName
-	);
+	const sourcePlugin = workspace.plugins.find((candidate) => candidate.sourceKey === pluginName);
+	if (sourcePlugin) {
+		return sourcePlugin;
+	}
+
+	const idMatches = workspace.plugins.filter((candidate) => candidate.id === pluginName);
+	if (idMatches.length > 1) {
+		throw new Error(
+			`Ambiguous plugin id "${pluginName}". Use a provider-qualified source key: ${idMatches
+				.map((plugin) => plugin.sourceKey)
+				.join(', ')}`
+		);
+	}
+
+	const plugin = idMatches[0];
 
 	if (!plugin) {
 		throw new Error(`Unknown plugin: ${pluginName}`);

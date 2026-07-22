@@ -52,8 +52,9 @@ jobs:
             popd >/dev/null
           fi
 
-          while IFS= read -r plugin_dir; do
-            plugin_name="$(basename "${plugin_dir}")"
+          while IFS= read -r manifest_path; do
+            plugin_dir="$(dirname "$(dirname "${manifest_path}")")"
+            plugin_name="${plugin_dir#dist/ai-plugins/}"
             if ! diff -qr "${plugin_dir}" "${previous_dir}/${plugin_name}" >/dev/null 2>&1; then
               node -e "
                 const fs = require('fs');
@@ -89,21 +90,22 @@ jobs:
                 const currentVersion = manifestVersion(currentDir);
                 const previousVersion = manifestVersion(previousDir);
                 if (compareSemver(currentVersion, previousVersion) <= 0) {
-                  console.error('Changed plugin content requires a higher version:', path.basename(currentDir), previousVersion, '->', currentVersion);
+                  console.error('Changed plugin content requires a higher version:', path.relative(process.cwd(), currentDir), previousVersion, '->', currentVersion);
                   process.exit(1);
                 }
               " "${plugin_dir}" "${previous_dir}/${plugin_name}"
               changed_plugins+=("${plugin_name}")
               publish_required=1
             fi
-          done < <(find dist/ai-plugins -mindepth 1 -maxdepth 1 -type d | sort)
+          done < <(find dist/ai-plugins -type f \( -path '*/.claude-plugin/plugin.json' -o -path '*/.codex-plugin/plugin.json' \) | sort)
 
-          while IFS= read -r previous_plugin_dir; do
-            previous_plugin_name="$(basename "${previous_plugin_dir}")"
+          while IFS= read -r previous_manifest_path; do
+            previous_plugin_dir="$(dirname "$(dirname "${previous_manifest_path}")")"
+            previous_plugin_name="${previous_plugin_dir#${previous_dir}/}"
             if [ ! -d "dist/ai-plugins/${previous_plugin_name}" ]; then
               publish_required=1
             fi
-          done < <(find "${previous_dir}" -mindepth 1 -maxdepth 1 -type d ! -name .git | sort)
+          done < <(find "${previous_dir}" -type f \( -path '*/.claude-plugin/plugin.json' -o -path '*/.codex-plugin/plugin.json' \) | sort)
 
           if [ "${publish_required}" -eq 0 ]; then
             echo "No plugin content changes detected."

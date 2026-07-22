@@ -71,15 +71,15 @@ const stagedResults = await buildPlugins([], { workspace, writeOutput: false });
 const hasClaudeCli = await commandExists('claude');
 
 for (const result of stagedResults) {
-	const releaseDir = path.resolve(workspace.packageRoot, workspace.buildConfig.pluginDistRoot, result.plugin.id);
+	const releaseDir = path.resolve(workspace.packageRoot, workspace.buildConfig.pluginDistRoot, result.plugin.sourceKey);
 	const errors = await compareDirectories(result.outputDir, releaseDir);
 	if (errors.length > 0) {
-		throw new Error(`Release verification failed for ${result.plugin.id}: ${errors.join(', ')}`);
+		throw new Error(`Release verification failed for ${result.plugin.sourceKey}: ${errors.join(', ')}`);
 	}
 
 	if (result.plugin.platform === 'claude' && hasClaudeCli) {
 		await runCommand('claude', ['plugin', 'validate', '--strict', releaseDir]);
 	}
 
-	console.log(`Verified ${result.plugin.id}`);
+	console.log(`Verified ${result.plugin.sourceKey}`);
 }

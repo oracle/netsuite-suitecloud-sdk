@@ -13,57 +13,105 @@ import { buildPlugin } from '../scripts/lib/plugin-builder.mjs';
 import { listRelativeFiles, writeJson } from '../scripts/lib/fs-utils.mjs';
 
 const packageRoot = path.resolve(process.cwd());
+const suitecloudSkills = [
+	'netsuite-owasp-secure-coding',
+	'netsuite-sdf-project-documentation',
+	'netsuite-sdf-roles-and-permissions',
+	'netsuite-sdf-safe-guide',
+	'netsuite-suitescript-learning',
+	'netsuite-suitescript-records-reference',
+	'netsuite-suitescript-upgrade',
+	'netsuite-uif-spa-reference',
+];
 
-test('workspace config loads and plugin skills normalize to expected membership counts', async () => {
+function getSkillDirectories(files) {
+	return [...new Set(files.filter((file) => file.startsWith('skills/')).map((file) => file.split('/').slice(0, 2).join('/')))].sort();
+}
+
+test('workspace config recursively discovers six provider-qualified plugins with expected platforms and skills', async () => {
 	const workspace = await loadWorkspace(packageRoot);
 
-	assert.equal(workspace.plugins.length, 4);
-
-	const connectorPlugins = workspace.plugins.filter((plugin) =>
-		['claude-ai-connector-plugin', 'codex-ai-connector-plugin'].includes(plugin.sourceDirectoryName)
+	assert.equal(workspace.plugins.length, 6);
+	assert.deepEqual(
+		workspace.plugins.map((plugin) => plugin.sourceKey),
+		[
+			'anthropic/netsuite-ai-connector-companion',
+			'anthropic/netsuite-finance-analyst',
+			'anthropic/netsuite-suitecloud',
+			'openai/netsuite-ai-connector-companion',
+			'openai/netsuite-finance-analyst',
+			'openai/netsuite-suitecloud',
+		]
 	);
-	const suitecloudPlugins = workspace.plugins.filter(
-		(plugin) => !['claude-ai-connector-plugin', 'codex-ai-connector-plugin'].includes(plugin.sourceDirectoryName)
-	);
 
-	assert.equal(connectorPlugins.length, 2);
-
-	for (const plugin of connectorPlugins) {
-		assert.deepEqual(getNormalizedSkills(plugin), [
-			'netsuite-ai-connector-instructions',
-			'netsuite-finance-analyst',
-		]);
+	for (const plugin of workspace.plugins) {
+		assert.equal(plugin.platform, plugin.sourceKey.startsWith('anthropic/') ? 'claude' : 'codex');
 	}
 
-	for (const plugin of suitecloudPlugins) {
-		assert.equal(getNormalizedSkills(plugin).length, 8);
+	for (const plugin of workspace.plugins.filter((plugin) => plugin.id === 'netsuite-ai-connector-companion')) {
+		assert.deepEqual(getNormalizedSkills(plugin), ['netsuite-ai-connector-instructions']);
+	}
+
+	for (const plugin of workspace.plugins.filter((plugin) => plugin.id === 'netsuite-finance-analyst')) {
+		assert.deepEqual(getNormalizedSkills(plugin), ['netsuite-finance-analyst']);
+	}
+
+	for (const plugin of workspace.plugins.filter((plugin) => plugin.id === 'netsuite-suitecloud')) {
+		assert.deepEqual(getNormalizedSkills(plugin), suitecloudSkills);
 	}
 });
 
-test('buildPlugin generates manifest, README, license, and expected skill membership', async () => {
+test('provider-qualified plugins build without collisions and ambiguous bare IDs fail clearly', async () => {
 	const workspace = await loadWorkspace(packageRoot);
-	const result = await buildPlugin('codex-ai-connector-plugin', { workspace, writeOutput: false });
+	const result = await buildPlugin('openai/netsuite-ai-connector-companion', { workspace, writeOutput: false });
 	const files = await listRelativeFiles(result.outputDir);
 
 	assert(files.includes('.codex-plugin/plugin.json'));
 	assert(files.includes('README.md'));
 	assert(files.includes('LICENSE.txt'));
-	assert.equal(result.skillNames.length, 2);
+	assert.deepEqual(result.skillNames, ['netsuite-ai-connector-instructions']);
 
 	const manifest = JSON.parse(await fs.readFile(path.join(result.outputDir, '.codex-plugin', 'plugin.json'), 'utf8'));
 	assert.equal(manifest.skills, './skills/');
 	assert.equal(manifest.name, 'netsuite-ai-connector-companion');
 	assert.equal(manifest.interface.displayName, 'netsuite-ai-connector-companion');
+
+	await assert.rejects(
+		() => buildPlugin('netsuite-ai-connector-companion', { workspace, writeOutput: false }),
+		/ambiguous plugin id.*provider-qualified/i
+	);
+});
+
+test('all provider-qualified plugins stage nested artifacts with provider-specific manifests and declared skills only', async () => {
+	const workspace = await loadWorkspace(packageRoot);
+
+	for (const plugin of workspace.plugins) {
+		const result = await buildPlugin(plugin.sourceKey, { workspace, writeOutput: false });
+		const files = await listRelativeFiles(result.outputDir);
+		const manifestPath = plugin.platform === 'claude' ? '.claude-plugin/plugin.json' : '.codex-plugin/plugin.json';
+		const absentManifestPath = plugin.platform === 'claude' ? '.codex-plugin/plugin.json' : '.claude-plugin/plugin.json';
+
+		assert(files.includes(manifestPath));
+		assert(!files.includes(absentManifestPath));
+		assert(files.includes('README.md'));
+		assert(files.includes('LICENSE.txt'));
+		assert.deepEqual(getSkillDirectories(files), result.skillNames.map((skillName) => `skills/${skillName}`));
+
+		const manifest = JSON.parse(await fs.readFile(path.join(result.outputDir, manifestPath), 'utf8'));
+		assert.equal(manifest.name, plugin.id);
+		assert.equal(manifest.version, plugin.version);
+	}
 });
 
 test('buildPlugin replaces stale output on repeated builds', async () => {
 	const workspace = await loadWorkspace(packageRoot);
-	const first = await buildPlugin('claude-suitecloud-plugin', { workspace, writeOutput: true });
+	const first = await buildPlugin('anthropic/netsuite-suitecloud', { workspace, writeOutput: true });
 	await fs.writeFile(path.join(first.outputDir, 'stale.txt'), 'stale', 'utf8');
-	const second = await buildPlugin('claude-suitecloud-plugin', { workspace, writeOutput: true });
+	const second = await buildPlugin('anthropic/netsuite-suitecloud', { workspace, writeOutput: true });
 	const files = await listRelativeFiles(second.outputDir);
 
 	assert(!files.includes('stale.txt'));
+	assert.match(second.outputDir, /dist\/ai-plugins\/anthropic\/netsuite-suitecloud$/);
 });
 
 test('loadWorkspace rejects invalid skill frontmatter', async () => {

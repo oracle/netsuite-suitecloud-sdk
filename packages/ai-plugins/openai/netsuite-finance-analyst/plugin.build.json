@@ -1,0 +1,23 @@
+{
+	"$schema": "../../schemas/plugin-build.schema.json",
+	"id": "netsuite-finance-analyst",
+	"version": "1.0.0",
+	"platform": "codex",
+	"metadata": {
+		"name": "netsuite-finance-analyst",
+		"description": "NetSuite finance analysis skill.",
+		"authorName": "Oracle NetSuite",
+		"authorUrl": "https://www.netsuite.com",
+		"license": "The Universal Permissive License (UPL), Version 1.0",
+		"keywords": ["netsuite", "finance", "mcp"],
+		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/ai-plugins",
+		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
+		"category": "Productivity",
+		"capabilities": ["Read"],
+		"shortDescription": "NetSuite finance analysis skill.",
+		"longDescription": "Bundles the NetSuite finance analysis skill for Codex."
+	},
+	"skills": ["netsuite-finance-analyst"],
+	"commonLayers": [],
+	"inputs": [{ "root": "src", "destination": ".", "include": ["README.md"], "exclude": [] }]
+}

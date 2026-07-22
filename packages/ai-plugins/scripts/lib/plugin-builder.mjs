@@ -266,7 +266,7 @@ export async function buildPlugin(pluginName, options = {}) {
 	const stageDir = await fs.mkdtemp(path.join(stageParent, `${pluginConfig.id}.stage-`));
 
 	const staged = await stagePlannedFiles({ workspace, pluginConfig, stageDir });
-	const outputDir = path.join(distRoot, pluginConfig.id);
+	const outputDir = path.join(distRoot, pluginConfig.sourceKey);
 
 	if (writeOutput) {
 		await replaceOutputAtomically(stageDir, outputDir);
@@ -289,7 +289,7 @@ export async function buildPlugins(pluginNames, options = {}) {
 	const targets =
 		pluginNames.length > 0
 			? pluginNames
-			: workspace.plugins.map((pluginConfig) => pluginConfig.sourceDirectoryName);
+			: workspace.plugins.map((pluginConfig) => pluginConfig.sourceKey);
 
 	const results = [];
 	for (const pluginName of targets) {

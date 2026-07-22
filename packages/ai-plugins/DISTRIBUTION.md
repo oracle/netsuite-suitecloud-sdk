@@ -27,14 +27,16 @@ The publisher:
 - updates the orphan `ai-plugins-dist` branch only when generated plugin output has changed;
 - requires a version increase when an already published plugin's content changes;
 - removes a distribution directory when its generated plugin is removed from source; and
-- creates a tag for every changed plugin in the form `ai-plugin/<plugin-id>/v<version>`.
+- creates a tag for every changed plugin in the form `ai-plugin/<provider>/<plugin-id>/v<version>`.
 
 Each distribution update also generates a branch-root `README.md` identifying the source branch used for that release. The branch root is otherwise limited to generated plugin directories:
 
-- `netsuite-ai-connector-companion-for-claude/`
-- `netsuite-ai-connector-companion-for-codex/`
-- `suitecloud-plugin-for-claude/`
-- `suitecloud-plugin-for-codex/`
+- `anthropic/netsuite-ai-connector-companion/`
+- `anthropic/netsuite-finance-analyst/`
+- `anthropic/netsuite-suitecloud/`
+- `openai/netsuite-ai-connector-companion/`
+- `openai/netsuite-finance-analyst/`
+- `openai/netsuite-suitecloud/`
 
 ## Local fallback procedure
 
@@ -54,7 +56,7 @@ npm run build --workspace @oracle/ai-plugins
 npm run verify-release --workspace @oracle/ai-plugins
 ```
 
-For every plugin whose generated content changes, increase its manifest version before publishing. Tag each changed plugin as `ai-plugin/<plugin-id>/v<version>` after the distribution commit is pushed.
+For every plugin whose generated content changes, increase its manifest version before publishing. Tag each changed plugin as `ai-plugin/<provider>/<plugin-id>/v<version>` after the distribution commit is pushed.
 
 ### Create the distribution worktree once
 
@@ -81,11 +83,11 @@ git -C ../ai-plugins-dist push -u origin ai-plugins-dist
 
 On recurring releases, omit `-u` from the final push if the worktree already tracks `origin/ai-plugins-dist`. Replace `master` in the generated README command only if releasing from another source branch.
 
-Create and push a tag for each changed plugin, substituting its published ID and version:
+Create and push a tag for each changed plugin, substituting its provider-qualified published ID and version:
 
 ```sh
-git -C ../ai-plugins-dist tag -a ai-plugin/<plugin-id>/v<version> -m "Release <plugin-id> v<version>"
-git -C ../ai-plugins-dist push origin ai-plugin/<plugin-id>/v<version>
+git -C ../ai-plugins-dist tag -a ai-plugin/<provider>/<plugin-id>/v<version> -m "Release <provider>/<plugin-id> v<version>"
+git -C ../ai-plugins-dist push origin ai-plugin/<provider>/<plugin-id>/v<version>
 ```
 
 ## Verification
@@ -94,10 +96,10 @@ Before committing a manual fallback release, inspect the distribution worktree:
 
 ```sh
 git -C ../ai-plugins-dist status
-find ../ai-plugins-dist -maxdepth 1 -mindepth 1 -type d | sort
+find ../ai-plugins-dist -mindepth 2 -maxdepth 2 -type d | sort
 ```
 
-It should contain the four generated plugin directories listed above and the generated branch-root `README.md`. It must not contain normal source files such as `package.json`, `packages/`, or a nested `dist/ai-plugins/` directory.
+It should contain the six generated provider-nested plugin directories listed above and the generated branch-root `README.md`. It must not contain normal source files such as `package.json`, `packages/`, or a nested `dist/ai-plugins/` directory.
 
 ## Guardrails
 
