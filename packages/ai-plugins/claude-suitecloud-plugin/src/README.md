@@ -11,6 +11,8 @@ This plug-in is compatible with Claude and bundles eight NetSuite SuiteCloud dev
 - netsuite-suitescript-upgrade
 - netsuite-uif-spa-reference
 
+The skills provide expert guidance for NetSuite SuiteCloud development, including SuiteScript, SDF, UIF SPAs, security, permissions, documentation, and modernization. It helps SuiteCloud developers and SuiteApp teams generate accurate, secure, maintainable code and project artifacts by using NetSuite references and SAFE Guide best practices.
+
 ## Contributing
 This project welcomes contributions from the community. Before submitting a pull request, review our [Contribution Guide](https://github.com/oracle/netsuite-suitecloud-sdk/blob/master/CONTRIBUTING.md).
 
