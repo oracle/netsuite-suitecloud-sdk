@@ -1,7 +1,7 @@
 <p align="left"><a href="#"><img width="250" src="../../../../resources/Netsuite-logo-ocean-150-bg.png"></a></p>
 
 # NetSuite AI Connector Companion
-This plugin is compatible with Claude and bundles two skills for NetSuite AI Connector:
+This plug-in is compatible with Claude and bundles two skills for NetSuite AI Connector:
 - netsuite-ai-connector-instuctions
 - netsuite-finance-analyst skills
 
