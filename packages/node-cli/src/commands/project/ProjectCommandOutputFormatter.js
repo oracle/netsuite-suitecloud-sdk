@@ -21,7 +21,7 @@ const NEUTRAL_SUMMARY_LINES = [
 	'SDF Errors:',
 	'SDF Validation Errors:',
 	'Endpoint Errors:',
-	'Local Timestamp:',
+	'Timestamp:',
 	'Account:',
 	'Role:',
 	'SuiteApp ID:',
