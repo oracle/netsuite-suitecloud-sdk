@@ -123,6 +123,31 @@ describe('ProjectCommandExecutor', () => {
 		});
 	});
 
+	it('should preserve command output when the optional log write fails', async () => {
+		const result = await executeProjectCommand(
+			{
+				command: PROJECT_COMMAND.DEPLOY,
+				projectFolder: '/tmp/project',
+				hostName: 'system.netsuite.com',
+				accessToken: 'token',
+				logFileLocation: '/missing/deploy.log',
+			},
+			{
+				createProjectArchive: async () => '/tmp/project.zip',
+				deleteFile: async () => undefined,
+				sendProjectRequest: async () => ({ statusCode: 200, body: JSON.stringify({ status: 'SUCCESS', data: ['Deployed'] }) }),
+				writeProjectLog: async () => { throw new Error('Unable to write log'); },
+			}
+		);
+
+		expect(result).toEqual({
+			status: SDK_OPERATION_STATUS.SUCCESS,
+			data: ['Deployed'],
+			resultMessage: '',
+			logWriteWarning: 'Unable to write log',
+		});
+	});
+
 	it('should normalize non-sdk successful payloads', async () => {
 		const result = await executeProjectCommand(
 			{

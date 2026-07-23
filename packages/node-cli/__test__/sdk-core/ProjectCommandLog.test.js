@@ -67,6 +67,6 @@ describe('ProjectCommandLog', () => {
 			command: 'deploy',
 			logFileLocation: join(temporaryFolder, 'missing', 'deploy.log'),
 			operationResult: { status: 'SUCCESS', data: [] },
-		})).rejects.toThrow('Unable to write the project command log');
+		})).rejects.toThrow('Unable to write log');
 	});
 });

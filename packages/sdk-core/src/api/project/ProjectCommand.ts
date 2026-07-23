@@ -45,4 +45,5 @@ export type ProjectCommandExecutionInput = {
 
 export type OperationResult<T = unknown> = SharedOperationResult<T> & {
 	logFilePath?: string;
+	logWriteWarning?: string;
 };

@@ -71,12 +71,16 @@ export async function executeProjectCommand(
 		if (!input.logFileLocation) {
 			return operationResult;
 		}
-		const logFilePath = await writeLog({
-			command: input.command,
-			logFileLocation: input.logFileLocation,
-			operationResult,
-		});
-		return { ...operationResult, logFilePath };
+		try {
+			const logFilePath = await writeLog({
+				command: input.command,
+				logFileLocation: input.logFileLocation,
+				operationResult,
+			});
+			return { ...operationResult, logFilePath };
+		} catch (error: unknown) {
+			return { ...operationResult, logWriteWarning: toErrorMessage(error) };
+		}
 	} catch (error: unknown) {
 		return {
 			status: SDK_OPERATION_STATUS.ERROR,

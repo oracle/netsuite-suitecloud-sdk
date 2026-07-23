@@ -134,6 +134,9 @@ module.exports = class ValidateAction extends BaseAction {
 		if (operationResult.logFilePath) {
 			this._log.info(NodeTranslationService.getMessage(PROJECT_COMMAND_LOG.MESSAGES.WRITING, operationResult.logFilePath));
 		}
+		if (operationResult.logWriteWarning) {
+			this._log.warning(operationResult.logWriteWarning);
+		}
 		return operationResult;
 	}
 
