@@ -6,12 +6,13 @@
 
 const assert = require('assert');
 const NodeTranslationService = require('./../services/NodeTranslationService');
-const { ERRORS, CLI, COMMAND_REFRESH_AUTHORIZATION } = require('../services/TranslationKeys');
+const { ERRORS, CLI, COMMAND_REFRESH_AUTHORIZATION, UTILS } = require('../services/TranslationKeys');
 const { ActionResult } = require('../services/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerOsConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/ExceptionUtils');
 const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
+const { executeWithSpinner } = require('../ui/CliSpinner');
 const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
 const { checkIfReauthorizationIsNeeded, refreshAuthorization } = require('../utils/AuthenticationUtils');
 const { AUTHORIZATION_PROPERTIES_KEYS } = require('../ApplicationConstants');
@@ -112,7 +113,10 @@ module.exports = class CommandActionExecutor {
 	}
 
 	async _refreshAuthorizationIfNeeded(defaultAuthId) {
-		const inspectAuthzOperationResult = await checkIfReauthorizationIsNeeded(defaultAuthId, this._sdkPath, this._executionEnvironmentContext);
+		const inspectAuthzOperationResult = await executeWithSpinner({
+			action: checkIfReauthorizationIsNeeded(defaultAuthId, this._sdkPath, this._executionEnvironmentContext),
+			message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.CHECKING_AUTHORIZATION),
+		});
 
 		if (!inspectAuthzOperationResult.isSuccess()) {
 			throw inspectAuthzOperationResult.errorMessages;

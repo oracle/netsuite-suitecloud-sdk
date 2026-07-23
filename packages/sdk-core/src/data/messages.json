@@ -65,6 +65,7 @@
   "PROJECT_CREATE_ERROR_UNSUPPORTED_TYPE": "Unsupported project type \"{0}\".",
   "PROJECT_ERROR_ACCESS_TOKEN_REQUIRED": "An access token is required for project command execution.",
   "PROJECT_ERROR_INPUT_REQUIRED": "Project command execution input is required.",
+  "PROJECT_ERROR_LOG_WRITE_FAILED": "Unable to write log to \"{0}\": {1}",
   "PROJECT_ERROR_PROJECT_FOLDER_REQUIRED": "A project folder is required for project command execution.",
   "PROJECT_ERROR_TARGET_HOST_REQUIRED": "A target host is required for project command execution.",
   "PROJECT_ERROR_UNSUPPORTED_COMMAND": "Unsupported project command \"{0}\".",

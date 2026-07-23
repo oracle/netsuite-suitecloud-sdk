@@ -261,6 +261,7 @@
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_WARNING": "The following warnings were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_VALIDATION_OUTPUT_MESSAGE": "        - Line No. {0} - {1}",
+	"PROJECT_COMMAND_LOG_MESSAGES_WRITING": "Writing to log file {0}.",
 
 	"ERRORS_ADD_ERROR_LINE": "\nError: {0}",
 	"ERRORS_CANT_CREATE_FOLDER": "There was an error when creating the {0} folder. Verify that the path is correct.\nError code: {1}",
@@ -331,6 +332,7 @@
 	"UTILS_ACCOUNT_SPECIFIC_VALUES_ARGUMENT_HANDLER_ERRORS_WRONG_ACCOUNT_SPECIFIC_VALUES_OPTION": "You have specified an invalid value for the \"--accountspecficvalues\" option. Enter either WARNING or ERROR.",
 	"UTILS_AUTHENTICATION_AUTHENTICATING": "Authenticating...",
 	"UTILS_AUTHENTICATION_AUTHORIZING": "Authorizing...",
+	"UTILS_AUTHENTICATION_CHECKING_AUTHORIZATION": "Checking authorization...",
 	"UTILS_AUTHENTICATION_LOADING_AUTHIDS": "Loading the configured authentication IDs in this machine...",
 	"UTILS_AUTHENTICATION_SUCCESS_SETUP": "The account has been successfully set up.",
 	"UTILS_AUTHENTICATION_SAVING_STARTING_OAUTH_FLOW": "Continue the authentication process in the prompted browser.",

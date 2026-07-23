@@ -22,6 +22,10 @@ import {
 	type ProjectCommandRequest,
 } from './ProjectCommandClient';
 import { normalizeProjectOperationResult } from './result/ProjectResultNormalizer';
+import {
+	writeProjectCommandLog,
+	type ProjectCommandLogInput,
+} from './result/ProjectCommandLog';
 
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 
@@ -29,6 +33,7 @@ type ProjectCommandDependencies = {
 	createProjectArchive?: (projectFolder: string) => Promise<string>;
 	deleteFile?: (archivePath: string) => Promise<void>;
 	sendProjectRequest?: (request: ProjectCommandRequest) => Promise<ProjectCommandHttpResponse>;
+	writeProjectLog?: (input: ProjectCommandLogInput) => Promise<string>;
 };
 
 export async function executeProjectCommand(
@@ -38,6 +43,7 @@ export async function executeProjectCommand(
 	const createArchive = dependencies.createProjectArchive ?? createProjectArchive;
 	const removeArchive = dependencies.deleteFile ?? deleteProjectArchiveQuietly;
 	const sendRequest = dependencies.sendProjectRequest ?? sendProjectCommandRequest;
+	const writeLog = dependencies.writeProjectLog ?? writeProjectCommandLog;
 	let projectArchivePath: string | undefined;
 
 	try {
@@ -54,7 +60,7 @@ export async function executeProjectCommand(
 			timeoutMs: input.timeoutMs || DEFAULT_TIMEOUT_MS,
 		});
 
-		return normalizeProjectOperationResult(
+		const operationResult = normalizeProjectOperationResult(
 			response.statusCode,
 			response.body,
 			input.command,
@@ -62,6 +68,19 @@ export async function executeProjectCommand(
 			input.summaryContext,
 			response.serverTimestamp
 		);
+		if (!input.logFileLocation) {
+			return operationResult;
+		}
+		try {
+			const logFilePath = await writeLog({
+				command: input.command,
+				logFileLocation: input.logFileLocation,
+				operationResult,
+			});
+			return { ...operationResult, logFilePath };
+		} catch (error: unknown) {
+			return { ...operationResult, logWriteWarning: toErrorMessage(error) };
+		}
 	} catch (error: unknown) {
 		return {
 			status: SDK_OPERATION_STATUS.ERROR,
