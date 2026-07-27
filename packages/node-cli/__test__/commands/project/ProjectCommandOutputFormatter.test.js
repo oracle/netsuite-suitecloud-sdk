@@ -35,6 +35,7 @@ describe('ProjectCommandOutputFormatter', () => {
 			'Steps: 2/2 successful',
 			'Validation Results: 0 error(s), 0 warning(s)',
 			'SDF Errors: none',
+			'Timestamp: Jul 23, 2026, 3:41:35 PM GMT+2',
 			'------------------------------------------------------------',
 			'✔ Step 1: MANIFEST_VALIDATION',
 			'WARNING: Warning message',
@@ -44,6 +45,7 @@ describe('ProjectCommandOutputFormatter', () => {
 		]);
 
 		expect(log.info).toHaveBeenCalledWith('DEPLOY SUMMARY');
+		expect(log.info).toHaveBeenCalledWith('Timestamp: Jul 23, 2026, 3:41:35 PM GMT+2');
 		expect(log.result).toHaveBeenCalledWith('Status: SUCCESS');
 		expect(log.result).toHaveBeenCalledWith('✔ Step 1: MANIFEST_VALIDATION');
 		expect(log.warning).toHaveBeenCalledWith('WARNING: Warning message');

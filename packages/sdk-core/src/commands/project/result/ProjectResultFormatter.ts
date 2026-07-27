@@ -18,6 +18,10 @@ const VALIDATION_RESULT_TYPE_WARNING = 'WARNING';
 const VALIDATION_RESULT_TYPE_ERROR = 'ERROR';
 const COMMAND_OUTPUT_SEPARATOR_LINE = '------------------------------------------------------------';
 const GENERAL_ISSUES_LABEL = 'General';
+const TIMESTAMP_DISPLAY_FORMATTER = new Intl.DateTimeFormat('en-US', {
+	dateStyle: 'medium',
+	timeStyle: 'long',
+});
 
 export function formatSdfProjectResultOutput(
 	command: ProjectCommandType,
@@ -29,7 +33,7 @@ export function formatSdfProjectResultOutput(
 ): { lines: string[]; hasFailures: boolean } {
 	const evaluationSummary = evaluateSdfProjectPayload(payload);
 	const validationLines = formatSdfProjectValidationResults(payload.validationResults);
-	const summaryMetadataLines = buildSummaryMetadataLines(payload, options);
+	const summaryMetadataLines = buildSummaryMetadataLines(options);
 	const lines = [
 		translationService.getMessage(PROJECT_API.RESULT.INFO.SUMMARY, command.toUpperCase()),
 		translationService.getMessage(PROJECT_API.RESULT.INFO.STATUS, evaluationSummary.hasFailures ? 'FAILED' : 'SUCCESS'),
@@ -200,12 +204,15 @@ function formatEndpointErrorSection(endpointErrorMessage: string, hasValidationL
 		return ['', translationService.getMessage(PROJECT_API.RESULT.INFO.ADDITIONAL_ENDPOINT_DETAILS), ...compactObjectValidationLines];
 	}
 
-	const firstMeaningfulLine = endpointErrorMessage
+	const meaningfulLines = endpointErrorMessage
 		.split(/\r?\n/)
 		.map((line) => line.trim())
-		.find((line) => line.length > 0);
-	return firstMeaningfulLine
-		? [translationService.getMessage(PROJECT_API.RESULT.INFO.ERROR_LINE, firstMeaningfulLine)]
+		.filter((line) => line.length > 0);
+	return meaningfulLines.length > 0
+		? [
+			translationService.getMessage(PROJECT_API.RESULT.INFO.ERROR_LINE, meaningfulLines[0]),
+			...meaningfulLines.slice(1),
+		]
 		: [];
 }
 
@@ -248,12 +255,16 @@ function isRecord(value: unknown): value is Record<string, any> {
 }
 
 function buildSummaryMetadataLines(
-	payload: Record<string, unknown>,
 	options: { summaryContext?: ProjectCommandSummaryContext; serverTimestamp?: string }
 ): string[] {
 	const summaryContext = options.summaryContext || {};
-	const localTimestamp = normalizeTimestamp(summaryContext.localTimestamp) || new Date().toISOString();
-	const lines = [translationService.getMessage(PROJECT_API.RESULT.INFO.LOCAL_TIMESTAMP, localTimestamp)];
+	const timestamp =
+		parseTimestamp(options.serverTimestamp) ||
+		parseTimestamp(summaryContext.localTimestamp) ||
+		new Date();
+	const lines = [
+		translationService.getMessage(PROJECT_API.RESULT.INFO.TIMESTAMP, formatTimestampForDisplay(timestamp)),
+	];
 
 	if (summaryContext.accountName) {
 		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.ACCOUNT, summaryContext.accountName));
@@ -270,44 +281,21 @@ function buildSummaryMetadataLines(
 	return lines;
 }
 
-function resolveServerTimestampFromPayload(payload: Record<string, unknown>): string | undefined {
-	const candidates: unknown[] = [
-		payload.serverTimestamp,
-		payload.serverTime,
-		payload.timeStamp,
-		payload.timestamp,
-		payload.date,
-		payload.requestTimestamp,
-	];
-
-	for (const candidate of candidates) {
-		const normalizedCandidate = normalizeTimestamp(candidate);
-		if (normalizedCandidate) {
-			return normalizedCandidate;
-		}
-	}
-
-	return undefined;
+function formatTimestampForDisplay(timestamp: Date): string {
+	return TIMESTAMP_DISPLAY_FORMATTER.format(timestamp);
 }
 
-function normalizeTimestamp(value: unknown): string | undefined {
-	if (value === undefined || value === null) {
+function parseTimestamp(value: unknown): Date | undefined {
+	if (typeof value === 'number') {
+		if (!Number.isFinite(value)) {
+			return undefined;
+		}
+		const parsedTimestamp = new Date(value);
+		return Number.isNaN(parsedTimestamp.getTime()) ? undefined : parsedTimestamp;
+	}
+	if (typeof value !== 'string' || !value.trim()) {
 		return undefined;
 	}
-	if (typeof value === 'number' && Number.isFinite(value)) {
-		const fromEpoch = new Date(value);
-		return Number.isNaN(fromEpoch.getTime()) ? undefined : fromEpoch.toISOString();
-	}
-	if (typeof value !== 'string') {
-		return undefined;
-	}
-	const trimmedValue = value.trim();
-	if (!trimmedValue) {
-		return undefined;
-	}
-	const parsedDate = new Date(trimmedValue);
-	if (Number.isNaN(parsedDate.getTime())) {
-		return trimmedValue;
-	}
-	return parsedDate.toISOString();
+	const parsedTimestamp = new Date(value.trim());
+	return Number.isNaN(parsedTimestamp.getTime()) ? undefined : parsedTimestamp;
 }

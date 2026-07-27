@@ -242,6 +242,10 @@ describe('ProjectCommandExecutor', () => {
 	});
 
 	it('should format successful SDF endpoint payload into CLI output lines', async () => {
+		const expectedTimestamp = new Intl.DateTimeFormat('en-US', {
+			dateStyle: 'medium',
+			timeStyle: 'long',
+		}).format(new Date('Thu, 23 Jul 2026 13:41:35 GMT'));
 		const result = await executeProjectCommand(
 			{
 				command: PROJECT_COMMAND.DEPLOY,
@@ -254,6 +258,7 @@ describe('ProjectCommandExecutor', () => {
 				deleteFile: async () => undefined,
 				sendProjectRequest: async () => ({
 					statusCode: 200,
+					serverTimestamp: 'Thu, 23 Jul 2026 13:41:35 GMT',
 					body: JSON.stringify({
 						steps: [
 							{ name: 'MANIFEST_VALIDATION', status: 'SUCCESSFUL' },
@@ -272,20 +277,21 @@ describe('ProjectCommandExecutor', () => {
 		);
 
 		expect(result.status).toBe(SDK_OPERATION_STATUS.SUCCESS);
-			expect(result.data).toEqual(expect.arrayContaining([
-				'DEPLOY SUMMARY',
-				'Status: SUCCESS',
-				'Steps: 2/2 successful',
-				'Validation Results: 0 error(s), 1 warning(s)',
-				'SDF Errors: none',
-				'------------------------------------------------------------',
-				'✔ Step 1: MANIFEST_VALIDATION',
-				'✔ Step 2: DEPLOY',
-				'Issues by file:',
-				'1. ~/Objects/customrecord.xml (0 error(s), 1 warning(s))',
-				'  - WARNING: Warning message',
-			]));
-		});
+		expect(result.data).toEqual(expect.arrayContaining([
+			'DEPLOY SUMMARY',
+			'Status: SUCCESS',
+			'Steps: 2/2 successful',
+			'Validation Results: 0 error(s), 1 warning(s)',
+			'SDF Errors: none',
+			`Timestamp: ${expectedTimestamp}`,
+			'------------------------------------------------------------',
+			'✔ Step 1: MANIFEST_VALIDATION',
+			'✔ Step 2: DEPLOY',
+			'Issues by file:',
+			'1. ~/Objects/customrecord.xml (0 error(s), 1 warning(s))',
+			'  - WARNING: Warning message',
+		]));
+	});
 
 	it('should mark SDF endpoint payload as failed when any step fails', async () => {
 		const result = await executeProjectCommand(
@@ -318,6 +324,40 @@ describe('ProjectCommandExecutor', () => {
 			'✔ Step 1: MANIFEST_VALIDATION',
 			'✖ Step 2: VALIDATE',
 		]));
+	});
+
+	it('should preserve every line of a multiline SDF endpoint error', async () => {
+		const result = await executeProjectCommand(
+			{
+				command: PROJECT_COMMAND.DEPLOY,
+				projectFolder: '/tmp/project',
+				hostName: 'system.netsuite.com',
+				accessToken: 'token',
+			},
+			{
+				createProjectArchive: async () => '/tmp/project.zip',
+				deleteFile: async () => undefined,
+				sendProjectRequest: async () => ({
+					statusCode: 200,
+					body: JSON.stringify({
+						steps: [],
+						validationResults: [],
+						errorMessage: [
+							'Validation failed.',
+							'Details: The element type "BAD" must be terminated by the matching end-tag "</BAD>".',
+							'File: ~/Objects/customscript.xml',
+						].join('\n'),
+					}),
+				}),
+			}
+		);
+
+		expect(result.status).toBe(SDK_OPERATION_STATUS.ERROR);
+		expect(result.errorMessages.slice(-3)).toEqual([
+			'ERROR: Validation failed.',
+			'Details: The element type "BAD" must be terminated by the matching end-tag "</BAD>".',
+			'File: ~/Objects/customscript.xml',
+		]);
 	});
 
 	it('should return raw JSON payload when raw output mode is enabled', async () => {
