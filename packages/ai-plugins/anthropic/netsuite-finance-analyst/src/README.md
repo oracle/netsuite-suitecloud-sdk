@@ -2,7 +2,7 @@
 
 # NetSuite Finance Analyst
 
-This plugin is compatible with Claude and bundles the `netsuite-finance-analyst` skill.
+This plug-in is compatible with Claude and bundles the `netsuite-finance-analyst` skill.
 
 ## Contributing
 

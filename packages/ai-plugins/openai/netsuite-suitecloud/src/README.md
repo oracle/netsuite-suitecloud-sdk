@@ -2,7 +2,7 @@
 
 # NetSuite SuiteCloud
 
-This plugin is compatible with Codex and bundles development skills for SuiteScript and SuiteCloud Development Framework (SDF) workflows:
+This plug-in is compatible with Codex and bundles development skills for SuiteScript and SuiteCloud Development Framework (SDF) workflows:
 
 - netsuite-owasp-secure-coding
 - netsuite-sdf-project-documentation

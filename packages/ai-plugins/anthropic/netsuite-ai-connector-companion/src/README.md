@@ -2,7 +2,7 @@
 
 # NetSuite AI Connector Companion
 
-This plugin is compatible with Claude and bundles the `netsuite-ai-connector-instructions` skill.
+This plug-in is compatible with Claude and bundles the `netsuite-ai-connector-instructions` skill.
 
 ## Contributing
 
