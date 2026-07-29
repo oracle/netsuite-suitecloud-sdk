@@ -1,4 +1,4 @@
-name: AI Plugins CI
+name: AI Plug-ins CI
 
 on:
   pull_request:

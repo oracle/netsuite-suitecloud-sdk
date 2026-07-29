@@ -1,4 +1,4 @@
-# AI Plugins Distribution and Release Guide
+# AI Plug-ins Distribution and Release Guide
 
 This guide is the release reference for the generated AI plugin artifacts published on the `ai-plugins-dist` orphan branch. Source remains on the repository's normal branches; the distribution branch contains only generated release content at its root.
 
@@ -6,15 +6,15 @@ This guide is the release reference for the generated AI plugin artifacts publis
 
 Two workflows support AI plugin changes:
 
-- **AI Plugins CI** runs automatically for pull requests and pushes to `master` when relevant AI plugin source, shared skill, package, license, ignore-file, or workflow files change. It validates configuration, runs tests, builds the plugins, and verifies the release output.
-- **Publish AI Plugins Dist** is manually dispatched. Use it for an intentional distribution release after the source change has been merged and validated. It validates, tests, and builds the plugins, then publishes the generated output to `ai-plugins-dist`.
+- **AI Plug-ins CI** runs automatically for pull requests and pushes to `master` when relevant AI plugin source, shared skill, package, license, ignore-file, or workflow files change. It validates configuration, runs tests, builds the plugins, and verifies the release output.
+- **Publish AI Plug-ins Dist** is manually dispatched. Use it for an intentional distribution release after the source change has been merged and validated. It validates, tests, and builds the plugins, then publishes the generated output to `ai-plugins-dist`.
 
-CI is merge-blocking only when the target branch's protection rules require the **AI Plugins CI** status check. The workflow itself validates changes but does not independently prevent a merge.
+CI is merge-blocking only when the target branch's protection rules require the **AI Plug-ins CI** status check. The workflow itself validates changes but does not independently prevent a merge.
 
 ## Standard release procedure
 
-1. Merge the intended source changes to `master` and confirm the applicable **AI Plugins CI** run succeeds.
-2. In GitHub Actions, manually run **Publish AI Plugins Dist** from the source revision to release (normally `master`).
+1. Merge the intended source changes to `master` and confirm the applicable **AI Plug-ins CI** run succeeds.
+2. In GitHub Actions, manually run **Publish AI Plug-ins Dist** from the source revision to release (normally `master`).
 3. Consume the generated plugin directories from the `ai-plugins-dist` branch and the version tags created for changed plugins.
 
 The publisher is the standard release mechanism. Do not edit the distribution branch by hand.
@@ -74,7 +74,7 @@ For the initial release and all later releases, rebuild and synchronize the gene
 
 ```sh
 rsync -a --delete --exclude .git dist/ai-plugins/ ../ai-plugins-dist/
-printf '%s\n' '# AI Plugins Distribution' '' 'Generated plugin directories published from the `master` branch source tree.' > ../ai-plugins-dist/README.md
+printf '%s\n' '# AI Plug-ins Distribution' '' 'Generated plugin directories published from the `master` branch source tree.' > ../ai-plugins-dist/README.md
 git -C ../ai-plugins-dist status --short
 git -C ../ai-plugins-dist add -A
 git -C ../ai-plugins-dist commit -m "Publish AI plugins from $(git rev-parse HEAD)"

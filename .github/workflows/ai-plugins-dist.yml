@@ -1,4 +1,4 @@
-name: Publish AI Plugins Dist
+name: Publish AI Plug-ins Dist
 
 on:
   workflow_dispatch:
@@ -116,7 +116,7 @@ jobs:
           cp -R dist/ai-plugins/. "${worktree_dir}/"
 
           cat > "${worktree_dir}/README.md" <<EOF
-          # AI Plugins Distribution
+          # AI Plug-ins Distribution
 
           Generated plugin directories published from the \`${default_branch}\` branch source tree.
           EOF
