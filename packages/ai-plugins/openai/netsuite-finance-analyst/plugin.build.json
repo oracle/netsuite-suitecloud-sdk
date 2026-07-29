@@ -10,7 +10,7 @@
 		"authorUrl": "https://www.netsuite.com",
 		"license": "The Universal Permissive License (UPL), Version 1.0",
 		"keywords": ["netsuite", "finance", "mcp"],
-		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/master/packages/ai-plugins",
+		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/finance-analyst",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
 		"category": "Productivity",
 		"capabilities": ["Read"],
