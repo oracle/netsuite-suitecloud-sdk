@@ -22,7 +22,9 @@ export const PROJECT_COMMAND = {
 export type ProjectCommandType = (typeof PROJECT_COMMAND)[keyof typeof PROJECT_COMMAND];
 
 export type ProjectCommandSummaryContext = {
+	accountId?: string;
 	accountName?: string;
+	applyInstallationPreferences?: boolean;
 	roleName?: string;
 	projectName?: string;
 	suiteAppId?: string;

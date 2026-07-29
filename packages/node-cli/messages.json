@@ -69,9 +69,7 @@
 	"COMMAND_DEPLOY_QUESTIONS_APPLY_INSTALLATION_PREFERENCES": "Do you want to apply installation preferences?",
 	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_CANCEL_PROCESS": "Cancel the process",
 	"COMMAND_DEPLOY_QUESTIONS_CHOICES_ACCOUNT_SPECIFIC_VALUES_DISPLAY_WARNING": "Display a warning",
-	"COMMAND_DEPLOY_MESSAGES_APPLYING_INSTALLATION_PREFERENCES": "The \"{0}\" project has been deployed applying installation preferences.",
 	"COMMAND_DEPLOY_MESSAGES_DEPLOYING": "Deploying project \"{0}\" with auth ID \"{1}\"...",
-	"COMMAND_DEPLOY_MESSAGES_NOT_APPLYING_INSTALLATION_PREFERENCES": "The \"{0}\" project has been deployed without applying installation preferences.",
 	"COMMAND_DEPLOY_MESSAGES_NOT_ASKING_INSTALLATION_PREFERENCES_REASON": "Installation preferences were not applied because the hiding.xml and locking.xml files were not found in the \"InstallationPreferences\" folder of the project. You need to create the two files in order to apply installation preferences.\nFor more information about installation preferences, see {0}",
 	"COMMAND_DEPLOY_MESSAGES_PREVIEWING": "Previewing project \"{0}\" with auth ID \"{1}\"...",
 	"COMMAND_DEPLOY_WARNINGS_VALIDATE_OPTION_IGNORED": "The \"--validate\" option has no effect. Project deployment is always validated on the server.",
@@ -249,8 +247,6 @@
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_NOT_UPLOADED": "The following files were not uploaded:",
 	"COMMAND_UPLOADFILES_ERROR_RESTRICTED_FOLDER": "The file is inside an invalid or restricted folder",
 
-	"COMMAND_VALIDATE_MESSAGES_APPLYING_INSTALLATION_PREFERENCES": "The \"{0}\" project has been validated locally applying installation preferences.",
-	"COMMAND_VALIDATE_MESSAGES_NOT_APPLYING_INSTALLATION_PREFERENCES": "The \"{0}\" project has been validated locally without applying installation preferences.",
 	"COMMAND_VALIDATE_MESSAGES_VALIDATING": "Validating project \"{0}\" with auth ID \"{1}\"",
 	"COMMAND_VALIDATE_WARNINGS_SERVER_OPTION_IGNORED": "The \"--server\" option has no effect. Project validation is always performed on the server.",
 	"COMMAND_VALIDATE_QUESTIONS_APPLY_INSTALLATION_PREFERENCES": "Do you want to apply installation preferences?",
@@ -262,6 +258,8 @@
 	"COMMAND_VALIDATE_OUTPUT_HEADING_LABEL_ERROR": "The following errors were found during local validation",
 	"COMMAND_VALIDATE_OUTPUT_VALIDATION_OUTPUT_MESSAGE": "        - Line No. {0} - {1}",
 	"PROJECT_COMMAND_LOG_MESSAGES_WRITING": "Writing to log file {0}.",
+	"PROJECT_COMMAND_MESSAGES_INSTALLATION_PREFERENCES_SELECTED": "The \"Apply Installation Preferences\" option was selected for the \"{0}\" project.",
+	"PROJECT_COMMAND_MESSAGES_INSTALLATION_PREFERENCES_NOT_SELECTED": "The \"Apply Installation Preferences\" option was not selected for the \"{0}\" project.",
 
 	"ERRORS_ADD_ERROR_LINE": "\nError: {0}",
 	"ERRORS_CANT_CREATE_FOLDER": "There was an error when creating the {0} folder. Verify that the path is correct.\nError code: {1}",

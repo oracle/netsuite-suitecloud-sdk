@@ -10,7 +10,7 @@ const BaseOutputHandler = require('../../base/BaseOutputHandler');
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 
 const {
-	COMMAND_DEPLOY: { MESSAGES },
+	PROJECT_COMMAND: { MESSAGES },
 } = require('../../../services/TranslationKeys');
 const {
 	isRawOutputRequested,
@@ -22,6 +22,7 @@ const {
 module.exports = class DeployOutputHandler extends BaseOutputHandler {
 	constructor(options) {
 		super(options);
+		this._executionPath = options.executionPath;
 	}
 
 	parse(actionResult) {
@@ -30,12 +31,7 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 			return actionResult;
 		}
 
-		this._showApplyInstallationPreferencesOptionMessage(
-			actionResult.projectType,
-			actionResult.appliedInstallationPreferences,
-			actionResult.projectFolder
-		);
-
+		this._showInstallationPreferencesMessage(actionResult);
 		if (actionResult.resultMessage) {
 			ActionResultUtils.logResultMessage(actionResult, this._log);
 		}
@@ -52,17 +48,18 @@ module.exports = class DeployOutputHandler extends BaseOutputHandler {
 			return actionResult;
 		}
 
+		this._showInstallationPreferencesMessage(actionResult);
 		logCommandErrors(this._log, actionResult.errorMessages);
 		return actionResult;
 	}
 
-	_showApplyInstallationPreferencesOptionMessage(projectType, isApplyInstallationPreferences, projectFolder) {
-		if (projectType === PROJECT_SUITEAPP) {
-			if (isApplyInstallationPreferences) {
-				this._log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_CONTENT_PROTECTION, projectFolder));
-			} else {
-				this._log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_CONTENT_PROTECTION, projectFolder));
-			}
+	_showInstallationPreferencesMessage(actionResult) {
+		if (actionResult.projectType !== PROJECT_SUITEAPP) {
+			return;
 		}
+		const messageKey = actionResult.appliedInstallationPreferences
+			? MESSAGES.INSTALLATION_PREFERENCES_SELECTED
+			: MESSAGES.INSTALLATION_PREFERENCES_NOT_SELECTED;
+		this._log.info(NodeTranslationService.getMessage(messageKey, this._executionPath || actionResult.projectFolder));
 	}
 };

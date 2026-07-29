@@ -133,6 +133,11 @@ module.exports = class DeployAction extends (
 	}
 
 	async _deploy(params, flags) {
+		const isApplyInstallationPreferences = isApplyInstallationPreferencesForDeploy(
+			this._projectType,
+			flags,
+			PROJECT_SUITEAPP
+		);
 		try {
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
 			const projectFolder = CommandUtils.unquoteString(sdkParams[COMMAND.OPTIONS.PROJECT]);
@@ -148,8 +153,6 @@ module.exports = class DeployAction extends (
 				),
 			});
 
-			const isApplyInstallationPreferences = isApplyInstallationPreferencesForDeploy(this._projectType, flags, PROJECT_SUITEAPP);
-
 			return operationResult.status === SDK_OPERATION_STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
@@ -159,10 +162,19 @@ module.exports = class DeployAction extends (
 					.withCommandParameters(sdkParams)
 					.withCommandFlags(flags)
 					.build()
-				: DeployActionResult.Builder.withErrors(operationResult.errorMessages).withCommandParameters(sdkParams)
-					.withCommandFlags(flags).build();
+				: DeployActionResult.Builder.withErrors(operationResult.errorMessages)
+					.withAppliedInstallationPreferences(isApplyInstallationPreferences)
+					.withProjectType(this._projectType)
+					.withCommandParameters(sdkParams)
+					.withCommandFlags(flags)
+					.build();
 		} catch (error) {
-			return DeployActionResult.Builder.withErrors(toErrorMessages(error)).build();
+			return DeployActionResult.Builder.withErrors(toErrorMessages(error))
+				.withAppliedInstallationPreferences(isApplyInstallationPreferences)
+				.withProjectType(this._projectType)
+				.withCommandParameters(params)
+				.withCommandFlags(flags)
+				.build();
 		}
 	}
 
@@ -206,16 +218,22 @@ module.exports = class DeployAction extends (
 			params: sdkParams,
 			flags,
 			userAgent: this._executionEnvironmentContext?.toUserAgentString?.(),
-			summaryContext: this._buildSummaryContext(authCredentials),
+			summaryContext: this._buildSummaryContext(authCredentials, flags),
 		});
 	}
 
-	_buildSummaryContext(authCredentials) {
+	_buildSummaryContext(authCredentials, flags = []) {
 		const accountInfo = authCredentials && authCredentials.accountInfo ? authCredentials.accountInfo : {};
 		return {
 			accountName: accountInfo.companyName,
+			accountId: accountInfo.companyId,
 			roleName: accountInfo.roleName,
-			...(this._suiteAppId ? { suiteAppId: this._suiteAppId } : { projectName: this._projectName }),
+			...(this._projectType === PROJECT_SUITEAPP && this._suiteAppId
+				? {
+					suiteAppId: this._suiteAppId,
+					applyInstallationPreferences: flags.includes(COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES),
+				}
+				: { projectName: this._projectName }),
 		};
 	}
 };
