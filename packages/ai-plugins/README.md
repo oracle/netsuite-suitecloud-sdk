@@ -1,7 +1,6 @@
 # AI Plug-ins Workspace
 
-This workspace builds source-managed plug-in directories for distribution through OpenAI and Anthropic from `plugin.build.json` files.
-Each plug-in declares its resources in its own `plugin.build.json`.
+This workspace builds source-managed plug-in directories for distribution through OpenAI and Anthropic from `plugin.build.json` files. Each plug-in declares its resources in its own `plugin.build.json`.
 
 ## Commands
 

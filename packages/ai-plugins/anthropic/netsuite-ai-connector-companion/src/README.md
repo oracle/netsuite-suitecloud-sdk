@@ -2,7 +2,7 @@
 
 # NetSuite AI Connector Companion
 
-This plug-in, compatible with Claude, bundles the `netsuite-ai-connector-instructions` skill and requires the NetSuite AI Connector Service to access NetSuite data. The skill guides AI assistants that use NetSuite AI Connector, including tool selection, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety checks.
+This plug-in, compatible with Claude, includes the `netsuite-ai-connector-instructions` skill and requires the NetSuite AI Connector Service to access NetSuite data. The NetSuite AI Connector Companion plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails.
 
 ## Supported Tasks
 
@@ -16,7 +16,7 @@ This plug-in, compatible with Claude, bundles the `netsuite-ai-connector-instruc
 ### Domain Knowledge
 - **General ledger and accounting logic grounding:** Provides debit and credit rules, account type behavior, and double-entry logic. This helps keep financial narratives accurate without restating accounting fundamentals in each session.
 - **Record type and field reference:** Maps business concepts to SuiteQL record types, table names, and field names. This reduces hallucinated schema references in custom queries.
-### Multiple-Subsidiary and Currency
+### Multi-Subsidiary and Currency
 - **Consolidation scope clarification:** Prompts for the subsidiary scope before retrieving financial data: consolidated, single entity, or comparison of multiple entities.
 - **Native versus base currency handling:** Applies the correct rules for foreign-amount and base-amount fields and exchange rate timing. It also identifies foreign exchange gain or loss exposure for open accounts receivable (AR) and accounts payable (AP).
 ### Query Safety
