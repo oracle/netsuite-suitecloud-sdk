@@ -5,19 +5,36 @@
 	"platform": "codex",
 	"metadata": {
 		"name": "netsuite-ai-connector-companion",
-		"description": "NetSuite AI Connector instructions.",
+		"description": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service.",
 		"authorName": "Oracle NetSuite",
 		"authorUrl": "https://www.netsuite.com",
 		"license": "The Universal Permissive License (UPL), Version 1.0",
-		"keywords": ["netsuite", "aiconnector", "mcp"],
+		"keywords": [
+			"netsuite",
+			"aiconnector",
+			"mcp"
+		],
 		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-connector-companion",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
 		"category": "Productivity",
-		"capabilities": ["Read"],
-		"shortDescription": "NetSuite AI Connector instructions.",
-		"longDescription": "Bundles NetSuite AI Connector instructions for Codex."
+		"capabilities": [
+			"Read"
+		],
+		"shortDescription": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service.",
+		"longDescription": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service."
 	},
-	"skills": ["netsuite-ai-connector-instructions"],
+	"skills": [
+		"netsuite-ai-connector-instructions"
+	],
 	"commonLayers": [],
-	"inputs": [{ "root": "src", "destination": ".", "include": ["README.md"], "exclude": [] }]
+	"inputs": [
+		{
+			"root": "src",
+			"destination": ".",
+			"include": [
+				"README.md"
+			],
+			"exclude": []
+		}
+	]
 }

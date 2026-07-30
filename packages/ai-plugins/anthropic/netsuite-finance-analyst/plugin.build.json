@@ -5,19 +5,36 @@
 	"platform": "claude",
 	"metadata": {
 		"name": "netsuite-finance-analyst",
-		"description": "NetSuite finance analysis skill.",
+		"description": "Analyze financial data via the NetSuite AI Connector Service.",
 		"authorName": "Oracle NetSuite",
 		"authorUrl": "https://www.netsuite.com",
 		"license": "The Universal Permissive License (UPL), Version 1.0",
-		"keywords": ["netsuite", "finance", "mcp"],
+		"keywords": [
+			"netsuite",
+			"finance",
+			"mcp"
+		],
 		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/anthropic/netsuite-finance-analyst",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
 		"category": "Productivity",
-		"capabilities": ["Read"],
-		"shortDescription": "NetSuite finance analysis skill.",
-		"longDescription": "Bundles the NetSuite finance analysis skill for Claude."
+		"capabilities": [
+			"Read"
+		],
+		"shortDescription": "Analyze financial data via the NetSuite AI Connector Service.",
+		"longDescription": "Use this skill to analyze NetSuite financial data via the NetSuite AI Connector Service."
 	},
-	"skills": ["netsuite-finance-analyst"],
+	"skills": [
+		"netsuite-finance-analyst"
+	],
 	"commonLayers": [],
-	"inputs": [{ "root": "src", "destination": ".", "include": ["README.md"], "exclude": [] }]
+	"inputs": [
+		{
+			"root": "src",
+			"destination": ".",
+			"include": [
+				"README.md"
+			],
+			"exclude": []
+		}
+	]
 }

@@ -5,19 +5,45 @@
 	"platform": "codex",
 	"metadata": {
 		"name": "netsuite-suitecloud",
-		"description": "NetSuite SuiteCloud development skills for SuiteScript and SDF workflows.",
+		"description": "Develop NetSuite SuiteCloud solutions with SuiteScript and SDF.",
 		"authorName": "Oracle NetSuite",
 		"authorUrl": "https://www.netsuite.com",
 		"license": "The Universal Permissive License (UPL), Version 1.0",
-		"keywords": ["netsuite", "suitecloud", "suitescript", "sdf"],
+		"keywords": [
+			"netsuite",
+			"suitecloud",
+			"suitescript",
+			"sdf"
+		],
 		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suitecloud",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
 		"category": "Developer Tools",
-		"capabilities": ["Read", "Write"],
-		"shortDescription": "NetSuite SuiteCloud development skills for SuiteScript and SDF workflows.",
-		"longDescription": "Bundles NetSuite SuiteCloud development skills for SuiteScript and SDF workflows."
+		"capabilities": [
+			"Read",
+			"Write"
+		],
+		"shortDescription": "Develop NetSuite SuiteCloud solutions with SuiteScript and SDF.",
+		"longDescription": "Use these NetSuite SuiteCloud development skills to build solutions with SuiteScript and SDF."
 	},
-	"skills": ["netsuite-owasp-secure-coding", "netsuite-sdf-project-documentation", "netsuite-sdf-roles-and-permissions", "netsuite-sdf-safe-guide", "netsuite-suitescript-learning", "netsuite-suitescript-records-reference", "netsuite-suitescript-upgrade", "netsuite-uif-spa-reference"],
+	"skills": [
+		"netsuite-owasp-secure-coding",
+		"netsuite-sdf-project-documentation",
+		"netsuite-sdf-roles-and-permissions",
+		"netsuite-sdf-safe-guide",
+		"netsuite-suitescript-learning",
+		"netsuite-suitescript-records-reference",
+		"netsuite-suitescript-upgrade",
+		"netsuite-uif-spa-reference"
+	],
 	"commonLayers": [],
-	"inputs": [{ "root": "src", "destination": ".", "include": ["README.md"], "exclude": [] }]
+	"inputs": [
+		{
+			"root": "src",
+			"destination": ".",
+			"include": [
+				"README.md"
+			],
+			"exclude": []
+		}
+	]
 }
