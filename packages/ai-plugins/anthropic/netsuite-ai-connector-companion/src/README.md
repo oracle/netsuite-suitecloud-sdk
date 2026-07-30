@@ -2,7 +2,7 @@
 
 # NetSuite AI Connector Companion
 
-This plug-in, compatible with Claude, bundles the `netsuite-ai-connector-instructions` skill and requires the NetSuite AI Connector Service to access NetSuite data.
+This plug-in, compatible with Claude, bundles the `netsuite-ai-connector-instructions` skill and requires the NetSuite AI Connector Service to access NetSuite data. The skill guides AI assistants that use NetSuite AI Connector, including tool selection, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety checks.
 
 ## Supported Tasks
 

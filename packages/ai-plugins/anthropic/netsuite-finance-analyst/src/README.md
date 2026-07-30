@@ -2,7 +2,7 @@
 
 # NetSuite Finance Analyst
 
-This plug-in, compatible with Claude, bundles the `netsuite-finance-analyst` skill and requires the NetSuite AI Connector Service to access NetSuite data.
+This plug-in, compatible with Claude, bundles the `netsuite-finance-analyst` skill and requires the NetSuite AI Connector Service to access NetSuite data. The skill supports NetSuite financial analysis and finance operations, including financial reporting, period-close activities, variance analysis, reconciliations, cash reporting, and executive financial narratives.
 
 ## Supported Tasks
 
