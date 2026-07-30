@@ -14,7 +14,7 @@ function buildAuthor(metadata) {
 
 function buildInterface(metadata) {
 	return {
-		displayName: metadata.name,
+		displayName: metadata.displayName,
 		shortDescription: metadata.shortDescription ?? metadata.description,
 		longDescription: metadata.longDescription ?? metadata.description,
 		developerName: metadata.authorName,
@@ -38,7 +38,7 @@ export function generateManifest(pluginConfig) {
 		skills: './skills/',
 	};
 
-	if (pluginConfig.platform === 'claude') {
+	if (pluginConfig.platform === 'anthropic') {
 		return {
 			manifestPath: CLAUDE_MANIFEST_PATH,
 			manifest: base,

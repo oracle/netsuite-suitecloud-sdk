@@ -23,8 +23,8 @@
 		"platform": {
 			"type": "string",
 			"enum": [
-				"claude",
-				"codex"
+				"anthropic",
+				"openai"
 			]
 		},
 		"metadata": {
@@ -38,6 +38,10 @@
 				"keywords"
 			],
 			"properties": {
+				"displayName": {
+					"type": "string",
+					"minLength": 1
+				},
 				"name": {
 					"type": "string",
 					"minLength": 1
@@ -148,5 +152,28 @@
 				}
 			}
 		}
-	}
+	},
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"platform": {
+						"const": "openai"
+					}
+				},
+				"required": [
+					"platform"
+				]
+			},
+			"then": {
+				"properties": {
+					"metadata": {
+						"required": [
+							"displayName"
+						]
+					}
+				}
+			}
+		}
+	]
 }

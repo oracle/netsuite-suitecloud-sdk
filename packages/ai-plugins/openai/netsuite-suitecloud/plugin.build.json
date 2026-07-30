@@ -2,8 +2,9 @@
 	"$schema": "../../schemas/plugin-build.schema.json",
 	"id": "netsuite-suitecloud",
 	"version": "1.0.0",
-	"platform": "codex",
+	"platform": "openai",
 	"metadata": {
+		"displayName": "NetSuite SuiteCloud",
 		"name": "netsuite-suitecloud",
 		"description": "Develop NetSuite SuiteCloud solutions with SuiteScript and SDF.",
 		"authorName": "Oracle NetSuite",

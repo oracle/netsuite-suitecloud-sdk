@@ -77,7 +77,7 @@ for (const result of stagedResults) {
 		throw new Error(`Release verification failed for ${result.plugin.sourceKey}: ${errors.join(', ')}`);
 	}
 
-	if (result.plugin.platform === 'claude' && hasClaudeCli) {
+	if (result.plugin.platform === 'anthropic' && hasClaudeCli) {
 		await runCommand('claude', ['plugin', 'validate', '--strict', releaseDir]);
 	}
 

@@ -2,7 +2,7 @@
 	"$schema": "../../schemas/plugin-build.schema.json",
 	"id": "netsuite-finance-analyst",
 	"version": "1.0.0",
-	"platform": "claude",
+	"platform": "anthropic",
 	"metadata": {
 		"name": "netsuite-finance-analyst",
 		"description": "Analyze financial data via the NetSuite AI Connector Service.",

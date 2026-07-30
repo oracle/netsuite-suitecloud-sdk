@@ -45,7 +45,7 @@ test('workspace config recursively discovers six provider-qualified plugins with
 	);
 
 	for (const plugin of workspace.plugins) {
-		assert.equal(plugin.platform, plugin.sourceKey.startsWith('anthropic/') ? 'claude' : 'codex');
+		assert.equal(plugin.platform, plugin.sourceKey.startsWith('anthropic/') ? 'anthropic' : 'openai');
 	}
 
 	for (const plugin of workspace.plugins.filter((plugin) => plugin.id === 'netsuite-ai-connector-companion')) {
@@ -74,7 +74,7 @@ test('provider-qualified plugins build without collisions and ambiguous bare IDs
 	const manifest = JSON.parse(await fs.readFile(path.join(result.outputDir, '.codex-plugin', 'plugin.json'), 'utf8'));
 	assert.equal(manifest.skills, './skills/');
 	assert.equal(manifest.name, 'netsuite-ai-connector-companion');
-	assert.equal(manifest.interface.displayName, 'netsuite-ai-connector-companion');
+	assert.equal(manifest.interface.displayName, 'NetSuite AI Connector Companion');
 
 	await assert.rejects(
 		() => buildPlugin('netsuite-ai-connector-companion', { workspace, writeOutput: false }),
@@ -88,8 +88,8 @@ test('all provider-qualified plugins stage nested artifacts with provider-specif
 	for (const plugin of workspace.plugins) {
 		const result = await buildPlugin(plugin.sourceKey, { workspace, writeOutput: false });
 		const files = await listRelativeFiles(result.outputDir);
-		const manifestPath = plugin.platform === 'claude' ? '.claude-plugin/plugin.json' : '.codex-plugin/plugin.json';
-		const absentManifestPath = plugin.platform === 'claude' ? '.codex-plugin/plugin.json' : '.claude-plugin/plugin.json';
+		const manifestPath = plugin.platform === 'anthropic' ? '.claude-plugin/plugin.json' : '.codex-plugin/plugin.json';
+		const absentManifestPath = plugin.platform === 'anthropic' ? '.codex-plugin/plugin.json' : '.claude-plugin/plugin.json';
 
 		assert(files.includes(manifestPath));
 		assert(!files.includes(absentManifestPath));
@@ -100,6 +100,11 @@ test('all provider-qualified plugins stage nested artifacts with provider-specif
 		const manifest = JSON.parse(await fs.readFile(path.join(result.outputDir, manifestPath), 'utf8'));
 		assert.equal(manifest.name, plugin.id);
 		assert.equal(manifest.version, plugin.version);
+		if (plugin.platform === 'openai') {
+			assert.equal(manifest.interface.displayName, plugin.metadata.displayName);
+		} else {
+			assert(!Object.hasOwn(manifest, 'interface'));
+		}
 	}
 });
 
@@ -112,6 +117,44 @@ test('buildPlugin replaces stale output on repeated builds', async () => {
 
 	assert(!files.includes('stale.txt'));
 	assert.match(second.outputDir, /dist\/ai-plugins\/anthropic\/netsuite-suitecloud$/);
+});
+
+test('loadWorkspace rejects an openai plugin without metadata.displayName', async () => {
+	const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-workspace-'));
+	const packageDir = path.join(tempRoot, 'plugins');
+	await fs.mkdir(path.join(packageDir, 'config'), { recursive: true });
+	await fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true });
+	await fs.mkdir(path.join(packageDir, 'bad-plugin'), { recursive: true });
+
+	await writeJson(path.join(packageDir, 'config', 'build.json'), {
+		version: 1,
+		licenseFile: '../LICENSE.txt',
+		skillsRoot: '../skills',
+		commonLayersRoot: './common',
+		pluginDistRoot: '../dist',
+		globalExcludes: [],
+	});
+	await fs.copyFile(
+		path.join(packageRoot, 'schemas', 'plugin-build.schema.json'),
+		path.join(packageDir, 'schemas', 'plugin-build.schema.json')
+	);
+	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), {
+		id: 'bad-plugin',
+		version: '1.0.0',
+		platform: 'openai',
+		metadata: {
+			name: 'bad-plugin',
+			description: 'bad plugin',
+			authorName: 'Oracle NetSuite',
+			license: 'UPL',
+			keywords: ['bad'],
+		},
+		skills: ['netsuite-good-skill'],
+		commonLayers: [],
+		inputs: [],
+	});
+
+	await assert.rejects(() => loadWorkspace(packageDir), /metadata\.displayName must be a non-empty string for openai plugins/i);
 });
 
 test('loadWorkspace rejects invalid skill frontmatter', async () => {
@@ -141,7 +184,7 @@ test('loadWorkspace rejects invalid skill frontmatter', async () => {
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), {
 		id: 'bad-plugin',
 		version: '1.0.0',
-		platform: 'claude',
+		platform: 'anthropic',
 		metadata: {
 			name: 'bad-plugin',
 			description: 'bad plugin',
@@ -191,7 +234,7 @@ test('buildPlugin rejects generated manifests supplied by source files', async (
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), {
 		id: 'bad-plugin',
 		version: '1.0.0',
-		platform: 'claude',
+		platform: 'anthropic',
 		metadata: {
 			name: 'bad-plugin',
 			description: 'bad plugin',
@@ -242,7 +285,7 @@ test('loadWorkspace rejects missing skill directories referenced directly by plu
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), {
 		id: 'bad-plugin',
 		version: '1.0.0',
-		platform: 'claude',
+		platform: 'anthropic',
 		metadata: {
 			name: 'bad-plugin',
 			description: 'bad plugin',

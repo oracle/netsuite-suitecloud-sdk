@@ -2,7 +2,7 @@
 	"$schema": "../../schemas/plugin-build.schema.json",
 	"id": "netsuite-ai-connector-companion",
 	"version": "1.0.0",
-	"platform": "claude",
+	"platform": "anthropic",
 	"metadata": {
 		"name": "netsuite-ai-connector-companion",
 		"description": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service.",

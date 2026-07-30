@@ -2,7 +2,7 @@
 	"$schema": "../../schemas/plugin-build.schema.json",
 	"id": "netsuite-suitecloud",
 	"version": "1.0.0",
-	"platform": "claude",
+	"platform": "anthropic",
 	"metadata": {
 		"name": "netsuite-suitecloud",
 		"description": "Develop NetSuite SuiteCloud solutions with SuiteScript and SDF.",

@@ -100,7 +100,7 @@ function validatePluginConfigShape(pluginConfig, pluginDirectoryName) {
 		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: "id" must be lowercase kebab-case`);
 	}
 
-	if (!['claude', 'codex'].includes(pluginConfig.platform)) {
+	if (!['anthropic', 'openai'].includes(pluginConfig.platform)) {
 		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: unsupported platform ${pluginConfig.platform}`);
 	}
 
@@ -113,6 +113,10 @@ function validatePluginConfigShape(pluginConfig, pluginDirectoryName) {
 		if (typeof metadata[field] !== 'string' || metadata[field].length === 0) {
 			throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.${field} must be a non-empty string`);
 		}
+	}
+
+	if (pluginConfig.platform === 'openai' && (typeof metadata.displayName !== 'string' || metadata.displayName.length === 0)) {
+		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.displayName must be a non-empty string for openai plugins`);
 	}
 
 	if (!Array.isArray(metadata.keywords) || metadata.keywords.length === 0 || metadata.keywords.some((value) => typeof value !== 'string')) {

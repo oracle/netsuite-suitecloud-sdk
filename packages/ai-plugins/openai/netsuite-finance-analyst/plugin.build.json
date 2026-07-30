@@ -2,8 +2,9 @@
 	"$schema": "../../schemas/plugin-build.schema.json",
 	"id": "netsuite-finance-analyst",
 	"version": "1.0.0",
-	"platform": "codex",
+	"platform": "openai",
 	"metadata": {
+		"displayName": "NetSuite Finance Analyst",
 		"name": "netsuite-finance-analyst",
 		"description": "Analyze financial data via the NetSuite AI Connector Service.",
 		"authorName": "Oracle NetSuite",
