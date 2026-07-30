@@ -2,7 +2,7 @@
 
 # NetSuite SuiteCloud
 
-This plug-in is compatible with Codex and bundles development skills for SuiteScript and SuiteCloud Development Framework (SDF) workflows. These skills provide expert guidance for NetSuite SuiteCloud development, including SuiteScript, SDF, UIF SPAs, security, permissions, documentation, and modernization. It helps SuiteCloud developers and SuiteApp teams generate accurate, secure, maintainable code and project artifacts by using NetSuite references and SAFE Guide best practices.
+This plug-in is compatible with ChatGPT and Codex and bundles development skills for SuiteScript and SuiteCloud Development Framework (SDF) workflows. These skills provide expert guidance for NetSuite SuiteCloud development, including SuiteScript, SDF, UIF SPAs, security, permissions, documentation, and modernization. It helps SuiteCloud developers and SuiteApp teams generate accurate, secure, maintainable code and project artifacts by using NetSuite references and SAFE Guide best practices.
 
 ## Supported Tasks
 
