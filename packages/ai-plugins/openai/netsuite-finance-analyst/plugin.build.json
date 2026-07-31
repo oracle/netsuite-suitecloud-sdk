@@ -15,7 +15,7 @@
 			"finance",
 			"mcp"
 		],
-		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/finance-analyst",
+		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-finance-analyst",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
 		"category": "Productivity",
 		"capabilities": [
