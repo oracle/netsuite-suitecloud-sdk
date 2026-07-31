@@ -6,7 +6,7 @@
 	"metadata": {
 		"displayName": "NetSuite SuiteCloud",
 		"name": "netsuite-suitecloud",
-		"description": "Develop NetSuite SuiteCloud solutions with SuiteScript and SDF.",
+		"description": "This plug-in includes eight areas of expert NetSuite SuiteCloud development guidance: SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, maintainable code and project artifacts.",
 		"authorName": "Oracle NetSuite",
 		"authorUrl": "https://www.netsuite.com",
 		"license": "The Universal Permissive License (UPL), Version 1.0",
@@ -23,8 +23,8 @@
 			"Read",
 			"Write"
 		],
-		"shortDescription": "Develop NetSuite SuiteCloud solutions with SuiteScript and SDF.",
-		"longDescription": "Use these NetSuite SuiteCloud development skills to build solutions with SuiteScript and SDF.",
+		"shortDescription": "Develop NetSuite SuiteCloud solutions with SuiteScript, SDF, and best practices.",
+		"longDescription": "This plug-in includes eight areas of expert NetSuite SuiteCloud development guidance: SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, maintainable code and project artifacts.",
 		"logo": "./assets/infinity-icon.png",
 		"composerIcon": "./assets/infinity-icon.png"
 	},
