@@ -24,7 +24,9 @@
 			"Write"
 		],
 		"shortDescription": "Develop NetSuite SuiteCloud solutions with SuiteScript and SDF.",
-		"longDescription": "Use these NetSuite SuiteCloud development skills to build solutions with SuiteScript and SDF."
+		"longDescription": "Use these NetSuite SuiteCloud development skills to build solutions with SuiteScript and SDF.",
+		"logo": "./assets/infinity-icon.png",
+		"composerIcon": "./assets/infinity-icon.png"
 	},
 	"skills": [
 		"netsuite-owasp-secure-coding",
@@ -36,7 +38,9 @@
 		"netsuite-suitescript-upgrade",
 		"netsuite-uif-spa-reference"
 	],
-	"commonLayers": [],
+	"commonLayers": [
+		"openai"
+	],
 	"inputs": [
 		{
 			"root": "src",

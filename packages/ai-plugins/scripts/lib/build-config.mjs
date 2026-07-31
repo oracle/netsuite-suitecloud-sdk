@@ -119,6 +119,12 @@ function validatePluginConfigShape(pluginConfig, pluginDirectoryName) {
 		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.displayName must be a non-empty string for openai plugins`);
 	}
 
+	for (const field of ['logo', 'composerIcon']) {
+		if (metadata[field] !== undefined && (typeof metadata[field] !== 'string' || metadata[field].length === 0)) {
+			throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.${field} must be a non-empty string`);
+		}
+	}
+
 	if (!Array.isArray(metadata.keywords) || metadata.keywords.length === 0 || metadata.keywords.some((value) => typeof value !== 'string')) {
 		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.keywords must be a non-empty string array`);
 	}

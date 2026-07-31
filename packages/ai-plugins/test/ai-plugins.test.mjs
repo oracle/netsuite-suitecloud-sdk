@@ -11,6 +11,7 @@ import test from 'node:test';
 import { loadWorkspace, getNormalizedSkills } from '../scripts/lib/build-config.mjs';
 import { buildPlugin } from '../scripts/lib/plugin-builder.mjs';
 import { listRelativeFiles, writeJson } from '../scripts/lib/fs-utils.mjs';
+import { generateManifest } from '../scripts/lib/manifest.mjs';
 
 const packageRoot = path.resolve(process.cwd());
 const suitecloudSkills = [
@@ -75,11 +76,32 @@ test('provider-qualified plugins build without collisions and ambiguous bare IDs
 	assert.equal(manifest.skills, './skills/');
 	assert.equal(manifest.name, 'netsuite-ai-connector-companion');
 	assert.equal(manifest.interface.displayName, 'NetSuite AI Connector Companion');
+	assert.equal(manifest.interface.logo, './assets/infinity-icon.png');
+	assert.equal(manifest.interface.composerIcon, './assets/infinity-icon.png');
+	assert(files.includes('assets/infinity-icon.png'));
 
 	await assert.rejects(
 		() => buildPlugin('netsuite-ai-connector-companion', { workspace, writeOutput: false }),
 		/ambiguous plugin id.*provider-qualified/i
 	);
+});
+
+test('OpenAI manifest omits optional branding fields when they are not configured', () => {
+	const { manifest } = generateManifest({
+		platform: 'openai',
+		version: '1.0.0',
+		metadata: {
+			name: 'unbranded-plugin',
+			description: 'Unbranded plugin',
+			authorName: 'Oracle NetSuite',
+			license: 'UPL',
+			keywords: ['netsuite'],
+			displayName: 'Unbranded Plugin',
+		},
+	});
+
+	assert(!Object.hasOwn(manifest.interface, 'logo'));
+	assert(!Object.hasOwn(manifest.interface, 'composerIcon'));
 });
 
 test('all provider-qualified plugins stage nested artifacts with provider-specific manifests and declared skills only', async () => {
@@ -102,8 +124,12 @@ test('all provider-qualified plugins stage nested artifacts with provider-specif
 		assert.equal(manifest.version, plugin.version);
 		if (plugin.platform === 'openai') {
 			assert.equal(manifest.interface.displayName, plugin.metadata.displayName);
+			assert.equal(manifest.interface.logo, './assets/infinity-icon.png');
+			assert.equal(manifest.interface.composerIcon, './assets/infinity-icon.png');
+			assert(files.includes('assets/infinity-icon.png'));
 		} else {
 			assert(!Object.hasOwn(manifest, 'interface'));
+			assert(!files.includes('assets/infinity-icon.png'));
 		}
 	}
 });

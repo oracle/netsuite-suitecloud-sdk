@@ -22,12 +22,16 @@
 			"Read"
 		],
 		"shortDescription": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service.",
-		"longDescription": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service."
+		"longDescription": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service.",
+		"logo": "./assets/infinity-icon.png",
+		"composerIcon": "./assets/infinity-icon.png"
 	},
 	"skills": [
 		"netsuite-ai-connector-instructions"
 	],
-	"commonLayers": [],
+	"commonLayers": [
+		"openai"
+	],
 	"inputs": [
 		{
 			"root": "src",

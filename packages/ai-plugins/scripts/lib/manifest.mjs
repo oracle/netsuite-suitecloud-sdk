@@ -13,7 +13,7 @@ function buildAuthor(metadata) {
 }
 
 function buildInterface(metadata) {
-	return {
+	const pluginInterface = {
 		displayName: metadata.displayName,
 		shortDescription: metadata.shortDescription ?? metadata.description,
 		longDescription: metadata.longDescription ?? metadata.description,
@@ -23,6 +23,16 @@ function buildInterface(metadata) {
 		websiteURL: metadata.homepage,
 		privacyPolicyURL: metadata.privacyPolicyUrl ?? metadata.homepage,
 	};
+
+	if (metadata.logo) {
+		pluginInterface.logo = metadata.logo;
+	}
+
+	if (metadata.composerIcon) {
+		pluginInterface.composerIcon = metadata.composerIcon;
+	}
+
+	return pluginInterface;
 }
 
 export function generateManifest(pluginConfig) {

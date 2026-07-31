@@ -22,12 +22,16 @@
 			"Read"
 		],
 		"shortDescription": "Analyze financial data via the NetSuite AI Connector Service.",
-		"longDescription": "Use this skill to analyze NetSuite financial data via the NetSuite AI Connector Service."
+		"longDescription": "Use this skill to analyze NetSuite financial data via the NetSuite AI Connector Service.",
+		"logo": "./assets/infinity-icon.png",
+		"composerIcon": "./assets/infinity-icon.png"
 	},
 	"skills": [
 		"netsuite-finance-analyst"
 	],
-	"commonLayers": [],
+	"commonLayers": [
+		"openai"
+	],
 	"inputs": [
 		{
 			"root": "src",
