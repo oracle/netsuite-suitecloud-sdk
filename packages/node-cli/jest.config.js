@@ -5,5 +5,6 @@
 'use strict';
 
 module.exports = {
-    "testEnvironment": "node"
+	"testEnvironment": "node",
+	"modulePathIgnorePatterns": ["<rootDir>/dist/"]
 };
