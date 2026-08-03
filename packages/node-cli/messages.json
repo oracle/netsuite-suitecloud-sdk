@@ -158,6 +158,7 @@
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_REMOVING": "Removing credentials...",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_RENAMING": "Renaming credentials...",
 	"COMMAND_MANAGE_ACCOUNT_MESSAGES_REVOKING": "Revoking credentials...",
+	"COMMAND_MANAGE_ACCOUNT_OUTPUT_NO_AUTHENTICATION_IDS": "There are no authentication IDs available.",
 	"COMMAND_MANAGE_ACCOUNT_OUTPUT_SUCCESS": "The authentication ID was successfully updated.",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_CHOICES_ACTIONS_EXIT": "Exit the process.",
 	"COMMAND_MANAGE_ACCOUNT_QUESTIONS_CHOICES_ACTIONS_REMOVE": "Remove the authentication ID.",
