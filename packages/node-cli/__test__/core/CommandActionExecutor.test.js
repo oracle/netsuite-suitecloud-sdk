@@ -1,12 +1,14 @@
 'use strict';
 
 const mockCheckIfReauthorizationIsNeeded = jest.fn();
+const mockGetAuthInfo = jest.fn();
 const mockRefreshAuthorization = jest.fn();
 const mockExecuteWithSpinner = jest.fn(({ action }) => action);
 
 jest.mock('../../src/utils/AuthenticationUtils', () => ({
 	...jest.requireActual('../../src/utils/AuthenticationUtils'),
 	checkIfReauthorizationIsNeeded: (...args) => mockCheckIfReauthorizationIsNeeded(...args),
+	getAuthInfo: (...args) => mockGetAuthInfo(...args),
 	refreshAuthorization: (...args) => mockRefreshAuthorization(...args),
 }));
 
@@ -106,6 +108,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		mockCommandUserExtensionOnCompleted.mockClear();
 		mockCommandUserExtensionOnError.mockClear();
 		mockCheckIfReauthorizationIsNeeded.mockReset();
+		mockGetAuthInfo.mockReset();
 		mockRefreshAuthorization.mockReset();
 		mockExecuteWithSpinner.mockClear();
 	});
@@ -187,6 +190,36 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			message: 'Checking authorization...',
 		});
 		expect(mockRefreshAuthorization).not.toHaveBeenCalled();
+	});
+
+	it('adds the configured host when authorization inspection fails', async () => {
+		mockCheckIfReauthorizationIsNeeded.mockResolvedValue({
+			isSuccess: () => false,
+			errorMessages: ['Received fatal alert: internal_error'],
+		});
+		mockGetAuthInfo.mockResolvedValue({
+			isSuccess: () => true,
+			data: { hostInfo: { hostName: 'test.vm.eng.netsuite.com' } },
+		});
+
+		await expect(commandExecutor._refreshAuthorizationIfNeeded('myAuth')).rejects.toEqual([
+			'Received fatal alert: internal_error\n' +
+				'Authentication ID: myAuth\n' +
+				'Host: test.vm.eng.netsuite.com\n' +
+				'Verify the network configuration and that the Host is reachable.',
+		]);
+	});
+
+	it('preserves the original authorization error when the configured host cannot be read', async () => {
+		mockCheckIfReauthorizationIsNeeded.mockResolvedValue({
+			isSuccess: () => false,
+			errorMessages: ['Authorization inspection failed'],
+		});
+		mockGetAuthInfo.mockRejectedValue(new Error('Credentials unavailable'));
+
+		await expect(commandExecutor._refreshAuthorizationIfNeeded('myAuth')).rejects.toEqual([
+			'Authorization inspection failed',
+		]);
 	});
 
 	it('Should throw EXCEPTION when setup is required and there is not any account configured.', async () => {

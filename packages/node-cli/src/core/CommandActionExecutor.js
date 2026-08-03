@@ -14,7 +14,7 @@ const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/E
 const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
 const { executeWithSpinner } = require('../ui/CliSpinner');
 const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
-const { checkIfReauthorizationIsNeeded, refreshAuthorization } = require('../utils/AuthenticationUtils');
+const { checkIfReauthorizationIsNeeded, getAuthInfo, refreshAuthorization } = require('../utils/AuthenticationUtils');
 const { AUTHORIZATION_PROPERTIES_KEYS } = require('../ApplicationConstants');
 const { runWithSuiteCloudRequestTelemetry } = require('@oracle/suitecloud-sdk-core').http;
 
@@ -119,7 +119,10 @@ module.exports = class CommandActionExecutor {
 		});
 
 		if (!inspectAuthzOperationResult.isSuccess()) {
-			throw inspectAuthzOperationResult.errorMessages;
+			throw await this._withAuthorizationFailureContext(
+				inspectAuthzOperationResult.errorMessages,
+				defaultAuthId
+			);
 		}
 		const inspectAuthzData = inspectAuthzOperationResult.data;
 		if (inspectAuthzData[AUTHORIZATION_PROPERTIES_KEYS.NEEDS_REAUTHORIZATION]) {
@@ -131,6 +134,24 @@ module.exports = class CommandActionExecutor {
 			}
 			await this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.AUTHORIZATION_REFRESH_COMPLETED));
 		}
+	}
+
+	async _withAuthorizationFailureContext(errorMessages, authId) {
+		try {
+			const authInfoResult = await getAuthInfo(authId, this._sdkPath, this._executionEnvironmentContext);
+			const hostName = authInfoResult.isSuccess() && authInfoResult.data?.hostInfo?.hostName;
+			if (hostName) {
+				const contextMessage = NodeTranslationService.getMessage(
+						COMMAND_REFRESH_AUTHORIZATION.ERRORS.CHECK_FAILED_CONTEXT,
+						authId,
+						hostName
+					);
+				return [[...errorMessages, contextMessage].join(lineBreak)];
+			}
+		} catch {
+			// Keep the original authorization error when local authentication metadata cannot be read.
+		}
+		return errorMessages;
 	}
 
 	_logGenericError(error) {
