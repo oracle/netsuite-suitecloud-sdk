@@ -31,7 +31,7 @@ describe('ProjectCommandLog', () => {
 			logFileLocation: logFilePath,
 			operationResult: {
 				status: 'SUCCESS',
-				data: ['DEPLOY SUMMARY', 'Status: SUCCESS'],
+				data: ['DEPLOY SUMMARY', 'Status: SUCCESS', 'Apply Installation Preferences: Yes'],
 			},
 		});
 
@@ -40,6 +40,7 @@ describe('ProjectCommandLog', () => {
 		expect(contents).toMatch(/^Existing entry\n!DEPLOY - \d{14} -----------------------------------------------/);
 		expect(contents).toContain('DEPLOY SUMMARY');
 		expect(contents).toContain('Status: SUCCESS');
+		expect(contents).toContain('Apply Installation Preferences: Yes');
 	});
 
 	it('creates a timestamped log file when a directory is provided', async () => {

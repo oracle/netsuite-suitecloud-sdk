@@ -38,6 +38,11 @@ jest.mock('../../../../src/utils/AuthSessionProvider', () => ({
 		resolveAuthSession: jest.fn().mockResolvedValue({
 			hostName: 'system.netsuite.com',
 			accessToken: 'token',
+			accountInfo: {
+				companyId: '11550285',
+				companyName: 'DevTools Test',
+				roleName: 'Administrator',
+			},
 		}),
 		refreshAuthSession: jest.fn().mockResolvedValue({
 			hostName: 'system.netsuite.com',
@@ -134,6 +139,13 @@ describe('ValidateAction', () => {
 		const executionInput = executeProjectCommand.mock.calls[0][0];
 		expect(executionInput.command).toBe('validate');
 		expect(executionInput.flags).toEqual(['applyinstallprefs']);
+		expect(executionInput.summaryContext).toEqual({
+			accountId: '11550285',
+			accountName: 'DevTools Test',
+			applyInstallationPreferences: true,
+			roleName: 'Administrator',
+			suiteAppId: 'com.netsuite.ts',
+		});
 		expect(executeWithSpinner).toHaveBeenCalledTimes(1);
 		expect(executeWithSpinner.mock.calls[0][0].message).toBe('COMMAND_VALIDATE_MESSAGES_VALIDATING');
 		expect(NodeTranslationService.getMessage).toHaveBeenCalledWith(
@@ -175,6 +187,57 @@ describe('ValidateAction', () => {
 
 		const executionInput = executeProjectCommand.mock.calls[0][0];
 		expect(executionInput.rawOutput).toBe(true);
+	});
+
+	it('should preserve SuiteApp installation preference details when validation fails', async () => {
+		executeProjectCommand.mockResolvedValueOnce({
+			status: 'ERROR',
+			httpStatusCode: 400,
+			errorMessages: ['Validation failed'],
+		});
+		const validateAction = new ValidateAction({
+			projectFolder: '/tmp/project/src',
+			commandMetadata: {
+				name: 'project:validate',
+				options: { project: {}, authid: {}, applyinstallprefs: {} },
+			},
+			executionPath: '/tmp/project',
+			sdkPath: '/tmp/sdk.jar',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+
+		const result = await validateAction.execute({
+			project: '"/tmp/project/src"',
+			authid: 'myAuth',
+			applyinstallprefs: true,
+		});
+
+		expect(result.appliedInstallationPreferences).toBe(true);
+		expect(result.projectFolder).toBeUndefined();
+		expect(result.projectType).toBe('SUITEAPP');
+	});
+
+	it('should preserve raw-output parameters when validation throws', async () => {
+		executeProjectCommand.mockRejectedValueOnce(new Error('Request failed'));
+		const validateAction = new ValidateAction({
+			projectFolder: '/tmp/project/src',
+			commandMetadata: {
+				name: 'project:validate',
+				options: { project: {}, authid: {}, applyinstallprefs: {}, json: {} },
+			},
+			executionPath: '/tmp/project',
+			sdkPath: '/tmp/sdk.jar',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+
+		const result = await validateAction.execute({
+			project: '"/tmp/project/src"',
+			authid: 'myAuth',
+			applyinstallprefs: true,
+			json: true,
+		});
+
+		expect(result.commandParameters.json).toBe(true);
 	});
 
 	it('should write the validation result when --log is requested', async () => {

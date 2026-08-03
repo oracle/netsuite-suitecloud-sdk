@@ -144,17 +144,18 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 		return [];
 	}
 	const sections: string[] = ['', translationService.getMessage(PROJECT_API.RESULT.INFO.ISSUES_BY_FILE)];
-	const grouped = new Map<string, { errors: Set<string>; warnings: Set<string> }>();
+	const grouped = new Map<string, { errors: Map<string, number>; warnings: Map<string, number> }>();
 	normalizedValidationResults.forEach((result) => {
 		const fileKey = result.component || GENERAL_ISSUES_LABEL;
-		if (!grouped.has(fileKey)) {
-			grouped.set(fileKey, { errors: new Set<string>(), warnings: new Set<string>() });
+		let bucket = grouped.get(fileKey);
+		if (!bucket) {
+			bucket = { errors: new Map<string, number>(), warnings: new Map<string, number>() };
+			grouped.set(fileKey, bucket);
 		}
-		const bucket = grouped.get(fileKey) as { errors: Set<string>; warnings: Set<string> };
 		if (result.type === VALIDATION_RESULT_TYPE_ERROR) {
-			bucket.errors.add(result.message);
+			bucket.errors.set(result.message, (bucket.errors.get(result.message) || 0) + 1);
 		} else {
-			bucket.warnings.add(result.message);
+			bucket.warnings.set(result.message, (bucket.warnings.get(result.message) || 0) + 1);
 		}
 	});
 
@@ -165,16 +166,20 @@ function formatSdfProjectValidationResults(validationResults: unknown): string[]
 	});
 
 	orderedEntries.forEach(([fileKey, bucket], index) => {
-		const errorCount = bucket.errors.size;
-		const warningCount = bucket.warnings.size;
+		const errorCount = Array.from(bucket.errors.values()).reduce((total, count) => total + count, 0);
+		const warningCount = Array.from(bucket.warnings.values()).reduce((total, count) => total + count, 0);
 		sections.push(
 			`${index + 1}. ${fileKey} (${errorCount} error(s), ${warningCount} warning(s))`
 		);
-		Array.from(bucket.errors).forEach((message) =>
-			sections.push(translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_ERROR, message))
+		bucket.errors.forEach((occurrences, message) =>
+			sections.push(occurrences > 1
+				? translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_ERROR_REPEATED, message, occurrences)
+				: translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_ERROR, message))
 		);
-		Array.from(bucket.warnings).forEach((message) =>
-			sections.push(translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_WARNING, message))
+		bucket.warnings.forEach((occurrences, message) =>
+			sections.push(occurrences > 1
+				? translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_WARNING_REPEATED, message, occurrences)
+				: translationService.getMessage(PROJECT_API.RESULT.INFO.VALIDATION_RESULT_WARNING, message))
 		);
 		sections.push('');
 	});
@@ -269,11 +274,21 @@ function buildSummaryMetadataLines(
 	if (summaryContext.accountName) {
 		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.ACCOUNT, summaryContext.accountName));
 	}
+	if (summaryContext.accountId) {
+		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.ACCOUNT_ID, summaryContext.accountId));
+	}
 	if (summaryContext.roleName) {
 		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.ROLE, summaryContext.roleName));
 	}
 	if (summaryContext.suiteAppId) {
 		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.SUITEAPP_ID, summaryContext.suiteAppId));
+		if (typeof summaryContext.applyInstallationPreferences === 'boolean') {
+			lines.push(translationService.getMessage(
+				summaryContext.applyInstallationPreferences
+					? PROJECT_API.RESULT.INFO.APPLY_INSTALLATION_PREFERENCES_YES
+					: PROJECT_API.RESULT.INFO.APPLY_INSTALLATION_PREFERENCES_NO
+			));
+		}
 	} else if (summaryContext.projectName) {
 		lines.push(translationService.getMessage(PROJECT_API.RESULT.INFO.PROJECT_NAME, summaryContext.projectName));
 	}

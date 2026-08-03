@@ -8,8 +8,9 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const ActionResultUtils = require('../../../utils/ActionResultUtils');
 
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
+
 const {
-	COMMAND_VALIDATE: { MESSAGES },
+	PROJECT_COMMAND: { MESSAGES },
 } = require('../../../services/TranslationKeys');
 const {
 	isRawOutputRequested,
@@ -21,6 +22,7 @@ const {
 module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 	constructor(options) {
 		super(options);
+		this._executionPath = options.executionPath;
 	}
 
 	parse(actionResult) {
@@ -29,14 +31,9 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 			return actionResult;
 		}
 
+		this._showInstallationPreferencesMessage(actionResult);
 		if (actionResult.isServerValidation && Array.isArray(actionResult.data)) {
 			logCommandOutput(this._log, actionResult.data);
-		} else if (!actionResult.isServerValidation) {
-			this._showApplyInstallationPreferencesOptionMessage(
-				actionResult.appliedInstallationPreferences,
-				actionResult.projectType,
-				actionResult.projectFolder
-			);
 		}
 		ActionResultUtils.logResultMessage(actionResult, this._log);
 		return actionResult;
@@ -51,17 +48,18 @@ module.exports = class ValidateOutputHandler extends BaseOutputHandler {
 			return actionResult;
 		}
 
+		this._showInstallationPreferencesMessage(actionResult);
 		logCommandErrors(this._log, actionResult.errorMessages);
 		return actionResult;
 	}
 
-	_showApplyInstallationPreferencesOptionMessage(isAppliedInstallationPreferences, projectType, projectFolder) {
-		if (projectType === PROJECT_SUITEAPP) {
-			if (isAppliedInstallationPreferences) {
-				this._log.info(NodeTranslationService.getMessage(MESSAGES.APPLYING_INSTALLATION_PREFERENCES, projectFolder));
-			} else {
-				this._log.info(NodeTranslationService.getMessage(MESSAGES.NOT_APPLYING_INSTALLATION_PREFERENCES, projectFolder));
-			}
+	_showInstallationPreferencesMessage(actionResult) {
+		if (actionResult.projectType !== PROJECT_SUITEAPP) {
+			return;
 		}
+		const messageKey = actionResult.appliedInstallationPreferences
+			? MESSAGES.INSTALLATION_PREFERENCES_SELECTED
+			: MESSAGES.INSTALLATION_PREFERENCES_NOT_SELECTED;
+		this._log.info(NodeTranslationService.getMessage(messageKey, this._executionPath || actionResult.projectFolder));
 	}
 };

@@ -252,6 +252,12 @@ describe('ProjectCommandExecutor', () => {
 				projectFolder: '/tmp/project',
 				hostName: 'system.netsuite.com',
 				accessToken: 'token',
+				summaryContext: {
+					accountName: 'DevTools Test',
+					accountId: '11550285',
+					applyInstallationPreferences: true,
+					suiteAppId: 'com.netsuite.ts',
+				},
 			},
 			{
 				createProjectArchive: async () => '/tmp/project.zip',
@@ -284,6 +290,10 @@ describe('ProjectCommandExecutor', () => {
 			'Validation Results: 0 error(s), 1 warning(s)',
 			'SDF Errors: none',
 			`Timestamp: ${expectedTimestamp}`,
+			'Account: DevTools Test',
+			'Account ID: 11550285',
+			'SuiteApp ID: com.netsuite.ts',
+			'Apply Installation Preferences: Yes',
 			'------------------------------------------------------------',
 			'✔ Step 1: MANIFEST_VALIDATION',
 			'✔ Step 2: DEPLOY',
@@ -293,6 +303,55 @@ describe('ProjectCommandExecutor', () => {
 		]));
 	});
 
+	it('should count repeated validation results without repeating the message', async () => {
+		const repeatedError = {
+			type: 'ERROR',
+			message: 'Repeated error',
+			validationDetails: { component: '~/Objects/customrecord.xml' },
+		};
+		const repeatedWarning = {
+			type: 'WARNING',
+			message: 'Repeated warning',
+			validationDetails: { component: '~/Objects/customrecord.xml' },
+		};
+		const result = await executeProjectCommand(
+			{
+				command: PROJECT_COMMAND.VALIDATE,
+				projectFolder: '/tmp/project',
+				hostName: 'system.netsuite.com',
+				accessToken: 'token',
+			},
+			{
+				createProjectArchive: async () => '/tmp/project.zip',
+				deleteFile: async () => undefined,
+				sendProjectRequest: async () => ({
+					statusCode: 200,
+					body: JSON.stringify({
+						steps: [{ name: 'VALIDATE', status: 'SUCCESSFUL' }],
+						validationResults: [
+							repeatedError,
+							repeatedError,
+							repeatedError,
+							repeatedWarning,
+							repeatedWarning,
+							repeatedWarning,
+						],
+					}),
+				}),
+			}
+		);
+
+		expect(result.status).toBe(SDK_OPERATION_STATUS.ERROR);
+		expect(result.errorMessages).toEqual(expect.arrayContaining([
+			'Validation Results: 3 error(s), 3 warning(s)',
+			'1. ~/Objects/customrecord.xml (3 error(s), 3 warning(s))',
+			'  - ERROR: Repeated error (3 occurrences)',
+			'  - WARNING: Repeated warning (3 occurrences)',
+		]));
+		expect(result.errorMessages.filter((line) => line.includes('Repeated error'))).toHaveLength(1);
+		expect(result.errorMessages.filter((line) => line.includes('Repeated warning'))).toHaveLength(1);
+	});
+
 	it('should mark SDF endpoint payload as failed when any step fails', async () => {
 		const result = await executeProjectCommand(
 			{
@@ -300,6 +359,10 @@ describe('ProjectCommandExecutor', () => {
 				projectFolder: '/tmp/project',
 				hostName: 'system.netsuite.com',
 				accessToken: 'token',
+				summaryContext: {
+					applyInstallationPreferences: false,
+					suiteAppId: 'com.netsuite.ts',
+				},
 			},
 			{
 				createProjectArchive: async () => '/tmp/project.zip',
@@ -321,6 +384,8 @@ describe('ProjectCommandExecutor', () => {
 		expect(result.errorMessages).toEqual(expect.arrayContaining([
 			'VALIDATE SUMMARY',
 			'Status: FAILED',
+			'SuiteApp ID: com.netsuite.ts',
+			'Apply Installation Preferences: No',
 			'✔ Step 1: MANIFEST_VALIDATION',
 			'✖ Step 2: VALIDATE',
 		]));

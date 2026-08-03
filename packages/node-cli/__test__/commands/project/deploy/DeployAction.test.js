@@ -84,4 +84,86 @@ describe('DeployAction ignored options', () => {
 			'myAuth'
 		);
 	});
+
+	it('adds the account ID to the project summary context', () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: { name: 'project:deploy', options: {} },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+
+		expect(deployAction._buildSummaryContext({
+			accountInfo: {
+				companyId: '11550285',
+				companyName: 'DevTools Test',
+				roleName: 'Administrator',
+			},
+		})).toEqual({
+			accountId: '11550285',
+			accountName: 'DevTools Test',
+			projectName: 'My Project',
+			roleName: 'Administrator',
+		});
+	});
+
+	it('adds installation preferences to SuiteApp summary context', () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: { name: 'project:deploy', options: {} },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+		deployAction._projectType = 'SUITEAPP';
+		deployAction._suiteAppId = 'com.netsuite.ts';
+
+		expect(deployAction._buildSummaryContext({}, ['applyinstallprefs'])).toEqual({
+			accountId: undefined,
+			accountName: undefined,
+			applyInstallationPreferences: true,
+			roleName: undefined,
+			suiteAppId: 'com.netsuite.ts',
+		});
+	});
+
+	it('preserves SuiteApp installation preference details when deployment fails', async () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project/src',
+			commandMetadata: { name: 'project:deploy', options: { project: {}, authid: {} } },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+		deployAction._projectType = 'SUITEAPP';
+		deployAction._executeProjectCommandWithAuthRetry = jest.fn().mockResolvedValue({
+			status: 'ERROR',
+			errorMessages: ['Validation failed'],
+		});
+
+		const result = await deployAction._deploy(
+			{ project: '"/tmp/project/src"', authid: 'myAuth' },
+			['applyinstallprefs']
+		);
+
+		expect(result.appliedInstallationPreferences).toBe(true);
+		expect(result.projectFolder).toBeUndefined();
+		expect(result.projectType).toBe('SUITEAPP');
+	});
+
+	it('preserves raw-output parameters when deployment throws', async () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project/src',
+			commandMetadata: { name: 'project:deploy', options: { project: {}, authid: {}, json: {} } },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+		deployAction._projectType = 'SUITEAPP';
+		deployAction._executeProjectCommandWithAuthRetry = jest.fn().mockRejectedValue(new Error('Request failed'));
+
+		const result = await deployAction._deploy(
+			{ project: '"/tmp/project/src"', authid: 'myAuth', json: true },
+			['applyinstallprefs']
+		);
+
+		expect(result.commandParameters.json).toBe(true);
+	});
 });

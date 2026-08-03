@@ -23,9 +23,11 @@ const NEUTRAL_SUMMARY_LINES = [
 	'Endpoint Errors:',
 	'Timestamp:',
 	'Account:',
+	'Account ID:',
 	'Role:',
 	'SuiteApp ID:',
 	'Project Name:',
+	'Apply Installation Preferences:',
 ];
 const SEPARATOR_LINE = '------------------------------------------------------------';
 const JSON_INDENT = 2;

@@ -9,7 +9,6 @@ const {
 	DEPLOY_COMMAND,
 	getPreviewCommandName,
 	prepareDeployExecution,
-	isApplyInstallationPreferencesForDeploy,
 } = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('DeployHandler', () => {
@@ -47,14 +46,5 @@ describe('DeployHandler', () => {
 
 	it('should expose preview command name', () => {
 		expect(getPreviewCommandName()).toBe('preview');
-	});
-
-	it('should detect apply installation preferences only for suiteapp', () => {
-		const result = isApplyInstallationPreferencesForDeploy(
-			'SUITEAPP',
-			[DEPLOY_COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES],
-			'SUITEAPP'
-		);
-		expect(result).toBe(true);
 	});
 });

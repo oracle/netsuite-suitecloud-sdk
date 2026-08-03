@@ -71,11 +71,3 @@ export function prepareDeployExecution(params: DeployExecutionParams): DeployExe
 		flags,
 	};
 }
-
-export function isApplyInstallationPreferencesForDeploy(
-	projectType: string | undefined,
-	flags: string[],
-	suiteAppProjectType: string
-): boolean {
-	return projectType === suiteAppProjectType && flags.includes(DEPLOY_COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES);
-}
