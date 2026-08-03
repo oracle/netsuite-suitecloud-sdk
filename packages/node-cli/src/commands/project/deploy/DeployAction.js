@@ -21,7 +21,6 @@ const {
 	DEPLOY_MODE,
 	DEPLOY_COMMAND,
 	prepareDeployExecution,
-	isApplyInstallationPreferencesForDeploy,
 } = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeProjectCommand,
@@ -133,10 +132,8 @@ module.exports = class DeployAction extends (
 	}
 
 	async _deploy(params, flags) {
-		const isApplyInstallationPreferences = isApplyInstallationPreferencesForDeploy(
-			this._projectType,
-			flags,
-			PROJECT_SUITEAPP
+		const installationPreferencesApplied = flags.includes(
+			COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES
 		);
 		try {
 			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
@@ -156,21 +153,21 @@ module.exports = class DeployAction extends (
 			return operationResult.status === SDK_OPERATION_STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 					.withResultMessage(operationResult.resultMessage)
-					.withAppliedInstallationPreferences(isApplyInstallationPreferences)
+					.withAppliedInstallationPreferences(installationPreferencesApplied)
 					.withProjectType(this._projectType)
 					.withProjectFolder(this._projectFolder)
 					.withCommandParameters(sdkParams)
 					.withCommandFlags(flags)
 					.build()
 				: DeployActionResult.Builder.withErrors(operationResult.errorMessages)
-					.withAppliedInstallationPreferences(isApplyInstallationPreferences)
+					.withAppliedInstallationPreferences(installationPreferencesApplied)
 					.withProjectType(this._projectType)
 					.withCommandParameters(sdkParams)
 					.withCommandFlags(flags)
 					.build();
 		} catch (error) {
 			return DeployActionResult.Builder.withErrors(toErrorMessages(error))
-				.withAppliedInstallationPreferences(isApplyInstallationPreferences)
+				.withAppliedInstallationPreferences(installationPreferencesApplied)
 				.withProjectType(this._projectType)
 				.withCommandParameters(params)
 				.withCommandFlags(flags)

@@ -92,7 +92,6 @@ export {
 	DEPLOY_COMMAND,
 	DEPLOY_MODE,
 	getPreviewCommandName,
-	isApplyInstallationPreferencesForDeploy,
 	prepareDeployExecution,
 } from '../commands/project/deploy/DeployHandler';
 export {
