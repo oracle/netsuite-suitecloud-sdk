@@ -8,7 +8,7 @@ const ManageAccountOutputHandler = require('../../../../src/commands/account/man
 
 describe('ManageAccountOutputHandler', () => {
 	it('reports when no authentication IDs are configured', () => {
-		const log = { result: jest.fn() };
+		const log = { info: jest.fn(), result: jest.fn() };
 		const outputHandler = new ManageAccountOutputHandler({ log });
 
 		outputHandler.parse({
@@ -16,7 +16,8 @@ describe('ManageAccountOutputHandler', () => {
 			data: {},
 		});
 
-		expect(log.result).toHaveBeenCalledTimes(1);
-		expect(log.result).toHaveBeenCalledWith('There are no authentication IDs available.');
+		expect(log.info).toHaveBeenCalledTimes(1);
+		expect(log.info).toHaveBeenCalledWith('There are no authentication IDs available.');
+		expect(log.result).not.toHaveBeenCalled();
 	});
 });

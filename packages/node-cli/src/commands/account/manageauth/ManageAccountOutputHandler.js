@@ -27,7 +27,7 @@ module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler {
 		} else if (actionResult.actionExecuted === MANAGE_ACTION.LIST) {
 			const authIds = Object.keys(actionResult.data);
 			if (authIds.length === 0) {
-				this._log.result(NodeTranslationService.getMessage(OUTPUT.NO_AUTHENTICATION_IDS));
+				this._log.info(NodeTranslationService.getMessage(OUTPUT.NO_AUTHENTICATION_IDS));
 			}
 			authIds.forEach((authId) =>
 				this._log.result(AccountCredentialsFormatter.getListItemString(authId, actionResult.data[authId]))
