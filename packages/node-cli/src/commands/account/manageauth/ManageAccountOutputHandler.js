@@ -28,10 +28,11 @@ module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler {
 			const authIds = Object.keys(actionResult.data);
 			if (authIds.length === 0) {
 				this._log.info(NodeTranslationService.getMessage(OUTPUT.NO_AUTHENTICATION_IDS));
+			} else {
+				authIds.forEach((authId) =>
+					this._log.result(AccountCredentialsFormatter.getListItemString(authId, actionResult.data[authId]))
+				);
 			}
-			authIds.forEach((authId) =>
-				this._log.result(AccountCredentialsFormatter.getListItemString(authId, actionResult.data[authId]))
-			);
 		}
 		return actionResult;
 	}
