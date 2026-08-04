@@ -12,6 +12,13 @@ import { loadWorkspace, getNormalizedSkills } from '../scripts/lib/build-config.
 import { buildPlugin } from '../scripts/lib/plugin-builder.mjs';
 import { listRelativeFiles, writeJson } from '../scripts/lib/fs-utils.mjs';
 import { generateManifest } from '../scripts/lib/manifest.mjs';
+import {
+	createIntegrityManifest,
+	serializeIntegrityManifest,
+	verifyIntegrityManifest,
+	writeIntegrityManifest,
+} from '../scripts/release-integrity.mjs';
+import { scanSecrets, scanWorkflowPolicies } from '../scripts/release-security-gates.mjs';
 
 const packageRoot = path.resolve(process.cwd());
 const suitecloudSkills = [
@@ -25,6 +32,64 @@ const suitecloudSkills = [
 	'netsuite-uif-spa-reference',
 ];
 
+test('release security gate detects credential-shaped values and accepts clean files', async () => {
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'release-security-secrets-'));
+	await fs.writeFile(path.join(root, 'clean.txt'), 'const reference = "Bearer ${token}";\n', 'utf8');
+	assert.deepEqual(await scanSecrets(root), []);
+
+	await fs.writeFile(path.join(root, 'credentials.txt'), [
+		'ghp_' + 'abcdefghijklmnopqrstuvwxyz0123456789ABCD',
+		'AKIA' + 'ABCDEFGHIJKLMNOP',
+		'Authorization: Bearer ' + 'abcdefghijklmnopqrstuvwxyz0123456789',
+		'-----BEGIN PRIVATE KEY-----\n' + 'A'.repeat(128),
+	].join('\n'), 'utf8');
+	assert.deepEqual((await scanSecrets(root)).map((finding) => finding.kind).sort(), [
+		'AWS access key', 'GitHub token', 'bearer credential', 'private key',
+	]);
+});
+
+test('release security gate excludes source checkout directories but scans generated output', async () => {
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'release-security-source-'));
+	for (const directory of ['.git', 'node_modules', 'dist']) {
+		await fs.mkdir(path.join(root, directory));
+		await fs.writeFile(path.join(root, directory, 'ignored.txt'), 'ghp_' + 'abcdefghijklmnopqrstuvwxyz0123456789ABCD', 'utf8');
+	}
+	assert.deepEqual(await scanSecrets(root, { source: true }), []);
+	const generated = path.join(root, 'dist');
+	assert.equal((await scanSecrets(generated)).length, 1);
+});
+
+test('release security workflow policy rejects unsafe workflows and accepts compliant workflows', async () => {
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'release-security-workflows-'));
+	await fs.writeFile(path.join(root, 'unsafe.yml'), `name: unsafe
+jobs:
+  test:
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: owner/action@main
+`, 'utf8');
+	const unsafeFindings = await scanWorkflowPolicies(root);
+	assert(unsafeFindings.some((finding) => finding.kind === 'missing explicit top-level permissions'));
+	assert(unsafeFindings.some((finding) => finding.kind === 'checkout persists credentials'));
+	assert.equal(unsafeFindings.filter((finding) => finding.kind.startsWith('unpinned external action')).length, 2);
+
+	await fs.rm(path.join(root, 'unsafe.yml'));
+	await fs.writeFile(path.join(root, 'compliant.yaml'), `name: compliant
+permissions:
+  contents: read
+jobs:
+  test:
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: ./local-action
+`, 'utf8');
+	assert.deepEqual(await scanWorkflowPolicies(root), []);
+});
+
 function getSkillDirectories(files) {
 	return [...new Set(files.filter((file) => file.startsWith('skills/')).map((file) => file.split('/').slice(0, 2).join('/')))].sort();
 }
@@ -32,6 +97,34 @@ function getSkillDirectories(files) {
 function getOpenAIInterfaceAssetPaths(plugin) {
 	return ['logo', 'composerIcon'].map((field) => plugin.metadata.interface[field].replace(/^\.\//, ''));
 }
+
+test('release integrity manifest is sorted, deterministic, and uses SHA-256', async () => {
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'release-integrity-'));
+	await fs.mkdir(path.join(root, 'nested'));
+	await fs.writeFile(path.join(root, 'z.txt'), 'last', 'utf8');
+	await fs.writeFile(path.join(root, 'nested', 'a.txt'), 'first', 'utf8');
+
+	const manifest = await createIntegrityManifest(root);
+	assert.deepEqual(manifest.map((entry) => entry.path), ['nested/a.txt', 'z.txt']);
+	assert.equal(manifest.find((entry) => entry.path === 'nested/a.txt').sha256, 'a7937b64b8caa58f03721bb6bacf5c78cb235febe0e70b1b84cd99541461a08e');
+	assert.equal(serializeIntegrityManifest(manifest), serializeIntegrityManifest(await createIntegrityManifest(root)));
+});
+
+test('release integrity verification rejects tampered, missing, and unexpected files', async () => {
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'release-integrity-'));
+	const manifestPath = path.join(await fs.mkdtemp(path.join(os.tmpdir(), 'release-integrity-metadata-')), 'manifest.sha256');
+	await fs.mkdir(path.join(root, 'nested'));
+	await fs.writeFile(path.join(root, 'nested', 'file.txt'), 'original', 'utf8');
+	await writeIntegrityManifest(root, manifestPath);
+	await fs.writeFile(path.join(root, 'nested', 'file.txt'), 'tampered', 'utf8');
+	await assert.rejects(() => verifyIntegrityManifest(root, manifestPath), /hash mismatch: nested\/file.txt/);
+	await fs.writeFile(path.join(root, 'nested', 'file.txt'), 'original', 'utf8');
+	await fs.rm(path.join(root, 'nested', 'file.txt'));
+	await assert.rejects(() => verifyIntegrityManifest(root, manifestPath), /missing file: nested\/file.txt/);
+	await fs.writeFile(path.join(root, 'nested', 'file.txt'), 'original', 'utf8');
+	await fs.writeFile(path.join(root, 'unexpected.txt'), 'unexpected', 'utf8');
+	await assert.rejects(() => verifyIntegrityManifest(root, manifestPath), /unexpected file: unexpected.txt/);
+});
 
 test('workspace config recursively discovers six provider-qualified plugins with expected platforms and skills', async () => {
 	const workspace = await loadWorkspace(packageRoot);

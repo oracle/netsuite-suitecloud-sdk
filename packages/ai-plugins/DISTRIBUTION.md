@@ -7,7 +7,7 @@ This guide is the release reference for the generated AI plug-in artifacts publi
 Two workflows support AI plug-in changes:
 
 - **AI Plug-ins CI** runs automatically for pull requests and pushes to `master` when relevant AI plug-in source, shared skills, package files, license files, ignore files, or workflow files change. It validates configuration, runs tests, builds the plug-ins, and verifies the release output.
-- **Publish AI Plug-ins Dist** is manually dispatched and executes only when dispatched from `master`. Dispatches from other refs intentionally skip its `publish` job. Use it for an intentional distribution release after the source change has been merged and validated. It validates, tests, and builds the plug-ins, then publishes the generated output to `ai-plugins-dist`.
+- **Publish AI Plug-ins Dist** is manually dispatched and executes only when dispatched from `master`. Dispatches from other refs intentionally skip its `publish` job. Use it for an intentional distribution release after the source change has been merged and validated. It runs mandatory security gates, validates, tests, and builds the plug-ins, then publishes the generated output to `ai-plugins-dist`.
 
 CI is merge-blocking only when the target branch's protection rules require the **AI Plug-ins CI** status check. The workflow itself validates changes but does not independently prevent a merge.
 
@@ -24,7 +24,9 @@ The publisher is the standard release mechanism. Do not edit the distribution br
 The publisher:
 
 - executes only from `master`; manually dispatched runs from any other ref skip publishing;
+- fails closed before publishing when the repository-owned security gate detects a high-confidence credential in source or generated output, detects an unpinned external Action, credential-persisting checkout, or missing top-level workflow permissions, or when `npm audit` reports a High or Critical locked-dependency vulnerability;
 - runs `validate`, `test`, and `build` for `@oracle/ai-plugins` before publishing;
+- creates a sorted SHA-256 manifest after source-versus-build verification and verifies the downloaded artifact against it before any write-scoped Git credential is configured;
 - updates the orphan `ai-plugins-dist` branch only when generated plug-in output has changed;
 - requires a version increase when an already published plug-in's content changes;
 - removes a distribution directory when its generated plug-in is removed from source; and
@@ -105,7 +107,13 @@ It should contain the generated plug-in directories for the source revision and 
 ## Guardrails
 
 - Never edit generated plug-in contents in `ai-plugins-dist`; regenerate and republish from source.
+- A security or integrity gate failure blocks publication. Correct the issue in a new `master` commit, then dispatch a new release run; do not reuse a failed run's artifacts.
 - Do not publish changed plug-in content without a version increase.
 - Inspect the distribution worktree before committing a manual fallback release.
 - Keep the distribution worktree separate from the source checkout.
-- Configure a protected GitHub Environment with required reviewers for publishing, protect the `ai-plugins-dist` branch, and restrict creation and updates in the `ai-plugin/*` tag namespace. These repository settings are required for full release-integrity remediation and cannot be enforced by repository-tracked files alone.
+
+### Repository-Owned Security Gate
+
+The release workflow runs `packages/ai-plugins/scripts/release-security-gates.mjs` before dependency installation and again after build output is generated. It intentionally has no external scanner Action or container-image dependency. The source scan excludes `.git`, `node_modules`, and source `dist`; generated output is scanned directly.
+
+The gate is fail-closed for a focused policy baseline: GitHub token formats, AWS access keys, private-key material, and credential-shaped bearer values; plus workflow Action SHA pinning, non-persistent checkout credentials, and explicit top-level permissions. It is intentionally narrower than dedicated third-party secret and workflow scanners, and must not be treated as equivalent coverage.

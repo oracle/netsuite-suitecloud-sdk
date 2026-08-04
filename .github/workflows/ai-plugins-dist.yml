@@ -22,6 +22,15 @@ jobs:
         with:
           node-version: 20
 
+      - name: Check GitHub Actions workflow policy
+        run: node packages/ai-plugins/scripts/release-security-gates.mjs workflows .github/workflows
+
+      - name: Scan source for secrets
+        run: node packages/ai-plugins/scripts/release-security-gates.mjs secrets .
+
+      - name: Audit locked dependencies
+        run: npm audit --package-lock-only --audit-level=high
+
       - name: Install dependencies
         run: npm ci --workspace @oracle/agent-skills --workspace @oracle/ai-plugins
 
@@ -39,8 +48,14 @@ jobs:
       - name: Build plugin directories
         run: npm run build --workspace @oracle/ai-plugins
 
+      - name: Scan generated distribution for secrets
+        run: node packages/ai-plugins/scripts/release-security-gates.mjs secrets dist/ai-plugins
+
       - name: Verify release output matches source build
         run: npm run verify-release --workspace @oracle/ai-plugins
+
+      - name: Create release integrity manifest
+        run: node packages/ai-plugins/scripts/release-integrity.mjs create dist/ai-plugins release-metadata/ai-plugins-dist.sha256
 
       - name: Determine release metadata
         id: release-metadata
@@ -158,6 +173,11 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout release integrity verifier
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
       - name: Download verified distribution output
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
@@ -169,6 +189,9 @@ jobs:
         with:
           name: ai-plugins-release-metadata
           path: release-metadata
+
+      - name: Verify downloaded distribution integrity
+        run: node packages/ai-plugins/scripts/release-integrity.mjs verify dist/ai-plugins release-metadata/ai-plugins-dist.sha256
 
       - name: Publish verified plugin directories to ai-plugins-dist
         shell: bash
