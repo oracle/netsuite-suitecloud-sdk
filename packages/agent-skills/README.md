@@ -10,9 +10,19 @@ This directory includes reusable skills that can be used across different coding
 
 Each skill is self-contained and follows a consistent structure so agents can discover, load, and use it reliably.
 
-### Included Skills
+## Included Skills
+
+### Business User Skills
+
+These skills are designed for finance users, business analysts, and administrators who work with NetSuite business data and processes rather than SuiteCloud development. They leverage the **NetSuite AI Connector Service** to securely access and analyze NetSuite data, enabling AI assistants to perform finance analysis, reporting, and other business workflows using live NetSuite information.
+
 - [netsuite-ai-connector-instructions](./netsuite-ai-connector-instructions): Provides guardrails and domain guidance for AI-to-NetSuite sessions—enforcing correct tool selection, safe SuiteQL usage, consistent output formatting, and proper multi-subsidiary and currency handling through the NetSuite AI Service Connector.
 - [netsuite-finance-analyst](./netsuite-finance-analyst): Use this skill when the user needs NetSuite-based finance analysis, Director of Financial Analysis support, period-close guidance, variance review, reconciliation review, cash reporting, or executive-ready financial narrative generation. Apply it to requests involving income statements, balance sheets, cash flow, budget versus actuals, AR or AP aging, month-end close, SOX-oriented finance checks, journal entry review, and board or CFO reporting. Prefer it when the request clearly involves NetSuite financial data interpretation or finance operations, but do not use it for general NetSuite development or non-finance administration tasks.
+
+### SuiteCloud Development Skills
+
+These skills are designed for SuiteCloud developers, SuiteApp teams, and technical users building, customizing, and maintaining NetSuite solutions. They provide expert guidance for SuiteScript development, SuiteCloud Development Framework (SDF), UIF SPA components, security, documentation, permissions, and modernization, helping AI coding assistants generate accurate, maintainable, and best-practice NetSuite code and project artifacts.
+
 - [netsuite-owasp-secure-coding](./netsuite-owasp-secure-coding): Platform-agnostic OWASP secure coding practices with JavaScript/Node.js patterns and NetSuite SuiteScript examples. Covers OWASP Top 10 (2021), output encoding, injection prevention, CSP headers, file security, API hardening, AI agent security, DRY security patterns, and 48+ security pitfalls with GOOD/BAD code templates.
 - [netsuite-sdf-project-documentation](./netsuite-sdf-project-documentation): Helps generate and maintain enterprise-grade documentation for NetSuite SDF projects by analyzing SuiteScript files, SDF object XML, and `manifest.xml`, then producing standardized outputs (for example, `README.md`, architecture diagrams in Mermaid/ASCII, deployment/runbooks, and troubleshooting tables). Can integrate with post-deployment documentation workflows when automation (for example, hooks) is available.
 - [netsuite-sdf-roles-and-permissions](./netsuite-sdf-roles-and-permissions): Helps generate and review SDF permission configurations (for example, customrole XML and script deployment permissions) and validates permission IDs/levels using NetSuite reference data.
