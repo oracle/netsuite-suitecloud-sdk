@@ -8,6 +8,7 @@ permissions:
 
 jobs:
   publish:
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -33,7 +34,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          default_branch="${GITHUB_REF_NAME}"
+          default_branch="master"
           dist_branch="ai-plugins-dist"
           worktree_dir="$(mktemp -d)"
           previous_dir="$(mktemp -d)"

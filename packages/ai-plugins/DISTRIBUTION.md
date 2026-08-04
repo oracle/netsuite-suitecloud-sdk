@@ -7,14 +7,14 @@ This guide is the release reference for the generated AI plug-in artifacts publi
 Two workflows support AI plug-in changes:
 
 - **AI Plug-ins CI** runs automatically for pull requests and pushes to `master` when relevant AI plug-in source, shared skills, package files, license files, ignore files, or workflow files change. It validates configuration, runs tests, builds the plug-ins, and verifies the release output.
-- **Publish AI Plug-ins Dist** is manually dispatched. Use it for an intentional distribution release after the source change has been merged and validated. It validates, tests, and builds the plug-ins, then publishes the generated output to `ai-plugins-dist`.
+- **Publish AI Plug-ins Dist** is manually dispatched and executes only when dispatched from `master`. Dispatches from other refs intentionally skip its `publish` job. Use it for an intentional distribution release after the source change has been merged and validated. It validates, tests, and builds the plug-ins, then publishes the generated output to `ai-plugins-dist`.
 
 CI is merge-blocking only when the target branch's protection rules require the **AI Plug-ins CI** status check. The workflow itself validates changes but does not independently prevent a merge.
 
 ## Standard Release Procedure
 
 1. Merge the intended source changes to `master` and confirm the applicable **AI Plug-ins CI** run succeeds.
-2. In GitHub Actions, manually run **Publish AI Plug-ins Dist** from the source revision to release (normally `master`).
+2. In GitHub Actions, manually run **Publish AI Plug-ins Dist** from `master`. Dispatches from any other ref are skipped and do not write the distribution branch or tags.
 3. Consume the generated plug-in directories from the `ai-plugins-dist` branch and the version tags created for changed plug-ins.
 
 The publisher is the standard release mechanism. Do not edit the distribution branch by hand.
@@ -23,6 +23,7 @@ The publisher is the standard release mechanism. Do not edit the distribution br
 
 The publisher:
 
+- executes only from `master`; manually dispatched runs from any other ref skip publishing;
 - runs `validate`, `test`, and `build` for `@oracle/ai-plugins` before publishing;
 - updates the orphan `ai-plugins-dist` branch only when generated plug-in output has changed;
 - requires a version increase when an already published plug-in's content changes;
@@ -81,7 +82,7 @@ git -C ../ai-plugins-dist commit -m "Publish AI plug-ins from $(git rev-parse HE
 git -C ../ai-plugins-dist push -u origin ai-plugins-dist
 ```
 
-On recurring releases, omit `-u` from the final push if the worktree already tracks `origin/ai-plugins-dist`. Replace `master` in the generated README command only if releasing from another source branch.
+On recurring releases, omit `-u` from the final push if the worktree already tracks `origin/ai-plugins-dist`. The standard publisher is restricted to `master`; a manual fallback release must also originate from `master`.
 
 Create and push a tag for each changed plug-in, substituting its provider-qualified published ID and version:
 
@@ -107,3 +108,4 @@ It should contain the generated plug-in directories for the source revision and 
 - Do not publish changed plug-in content without a version increase.
 - Inspect the distribution worktree before committing a manual fallback release.
 - Keep the distribution worktree separate from the source checkout.
+- Configure a protected GitHub Environment with required reviewers for publishing, protect the `ai-plugins-dist` branch, and restrict creation and updates in the `ai-plugin/*` tag namespace. These repository settings are required for full release-integrity remediation and cannot be enforced by repository-tracked files alone.
