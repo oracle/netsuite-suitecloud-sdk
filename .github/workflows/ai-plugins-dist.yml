@@ -4,16 +4,19 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  publish:
+  prepare:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    outputs:
+      publish_required: ${{ steps.release-metadata.outputs.publish_required }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
@@ -22,41 +25,53 @@ jobs:
       - name: Install dependencies
         run: npm ci --workspace @oracle/agent-skills --workspace @oracle/ai-plugins
 
-      - name: Validate and build plugins
-        run: |
-          npm run validate --workspace @oracle/agent-skills
-          npm run validate --workspace @oracle/ai-plugins
-          npm run test --workspace @oracle/ai-plugins
-          npm run build --workspace @oracle/ai-plugins
+      - name: Validate Agent Skills
+        run: npm run validate --workspace @oracle/agent-skills
 
-      - name: Publish generated plugin directories to ai-plugins-dist
+      - name: Validate plugin configuration
+        run: npm run validate --workspace @oracle/ai-plugins
+
+      - name: Run tests
+        run: |
+          npm run test --workspace @oracle/agent-skills
+          npm run test --workspace @oracle/ai-plugins
+
+      - name: Build plugin directories
+        run: npm run build --workspace @oracle/ai-plugins
+
+      - name: Verify release output matches source build
+        run: npm run verify-release --workspace @oracle/ai-plugins
+
+      - name: Determine release metadata
+        id: release-metadata
         shell: bash
+        env:
+          DIST_BRANCH: ai-plugins-dist
         run: |
           set -euo pipefail
 
-          default_branch="master"
-          dist_branch="ai-plugins-dist"
-          worktree_dir="$(mktemp -d)"
           previous_dir="$(mktemp -d)"
-          changed_plugins=()
-          publish_required=0
+          metadata_dir="release-metadata"
+          publish_required=false
+          mkdir -p "${metadata_dir}"
+          : > "${metadata_dir}/changed-plugins.tsv"
+          trap 'rm -rf "${previous_dir}"' EXIT
 
-          if git ls-remote --exit-code --heads origin "${dist_branch}" >/dev/null 2>&1; then
-            git fetch origin "${dist_branch}:${dist_branch}"
-            git worktree add "${worktree_dir}" "${dist_branch}"
-            cp -R "${worktree_dir}/." "${previous_dir}/" || true
+          # The read-scoped token is supplied only to this command and is never
+          # persisted in Git configuration.
+          if git -c http.extraHeader="AUTHORIZATION: bearer ${GITHUB_TOKEN}" \
+            fetch --no-tags origin "${DIST_BRANCH}:${DIST_BRANCH}"; then
+            git archive "${DIST_BRANCH}" | tar -x -C "${previous_dir}"
           else
-            git worktree add --detach "${worktree_dir}"
-            pushd "${worktree_dir}" >/dev/null
-            rm -rf ./*
-            git checkout --orphan "${dist_branch}"
-            popd >/dev/null
+            echo "Distribution branch does not exist yet; preparing initial release."
           fi
 
           while IFS= read -r manifest_path; do
             plugin_dir="$(dirname "$(dirname "${manifest_path}")")"
             plugin_name="${plugin_dir#dist/ai-plugins/}"
-            if ! diff -qr "${plugin_dir}" "${previous_dir}/${plugin_name}" >/dev/null 2>&1; then
+            previous_plugin_dir="${previous_dir}/${plugin_name}"
+
+            if ! diff -qr "${plugin_dir}" "${previous_plugin_dir}" >/dev/null 2>&1; then
               node -e "
                 const fs = require('fs');
                 const path = require('path');
@@ -94,9 +109,19 @@ jobs:
                   console.error('Changed plugin content requires a higher version:', path.relative(process.cwd(), currentDir), previousVersion, '->', currentVersion);
                   process.exit(1);
                 }
-              " "${plugin_dir}" "${previous_dir}/${plugin_name}"
-              changed_plugins+=("${plugin_name}")
-              publish_required=1
+              " "${plugin_dir}" "${previous_plugin_dir}"
+
+              version="$(node -e "
+                const fs = require('fs');
+                const path = require('path');
+                const root = process.argv[1];
+                const claude = path.join(root, '.claude-plugin', 'plugin.json');
+                const codex = path.join(root, '.codex-plugin', 'plugin.json');
+                const manifest = fs.existsSync(claude) ? claude : codex;
+                process.stdout.write(JSON.parse(fs.readFileSync(manifest, 'utf8')).version);
+              " "${plugin_dir}")"
+              printf '%s\t%s\n' "${plugin_name}" "${version}" >> "${metadata_dir}/changed-plugins.tsv"
+              publish_required=true
             fi
           done < <(find dist/ai-plugins -type f \( -path '*/.claude-plugin/plugin.json' -o -path '*/.codex-plugin/plugin.json' \) | sort)
 
@@ -104,37 +129,85 @@ jobs:
             previous_plugin_dir="$(dirname "$(dirname "${previous_manifest_path}")")"
             previous_plugin_name="${previous_plugin_dir#${previous_dir}/}"
             if [ ! -d "dist/ai-plugins/${previous_plugin_name}" ]; then
-              publish_required=1
+              publish_required=true
             fi
           done < <(find "${previous_dir}" -type f \( -path '*/.claude-plugin/plugin.json' -o -path '*/.codex-plugin/plugin.json' \) | sort)
 
-          if [ "${publish_required}" -eq 0 ]; then
-            echo "No plugin content changes detected."
-            exit 0
+          printf '%s\n' "${GITHUB_SHA}" > "${metadata_dir}/source-sha"
+          printf '%s\n' "${publish_required}" > "${metadata_dir}/publish-required"
+          echo "publish_required=${publish_required}" >> "${GITHUB_OUTPUT}"
+
+      - name: Upload verified distribution output
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: verified-ai-plugins-dist
+          path: dist/ai-plugins
+          if-no-files-found: error
+
+      - name: Upload release metadata
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ai-plugins-release-metadata
+          path: release-metadata
+          if-no-files-found: error
+
+  publish:
+    needs: prepare
+    if: github.ref == 'refs/heads/master' && needs.prepare.result == 'success' && needs.prepare.outputs.publish_required == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download verified distribution output
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: verified-ai-plugins-dist
+          path: dist/ai-plugins
+
+      - name: Download release metadata
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ai-plugins-release-metadata
+          path: release-metadata
+
+      - name: Publish verified plugin directories to ai-plugins-dist
+        shell: bash
+        env:
+          DEFAULT_BRANCH: master
+          DIST_BRANCH: ai-plugins-dist
+        run: |
+          set -euo pipefail
+
+          source_sha="$(<release-metadata/source-sha)"
+          test "$(<release-metadata/publish-required)" = true
+          worktree_dir="$(mktemp -d)"
+          trap 'rm -rf "${worktree_dir}"' EXIT
+
+          # All repository-controlled commands completed in prepare. Configure
+          # the write-scoped token only for this final fetch/push/tag sequence.
+          git init "${worktree_dir}"
+          git -C "${worktree_dir}" config user.name "github-actions[bot]"
+          git -C "${worktree_dir}" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "${worktree_dir}" remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          if git -C "${worktree_dir}" fetch --no-tags origin "${DIST_BRANCH}:${DIST_BRANCH}"; then
+            git -C "${worktree_dir}" checkout "${DIST_BRANCH}"
+          else
+            git -C "${worktree_dir}" checkout --orphan "${DIST_BRANCH}"
+            git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           fi
 
-          rm -rf "${worktree_dir:?}/"*
+          find "${worktree_dir}" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           cp -R dist/ai-plugins/. "${worktree_dir}/"
+          printf '# AI Plug-ins Distribution\n\nGenerated plugin directories published from the `%s` branch source tree.\n' "${DEFAULT_BRANCH}" > "${worktree_dir}/README.md"
 
-          cat > "${worktree_dir}/README.md" <<EOF
-          # AI Plug-ins Distribution
+          git -C "${worktree_dir}" add README.md .
+          git -C "${worktree_dir}" commit -m "Publish AI plugins from ${source_sha}"
+          git -C "${worktree_dir}" push origin "HEAD:${DIST_BRANCH}"
 
-          Generated plugin directories published from the \`${default_branch}\` branch source tree.
-          EOF
-
-          pushd "${worktree_dir}" >/dev/null
-          git add README.md .
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Publish AI plugins from ${GITHUB_SHA}"
-          git push origin HEAD:${dist_branch}
-
-          for plugin_name in "${changed_plugins[@]}"; do
-            version="$(
-              node -e "const fs=require('fs'); const path=require('path'); const root=process.argv[1]; const claude=path.join(root,'.claude-plugin','plugin.json'); const codex=path.join(root,'.codex-plugin','plugin.json'); const manifest=fs.existsSync(claude)?claude:codex; process.stdout.write(JSON.parse(fs.readFileSync(manifest,'utf8')).version);" \
-              "${plugin_name}"
-            )"
-            git tag -a "ai-plugin/${plugin_name}/v${version}" -m "Release ${plugin_name} v${version}" HEAD
-            git push origin "ai-plugin/${plugin_name}/v${version}"
-          done
-          popd >/dev/null
+          while IFS=$'\t' read -r plugin_name version; do
+            [ -n "${plugin_name}" ] || continue
+            tag="ai-plugin/${plugin_name}/v${version}"
+            git -C "${worktree_dir}" tag -a "${tag}" -m "Release ${plugin_name} v${version}" HEAD
+            git -C "${worktree_dir}" push origin "${tag}"
+          done < release-metadata/changed-plugins.tsv
