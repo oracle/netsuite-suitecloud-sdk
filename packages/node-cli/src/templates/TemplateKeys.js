@@ -4,11 +4,13 @@
 */
 'use strict';
 
+const embeddedTemplates = require('./EmbeddedTemplates');
+
 module.exports = {
 	SCRIPTS: {
-		blankscript: require.resolve('./scripts/blankscript.js'),
+		blankscript: embeddedTemplates.blankscript,
 	},
 	OBJECTS: {
-		commerceextension: require.resolve('./objects/commerceextension.xml'),
+		commerceextension: embeddedTemplates.commerceextension,
 	},
 };

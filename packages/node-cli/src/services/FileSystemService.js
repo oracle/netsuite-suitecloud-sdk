@@ -65,9 +65,9 @@ module.exports = class FileSystemService {
 		assert(options.fileName);
 
 		return new Promise((resolve, reject) => {
-			readFile(options.template, CHAR_ENCODING_UTF8, (readingError, content) => {
+			const processTemplate = (readingError, content) => {
 				if (readingError) {
-					reject(readingError);
+					return reject(readingError);
 				}
 				if (Array.isArray(options.bindings)) {
 					content = this._processTemplateBindings(content, options.bindings);
@@ -85,7 +85,13 @@ module.exports = class FileSystemService {
 						resolve();
 					}
 				);
-			});
+			};
+
+			if (typeof options.template === 'string' && (options.template.includes('\n') || options.template.includes('\r'))) {
+				processTemplate(null, options.template);
+			} else {
+				readFile(options.template, CHAR_ENCODING_UTF8, processTemplate);
+			}
 		});
 	}
 

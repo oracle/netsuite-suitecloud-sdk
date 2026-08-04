@@ -4,14 +4,10 @@
  */
 'use strict';
 
-const path = require('path');
-const FileUtils = require('../utils/FileUtils');
-const {
-	SDK_COMMANDS_METADATA_FILE,
-	SDK_COMMANDS_METADATA_PATCH_FILE,
-	NODE_COMMANDS_METADATA_FILE,
-	COMMAND_GENERATORS_METADATA_FILE,
-} = require('../ApplicationConstants');
+const sdkCommandsMetadata = require('../metadata/SdkCommandsMetadata.json');
+const sdkCommandsMetadataPatch = require('../metadata/SdkCommandsMetadataPatch.json');
+const nodeCommandsMetadata = require('../metadata/NodeCommandsMetadata.json');
+const commandGeneratorsMetadata = require('../metadata/CommandGenerators.json');
 
 let commandsMetadataCache;
 
@@ -26,21 +22,15 @@ function executeForEachCommandMetadata(commandsMetadata, func) {
 
 module.exports = class CommandsMetadataService {
 	constructor() {
-		this._rootCLIPath = path.dirname(__dirname, '../');
 		this._initializeCommandsMetadata();
 	}
 
 	_initializeCommandsMetadata() {
 		if (!commandsMetadataCache) {
-			const sdkCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_FILE));
-			const SdkCommandsMetadataPatch = this._getMetadataFromFile(path.join(this._rootCLIPath, SDK_COMMANDS_METADATA_PATCH_FILE));
-			const nodeCommandsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, NODE_COMMANDS_METADATA_FILE));
-			const commandGeneratorsMetadata = this._getMetadataFromFile(path.join(this._rootCLIPath, COMMAND_GENERATORS_METADATA_FILE));
-
-			let combinedSdkCommandMetadata = this._combineMetadata(sdkCommandsMetadata, SdkCommandsMetadataPatch);
+			let combinedSdkCommandMetadata = this._combineMetadata(structuredClone(sdkCommandsMetadata), sdkCommandsMetadataPatch);
 			let combinedMetadata = {
 				...combinedSdkCommandMetadata,
-				...nodeCommandsMetadata,
+				...structuredClone(nodeCommandsMetadata),
 			};
 			combinedMetadata = this._addCommandGeneratorMetadata(commandGeneratorsMetadata, combinedMetadata);
 			commandsMetadataCache = combinedMetadata;
@@ -80,23 +70,12 @@ module.exports = class CommandsMetadataService {
 		return commandMetadata;
 	}
 
-	_getMetadataFromFile(filepath) {
-		if (!FileUtils.exists(filepath)) {
-			throw `Commands Metadata in filepath ${filepath} not found`;
-		}
-		try {
-			return FileUtils.readAsJson(filepath);
-		} catch (error) {
-			throw `Error parsing Commands Metadata from ${filepath}`;
-		}
-	}
-
 	_addCommandGeneratorMetadata(commandGeneratorsMetadata, commandsMetadata) {
 		executeForEachCommandMetadata(commandsMetadata, (commandMetadata) => {
 			const generatorMetadata = commandGeneratorsMetadata.find((generatorMetadata) => {
 				return generatorMetadata.commandName === commandMetadata.name;
 			});
-			commandMetadata.generator = path.join(this._rootCLIPath, generatorMetadata.generator);
+			commandMetadata.generator = generatorMetadata.commandName;
 			commandMetadata.supportsInteractiveMode = generatorMetadata.supportsInteractiveMode;
 		});
 		return commandsMetadata;

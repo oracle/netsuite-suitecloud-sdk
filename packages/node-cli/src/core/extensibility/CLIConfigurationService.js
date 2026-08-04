@@ -9,6 +9,7 @@ const FileUtils = require('../../utils/FileUtils');
 const CLIException = require('../../CLIException');
 const path = require('path');
 const fs = require('fs');
+const { createRequire } = require('node:module');
 const NodeTranslationService = require('./../../services/NodeTranslationService');
 const { ERRORS } = require('./../../services/TranslationKeys');
 const CommandUserExtension = require('./CommandUserExtension');
@@ -35,7 +36,9 @@ module.exports = class CLIConfigurationService {
 		}
 
 		try {
-			this._cliConfig = require(cliConfigFile);
+			// Use Node's native module loader so external project configuration remains
+			// loadable when the CLI itself is distributed as a webpack bundle.
+			this._cliConfig = createRequire(__filename)(cliConfigFile);
 		} catch (error) {
 			throw NodeTranslationService.getMessage(ERRORS.CLI_CONFIG_ERROR_LOADING_CONFIGURATION_MODULE, cliConfigFile, lineBreak, error);
 		}

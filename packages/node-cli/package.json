@@ -43,11 +43,14 @@
 	"devDependencies": {
 		"copy-webpack-plugin": "^13.0.1",
 		"jest": "29.7.0",
+		"postject": "^1.0.0-alpha.6",
 		"webpack": "^5.109.2",
 		"webpack-cli": "^6.0.1"
 	},
 	"scripts": {
 		"build": "webpack --config webpack.config.js",
+		"build:single": "webpack --config webpack.single.config.js",
+		"build:exe": "npm run build:single && node scripts/build-sea.js",
 		"test": "jest",
 		"postinstall": "node postinstall.js"
 	}

@@ -4,7 +4,6 @@
  */
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
 const program = require('commander');
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
@@ -18,11 +17,9 @@ const unwrapExceptionMessage = require('./utils/ExceptionUtils').unwrapException
 const INTERACTIVE_ALIAS = '-i';
 const INTERACTIVE_OPTION = '--interactive';
 
-// suitecloud executable is in {root}/src/suitecloud.js. package.json file is one level before
-const PACKAGE_FILE = `${path.dirname(require.main.filename)}/../package.json`;
-const configFile = require(PACKAGE_FILE);
+const configFile = require('../package.json');
 const CLI_VERSION = configFile ? configFile.version : 'unknown';
-const { nsCompatibleVersion } = require(PACKAGE_FILE);
+const { nsCompatibleVersion } = configFile;
 const COMMAND_ALIAS = '[command]';
 const HELP_COMMAND = 'help';
 const HELP_OPTION = '--help';

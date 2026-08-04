@@ -6,6 +6,7 @@
 	"scripts": {
 		"build:sdk-core": "npm run build --workspace @oracle/suitecloud-sdk-core",
 		"build": "npm run build:sdk-core",
+		"build:exe": "npm run build && npm run build:exe --workspace @oracle/suitecloud-cli",
 		"pack:cli": "node scripts/pack-cli.js"
 	},
 	"workspaces": [

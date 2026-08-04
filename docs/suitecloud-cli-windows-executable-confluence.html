@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SuiteCloud CLI Windows Executable (Node.js SEA)</title>
+	<style>
+		body { max-width: 1100px; margin: 40px auto; padding: 0 24px; color: #172b4d; font: 15px/1.55 Arial, sans-serif; }
+		h1, h2, h3 { color: #172b4d; }
+		h1 { border-bottom: 1px solid #dfe1e6; padding-bottom: 12px; }
+		h2 { margin-top: 36px; border-bottom: 1px solid #ebecf0; padding-bottom: 6px; }
+		code { background: #f4f5f7; border-radius: 3px; padding: 2px 4px; font-family: Consolas, monospace; }
+		pre { overflow-x: auto; background: #f4f5f7; border: 1px solid #dfe1e6; border-radius: 4px; padding: 14px; }
+		pre code { padding: 0; }
+		table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+		th, td { border: 1px solid #dfe1e6; padding: 9px; text-align: left; vertical-align: top; }
+		th { background: #f4f5f7; }
+		.info, .warning, .success { border-left: 5px solid; border-radius: 3px; margin: 18px 0; padding: 12px 16px; }
+		.info { background: #deebff; border-color: #0052cc; }
+		.warning { background: #fffae6; border-color: #ff991f; }
+		.success { background: #e3fcef; border-color: #00875a; }
+		.flow { text-align: center; font-family: Consolas, monospace; font-size: 16px; line-height: 1.8; }
+	</style>
+</head>
+<body>
+	<h1>SuiteCloud CLI Windows Executable (Node.js SEA)</h1>
+
+	<table>
+		<tbody>
+			<tr><th>Status</th><td>Implemented and smoke-tested</td></tr>
+			<tr><th>Comparison base</th><td><code>feature-ts-migration-devbase</code></td></tr>
+			<tr><th>Implementation branch</th><td><code>tscorewebpack1</code></td></tr>
+			<tr><th>Target platform</th><td>Windows x64</td></tr>
+			<tr><th>Runtime</th><td>Node.js 22 LTS embedded with Node.js Single Executable Applications (SEA)</td></tr>
+			<tr><th>Output</th><td><code>packages/node-cli/dist/suitecloud.exe</code></td></tr>
+	</table>
+
+	<h2>Overview</h2>
+	<p>
+		This change packages SuiteCloud CLI for Node.js as a Windows executable. Users can run
+		<code>suitecloud.exe</code> directly without installing Node.js. The implementation first uses webpack to combine
+		the CLI, SDK core, npm dependencies, command implementations, metadata, messages, and templates into one
+		JavaScript file. It then embeds that bundle in a copy of the Node.js runtime using the Node.js SEA mechanism.
+	</p>
+
+	<div class="flow">
+		SuiteCloud source + SDK core + dependencies<br>
+		↓ webpack<br>
+		packages/node-cli/dist/suitecloud.js<br>
+		↓ Node.js SEA blob + postject injection<br>
+		packages/node-cli/dist/suitecloud.exe
+	</div>
+
+	<div class="info">
+		<strong>Why source changes were necessary:</strong> the CLI on <code>feature-ts-migration-devbase</code> assumes
+		that commands, JSON metadata, messages, templates, and package metadata are separate files in an installed npm
+		package. Those files do not exist as normal filesystem entries inside a single executable, so CLI-owned resources
+		had to become statically discoverable and embeddable.
+	</div>
+
+	<h2>Build and run</h2>
+	<h3>Prerequisites for building</h3>
+	<ul>
+		<li>Windows</li>
+		<li>Node.js 22 LTS</li>
+		<li>Repository dependencies installed with npm</li>
+	</ul>
+
+	<h3>Build command</h3>
+	<pre><code>npm ci
+npm run build:exe</code></pre>
+
+	<p>The result is:</p>
+	<pre><code>packages/node-cli/dist/suitecloud.exe</code></pre>
+
+	<h3>Example usage</h3>
+	<pre><code>cd /d C:\work\NSNNetsuiteProjects\quarks
+C:\projects\netsuite\netsuite-suitecloud-sdk\packages\node-cli\dist\suitecloud.exe project:deploy --log C:\tmp\fichero5.txt</code></pre>
+
+	<h2>Changes compared with <code>feature-ts-migration-devbase</code></h2>
+
+	<h3>1. Single-file webpack bundle</h3>
+	<p><strong>File:</strong> <code>packages/node-cli/webpack.single.config.js</code></p>
+	<p>This configuration creates the JavaScript input consumed by Node SEA.</p>
+	<ul>
+		<li><code>target: 'node22'</code> targets the same Node generation embedded in the executable.</li>
+		<li><code>splitChunks: false</code> and <code>runtimeChunk: false</code> prevent additional output chunks.</li>
+		<li><code>LimitChunkCountPlugin({ maxChunks: 1 })</code> enforces one JavaScript file.</li>
+		<li>Node built-ins remain native because the embedded Node runtime provides them.</li>
+		<li>Asset rules import XML, template, and queried source files as JavaScript strings.</li>
+	</ul>
+	<pre><code>target: 'node22',
+output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'suitecloud.js',
+    clean: true,
+},
+optimization: {
+    minimize: false,
+    splitChunks: false,
+    runtimeChunk: false,
+}</code></pre>
+
+	<p><strong>File:</strong> <code>packages/node-cli/webpack.config.js</code></p>
+	<p>
+		A separate webpack configuration supports a conventional multi-file distribution by keeping CommonJS imports
+		external and copying resources into <code>dist</code>. It is useful for normal distribution testing, but
+		<code>build:exe</code> specifically uses <code>webpack.single.config.js</code>.
+	</p>
+
+	<h3>2. Static command generator registry</h3>
+	<p><strong>Files:</strong></p>
+	<ul>
+		<li><code>packages/node-cli/src/core/CommandGeneratorRegistry.js</code></li>
+		<li><code>packages/node-cli/src/core/CommandActionExecutor.js</code></li>
+		<li><code>packages/node-cli/src/core/CommandsMetadataService.js</code></li>
+	</ul>
+
+	<p>The previous implementation loaded a generator from a path determined at runtime:</p>
+	<pre><code>const commandGenerator = require(commandMetadata.generator);</code></pre>
+	<p>
+		Webpack cannot reliably include modules referenced only by a dynamic runtime path. The new registry statically
+		requires every command generator, making all command implementations visible during compilation:
+	</p>
+	<pre><code>module.exports = {
+    'account:manageauth': require('../commands/account/manageauth/ManageAccountCommand'),
+    'project:deploy': require('../commands/project/deploy/DeployCommand'),
+    'proxy:start': require('../commands/proxy/start/ProxyStartCommand'),
+    // Other commands omitted here
+};</code></pre>
+	<p><code>CommandActionExecutor</code> now resolves a command through that registry:</p>
+	<pre><code>const commandGenerator = commandGeneratorRegistry[commandMetadata.generator];</code></pre>
+	<p>
+		<code>CommandsMetadataService</code> also imports command metadata JSON statically and stores the command name as the
+		registry key instead of constructing a source-tree path. <code>structuredClone()</code> prevents metadata merging from
+		mutating cached JSON module exports.
+	</p>
+
+	<h3>3. Embedded JSON resources and package metadata</h3>
+	<p><strong>Files:</strong></p>
+	<ul>
+		<li><code>packages/node-cli/src/services/NodeTranslationService.js</code></li>
+		<li><code>packages/node-cli/src/CLI.js</code></li>
+		<li><code>packages/node-cli/src/core/CommandsMetadataService.js</code></li>
+	</ul>
+	<p>
+		Translation messages, command metadata, and <code>package.json</code> were previously located and read from disk.
+		They are now imported with static <code>require()</code> calls, allowing webpack to embed them. This preserves CLI
+		version output, compatible NetSuite version data, command definitions, help text, and translated messages.
+	</p>
+	<pre><code>const messages = require('../../messages.json');
+const configFile = require('../package.json');
+const sdkCommandsMetadata = require('../metadata/SdkCommandsMetadata.json');</code></pre>
+
+	<h3>4. Embedded templates</h3>
+	<p><strong>Files:</strong></p>
+	<ul>
+		<li><code>packages/node-cli/src/templates/EmbeddedTemplates.js</code></li>
+		<li><code>packages/node-cli/src/templates/TemplateKeys.js</code></li>
+		<li><code>packages/node-cli/src/services/FileSystemService.js</code></li>
+	</ul>
+	<p>
+		The original implementation used <code>require.resolve()</code> to return paths to template files, which were then
+		read from disk. The executable has no standalone template directory. Templates are now imported as source text:
+	</p>
+	<pre><code>module.exports = {
+    blankscript: require('./scripts/blankscript.js?source'),
+    commerceextension: require('./objects/commerceextension.xml'),
+};</code></pre>
+	<p>
+		<code>FileSystemService.createFileFromTemplate()</code> accepts both embedded multiline content and a traditional
+		filesystem path. This maintains compatibility with existing callers while allowing file, object, and project
+		creation from the executable.
+	</p>
+
+	<h3>5. Native loading of external <code>suitecloud.config.js</code></h3>
+	<p><strong>File:</strong> <code>packages/node-cli/src/core/extensibility/CLIConfigurationService.js</code></p>
+	<p>
+		The project configuration is different from CLI-owned resources: it belongs to the user and must be loaded from
+		the current project at runtime. The original dynamic call was transformed by webpack into a bundle-internal
+		module lookup:
+	</p>
+	<pre><code>this._cliConfig = require(cliConfigFile);</code></pre>
+	<p>This caused the executable to report:</p>
+	<pre><code>Cannot find module 'C:\work\NSNNetsuiteProjects\quarks\suitecloud.config.js'</code></pre>
+	<p>The implementation now explicitly invokes Node's native CommonJS loader:</p>
+	<pre><code>const { createRequire } = require('node:module');
+
+this._cliConfig = createRequire(__filename)(cliConfigFile);</code></pre>
+	<p>
+		This bypasses webpack's module context, loads the absolute external path, and permits relative CommonJS imports
+		inside the user's configuration file.
+	</p>
+
+	<h3>6. Node SEA executable packaging</h3>
+	<p><strong>File:</strong> <code>packages/node-cli/scripts/build-sea.js</code></p>
+	<p>The SEA builder follows these steps:</p>
+	<ol>
+		<li>Create a temporary SEA configuration whose main script is <code>dist/suitecloud.js</code>.</li>
+		<li>Run the current Node executable with <code>--experimental-sea-config</code> to generate a preparation blob.</li>
+		<li>Copy <code>process.execPath</code> to <code>dist/suitecloud.exe</code>.</li>
+		<li>Use <code>postject</code> to inject the blob as <code>NODE_SEA_BLOB</code>.</li>
+		<li>Set the Node SEA sentinel fuse during injection.</li>
+		<li>Delete the temporary SEA configuration and blob.</li>
+	</ol>
+	<pre><code>runNode(['--experimental-sea-config', seaConfigPath]);
+copyFileSync(process.execPath, executablePath);
+await inject(executablePath, 'NODE_SEA_BLOB', readFileSync(seaBlobPath), {
+    sentinelFuse: 'NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2',
+});</code></pre>
+	<p>
+		Using <code>process.execPath</code> for both blob generation and the copied runtime ensures their Node versions match.
+		Snapshots and code cache are disabled to keep the build straightforward and avoid cache compatibility issues.
+	</p>
+
+	<h3>7. Build dependencies and scripts</h3>
+	<p><strong>Files:</strong></p>
+	<ul>
+		<li><code>package.json</code></li>
+		<li><code>packages/node-cli/package.json</code></li>
+		<li><code>package-lock.json</code></li>
+	</ul>
+	<table>
+		<thead><tr><th>Dependency</th><th>Purpose</th></tr></thead>
+		<tbody>
+			<tr><td><code>webpack</code></td><td>Bundles CLI code, SDK core, npm dependencies, metadata, and assets.</td></tr>
+			<tr><td><code>webpack-cli</code></td><td>Runs webpack through npm scripts.</td></tr>
+			<tr><td><code>postject</code></td><td>Injects the SEA preparation blob into the Windows PE executable.</td></tr>
+			<tr><td><code>copy-webpack-plugin</code></td><td>Copies files for the conventional multi-file webpack distribution; not used by the SEA configuration itself.</td></tr>
+		</tbody>
+	</table>
+	<p>CLI workspace scripts:</p>
+	<pre><code>"build": "webpack --config webpack.config.js",
+"build:single": "webpack --config webpack.single.config.js",
+"build:exe": "npm run build:single &amp;&amp; node scripts/build-sea.js"</code></pre>
+	<p>Root orchestration script:</p>
+	<pre><code>"build:exe": "npm run build &amp;&amp; npm run build:exe --workspace @oracle/suitecloud-cli"</code></pre>
+	<p>
+		The order is important: SDK core TypeScript is compiled first, then the CLI and compiled SDK core are bundled,
+		and finally the bundle is injected into the executable.
+	</p>
+
+	<h3>8. Supporting development changes</h3>
+	<ul>
+		<li><code>jest.config.js</code> ignores <code>dist</code> to prevent generated output from being discovered as duplicate modules or tests.</li>
+		<li><code>packages/node-cli/README.md</code> documents executable creation, usage, Java requirements, and code signing.</li>
+		<li><code>package-lock.json</code> contains the reproducible dependency graph for webpack, postject, and their transitive dependencies.</li>
+	</ul>
+
+	<h2>Runtime architecture</h2>
+	<table>
+		<thead><tr><th>Embedded in <code>suitecloud.exe</code></th><th>Remains external at runtime</th></tr></thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul>
+						<li>Node.js 22 runtime</li>
+						<li>SuiteCloud CLI code</li>
+						<li>Compiled SuiteCloud SDK core</li>
+						<li>npm runtime dependencies</li>
+						<li>Command generators</li>
+						<li>Command metadata and messages</li>
+						<li>File and object templates</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>User SuiteCloud project</li>
+						<li><code>suitecloud.config.js</code></li>
+						<li>User authentication/configuration files</li>
+						<li>Oracle JDK 17 or 21</li>
+						<li>SuiteCloud SDK JAR</li>
+						<li>NetSuite and network services</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2>Required versus optional changes</h2>
+	<table>
+		<thead><tr><th>Strictly required for the executable</th><th>Supporting or optional</th></tr></thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul>
+						<li>Single-file webpack configuration</li>
+						<li>SEA builder and <code>postject</code></li>
+						<li>Static command registry</li>
+						<li>Static metadata, message, and package imports</li>
+						<li>Embedded templates</li>
+						<li>Native external configuration loading</li>
+						<li>SDK core build before CLI bundling</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>Conventional multi-file <code>webpack.config.js</code></li>
+						<li><code>copy-webpack-plugin</code>, used by the multi-file build</li>
+						<li>Jest exclusion for generated output</li>
+						<li>README documentation</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2>Verification results</h2>
+	<div class="success">
+		<strong>Verified successfully:</strong>
+		<ul>
+			<li>Built with Node.js <code>v22.22.3</code>.</li>
+			<li>Generated executable size: <code>89,252,864 bytes</code> (approximately 89.3 MB).</li>
+			<li><code>suitecloud.exe --version</code> returned <code>4.0.0</code>.</li>
+			<li><code>project:deploy --help</code> ran successfully from the external <code>quarks</code> project.</li>
+			<li>The external project's <code>suitecloud.config.js</code> loaded successfully.</li>
+		</ul>
+	</div>
+
+	<h2>Distribution considerations</h2>
+	<div class="warning">
+		<strong>Code signing:</strong> SEA injection modifies the copied Node executable and invalidates the digital
+		signature inherited from <code>node.exe</code>. The build may display
+		<code>warning: The signature seems corrupted!</code>. This is expected. Code-sign the final
+		<code>suitecloud.exe</code> after injection and before distribution.
+	</div>
+	<ul>
+		<li>The executable is platform-specific. The current builder intentionally creates a Windows <code>.exe</code>.</li>
+		<li>End users do not need Node.js installed.</li>
+		<li>Java-backed SuiteCloud commands still require Oracle JDK 17 or 21 and the SuiteCloud SDK JAR.</li>
+		<li>The executable should be rebuilt with the supported Node 22 LTS release used for distribution.</li>
+		<li>Normal release validation, security scanning, license review, and signing processes still apply.</li>
+	</ul>
+
+	<h2>Conclusion</h2>
+	<p>
+		Compared with <code>feature-ts-migration-devbase</code>, this implementation changes the CLI from an npm-package
+		runtime that depends on a source/resources directory into a bundle-safe runtime. CLI-owned modules and assets are
+		statically embedded, while user-owned project configuration remains dynamically loadable through Node's native
+		module loader. The resulting <code>suitecloud.exe</code> embeds Node.js and has been verified against an external
+		SuiteCloud project.
+	</p>
+</body>
+</html>

@@ -50,6 +50,34 @@ CLI for Node.js uses the following syntax:
 suitecloud <command> <option> <argument>
 ```
 
+### Building a Windows executable
+
+From the repository root, use Node.js 22 on Windows and run:
+
+```cmd
+npm ci
+npm run build:exe
+```
+
+This builds the SDK core, creates the single-file webpack bundle, and packages it as a
+[Node.js single executable application](https://nodejs.org/api/single-executable-applications.html):
+
+```text
+packages/node-cli/dist/suitecloud.exe
+```
+
+The executable embeds Node.js, so users do not need a separate Node.js installation. Oracle JDK 17 or 21
+and the downloaded SuiteCloud SDK JAR are still required for commands that invoke the Java SDK.
+
+Run the executable from a SuiteCloud project folder, for example:
+
+```cmd
+suitecloud.exe project:deploy --log C:\tmp\suitecloud-deploy.log
+```
+
+Injecting the SEA blob modifies the copied Node executable and invalidates its original digital signature.
+Code-sign `suitecloud.exe` after building it before distributing it to other users.
+
 ### Commands
 | Command | Description |
 | --- | --- |

@@ -4,18 +4,13 @@
  */
 'use strict';
 
-const path = require('path');
 const TranslationService = require('./TranslationService');
-const { DEFAULT_MESSAGES_FILE } = require('../ApplicationConstants');
-const FileUtils = require('../utils/FileUtils');
+const messages = require('../../messages.json');
 
 class NodeTranslationService extends TranslationService {
 	constructor() {
 		super();
-		const filePath = path.join(__dirname, DEFAULT_MESSAGES_FILE);
-		// TODO refactor: use node require instead of FileUtils.readAsJson the initialize this._MESSAGES.
-		// Once the refactor is done FileUtils will be able to use NodeTranslationService again without a circular dependency.
-		this._MESSAGES = FileUtils.readAsJson(filePath);
+		this._MESSAGES = messages;
 	}
 }
 

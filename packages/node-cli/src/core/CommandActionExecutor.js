@@ -17,6 +17,7 @@ const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
 const { checkIfReauthorizationIsNeeded, getAuthInfo, refreshAuthorization } = require('../utils/AuthenticationUtils');
 const { AUTHORIZATION_PROPERTIES_KEYS } = require('../ApplicationConstants');
 const { runWithSuiteCloudRequestTelemetry } = require('@oracle/suitecloud-sdk-core').http;
+const commandGeneratorRegistry = require('./CommandGeneratorRegistry');
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -187,10 +188,9 @@ module.exports = class CommandActionExecutor {
 	}
 
 	_getCommand(runInInteractiveMode, projectFolder, commandMetadata) {
-		const commandPath = commandMetadata.generator;
-		const commandGenerator = require(commandPath);
+		const commandGenerator = commandGeneratorRegistry[commandMetadata.generator];
 		if (!commandGenerator) {
-			throw `Path ${commandPath} doesn't contain any command`;
+			throw `No command generator found for ${commandMetadata.name}`;
 		}
 		return commandGenerator.create({
 			commandMetadata: commandMetadata,
