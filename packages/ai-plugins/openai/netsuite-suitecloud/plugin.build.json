@@ -5,7 +5,7 @@
 	"platform": "openai",
 	"metadata": {
 		"name": "netsuite-suitecloud",
-		"description": "This plug-in includes skills that support key areas of SuiteCloud development, such as SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, and maintainable code and project artifacts.",
+		"description": "Develop NetSuite SuiteCloud solutions with SuiteScript, SDF, and best practices.",
 		"author": {
 			"name": "Oracle NetSuite",
 			"url": "https://www.netsuite.com"
