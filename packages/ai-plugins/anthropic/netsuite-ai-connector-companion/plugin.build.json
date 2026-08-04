@@ -5,7 +5,7 @@
 	"platform": "anthropic",
 	"metadata": {
 		"name": "netsuite-ai-connector-companion",
-		"description": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service.",
+		"description": "This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multiple-subsidiary and currency handling, and SuiteQL safety guardrails.",
 		"authorName": "Oracle NetSuite",
 		"authorUrl": "https://www.netsuite.com",
 		"license": "The Universal Permissive License (UPL), Version 1.0",
@@ -20,8 +20,8 @@
 		"capabilities": [
 			"Read"
 		],
-		"shortDescription": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service.",
-		"longDescription": "Use NetSuite AI Connector instructions with the NetSuite AI Connector Service."
+		"shortDescription": "Guide AI assistants using NetSuite AI Connector.",
+		"longDescription": "This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multiple-subsidiary and currency handling, and SuiteQL safety guardrails."
 	},
 	"skills": [
 		"netsuite-ai-connector-instructions"
