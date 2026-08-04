@@ -29,6 +29,10 @@ function getSkillDirectories(files) {
 	return [...new Set(files.filter((file) => file.startsWith('skills/')).map((file) => file.split('/').slice(0, 2).join('/')))].sort();
 }
 
+function getOpenAIInterfaceAssetPaths(plugin) {
+	return ['logo', 'composerIcon'].map((field) => plugin.metadata.interface[field].replace(/^\.\//, ''));
+}
+
 test('workspace config recursively discovers six provider-qualified plugins with expected platforms and skills', async () => {
 	const workspace = await loadWorkspace(packageRoot);
 
@@ -77,7 +81,9 @@ test('provider-qualified plugins build without collisions and ambiguous bare IDs
 	assert.equal(manifest.name, 'netsuite-ai-connector-companion');
 	assert.deepEqual(manifest.interface, result.plugin.metadata.interface);
 	assert.equal(manifest.interface.brandColor, '#294B5F');
-	assert(files.includes('assets/infinity-icon.png'));
+	for (const assetPath of getOpenAIInterfaceAssetPaths(result.plugin)) {
+		assert(files.includes(assetPath));
+	}
 
 	await assert.rejects(
 		() => buildPlugin('netsuite-ai-connector-companion', { workspace, writeOutput: false }),
@@ -155,9 +161,12 @@ test('all provider-qualified plugins stage nested artifacts with provider-specif
 		if (plugin.platform === 'openai') {
 			assert.deepEqual(manifest.interface, plugin.metadata.interface);
 			assert.equal(manifest.interface.brandColor, '#294B5F');
-			assert(files.includes('assets/infinity-icon.png'));
+			for (const assetPath of getOpenAIInterfaceAssetPaths(plugin)) {
+				assert(files.includes(assetPath));
+			}
 		} else {
-			assert(!files.includes('assets/infinity-icon.png'));
+			assert(!files.includes('assets/netsuite-logo.png'));
+			assert(!files.includes('assets/netsuite-icon.png'));
 		}
 	}
 });
@@ -211,7 +220,7 @@ test('loadWorkspace rejects an openai plugin without a complete interface', asyn
 	await assert.rejects(() => loadWorkspace(packageDir), /metadata\.interface must be an object for openai plugins/i);
 });
 
-test('loadWorkspace validates OpenAI interface field types and accepts Anthropic nested interfaces', async () => {
+test('loadWorkspace validates required OpenAI interface fields, accepts optional capabilities, and accepts Anthropic nested interfaces', async () => {
 	const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-workspace-'));
 	const packageDir = path.join(tempRoot, 'plugins');
 	await fs.mkdir(path.join(packageDir, 'config'), { recursive: true });
@@ -238,11 +247,12 @@ test('loadWorkspace validates OpenAI interface field types and accepts Anthropic
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, metadata: { ...metadata, interface: interfaceWithoutDisplayName } });
 	await assert.rejects(() => loadWorkspace(packageDir), /metadata\.interface\.displayName must be a non-empty string/i);
 
-	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, metadata: { ...metadata, interface: { ...pluginInterface, capabilities: 'Read' } } });
-	await assert.rejects(() => loadWorkspace(packageDir), /metadata\.interface\.capabilities must be a non-empty string array/i);
-
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, metadata: { ...metadata, interface: { ...pluginInterface, websiteURL: 'not-a-url' } } });
 	await assert.rejects(() => loadWorkspace(packageDir), /metadata\.interface\.websiteURL must be an http\(s\) URL/i);
+
+	const { capabilities, ...interfaceWithoutCapabilities } = pluginInterface;
+	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, metadata: { ...metadata, interface: interfaceWithoutCapabilities } });
+	await assert.doesNotReject(() => loadWorkspace(packageDir));
 
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, platform: 'anthropic' });
 	await assert.doesNotReject(() => loadWorkspace(packageDir));
