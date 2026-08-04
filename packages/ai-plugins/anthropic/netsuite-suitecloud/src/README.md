@@ -2,7 +2,7 @@
 
 # NetSuite SuiteCloud
 
-This plug-in is compatible with Claude and includes eight areas of expert NetSuite SuiteCloud development guidance: SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, maintainable code and project artifacts.
+This plug-in is compatible with Claude. It includes skills that support key areas of SuiteCloud development, such as SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, and maintainable code and project artifacts.
 
 ## Supported Tasks
 
