@@ -29,19 +29,15 @@
 		},
 		"metadata": {
 			"type": "object",
-			"additionalProperties": false,
+			"additionalProperties": true,
 			"required": [
 				"name",
 				"description",
-				"authorName",
+				"author",
 				"license",
 				"keywords"
 			],
 			"properties": {
-				"displayName": {
-					"type": "string",
-					"minLength": 1
-				},
 				"name": {
 					"type": "string",
 					"minLength": 1
@@ -50,13 +46,22 @@
 					"type": "string",
 					"minLength": 1
 				},
-				"authorName": {
-					"type": "string",
-					"minLength": 1
-				},
-				"authorUrl": {
-					"type": "string",
-					"format": "uri"
+				"author": {
+					"type": "object",
+					"additionalProperties": true,
+					"required": [
+						"name"
+					],
+					"properties": {
+						"name": {
+							"type": "string",
+							"minLength": 1
+						},
+						"url": {
+							"type": "string",
+							"format": "uri"
+						}
+					}
 				},
 				"license": {
 					"type": "string",
@@ -75,33 +80,6 @@
 					"format": "uri"
 				},
 				"repository": {
-					"type": "string",
-					"format": "uri"
-				},
-				"category": {
-					"type": "string"
-				},
-				"capabilities": {
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
-				},
-				"shortDescription": {
-					"type": "string"
-				},
-				"longDescription": {
-					"type": "string"
-				},
-				"logo": {
-					"type": "string",
-					"minLength": 1
-				},
-				"composerIcon": {
-					"type": "string",
-					"minLength": 1
-				},
-				"privacyPolicyUrl": {
 					"type": "string",
 					"format": "uri"
 				}
@@ -177,8 +155,68 @@
 				"properties": {
 					"metadata": {
 						"required": [
-							"displayName"
-						]
+							"interface"
+						],
+						"properties": {
+							"interface": {
+								"type": "object",
+								"additionalProperties": true,
+								"required": [
+									"displayName",
+									"shortDescription",
+									"longDescription",
+									"developerName",
+									"category",
+									"websiteURL",
+									"privacyPolicyURL",
+									"logo",
+									"composerIcon",
+									"brandColor"
+								],
+								"properties": {
+									"displayName": {
+										"type": "string",
+										"minLength": 1
+									},
+									"shortDescription": {
+										"type": "string",
+										"minLength": 1
+									},
+									"longDescription": {
+										"type": "string",
+										"minLength": 1
+									},
+									"developerName": {
+										"type": "string",
+										"minLength": 1
+									},
+									"category": {
+										"type": "string",
+										"minLength": 1
+									},
+									"websiteURL": {
+										"type": "string",
+										"format": "uri"
+									},
+									"privacyPolicyURL": {
+										"type": "string",
+										"format": "uri"
+									},
+									"logo": {
+										"type": "string",
+										"minLength": 1
+									},
+									"composerIcon": {
+										"type": "string",
+										"minLength": 1
+									},
+									"brandColor": {
+										"type": "string",
+										"minLength": 1
+									}
+								}
+							}
+						}
 					}
 				}
 			}

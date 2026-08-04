@@ -109,29 +109,44 @@ function validatePluginConfigShape(pluginConfig, pluginDirectoryName) {
 	}
 
 	const metadata = pluginConfig.metadata;
-	for (const field of ['name', 'description', 'authorName', 'license']) {
+	for (const field of ['name', 'description', 'license']) {
 		if (typeof metadata[field] !== 'string' || metadata[field].length === 0) {
 			throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.${field} must be a non-empty string`);
 		}
 	}
-
-	if (pluginConfig.platform === 'openai' && (typeof metadata.displayName !== 'string' || metadata.displayName.length === 0)) {
-		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.displayName must be a non-empty string for openai plugins`);
+	if (!isPlainObject(metadata.author) || typeof metadata.author.name !== 'string' || metadata.author.name.length === 0) {
+		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.author.name must be a non-empty string`);
 	}
-
-	for (const field of ['logo', 'composerIcon']) {
-		if (metadata[field] !== undefined && (typeof metadata[field] !== 'string' || metadata[field].length === 0)) {
-			throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.${field} must be a non-empty string`);
-		}
+	if (metadata.author.url !== undefined && !isValidHttpUrl(metadata.author.url)) {
+		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.author.url must be an http(s) URL`);
 	}
 
 	if (!Array.isArray(metadata.keywords) || metadata.keywords.length === 0 || metadata.keywords.some((value) => typeof value !== 'string')) {
 		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.keywords must be a non-empty string array`);
 	}
 
-	for (const field of ['authorUrl', 'homepage', 'repository', 'privacyPolicyUrl']) {
+	for (const field of ['homepage', 'repository']) {
 		if (metadata[field] !== undefined && !isValidHttpUrl(metadata[field])) {
 			throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.${field} must be an http(s) URL`);
+		}
+	}
+
+	if (pluginConfig.platform === 'openai') {
+		if (!isPlainObject(metadata.interface)) {
+			throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.interface must be an object for openai plugins`);
+		}
+
+		const pluginInterface = metadata.interface;
+		for (const field of ['displayName', 'shortDescription', 'longDescription', 'developerName', 'category', 'websiteURL', 'privacyPolicyURL', 'logo', 'composerIcon', 'brandColor']) {
+			if (typeof pluginInterface[field] !== 'string' || pluginInterface[field].length === 0) {
+				throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.interface.${field} must be a non-empty string for openai plugins`);
+			}
+		}
+
+		for (const field of ['websiteURL', 'privacyPolicyURL']) {
+			if (!isValidHttpUrl(pluginInterface[field])) {
+				throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.interface.${field} must be an http(s) URL for openai plugins`);
+			}
 		}
 	}
 
