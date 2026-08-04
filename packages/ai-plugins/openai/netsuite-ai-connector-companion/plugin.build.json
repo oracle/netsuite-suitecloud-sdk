@@ -23,11 +23,11 @@
 			"shortDescription": "Guide AI assistants using NetSuite AI Connector.",
 			"longDescription": "This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multiple-subsidiary and currency handling, and SuiteQL safety guardrails.",
 			"developerName": "Oracle NetSuite",
-			"category": "Productivity",
+			"category": "Business & Operations",
 			"websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-connector-companion",
 			"privacyPolicyURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-connector-companion",
-			"logo": "./assets/infinity-icon.png",
-			"composerIcon": "./assets/infinity-icon.png",
+			"logo": "./assets/netsuite-logo.png",
+			"composerIcon": "./assets/netsuite-icon.png",
 			"brandColor": "#294B5F"
 		}
 	},

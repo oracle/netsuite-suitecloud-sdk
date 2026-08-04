@@ -15,7 +15,8 @@
 			"netsuite",
 			"suitecloud",
 			"suitescript",
-			"sdf"
+			"sdf",
+			"uif"
 		],
 		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suitecloud",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
@@ -27,8 +28,8 @@
 			"category": "Developer Tools",
 			"websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suitecloud",
 			"privacyPolicyURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suitecloud",
-			"logo": "./assets/infinity-icon.png",
-			"composerIcon": "./assets/infinity-icon.png",
+			"logo": "./assets/netsuite-logo.png",
+			"composerIcon": "./assets/netsuite-icon.png",
 			"brandColor": "#294B5F"
 		}
 	},

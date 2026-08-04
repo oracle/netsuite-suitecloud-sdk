@@ -23,11 +23,11 @@
 			"shortDescription": "Deliver Director-level finance analysis on live NetSuite data.",
 			"longDescription": "This plug-in provides Director-level finance analysis on live NetSuite data, including financial reporting, period-close activities, variance, aging, and reconciliation reviews, cash reporting, and board-ready financial narratives with clear next actions.",
 			"developerName": "Oracle NetSuite",
-			"category": "Productivity",
+			"category": "Business & Operations",
 			"websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-finance-analyst",
 			"privacyPolicyURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-finance-analyst",
-			"logo": "./assets/infinity-icon.png",
-			"composerIcon": "./assets/infinity-icon.png",
+			"logo": "./assets/netsuite-logo.png",
+			"composerIcon": "./assets/netsuite-icon.png",
 			"brandColor": "#294B5F"
 		}
 	},
