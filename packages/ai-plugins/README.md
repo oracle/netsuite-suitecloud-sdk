@@ -2,7 +2,7 @@
 
 This workspace builds source-managed plug-in directories for distribution through OpenAI and Anthropic from `plugin.build.json` files. Each plug-in declares its resources in its own `plugin.build.json`.
 
-`metadata` is copied directly to the generated manifest root for both providers. The build then injects the build-owned `version` and `skills` fields. For OpenAI plugins, UI-manifest fields belong at `metadata.interface`; this object is preserved exactly, including future JSON-compatible interface properties. Anthropic metadata, including nested properties such as `interface`, is also passed through unchanged.
+`metadata` is copied directly to the generated manifest root for both providers. The build then injects the build-owned `version` and `skills` fields. For OpenAI plug-ins, UI-manifest fields belong to `metadata.interface`; this object is preserved exactly, including future JSON-compatible interface properties. Anthropic metadata, including nested properties such as `interface`, are also passed through unchanged.
 
 ## Commands
 
