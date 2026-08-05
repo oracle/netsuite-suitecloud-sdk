@@ -1,0 +1,73 @@
+/*
+ ** Copyright (c) 2026 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+'use strict';
+
+// Java source of truth:
+// - cli/.../handler/DeployHandler.java
+// - cli/.../handler/PreviewHandler.java
+const PREVIEW_COMMAND = 'preview';
+
+export const DEPLOY_MODE = {
+	DEPLOY: 'deploy',
+	PREVIEW: 'preview',
+} as const;
+
+export const DEPLOY_COMMAND = {
+	FLAGS: {
+		NO_PREVIEW: 'no_preview',
+		PREVIEW: 'dryrun',
+		SKIP_WARNING: 'skip_warning',
+		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
+	},
+} as const;
+
+type DeployExecutionParams = {
+	no_preview?: boolean;
+	dryrun?: boolean;
+	skip_warning?: boolean;
+	applyinstallprefs?: boolean;
+	validate?: boolean;
+	[key: string]: unknown;
+};
+
+type DeployExecutionPlan = {
+	mode: typeof DEPLOY_MODE[keyof typeof DEPLOY_MODE];
+	params: DeployExecutionParams;
+	flags: string[];
+};
+
+export function getPreviewCommandName(): string {
+	return PREVIEW_COMMAND;
+}
+
+export function prepareDeployExecution(params: DeployExecutionParams): DeployExecutionPlan {
+	const normalizedParams: DeployExecutionParams = { ...params };
+	let flags: string[] = [DEPLOY_COMMAND.FLAGS.NO_PREVIEW, DEPLOY_COMMAND.FLAGS.SKIP_WARNING];
+	delete normalizedParams.validate;
+
+	if (normalizedParams[DEPLOY_COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES]) {
+		delete normalizedParams[DEPLOY_COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES];
+		flags.push(DEPLOY_COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES);
+	}
+
+	if (normalizedParams[DEPLOY_COMMAND.FLAGS.PREVIEW]) {
+		delete normalizedParams[DEPLOY_COMMAND.FLAGS.PREVIEW];
+		flags = flags.filter(
+			(flag) => flag !== DEPLOY_COMMAND.FLAGS.NO_PREVIEW && flag !== DEPLOY_COMMAND.FLAGS.SKIP_WARNING
+		);
+
+		return {
+			mode: DEPLOY_MODE.PREVIEW,
+			params: normalizedParams,
+			flags,
+		};
+	}
+
+	return {
+		mode: DEPLOY_MODE.DEPLOY,
+		params: normalizedParams,
+		flags,
+	};
+}

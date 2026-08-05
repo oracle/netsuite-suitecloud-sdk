@@ -13,7 +13,6 @@ const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const SdkExecutor = require('../../../SdkExecutor');
 const { showValidationResults, validateArrayIsNotEmpty } = require('../../../validation/InteractiveAnswersValidator');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
@@ -37,9 +36,6 @@ const COMMAND_ANSWERS = {
 module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
-
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}

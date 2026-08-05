@@ -20,7 +20,6 @@ const {
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
-	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	PROJECT: 'project',
@@ -36,22 +35,6 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 	async getParameters(params) {
 
 		const answers = await prompt([
-			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_OPTIONS.SERVER,
-				message: NodeTranslationService.getMessage(QUESTIONS.SERVER_SIDE),
-				default: true,
-				choices: [
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.ACCOUNT),
-						value: true,
-					},
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.LOCAL),
-						value: false,
-					},
-				],
-			},
 			{
 				when: this._projectInfoService.getProjectType() === PROJECT_ACP,
 				type: CommandUtils.INQUIRER_TYPES.LIST,

@@ -28,6 +28,7 @@ const HELP_COMMAND = 'help';
 const HELP_OPTION = '--help';
 const HELP_ALIAS = '-h';
 const VERSION_OPTION = '--version';
+const EXCESS_ZERO_ARGUMENTS_ERROR_PATTERN = /^error: too many arguments for '([^']+)'\. Expected 0 arguments but got \d+\.\s*$/m;
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -71,6 +72,9 @@ module.exports = class CLI {
 			}
 
 			program
+				.configureOutput({
+					outputError: (str, write) => write(formatCommanderError(str)),
+				})
 				.version(CLI_VERSION, VERSION_OPTION, NodeTranslationService.getMessage(VERSION_HELP))
 				.option(
 					`${INTERACTIVE_ALIAS}, ${INTERACTIVE_OPTION}`,
@@ -131,3 +135,17 @@ module.exports = class CLI {
 		});
 	}
 };
+
+function formatCommanderError(errorOutput) {
+	const normalizedErrorOutput = typeof errorOutput === 'string' ? errorOutput.trim() : '';
+	const excessArgumentsMatch = normalizedErrorOutput.match(EXCESS_ZERO_ARGUMENTS_ERROR_PATTERN);
+	if (!excessArgumentsMatch) {
+		return errorOutput;
+	}
+
+	const commandName = excessArgumentsMatch[1];
+	return (
+		`error: unexpected positional argument(s). The "${commandName}" command accepts named options only.\n` +
+		`Use "suitecloud ${commandName} --help" to see valid options.\n`
+	);
+}

@@ -15,7 +15,7 @@ const {
     validateFileName
 } = require('../../../validation/InteractiveAnswersValidator');
 const {
-    COMMAND_CREATEFILE: { QUESTIONS },
+    COMMAND_CREATEFILE: { QUESTIONS, ERRORS },
     YES,
     NO,
 } = require('../../../services/TranslationKeys');
@@ -26,8 +26,11 @@ const FileSystemService = require('../../../services/FileSystemService');
 const FileCabinetService = require('../../../services/FileCabinetService');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
-const SUITESCRIPT_MODULES = require('../../../metadata/SuiteScriptModulesMetadata');
-const SUITESCRIPT_TYPES = require('../../../metadata/SuiteScriptTypesMetadata');
+const CLIException = require('../../../CLIException');
+const {
+    SUITESCRIPT_MODULES,
+    SUITESCRIPT_TEMPLATES,
+} = require('@oracle/suitecloud-sdk-core').metadata;
 
 const ANSWER_NAMES = {
     ADD_SUITESCRIPT_MODULES: 'addSuiteScriptModules',
@@ -53,11 +56,16 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
     }
 
     async getParameters(params) {
+        const folderChoices = this._getFolderChoices();
+        if (!folderChoices.some((choice) => !choice.disabled)) {
+            throw new CLIException(NodeTranslationService.getMessage(ERRORS.NO_SELECTABLE_FOLDERS));
+        }
+
         const answers = await prompt([
             this._questionSelectSuiteScriptType(),
             this._questionAddSuiteScriptModules(),
             this._questionSelectSuiteScriptModules(),
-            this._questionSelectDestinationFolder(),
+            this._questionSelectDestinationFolder(folderChoices),
 
         ]);
 
@@ -76,7 +84,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             message: NodeTranslationService.getMessage(QUESTIONS.CHOOSE_SUITESCRIPT_TYPE),
             pageSize: 15,
             choices: [
-                ...SUITESCRIPT_TYPES.map(( suiteScriptType) => ({
+                ...SUITESCRIPT_TEMPLATES.map((suiteScriptType) => ({
                     name: suiteScriptType.name,
                     value: suiteScriptType.id,
                 })),
@@ -109,8 +117,8 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             pageSize: 15,
             choices: [
                 ...SUITESCRIPT_MODULES.map((suiteScriptModule) => ({
-                    name: suiteScriptModule.id,
-                    value: suiteScriptModule.id,
+                    name: suiteScriptModule,
+                    value: suiteScriptModule,
                 })),
                 new Separator(),
             ],
@@ -118,13 +126,13 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
         };
     }
 
-    _questionSelectDestinationFolder() {
+    _questionSelectDestinationFolder(folderChoices) {
         return {
             type: CommandUtils.INQUIRER_TYPES.LIST,
             name: ANSWER_NAMES.PARENT_PATH,
             message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
             pageSize: 15,
-            choices: this._getFolderChoices(),
+            choices: folderChoices,
         };
     }
 

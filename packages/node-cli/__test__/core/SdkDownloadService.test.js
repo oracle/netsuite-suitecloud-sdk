@@ -17,6 +17,7 @@ jest.mock('../../src/core/sdksetup/SdkArtifactVerifier', () => ({
 
 const SdkProperties = require('../../src/core/sdksetup/SdkProperties');
 const SdkArtifactVerifier = require('../../src/core/sdksetup/SdkArtifactVerifier');
+const { http: suiteCloudHttp } = require('@oracle/suitecloud-sdk-core');
 const SdkDownloadService = require('../../src/core/sdksetup/SdkDownloadService');
 const fs = require('fs');
 
@@ -25,9 +26,14 @@ describe('SdkDownloadService', () => {
 	const sdkDirectory = '/tmp/.suitecloud-sdk/node-cli';
 	const sdkFilename = 'sdk.jar';
 	const sdkDownloadUrl = 'https://example.com/sdk';
+	const proxyConfiguration = {
+		envVarName: 'SUITECLOUD_PROXY',
+		proxyUri: 'http://proxy.example.com:8080',
+	};
 
 	beforeEach(() => {
 		jest.clearAllMocks();
+		jest.spyOn(suiteCloudHttp, 'resolveSdkDownloadProxyFromEnv').mockReturnValue(proxyConfiguration);
 		SdkProperties.getDownloadURL.mockReturnValue(sdkDownloadUrl);
 		SdkProperties.getSdkFileName.mockReturnValue(sdkFilename);
 		SdkProperties.isCustomSdkMetadataUsed.mockReturnValue(false);
@@ -45,7 +51,7 @@ describe('SdkDownloadService', () => {
 		jest.restoreAllMocks();
 	});
 
-	it('delegates SDK artifact verification to SdkArtifactVerifier with SDK properties', async () => {
+	it('downloads, verifies, and installs the SDK artifact', async () => {
 		const temporarySdkPath = `${sdkDirectory}/${sdkFilename}.tmp`;
 		const finalSdkPath = `${sdkDirectory}/${sdkFilename}`;
 
@@ -54,7 +60,7 @@ describe('SdkDownloadService', () => {
 		expect(SdkDownloadService._downloadJarFilePromise).toHaveBeenCalledWith(
 			`${sdkDownloadUrl}/${sdkFilename}`,
 			temporarySdkPath,
-			undefined,
+			proxyConfiguration,
 			false
 		);
 		expect(SdkArtifactVerifier.verify).toHaveBeenCalledWith(temporarySdkPath, SdkProperties);

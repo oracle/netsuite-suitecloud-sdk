@@ -11,6 +11,8 @@ class ConsoleLogger {
 
 	info(message) {}
 
+	plain(message) {}
+
 	result(message) {}
 
 	warning(message) {}

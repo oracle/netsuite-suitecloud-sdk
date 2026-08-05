@@ -1,0 +1,169 @@
+/*
+ ** Copyright (c) 2026 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/upl.
+ */
+'use strict';
+
+jest.mock('../../../../src/services/ProjectInfoService', () => {
+	return jest.fn().mockImplementation(() => ({
+		getProjectType: () => 'ACCOUNTCUSTOMIZATION',
+		getProjectName: () => 'My Project',
+	}));
+});
+
+jest.mock('../../../../src/services/NodeTranslationService', () => ({
+	getMessage: jest.fn((key) => key),
+}));
+
+jest.mock('../../../../src/utils/AuthenticationUtils', () => ({
+	getProjectDefaultAuthId: jest.fn(() => 'myAuth'),
+}));
+
+const DeployAction = require('../../../../src/commands/project/deploy/DeployAction');
+const NodeTranslationService = require('../../../../src/services/NodeTranslationService');
+
+describe('DeployAction ignored options', () => {
+	beforeEach(() => {
+		NodeTranslationService.getMessage.mockClear();
+	});
+
+	it('warns and ignores --validate without disrupting deployment', async () => {
+		const warning = jest.fn();
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: { name: 'project:deploy', options: {} },
+			executionPath: '/tmp/project',
+			log: { warning, info: jest.fn() },
+		});
+		deployAction._deploy = jest.fn().mockResolvedValue({ status: 'SUCCESS' });
+
+		const result = await deployAction.execute({ validate: true, project: '"/tmp/project"' });
+
+		expect(warning).toHaveBeenCalledWith('COMMAND_DEPLOY_WARNINGS_VALIDATE_OPTION_IGNORED');
+		expect(deployAction._deploy).toHaveBeenCalledWith(
+			{ project: '"/tmp/project"' },
+			['no_preview', 'skip_warning']
+		);
+		expect(result).toEqual({ status: 'SUCCESS' });
+	});
+
+	it('warns and preserves --dryrun preview when --validate is also provided', async () => {
+		const warning = jest.fn();
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: { name: 'project:deploy', options: {} },
+			executionPath: '/tmp/project',
+			log: { warning, info: jest.fn() },
+		});
+		deployAction._preview = jest.fn().mockResolvedValue({ status: 'SUCCESS' });
+
+		const result = await deployAction.execute({ dryrun: true, validate: true, project: '"/tmp/project"' });
+
+		expect(warning).toHaveBeenCalledWith('COMMAND_DEPLOY_WARNINGS_VALIDATE_OPTION_IGNORED');
+		expect(deployAction._preview).toHaveBeenCalledWith({ project: '"/tmp/project"' }, []);
+		expect(result).toEqual({ status: 'SUCCESS' });
+	});
+
+	it('uses the project name in the ACP deployment spinner', async () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: { name: 'project:deploy', options: { project: {}, authid: {} } },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+		deployAction._executeProjectCommandWithAuthRetry = jest.fn().mockResolvedValue({
+			status: 'SUCCESS',
+			data: [],
+		});
+
+		await deployAction._deploy({ project: '"/tmp/project"', authid: 'myAuth' }, []);
+
+		expect(NodeTranslationService.getMessage).toHaveBeenCalledWith(
+			'COMMAND_DEPLOY_MESSAGES_DEPLOYING',
+			'My Project',
+			'myAuth'
+		);
+	});
+
+	it('adds the account ID to the project summary context', () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: { name: 'project:deploy', options: {} },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+
+		expect(deployAction._buildSummaryContext({
+			accountInfo: {
+				companyId: '11550285',
+				companyName: 'DevTools Test',
+				roleName: 'Administrator',
+			},
+		})).toEqual({
+			accountId: '11550285',
+			accountName: 'DevTools Test',
+			projectName: 'My Project',
+			roleName: 'Administrator',
+		});
+	});
+
+	it('adds installation preferences to SuiteApp summary context', () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project',
+			commandMetadata: { name: 'project:deploy', options: {} },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+		deployAction._projectType = 'SUITEAPP';
+		deployAction._suiteAppId = 'com.netsuite.ts';
+
+		expect(deployAction._buildSummaryContext({}, ['applyinstallprefs'])).toEqual({
+			accountId: undefined,
+			accountName: undefined,
+			applyInstallationPreferences: true,
+			roleName: undefined,
+			suiteAppId: 'com.netsuite.ts',
+		});
+	});
+
+	it('preserves SuiteApp installation preference details when deployment fails', async () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project/src',
+			commandMetadata: { name: 'project:deploy', options: { project: {}, authid: {} } },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+		deployAction._projectType = 'SUITEAPP';
+		deployAction._executeProjectCommandWithAuthRetry = jest.fn().mockResolvedValue({
+			status: 'ERROR',
+			errorMessages: ['Validation failed'],
+		});
+
+		const result = await deployAction._deploy(
+			{ project: '"/tmp/project/src"', authid: 'myAuth' },
+			['applyinstallprefs']
+		);
+
+		expect(result.appliedInstallationPreferences).toBe(true);
+		expect(result.projectFolder).toBeUndefined();
+		expect(result.projectType).toBe('SUITEAPP');
+	});
+
+	it('preserves raw-output parameters when deployment throws', async () => {
+		const deployAction = new DeployAction({
+			projectFolder: '/tmp/project/src',
+			commandMetadata: { name: 'project:deploy', options: { project: {}, authid: {}, json: {} } },
+			executionPath: '/tmp/project',
+			log: { warning: jest.fn(), info: jest.fn() },
+		});
+		deployAction._projectType = 'SUITEAPP';
+		deployAction._executeProjectCommandWithAuthRetry = jest.fn().mockRejectedValue(new Error('Request failed'));
+
+		const result = await deployAction._deploy(
+			{ project: '"/tmp/project/src"', authid: 'myAuth', json: true },
+			['applyinstallprefs']
+		);
+
+		expect(result.commandParameters.json).toBe(true);
+	});
+});

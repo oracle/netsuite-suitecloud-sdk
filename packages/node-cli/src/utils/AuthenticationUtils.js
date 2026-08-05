@@ -9,6 +9,7 @@ const NodeTranslationService = require('../services/NodeTranslationService');
 const {
 	ERRORS,
 	UTILS,
+	SUITECLOUD_AUTH_PROXY_SERVICE,
 	COMMAND_SETUPACCOUNTCI: { ERRORS: { NOT_EXISTING_AUTH_ID } },
 } = require('../services/TranslationKeys');
 const { FILES} = require('../ApplicationConstants');
@@ -53,6 +54,9 @@ const COMMANDS = {
 	},
 	MANAGEAUTH: {
 		SDK_COMMAND: 'manageauth',
+		PARAMS: {
+			INFO: 'info',
+		},
 	},
 	INSPECT_AUTHORIZATION: {
 		SDK_COMMAND: 'inspectauthorization',
@@ -120,6 +124,21 @@ async function getAuthIds(sdkPath) {
 	return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
 		? ActionResult.Builder.withData(operationResult.data).build()
 		: ActionResult.Builder.withErrors(operationResult.errorMessages).build();
+}
+
+async function getAuthInfo(authId, sdkPath, executionEnvironmentContext) {
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+	const contextBuilder = SdkExecutionContext.Builder.forCommand(COMMANDS.MANAGEAUTH.SDK_COMMAND)
+		.integration()
+		.addParam(COMMANDS.MANAGEAUTH.PARAMS.INFO, authId);
+	const getAuthInfoContext = contextBuilder.build();
+	const operationResult = await sdkExecutor.execute(getAuthInfoContext);
+	const sdkOperationResult = new SdkOperationResult(operationResult);
+	if (!sdkOperationResult.isSuccess()) {
+		return ActionResult.Builder.withErrors(sdkOperationResult.errorMessages).build();
+	}
+
+	return ActionResult.Builder.withData(sdkOperationResult.data).build();
 }
 
 async function authenticateWithOauth(params, sdkPath, projectFolder, cancelToken, executionEnvironmentContext) {
@@ -266,4 +285,58 @@ async function forceRefreshAuthorization(authid, sdkPath, executionEnvironmentCo
 	return new SdkOperationResult(result);
 }
 
-module.exports = { setDefaultAuthentication, getProjectDefaultAuthId, getAuthIds, authenticateWithOauth, authenticateCi, selectAuthenticationCI, checkIfReauthorizationIsNeeded, refreshAuthorization, forceRefreshAuthorization, COMMANDS};
+async function forceRefreshAuthorizationSilently(authid, sdkPath, executionEnvironmentContext) {
+	const sdkExecutor = new SdkExecutor(sdkPath, executionEnvironmentContext);
+	const reauthorizeAuthContext = SdkExecutionContext.Builder
+		.forCommand(COMMANDS.FORCE_REFRESH_AUTHORIZATION.SDK_COMMAND)
+		.addParam(COMMANDS.FORCE_REFRESH_AUTHORIZATION.PARAMS.AUTH_ID, authid)
+		.integration()
+		.build();
+	const result = await sdkExecutor.execute(reauthorizeAuthContext);
+	return new SdkOperationResult(result);
+}
+
+async function getAuthCredentialsById(authId, sdkPath, executionEnvironmentContext) {
+	if (!authId) {
+		throw NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.MISSING_AUTH_ID);
+	}
+
+	const authInfoResult = await getAuthInfo(authId, sdkPath, executionEnvironmentContext);
+	if (!authInfoResult.isSuccess()) {
+		throw authInfoResult.errorMessages;
+	}
+
+	const hostName = authInfoResult.data?.hostInfo?.hostName;
+	if (!hostName) {
+		throw NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.NEED_TO_REAUTHENTICATE);
+	}
+
+	const refreshResult = await forceRefreshAuthorizationSilently(authId, sdkPath, executionEnvironmentContext);
+	if (!refreshResult.isSuccess()) {
+		throw refreshResult.errorMessages;
+	}
+
+	const accessToken = refreshResult.data && refreshResult.data.accessToken;
+	if (!accessToken) {
+		throw NodeTranslationService.getMessage(SUITECLOUD_AUTH_PROXY_SERVICE.NEED_TO_REAUTHENTICATE);
+	}
+
+	const accountInfo = authInfoResult.data && authInfoResult.data.accountInfo;
+	return { accessToken, hostName, accountInfo };
+}
+
+module.exports = {
+	setDefaultAuthentication,
+	getProjectDefaultAuthId,
+	getAuthIds,
+	getAuthInfo,
+	getAuthCredentialsById,
+	authenticateWithOauth,
+	authenticateCi,
+	selectAuthenticationCI,
+	checkIfReauthorizationIsNeeded,
+	refreshAuthorization,
+	forceRefreshAuthorization,
+	forceRefreshAuthorizationSilently,
+	COMMANDS,
+};

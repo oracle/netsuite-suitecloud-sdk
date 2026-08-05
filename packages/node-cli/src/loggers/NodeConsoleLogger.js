@@ -20,6 +20,10 @@ class NodeConsoleLogger extends ConsoleLogger {
 		});
 	}
 
+	plain(message) {
+		console.log(message);
+	}
+
 	result(message) {
 		return fontFormatterPromise.then(({ COLORS: { RESULT } }) => {
 			this._println(message, RESULT);
