@@ -65,15 +65,18 @@ describe('forceRefreshAuthorization', () => {
 	});
 
 	it('should call executeWithSpinner with correct action and message', async () => {
-		const executeMock = jest.fn().mockResolvedValue({ status: 'SUCCESS' });
+		const action = Promise.resolve({ status: 'SUCCESS' });
+		const message = 'Authorizing...';
+		const executeMock = jest.fn().mockReturnValue(action);
 		SdkExecutor.mockImplementationOnce(() => ({ execute: executeMock }));
+		NodeTranslationService.getMessage.mockReturnValueOnce(message);
 		await AuthenticationUtils.forceRefreshAuthorization(authId, sdkPath, executionEnvironmentContext);
-		const context = SdkExecutionContext.Builder.build();
 		expect(executeWithSpinner).toHaveBeenCalledTimes(1);
 		expect(executeWithSpinner).toHaveBeenCalledWith({
-			action: executeMock(context),
-			message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.AUTHORIZING),
+			action,
+			message,
 		});
+		expect(NodeTranslationService.getMessage).toHaveBeenCalledWith(UTILS.AUTHENTICATION.AUTHORIZING);
 	});
 
 	it('should return SdkOperationResult', async () => {
