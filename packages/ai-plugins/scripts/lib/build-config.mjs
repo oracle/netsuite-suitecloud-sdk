@@ -24,6 +24,56 @@ function assertRelativePath(value, label) {
 	return normalized;
 }
 
+function isPathInside(parentPath, candidatePath) {
+	const relativePath = path.relative(parentPath, candidatePath);
+	return relativePath === '' || (!relativePath.startsWith(`..${path.sep}`) && relativePath !== '..' && !path.isAbsolute(relativePath));
+}
+
+/**
+ * Validates a collection root and returns canonical paths that can safely be
+ * retained for later collection. Collection roots themselves must never be
+ * symbolic links, even if they currently resolve within their boundary.
+ */
+export async function validateCollectionRoot({ rootDir, allowedParent, label }) {
+	let rootStat;
+	try {
+		rootStat = await fs.lstat(rootDir);
+	} catch (error) {
+		if (error?.code === 'ENOENT') {
+			throw new Error(`${label} root does not exist: ${rootDir}`);
+		}
+		throw error;
+	}
+
+	if (rootStat.isSymbolicLink()) {
+		throw new Error(`Rejected ${label} root: symbolic links are not allowed: ${rootDir}`);
+	}
+	if (!rootStat.isDirectory()) {
+		throw new Error(`Rejected ${label} root: expected an existing directory: ${rootDir}`);
+	}
+
+	let canonicalParent;
+	try {
+		canonicalParent = await fs.realpath(allowedParent);
+	} catch (error) {
+		if (error?.code === 'ENOENT') {
+			throw new Error(`Allowed parent for ${label} root does not exist: ${allowedParent}`);
+		}
+		throw error;
+	}
+	const parentStat = await fs.stat(canonicalParent);
+	if (!parentStat.isDirectory()) {
+		throw new Error(`Allowed parent for ${label} root must be a directory: ${allowedParent}`);
+	}
+
+	const canonicalRoot = await fs.realpath(rootDir);
+	if (!isPathInside(canonicalParent, canonicalRoot)) {
+		throw new Error(`Rejected ${label} root outside allowed parent: ${rootDir}`);
+	}
+
+	return { rootDir: canonicalRoot, boundaryDir: canonicalParent };
+}
+
 function parseSkillFrontmatter(skillFileContents, skillName) {
 	const match = /^---\n([\s\S]*?)\n---\n/.exec(skillFileContents);
 	if (!match) {
@@ -224,6 +274,7 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 		getPluginDirectories(packageRoot),
 	]);
 	const skillsRoot = path.resolve(packageRoot, buildConfig.skillsRoot);
+	const commonLayersRoot = path.resolve(packageRoot, buildConfig.commonLayersRoot);
 
 	const plugins = [];
 
@@ -244,26 +295,34 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 			throw new Error(`Plugin ${pluginDirectoryName} has invalid SemVer version: ${pluginConfig.version}`);
 		}
 
+		const validatedCommonLayers = [];
 		for (const layerName of pluginConfig.commonLayers) {
 			assertRelativePath(layerName, `common layer for ${pluginDirectoryName}`);
-			const layerPath = path.resolve(packageRoot, buildConfig.commonLayersRoot, layerName);
-			const layerStat = await fs.stat(layerPath).catch(() => null);
-			if (!layerStat?.isDirectory()) {
-				throw new Error(`Plugin ${pluginDirectoryName} references missing common layer: ${layerName}`);
-			}
+			const layerPath = path.resolve(commonLayersRoot, layerName);
+			const validatedRoot = await validateCollectionRoot({
+				rootDir: layerPath,
+				allowedParent: commonLayersRoot,
+				label: `common layer ${layerName} for ${pluginDirectoryName}`,
+			});
+			validatedCommonLayers.push({ name: layerName, ...validatedRoot });
 		}
 
+		const validatedInputs = [];
 		for (const input of pluginConfig.inputs) {
 			assertRelativePath(input.root, `input root for ${pluginDirectoryName}`);
 			assertRelativePath(input.destination, `input destination for ${pluginDirectoryName}`);
 			const inputPath = path.join(pluginDirectory, input.root);
-			const inputStat = await fs.stat(inputPath).catch(() => null);
-			if (!inputStat?.isDirectory()) {
-				throw new Error(`Plugin ${pluginDirectoryName} input root does not exist: ${input.root}`);
-			}
+			const validatedRoot = await validateCollectionRoot({
+				rootDir: inputPath,
+				allowedParent: pluginDirectory,
+				label: `input ${input.root} for ${pluginDirectoryName}`,
+			});
+			validatedInputs.push({ ...input, ...validatedRoot });
 		}
 		plugins.push({
 			...pluginConfig,
+			inputs: validatedInputs,
+			validatedCommonLayers,
 			sourceDirectoryName: pluginDirectoryName,
 			sourceKey: pluginDirectoryName,
 			pluginDirectory,
@@ -271,31 +330,44 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 		});
 	}
 
+	const skillDirectories = new Map();
 	for (const skillName of new Set(plugins.flatMap((plugin) => plugin.skills))) {
 		if (!/^netsuite[-_a-z0-9]+$/.test(skillName)) {
 			throw new Error(`Invalid skill name in plugin config: ${skillName}`);
 		}
 
 		const skillDir = path.join(skillsRoot, skillName);
-		const skillStat = await fs.stat(skillDir).catch(() => null);
-		if (!skillStat?.isDirectory()) {
-			throw new Error(`Missing skill directory for ${skillName}`);
+		let validatedRoot;
+		try {
+			validatedRoot = await validateCollectionRoot({
+				rootDir: skillDir,
+				allowedParent: skillsRoot,
+				label: `skill ${skillName}`,
+			});
+		} catch (error) {
+			if (error.message.startsWith(`skill ${skillName} root does not exist:`)) {
+				throw new Error(`Missing skill directory for ${skillName}`);
+			}
+			throw error;
 		}
 
-		const skillFilePath = path.join(skillDir, 'SKILL.md');
+		const skillFilePath = path.join(validatedRoot.rootDir, 'SKILL.md');
 		const skillFileContents = await fs.readFile(skillFilePath, 'utf8').catch(() => null);
 		if (skillFileContents === null) {
 			throw new Error(`Skill ${skillName} is missing SKILL.md`);
 		}
 
 		parseSkillFrontmatter(skillFileContents, skillName);
+		skillDirectories.set(skillName, validatedRoot);
 	}
 
 	return {
 		packageRoot,
 		buildConfig,
 		pluginSchema,
-		skillsRoot,
+		skillsRoot: await fs.realpath(skillsRoot).catch(() => skillsRoot),
+		commonLayersRoot: await fs.realpath(commonLayersRoot).catch(() => commonLayersRoot),
+		skillDirectories,
 		plugins,
 	};
 }

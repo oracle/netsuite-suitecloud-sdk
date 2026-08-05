@@ -7,7 +7,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { GENERATED_MANIFEST_PATHS } from './constants.mjs';
-import { loadWorkspace, getNormalizedSkills, getPluginBySourceName } from './build-config.mjs';
+import { loadWorkspace, getNormalizedSkills, getPluginBySourceName, validateCollectionRoot } from './build-config.mjs';
 import { ensureDir, copyFileStrict, removeIfExists, writeJson, listRelativeFiles } from './fs-utils.mjs';
 import { generateManifest } from './manifest.mjs';
 
@@ -100,8 +100,9 @@ async function walkFiles(rootDir) {
 	return files;
 }
 
-async function collectFiles({ rootDir, include, exclude, globalExcludes, label }) {
-	const allFiles = await walkFiles(rootDir);
+async function collectFiles({ rootDir, boundaryDir, include, exclude, globalExcludes, label }) {
+	const validatedRoot = await validateCollectionRoot({ rootDir, allowedParent: boundaryDir, label });
+	const allFiles = await walkFiles(validatedRoot.rootDir);
 	const files = allFiles.filter((file) => {
 		if (!matchesAnyPattern(file.sourceRelativePath, include)) {
 			return false;
@@ -141,9 +142,9 @@ async function stagePlannedFiles({ workspace, pluginConfig, stageDir }) {
 	const plannedFiles = [];
 
 	for (const input of pluginConfig.inputs) {
-		const inputRoot = path.join(pluginConfig.pluginDirectory, input.root);
 		const files = await collectFiles({
-			rootDir: inputRoot,
+			rootDir: input.rootDir,
+			boundaryDir: input.boundaryDir,
 			include: input.include,
 			exclude: input.exclude,
 			globalExcludes: workspace.buildConfig.globalExcludes,
@@ -164,20 +165,20 @@ async function stagePlannedFiles({ workspace, pluginConfig, stageDir }) {
 		}
 	}
 
-	for (const layerName of pluginConfig.commonLayers) {
-		const layerRoot = path.resolve(workspace.packageRoot, workspace.buildConfig.commonLayersRoot, layerName);
+	for (const layer of pluginConfig.validatedCommonLayers) {
 		const files = await collectFiles({
-			rootDir: layerRoot,
+			rootDir: layer.rootDir,
+			boundaryDir: layer.boundaryDir,
 			include: ['**/*'],
 			exclude: [],
 			globalExcludes: workspace.buildConfig.globalExcludes,
-			label: `common layer ${layerName}`,
+			label: `common layer ${layer.name}`,
 		});
 
 		for (const file of files) {
 			const destination = assertSafeDestination(file.sourceRelativePath);
 			if (GENERATED_MANIFEST_PATHS.has(destination)) {
-				throw new Error(`Generated manifest path cannot be supplied by common layer ${layerName}: ${destination}`);
+				throw new Error(`Generated manifest path cannot be supplied by common layer ${layer.name}: ${destination}`);
 			}
 
 			collisionCheck(destination, file.sourceAbsolutePath);
@@ -196,9 +197,10 @@ async function stagePlannedFiles({ workspace, pluginConfig, stageDir }) {
 	});
 
 	for (const skillName of getNormalizedSkills(pluginConfig)) {
-		const skillRoot = path.join(workspace.skillsRoot, skillName);
+		const skillRoot = workspace.skillDirectories.get(skillName);
 		const files = await collectFiles({
-			rootDir: skillRoot,
+			rootDir: skillRoot.rootDir,
+			boundaryDir: skillRoot.boundaryDir,
 			include: ['**/*'],
 			exclude: [],
 			globalExcludes: workspace.buildConfig.globalExcludes,

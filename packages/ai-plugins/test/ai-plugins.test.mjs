@@ -531,3 +531,101 @@ test('getNormalizedSkills deduplicates and sorts plugin skill entries', () => {
 		['netsuite-alpha', 'netsuite-zeta']
 	);
 });
+
+async function createBoundaryWorkspace({ commonLayers = [] } = {}) {
+	const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-boundary-'));
+	const packageDir = path.join(tempRoot, 'plugins');
+	const pluginDir = path.join(packageDir, 'boundary-plugin');
+	const sourceDir = path.join(pluginDir, 'src');
+	const commonLayerDir = path.join(packageDir, 'common', 'shared');
+	const skillsRoot = path.join(tempRoot, 'skills');
+	const skillDir = path.join(skillsRoot, 'netsuite-good-skill');
+	const outsideDir = path.join(tempRoot, 'outside');
+
+	await Promise.all([
+		fs.mkdir(sourceDir, { recursive: true }),
+		fs.mkdir(commonLayerDir, { recursive: true }),
+		fs.mkdir(skillDir, { recursive: true }),
+		fs.mkdir(outsideDir, { recursive: true }),
+		fs.mkdir(path.join(packageDir, 'config'), { recursive: true }),
+		fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true }),
+	]);
+	await Promise.all([
+		fs.writeFile(path.join(tempRoot, 'LICENSE.txt'), 'license\n', 'utf8'),
+		fs.writeFile(path.join(sourceDir, 'README.md'), '# Boundary plugin\n', 'utf8'),
+		fs.writeFile(path.join(commonLayerDir, 'COMMON.md'), '# Common\n', 'utf8'),
+		fs.writeFile(path.join(outsideDir, 'outside.txt'), 'must not be collected\n', 'utf8'),
+		fs.writeFile(path.join(skillDir, 'SKILL.md'), '---\nname: netsuite-good-skill\ndescription: good\nlicense: UPL\n---\n', 'utf8'),
+	]);
+	await fs.copyFile(path.join(packageRoot, 'schemas', 'plugin-build.schema.json'), path.join(packageDir, 'schemas', 'plugin-build.schema.json'));
+	await writeJson(path.join(packageDir, 'config', 'build.json'), {
+		version: 1,
+		licenseFile: '../LICENSE.txt',
+		skillsRoot: '../skills',
+		commonLayersRoot: './common',
+		pluginDistRoot: '../dist',
+		globalExcludes: [],
+	});
+	await writeJson(path.join(pluginDir, 'plugin.build.json'), {
+		id: 'boundary-plugin',
+		version: '1.0.0',
+		platform: 'anthropic',
+		metadata: {
+			name: 'boundary-plugin', description: 'Boundary plugin', author: { name: 'Oracle NetSuite' }, license: 'UPL', keywords: ['boundary'],
+		},
+		skills: ['netsuite-good-skill'],
+		commonLayers,
+		inputs: [{ root: 'src', destination: '.', include: ['**/*'], exclude: [] }],
+	});
+
+	return { tempRoot, packageDir, pluginDir, sourceDir, commonLayerDir, skillDir, outsideDir };
+}
+
+test('loadWorkspace rejects symlinked input, common-layer, and skill collection roots before staging', async (t) => {
+	await t.test('input root outside plugin directory', async () => {
+		const fixture = await createBoundaryWorkspace();
+		await fs.rm(fixture.sourceDir, { recursive: true });
+		await fs.symlink(fixture.outsideDir, fixture.sourceDir, 'dir');
+		await assert.rejects(() => loadWorkspace(fixture.packageDir), /Rejected input src.*symbolic links are not allowed/i);
+		await assert.rejects(() => fs.access(path.join(fixture.tempRoot, 'dist')), /ENOENT/);
+	});
+
+	await t.test('common layer root outside configured common-layers root', async () => {
+		const fixture = await createBoundaryWorkspace({ commonLayers: ['shared'] });
+		await fs.rm(fixture.commonLayerDir, { recursive: true });
+		await fs.symlink(fixture.outsideDir, fixture.commonLayerDir, 'dir');
+		await assert.rejects(() => loadWorkspace(fixture.packageDir), /Rejected common layer shared.*symbolic links are not allowed/i);
+		await assert.rejects(() => fs.access(path.join(fixture.tempRoot, 'dist')), /ENOENT/);
+	});
+
+	await t.test('skill root outside skillsRoot', async () => {
+		const fixture = await createBoundaryWorkspace();
+		await fs.rm(fixture.skillDir, { recursive: true });
+		await fs.symlink(fixture.outsideDir, fixture.skillDir, 'dir');
+		await assert.rejects(() => loadWorkspace(fixture.packageDir), /Rejected skill netsuite-good-skill root: symbolic links are not allowed/i);
+		await assert.rejects(() => fs.access(path.join(fixture.tempRoot, 'dist')), /ENOENT/);
+	});
+});
+
+test('buildPlugin rejects nested symlinks and accepts in-bound collection roots', async () => {
+	const fixture = await createBoundaryWorkspace({ commonLayers: ['shared'] });
+	const workspace = await loadWorkspace(fixture.packageDir);
+	const nestedLink = path.join(fixture.sourceDir, 'nested-link');
+	await fs.symlink(fixture.outsideDir, nestedLink, 'dir');
+
+	await assert.rejects(
+		() => buildPlugin('boundary-plugin', { workspace, writeOutput: true }),
+		/Symlinks are not allowed: nested-link/i
+	);
+	await assert.rejects(() => fs.access(path.join(fixture.tempRoot, 'dist', 'boundary-plugin')), /ENOENT/);
+
+	await fs.rm(nestedLink);
+	const result = await buildPlugin('boundary-plugin', { workspace, writeOutput: false });
+	assert.deepEqual(await listRelativeFiles(result.outputDir), [
+		'.claude-plugin/plugin.json',
+		'COMMON.md',
+		'LICENSE.txt',
+		'README.md',
+		'skills/netsuite-good-skill/SKILL.md',
+	]);
+});
