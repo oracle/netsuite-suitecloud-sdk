@@ -173,7 +173,7 @@ jobs:
             git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           fi
 
-          find "${worktree_dir}" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           cp -R dist/ai-plugins/. "${worktree_dir}/"
           printf '# AI Plug-ins Distribution\n\nGenerated plugin directories published from the `%s` branch source tree.\n' "${DEFAULT_BRANCH}" > "${worktree_dir}/README.md"
 
