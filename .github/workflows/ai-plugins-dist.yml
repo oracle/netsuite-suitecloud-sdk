@@ -87,54 +87,7 @@ jobs:
             previous_plugin_dir="${previous_dir}/${plugin_name}"
 
             if ! diff -qr "${plugin_dir}" "${previous_plugin_dir}" >/dev/null 2>&1; then
-              node -e "
-                const fs = require('fs');
-                const path = require('path');
-
-                function manifestVersion(root) {
-                  const claude = path.join(root, '.claude-plugin', 'plugin.json');
-                  const codex = path.join(root, '.codex-plugin', 'plugin.json');
-                  const manifest = fs.existsSync(claude) ? claude : codex;
-                  return JSON.parse(fs.readFileSync(manifest, 'utf8')).version;
-                }
-
-                function compareSemver(left, right) {
-                  const leftParts = left.split(/[.+-]/);
-                  const rightParts = right.split(/[.+-]/);
-                  const length = Math.max(leftParts.length, rightParts.length);
-                  for (let index = 0; index < length; index += 1) {
-                    const leftPart = leftParts[index] ?? '0';
-                    const rightPart = rightParts[index] ?? '0';
-                    const leftNumber = Number(leftPart);
-                    const rightNumber = Number(rightPart);
-                    const leftComparable = Number.isNaN(leftNumber) ? leftPart : leftNumber;
-                    const rightComparable = Number.isNaN(rightNumber) ? rightPart : rightNumber;
-                    if (leftComparable > rightComparable) return 1;
-                    if (leftComparable < rightComparable) return -1;
-                  }
-                  return 0;
-                }
-
-                const currentDir = process.argv[1];
-                const previousDir = process.argv[2];
-                if (!fs.existsSync(previousDir)) process.exit(0);
-                const currentVersion = manifestVersion(currentDir);
-                const previousVersion = manifestVersion(previousDir);
-                if (compareSemver(currentVersion, previousVersion) <= 0) {
-                  console.error('Changed plugin content requires a higher version:', path.relative(process.cwd(), currentDir), previousVersion, '->', currentVersion);
-                  process.exit(1);
-                }
-              " "${plugin_dir}" "${previous_plugin_dir}"
-
-              version="$(node -e "
-                const fs = require('fs');
-                const path = require('path');
-                const root = process.argv[1];
-                const claude = path.join(root, '.claude-plugin', 'plugin.json');
-                const codex = path.join(root, '.codex-plugin', 'plugin.json');
-                const manifest = fs.existsSync(claude) ? claude : codex;
-                process.stdout.write(JSON.parse(fs.readFileSync(manifest, 'utf8')).version);
-              " "${plugin_dir}")"
+              version="$(node packages/ai-plugins/scripts/release-version.mjs "${plugin_dir}" "${previous_plugin_dir}")"
               printf '%s\t%s\n' "${plugin_name}" "${version}" >> "${metadata_dir}/changed-plugins.tsv"
               publish_required=true
             fi

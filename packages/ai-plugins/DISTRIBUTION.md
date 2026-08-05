@@ -28,7 +28,7 @@ The publisher:
 - runs `validate`, `test`, and `build` for `@oracle/ai-plugins` before publishing;
 - creates a sorted SHA-256 manifest after source-versus-build verification and verifies the downloaded artifact against it before any write-scoped Git credential is configured;
 - updates the orphan `ai-plugins-dist` branch only when generated plug-in output has changed;
-- requires a version increase when an already published plug-in's content changes;
+- requires a strictly higher stable `MAJOR.MINOR.PATCH` version when an already published plug-in's content changes; prerelease and build metadata are unsupported;
 - removes a distribution directory when its generated plug-in is removed from source; and
 - creates a tag for every changed plug-in in the form `ai-plugin/<provider>/<plugin-id>/v<version>`.
 
@@ -59,7 +59,7 @@ npm run build --workspace @oracle/ai-plugins
 npm run verify-release --workspace @oracle/ai-plugins
 ```
 
-For every plug-in whose generated content changes, increase its version in `plugin.build.json` before publishing. Tag each changed plug-in as `ai-plugin/<provider>/<plugin-id>/v<version>` after the distribution commit is pushed.
+For every plug-in whose generated content changes, increase its version in `plugin.build.json` before publishing. Published versions and release tags must use canonical stable `MAJOR.MINOR.PATCH` values (for example, `1.2.3`); prerelease versions and build metadata are unsupported. Tag each changed plug-in as `ai-plugin/<provider>/<plugin-id>/v<version>` after the distribution commit is pushed.
 
 ### Create the Distribution Worktree Once
 
@@ -108,7 +108,7 @@ It should contain the generated plug-in directories for the source revision and 
 
 - Never edit generated plug-in contents in `ai-plugins-dist`; regenerate and republish from source.
 - A security or integrity gate failure blocks publication. Correct the issue in a new `master` commit, then dispatch a new release run; do not reuse a failed run's artifacts.
-- Do not publish changed plug-in content without a version increase.
+- Do not publish changed plug-in content without a strictly higher stable `MAJOR.MINOR.PATCH` version.
 - Inspect the distribution worktree before committing a manual fallback release.
 - Keep the distribution worktree separate from the source checkout.
 

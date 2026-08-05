@@ -4,10 +4,12 @@
  */
 
 import fs from 'node:fs/promises';
+import { execFile } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { promisify } from 'node:util';
 import { loadWorkspace, getNormalizedSkills } from '../scripts/lib/build-config.mjs';
 import { buildPlugin } from '../scripts/lib/plugin-builder.mjs';
 import { listRelativeFiles, writeJson } from '../scripts/lib/fs-utils.mjs';
@@ -19,8 +21,14 @@ import {
 	writeIntegrityManifest,
 } from '../scripts/release-integrity.mjs';
 import { scanSecrets, scanWorkflowPolicies } from '../scripts/release-security-gates.mjs';
+import {
+	compareReleaseVersions,
+	isValidReleaseVersion,
+	parseReleaseVersion,
+} from '../scripts/release-version.mjs';
 
 const packageRoot = path.resolve(process.cwd());
+const execFileAsync = promisify(execFile);
 const suitecloudSkills = [
 	'netsuite-owasp-secure-coding',
 	'netsuite-sdf-project-documentation',
@@ -124,6 +132,70 @@ test('release integrity verification rejects tampered, missing, and unexpected f
 	await fs.writeFile(path.join(root, 'nested', 'file.txt'), 'original', 'utf8');
 	await fs.writeFile(path.join(root, 'unexpected.txt'), 'unexpected', 'utf8');
 	await assert.rejects(() => verifyIntegrityManifest(root, manifestPath), /unexpected file: unexpected.txt/);
+});
+
+test('release versions accept only canonical stable SemVer', () => {
+	for (const version of ['0.0.0', '1.2.3']) {
+		assert.equal(isValidReleaseVersion(version), true);
+	}
+	for (const version of ['1.0.0-rc.1', '1.0.0+build.1', '01.0.0', '1.02.0', '1.0.03', '1.0', 'v1.0.0', '', 1, null]) {
+		assert.equal(isValidReleaseVersion(version), false, String(version));
+		assert.throws(() => parseReleaseVersion(version));
+	}
+});
+
+test('release version precedence compares all components exactly', () => {
+	for (const [higher, lower] of [
+		['2.0.0', '1.999999999999999999999999999999.999999999999999999999999999999'],
+		['1.3.0', '1.2.999999999999999999999999999999'],
+		['1.2.4', '1.2.3'],
+	]) {
+		assert.equal(compareReleaseVersions(higher, lower), 1);
+		assert.equal(compareReleaseVersions(lower, higher), -1);
+	}
+	assert.equal(compareReleaseVersions('1.2.3', '1.2.3'), 0);
+	assert.throws(() => compareReleaseVersions('1.2.3-rc.1', '1.2.3'));
+});
+
+test('release-version command validates generated manifests and version increases', async () => {
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-release-version-'));
+	const current = path.join(root, 'current');
+	const previous = path.join(root, 'previous');
+	const command = path.join(packageRoot, 'scripts', 'release-version.mjs');
+	const writeManifest = async (directory, version) => {
+		await fs.mkdir(path.join(directory, '.claude-plugin'), { recursive: true });
+		await writeJson(path.join(directory, '.claude-plugin', 'plugin.json'), { version });
+	};
+
+	await writeManifest(current, '9007199254740993.0.0');
+	assert.equal((await execFileAsync(process.execPath, [command, current, previous])).stdout.trim(), '9007199254740993.0.0');
+
+	await writeManifest(previous, '9007199254740992.999999999999999999999999999999.999999999999999999999999999999');
+	assert.equal((await execFileAsync(process.execPath, [command, current, previous])).stdout.trim(), '9007199254740993.0.0');
+
+	await writeManifest(current, '1.2.3');
+	await writeManifest(previous, '1.2.3');
+	await assert.rejects(
+		() => execFileAsync(process.execPath, [command, current, previous]),
+		/Changed plug-in content requires a higher version/
+	);
+	await writeManifest(current, '1.2.2');
+	await assert.rejects(
+		() => execFileAsync(process.execPath, [command, current, previous]),
+		/Changed plug-in content requires a higher version/
+	);
+
+	await writeManifest(current, '1.2.3-rc.1');
+	await assert.rejects(
+		() => execFileAsync(process.execPath, [command, current, previous]),
+		/Invalid release version/
+	);
+	await writeManifest(current, '1.2.4');
+	await writeManifest(previous, '1.2.3+build.1');
+	await assert.rejects(
+		() => execFileAsync(process.execPath, [command, current, previous]),
+		/Invalid release version/
+	);
 });
 
 test('workspace config recursively discovers six provider-qualified plugins with expected platforms and skills', async () => {
@@ -580,6 +652,17 @@ async function createBoundaryWorkspace({ commonLayers = [] } = {}) {
 
 	return { tempRoot, packageDir, pluginDir, sourceDir, commonLayerDir, skillDir, outsideDir };
 }
+
+test('loadWorkspace rejects non-release plugin versions', async () => {
+	const fixture = await createBoundaryWorkspace();
+	const pluginBuildPath = path.join(fixture.pluginDir, 'plugin.build.json');
+	const validPlugin = JSON.parse(await fs.readFile(pluginBuildPath, 'utf8'));
+
+	for (const version of ['1.0.0-rc.1', '1.0.0+build.1', '01.0.0', '1.00.0', '1.0.01', '1.0', 1]) {
+		await writeJson(pluginBuildPath, { ...validPlugin, version });
+		await assert.rejects(() => loadWorkspace(fixture.packageDir), /(invalid release version|version.*non-empty string)/i);
+	}
+});
 
 test('loadWorkspace rejects symlinked input, common-layer, and skill collection roots before staging', async (t) => {
 	await t.test('input root outside plugin directory', async () => {

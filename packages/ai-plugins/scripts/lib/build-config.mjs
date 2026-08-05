@@ -6,6 +6,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { FRONTMATTER_REQUIRED_FIELDS } from './constants.mjs';
+import { isValidReleaseVersion } from '../release-version.mjs';
 
 function normalizePath(value) {
 	return value.split(path.sep).join('/');
@@ -123,10 +124,6 @@ async function readJson(filePath) {
 
 function isPlainObject(value) {
 	return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
-function isValidSemver(version) {
-	return /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(version);
 }
 
 function isValidHttpUrl(value) {
@@ -291,8 +288,8 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 		const pluginConfig = await readJson(pluginBuildPath);
 		validatePluginConfigShape(pluginConfig, pluginDirectoryName);
 
-		if (!isValidSemver(pluginConfig.version)) {
-			throw new Error(`Plugin ${pluginDirectoryName} has invalid SemVer version: ${pluginConfig.version}`);
+		if (!isValidReleaseVersion(pluginConfig.version)) {
+			throw new Error(`Plugin ${pluginDirectoryName} has invalid release version: ${pluginConfig.version}`);
 		}
 
 		const validatedCommonLayers = [];
