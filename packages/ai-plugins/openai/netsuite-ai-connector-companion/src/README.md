@@ -12,9 +12,9 @@ This plug-in, compatible with ChatGPT and Codex, includes the `netsuite-ai-conne
 - **Report-first query routing:** Uses a priority order when retrieving data: standard reports, saved searches, record lookups, and SuiteQL. Uses SuiteQL only when a safer option is not available.
 - **Subsidiary context checks:** Retrieves subsidiary metadata when a report includes a subsidiary filter. This helps prevent scoping errors in accounts with multiple entities.
 ### Output and Presentation
-- **Financial number formatting:** Formats currency amounts, percentages, and whole numbers consistently across NetSuite skills. For example, amounts display as $2.1M, $342.5K, and 12.3%.
+- **Financial number formatting:** Formats currency amounts, percentages, and whole numbers consistently across NetSuite skills. For example, amounts are displayed as $2.1M, $342.5K, and 12.3%.
 - **Linked record references:** Converts transaction and entity references into clickable NetSuite links by using internal IDs. This removes raw IDs from user-facing output.
-- **Dashboard versus inline output:** Uses a full artifact when a request includes three or more key performance indicators (KPIs), a comparative analysis, 10 or more rows, or an explicit request for a dashboard or report. Otherwise, responds inline.
+- **Dashboard versus inline output:** Uses a full dashboard or report when a request includes three or more key performance indicators (KPIs), a comparative analysis, 10 or more rows, or an explicit request for a dashboard or report. Otherwise, responds inline.
 ### Domain Knowledge
 - **General ledger and accounting logic grounding:** Provides debit and credit rules, account type behavior, and double-entry logic. This helps keep financial narratives accurate without restating accounting fundamentals in each session.
 - **Record type and field reference:** Maps business concepts to SuiteQL record types, table names, and field names. This reduces hallucinated schema references in custom queries.
