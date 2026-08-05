@@ -4,9 +4,10 @@ This guide is the release reference for the generated AI plug-in artifacts publi
 
 ## GitHub Actions Workflows
 
-Two workflows support AI plug-in changes:
+Three workflows support AI plug-in changes:
 
-- **AI Plug-ins CI** runs automatically for pull requests and pushes to `master` when relevant AI plug-in source, shared skills, package files, license files, ignore files, or workflow files change. It validates configuration, runs tests, builds the plug-ins, and verifies the release output.
+- **Agent Skills CI** is the sole continuous-integration validator and test suite for Agent Skill content.
+- **AI Plug-ins CI** runs automatically for pull requests and pushes to `master` when relevant AI plug-in source, shared skills, package files, license files, ignore files, or workflow files change. Skill changes trigger it so it can rebuild affected distributions; it validates plug-in configuration, runs plug-in tests, builds the plug-ins, and verifies the release output.
 - **Publish AI Plug-ins Dist** is manually dispatched and executes only when dispatched from `master`. Dispatches from other refs intentionally skip its `publish` job. Use it for an intentional distribution release after the source change has been merged and validated. It runs mandatory security gates, validates, tests, and builds the plug-ins, then publishes the generated output to `ai-plugins-dist`.
 
 CI is merge-blocking only when the target branch's protection rules require the **AI Plug-ins CI** status check. The workflow itself validates changes but does not independently prevent a merge.
@@ -25,7 +26,7 @@ The publisher:
 
 - executes only from `master`; manually dispatched runs from any other ref skip publishing;
 - fails closed before publishing when the repository-owned security gate detects a high-confidence credential in source or generated output, detects an unpinned external Action, credential-persisting checkout, or missing top-level workflow permissions, or when `npm audit` reports a High or Critical locked-dependency vulnerability;
-- runs `validate`, `test`, and `build` for `@oracle/ai-plugins` before publishing;
+- runs `validate` and `test` for both `@oracle/agent-skills` and `@oracle/ai-plugins`, then builds the plug-ins before publishing;
 - creates a sorted SHA-256 manifest after source-versus-build verification and verifies the downloaded artifact against it before any write-scoped Git credential is configured;
 - updates the orphan `ai-plugins-dist` branch only when generated plug-in output has changed;
 - requires a strictly higher stable `MAJOR.MINOR.PATCH` version when an already published plug-in's content changes; prerelease and build metadata are unsupported;
@@ -50,12 +51,19 @@ Use this only when a maintainer must publish manually. The manual process must p
 - Run commands from the repository root unless noted otherwise.
 - `git worktree` and `rsync` must be available.
 - Start from the exact source commit to release.
-- Before syncing, run the same source checks as CI:
+- Before syncing, run the applicable publisher safeguards. The integrity-manifest check is intentionally omitted: it protects the GitHub Actions artifact handoff between the `prepare` and `publish` jobs and has no direct equivalent in a local publish.
 
 ```sh
+npm ci --workspace @oracle/agent-skills --workspace @oracle/ai-plugins
+node packages/ai-plugins/scripts/release-security-gates.mjs workflows .github/workflows
+node packages/ai-plugins/scripts/release-security-gates.mjs secrets .
+npm audit --package-lock-only --audit-level=high
+npm run validate --workspace @oracle/agent-skills
 npm run validate --workspace @oracle/ai-plugins
+npm run test --workspace @oracle/agent-skills
 npm run test --workspace @oracle/ai-plugins
 npm run build --workspace @oracle/ai-plugins
+node packages/ai-plugins/scripts/release-security-gates.mjs secrets dist/ai-plugins
 npm run verify-release --workspace @oracle/ai-plugins
 ```
 

@@ -263,11 +263,9 @@ async function getPluginDirectories(packageRoot) {
 
 export async function loadWorkspace(packageRoot = process.cwd()) {
 	const buildConfigPath = path.join(packageRoot, 'config', 'build.json');
-	const pluginSchemaPath = path.join(packageRoot, 'schemas', 'plugin-build.schema.json');
 
-	const [buildConfig, pluginSchema, pluginDirectories] = await Promise.all([
+	const [buildConfig, pluginDirectories] = await Promise.all([
 		readJson(buildConfigPath),
-		readJson(pluginSchemaPath),
 		getPluginDirectories(packageRoot),
 	]);
 	const skillsRoot = path.resolve(packageRoot, buildConfig.skillsRoot);
@@ -361,7 +359,6 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 	return {
 		packageRoot,
 		buildConfig,
-		pluginSchema,
 		skillsRoot: await fs.realpath(skillsRoot).catch(() => skillsRoot),
 		commonLayersRoot: await fs.realpath(commonLayersRoot).catch(() => commonLayersRoot),
 		skillDirectories,

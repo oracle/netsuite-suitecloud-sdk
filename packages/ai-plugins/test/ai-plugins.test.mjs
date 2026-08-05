@@ -351,7 +351,6 @@ test('loadWorkspace rejects an openai plugin without a complete interface', asyn
 	const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-workspace-'));
 	const packageDir = path.join(tempRoot, 'plugins');
 	await fs.mkdir(path.join(packageDir, 'config'), { recursive: true });
-	await fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true });
 	await fs.mkdir(path.join(packageDir, 'bad-plugin'), { recursive: true });
 
 	await writeJson(path.join(packageDir, 'config', 'build.json'), {
@@ -362,10 +361,6 @@ test('loadWorkspace rejects an openai plugin without a complete interface', asyn
 		pluginDistRoot: '../dist',
 		globalExcludes: [],
 	});
-	await fs.copyFile(
-		path.join(packageRoot, 'schemas', 'plugin-build.schema.json'),
-		path.join(packageDir, 'schemas', 'plugin-build.schema.json')
-	);
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), {
 		id: 'bad-plugin',
 		version: '1.0.0',
@@ -389,15 +384,12 @@ test('loadWorkspace validates required OpenAI interface fields, accepts optional
 	const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-workspace-'));
 	const packageDir = path.join(tempRoot, 'plugins');
 	await fs.mkdir(path.join(packageDir, 'config'), { recursive: true });
-	await fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true });
 	await fs.mkdir(path.join(packageDir, 'bad-plugin', 'src'), { recursive: true });
 	await fs.mkdir(path.join(tempRoot, 'skills', 'netsuite-good-skill'), { recursive: true });
 	await fs.writeFile(path.join(tempRoot, 'skills', 'netsuite-good-skill', 'SKILL.md'), `---\nname: netsuite-good-skill\ndescription: good\nlicense: UPL\n---\n`, 'utf8');
 	await writeJson(path.join(packageDir, 'config', 'build.json'), {
 		version: 1, licenseFile: '../LICENSE.txt', skillsRoot: '../skills', commonLayersRoot: './common', pluginDistRoot: '../dist', globalExcludes: [],
 	});
-	await fs.copyFile(path.join(packageRoot, 'schemas', 'plugin-build.schema.json'), path.join(packageDir, 'schemas', 'plugin-build.schema.json'));
-
 	const metadata = { name: 'bad-plugin', description: 'bad plugin', author: { name: 'Oracle NetSuite' }, license: 'UPL', keywords: ['bad'] };
 	const pluginInterface = {
 		displayName: 'Bad Plugin', shortDescription: 'Bad plugin', longDescription: 'Bad plugin', developerName: 'Oracle NetSuite', category: 'Developer Tools',
@@ -427,12 +419,10 @@ test('loadWorkspace rejects missing or invalid generic author data', async () =>
 	const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-workspace-'));
 	const packageDir = path.join(tempRoot, 'plugins');
 	await fs.mkdir(path.join(packageDir, 'config'), { recursive: true });
-	await fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true });
 	await fs.mkdir(path.join(packageDir, 'bad-plugin'), { recursive: true });
 	await writeJson(path.join(packageDir, 'config', 'build.json'), {
 		version: 1, licenseFile: '../LICENSE.txt', skillsRoot: '../skills', commonLayersRoot: './common', pluginDistRoot: '../dist', globalExcludes: [],
 	});
-	await fs.copyFile(path.join(packageRoot, 'schemas', 'plugin-build.schema.json'), path.join(packageDir, 'schemas', 'plugin-build.schema.json'));
 	const basePlugin = {
 		id: 'bad-plugin', version: '1.0.0', platform: 'anthropic',
 		metadata: { name: 'bad-plugin', description: 'bad plugin', author: { name: 'Oracle NetSuite' }, license: 'UPL', keywords: ['bad'] },
@@ -449,7 +439,6 @@ test('loadWorkspace rejects invalid skill frontmatter', async () => {
 	const skillsRoot = path.join(tempRoot, 'skills');
 	const packageDir = path.join(tempRoot, 'plugins');
 	await fs.mkdir(path.join(packageDir, 'config'), { recursive: true });
-	await fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true });
 	await fs.mkdir(path.join(packageDir, 'bad-plugin', 'src'), { recursive: true });
 	await fs.mkdir(path.join(skillsRoot, 'netsuite-bad-skill'), { recursive: true });
 	await fs.writeFile(path.join(tempRoot, 'LICENSE.txt'), 'license\n', 'utf8');
@@ -464,10 +453,6 @@ test('loadWorkspace rejects invalid skill frontmatter', async () => {
 		pluginDistRoot: '../dist',
 		globalExcludes: [],
 	});
-	await fs.copyFile(
-		path.join(packageRoot, 'schemas', 'plugin-build.schema.json'),
-		path.join(packageDir, 'schemas', 'plugin-build.schema.json')
-	);
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), {
 		id: 'bad-plugin',
 		version: '1.0.0',
@@ -499,7 +484,6 @@ test('buildPlugin rejects generated manifests supplied by source files', async (
 	const skillsRoot = path.join(tempRoot, 'skills');
 	const packageDir = path.join(tempRoot, 'plugins');
 	await fs.mkdir(path.join(packageDir, 'config'), { recursive: true });
-	await fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true });
 	await fs.mkdir(path.join(packageDir, 'bad-plugin', 'src', '.claude-plugin'), { recursive: true });
 	await fs.mkdir(path.join(skillsRoot, 'netsuite-good-skill'), { recursive: true });
 	await fs.writeFile(path.join(tempRoot, 'LICENSE.txt'), 'license\n', 'utf8');
@@ -514,10 +498,6 @@ test('buildPlugin rejects generated manifests supplied by source files', async (
 		pluginDistRoot: '../dist',
 		globalExcludes: [],
 	});
-	await fs.copyFile(
-		path.join(packageRoot, 'schemas', 'plugin-build.schema.json'),
-		path.join(packageDir, 'schemas', 'plugin-build.schema.json')
-	);
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), {
 		id: 'bad-plugin',
 		version: '1.0.0',
@@ -552,7 +532,6 @@ test('loadWorkspace rejects missing skill directories referenced directly by plu
 	const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-workspace-'));
 	const packageDir = path.join(tempRoot, 'plugins');
 	await fs.mkdir(path.join(packageDir, 'config'), { recursive: true });
-	await fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true });
 	await fs.mkdir(path.join(packageDir, 'bad-plugin', 'src'), { recursive: true });
 	await fs.writeFile(path.join(tempRoot, 'LICENSE.txt'), 'license\n', 'utf8');
 	await fs.writeFile(path.join(packageDir, 'bad-plugin', 'src', 'README.md'), '# Temp\n', 'utf8');
@@ -565,10 +544,6 @@ test('loadWorkspace rejects missing skill directories referenced directly by plu
 		pluginDistRoot: '../dist',
 		globalExcludes: [],
 	});
-	await fs.copyFile(
-		path.join(packageRoot, 'schemas', 'plugin-build.schema.json'),
-		path.join(packageDir, 'schemas', 'plugin-build.schema.json')
-	);
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), {
 		id: 'bad-plugin',
 		version: '1.0.0',
@@ -620,7 +595,6 @@ async function createBoundaryWorkspace({ commonLayers = [] } = {}) {
 		fs.mkdir(skillDir, { recursive: true }),
 		fs.mkdir(outsideDir, { recursive: true }),
 		fs.mkdir(path.join(packageDir, 'config'), { recursive: true }),
-		fs.mkdir(path.join(packageDir, 'schemas'), { recursive: true }),
 	]);
 	await Promise.all([
 		fs.writeFile(path.join(tempRoot, 'LICENSE.txt'), 'license\n', 'utf8'),
@@ -629,7 +603,6 @@ async function createBoundaryWorkspace({ commonLayers = [] } = {}) {
 		fs.writeFile(path.join(outsideDir, 'outside.txt'), 'must not be collected\n', 'utf8'),
 		fs.writeFile(path.join(skillDir, 'SKILL.md'), '---\nname: netsuite-good-skill\ndescription: good\nlicense: UPL\n---\n', 'utf8'),
 	]);
-	await fs.copyFile(path.join(packageRoot, 'schemas', 'plugin-build.schema.json'), path.join(packageDir, 'schemas', 'plugin-build.schema.json'));
 	await writeJson(path.join(packageDir, 'config', 'build.json'), {
 		version: 1,
 		licenseFile: '../LICENSE.txt',
