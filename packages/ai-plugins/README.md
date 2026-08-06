@@ -1,4 +1,4 @@
-# AI Plug-ins Workspace
+# AI Agent Plug-ins Workspace
 
 This workspace builds source-managed plug-in directories for distribution through OpenAI and Anthropic from `plugin.build.json` files. Each plug-in declares its resources in its own `plugin.build.json`.
 
@@ -25,4 +25,4 @@ Generated output is written only to `dist/ai-plugins/` and should never be edite
 
 ## Distribution and Releases
 
-Release operators should follow the [AI Plug-ins Distribution and Release Guide](DISTRIBUTION.md). The manually dispatched **Publish AI Plug-ins Dist** workflow is the standard release path.
+Release operators should follow the [AI Agent Plug-ins Distribution and Release Guide](DISTRIBUTION.md). The manually dispatched **Publish AI Agent Plug-ins Dist** workflow is the standard release path.
