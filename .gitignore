@@ -12,6 +12,9 @@
 # transpiled .js files
 packages/**/dist
 
+# distribution files for ai-plugins
+dist/ai-plugins/
+
 # coverage reports
 **/coverage/**
 

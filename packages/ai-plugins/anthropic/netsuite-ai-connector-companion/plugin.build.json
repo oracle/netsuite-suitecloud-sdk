@@ -1,0 +1,37 @@
+{
+	"$schema": "../../schemas/plugin-build.schema.json",
+	"id": "netsuite-ai-connector-companion",
+	"version": "1.0.0",
+	"platform": "anthropic",
+	"metadata": {
+		"name": "netsuite-ai-connector-companion",
+		"displayName": "NetSuite AI Connector Companion",
+		"description": "Guide AI assistants using NetSuite AI Connector.",
+		"author": {
+			"name": "Oracle NetSuite",
+			"url": "https://www.netsuite.com"
+		},
+		"license": "The Universal Permissive License (UPL), Version 1.0",
+		"keywords": [
+			"netsuite",
+			"aiconnector",
+			"mcp"
+		],
+		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/anthropic/netsuite-ai-connector-companion",
+		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk"
+	},
+	"skills": [
+		"netsuite-ai-connector-instructions"
+	],
+	"commonLayers": [],
+	"inputs": [
+		{
+			"root": "src",
+			"destination": ".",
+			"include": [
+				"README.md"
+			],
+			"exclude": []
+		}
+	]
+}

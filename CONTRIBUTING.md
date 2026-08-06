@@ -43,6 +43,15 @@ Only pull requests from contributors who can be verified as having signed the OC
    your changes. Ensure that you reference the issue you created as well.
 7. We will assign the pull request to 2-3 people for review before it is merged.
 
+## Workflow dependency review
+
+When reviewing a pull request that changes a GitHub Actions dependency, confirm:
+
+1. The action uses the expected upstream owner and repository.
+2. The pinned commit SHA maps to the stated upstream release or tag and has GitHub provenance.
+3. The version comment next to the SHA is retained.
+4. Required CI checks pass before the pull request is merged.
+
 ## Code of Conduct
 
 Follow the [Golden Rule](https://en.wikipedia.org/wiki/Golden_Rule). For more specific guidelines, see the [Contributor Covenant Code of Conduct][COC].
