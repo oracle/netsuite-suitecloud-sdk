@@ -246,6 +246,7 @@
 	"COMMAND_UPLOADFILES_MESSAGES_RESTRICTED_FOLDER": "Restricted Folder",
 	"COMMAND_UPLOADFILES_MESSAGES_UPLOADING_FILES": "Uploading files...",
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_UPLOADED": "The following files were uploaded:",
+	"COMMAND_UPLOADFILES_OUTPUT_FILES_UPDATED": "The following files were updated:",
 	"COMMAND_UPLOADFILES_OUTPUT_FILES_NOT_UPLOADED": "The following files were not uploaded:",
 	"COMMAND_UPLOADFILES_ERROR_RESTRICTED_FOLDER": "The file is inside an invalid or restricted folder",
 

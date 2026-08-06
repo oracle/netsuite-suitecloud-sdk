@@ -14,11 +14,13 @@ export {
 	selectManageAuthAction,
 	validateManageAuthOptions,
 } from '../commands/account/manageauth/ManageAuthHandler';
-export { FILE_COMMAND_STATUS } from '../api/file/FileCommand';
+export { FILE_COMMAND_STATUS, UPLOAD_FILE_ACTION } from '../api/file/FileCommand';
 export type {
 	ImportFileResult,
 	ImportFilesOperationResult,
 	ImportFilesResult,
+	UploadFileAction,
+	UploadFileResult,
 } from '../api/file/FileCommand';
 export { executeImportFiles } from '../commands/file/import/ImportFilesExecutor';
 export { executeListFiles, executeListFolders } from '../commands/file/list/ListFilesExecutor';
