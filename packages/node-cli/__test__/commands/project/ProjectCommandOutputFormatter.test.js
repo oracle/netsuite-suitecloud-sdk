@@ -36,7 +36,7 @@ describe('ProjectCommandOutputFormatter', () => {
 			'Validation Results: 0 error(s), 0 warning(s)',
 			'SDF Errors: none',
 			'Timestamp: Jul 23, 2026, 3:41:35 PM GMT+2',
-			'Account ID: 11550285',
+			'Account ID: 1234567',
 			'Apply Installation Preferences: Yes',
 			'------------------------------------------------------------',
 			'✔ Step 1: MANIFEST_VALIDATION',
@@ -48,7 +48,7 @@ describe('ProjectCommandOutputFormatter', () => {
 
 		expect(log.info).toHaveBeenCalledWith('DEPLOY SUMMARY');
 		expect(log.info).toHaveBeenCalledWith('Timestamp: Jul 23, 2026, 3:41:35 PM GMT+2');
-		expect(log.info).toHaveBeenCalledWith('Account ID: 11550285');
+		expect(log.info).toHaveBeenCalledWith('Account ID: 1234567');
 		expect(log.info).toHaveBeenCalledWith('Apply Installation Preferences: Yes');
 		expect(log.result).toHaveBeenCalledWith('Status: SUCCESS');
 		expect(log.result).toHaveBeenCalledWith('✔ Step 1: MANIFEST_VALIDATION');
