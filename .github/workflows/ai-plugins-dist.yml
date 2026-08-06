@@ -115,6 +115,7 @@ jobs:
         with:
           name: verified-ai-plugins-dist
           path: dist/ai-plugins
+          include-hidden-files: true
           if-no-files-found: error
 
       - name: Upload release metadata
