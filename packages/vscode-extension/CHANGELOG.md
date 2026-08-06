@@ -1,5 +1,11 @@
 # Change Log
 
+## 4.0.0
+
+- TO-BE reviewed by TechWriter
+- Updated **SuiteCloud: Deploy Project** command
+- Updated **SuiteCloud: Validate Accounts** command
+
 ## 3.1.3
 
 - Fix for security vulnerabilities

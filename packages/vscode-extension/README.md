@@ -24,9 +24,9 @@ The following table shows the extension versions currently available in the Mark
 
 | Extension Versions Available in the Marketplace |
 |:-----------------------------------------------:|
+| 4.0.0 |
 | 3.1.3 |
 | 3.1.2 |
-| 3.1.1 |
 
 ## Installing SuiteCloud Extension for Visual Studio Code
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
