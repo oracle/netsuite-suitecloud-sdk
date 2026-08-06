@@ -66,6 +66,7 @@ jobs:
         shell: bash
         env:
           DIST_BRANCH: ai-plugins-dist
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
@@ -76,8 +77,8 @@ jobs:
           : > "${metadata_dir}/changed-plugins.tsv"
           trap 'rm -rf "${previous_dir}"' EXIT
 
-          # The read-scoped token is supplied only to this command and is never
-          # persisted in Git configuration.
+          # The read-scoped token is limited to this step and is never persisted
+          # in Git configuration.
           if git -c http.extraHeader="AUTHORIZATION: bearer ${GITHUB_TOKEN}" \
             fetch --no-tags origin "${DIST_BRANCH}:${DIST_BRANCH}"; then
             git archive "${DIST_BRANCH}" | tar -x -C "${previous_dir}"
@@ -155,6 +156,7 @@ jobs:
         env:
           DEFAULT_BRANCH: master
           DIST_BRANCH: ai-plugins-dist
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
