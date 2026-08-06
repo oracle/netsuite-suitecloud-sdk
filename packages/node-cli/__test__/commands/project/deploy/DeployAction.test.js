@@ -95,13 +95,13 @@ describe('DeployAction ignored options', () => {
 
 		expect(deployAction._buildSummaryContext({
 			accountInfo: {
-				companyId: '11550285',
-				companyName: 'DevTools Test',
+				companyId: '1234567',
+				companyName: 'Example Account',
 				roleName: 'Administrator',
 			},
 		})).toEqual({
-			accountId: '11550285',
-			accountName: 'DevTools Test',
+			accountId: '1234567',
+			accountName: 'Example Account',
 			projectName: 'My Project',
 			roleName: 'Administrator',
 		});
