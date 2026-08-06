@@ -3,6 +3,10 @@ name: Publish AI Plug-ins Dist
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ai-plugins-dist-release
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
