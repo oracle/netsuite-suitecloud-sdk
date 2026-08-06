@@ -1,4 +1,4 @@
-# AI Plug-ins Distribution and Release Guide
+# AI Agent Plug-ins Distribution and Release Guide
 
 This guide is the release reference for the generated AI plug-in artifacts published on the `ai-plugins-dist` orphan branch. Source remains on the repository's normal branches; the distribution branch contains only generated release content at its root.
 
@@ -7,15 +7,15 @@ This guide is the release reference for the generated AI plug-in artifacts publi
 Three workflows support AI plug-in changes:
 
 - **Agent Skills CI** is the sole continuous-integration validator and test suite for Agent Skill content.
-- **AI Plug-ins CI** runs automatically for pull requests and pushes to `master` when relevant AI plug-in source, shared skills, package files, license files, ignore files, or workflow files change. Skill changes trigger it so it can rebuild affected distributions; it validates plug-in configuration, runs plug-in tests, builds the plug-ins, and verifies the release output.
-- **Publish AI Plug-ins Dist** is manually dispatched and executes only when dispatched from `master`. Dispatches from other refs intentionally skip its `publish` job. Use it for an intentional distribution release after the source change has been merged and validated. It runs mandatory security gates, validates, tests, and builds the plug-ins, then publishes the generated output to `ai-plugins-dist`.
+- **AI Agent Plug-ins CI** runs automatically for pull requests and pushes to `master` when relevant AI plug-in source, shared skills, package files, license files, ignore files, or workflow files change. Skill changes trigger it so it can rebuild affected distributions; it validates plug-in configuration, runs plug-in tests, builds the plug-ins, and verifies the release output.
+- **Publish AI Agent Plug-ins Dist** is manually dispatched and executes only when dispatched from `master`. Dispatches from other refs intentionally skip its `publish` job. Use it for an intentional distribution release after the source change has been merged and validated. It runs mandatory security gates, validates, tests, and builds the plug-ins, then publishes the generated output to `ai-plugins-dist`.
 
-CI is merge-blocking only when the target branch's protection rules require the **AI Plug-ins CI** status check. The workflow itself validates changes but does not independently prevent a merge.
+CI is merge-blocking only when the target branch's protection rules require the **AI Agent Plug-ins CI** status check. The workflow itself validates changes but does not independently prevent a merge.
 
 ## Standard Release Procedure
 
-1. Merge the intended source changes to `master` and confirm the applicable **AI Plug-ins CI** run succeeds.
-2. In GitHub Actions, manually run **Publish AI Plug-ins Dist** from `master`. Dispatches from any other ref are skipped and do not write the distribution branch or tags.
+1. Merge the intended source changes to `master` and confirm the applicable **AI Agent Plug-ins CI** run succeeds.
+2. In GitHub Actions, manually run **Publish AI Agent Plug-ins Dist** from `master`. Dispatches from any other ref are skipped and do not write the distribution branch or tags.
 3. Consume the generated plug-in directories from the `ai-plugins-dist` branch and the version tags created for changed plug-ins.
 
 The publisher is the standard release mechanism. Do not edit the distribution branch by hand.
@@ -85,10 +85,10 @@ For the initial release and all later releases, synchronize the generated output
 
 ```sh
 rsync -a --delete --exclude .git dist/ai-plugins/ ../ai-plugins-dist/
-printf '%s\n' '# AI Plug-ins Distribution' '' 'Generated plug-in directories published from the `master` branch source tree.' > ../ai-plugins-dist/README.md
+printf '%s\n' '# AI Agent Plug-ins Distribution' '' 'Generated plug-in directories published from the `master` branch source tree.' > ../ai-plugins-dist/README.md
 git -C ../ai-plugins-dist status --short
 git -C ../ai-plugins-dist add -A
-git -C ../ai-plugins-dist commit -m "Publish AI plug-ins from $(git rev-parse HEAD)"
+git -C ../ai-plugins-dist commit -m "Publish AI Agent Plug-ins from $(git rev-parse HEAD)"
 git -C ../ai-plugins-dist push -u origin ai-plugins-dist
 ```
 

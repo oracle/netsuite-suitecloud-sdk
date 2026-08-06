@@ -1,4 +1,4 @@
-name: Publish AI Plug-ins Dist
+name: Publish AI Agent Plug-ins Dist
 
 on:
   workflow_dispatch:
@@ -179,7 +179,7 @@ jobs:
 
           git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           cp -R dist/ai-plugins/. "${worktree_dir}/"
-          printf '# AI Plug-ins Distribution\n\nGenerated plugin directories published from the `%s` branch source tree.\n' "${DEFAULT_BRANCH}" > "${worktree_dir}/README.md"
+          printf '# AI Agent Plug-ins Distribution\n\nGenerated plugin directories published from the `%s` branch source tree.\n' "${DEFAULT_BRANCH}" > "${worktree_dir}/README.md"
 
           git -C "${worktree_dir}" add README.md .
           git -C "${worktree_dir}" commit -m "Publish AI plugins from ${source_sha}"
