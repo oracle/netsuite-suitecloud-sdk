@@ -18,7 +18,7 @@ npm run build:one --workspace @oracle/ai-plugins -- <provider>/<plugin-id>
 npm run verify-release --workspace @oracle/ai-plugins
 ```
 
-`<provider>/<plugin-id>` is one of `anthropic/netsuite-ai-connector-companion`, `anthropic/netsuite-finance-analyst`, `anthropic/netsuite-suitecloud`, `openai/netsuite-ai-connector-companion`, `openai/netsuite-finance-analyst`, or `openai/netsuite-suitecloud`.
+`<provider>/<plugin-id>` is one of `anthropic/netsuite-ai-companion`, `anthropic/netsuite-finance-analyst`, `anthropic/netsuite-suitecloud`, `openai/netsuite-ai-companion`, `openai/netsuite-finance-analyst`, or `openai/netsuite-suitecloud`.
 You can also target a plug-in by bare ID only when that ID is unique; these provider plug-ins have duplicate IDs and require the qualified key.
 
 Generated output is written only to `dist/ai-plugins/` and should never be edited by hand.
