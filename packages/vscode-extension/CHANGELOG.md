@@ -2,8 +2,8 @@
 
 ## 4.0.0
 
-- Updated **SuiteCloud: Deploy Project** command
-- Updated **SuiteCloud: Validate Project** command
+- Updated output for **SuiteCloud: Deploy Project** command
+- Updated output for **SuiteCloud: Validate Project** command
 
 ## 3.1.3
 
