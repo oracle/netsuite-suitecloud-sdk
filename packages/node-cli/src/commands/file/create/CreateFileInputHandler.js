@@ -79,7 +79,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
 
     _questionSelectSuiteScriptType() {
         return {
-            type: CommandUtils.INQUIRER_TYPES.LIST,
+            type: CommandUtils.INQUIRER_TYPES.SELECT,
             name: ANSWER_NAMES.TYPE,
             message: NodeTranslationService.getMessage(QUESTIONS.CHOOSE_SUITESCRIPT_TYPE),
             pageSize: 15,
@@ -95,7 +95,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
 
     _questionAddSuiteScriptModules() {
         return {
-            type: CommandUtils.INQUIRER_TYPES.LIST,
+            type: CommandUtils.INQUIRER_TYPES.SELECT,
             name: ANSWER_NAMES.ADD_SUITESCRIPT_MODULES,
             message: NodeTranslationService.getMessage(QUESTIONS.ADD_SUITESCRIPT_MODULES),
             default: true,
@@ -128,7 +128,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
 
     _questionSelectDestinationFolder(folderChoices) {
         return {
-            type: CommandUtils.INQUIRER_TYPES.LIST,
+            type: CommandUtils.INQUIRER_TYPES.SELECT,
             name: ANSWER_NAMES.PARENT_PATH,
             message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
             pageSize: 15,
