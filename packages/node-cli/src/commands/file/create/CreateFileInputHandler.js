@@ -132,6 +132,7 @@ module.exports = class CreateFileInputHandler extends BaseInputHandler {
             name: ANSWER_NAMES.PARENT_PATH,
             message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
             pageSize: 15,
+            default: folderChoices.find((choice) => !choice.disabled).value,
             choices: folderChoices,
         };
     }
