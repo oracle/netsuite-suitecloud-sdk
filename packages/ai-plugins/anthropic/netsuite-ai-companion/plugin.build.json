@@ -1,10 +1,10 @@
 {
 	"$schema": "../../schemas/plugin-build.schema.json",
-	"id": "netsuite-ai-connector-companion",
+	"id": "netsuite-ai-companion",
 	"version": "1.0.0",
 	"platform": "anthropic",
 	"metadata": {
-		"name": "netsuite-ai-connector-companion",
+		"name": "netsuite-ai-companion",
 		"displayName": "NetSuite AI Connector Companion",
 		"description": "Guide AI assistants using NetSuite AI Connector.",
 		"author": {
@@ -17,7 +17,7 @@
 			"aiconnector",
 			"mcp"
 		],
-		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/anthropic/netsuite-ai-connector-companion",
+		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/anthropic/netsuite-ai-companion",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk"
 	},
 	"skills": [
