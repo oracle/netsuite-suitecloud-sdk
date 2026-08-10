@@ -35,13 +35,13 @@ Since CLI for Node.js is a development tool, use a global instance to install it
 ```
 npm install -g @oracle/suitecloud-cli
 ```
-When installing SuiteCloud CLI for Node.js via script, for instance in a CI environment, you can skip showing the license presented during the normal installation process by setting the `SUITECLOUD_CLI_ACCEPT_LICENSE` environment variable to `true`. By setting this variable, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions license. See the [License](#license) section for details.
+When you install SuiteCloud CLI for Node.js through a script, such as in a CI environment, set the `SUITECLOUD_CLI_ACCEPT_LICENSE` environment variable to `true` to suppress the license prompt. By setting this variable, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions. For details, see the [License](#license) section.
 
 ```
 SUITECLOUD_CLI_ACCEPT_LICENSE=true npm install -g @oracle/suitecloud-cli
 ```
 
-For PowerShell:
+If you use PowerShell, run:
 
 ```
 $env:SUITECLOUD_CLI_ACCEPT_LICENSE = 'true'
