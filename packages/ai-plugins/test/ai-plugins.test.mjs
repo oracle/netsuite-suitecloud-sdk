@@ -11,7 +11,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { promisify } from 'node:util';
 import { loadWorkspace, getNormalizedSkills } from '../scripts/lib/build-config.mjs';
-import { buildPlugin } from '../scripts/lib/plugin-builder.mjs';
+import { buildPlugin, buildPlugins } from '../scripts/lib/plugin-builder.mjs';
 import { listRelativeFiles, writeJson } from '../scripts/lib/fs-utils.mjs';
 import { generateManifest } from '../scripts/lib/manifest.mjs';
 import {
@@ -26,6 +26,7 @@ import {
 	isValidReleaseVersion,
 	parseReleaseVersion,
 } from '../scripts/release-version.mjs';
+import { verifyRootReadme } from '../scripts/verify-release.mjs';
 
 const packageRoot = path.resolve(process.cwd());
 const execFileAsync = promisify(execFile);
@@ -345,6 +346,28 @@ test('buildPlugin replaces stale output on repeated builds', async () => {
 
 	assert(!files.includes('stale.txt'));
 	assert.match(second.outputDir, /dist\/ai-plugins\/anthropic\/netsuite-suitecloud$/);
+});
+
+test('output builds copy the static distribution README byte-for-byte', async () => {
+	const workspace = await loadWorkspace(packageRoot);
+	await buildPlugins(['anthropic/netsuite-suitecloud'], { workspace, writeOutput: true });
+
+	const [sourceReadme, distributionReadme] = await Promise.all([
+		fs.readFile(path.join(packageRoot, 'README.md')),
+		fs.readFile(path.resolve(packageRoot, workspace.buildConfig.pluginDistRoot, 'README.md')),
+	]);
+	assert(sourceReadme.equals(distributionReadme));
+});
+
+test('release verification rejects missing or altered root README files', async () => {
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-release-readme-'));
+	const workspace = { packageRoot: root, buildConfig: { pluginDistRoot: 'dist' } };
+	await fs.writeFile(path.join(root, 'README.md'), '# Reviewed README\n', 'utf8');
+	await fs.mkdir(path.join(root, 'dist'));
+
+	await assert.rejects(() => verifyRootReadme(workspace), /missing root README\.md/);
+	await fs.writeFile(path.join(root, 'dist', 'README.md'), '# Altered README\n', 'utf8');
+	await assert.rejects(() => verifyRootReadme(workspace), /root README\.md differs/);
 });
 
 test('loadWorkspace rejects an openai plugin without a complete interface', async () => {

@@ -288,6 +288,7 @@ export async function buildPlugin(pluginName, options = {}) {
 
 export async function buildPlugins(pluginNames, options = {}) {
 	const workspace = options.workspace ?? (await loadWorkspace());
+	const writeOutput = options.writeOutput ?? true;
 	const targets =
 		pluginNames.length > 0
 			? pluginNames
@@ -296,6 +297,11 @@ export async function buildPlugins(pluginNames, options = {}) {
 	const results = [];
 	for (const pluginName of targets) {
 		results.push(await buildPlugin(pluginName, { ...options, workspace }));
+	}
+
+	if (writeOutput) {
+		const distRoot = path.resolve(workspace.packageRoot, workspace.buildConfig.pluginDistRoot);
+		await copyFileStrict(path.join(workspace.packageRoot, 'README.md'), path.join(distRoot, 'README.md'));
 	}
 
 	return results;
