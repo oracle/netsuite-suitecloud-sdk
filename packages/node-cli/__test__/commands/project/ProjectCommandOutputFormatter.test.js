@@ -66,8 +66,14 @@ describe('ProjectCommandOutputFormatter', () => {
 
 	it('should classify error lines for formatted project output', () => {
 		const log = createLogMock();
-		logCommandErrors(log, ['Status: FAILED', 'ERROR: Endpoint error']);
+		logCommandErrors(log, [
+			'Status: FAILED',
+			'  - ERROR: Endpoint error',
+			'  - WARNING: Validation warning',
+		]);
 		expect(log.error).toHaveBeenCalledWith('Status: FAILED');
-		expect(log.error).toHaveBeenCalledWith('ERROR: Endpoint error');
+		expect(log.error).toHaveBeenCalledWith('  - ERROR: Endpoint error');
+		expect(log.warning).toHaveBeenCalledWith('  - WARNING: Validation warning');
+		expect(log.error).not.toHaveBeenCalledWith('  - WARNING: Validation warning');
 	});
 });
