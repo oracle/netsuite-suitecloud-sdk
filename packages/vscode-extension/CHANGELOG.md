@@ -2,9 +2,8 @@
 
 ## 4.0.0
 
-- TO-BE reviewed by TechWriter
-- Updated **SuiteCloud: Deploy Project** command
-- Updated **SuiteCloud: Validate Accounts** command
+- Updated output for **SuiteCloud: Deploy Project** command
+- Updated output for **SuiteCloud: Validate Project** command
 
 ## 3.1.3
 
