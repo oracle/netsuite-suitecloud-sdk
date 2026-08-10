@@ -1,0 +1,32 @@
+{
+  "name": "netsuite-suitecloud",
+  "description": "Develop NetSuite SuiteCloud solutions with SuiteScript, SDF, and best practices.",
+  "author": {
+    "name": "Oracle NetSuite",
+    "url": "https://www.netsuite.com"
+  },
+  "license": "The Universal Permissive License (UPL), Version 1.0",
+  "keywords": [
+    "netsuite",
+    "suitecloud",
+    "suitescript",
+    "sdf",
+    "uif"
+  ],
+  "homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suitecloud",
+  "repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
+  "interface": {
+    "displayName": "NetSuite SuiteCloud",
+    "shortDescription": "Develop NetSuite SuiteCloud solutions with SuiteScript, SDF, and best practices.",
+    "longDescription": "This plug-in includes skills that support key areas of SuiteCloud development, such as SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, and maintainable code and project artifacts.",
+    "developerName": "Oracle NetSuite",
+    "category": "Developer Tools",
+    "websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suitecloud",
+    "privacyPolicyURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suitecloud",
+    "logo": "./assets/netsuite-logo.png",
+    "composerIcon": "./assets/netsuite-icon.png",
+    "brandColor": "#294B5F"
+  },
+  "version": "1.0.0",
+  "skills": "./skills/"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "netsuite-finance-analyst",
+  "displayName": "NetSuite Finance Analyst",
+  "description": "Deliver Director-level finance analysis on live NetSuite data.",
+  "author": {
+    "name": "Oracle NetSuite",
+    "url": "https://www.netsuite.com"
+  },
+  "license": "The Universal Permissive License (UPL), Version 1.0",
+  "keywords": [
+    "netsuite",
+    "finance",
+    "mcp"
+  ],
+  "homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/anthropic/netsuite-finance-analyst",
+  "repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
+  "version": "1.0.0",
+  "skills": "./skills/"
+}

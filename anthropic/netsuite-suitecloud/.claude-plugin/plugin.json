@@ -1,0 +1,21 @@
+{
+  "name": "netsuite-suitecloud",
+  "displayName": "NetSuite SuiteCloud",
+  "description": "Develop NetSuite SuiteCloud solutions with SuiteScript, SDF, and best practices.",
+  "author": {
+    "name": "Oracle NetSuite",
+    "url": "https://www.netsuite.com"
+  },
+  "license": "The Universal Permissive License (UPL), Version 1.0",
+  "keywords": [
+    "netsuite",
+    "suitecloud",
+    "suitescript",
+    "sdf",
+    "uif"
+  ],
+  "homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/anthropic/netsuite-suitecloud",
+  "repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
+  "version": "1.0.0",
+  "skills": "./skills/"
+}

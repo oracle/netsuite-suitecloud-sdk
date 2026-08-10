@@ -1,0 +1,30 @@
+{
+  "name": "netsuite-finance-analyst",
+  "description": "Deliver Director-level finance analysis on live NetSuite data.",
+  "author": {
+    "name": "Oracle NetSuite",
+    "url": "https://www.netsuite.com"
+  },
+  "license": "The Universal Permissive License (UPL), Version 1.0",
+  "keywords": [
+    "netsuite",
+    "finance",
+    "mcp"
+  ],
+  "homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-finance-analyst",
+  "repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
+  "interface": {
+    "displayName": "NetSuite Finance Analyst",
+    "shortDescription": "Deliver Director-level finance analysis on live NetSuite data.",
+    "longDescription": "This plug-in provides Director-level finance analysis on live NetSuite data, including financial reporting, period-close activities, variance, aging, and reconciliation reviews, cash reporting, and board-ready financial narratives with clear next actions.",
+    "developerName": "Oracle NetSuite",
+    "category": "Business & Operations",
+    "websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-finance-analyst",
+    "privacyPolicyURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-finance-analyst",
+    "logo": "./assets/netsuite-logo.png",
+    "composerIcon": "./assets/netsuite-icon.png",
+    "brandColor": "#294B5F"
+  },
+  "version": "1.0.0",
+  "skills": "./skills/"
+}
