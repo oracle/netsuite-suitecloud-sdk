@@ -20,7 +20,7 @@
 		"directory": "packages/vscode-extension"
 	},
 	"engines": {
-		"vscode": "^1.96.0"
+		"vscode": "^1.106.0"
 	},
 	"categories": [
 		"Other"
@@ -252,13 +252,13 @@
 	},
 	"devDependencies": {
 		"@types/mocha": "10.0.10",
-		"@types/node": "20.17.14",
-		"@types/vscode": "1.96.0",
-		"@typescript-eslint/eslint-plugin": "8.20.0",
-		"@typescript-eslint/parser": "8.20.0",
-		"@vscode/test-electron": "2.4.1",
-		"eslint": "9.18.0",
-		"eslint-config-prettier": "10.0.1",
+		"@types/node": "22.20.1",
+		"@types/vscode": "1.106.0",
+		"@typescript-eslint/eslint-plugin": "8.66.0",
+		"@typescript-eslint/parser": "8.66.0",
+		"@vscode/test-electron": "3.1.0",
+		"eslint": "10.8.1",
+		"eslint-config-prettier": "10.1.8",
 		"mocha": "11.1.0",
 		"typescript": "5.9.3"
 	}
