@@ -35,10 +35,10 @@ The publisher:
 
 Each distribution update also generates a branch-root `README.md` identifying the source branch used for that release. The branch root is otherwise limited to generated plug-in directories:
 
-- `anthropic/netsuite-ai-connector-companion/`
+- `anthropic/netsuite-ai-companion/`
 - `anthropic/netsuite-finance-analyst/`
 - `anthropic/netsuite-suitecloud/`
-- `openai/netsuite-ai-connector-companion/`
+- `openai/netsuite-ai-companion/`
 - `openai/netsuite-finance-analyst/`
 - `openai/netsuite-suitecloud/`
 

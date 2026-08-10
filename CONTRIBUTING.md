@@ -43,7 +43,7 @@ Only pull requests from contributors who can be verified as having signed the OC
    your changes. Ensure that you reference the issue you created as well.
 7. We will assign the pull request to 2-3 people for review before it is merged.
 
-## Workflow dependency review
+## Workflow Dependency Review
 
 When reviewing a pull request that changes a GitHub Actions dependency, confirm:
 

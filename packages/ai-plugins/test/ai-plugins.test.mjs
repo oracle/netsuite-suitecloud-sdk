@@ -205,10 +205,10 @@ test('workspace config recursively discovers six provider-qualified plugins with
 	assert.deepEqual(
 		workspace.plugins.map((plugin) => plugin.sourceKey),
 		[
-			'anthropic/netsuite-ai-connector-companion',
+			'anthropic/netsuite-ai-companion',
 			'anthropic/netsuite-finance-analyst',
 			'anthropic/netsuite-suitecloud',
-			'openai/netsuite-ai-connector-companion',
+			'openai/netsuite-ai-companion',
 			'openai/netsuite-finance-analyst',
 			'openai/netsuite-suitecloud',
 		]
@@ -218,7 +218,7 @@ test('workspace config recursively discovers six provider-qualified plugins with
 		assert.equal(plugin.platform, plugin.sourceKey.startsWith('anthropic/') ? 'anthropic' : 'openai');
 	}
 
-	for (const plugin of workspace.plugins.filter((plugin) => plugin.id === 'netsuite-ai-connector-companion')) {
+	for (const plugin of workspace.plugins.filter((plugin) => plugin.id === 'netsuite-ai-companion')) {
 		assert.deepEqual(getNormalizedSkills(plugin), ['netsuite-ai-connector-instructions']);
 	}
 
@@ -233,7 +233,7 @@ test('workspace config recursively discovers six provider-qualified plugins with
 
 test('provider-qualified plugins build without collisions and ambiguous bare IDs fail clearly', async () => {
 	const workspace = await loadWorkspace(packageRoot);
-	const result = await buildPlugin('openai/netsuite-ai-connector-companion', { workspace, writeOutput: false });
+	const result = await buildPlugin('openai/netsuite-ai-companion', { workspace, writeOutput: false });
 	const files = await listRelativeFiles(result.outputDir);
 
 	assert(files.includes('.codex-plugin/plugin.json'));
@@ -243,7 +243,7 @@ test('provider-qualified plugins build without collisions and ambiguous bare IDs
 
 	const manifest = JSON.parse(await fs.readFile(path.join(result.outputDir, '.codex-plugin', 'plugin.json'), 'utf8'));
 	assert.equal(manifest.skills, './skills/');
-	assert.equal(manifest.name, 'netsuite-ai-connector-companion');
+	assert.equal(manifest.name, 'netsuite-ai-companion');
 	assert.deepEqual(manifest.interface, result.plugin.metadata.interface);
 	assert.equal(manifest.interface.brandColor, '#294B5F');
 	for (const assetPath of getOpenAIInterfaceAssetPaths(result.plugin)) {
@@ -251,7 +251,7 @@ test('provider-qualified plugins build without collisions and ambiguous bare IDs
 	}
 
 	await assert.rejects(
-		() => buildPlugin('netsuite-ai-connector-companion', { workspace, writeOutput: false }),
+		() => buildPlugin('netsuite-ai-companion', { workspace, writeOutput: false }),
 		/ambiguous plugin id.*provider-qualified/i
 	);
 });
