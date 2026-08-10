@@ -1,28 +1,19 @@
-# AI Agent Plug-ins Workspace
+<p align="left"><a href="#"><img width="250" src="../../resources/Netsuite-logo-ocean-150-bg.png"></a></p>
 
-This workspace builds source-managed plug-in directories for distribution through OpenAI and Anthropic from `plugin.build.json` files. Each plug-in declares its resources in its own `plugin.build.json`.
+# AI Agent Plug-ins
+AI Agent Plug-ins package skills for installation on supported AI platforms. The included skills provide NetSuite-specific guidance and repeatable workflows for business users and SuiteCloud developers. AI Agent Plug-ins help business users and SuiteCloud developers across supported OpenAI and Anthropic platforms. Business users can install NetSuite AI Connector Companion and NetSuite Finance Analyst plug-ins to enhance AI-assisted NetSuite workflows. SuiteCloud developers can install the NetSuite SuiteCloud plug-in to access SuiteCloud development skills. Installation steps vary by platform, but the underlying skills and capabilities remain consistent.
 
-`metadata` is copied directly to the generated manifest root for both providers. The build then injects the build-owned `version` and `skills` fields. For OpenAI plug-ins, UI-manifest fields belong to `metadata.interface`; this object is preserved exactly, including future JSON-compatible interface properties. Anthropic metadata, including nested properties such as `interface`, are also passed through unchanged.
+## Included Plug-ins
 
-## Commands
+### Business User Plug-ins
+- **NetSuite AI Connector Companion Plug-in (netsuite-ai-companion):** Includes the NetSuite AI Connector Instructions skill. This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails. 
+- **NetSuite Finance Analyst Plug-in (netsuite-finance-analyst):** Includes the NetSuite Finance Analyst skill. This plug-in provides Director-level finance analysis on live NetSuite data, including financial reporting, period-close activities, variance, aging, and reconciliation reviews, cash reporting, and board-ready financial narratives with clear next actions.
 
-Use these commands to validate, test, build, and verify the plug-in distributions.
+### SuiteCloud Development Plug-ins
+- **NetSuite SuiteCloud Plug-in (netsuite-suitecloud):** It includes skills that support key areas of SuiteCloud development, such as SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, and maintainable code and project artifacts.
 
-Run from the repository root:
+## Contributing
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](/CONTRIBUTING.md).
 
-```sh
-npm run validate --workspace @oracle/ai-plugins
-npm run test --workspace @oracle/ai-plugins
-npm run build --workspace @oracle/ai-plugins
-npm run build:one --workspace @oracle/ai-plugins -- <provider>/<plugin-id>
-npm run verify-release --workspace @oracle/ai-plugins
-```
-
-`<provider>/<plugin-id>` is one of `anthropic/netsuite-ai-connector-companion`, `anthropic/netsuite-finance-analyst`, `anthropic/netsuite-suitecloud`, `openai/netsuite-ai-connector-companion`, `openai/netsuite-finance-analyst`, or `openai/netsuite-suitecloud`.
-You can also target a plug-in by bare ID only when that ID is unique; these provider plug-ins have duplicate IDs and require the qualified key.
-
-Generated output is written only to `dist/ai-plugins/` and should never be edited by hand.
-
-## Distribution and Releases
-
-Release operators should follow the [AI Agent Plug-ins Distribution and Release Guide](DISTRIBUTION.md). The manually dispatched **Publish AI Agent Plug-ins Dist** workflow is the standard release path.
+## [License](../../LICENSE.txt)
+Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.

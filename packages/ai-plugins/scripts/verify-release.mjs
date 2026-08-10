@@ -66,20 +66,47 @@ async function runCommand(command, args) {
 	});
 }
 
-const workspace = await loadWorkspace();
-const stagedResults = await buildPlugins([], { workspace, writeOutput: false });
-const hasClaudeCli = await commandExists('claude');
+export async function verifyRootReadme(workspace) {
+	const expectedPath = path.join(workspace.packageRoot, 'README.md');
+	const releasePath = path.resolve(workspace.packageRoot, workspace.buildConfig.pluginDistRoot, 'README.md');
+	let actualContents;
 
-for (const result of stagedResults) {
-	const releaseDir = path.resolve(workspace.packageRoot, workspace.buildConfig.pluginDistRoot, result.plugin.sourceKey);
-	const errors = await compareDirectories(result.outputDir, releaseDir);
-	if (errors.length > 0) {
-		throw new Error(`Release verification failed for ${result.plugin.sourceKey}: ${errors.join(', ')}`);
+	try {
+		actualContents = await fs.readFile(releasePath);
+	} catch (error) {
+		if (error?.code === 'ENOENT') {
+			throw new Error('Release verification failed: missing root README.md');
+		}
+		throw error;
 	}
 
-	if (result.plugin.platform === 'anthropic' && hasClaudeCli) {
-		await runCommand('claude', ['plugin', 'validate', '--strict', releaseDir]);
+	const expectedContents = await fs.readFile(expectedPath);
+	if (!expectedContents.equals(actualContents)) {
+		throw new Error('Release verification failed: root README.md differs from packages/ai-plugins/README.md');
 	}
+}
 
-	console.log(`Verified ${result.plugin.sourceKey}`);
+async function main() {
+	const workspace = await loadWorkspace();
+	await verifyRootReadme(workspace);
+	const stagedResults = await buildPlugins([], { workspace, writeOutput: false });
+	const hasClaudeCli = await commandExists('claude');
+
+	for (const result of stagedResults) {
+		const releaseDir = path.resolve(workspace.packageRoot, workspace.buildConfig.pluginDistRoot, result.plugin.sourceKey);
+		const errors = await compareDirectories(result.outputDir, releaseDir);
+		if (errors.length > 0) {
+			throw new Error(`Release verification failed for ${result.plugin.sourceKey}: ${errors.join(', ')}`);
+		}
+
+		if (result.plugin.platform === 'anthropic' && hasClaudeCli) {
+			await runCommand('claude', ['plugin', 'validate', '--strict', releaseDir]);
+		}
+
+		console.log(`Verified ${result.plugin.sourceKey}`);
+	}
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+	await main();
 }

@@ -4,8 +4,6 @@
 
 This plug-in, compatible with ChatGPT and Codex, includes the `netsuite-ai-connector-instructions` skill and requires the NetSuite AI Connector Service to access NetSuite data. The NetSuite AI Connector Companion plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails.
 
-
-
 ## Supported Tasks
 
 ### Tool Orchestration

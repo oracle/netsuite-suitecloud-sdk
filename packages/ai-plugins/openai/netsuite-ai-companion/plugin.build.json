@@ -1,10 +1,10 @@
 {
 	"$schema": "../../schemas/plugin-build.schema.json",
-	"id": "netsuite-ai-connector-companion",
+	"id": "netsuite-ai-companion",
 	"version": "1.0.0",
 	"platform": "openai",
 	"metadata": {
-		"name": "netsuite-ai-connector-companion",
+		"name": "netsuite-ai-companion",
 		"description": "Guide AI assistants using NetSuite AI Connector.",
 		"author": {
 			"name": "Oracle NetSuite",
@@ -16,7 +16,7 @@
 			"aiconnector",
 			"mcp"
 		],
-		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-connector-companion",
+		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-companion",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
 		"interface": {
 			"displayName": "NetSuite AI Connector Companion",
@@ -24,8 +24,8 @@
 			"longDescription": "This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multiple-subsidiary and currency handling, and SuiteQL safety guardrails.",
 			"developerName": "Oracle NetSuite",
 			"category": "Business & Operations",
-			"websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-connector-companion",
-			"privacyPolicyURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-connector-companion",
+			"websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-companion",
+			"privacyPolicyURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-ai-companion",
 			"logo": "./assets/netsuite-logo.png",
 			"composerIcon": "./assets/netsuite-icon.png",
 			"brandColor": "#294B5F"

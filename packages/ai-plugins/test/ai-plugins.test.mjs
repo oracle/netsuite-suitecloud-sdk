@@ -11,7 +11,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { promisify } from 'node:util';
 import { loadWorkspace, getNormalizedSkills } from '../scripts/lib/build-config.mjs';
-import { buildPlugin } from '../scripts/lib/plugin-builder.mjs';
+import { buildPlugin, buildPlugins } from '../scripts/lib/plugin-builder.mjs';
 import { listRelativeFiles, writeJson } from '../scripts/lib/fs-utils.mjs';
 import { generateManifest } from '../scripts/lib/manifest.mjs';
 import {
@@ -26,6 +26,7 @@ import {
 	isValidReleaseVersion,
 	parseReleaseVersion,
 } from '../scripts/release-version.mjs';
+import { verifyRootReadme } from '../scripts/verify-release.mjs';
 
 const packageRoot = path.resolve(process.cwd());
 const execFileAsync = promisify(execFile);
@@ -205,10 +206,10 @@ test('workspace config recursively discovers six provider-qualified plugins with
 	assert.deepEqual(
 		workspace.plugins.map((plugin) => plugin.sourceKey),
 		[
-			'anthropic/netsuite-ai-connector-companion',
+			'anthropic/netsuite-ai-companion',
 			'anthropic/netsuite-finance-analyst',
 			'anthropic/netsuite-suitecloud',
-			'openai/netsuite-ai-connector-companion',
+			'openai/netsuite-ai-companion',
 			'openai/netsuite-finance-analyst',
 			'openai/netsuite-suitecloud',
 		]
@@ -218,7 +219,7 @@ test('workspace config recursively discovers six provider-qualified plugins with
 		assert.equal(plugin.platform, plugin.sourceKey.startsWith('anthropic/') ? 'anthropic' : 'openai');
 	}
 
-	for (const plugin of workspace.plugins.filter((plugin) => plugin.id === 'netsuite-ai-connector-companion')) {
+	for (const plugin of workspace.plugins.filter((plugin) => plugin.id === 'netsuite-ai-companion')) {
 		assert.deepEqual(getNormalizedSkills(plugin), ['netsuite-ai-connector-instructions']);
 	}
 
@@ -233,7 +234,7 @@ test('workspace config recursively discovers six provider-qualified plugins with
 
 test('provider-qualified plugins build without collisions and ambiguous bare IDs fail clearly', async () => {
 	const workspace = await loadWorkspace(packageRoot);
-	const result = await buildPlugin('openai/netsuite-ai-connector-companion', { workspace, writeOutput: false });
+	const result = await buildPlugin('openai/netsuite-ai-companion', { workspace, writeOutput: false });
 	const files = await listRelativeFiles(result.outputDir);
 
 	assert(files.includes('.codex-plugin/plugin.json'));
@@ -243,7 +244,7 @@ test('provider-qualified plugins build without collisions and ambiguous bare IDs
 
 	const manifest = JSON.parse(await fs.readFile(path.join(result.outputDir, '.codex-plugin', 'plugin.json'), 'utf8'));
 	assert.equal(manifest.skills, './skills/');
-	assert.equal(manifest.name, 'netsuite-ai-connector-companion');
+	assert.equal(manifest.name, 'netsuite-ai-companion');
 	assert.deepEqual(manifest.interface, result.plugin.metadata.interface);
 	assert.equal(manifest.interface.brandColor, '#294B5F');
 	for (const assetPath of getOpenAIInterfaceAssetPaths(result.plugin)) {
@@ -251,7 +252,7 @@ test('provider-qualified plugins build without collisions and ambiguous bare IDs
 	}
 
 	await assert.rejects(
-		() => buildPlugin('netsuite-ai-connector-companion', { workspace, writeOutput: false }),
+		() => buildPlugin('netsuite-ai-companion', { workspace, writeOutput: false }),
 		/ambiguous plugin id.*provider-qualified/i
 	);
 });
@@ -345,6 +346,28 @@ test('buildPlugin replaces stale output on repeated builds', async () => {
 
 	assert(!files.includes('stale.txt'));
 	assert.match(second.outputDir, /dist\/ai-plugins\/anthropic\/netsuite-suitecloud$/);
+});
+
+test('output builds copy the static distribution README byte-for-byte', async () => {
+	const workspace = await loadWorkspace(packageRoot);
+	await buildPlugins(['anthropic/netsuite-suitecloud'], { workspace, writeOutput: true });
+
+	const [sourceReadme, distributionReadme] = await Promise.all([
+		fs.readFile(path.join(packageRoot, 'README.md')),
+		fs.readFile(path.resolve(packageRoot, workspace.buildConfig.pluginDistRoot, 'README.md')),
+	]);
+	assert(sourceReadme.equals(distributionReadme));
+});
+
+test('release verification rejects missing or altered root README files', async () => {
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-plugin-release-readme-'));
+	const workspace = { packageRoot: root, buildConfig: { pluginDistRoot: 'dist' } };
+	await fs.writeFile(path.join(root, 'README.md'), '# Reviewed README\n', 'utf8');
+	await fs.mkdir(path.join(root, 'dist'));
+
+	await assert.rejects(() => verifyRootReadme(workspace), /missing root README\.md/);
+	await fs.writeFile(path.join(root, 'dist', 'README.md'), '# Altered README\n', 'utf8');
+	await assert.rejects(() => verifyRootReadme(workspace), /root README\.md differs/);
 });
 
 test('loadWorkspace rejects an openai plugin without a complete interface', async () => {
