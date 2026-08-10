@@ -1,4 +1,4 @@
-<p align="left"><a href="#"><img width="250" src="../../resources/Netsuite-logo-ocean-150-bg.png"></a></p>
+<p align="left"><img width="250" src="https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/master/resources/Netsuite-logo-ocean-150-bg.png" alt="NetSuite"></p>
 
 # AI Agent Plug-ins
 AI Agent Plug-ins package skills for installation on supported AI platforms. The included skills provide NetSuite-specific guidance and repeatable workflows for business users and SuiteCloud developers. AI Agent Plug-ins help business users and SuiteCloud developers across supported OpenAI and Anthropic platforms. Business users can install NetSuite AI Connector Companion and NetSuite Finance Analyst plug-ins to enhance AI-assisted NetSuite workflows. SuiteCloud developers can install the NetSuite SuiteCloud plug-in to access SuiteCloud development skills. Installation steps vary by platform, but the underlying skills and capabilities remain consistent.
