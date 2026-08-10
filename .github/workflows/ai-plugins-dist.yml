@@ -106,6 +106,10 @@ jobs:
             fi
           done < <(find "${previous_dir}" -type f \( -path '*/.claude-plugin/plugin.json' -o -path '*/.codex-plugin/plugin.json' \) | sort)
 
+          if ! cmp -s dist/ai-plugins/README.md "${previous_dir}/README.md"; then
+            publish_required=true
+          fi
+
           printf '%s\n' "${GITHUB_SHA}" > "${metadata_dir}/source-sha"
           printf '%s\n' "${publish_required}" > "${metadata_dir}/publish-required"
           echo "publish_required=${publish_required}" >> "${GITHUB_OUTPUT}"
@@ -152,10 +156,9 @@ jobs:
       - name: Verify downloaded distribution integrity
         run: node packages/ai-plugins/scripts/release-integrity.mjs verify dist/ai-plugins release-metadata/ai-plugins-dist.sha256
 
-      - name: Publish verified plugin directories to ai-plugins-dist
+      - name: Publish verified distribution to ai-plugins-dist
         shell: bash
         env:
-          DEFAULT_BRANCH: master
           DIST_BRANCH: ai-plugins-dist
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -182,9 +185,8 @@ jobs:
 
           git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           cp -R dist/ai-plugins/. "${worktree_dir}/"
-          printf '# AI Agent Plug-ins Distribution\n\nGenerated plugin directories published from the `%s` branch source tree.\n' "${DEFAULT_BRANCH}" > "${worktree_dir}/README.md"
 
-          git -C "${worktree_dir}" add README.md .
+          git -C "${worktree_dir}" add -A
           git -C "${worktree_dir}" commit -m "Publish AI plugins from ${source_sha}"
           git -C "${worktree_dir}" push origin "HEAD:${DIST_BRANCH}"
 
