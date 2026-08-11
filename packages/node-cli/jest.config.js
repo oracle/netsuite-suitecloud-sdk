@@ -5,5 +5,6 @@
 'use strict';
 
 module.exports = {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "setupFiles": ["<rootDir>/__test__/setup.js"]
 };
