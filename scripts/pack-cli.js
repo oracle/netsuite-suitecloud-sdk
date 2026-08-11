@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { cpSync, copyFileSync, mkdirSync, mkdtempSync, rmSync } = require('node:fs');
+const { appendFileSync, cpSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync } = require('node:fs');
 const { tmpdir } = require('node:os');
 const { join, resolve } = require('node:path');
 const { spawnSync } = require('node:child_process');
@@ -13,7 +13,10 @@ const repositoryRoot = resolve(__dirname, '..');
 const cliPackage = require(join(repositoryRoot, 'packages', 'node-cli', 'package.json'));
 const sdkCorePackage = require(join(repositoryRoot, 'packages', 'sdk-core', 'package.json'));
 const sdkCorePackageName = sdkCorePackage.name;
-const destinationFolder = resolve(repositoryRoot, process.argv[2] || 'dist');
+const packageArguments = process.argv.slice(2);
+const includeSdkSetupConfig = packageArguments.includes('--include-sdk-setup-config');
+const destinationArgument = packageArguments.find((argument) => !argument.startsWith('--'));
+const destinationFolder = resolve(repositoryRoot, destinationArgument || 'dist');
 const stagingRoot = mkdtempSync(join(tmpdir(), 'suitecloud-cli-package-'));
 const stagedCliFolder = join(stagingRoot, 'package');
 const sdkCoreSourceFolder = join(repositoryRoot, 'packages', 'sdk-core');
@@ -54,6 +57,12 @@ function stageCliPackage() {
 		filter: (sourcePath) => sourcePath !== join(cliSourceFolder, 'node_modules'),
 	});
 
+	configurePackageIgnoreFile(cliSourceFolder);
+
+	if (includeSdkSetupConfig) {
+		verifySdkSetupConfig(cliSourceFolder);
+	}
+
 	mkdirSync(stagedSdkCoreFolder, { recursive: true });
 	copyFileSync(
 		join(sdkCoreSourceFolder, 'package.json'),
@@ -62,6 +71,24 @@ function stageCliPackage() {
 	cpSync(join(sdkCoreSourceFolder, 'build'), join(stagedSdkCoreFolder, 'build'), {
 		recursive: true,
 	});
+}
+
+function configurePackageIgnoreFile(cliSourceFolder) {
+	const stagedIgnoreFile = join(stagedCliFolder, '.npmignore');
+	copyFileSync(join(cliSourceFolder, '.npmignore'), stagedIgnoreFile);
+
+	if (includeSdkSetupConfig) {
+		appendFileSync(stagedIgnoreFile, '\n!src/core/sdksetup/config.json\n');
+	}
+}
+
+function verifySdkSetupConfig(cliSourceFolder) {
+	const sourceConfigPath = join(cliSourceFolder, 'src', 'core', 'sdksetup', 'config.json');
+	if (!existsSync(sourceConfigPath)) {
+		throw new Error(
+			'Cannot include the SDK setup configuration because src/core/sdksetup/config.json does not exist.'
+		);
+	}
 }
 
 function installSdkCoreRuntimeDependencies() {
