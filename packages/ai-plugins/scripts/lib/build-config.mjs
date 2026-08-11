@@ -189,6 +189,9 @@ function validatePluginConfigShape(pluginConfig, pluginDirectoryName) {
 				throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.interface.${field} must be a non-empty string for openai plugins`);
 			}
 		}
+		if (pluginInterface.displayName.length > 30) {
+			throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: metadata.interface.displayName must not exceed 30 characters for openai plugins`);
+		}
 
 		for (const field of ['websiteURL', 'privacyPolicyURL']) {
 			if (!isValidHttpUrl(pluginInterface[field])) {

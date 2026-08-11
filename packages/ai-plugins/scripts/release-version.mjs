@@ -90,27 +90,34 @@ async function readManifestVersion(pluginDirectory) {
 /**
  * Validates a changed generated plug-in and enforces a strictly higher version
  * when a previously published directory is supplied. A missing previous
- * directory represents first publication.
+ * directory represents first publication. Same-version republishing is an
+ * explicit exception for an already deleted release tag.
  */
-export async function verifyReleaseVersion(currentDirectory, previousDirectory) {
+export async function verifyReleaseVersion(currentDirectory, previousDirectory, { allowSameVersionRepublish = false } = {}) {
 	const currentVersion = await readManifestVersion(currentDirectory);
 	if (!previousDirectory || !await fs.access(previousDirectory).then(() => true).catch(() => false)) {
 		return currentVersion;
 	}
 
 	const previousVersion = await readManifestVersion(previousDirectory);
-	if (compareReleaseVersions(currentVersion, previousVersion) <= 0) {
+	const comparison = compareReleaseVersions(currentVersion, previousVersion);
+	if (comparison < 0 || (comparison === 0 && !allowSameVersionRepublish)) {
 		throw new Error(`Changed plug-in content requires a higher version: ${previousVersion} -> ${currentVersion}`);
 	}
 	return currentVersion;
 }
 
 async function main() {
-	const [currentDirectory, previousDirectory] = process.argv.slice(2);
-	if (!currentDirectory || process.argv.length > 4) {
-		throw new Error('Usage: node release-version.mjs <current-plugin-directory> [previous-plugin-directory]');
+	const args = process.argv.slice(2);
+	const allowSameVersionRepublish = args[0] === '--allow-same-version-republish';
+	if (allowSameVersionRepublish) {
+		args.shift();
 	}
-	process.stdout.write(`${await verifyReleaseVersion(currentDirectory, previousDirectory)}\n`);
+	const [currentDirectory, previousDirectory] = args;
+	if (!currentDirectory || args.length > 2) {
+		throw new Error('Usage: node release-version.mjs [--allow-same-version-republish] <current-plugin-directory> [previous-plugin-directory]');
+	}
+	process.stdout.write(`${await verifyReleaseVersion(currentDirectory, previousDirectory, { allowSameVersionRepublish })}\n`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {

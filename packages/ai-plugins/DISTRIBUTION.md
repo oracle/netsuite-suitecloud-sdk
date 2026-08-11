@@ -29,9 +29,19 @@ The publisher:
 - runs `validate` and `test` for both `@oracle/agent-skills` and `@oracle/ai-plugins`, then builds the plug-ins before publishing;
 - creates a sorted SHA-256 manifest after source-versus-build verification and verifies the downloaded artifact against it before any write-scoped Git credential is configured;
 - updates the orphan `ai-plugins-dist` branch only when generated distribution output, including its source-managed README, has changed;
-- requires a strictly higher stable `MAJOR.MINOR.PATCH` version when an already published plug-in's content changes; prerelease and build metadata are unsupported;
+- requires a stable `MAJOR.MINOR.PATCH` version for every changed plug-in; lower versions are rejected, and prerelease and build metadata are unsupported;
 - removes a distribution directory when its generated plug-in is removed from source; and
 - creates a tag for every changed plug-in in the form `ai-plugin/<provider>/<plugin-id>/v<version>`.
+
+### Exceptional Same-Version Reissue
+
+Use this only to correct an already published artifact without changing its version. Before dispatching, delete the existing remote release tag. For example, to reissue the corrected OpenAI AI Companion artifact at version `1.0.0`:
+
+```sh
+git push origin --delete ai-plugin/openai/netsuite-ai-companion/v1.0.0
+```
+
+Then dispatch **Publish AI Agent Plug-ins Dist** from the intended `master` commit. The publisher still runs its full build and verification flow, publishes all otherwise valid changed plug-ins in that commit, and creates tags normally. It does not delete, overwrite, force-update, or rewrite tags: it fails before writing the distribution branch if any pending release tag still exists. After a successful run, verify that `ai-plugin/openai/netsuite-ai-companion/v1.0.0` was recreated at the corrected distribution commit.
 
 Each distribution update includes the reviewed, source-managed branch-root `README.md`, which identifies the source branch used for that release. The branch root is otherwise limited to generated plug-in directories:
 
@@ -115,7 +125,7 @@ It should contain the generated plug-in directories for the source revision and 
 
 - Never edit generated plug-in contents in `ai-plugins-dist`; regenerate and republish from source.
 - A security or integrity gate failure blocks publication. Correct the issue in a new `master` commit, then dispatch a new release run; do not reuse a failed run's artifacts.
-- Do not publish changed plug-in content without a strictly higher stable `MAJOR.MINOR.PATCH` version.
+- Do not reissue changed plug-in content at the same version unless the corresponding remote release tag has first been deleted.
 - Inspect the distribution worktree before committing a manual fallback release.
 - Keep the distribution worktree separate from the source checkout.
 
