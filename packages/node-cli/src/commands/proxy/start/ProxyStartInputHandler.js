@@ -33,7 +33,7 @@ module.exports = class ProxyStartInputHandler extends BaseInputHandler {
 
 		const answers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: OPTIONS.AUTH_ID,
 				message: NodeTranslationService.getMessage(COMMAND_PROXY_START.QUESTIONS.SELECT_AUTH_ID),
 				choices: this._toAuthIdChoices(authIDActionResult.data),
