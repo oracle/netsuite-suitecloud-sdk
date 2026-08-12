@@ -92,7 +92,7 @@ jobs:
             previous_plugin_dir="${previous_dir}/${plugin_name}"
 
             if ! diff -qr "${plugin_dir}" "${previous_plugin_dir}" >/dev/null 2>&1; then
-              version="$(node packages/ai-plugins/scripts/release-version.mjs "${plugin_dir}" "${previous_plugin_dir}")"
+              version="$(node packages/ai-plugins/scripts/release-version.mjs --allow-same-version-republish "${plugin_dir}" "${previous_plugin_dir}")"
               printf '%s\t%s\n' "${plugin_name}" "${version}" >> "${metadata_dir}/changed-plugins.tsv"
               publish_required=true
             fi
@@ -182,6 +182,15 @@ jobs:
             git -C "${worktree_dir}" checkout --orphan "${DIST_BRANCH}"
             git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           fi
+
+          while IFS=$'\t' read -r plugin_name version; do
+            [ -n "${plugin_name}" ] || continue
+            tag="ai-plugin/${plugin_name}/v${version}"
+            if git -C "${worktree_dir}" ls-remote --exit-code --tags origin "refs/tags/${tag}" >/dev/null; then
+              echo "Refusing to publish because release tag already exists: ${tag}" >&2
+              exit 1
+            fi
+          done < release-metadata/changed-plugins.tsv
 
           git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           cp -R dist/ai-plugins/. "${worktree_dir}/"

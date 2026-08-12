@@ -1,8 +1,8 @@
 <p align="left"><img width="250" src="https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/master/resources/Netsuite-logo-ocean-150-bg.png" alt="NetSuite"></p>
 
-# NetSuite AI Connector Companion
+# NetSuite AI Companion
 
-This plug-in, compatible with Claude, includes the `netsuite-ai-connector-instructions` skill and requires the NetSuite AI Connector Service to access NetSuite data. The NetSuite AI Connector Companion plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails.
+This plug-in, compatible with Claude, includes the `netsuite-ai-connector-instructions` skill and requires the NetSuite AI Connector Service to access NetSuite data. The NetSuite AI Companion plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails.
 
 ## Supported Tasks
 

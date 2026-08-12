@@ -180,9 +180,17 @@ test('release-version command validates generated manifests and version increase
 		() => execFileAsync(process.execPath, [command, current, previous]),
 		/Changed plug-in content requires a higher version/
 	);
+	assert.equal(
+		(await execFileAsync(process.execPath, [command, '--allow-same-version-republish', current, previous])).stdout.trim(),
+		'1.2.3'
+	);
 	await writeManifest(current, '1.2.2');
 	await assert.rejects(
 		() => execFileAsync(process.execPath, [command, current, previous]),
+		/Changed plug-in content requires a higher version/
+	);
+	await assert.rejects(
+		() => execFileAsync(process.execPath, [command, '--allow-same-version-republish', current, previous]),
 		/Changed plug-in content requires a higher version/
 	);
 
@@ -433,6 +441,11 @@ test('loadWorkspace validates required OpenAI interface fields, accepts optional
 	const { capabilities, ...interfaceWithoutCapabilities } = pluginInterface;
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, metadata: { ...metadata, interface: interfaceWithoutCapabilities } });
 	await assert.doesNotReject(() => loadWorkspace(packageDir));
+
+	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, metadata: { ...metadata, interface: { ...pluginInterface, displayName: 'A'.repeat(30) } } });
+	await assert.doesNotReject(() => loadWorkspace(packageDir));
+	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, metadata: { ...metadata, interface: { ...pluginInterface, displayName: 'A'.repeat(31) } } });
+	await assert.rejects(() => loadWorkspace(packageDir), /metadata\.interface\.displayName must not exceed 30 characters/i);
 
 	await writeJson(path.join(packageDir, 'bad-plugin', 'plugin.build.json'), { ...basePlugin, platform: 'anthropic' });
 	await assert.doesNotReject(() => loadWorkspace(packageDir));
