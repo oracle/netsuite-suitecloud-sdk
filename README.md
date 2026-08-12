@@ -1,12 +1,12 @@
-<p align="left"><img width="250" src="https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/master/resources/Netsuite-logo-ocean-150-bg.png" alt="NetSuite"></p>
+<p align="left"><a href="#"><img width="250" src="../../resources/Netsuite-logo-ocean-150-bg.png"></a></p>
 
 # AI Agent Plug-ins
-AI Agent Plug-ins package skills for installation on supported AI platforms. The included skills provide NetSuite-specific guidance and repeatable workflows for business users and SuiteCloud developers. AI Agent Plug-ins help business users and SuiteCloud developers across supported OpenAI and Anthropic platforms. Business users can install NetSuite AI Connector Companion and NetSuite Finance Analyst plug-ins to enhance AI-assisted NetSuite workflows. SuiteCloud developers can install the NetSuite SuiteCloud plug-in to access SuiteCloud development skills. Installation steps vary by platform, but the underlying skills and capabilities remain consistent.
+AI Agent Plug-ins package skills for installation on supported AI platforms. The included skills provide NetSuite-specific guidance and repeatable workflows for business users and SuiteCloud developers. AI Agent Plug-ins help business users and SuiteCloud developers across supported OpenAI and Anthropic platforms. Business users can install NetSuite AI Companion and NetSuite Finance Analyst plug-ins to enhance AI-assisted NetSuite workflows. SuiteCloud developers can install the NetSuite SuiteCloud plug-in to access SuiteCloud development skills. Installation steps vary by platform, but the underlying skills and capabilities remain consistent.
 
 ## Included Plug-ins
 
 ### Business User Plug-ins
-- **NetSuite AI Connector Companion Plug-in (netsuite-ai-companion):** Includes the NetSuite AI Connector Instructions skill. This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails. 
+- **NetSuite AI Companion Plug-in (netsuite-ai-companion):** Includes the NetSuite AI Connector Instructions skill. This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails. 
 - **NetSuite Finance Analyst Plug-in (netsuite-finance-analyst):** Includes the NetSuite Finance Analyst skill. This plug-in provides Director-level finance analysis on live NetSuite data, including financial reporting, period-close activities, variance, aging, and reconciliation reviews, cash reporting, and board-ready financial narratives with clear next actions.
 
 ### SuiteCloud Development Plug-ins

@@ -1,6 +1,6 @@
 {
   "name": "netsuite-ai-companion",
-  "displayName": "NetSuite AI Connector Companion",
+  "displayName": "NetSuite AI Companion",
   "description": "Guide AI assistants using NetSuite AI Connector.",
   "author": {
     "name": "Oracle NetSuite",
