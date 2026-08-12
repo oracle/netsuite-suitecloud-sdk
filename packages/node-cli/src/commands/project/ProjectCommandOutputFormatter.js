@@ -30,6 +30,7 @@ const NEUTRAL_SUMMARY_LINES = [
 	'SuiteApp ID:',
 	'Project Name:',
 	'Apply Installation Preferences:',
+	'Issues by file:',
 ];
 const SEPARATOR_LINE = '------------------------------------------------------------';
 const JSON_INDENT = 2;
@@ -52,7 +53,9 @@ function logCommandOutput(log, payload) {
 		payload.forEach((line) => {
 			const outputLine = String(line);
 			if (outputLine === ISSUES_BY_FILE_LINE) {
+				logLine(log, outputLine, false);
 				isInIssuesByFileSection = hasWarningOnlyIssues;
+				return;
 			}
 			logLine(log, outputLine, isInIssuesByFileSection);
 		});

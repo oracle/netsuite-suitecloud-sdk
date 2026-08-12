@@ -58,6 +58,20 @@ describe('ProjectCommandOutputFormatter', () => {
 		expect(log.result).toHaveBeenCalledWith('Custom line');
 	});
 
+	it('should classify warning-only issues by file as warnings', () => {
+		const log = createLogMock();
+		logCommandOutput(log, [
+			'Issues by file:',
+			'1. FileCabinet/SuiteScripts/example.js (0 error(s), 1 warning(s))',
+			'   - WARNING: Avoid using deprecated API.',
+		]);
+
+		expect(log.warning).toHaveBeenCalledWith('1. FileCabinet/SuiteScripts/example.js (0 error(s), 1 warning(s))');
+		expect(log.warning).toHaveBeenCalledWith('   - WARNING: Avoid using deprecated API.');
+		expect(log.info).toHaveBeenCalledWith('Issues by file:');
+		expect(log.error).not.toHaveBeenCalled();
+	});
+
 	it('should print raw JSON payload directly', () => {
 		const log = createLogMock();
 		logRawOutput(log, { status: 'ok' }, false);
