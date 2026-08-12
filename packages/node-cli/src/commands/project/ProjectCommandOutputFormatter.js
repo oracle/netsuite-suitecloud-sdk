@@ -11,10 +11,12 @@ const OUTPUT_FLAGS = {
 const SUMMARY_LINE_PATTERN = /SUMMARY$/;
 const STEP_SUCCESS_PATTERN = /^[✓✔] Step \d+:/;
 const STEP_FAILURE_PATTERN = /^[✗✖] Step \d+:/;
-const WARNING_LINE_PATTERN = /^WARNING:/;
+const WARNING_LINE_PATTERN = /^(?:\s*-\s+)?WARNING:/;
 const ERROR_LINE_PATTERN = /^ERROR:/;
 const STATUS_SUCCESS_PATTERN = /^Status:\s+SUCCESS$/;
 const STATUS_FAILURE_PATTERN = /^Status:\s+FAILED$/;
+const ISSUES_BY_FILE_LINE = 'Issues by file:';
+const ISSUE_FILE_SUMMARY_PATTERN = /^\d+\.\s+.+\s+\((\d+) error\(s\),\s+(\d+) warning\(s\)\)$/;
 const NEUTRAL_SUMMARY_LINES = [
 	'Steps:',
 	'Validation Results:',
@@ -28,6 +30,7 @@ const NEUTRAL_SUMMARY_LINES = [
 	'SuiteApp ID:',
 	'Project Name:',
 	'Apply Installation Preferences:',
+	'Issues by file:',
 ];
 const SEPARATOR_LINE = '------------------------------------------------------------';
 const JSON_INDENT = 2;
@@ -45,8 +48,16 @@ function logCommandOutput(log, payload) {
 	}
 
 	if (Array.isArray(payload)) {
+		const hasWarningOnlyIssues = containsWarningOnlyIssues(payload);
+		let isInIssuesByFileSection = false;
 		payload.forEach((line) => {
-			logLine(log, String(line));
+			const outputLine = String(line);
+			if (outputLine === ISSUES_BY_FILE_LINE) {
+				logLine(log, outputLine, false);
+				isInIssuesByFileSection = hasWarningOnlyIssues;
+				return;
+			}
+			logLine(log, outputLine, isInIssuesByFileSection);
 		});
 		return;
 	}
@@ -77,9 +88,14 @@ function logRawOutput(log, payload, isError) {
 	log.info(output);
 }
 
-function logLine(log, line) {
+function logLine(log, line, isWarningOnlyIssue) {
 	if (!line) {
 		log.info('');
+		return;
+	}
+
+	if (isWarningOnlyIssue) {
+		log.warning(line);
 		return;
 	}
 
@@ -104,6 +120,28 @@ function logLine(log, line) {
 	}
 
 	log.result(line);
+}
+
+function containsWarningOnlyIssues(lines) {
+	let hasWarning = false;
+
+	for (const line of lines) {
+		const match = String(line).match(ISSUE_FILE_SUMMARY_PATTERN);
+		if (!match) {
+			continue;
+		}
+
+		const errorCount = Number(match[1]);
+		const warningCount = Number(match[2]);
+		if (errorCount > 0) {
+			return false;
+		}
+		if (warningCount > 0) {
+			hasWarning = true;
+		}
+	}
+
+	return hasWarning;
 }
 
 function logErrorLine(log, line) {
