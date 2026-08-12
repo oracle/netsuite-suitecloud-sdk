@@ -78,12 +78,22 @@ jobs:
           trap 'rm -rf "${previous_dir}"' EXIT
 
           # The read-scoped token is limited to this step and is never persisted
-          # in Git configuration.
-          if git -c http.extraHeader="AUTHORIZATION: bearer ${GITHUB_TOKEN}" \
-            fetch --no-tags origin "${DIST_BRANCH}:${DIST_BRANCH}"; then
-            git archive "${DIST_BRANCH}" | tar -x -C "${previous_dir}"
+          # in Git configuration. Only ls-remote status 2 confirms that the
+          # distribution branch is absent; authentication and transport errors
+          # must stop metadata generation.
+          remote_url="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git ls-remote --exit-code "${remote_url}" "refs/heads/${DIST_BRANCH}" >/dev/null; then
+            git fetch --no-tags "${remote_url}" \
+              "refs/heads/${DIST_BRANCH}:refs/remotes/origin/${DIST_BRANCH}"
+            git archive "refs/remotes/origin/${DIST_BRANCH}" | tar -x -C "${previous_dir}"
           else
-            echo "Distribution branch does not exist yet; preparing initial release."
+            ls_remote_status=$?
+            if [ "${ls_remote_status}" -eq 2 ]; then
+              echo "Distribution branch does not exist yet; preparing initial release."
+            else
+              echo "Failed to determine whether distribution branch exists (git ls-remote exited ${ls_remote_status})." >&2
+              exit "${ls_remote_status}"
+            fi
           fi
 
           while IFS= read -r manifest_path; do
@@ -92,7 +102,7 @@ jobs:
             previous_plugin_dir="${previous_dir}/${plugin_name}"
 
             if ! diff -qr "${plugin_dir}" "${previous_plugin_dir}" >/dev/null 2>&1; then
-              version="$(node packages/ai-plugins/scripts/release-version.mjs "${plugin_dir}" "${previous_plugin_dir}")"
+              version="$(node packages/ai-plugins/scripts/release-version.mjs --allow-same-version-republish "${plugin_dir}" "${previous_plugin_dir}")"
               printf '%s\t%s\n' "${plugin_name}" "${version}" >> "${metadata_dir}/changed-plugins.tsv"
               publish_required=true
             fi
@@ -182,6 +192,15 @@ jobs:
             git -C "${worktree_dir}" checkout --orphan "${DIST_BRANCH}"
             git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           fi
+
+          while IFS=$'\t' read -r plugin_name version; do
+            [ -n "${plugin_name}" ] || continue
+            tag="ai-plugin/${plugin_name}/v${version}"
+            if git -C "${worktree_dir}" ls-remote --exit-code --tags origin "refs/tags/${tag}" >/dev/null; then
+              echo "Refusing to publish because release tag already exists: ${tag}" >&2
+              exit 1
+            fi
+          done < release-metadata/changed-plugins.tsv
 
           git -C "${worktree_dir}" rm -rf --ignore-unmatch .
           cp -R dist/ai-plugins/. "${worktree_dir}/"
