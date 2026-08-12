@@ -15,7 +15,7 @@
   "repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
   "interface": {
     "displayName": "NetSuite Finance Analyst",
-    "shortDescription": "Deliver Director-level finance analysis on live NetSuite data.",
+    "shortDescription": "Analyze live NetSuite data",
     "longDescription": "This plug-in provides Director-level finance analysis on live NetSuite data, including financial reporting, period-close activities, variance, aging, and reconciliation reviews, cash reporting, and board-ready financial narratives with clear next actions.",
     "developerName": "Oracle NetSuite",
     "category": "Business & Operations",
