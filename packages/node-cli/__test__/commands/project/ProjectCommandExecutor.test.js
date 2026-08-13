@@ -22,7 +22,7 @@ describe('ProjectCommandExecutor', () => {
 
 		expect(result).toEqual({
 			status: SDK_OPERATION_STATUS.ERROR,
-			errorMessages: ['Project command execution input is required.'],
+			errorMessages: ['Input is required to run the project command.'],
 		});
 		expect(createProjectArchive).not.toHaveBeenCalled();
 		expect(sendProjectRequest).not.toHaveBeenCalled();
