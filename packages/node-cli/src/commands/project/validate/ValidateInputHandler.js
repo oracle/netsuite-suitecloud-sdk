@@ -37,7 +37,7 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 		const answers = await prompt([
 			{
 				when: this._projectInfoService.getProjectType() === PROJECT_ACP,
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
 				default: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
@@ -54,7 +54,7 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 			},
 			{
 				when: this._projectInfoService.getProjectType() === PROJECT_SUITEAPP && this._projectInfoService.hasLockAndHideFiles(),
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_INSTALLATION_PREFERENCES),
 				default: false,

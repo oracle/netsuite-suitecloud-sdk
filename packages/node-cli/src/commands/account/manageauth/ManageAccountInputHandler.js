@@ -117,7 +117,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 		choices.push(new Separator());
 		return await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: ANSWERS_NAMES.SELECTED_AUTH_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_CREDENTIALS),
 				choices: choices,
@@ -127,7 +127,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 
 	async _selectAction(prompt) {
 		let answer = await prompt({
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: ANSWERS_NAMES.ACTION,
 			message: NodeTranslationService.getMessage(QUESTIONS.SELECT_ACTION),
 			choices: [
@@ -177,7 +177,7 @@ module.exports = class ManageAccountInputHandler extends BaseInputHandler {
 	async _confirmRemove(prompt) {
 		let answer = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: ANSWERS_NAMES.REMOVE,
 				message: NodeTranslationService.getMessage(QUESTIONS.VERIFY_REMOVE),
 				default: false,

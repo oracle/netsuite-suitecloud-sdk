@@ -14,12 +14,12 @@
     "build:watch": "npm run clean && npm run copy:resources && tsc -p tsconfig.build.json --watch"
   },
   "dependencies": {
-    "adm-zip": "0.5.18",
+    "adm-zip": "0.6.0",
     "xml2js": "0.6.2"
   },
   "devDependencies": {
-    "@types/node": "22.10.2",
-    "typescript": "5.7.3"
+    "@types/node": "22.20.1",
+    "typescript": "5.9.3"
   },
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

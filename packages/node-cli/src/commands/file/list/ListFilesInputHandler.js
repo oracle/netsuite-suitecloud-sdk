@@ -41,7 +41,7 @@ module.exports = class ListFilesInputHandler extends BaseInputHandler {
 
 		return prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: this._commandMetadata.options.folder.name,
 				message: NodeTranslationService.getMessage(SELECT_FOLDER),
 				default: SUITE_SCRIPTS_FOLDER,
