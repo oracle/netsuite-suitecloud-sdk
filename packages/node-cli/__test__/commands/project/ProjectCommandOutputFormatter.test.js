@@ -32,7 +32,7 @@ describe('ProjectCommandOutputFormatter', () => {
 		logCommandOutput(log, [
 			'DEPLOY SUMMARY',
 			'Status: SUCCESS',
-			'Steps: 2 of 2 successful',
+			'Steps: 2/2 successful',
 			'Validation Results: 0 error(s), 0 warning(s)',
 			'SDF Errors: none',
 			'Timestamp: Jul 23, 2026, 3:41:35 PM GMT+2',

@@ -22,7 +22,7 @@ describe('ProjectCommandExecutor', () => {
 
 		expect(result).toEqual({
 			status: SDK_OPERATION_STATUS.ERROR,
-			errorMessages: ['Input is required to run the project command.'],
+			errorMessages: ['Project command execution input is required.'],
 		});
 		expect(createProjectArchive).not.toHaveBeenCalled();
 		expect(sendProjectRequest).not.toHaveBeenCalled();
@@ -286,8 +286,8 @@ describe('ProjectCommandExecutor', () => {
 		expect(result.data).toEqual(expect.arrayContaining([
 			'DEPLOY SUMMARY',
 			'Status: SUCCESS',
-			'Steps: 2 of 2 successful',
-			'Validation Results: 0 error(s) and 1 warning(s)',
+			'Steps: 2/2 successful',
+			'Validation Results: 0 error(s), 1 warning(s)',
 			'SDF Errors: none',
 			`Timestamp: ${expectedTimestamp}`,
 			'Account: Example Account',
@@ -343,7 +343,7 @@ describe('ProjectCommandExecutor', () => {
 
 		expect(result.status).toBe(SDK_OPERATION_STATUS.ERROR);
 		expect(result.errorMessages).toEqual(expect.arrayContaining([
-			'Validation Results: 3 error(s) and 3 warning(s)',
+			'Validation Results: 3 error(s), 3 warning(s)',
 			'1. ~/Objects/customrecord.xml (3 error(s), 3 warning(s))',
 			'  - ERROR: Repeated error (3 occurrences)',
 			'  - WARNING: Repeated warning (3 occurrences)',
