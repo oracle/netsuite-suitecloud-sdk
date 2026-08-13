@@ -108,7 +108,7 @@ describe('command path validation', () => {
 
 		expect(result).toEqual({
 			status: 'ERROR',
-			errorMessages: ['You tried to upload a folder instead of a file.'],
+			errorMessages: ['A folder can\'t be uploaded. Specify a file.'],
 		});
 	});
 

@@ -10,7 +10,7 @@
   "FILE_ERROR_REQUEST_TIMED_OUT": "File command request timed out.",
   "FILE_ERROR_UNKNOWN_SERVER_RESPONSE": "Unable to recognize the response from server.",
   "FILE_ERROR_UNZIP_IMPORT_FAILED": "Unable to extract imported files: {0}",
-  "FILE_ERROR_UPLOAD_DIRECTORY": "You tried to upload a folder instead of a file.",
+  "FILE_ERROR_UPLOAD_DIRECTORY": "A folder can't be uploaded. Specify a file.",
   "FILE_ERROR_UPLOAD_FILE_PATHS_REQUIRED": "Missing required file paths for file upload.",
   "FILE_INFO_NO_FILES_FOUND": "No files found.",
   "FILE_INFO_NO_FOLDERS_FOUND": "No folders found.",
