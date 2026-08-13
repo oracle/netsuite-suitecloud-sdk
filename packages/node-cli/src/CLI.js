@@ -6,7 +6,7 @@
 
 const path = require('path');
 const assert = require('assert');
-const program = require('commander');
+const { program } = require('commander')
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const {
@@ -28,7 +28,7 @@ const HELP_COMMAND = 'help';
 const HELP_OPTION = '--help';
 const HELP_ALIAS = '-h';
 const VERSION_OPTION = '--version';
-const EXCESS_ZERO_ARGUMENTS_ERROR_PATTERN = /^error: too many arguments for '([^']+)'\. Expected 0 arguments but got \d+\.\s*$/m;
+const EXCESS_ZERO_ARGUMENTS_ERROR_PATTERN = /^error: too many arguments for '([^']+)'\. Expected 0 arguments but got \d+(?:: ([\s\S]*))?\.\s*$/m;
 
 module.exports = class CLI {
 	constructor(dependencies) {
@@ -144,8 +144,23 @@ function formatCommanderError(errorOutput) {
 	}
 
 	const commandName = excessArgumentsMatch[1];
+	const optionName = findOptionForUnexpectedArgument(excessArgumentsMatch[2]);
+	if (optionName) {
+		return (
+			`error: The "${optionName}" option accepts one value. Remove the extra values and try again.\n` +
+			`Use "suitecloud ${commandName} --help" to see valid options.\n`
+		);
+	}
 	return (
 		`error: unexpected positional argument(s). The "${commandName}" command accepts named options only.\n` +
 		`Use "suitecloud ${commandName} --help" to see valid options.\n`
 	);
+}
+
+function findOptionForUnexpectedArgument(unexpectedArgument) {
+	if (!unexpectedArgument) {
+		return undefined;
+	}
+	const argumentIndex = process.argv.lastIndexOf(unexpectedArgument);
+	return process.argv.slice(0, argumentIndex).reverse().find((argument) => argument.startsWith('--'));
 }

@@ -46,7 +46,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 		const answers = await prompt([
 			{
 				when: isSuiteAppProject && this._projectInfoService.hasLockAndHideFiles(),
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND.FLAGS.APPLY_INSTALLATION_PREFERENCES,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_INSTALLATION_PREFERENCES),
 				default: false,
@@ -57,7 +57,7 @@ module.exports = class DeployInputHandler extends BaseInputHandler {
 			},
 			{
 				when: isACProject,
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND.OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
 				default: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
