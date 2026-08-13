@@ -7,6 +7,6 @@
   "devDependencies": {
 	"jest": "30.4.2",
     "@types/jest": "30.4.2",
-    "@oracle/suitecloud-unit-testing": "^1.7.0"
+    "@oracle/suitecloud-unit-testing": "^1.8.0"
   }
 }
