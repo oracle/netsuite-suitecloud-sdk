@@ -10,6 +10,18 @@ const { join } = require('node:path');
 const CLI_PATH = join(__dirname, '..', '..', 'src', 'suitecloud.js');
 
 describe('project command help', () => {
+	it('exposes config:import with only its supported options', () => {
+		const help = runCli('config:import', '--help');
+		const removedOption = runCli('config:import', '--configurationid', '--authid', 'test-auth');
+		expect(help.status).toBe(0);
+		expect(help.stdout).toContain('--authid <argument>');
+		expect(help.stdout).not.toContain('--configurationid');
+		expect(help.stdout).not.toContain('--project');
+		expect(help.stdout).not.toContain('--interactive');
+		expect(removedOption.status).toBe(1);
+		expect(removedOption.stderr).toContain("unknown option '--configurationid'");
+	});
+
 	it('does not expose obsolete local-validation switches', () => {
 		const deployHelp = runCli('project:deploy', '--help');
 		const validateHelp = runCli('project:validate', '--help');

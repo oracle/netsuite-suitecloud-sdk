@@ -99,6 +99,6 @@ module.exports = class CLIConfigurationService {
 		if (!commandName || commandName === 'project:create') {
 			return false;
 		}
-		return commandName.startsWith('project:') || commandName.startsWith('file:') || commandName.startsWith('object:');
+		return commandName.startsWith('project:') || commandName.startsWith('file:') || commandName.startsWith('object:') || commandName === 'config:import';
 	}
 };

@@ -1,5 +1,10 @@
 [
 	{
+		"commandName": "config:import",
+		"supportsInteractiveMode": false,
+		"generator": "commands/config/import/ImportConfigurationCommand"
+	},
+	{
 		"commandName": "account:manageauth",
 		"supportsInteractiveMode": true,
 		"generator": "./commands/account/manageauth/ManageAccountCommand"
