@@ -17,7 +17,7 @@ import { extractZipArchive } from '../../../services/archive/ZipArchive';
 import { PathOutsideRootError } from '../../../services/project/ProjectPathResolver';
 import { FILE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
-import { getInvalidFileCabinetPathMessage, isValidFileCabinetPath } from '../FileCabinetPath';
+import { getInvalidFileCabinetPathMessage, isValidImportFileCabinetPath } from '../FileCabinetPath';
 import { getHttpErrorMessage, looksLikeIdeResponse, sendIdeRequest } from '../FileCommandClient';
 import {
 	buildImportFilesXml,
@@ -36,8 +36,8 @@ export async function executeImportFiles(input: ImportFilesExecutionInput): Prom
 	}
 
 	for (const filePath of input.filePaths) {
-		if (!isValidFileCabinetPath(filePath)) {
-			return errorResultWithMessage(getInvalidFileCabinetPathMessage(filePath), undefined);
+		if (!isValidImportFileCabinetPath(filePath, input.allowSuiteAppPaths)) {
+			return errorResultWithMessage(getInvalidFileCabinetPathMessage(filePath, input.allowSuiteAppPaths), undefined);
 		}
 	}
 

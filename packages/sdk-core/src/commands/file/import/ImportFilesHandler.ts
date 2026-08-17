@@ -41,6 +41,7 @@ export type ImportFilesExecutionInput = FileCommandAuthInput & {
 	projectFolder: string;
 	filePaths: string[];
 	excludeProperties: boolean;
+	allowSuiteAppPaths?: boolean;
 };
 
 export function prepareImportFilesParams(
