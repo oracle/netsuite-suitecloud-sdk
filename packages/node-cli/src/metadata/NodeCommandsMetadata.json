@@ -1,4 +1,19 @@
 {
+	"config:import": {
+		"name": "config:import",
+		"description": "Imports the features from an account.",
+		"isSetupRequired": false,
+		"forceInteractiveMode": false,
+		"options": {
+			"authid": {
+				"name": "authid",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
+				"type": "SINGLE",
+				"mandatory": true,
+				"disableInIntegrationMode": false
+			}
+		}
+	},
 	"account:setup": {
 		"name": "account:setup",
 		"alias": "sa",
