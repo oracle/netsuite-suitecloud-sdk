@@ -35,6 +35,18 @@ jest.mock('@oracle/suitecloud-sdk-core', () => {
 
 const ImportFilesAction = require('../../../src/commands/file/import/ImportFilesAction');
 
+function createImportFilesAction() {
+	return new ImportFilesAction({
+		projectFolder: '/tmp/project',
+		commandMetadata: { options: {} },
+		executionPath: '/tmp/project',
+		runInInteractiveMode: false,
+		log: {},
+		sdkPath: '/tmp/sdk.jar',
+		executionEnvironmentContext: { environment: 'test' },
+	});
+}
+
 describe('ImportFilesAction authentication session', () => {
 	beforeEach(() => {
 		mockExecuteImportFilesCommand.mockReset();
@@ -50,15 +62,7 @@ describe('ImportFilesAction authentication session', () => {
 		mockExecuteImportFilesCommand
 			.mockResolvedValueOnce({ status: 'ERROR', httpStatusCode: 401, errorMessages: ['Unauthorized'] })
 			.mockResolvedValueOnce({ status: 'SUCCESS', data: { results: [] } });
-		const action = new ImportFilesAction({
-			projectFolder: '/tmp/project',
-			commandMetadata: { options: {} },
-			executionPath: '/tmp/project',
-			runInInteractiveMode: false,
-			log: {},
-			sdkPath: '/tmp/sdk.jar',
-			executionEnvironmentContext: { environment: 'test' },
-		});
+		const action = createImportFilesAction();
 
 		const result = await action._executeImportWithAuthRetry({
 			authid: 'myAuth',
@@ -73,6 +77,26 @@ describe('ImportFilesAction authentication session', () => {
 		}));
 		expect(mockExecuteImportFilesCommand).toHaveBeenNthCalledWith(2, expect.objectContaining({
 			accessToken: 'refreshed-token',
+		}));
+	});
+
+	it('forwards the SuiteApp path permission used by compare-file imports', async () => {
+		mockAuthSessionProvider.resolveAuthSession.mockResolvedValue({
+			hostName: 'system.netsuite.com',
+			accessToken: 'access-token',
+		});
+		mockExecuteImportFilesCommand.mockResolvedValue({ status: 'SUCCESS', data: { results: [] } });
+		const action = createImportFilesAction();
+		action._calledFromCompareFiles = true;
+
+		await action.execute({
+			authid: 'myAuth',
+			project: '"/tmp/project"',
+			paths: '"/SuiteApps/com.example.app/example.js"',
+		});
+
+		expect(mockExecuteImportFilesCommand).toHaveBeenCalledWith(expect.objectContaining({
+			allowSuiteAppPaths: true,
 		}));
 	});
 });

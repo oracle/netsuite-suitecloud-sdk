@@ -9,6 +9,7 @@ import { FILE } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
 
 const TEMPLATES_ROOT = '/Templates';
+const SUITEAPPS_ROOT = '/SuiteApps';
 const ALLOWED_FILE_CABINET_PATHS = [
 	'/SuiteScripts',
 	'/Templates/E-mail Templates',
@@ -27,10 +28,25 @@ export function isValidFileCabinetPath(fileCabinetPath: string): boolean {
 	);
 }
 
-export function getInvalidFileCabinetPathMessage(fileCabinetPath: string): string {
+export function isValidImportFileCabinetPath(fileCabinetPath: string, allowSuiteAppPaths = false): boolean {
+	if (isValidFileCabinetPath(fileCabinetPath)) {
+		return true;
+	}
+	if (!allowSuiteAppPaths || !fileCabinetPath) {
+		return false;
+	}
+
+	const normalizedPath = fileCabinetPath.replace(/\\/g, '/').trim();
+	return isSuiteCloudPathWithinRoot(normalizedPath, SUITEAPPS_ROOT);
+}
+
+export function getInvalidFileCabinetPathMessage(fileCabinetPath: string, allowSuiteAppPaths = false): string {
+	const allowedPaths = allowSuiteAppPaths
+		? [...ALLOWED_FILE_CABINET_PATHS, SUITEAPPS_ROOT]
+		: ALLOWED_FILE_CABINET_PATHS;
 	return translationService.getMessage(
 		FILE.ERROR.INVALID_FILE_CABINET_PATH,
 		fileCabinetPath,
-		ALLOWED_FILE_CABINET_PATHS.join(',')
+		allowedPaths.join(',')
 	);
 }
