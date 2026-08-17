@@ -62,7 +62,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 			const executionParams = this._calledFromCompareFiles ? addCompareFilesImportFlag(params) : params;
 
 			const operationResult = await executeWithSpinner({
-				action: this._executeImportWithAuthRetry(executionParams),
+				action: this._executeImportWithAuthRetry(executionParams, this._calledFromCompareFiles),
 				message:  NodeTranslationService.getMessage(MESSAGES.IMPORTING_FILES),
 			});
 
@@ -82,7 +82,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 		}
 	}
 
-	async _executeImportWithAuthRetry(params) {
+	async _executeImportWithAuthRetry(params, allowSuiteAppPaths = false) {
 		const authId = params.authid;
 		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
 		return executeWithAuthRetry({
@@ -95,6 +95,7 @@ module.exports = class ImportFilesAction extends BaseAction {
 				projectFolder: unquote(params.project),
 				filePaths: parseQuotedMultiValue(params.paths),
 				excludeProperties: Object.prototype.hasOwnProperty.call(params, 'excludeproperties'),
+				allowSuiteAppPaths: allowSuiteAppPaths,
 				userAgent: getUserAgent(this._executionEnvironmentContext),
 			}),
 		});
