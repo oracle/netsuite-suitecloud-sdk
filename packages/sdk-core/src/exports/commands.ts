@@ -12,7 +12,6 @@ export type {
 	ImportConfigurationResult,
 } from '../api/config/ConfigurationCommand';
 export { executeImportConfiguration } from '../commands/config/import/ImportConfigurationExecutor';
-export { executeImportConfigurationCommand } from '../commands/config/import/ImportConfigurationHandler';
 
 export {
 	COMMAND_OPTIONS,

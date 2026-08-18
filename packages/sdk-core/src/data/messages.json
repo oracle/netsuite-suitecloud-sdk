@@ -1,4 +1,5 @@
 {
+  "CONFIGURATION_ERROR_DESTINATION_OUTSIDE_PROJECT": "Account configuration must be imported into the AccountConfiguration folder within the project.",
   "CONFIGURATION_ERROR_PROJECT_FOLDER_REQUIRED": "A project folder is required for configuration import.",
   "CONFIGURATION_ERROR_UNKNOWN_SERVER_RESPONSE": "Unable to recognize the response from server.",
   "FILE_CREATE_ERROR_FILE_ALREADY_EXISTS": "The SuiteScript file already exists in \"{0}\".",

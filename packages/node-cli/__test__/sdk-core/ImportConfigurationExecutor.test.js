@@ -4,17 +4,29 @@
  */
 'use strict';
 
-const { mkdtemp, mkdir, readFile, rm } = require('node:fs/promises');
+const { mkdtemp, readFile, rm } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const AdmZip = require('adm-zip');
 
 const mockSendFormRequest = jest.fn();
+const mockAssertCreatablePathWithin = jest.fn();
 
 jest.mock('../../../sdk-core/build/commands/object/ObjectCommandClient', () => {
 	const actual = jest.requireActual('../../../sdk-core/build/commands/object/ObjectCommandClient');
 	return { ...actual, sendFormRequest: (...args) => mockSendFormRequest(...args) };
 });
+jest.mock('../../../sdk-core/build/services/project/ProjectPathResolver', () => {
+	const actual = jest.requireActual('../../../sdk-core/build/services/project/ProjectPathResolver');
+	return {
+		...actual,
+		assertCreatablePathWithin: (...args) => mockAssertCreatablePathWithin(...args),
+	};
+});
+
+const projectPathResolver = jest.requireActual(
+	'../../../sdk-core/build/services/project/ProjectPathResolver'
+);
 
 const {
 	executeImportConfiguration,
@@ -25,8 +37,9 @@ describe('ImportConfigurationExecutor', () => {
 
 	beforeEach(async () => {
 		mockSendFormRequest.mockReset();
+		mockAssertCreatablePathWithin.mockReset();
+		mockAssertCreatablePathWithin.mockImplementation(projectPathResolver.assertCreatablePathWithin);
 		projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-config-import-test-'));
-		await mkdir(join(projectFolder, 'AccountConfiguration'), { recursive: true });
 	});
 
 	afterEach(async () => {
@@ -53,6 +66,10 @@ describe('ImportConfigurationExecutor', () => {
 				custom_objects: expect.stringContaining('id="ALL_FEATURES" type="FEATURES"'),
 			},
 		}));
+		expect(mockAssertCreatablePathWithin).toHaveBeenCalledWith(
+			projectFolder,
+			join(projectFolder, 'AccountConfiguration')
+		);
 		expect(result).toEqual({
 			status: 'SUCCESS',
 			data: {
@@ -64,6 +81,24 @@ describe('ImportConfigurationExecutor', () => {
 			.resolves.toBe('<features/>');
 		await expect(readFile(join(projectFolder, 'AccountConfiguration', 'status.xml'), 'utf8'))
 			.rejects.toThrow();
+	});
+
+	it('rejects an AccountConfiguration destination that resolves outside the project', async () => {
+		mockAssertCreatablePathWithin.mockRejectedValue(
+			new projectPathResolver.PathOutsideRootError(join(projectFolder, 'AccountConfiguration'))
+		);
+
+		await expect(executeImportConfiguration({
+			hostName: 'system.netsuite.com',
+			accessToken: 'token',
+			projectFolder,
+		})).resolves.toEqual({
+			status: 'ERROR',
+			errorMessages: [
+				'Account configuration must be imported into the AccountConfiguration folder within the project.',
+			],
+		});
+		expect(mockSendFormRequest).not.toHaveBeenCalled();
 	});
 
 	it('returns the server error without trying to extract it', async () => {

@@ -1,8 +1,11 @@
-/* Copyright (c) 2026 Oracle and/or its affiliates. All rights reserved. */
+/*
+ ** Copyright (c) 2026 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/upl.
+ */
 'use strict';
 
 const mockGetAuthCredentialsById = jest.fn();
-const mockExecuteImportConfigurationCommand = jest.fn();
+const mockExecuteImportConfiguration = jest.fn();
 let mockProjectType = 'ACCOUNTCUSTOMIZATION';
 
 jest.mock('../../../../src/utils/AuthenticationUtils', () => ({
@@ -18,7 +21,7 @@ jest.mock('@oracle/suitecloud-sdk-core', () => {
 		...actual,
 		commands: {
 			...actual.commands,
-			executeImportConfigurationCommand: (...args) => mockExecuteImportConfigurationCommand(...args),
+			executeImportConfiguration: (...args) => mockExecuteImportConfiguration(...args),
 		},
 	};
 });
@@ -29,12 +32,12 @@ describe('ImportConfigurationAction', () => {
 	beforeEach(() => {
 		mockProjectType = 'ACCOUNTCUSTOMIZATION';
 		mockGetAuthCredentialsById.mockReset();
-		mockExecuteImportConfigurationCommand.mockReset();
+		mockExecuteImportConfiguration.mockReset();
 	});
 
 	it('gets credentials by auth ID and imports into the current project', async () => {
 		mockGetAuthCredentialsById.mockResolvedValue({ hostName: 'system.netsuite.com', accessToken: 'token' });
-		mockExecuteImportConfigurationCommand.mockResolvedValue({
+		mockExecuteImportConfiguration.mockResolvedValue({
 			status: 'SUCCESS', data: { successfulImports: [], failedImports: [] },
 		});
 
@@ -42,7 +45,7 @@ describe('ImportConfigurationAction', () => {
 
 		expect(result.isSuccess()).toBe(true);
 		expect(mockGetAuthCredentialsById).toHaveBeenCalledWith('myAuth', '/tmp/sdk.jar');
-		expect(mockExecuteImportConfigurationCommand).toHaveBeenCalledWith({
+		expect(mockExecuteImportConfiguration).toHaveBeenCalledWith({
 			hostName: 'system.netsuite.com', accessToken: 'token',
 			projectFolder: '/tmp/project/src', userAgent: 'test-agent',
 		});
