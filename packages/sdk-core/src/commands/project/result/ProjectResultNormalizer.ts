@@ -102,13 +102,60 @@ function normalizeErrorResult(parsedBody: any, statusCode: number, rawBody: stri
 	}
 
 	const fallbackMessage = rawBody.trim()
-		? rawBody
+		? formatNonJsonErrorMessage(rawBody, statusCode)
 		: `Project command request failed with status code ${statusCode}.`;
 	return {
 		status: SDK_OPERATION_STATUS.ERROR,
 		httpStatusCode: statusCode,
 		errorMessages: [fallbackMessage],
 	};
+}
+
+function formatNonJsonErrorMessage(rawBody: string, statusCode: number): string {
+	const trimmedBody = rawBody.trim();
+	if (!isHtmlDocument(trimmedBody)) {
+		return trimmedBody;
+	}
+
+	const text = decodeHtmlEntities(
+		trimmedBody
+			.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+			.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+			.replace(/<[^>]+>/g, ' ')
+			.replace(/\s+/g, ' ')
+			.trim()
+	);
+
+	return text
+		? `Project command request failed with status code ${statusCode}: ${text}`
+		: `Project command request failed with status code ${statusCode}.`;
+}
+
+function isHtmlDocument(value: string): boolean {
+	return /<!doctype\s+html\b|<html\b|<head\b|<body\b/i.test(value);
+}
+
+function decodeHtmlEntities(value: string): string {
+	return value
+		.replace(/&#x([0-9a-f]+);?/gi, (match, codePoint) => decodeNumericHtmlEntity(match, codePoint, 16))
+		.replace(/&#(\d+);?/g, (match, codePoint) => decodeNumericHtmlEntity(match, codePoint, 10))
+		.replace(/&(amp|lt|gt|quot|apos);/gi, (_match, entity) => {
+			const entities: Record<string, string> = {
+				amp: '&',
+				lt: '<',
+				gt: '>',
+				quot: '"',
+				apos: "'",
+			};
+			return entities[entity.toLowerCase()];
+		});
+}
+
+function decodeNumericHtmlEntity(originalValue: string, value: string, radix: number): string {
+	const codePoint = parseInt(value, radix);
+	return Number.isSafeInteger(codePoint) && codePoint >= 0 && codePoint <= 0x10ffff
+		? String.fromCodePoint(codePoint)
+		: originalValue;
 }
 
 function parseJsonBody(body: string): unknown {

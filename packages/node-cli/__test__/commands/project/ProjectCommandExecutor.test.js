@@ -241,6 +241,33 @@ describe('ProjectCommandExecutor', () => {
 		expect(result.errorMessages).toEqual(['HTTP 404 Not Found']);
 	});
 
+	it('should render an HTML error response as readable text', async () => {
+		const result = await executeProjectCommand(
+			{
+				command: PROJECT_COMMAND.DEPLOY,
+				projectFolder: '/tmp/project',
+				hostName: 'system.netsuite.com',
+				accessToken: 'token',
+			},
+			{
+				createProjectArchive: async () => '/tmp/project.zip',
+				deleteFile: async () => undefined,
+				sendProjectRequest: async () => ({
+					statusCode: 500,
+					body: '<HTML><HEAD><TITLE>Error</TITLE></HEAD><BODY>An error occurred while processing your request.<p>Reference&#32;&#35;221&#46;3c0c4017&#46;1787062674&#46;c2d7028<p>https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;221&#46;3c0c4017&#46;1787062674&#46;c2d7028</BODY></HTML>',
+				}),
+			}
+		);
+
+		expect(result).toEqual({
+			status: SDK_OPERATION_STATUS.ERROR,
+			httpStatusCode: 500,
+			errorMessages: [
+				'Project command request failed with status code 500: Error An error occurred while processing your request. Reference #221.3c0c4017.1787062674.c2d7028 https://errors.edgesuite.net/221.3c0c4017.1787062674.c2d7028',
+			],
+		});
+	});
+
 	it('should format successful SDF endpoint payload into CLI output lines', async () => {
 		const expectedTimestamp = new Intl.DateTimeFormat('en-US', {
 			dateStyle: 'medium',
