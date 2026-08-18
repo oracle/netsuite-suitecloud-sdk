@@ -1,10 +1,5 @@
 [
 	{
-		"commandName": "config:import",
-		"supportsInteractiveMode": false,
-		"generator": "commands/config/import/ImportConfigurationCommand"
-	},
-	{
 		"commandName": "account:manageauth",
 		"supportsInteractiveMode": true,
 		"generator": "./commands/account/manageauth/ManageAccountCommand"
@@ -18,6 +13,11 @@
 		"commandName": "account:setup:ci",
 		"supportsInteractiveMode": false,
 		"generator": "./commands/account/setupci/AccountSetupCiCommand"
+	},
+	{
+		"commandName": "config:import",
+		"supportsInteractiveMode": false,
+		"generator": "commands/config/import/ImportConfigurationCommand"
 	},
 	{
 		"commandName": "file:create",
