@@ -18,10 +18,7 @@ describe('project command help', () => {
 		const removedAuthIdOption = runCli('config:import', '--authid', 'test-auth');
 		const removedConfigurationIdOption = runCli('config:import', '--configurationid');
 		expect(commandMetadata.isSetupRequired).toBe(true);
-		expect(commandMetadata.options.authid).toMatchObject({
-			mandatory: true,
-			disableInIntegrationMode: true,
-		});
+		expect(commandMetadata.options).toEqual({});
 		expect(help.status).toBe(0);
 		expect(help.stdout).not.toContain('--authid');
 		expect(help.stdout).not.toContain('--configurationid');
