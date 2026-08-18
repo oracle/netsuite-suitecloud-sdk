@@ -11,6 +11,31 @@ const {
 } = require('@oracle/suitecloud-sdk-core').commands;
 
 describe('ProjectCommandExecutor', () => {
+	it('should use a 15-minute timeout by default', async () => {
+		const sendProjectRequest = jest.fn().mockResolvedValue({
+			statusCode: 200,
+			body: JSON.stringify({ status: 'SUCCESS', data: [] }),
+		});
+
+		await executeProjectCommand(
+			{
+				command: PROJECT_COMMAND.DEPLOY,
+				projectFolder: '/tmp/project',
+				hostName: 'system.netsuite.com',
+				accessToken: 'token',
+			},
+			{
+				createProjectArchive: async () => '/tmp/project.zip',
+				deleteFile: async () => undefined,
+				sendProjectRequest,
+			}
+		);
+
+		expect(sendProjectRequest).toHaveBeenCalledWith(
+			expect.objectContaining({ timeoutMs: 15 * 60 * 1000 })
+		);
+	});
+
 	it('should return an error result when execution input is missing', async () => {
 		const createProjectArchive = jest.fn();
 		const sendProjectRequest = jest.fn();
