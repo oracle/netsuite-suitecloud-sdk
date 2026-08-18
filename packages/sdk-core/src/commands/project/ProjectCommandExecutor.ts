@@ -27,7 +27,7 @@ import {
 	type ProjectCommandLogInput,
 } from './result/ProjectCommandLog';
 
-const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
+const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000;
 
 type ProjectCommandDependencies = {
 	createProjectArchive?: (projectFolder: string) => Promise<string>;
