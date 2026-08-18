@@ -1,3 +1,7 @@
+/*
+ ** Copyright (c) 2026 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/upl.
+ */
 'use strict';
 
 const { ActionResult } = require('../../../services/actionresult/ActionResult');
@@ -9,7 +13,7 @@ const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
 const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
 const BaseAction = require('../../base/BaseAction');
-const { executeImportConfigurationCommand } = require('@oracle/suitecloud-sdk-core').commands;
+const { executeImportConfiguration } = require('@oracle/suitecloud-sdk-core').commands;
 const { executeWithAuthRetry, shouldRetryAuthByResult } = require('@oracle/suitecloud-sdk-core').auth;
 
 module.exports = class ImportConfigurationAction extends BaseAction {
@@ -43,7 +47,7 @@ module.exports = class ImportConfigurationAction extends BaseAction {
 			authId,
 			authSessionProvider: createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext),
 			shouldRetryAuth: shouldRetryAuthByResult,
-			executeWithAuthSession: (authCredentials) => executeImportConfigurationCommand({
+			executeWithAuthSession: (authCredentials) => executeImportConfiguration({
 				hostName: authCredentials.hostName,
 				accessToken: authCredentials.accessToken,
 				projectFolder: this._projectFolder,

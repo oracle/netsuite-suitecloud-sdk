@@ -16,6 +16,11 @@ import {
 	type ImportConfigurationResult,
 } from '../../../api/config/ConfigurationCommand';
 import { extractZipArchive } from '../../../services/archive/ZipArchive';
+import {
+	assertCreatablePathWithin,
+	assertPathWithin,
+	PathOutsideRootError,
+} from '../../../services/project/ProjectPathResolver';
 import { CONFIGURATION } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import {
@@ -51,6 +56,11 @@ export async function executeImportConfiguration(
 		if (!input.projectFolder) {
 			return errorResult(translationService.getMessage(CONFIGURATION.ERROR.PROJECT_FOLDER_REQUIRED));
 		}
+		const unresolvedTargetFolder = assertPathWithin(
+			input.projectFolder,
+			join(input.projectFolder, ACCOUNT_CONFIGURATION_FOLDER_NAME)
+		);
+		const targetFolder = await assertCreatablePathWithin(input.projectFolder, unresolvedTargetFolder);
 
 		const response = await sendFormRequest({
 			hostName: input.hostName,
@@ -92,7 +102,8 @@ export async function executeImportConfiguration(
 		}
 
 		await rm(statusFilePath, { force: true });
-		await copyDirectoryContents(unzipFolder, join(input.projectFolder, ACCOUNT_CONFIGURATION_FOLDER_NAME));
+		await mkdir(targetFolder, { recursive: true });
+		await copyDirectoryContents(unzipFolder, targetFolder);
 
 		const statusItems = await parseImportObjectStatus(statusXml);
 		return successResult({
@@ -125,6 +136,9 @@ function errorResult(message: string, httpStatusCode?: number): ConfigurationCom
 }
 
 function toErrorMessage(error: unknown): string {
+	if (error instanceof PathOutsideRootError) {
+		return translationService.getMessage(CONFIGURATION.ERROR.DESTINATION_OUTSIDE_PROJECT);
+	}
 	return error instanceof Error ? error.message : String(error);
 }
 
