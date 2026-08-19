@@ -4,7 +4,7 @@ description: SuiteScript records and fields reference. Look up field IDs, types,
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
 ---
 
 # NetSuite SuiteScript Records Reference

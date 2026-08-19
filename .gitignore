@@ -17,6 +17,9 @@ packages/sdk-core/*.tsbuildinfo
 # packaged release artifacts
 /dist/
 
+# distribution files for ai-plugins
+dist/ai-plugins/
+
 # coverage reports
 **/coverage/**
 

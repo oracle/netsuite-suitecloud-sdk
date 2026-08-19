@@ -9,6 +9,8 @@
 		"pack:cli": "node scripts/pack-cli.js"
 	},
 	"workspaces": [
+		"packages/ai-plugins",
+		"packages/agent-skills",
 		"packages/sdk-core",
 		"packages/node-cli",
 		"packages/unit-testing"
