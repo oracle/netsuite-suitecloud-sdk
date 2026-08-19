@@ -4,7 +4,7 @@ description: SuiteScript 1.0, 2.0, and 2.x to 2.1 migration assistant. Analyzes,
 license: The Universal Permissive License (UPL), Version 1.0 
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
 ---
 
 # NetSuite SuiteScript Upgrade Skill
