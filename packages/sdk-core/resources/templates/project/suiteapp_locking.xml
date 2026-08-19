@@ -1,0 +1,11 @@
+<!-- This file is used for locking the content of your SuiteApp when deploying to a NetSuite account. -->
+<!-- The configuration below locks all content except for the files and objects specified under the apply tag. Use the commented lines as examples. -->
+<!-- This configuration is only applied when the "Apply Installation Preferences" option is provided through SuiteCloud SDK. Otherwise this file is ignored. -->
+<!-- For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html -->
+
+<preference type="LOCKING" defaultAction="LOCK">
+    <apply action="UNLOCK">
+        <!-- <object>custcontenttype_myobject</object> -->
+        <!-- <path>~/FileCabinet/SuiteApps/xxx.xxx.xxx/MyScript.js</path> -->
+    </apply>
+</preference>

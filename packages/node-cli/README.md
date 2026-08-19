@@ -13,7 +13,7 @@ CLI for Node.js is an interactive tool that guides you through all the steps of 
 
 ## Prerequisites
 The following software is required to work with SuiteCloud CLI for Node.js:
-- Node.js version 22 LTS
+- Node.js version 24 LTS
 - Oracle JDK version 17 or 21
 
 Read the full list of prerequisites in [SuiteCloud CLI for Node.js Installation Prerequisites](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558708810.html).
@@ -25,8 +25,8 @@ The following table shows the CLI versions currently available in NPM.
 
 | CLI Versions Available in NPM | 
 |:-----------------------------:|
+| 4.0.0 |
 | 3.2.0 |
-| 3.1.4 |
 
 
 ## Installation
@@ -35,10 +35,17 @@ Since CLI for Node.js is a development tool, use a global instance to install it
 ```
 npm install -g @oracle/suitecloud-cli
 ```
-When installing SuiteCloud CLI for Node.js via script, for instance in a CI environment, you can skip showing the license presented during the normal installation process by adding the --acceptSuiteCloudSDKLicense flag to the install script as shown below. Note that by adding the mentioned flag to the script, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions license. See the [License](#license) section for details.
+When you install SuiteCloud CLI for Node.js through a script, such as in a CI environment, set the `SUITECLOUD_CLI_ACCEPT_LICENSE` environment variable to `true` to suppress the license prompt. By setting this variable, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions. For details, see the [License](#license) section.
 
 ```
-npm install -g --acceptSuiteCloudSDKLicense @oracle/suitecloud-cli
+SUITECLOUD_CLI_ACCEPT_LICENSE=true npm install -g @oracle/suitecloud-cli
+```
+
+If you use PowerShell, run:
+
+```
+$env:SUITECLOUD_CLI_ACCEPT_LICENSE = 'true'
+npm install -g @oracle/suitecloud-cli
 ```
 
 

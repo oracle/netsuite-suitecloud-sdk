@@ -325,12 +325,13 @@
 			"validate": {
 				"name": "validate",
 				"option": "validate",
-				"description": "Validates the project before deploying. If an error ocurrs during the deployment, the process is stopped.",
+				"description": "The \"--validate\" option has no effect. Project deployment is always validated on the server.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",
 				"defaultOption": false,
-				"disableInIntegrationMode": false
+				"disableInIntegrationMode": false,
+				"hidden": true
 			}
 		}
 	},
@@ -776,12 +777,13 @@
 			"server": {
 				"name": "server",
 				"option": "server",
-				"description": "Indicates that the server will perform the validation.",
+				"description": "The \"--server\" option has no effect. Project validation is always performed on the server.",
 				"mandatory": false,
 				"type": "FLAG",
 				"usage": "",
 				"defaultOption": false,
-				"disableInIntegrationMode": false
+				"disableInIntegrationMode": false,
+				"hidden": true
 			}
 		}
 	},

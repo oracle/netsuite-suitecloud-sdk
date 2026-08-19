@@ -6,15 +6,17 @@
 
 const assert = require('assert');
 const NodeTranslationService = require('./../services/NodeTranslationService');
-const { ERRORS, CLI, COMMAND_REFRESH_AUTHORIZATION } = require('../services/TranslationKeys');
+const { ERRORS, CLI, COMMAND_REFRESH_AUTHORIZATION, UTILS } = require('../services/TranslationKeys');
 const { ActionResult } = require('../services/actionresult/ActionResult');
 const { lineBreak } = require('../loggers/LoggerOsConstants');
 const ActionResultUtils = require('../utils/ActionResultUtils');
 const { unwrapExceptionMessage, unwrapInformationMessage } = require('../utils/ExceptionUtils');
 const { getProjectDefaultAuthId } = require('../utils/AuthenticationUtils');
+const { executeWithSpinner } = require('../ui/CliSpinner');
 const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
-const { checkIfReauthorizationIsNeeded, refreshAuthorization } = require('../utils/AuthenticationUtils');
+const { checkIfReauthorizationIsNeeded, getAuthInfo, refreshAuthorization } = require('../utils/AuthenticationUtils');
 const { AUTHORIZATION_PROPERTIES_KEYS } = require('../ApplicationConstants');
+const { runWithSuiteCloudRequestTelemetry } = require('@oracle/suitecloud-sdk-core').http;
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -38,6 +40,11 @@ module.exports = class CommandActionExecutor {
 	}
 
 	async executeAction(context) {
+		const userAgent = this._executionEnvironmentContext?.toUserAgentString?.();
+		return runWithSuiteCloudRequestTelemetry({ userAgent }, () => this._executeAction(context));
+	}
+
+	async _executeAction(context) {
 		assert(context);
 		assert(context.arguments);
 		assert(context.commandName);
@@ -48,6 +55,7 @@ module.exports = class CommandActionExecutor {
 			const commandName = context.commandName;
 			const commandMetadata = this._commandsMetadataService.getCommandMetadataByName(commandName);
 			this._cliConfigurationService.initialize(this._executionPath);
+			this._cliConfigurationService.validateProjectContext(commandName);
 			const projectFolder = this._cliConfigurationService.getProjectFolder(commandName);
 			commandUserExtension = this._cliConfigurationService.getCommandUserExtension(commandName);
 			const runInInteractiveMode = context.runInInteractiveMode;
@@ -105,10 +113,16 @@ module.exports = class CommandActionExecutor {
 	}
 
 	async _refreshAuthorizationIfNeeded(defaultAuthId) {
-		const inspectAuthzOperationResult = await checkIfReauthorizationIsNeeded(defaultAuthId, this._sdkPath, this._executionEnvironmentContext);
+		const inspectAuthzOperationResult = await executeWithSpinner({
+			action: checkIfReauthorizationIsNeeded(defaultAuthId, this._sdkPath, this._executionEnvironmentContext),
+			message: NodeTranslationService.getMessage(UTILS.AUTHENTICATION.CHECKING_AUTHORIZATION),
+		});
 
 		if (!inspectAuthzOperationResult.isSuccess()) {
-			throw inspectAuthzOperationResult.errorMessages;
+			throw await this._withAuthorizationFailureContext(
+				inspectAuthzOperationResult.errorMessages,
+				defaultAuthId
+			);
 		}
 		const inspectAuthzData = inspectAuthzOperationResult.data;
 		if (inspectAuthzData[AUTHORIZATION_PROPERTIES_KEYS.NEEDS_REAUTHORIZATION]) {
@@ -120,6 +134,24 @@ module.exports = class CommandActionExecutor {
 			}
 			await this._log.info(NodeTranslationService.getMessage(COMMAND_REFRESH_AUTHORIZATION.MESSAGES.AUTHORIZATION_REFRESH_COMPLETED));
 		}
+	}
+
+	async _withAuthorizationFailureContext(errorMessages, authId) {
+		try {
+			const authInfoResult = await getAuthInfo(authId, this._sdkPath, this._executionEnvironmentContext);
+			const hostName = authInfoResult.isSuccess() && authInfoResult.data?.hostInfo?.hostName;
+			if (hostName) {
+				const contextMessage = NodeTranslationService.getMessage(
+						COMMAND_REFRESH_AUTHORIZATION.ERRORS.CHECK_FAILED_CONTEXT,
+						authId,
+						hostName
+					);
+				return [[...errorMessages, contextMessage].join(lineBreak)];
+			}
+		} catch {
+			// Keep the original authorization error when local authentication metadata cannot be read.
+		}
+		return errorMessages;
 	}
 
 	_logGenericError(error) {

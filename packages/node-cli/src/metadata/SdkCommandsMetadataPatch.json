@@ -117,14 +117,36 @@
 			},
 			"applyinstallprefs": {
 				"alias": "a"
+			},
+				"json": {
+					"name": "json",
+					"option": "json",
+					"alias": "j",
+					"description": "Prints the raw JSON response from the server and skips formatted CLI output.",
+					"mandatory": false,
+					"type": "FLAG",
+					"usage": "",
+					"defaultOption": false,
+					"disableInIntegrationMode": false
+				}
 			}
-		}
-	},
-	"project:validate": {
+		},
+		"project:validate": {
 		"options": {
 			"applyinstallprefs": {
 				"alias": "a"
+			},
+				"json": {
+					"name": "json",
+					"option": "json",
+					"alias": "j",
+					"description": "Prints the raw JSON response from the server and skips formatted CLI output.",
+					"mandatory": false,
+					"type": "FLAG",
+					"usage": "",
+					"defaultOption": false,
+					"disableInIntegrationMode": false
+				}
 			}
 		}
 	}
-}

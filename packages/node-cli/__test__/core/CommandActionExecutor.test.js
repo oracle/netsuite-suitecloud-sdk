@@ -1,4 +1,21 @@
 'use strict';
+
+const mockCheckIfReauthorizationIsNeeded = jest.fn();
+const mockGetAuthInfo = jest.fn();
+const mockRefreshAuthorization = jest.fn();
+const mockExecuteWithSpinner = jest.fn(({ action }) => action);
+
+jest.mock('../../src/utils/AuthenticationUtils', () => ({
+	...jest.requireActual('../../src/utils/AuthenticationUtils'),
+	checkIfReauthorizationIsNeeded: (...args) => mockCheckIfReauthorizationIsNeeded(...args),
+	getAuthInfo: (...args) => mockGetAuthInfo(...args),
+	refreshAuthorization: (...args) => mockRefreshAuthorization(...args),
+}));
+
+jest.mock('../../src/ui/CliSpinner', () => ({
+	executeWithSpinner: (context) => mockExecuteWithSpinner(context),
+}));
+
 const CommandActionExecutor = require('../../src/core/CommandActionExecutor');
 const sdkPath = require('../../src/core/sdksetup/SdkProperties').getSdkPath();
 const { ActionResult } = require('../../src/services/actionresult/ActionResult');
@@ -41,6 +58,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 	const CliConfigurationService = jest.fn(() => ({
 		initialize: jest.fn(() => {}),
+		validateProjectContext: jest.fn(() => {}),
 		getProjectFolder: jest.fn(() => {}),
 		getCommandUserExtension: jest.fn(() => {
 			return new CommandUserExtension();
@@ -89,6 +107,10 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 
 		mockCommandUserExtensionOnCompleted.mockClear();
 		mockCommandUserExtensionOnError.mockClear();
+		mockCheckIfReauthorizationIsNeeded.mockReset();
+		mockGetAuthInfo.mockReset();
+		mockRefreshAuthorization.mockReset();
+		mockExecuteWithSpinner.mockClear();
 	});
 
 	let error = null;
@@ -150,8 +172,54 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			runInInteractiveMode: true,
 			arguments: {},
 		});
-		expect(mockConsoleLogger.error).toBeCalledTimes(0);
+		expect(mockConsoleLogger.error).toHaveBeenCalledTimes(0);
 		expect(actionResult._status).toBe('SUCCESS');
+	});
+
+	it('should show progress while checking whether authorization must be refreshed', async () => {
+		const inspection = Promise.resolve({
+			isSuccess: () => true,
+			data: { needsReauthorization: false },
+		});
+		mockCheckIfReauthorizationIsNeeded.mockReturnValue(inspection);
+
+		await commandExecutor._refreshAuthorizationIfNeeded('myAuth');
+
+		expect(mockExecuteWithSpinner).toHaveBeenCalledWith({
+			action: inspection,
+			message: 'Checking authorization...',
+		});
+		expect(mockRefreshAuthorization).not.toHaveBeenCalled();
+	});
+
+	it('adds the configured host when authorization inspection fails', async () => {
+		mockCheckIfReauthorizationIsNeeded.mockResolvedValue({
+			isSuccess: () => false,
+			errorMessages: ['Received fatal alert: internal_error'],
+		});
+		mockGetAuthInfo.mockResolvedValue({
+			isSuccess: () => true,
+			data: { hostInfo: { hostName: 'test.vm.eng.netsuite.com' } },
+		});
+
+		await expect(commandExecutor._refreshAuthorizationIfNeeded('myAuth')).rejects.toEqual([
+			'Received fatal alert: internal_error\n' +
+				'Authentication ID: myAuth\n' +
+				'Host: test.vm.eng.netsuite.com\n' +
+				'Verify the network configuration and that the Host is reachable.',
+		]);
+	});
+
+	it('preserves the original authorization error when the configured host cannot be read', async () => {
+		mockCheckIfReauthorizationIsNeeded.mockResolvedValue({
+			isSuccess: () => false,
+			errorMessages: ['Authorization inspection failed'],
+		});
+		mockGetAuthInfo.mockRejectedValue(new Error('Credentials unavailable'));
+
+		await expect(commandExecutor._refreshAuthorizationIfNeeded('myAuth')).rejects.toEqual([
+			'Authorization inspection failed',
+		]);
 	});
 
 	it('Should throw EXCEPTION when setup is required and there is not any account configured.', async () => {
@@ -222,7 +290,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			runInInteractiveMode: false,
 			arguments: {},
 		});
-		expect(mockCommandUserExtensionOnError).toBeCalledTimes(1);
+		expect(mockCommandUserExtensionOnError).toHaveBeenCalledTimes(1);
 	});
 
 	it('Should trigger CommandUserExtension.onCompleted.', async () => {
@@ -231,6 +299,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			runInInteractiveMode: false,
 			arguments: {},
 		});
-		expect(mockCommandUserExtensionOnCompleted).toBeCalledTimes(1);
+		expect(mockCommandUserExtensionOnCompleted).toHaveBeenCalledTimes(1);
 	});
 });
