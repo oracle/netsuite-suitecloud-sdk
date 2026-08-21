@@ -100,20 +100,24 @@ export async function executeImportConfiguration(
 		if (!statusXml) {
 			return errorResult(translationService.getMessage(CONFIGURATION.ERROR.UNKNOWN_SERVER_RESPONSE));
 		}
-
-		await rm(statusFilePath, { force: true });
-		await mkdir(targetFolder, { recursive: true });
-		await copyDirectoryContents(unzipFolder, targetFolder);
-
 		const statusItems = await parseImportObjectStatus(statusXml);
-		return successResult({
+		const importResult: ImportConfigurationResult = {
 			successfulImports: statusItems
 				.filter((item) => item.result?.code === 'SUCCESS')
 				.map((item) => ({ type: item.type, id: item.id })),
 			failedImports: statusItems
 				.filter((item) => item.result?.code === 'FAILED')
 				.map((item) => ({ type: item.type, id: item.id, message: item.result?.message })),
-		});
+		};
+		if (importResult.failedImports.length > 0) {
+			return successResult(importResult);
+		}
+
+		await rm(statusFilePath, { force: true });
+		await mkdir(targetFolder, { recursive: true });
+		await copyDirectoryContents(unzipFolder, targetFolder);
+
+		return successResult(importResult);
 	} catch (error: unknown) {
 		return errorResult(toErrorMessage(error), getStatusCode(error));
 	} finally {
