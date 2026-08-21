@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { mkdtemp, readFile, rm } = require('node:fs/promises');
+const { mkdir, mkdtemp, readFile, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const AdmZip = require('adm-zip');
@@ -118,14 +118,65 @@ describe('ImportConfigurationExecutor', () => {
 			errorMessages: ['Forbidden'],
 		});
 	});
+
+	it('does not overwrite account configuration when status.xml parsing fails', async () => {
+		const accountConfigurationFolder = join(projectFolder, 'AccountConfiguration');
+		const featuresFile = join(accountConfigurationFolder, 'features.xml');
+		await mkdir(accountConfigurationFolder);
+		await writeFile(featuresFile, '<existing-features/>');
+		mockSendFormRequest.mockResolvedValue({
+			statusCode: 200,
+			contentType: 'application/octet-stream',
+			body: createImportZip('<Status>'),
+		});
+
+		const result = await executeImportConfiguration({
+			hostName: 'system.netsuite.com',
+			accessToken: 'token',
+			projectFolder,
+		});
+
+		expect(result.status).toBe('ERROR');
+		await expect(readFile(featuresFile, 'utf8')).resolves.toBe('<existing-features/>');
+	});
+
+	it('does not overwrite account configuration when the import status is failed', async () => {
+		const accountConfigurationFolder = join(projectFolder, 'AccountConfiguration');
+		const featuresFile = join(accountConfigurationFolder, 'features.xml');
+		await mkdir(accountConfigurationFolder);
+		await writeFile(featuresFile, '<existing-features/>');
+		mockSendFormRequest.mockResolvedValue({
+			statusCode: 200,
+			contentType: 'application/octet-stream',
+			body: createImportZip(
+				'<Status><customObject id="all_features" type="features">' +
+				'<result><code>FAILED</code><message>Import failed</message></result>' +
+				'</customObject></Status>'
+			),
+		});
+
+		const result = await executeImportConfiguration({
+			hostName: 'system.netsuite.com',
+			accessToken: 'token',
+			projectFolder,
+		});
+
+		expect(result).toEqual({
+			status: 'SUCCESS',
+			data: {
+				successfulImports: [],
+				failedImports: [{ type: 'features', id: 'all_features', message: 'Import failed' }],
+			},
+		});
+		await expect(readFile(featuresFile, 'utf8')).resolves.toBe('<existing-features/>');
+	});
 });
 
-function createImportZip() {
+function createImportZip(statusXml =
+	'<Status><customObject id="all_features" type="features">' +
+	'<result><code>SUCCESS</code></result></customObject></Status>') {
 	const zip = new AdmZip();
-	zip.addFile('status.xml', Buffer.from(
-		'<Status><customObject id="all_features" type="features">' +
-		'<result><code>SUCCESS</code></result></customObject></Status>'
-	));
+	zip.addFile('status.xml', Buffer.from(statusXml));
 	zip.addFile('features.xml', Buffer.from('<features/>'));
 	return zip.toBuffer();
 }
