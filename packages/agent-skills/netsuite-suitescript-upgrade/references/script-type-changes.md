@@ -3,6 +3,8 @@
 
 > Complete entry point migration reference for all script types.
 > SuiteScript 2.1 uses `@NApiVersion` and `@NScriptType` JSDoc tags with AMD `define()` module loading.
+>
+> For existing SuiteScript 2.0/2.x AMD modules, use this file to validate returned entrypoint names against the declared `@NScriptType`. Preserve the existing module structure and only inject a fallback entrypoint when the returned module object has no valid entrypoint for that script type.
 
 ---
 
@@ -566,6 +568,7 @@ define(['N/record', 'N/log'], (record, log) => {
 - GET and DELETE receive URL query parameters; POST and PUT receive the parsed request body
 - RESTlets return JSON by default; return a string for plain text responses
 - Error responses in SS2.1 return structured JSON: `{ "error": { "code": "...", "message": "..." } }`
+- For existing SS2.0/2.x RESTlets, the Babel-compatible path wraps direct `post` return expressions in `JSON.stringify(...)`; this is separate from SS1.0 RESTlet entrypoint migration
 
 ---
 
@@ -997,3 +1000,27 @@ define(['N/record', 'N/log', 'N/runtime'], (record, log, runtime) => {
 | Bundle Install | `beforeInstall`, `afterInstall`, etc. | Same names, context wrapper | `BundleInstallationScript` |
 | Workflow Action | Custom function name | `onAction` | `WorkflowActionScript` |
 | SDF Install | N/A (new) | `run` | `SDFInstallationScript` |
+
+---
+
+## SuiteScript 2.x Entrypoint Validation and Fallbacks
+
+For existing SuiteScript 2.0/2.x modules, do not convert custom function declarations just because the local symbol name differs. Validate the keys returned from the `define()` callback. For example, `return { beforeLoad: handleBeforeLoad }` is valid for a User Event script.
+
+If a file declares a known `@NScriptType` but returns no valid entrypoint key for that script type, the Babel-compatible path injects a no-op fallback entrypoint and flags it for manual review. The fallback only keeps the script structurally deployable; it does not replace missing business logic.
+
+| @NScriptType | Valid returned entrypoints | Fallback |
+|--------------|----------------------------|----------|
+| `ClientScript` | `pageInit`, `saveRecord`, `fieldChanged`, `postSourcing`, `lineInit`, `validateField`, `validateLine`, `validateInsert`, `validateDelete`, `sublistChanged`, `localizationContextEnter`, `localizationContextExit` | `pageInit` |
+| `UserEventScript` | `beforeLoad`, `beforeSubmit`, `afterSubmit` | `beforeLoad` |
+| `Suitelet` | `onRequest` | `onRequest` |
+| `Restlet` | `get`, `post`, `put`, `delete` | `get` |
+| `ScheduledScript` | `execute` | `execute` |
+| `MapReduceScript` | `getInputData`, `map`, `reduce`, `summarize` | `getInputData`, returning `[]` |
+| `MassUpdateScript` | `each` | `each` |
+| `Portlet` | `render` | `render` |
+| `WorkflowActionScript` | `onAction` | `onAction` |
+| `BundleInstallationScript` | `beforeInstall`, `beforeUpdate`, `afterInstall`, `afterUpdate` | `afterInstall` |
+| `SDFInstallationScript` | `run` | `run` |
+
+Review any injected fallback before deployment. If the original script was intended to run logic, replace the fallback with the correct entrypoint implementation.
