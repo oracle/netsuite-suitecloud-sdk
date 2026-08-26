@@ -19,6 +19,10 @@ const CUSTOM_SEGMENT_TYPE = 'customsegment';
 const CUSTOM_RECORD_TYPE = 'customrecordtype';
 const CUSTOM_RECORD_PREFIX = 'customrecord';
 const IDE_RESULT_KEY = 'result';
+const UPDATE_OBJECT_TYPE_BY_ROOT_TAG: Readonly<Record<string, string>> = {
+	pluginimplementation: 'plugintypeimpl',
+	savedcsvimport: 'csvimport',
+};
 
 export function buildCustomObjectsXml(customObjects: CustomObjectInfo[]): string {
 	const expandedObjects: CustomObjectInfo[] = [];
@@ -142,6 +146,11 @@ export function extractRootTagName(xmlText: string): string {
 		throw new Error(translationService.getMessage(OBJECT.ERROR.ROOT_TAG_PARSE_FAILED));
 	}
 	return tagMatch[1];
+}
+
+export function extractObjectTypeForUpdate(xmlText: string): string {
+	const rootTag = extractRootTagName(xmlText).toLowerCase();
+	return UPDATE_OBJECT_TYPE_BY_ROOT_TAG[rootTag] ?? rootTag;
 }
 
 export async function parseIdePayload(xmlText: string): Promise<{ resultText?: string; errorMessage?: string }> {
