@@ -15,6 +15,11 @@
 		"generator": "./commands/account/setupci/AccountSetupCiCommand"
 	},
 	{
+		"commandName": "config:import",
+		"supportsInteractiveMode": false,
+		"generator": "commands/config/import/ImportConfigurationCommand"
+	},
+	{
 		"commandName": "file:create",
 		"supportsInteractiveMode": true,
 		"generator": "commands/file/create/CreateFileCommand"
