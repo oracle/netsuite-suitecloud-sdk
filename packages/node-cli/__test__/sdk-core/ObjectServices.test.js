@@ -10,6 +10,7 @@ const { join } = require('node:path');
 
 const {
 	buildCustomObjectsXml,
+	extractObjectTypeForUpdate,
 	extractRootTagName,
 } = require('../../../sdk-core/build/commands/object/ObjectCommandXml');
 const {
@@ -40,6 +41,12 @@ describe('ObjectCommandXml', () => {
 		].join('\n');
 
 		expect(extractRootTagName(objectXml)).toBe('savedsearch');
+	});
+
+	it('uses the Java-compatible object types for update requests', () => {
+		expect(extractObjectTypeForUpdate('<savedcsvimport/>')).toBe('csvimport');
+		expect(extractObjectTypeForUpdate('<pluginimplementation/>')).toBe('plugintypeimpl');
+		expect(extractObjectTypeForUpdate('<savedsearch/>')).toBe('savedsearch');
 	});
 });
 

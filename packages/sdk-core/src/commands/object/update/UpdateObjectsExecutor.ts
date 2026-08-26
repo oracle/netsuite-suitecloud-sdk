@@ -34,7 +34,7 @@ import {
 } from '../ObjectFiles';
 import {
 	buildCustomObjectsXml,
-	extractRootTagName,
+	extractObjectTypeForUpdate,
 	parseIdePayload,
 	parseImportObjectStatus,
 } from '../ObjectCommandXml';
@@ -77,7 +77,7 @@ export async function executeUpdateObjects(
 
 			try {
 				const objectInfo: CustomObjectInfo = {
-					type: extractRootTagName(await readFile(objectFile, 'utf8')).toLowerCase(),
+					type: extractObjectTypeForUpdate(await readFile(objectFile, 'utf8')),
 					scriptId,
 					appId: packageRoot || undefined,
 				};
