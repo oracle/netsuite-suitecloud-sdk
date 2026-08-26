@@ -128,7 +128,15 @@ export function extractScriptFileReferences(xmlText: string): string[] {
 }
 
 export function extractRootTagName(xmlText: string): string {
-	const normalizedXml = xmlText.trim().replace(/^<\?xml[^>]*\?>/i, '').trim();
+	let normalizedXml = xmlText.trim();
+	while (normalizedXml.startsWith('<?') || normalizedXml.startsWith('<!--')) {
+		const closingToken = normalizedXml.startsWith('<!--') ? '-->' : '?>';
+		const closingIndex = normalizedXml.indexOf(closingToken);
+		if (closingIndex === -1) {
+			throw new Error(translationService.getMessage(OBJECT.ERROR.ROOT_TAG_PARSE_FAILED));
+		}
+		normalizedXml = normalizedXml.slice(closingIndex + closingToken.length).trimStart();
+	}
 	const tagMatch = normalizedXml.match(/^<([a-zA-Z0-9_:-]+)/);
 	if (!tagMatch) {
 		throw new Error(translationService.getMessage(OBJECT.ERROR.ROOT_TAG_PARSE_FAILED));
