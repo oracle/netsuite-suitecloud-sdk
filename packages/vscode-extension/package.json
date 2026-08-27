@@ -130,7 +130,8 @@
 		"views": {
 			"suitecloud": [
 				{
-					"name": "Dev Assistant Control Panel",
+					"id": "suitecloud.devAssistControlPanelView",
+					"name": "Developer Assistant Control Panel",
 					"type": "webview"
 				}
 			]
