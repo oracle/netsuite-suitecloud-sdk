@@ -11,16 +11,16 @@ const DEFAULT_UI_STRINGS = {
 	generateApiKeyTitle: 'Generate API key',
 	rotateApiKeyTitle: 'Generate a new API key',
 	openClineChatEnabledTitle: 'Open Cline chat view.',
-	openClineChatDisabledTitle: 'Start and configure the proxy before opening Cline chat.',
+	openClineChatDisabledTitle: 'Start the local service to enable this.',
 	applyClineNoChangesTitle: 'No change detected. Nothing to apply to Cline config.',
 	applyClineIncompatibleTitle: 'Automatic Cline update is not supported on this machine.',
 	applyClineMissingApiKeyTitle: 'Generate an API key first.',
-	applyClineProxyUnavailableTitle: 'Start the SuiteCloud proxy before applying Cline settings.',
+	applyClineProxyUnavailableTitle: 'Start the local service to enable this.',
 	applyClineReadyTitle: 'Apply current panel settings to Cline configuration.',
 	workspaceManualSetupTitle: 'Workspace-specific Cline setup must be configured manually.',
-	changePortWhileRunningTitle: 'Stop the proxy before changing the local port.',
-	changeAuthIdWhileRunningTitle: 'Stop the proxy before changing the Auth ID.',
-	changeApiKeyWhileRunningTitle: 'Stop the proxy before generating or rotating the API key.',
+	changePortWhileRunningTitle: 'Stop the local service before changing the local port.',
+	changeAuthIdWhileRunningTitle: 'Stop the local service before changing the Auth ID.',
+	changeApiKeyWhileRunningTitle: 'Stop the local service before generating or rotating the API key.',
 	invalidPortFormat: 'Enter a 4 or 5 digit port between 1024 and 65535.'
 };
 
@@ -52,6 +52,10 @@ const elements = {
 	clineMarketplaceLink: byId('clineMarketplaceLink'),
 	clineDescription: byId('clineDescription'),
 	clineScope: byId('clineScope'),
+	providerDisclosure: byId('providerDisclosure'),
+	providerDisclosureSummary: byId('providerDisclosureSummary'),
+	providerBaseUrl: byId('providerBaseUrl'),
+	providerApiKey: byId('providerApiKey'),
 	disableWelcomeNotification: byId('disableWelcomeNotification'),
 	rotateKey: byId('rotateKey'),
 	rotateKeyIcon: byId('rotateKeyIcon'),
@@ -59,13 +63,13 @@ const elements = {
 	startProxy: byId('startProxy'),
 	stopProxy: byId('stopProxy'),
 	openOutput: byId('openOutput'),
+	applyClineTooltip: byId('applyClineTooltip'),
 	applyCline: byId('applyCline'),
 	openClineChat: byId('openClineChat'),
 	toggleFeedback: byId('toggleFeedback'),
 	feedbackContent: byId('feedbackContent'),
 	feedbackText: byId('feedbackText'),
 	submitFeedback: byId('submitFeedback'),
-	clearFeedback: byId('clearFeedback'),
 	controlPanelContent: byId('controlPanelContent'),
 	expandedViewInfo: byId('expandedViewInfo'),
 	expandView: byId('expandView')
@@ -108,6 +112,14 @@ function post(eventType, eventData) {
 function on(element, eventName, listener) {
 	if (element) {
 		element.addEventListener(eventName, listener);
+	}
+}
+
+function setTooltip(element, message) {
+	if (message) {
+		element.dataset.tooltip = message;
+	} else {
+		delete element.dataset.tooltip;
 	}
 }
 
@@ -255,7 +267,7 @@ function renderCline(status) {
 	elements.clineMarketplaceLink.classList.toggle('hidden', isCompatible || isWorkspaceManualSetup);
 	elements.clineDescription.classList.toggle('hidden', isConfigured);
 	elements.openClineChat.classList.toggle('hidden', !isConfigured);
-	elements.applyCline.classList.toggle('hidden', !isCompatible || isConfigured);
+	elements.applyClineTooltip.classList.toggle('hidden', !isCompatible || isConfigured);
 
 	const isClineProxyAvailable = status === 'running';
 	const applyDisabledReason = !isClineProxyAvailable
@@ -266,7 +278,12 @@ function renderCline(status) {
 			? UI_STRINGS.applyClineIncompatibleTitle
 			: '';
 	elements.applyCline.disabled = !!applyDisabledReason;
-	elements.applyCline.title = applyDisabledReason || UI_STRINGS.applyClineReadyTitle;
+	elements.applyCline.title = applyDisabledReason ? '' : UI_STRINGS.applyClineReadyTitle;
+	elements.applyCline.setAttribute(
+		'aria-label',
+		applyDisabledReason ? `Apply settings. ${applyDisabledReason}` : 'Apply settings'
+	);
+	setTooltip(elements.applyClineTooltip, applyDisabledReason);
 
 	const canOpenCline = status === 'running' && isConfigured;
 	elements.openClineChat.disabled = !canOpenCline;
@@ -278,20 +295,53 @@ function renderCline(status) {
 	elements.clineSyncMessage.classList.toggle('hidden', !state.clineConfigSyncMessage || isConfigured);
 }
 
-function renderFeedback(isRunning) {
-	elements.submitFeedback.disabled = !isRunning;
-	elements.submitFeedback.title = isRunning
-		? 'Submit feedback through the current proxy session.'
-		: 'Start the local service before sending feedback.';
+function updateFeedbackSubmitState() {
+	const payload = getFeedbackPayload();
+	const isRunning = String(state.proxyStatus || '').toLowerCase() === 'running';
+	const isComplete =
+		!!payload.feedback &&
+		payload.topics.length > 0 &&
+		Number.isInteger(payload.rating) &&
+		payload.rating >= 1 &&
+		payload.rating <= 5;
+	elements.submitFeedback.disabled = !isRunning || !isComplete;
+	elements.submitFeedback.title = !isRunning
+		? 'Start the local service to send feedback.'
+		: !isComplete
+			? 'Select a topic, choose a rating, and enter your feedback.'
+			: 'Send feedback.';
+}
+
+function renderFeedback() {
+	updateFeedbackSubmitState();
 	elements.feedbackContent.classList.toggle('feedbackExpanded', feedbackExpanded);
 	elements.toggleFeedback.setAttribute('aria-expanded', String(feedbackExpanded));
 	elements.toggleFeedback.textContent = feedbackExpanded ? 'Hide feedback' : 'Share your feedback';
 }
 
+function renderProviderDisclosure(isRunning) {
+	const disabledReason = 'Start the local service to enable this.';
+	elements.providerDisclosure.classList.toggle('disabled', !isRunning);
+	elements.providerDisclosureSummary.setAttribute('aria-disabled', String(!isRunning));
+	elements.providerDisclosureSummary.setAttribute(
+		'aria-label',
+		isRunning ? 'API provider settings' : `API provider settings. ${disabledReason}`
+	);
+	elements.providerDisclosureSummary.tabIndex = isRunning ? 0 : -1;
+	elements.providerDisclosureSummary.title = isRunning
+		? 'Show API provider settings'
+		: '';
+	setTooltip(elements.providerDisclosure, isRunning ? '' : disabledReason);
+	if (!isRunning) {
+		elements.providerDisclosure.open = false;
+	}
+}
+
 function render() {
 	const status = String(state.proxyStatus || 'stopped').toLowerCase();
 	const isRunning = status === 'running';
-	renderFeedback(isRunning);
+	renderFeedback();
+	renderProviderDisclosure(isRunning);
 
 	renderAuthIds(state.authIds, state.authId);
 	if (document.activeElement !== elements.port) {
@@ -313,7 +363,7 @@ function render() {
 	elements.authIdField.title = isProxyConfigLocked ? UI_STRINGS.changeAuthIdWhileRunningTitle : '';
 	elements.authIdField.classList.toggle('lockedField', isProxyConfigLocked);
 	elements.setupAccount.disabled = !isSdkReady;
-	elements.setupAccount.title = isSdkReady ? 'Set up SuiteCloud account' : 'Preparing SuiteCloud SDK...';
+	setTooltip(elements.setupAccount, isSdkReady ? 'Set up a new Auth ID' : 'Preparing SuiteCloud SDK...');
 	elements.port.disabled = isProxyConfigLocked;
 	elements.port.title = isProxyConfigLocked ? UI_STRINGS.changePortWhileRunningTitle : '';
 	elements.portField.title = isProxyConfigLocked ? UI_STRINGS.changePortWhileRunningTitle : '';
@@ -325,11 +375,11 @@ function render() {
 	const apiKeyActionTitle = state.apiKeyExists
 		? UI_STRINGS.rotateApiKeyTitle
 		: UI_STRINGS.generateApiKeyTitle;
-	elements.rotateKey.title = !isSdkReady
+	setTooltip(elements.rotateKey, !isSdkReady
 		? 'Preparing SuiteCloud SDK...'
 		: isApiKeyChangeBlocked
 		? UI_STRINGS.changeApiKeyWhileRunningTitle
-		: apiKeyActionTitle;
+		: apiKeyActionTitle);
 	elements.rotateKey.setAttribute('aria-label', apiKeyActionTitle);
 	elements.rotateKey.classList.toggle('iconOnlyButton', state.apiKeyExists);
 	elements.rotateKeyIcon.classList.toggle('hidden', !state.apiKeyExists);
@@ -341,6 +391,10 @@ function render() {
 	elements.maskedApiKey.textContent = hasApiKey
 		? state.maskedApiKey || UI_STRINGS.notResolved
 		: '';
+	elements.providerBaseUrl.textContent = state.baseUrl || '-';
+	elements.providerApiKey.textContent = hasApiKey
+		? `Use ${state.maskedApiKey || UI_STRINGS.notResolved}, or rotate to generate a new one.`
+		: 'Generate an API key.';
 	scheduleApiKeyCountdown();
 
 	elements.startProxy.classList.toggle('hidden', isRunning || isStopping);
@@ -349,7 +403,7 @@ function render() {
 	elements.startProxy.querySelector('span:last-child').textContent = isStarting ? 'Starting' : 'Start';
 	elements.startProxy.title = !isSdkReady
 		? 'Preparing SuiteCloud SDK...'
-		: 'Start proxy';
+		: 'Start local service';
 	elements.stopProxy.disabled = isStopping;
 	elements.stopProxy.querySelector('span:last-child').textContent = isStopping ? 'Stopping' : 'Stop';
 	elements.stopProxy.title = 'Stop proxy';
@@ -378,6 +432,7 @@ function clearFeedbackForm() {
 	document.querySelectorAll('input[name="topics"], input[name="rating"]').forEach((input) => {
 		input.checked = false;
 	});
+	updateFeedbackSubmitState();
 }
 
 function resizeFeedbackText() {
@@ -404,24 +459,36 @@ on(elements.copyApiKey, 'click', () => {
 on(elements.applyCline, 'click', () => post(EVENTS.APPLY_CLINE_SETTINGS));
 on(elements.clineMarketplaceLink, 'click', () => post(EVENTS.OPEN_CLINE_MARKETPLACE));
 on(elements.openClineChat, 'click', () => post(EVENTS.OPEN_CLINE_CHAT));
+on(elements.providerDisclosureSummary, 'click', (event) => {
+	if (elements.providerDisclosure.classList.contains('disabled')) {
+		event.preventDefault();
+	}
+});
+on(elements.providerDisclosure, 'toggle', () => {
+	if (elements.providerDisclosure.classList.contains('disabled') && elements.providerDisclosure.open) {
+		elements.providerDisclosure.open = false;
+	}
+});
 on(elements.toggleFeedback, 'click', () => {
 	feedbackExpanded = !feedbackExpanded;
 	render();
 	if (feedbackExpanded) {
 		resizeFeedbackText();
-		requestAnimationFrame(() => {
-			elements.feedbackContent.scrollIntoView({ behavior: 'smooth', block: 'center' });
-		});
 	}
 });
 on(elements.expandView, 'click', () => post(EVENTS.OPEN_EXPANDED_VIEW));
 on(elements.submitFeedback, 'click', () => post(EVENTS.SUBMIT_FEEDBACK, getFeedbackPayload()));
-on(elements.clearFeedback, 'click', clearFeedbackForm);
 
 on(elements.authId, 'change', applyProxyConfigUpdate);
 on(elements.port, 'change', applyProxyConfigUpdate);
 on(elements.port, 'input', () => validatePort(false));
-on(elements.feedbackText, 'input', resizeFeedbackText);
+on(elements.feedbackText, 'input', () => {
+	resizeFeedbackText();
+	updateFeedbackSubmitState();
+});
+document.querySelectorAll('input[name="topics"], input[name="rating"]').forEach((input) => {
+	on(input, 'change', updateFeedbackSubmitState);
+});
 on(elements.disableWelcomeNotification, 'change', applyFormUpdate);
 on(elements.clineScope, 'change', applyFormUpdate);
 

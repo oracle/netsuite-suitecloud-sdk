@@ -45,6 +45,15 @@ describe('project command help', () => {
 		expect(deployLegacyOption.status).toBe(0);
 		expect(validateLegacyOption.status).toBe(0);
 	});
+
+	it('registers the proxy command with the supported Commander API', () => {
+		const proxyHelp = runCli('proxy:start', '--help');
+
+		expect(proxyHelp.status).toBe(0);
+		expect(proxyHelp.stdout).toContain('--authid');
+		expect(proxyHelp.stdout).toContain('--port');
+		expect(proxyHelp.stdout).not.toContain('program.command is not a function');
+	});
 });
 
 function runCli(...args) {
