@@ -16,6 +16,7 @@
 
 html,
 body {
+  width: 100%;
   min-width: 0;
 }
 
@@ -27,6 +28,7 @@ html.panelReady {
 
 body {
   margin: 0;
+  padding: 0;
   color: var(--vscode-foreground);
   background: transparent;
   font-family: var(--vscode-font-family);
@@ -66,9 +68,17 @@ a:focus-visible {
 
 .container {
   width: 100%;
-  max-width: 520px;
+  max-width: 560px;
   margin: 0 auto;
   padding: 0 5px 12px;
+}
+
+body[data-view-mode="sidebar"] .container {
+  max-width: none;
+  margin-right: 0;
+  margin-left: 0;
+  padding-right: 12px;
+  padding-left: 12px;
 }
 
 .controlPanelContent {
@@ -81,7 +91,46 @@ a:focus-visible {
 }
 
 body[data-view-mode="panel"] .container {
-  padding-top: 16px;
+  max-width: 700px;
+  padding: 16px 8px 12px;
+}
+
+@media (min-width: 760px) {
+  body[data-view-mode="panel"] .container,
+  body[data-view-mode="sidebar"] .container {
+    max-width: 1400px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  body[data-view-mode="panel"] .container {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  body[data-view-mode="sidebar"] .container {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .controlPanelContent {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    column-gap: 12px;
+  }
+
+  .panelPreferences,
+  .learnMoreLink,
+  .feedbackToggle,
+  .expandButton {
+    grid-column: 1 / -1;
+  }
+
+  .feedbackContent.feedbackExpanded {
+    max-width: 520px;
+    margin-right: auto;
+    margin-left: auto;
+  }
 }
 
 body[data-view-mode="panel"] .feedbackContent.feedbackExpanded {
@@ -207,23 +256,84 @@ body[data-view-mode="sidebar"] .feedbackContent.feedbackExpanded {
   transform: translateY(-50%);
 }
 
-.authIdActionButton {
+.iconActionButton {
   display: inline-flex;
   width: var(--field-action-width);
   height: var(--field-action-width);
-  flex: 0 0 var(--field-action-width);
   align-items: center;
   justify-content: center;
   padding: 0;
   border: 0;
+  border-radius: var(--radius);
   color: var(--muted);
   background: transparent;
   cursor: pointer;
 }
 
-.authIdActionButton:hover:not(:disabled) {
+.iconActionButton:hover:not(:disabled) {
   color: var(--vscode-foreground);
   background: var(--vscode-toolbar-hoverBackground, transparent);
+}
+
+.authIdActionButton {
+  flex: 0 0 var(--field-action-width);
+}
+
+.authIdActionButton[data-tooltip],
+.apiKeyButton.iconOnlyButton[data-tooltip],
+.controlTooltipHost[data-tooltip],
+.providerDisclosure[data-tooltip] {
+  position: relative;
+}
+
+.authIdActionButton[data-tooltip]::after,
+.apiKeyButton.iconOnlyButton[data-tooltip]::after,
+.controlTooltipHost[data-tooltip]::after,
+.providerDisclosure[data-tooltip]::after {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 5px);
+  right: 0;
+  width: max-content;
+  max-width: 220px;
+  padding: 4px 7px;
+  border: 1px solid var(--vscode-editorHoverWidget-border, var(--panel-card-border));
+  border-radius: 3px;
+  color: var(--vscode-editorHoverWidget-foreground, var(--vscode-foreground));
+  background: var(--vscode-editorHoverWidget-background, var(--panel-card));
+  box-shadow: 0 2px 8px var(--vscode-widget-shadow, rgba(0, 0, 0, 0.35));
+  content: attr(data-tooltip);
+  font-size: var(--help-font-size);
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-2px);
+  transition: opacity 80ms ease-out 250ms, transform 80ms ease-out 250ms;
+}
+
+.authIdActionButton[data-tooltip]:hover::after,
+.authIdActionButton[data-tooltip]:focus-visible::after,
+.apiKeyButton.iconOnlyButton[data-tooltip]:hover::after,
+.apiKeyButton.iconOnlyButton[data-tooltip]:focus-visible::after,
+.controlTooltipHost[data-tooltip]:hover::after,
+.controlTooltipHost[data-tooltip]:focus-within::after,
+.providerDisclosure[data-tooltip]:hover::after,
+.providerDisclosure[data-tooltip]:focus-within::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.authIdActionButton:disabled,
+.apiKeyButton.iconOnlyButton:disabled {
+  opacity: 1;
+}
+
+.authIdActionButton:disabled > .codicon,
+.apiKeyButton.iconOnlyButton:disabled > .codicon {
+  opacity: 0.52;
 }
 
 .fieldHint {
@@ -295,7 +405,7 @@ textarea::placeholder {
 
 .secondaryButton {
   color: var(--vscode-button-secondaryForeground);
-  border-color: var(--control-border);
+  border-color: color-mix(in srgb, var(--vscode-button-secondaryForeground) 40%, transparent);
   background: var(--vscode-button-secondaryBackground, var(--control-surface));
 }
 
@@ -329,6 +439,7 @@ textarea::placeholder {
 }
 
 .apiKeyStatusLabel {
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -348,13 +459,9 @@ textarea::placeholder {
 }
 
 .apiKeyButton.iconOnlyButton {
-  display: inline-flex;
   width: var(--field-action-width);
   min-width: var(--field-action-width);
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 0;
+  border-color: transparent;
   color: var(--muted);
   background: transparent;
 }
@@ -393,9 +500,9 @@ textarea::placeholder {
 }
 
 input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
   margin: 0;
   accent-color: var(--vscode-checkbox-selectBackground, var(--vscode-button-background));
 }
@@ -432,6 +539,14 @@ input[type="checkbox"] {
   margin-top: 3px;
 }
 
+.panelPreferences {
+  margin: 0 0 0 1px;
+}
+
+.panelPreferences .compactCheckbox {
+  margin-top: 0;
+}
+
 .serviceLogsButton {
   margin-top: 10px;
   font-size: inherit;
@@ -439,7 +554,7 @@ input[type="checkbox"] {
 
 .compactCheckbox {
   margin-top: 7px;
-  font-size: var(--help-font-size);
+  font-size: inherit;
 }
 
 .helpLink {
@@ -504,9 +619,81 @@ body[data-view-mode="sidebar"] .expandButton {
   margin: 9px 0 0;
 }
 
-#applyCline,
+#applyClineTooltip,
 #openClineChat {
   margin-top: 9px;
+}
+
+.providerDisclosure {
+  margin-top: 11px;
+}
+
+.providerDisclosure summary {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--vscode-foreground);
+  font-weight: 650;
+  list-style: none;
+  cursor: pointer;
+}
+
+.providerDisclosure.disabled summary {
+  color: var(--muted);
+  cursor: default;
+  opacity: 0.52;
+}
+
+.providerDisclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.providerDisclosure summary::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 80ms ease-out;
+}
+
+.providerDisclosure[open] summary::before {
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.providerSettings {
+  display: grid;
+  gap: 9px;
+  margin: 9px 0 0;
+  padding: 10px;
+  border: 1px solid var(--panel-card-border);
+  border-radius: var(--radius);
+}
+
+.providerField {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.providerField dt {
+  color: var(--muted);
+  font-size: var(--help-font-size);
+  font-weight: 650;
+}
+
+.providerField dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.providerField code {
+  color: inherit;
+  font-family: var(--vscode-editor-font-family);
+  font-size: var(--help-font-size);
 }
 
 .inlineNotice,
@@ -546,8 +733,14 @@ body[data-view-mode="sidebar"] .expandButton {
   background: var(--panel-card);
 }
 
-.feedbackContent h2 {
-  margin-bottom: 7px;
+.feedbackFieldLabel {
+  display: block;
+  margin: 0 0 7px;
+  padding: 0;
+  color: var(--muted);
+  font-size: inherit;
+  font-weight: 650;
+  line-height: 1.2;
 }
 
 .feedbackTopics {
@@ -560,17 +753,10 @@ body[data-view-mode="sidebar"] .expandButton {
 
 .feedbackOption {
   margin: 0;
-  font-size: 13px;
-}
-
-.feedbackOption input {
-  width: 18px;
-  height: 18px;
-  flex-basis: 18px;
 }
 
 .ratingHeading {
-  margin-top: 15px !important;
+  margin-top: 15px;
 }
 
 .starRating {
@@ -630,13 +816,8 @@ textarea {
 .feedbackDisclosure {
   margin: 10px 0;
   color: var(--muted);
+  font-size: var(--help-font-size);
   line-height: 1.35;
-}
-
-.clearFeedbackButton {
-  display: block;
-  margin: 8px auto 0;
-  font-size: 10px;
 }
 
 .hidden {

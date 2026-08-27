@@ -6,7 +6,7 @@
 
 const path = require('path');
 const assert = require('assert');
-const { program } = require('commander')
+const { program } = require('commander');
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 const NodeTranslationService = require('./services/NodeTranslationService');
 const {

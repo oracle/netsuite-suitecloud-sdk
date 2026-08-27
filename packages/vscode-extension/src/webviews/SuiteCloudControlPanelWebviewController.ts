@@ -1037,9 +1037,9 @@ class SuiteCloudControlPanelController implements vscode.WebviewViewProvider {
 
 	private _maskApiKey(apiKey: string): string {
 		if (!apiKey || apiKey.length <= 4) {
-			return '****';
+			return '*';
 		}
-		return `****${apiKey.slice(-4)}`;
+		return `*${apiKey.slice(-4)}`;
 	}
 
 	private async _copyApiKeyToClipboard(): Promise<void> {

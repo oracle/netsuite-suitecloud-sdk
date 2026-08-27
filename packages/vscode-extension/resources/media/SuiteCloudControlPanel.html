@@ -32,7 +32,7 @@
               <select id="authId"></select>
               <span class="codicon codicon-chevron-down selectChevron" aria-hidden="true"></span>
             </span>
-            <button id="setupAccount" type="button" class="authIdActionButton" aria-label="Set up SuiteCloud account" title="Set up SuiteCloud account">
+            <button id="setupAccount" type="button" class="iconActionButton authIdActionButton" aria-label="Set up a new Auth ID">
               <span class="codicon codicon-add" aria-hidden="true"></span>
             </button>
           </span>
@@ -59,11 +59,11 @@
             <span class="codicon codicon-pass apiKeyStatusIcon" aria-hidden="true"></span>
             <span class="apiKeyStatusLabel">API key generated: <span id="maskedApiKey" class="maskedApiKey">Not resolved</span></span>
             <span id="apiKeyCountdown" class="apiKeyCountdown hidden" aria-label="Time left to copy API key"></span>
-            <button id="copyApiKey" type="button" class="copyIconButton hidden" aria-label="Copy API key" title="Copy API key">
+            <button id="copyApiKey" type="button" class="iconActionButton copyIconButton hidden" aria-label="Copy API key" title="Copy API key">
               <span class="codicon codicon-copy" aria-hidden="true"></span>
             </button>
           </div>
-          <button id="rotateKey" type="button" class="primaryButton apiKeyButton" disabled>
+          <button id="rotateKey" type="button" class="primaryButton iconActionButton apiKeyButton" disabled>
             <span id="rotateKeyIcon" class="codicon codicon-refresh hidden" aria-hidden="true"></span>
             <span id="rotateKeyLabel">Generate API key</span>
           </button>
@@ -81,12 +81,6 @@
 
         <button id="openOutput" type="button" class="textButton serviceLogsButton">See service logs</button>
 
-        <div class="advancedPreferences">
-          <label class="checkboxField compactCheckbox">
-            <input id="disableWelcomeNotification" type="checkbox" />
-            <span>Do not show the startup reminder</span>
-          </label>
-        </div>
       </section>
 
       <section class="panelCard clineCard">
@@ -109,13 +103,15 @@
           Install on Marketplace
         </button>
 
-        <button id="applyCline" type="button" class="primaryButton fullWidthButton hidden">Apply settings</button>
+        <div id="applyClineTooltip" class="controlTooltipHost hidden">
+          <button id="applyCline" type="button" class="primaryButton fullWidthButton">Apply settings</button>
+        </div>
 
         <p id="clineDescription" class="fieldHint integrationDescription">
           For convenience, we provide quick set up in Cline. You can use any other OpenAI-compatible coding tool that supports custom API provider configuration.
         </p>
 
-        <button id="openClineChat" type="button" class="primaryButton fullWidthButton hidden">Talk to Dev Assist in Cline</button>
+        <button id="openClineChat" type="button" class="primaryButton fullWidthButton hidden">Open Cline Chat</button>
 
         <label class="srOnly" aria-hidden="true">
           Cline config mode
@@ -124,10 +120,39 @@
             <option value="workspace">Workspace Manual Setup</option>
           </select>
         </label>
+
+        <details id="providerDisclosure" class="providerDisclosure disabled">
+          <summary id="providerDisclosureSummary" aria-disabled="true" tabindex="-1">API provider settings</summary>
+          <dl class="providerSettings">
+            <div class="providerField">
+              <dt>API Provider</dt>
+              <dd>OpenAI Compatible</dd>
+            </div>
+            <div class="providerField">
+              <dt>Base URL</dt>
+              <dd><code id="providerBaseUrl">-</code></dd>
+            </div>
+            <div class="providerField">
+              <dt>API Key</dt>
+              <dd id="providerApiKey">Not generated</dd>
+            </div>
+            <div class="providerField">
+              <dt>Model ID</dt>
+              <dd>NetSuite</dd>
+            </div>
+          </dl>
+        </details>
       </section>
 
+      <div class="advancedPreferences panelPreferences">
+        <label class="checkboxField compactCheckbox">
+          <input id="disableWelcomeNotification" type="checkbox" />
+          <span>Do not show the startup reminder</span>
+        </label>
+      </div>
+
       <a class="helpLink learnMoreLink" href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_1171315103.html">
-        Learn more about Dev Assist
+        Learn more about SuiteCloud Developer Assistant
       </a>
 
       <button id="toggleFeedback" type="button" class="textButton feedbackToggle" aria-expanded="false" aria-controls="feedbackContent">
@@ -141,9 +166,8 @@
       <div class="cardHeading feedbackCardHeading">
         <h2>Feedback</h2>
       </div>
-      <h2>Your feedback is about:</h2>
       <fieldset class="feedbackTopics">
-        <legend class="srOnly">Feedback topics</legend>
+        <legend class="feedbackFieldLabel">Your feedback is about</legend>
         <label class="checkboxField feedbackOption">
           <input type="checkbox" name="topics" value="CodeExplanation" />
           <span>Code explanation</span>
@@ -166,8 +190,8 @@
         </label>
       </fieldset>
 
-      <h2 class="ratingHeading">Please rate your experience:</h2>
-      <div class="starRating" role="radiogroup" aria-label="Star rating">
+      <p id="feedbackRatingLabel" class="feedbackFieldLabel ratingHeading">Please rate your experience</p>
+      <div class="starRating" role="radiogroup" aria-labelledby="feedbackRatingLabel">
         <input type="radio" id="feedbackRating5" name="rating" value="5" />
         <label for="feedbackRating5" aria-label="5 stars"></label>
         <input type="radio" id="feedbackRating4" name="rating" value="4" />
@@ -184,7 +208,6 @@
       <textarea id="feedbackText" maxlength="1000" rows="7" placeholder="How can we improve it?"></textarea>
       <p class="feedbackDisclosure">Your account ID will be shared along with your feedback.</p>
       <button id="submitFeedback" type="button" class="primaryButton fullWidthButton">Send feedback</button>
-      <button id="clearFeedback" type="button" class="textButton clearFeedbackButton">Clear form</button>
     </section>
   </main>
 
