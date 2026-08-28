@@ -4,16 +4,26 @@
  */
 
 import {
+	ProxyStatus,
 	SuiteCloudPanelState,
 	SuiteCloudPanelUpdateFormPayload,
-} from './SuiteCloudPanelTypes';
+} from './Types';
+
+const ACTIVE_PROXY_STATUSES: ReadonlySet<ProxyStatus> = new Set([
+	'starting',
+	'running',
+	'stopping',
+]);
+
+export const isProxyLifecycleActive = (status: ProxyStatus): boolean =>
+	ACTIVE_PROXY_STATUSES.has(status);
 
 export const applyFormChangesToState = (
 	state: SuiteCloudPanelState,
 	formData: SuiteCloudPanelUpdateFormPayload
 ): SuiteCloudPanelState => {
 	const updatedState: SuiteCloudPanelState = { ...state };
-	const canChangeProxyConfig = state.proxyStatus === 'stopped' || state.proxyStatus === 'error';
+	const canChangeProxyConfig = !isProxyLifecycleActive(state.proxyStatus);
 
 	if (canChangeProxyConfig && typeof formData.authId === 'string') {
 		updatedState.authId = formData.authId;

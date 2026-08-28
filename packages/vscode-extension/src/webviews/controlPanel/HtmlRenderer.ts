@@ -6,11 +6,11 @@
 import * as crypto from 'crypto';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { SUITECLOUD_PANEL_CLIENT_STRINGS } from '../panel/SuiteCloudPanelStrings';
-import { SUITECLOUD_PANEL_EVENTS } from '../panel/SuiteCloudPanelTypes';
-import { FileUtils } from '../util/ExtensionUtil';
+import { SUITECLOUD_PANEL_CLIENT_STRINGS } from '../../controlPanel/Strings';
+import { SUITECLOUD_PANEL_EVENTS } from '../../controlPanel/Types';
+import { FileUtils } from '../../util/ExtensionUtil';
 
-export type SuiteCloudPanelWebviewMode = 'sidebar' | 'panel';
+export type WebviewMode = 'sidebar' | 'panel';
 
 const serializeForInlineScript = (value: unknown): string =>
 	JSON.stringify(value)
@@ -20,14 +20,14 @@ const serializeForInlineScript = (value: unknown): string =>
 		.replace(/\u2028/g, '\\u2028')
 		.replace(/\u2029/g, '\\u2029');
 
-export default class SuiteCloudPanelHtmlRenderer {
+export default class HtmlRenderer {
 	private readonly _extensionPath: string;
 
 	constructor(extensionPath: string) {
 		this._extensionPath = extensionPath;
 	}
 
-	render(webview: vscode.Webview, mode: SuiteCloudPanelWebviewMode): string {
+	render(webview: vscode.Webview, mode: WebviewMode): string {
 		const resourcesPath = path.join(this._extensionPath, 'resources');
 		const mediaPath = path.join(resourcesPath, 'media');
 		const codiconsPath = path.join(

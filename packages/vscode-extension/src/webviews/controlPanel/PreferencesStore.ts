@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode';
-import { ClineScope } from '../panel/SuiteCloudPanelTypes';
+import { ClineScope } from '../../controlPanel/Types';
 
 export type PersistedPanelPreferences = {
 	authId: string;
@@ -14,7 +14,7 @@ export type PersistedPanelPreferences = {
 	disableWelcomeNotification: boolean;
 };
 
-export default class SuiteCloudControlPanelPreferencesStore {
+export default class PreferencesStore {
 	private readonly _workspaceState: vscode.Memento;
 	private readonly _storageKey: string;
 
@@ -44,7 +44,7 @@ export default class SuiteCloudControlPanelPreferencesStore {
 		};
 	}
 
-	save(preferences: PersistedPanelPreferences): Thenable<void> {
+	save(preferences: PersistedPanelPreferences): PromiseLike<void> {
 		return this._workspaceState.update(this._storageKey, preferences);
 	}
 }

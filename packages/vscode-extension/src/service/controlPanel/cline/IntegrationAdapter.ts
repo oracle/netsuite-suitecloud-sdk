@@ -3,26 +3,26 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { ClineScope } from './SuiteCloudPanelTypes';
+import { ClineScope } from '../../../controlPanel/Types';
 import {
 	CLINE_OPENAI_COMPATIBLE_PROVIDER_ID,
-} from './cline/ClineConstants';
-import ClineFileStore from './cline/ClineFileStore';
+} from './Constants';
+import ClineFileStore from './FileStore';
 import {
 	ApplyClineConfigInput,
 	ApplyClineConfigResult,
 	ClineConfigSyncResult,
 	ClineCompatibilityResult,
-} from './cline/ClineIntegrationTypes';
-import ClineLegacyConfigStrategy from './cline/ClineLegacyConfigStrategy';
-import ClineProvidersConfigStrategy from './cline/ClineProvidersConfigStrategy';
+} from './IntegrationTypes';
+import ClineLegacyConfigStrategy from './LegacyConfigStrategy';
+import ClineProvidersConfigStrategy from './ProvidersConfigStrategy';
 
 export type {
 	ApplyClineConfigInput,
 	ApplyClineConfigResult,
 	ClineConfigSyncResult,
 	ClineCompatibilityResult,
-} from './cline/ClineIntegrationTypes';
+} from './IntegrationTypes';
 
 const CLINE_CONFIG_MISMATCH_MESSAGE =
 	'Cline uses different settings. Select Apply settings to configure it for Dev Assist.';

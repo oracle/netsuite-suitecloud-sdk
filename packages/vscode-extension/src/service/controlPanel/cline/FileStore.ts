@@ -8,7 +8,7 @@ import * as fsSync from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'crypto';
-import { JsonObject } from './ClineIntegrationTypes';
+import { JsonObject } from './IntegrationTypes';
 
 const POSIX_SECRET_FILE_MODE = 0o600;
 const PLATFORM_IS_POSIX = process.platform !== 'win32';

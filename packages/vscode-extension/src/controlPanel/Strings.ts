@@ -88,28 +88,20 @@ export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
 } as const;
 
 export const SUITECLOUD_PANEL_CLIENT_STRINGS = {
-	apiKeyHiddenInstructions:
-		'Rotating creates a new key and invalidates the previous one. Copy the new key within 5 minutes and update your client, or click Update Cline Config.',
-	apiKeyVisibleInstructions: 'Copy is temporarily available. Copy the key before the window expires, then update your client.',
 	noAccountsAvailable: 'Select from list',
-	unknownSource: 'unknown',
 	notResolved: 'Not resolved',
 	generateApiKeyTitle: 'Generate API key',
 	rotateApiKeyTitle: 'Rotate API key',
 	openClineChatEnabledTitle: 'Open Cline chat view.',
 	openClineChatDisabledTitle: 'Start the local service to enable this.',
-	applyClineNoChangesTitle: 'No change detected. Nothing to apply to Cline config.',
 	applyClineIncompatibleTitle: 'Automatic Cline update is not supported on this machine. Copy values manually.',
 	applyClineMissingApiKeyTitle: 'Generate or rotate API key first.',
 	applyClineProxyUnavailableTitle: 'Start the local service to enable this.',
 	applyClineReadyTitle: 'Apply current panel settings to Cline configuration.',
-	workspaceManualSetupTitle:
-		'Cline provider config is global in supported Cline versions. Copy the values manually for workspace-specific setup.',
 	changePortWhileRunningTitle: 'Stop the local service before changing the local port.',
 	changeAuthIdWhileRunningTitle: 'Stop the local service before changing the Auth ID.',
 	changeApiKeyWhileRunningTitle: 'Stop the local service before generating or rotating the API key.',
 	invalidPortFormat: 'Enter a 4 or 5 digit port between 1024 and 65535.',
-	panelSettingsTitle: 'Panel settings',
 } as const;
 
 export type SuiteCloudPanelClientStrings = typeof SUITECLOUD_PANEL_CLIENT_STRINGS;
