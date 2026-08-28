@@ -1,0 +1,687 @@
+:root {
+  --panel-card: #2A2A2A;
+  --panel-card-border: color-mix(in srgb, var(--vscode-panel-border) 72%, transparent);
+  --control-surface: #3B3B3B;
+  --control-border: var(--vscode-input-border, color-mix(in srgb, var(--vscode-foreground) 18%, transparent));
+  --muted: var(--vscode-descriptionForeground);
+  --success: var(--vscode-testing-iconPassed, #73c779);
+  --danger: var(--vscode-testing-iconFailed, #f06b65);
+  --link: var(--vscode-textLink-foreground);
+  --radius: 5px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-width: 0;
+}
+
+html.panelReady {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 80ms ease-out;
+}
+
+body {
+  margin: 0;
+  color: var(--vscode-foreground);
+  background: transparent;
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  line-height: 1.3;
+}
+
+:root {
+  --help-font-size: calc(var(--vscode-font-size) - 1px);
+  --field-action-width: 28px;
+  --field-action-gap: 6px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+select,
+input,
+textarea,
+a {
+  outline: none;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: 1px;
+}
+
+.container {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 5px 12px;
+}
+
+.controlPanelContent {
+  display: grid;
+  gap: 8px;
+}
+
+.feedbackContent {
+  display: none;
+}
+
+body[data-view-mode="panel"] .container {
+  padding-top: 16px;
+}
+
+body[data-view-mode="panel"] .feedbackContent.feedbackExpanded {
+  display: block;
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--panel-card);
+}
+
+body[data-view-mode="sidebar"] .feedbackContent.feedbackExpanded {
+  display: block;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--panel-card-border);
+  border-radius: var(--radius);
+  background: var(--panel-card);
+}
+
+.feedbackCardHeading {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--panel-card-border);
+}
+
+.panelCard {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--panel-card-border);
+  border-radius: var(--radius);
+  background: var(--panel-card);
+}
+
+.cardHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.cardHeading h2,
+.feedbackContent h2 {
+  margin: 0;
+  color: var(--vscode-foreground);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.statusPill {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--vscode-editor-background) 92%, black 8%);
+  background: color-mix(in srgb, var(--vscode-descriptionForeground) 72%, transparent);
+  font-size: 10px;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.statusPill.running,
+.statusPill.detected,
+.statusPill.ready {
+  background: var(--success);
+}
+
+.statusPill.starting,
+.statusPill.stopping {
+  color: var(--vscode-foreground);
+  background: color-mix(in srgb, var(--vscode-progressBar-background) 54%, var(--panel-card) 46%);
+}
+
+.statusPill.error {
+  color: var(--vscode-editor-background);
+  background: var(--danger);
+}
+
+.field {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.field.lockedField {
+  cursor: help;
+}
+
+.field.lockedField input,
+.field.lockedField select {
+  pointer-events: none;
+}
+
+.fieldLabel {
+  color: var(--muted);
+  font-size: inherit;
+  font-weight: 650;
+}
+
+.authIdRow {
+  display: flex;
+  align-items: center;
+  gap: var(--field-action-gap);
+}
+
+.selectControl {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.selectControl select {
+  appearance: none;
+  padding-right: 30px;
+}
+
+.selectChevron {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  color: var(--muted);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.authIdActionButton {
+  display: inline-flex;
+  width: var(--field-action-width);
+  height: var(--field-action-width);
+  flex: 0 0 var(--field-action-width);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.authIdActionButton:hover:not(:disabled) {
+  color: var(--vscode-foreground);
+  background: var(--vscode-toolbar-hoverBackground, transparent);
+}
+
+.fieldHint {
+  margin: 5px 0 10px;
+  color: var(--muted);
+  font-size: var(--help-font-size);
+  line-height: 1.25;
+}
+
+select,
+input[type="number"],
+input[type="text"],
+textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  color: var(--vscode-input-foreground);
+  background: var(--control-surface);
+}
+
+select,
+input[type="number"],
+input[type="text"] {
+  height: 30px;
+  padding: 4px 28px 4px 9px;
+}
+
+#port {
+  width: calc(100% - var(--field-action-width) - var(--field-action-gap));
+}
+
+select:disabled,
+input:disabled,
+button:disabled {
+  cursor: default;
+  opacity: 0.52;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--vscode-input-placeholderForeground);
+}
+
+.copyIconButton {
+  border: 0;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.primaryButton {
+  color: var(--vscode-button-foreground);
+  background: var(--vscode-button-background);
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: var(--vscode-button-hoverBackground);
+}
+
+.secondaryButton {
+  color: var(--vscode-button-secondaryForeground);
+  border-color: var(--control-border);
+  background: var(--vscode-button-secondaryBackground, var(--control-surface));
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background: var(--vscode-button-secondaryHoverBackground);
+}
+
+.fullWidthButton {
+  width: 100%;
+}
+
+.apiKeyRow {
+  display: flex;
+  gap: var(--field-action-gap);
+  align-items: center;
+  margin-top: 9px;
+}
+
+.apiKeyStatus {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--muted);
+}
+
+.apiKeyStatusIcon {
+  flex: 0 0 auto;
+  color: var(--success);
+}
+
+.apiKeyStatusLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.maskedApiKey {
+  font-family: var(--vscode-editor-font-family);
+}
+
+.apiKeyButton {
+  flex: 1 1 auto;
+}
+
+.apiKeyRow.hasApiKey .apiKeyButton {
+  flex: 0 0 var(--field-action-width);
+}
+
+.apiKeyButton.iconOnlyButton {
+  display: inline-flex;
+  width: var(--field-action-width);
+  min-width: var(--field-action-width);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  color: var(--muted);
+  background: transparent;
+}
+
+.apiKeyButton.iconOnlyButton:hover:not(:disabled) {
+  color: var(--vscode-foreground);
+  background: var(--vscode-toolbar-hoverBackground, transparent);
+}
+
+.apiKeyCountdown {
+  flex: 0 0 auto;
+  padding-left: 4px;
+  color: var(--success);
+  font-size: inherit;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.serviceButton {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  margin-top: 10px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin: 0;
+  accent-color: var(--vscode-checkbox-selectBackground, var(--vscode-button-background));
+}
+
+.copyIconButton {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+}
+
+.copyIconButton.copyAvailable {
+  color: var(--success);
+}
+
+.textButton,
+.helpLink {
+  padding: 0;
+  border: 0;
+  color: var(--link);
+  background: transparent;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.textButton:hover:not(:disabled),
+.helpLink:hover {
+  color: var(--vscode-textLink-activeForeground);
+  text-decoration: underline;
+}
+
+.advancedPreferences {
+  margin-top: 3px;
+}
+
+.serviceLogsButton {
+  margin-top: 10px;
+  font-size: inherit;
+}
+
+.compactCheckbox {
+  margin-top: 7px;
+  font-size: var(--help-font-size);
+}
+
+.helpLink {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: inherit;
+}
+
+.compactLink {
+  margin-top: 3px;
+}
+
+.learnMoreLink {
+  margin: 0 0 0 1px;
+}
+
+.feedbackToggle {
+  justify-self: start;
+  margin-left: 1px;
+  font-size: inherit;
+}
+
+.expandButton {
+  justify-self: start;
+  font-size: var(--help-font-size);
+}
+
+body[data-view-mode="sidebar"] .expandButton {
+  display: none;
+}
+
+.integrationStatus {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--muted);
+  font-size: inherit;
+}
+
+.stateIcon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.stateIconSuccess {
+  color: var(--success);
+}
+
+.stateIconError {
+  color: var(--danger);
+}
+
+.integrationDescription {
+  margin: 9px 0 0;
+}
+
+#applyCline,
+#openClineChat {
+  margin-top: 9px;
+}
+
+.inlineNotice,
+.inlineError {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--help-font-size);
+}
+
+.inlineNotice {
+  color: var(--muted);
+}
+
+.inlineError {
+  color: var(--danger);
+}
+
+.notice {
+  min-width: 0;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  overflow-wrap: anywhere;
+  font-size: var(--help-font-size);
+}
+
+.fieldHint,
+.checkboxField span,
+.integrationStatus span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  color: var(--muted);
+  background: var(--panel-card);
+}
+
+.feedbackContent h2 {
+  margin-bottom: 7px;
+}
+
+.feedbackTopics {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.feedbackOption {
+  margin: 0;
+  font-size: 13px;
+}
+
+.feedbackOption input {
+  width: 18px;
+  height: 18px;
+  flex-basis: 18px;
+}
+
+.ratingHeading {
+  margin-top: 15px !important;
+}
+
+.starRating {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  gap: 6px;
+  margin: 0 0 12px;
+}
+
+.starRating input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.starRating label {
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 1;
+  transition: transform 50ms ease;
+}
+
+.starRating label::before {
+  content: "☆";
+}
+
+.starRating label:hover,
+.starRating label:hover ~ label {
+  color: #f59e0b;
+  transform: scale(1.15);
+}
+
+.starRating label:hover::before,
+.starRating label:hover ~ label::before,
+.starRating input:checked ~ label::before {
+  content: "★";
+  color: #f59e0b;
+}
+
+.starRating input:focus-visible + label {
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: 1px;
+}
+
+textarea {
+  min-height: 130px;
+  padding: 9px;
+  resize: vertical;
+}
+
+.feedbackContent textarea {
+  overflow: hidden;
+  resize: none;
+}
+
+.feedbackDisclosure {
+  margin: 10px 0;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.clearFeedbackButton {
+  display: block;
+  margin: 8px auto 0;
+  font-size: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.srOnly {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (max-width: 280px) {
+  .container {
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+
+  .panelCard {
+    padding: 9px;
+  }
+
+  .cardHeading {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 220px) {
+  .apiKeyRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .apiKeyRow.hasApiKey {
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .apiKeyButton:not(.iconOnlyButton) {
+    width: 100%;
+  }
+}
