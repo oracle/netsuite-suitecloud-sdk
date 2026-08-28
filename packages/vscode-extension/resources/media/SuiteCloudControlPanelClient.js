@@ -4,30 +4,15 @@ const vscode = acquireVsCodeApi();
 
 const EVENTS = window.__SUITECLOUD_PANEL_EVENTS__;
 const DEFAULT_PROXY_PORT = 8181;
-
-const DEFAULT_UI_STRINGS = {
-	noAccountsAvailable: 'Select from list',
-	notResolved: 'Not resolved',
-	generateApiKeyTitle: 'Generate API key',
-	rotateApiKeyTitle: 'Generate a new API key',
-	openClineChatEnabledTitle: 'Open Cline chat view.',
-	openClineChatDisabledTitle: 'Start the local service to enable this.',
-	applyClineNoChangesTitle: 'No change detected. Nothing to apply to Cline config.',
-	applyClineIncompatibleTitle: 'Automatic Cline update is not supported on this machine.',
-	applyClineMissingApiKeyTitle: 'Generate an API key first.',
-	applyClineProxyUnavailableTitle: 'Start the local service to enable this.',
-	applyClineReadyTitle: 'Apply current panel settings to Cline configuration.',
-	workspaceManualSetupTitle: 'Workspace-specific Cline setup must be configured manually.',
-	changePortWhileRunningTitle: 'Stop the local service before changing the local port.',
-	changeAuthIdWhileRunningTitle: 'Stop the local service before changing the Auth ID.',
-	changeApiKeyWhileRunningTitle: 'Stop the local service before generating or rotating the API key.',
-	invalidPortFormat: 'Enter a 4 or 5 digit port between 1024 and 65535.'
-};
-
-const UI_STRINGS = {
-	...DEFAULT_UI_STRINGS,
-	...(window.__SUITECLOUD_PANEL_STRINGS__ || {})
-};
+const ACTIVE_PROXY_STATUSES = new Set(['starting', 'running', 'stopping']);
+const STATUS_LABELS = Object.freeze({
+	stopped: 'not running',
+	starting: 'starting',
+	running: 'running',
+	stopping: 'stopping',
+	error: 'error'
+});
+const UI_STRINGS = Object.freeze(window.__SUITECLOUD_PANEL_STRINGS__);
 
 const byId = (id) => document.getElementById(id);
 const elements = {
@@ -229,17 +214,7 @@ function refreshAuthIdsOnOpen() {
 }
 
 function setStatusPill(status) {
-	let label = 'not running';
-	if (status === 'running') {
-		label = 'running';
-	} else if (status === 'starting') {
-		label = 'starting';
-	} else if (status === 'stopping') {
-		label = 'stopping';
-	} else if (status === 'error') {
-		label = 'error';
-	}
-	elements.statusBadge.textContent = label;
+	elements.statusBadge.textContent = STATUS_LABELS[status] || STATUS_LABELS.stopped;
 	elements.statusBadge.className = `statusPill ${status}`;
 }
 
@@ -351,8 +326,7 @@ function render() {
 	const isStarting = status === 'starting';
 	const isStopping = status === 'stopping';
 	const isOwnedProxy = state.proxyOwnership === 'owned';
-	const isProxyConfigLocked = isRunning || isStarting || isStopping;
-	const isApiKeyChangeBlocked = isRunning || isStarting || isStopping;
+	const isProxyConfigLocked = ACTIVE_PROXY_STATUSES.has(status);
 	const hasAuthAccounts = Array.isArray(state.authIds) && state.authIds.length > 0;
 	const isSdkReady = !!state.isSdkReady;
 
@@ -371,13 +345,13 @@ function render() {
 	elements.disableWelcomeNotification.checked = !!state.disableWelcomeNotification;
 	elements.clineScope.value = state.clineScope || 'user';
 
-	elements.rotateKey.disabled = !panelStateLoaded || !isSdkReady || isApiKeyChangeBlocked;
+	elements.rotateKey.disabled = !panelStateLoaded || !isSdkReady || isProxyConfigLocked;
 	const apiKeyActionTitle = state.apiKeyExists
 		? UI_STRINGS.rotateApiKeyTitle
 		: UI_STRINGS.generateApiKeyTitle;
 	setTooltip(elements.rotateKey, !isSdkReady
 		? 'Preparing SuiteCloud SDK...'
-		: isApiKeyChangeBlocked
+		: isProxyConfigLocked
 		? UI_STRINGS.changeApiKeyWhileRunningTitle
 		: apiKeyActionTitle);
 	elements.rotateKey.setAttribute('aria-label', apiKeyActionTitle);

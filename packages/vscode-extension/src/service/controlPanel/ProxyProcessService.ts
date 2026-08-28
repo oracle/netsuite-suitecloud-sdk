@@ -5,6 +5,7 @@
 
 import * as net from 'net';
 import { ChildProcess, spawn } from 'child_process';
+import ProxyOutputProcessor from './ProxyOutputProcessor';
 
 export type StartProxyInput = {
 	authId: string;
@@ -20,28 +21,23 @@ export type ProxyProcessCallbacks = {
 
 const STARTUP_TIMEOUT_MS = 30000;
 const STOP_TIMEOUT_MS = 5000;
-const MAX_LOG_HISTORY_LINES = 80;
-const CLI_USAGE_GUIDANCE_START = 'To use it on this machine, configure your third-party tool as follows:';
-const CLI_USAGE_GUIDANCE_END = 'Press Ctrl+C to stop the proxy.';
 
-export default class SuiteCloudProxyProcessService {
+export default class ProxyProcessService {
 	private _process?: ChildProcess;
 	private readonly _callbacks: ProxyProcessCallbacks;
 	private readonly _spawnProcess: typeof spawn;
+	private readonly _outputProcessor: ProxyOutputProcessor;
 	private readonly _startingProcesses = new WeakSet<ChildProcess>();
 	private readonly _spawnFailedProcesses = new WeakSet<ChildProcess>();
-	private _stdoutBuffer = '';
-	private _stderrBuffer = '';
-	private _recentOutputLines: string[] = [];
 	private _lastExitCode: number | null = null;
 	private _lastExitSignal: NodeJS.Signals | null = null;
-	private _hasEmittedOutputLine = false;
-	private _lastOutputWasBlank = false;
-	private _isSkippingCliUsageGuidance = false;
 
 	constructor(callbacks: ProxyProcessCallbacks, spawnProcess: typeof spawn = spawn) {
 		this._callbacks = callbacks;
 		this._spawnProcess = spawnProcess;
+		this._outputProcessor = new ProxyOutputProcessor((line, isError) =>
+			callbacks.onLog(line, isError)
+		);
 	}
 
 	get pid(): number | null {
@@ -56,14 +52,9 @@ export default class SuiteCloudProxyProcessService {
 		if (this.isRunning) {
 			throw new Error('SuiteCloud Developer Assistant proxy is already running.');
 		}
-		this._stdoutBuffer = '';
-		this._stderrBuffer = '';
-		this._recentOutputLines = [];
+		this._outputProcessor.reset();
 		this._lastExitCode = null;
 		this._lastExitSignal = null;
-		this._hasEmittedOutputLine = false;
-		this._lastOutputWasBlank = false;
-		this._isSkippingCliUsageGuidance = false;
 
 		const portInUse = await this._isPortInUse(input.port);
 		if (portInUse) {
@@ -158,23 +149,19 @@ export default class SuiteCloudProxyProcessService {
 
 	private _wireProcessOutput(proxyProcess: ChildProcess): void {
 		proxyProcess.stdout?.on('data', (chunk: Buffer | string) => {
-			const content = chunk.toString();
-			this._stdoutBuffer += content;
-			this._flushLines('stdout');
+			this._outputProcessor.append('stdout', chunk);
 		});
 
 		proxyProcess.stderr?.on('data', (chunk: Buffer | string) => {
-			const content = chunk.toString();
-			this._stderrBuffer += content;
-			this._flushLines('stderr');
+			this._outputProcessor.append('stderr', chunk);
 		});
 
 		proxyProcess.on('close', (code, signal) => {
 			const spawnFailed = this._spawnFailedProcesses.delete(proxyProcess);
 			this._lastExitCode = code;
 			this._lastExitSignal = signal;
-			this._flushLines('stdout', true);
-			this._flushLines('stderr', true);
+			this._outputProcessor.flush('stdout', true);
+			this._outputProcessor.flush('stderr', true);
 
 			if (this._process?.pid === proxyProcess.pid) {
 				this._process = undefined;
@@ -204,79 +191,13 @@ export default class SuiteCloudProxyProcessService {
 		return new Error(`Unable to start SuiteCloud proxy process: ${details}`);
 	}
 
-	private _flushLines(stream: 'stdout' | 'stderr', flushAll = false): void {
-		const buffer = stream === 'stdout' ? this._stdoutBuffer : this._stderrBuffer;
-		const parts = buffer.split(/\r?\n|\r/);
-		const remainder = parts.pop() || '';
-		const isError = stream === 'stderr';
-
-		parts.forEach((line) => {
-			this._emitOutputLine(line, isError);
-		});
-
-		if (stream === 'stdout') {
-			this._stdoutBuffer = flushAll ? '' : remainder;
-		} else {
-			this._stderrBuffer = flushAll ? '' : remainder;
-		}
-
-		if (flushAll && remainder.trim()) {
-			this._emitOutputLine(remainder, isError);
-		}
-	}
-
-	private _emitOutputLine(line: string, isError: boolean): void {
-		const normalizedLine = this._sanitizeOutputLine(line);
-		// The panel renders equivalent guidance with panel-specific API key instructions.
-		if (normalizedLine === CLI_USAGE_GUIDANCE_START) {
-			this._isSkippingCliUsageGuidance = true;
-			return;
-		}
-		if (this._isSkippingCliUsageGuidance) {
-			if (normalizedLine === CLI_USAGE_GUIDANCE_END) {
-				this._isSkippingCliUsageGuidance = false;
-			}
-			return;
-		}
-		if (!normalizedLine) {
-			if (this._hasEmittedOutputLine && !this._lastOutputWasBlank) {
-				this._callbacks.onLog('', isError);
-				this._lastOutputWasBlank = true;
-			}
-			return;
-		}
-
-		this._hasEmittedOutputLine = true;
-		this._lastOutputWasBlank = false;
-		this._recordOutputLine(normalizedLine, isError);
-		this._callbacks.onLog(normalizedLine, isError);
-	}
-
-	private _sanitizeOutputLine(line: string): string {
-		if (!line) {
-			return '';
-		}
-		return line
-			// OSC sequences (e.g., ESC ] ... BEL / ESC \)
-			.replace(/\u001B\][^\u0007]*(?:\u0007|\u001B\\)/g, '')
-			// CSI sequences (e.g., ESC [ 2K, ESC [ 1G)
-			.replace(/\u001B\[[0-?]*[ -/]*[@-~]/g, '')
-			// 2-char escape sequences (e.g., ESC c)
-			.replace(/\u001B[@-_]/g, '')
-			// Strip remaining non-printable control chars (except newline/carriage-return, already split)
-			.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
-			.trim();
-	}
-
 	private async _waitForReadiness(
 		port: number,
 		proxyProcess: ChildProcess
 	): Promise<void> {
 		const startedAt = Date.now();
 		const startupError = () => {
-			const recentDetails = this._recentOutputLines.slice(-6).join('\n');
-			const fallbackDetails = this._stderrBuffer.trim() || this._stdoutBuffer.trim();
-			const details = recentDetails || fallbackDetails;
+			const details = this._outputProcessor.getDiagnosticDetails();
 			const exitDetails = this._formatExitDetails();
 			if (details) {
 				return `Failed to start proxy${exitDetails ? ` ${exitDetails}` : ''}.\n${details}`;
@@ -333,18 +254,6 @@ export default class SuiteCloudProxyProcessService {
 			taskKill.on('exit', () => resolve());
 			taskKill.on('error', () => resolve());
 		});
-	}
-
-	private _recordOutputLine(line: string, isError: boolean): void {
-		const normalizedLine = line.trim();
-		if (!normalizedLine) {
-			return;
-		}
-
-		this._recentOutputLines.push(`${isError ? 'stderr' : 'stdout'}: ${normalizedLine}`);
-		if (this._recentOutputLines.length > MAX_LOG_HISTORY_LINES) {
-			this._recentOutputLines.shift();
-		}
 	}
 
 	private _formatExitDetails(): string {

@@ -7,7 +7,8 @@ import * as assert from 'assert';
 import * as http from 'http';
 import { ChildProcess, spawn } from 'child_process';
 import { EventEmitter } from 'events';
-import SuiteCloudProxyProcessService from '../../panel/SuiteCloudProxyProcessService';
+import ProxyOutputProcessor from '../../service/controlPanel/ProxyOutputProcessor';
+import ProxyProcessService from '../../service/controlPanel/ProxyProcessService';
 
 const listen = async (): Promise<{ server: http.Server; port: number }> => {
 	const server = http.createServer((_request, response) => response.end());
@@ -44,8 +45,8 @@ const createFailedChildProcess = (error: Error): ChildProcess => {
 	return childProcess;
 };
 
-suite('SuiteCloud Proxy Process Service', () => {
-	const service = new SuiteCloudProxyProcessService({
+suite('Control Panel Proxy Process Service', () => {
+	const service = new ProxyProcessService({
 		onLog: () => undefined,
 		onProcessClosed: () => undefined,
 	});
@@ -70,7 +71,7 @@ suite('SuiteCloud Proxy Process Service', () => {
 		const spawnProcess = (() => {
 			throw spawnFailure;
 		}) as unknown as typeof spawn;
-		const processService = new SuiteCloudProxyProcessService({
+		const processService = new ProxyProcessService({
 			onLog: () => undefined,
 			onProcessClosed: () => assert.fail('A process that was not spawned cannot close.'),
 		}, spawnProcess);
@@ -94,7 +95,7 @@ suite('SuiteCloud Proxy Process Service', () => {
 			spawnedEnvironment = options.env;
 			return createFailedChildProcess(Object.assign(new Error('spawn ENOENT'), { code: 'ENOENT' }));
 		}) as unknown as typeof spawn;
-		const processService = new SuiteCloudProxyProcessService({
+		const processService = new ProxyProcessService({
 			onLog: () => undefined,
 			onProcessClosed: () => {
 				processClosed = true;
@@ -123,7 +124,7 @@ suite('SuiteCloud Proxy Process Service', () => {
 		let processClosed = false;
 		const childProcess = new EventEmitter() as ChildProcess;
 		Object.assign(childProcess, { pid: 1234, killed: false });
-		const processService = new SuiteCloudProxyProcessService({
+		const processService = new ProxyProcessService({
 			onLog: () => undefined,
 			onProcessClosed: () => {
 				processClosed = true;
@@ -144,14 +145,9 @@ suite('SuiteCloud Proxy Process Service', () => {
 
 	test('preserves one intentional blank line in proxy output', () => {
 		const messages: string[] = [];
-		const processService = new SuiteCloudProxyProcessService({
-			onLog: (line) => messages.push(line),
-			onProcessClosed: () => undefined,
-		});
-		const serviceInternals = processService as any;
-		serviceInternals._stdoutBuffer = 'Proxy started.\n\n\nConnection settings:\n';
+		const outputProcessor = new ProxyOutputProcessor((line) => messages.push(line));
 
-		serviceInternals._flushLines('stdout');
+		outputProcessor.append('stdout', 'Proxy started.\n\n\nConnection settings:\n');
 
 		assert.deepStrictEqual(messages, [
 			'Proxy started.',
@@ -162,12 +158,8 @@ suite('SuiteCloud Proxy Process Service', () => {
 
 	test('replaces CLI usage guidance without suppressing later proxy output', () => {
 		const messages: string[] = [];
-		const processService = new SuiteCloudProxyProcessService({
-			onLog: (line) => messages.push(line),
-			onProcessClosed: () => undefined,
-		});
-		const serviceInternals = processService as any;
-		serviceInternals._stdoutBuffer = [
+		const outputProcessor = new ProxyOutputProcessor((line) => messages.push(line));
+		const output = [
 			'Proxy started.',
 			'',
 			'To use it on this machine, configure your third-party tool as follows:',
@@ -180,13 +172,37 @@ suite('SuiteCloud Proxy Process Service', () => {
 			'',
 		].join('\n');
 
-		serviceInternals._flushLines('stdout');
+		outputProcessor.append('stdout', output);
 
 		assert.deepStrictEqual(messages, [
 			'Proxy started.',
 			'',
 			'Proxy request accepted.',
 		]);
+	});
+
+	test('preserves partial lines across output chunks', () => {
+		const messages: string[] = [];
+		const outputProcessor = new ProxyOutputProcessor((line) => messages.push(line));
+
+		outputProcessor.append('stdout', 'Proxy start');
+		outputProcessor.append('stdout', 'ed.\nListening');
+		assert.deepStrictEqual(messages, ['Proxy started.']);
+
+		outputProcessor.flush('stdout', true);
+		assert.deepStrictEqual(messages, ['Proxy started.', 'Listening']);
+	});
+
+	test('sanitizes terminal control sequences while retaining diagnostic output', () => {
+		const messages: Array<{ line: string; isError?: boolean }> = [];
+		const outputProcessor = new ProxyOutputProcessor((line, isError) => {
+			messages.push({ line, isError });
+		});
+
+		outputProcessor.append('stderr', '\u001b[31mProxy failed\u001b[0m\n');
+
+		assert.deepStrictEqual(messages, [{ line: 'Proxy failed', isError: true }]);
+		assert.strictEqual(outputProcessor.getDiagnosticDetails(), 'stderr: Proxy failed');
 	});
 
 });

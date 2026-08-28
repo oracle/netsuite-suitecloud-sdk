@@ -8,9 +8,10 @@ import {
 	applyFormChangesToState,
 	calculatePendingRuntimeConfig,
 	clearRuntimeConfig,
+	isProxyLifecycleActive,
 	markRuntimeConfigAsActive,
-} from '../../panel/SuiteCloudPanelStateTransitions';
-import { SuiteCloudPanelState } from '../../panel/SuiteCloudPanelTypes';
+} from '../../controlPanel/StateTransitions';
+import { SuiteCloudPanelState } from '../../controlPanel/Types';
 
 const createState = (overrides: Partial<SuiteCloudPanelState> = {}): SuiteCloudPanelState => ({
 	isSdkReady: true,
@@ -44,6 +45,15 @@ const createState = (overrides: Partial<SuiteCloudPanelState> = {}): SuiteCloudP
 });
 
 suite('SuiteCloud Control Panel State Transitions', () => {
+	test('identifies proxy lifecycle states that lock configuration', () => {
+		for (const status of ['starting', 'running', 'stopping'] as const) {
+			assert.strictEqual(isProxyLifecycleActive(status), true);
+		}
+		for (const status of ['stopped', 'error'] as const) {
+			assert.strictEqual(isProxyLifecycleActive(status), false);
+		}
+	});
+
 	test('applyFormChangesToState updates editable fields while proxy is stopped', () => {
 		const initialState = createState({ proxyStatus: 'stopped' });
 

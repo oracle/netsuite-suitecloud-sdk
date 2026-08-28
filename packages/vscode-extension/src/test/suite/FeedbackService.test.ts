@@ -4,9 +4,9 @@
  */
 
 import * as assert from 'assert';
-import SuiteCloudFeedbackService from '../../panel/SuiteCloudFeedbackService';
+import FeedbackService from '../../service/controlPanel/FeedbackService';
 
-suite('SuiteCloud Feedback Service', () => {
+suite('Control Panel Feedback Service', () => {
 	test('preserves the existing feedback server contract', async () => {
 		let requestedUrl = '';
 		let requestedInit: RequestInit | undefined;
@@ -15,7 +15,7 @@ suite('SuiteCloud Feedback Service', () => {
 			requestedInit = init;
 			return new Response(undefined, { status: 204 });
 		};
-		const service = new SuiteCloudFeedbackService(fetchStub);
+		const service = new FeedbackService(fetchStub);
 
 		await service.submit({
 			apiKey: 'feedback-api-key',
@@ -49,7 +49,7 @@ suite('SuiteCloud Feedback Service', () => {
 			requestCount += 1;
 			return new Response(undefined, { status: 204 });
 		};
-		const service = new SuiteCloudFeedbackService(fetchStub);
+		const service = new FeedbackService(fetchStub);
 
 		await assert.rejects(
 			service.submit({

@@ -3,16 +3,16 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import ClineFileStore from './ClineFileStore';
+import ClineFileStore from './FileStore';
 import {
 	CLINE_OPENAI_COMPATIBLE_PROVIDER_ID,
-} from './ClineConstants';
+} from './Constants';
 import {
 	ApplyClineConfigInput,
 	ApplyClineConfigResult,
 	ClineCompatibilityResult,
 	JsonObject,
-} from './ClineIntegrationTypes';
+} from './IntegrationTypes';
 
 export default class ClineProvidersConfigStrategy {
 	private readonly _fileStore: ClineFileStore;

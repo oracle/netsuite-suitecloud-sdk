@@ -5,7 +5,7 @@
 
 export const RESTART_EXTENSION_HOST_COMMAND_ID = 'workbench.action.restartExtensionHost';
 
-type ExecuteCommand = (commandId: string) => Thenable<unknown>;
+type ExecuteCommand = (commandId: string) => PromiseLike<unknown>;
 
 /** Isolates the internal VS Code command until a supported per-extension restart API is available. */
 export default class ExtensionHostRestartService {

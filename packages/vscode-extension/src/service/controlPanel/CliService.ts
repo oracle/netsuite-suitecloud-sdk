@@ -4,11 +4,11 @@
  */
 
 import * as vscode from 'vscode';
-import { DEVASSIST, VSCODE_PLATFORM } from '../ApplicationConstants';
-import { getSdkPath as resolveVsCodeSdkPath } from '../core/sdksetup/SdkProperties';
-import { ActionResult, AuthListData } from '../types/ActionResult';
-import { AuthenticationUtils, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
-import { SuiteCloudAuthItem } from './SuiteCloudPanelTypes';
+import { DEVASSIST, VSCODE_PLATFORM } from '../../ApplicationConstants';
+import { getSdkPath as resolveVsCodeSdkPath } from '../../core/sdksetup/SdkProperties';
+import { SuiteCloudAuthItem } from '../../controlPanel/Types';
+import { ActionResult, AuthListData } from '../../types/ActionResult';
+import { AuthenticationUtils, ExecutionEnvironmentContext } from '../../util/ExtensionUtil';
 
 const getDevAssistProxyIntegration = (): any => {
 	try {
@@ -18,7 +18,7 @@ const getDevAssistProxyIntegration = (): any => {
 	}
 };
 
-export default class SuiteCloudPanelCliService {
+export default class CliService {
 	getSdkPath(): string {
 		return resolveVsCodeSdkPath();
 	}

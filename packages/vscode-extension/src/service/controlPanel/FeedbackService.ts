@@ -3,8 +3,8 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { DEVASSIST } from '../ApplicationConstants';
-import { SuiteCloudPanelSubmitFeedbackPayload } from './SuiteCloudPanelTypes';
+import { DEVASSIST } from '../../ApplicationConstants';
+import { SuiteCloudPanelSubmitFeedbackPayload } from '../../controlPanel/Types';
 
 const FEEDBACK_MAX_LENGTH = 1000;
 const FEEDBACK_REQUEST_TIMEOUT_MS = 10000;
@@ -17,20 +17,20 @@ const FEEDBACK_ALLOWED_TOPICS = new Set([
 	'Other',
 ]);
 
-export type SubmitSuiteCloudFeedbackInput = {
+export type SubmitFeedbackInput = {
 	payload: SuiteCloudPanelSubmitFeedbackPayload;
 	apiKey: string;
 	port: number;
 };
 
-export default class SuiteCloudFeedbackService {
+export default class FeedbackService {
 	private readonly _fetch: typeof fetch;
 
 	constructor(fetchImplementation: typeof fetch = fetch) {
 		this._fetch = fetchImplementation;
 	}
 
-	async submit(input: SubmitSuiteCloudFeedbackInput): Promise<void> {
+	async submit(input: SubmitFeedbackInput): Promise<void> {
 		const feedback =
 			typeof input.payload.feedback === 'string' ? input.payload.feedback.trim() : '';
 		const topics = Array.isArray(input.payload.topics)

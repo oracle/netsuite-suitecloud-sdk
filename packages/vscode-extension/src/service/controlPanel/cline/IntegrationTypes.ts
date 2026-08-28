@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { ClineScope } from '../SuiteCloudPanelTypes';
+import { ClineScope } from '../../../controlPanel/Types';
 
 export type CompatibilityDetails = {
 	providerKey: string;

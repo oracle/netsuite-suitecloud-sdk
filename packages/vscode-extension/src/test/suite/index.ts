@@ -19,12 +19,19 @@ export function run(): Promise<void> {
 
 		const files: string[] = [
 			'extension.test.js',
+			'ClineChatOpener.test.js',
 			'SuiteCloudPanelMessageParser.test.js',
+			'ApiKeyService.test.js',
+			'ClineCompatibilityService.test.js',
+			'ClineConfigService.test.js',
+			'SuiteCloudPanelConfiguration.test.js',
+			'SuiteCloudPanelErrorFormatter.test.js',
 			'SuiteCloudPanelStateTransitions.test.js',
-			'SuiteCloudFeedbackService.test.js',
+			'ProxyLifecycleService.test.js',
+			'FeedbackService.test.js',
 			'ClineIntegrationAdapter.test.js',
 			'ExtensionHostRestartService.test.js',
-			'SuiteCloudProxyProcessService.test.js',
+			'ProxyProcessService.test.js',
 			'VSConsoleLogger.test.js',
 		];
 
