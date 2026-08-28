@@ -4,14 +4,16 @@
  */
 
 import * as vscode from 'vscode';
+import * as crypto from 'crypto';
 import { DEVASSIST } from '../ApplicationConstants';
 import { DEVASSIST_SERVICE } from '../service/TranslationKeys';
 import { MediaFileService } from '../service/MediaFileService';
 import { FEEDBACK_FORM_FILE_NAMES } from '../service/MediaFileKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
-import { getDevAssistCurrentSettings } from '../startup/DevAssistConfiguration';
+import { getDevAssistCurrentSettings } from '../startup/DevAssistSettings';
 import { ApplicationConstants } from '../util/ExtensionUtil';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
+import SuiteCloudPanelCliService from '../panel/SuiteCloudPanelCliService';
 import {
 	validateIntegerWithinInterval,
 	validateMultipleOptionField,
@@ -20,6 +22,7 @@ import {
 
 const translationService = new VSTranslationService();
 const vsLogger = new VSConsoleLogger();
+const suiteCloudCliService = new SuiteCloudPanelCliService();
 
 const PROXY_URL = DEVASSIST.PROXY_URL;
 
@@ -55,14 +58,7 @@ const VALID_FEEDBACK_TOPICS = [
 
 let feedbackFormPanel: vscode.WebviewPanel | undefined;
 let mediaService: MediaFileService;
-const generateNonce = () => {
-	const nonceCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	let nonce = '';
-	for (let index = 0; index < 32; index++) {
-		nonce += nonceCharacters.charAt(Math.floor(Math.random() * nonceCharacters.length));
-	}
-	return nonce;
-};
+const generateNonce = () => crypto.randomBytes(16).toString('base64');
 
 export const openDevAssistFeedbackForm = (extensionContext: vscode.ExtensionContext) => {
 
@@ -149,9 +145,12 @@ const handleSubmitFeedbackFormEvent = async (
 
 	// Send request to NetSuite Backend through Proxy
 	try {
-		const currentProxySettings = getDevAssistCurrentSettings();
+		const currentProxySettings = getDevAssistCurrentSettings(extensionContext.workspaceState);
 		const requestBody = JSON.stringify(formData);
-		const devassistApiKey = await extensionContext.secrets.get(DEVASSIST.SECRET_STORAGE_KEY_ID);
+		const devassistApiKey = await suiteCloudCliService.getProxyApiKeyFromSdkStorage();
+		if (!devassistApiKey) {
+			throw new Error('No SuiteCloud proxy API key is available in CLI secure storage.');
+		}
 		const response = await fetch(`${PROXY_URL.SCHEME}${PROXY_URL.LOCALHOST_IP}:${currentProxySettings.localPort}${PROXY_URL.FEEDBACK_PATH}`, {
 			method: 'POST',
 			headers: { 

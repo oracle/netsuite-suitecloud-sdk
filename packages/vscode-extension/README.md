@@ -1,4 +1,6 @@
-<p align="left"><a href="#"><img width="250" src="resources/Netsuite-logo-ocean-150-bg.png"></a></p>
+<p align="center">
+  <img src="resources/readme/suitecloud-developer-assistant-banner.png" alt="Meet SuiteCloud Developer Assistant: Frontier LLM with NetSuite domain expertise">
+</p>
 
 # SuiteCloud Extension for Visual Studio Code
 <a href="https://marketplace.visualstudio.com/items?itemName=Oracle.suitecloud-vscode-extension">
