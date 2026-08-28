@@ -17,7 +17,16 @@ export function run(): Promise<void> {
 
 	return new Promise((c, e) => {
 
-		const files: string[] = ['extension.test.js'];
+		const files: string[] = [
+			'extension.test.js',
+			'SuiteCloudPanelMessageParser.test.js',
+			'SuiteCloudPanelStateTransitions.test.js',
+			'SuiteCloudFeedbackService.test.js',
+			'ClineIntegrationAdapter.test.js',
+			'ExtensionHostRestartService.test.js',
+			'SuiteCloudProxyProcessService.test.js',
+			'VSConsoleLogger.test.js',
+		];
 
 		// Add files to the test suite
 		files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));

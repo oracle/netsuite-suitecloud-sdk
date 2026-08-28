@@ -42,10 +42,9 @@ export function createAuthIDStatusBar(): vscode.StatusBarItem {
 export function createDevAssistStatusBar(): vscode.StatusBarItem {
 	const devAssistStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, STATUS_BAR_PRIORITY - 2);
 	devAssistStatusBar.tooltip = translationService.getMessage(DEVASSIST_SERVICE.STATUSBAR_TOOLTIP);
-	// this devAssistStatusBar visibility is controlled by DevAssistConfiguration.ts (startDevAssistProxyIfEnabled, devAssistConfigurationChangeHandler)
-	// initially hidden because devassist service could be disabled 
+	// initially hidden; it is updated by the SuiteCloud Control Panel runtime state.
 	devAssistStatusBar.hide();
-	devAssistStatusBar.command ='suitecloud.opensettings';
+	devAssistStatusBar.command = 'suitecloud.opencontrolpanel';
 	return devAssistStatusBar;
 }
 

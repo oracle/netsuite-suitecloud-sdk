@@ -15,13 +15,22 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	private executionPath?: string;
 	private addExecutionDetailsToLog: boolean = false;
 	private hideProjectFolderName: boolean = false;
+	private readonly outputChannel: vscode.OutputChannel;
 	private readonly translationService = new VSTranslationService();
+	private hasWrittenOutput = false;
+	private lastLineWasBlank = false;
+	private sectionOpen = false;
 
-	constructor(addExecutionDetailsToLog: boolean = false, executionPath?: string) {
+	constructor(
+		addExecutionDetailsToLog: boolean = false,
+		executionPath?: string,
+		outputChannel: vscode.OutputChannel = output
+	) {
 		super();
 
 		this.addExecutionDetailsToLog = addExecutionDetailsToLog;
 		this.executionPath = executionPath;
+		this.outputChannel = outputChannel;
 	}
 
 	private getExecutionDetails(): string {
@@ -42,11 +51,43 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	// We could explore some workarounds in future like creating a Terminal, importing a new library or just implment it ourselves
 	private println(message: string): void {
 		if (this.addExecutionDetailsToLog && message !== '') {
-			output.appendLine(this.getExecutionDetails());
+			this.appendLine(this.getExecutionDetails());
 			this.addExecutionDetailsToLog = false;
 		}
 		this.checkForCorruptedJar(message);
-		output.appendLine(message);
+		this.appendLine(message);
+	}
+
+	private appendLine(message: string): void {
+		this.outputChannel.appendLine(message);
+		this.hasWrittenOutput = true;
+		this.lastLineWasBlank = message === '';
+	}
+
+	public startSection(): void {
+		if (this.hasWrittenOutput && !this.lastLineWasBlank) {
+			this.appendLine('');
+		}
+		this.appendLine(this.getExecutionDetails());
+		this.addExecutionDetailsToLog = false;
+		this.sectionOpen = true;
+	}
+
+	public endSection(): void {
+		if (!this.sectionOpen) {
+			return;
+		}
+		if (this.hasWrittenOutput && !this.lastLineWasBlank) {
+			this.appendLine('');
+		}
+		this.sectionOpen = false;
+	}
+
+	public clear(): void {
+		this.outputChannel.clear();
+		this.hasWrittenOutput = false;
+		this.lastLineWasBlank = false;
+		this.sectionOpen = false;
 	}
 
 	public info(message: string): void {
