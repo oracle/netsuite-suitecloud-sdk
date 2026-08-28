@@ -3,21 +3,21 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { ClineScope } from '../SuiteCloudPanelTypes';
+import { ClineScope } from '../../../controlPanel/Types';
 import {
 	PREFERRED_BASE_URL_KEYS,
 	PREFERRED_MODEL_KEYS,
 	PREFERRED_PROVIDER_KEYS,
 	PREFERRED_SECRET_KEYS,
-} from './ClineConstants';
-import ClineFileStore from './ClineFileStore';
+} from './Constants';
+import ClineFileStore from './FileStore';
 import {
 	ApplyClineConfigInput,
 	ApplyClineConfigResult,
 	CompatibilityDetails,
 	ClineCompatibilityResult,
 	JsonObject,
-} from './ClineIntegrationTypes';
+} from './IntegrationTypes';
 
 export default class ClineLegacyConfigStrategy {
 	private readonly _fileStore: ClineFileStore;

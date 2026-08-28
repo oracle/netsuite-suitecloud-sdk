@@ -4,10 +4,8 @@
  */
 
 import * as assert from 'assert';
-import {
-	parseSuiteCloudPanelIncomingMessage,
-	SUITECLOUD_PANEL_EVENTS,
-} from '../../panel/SuiteCloudPanelTypes';
+import { parseSuiteCloudPanelIncomingMessage } from '../../controlPanel/MessageParser';
+import { SUITECLOUD_PANEL_EVENTS } from '../../controlPanel/Types';
 
 suite('SuiteCloud Control Panel Message Parser', () => {
 	test('parses simple valid event', () => {

@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import { DEVASSIST } from '../ApplicationConstants';
-import SuiteCloudControlPanelPreferencesStore from '../webviews/SuiteCloudControlPanelPreferencesStore';
+import PreferencesStore from '../webviews/controlPanel/PreferencesStore';
 
 const PANEL_STATE_STORAGE_KEY = 'suitecloud.controlPanel.state.v1';
 
@@ -16,7 +16,7 @@ export type DevAssistCurrentSettings = {
 };
 
 export const getDevAssistCurrentSettings = (workspaceState: vscode.Memento): DevAssistCurrentSettings => {
-	const panelPreferencesStore = new SuiteCloudControlPanelPreferencesStore(
+	const panelPreferencesStore = new PreferencesStore(
 		workspaceState,
 		PANEL_STATE_STORAGE_KEY
 	);
