@@ -10,6 +10,8 @@ const { join } = require('node:path');
 
 const {
 	buildCustomObjectsXml,
+	extractObjectTypeForUpdate,
+	extractRootTagName,
 } = require('../../../sdk-core/build/commands/object/ObjectCommandXml');
 const {
 	copyDirectoryContents,
@@ -30,6 +32,22 @@ describe('ObjectCommandXml', () => {
 			'  <customObject package="appId" id="scriptId2" type="type"/>',
 			'</customObjects>',
 		].join('\n'));
+	});
+
+	it('extracts the root tag from system-generated object XML with leading metadata', () => {
+		const objectXml = [
+			'<!-- This XML must be system-generated. Do not edit it manually. !-->',
+			'<savedsearch scriptid="customsearch_example"/>',
+		].join('\n');
+
+		expect(extractRootTagName(objectXml)).toBe('savedsearch');
+	});
+
+	it('uses the Java-compatible object types for update requests', () => {
+		expect(extractObjectTypeForUpdate('<savedcsvimport/>', 'custimport_example')).toBe('csvimport');
+		expect(extractObjectTypeForUpdate('<pluginimplementation/>', 'customplugin_example')).toBe('plugintypeimpl');
+		expect(extractObjectTypeForUpdate('<savedsearch/>', 'customsearch_example')).toBe('savedsearch');
+		expect(extractObjectTypeForUpdate('<customlist/>', 'com.example.customrecord_example')).toBe('customrecordtype');
 	});
 });
 
