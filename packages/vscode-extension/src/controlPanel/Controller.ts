@@ -4,50 +4,51 @@
  */
 
 import * as vscode from 'vscode';
-import { DEVASSIST } from '../../ApplicationConstants';
 import PreferencesStore, {
 	PersistedPanelPreferences,
-} from './PreferencesStore';
-import ClineChatOpener from '../../service/controlPanel/cline/ChatOpener';
-import ClineIntegrationAdapter from '../../service/controlPanel/cline/IntegrationAdapter';
+} from '../service/controlPanel/devAssist/PreferencesStore';
+import ClineChatOpener from '../service/controlPanel/devAssist/cline/ChatOpener';
+import ClineIntegrationAdapter from '../service/controlPanel/devAssist/cline/IntegrationAdapter';
 import {
-	formatProxyStartError,
-	summarizeInlineError,
-} from '../../controlPanel/ErrorFormatter';
-import { buildProxyBaseUrl, createInitialPanelState } from '../../controlPanel/Configuration';
-import { CLINE_EXTENSION_ID } from '../../service/controlPanel/cline/Constants';
-import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/Strings';
+	buildProxyBaseUrl,
+	createInitialPanelState,
+	getDefaultPanelSettings,
+} from './devAssist/Configuration';
+import { CLINE_EXTENSION_ID } from '../service/controlPanel/devAssist/cline/Constants';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from './devAssist/Strings';
 import {
 	applyFormChangesToState,
 	calculatePendingRuntimeConfig,
 	clearRuntimeConfig,
 	isProxyLifecycleActive,
-	markRuntimeConfigAsActive,
-} from '../../controlPanel/StateTransitions';
+} from './devAssist/StateTransitions';
 import {
 	SuiteCloudPanelIncomingMessage,
 	SuiteCloudPanelSubmitFeedbackPayload,
-	SuiteCloudPanelState,
 	SuiteCloudPanelUpdateFormPayload,
 	SUITECLOUD_PANEL_EVENTS,
-} from '../../controlPanel/Types';
-import ExtensionHostRestartService from '../../service/controlPanel/ExtensionHostRestartService';
-import FeedbackService from '../../service/controlPanel/FeedbackService';
+} from './devAssist/Messages';
+import { SuiteCloudPanelState } from './devAssist/State';
+import ExtensionHostRestartService from '../service/controlPanel/devAssist/ExtensionHostRestartService';
+import FeedbackService from '../service/controlPanel/devAssist/FeedbackService';
 import ApiKeyService, {
 	ApiKeyResolution,
-} from '../../service/controlPanel/ApiKeyService';
-import ClineCompatibilityService from '../../service/controlPanel/ClineCompatibilityService';
-import ClineConfigService from '../../service/controlPanel/ClineConfigService';
-import CliService from '../../service/controlPanel/CliService';
-import ProxyLifecycleService from '../../service/controlPanel/ProxyLifecycleService';
-import ProxyProcessService from '../../service/controlPanel/ProxyProcessService';
-import Presenter from './Presenter';
-import ViewHost from './ViewHost';
+} from '../service/controlPanel/devAssist/ApiKeyService';
+import ClineCompatibilityService from '../service/controlPanel/devAssist/cline/ClineCompatibilityService';
+import ClineConfigService from '../service/controlPanel/devAssist/cline/ClineConfigService';
+import DevAssistCliService from '../service/DevAssistCliService';
+import ProxyLifecycleService from '../service/controlPanel/devAssist/proxy/ProxyLifecycleService';
+import ProxyProcessService from '../service/controlPanel/devAssist/proxy/ProxyProcessService';
+import Presenter from '../webviews/controlPanel/Presenter';
+import ViewHost from '../webviews/controlPanel/ViewHost';
+import MessageDispatcher from './devAssist/MessageDispatcher';
+import ClineWorkflow, {
+	CLINE_PENDING_PROXY_RESTART_STORAGE_KEY,
+} from './devAssist/workflows/ClineWorkflow';
+import ProxyWorkflow from './devAssist/workflows/ProxyWorkflow';
 
 const SETUP_ACCOUNT_COMMAND_ID = 'suitecloud.setupaccount';
-const SUITECLOUD_MODEL_ID = SUITECLOUD_PANEL_RUNTIME_STRINGS.modelId;
 const PANEL_STATE_STORAGE_KEY = 'suitecloud.controlPanel.state.v1';
-const CLINE_PENDING_PROXY_RESTART_STORAGE_KEY = 'suitecloud.controlPanel.pendingClineProxyRestart.v1';
 const WALKTHROUGH_CONTEXT_KEYS = {
 	proxyRunning: 'suitecloud.controlPanel.proxyRunning',
 	clineApplied: 'suitecloud.controlPanel.clineApplied',
@@ -55,9 +56,6 @@ const WALKTHROUGH_CONTEXT_KEYS = {
 } as const;
 
 let controlPanelController: ControlPanelController | undefined;
-const assertUnreachable = (value: never): never => {
-	throw new Error(`Unhandled control panel event: ${String(value)}`);
-};
 
 export const initializeSuiteCloudControlPanel = (
 	extensionContext: vscode.ExtensionContext,
@@ -111,14 +109,11 @@ export const applyPendingSuiteCloudClineConfig = async (): Promise<void> => {
 
 class ControlPanelController {
 	private readonly _extensionContext: vscode.ExtensionContext;
-	private readonly _cliService: CliService;
-	private readonly _clineAdapter: ClineIntegrationAdapter;
-	private readonly _clineChatOpener: ClineChatOpener;
-	private readonly _clineCompatibilityService: ClineCompatibilityService;
-	private readonly _clineConfigService: ClineConfigService;
-	private readonly _extensionHostRestartService: ExtensionHostRestartService;
+	private readonly _cliService: DevAssistCliService;
 	private readonly _proxyProcessService: ProxyProcessService;
-	private readonly _proxyLifecycleService: ProxyLifecycleService;
+	private readonly _proxyWorkflow: ProxyWorkflow;
+	private readonly _clineWorkflow: ClineWorkflow;
+	private readonly _messageDispatcher: MessageDispatcher;
 	private readonly _presenter: Presenter;
 	private readonly _preferencesStore: PreferencesStore;
 	private readonly _feedbackService: FeedbackService;
@@ -126,7 +121,6 @@ class ControlPanelController {
 	private readonly _viewHost: ViewHost;
 	private readonly _sdkDependenciesReady: Promise<void>;
 	private _state: SuiteCloudPanelState;
-	private _clineAppliedInSession = false;
 	private _messageQueue: Promise<void> = Promise.resolve();
 
 	constructor(
@@ -136,17 +130,15 @@ class ControlPanelController {
 	) {
 		this._extensionContext = extensionContext;
 		this._sdkDependenciesReady = sdkDependenciesReady;
-		this._cliService = new CliService();
-		this._clineAdapter = new ClineIntegrationAdapter();
-		this._clineChatOpener = new ClineChatOpener(vscode.commands);
-		this._clineCompatibilityService = new ClineCompatibilityService(
-			this._clineAdapter
-		);
-		this._clineConfigService = new ClineConfigService(
-			this._clineAdapter,
+		this._cliService = new DevAssistCliService();
+		const clineAdapter = new ClineIntegrationAdapter();
+		const clineChatOpener = new ClineChatOpener(vscode.commands);
+		const clineCompatibilityService = new ClineCompatibilityService(clineAdapter);
+		const clineConfigService = new ClineConfigService(
+			clineAdapter,
 			this._extensionContext.globalState
 		);
-		this._extensionHostRestartService = new ExtensionHostRestartService(
+		const extensionHostRestartService = new ExtensionHostRestartService(
 			(commandId) => vscode.commands.executeCommand(commandId)
 		);
 		this._feedbackService = new FeedbackService();
@@ -164,7 +156,7 @@ class ControlPanelController {
 			PANEL_STATE_STORAGE_KEY
 		);
 
-		const defaults = this._cliService.getDefaultPanelSettings();
+		const defaults = getDefaultPanelSettings();
 		const persistedPreferences = this._preferencesStore.load(defaults);
 		this._state = createInitialPanelState(defaults, persistedPreferences);
 		this._viewHost = new ViewHost(this._extensionContext.extensionPath, {
@@ -201,9 +193,102 @@ class ControlPanelController {
 				}
 			},
 		});
-		this._proxyLifecycleService = new ProxyLifecycleService(
-			this._proxyProcessService
-		);
+		const proxyLifecycleService = new ProxyLifecycleService(this._proxyProcessService);
+		this._proxyWorkflow = new ProxyWorkflow({
+			cliService: this._cliService,
+			lifecycleService: proxyLifecycleService,
+			processService: this._proxyProcessService,
+			presenter: this._presenter,
+			getState: () => this._state,
+			setState: (state) => {
+				this._state = state;
+			},
+			getWorkspacePath: () => this._workspacePath,
+			confirmStartDisclaimer: async () => {
+				const selection = await vscode.window.showWarningMessage(
+					this._presenter.formatNotification(
+						SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.startProxyDisclaimer
+					),
+					{ modal: true },
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.startProxyDisclaimerAction
+				);
+				return selection ===
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.startProxyDisclaimerAction;
+			},
+			ensureSdkDependenciesReady: () => this._ensureSdkDependenciesReady(),
+			resolveApiKey: (allowGenerate) => this._resolveApiKey(allowGenerate),
+			refreshAuthIds: () => this._refreshAuthIds(),
+			refreshApiKeyAndCompatibility: (allowGenerate) =>
+				this._refreshApiKeyAndCompatibility(allowGenerate),
+			refreshCompatibility: () => this._clineWorkflow.refreshCompatibility(),
+			persistPreferencesNoThrow: () => this._persistPreferencesNoThrow(),
+			postStateUpdate: () => this._postStateUpdate(),
+		});
+		this._clineWorkflow = new ClineWorkflow({
+			chatOpener: clineChatOpener,
+			compatibilityService: clineCompatibilityService,
+			configService: clineConfigService,
+			extensionHostRestartService,
+			globalState: this._extensionContext.globalState,
+			presenter: this._presenter,
+			proxyWorkflow: this._proxyWorkflow,
+			getState: () => this._state,
+			getWorkspacePath: () => this._workspacePath,
+			getResolvedApiKey: () => this._apiKeyService.resolvedApiKey,
+			isClineInstalled: () => !!vscode.extensions.getExtension(CLINE_EXTENSION_ID),
+			confirmExtensionRestart: async () => {
+				const restartExtensionsAction =
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.restartExtensionsAction;
+				const selection = await vscode.window.showWarningMessage(
+					this._presenter.formatNotification(
+						SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.clineExtensionRestartRequiredPrompt
+					),
+					{ modal: true },
+					restartExtensionsAction,
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.cancelAction
+				);
+				return selection === restartExtensionsAction;
+			},
+			resolveApiKey: (allowGenerate) => this._resolveApiKey(allowGenerate),
+			isProxyAvailable: () => this._isProxyAvailable(),
+			postStateUpdate: () => this._postStateUpdate(),
+		});
+		this._messageDispatcher = new MessageDispatcher({
+			load: () => this._handleLoad(),
+			openExpandedView: () => this.openPanel(),
+			copyApiKey: () => this._copyApiKeyToClipboard(),
+			updateForm: async (payload) => {
+				await this._applyFormChanges(payload);
+				await this._clineWorkflow.refreshCompatibility();
+				this._postStateUpdate();
+			},
+			startProxy: async (payload) => {
+				await this._applyFormChanges(payload);
+				await this._clineWorkflow.refreshCompatibility();
+				await this._proxyWorkflow.start();
+			},
+			stopProxy: () => this._proxyWorkflow.stop(),
+			refreshAuthIds: async () => {
+				await this._refreshAuthIds();
+				this._postStateUpdate();
+			},
+			setupAccount: async () => {
+				await vscode.commands.executeCommand(SETUP_ACCOUNT_COMMAND_ID);
+				await this._refreshAuthIds();
+				this._postStateUpdate();
+			},
+			rotateApiKey: () => this._rotateApiKey(),
+			applyClineSettings: () => this._clineWorkflow.applySettings(),
+			openClineMarketplace: async () => {
+				await vscode.commands.executeCommand(
+					'workbench.extensions.search',
+					`@id:${CLINE_EXTENSION_ID}`
+				);
+			},
+			openOutput: () => this._presenter.openOutput(),
+			openClineChat: () => this._clineWorkflow.openChat(),
+			submitFeedback: (payload) => this._submitFeedback(payload),
+		});
 	}
 
 	get _workspacePath(): string {
@@ -231,7 +316,7 @@ class ControlPanelController {
 		this._viewHost.dispose();
 		try {
 			await this._proxyProcessService.dispose();
-			this._clineAppliedInSession = false;
+			this._clineWorkflow.resetSessionState();
 			this._updateWalkthroughContexts();
 			this._presenter.setStoppedStatus();
 		} finally {
@@ -242,29 +327,14 @@ class ControlPanelController {
 	async startProxyOnStartupIfEnabled(): Promise<void> {
 		const shouldRestartForClineConfig =
 			this._extensionContext.globalState.get<boolean>(CLINE_PENDING_PROXY_RESTART_STORAGE_KEY) === true;
-		if (
-			(!this._state.autoStartProxyOnStartup && !shouldRestartForClineConfig) ||
-			this._proxyProcessService.isRunning
-		) {
-			return;
-		}
-		try {
-			await this._refreshAuthIds();
-			await this._refreshApiKeyAndCompatibility(false);
-			await this._startProxy(false, true);
-			if (shouldRestartForClineConfig) {
-				await this._extensionContext.globalState.update(CLINE_PENDING_PROXY_RESTART_STORAGE_KEY, undefined);
-			}
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error);
-			const friendlyErrorMessage = this._toFriendlyProxyStartError(errorMessage);
-			this._state.proxyStatus = 'error';
-			this._state.lastError = this._toInlineErrorSummary(friendlyErrorMessage);
-			this._presenter.setStoppedStatus();
-			this._postStateUpdate();
-			this._presenter.showError(`Auto-start failed: ${friendlyErrorMessage}`);
-			this._presenter.endLogSection();
-		}
+		await this._proxyWorkflow.startOnStartupIfEnabled(
+			shouldRestartForClineConfig,
+			() =>
+				this._extensionContext.globalState.update(
+					CLINE_PENDING_PROXY_RESTART_STORAGE_KEY,
+					undefined
+				)
+		);
 	}
 
 	async showWelcomeIfNeeded(): Promise<void> {
@@ -286,92 +356,31 @@ class ControlPanelController {
 			this._state.disableWelcomeNotification = true;
 			await this._persistPreferences();
 			this._postStateUpdate();
-			this._presenter.showSuccess(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.welcomeNotificationDisabled);
+			this._presenter.logSuccess(
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.welcomeNotificationDisabled
+			);
 		}
 	}
 
 	async applyPendingClineConfig(): Promise<void> {
-		try {
-			const applied = await this._clineConfigService.applyPendingConfig(
-				this._workspacePath,
-				() => this._resolveApiKey(false)
-			);
-			if (applied) {
-				this._presenter.info(
-					'Applied pending Cline configuration during SuiteCloud activation.'
-				);
-			}
-		} catch (error) {
-			this._presenter.error(`Unable to apply pending Cline configuration: ${String(error)}`);
-		}
+		await this._clineWorkflow.applyPendingConfig();
 	}
 
 	private async _handleWebviewMessage(message: SuiteCloudPanelIncomingMessage): Promise<void> {
 		try {
-			switch (message.eventType) {
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.LOAD:
-					await this._handleLoad();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.OPEN_EXPANDED_VIEW:
-					this.openPanel();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.COPY_API_KEY:
-					await this._copyApiKeyToClipboard();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.UPDATE_FORM:
-					await this._applyFormChanges(message.eventData || {});
-					await this._refreshCompatibility();
-					this._postStateUpdate();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.START_PROXY:
-					await this._applyFormChanges(message.eventData || {});
-					await this._refreshCompatibility();
-					await this._startProxy();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.STOP_PROXY:
-					await this._stopProxy();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.AUTH_ID_DROPDOWN_OPEN:
-					await this._refreshAuthIds();
-					this._postStateUpdate();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.SETUP_ACCOUNT:
-					await vscode.commands.executeCommand(SETUP_ACCOUNT_COMMAND_ID);
-					await this._refreshAuthIds();
-					this._postStateUpdate();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.ROTATE_KEY:
-					await this._rotateApiKey();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.APPLY_CLINE_SETTINGS:
-					await this._applyClineSettings();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.OPEN_CLINE_MARKETPLACE:
-					await vscode.commands.executeCommand(
-						'workbench.extensions.search',
-						`@id:${CLINE_EXTENSION_ID}`
-					);
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.OPEN_OUTPUT:
-					this._presenter.openOutput();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.OPEN_CLINE_CHAT:
-					await this._openClineChat();
-					break;
-				case SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.SUBMIT_FEEDBACK:
-					await this._submitFeedback(message.eventData || {});
-					break;
-				default:
-					assertUnreachable(message);
-			}
+			await this._messageDispatcher.dispatch(message);
 		} catch (error) {
 			const isProxyStartAction = message.eventType === SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.START_PROXY;
 			const isProxyStopAction = message.eventType === SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.STOP_PROXY;
 			const errorMessage = error instanceof Error ? error.message : String(error);
-			const friendlyErrorMessage = isProxyStartAction ? this._toFriendlyProxyStartError(errorMessage) : errorMessage;
+			const friendlyErrorMessage = isProxyStartAction
+				? this._proxyWorkflow.formatStartError(errorMessage)
+				: errorMessage;
 			if (isProxyStartAction) {
 				this._state.proxyStatus = 'error';
-				this._state.lastError = this._toInlineErrorSummary(friendlyErrorMessage);
+				this._state.lastError = this._proxyWorkflow.summarizeInlineError(
+					friendlyErrorMessage
+				);
 				this._presenter.setStoppedStatus();
 			} else if (message.eventType === SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.STOP_PROXY) {
 				this._state.proxyStatus = this._isProxyAvailable() ? 'running' : 'stopped';
@@ -434,17 +443,7 @@ class ControlPanelController {
 	}
 
 	private async _refreshCompatibility(): Promise<void> {
-		Object.assign(
-			this._state,
-			await this._clineCompatibilityService.evaluate({
-				isExtensionInstalled: !!vscode.extensions.getExtension(CLINE_EXTENSION_ID),
-				scope: this._state.clineScope,
-				workspacePath: this._workspacePath,
-				apiKey: this._apiKeyService.resolvedApiKey,
-				baseUrl: this._state.baseUrl,
-				modelId: SUITECLOUD_MODEL_ID,
-			})
-		);
+		await this._clineWorkflow.refreshCompatibility();
 	}
 
 	private async _resolveApiKey(allowGenerate: boolean): Promise<string | undefined> {
@@ -483,107 +482,6 @@ class ControlPanelController {
 		}
 	}
 
-	private async _startProxy(
-		showDisclaimerPrompt = true,
-		emitSuccessMessage = true
-	): Promise<void> {
-		await this._ensureSdkDependenciesReady();
-		if (showDisclaimerPrompt) {
-			const approved = await this._confirmStartProxyDisclaimer();
-			if (!approved) {
-				return;
-			}
-		}
-		this._presenter.clearLog();
-		this._presenter.startLogSection();
-		const startResult = await this._proxyLifecycleService.start({
-			state: this._state,
-			unconfiguredAuthId: DEVASSIST.DEFAULT_VALUES.authID,
-			isCommandSupported: () => this._cliService.isProxyStartCommandSupported(),
-			getCliVersion: () => this._cliService.getBundledCliVersion(),
-			getWorkspacePath: () => this._workspacePath,
-			getSdkPath: () => this._cliService.getSdkPath(),
-			resolveApiKey: () => this._resolveApiKey(true),
-			onStarting: (state) => {
-				this._presenter.info(
-					`Starting proxy on port ${state.port} with auth ID "${state.authId}".`
-				);
-				this._state = state;
-				this._postStateUpdate();
-				this._presenter.setStartingStatus();
-			},
-		});
-		this._state = markRuntimeConfigAsActive({
-			...this._state,
-			proxyStatus: 'running',
-			proxyPid: startResult.pid,
-			baseUrl: buildProxyBaseUrl(startResult.port),
-			authId: startResult.authId,
-			port: startResult.port,
-		});
-		await this._persistPreferencesNoThrow();
-		await this._refreshCompatibility();
-		this._presenter.setRunningStatus();
-		this._postStateUpdate();
-		this._presenter.logApiProviderSettings(this._state.baseUrl, SUITECLOUD_MODEL_ID);
-
-		if (emitSuccessMessage) {
-			this._presenter.showSuccess(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.proxyRunning);
-		}
-		this._presenter.endLogSection();
-	}
-
-	private async _stopProxy(
-		emitSuccessMessage = true,
-		options: { preserveStartIntent?: boolean } = {}
-	): Promise<void> {
-		this._presenter.startLogSection();
-		const result = await this._proxyLifecycleService.stop({
-			state: this._state,
-			preserveStartIntent: options.preserveStartIntent === true,
-			onStopping: async (state) => {
-				this._presenter.info('Stopping proxy process.');
-				this._state = state;
-				await this._persistPreferencesNoThrow();
-				this._postStateUpdate();
-			},
-		});
-		this._state = clearRuntimeConfig(
-			{
-				...this._state,
-				proxyStatus: 'stopped',
-				proxyPid: null,
-			},
-			{ clearStartIntent: result.clearStartIntent }
-		);
-
-		if (!result.processWasRunning) {
-			await this._persistPreferencesNoThrow();
-			this._presenter.setStoppedStatus();
-			this._postStateUpdate();
-			if (emitSuccessMessage) {
-				this._presenter.showSuccess(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.proxyAlreadyStopped);
-			}
-			this._presenter.endLogSection();
-			return;
-		}
-		this._presenter.setStoppedStatus();
-		this._postStateUpdate();
-		if (emitSuccessMessage) {
-			this._presenter.showSuccess(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.proxyStopped);
-		}
-		this._presenter.endLogSection();
-	}
-
-	private async _confirmStartProxyDisclaimer(): Promise<boolean> {
-		const selection = await vscode.window.showWarningMessage(
-			this._presenter.formatNotification(SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.startProxyDisclaimer),
-			{ modal: true },
-			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.startProxyDisclaimerAction
-		);
-		return selection === SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.startProxyDisclaimerAction;
-	}
-
 	private async _rotateApiKey(): Promise<void> {
 		await this._ensureSdkDependenciesReady();
 		if (this._proxyProcessService.isRunning || isProxyLifecycleActive(this._state.proxyStatus)) {
@@ -609,121 +507,11 @@ class ControlPanelController {
 		this._applyApiKeyResolution(await this._apiKeyService.generate());
 		await this._refreshCompatibility();
 		this._postStateUpdate();
-		this._presenter.showSuccess(hasExistingKey ? SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.apiKeyRotated : SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.apiKeyGenerated);
-	}
-
-	private async _applyClineSettings(): Promise<void> {
-		const outcome = await this._clineConfigService.applyPanelConfig({
-			isProxyAvailable: this._isProxyAvailable(),
-			isConfigInSync: this._state.isClineConfigInSync,
-			scope: this._state.clineScope,
-			workspacePath: this._workspacePath,
-			baseUrl: this._state.baseUrl,
-			modelId: SUITECLOUD_MODEL_ID,
-			resolveApiKey: () => this._resolveApiKey(false),
-		});
-
-		switch (outcome.kind) {
-			case 'proxyUnavailable':
-				this._presenter.showError(
-					SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.startProxyBeforeClineApply
-				);
-				return;
-			case 'workspaceManual':
-				this._presenter.showSuccess(
-					SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.workspaceClineSetupIsManual
-				);
-				return;
-			case 'alreadyInSync':
-				this._presenter.showSuccess(
-					SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.noClineConfigChangesDetected
-				);
-				return;
-			case 'missingApiKey':
-				this._presenter.showError(
-					SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.noApiKeyForClineApply
-				);
-				return;
-			case 'applyFailed':
-				await this._refreshCompatibility();
-				this._clineAppliedInSession = false;
-				this._postStateUpdate();
-				this._presenter.showError(outcome.message);
-				return;
-			case 'applied':
-				break;
-			default:
-				assertUnreachable(outcome);
-		}
-
-		await this._refreshCompatibility();
-		const configVerified = this._state.isClineConfigInSync;
-		this._clineAppliedInSession = configVerified;
-		this._postStateUpdate();
-		const restartExtensionsAction =
-			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.restartExtensionsAction;
-		const selection = await vscode.window.showWarningMessage(
-			this._presenter.formatNotification(
-				SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.clineExtensionRestartRequiredPrompt
-			),
-			{ modal: true },
-			restartExtensionsAction,
-			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.cancelAction
+		this._presenter.logSuccess(
+			hasExistingKey
+				? SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.apiKeyRotated
+				: SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.apiKeyGenerated
 		);
-		if (selection === restartExtensionsAction) {
-			await this._restartExtensionsForClineConfig();
-			return;
-		}
-		this._presenter.showSuccess(
-			configVerified
-				? 'Cline settings were updated and verified. Changes will take effect after VS Code extensions restart.'
-				: 'Cline rewrote its active settings. SuiteCloud will reapply the requested configuration after VS Code extensions restart.'
-		);
-	}
-
-	private async _restartExtensionsForClineConfig(): Promise<void> {
-		const shouldRecoverOwnedProxy = this._proxyProcessService.isRunning;
-		await this._extensionContext.globalState.update(CLINE_PENDING_PROXY_RESTART_STORAGE_KEY, true);
-
-		try {
-			if (shouldRecoverOwnedProxy) {
-				await this._stopProxy(false, { preserveStartIntent: true });
-			}
-			await this._extensionHostRestartService.restart();
-		} catch (error) {
-			await this._extensionContext.globalState.update(CLINE_PENDING_PROXY_RESTART_STORAGE_KEY, undefined);
-			const restartError = error instanceof Error ? error.message : String(error);
-			let recoveryError: string | undefined;
-
-			if (shouldRecoverOwnedProxy && !this._proxyProcessService.isRunning) {
-				try {
-					await this._startProxy(false, true);
-				} catch (proxyError) {
-					recoveryError = proxyError instanceof Error ? proxyError.message : String(proxyError);
-					this._presenter.error(`Unable to recover proxy after extension restart failed: ${recoveryError}`);
-				}
-			}
-
-			throw new Error(
-				`Unable to restart VS Code extensions automatically: ${restartError}. ` +
-				`Run "Developer: Restart Extension Host" from the Command Palette.${
-					recoveryError ? ` Proxy recovery also failed: ${recoveryError}` : ''
-				}`
-			);
-		}
-	}
-
-	private async _openClineChat(): Promise<void> {
-		if (!this._isProxyAvailable()) {
-			this._presenter.showError(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.startProxyBeforeClineChat);
-			return;
-		}
-
-		if (await this._clineChatOpener.open()) {
-			this._presenter.showSuccess(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.openedClineChat);
-			return;
-		}
-		this._presenter.showError(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.openClineChatFailed);
 	}
 
 	private async _submitFeedback(payload: SuiteCloudPanelSubmitFeedbackPayload): Promise<void> {
@@ -741,7 +529,9 @@ class ControlPanelController {
 			apiKey,
 			port: this._state.runtimePort || this._state.port,
 		});
-		this._presenter.showSuccess('Feedback submitted successfully. Thank you!', 'SUBMIT_FEEDBACK');
+		const successMessage = 'Feedback submitted successfully. Thank you!';
+		this._presenter.showSuccess(successMessage);
+		this._presenter.postActionSuccess(successMessage, 'SUBMIT_FEEDBACK');
 	}
 
 	private async _persistPreferences(): Promise<void> {
@@ -775,17 +565,6 @@ class ControlPanelController {
 
 		await vscode.env.clipboard.writeText(copyableApiKey);
 		this._presenter.showSuccess(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.copyValue('API key'));
-	}
-
-	private _toFriendlyProxyStartError(errorMessage: string): string {
-		return formatProxyStartError(
-			errorMessage,
-			() => this._cliService.getBundledCliVersion()
-		);
-	}
-
-	private _toInlineErrorSummary(errorMessage: string): string {
-		return summarizeInlineError(errorMessage);
 	}
 
 	private _updatePendingRuntimeConfigFlag(): void {
@@ -837,7 +616,11 @@ class ControlPanelController {
 
 	private _updateWalkthroughContexts(): void {
 		void vscode.commands.executeCommand('setContext', WALKTHROUGH_CONTEXT_KEYS.proxyRunning, this._isProxyAvailable());
-		void vscode.commands.executeCommand('setContext', WALKTHROUGH_CONTEXT_KEYS.clineApplied, this._clineAppliedInSession);
+		void vscode.commands.executeCommand(
+			'setContext',
+			WALKTHROUGH_CONTEXT_KEYS.clineApplied,
+			this._clineWorkflow.appliedInSession
+		);
 		void vscode.commands.executeCommand(
 			'setContext',
 			WALKTHROUGH_CONTEXT_KEYS.welcomeNotificationDisabled,

@@ -6,7 +6,7 @@
 import * as assert from 'assert';
 import ApiKeyService, {
 	ApiKeyStorage,
-} from '../../service/controlPanel/ApiKeyService';
+} from '../../service/controlPanel/devAssist/ApiKeyService';
 
 const createStorage = (storedApiKey?: string): ApiKeyStorage => ({
 	getProxyApiKeyFromSdkStorage: async () => storedApiKey,

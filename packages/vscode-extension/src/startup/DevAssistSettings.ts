@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import { DEVASSIST } from '../ApplicationConstants';
-import PreferencesStore from '../webviews/controlPanel/PreferencesStore';
+import PreferencesStore from '../service/controlPanel/devAssist/PreferencesStore';
 
 const PANEL_STATE_STORAGE_KEY = 'suitecloud.controlPanel.state.v1';
 
