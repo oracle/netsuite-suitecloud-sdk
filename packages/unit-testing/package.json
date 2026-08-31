@@ -23,5 +23,12 @@
 		"babel-jest": "30.5.0",
 		"babel-plugin-transform-amd-to-commonjs": "1.6.0",
 		"xml2js": "0.6.2"
+	},
+	"overrides": {
+		"babel-jest": {
+			"babel-plugin-istanbul": {
+				"test-exclude": "^8.0.0"
+			}
+		}
 	}
 }

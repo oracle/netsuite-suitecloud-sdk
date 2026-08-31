@@ -263,6 +263,8 @@
 		"typescript": "5.9.3"
 	},
 	"overrides": {
-		"glob": "^13.0.0"
+		"mocha": {
+			"glob": "^13.0.0"
+		}
 	}
 }
