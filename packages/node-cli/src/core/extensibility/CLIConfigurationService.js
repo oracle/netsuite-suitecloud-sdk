@@ -89,7 +89,7 @@ module.exports = class CLIConfigurationService {
 		}
 
 		if (errors.length > 0) {
-			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, 'https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4737888643.html');
+			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, 'https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_155931221634.html');
 			const details = errors.map((entry) => ` - ${entry}`).join(lineBreak);
 			throw new CLIException(`Invalid SuiteCloud project context for command "${commandName}".${lineBreak}${details}${lineBreak}${guidance}`);
 		}
