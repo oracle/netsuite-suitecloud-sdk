@@ -7,8 +7,8 @@ import * as assert from 'assert';
 import * as http from 'http';
 import { ChildProcess, spawn } from 'child_process';
 import { EventEmitter } from 'events';
-import ProxyOutputProcessor from '../../service/controlPanel/ProxyOutputProcessor';
-import ProxyProcessService from '../../service/controlPanel/ProxyProcessService';
+import ProxyOutputProcessor from '../../service/controlPanel/devAssist/proxy/ProxyOutputProcessor';
+import ProxyProcessService from '../../service/controlPanel/devAssist/proxy/ProxyProcessService';
 
 const listen = async (): Promise<{ server: http.Server; port: number }> => {
 	const server = http.createServer((_request, response) => response.end());

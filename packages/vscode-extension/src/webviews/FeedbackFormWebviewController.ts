@@ -13,7 +13,7 @@ import { VSTranslationService } from '../service/VSTranslationService';
 import { getDevAssistCurrentSettings } from '../startup/DevAssistSettings';
 import { ApplicationConstants } from '../util/ExtensionUtil';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
-import CliService from '../service/controlPanel/CliService';
+import DevAssistCliService from '../service/DevAssistCliService';
 import {
 	validateIntegerWithinInterval,
 	validateMultipleOptionField,
@@ -22,7 +22,7 @@ import {
 
 const translationService = new VSTranslationService();
 const vsLogger = new VSConsoleLogger();
-const suiteCloudCliService = new CliService();
+const suiteCloudCliService = new DevAssistCliService();
 
 const PROXY_URL = DEVASSIST.PROXY_URL;
 

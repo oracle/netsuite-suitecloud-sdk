@@ -10,8 +10,8 @@ import {
 	clearRuntimeConfig,
 	isProxyLifecycleActive,
 	markRuntimeConfigAsActive,
-} from '../../controlPanel/StateTransitions';
-import { SuiteCloudPanelState } from '../../controlPanel/Types';
+} from '../../controlPanel/devAssist/StateTransitions';
+import { SuiteCloudPanelState } from '../../controlPanel/devAssist/State';
 
 const createState = (overrides: Partial<SuiteCloudPanelState> = {}): SuiteCloudPanelState => ({
 	isSdkReady: true,

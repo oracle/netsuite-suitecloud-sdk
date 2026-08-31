@@ -3,8 +3,8 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/Strings';
-import { ApiKeySource, SuiteCloudPanelState } from '../../controlPanel/Types';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../../controlPanel/devAssist/Strings';
+import { ApiKeySource, SuiteCloudPanelState } from '../../../controlPanel/devAssist/State';
 
 const API_KEY_PREVIEW_WINDOW_MS = 5 * 60 * 1000;
 const API_KEY_EXISTS_HIDDEN_LABEL = SUITECLOUD_PANEL_RUNTIME_STRINGS.apiKey.hiddenExistingLabel;

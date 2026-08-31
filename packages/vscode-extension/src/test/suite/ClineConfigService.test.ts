@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import ClineConfigService, {
 	ApplyPanelClineConfigInput,
 	ClineConfigStorage,
-} from '../../service/controlPanel/ClineConfigService';
+} from '../../service/controlPanel/devAssist/cline/ClineConfigService';
 
 const PENDING_CONFIG_STORAGE_KEY = 'suitecloud.controlPanel.pendingClineConfig.v1';
 

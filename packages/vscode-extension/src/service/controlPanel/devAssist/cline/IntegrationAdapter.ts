@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { ClineScope } from '../../../controlPanel/Types';
+import { ClineScope } from '../../../../controlPanel/devAssist/State';
 import {
 	CLINE_OPENAI_COMPATIBLE_PROVIDER_ID,
 } from './Constants';

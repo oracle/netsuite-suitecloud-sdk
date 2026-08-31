@@ -9,7 +9,7 @@ import {
 	SuiteCloudPanelSubmitFeedbackPayload,
 	SuiteCloudPanelUpdateFormPayload,
 	SUITECLOUD_PANEL_EVENTS,
-} from './Types';
+} from './Messages';
 
 const FROM_WEBVIEW_EVENT_SET: ReadonlySet<string> = new Set(
 	Object.values(SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW)

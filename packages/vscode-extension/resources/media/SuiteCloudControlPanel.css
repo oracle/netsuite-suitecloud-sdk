@@ -278,6 +278,7 @@ body[data-view-mode="sidebar"] .feedbackContent.feedbackExpanded {
 
 .authIdActionButton[data-tooltip],
 .apiKeyButton.iconOnlyButton[data-tooltip],
+.field.lockedField[data-tooltip],
 .controlTooltipHost[data-tooltip],
 .providerDisclosure[data-tooltip] {
   position: relative;
@@ -285,6 +286,7 @@ body[data-view-mode="sidebar"] .feedbackContent.feedbackExpanded {
 
 .authIdActionButton[data-tooltip]::after,
 .apiKeyButton.iconOnlyButton[data-tooltip]::after,
+.field.lockedField[data-tooltip]::after,
 .controlTooltipHost[data-tooltip]::after,
 .providerDisclosure[data-tooltip]::after {
   position: absolute;
@@ -315,6 +317,8 @@ body[data-view-mode="sidebar"] .feedbackContent.feedbackExpanded {
 .authIdActionButton[data-tooltip]:focus-visible::after,
 .apiKeyButton.iconOnlyButton[data-tooltip]:hover::after,
 .apiKeyButton.iconOnlyButton[data-tooltip]:focus-visible::after,
+.field.lockedField[data-tooltip]:hover::after,
+.field.lockedField[data-tooltip]:focus-within::after,
 .controlTooltipHost[data-tooltip]:hover::after,
 .controlTooltipHost[data-tooltip]:focus-within::after,
 .providerDisclosure[data-tooltip]:hover::after,

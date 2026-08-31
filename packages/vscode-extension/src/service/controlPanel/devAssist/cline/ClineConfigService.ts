@@ -3,8 +3,8 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import type ClineIntegrationAdapter from './cline/IntegrationAdapter';
-import { ClineScope } from '../../controlPanel/Types';
+import type ClineIntegrationAdapter from './IntegrationAdapter';
+import { ClineScope } from '../../../../controlPanel/devAssist/State';
 
 const PENDING_CONFIG_STORAGE_KEY = 'suitecloud.controlPanel.pendingClineConfig.v1';
 const POST_WRITE_VERIFICATION_DELAY_MS = 750;

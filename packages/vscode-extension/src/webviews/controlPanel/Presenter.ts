@@ -7,12 +7,12 @@ import * as vscode from 'vscode';
 import VSConsoleLogger from '../../loggers/VSConsoleLogger';
 import { DEVASSIST_SERVICE } from '../../service/TranslationKeys';
 import { VSTranslationService } from '../../service/VSTranslationService';
-import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/Strings';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/devAssist/Strings';
 import {
 	SuiteCloudPanelAction,
 	SuiteCloudPanelOutgoingMessage,
 	SUITECLOUD_PANEL_EVENTS,
-} from '../../controlPanel/Types';
+} from '../../controlPanel/devAssist/Messages';
 
 const OUTPUT_CHANNEL_NAME = 'SuiteCloud: Developer Assistant';
 const LOG_PREFIX = SUITECLOUD_PANEL_RUNTIME_STRINGS.logPrefix;
@@ -67,15 +67,20 @@ export default class Presenter {
 		this._logger.error(`${LOG_PREFIX} ${message}`);
 	}
 
-	showSuccess(message: string, action?: SuiteCloudPanelAction): void {
+	logSuccess(message: string): void {
 		this.info(message);
+	}
+
+	showSuccess(message: string): void {
+		this.logSuccess(message);
 		void vscode.window.showInformationMessage(this.formatNotification(message));
-		if (action) {
-			this._postMessage({
-				eventType: SUITECLOUD_PANEL_EVENTS.TO_WEBVIEW.ACTION_SUCCESS,
-				eventData: { message, action },
-			});
-		}
+	}
+
+	postActionSuccess(message: string, action: SuiteCloudPanelAction): void {
+		this._postMessage({
+			eventType: SUITECLOUD_PANEL_EVENTS.TO_WEBVIEW.ACTION_SUCCESS,
+			eventData: { message, action },
+		});
 	}
 
 	showError(message: string): void {

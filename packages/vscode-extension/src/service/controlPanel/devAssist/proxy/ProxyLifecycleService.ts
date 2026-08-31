@@ -3,9 +3,9 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { validateProxyStartInputs } from '../../controlPanel/Configuration';
-import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/Strings';
-import { SuiteCloudPanelState } from '../../controlPanel/Types';
+import { validateProxyStartInputs } from '../../../../controlPanel/devAssist/Configuration';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../../../controlPanel/devAssist/Strings';
+import { SuiteCloudPanelState } from '../../../../controlPanel/devAssist/State';
 import type { StartProxyInput } from './ProxyProcessService';
 
 export type ProxyProcess = {

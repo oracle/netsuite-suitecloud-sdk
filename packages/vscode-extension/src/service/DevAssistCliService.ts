@@ -4,11 +4,11 @@
  */
 
 import * as vscode from 'vscode';
-import { DEVASSIST, VSCODE_PLATFORM } from '../../ApplicationConstants';
-import { getSdkPath as resolveVsCodeSdkPath } from '../../core/sdksetup/SdkProperties';
-import { SuiteCloudAuthItem } from '../../controlPanel/Types';
-import { ActionResult, AuthListData } from '../../types/ActionResult';
-import { AuthenticationUtils, ExecutionEnvironmentContext } from '../../util/ExtensionUtil';
+import { VSCODE_PLATFORM } from '../ApplicationConstants';
+import { getSdkPath as resolveVsCodeSdkPath } from '../core/sdksetup/SdkProperties';
+import { SuiteCloudAuthItem } from '../controlPanel/devAssist/State';
+import { ActionResult, AuthListData } from '../types/ActionResult';
+import { AuthenticationUtils, ExecutionEnvironmentContext } from '../util/ExtensionUtil';
 
 const getDevAssistProxyIntegration = (): any => {
 	try {
@@ -18,7 +18,7 @@ const getDevAssistProxyIntegration = (): any => {
 	}
 };
 
-export default class CliService {
+export default class DevAssistCliService {
 	getSdkPath(): string {
 		return resolveVsCodeSdkPath();
 	}
@@ -56,13 +56,6 @@ export default class CliService {
 				};
 			})
 			.sort((left, right) => left.authId.localeCompare(right.authId));
-	}
-
-	getDefaultPanelSettings(): { authId: string; localPort: number } {
-		return {
-			authId: DEVASSIST.DEFAULT_VALUES.authID,
-			localPort: DEVASSIST.DEFAULT_VALUES.localPort,
-		};
 	}
 
 	async getProxyApiKeyFromSdkStorage(): Promise<string | undefined> {

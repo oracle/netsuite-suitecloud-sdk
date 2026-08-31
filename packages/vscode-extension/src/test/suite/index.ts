@@ -21,6 +21,8 @@ export function run(): Promise<void> {
 			'extension.test.js',
 			'ClineChatOpener.test.js',
 			'SuiteCloudPanelMessageParser.test.js',
+			'ControlPanelMessageDispatcher.test.js',
+			'ControlPanelWorkflow.test.js',
 			'ApiKeyService.test.js',
 			'ClineCompatibilityService.test.js',
 			'ClineConfigService.test.js',
