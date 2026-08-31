@@ -148,8 +148,12 @@ export function extractRootTagName(xmlText: string): string {
 	return tagMatch[1];
 }
 
-export function extractObjectTypeForUpdate(xmlText: string): string {
+export function extractObjectTypeForUpdate(xmlText: string, scriptId: string): string {
 	const rootTag = extractRootTagName(xmlText).toLowerCase();
+	const unqualifiedScriptId = scriptId.slice(scriptId.lastIndexOf('.') + 1);
+	if (unqualifiedScriptId.startsWith(CUSTOM_RECORD_PREFIX)) {
+		return CUSTOM_RECORD_TYPE;
+	}
 	return UPDATE_OBJECT_TYPE_BY_ROOT_TAG[rootTag] ?? rootTag;
 }
 
