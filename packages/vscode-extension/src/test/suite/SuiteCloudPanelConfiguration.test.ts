@@ -9,7 +9,7 @@ import {
 	createInitialPanelState,
 	sanitizeProxyPort,
 	validateProxyStartInputs,
-} from '../../controlPanel/Configuration';
+} from '../../controlPanel/devAssist/Configuration';
 
 suite('SuiteCloud Panel Configuration', () => {
 	test('sanitizes invalid ports and builds the loopback proxy URL', () => {

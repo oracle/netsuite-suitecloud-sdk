@@ -4,7 +4,7 @@
  */
 
 import * as assert from 'assert';
-import ClineChatOpener, { CommandExecutor } from '../../service/controlPanel/cline/ChatOpener';
+import ClineChatOpener, { CommandExecutor } from '../../service/controlPanel/devAssist/cline/ChatOpener';
 
 suite('Cline Chat Opener', () => {
 	test('opens the first available chat focus command', async () => {

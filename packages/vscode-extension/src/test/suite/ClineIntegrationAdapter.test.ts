@@ -7,8 +7,8 @@ import * as assert from 'assert';
 import * as fs from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
-import ClineIntegrationAdapter from '../../service/controlPanel/cline/IntegrationAdapter';
-import ClineFileStore from '../../service/controlPanel/cline/FileStore';
+import ClineIntegrationAdapter from '../../service/controlPanel/devAssist/cline/IntegrationAdapter';
+import ClineFileStore from '../../service/controlPanel/devAssist/cline/FileStore';
 
 const API_KEY = 'test-api-key';
 const MODEL_ID = 'NetSuite';

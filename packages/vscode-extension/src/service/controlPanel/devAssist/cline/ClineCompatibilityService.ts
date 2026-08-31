@@ -3,8 +3,8 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import type ClineIntegrationAdapter from './cline/IntegrationAdapter';
-import { ClineScope, SuiteCloudPanelState } from '../../controlPanel/Types';
+import type ClineIntegrationAdapter from './IntegrationAdapter';
+import { ClineScope, SuiteCloudPanelState } from '../../../../controlPanel/devAssist/State';
 
 type ClineCompatibilityState = Pick<
 	SuiteCloudPanelState,

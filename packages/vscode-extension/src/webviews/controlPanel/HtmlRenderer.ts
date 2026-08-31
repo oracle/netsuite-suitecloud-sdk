@@ -6,8 +6,8 @@
 import * as crypto from 'crypto';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { SUITECLOUD_PANEL_CLIENT_STRINGS } from '../../controlPanel/Strings';
-import { SUITECLOUD_PANEL_EVENTS } from '../../controlPanel/Types';
+import { SUITECLOUD_PANEL_CLIENT_STRINGS } from '../../controlPanel/devAssist/Strings';
+import { SUITECLOUD_PANEL_EVENTS } from '../../controlPanel/devAssist/Messages';
 import { FileUtils } from '../../util/ExtensionUtil';
 
 export type WebviewMode = 'sidebar' | 'panel';

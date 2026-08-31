@@ -3,8 +3,9 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
+import { DEVASSIST } from '../../ApplicationConstants';
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from './Strings';
-import { ClineScope, SuiteCloudPanelState } from './Types';
+import { ClineScope, SuiteCloudPanelState } from './State';
 
 const DEVASSIST_BASE_PATH = '/api/internal/devassist';
 export const VALID_PROXY_PORT_MIN = 1024;
@@ -14,6 +15,11 @@ export type DefaultPanelSettings = {
 	authId: string;
 	localPort: number;
 };
+
+export const getDefaultPanelSettings = (): DefaultPanelSettings => ({
+	authId: DEVASSIST.DEFAULT_VALUES.authID,
+	localPort: DEVASSIST.DEFAULT_VALUES.localPort,
+});
 
 export type InitialPanelPreferences = {
 	authId: string;

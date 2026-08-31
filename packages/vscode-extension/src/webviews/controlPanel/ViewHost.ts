@@ -5,12 +5,12 @@
 
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { parseSuiteCloudPanelIncomingMessage } from '../../controlPanel/MessageParser';
-import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/Strings';
+import { parseSuiteCloudPanelIncomingMessage } from '../../controlPanel/devAssist/MessageParser';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/devAssist/Strings';
 import {
 	SuiteCloudPanelIncomingMessage,
 	SuiteCloudPanelOutgoingMessage,
-} from '../../controlPanel/Types';
+} from '../../controlPanel/devAssist/Messages';
 import HtmlRenderer, { WebviewMode } from './HtmlRenderer';
 
 const PANEL_VIEW_TYPE = 'suitecloudControlPanel';

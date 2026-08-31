@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import {
 	formatProxyStartError,
 	summarizeInlineError,
-} from '../../controlPanel/ErrorFormatter';
+} from '../../controlPanel/devAssist/ErrorFormatter';
 
 suite('SuiteCloud Panel Error Formatter', () => {
 	test('adds actionable guidance for known proxy startup failures', () => {

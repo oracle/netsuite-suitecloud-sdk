@@ -6,8 +6,8 @@
 import {
 	ProxyStatus,
 	SuiteCloudPanelState,
-	SuiteCloudPanelUpdateFormPayload,
-} from './Types';
+} from './State';
+import { SuiteCloudPanelUpdateFormPayload } from './Messages';
 
 const ACTIVE_PROXY_STATUSES: ReadonlySet<ProxyStatus> = new Set([
 	'starting',

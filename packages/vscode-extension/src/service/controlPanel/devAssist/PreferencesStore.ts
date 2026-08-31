@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode';
-import { ClineScope } from '../../controlPanel/Types';
+import { ClineScope } from '../../../controlPanel/devAssist/State';
 
 export type PersistedPanelPreferences = {
 	authId: string;

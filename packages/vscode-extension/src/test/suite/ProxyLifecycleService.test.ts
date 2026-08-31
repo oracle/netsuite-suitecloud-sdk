@@ -4,12 +4,12 @@
  */
 
 import * as assert from 'assert';
-import { createInitialPanelState } from '../../controlPanel/Configuration';
+import { createInitialPanelState } from '../../controlPanel/devAssist/Configuration';
 import ProxyLifecycleService, {
 	ProxyProcess,
 	StartPanelProxyInput,
-} from '../../service/controlPanel/ProxyLifecycleService';
-import { SuiteCloudPanelState } from '../../controlPanel/Types';
+} from '../../service/controlPanel/devAssist/proxy/ProxyLifecycleService';
+import { SuiteCloudPanelState } from '../../controlPanel/devAssist/State';
 
 const createState = () =>
 	createInitialPanelState(

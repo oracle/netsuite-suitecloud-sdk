@@ -36,7 +36,7 @@ import {
 	openSuiteCloudControlPanel,
 	showSuiteCloudControlPanelWelcomeIfNeeded,
 	startSuiteCloudControlPanelProxyIfEnabled,
-} from './webviews/controlPanel/WebviewController';
+} from './controlPanel/Controller';
 
 
 const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';

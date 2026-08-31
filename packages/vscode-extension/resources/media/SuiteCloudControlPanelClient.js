@@ -333,14 +333,20 @@ function render() {
 	setStatusPill(status);
 
 	elements.authId.disabled = isProxyConfigLocked;
-	elements.authId.title = isProxyConfigLocked ? UI_STRINGS.changeAuthIdWhileRunningTitle : '';
-	elements.authIdField.title = isProxyConfigLocked ? UI_STRINGS.changeAuthIdWhileRunningTitle : '';
+	elements.authId.title = '';
+	setTooltip(
+		elements.authIdField,
+		isProxyConfigLocked ? UI_STRINGS.changeAuthIdWhileRunningTitle : ''
+	);
 	elements.authIdField.classList.toggle('lockedField', isProxyConfigLocked);
 	elements.setupAccount.disabled = !isSdkReady;
 	setTooltip(elements.setupAccount, isSdkReady ? 'Set up a new Auth ID' : 'Preparing SuiteCloud SDK...');
 	elements.port.disabled = isProxyConfigLocked;
-	elements.port.title = isProxyConfigLocked ? UI_STRINGS.changePortWhileRunningTitle : '';
-	elements.portField.title = isProxyConfigLocked ? UI_STRINGS.changePortWhileRunningTitle : '';
+	elements.port.title = '';
+	setTooltip(
+		elements.portField,
+		isProxyConfigLocked ? UI_STRINGS.changePortWhileRunningTitle : ''
+	);
 	elements.portField.classList.toggle('lockedField', isProxyConfigLocked);
 	elements.disableWelcomeNotification.checked = !!state.disableWelcomeNotification;
 	elements.clineScope.value = state.clineScope || 'user';

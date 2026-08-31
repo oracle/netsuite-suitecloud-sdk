@@ -3,8 +3,8 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { DEVASSIST } from '../../ApplicationConstants';
-import { SuiteCloudPanelSubmitFeedbackPayload } from '../../controlPanel/Types';
+import { DEVASSIST } from '../../../ApplicationConstants';
+import { SuiteCloudPanelSubmitFeedbackPayload } from '../../../controlPanel/devAssist/Messages';
 
 const FEEDBACK_MAX_LENGTH = 1000;
 const FEEDBACK_REQUEST_TIMEOUT_MS = 10000;
