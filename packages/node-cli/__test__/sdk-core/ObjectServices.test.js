@@ -44,9 +44,10 @@ describe('ObjectCommandXml', () => {
 	});
 
 	it('uses the Java-compatible object types for update requests', () => {
-		expect(extractObjectTypeForUpdate('<savedcsvimport/>')).toBe('csvimport');
-		expect(extractObjectTypeForUpdate('<pluginimplementation/>')).toBe('plugintypeimpl');
-		expect(extractObjectTypeForUpdate('<savedsearch/>')).toBe('savedsearch');
+		expect(extractObjectTypeForUpdate('<savedcsvimport/>', 'custimport_example')).toBe('csvimport');
+		expect(extractObjectTypeForUpdate('<pluginimplementation/>', 'customplugin_example')).toBe('plugintypeimpl');
+		expect(extractObjectTypeForUpdate('<savedsearch/>', 'customsearch_example')).toBe('savedsearch');
+		expect(extractObjectTypeForUpdate('<customlist/>', 'com.example.customrecord_example')).toBe('customrecordtype');
 	});
 });
 

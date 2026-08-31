@@ -77,7 +77,7 @@ export async function executeUpdateObjects(
 
 			try {
 				const objectInfo: CustomObjectInfo = {
-					type: extractObjectTypeForUpdate(await readFile(objectFile, 'utf8')),
+					type: extractObjectTypeForUpdate(await readFile(objectFile, 'utf8'), scriptId),
 					scriptId,
 					appId: packageRoot || undefined,
 				};
