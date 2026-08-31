@@ -8,7 +8,7 @@ const { ActionResult } = require('../../../services/actionresult/ActionResult');
 const { PROJECT_ACP } = require('../../../ApplicationConstants');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
-const { COMMAND_IMPORTCONFIGURATION } = require('../../../services/TranslationKeys');
+const { COMMAND_CONFIGIMPORT } = require('../../../services/TranslationKeys');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
 const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
@@ -26,12 +26,12 @@ module.exports = class ImportConfigurationAction extends BaseAction {
 		try {
 			if (this._projectInfoService.getProjectType() !== PROJECT_ACP) {
 				return ActionResult.Builder.withErrors([
-					NodeTranslationService.getMessage(COMMAND_IMPORTCONFIGURATION.ERRORS.IS_SUITEAPP),
+					NodeTranslationService.getMessage(COMMAND_CONFIGIMPORT.ERRORS.IS_SUITEAPP),
 				]).build();
 			}
 			const operationResult = await executeWithSpinner({
 				action: this._executeImportWithAuthRetry(params.authid),
-				message: NodeTranslationService.getMessage(COMMAND_IMPORTCONFIGURATION.MESSAGES.IMPORTING),
+				message: NodeTranslationService.getMessage(COMMAND_CONFIGIMPORT.MESSAGES.IMPORTING),
 			});
 			const commandParameters = { authid: params.authid };
 			return operationResult.status === 'SUCCESS'

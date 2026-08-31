@@ -56,7 +56,7 @@ describe('ImportConfigurationAction', () => {
 		mockProjectType = 'SUITEAPP';
 		const result = await createCommand()._action.execute({ authid: 'myAuth' });
 		expect(result.errorMessages).toEqual([
-			'The "importconfiguration" service is only applicable for an Account Customization project.',
+			'The "config:import" command is only applicable for Account Customization project.',
 		]);
 		expect(mockGetAuthCredentialsById).not.toHaveBeenCalled();
 	});
