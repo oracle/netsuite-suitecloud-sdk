@@ -1,10 +1,9 @@
-# Open the panel
+# Open the Developer Assistant control panel
 
-Use the **SuiteCloud** activity bar icon, then open **Control Panel**.
+The control panel is where you connect SuiteCloud Developer Assistant to a NetSuite account and an AI coding tool.
 
-What to verify:
-- You can see the **AI - SDA** tab selected by default.
-- The **Connection** section is visible with `Auth ID` and `Local Port`.
+1. Select the **SuiteCloud** icon in the Activity Bar on the left side of VS Code.
+2. Find **Developer Assistant Control Panel**.
+3. If you need more space, select **Open expanded view** at the bottom of the panel.
 
-Tip:
-- Use the **Expand** button to open a wider editor view if sidebar width is limited.
+You are in the right place when you can see the **Local service** and **Cline integration** sections.
