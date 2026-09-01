@@ -116,6 +116,11 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.opencontrolpanelwalkthrough",
+				"title": "Open Developer Assistant Walkthrough",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.opendevassistfeedbackform",
 				"title": "Open DevAssist Feedback Form",
 				"category": "SuiteCloud",
@@ -140,6 +145,62 @@
 				}
 			]
 		},
+		"walkthroughs": [
+			{
+				"id": "suitecloudControlPanelWalkthrough",
+				"title": "SuiteCloud Developer Assistant",
+				"description": "Configure and use SuiteCloud Developer Assistant from its control panel.",
+				"steps": [
+					{
+						"id": "suitecloudControlPanel.open",
+						"title": "Open the control panel",
+						"description": "Open the SuiteCloud activity bar and locate the Developer Assistant controls.",
+						"media": {
+							"markdown": "resources/walkthrough/control-panel-open.md"
+						},
+						"completionEvents": [
+							"onCommand:suitecloud.opencontrolpanel"
+						]
+					},
+					{
+						"id": "suitecloudControlPanel.auth",
+						"title": "Prepare account access",
+						"description": "Select or configure the Auth ID used by Developer Assistant.",
+						"media": {
+							"markdown": "resources/walkthrough/control-panel-auth.md"
+						},
+						"completionEvents": [
+							"onCommand:suitecloud.manageauth",
+							"onCommand:suitecloud.setupaccount"
+						]
+					},
+					{
+						"id": "suitecloudControlPanel.runtime",
+						"title": "Run the local proxy",
+						"description": "Start the local Developer Assistant proxy and verify its status.",
+						"media": {
+							"markdown": "resources/walkthrough/control-panel-runtime.md"
+						}
+					},
+					{
+						"id": "suitecloudControlPanel.cline",
+						"title": "Connect with Cline",
+						"description": "Update Cline to use the local Developer Assistant proxy.",
+						"media": {
+							"markdown": "resources/walkthrough/control-panel-cline.md"
+						}
+					},
+					{
+						"id": "suitecloudControlPanel.settings",
+						"title": "Review panel preferences",
+						"description": "Choose how the control panel behaves when VS Code starts.",
+						"media": {
+							"markdown": "resources/walkthrough/control-panel-settings.md"
+						}
+					}
+				]
+			}
+		],
 		"keybindings": [
 			{
 				"command": "suitecloud.adddependencies",
