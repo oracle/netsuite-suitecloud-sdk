@@ -13,14 +13,13 @@ export const VSCODE_SDK_FOLDER = 'vscode';
 
 const EXTENSION_CONFIG_JSON_FILENAME = 'extension.config.json';
 const EXTENSION_CONFIG_JSON_FILE = './' + EXTENSION_CONFIG_JSON_FILENAME;
-const EXTENSION_PACKAGE_METADATA = require('../../../package.json');
+const VSCODE_EXTENSION_PACKAGE_JSON = '../../../package.json';
+const VSCODE_EXTENSION_PACKAGE_METADATA = require(VSCODE_EXTENSION_PACKAGE_JSON);
 const EXTENSION_CONFIG_JSON_FILE_PATH = resolve(__dirname, EXTENSION_CONFIG_JSON_FILENAME);
 const IS_CUSTOM_SDK_METADATA_USED = existsSync(EXTENSION_CONFIG_JSON_FILE_PATH);
-// SDK ownership belongs to the VS Code product. Internal builds can still override
-// these values with a generated extension.config.json next to this module.
 const SDK_METADATA = IS_CUSTOM_SDK_METADATA_USED
 	? require(EXTENSION_CONFIG_JSON_FILE)
-	: EXTENSION_PACKAGE_METADATA;
+	: VSCODE_EXTENSION_PACKAGE_METADATA;
 
 function getSdkDownloadUrl(): string {
 	return SDK_METADATA.sdkDownloadUrl;
