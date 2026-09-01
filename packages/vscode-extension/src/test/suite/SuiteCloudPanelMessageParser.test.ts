@@ -124,6 +124,21 @@ suite('SuiteCloud Control Panel Message Parser', () => {
 		assert.strictEqual(message, undefined);
 	});
 
+	test('rejects account identifiers in feedback payloads', () => {
+		for (const identifier of ['authId', 'accountId']) {
+			const message = parseSuiteCloudPanelIncomingMessage({
+				eventType: SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.SUBMIT_FEEDBACK,
+				eventData: {
+					feedback: 'Helpful response',
+					topics: ['CodeExplanation'],
+					rating: 5,
+					[identifier]: 'must-not-be-shared',
+				},
+			});
+			assert.strictEqual(message, undefined);
+		}
+	});
+
 	test('rejects removed auto-start and Cline auto-apply controls', () => {
 		for (const removedField of ['autoStartProxyOnStartup', 'clineSyncEnabled']) {
 			const message = parseSuiteCloudPanelIncomingMessage({

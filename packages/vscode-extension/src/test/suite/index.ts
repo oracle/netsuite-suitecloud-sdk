@@ -24,6 +24,7 @@ export function run(): Promise<void> {
 			'ControlPanelMessageDispatcher.test.js',
 			'ControlPanelWorkflow.test.js',
 			'ApiKeyService.test.js',
+			'SdkApiKeyStorage.test.js',
 			'ClineCompatibilityService.test.js',
 			'ClineConfigService.test.js',
 			'SuiteCloudPanelConfiguration.test.js',
@@ -33,7 +34,7 @@ export function run(): Promise<void> {
 			'FeedbackService.test.js',
 			'ClineIntegrationAdapter.test.js',
 			'ExtensionHostRestartService.test.js',
-			'ProxyProcessService.test.js',
+			'ProxyService.test.js',
 			'VSConsoleLogger.test.js',
 		];
 

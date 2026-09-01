@@ -3,7 +3,18 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 import type { ActionResult, AuthListData } from '../types/ActionResult';
-import type { ConsoleLoggerConstructor, ExecutionEnvironmentContextConstructor, ExecutionEnvironmentContextInstance, SdkArtifactVerifierInstance, SdkOperationResult, SuiteCloudAuthProxyServiceConstructor } from '../types/JavascriptNodeCli';
+import type {
+	ClientAPIKeyObjectWrapperConstructor,
+	ConsoleLoggerConstructor,
+	ExecutionEnvironmentContextConstructor,
+	ExecutionEnvironmentContextInstance,
+	RawSdkOperationResult,
+	SdkArtifactVerifierInstance,
+	SdkExecutorConstructor,
+	SdkOperationResult,
+	SuiteCloudAuthProxyEvents as SuiteCloudAuthProxyEventsShape,
+	SuiteCloudAuthProxyServiceConstructor,
+} from '../types/JavascriptNodeCli';
 
 export const SUITESCRIPT_TYPES: { id: string; name: string }[] = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptTypesMetadata');
 export const SUITESCRIPT_MODULES: { id: string }[] = require('@oracle/suitecloud-cli/src/metadata/SuiteScriptModulesMetadata');
@@ -61,6 +72,13 @@ export const AuthenticationUtils: {
  */
 const SuiteCloudAuthProxyServiceTypedJSClass: SuiteCloudAuthProxyServiceConstructor = require('@oracle/suitecloud-cli/src/services/SuiteCloudAuthProxyService').SuiteCloudAuthProxyService;
 export class SuiteCloudAuthProxyService extends SuiteCloudAuthProxyServiceTypedJSClass { };
+export const SuiteCloudAuthProxyEvents: SuiteCloudAuthProxyEventsShape = require('@oracle/suitecloud-cli/src/services/SuiteCloudAuthProxyService').EVENTS;
+
+export const SdkExecutor: SdkExecutorConstructor = require('@oracle/suitecloud-cli/src/SdkExecutor');
+export const ClientAPIKeyObjectWrapper: ClientAPIKeyObjectWrapperConstructor = require('@oracle/suitecloud-cli/src/utils/ClientAPIKeyObjectWrapper').ClientAPIKeyObjectWrapper;
+export const readClientAPIKeyFileContents: (
+	sdkExecutor: InstanceType<SdkExecutorConstructor>
+) => Promise<RawSdkOperationResult<string>> = require('@oracle/suitecloud-cli/src/utils/ClientAPIKeyUtils').readClientAPIKeyFileContents;
 
 export const AccountCredentialsFormatter: {
 	getInfoString(accountCredentials: any): string;

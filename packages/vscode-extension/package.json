@@ -13,6 +13,10 @@
 	"license": "UPL-1.0",
 	"private": true,
 	"version": "4.0.0",
+	"nsCompatibleVersion": "2026.2",
+	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/26.2",
+	"sdkFilename": "cli-2026.2.0.jar",
+	"sdkSha256": "5ff6363cffd2f66c76974425521a0ad1b5cb49f0fa5bfd766d09bee3a0994bc0",
 	"icon": "resources/extension_icon_dark.png",
 	"repository": {
 		"type": "git",
@@ -225,7 +229,8 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
+		"clean": "node scripts/clean-build.js",
+		"vscode:prepublish": "npm run clean && npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./"
 	},

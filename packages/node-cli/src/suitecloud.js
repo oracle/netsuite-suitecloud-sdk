@@ -11,12 +11,10 @@ const CommandActionExecutor = require('./core/CommandActionExecutor');
 const CommandRegistrationService = require('./core/CommandRegistrationService');
 const CommandOptionsValidator = require('./core/CommandOptionsValidator');
 const CLIConfigurationService = require('./core/extensibility/CLIConfigurationService');
-const defaultSdkPath = require('./core/sdksetup/SdkProperties').getSdkPath();
-const { resolveCliSdkPath } = require('./integration/DevAssistProxyIntegration');
+const sdkPath = require('./core/sdksetup/SdkProperties').getSdkPath();
 const NodeConsoleLogger = require('./loggers/NodeConsoleLogger');
 
 const executionPath = process.cwd();
-const sdkPath = resolveCliSdkPath(process.argv[2], defaultSdkPath);
 const commandsMetadataServiceSingleton = new CommandsMetadataService();
 
 const cliInstance = new CLI({

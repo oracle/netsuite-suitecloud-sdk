@@ -33,7 +33,6 @@ export type SuiteCloudPanelState = {
 	apiKeyVisibilityInfo: string | null;
 	proxyStatus: ProxyStatus;
 	proxyOwnership: ProxyOwnership;
-	proxyPid: number | null;
 	baseUrl: string;
 	lastError: string | null;
 	autoStartProxyOnStartup: boolean;

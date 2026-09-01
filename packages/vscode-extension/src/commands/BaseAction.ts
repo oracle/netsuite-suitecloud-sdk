@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { Uri, window } from 'vscode';
 import { VSCODE_PLATFORM } from '../ApplicationConstants';
-import { CommandsInfoMapType, commandsInfoMap } from '../commandsMap';
+import { CliCommandsInfoMapType, commandsInfoMap } from '../commandsMap';
 import SuiteCloudRunner from '../core/SuiteCloudRunner';
 import { getSdkPath } from '../core/sdksetup/SdkProperties';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
@@ -32,7 +32,7 @@ export default abstract class BaseAction {
 	protected vsConsoleLogger!: VSConsoleLogger;
 	protected activeFile?: string;
 
-	constructor(commandName: keyof CommandsInfoMapType) {
+	constructor(commandName: keyof CliCommandsInfoMapType) {
 		this.cliCommandName = commandsInfoMap[commandName].cliCommandName;
 		this.vscodeCommandName = commandsInfoMap[commandName].vscodeCommandName;
 		this.commandMetadata = CommandsMetadataSingleton.getInstance().getCommandMetadataByName(this.cliCommandName);

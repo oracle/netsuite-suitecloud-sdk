@@ -37,7 +37,7 @@ suite('Control Panel Workflows', () => {
 		};
 		const workflow = new ProxyWorkflow({
 			cliService: {
-				isProxyStartCommandSupported: () => true,
+				isProxyServiceSupported: () => true,
 				getBundledCliVersion: () => '4.0.0',
 				getSdkPath: () => '/sdk',
 			} as any,
@@ -45,14 +45,13 @@ suite('Control Panel Workflows', () => {
 				start: async (input: any) => {
 					calls.push('lifecycleStart');
 					input.onStarting({ ...input.state, proxyStatus: 'starting' });
-					return { pid: 1234, authId: input.state.authId, port: input.state.port };
+					return { authId: input.state.authId, port: input.state.port };
 				},
 			} as any,
-			processService: { isRunning: false } as any,
+			proxyService: { isRunning: false } as any,
 			presenter: presenter as any,
 			getState: () => state,
 			setState: (nextState) => { state = nextState; },
-			getWorkspacePath: () => '/workspace',
 			confirmStartDisclaimer: async () => {
 				calls.push('confirmStartDisclaimer');
 				return true;
@@ -70,7 +69,6 @@ suite('Control Panel Workflows', () => {
 
 		assert.strictEqual(state.proxyStatus, 'running');
 		assert.strictEqual(state.proxyOwnership, 'owned');
-		assert.strictEqual(state.proxyPid, 1234);
 		assert.strictEqual(state.runtimeAuthId, 'account');
 		assert.strictEqual(state.runtimePort, 8181);
 		assert.deepStrictEqual(calls, [
@@ -103,11 +101,10 @@ suite('Control Panel Workflows', () => {
 					return { pid: 1, authId: 'account', port: 8181 };
 				},
 			} as any,
-			processService: { isRunning: false } as any,
+			proxyService: { isRunning: false } as any,
 			presenter: {} as any,
 			getState: () => state,
 			setState: () => undefined,
-			getWorkspacePath: () => '/workspace',
 			confirmStartDisclaimer: async () => false,
 			ensureSdkDependenciesReady: async () => undefined,
 			resolveApiKey: async () => 'secret',
