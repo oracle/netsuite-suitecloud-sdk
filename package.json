@@ -14,10 +14,8 @@
 		"packages/unit-testing"
 	],
 	"overrides": {
-		"babel-jest": {
-			"babel-plugin-istanbul": {
-				"test-exclude": "^8.0.0"
-			}
+		"babel-plugin-istanbul": {
+			"test-exclude": "^8.0.0"
 		}
 	}
 }
