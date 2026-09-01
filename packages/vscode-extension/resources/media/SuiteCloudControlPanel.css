@@ -808,13 +808,6 @@ textarea {
   resize: none;
 }
 
-.feedbackDisclosure {
-  margin: 10px 0;
-  color: var(--muted);
-  font-size: var(--help-font-size);
-  line-height: 1.35;
-}
-
 .hidden {
   display: none !important;
 }

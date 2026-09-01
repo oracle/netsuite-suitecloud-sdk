@@ -29,7 +29,6 @@ const createState = (overrides: Partial<SuiteCloudPanelState> = {}): SuiteCloudP
 	apiKeyVisibilityInfo: null,
 	proxyStatus: 'stopped',
 	proxyOwnership: 'none',
-	proxyPid: null,
 	baseUrl: 'http://127.0.0.1:8181/api/internal/devassist',
 	lastError: null,
 	autoStartProxyOnStartup: false,

@@ -34,11 +34,12 @@ import FeedbackService from '../service/controlPanel/devAssist/FeedbackService';
 import ApiKeyService, {
 	ApiKeyResolution,
 } from '../service/controlPanel/devAssist/ApiKeyService';
+import SdkApiKeyStorage from '../service/controlPanel/devAssist/SdkApiKeyStorage';
 import ClineCompatibilityService from '../service/controlPanel/devAssist/cline/ClineCompatibilityService';
 import ClineConfigService from '../service/controlPanel/devAssist/cline/ClineConfigService';
-import DevAssistCliService from '../service/DevAssistCliService';
+import CliService from '../service/controlPanel/devAssist/CliService';
 import ProxyLifecycleService from '../service/controlPanel/devAssist/proxy/ProxyLifecycleService';
-import ProxyProcessService from '../service/controlPanel/devAssist/proxy/ProxyProcessService';
+import ProxyService from '../service/controlPanel/devAssist/proxy/ProxyService';
 import Presenter from '../webviews/controlPanel/Presenter';
 import ViewHost from '../webviews/controlPanel/ViewHost';
 import MessageDispatcher from './devAssist/MessageDispatcher';
@@ -109,8 +110,8 @@ export const applyPendingSuiteCloudClineConfig = async (): Promise<void> => {
 
 class ControlPanelController {
 	private readonly _extensionContext: vscode.ExtensionContext;
-	private readonly _cliService: DevAssistCliService;
-	private readonly _proxyProcessService: ProxyProcessService;
+	private readonly _cliService: CliService;
+	private readonly _proxyService: ProxyService;
 	private readonly _proxyWorkflow: ProxyWorkflow;
 	private readonly _clineWorkflow: ClineWorkflow;
 	private readonly _messageDispatcher: MessageDispatcher;
@@ -130,7 +131,7 @@ class ControlPanelController {
 	) {
 		this._extensionContext = extensionContext;
 		this._sdkDependenciesReady = sdkDependenciesReady;
-		this._cliService = new DevAssistCliService();
+		this._cliService = new CliService();
 		const clineAdapter = new ClineIntegrationAdapter();
 		const clineChatOpener = new ClineChatOpener(vscode.commands);
 		const clineCompatibilityService = new ClineCompatibilityService(clineAdapter);
@@ -143,7 +144,7 @@ class ControlPanelController {
 		);
 		this._feedbackService = new FeedbackService();
 		this._apiKeyService = new ApiKeyService(
-			this._cliService,
+			new SdkApiKeyStorage(),
 			(displayState) => {
 				if (this._state.apiKeyExists) {
 					Object.assign(this._state, displayState);
@@ -178,32 +179,29 @@ class ControlPanelController {
 			(message) => this._viewHost.postMessage(message)
 		);
 
-		this._proxyProcessService = new ProxyProcessService({
+		this._proxyService = new ProxyService({
 			onLog: (line, isError) => this._presenter.proxyLog(line, isError),
-			onProcessClosed: (exitCode, signal) => {
+			onUnexpectedStop: () => {
 				this._state = clearRuntimeConfig({
 					...this._state,
 					proxyStatus: 'stopped',
-					proxyPid: null,
 				});
 				this._presenter.setStoppedStatus();
 				this._postStateUpdate();
-				if (exitCode !== 0 && exitCode !== null) {
-					this._presenter.showError(`Proxy exited unexpectedly with code ${exitCode}${signal ? ` (${signal})` : ''}.`);
-				}
+				this._presenter.showError('Proxy stopped unexpectedly.');
 			},
+			refreshAuthorization: (authId) => this._cliService.refreshAuthorization(authId),
 		});
-		const proxyLifecycleService = new ProxyLifecycleService(this._proxyProcessService);
+		const proxyLifecycleService = new ProxyLifecycleService(this._proxyService);
 		this._proxyWorkflow = new ProxyWorkflow({
 			cliService: this._cliService,
 			lifecycleService: proxyLifecycleService,
-			processService: this._proxyProcessService,
+			proxyService: this._proxyService,
 			presenter: this._presenter,
 			getState: () => this._state,
 			setState: (state) => {
 				this._state = state;
 			},
-			getWorkspacePath: () => this._workspacePath,
 			confirmStartDisclaimer: async () => {
 				const selection = await vscode.window.showWarningMessage(
 					this._presenter.formatNotification(
@@ -315,7 +313,7 @@ class ControlPanelController {
 		this._apiKeyService.dispose();
 		this._viewHost.dispose();
 		try {
-			await this._proxyProcessService.dispose();
+			await this._proxyService.dispose();
 			this._clineWorkflow.resetSessionState();
 			this._updateWalkthroughContexts();
 			this._presenter.setStoppedStatus();
@@ -456,7 +454,7 @@ class ControlPanelController {
 	private async _applyFormChanges(formData: SuiteCloudPanelUpdateFormPayload): Promise<void> {
 		const previousPort = this._state.port;
 		const proxyConfigLocked =
-			this._proxyProcessService.isRunning ||
+			this._proxyService.isRunning ||
 			isProxyLifecycleActive(this._state.proxyStatus);
 		const authIdChangeBlocked =
 			proxyConfigLocked &&
@@ -484,7 +482,7 @@ class ControlPanelController {
 
 	private async _rotateApiKey(): Promise<void> {
 		await this._ensureSdkDependenciesReady();
-		if (this._proxyProcessService.isRunning || isProxyLifecycleActive(this._state.proxyStatus)) {
+		if (this._proxyService.isRunning || isProxyLifecycleActive(this._state.proxyStatus)) {
 			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.apiKeyChangeRequiresStoppedProxy);
 		}
 		const hasExistingKey = this._state.apiKeyExists;
@@ -580,7 +578,7 @@ class ControlPanelController {
 	}
 
 	private _isProxyAvailable(): boolean {
-		return this._state.proxyStatus === 'running' && this._proxyProcessService.isRunning;
+		return this._state.proxyStatus === 'running' && this._proxyService.isRunning;
 	}
 
 	private _applyApiKeyResolution(resolution: ApiKeyResolution): void {

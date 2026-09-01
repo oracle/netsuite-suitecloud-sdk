@@ -103,6 +103,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		this._localProxy = http.createServer();
 
 		this._localProxy.addListener('request', async (request, response) => {
+
 			// Validate incoming request (Api Key & Request Path)
 			if (!this._isValidAndFilterIncomingRequest(request, response)) {
 				return;
