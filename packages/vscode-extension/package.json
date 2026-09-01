@@ -154,7 +154,7 @@
 					{
 						"id": "suitecloudControlPanel.open",
 						"title": "Open the control panel",
-						"description": "Find the Developer Assistant controls and learn what each section is for.",
+						"description": "Open SuiteCloud Developer Assistant from the Activity Bar.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-open.md"
 						},
@@ -165,14 +165,10 @@
 					{
 						"id": "suitecloudControlPanel.auth",
 						"title": "Choose an account and create an API key",
-						"description": "Select the NetSuite account and prepare secure access for the local service.",
+						"description": "Select a NetSuite account and generate the API key required by the local service.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-auth.md"
-						},
-						"completionEvents": [
-							"onCommand:suitecloud.manageauth",
-							"onCommand:suitecloud.setupaccount"
-						]
+						}
 					},
 					{
 						"id": "suitecloudControlPanel.runtime",
