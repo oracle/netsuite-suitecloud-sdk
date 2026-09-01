@@ -1,8 +1,7 @@
-# Panel preferences
+# Choose whether to show the startup reminder
 
-Open the **Settings** tab and configure the welcome-notification checkbox.
+At the bottom of the control panel, select **Do not show the startup reminder** if you no longer want the Developer Assistant introduction to appear when VS Code starts.
 
-What this controls:
-- Whether the SuiteCloud welcome notification is shown on startup.
+This preference only hides the reminder. It does not disable Developer Assistant, stop the local service, or remove any configuration.
 
-These preferences are stored in panel state and used by the Control Panel experience.
+Clear the checkbox at any time to show the reminder again.
