@@ -6,20 +6,19 @@
 import { validateProxyStartInputs } from '../../../../controlPanel/devAssist/Configuration';
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../../../controlPanel/devAssist/Strings';
 import { SuiteCloudPanelState } from '../../../../controlPanel/devAssist/State';
-import type { StartProxyInput } from './ProxyProcessService';
+import type { StartProxyInput } from './ProxyService';
 
-export type ProxyProcess = {
+export type ProxyRuntime = {
 	readonly isRunning: boolean;
-	start(input: StartProxyInput): Promise<number>;
+	start(input: StartProxyInput): Promise<void>;
 	stop(): Promise<void>;
 };
 
 export type StartPanelProxyInput = {
 	state: SuiteCloudPanelState;
 	unconfiguredAuthId: string;
-	isCommandSupported: () => boolean;
+	isProxySupported: () => boolean;
 	getCliVersion: () => string;
-	getWorkspacePath: () => string;
 	getSdkPath: () => string;
 	resolveApiKey: () => Promise<string | undefined>;
 	onStarting: (state: SuiteCloudPanelState) => void;
@@ -32,28 +31,27 @@ export type StopPanelProxyInput = {
 };
 
 export type StartPanelProxyResult = {
-	pid: number;
 	authId: string;
 	port: number;
 };
 
 export type StopPanelProxyResult = {
-	processWasRunning: boolean;
+	proxyWasRunning: boolean;
 	clearStartIntent: boolean;
 };
 
 export default class ProxyLifecycleService {
-	private readonly _process: ProxyProcess;
+	private readonly _proxy: ProxyRuntime;
 
-	constructor(process: ProxyProcess) {
-		this._process = process;
+	constructor(proxy: ProxyRuntime) {
+		this._proxy = proxy;
 	}
 
 	async start(input: StartPanelProxyInput): Promise<StartPanelProxyResult> {
 		validateProxyStartInputs(input.state, input.unconfiguredAuthId);
-		if (!input.isCommandSupported()) {
+		if (!input.isProxySupported()) {
 			throw new Error(
-				`The bundled @oracle/suitecloud-cli version (${input.getCliVersion()}) does not support "proxy:start". Upgrade the extension CLI dependency and reinstall.`
+				`The bundled @oracle/suitecloud-cli version (${input.getCliVersion()}) does not include the SuiteCloud proxy service. Upgrade the extension CLI dependency and reinstall.`
 			);
 		}
 
@@ -69,20 +67,20 @@ export default class ProxyLifecycleService {
 			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.unableResolveApiKeyForStart);
 		}
 
-		const pid = await this._process.start({
+		await this._proxy.start({
 			authId: startingState.authId,
 			port: startingState.port,
-			cwd: input.getWorkspacePath(),
 			sdkPath: input.getSdkPath(),
+			apiKey,
 		});
-		return { pid, authId: startingState.authId, port: startingState.port };
+		return { authId: startingState.authId, port: startingState.port };
 	}
 
 	async stop(input: StopPanelProxyInput): Promise<StopPanelProxyResult> {
 		const clearStartIntent = !input.preserveStartIntent;
-		if (!this._process.isRunning) {
+		if (!this._proxy.isRunning) {
 			return {
-				processWasRunning: false,
+				proxyWasRunning: false,
 				clearStartIntent,
 			};
 		}
@@ -95,10 +93,10 @@ export default class ProxyLifecycleService {
 			proxyStatus: 'stopping',
 		};
 		await input.onStopping(stoppingState);
-		await this._process.stop();
+		await this._proxy.stop();
 
 		return {
-			processWasRunning: true,
+			proxyWasRunning: true,
 			clearStartIntent,
 		};
 	}

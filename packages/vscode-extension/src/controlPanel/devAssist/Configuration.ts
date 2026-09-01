@@ -59,7 +59,6 @@ export const createInitialPanelState = (
 		apiKeyActionLabel: SUITECLOUD_PANEL_RUNTIME_STRINGS.apiKey.generateLabel,
 		apiKeyVisibilityInfo: SUITECLOUD_PANEL_RUNTIME_STRINGS.apiKey.notFoundInfo,
 		proxyStatus: 'stopped',
-		proxyPid: null,
 		baseUrl: buildProxyBaseUrl(port),
 		lastError: null,
 		proxyOwnership: 'none',

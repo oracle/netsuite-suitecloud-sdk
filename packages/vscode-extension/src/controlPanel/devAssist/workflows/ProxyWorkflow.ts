@@ -4,9 +4,9 @@
  */
 
 import { DEVASSIST } from '../../../ApplicationConstants';
-import type DevAssistCliService from '../../../service/DevAssistCliService';
+import type CliService from '../../../service/controlPanel/devAssist/CliService';
 import type ProxyLifecycleService from '../../../service/controlPanel/devAssist/proxy/ProxyLifecycleService';
-import type ProxyProcessService from '../../../service/controlPanel/devAssist/proxy/ProxyProcessService';
+import type ProxyService from '../../../service/controlPanel/devAssist/proxy/ProxyService';
 import type Presenter from '../../../webviews/controlPanel/Presenter';
 import { buildProxyBaseUrl } from '../Configuration';
 import { formatProxyStartError, summarizeInlineError } from '../ErrorFormatter';
@@ -18,13 +18,12 @@ import {
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 export type ProxyWorkflowDependencies = {
-	cliService: DevAssistCliService;
+	cliService: CliService;
 	lifecycleService: ProxyLifecycleService;
-	processService: ProxyProcessService;
+	proxyService: ProxyService;
 	presenter: Presenter;
 	getState: () => SuiteCloudPanelState;
 	setState: (state: SuiteCloudPanelState) => void;
-	getWorkspacePath: () => string;
 	confirmStartDisclaimer: () => Promise<boolean>;
 	ensureSdkDependenciesReady: () => Promise<void>;
 	resolveApiKey: (allowGenerate: boolean) => Promise<string | undefined>;
@@ -39,7 +38,7 @@ export default class ProxyWorkflow {
 	constructor(private readonly _dependencies: ProxyWorkflowDependencies) {}
 
 	get isRunning(): boolean {
-		return this._dependencies.processService.isRunning;
+		return this._dependencies.proxyService.isRunning;
 	}
 
 	async startOnStartupIfEnabled(
@@ -89,9 +88,8 @@ export default class ProxyWorkflow {
 		const startResult = await this._dependencies.lifecycleService.start({
 			state: this._dependencies.getState(),
 			unconfiguredAuthId: DEVASSIST.DEFAULT_VALUES.authID,
-			isCommandSupported: () => this._dependencies.cliService.isProxyStartCommandSupported(),
+			isProxySupported: () => this._dependencies.cliService.isProxyServiceSupported(),
 			getCliVersion: () => this._dependencies.cliService.getBundledCliVersion(),
-			getWorkspacePath: this._dependencies.getWorkspacePath,
 			getSdkPath: () => this._dependencies.cliService.getSdkPath(),
 			resolveApiKey: () => this._dependencies.resolveApiKey(true),
 			onStarting: (state) => {
@@ -106,7 +104,6 @@ export default class ProxyWorkflow {
 		this._dependencies.setState(markRuntimeConfigAsActive({
 			...this._dependencies.getState(),
 			proxyStatus: 'running',
-			proxyPid: startResult.pid,
 			baseUrl: buildProxyBaseUrl(startResult.port),
 			authId: startResult.authId,
 			port: startResult.port,
@@ -146,12 +143,11 @@ export default class ProxyWorkflow {
 			{
 				...this._dependencies.getState(),
 				proxyStatus: 'stopped',
-				proxyPid: null,
 			},
 			{ clearStartIntent: result.clearStartIntent }
 		));
 
-		if (!result.processWasRunning) {
+		if (!result.proxyWasRunning) {
 			await this._dependencies.persistPreferencesNoThrow();
 			presenter.setStoppedStatus();
 			this._dependencies.postStateUpdate();

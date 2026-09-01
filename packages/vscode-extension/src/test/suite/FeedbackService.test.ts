@@ -43,6 +43,33 @@ suite('Control Panel Feedback Service', () => {
 		});
 	});
 
+	test('does not forward account identifiers from an untrusted payload', async () => {
+		let requestedInit: RequestInit | undefined;
+		const fetchStub: typeof fetch = async (_input, init) => {
+			requestedInit = init;
+			return new Response(undefined, { status: 204 });
+		};
+		const service = new FeedbackService(fetchStub);
+
+		await service.submit({
+			apiKey: 'feedback-api-key',
+			port: 8283,
+			payload: {
+				feedback: 'Helpful response',
+				topics: ['CodeExplanation'],
+				rating: 5,
+				authId: 'must-not-be-shared',
+				accountId: 'must-not-be-shared',
+			} as unknown as Parameters<FeedbackService['submit']>[0]['payload'],
+		});
+
+		assert.deepStrictEqual(JSON.parse(String(requestedInit?.body)), {
+			feedback: 'Helpful response',
+			topics: ['CodeExplanation'],
+			rating: 5,
+		});
+	});
+
 	test('validates feedback before making a request', async () => {
 		let requestCount = 0;
 		const fetchStub: typeof fetch = async () => {

@@ -13,7 +13,7 @@ import { VSTranslationService } from '../service/VSTranslationService';
 import { getDevAssistCurrentSettings } from '../startup/DevAssistSettings';
 import { ApplicationConstants } from '../util/ExtensionUtil';
 import VSConsoleLogger from '../loggers/VSConsoleLogger';
-import DevAssistCliService from '../service/DevAssistCliService';
+import SdkApiKeyStorage from '../service/controlPanel/devAssist/SdkApiKeyStorage';
 import {
 	validateIntegerWithinInterval,
 	validateMultipleOptionField,
@@ -22,7 +22,7 @@ import {
 
 const translationService = new VSTranslationService();
 const vsLogger = new VSConsoleLogger();
-const suiteCloudCliService = new DevAssistCliService();
+const sdkApiKeyStorage = new SdkApiKeyStorage();
 
 const PROXY_URL = DEVASSIST.PROXY_URL;
 
@@ -147,7 +147,7 @@ const handleSubmitFeedbackFormEvent = async (
 	try {
 		const currentProxySettings = getDevAssistCurrentSettings(extensionContext.workspaceState);
 		const requestBody = JSON.stringify(formData);
-		const devassistApiKey = await suiteCloudCliService.getProxyApiKeyFromSdkStorage();
+		const devassistApiKey = await sdkApiKeyStorage.getProxyApiKeyFromSdkStorage();
 		if (!devassistApiKey) {
 			throw new Error('No SuiteCloud proxy API key is available in CLI secure storage.');
 		}
