@@ -154,7 +154,7 @@
 					{
 						"id": "suitecloudControlPanel.open",
 						"title": "Open the control panel",
-						"description": "Open the SuiteCloud activity bar and locate the Developer Assistant controls.",
+						"description": "Find the Developer Assistant controls and learn what each section is for.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-open.md"
 						},
@@ -164,8 +164,8 @@
 					},
 					{
 						"id": "suitecloudControlPanel.auth",
-						"title": "Prepare account access",
-						"description": "Select or configure the Auth ID used by Developer Assistant.",
+						"title": "Choose an account and create an API key",
+						"description": "Select the NetSuite account and prepare secure access for the local service.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-auth.md"
 						},
@@ -176,24 +176,24 @@
 					},
 					{
 						"id": "suitecloudControlPanel.runtime",
-						"title": "Run the local proxy",
-						"description": "Start the local Developer Assistant proxy and verify its status.",
+						"title": "Start the local service",
+						"description": "Start the connection between your AI coding tool and Developer Assistant.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-runtime.md"
 						}
 					},
 					{
 						"id": "suitecloudControlPanel.cline",
-						"title": "Connect with Cline",
-						"description": "Update Cline to use the local Developer Assistant proxy.",
+						"title": "Connect Cline",
+						"description": "Configure Cline to use SuiteCloud Developer Assistant.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-cline.md"
 						}
 					},
 					{
 						"id": "suitecloudControlPanel.settings",
-						"title": "Review panel preferences",
-						"description": "Choose how the control panel behaves when VS Code starts.",
+						"title": "Choose whether to show the startup reminder",
+						"description": "Control the reminder without changing Developer Assistant itself.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-settings.md"
 						}
