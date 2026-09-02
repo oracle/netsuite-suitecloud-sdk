@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'none'; img-src {{CSP_SOURCE}}; style-src {{CSP_SOURCE}} 'nonce-{{SCRIPT_NONCE}}'; font-src {{CSP_SOURCE}}; script-src 'nonce-{{SCRIPT_NONCE}}';"
+  />
+  <title>SuiteCloud Dev Assist</title>
+  <style nonce="{{SCRIPT_NONCE}}">html { visibility: hidden; opacity: 0; }</style>
+  <link rel="stylesheet" href="{{CODICONS_CSS}}" />
+  <link rel="stylesheet" href="{{CSS_FILE.css}}" />
+</head>
+<body data-view-mode="{{WEBVIEW_MODE}}">
+  <main class="container">
+    <section id="expandedViewInfo" class="notice hidden">
+      The full control panel is open in the editor area.
+    </section>
+
+    <div id="controlPanelContent" class="controlPanelContent">
+      <section class="panelCard localServiceCard">
+        <div class="cardHeading">
+          <h2>Local service</h2>
+          <span id="statusBadge" class="statusPill">not running</span>
+        </div>
+
+        <div id="authIdField" class="field">
+          <label class="fieldLabel" for="authId">Auth ID</label>
+          <span class="authIdRow">
+            <span class="selectControl">
+              <select id="authId"></select>
+              <span class="codicon codicon-chevron-down selectChevron" aria-hidden="true"></span>
+            </span>
+            <button id="setupAccount" type="button" class="iconActionButton authIdActionButton" aria-label="Set up a new Auth ID">
+              <span class="codicon codicon-add" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+
+        <label id="portField" class="field">
+          <span class="fieldLabel">Local port</span>
+          <input
+            id="port"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]{4,5}"
+            minlength="4"
+            maxlength="5"
+            title="Enter a port between 1024 and 65535. Leave empty to use port 8181."
+            aria-describedby="portValidation"
+            placeholder="8181 by default"
+          />
+        </label>
+        <p id="portValidation" class="inlineError hidden" role="alert"></p>
+
+        <div id="apiKeyRow" class="apiKeyRow">
+          <div id="apiKeyStatus" class="apiKeyStatus hidden" aria-label="API key generated">
+            <span class="codicon codicon-pass apiKeyStatusIcon" aria-hidden="true"></span>
+            <span class="apiKeyStatusLabel">API key generated: <span id="maskedApiKey" class="maskedApiKey">Not resolved</span></span>
+            <span id="apiKeyCountdown" class="apiKeyCountdown hidden" aria-label="Time left to copy API key"></span>
+            <button id="copyApiKey" type="button" class="iconActionButton copyIconButton hidden" aria-label="Copy API key" title="Copy API key">
+              <span class="codicon codicon-copy" aria-hidden="true"></span>
+            </button>
+          </div>
+          <button id="rotateKey" type="button" class="primaryButton iconActionButton apiKeyButton" disabled>
+            <span id="rotateKeyIcon" class="codicon codicon-refresh hidden" aria-hidden="true"></span>
+            <span id="rotateKeyLabel">Generate API key</span>
+          </button>
+        </div>
+
+        <button id="startProxy" type="button" class="primaryButton fullWidthButton serviceButton">
+          <span class="codicon codicon-play-circle" aria-hidden="true"></span>
+          <span>Start</span>
+        </button>
+        <button id="stopProxy" type="button" class="secondaryButton stopButton fullWidthButton serviceButton hidden">
+          <span class="codicon codicon-stop-circle" aria-hidden="true"></span>
+          <span>Stop</span>
+        </button>
+        <p id="lastErrorRow" class="inlineError hidden"><span id="lastError"></span></p>
+
+        <button id="openOutput" type="button" class="textButton serviceLogsButton">See service logs</button>
+
+      </section>
+
+      <section class="panelCard clineCard">
+        <div class="cardHeading">
+          <h2>Cline integration</h2>
+          <span id="clineCompatibility" class="statusPill">not ready</span>
+        </div>
+
+        <div class="integrationStatus">
+          <span id="clineStateIcon" class="stateIcon stateIconError" aria-hidden="true">×</span>
+          <span id="clineCompatibilityMessage">Cline not installed.</span>
+        </div>
+        <p id="clineSyncMessage" class="fieldHint hidden"></p>
+
+        <button
+          id="clineMarketplaceLink"
+          class="helpLink compactLink"
+          type="button"
+        >
+          Install on Marketplace
+        </button>
+
+        <div id="applyClineTooltip" class="controlTooltipHost hidden">
+          <button id="applyCline" type="button" class="primaryButton fullWidthButton">Apply settings</button>
+        </div>
+
+        <p id="clineDescription" class="fieldHint integrationDescription">
+          For convenience, we provide quick set up in Cline. You can use any other OpenAI-compatible coding tool that supports custom API provider configuration.
+        </p>
+
+        <button id="openClineChat" type="button" class="primaryButton fullWidthButton hidden">Open Cline Chat</button>
+
+        <label class="srOnly" aria-hidden="true">
+          Cline config mode
+          <select id="clineScope" tabindex="-1">
+            <option value="user">Global Cline Config</option>
+            <option value="workspace">Workspace Manual Setup</option>
+          </select>
+        </label>
+
+        <details id="providerDisclosure" class="providerDisclosure disabled">
+          <summary id="providerDisclosureSummary" aria-disabled="true" tabindex="-1">API provider settings</summary>
+          <dl class="providerSettings">
+            <div class="providerField">
+              <dt>API Provider</dt>
+              <dd>OpenAI Compatible</dd>
+            </div>
+            <div class="providerField">
+              <dt>Base URL</dt>
+              <dd><code id="providerBaseUrl">-</code></dd>
+            </div>
+            <div class="providerField">
+              <dt>API Key</dt>
+              <dd id="providerApiKey">Not generated</dd>
+            </div>
+            <div class="providerField">
+              <dt>Model ID</dt>
+              <dd>NetSuite</dd>
+            </div>
+          </dl>
+        </details>
+      </section>
+
+      <div class="advancedPreferences panelPreferences">
+        <label class="checkboxField compactCheckbox">
+          <input id="disableWelcomeNotification" type="checkbox" />
+          <span>Do not show the startup reminder</span>
+        </label>
+      </div>
+
+      <a class="helpLink learnMoreLink" href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_1171315103.html">
+        Learn more about SuiteCloud Developer Assistant
+      </a>
+
+      <button id="toggleFeedback" type="button" class="textButton feedbackToggle" aria-expanded="false" aria-controls="feedbackContent">
+        Share your feedback
+      </button>
+
+      <button id="expandView" type="button" class="textButton expandButton">Open expanded view</button>
+    </div>
+
+    <section id="feedbackContent" class="panelCard feedbackContent">
+      <div class="cardHeading feedbackCardHeading">
+        <h2>Feedback</h2>
+      </div>
+      <fieldset class="feedbackTopics">
+        <legend class="feedbackFieldLabel">Your feedback is about</legend>
+        <label class="checkboxField feedbackOption">
+          <input type="checkbox" name="topics" value="CodeExplanation" />
+          <span>Code explanation</span>
+        </label>
+        <label class="checkboxField feedbackOption">
+          <input type="checkbox" name="topics" value="SDFObjectGeneration" />
+          <span>SDF custom objects generation</span>
+        </label>
+        <label class="checkboxField feedbackOption">
+          <input type="checkbox" name="topics" value="SuiteScriptCodeGeneration" />
+          <span>SuiteScript code generation</span>
+        </label>
+        <label class="checkboxField feedbackOption">
+          <input type="checkbox" name="topics" value="UnitTesting" />
+          <span>Unit testing</span>
+        </label>
+        <label class="checkboxField feedbackOption">
+          <input type="checkbox" name="topics" value="Other" />
+          <span>Other</span>
+        </label>
+      </fieldset>
+
+      <p id="feedbackRatingLabel" class="feedbackFieldLabel ratingHeading">Please rate your experience</p>
+      <div class="starRating" role="radiogroup" aria-labelledby="feedbackRatingLabel">
+        <input type="radio" id="feedbackRating5" name="rating" value="5" />
+        <label for="feedbackRating5" aria-label="5 stars"></label>
+        <input type="radio" id="feedbackRating4" name="rating" value="4" />
+        <label for="feedbackRating4" aria-label="4 stars"></label>
+        <input type="radio" id="feedbackRating3" name="rating" value="3" />
+        <label for="feedbackRating3" aria-label="3 stars"></label>
+        <input type="radio" id="feedbackRating2" name="rating" value="2" />
+        <label for="feedbackRating2" aria-label="2 stars"></label>
+        <input type="radio" id="feedbackRating1" name="rating" value="1" />
+        <label for="feedbackRating1" aria-label="1 star"></label>
+      </div>
+
+      <label class="srOnly" for="feedbackText">How can we improve it?</label>
+      <textarea id="feedbackText" maxlength="1000" rows="7" placeholder="How can we improve it?"></textarea>
+      <button id="submitFeedback" type="button" class="primaryButton fullWidthButton">Send feedback</button>
+    </section>
+  </main>
+
+  <script nonce="{{SCRIPT_NONCE}}">
+    window.__SUITECLOUD_PANEL_STRINGS__ = {{PANEL_STRINGS_JSON}};
+    window.__SUITECLOUD_PANEL_EVENTS__ = {{PANEL_EVENTS_JSON}};
+  </script>
+  <script nonce="{{SCRIPT_NONCE}}" src="{{CONTROL_PANEL_JS}}"></script>
+</body>
+</html>

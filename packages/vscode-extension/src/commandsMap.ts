@@ -5,28 +5,36 @@
 
 export type CommandInfo = {
 	vscodeCommandId: string;
-	cliCommandName: string;
 	vscodeCommandName: string;
 	// not really needed, just left here as an idea
 	vscodeShortName?: string;
 };
 
-export type CommandsInfoMapType = {
-	adddependencies: CommandInfo;
-	comparefile: CommandInfo;
-	createfile: CommandInfo;
-	createproject: CommandInfo;
-	deploy: CommandInfo;
-	importfiles: CommandInfo;
-	importobjects: CommandInfo;
-	listfiles: CommandInfo;
-	listobjects: CommandInfo;
-	manageauth: CommandInfo;
-	setupaccount: CommandInfo;
-	updatefile: CommandInfo;
-	updateobject: CommandInfo;
-	uploadfile: CommandInfo;
-	validate: CommandInfo;
+export type CliCommandInfo = CommandInfo & {
+	cliCommandName: string;
+};
+
+export type CliCommandsInfoMapType = {
+	adddependencies: CliCommandInfo;
+	comparefile: CliCommandInfo;
+	createfile: CliCommandInfo;
+	createproject: CliCommandInfo;
+	deploy: CliCommandInfo;
+	importfiles: CliCommandInfo;
+	importobjects: CliCommandInfo;
+	listfiles: CliCommandInfo;
+	listobjects: CliCommandInfo;
+	manageauth: CliCommandInfo;
+	setupaccount: CliCommandInfo;
+	updatefile: CliCommandInfo;
+	updateobject: CliCommandInfo;
+	uploadfile: CliCommandInfo;
+	validate: CliCommandInfo;
+};
+
+export type CommandsInfoMapType = CliCommandsInfoMapType & {
+	opencontrolpanel: CommandInfo;
+	opendevassistfeedbackform: CommandInfo;
 };
 
 export const commandsInfoMap: CommandsInfoMapType = {
@@ -108,5 +116,13 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		vscodeCommandId: 'suitecloud.validate',
 		cliCommandName: 'project:validate',
 		vscodeCommandName: 'Validate Project',
+	},
+	opencontrolpanel: {
+		vscodeCommandId: 'suitecloud.opencontrolpanel',
+		vscodeCommandName: 'Open Dev Assist Control Panel',
+	},
+	opendevassistfeedbackform: {
+		vscodeCommandId: 'suitecloud.opendevassistfeedbackform',
+		vscodeCommandName: 'Open DevAssist Feedback Form',
 	},
 };

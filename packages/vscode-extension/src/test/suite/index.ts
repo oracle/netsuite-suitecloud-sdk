@@ -17,7 +17,26 @@ export function run(): Promise<void> {
 
 	return new Promise((c, e) => {
 
-		const files: string[] = ['extension.test.js'];
+		const files: string[] = [
+			'extension.test.js',
+			'ClineChatOpener.test.js',
+			'SuiteCloudPanelMessageParser.test.js',
+			'ControlPanelMessageDispatcher.test.js',
+			'ControlPanelWorkflow.test.js',
+			'ApiKeyService.test.js',
+			'SdkApiKeyStorage.test.js',
+			'ClineCompatibilityService.test.js',
+			'ClineConfigService.test.js',
+			'SuiteCloudPanelConfiguration.test.js',
+			'SuiteCloudPanelErrorFormatter.test.js',
+			'SuiteCloudPanelStateTransitions.test.js',
+			'ProxyLifecycleService.test.js',
+			'FeedbackService.test.js',
+			'ClineIntegrationAdapter.test.js',
+			'ExtensionHostRestartService.test.js',
+			'ProxyService.test.js',
+			'VSConsoleLogger.test.js',
+		];
 
 		// Add files to the test suite
 		files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));

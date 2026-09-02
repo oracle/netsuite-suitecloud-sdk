@@ -11,14 +11,15 @@ import { existsSync } from 'fs';
 export const SUITECLOUD_FOLDER = '.suitecloud-sdk';
 export const VSCODE_SDK_FOLDER = 'vscode';
 
-const SUITECLOUD_CLI_PACKAGE_JSON = '@oracle/suitecloud-cli/package.json';
 const EXTENSION_CONFIG_JSON_FILENAME = 'extension.config.json';
 const EXTENSION_CONFIG_JSON_FILE = './' + EXTENSION_CONFIG_JSON_FILENAME;
-const SUITECLOUD_CLI_PACKAGE_METADATA = require(SUITECLOUD_CLI_PACKAGE_JSON);
+const VSCODE_EXTENSION_PACKAGE_JSON = '../../../package.json';
+const VSCODE_EXTENSION_PACKAGE_METADATA = require(VSCODE_EXTENSION_PACKAGE_JSON);
 const EXTENSION_CONFIG_JSON_FILE_PATH = resolve(__dirname, EXTENSION_CONFIG_JSON_FILENAME);
 const IS_CUSTOM_SDK_METADATA_USED = existsSync(EXTENSION_CONFIG_JSON_FILE_PATH);
-// Load the SDK artifact metadata used to download and verify the bundled SDK dependency.
-const SDK_METADATA = IS_CUSTOM_SDK_METADATA_USED ? require(EXTENSION_CONFIG_JSON_FILE) : SUITECLOUD_CLI_PACKAGE_METADATA;
+const SDK_METADATA = IS_CUSTOM_SDK_METADATA_USED
+	? require(EXTENSION_CONFIG_JSON_FILE)
+	: VSCODE_EXTENSION_PACKAGE_METADATA;
 
 function getSdkDownloadUrl(): string {
 	return SDK_METADATA.sdkDownloadUrl;
