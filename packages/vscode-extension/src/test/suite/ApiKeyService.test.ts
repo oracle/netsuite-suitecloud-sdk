@@ -52,6 +52,17 @@ suite('Control Panel API Key Service', () => {
 		service.dispose();
 	});
 
+	test('generates a key when required and SDK storage is empty', async () => {
+		const service = new ApiKeyService(createStorage(), () => undefined);
+
+		const result = await service.resolve(true);
+
+		assert.strictEqual(result.apiKey, 'generated-secret');
+		assert.strictEqual(result.displayState.apiKeySource, 'generated');
+		assert.strictEqual(result.displayState.apiKeyExists, true);
+		service.dispose();
+	});
+
 	test('only propagates storage failures when a key is required', async () => {
 		const storageError = new Error('secure storage unavailable');
 		const storage: ApiKeyStorage = {
