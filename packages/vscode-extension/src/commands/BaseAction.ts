@@ -157,9 +157,13 @@ export default abstract class BaseAction {
 	}
 
 	protected async runSuiteCloudCommand(args: { [key: string]: string | string[] } = {}, otherExecutionPath?: string) {
+		const executionPath = otherExecutionPath ?? this.rootWorkspaceFolder;
+		if (!executionPath) {
+			throw new Error('Unable to run SuiteCloud command without an execution path.');
+		}
 		const suiteCloudRunnerRunResult = await new SuiteCloudRunner(
 			this.vsConsoleLogger,
-			otherExecutionPath !== undefined ? otherExecutionPath : this.rootWorkspaceFolder
+			executionPath
 		).run({
 			commandName: this.cliCommandName,
 			arguments: args,

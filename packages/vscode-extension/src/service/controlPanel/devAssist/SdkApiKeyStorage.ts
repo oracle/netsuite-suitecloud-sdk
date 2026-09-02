@@ -3,6 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
+import { dirname } from 'path';
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../../../ApplicationConstants';
 import SuiteCloudRunner from '../../../core/SuiteCloudRunner';
@@ -35,7 +36,7 @@ const readStoredProxyApiKey = async (): Promise<RawSdkOperationResult<string>> =
 };
 
 const generateAndStoreProxyApiKey = (): Promise<ActionResult<ProxyGenerateKeyData>> =>
-	new SuiteCloudRunner(new VSConsoleLogger()).run({
+	new SuiteCloudRunner(new VSConsoleLogger(), dirname(getSdkPath())).run({
 		commandName: 'proxy:generatekey',
 		arguments: {},
 	});
