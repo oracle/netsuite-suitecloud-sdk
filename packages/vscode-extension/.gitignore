@@ -2,5 +2,3 @@
 dist
 node_modules
 .vscode-test/
-*.vsix
-suitecloud-vscode-extension-*/
