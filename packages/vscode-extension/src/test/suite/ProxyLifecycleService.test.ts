@@ -118,7 +118,7 @@ suite('Control Panel Proxy Lifecycle Service', () => {
 
 		await assert.rejects(
 			new ProxyLifecycleService(proxy).start(input),
-			/Unable to resolve an API key/
+			/Generate an API key in the control panel/
 		);
 		assert.strictEqual(starts.length, 0);
 	});

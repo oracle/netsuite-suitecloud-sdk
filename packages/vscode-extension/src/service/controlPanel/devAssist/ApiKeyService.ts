@@ -50,23 +50,28 @@ export default class ApiKeyService {
 		return this._resolvedApiKey;
 	}
 
-	async resolve(allowGenerate: boolean): Promise<ApiKeyResolution> {
+	async resolve(): Promise<ApiKeyResolution> {
+		return this._resolve(true);
+	}
+
+	async resolveIgnoringReadErrors(): Promise<ApiKeyResolution> {
+		return this._resolve(false);
+	}
+
+	private async _resolve(throwOnReadError: boolean): Promise<ApiKeyResolution> {
 		this._clearExpiredPreview();
 
 		let storedApiKey: string | undefined;
 		try {
 			storedApiKey = await this._storage.getProxyApiKeyFromSdkStorage();
 		} catch (error) {
-			if (allowGenerate) {
+			if (throwOnReadError) {
 				throw error;
 			}
 		}
 
 		if (storedApiKey) {
 			return this._setResolvedApiKey('sdk', storedApiKey, false);
-		}
-		if (allowGenerate) {
-			return this.generate();
 		}
 		return this._setMissingApiKey();
 	}
@@ -120,6 +125,8 @@ export default class ApiKeyService {
 	}
 
 	private _setMissingApiKey(): ApiKeyResolution {
+		this._clearPreviewHideTimeout();
+		this._generatedPreview = undefined;
 		this._resolvedApiKey = undefined;
 		return {
 			apiKey: undefined,
