@@ -26,6 +26,13 @@ suite('SuiteCloud Panel Error Formatter', () => {
 		assert.match(result, /Open Output/);
 	});
 
+	test('keeps missing API key guidance concise and actionable', () => {
+		const message =
+			'No API key is available. Generate an API key in the control panel before starting the local service.';
+
+		assert.strictEqual(formatProxyStartError(message, () => 'unused'), message);
+	});
+
 	test('reduces multiline errors to a bounded first-line summary', () => {
 		assert.strictEqual(summarizeInlineError('\n First useful line \nDetails'), 'First useful line');
 		assert.strictEqual(summarizeInlineError(''), 'Operation failed.');

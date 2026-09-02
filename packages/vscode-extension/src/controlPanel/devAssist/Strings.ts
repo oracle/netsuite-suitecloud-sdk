@@ -28,7 +28,7 @@ export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
 		openedClineChat: 'Opened Cline chat.',
 		openClineChatFailed: 'Unable to open Cline chat automatically. Open Cline from the Activity Bar and focus chat input.',
 		invalidWebviewPayload: 'Received invalid webview message payload.',
-		noApiKeyForClineApply: 'No API key is available yet. Start proxy or rotate key first.',
+		noApiKeyForClineApply: 'No API key is available. Generate an API key first.',
 		noClineConfigChangesDetected: 'No change detected. Nothing to apply to Cline config.',
 		workspaceClineSetupIsManual:
 			'Cline provider config is global in supported Cline versions. Copy Base URL, Model ID, and API key manually for workspace-specific setup.',
@@ -65,7 +65,8 @@ export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
 	errors: {
 		invalidAuthId: 'Select a valid auth ID before starting the proxy.',
 		invalidPortRange: (min: number, max: number) => `Port must be between ${min} and ${max}.`,
-		unableResolveApiKeyForStart: 'Unable to resolve an API key for SuiteCloud proxy startup.',
+		unableResolveApiKeyForStart:
+			'No API key is available. Generate an API key in the control panel before starting the local service.',
 	},
 	friendlyErrors: {
 		outputHint: '\n\nOpen Output for detailed startup logs.',

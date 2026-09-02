@@ -26,9 +26,9 @@ export type ProxyWorkflowDependencies = {
 	setState: (state: SuiteCloudPanelState) => void;
 	confirmStartDisclaimer: () => Promise<boolean>;
 	ensureSdkDependenciesReady: () => Promise<void>;
-	resolveApiKey: (allowGenerate: boolean) => Promise<string | undefined>;
+	resolveApiKey: () => Promise<string | undefined>;
 	refreshAuthIds: () => Promise<void>;
-	refreshApiKeyAndCompatibility: (allowGenerate: boolean) => Promise<void>;
+	refreshApiKeyAndCompatibility: () => Promise<void>;
 	refreshCompatibility: () => Promise<void>;
 	persistPreferencesNoThrow: () => Promise<void>;
 	postStateUpdate: () => void;
@@ -55,7 +55,7 @@ export default class ProxyWorkflow {
 
 		try {
 			await this._dependencies.refreshAuthIds();
-			await this._dependencies.refreshApiKeyAndCompatibility(false);
+			await this._dependencies.refreshApiKeyAndCompatibility();
 			await this.start(false, true);
 			if (shouldRestartForClineConfig) {
 				await clearPendingRestart();
@@ -91,7 +91,7 @@ export default class ProxyWorkflow {
 			isProxySupported: () => this._dependencies.cliService.isProxyServiceSupported(),
 			getCliVersion: () => this._dependencies.cliService.getBundledCliVersion(),
 			getSdkPath: () => this._dependencies.cliService.getSdkPath(),
-			resolveApiKey: () => this._dependencies.resolveApiKey(true),
+			resolveApiKey: () => this._dependencies.resolveApiKey(),
 			onStarting: (state) => {
 				presenter.info(
 					`Starting proxy on port ${state.port} with auth ID "${state.authId}".`

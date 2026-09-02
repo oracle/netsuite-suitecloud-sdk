@@ -214,10 +214,10 @@ class ControlPanelController {
 					SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.startProxyDisclaimerAction;
 			},
 			ensureSdkDependenciesReady: () => this._ensureSdkDependenciesReady(),
-			resolveApiKey: (allowGenerate) => this._resolveApiKey(allowGenerate),
+			resolveApiKey: () => this._resolveApiKey(),
 			refreshAuthIds: () => this._refreshAuthIds(),
-			refreshApiKeyAndCompatibility: (allowGenerate) =>
-				this._refreshApiKeyAndCompatibility(allowGenerate),
+			refreshApiKeyAndCompatibility: () =>
+				this._refreshApiKeyAndCompatibility(),
 			refreshCompatibility: () => this._clineWorkflow.refreshCompatibility(),
 			persistPreferencesNoThrow: () => this._persistPreferencesNoThrow(),
 			postStateUpdate: () => this._postStateUpdate(),
@@ -247,7 +247,7 @@ class ControlPanelController {
 				);
 				return selection === restartExtensionsAction;
 			},
-			resolveApiKey: (allowGenerate) => this._resolveApiKey(allowGenerate),
+			resolveApiKey: () => this._resolveApiKeyIgnoringReadErrors(),
 			isProxyAvailable: () => this._isProxyAvailable(),
 			postStateUpdate: () => this._postStateUpdate(),
 		});
@@ -408,7 +408,7 @@ class ControlPanelController {
 		}
 
 		try {
-			await this._refreshApiKeyAndCompatibility(false);
+			await this._refreshApiKeyAndCompatibility();
 		} catch (error) {
 			loadErrors.push(error instanceof Error ? error.message : String(error));
 		}
@@ -435,8 +435,8 @@ class ControlPanelController {
 		}
 	}
 
-	private async _refreshApiKeyAndCompatibility(allowGenerate: boolean): Promise<void> {
-		await this._resolveApiKey(allowGenerate);
+	private async _refreshApiKeyAndCompatibility(): Promise<void> {
+		await this._resolveApiKeyIgnoringReadErrors();
 		await this._refreshCompatibility();
 	}
 
@@ -444,9 +444,16 @@ class ControlPanelController {
 		await this._clineWorkflow.refreshCompatibility();
 	}
 
-	private async _resolveApiKey(allowGenerate: boolean): Promise<string | undefined> {
+	private async _resolveApiKey(): Promise<string | undefined> {
 		await this._ensureSdkDependenciesReady();
-		const resolution = await this._apiKeyService.resolve(allowGenerate);
+		const resolution = await this._apiKeyService.resolve();
+		this._applyApiKeyResolution(resolution);
+		return resolution.apiKey;
+	}
+
+	private async _resolveApiKeyIgnoringReadErrors(): Promise<string | undefined> {
+		await this._ensureSdkDependenciesReady();
+		const resolution = await this._apiKeyService.resolveIgnoringReadErrors();
 		this._applyApiKeyResolution(resolution);
 		return resolution.apiKey;
 	}
@@ -517,7 +524,7 @@ class ControlPanelController {
 			throw new Error('Start proxy before submitting feedback.');
 		}
 
-		const apiKey = await this._resolveApiKey(false);
+		const apiKey = await this._resolveApiKeyIgnoringReadErrors();
 		if (!apiKey || !apiKey.trim()) {
 			throw new Error('No API key is available. Generate or rotate API key first.');
 		}
@@ -596,7 +603,7 @@ class ControlPanelController {
 	private _enqueueCompatibilityRefresh(): void {
 		this._messageQueue = this._messageQueue
 			.then(async () => {
-				await this._refreshApiKeyAndCompatibility(false);
+				await this._refreshApiKeyAndCompatibility();
 				this._postStateUpdate();
 			})
 			.catch((error) => {

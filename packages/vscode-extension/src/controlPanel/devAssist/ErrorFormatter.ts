@@ -12,6 +12,12 @@ export const formatProxyStartError = (
 	const normalizedMessage = (errorMessage || '').toLowerCase();
 	const friendlyErrors = SUITECLOUD_PANEL_RUNTIME_STRINGS.friendlyErrors;
 
+	if (
+		normalizedMessage ===
+		SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.unableResolveApiKeyForStart.toLowerCase()
+	) {
+		return errorMessage;
+	}
 	if (normalizedMessage.startsWith('unable to start suitecloud proxy process:')) {
 		return `${errorMessage}${friendlyErrors.outputHint}`;
 	}
