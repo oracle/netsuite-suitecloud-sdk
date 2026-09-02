@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SuiteCloud CLI Webpack Compatibility Changes</title>
+	<style>
+		:root {
+			--ink: #172b4d;
+			--muted: #5e6c84;
+			--line: #dfe1e6;
+			--panel: #f4f5f7;
+			--blue: #0052cc;
+			--green: #00875a;
+			--amber: #ff991f;
+			--red: #de350b;
+		}
+		* { box-sizing: border-box; }
+		body {
+			max-width: 1180px;
+			margin: 40px auto;
+			padding: 0 28px 64px;
+			color: var(--ink);
+			font: 15px/1.58 Arial, Helvetica, sans-serif;
+		}
+		h1 { margin-bottom: 8px; font-size: 32px; }
+		h2 { margin-top: 42px; padding-bottom: 7px; border-bottom: 1px solid var(--line); }
+		h3 { margin-top: 28px; }
+		.subtitle { margin-top: 0; color: var(--muted); font-size: 17px; }
+		code { padding: 2px 5px; border-radius: 3px; background: var(--panel); font-family: Consolas, monospace; }
+		pre { overflow-x: auto; margin: 14px 0; padding: 15px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); }
+		pre code { padding: 0; background: transparent; }
+		table { width: 100%; margin: 18px 0; border-collapse: collapse; }
+		th, td { padding: 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+		th { background: var(--panel); }
+		.callout { margin: 18px 0; padding: 13px 17px; border-left: 5px solid; border-radius: 4px; }
+		.info { border-color: var(--blue); background: #deebff; }
+		.success { border-color: var(--green); background: #e3fcef; }
+		.warning { border-color: var(--amber); background: #fffae6; }
+		.flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 12px; align-items: center; margin: 24px 0; }
+		.flow > div { min-height: 92px; padding: 14px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); text-align: center; }
+		.flow .arrow { min-height: 0; padding: 0; border: 0; background: none; font-size: 24px; }
+		.file { color: var(--blue); font-family: Consolas, monospace; }
+		.small { color: var(--muted); font-size: 13px; }
+		@media (max-width: 760px) {
+			.flow { grid-template-columns: 1fr; }
+			.flow .arrow { transform: rotate(90deg); }
+		}
+	</style>
+</head>
+<body>
+	<h1>SuiteCloud CLI Webpack Compatibility Changes</h1>
+	<p class="subtitle">Complete implementation notes for the merged <code>tscorewebpack1</code> branch</p>
+
+	<table>
+		<tbody>
+			<tr><th>Current branch</th><td><code>tscorewebpack1</code></td></tr>
+			<tr><th>Development branch merged</th><td><code>dev</code></td></tr>
+			<tr><th>Merge commit</th><td><code>742c7b0f</code></td></tr>
+			<tr><th>CLI version used for verification</th><td><code>4.0.0</code></td></tr>
+			<tr><th>Node.js used for verification</th><td><code>v22.22.3</code></td></tr>
+			<tr><th>Webpack used for verification</th><td><code>5.110.3</code></td></tr>
+		</tbody>
+	</table>
+
+	<h2>Executive summary</h2>
+	<p>
+		The original CLI behaved like a normal installed npm package. It discovered command modules from runtime paths,
+		read metadata and templates from the filesystem, and loaded project configuration with a dynamic
+		<code>require()</code>. Those patterns work when all source files remain beside the entry point, but they prevent
+		webpack from determining everything that must be included in a single bundle.
+	</p>
+	<p>
+		The webpack-compatible implementation separates resources into two groups. CLI-owned modules and resources are
+		made statically visible so webpack can include them. User-owned resources, particularly
+		<code>suitecloud.config.js</code>, remain external and are deliberately loaded with Node's native module loader.
+		Two webpack configurations are provided: a conventional multi-file distribution and a true single-file bundle
+		that can also be embedded into a Node.js Single Executable Application (SEA).
+	</p>
+
+	<div class="flow">
+		<div><strong>Source</strong><br>CLI JavaScript<br>compiled SDK core<br>JSON and templates</div>
+		<div class="arrow">→</div>
+		<div><strong>Webpack</strong><br>multi-file distribution<br>or one JS bundle</div>
+		<div class="arrow">→</div>
+		<div><strong>Output</strong><br><code>dist/src/suitecloud.js</code><br>or <code>dist/suitecloud.js</code><br>or SEA executable</div>
+	</div>
+
+	<h2>Why the source had to change</h2>
+	<table>
+		<thead>
+			<tr><th>Original runtime pattern</th><th>Webpack problem</th><th>Implemented solution</th></tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Dynamic command path passed to <code>require()</code></td>
+				<td>The dependency graph does not contain a concrete module path, so commands can be omitted.</td>
+				<td>A registry contains a static import for every command and loads each command lazily.</td>
+			</tr>
+			<tr>
+				<td>Metadata and messages read from paths on disk</td>
+				<td>Files inside a single bundle do not exist at their old source-tree paths.</td>
+				<td>JSON is imported statically and becomes part of the bundle.</td>
+			</tr>
+			<tr>
+				<td><code>require.resolve()</code> returns template paths</td>
+				<td>A single-file bundle cannot expose those templates as ordinary adjacent files.</td>
+				<td>Template contents are imported with webpack asset modules and passed as strings.</td>
+			</tr>
+			<tr>
+				<td>Dynamic loading of a user's <code>suitecloud.config.js</code></td>
+				<td>Webpack may reinterpret the dynamic call as a bundle-internal module lookup.</td>
+				<td><code>createRequire()</code> explicitly delegates to Node's native CommonJS loader.</td>
+			</tr>
+			<tr>
+				<td>Potentially multiple output chunks</td>
+				<td>Node SEA accepts one main JavaScript file.</td>
+				<td>Chunk splitting is disabled and the chunk count is limited to one.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2>Complete change inventory</h2>
+
+	<h3>1. Build dependencies, workspace scripts, and lockfile</h3>
+	<p><span class="file">package.json</span>, <span class="file">packages/node-cli/package.json</span>, and <span class="file">package-lock.json</span></p>
+	<p>The CLI workspace adds the tools used by the two webpack builds and by executable packaging:</p>
+	<table>
+		<thead><tr><th>Dependency</th><th>Purpose</th></tr></thead>
+		<tbody>
+			<tr><td><code>webpack</code></td><td>Builds the dependency graph and emits the distribution bundle.</td></tr>
+			<tr><td><code>webpack-cli</code></td><td>Exposes webpack to npm scripts.</td></tr>
+			<tr><td><code>copy-webpack-plugin</code></td><td>Copies source and package resources for the conventional multi-file distribution.</td></tr>
+			<tr><td><code>postject</code></td><td>Injects the single-file bundle's SEA blob into a copied Node executable.</td></tr>
+		</tbody>
+	</table>
+	<p>The CLI scripts are:</p>
+	<pre><code>"build": "webpack --config webpack.config.js",
+"build:single": "webpack --config webpack.single.config.js",
+"build:exe": "npm run build:single &amp;&amp; node scripts/build-sea.js"</code></pre>
+	<p>The root executable script first compiles SDK core and then delegates to the CLI workspace:</p>
+	<pre><code>"build:exe": "npm run build &amp;&amp; npm run build:exe --workspace @oracle/suitecloud-cli"</code></pre>
+	<p>
+		This order matters because webpack consumes <code>@oracle/suitecloud-sdk-core</code> through its compiled
+		<code>build</code> entry point. The lockfile was regenerated after merging <code>dev</code>, retaining the newer
+		Jest and runtime dependency versions together with the webpack toolchain.
+	</p>
+
+	<h3>2. Conventional multi-file webpack distribution</h3>
+	<p><span class="file">packages/node-cli/webpack.config.js</span></p>
+	<p>
+		This configuration produces a normal package-like directory. It bundles only the executable entry and preserves
+		native CommonJS resolution for the remaining files. The source tree, messages, resources, package manifest,
+		postinstall script, and README are copied to <code>dist</code>.
+	</p>
+	<ul>
+		<li><code>target: 'node'</code> emits code for Node.js.</li>
+		<li><code>output.filename: 'src/suitecloud.js'</code> preserves the installed package layout.</li>
+		<li><code>externalsPresets.node</code> keeps Node built-ins external.</li>
+		<li>The custom <code>externals</code> callback leaves imports as CommonJS requests, except for the entry itself.</li>
+		<li><code>CopyWebpackPlugin</code> reconstructs the files needed by the normal package runtime.</li>
+		<li><code>BannerPlugin</code> preserves the <code>#!/usr/bin/env node</code> launcher.</li>
+		<li>Minification is disabled and source maps are enabled to keep the output debuggable.</li>
+	</ul>
+	<div class="info callout">
+		<strong>Purpose:</strong> this mode validates that a webpack-generated distribution still behaves like the npm
+		package. It is not the input used by the SEA builder.
+	</div>
+
+	<h3>3. Single-file webpack bundle</h3>
+	<p><span class="file">packages/node-cli/webpack.single.config.js</span></p>
+	<p>This configuration emits <code>packages/node-cli/dist/suitecloud.js</code>, which contains the CLI, SDK core, dependencies, metadata, messages, and supported templates.</p>
+	<ul>
+		<li><code>target: 'node22'</code> matches the Node generation used by the SEA executable.</li>
+		<li><code>splitChunks: false</code> and <code>runtimeChunk: false</code> prevent secondary files.</li>
+		<li><code>LimitChunkCountPlugin({ maxChunks: 1 })</code> enforces the single-output contract.</li>
+		<li><code>devtool: false</code> avoids a separate source-map artifact.</li>
+		<li><code>asset/source</code> converts queried source files, XML, and template files into JavaScript strings.</li>
+		<li>The Node shebang is added to the one entry bundle.</li>
+	</ul>
+	<pre><code>module: {
+    rules: [
+        { resourceQuery: /source/, type: 'asset/source' },
+        { test: /[\\/]templates[\\/].*\.(?:xml|template)$/, type: 'asset/source' }
+    ]
+},
+plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 })
+]</code></pre>
+
+	<h3>4. Static, lazy command registry</h3>
+	<p>
+		<span class="file">packages/node-cli/src/core/CommandGeneratorRegistry.js</span>,
+		<span class="file">packages/node-cli/src/core/CommandActionExecutor.js</span>, and
+		<span class="file">packages/node-cli/src/core/CommandsMetadataService.js</span>
+	</p>
+	<p>The old executor attempted to load a path supplied by metadata:</p>
+	<pre><code>const commandGenerator = require(commandMetadata.generator);</code></pre>
+	<p>
+		Because the path is not a literal, webpack cannot reliably identify the command modules. The registry now contains
+		literal <code>require()</code> calls, while a small wrapper defers evaluation until the selected command is executed:
+	</p>
+	<pre><code>const lazy = (loadCommand) =&gt; ({
+    create: (...args) =&gt; loadCommand().create(...args),
+});
+
+module.exports = {
+    'config:import': lazy(() =&gt; require('../commands/config/import/ImportConfigurationCommand')),
+    'project:deploy': lazy(() =&gt; require('../commands/project/deploy/DeployCommand')),
+    // Every other supported command is registered in the same way.
+};</code></pre>
+	<p>
+		The lazy wrapper is important after the <code>dev</code> merge. It keeps every dependency statically visible to
+		webpack without eagerly initializing commands that use ESM-only interactive code or raw template imports. The
+		registry also includes the new <code>config:import</code> command introduced on <code>dev</code>.
+	</p>
+	<p><code>CommandActionExecutor</code> uses the metadata's command name as the registry key:</p>
+	<pre><code>const commandGenerator = commandGeneratorRegistry[commandMetadata.generator];</code></pre>
+
+	<h3>5. Static command metadata</h3>
+	<p><span class="file">packages/node-cli/src/core/CommandsMetadataService.js</span></p>
+	<p>
+		The metadata service no longer constructs paths and reads JSON with the filesystem service. All four metadata files
+		are imported with literal paths, allowing webpack to include them in its graph:
+	</p>
+	<pre><code>const sdkCommandsMetadata = require('../metadata/SdkCommandsMetadata.json');
+const sdkCommandsMetadataPatch = require('../metadata/SdkCommandsMetadataPatch.json');
+const nodeCommandsMetadata = require('../metadata/NodeCommandsMetadata.json');
+const commandGeneratorsMetadata = require('../metadata/CommandGenerators.json');</code></pre>
+	<p>
+		Generator metadata is converted from a filesystem path into a stable command-name key. The imported objects are
+		cloned before merging because Node caches JSON modules; without cloning, metadata initialization could mutate the
+		shared module export.
+	</p>
+
+	<h3>6. Static messages and package metadata</h3>
+	<p>
+		<span class="file">packages/node-cli/src/services/NodeTranslationService.js</span>,
+		<span class="file">packages/node-cli/src/CLI.js</span>, and
+		<span class="file">packages/node-cli/src/ExecutionEnvironmentContext.js</span>
+	</p>
+	<p>
+		The CLI's messages and package metadata are owned by the application, so they are imported rather than rediscovered
+		from <code>__dirname</code> or <code>require.main.filename</code>. This lets webpack embed the values needed for error
+		messages, <code>--version</code>, NetSuite compatibility information, the SDK filename, and telemetry.
+	</p>
+	<pre><code>const messages = require('../../messages.json');
+const configFile = require('../package.json');
+const { nsCompatibleVersion, sdkFilename } = require('../package.json');</code></pre>
+
+	<h3>7. Embedded templates and dual-mode file creation</h3>
+	<p>
+		<span class="file">packages/node-cli/src/templates/EmbeddedTemplates.js</span>,
+		<span class="file">packages/node-cli/src/templates/TemplateKeys.js</span>, and
+		<span class="file">packages/node-cli/src/services/FileSystemService.js</span>
+	</p>
+	<p>
+		Templates previously flowed through the application as filesystem paths returned by <code>require.resolve()</code>.
+		The single-file build instead imports their contents. The <code>?source</code> query selects the asset/source rule for
+		JavaScript that must be treated as text, while XML under a templates directory is covered by the file rule.
+	</p>
+	<pre><code>module.exports = {
+    blankscript: require('./scripts/blankscript.js?source'),
+    commerceextension: require('./objects/commerceextension.xml'),
+};</code></pre>
+	<p>
+		<code>TemplateKeys</code> exposes the imported strings. <code>FileSystemService.createFileFromTemplate()</code> now
+		accepts either multiline template content or a traditional path. This preserves compatibility with non-bundled
+		callers while allowing the single bundle to create files without extracting its internal templates.
+	</p>
+
+	<h3>8. Native loading for external project configuration</h3>
+	<p><span class="file">packages/node-cli/src/core/extensibility/CLIConfigurationService.js</span></p>
+	<p>
+		Unlike messages and templates, <code>suitecloud.config.js</code> belongs to the user's project and cannot be embedded at
+		build time. The implementation uses Node's native loader explicitly:
+	</p>
+	<pre><code>const { createRequire } = require('node:module');
+
+this._cliConfig = createRequire(__filename)(cliConfigFile);</code></pre>
+	<p>
+		This prevents webpack from turning the absolute runtime path into a bundle-internal lookup and preserves relative
+		CommonJS imports made by the user's configuration file.
+	</p>
+
+	<h3>9. Node SEA executable packaging</h3>
+	<p><span class="file">packages/node-cli/scripts/build-sea.js</span></p>
+	<p>
+		SEA packaging is downstream of webpack rather than a requirement for webpack itself. It consumes the output of
+		<code>build:single</code> and creates a native executable through these steps:
+	</p>
+	<ol>
+		<li>Write a temporary SEA configuration that names <code>dist/suitecloud.js</code> as its main script.</li>
+		<li>Run the current Node binary with <code>--experimental-sea-config</code> to generate a blob.</li>
+		<li>Copy <code>process.execPath</code> to the platform-appropriate output name.</li>
+		<li>On macOS, remove the copied binary's signature before injection.</li>
+		<li>Inject <code>NODE_SEA_BLOB</code> with <code>postject</code> and the Node SEA sentinel fuse.</li>
+		<li>Set executable permissions on non-Windows platforms and apply an ad-hoc macOS signature.</li>
+		<li>Remove the temporary configuration and blob in a <code>finally</code> block.</li>
+	</ol>
+	<p>
+		The builder rejects unsupported platforms and accidental cross-platform requests. SEA executables must be created
+		natively on their target operating system. Using <code>process.execPath</code> for both blob generation and the copied
+		runtime guarantees compatible Node versions.
+	</p>
+
+	<h3>10. Test and documentation support</h3>
+	<p>
+		<span class="file">packages/node-cli/jest.config.js</span>,
+		<span class="file">packages/node-cli/README.md</span>, and
+		<span class="file">docs/suitecloud-cli-windows-executable-confluence.html</span>
+	</p>
+	<ul>
+		<li>Jest ignores <code>dist</code>, preventing bundled copies from being indexed as duplicate modules or tests.</li>
+		<li>The existing Jest setup from <code>dev</code> remains active for the ESM-only Inquirer dependency.</li>
+		<li>The README documents the executable build command, runtime requirements, use, and signing requirement.</li>
+		<li>The older Confluence-oriented page remains useful for Windows SEA distribution details; this document supersedes its webpack implementation description.</li>
+	</ul>
+
+	<h2>Build commands and outputs</h2>
+	<table>
+		<thead><tr><th>Goal</th><th>Command from repository root</th><th>Primary output</th></tr></thead>
+		<tbody>
+			<tr>
+				<td>Compile SDK core</td>
+				<td><code>npm run build</code></td>
+				<td><code>packages/sdk-core/build</code></td>
+			</tr>
+			<tr>
+				<td>Conventional webpack distribution</td>
+				<td><code>npm run build --workspace @oracle/suitecloud-cli</code></td>
+				<td><code>packages/node-cli/dist/src/suitecloud.js</code> plus copied files</td>
+			</tr>
+			<tr>
+				<td>Single-file webpack bundle</td>
+				<td><code>npm run build:single --workspace @oracle/suitecloud-cli</code></td>
+				<td><code>packages/node-cli/dist/suitecloud.js</code></td>
+			</tr>
+			<tr>
+				<td>Native SEA executable</td>
+				<td><code>npm run build:exe</code></td>
+				<td><code>packages/node-cli/dist/suitecloud.exe</code> on Windows, or <code>suitecloud</code> on macOS/Linux</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2>What remains external at runtime</h2>
+	<table>
+		<thead><tr><th>Included in the single bundle</th><th>Intentionally external</th></tr></thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul>
+						<li>SuiteCloud CLI JavaScript</li>
+						<li>Compiled SDK core</li>
+						<li>npm runtime dependencies</li>
+						<li>Every registered command generator</li>
+						<li>Command metadata and translated messages</li>
+						<li>Supported CLI-owned templates</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>The user's SuiteCloud project</li>
+						<li><code>suitecloud.config.js</code> and its local imports</li>
+						<li>Authentication and user configuration files</li>
+						<li>The SuiteCloud SDK JAR</li>
+						<li>Java and operating-system services</li>
+						<li>Network and NetSuite services</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2>Verification after merging dev</h2>
+	<div class="success callout">
+		<strong>Successful checks:</strong>
+		<ul>
+			<li>SDK core TypeScript compilation completed successfully.</li>
+			<li>The conventional webpack distribution compiled successfully.</li>
+			<li>The single-file bundle compiled successfully.</li>
+			<li><code>node packages/node-cli/dist/suitecloud.js --version</code> returned <code>4.0.0</code>.</li>
+			<li>The command-help regression tests passed, including the merged <code>config:import</code> command.</li>
+		</ul>
+	</div>
+	<div class="warning callout">
+		<strong>Known build warning:</strong> the single-file build reports one critical-dependency warning for the dynamic
+		request in <code>src/core/sdksetup/SdkProperties.js</code>. The build succeeds and the bundled CLI passes the version
+		smoke test. That lookup refers to runtime SDK setup data and has not been converted into a static embedded resource.
+	</div>
+	<p>
+		The full Jest run is not green on the current Windows environment: 44 of 53 suites passed during merge validation.
+		The remaining failures were Windows path-separator, CRLF, and symbolic-link expectation differences. The registry
+		was subsequently changed to lazy static loading, and the command-help tests passed with that final implementation.
+	</p>
+
+	<h2>Maintenance rules</h2>
+	<ol>
+		<li>When adding a command to <code>CommandGenerators.json</code>, add the same command key and a literal lazy import to <code>CommandGeneratorRegistry.js</code>.</li>
+		<li>Do not replace static CLI-owned JSON imports with computed filesystem paths.</li>
+		<li>When adding a bundled template type, add an <code>asset/source</code> rule if the existing rules do not match it.</li>
+		<li>Keep user-owned configuration external and load it through Node's native module system.</li>
+		<li>Compile SDK core before invoking the CLI webpack build.</li>
+		<li>Run both webpack modes; they intentionally exercise different module-resolution models.</li>
+		<li>After changing dependencies, regenerate and commit the root lockfile.</li>
+		<li>Build SEA artifacts on the target platform and sign the final executable after blob injection.</li>
+	</ol>
+
+	<h2>Conclusion</h2>
+	<p>
+		Webpack compatibility was achieved by making the application's internal dependency graph explicit while preserving
+		true runtime dependencies as external. Static JSON imports, the lazy command registry, embedded templates, and
+		native external configuration loading are the essential runtime changes. The two webpack configurations and npm
+		scripts provide repeatable multi-file and single-file outputs, while the optional SEA stage turns the single bundle
+		into a platform-native executable.
+	</p>
+
+	<p class="small">Generated from the repository state after merge commit <code>742c7b0f</code> on 2 September 2026.</p>
+</body>
+</html>
