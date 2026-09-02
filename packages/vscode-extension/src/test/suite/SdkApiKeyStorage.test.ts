@@ -47,6 +47,15 @@ suite('Control Panel SDK API Key Storage', () => {
 		assert.strictEqual(await storage.getProxyApiKeyFromSdkStorage(), 'stored-secret');
 	});
 
+	test('treats a missing key file as empty SDK storage', async () => {
+		const storage = new SdkApiKeyStorage(
+			async () => ({ status: 'SUCCESS', data: '', errorMessages: [] }),
+			async () => createActionResult(true, 'unused')
+		);
+
+		assert.strictEqual(await storage.getProxyApiKeyFromSdkStorage(), undefined);
+	});
+
 	test('uses the canonical proxy:generatekey result', async () => {
 		const storage = new SdkApiKeyStorage(
 			async () => createReadResult(''),
