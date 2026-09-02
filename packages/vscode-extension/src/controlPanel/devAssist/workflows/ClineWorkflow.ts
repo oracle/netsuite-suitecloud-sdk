@@ -39,7 +39,7 @@ export type ClineWorkflowDependencies = {
 	getResolvedApiKey: () => string | undefined;
 	isClineInstalled: () => boolean;
 	confirmExtensionRestart: () => Promise<boolean>;
-	resolveApiKey: (allowGenerate: boolean) => Promise<string | undefined>;
+	resolveApiKey: () => Promise<string | undefined>;
 	isProxyAvailable: () => boolean;
 	postStateUpdate: () => void;
 };
@@ -76,7 +76,7 @@ export default class ClineWorkflow {
 		try {
 			const applied = await this._dependencies.configService.applyPendingConfig(
 				this._dependencies.getWorkspacePath(),
-				() => this._dependencies.resolveApiKey(false)
+				() => this._dependencies.resolveApiKey()
 			);
 			if (applied) {
 				this._dependencies.presenter.info(
@@ -99,7 +99,7 @@ export default class ClineWorkflow {
 			workspacePath: this._dependencies.getWorkspacePath(),
 			baseUrl: state.baseUrl,
 			modelId: SUITECLOUD_PANEL_RUNTIME_STRINGS.modelId,
-			resolveApiKey: () => this._dependencies.resolveApiKey(false),
+			resolveApiKey: () => this._dependencies.resolveApiKey(),
 		});
 
 		if (await this._handleNonAppliedOutcome(outcome)) {

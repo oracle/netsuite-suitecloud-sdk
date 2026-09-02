@@ -17,7 +17,7 @@ suite('Control Panel API Key Service', () => {
 	test('loads and masks an existing SDK API key', async () => {
 		const service = new ApiKeyService(createStorage('stored-secret'), () => undefined);
 
-		const result = await service.resolve(false);
+		const result = await service.resolve();
 
 		assert.strictEqual(result.apiKey, 'stored-secret');
 		assert.strictEqual(result.displayState.apiKeySource, 'sdk');
@@ -43,7 +43,7 @@ suite('Control Panel API Key Service', () => {
 	test('returns the missing-key presentation when storage is empty', async () => {
 		const service = new ApiKeyService(createStorage(), () => undefined);
 
-		const result = await service.resolve(false);
+		const result = await service.resolve();
 
 		assert.strictEqual(result.apiKey, undefined);
 		assert.strictEqual(result.displayState.apiKeySource, 'unknown');
@@ -52,14 +52,35 @@ suite('Control Panel API Key Service', () => {
 		service.dispose();
 	});
 
-	test('generates a key when required and SDK storage is empty', async () => {
+	test('does not generate a key when required and SDK storage is empty', async () => {
+		let generationCount = 0;
+		const service = new ApiKeyService({
+			getProxyApiKeyFromSdkStorage: async () => undefined,
+			generateProxyApiKey: async () => {
+				generationCount += 1;
+				return 'generated-secret';
+			},
+		}, () => undefined);
+
+		const result = await service.resolve();
+
+		assert.strictEqual(result.apiKey, undefined);
+		assert.strictEqual(result.displayState.apiKeySource, 'unknown');
+		assert.strictEqual(result.displayState.apiKeyExists, false);
+		assert.strictEqual(generationCount, 0);
+		service.dispose();
+	});
+
+	test('clears a generated preview when the stored key is removed', async () => {
 		const service = new ApiKeyService(createStorage(), () => undefined);
+		await service.generate();
+		assert.strictEqual(service.getCopyableApiKey(), 'generated-secret');
 
-		const result = await service.resolve(true);
+		const result = await service.resolve();
 
-		assert.strictEqual(result.apiKey, 'generated-secret');
-		assert.strictEqual(result.displayState.apiKeySource, 'generated');
-		assert.strictEqual(result.displayState.apiKeyExists, true);
+		assert.strictEqual(result.apiKey, undefined);
+		assert.strictEqual(result.displayState.apiKeyExists, false);
+		assert.strictEqual(service.getCopyableApiKey(), undefined);
 		service.dispose();
 	});
 
@@ -73,9 +94,9 @@ suite('Control Panel API Key Service', () => {
 		};
 		const service = new ApiKeyService(storage, () => undefined);
 
-		const optionalResult = await service.resolve(false);
+		const optionalResult = await service.resolveIgnoringReadErrors();
 		assert.strictEqual(optionalResult.apiKey, undefined);
-		await assert.rejects(service.resolve(true), storageError);
+		await assert.rejects(service.resolve(), storageError);
 		service.dispose();
 	});
 });
