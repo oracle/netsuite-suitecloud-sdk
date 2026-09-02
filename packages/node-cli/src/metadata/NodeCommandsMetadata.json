@@ -16,6 +16,13 @@
 			}
 		}
 	},
+	"config:import": {
+		"name": "config:import",
+		"description": "Imports the features from an account.",
+		"isSetupRequired": true,
+		"forceInteractiveMode": false,
+		"options": {}
+	},
 	"proxy:start": {
 		"name": "proxy:start",
 		"description": "Starts a local proxy for SuiteCloud Developer Assistant service.",

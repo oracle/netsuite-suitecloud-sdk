@@ -11,7 +11,7 @@ class CommandUtils {
 		return {
 			CHECKBOX: 'checkbox',
 			INPUT: 'input',
-			LIST: 'list',
+			SELECT: 'select',
 			PASSWORD: 'password',
 			PASSWORD_MASK: '*',
 		};

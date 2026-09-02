@@ -5,6 +5,7 @@
 'use strict';
 
 module.exports = {
-	"testEnvironment": "node",
-	"modulePathIgnorePatterns": ["<rootDir>/dist/"]
+    "testEnvironment": "node",
+    "setupFiles": ["<rootDir>/__test__/setup.js"],
+    "modulePathIgnorePatterns": ["<rootDir>/dist/"]
 };

@@ -36,7 +36,7 @@ describe('ProjectCommandOutputFormatter', () => {
 			'Validation Results: 0 error(s), 0 warning(s)',
 			'SDF Errors: none',
 			'Timestamp: Jul 23, 2026, 3:41:35 PM GMT+2',
-			'Account ID: 11550285',
+			'Account ID: 1234567',
 			'Apply Installation Preferences: Yes',
 			'------------------------------------------------------------',
 			'✔ Step 1: MANIFEST_VALIDATION',
@@ -48,7 +48,7 @@ describe('ProjectCommandOutputFormatter', () => {
 
 		expect(log.info).toHaveBeenCalledWith('DEPLOY SUMMARY');
 		expect(log.info).toHaveBeenCalledWith('Timestamp: Jul 23, 2026, 3:41:35 PM GMT+2');
-		expect(log.info).toHaveBeenCalledWith('Account ID: 11550285');
+		expect(log.info).toHaveBeenCalledWith('Account ID: 1234567');
 		expect(log.info).toHaveBeenCalledWith('Apply Installation Preferences: Yes');
 		expect(log.result).toHaveBeenCalledWith('Status: SUCCESS');
 		expect(log.result).toHaveBeenCalledWith('✔ Step 1: MANIFEST_VALIDATION');
@@ -56,6 +56,20 @@ describe('ProjectCommandOutputFormatter', () => {
 		expect(log.error).toHaveBeenCalledWith('ERROR: Error message');
 		expect(log.error).toHaveBeenCalledWith('✖ Step 2: DEPLOY');
 		expect(log.result).toHaveBeenCalledWith('Custom line');
+	});
+
+	it('should classify warning-only issues by file as warnings', () => {
+		const log = createLogMock();
+		logCommandOutput(log, [
+			'Issues by file:',
+			'1. FileCabinet/SuiteScripts/example.js (0 error(s), 1 warning(s))',
+			'   - WARNING: Avoid using deprecated API.',
+		]);
+
+		expect(log.warning).toHaveBeenCalledWith('1. FileCabinet/SuiteScripts/example.js (0 error(s), 1 warning(s))');
+		expect(log.warning).toHaveBeenCalledWith('   - WARNING: Avoid using deprecated API.');
+		expect(log.info).toHaveBeenCalledWith('Issues by file:');
+		expect(log.error).not.toHaveBeenCalled();
 	});
 
 	it('should print raw JSON payload directly', () => {
@@ -66,8 +80,14 @@ describe('ProjectCommandOutputFormatter', () => {
 
 	it('should classify error lines for formatted project output', () => {
 		const log = createLogMock();
-		logCommandErrors(log, ['Status: FAILED', 'ERROR: Endpoint error']);
+		logCommandErrors(log, [
+			'Status: FAILED',
+			'  - ERROR: Endpoint error',
+			'  - WARNING: Validation warning',
+		]);
 		expect(log.error).toHaveBeenCalledWith('Status: FAILED');
-		expect(log.error).toHaveBeenCalledWith('ERROR: Endpoint error');
+		expect(log.error).toHaveBeenCalledWith('  - ERROR: Endpoint error');
+		expect(log.warning).toHaveBeenCalledWith('  - WARNING: Validation warning');
+		expect(log.error).not.toHaveBeenCalledWith('  - WARNING: Validation warning');
 	});
 });

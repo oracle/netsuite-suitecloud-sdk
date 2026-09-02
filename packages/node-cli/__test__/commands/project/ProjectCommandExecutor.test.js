@@ -22,7 +22,7 @@ describe('ProjectCommandExecutor', () => {
 
 		expect(result).toEqual({
 			status: SDK_OPERATION_STATUS.ERROR,
-			errorMessages: ['Project command execution input is required.'],
+			errorMessages: ['Input is required to run the project command.'],
 		});
 		expect(createProjectArchive).not.toHaveBeenCalled();
 		expect(sendProjectRequest).not.toHaveBeenCalled();
@@ -253,8 +253,8 @@ describe('ProjectCommandExecutor', () => {
 				hostName: 'system.netsuite.com',
 				accessToken: 'token',
 				summaryContext: {
-					accountName: 'DevTools Test',
-					accountId: '11550285',
+					accountName: 'Example Account',
+					accountId: '1234567',
 					applyInstallationPreferences: true,
 					suiteAppId: 'com.netsuite.ts',
 				},
@@ -290,8 +290,8 @@ describe('ProjectCommandExecutor', () => {
 			'Validation Results: 0 error(s), 1 warning(s)',
 			'SDF Errors: none',
 			`Timestamp: ${expectedTimestamp}`,
-			'Account: DevTools Test',
-			'Account ID: 11550285',
+			'Account: Example Account',
+			'Account ID: 1234567',
 			'SuiteApp ID: com.netsuite.ts',
 			'Apply Installation Preferences: Yes',
 			'------------------------------------------------------------',

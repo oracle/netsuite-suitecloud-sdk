@@ -39,8 +39,8 @@ jest.mock('../../../../src/utils/AuthSessionProvider', () => ({
 			hostName: 'system.netsuite.com',
 			accessToken: 'token',
 			accountInfo: {
-				companyId: '11550285',
-				companyName: 'DevTools Test',
+				companyId: '1234567',
+				companyName: 'Example Account',
 				roleName: 'Administrator',
 			},
 		}),
@@ -140,8 +140,8 @@ describe('ValidateAction', () => {
 		expect(executionInput.command).toBe('validate');
 		expect(executionInput.flags).toEqual(['applyinstallprefs']);
 		expect(executionInput.summaryContext).toEqual({
-			accountId: '11550285',
-			accountName: 'DevTools Test',
+			accountId: '1234567',
+			accountName: 'Example Account',
 			applyInstallationPreferences: true,
 			roleName: 'Administrator',
 			suiteAppId: 'com.netsuite.ts',

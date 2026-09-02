@@ -172,7 +172,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			runInInteractiveMode: true,
 			arguments: {},
 		});
-		expect(mockConsoleLogger.error).toBeCalledTimes(0);
+		expect(mockConsoleLogger.error).toHaveBeenCalledTimes(0);
 		expect(actionResult._status).toBe('SUCCESS');
 	});
 
@@ -290,7 +290,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			runInInteractiveMode: false,
 			arguments: {},
 		});
-		expect(mockCommandUserExtensionOnError).toBeCalledTimes(1);
+		expect(mockCommandUserExtensionOnError).toHaveBeenCalledTimes(1);
 	});
 
 	it('Should trigger CommandUserExtension.onCompleted.', async () => {
@@ -299,6 +299,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			runInInteractiveMode: false,
 			arguments: {},
 		});
-		expect(mockCommandUserExtensionOnCompleted).toBeCalledTimes(1);
+		expect(mockCommandUserExtensionOnCompleted).toHaveBeenCalledTimes(1);
 	});
 });

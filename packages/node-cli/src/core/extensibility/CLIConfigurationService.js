@@ -16,6 +16,9 @@ const CommandUserExtension = require('./CommandUserExtension');
 const CLI_CONFIG_JS_FILE = 'suitecloud.config.js';
 const MANIFEST_XML_FILE = 'manifest.xml';
 const DEPLOY_XML_FILE = 'deploy.xml';
+const {
+	LINKS: { INFO },
+} = require('../../ApplicationConstants');
 const DEFAULT_CONFIG = {
 	defaultProjectFolder: '',
 	commands: {},
@@ -92,7 +95,7 @@ module.exports = class CLIConfigurationService {
 		}
 
 		if (errors.length > 0) {
-			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, 'https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4737888643.html');
+			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
 			const details = errors.map((entry) => ` - ${entry}`).join(lineBreak);
 			throw new CLIException(`Invalid SuiteCloud project context for command "${commandName}".${lineBreak}${details}${lineBreak}${guidance}`);
 		}
@@ -102,6 +105,6 @@ module.exports = class CLIConfigurationService {
 		if (!commandName || commandName === 'project:create') {
 			return false;
 		}
-		return commandName.startsWith('project:') || commandName.startsWith('file:') || commandName.startsWith('object:');
+		return commandName.startsWith('project:') || commandName.startsWith('file:') || commandName.startsWith('object:') || commandName === 'config:import';
 	}
 };

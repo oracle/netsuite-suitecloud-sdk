@@ -45,7 +45,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 			let message = NodeTranslationService.getMessage(QUESTIONS.SPECIFIC_APPID);
 
 			const questionSpecificSuiteApp = {
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_QUESTIONS_NAMES.SPECIFY_SUITEAPP,
 				message,
 				default: true,
@@ -76,7 +76,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 		}
 
 		const questionFilterByCustomObjects = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: COMMAND_QUESTIONS_NAMES.TYPE_ALL,
 			message: NodeTranslationService.getMessage(QUESTIONS.SHOW_ALL_CUSTOM_OBJECTS),
 			default: true,
@@ -115,7 +115,7 @@ module.exports = class ListObjectsInputHandler extends BaseInputHandler {
 		questions.push(questionCustomObjects);
 
 		const questionSpecificScriptId = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: COMMAND_QUESTIONS_NAMES.SPECIFY_SCRIPT_ID,
 			message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 			default: false,

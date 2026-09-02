@@ -5,8 +5,13 @@
     "test": "jest"
   },
   "devDependencies": {
-    "jest": "29.7.0",
-    "@types/jest": "29.5.14",
-    "@oracle/suitecloud-unit-testing": "^1.7.0"
+	"jest": "30.5.1",
+    "@types/jest": "30.0.0",
+    "@oracle/suitecloud-unit-testing": "^1.9.0"
+  },
+  "overrides": {
+    "babel-plugin-istanbul": {
+        "test-exclude": "^8.0.0"
+    }
   }
 }

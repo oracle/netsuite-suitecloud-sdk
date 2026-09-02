@@ -76,7 +76,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 	_generateSelectFolderQuestion(listFoldersResult) {
 		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: COMMAND_OPTIONS.FOLDER,
 			message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
 			default: SUITE_SCRIPTS_FOLDER,
@@ -101,7 +101,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_OPTIONS.EXCLUDE_PROPERTIES,
 				message: NodeTranslationService.getMessage(QUESTIONS.EXCLUDE_PROPERTIES),
 				choices: [
@@ -114,7 +114,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 	_generateOverwriteQuestion() {
 		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
 			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
 			default: true,

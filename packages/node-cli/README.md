@@ -35,10 +35,17 @@ Since CLI for Node.js is a development tool, use a global instance to install it
 ```
 npm install -g @oracle/suitecloud-cli
 ```
-When installing SuiteCloud CLI for Node.js via script, for instance in a CI environment, you can skip showing the license presented during the normal installation process by adding the --acceptSuiteCloudSDKLicense flag to the install script as shown below. Note that by adding the mentioned flag to the script, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions license. See the [License](#license) section for details.
+When you install SuiteCloud CLI for Node.js through a script, such as in a CI environment, set the `SUITECLOUD_CLI_ACCEPT_LICENSE` environment variable to `true` to suppress the license prompt. By setting this variable, you confirm that you have read and accepted the Oracle Free Use Terms and Conditions. For details, see the [License](#license) section.
 
 ```
-npm install -g --acceptSuiteCloudSDKLicense @oracle/suitecloud-cli
+SUITECLOUD_CLI_ACCEPT_LICENSE=true npm install -g @oracle/suitecloud-cli
+```
+
+If you use PowerShell, run:
+
+```
+$env:SUITECLOUD_CLI_ACCEPT_LICENSE = 'true'
+npm install -g @oracle/suitecloud-cli
 ```
 
 
@@ -86,6 +93,7 @@ Code-sign `suitecloud.exe` after building it before distributing it to other use
 |[`account:setup:ci`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_81134826821.html)|Sets up an account to use with SuiteCloud SDK and configures the default auth ID for the SuiteCloud project. It also allows you to select an existing auth ID for the SuiteCloud project. This command does not require browser-based login to NetSuite and is helpful for automated environments such as CI.|
 |[`file:create`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162810635242.html)|Creates SuiteScript files in the selected folder using the correct template with SuiteScript modules injected.|
 |[`file:import`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156041963273.html)|Imports files from an account to your account customization project.|
+|[`config:import`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1500042748.html)|Imports all features from an account to the current account customization project.|
 |[`file:list`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156042966488.html)|Lists the files in the File Cabinet of your account.|
 |[`file:upload`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_159066070687.html)|Uploads files from your project to an account.|
 |[`object:import`](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_156042181820.html)|Imports SDF custom objects from an account to your SuiteCloud project.|

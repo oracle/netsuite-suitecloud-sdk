@@ -4,6 +4,8 @@
  */
 'use strict';
 
+const SDK_VERSION = '2026.2.0';
+
 function loadContext({ osType, osRelease = '', powershellCaption = '' }) {
 	let ExecutionEnvironmentContext;
 	jest.isolateModules(() => {
@@ -19,6 +21,10 @@ function loadContext({ osType, osRelease = '', powershellCaption = '' }) {
 				return { stderr: 'openjdk version "17.0.6"' };
 			},
 		}));
+		jest.doMock('../package.json', () => ({
+			nsCompatibleVersion: '2026.1',
+			sdkFilename: `cli-${SDK_VERSION}.jar`,
+		}));
 		ExecutionEnvironmentContext = require('../src/ExecutionEnvironmentContext');
 	});
 	return ExecutionEnvironmentContext;
@@ -31,7 +37,7 @@ describe('ExecutionEnvironmentContext telemetry', () => {
 	it('uses the Java wire format and Mac OS X value', () => {
 		const Context = loadContext({ osType: 'Darwin' });
 		expect(new Context({ platform: 'VSCode', platformVersion: '1.99.0' }).toUserAgentString())
-			.toBe(`VSCode/1.99.0 MacOSX SuiteCloudSDK/2026.1.0 Java/17.0.6;${architecture}`);
+			.toBe(`VSCode/1.99.0 MacOSX SuiteCloudSDK/${SDK_VERSION} Java/17.0.6;${architecture}`);
 	});
 
 	it('uses the Windows product caption rather than the kernel version', () => {
@@ -41,6 +47,6 @@ describe('ExecutionEnvironmentContext telemetry', () => {
 			powershellCaption: 'Microsoft Windows Server 2025 Datacenter',
 		});
 		expect(new Context({ platform: 'SuiteCloudCLIforNode.js', platformVersion: 'v24.16.0' }).toUserAgentString())
-			.toBe(`SuiteCloudCLIforNode.js/v24.16.0 WindowsServer2025 SuiteCloudSDK/2026.1.0 Java/17.0.6;${architecture}`);
+			.toBe(`SuiteCloudCLIforNode.js/v24.16.0 WindowsServer2025 SuiteCloudSDK/${SDK_VERSION} Java/17.0.6;${architecture}`);
 	});
 });
