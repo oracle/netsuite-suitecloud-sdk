@@ -33,6 +33,27 @@ export type ImportFilesOperationResult =
 	| (SuccessResult<ImportFilesResult> & { data: ImportFilesResult })
 	| ErrorResult;
 
+export const UPLOAD_FILE_ACTION = {
+	CREATE: 'create',
+	UPDATE: 'update',
+} as const;
+
+export type UploadFileAction = typeof UPLOAD_FILE_ACTION[keyof typeof UPLOAD_FILE_ACTION];
+
+type UploadFileResultBase = {
+	file: { path: string };
+};
+
+export type UploadFileResult =
+	| (UploadFileResultBase & {
+		type: 'SUCCESS';
+		action?: UploadFileAction;
+	})
+	| (UploadFileResultBase & {
+		type: 'ERROR';
+		errorMessage: string;
+	});
+
 export type FileCommandAuthInput = {
 	hostName: string;
 	accessToken: string;
