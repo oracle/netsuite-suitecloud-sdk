@@ -341,7 +341,7 @@ class ControlPanelController {
 		}
 
 		const selection = await vscode.window.showInformationMessage(
-			this._presenter.formatNotification(SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeMessage),
+			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeMessage,
 			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeOpenPanelAction,
 			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeRemindAction,
 			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeDisableAction
