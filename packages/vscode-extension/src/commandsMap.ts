@@ -119,10 +119,10 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	},
 	opencontrolpanel: {
 		vscodeCommandId: 'suitecloud.opencontrolpanel',
-		vscodeCommandName: 'Open Dev Assist Control Panel',
+		vscodeCommandName: 'Open Developer Assistant Control Panel',
 	},
 	opendevassistfeedbackform: {
 		vscodeCommandId: 'suitecloud.opendevassistfeedbackform',
-		vscodeCommandName: 'Open DevAssist Feedback Form',
+		vscodeCommandName: 'Open Developer Assistant Feedback Form',
 	},
 };

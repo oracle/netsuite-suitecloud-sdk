@@ -16,6 +16,7 @@ const UI_STRINGS = Object.freeze(window.__SUITECLOUD_PANEL_STRINGS__);
 
 const byId = (id) => document.getElementById(id);
 const elements = {
+	initializationView: byId('initializationView'),
 	authId: byId('authId'),
 	authIdField: byId('authIdField'),
 	setupAccount: byId('setupAccount'),
@@ -25,17 +26,19 @@ const elements = {
 	statusBadge: byId('statusBadge'),
 	apiKeyRow: byId('apiKeyRow'),
 	apiKeyStatus: byId('apiKeyStatus'),
+	apiKeyStatusIcon: byId('apiKeyStatusIcon'),
+	apiKeyStatusText: byId('apiKeyStatusText'),
 	maskedApiKey: byId('maskedApiKey'),
 	copyApiKey: byId('copyApiKey'),
 	apiKeyCountdown: byId('apiKeyCountdown'),
 	lastError: byId('lastError'),
 	lastErrorRow: byId('lastErrorRow'),
-	clineCompatibility: byId('clineCompatibility'),
-	clineCompatibilityMessage: byId('clineCompatibilityMessage'),
+	clineInstalledIcon: byId('clineInstalledIcon'),
+	clineInstalledLabel: byId('clineInstalledLabel'),
+	clineSyncedIcon: byId('clineSyncedIcon'),
+	clineSyncedLabel: byId('clineSyncedLabel'),
+	clineStatusBadge: byId('clineStatusBadge'),
 	clineSyncMessage: byId('clineSyncMessage'),
-	clineStateIcon: byId('clineStateIcon'),
-	clineMarketplaceLink: byId('clineMarketplaceLink'),
-	clineDescription: byId('clineDescription'),
 	clineScope: byId('clineScope'),
 	providerDisclosure: byId('providerDisclosure'),
 	providerDisclosureSummary: byId('providerDisclosureSummary'),
@@ -48,11 +51,11 @@ const elements = {
 	startProxy: byId('startProxy'),
 	stopProxy: byId('stopProxy'),
 	openOutput: byId('openOutput'),
-	applyClineTooltip: byId('applyClineTooltip'),
-	applyCline: byId('applyCline'),
-	openClineChat: byId('openClineChat'),
+	clineActionTooltip: byId('clineActionTooltip'),
+	clineAction: byId('clineAction'),
 	toggleFeedback: byId('toggleFeedback'),
 	feedbackContent: byId('feedbackContent'),
+	closeFeedback: byId('closeFeedback'),
 	feedbackText: byId('feedbackText'),
 	submitFeedback: byId('submitFeedback'),
 	controlPanelContent: byId('controlPanelContent'),
@@ -61,6 +64,7 @@ const elements = {
 };
 
 let state = {
+	initializationStatus: 'loading',
 	isSdkReady: false,
 	authId: '',
 	port: 8181,
@@ -77,6 +81,7 @@ let state = {
 	disableWelcomeNotification: false,
 	clineScope: 'user',
 	authIds: [],
+	isClineInstalled: false,
 	isClineCompatible: false,
 	clineCompatibilityMessage: '',
 	isClineConfigInSync: false,
@@ -89,6 +94,7 @@ let apiKeyCountdownIntervalHandle = null;
 let panelStateLoaded = false;
 let feedbackExpanded = false;
 let lastAuthIdRefreshRequestAt = 0;
+let clineActionEventType = EVENTS.OPEN_CLINE_MARKETPLACE;
 
 function post(eventType, eventData) {
 	vscode.postMessage({ eventType, eventData });
@@ -218,56 +224,144 @@ function setStatusPill(status) {
 	elements.statusBadge.className = `statusPill ${status}`;
 }
 
-function renderCline(status) {
-	const isWorkspaceManualSetup = state.clineScope === 'workspace';
-	const isCompatible = !!state.isClineCompatible && !isWorkspaceManualSetup;
-	const isConfigured = isCompatible && !!state.isClineConfigInSync;
+function renderClineStatus(icon, label, isReady, readyLabel, notReadyLabel) {
+	icon.textContent = isReady ? '✓' : '×';
+	icon.className = `stateIcon ${isReady ? 'stateIconSuccess' : 'stateIconError'}`;
+	label.textContent = isReady ? readyLabel : notReadyLabel;
+}
 
-	elements.clineCompatibility.textContent = isConfigured ? 'ready' : 'not ready';
-	elements.clineCompatibility.className = `statusPill ${isConfigured ? 'ready' : ''}`;
+function getClineSyncDisabledReason({
+	isInstalled,
+	supportsSync,
+	isSynced,
+	isProxyAvailable,
+	hasApiKey
+}) {
+	if (!isInstalled) {
+		return UI_STRINGS.syncClineNotInstalledTitle;
+	}
+	if (!supportsSync) {
+		return UI_STRINGS.syncClineIncompatibleTitle;
+	}
+	if (isSynced) {
+		return UI_STRINGS.syncClineAlreadySyncedTitle;
+	}
+	if (!hasApiKey) {
+		return UI_STRINGS.syncClineMissingApiKeyTitle;
+	}
+	if (!isProxyAvailable) {
+		return UI_STRINGS.syncClineProxyUnavailableTitle;
+	}
+	return '';
+}
 
-	elements.clineStateIcon.textContent = isCompatible ? '✓' : '×';
-	elements.clineStateIcon.className = `stateIcon ${isCompatible ? 'stateIconSuccess' : 'stateIconError'}`;
+function getClineStatusMessage({
+	isInstalled,
+	supportsSync,
+	isSynced,
+	compatibilityMessage,
+	syncMessage
+}) {
+	if (!isInstalled || isSynced) {
+		return '';
+	}
+	return supportsSync
+		? syncMessage || ''
+		: compatibilityMessage || '';
+}
 
-	if (isConfigured) {
-		elements.clineCompatibilityMessage.textContent = 'Cline installed and configured.';
-	} else if (isCompatible) {
-		elements.clineCompatibilityMessage.textContent = 'Cline installed.';
-	} else if (isWorkspaceManualSetup) {
-		elements.clineCompatibilityMessage.textContent = 'Workspace setup requires manual provider configuration.';
-	} else {
-		elements.clineCompatibilityMessage.textContent = 'Cline not installed.';
+function getClineActionState({
+	isInstalled,
+	supportsSync,
+	isSynced,
+	isProxyAvailable,
+	hasApiKey
+}) {
+	if (!isInstalled) {
+		return {
+			label: 'Go to Marketplace',
+			disabledReason: '',
+			enabledTitle: 'Open Cline in the Extensions Marketplace.',
+			eventType: EVENTS.OPEN_CLINE_MARKETPLACE
+		};
 	}
 
-	elements.clineMarketplaceLink.classList.toggle('hidden', isCompatible || isWorkspaceManualSetup);
-	elements.clineDescription.classList.toggle('hidden', isConfigured);
-	elements.openClineChat.classList.toggle('hidden', !isConfigured);
-	elements.applyClineTooltip.classList.toggle('hidden', !isCompatible || isConfigured);
+	if (isSynced) {
+		return {
+			label: 'Open Cline',
+			disabledReason: isProxyAvailable ? '' : UI_STRINGS.openClineChatDisabledTitle,
+			enabledTitle: UI_STRINGS.openClineChatEnabledTitle,
+			eventType: EVENTS.OPEN_CLINE_CHAT
+		};
+	}
+
+	return {
+		label: 'Configure',
+		disabledReason: getClineSyncDisabledReason({
+			isInstalled,
+			supportsSync,
+			isSynced,
+			isProxyAvailable,
+			hasApiKey
+		}),
+		enabledTitle: UI_STRINGS.syncClineReadyTitle,
+		eventType: EVENTS.APPLY_CLINE_SETTINGS
+	};
+}
+
+function renderCline(status) {
+	const isInstalled = !!state.isClineInstalled;
+	const isWorkspaceManualSetup = state.clineScope === 'workspace';
+	const supportsSync = isInstalled && !!state.isClineCompatible && !isWorkspaceManualSetup;
+	const isSynced = !!state.isClineConfigInSync;
+
+	renderClineStatus(
+		elements.clineInstalledIcon,
+		elements.clineInstalledLabel,
+		isInstalled,
+		'Installed',
+		'Not Installed'
+	);
+	renderClineStatus(
+		elements.clineSyncedIcon,
+		elements.clineSyncedLabel,
+		isSynced,
+		'Configured',
+		'Not Configured'
+	);
+	const isReady = isInstalled && isSynced;
+	elements.clineStatusBadge.textContent = isReady ? 'ready' : 'not ready';
+	elements.clineStatusBadge.className = `statusPill${isReady ? ' ready' : ''}`;
 
 	const isClineProxyAvailable = status === 'running';
-	const applyDisabledReason = !isClineProxyAvailable
-		? UI_STRINGS.applyClineProxyUnavailableTitle
-		: !state.apiKeyExists
-			? UI_STRINGS.applyClineMissingApiKeyTitle
-			: !isCompatible
-			? UI_STRINGS.applyClineIncompatibleTitle
-			: '';
-	elements.applyCline.disabled = !!applyDisabledReason;
-	elements.applyCline.title = applyDisabledReason ? '' : UI_STRINGS.applyClineReadyTitle;
-	elements.applyCline.setAttribute(
+	const actionState = getClineActionState({
+		isInstalled,
+		supportsSync,
+		isSynced,
+		isProxyAvailable: isClineProxyAvailable,
+		hasApiKey: !!state.apiKeyExists
+	});
+	clineActionEventType = actionState.eventType;
+	elements.clineAction.textContent = actionState.label;
+	elements.clineAction.disabled = !!actionState.disabledReason;
+	elements.clineAction.title = actionState.disabledReason ? '' : actionState.enabledTitle;
+	elements.clineAction.setAttribute(
 		'aria-label',
-		applyDisabledReason ? `Apply settings. ${applyDisabledReason}` : 'Apply settings'
+		actionState.disabledReason
+			? `${actionState.label}. ${actionState.disabledReason}`
+			: actionState.label
 	);
-	setTooltip(elements.applyClineTooltip, applyDisabledReason);
+	setTooltip(elements.clineActionTooltip, actionState.disabledReason);
 
-	const canOpenCline = status === 'running' && isConfigured;
-	elements.openClineChat.disabled = !canOpenCline;
-	elements.openClineChat.title = canOpenCline
-		? UI_STRINGS.openClineChatEnabledTitle
-		: UI_STRINGS.openClineChatDisabledTitle;
-
-	elements.clineSyncMessage.textContent = state.clineConfigSyncMessage || '';
-	elements.clineSyncMessage.classList.toggle('hidden', !state.clineConfigSyncMessage || isConfigured);
+	const clineStatusMessage = getClineStatusMessage({
+		isInstalled,
+		supportsSync,
+		isSynced,
+		compatibilityMessage: state.clineCompatibilityMessage,
+		syncMessage: state.clineConfigSyncMessage
+	});
+	elements.clineSyncMessage.textContent = clineStatusMessage;
+	elements.clineSyncMessage.classList.toggle('hidden', !clineStatusMessage);
 }
 
 function updateFeedbackSubmitState() {
@@ -281,7 +375,7 @@ function updateFeedbackSubmitState() {
 		payload.rating <= 5;
 	elements.submitFeedback.disabled = !isRunning || !isComplete;
 	elements.submitFeedback.title = !isRunning
-		? 'Start the local service to send feedback.'
+		? 'Start the SuiteCloud Proxy to send feedback.'
 		: !isComplete
 			? 'Select a topic, choose a rating, and enter your feedback.'
 			: 'Send feedback.';
@@ -290,21 +384,33 @@ function updateFeedbackSubmitState() {
 function renderFeedback() {
 	updateFeedbackSubmitState();
 	elements.feedbackContent.classList.toggle('feedbackExpanded', feedbackExpanded);
+	elements.feedbackContent.setAttribute('aria-hidden', String(!feedbackExpanded));
 	elements.toggleFeedback.setAttribute('aria-expanded', String(feedbackExpanded));
-	elements.toggleFeedback.textContent = feedbackExpanded ? 'Hide feedback' : 'Share your feedback';
+	elements.toggleFeedback.textContent = 'Share your feedback';
+}
+
+function setFeedbackViewOpen(isOpen) {
+	feedbackExpanded = isOpen;
+	render();
+	if (isOpen) {
+		resizeFeedbackText();
+		elements.closeFeedback.focus();
+		return;
+	}
+	elements.toggleFeedback.focus();
 }
 
 function renderProviderDisclosure(isRunning) {
-	const disabledReason = 'Start the local service to enable this.';
+	const disabledReason = 'Start the SuiteCloud Proxy to enable this.';
 	elements.providerDisclosure.classList.toggle('disabled', !isRunning);
 	elements.providerDisclosureSummary.setAttribute('aria-disabled', String(!isRunning));
 	elements.providerDisclosureSummary.setAttribute(
 		'aria-label',
-		isRunning ? 'API provider settings' : `API provider settings. ${disabledReason}`
+		isRunning ? 'API provider configuration' : `API provider configuration. ${disabledReason}`
 	);
 	elements.providerDisclosureSummary.tabIndex = isRunning ? 0 : -1;
 	elements.providerDisclosureSummary.title = isRunning
-		? 'Show API provider settings'
+		? 'Show API provider configuration'
 		: '';
 	setTooltip(elements.providerDisclosure, isRunning ? '' : disabledReason);
 	if (!isRunning) {
@@ -313,6 +419,15 @@ function renderProviderDisclosure(isRunning) {
 }
 
 function render() {
+	const isInitializing = state.initializationStatus !== 'ready';
+	elements.initializationView.classList.toggle('hidden', !isInitializing);
+	elements.controlPanelContent.classList.toggle('hidden', isInitializing);
+	elements.controlPanelContent.setAttribute('aria-hidden', String(isInitializing));
+	elements.expandedViewInfo.classList.add('hidden');
+	if (isInitializing) {
+		return;
+	}
+
 	const status = String(state.proxyStatus || 'stopped').toLowerCase();
 	const isRunning = status === 'running';
 	renderFeedback();
@@ -367,7 +482,16 @@ function render() {
 
 	const hasApiKey = isSdkReady && !!state.apiKeyExists;
 	elements.apiKeyRow.classList.toggle('hasApiKey', hasApiKey);
-	elements.apiKeyStatus.classList.toggle('hidden', !hasApiKey);
+	elements.apiKeyStatusIcon.textContent = hasApiKey ? '✓' : '×';
+	elements.apiKeyStatusIcon.className =
+		`stateIcon ${hasApiKey ? 'stateIconSuccess' : 'stateIconError'}`;
+	elements.apiKeyStatusText.textContent = hasApiKey
+		? 'API key generated:'
+		: 'API key not generated';
+	elements.apiKeyStatus.setAttribute(
+		'aria-label',
+		hasApiKey ? 'API key generated' : 'API key not generated'
+	);
 	elements.maskedApiKey.textContent = hasApiKey
 		? state.maskedApiKey || UI_STRINGS.notResolved
 		: '';
@@ -377,24 +501,27 @@ function render() {
 		: 'Generate an API key.';
 	scheduleApiKeyCountdown();
 
-	elements.startProxy.classList.toggle('hidden', isRunning || isStopping);
+	const showStartProxy = !isRunning && !isStopping && hasApiKey;
+	elements.startProxy.classList.toggle('hidden', !showStartProxy);
 	elements.stopProxy.classList.toggle('hidden', !isRunning || !isOwnedProxy);
 	elements.startProxy.disabled = !isSdkReady || isStarting || !hasAuthAccounts || !state.authId || !state.apiKeyExists;
 	elements.startProxy.querySelector('span:last-child').textContent = isStarting ? 'Starting' : 'Start';
 	elements.startProxy.title = !isSdkReady
 		? 'Preparing SuiteCloud SDK...'
-		: 'Start local service';
+		: 'Start SuiteCloud Proxy';
 	elements.stopProxy.disabled = isStopping;
 	elements.stopProxy.querySelector('span:last-child').textContent = isStopping ? 'Stopping' : 'Stop';
-	elements.stopProxy.title = 'Stop proxy';
+	elements.stopProxy.title = 'Stop SuiteCloud Proxy';
 	elements.lastError.textContent = state.lastError || '';
 	elements.lastErrorRow.classList.toggle('hidden', !state.lastError);
 
 	renderCline(status);
 
 	const inSidebarMode = document.body.dataset.viewMode === 'sidebar';
-	const showExpandedMessage = inSidebarMode && !!state.expandedViewOpen;
-	elements.controlPanelContent.classList.toggle('hidden', showExpandedMessage);
+	const showExpandedMessage = !feedbackExpanded && inSidebarMode && !!state.expandedViewOpen;
+	const hideControlPanel = feedbackExpanded || showExpandedMessage;
+	elements.controlPanelContent.classList.toggle('hidden', hideControlPanel);
+	elements.controlPanelContent.setAttribute('aria-hidden', String(hideControlPanel));
 	elements.expandedViewInfo.classList.toggle('hidden', !showExpandedMessage);
 }
 
@@ -436,9 +563,7 @@ on(elements.copyApiKey, 'click', () => {
 		post(EVENTS.COPY_API_KEY);
 	}
 });
-on(elements.applyCline, 'click', () => post(EVENTS.APPLY_CLINE_SETTINGS));
-on(elements.clineMarketplaceLink, 'click', () => post(EVENTS.OPEN_CLINE_MARKETPLACE));
-on(elements.openClineChat, 'click', () => post(EVENTS.OPEN_CLINE_CHAT));
+on(elements.clineAction, 'click', () => post(clineActionEventType));
 on(elements.providerDisclosureSummary, 'click', (event) => {
 	if (elements.providerDisclosure.classList.contains('disabled')) {
 		event.preventDefault();
@@ -450,12 +575,9 @@ on(elements.providerDisclosure, 'toggle', () => {
 	}
 });
 on(elements.toggleFeedback, 'click', () => {
-	feedbackExpanded = !feedbackExpanded;
-	render();
-	if (feedbackExpanded) {
-		resizeFeedbackText();
-	}
+	setFeedbackViewOpen(true);
 });
+on(elements.closeFeedback, 'click', () => setFeedbackViewOpen(false));
 on(elements.expandView, 'click', () => post(EVENTS.OPEN_EXPANDED_VIEW));
 on(elements.submitFeedback, 'click', () => post(EVENTS.SUBMIT_FEEDBACK, getFeedbackPayload()));
 
@@ -472,13 +594,19 @@ document.querySelectorAll('input[name="topics"], input[name="rating"]').forEach(
 on(elements.disableWelcomeNotification, 'change', applyFormUpdate);
 on(elements.clineScope, 'change', applyFormUpdate);
 
+document.addEventListener('keydown', (event) => {
+	if (event.key === 'Escape' && feedbackExpanded) {
+		event.preventDefault();
+		setFeedbackViewOpen(false);
+	}
+});
+
 window.addEventListener('message', (event) => {
 	const message = event.data || {};
 	if (message.eventType === EVENTS.STATE_UPDATE) {
 		panelStateLoaded = true;
 		state = { ...state, ...(message.eventData || {}) };
 		render();
-		document.documentElement.classList.add('panelReady');
 		return;
 	}
 
@@ -489,4 +617,6 @@ window.addEventListener('message', (event) => {
 	}
 });
 
+render();
+document.documentElement.classList.add('panelReady');
 post(EVENTS.LOAD);

@@ -97,7 +97,7 @@ suite('Control Panel Proxy Service', () => {
 		assert.deepStrictEqual(createdInputs, [INPUT]);
 		assert.deepStrictEqual(proxy.startCalls, [{ authId: 'account', port: 8181 }]);
 		assert.deepStrictEqual(logs, [{
-			message: 'SuiteCloud proxy is listening on port 8181.',
+			message: 'SuiteCloud Proxy is listening on port 8181.',
 			isError: undefined,
 		}]);
 	});
@@ -117,12 +117,12 @@ suite('Control Panel Proxy Service', () => {
 		const proxy = new FakeProxy();
 		const { service } = createService(proxy, {
 			createProxy: () => {
-				throw new Error('Proxy implementation unavailable.');
+				throw new Error('SuiteCloud Proxy implementation unavailable.');
 			},
 		});
 
-		await assert.rejects(service.start(INPUT), /Proxy implementation unavailable/);
-		await assert.rejects(service.start(INPUT), /Proxy implementation unavailable/);
+		await assert.rejects(service.start(INPUT), /SuiteCloud Proxy implementation unavailable/);
+		await assert.rejects(service.start(INPUT), /SuiteCloud Proxy implementation unavailable/);
 		assert.strictEqual(service.isRunning, false);
 	});
 
@@ -137,7 +137,7 @@ suite('Control Panel Proxy Service', () => {
 		};
 		const { service, getUnexpectedStopCount } = createService(proxy);
 
-		await assert.rejects(service.start(INPUT), /Unable to start SuiteCloud proxy: Cannot bind proxy port/);
+		await assert.rejects(service.start(INPUT), /Unable to start the SuiteCloud Proxy: Cannot bind proxy port/);
 		assert.strictEqual(service.isRunning, false);
 		assert.strictEqual(proxy.stopCount, 1);
 		assert.strictEqual(getUnexpectedStopCount(), 0);

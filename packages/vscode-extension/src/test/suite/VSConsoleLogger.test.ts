@@ -17,10 +17,10 @@ suite('VS Console Logger', () => {
 		const devAssistLogger = new VSConsoleLogger(false, undefined, devAssistOutput);
 
 		commandLogger.info('Deploy completed.');
-		devAssistLogger.info('Developer Assistant proxy started.');
+		devAssistLogger.info('SuiteCloud Proxy started.');
 
 		assert.deepStrictEqual(commandMessages, ['Deploy completed.']);
-		assert.deepStrictEqual(devAssistMessages, ['Developer Assistant proxy started.']);
+		assert.deepStrictEqual(devAssistMessages, ['SuiteCloud Proxy started.']);
 	});
 
 	test('separates lifecycle sections without duplicate blank lines', () => {
@@ -28,22 +28,22 @@ suite('VS Console Logger', () => {
 		const logger = new VSConsoleLogger(true, '/workspace/sample-project', createOutputChannel(messages));
 
 		logger.startSection();
-		logger.info('[SuiteCloud Control Panel] Starting proxy.');
-		logger.info('Starting proxy process...');
+		logger.info('[SuiteCloud Proxy] Starting the SuiteCloud Proxy.');
+		logger.info('Starting the SuiteCloud Proxy...');
 		logger.endSection();
 		logger.startSection();
-		logger.error('[SuiteCloud Control Panel] Port is already in use.');
+		logger.error('[SuiteCloud Proxy] Port is already in use.');
 		logger.endSection();
 
 		assert.match(messages[0], /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} - sample-project$/);
 		assert.deepStrictEqual(messages.slice(1, 4), [
-			'[SuiteCloud Control Panel] Starting proxy.',
-			'Starting proxy process...',
+			'[SuiteCloud Proxy] Starting the SuiteCloud Proxy.',
+			'Starting the SuiteCloud Proxy...',
 			'',
 		]);
 		assert.match(messages[4], /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} - sample-project$/);
 		assert.deepStrictEqual(messages.slice(5), [
-			'[SuiteCloud Control Panel] Port is already in use.',
+			'[SuiteCloud Proxy] Port is already in use.',
 			'',
 		]);
 	});

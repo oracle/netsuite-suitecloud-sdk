@@ -55,6 +55,11 @@ export default class ClineConfigService {
 		this._sleep = sleep;
 	}
 
+	hasPendingConfig(): boolean {
+		const pendingConfig = this._storage.get<PendingClineConfig>(PENDING_CONFIG_STORAGE_KEY);
+		return !!pendingConfig?.baseUrl && !!pendingConfig.modelId;
+	}
+
 	async applyPendingConfig(
 		workspacePath: string,
 		resolveApiKey: () => Promise<string | undefined>

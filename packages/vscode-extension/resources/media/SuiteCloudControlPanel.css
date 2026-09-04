@@ -83,8 +83,26 @@ body[data-view-mode="sidebar"] .container {
   gap: 8px;
 }
 
+.initializationView {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.initializationView .codicon {
+  color: var(--vscode-progressBar-background);
+  font-size: 16px;
+}
+
 .feedbackContent {
   display: none;
+  width: 100%;
+  min-width: 0;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 body[data-view-mode="panel"] .container {
@@ -123,34 +141,43 @@ body[data-view-mode="panel"] .container {
     grid-column: 1 / -1;
   }
 
-  .feedbackContent.feedbackExpanded {
-    max-width: 520px;
-    margin-right: auto;
-    margin-left: auto;
-  }
 }
 
-body[data-view-mode="panel"] .feedbackContent.feedbackExpanded {
+.feedbackContent.feedbackExpanded {
   display: block;
-  margin-top: 12px;
+}
+
+.feedbackViewHeader {
+  margin-bottom: 18px;
+}
+
+.feedbackBackButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 16px;
+}
+
+.feedbackViewHeader h2 {
+  margin: 0 0 5px;
+  color: var(--vscode-foreground);
+  font-size: calc(var(--vscode-font-size) + 2px);
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.feedbackViewHeader p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.feedbackForm {
+  min-width: 0;
   padding: 14px;
-  border-radius: var(--radius);
-  background: var(--panel-card);
-}
-
-body[data-view-mode="sidebar"] .feedbackContent.feedbackExpanded {
-  display: block;
-  margin-top: 8px;
-  padding: 12px;
   border: 1px solid var(--panel-card-border);
   border-radius: var(--radius);
   background: var(--panel-card);
-}
-
-.feedbackCardHeading {
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--panel-card-border);
 }
 
 .panelCard {
@@ -424,10 +451,14 @@ textarea::placeholder {
 }
 
 .apiKeyRow {
-  display: flex;
+  display: grid;
   gap: var(--field-action-gap);
-  align-items: center;
   margin-top: 9px;
+}
+
+.apiKeyRow.hasApiKey {
+  display: flex;
+  align-items: center;
 }
 
 .apiKeyStatus {
@@ -439,11 +470,6 @@ textarea::placeholder {
   color: var(--muted);
 }
 
-.apiKeyStatusIcon {
-  flex: 0 0 auto;
-  color: var(--success);
-}
-
 .apiKeyStatusLabel {
   flex: 1 1 auto;
   min-width: 0;
@@ -453,11 +479,16 @@ textarea::placeholder {
 }
 
 .maskedApiKey {
+  margin-left: 3px;
   font-family: var(--vscode-editor-font-family);
 }
 
 .apiKeyButton {
   flex: 1 1 auto;
+}
+
+.apiKeyButton:not(.iconOnlyButton) {
+  width: 100%;
 }
 
 .apiKeyRow.hasApiKey .apiKeyButton {
@@ -550,6 +581,10 @@ input[type="checkbox"] {
   font-size: inherit;
 }
 
+.proxyDependency {
+  margin: -3px 0 9px;
+}
+
 .compactCheckbox {
   margin-top: 7px;
   font-size: inherit;
@@ -559,10 +594,6 @@ input[type="checkbox"] {
   display: inline-block;
   margin-top: 10px;
   font-size: inherit;
-}
-
-.compactLink {
-  margin-top: 3px;
 }
 
 .learnMoreLink {
@@ -584,12 +615,31 @@ body[data-view-mode="sidebar"] .expandButton {
   display: none;
 }
 
-.integrationStatus {
+.clineStatusList {
+  display: grid;
+  gap: 2px;
+}
+
+.clineStatusItem {
   display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  color: var(--muted);
-  font-size: inherit;
+  min-width: 0;
+  min-height: 26px;
+  align-items: center;
+  gap: 8px;
+}
+
+.clineStatusValue {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+.clineStatusLabel {
+  min-width: 0;
+  color: var(--vscode-foreground);
+  font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
 .stateIcon {
@@ -599,9 +649,8 @@ body[data-view-mode="sidebar"] .expandButton {
   flex: 0 0 14px;
   align-items: center;
   justify-content: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  font-size: 10px;
+  font-size: 15px;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -614,11 +663,10 @@ body[data-view-mode="sidebar"] .expandButton {
 }
 
 .integrationDescription {
-  margin: 9px 0 0;
+  margin: -2px 0 9px;
 }
 
-#applyClineTooltip,
-#openClineChat {
+.clineAction {
   margin-top: 9px;
 }
 
@@ -722,8 +770,7 @@ body[data-view-mode="sidebar"] .expandButton {
 }
 
 .fieldHint,
-.checkboxField span,
-.integrationStatus span:last-child {
+.checkboxField span {
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -836,21 +883,5 @@ textarea {
 
   .cardHeading {
     align-items: flex-start;
-  }
-}
-
-@media (max-width: 220px) {
-  .apiKeyRow {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .apiKeyRow.hasApiKey {
-    align-items: center;
-    flex-direction: row;
-  }
-
-  .apiKeyButton:not(.iconOnlyButton) {
-    width: 100%;
   }
 }

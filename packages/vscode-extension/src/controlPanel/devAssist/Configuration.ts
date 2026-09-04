@@ -45,6 +45,7 @@ export const createInitialPanelState = (
 ): SuiteCloudPanelState => {
 	const port = sanitizeProxyPort(preferences.port, defaults.localPort);
 	return {
+		initializationStatus: 'loading',
 		isSdkReady: false,
 		authId: preferences.authId || defaults.authId,
 		port,
@@ -66,6 +67,7 @@ export const createInitialPanelState = (
 		disableWelcomeNotification: preferences.disableWelcomeNotification,
 		clineScope: preferences.clineScope,
 		authIds: [],
+		isClineInstalled: false,
 		isClineCompatible: false,
 		clineCompatibilityMessage: null,
 		isClineConfigInSync: false,

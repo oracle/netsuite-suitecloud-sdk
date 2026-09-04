@@ -143,13 +143,13 @@ const handleSubmitFeedbackFormEvent = async (
 
 	feedbackFormPanel!.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.SUBMITTING_HTML);
 
-	// Send request to NetSuite Backend through Proxy
+	// Send the request to the NetSuite backend through the SuiteCloud Proxy.
 	try {
 		const currentProxySettings = getDevAssistCurrentSettings(extensionContext.workspaceState);
 		const requestBody = JSON.stringify(formData);
 		const devassistApiKey = await sdkApiKeyStorage.getProxyApiKeyFromSdkStorage();
 		if (!devassistApiKey) {
-			throw new Error('No SuiteCloud proxy API key is available in CLI secure storage.');
+			throw new Error('No SuiteCloud Proxy API key is available in CLI secure storage.');
 		}
 		const response = await fetch(`${PROXY_URL.SCHEME}${PROXY_URL.LOCALHOST_IP}:${currentProxySettings.localPort}${PROXY_URL.FEEDBACK_PATH}`, {
 			method: 'POST',
@@ -167,7 +167,7 @@ const handleSubmitFeedbackFormEvent = async (
 			feedbackFormPanel!.webview.html = renderFeedbackPage(FEEDBACK_FORM_FILE_NAMES.SUCCESS_HTML);
 		}
 		else {
-			// SERVER_ERROR (but proxy is running, a response was received)
+			// SERVER_ERROR (but the SuiteCloud Proxy is running and a response was received)
 			vsLogger.printTimestamp();
 			vsLogger.error(translationService.getMessage(DEVASSIST_SERVICE.FEEDBACK_FORM.SUBMITTING_EXTERNAL_ERROR, response.status.toString(), response.statusText));
 

@@ -25,7 +25,7 @@ export type {
 } from './IntegrationTypes';
 
 const CLINE_CONFIG_MISMATCH_MESSAGE =
-	'Cline uses different settings. Select Apply settings to configure it for Dev Assist.';
+	'Cline uses different settings. Select Configure to use it with SuiteCloud Developer Assistant.';
 
 export default class ClineIntegrationAdapter {
 	private readonly _fileStore: ClineFileStore;
@@ -43,7 +43,7 @@ export default class ClineIntegrationAdapter {
 		if (!dirExists) {
 			return {
 				compatible: false,
-				message: 'Cline storage directory was not found. Open Cline once before applying settings automatically.',
+				message: 'Cline storage directory was not found. Open Cline once before configuring it automatically.',
 			};
 		}
 
@@ -76,7 +76,7 @@ export default class ClineIntegrationAdapter {
 			return {
 				comparable: false,
 				inSync: false,
-				message: 'No API key available yet. Generate or rotate API key before checking Cline sync.',
+				message: 'No API key available yet. Generate or rotate the API key before checking Cline configuration.',
 			};
 		}
 
@@ -87,7 +87,7 @@ export default class ClineIntegrationAdapter {
 				return {
 					comparable: false,
 					inSync: false,
-					message: 'Cline providers settings are not available for sync comparison.',
+					message: 'Cline providers settings are not available for configuration comparison.',
 				};
 			}
 
@@ -160,7 +160,7 @@ export default class ClineIntegrationAdapter {
 			return {
 				comparable: false,
 				inSync: false,
-				message: 'Cline state/secrets are missing for sync comparison.',
+				message: 'Cline state/secrets are missing for configuration comparison.',
 			};
 		}
 

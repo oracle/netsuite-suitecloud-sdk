@@ -61,7 +61,7 @@ suite('Cline Integration Adapter', () => {
 		assert.strictEqual(result.inSync, false);
 		assert.strictEqual(
 			result.message,
-			'Cline uses different settings. Select Apply settings to configure it for Dev Assist.'
+			'Cline uses different settings. Select Configure to use it with SuiteCloud Developer Assistant.'
 		);
 	});
 

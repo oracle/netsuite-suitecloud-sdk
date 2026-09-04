@@ -31,6 +31,7 @@ suite('Control Panel Cline Compatibility Service', () => {
 
 		const result = await service.evaluate({ ...baseInput, isExtensionInstalled: false });
 
+		assert.strictEqual(result.isClineInstalled, false);
 		assert.strictEqual(result.isClineCompatible, false);
 		assert.strictEqual(result.clineCompatibilityMessage, 'Cline is not installed.');
 		assert.strictEqual(adapterCalled, false);
@@ -51,6 +52,7 @@ suite('Control Panel Cline Compatibility Service', () => {
 
 		const result = await service.evaluate({ ...baseInput, scope: 'workspace' });
 
+		assert.strictEqual(result.isClineInstalled, true);
 		assert.strictEqual(result.isClineCompatible, true);
 		assert.strictEqual(result.isClineConfigInSync, false);
 		assert.match(result.clineConfigSyncMessage || '', /Copy Base URL and Model ID/);
@@ -65,6 +67,7 @@ suite('Control Panel Cline Compatibility Service', () => {
 
 		const result = await service.evaluate(baseInput);
 
+		assert.strictEqual(result.isClineInstalled, true);
 		assert.strictEqual(result.isClineCompatible, false);
 		assert.strictEqual(result.clineCompatibilityMessage, 'Unsupported Cline version.');
 		assert.match(result.clineConfigSyncMessage || '', /Copy Base URL and API key manually/);
@@ -82,13 +85,14 @@ suite('Control Panel Cline Compatibility Service', () => {
 
 		const result = await service.evaluate({ ...baseInput, apiKey: undefined });
 
+		assert.strictEqual(result.isClineInstalled, true);
 		assert.strictEqual(result.isClineCompatible, true);
 		assert.strictEqual(result.isClineConfigInSync, false);
-		assert.match(result.clineConfigSyncMessage || '', /Generate or rotate API key/);
+		assert.match(result.clineConfigSyncMessage || '', /Generate an API key/);
 		assert.strictEqual(syncChecked, false);
 	});
 
-	test('reports the current config sync result', async () => {
+	test('reports the current configuration without a redundant message', async () => {
 		const service = new ClineCompatibilityService({
 			checkCompatibility: async () => ({ compatible: true, message: 'compatible' }),
 			checkConfigSync: async (input) => {
@@ -105,8 +109,28 @@ suite('Control Panel Cline Compatibility Service', () => {
 
 		const result = await service.evaluate(baseInput);
 
+		assert.strictEqual(result.isClineInstalled, true);
 		assert.strictEqual(result.isClineCompatible, true);
 		assert.strictEqual(result.isClineConfigInSync, true);
-		assert.strictEqual(result.clineConfigSyncMessage, 'Configuration is current.');
+		assert.strictEqual(result.clineConfigSyncMessage, null);
+	});
+
+	test('preserves an actionable message when configuration cannot be compared', async () => {
+		const service = new ClineCompatibilityService({
+			checkCompatibility: async () => ({ compatible: true, message: 'compatible' }),
+			checkConfigSync: async () => ({
+				comparable: false,
+				inSync: false,
+				message: 'Open Cline once before configuring it.',
+			}),
+		});
+
+		const result = await service.evaluate(baseInput);
+
+		assert.strictEqual(result.isClineConfigInSync, false);
+		assert.strictEqual(
+			result.clineConfigSyncMessage,
+			'Open Cline once before configuring it.'
+		);
 	});
 });

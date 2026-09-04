@@ -7,13 +7,18 @@
     http-equiv="Content-Security-Policy"
     content="default-src 'none'; img-src {{CSP_SOURCE}}; style-src {{CSP_SOURCE}} 'nonce-{{SCRIPT_NONCE}}'; font-src {{CSP_SOURCE}}; script-src 'nonce-{{SCRIPT_NONCE}}';"
   />
-  <title>SuiteCloud Dev Assist</title>
+  <title>SuiteCloud Developer Assistant</title>
   <style nonce="{{SCRIPT_NONCE}}">html { visibility: hidden; opacity: 0; }</style>
   <link rel="stylesheet" href="{{CODICONS_CSS}}" />
   <link rel="stylesheet" href="{{CSS_FILE.css}}" />
 </head>
 <body data-view-mode="{{WEBVIEW_MODE}}">
   <main class="container">
+    <section id="initializationView" class="initializationView" role="status" aria-live="polite">
+      <span class="codicon codicon-loading codicon-modifier-spin" aria-hidden="true"></span>
+      <span>Checking Developer Assistant setup...</span>
+    </section>
+
     <section id="expandedViewInfo" class="notice hidden">
       The full control panel is open in the editor area.
     </section>
@@ -21,9 +26,11 @@
     <div id="controlPanelContent" class="controlPanelContent">
       <section class="panelCard localServiceCard">
         <div class="cardHeading">
-          <h2>Local service</h2>
+          <h2>SuiteCloud Proxy</h2>
           <span id="statusBadge" class="statusPill">not running</span>
         </div>
+
+        <p class="fieldHint proxyDependency">SuiteCloud Developer Assistant requires the SuiteCloud Proxy.</p>
 
         <div id="authIdField" class="field">
           <label class="fieldLabel" for="authId">Auth ID</label>
@@ -55,9 +62,11 @@
         <p id="portValidation" class="inlineError hidden" role="alert"></p>
 
         <div id="apiKeyRow" class="apiKeyRow">
-          <div id="apiKeyStatus" class="apiKeyStatus hidden" aria-label="API key generated">
-            <span class="codicon codicon-pass apiKeyStatusIcon" aria-hidden="true"></span>
-            <span class="apiKeyStatusLabel">API key generated: <span id="maskedApiKey" class="maskedApiKey">Not resolved</span></span>
+          <div id="apiKeyStatus" class="apiKeyStatus" role="status" aria-live="polite">
+            <span id="apiKeyStatusIcon" class="stateIcon stateIconError" aria-hidden="true">×</span>
+            <span class="apiKeyStatusLabel">
+              <span id="apiKeyStatusText">API key not generated</span><span id="maskedApiKey" class="maskedApiKey"></span>
+            </span>
             <span id="apiKeyCountdown" class="apiKeyCountdown hidden" aria-label="Time left to copy API key"></span>
             <button id="copyApiKey" type="button" class="iconActionButton copyIconButton hidden" aria-label="Copy API key" title="Copy API key">
               <span class="codicon codicon-copy" aria-hidden="true"></span>
@@ -77,52 +86,9 @@
           <span class="codicon codicon-stop-circle" aria-hidden="true"></span>
           <span>Stop</span>
         </button>
-        <p id="lastErrorRow" class="inlineError hidden"><span id="lastError"></span></p>
-
-        <button id="openOutput" type="button" class="textButton serviceLogsButton">See service logs</button>
-
-      </section>
-
-      <section class="panelCard clineCard">
-        <div class="cardHeading">
-          <h2>Cline integration</h2>
-          <span id="clineCompatibility" class="statusPill">not ready</span>
-        </div>
-
-        <div class="integrationStatus">
-          <span id="clineStateIcon" class="stateIcon stateIconError" aria-hidden="true">×</span>
-          <span id="clineCompatibilityMessage">Cline not installed.</span>
-        </div>
-        <p id="clineSyncMessage" class="fieldHint hidden"></p>
-
-        <button
-          id="clineMarketplaceLink"
-          class="helpLink compactLink"
-          type="button"
-        >
-          Install on Marketplace
-        </button>
-
-        <div id="applyClineTooltip" class="controlTooltipHost hidden">
-          <button id="applyCline" type="button" class="primaryButton fullWidthButton">Apply settings</button>
-        </div>
-
-        <p id="clineDescription" class="fieldHint integrationDescription">
-          For convenience, we provide quick set up in Cline. You can use any other OpenAI-compatible coding tool that supports custom API provider configuration.
-        </p>
-
-        <button id="openClineChat" type="button" class="primaryButton fullWidthButton hidden">Open Cline Chat</button>
-
-        <label class="srOnly" aria-hidden="true">
-          Cline config mode
-          <select id="clineScope" tabindex="-1">
-            <option value="user">Global Cline Config</option>
-            <option value="workspace">Workspace Manual Setup</option>
-          </select>
-        </label>
 
         <details id="providerDisclosure" class="providerDisclosure disabled">
-          <summary id="providerDisclosureSummary" aria-disabled="true" tabindex="-1">API provider settings</summary>
+          <summary id="providerDisclosureSummary" aria-disabled="true" tabindex="-1">API provider configuration</summary>
           <dl class="providerSettings">
             <div class="providerField">
               <dt>API Provider</dt>
@@ -142,6 +108,52 @@
             </div>
           </dl>
         </details>
+
+        <p id="lastErrorRow" class="inlineError hidden"><span id="lastError"></span></p>
+
+        <button id="openOutput" type="button" class="textButton serviceLogsButton">See Proxy logs</button>
+
+      </section>
+
+      <section class="panelCard clineCard">
+        <div class="cardHeading">
+          <h2>Cline extension</h2>
+          <span id="clineStatusBadge" class="statusPill" role="status" aria-live="polite">not ready</span>
+        </div>
+
+        <p class="fieldHint integrationDescription">
+          For convenience, quick Cline setup is provided. You can use any other OpenAI-compatible coding tool that supports custom API provider configuration (see above).
+        </p>
+
+        <div class="clineStatusList" role="list" aria-label="Cline Extension status" aria-live="polite">
+          <div class="clineStatusItem" role="listitem">
+            <div class="clineStatusValue">
+              <span id="clineInstalledIcon" class="stateIcon stateIconError" aria-hidden="true">×</span>
+              <span id="clineInstalledLabel" class="clineStatusLabel">Not Installed</span>
+            </div>
+          </div>
+          <div class="clineStatusItem" role="listitem">
+            <div class="clineStatusValue">
+              <span id="clineSyncedIcon" class="stateIcon stateIconError" aria-hidden="true">×</span>
+              <span id="clineSyncedLabel" class="clineStatusLabel">Not Configured</span>
+            </div>
+          </div>
+        </div>
+
+        <p id="clineSyncMessage" class="fieldHint hidden" role="status"></p>
+
+        <div id="clineActionTooltip" class="controlTooltipHost clineAction">
+          <button id="clineAction" type="button" class="primaryButton fullWidthButton">Go to Marketplace</button>
+        </div>
+
+        <label class="srOnly" aria-hidden="true">
+          Cline config mode
+          <select id="clineScope" tabindex="-1">
+            <option value="user">Global Cline Config</option>
+            <option value="workspace">Workspace Manual Setup</option>
+          </select>
+        </label>
+
       </section>
 
       <div class="advancedPreferences panelPreferences">
@@ -162,51 +174,59 @@
       <button id="expandView" type="button" class="textButton expandButton">Open expanded view</button>
     </div>
 
-    <section id="feedbackContent" class="panelCard feedbackContent">
-      <div class="cardHeading feedbackCardHeading">
-        <h2>Feedback</h2>
-      </div>
-      <fieldset class="feedbackTopics">
-        <legend class="feedbackFieldLabel">Your feedback is about</legend>
-        <label class="checkboxField feedbackOption">
-          <input type="checkbox" name="topics" value="CodeExplanation" />
-          <span>Code explanation</span>
-        </label>
-        <label class="checkboxField feedbackOption">
-          <input type="checkbox" name="topics" value="SDFObjectGeneration" />
-          <span>SDF custom objects generation</span>
-        </label>
-        <label class="checkboxField feedbackOption">
-          <input type="checkbox" name="topics" value="SuiteScriptCodeGeneration" />
-          <span>SuiteScript code generation</span>
-        </label>
-        <label class="checkboxField feedbackOption">
-          <input type="checkbox" name="topics" value="UnitTesting" />
-          <span>Unit testing</span>
-        </label>
-        <label class="checkboxField feedbackOption">
-          <input type="checkbox" name="topics" value="Other" />
-          <span>Other</span>
-        </label>
-      </fieldset>
+    <section id="feedbackContent" class="feedbackContent" aria-labelledby="feedbackTitle" aria-hidden="true">
+      <header class="feedbackViewHeader">
+        <button id="closeFeedback" type="button" class="textButton feedbackBackButton" aria-label="Back to Developer Assistant">
+          <span class="codicon codicon-arrow-left" aria-hidden="true"></span>
+          <span>Back</span>
+        </button>
+        <h2 id="feedbackTitle">Share your feedback</h2>
+        <p>Tell us about your experience with Developer Assistant.</p>
+      </header>
 
-      <p id="feedbackRatingLabel" class="feedbackFieldLabel ratingHeading">Please rate your experience</p>
-      <div class="starRating" role="radiogroup" aria-labelledby="feedbackRatingLabel">
-        <input type="radio" id="feedbackRating5" name="rating" value="5" />
-        <label for="feedbackRating5" aria-label="5 stars"></label>
-        <input type="radio" id="feedbackRating4" name="rating" value="4" />
-        <label for="feedbackRating4" aria-label="4 stars"></label>
-        <input type="radio" id="feedbackRating3" name="rating" value="3" />
-        <label for="feedbackRating3" aria-label="3 stars"></label>
-        <input type="radio" id="feedbackRating2" name="rating" value="2" />
-        <label for="feedbackRating2" aria-label="2 stars"></label>
-        <input type="radio" id="feedbackRating1" name="rating" value="1" />
-        <label for="feedbackRating1" aria-label="1 star"></label>
-      </div>
+      <div class="feedbackForm">
+        <fieldset class="feedbackTopics">
+          <legend class="feedbackFieldLabel">Your feedback is about</legend>
+          <label class="checkboxField feedbackOption">
+            <input type="checkbox" name="topics" value="CodeExplanation" />
+            <span>Code explanation</span>
+          </label>
+          <label class="checkboxField feedbackOption">
+            <input type="checkbox" name="topics" value="SDFObjectGeneration" />
+            <span>SDF custom objects generation</span>
+          </label>
+          <label class="checkboxField feedbackOption">
+            <input type="checkbox" name="topics" value="SuiteScriptCodeGeneration" />
+            <span>SuiteScript code generation</span>
+          </label>
+          <label class="checkboxField feedbackOption">
+            <input type="checkbox" name="topics" value="UnitTesting" />
+            <span>Unit testing</span>
+          </label>
+          <label class="checkboxField feedbackOption">
+            <input type="checkbox" name="topics" value="Other" />
+            <span>Other</span>
+          </label>
+        </fieldset>
 
-      <label class="srOnly" for="feedbackText">How can we improve it?</label>
-      <textarea id="feedbackText" maxlength="1000" rows="7" placeholder="How can we improve it?"></textarea>
-      <button id="submitFeedback" type="button" class="primaryButton fullWidthButton">Send feedback</button>
+        <p id="feedbackRatingLabel" class="feedbackFieldLabel ratingHeading">Please rate your experience</p>
+        <div class="starRating" role="radiogroup" aria-labelledby="feedbackRatingLabel">
+          <input type="radio" id="feedbackRating5" name="rating" value="5" />
+          <label for="feedbackRating5" aria-label="5 stars"></label>
+          <input type="radio" id="feedbackRating4" name="rating" value="4" />
+          <label for="feedbackRating4" aria-label="4 stars"></label>
+          <input type="radio" id="feedbackRating3" name="rating" value="3" />
+          <label for="feedbackRating3" aria-label="3 stars"></label>
+          <input type="radio" id="feedbackRating2" name="rating" value="2" />
+          <label for="feedbackRating2" aria-label="2 stars"></label>
+          <input type="radio" id="feedbackRating1" name="rating" value="1" />
+          <label for="feedbackRating1" aria-label="1 star"></label>
+        </div>
+
+        <label class="srOnly" for="feedbackText">How can we improve it?</label>
+        <textarea id="feedbackText" maxlength="1000" rows="7" placeholder="How can we improve it?"></textarea>
+        <button id="submitFeedback" type="button" class="primaryButton fullWidthButton">Send feedback</button>
+      </div>
     </section>
   </main>
 

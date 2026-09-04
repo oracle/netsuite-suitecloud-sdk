@@ -5,4 +5,4 @@ The control panel is where you connect SuiteCloud Developer Assistant to a NetSu
 1. Select the **SuiteCloud** icon in the Activity Bar on the left side of VS Code.
 2. Find **Developer Assistant Control Panel**.
 
-You are in the right place when you can see the **Local service** and **Cline integration** sections.
+You are in the right place when you can see the **SuiteCloud Proxy** and **Cline Extension** sections.

@@ -14,6 +14,7 @@ import {
 import { SuiteCloudPanelState } from '../../controlPanel/devAssist/State';
 
 const createState = (overrides: Partial<SuiteCloudPanelState> = {}): SuiteCloudPanelState => ({
+	initializationStatus: 'ready',
 	isSdkReady: true,
 	authId: 'prod-123',
 	port: 8181,
@@ -34,6 +35,7 @@ const createState = (overrides: Partial<SuiteCloudPanelState> = {}): SuiteCloudP
 	autoStartProxyOnStartup: false,
 	clineScope: 'workspace',
 	authIds: [],
+	isClineInstalled: false,
 	isClineCompatible: false,
 	clineCompatibilityMessage: null,
 	isClineConfigInSync: false,

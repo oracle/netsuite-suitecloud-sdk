@@ -28,7 +28,7 @@ suite('SuiteCloud Panel Error Formatter', () => {
 
 	test('keeps missing API key guidance concise and actionable', () => {
 		const message =
-			'No API key is available. Generate an API key in the control panel before starting the local service.';
+			'No API key is available. Generate an API key in the control panel before starting the SuiteCloud Proxy.';
 
 		assert.strictEqual(formatProxyStartError(message, () => 'unused'), message);
 	});

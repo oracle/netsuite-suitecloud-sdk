@@ -100,7 +100,9 @@ export default class Presenter {
 				}
 			},
 			(error) => {
-				this.error(`Unable to show proxy startup error notification: ${String(error)}`);
+				this.error(
+					`Unable to show the SuiteCloud Proxy startup error notification: ${String(error)}`
+				);
 			}
 		);
 	}
@@ -125,7 +127,7 @@ export default class Presenter {
 	}
 
 	setStartingStatus(): void {
-		this._statusBarItem.text = '$(sync~spin) SuiteCloud: starting proxy';
+		this._statusBarItem.text = '$(sync~spin) SuiteCloud: Proxy starting';
 		this._showStatusBarItem();
 	}
 
@@ -135,7 +137,7 @@ export default class Presenter {
 			'',
 			'API Provider: OpenAI Compatible',
 			`Base URL: ${baseUrl}`,
-			'API Key: Generate or rotate the key in the Dev Assist Control Panel, then copy it.',
+			'API Key: Generate or rotate the key in the Developer Assistant Control Panel, then copy it.',
 			`Model ID: ${modelId}`,
 		];
 		const contentWidth = Math.max(...settings.map((line) => line.length));
