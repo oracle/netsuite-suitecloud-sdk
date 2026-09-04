@@ -32,12 +32,14 @@ suite('SuiteCloud Panel Configuration', () => {
 		);
 
 		assert.strictEqual(state.authId, 'saved-auth');
+		assert.strictEqual(state.initializationStatus, 'loading');
 		assert.strictEqual(state.port, 9000);
 		assert.strictEqual(state.baseUrl, 'http://127.0.0.1:9000/api/internal/devassist');
 		assert.strictEqual(state.proxyStatus, 'stopped');
 		assert.strictEqual(state.autoStartProxyOnStartup, true);
 		assert.strictEqual(state.disableWelcomeNotification, true);
 		assert.strictEqual(state.apiKeyExists, false);
+		assert.strictEqual(state.isClineInstalled, false);
 	});
 
 	test('rejects missing and unconfigured Auth IDs', () => {

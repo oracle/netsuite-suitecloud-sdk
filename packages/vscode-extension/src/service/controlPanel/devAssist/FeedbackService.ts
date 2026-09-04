@@ -76,7 +76,9 @@ export default class FeedbackService {
 			});
 		} catch (error) {
 			if (abortController.signal.aborted) {
-				throw new Error('Feedback submit timed out. Verify the proxy is running and retry.');
+				throw new Error(
+					'Feedback submit timed out. Verify the SuiteCloud Proxy is running and retry.'
+				);
 			}
 			throw error;
 		} finally {

@@ -188,7 +188,7 @@ class ControlPanelController {
 				});
 				this._presenter.setStoppedStatus();
 				this._postStateUpdate();
-				this._presenter.showError('Proxy stopped unexpectedly.');
+				this._presenter.showError('SuiteCloud Proxy stopped unexpectedly.');
 			},
 			refreshAuthorization: (authId) => this._cliService.refreshAuthorization(authId),
 		});
@@ -398,21 +398,36 @@ class ControlPanelController {
 	}
 
 	private async _handleLoad(): Promise<void> {
-		await this._ensureSdkDependenciesReady();
+		if (this._state.initializationStatus === 'ready') {
+			this._postStateUpdate();
+		}
+
 		const loadErrors: string[] = [];
+		let sdkDependenciesAvailable = true;
+
 		try {
-			await this._refreshAuthIds();
+			await this._ensureSdkDependenciesReady();
 		} catch (error) {
-			this._state.authIds = [];
+			sdkDependenciesAvailable = false;
 			loadErrors.push(error instanceof Error ? error.message : String(error));
 		}
 
-		try {
-			await this._refreshApiKeyAndCompatibility();
-		} catch (error) {
-			loadErrors.push(error instanceof Error ? error.message : String(error));
+		if (sdkDependenciesAvailable) {
+			try {
+				await this._refreshAuthIds();
+			} catch (error) {
+				this._state.authIds = [];
+				loadErrors.push(error instanceof Error ? error.message : String(error));
+			}
+
+			try {
+				await this._refreshApiKeyAndCompatibility();
+			} catch (error) {
+				loadErrors.push(error instanceof Error ? error.message : String(error));
+			}
 		}
 
+		this._state.initializationStatus = 'ready';
 		this._postStateUpdate();
 		if (loadErrors.length > 0) {
 			this._presenter.showError(loadErrors.join('\n'));
@@ -521,7 +536,7 @@ class ControlPanelController {
 
 	private async _submitFeedback(payload: SuiteCloudPanelSubmitFeedbackPayload): Promise<void> {
 		if (!this._isProxyAvailable()) {
-			throw new Error('Start proxy before submitting feedback.');
+			throw new Error('Start the SuiteCloud Proxy before submitting feedback.');
 		}
 
 		const apiKey = await this._resolveApiKeyIgnoringReadErrors();

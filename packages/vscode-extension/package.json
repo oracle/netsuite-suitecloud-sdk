@@ -13,10 +13,6 @@
 	"license": "UPL-1.0",
 	"private": true,
 	"version": "4.0.0",
-	"nsCompatibleVersion": "2026.2",
-	"sdkDownloadUrl": "https://system.netsuite.com/download/suitecloud-sdk/26.2",
-	"sdkFilename": "cli-2026.2.0.jar",
-	"sdkSha256": "5ff6363cffd2f66c76974425521a0ad1b5cb49f0fa5bfd766d09bee3a0994bc0",
 	"icon": "resources/extension_icon_dark.png",
 	"repository": {
 		"type": "git",
@@ -112,7 +108,7 @@
 			},
 			{
 				"command": "suitecloud.opencontrolpanel",
-				"title": "Open Dev Assist Control Panel",
+				"title": "Open Developer Assistant Control Panel",
 				"category": "SuiteCloud"
 			},
 			{
@@ -122,7 +118,7 @@
 			},
 			{
 				"command": "suitecloud.opendevassistfeedbackform",
-				"title": "Open DevAssist Feedback Form",
+				"title": "Open Developer Assistant Feedback Form",
 				"category": "SuiteCloud",
 				"enablement": "false"
 			}
@@ -140,7 +136,7 @@
 			"suitecloud": [
 				{
 					"id": "suitecloud.devAssistControlPanelView",
-					"name": "Developer Assistant Control Panel",
+					"name": "Developer Assistant",
 					"type": "webview"
 				}
 			]
@@ -165,15 +161,15 @@
 					{
 						"id": "suitecloudControlPanel.auth",
 						"title": "Choose an account and create an API key",
-						"description": "Select a NetSuite account and generate the API key required by the local service.",
+						"description": "Select a NetSuite account and generate the API key required by the SuiteCloud Proxy.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-auth.md"
 						}
 					},
 					{
 						"id": "suitecloudControlPanel.runtime",
-						"title": "Start the local service",
-						"description": "Start the connection between your AI coding tool and Developer Assistant.",
+						"title": "Start the SuiteCloud Proxy",
+						"description": "Start the Proxy required to connect your AI coding tool to Developer Assistant.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-runtime.md"
 						}

@@ -116,7 +116,7 @@ export default class ProxyService {
 
 	async start(input: StartProxyInput): Promise<void> {
 		if (this._proxy || this._isStarting || this._isRunning) {
-			throw new Error('SuiteCloud Developer Assistant proxy is already running.');
+			throw new Error('SuiteCloud Proxy is already running.');
 		}
 		if (await this._dependencies.isPortInUse(input.port)) {
 			throw new Error(
@@ -140,7 +140,7 @@ export default class ProxyService {
 				readiness.promise,
 			]);
 			this._isRunning = true;
-			this._callbacks.onLog(`SuiteCloud proxy is listening on port ${input.port}.`);
+			this._callbacks.onLog(`SuiteCloud Proxy is listening on port ${input.port}.`);
 		} catch (error) {
 			if (proxy) {
 				await this._stopAfterFailedStart(proxy);
@@ -180,7 +180,7 @@ export default class ProxyService {
 		proxy.on(
 			SuiteCloudAuthProxyEvents.PROXY_ERROR.DEFAULT,
 			(payload: SuiteCloudAuthProxyEventPayload) => {
-				const error = this._eventError(payload, 'SuiteCloud proxy failed to start.');
+				const error = this._eventError(payload, 'SuiteCloud Proxy failed to start.');
 				if (this._isStarting && !this._isRunning) {
 					readiness.reject(error);
 					return;
@@ -209,7 +209,7 @@ export default class ProxyService {
 	}
 
 	private readonly _logProxyError = (payload: SuiteCloudAuthProxyEventPayload): void => {
-		this._callbacks.onLog(this._eventError(payload, 'SuiteCloud proxy error.').message, true);
+		this._callbacks.onLog(this._eventError(payload, 'SuiteCloud Proxy error.').message, true);
 	};
 
 	private async _handleAuthorizationRefresh(
@@ -254,7 +254,7 @@ export default class ProxyService {
 			if (!settled) {
 				settled = true;
 				rejectPromise(
-					new Error('Timed out while waiting for SuiteCloud Developer Assistant proxy to become ready.')
+					new Error('Timed out while waiting for the SuiteCloud Proxy to become ready.')
 				);
 			}
 		}, STARTUP_TIMEOUT_MS);
@@ -312,7 +312,7 @@ export default class ProxyService {
 	}
 
 	private _createStartError(error: unknown): Error {
-		return new Error(`Unable to start SuiteCloud proxy: ${this._errorMessage(error)}`);
+		return new Error(`Unable to start the SuiteCloud Proxy: ${this._errorMessage(error)}`);
 	}
 
 	private _errorMessage(error: unknown): string {

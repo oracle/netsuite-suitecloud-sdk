@@ -80,7 +80,7 @@ suite('Control Panel SDK API Key Storage', () => {
 			async () => createActionResult(true, ' ')
 		);
 
-		await assert.rejects(storage.generateProxyApiKey(), /Generated proxy API key is empty/);
+		await assert.rejects(storage.generateProxyApiKey(), /Generated SuiteCloud Proxy API key is empty/);
 	});
 
 	test('reports a plain SDK read error without requiring isSuccess()', async () => {

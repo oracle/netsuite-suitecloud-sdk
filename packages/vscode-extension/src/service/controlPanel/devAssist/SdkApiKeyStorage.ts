@@ -51,7 +51,7 @@ export default class SdkApiKeyStorage implements ApiKeyStorage {
 		const readResult = await this._readStoredApiKey();
 		if (readResult.status !== 'SUCCESS' || typeof readResult.data !== 'string') {
 			throw new Error(
-				readResult.errorMessages.join('\n') || 'Unable to read proxy API key storage.'
+				readResult.errorMessages.join('\n') || 'Unable to read SuiteCloud Proxy API key storage.'
 			);
 		}
 		const apiKey = new ClientAPIKeyObjectWrapper(readResult.data).getDefaultKeyValue();
@@ -62,13 +62,13 @@ export default class SdkApiKeyStorage implements ApiKeyStorage {
 		const result = await this._generateApiKey();
 		if (!result.isSuccess()) {
 			throw new Error(
-				result.errorMessages?.join('\n') || 'Unable to generate and persist proxy API key.'
+				result.errorMessages?.join('\n') || 'Unable to generate and persist the SuiteCloud Proxy API key.'
 			);
 		}
 
 		const apiKey = result.data?.proxyAPIKey;
 		if (typeof apiKey !== 'string' || !apiKey.trim()) {
-			throw new Error('Generated proxy API key is empty.');
+			throw new Error('Generated SuiteCloud Proxy API key is empty.');
 		}
 		return apiKey.trim();
 	}

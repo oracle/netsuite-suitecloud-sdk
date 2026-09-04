@@ -8,6 +8,7 @@ import { ClineScope, SuiteCloudPanelState } from '../../../../controlPanel/devAs
 
 type ClineCompatibilityState = Pick<
 	SuiteCloudPanelState,
+	| 'isClineInstalled'
 	| 'isClineCompatible'
 	| 'clineCompatibilityMessage'
 	| 'isClineConfigInSync'
@@ -38,6 +39,7 @@ export default class ClineCompatibilityService {
 	async evaluate(input: ClineCompatibilityInput): Promise<ClineCompatibilityState> {
 		if (!input.isExtensionInstalled) {
 			return {
+				isClineInstalled: false,
 				isClineCompatible: false,
 				clineCompatibilityMessage: 'Cline is not installed.',
 				isClineConfigInSync: false,
@@ -47,12 +49,13 @@ export default class ClineCompatibilityService {
 
 		if (input.scope === 'workspace') {
 			return {
+				isClineInstalled: true,
 				isClineCompatible: true,
 				clineCompatibilityMessage:
 					'Workspace Manual Setup is copy-only. Cline provider config is global in supported Cline versions.',
 				isClineConfigInSync: false,
 				clineConfigSyncMessage:
-					'Copy Base URL and Model ID from Proxy Status, then copy the visible API key after rotating it if needed.',
+					'Copy Base URL and Model ID from the SuiteCloud Proxy section, then copy the visible API key after rotating it if needed.',
 			};
 		}
 
@@ -62,6 +65,7 @@ export default class ClineCompatibilityService {
 		);
 		if (!compatibility.compatible) {
 			return {
+				isClineInstalled: true,
 				isClineCompatible: false,
 				clineCompatibilityMessage: compatibility.message,
 				isClineConfigInSync: false,
@@ -72,11 +76,12 @@ export default class ClineCompatibilityService {
 
 		if (!input.apiKey) {
 			return {
+				isClineInstalled: true,
 				isClineCompatible: true,
 				clineCompatibilityMessage: 'Automatic Cline update is supported on this machine.',
 				isClineConfigInSync: false,
 				clineConfigSyncMessage:
-					'Generate or rotate API key to enable automatic Cline sync checks.',
+					'Generate an API key to check and configure Cline settings.',
 			};
 		}
 
@@ -88,10 +93,11 @@ export default class ClineCompatibilityService {
 			modelId: input.modelId,
 		});
 		return {
+			isClineInstalled: true,
 			isClineCompatible: true,
 			clineCompatibilityMessage: 'Automatic Cline update is supported on this machine.',
 			isClineConfigInSync: syncResult.comparable && syncResult.inSync,
-			clineConfigSyncMessage: syncResult.message,
+			clineConfigSyncMessage: syncResult.comparable ? null : syncResult.message,
 		};
 	}
 }

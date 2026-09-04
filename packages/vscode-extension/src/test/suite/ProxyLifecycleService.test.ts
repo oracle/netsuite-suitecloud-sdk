@@ -85,7 +85,7 @@ suite('Control Panel Proxy Lifecycle Service', () => {
 
 		await assert.rejects(
 			new ProxyLifecycleService(proxy).start(input),
-			/bundled @oracle\/suitecloud-cli version \(3\.1\.0\).*proxy service/
+			/bundled @oracle\/suitecloud-cli version \(3\.1\.0\).*SuiteCloud Proxy/
 		);
 		assert.strictEqual(startingEmitted, false);
 	});

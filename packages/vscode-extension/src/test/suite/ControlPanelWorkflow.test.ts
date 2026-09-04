@@ -121,7 +121,7 @@ suite('Control Panel Workflows', () => {
 		assert.strictEqual(state.proxyStatus, 'stopped');
 	});
 
-	test('applies and verifies Cline settings before reporting success', async () => {
+	test('keeps Cline unconfigured until extensions restart', async () => {
 		const state = createState();
 		state.proxyStatus = 'running';
 		const calls: string[] = [];
@@ -134,6 +134,7 @@ suite('Control Panel Workflows', () => {
 					calls.push('evaluateCompatibility');
 					compatibilityApiKey = input.apiKey;
 					return {
+						isClineInstalled: true,
 						isClineCompatible: true,
 						clineCompatibilityMessage: 'compatible',
 						isClineConfigInSync: true,
@@ -142,6 +143,7 @@ suite('Control Panel Workflows', () => {
 				},
 			} as any,
 			configService: {
+				hasPendingConfig: () => true,
 				applyPanelConfig: async () => {
 					calls.push('applyPanelConfig');
 					return { kind: 'applied' };
@@ -172,7 +174,12 @@ suite('Control Panel Workflows', () => {
 		await workflow.applySettings();
 
 		assert.strictEqual(compatibilityApiKey, 'resolved-secret');
-		assert.strictEqual(workflow.appliedInSession, true);
+		assert.strictEqual(state.isClineConfigInSync, false);
+		assert.strictEqual(
+			state.clineConfigSyncMessage,
+			'Restart VS Code extensions to finish configuring Cline.'
+		);
+		assert.strictEqual(workflow.appliedInSession, false);
 		assert.deepStrictEqual(calls, [
 			'applyPanelConfig',
 			'evaluateCompatibility',
@@ -180,7 +187,57 @@ suite('Control Panel Workflows', () => {
 			'confirmExtensionRestart',
 			'showSuccess',
 		]);
-		assert.match(successMessages[0], /updated and verified/);
+		assert.match(successMessages[0], /saved.*Restart VS Code extensions/);
+	});
+
+	test('marks Cline configured after pending settings are verified on restart', async () => {
+		const state = createState();
+		const calls: string[] = [];
+		const workflow = new ClineWorkflow({
+			chatOpener: {} as any,
+			compatibilityService: {
+				evaluate: async () => {
+					calls.push('evaluateCompatibility');
+					return {
+						isClineInstalled: true,
+						isClineCompatible: true,
+						clineCompatibilityMessage: 'compatible',
+						isClineConfigInSync: true,
+						clineConfigSyncMessage: null,
+					};
+				},
+			} as any,
+			configService: {
+				hasPendingConfig: () => false,
+				applyPendingConfig: async () => {
+					calls.push('applyPendingConfig');
+					return true;
+				},
+			} as any,
+			extensionHostRestartService: {} as any,
+			globalState: { update: async () => undefined },
+			presenter: { info: () => calls.push('info') } as any,
+			proxyWorkflow: {} as any,
+			getState: () => state,
+			getWorkspacePath: () => '/workspace',
+			getResolvedApiKey: () => 'resolved-secret',
+			isClineInstalled: () => true,
+			confirmExtensionRestart: async () => false,
+			resolveApiKey: async () => 'resolved-secret',
+			isProxyAvailable: () => false,
+			postStateUpdate: () => calls.push('postStateUpdate'),
+		});
+
+		await workflow.applyPendingConfig();
+
+		assert.strictEqual(state.isClineConfigInSync, true);
+		assert.strictEqual(workflow.appliedInSession, true);
+		assert.deepStrictEqual(calls, [
+			'applyPendingConfig',
+			'evaluateCompatibility',
+			'postStateUpdate',
+			'info',
+		]);
 	});
 
 	test('logs Cline navigation success without showing a global notification', async () => {

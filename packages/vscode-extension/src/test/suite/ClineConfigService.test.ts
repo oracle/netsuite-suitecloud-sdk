@@ -40,6 +40,21 @@ const createStorage = (initialValue?: unknown) => {
 };
 
 suite('Control Panel Cline Config Service', () => {
+	test('reports whether a complete pending configuration exists', () => {
+		const { storage: emptyStorage } = createStorage();
+		const { storage: pendingStorage } = createStorage({
+			baseUrl: 'http://localhost:9000',
+			modelId: 'NetSuite',
+		});
+		const adapter = {
+			applyConfig: async () => ({ applied: true, message: 'applied' }),
+			checkConfigSync: async () => ({ comparable: true, inSync: true, message: 'in sync' }),
+		};
+
+		assert.strictEqual(new ClineConfigService(adapter, emptyStorage).hasPendingConfig(), false);
+		assert.strictEqual(new ClineConfigService(adapter, pendingStorage).hasPendingConfig(), true);
+	});
+
 	test('does nothing when no pending config exists', async () => {
 		const { storage } = createStorage();
 		let apiKeyResolved = false;

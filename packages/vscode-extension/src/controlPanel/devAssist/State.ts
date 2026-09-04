@@ -11,6 +11,8 @@ export type ProxyOwnership = 'none' | 'owned';
 
 export type ApiKeySource = 'generated' | 'sdk' | 'unknown';
 
+export type PanelInitializationStatus = 'loading' | 'ready';
+
 export type SuiteCloudAuthItem = {
 	authId: string;
 	companyName: string;
@@ -18,6 +20,7 @@ export type SuiteCloudAuthItem = {
 };
 
 export type SuiteCloudPanelState = {
+	initializationStatus: PanelInitializationStatus;
 	isSdkReady: boolean;
 	authId: string;
 	port: number;
@@ -39,6 +42,7 @@ export type SuiteCloudPanelState = {
 	disableWelcomeNotification: boolean;
 	clineScope: ClineScope;
 	authIds: SuiteCloudAuthItem[];
+	isClineInstalled: boolean;
 	isClineCompatible: boolean;
 	clineCompatibilityMessage: string | null;
 	isClineConfigInSync: boolean;

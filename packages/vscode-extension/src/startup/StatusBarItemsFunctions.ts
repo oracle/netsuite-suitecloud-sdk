@@ -35,7 +35,7 @@ export function createAuthIDStatusBar(): vscode.StatusBarItem {
 }
 
 /**
- * Create the status bar item used to display DevAssist service status
+ * Create the status bar item used to display SuiteCloud Proxy status
  *
  * @returns {vscode.StatusBarItem} The authID status bar item
  */

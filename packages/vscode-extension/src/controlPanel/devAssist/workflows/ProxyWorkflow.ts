@@ -94,7 +94,7 @@ export default class ProxyWorkflow {
 			resolveApiKey: () => this._dependencies.resolveApiKey(),
 			onStarting: (state) => {
 				presenter.info(
-					`Starting proxy on port ${state.port} with auth ID "${state.authId}".`
+					`Starting the SuiteCloud Proxy on port ${state.port} with auth ID "${state.authId}".`
 				);
 				this._dependencies.setState(state);
 				this._dependencies.postStateUpdate();
@@ -133,7 +133,7 @@ export default class ProxyWorkflow {
 			state: this._dependencies.getState(),
 			preserveStartIntent: options.preserveStartIntent === true,
 			onStopping: async (state) => {
-				presenter.info('Stopping proxy process.');
+			presenter.info('Stopping the SuiteCloud Proxy.');
 				this._dependencies.setState(state);
 				await this._dependencies.persistPreferencesNoThrow();
 				this._dependencies.postStateUpdate();
