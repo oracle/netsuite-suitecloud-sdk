@@ -18,7 +18,7 @@
 	},
 	"config:import": {
 		"name": "config:import",
-		"description": "Imports the features from an account.",
+		"description": "Imports the feature configuration from your NetSuite account to the account customization project.",
 		"isSetupRequired": true,
 		"forceInteractiveMode": false,
 		"options": {}
