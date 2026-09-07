@@ -115,12 +115,6 @@
 				"command": "suitecloud.opencontrolpanelwalkthrough",
 				"title": "Open Developer Assistant Walkthrough",
 				"category": "SuiteCloud"
-			},
-			{
-				"command": "suitecloud.opendevassistfeedbackform",
-				"title": "Open Developer Assistant Feedback Form",
-				"category": "SuiteCloud",
-				"enablement": "false"
 			}
 		],
 		"viewsContainers": {

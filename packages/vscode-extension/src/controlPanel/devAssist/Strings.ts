@@ -108,5 +108,3 @@ export const SUITECLOUD_PANEL_CLIENT_STRINGS = {
 	invalidPortFormat:
 		`Enter a 4 or 5 digit port between ${DEVASSIST.PORT_RANGE.MIN} and ${DEVASSIST.PORT_RANGE.MAX}.`,
 } as const;
-
-export type SuiteCloudPanelClientStrings = typeof SUITECLOUD_PANEL_CLIENT_STRINGS;
