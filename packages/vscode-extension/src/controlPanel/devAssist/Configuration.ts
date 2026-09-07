@@ -7,9 +7,8 @@ import { DEVASSIST } from '../../ApplicationConstants';
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from './Strings';
 import { ClineScope, SuiteCloudPanelState } from './State';
 
-const DEVASSIST_BASE_PATH = '/api/internal/devassist';
-export const VALID_PROXY_PORT_MIN = 1024;
-export const VALID_PROXY_PORT_MAX = 65535;
+export const VALID_PROXY_PORT_MIN = DEVASSIST.PORT_RANGE.MIN;
+export const VALID_PROXY_PORT_MAX = DEVASSIST.PORT_RANGE.MAX;
 
 export type DefaultPanelSettings = {
 	authId: string;
@@ -30,7 +29,7 @@ export type InitialPanelPreferences = {
 };
 
 export const buildProxyBaseUrl = (port: number): string =>
-	`http://127.0.0.1:${port}${DEVASSIST_BASE_PATH}`;
+	`${DEVASSIST.PROXY_URL.SCHEME}${DEVASSIST.PROXY_URL.LOCALHOST_IP}:${port}${DEVASSIST.PROXY_URL.BASE_PATH}`;
 
 export const sanitizeProxyPort = (candidatePort: number, fallbackPort: number): number =>
 	Number.isInteger(candidatePort) &&

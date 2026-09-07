@@ -3,7 +3,10 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { CLINE_EXTENSION_ID } from './Constants';
+import {
+	CLINE_EXTENSION_ID,
+	CLINE_MARKETPLACE_COMMAND_ID,
+} from './Constants';
 
 const ACTIVITY_BAR_COMMANDS = [
 	'workbench.view.extension.claude-dev-ActivityBar',
@@ -41,7 +44,7 @@ export default class ClineChatOpener {
 		}
 
 		await this._executeBestEffort(
-			'workbench.extensions.search',
+			CLINE_MARKETPLACE_COMMAND_ID,
 			`@id:${CLINE_EXTENSION_ID}`
 		);
 		return false;

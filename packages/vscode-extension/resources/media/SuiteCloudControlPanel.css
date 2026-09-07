@@ -196,11 +196,10 @@ body[data-view-mode="panel"] .container {
   margin-bottom: 10px;
 }
 
-.cardHeading h2,
-.feedbackContent h2 {
+.cardHeading h2 {
   margin: 0;
   color: var(--vscode-foreground);
-  font-size: 13px;
+  font-size: calc(var(--vscode-font-size) + 1px);
   font-weight: 650;
   line-height: 1.2;
 }
@@ -585,6 +584,10 @@ input[type="checkbox"] {
   margin: -3px 0 9px;
 }
 
+.authIdHint {
+  margin: 0;
+}
+
 .compactCheckbox {
   margin-top: 7px;
   font-size: inherit;
@@ -659,7 +662,11 @@ body[data-view-mode="sidebar"] .expandButton {
 }
 
 .stateIconError {
+  border: 1px solid currentColor;
+  border-radius: 50%;
   color: var(--danger);
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .integrationDescription {

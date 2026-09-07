@@ -3,6 +3,8 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
+import { DEVASSIST } from '../../ApplicationConstants';
+
 import {
 	SuiteCloudPanelFromWebviewEventType,
 	SuiteCloudPanelIncomingMessage,
@@ -41,7 +43,11 @@ const parseFormPayload = (value: unknown): SuiteCloudPanelUpdateFormPayload | un
 	}
 	if (
 		value.port !== undefined &&
-		(!Number.isInteger(value.port) || (value.port as number) < 1024 || (value.port as number) > 65535)
+		(
+			!Number.isInteger(value.port) ||
+			(value.port as number) < DEVASSIST.PORT_RANGE.MIN ||
+			(value.port as number) > DEVASSIST.PORT_RANGE.MAX
+		)
 	) {
 		return undefined;
 	}

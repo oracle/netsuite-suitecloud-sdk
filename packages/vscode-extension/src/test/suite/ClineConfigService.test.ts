@@ -6,10 +6,9 @@
 import * as assert from 'assert';
 import ClineConfigService, {
 	ApplyPanelClineConfigInput,
+	CLINE_PENDING_CONFIG_STORAGE_KEY,
 	ClineConfigStorage,
 } from '../../service/controlPanel/devAssist/cline/ClineConfigService';
-
-const PENDING_CONFIG_STORAGE_KEY = 'suitecloud.controlPanel.pendingClineConfig.v1';
 
 const baseInput: ApplyPanelClineConfigInput = {
 	isProxyAvailable: true,
@@ -24,7 +23,7 @@ const baseInput: ApplyPanelClineConfigInput = {
 const createStorage = (initialValue?: unknown) => {
 	const values = new Map<string, unknown>();
 	if (initialValue !== undefined) {
-		values.set(PENDING_CONFIG_STORAGE_KEY, initialValue);
+		values.set(CLINE_PENDING_CONFIG_STORAGE_KEY, initialValue);
 	}
 	const storage: ClineConfigStorage = {
 		get: <T>(key: string) => values.get(key) as T | undefined,
@@ -104,7 +103,7 @@ suite('Control Panel Cline Config Service', () => {
 		assert.strictEqual(sleepDuration, 750);
 		assert.strictEqual(receivedInputs.length, 2);
 		assert.deepStrictEqual(receivedInputs[0], receivedInputs[1]);
-		assert.strictEqual(values.has(PENDING_CONFIG_STORAGE_KEY), false);
+		assert.strictEqual(values.has(CLINE_PENDING_CONFIG_STORAGE_KEY), false);
 	});
 
 	test('keeps pending config when verification fails', async () => {
@@ -123,7 +122,7 @@ suite('Control Panel Cline Config Service', () => {
 			service.applyPendingConfig('/workspace', async () => 'secret'),
 			/not in sync/
 		);
-		assert.deepStrictEqual(values.get(PENDING_CONFIG_STORAGE_KEY), pendingConfig);
+		assert.deepStrictEqual(values.get(CLINE_PENDING_CONFIG_STORAGE_KEY), pendingConfig);
 	});
 
 	test('returns early outcomes without resolving secrets or writing config', async () => {
@@ -209,7 +208,7 @@ suite('Control Panel Cline Config Service', () => {
 			},
 			storage,
 			async () => {
-				configWasStoredBeforeSleep = values.has(PENDING_CONFIG_STORAGE_KEY);
+				configWasStoredBeforeSleep = values.has(CLINE_PENDING_CONFIG_STORAGE_KEY);
 			}
 		);
 
@@ -217,7 +216,7 @@ suite('Control Panel Cline Config Service', () => {
 
 		assert.deepStrictEqual(outcome, { kind: 'applied' });
 		assert.strictEqual(configWasStoredBeforeSleep, true);
-		assert.deepStrictEqual(values.get(PENDING_CONFIG_STORAGE_KEY), {
+		assert.deepStrictEqual(values.get(CLINE_PENDING_CONFIG_STORAGE_KEY), {
 			baseUrl: baseInput.baseUrl,
 			modelId: baseInput.modelId,
 		});

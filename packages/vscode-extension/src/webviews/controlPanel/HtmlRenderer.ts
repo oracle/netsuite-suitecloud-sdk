@@ -6,7 +6,15 @@
 import * as crypto from 'crypto';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { SUITECLOUD_PANEL_CLIENT_STRINGS } from '../../controlPanel/devAssist/Strings';
+import { DEVASSIST } from '../../ApplicationConstants';
+import {
+	SUITECLOUD_PANEL_CLIENT_STRINGS,
+	SUITECLOUD_PANEL_RUNTIME_STRINGS,
+} from '../../controlPanel/devAssist/Strings';
+import {
+	VALID_PROXY_PORT_MAX,
+	VALID_PROXY_PORT_MIN,
+} from '../../controlPanel/devAssist/Configuration';
 import { SUITECLOUD_PANEL_EVENTS } from '../../controlPanel/devAssist/Messages';
 import { FileUtils } from '../../util/ExtensionUtil';
 
@@ -62,6 +70,26 @@ export default class HtmlRenderer {
 				...SUITECLOUD_PANEL_EVENTS.TO_WEBVIEW,
 			})
 		);
+		htmlContent = htmlContent.replace(
+			'{{PANEL_CONFIG_JSON}}',
+			serializeForInlineScript({
+				defaultProxyPort: DEVASSIST.DEFAULT_VALUES.localPort,
+				minimumProxyPort: VALID_PROXY_PORT_MIN,
+				maximumProxyPort: VALID_PROXY_PORT_MAX,
+			})
+		);
+		htmlContent = htmlContent
+			.split('{{DEFAULT_PROXY_PORT}}')
+			.join(String(DEVASSIST.DEFAULT_VALUES.localPort));
+		htmlContent = htmlContent
+			.split('{{MINIMUM_PROXY_PORT}}')
+			.join(String(VALID_PROXY_PORT_MIN));
+		htmlContent = htmlContent
+			.split('{{MAXIMUM_PROXY_PORT}}')
+			.join(String(VALID_PROXY_PORT_MAX));
+		htmlContent = htmlContent
+			.split('{{MODEL_ID}}')
+			.join(SUITECLOUD_PANEL_RUNTIME_STRINGS.modelId);
 		htmlContent = htmlContent.split('{{SCRIPT_NONCE}}').join(scriptNonce);
 		htmlContent = htmlContent.split('{{CSP_SOURCE}}').join(webview.cspSource);
 		return htmlContent;

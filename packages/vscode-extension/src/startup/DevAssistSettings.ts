@@ -7,8 +7,6 @@ import * as vscode from 'vscode';
 import { DEVASSIST } from '../ApplicationConstants';
 import PreferencesStore from '../service/controlPanel/devAssist/PreferencesStore';
 
-const PANEL_STATE_STORAGE_KEY = 'suitecloud.controlPanel.state.v1';
-
 export type DevAssistCurrentSettings = {
 	authID: string;
 	localPort: number;
@@ -18,7 +16,8 @@ export type DevAssistCurrentSettings = {
 export const getDevAssistCurrentSettings = (workspaceState: vscode.Memento): DevAssistCurrentSettings => {
 	const panelPreferencesStore = new PreferencesStore(
 		workspaceState,
-		PANEL_STATE_STORAGE_KEY
+		DEVASSIST.PREFERENCES_STORAGE_KEY,
+		vscode.workspace.getConfiguration(DEVASSIST.CONFIGURATION_SECTION)
 	);
 	const panelPreferences = panelPreferencesStore.load({
 		authId: DEVASSIST.DEFAULT_VALUES.authID,

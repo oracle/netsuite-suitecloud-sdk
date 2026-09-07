@@ -7,6 +7,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { FILES } from './ApplicationConstants';
+import { commandsInfoMap } from './commandsMap';
 import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
 import CompareFile from './commands/CompareFile';
@@ -26,6 +27,7 @@ import Validate from './commands/Validate';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
+import { suiteCloudOutputChannel } from './service/SuiteCloudOutputChannel';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
 import { createAuthIDStatusBar, createDevAssistStatusBar, createSuiteCloudProjectStatusBar, updateAuthIDStatusBarIfNeeded, updateStatusBars } from './startup/StatusBarItemsFunctions';
 import { openDevAssistFeedbackForm } from './webviews/FeedbackFormWebviewController';
@@ -39,8 +41,7 @@ import {
 } from './controlPanel/Controller';
 
 
-const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
-export const output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
+export const output = suiteCloudOutputChannel;
 
 const translationService = new VSTranslationService();
 
@@ -83,33 +84,33 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// register commands
 	context.subscriptions.push(
-		register('suitecloud.adddependencies', new AddDependencies()),
-		register('suitecloud.comparefile', new CompareFile()),
-		register('suitecloud.createfile', new CreateFile()),
-		register('suitecloud.createproject', new CreateProject()),
-		register('suitecloud.deploy', new Deploy()),
-		register('suitecloud.importfiles', new ImportFiles()),
-		register('suitecloud.importobjects', new ImportObjects()),
-		register('suitecloud.listfiles', new ListFiles()),
-		register('suitecloud.listobjects', new ListObjects()),
-		register('suitecloud.manageauth', new ManageAuth()),
-		register('suitecloud.setupaccount', new SetupAccount()),
-		register('suitecloud.updatefile', new UpdateFile()),
-		register('suitecloud.updateobject', new UpdateObject()),
-		register('suitecloud.uploadfile', new UploadFile()),
-		register('suitecloud.validate', new Validate())
+		register(commandsInfoMap.adddependencies.vscodeCommandId, new AddDependencies()),
+		register(commandsInfoMap.comparefile.vscodeCommandId, new CompareFile()),
+		register(commandsInfoMap.createfile.vscodeCommandId, new CreateFile()),
+		register(commandsInfoMap.createproject.vscodeCommandId, new CreateProject()),
+		register(commandsInfoMap.deploy.vscodeCommandId, new Deploy()),
+		register(commandsInfoMap.importfiles.vscodeCommandId, new ImportFiles()),
+		register(commandsInfoMap.importobjects.vscodeCommandId, new ImportObjects()),
+		register(commandsInfoMap.listfiles.vscodeCommandId, new ListFiles()),
+		register(commandsInfoMap.listobjects.vscodeCommandId, new ListObjects()),
+		register(commandsInfoMap.manageauth.vscodeCommandId, new ManageAuth()),
+		register(commandsInfoMap.setupaccount.vscodeCommandId, new SetupAccount()),
+		register(commandsInfoMap.updatefile.vscodeCommandId, new UpdateFile()),
+		register(commandsInfoMap.updateobject.vscodeCommandId, new UpdateObject()),
+		register(commandsInfoMap.uploadfile.vscodeCommandId, new UploadFile()),
+		register(commandsInfoMap.validate.vscodeCommandId, new Validate())
 	);
 
 	// register more commands
 	context.subscriptions.push(
-		vscode.commands.registerCommand('suitecloud.opencontrolpanel',
+		vscode.commands.registerCommand(commandsInfoMap.opencontrolpanel.vscodeCommandId,
 			() => openSuiteCloudControlPanel()
 		),
-		vscode.commands.registerCommand('suitecloud.opencontrolpanelwalkthrough',
+		vscode.commands.registerCommand(commandsInfoMap.opencontrolpanelwalkthrough.vscodeCommandId,
 			() => vscode.commands.executeCommand('workbench.action.openWalkthrough', controlPanelWalkthroughId, false)
 		),
 		// DevAssist Feedback Form WebView
-		vscode.commands.registerCommand('suitecloud.opendevassistfeedbackform',
+		vscode.commands.registerCommand(commandsInfoMap.opendevassistfeedbackform.vscodeCommandId,
 			() => openDevAssistFeedbackForm(context))
 	);
 

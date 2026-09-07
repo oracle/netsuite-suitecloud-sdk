@@ -29,18 +29,26 @@ export const ACP_UNRESTRICTED_FOLDERS: string[] = [
 	FOLDERS.WEB_SITE_HOSTING_FILES,
 ];
 
+const DEVASSIST_PROXY_BASE_PATH = '/api/internal/devassist';
+
 export const DEVASSIST = {
-	ALLOWED_PROXY_PATH_PREFIX: '/api/internal/devassist/',
+	ALLOWED_PROXY_PATH_PREFIX: `${DEVASSIST_PROXY_BASE_PATH}/`,
+	CONFIGURATION_SECTION: 'suitecloud.developerAssistant',
+	PREFERENCES_STORAGE_KEY: 'suitecloud.controlPanel.state.v1',
 	DEFAULT_VALUES: {
 		localPort: 8181,
 		authID: 'authid-to-be-used-by-dev-assist',
 	},
-	MODELS_PATH: '/api/internal/devassist/models',
+	PORT_RANGE: {
+		MIN: 1024,
+		MAX: 65535,
+	},
+	MODELS_PATH: `${DEVASSIST_PROXY_BASE_PATH}/models`,
 	PROXY_URL: {
 		SCHEME: 'http://',
 		LOCALHOST_IP: '127.0.0.1',
-		BASE_PATH: '/api/internal/devassist',
-		FEEDBACK_PATH: '/api/internal/devassist/feedback',
+		BASE_PATH: DEVASSIST_PROXY_BASE_PATH,
+		FEEDBACK_PATH: `${DEVASSIST_PROXY_BASE_PATH}/feedback`,
 	},
 	SECRET_STORAGE_KEY_ID: 'DEVASSIT_SECRET_STORAGE_KEY_ID',
 };

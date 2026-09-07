@@ -7,7 +7,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { Uri, commands, window } from 'vscode';
 import { ANSWERS, COMMAND, CREATE_PROJECT } from '../service/TranslationKeys';
-import { output } from '../suitecloud';
+import { suiteCloudOutputChannel } from '../service/SuiteCloudOutputChannel';
 import { ApplicationConstants, FileSystemService, InteractiveAnswersValidator } from '../util/ExtensionUtil';
 import BaseAction from './BaseAction';
 import { ValidationResult } from '../types/ActionResult';
@@ -37,7 +37,7 @@ export default class CreateProject extends BaseAction {
 			return;
 		}
 
-		output.show(true);
+		suiteCloudOutputChannel.show(true);
 
 		const runSuiteCloudCommandPromise = this.runSuiteCloudCommand(commandArgs, commandArgs.parentdirectory);
 		this.messageService.showInformationMessage(

@@ -3,8 +3,10 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
+import { DEVASSIST } from '../../ApplicationConstants';
+
 export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
-	panelTitle: 'SuiteCloud Control Panel',
+	panelTitle: 'SuiteCloud Developer Assistant',
 	notificationTitle: 'SuiteCloud Developer Assistant',
 	modelId: 'NetSuite',
 	logPrefix: '[SuiteCloud Proxy]',
@@ -47,12 +49,11 @@ export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
 			'Generate a SuiteCloud Proxy API key? This key is required to start the SuiteCloud Proxy and connect a client.',
 		rotateExistingAction: 'Rotate API Key',
 		rotateMissingAction: 'Generate API Key',
-		cancelAction: 'Cancel',
 		applyClinePrompt:
 			'Apply settings to Cline using an experimental storage integration? This can fail if Cline changes its internal format.',
 		applyClineAction: 'Update Cline Config',
 		clineExtensionRestartRequiredPrompt:
-			'Restart VS Code extensions to activate the new Cline configuration. Running extension commands, including SuiteCloud deployments and validations, will be interrupted.',
+			'Restart extensions to apply the Cline configuration? Any running commands, including deployments and validations, will be stopped.',
 		restartExtensionsAction: 'Restart Extensions',
 		welcomeTitle: 'SuiteCloud Developer Assistant',
 		welcomeMessage:
@@ -97,16 +98,15 @@ export const SUITECLOUD_PANEL_CLIENT_STRINGS = {
 	rotateApiKeyTitle: 'Rotate API key',
 	openClineChatEnabledTitle: 'Open Cline chat view.',
 	openClineChatDisabledTitle: 'Start the SuiteCloud Proxy to enable this.',
-	syncClineNotInstalledTitle: 'Install Cline Extension before configuring it.',
 	syncClineIncompatibleTitle: 'Automatic Cline configuration is not supported in the current setup.',
 	syncClineMissingApiKeyTitle: 'Generate an API key before configuring Cline.',
 	syncClineProxyUnavailableTitle: 'Start the SuiteCloud Proxy before configuring Cline.',
-	syncClineAlreadySyncedTitle: 'Cline is already configured.',
 	syncClineReadyTitle: 'Configure Cline with the current panel settings.',
 	changePortWhileRunningTitle: 'Stop the SuiteCloud Proxy before changing the local port.',
 	changeAuthIdWhileRunningTitle: 'Stop the SuiteCloud Proxy before changing the Auth ID.',
 	changeApiKeyWhileRunningTitle: 'Stop the SuiteCloud Proxy before generating or rotating the API key.',
-	invalidPortFormat: 'Enter a 4 or 5 digit port between 1024 and 65535.',
+	invalidPortFormat:
+		`Enter a 4 or 5 digit port between ${DEVASSIST.PORT_RANGE.MIN} and ${DEVASSIST.PORT_RANGE.MAX}.`,
 } as const;
 
 export type SuiteCloudPanelClientStrings = typeof SUITECLOUD_PANEL_CLIENT_STRINGS;
