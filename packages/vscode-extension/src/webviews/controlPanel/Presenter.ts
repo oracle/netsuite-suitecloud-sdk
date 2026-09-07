@@ -137,7 +137,7 @@ export default class Presenter {
 			'',
 			'API Provider: OpenAI Compatible',
 			`Base URL: ${baseUrl}`,
-			'API Key: Generate or rotate the key in the Developer Assistant Control Panel, then copy it.',
+			'API Key: Generate or rotate the key in Developer Assistant, then copy it.',
 			`Model ID: ${modelId}`,
 		];
 		const contentWidth = Math.max(...settings.map((line) => line.length));

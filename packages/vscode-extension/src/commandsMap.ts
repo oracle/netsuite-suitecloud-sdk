@@ -32,10 +32,14 @@ export type CliCommandsInfoMapType = {
 	validate: CliCommandInfo;
 };
 
-export type CommandsInfoMapType = CliCommandsInfoMapType & {
+export type VSCodeSpecificCommandsInfoMapType = {
 	opencontrolpanel: CommandInfo;
+	opencontrolpanelwalkthrough: CommandInfo;
 	opendevassistfeedbackform: CommandInfo;
 };
+
+export type CommandsInfoMapType =
+	CliCommandsInfoMapType & VSCodeSpecificCommandsInfoMapType;
 
 export const commandsInfoMap: CommandsInfoMapType = {
 	adddependencies: {
@@ -119,7 +123,11 @@ export const commandsInfoMap: CommandsInfoMapType = {
 	},
 	opencontrolpanel: {
 		vscodeCommandId: 'suitecloud.opencontrolpanel',
-		vscodeCommandName: 'Open Developer Assistant Control Panel',
+		vscodeCommandName: 'Open Developer Assistant',
+	},
+	opencontrolpanelwalkthrough: {
+		vscodeCommandId: 'suitecloud.opencontrolpanelwalkthrough',
+		vscodeCommandName: 'Open Developer Assistant Walkthrough',
 	},
 	opendevassistfeedbackform: {
 		vscodeCommandId: 'suitecloud.opendevassistfeedbackform',

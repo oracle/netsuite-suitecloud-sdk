@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { output } from '../suitecloud';
+import { suiteCloudOutputChannel } from '../service/SuiteCloudOutputChannel';
 import { ConsoleLogger } from '../util/ExtensionUtil';
 import { getTimestamp } from '../util/DateUtils';
 import { BUTTONS, ERRORS } from '../service/TranslationKeys';
@@ -24,7 +24,7 @@ export default class VSConsoleLogger extends ConsoleLogger {
 	constructor(
 		addExecutionDetailsToLog: boolean = false,
 		executionPath?: string,
-		outputChannel: vscode.OutputChannel = output
+		outputChannel: vscode.OutputChannel = suiteCloudOutputChannel
 	) {
 		super();
 

@@ -8,6 +8,7 @@ import {
 	SuiteCloudPanelState,
 } from './State';
 import { SuiteCloudPanelUpdateFormPayload } from './Messages';
+import { buildProxyBaseUrl } from './Configuration';
 
 const ACTIVE_PROXY_STATUSES: ReadonlySet<ProxyStatus> = new Set([
 	'starting',
@@ -31,6 +32,7 @@ export const applyFormChangesToState = (
 
 	if (canChangeProxyConfig && typeof formData.port === 'number' && Number.isFinite(formData.port)) {
 		updatedState.port = Math.trunc(formData.port);
+		updatedState.baseUrl = buildProxyBaseUrl(updatedState.port);
 	}
 
 	if (formData.clineScope === 'workspace' || formData.clineScope === 'user') {

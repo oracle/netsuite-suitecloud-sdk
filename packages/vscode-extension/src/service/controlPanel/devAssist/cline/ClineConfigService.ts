@@ -6,7 +6,8 @@
 import type ClineIntegrationAdapter from './IntegrationAdapter';
 import { ClineScope } from '../../../../controlPanel/devAssist/State';
 
-const PENDING_CONFIG_STORAGE_KEY = 'suitecloud.controlPanel.pendingClineConfig.v1';
+export const CLINE_PENDING_CONFIG_STORAGE_KEY =
+	'suitecloud.controlPanel.pendingClineConfig.v1';
 const POST_WRITE_VERIFICATION_DELAY_MS = 750;
 
 type ClineConfigAdapter = Pick<ClineIntegrationAdapter, 'applyConfig' | 'checkConfigSync'>;
@@ -56,7 +57,9 @@ export default class ClineConfigService {
 	}
 
 	hasPendingConfig(): boolean {
-		const pendingConfig = this._storage.get<PendingClineConfig>(PENDING_CONFIG_STORAGE_KEY);
+		const pendingConfig = this._storage.get<PendingClineConfig>(
+			CLINE_PENDING_CONFIG_STORAGE_KEY
+		);
 		return !!pendingConfig?.baseUrl && !!pendingConfig.modelId;
 	}
 
@@ -64,7 +67,9 @@ export default class ClineConfigService {
 		workspacePath: string,
 		resolveApiKey: () => Promise<string | undefined>
 	): Promise<boolean> {
-		const pendingConfig = this._storage.get<PendingClineConfig>(PENDING_CONFIG_STORAGE_KEY);
+		const pendingConfig = this._storage.get<PendingClineConfig>(
+			CLINE_PENDING_CONFIG_STORAGE_KEY
+		);
 		if (!pendingConfig?.baseUrl || !pendingConfig.modelId) {
 			return false;
 		}
@@ -97,7 +102,7 @@ export default class ClineConfigService {
 			throw new Error(syncResult.message);
 		}
 
-		await this._storage.update(PENDING_CONFIG_STORAGE_KEY, undefined);
+		await this._storage.update(CLINE_PENDING_CONFIG_STORAGE_KEY, undefined);
 		return true;
 	}
 
@@ -130,7 +135,7 @@ export default class ClineConfigService {
 			return { kind: 'applyFailed', message: result.message };
 		}
 
-		await this._storage.update(PENDING_CONFIG_STORAGE_KEY, {
+		await this._storage.update(CLINE_PENDING_CONFIG_STORAGE_KEY, {
 			baseUrl: input.baseUrl,
 			modelId: input.modelId,
 		} satisfies PendingClineConfig);

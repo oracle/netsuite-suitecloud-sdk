@@ -3,18 +3,24 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
+import * as os from 'os';
+import * as path from 'path';
 import * as vscode from 'vscode';
+import { DEVASSIST } from '../ApplicationConstants';
+import { commandsInfoMap } from '../commandsMap';
 import PreferencesStore, {
 	PersistedPanelPreferences,
 } from '../service/controlPanel/devAssist/PreferencesStore';
 import ClineChatOpener from '../service/controlPanel/devAssist/cline/ChatOpener';
 import ClineIntegrationAdapter from '../service/controlPanel/devAssist/cline/IntegrationAdapter';
 import {
-	buildProxyBaseUrl,
 	createInitialPanelState,
 	getDefaultPanelSettings,
 } from './devAssist/Configuration';
-import { CLINE_EXTENSION_ID } from '../service/controlPanel/devAssist/cline/Constants';
+import {
+	CLINE_EXTENSION_ID,
+	CLINE_MARKETPLACE_COMMAND_ID,
+} from '../service/controlPanel/devAssist/cline/Constants';
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from './devAssist/Strings';
 import {
 	applyFormChangesToState,
@@ -37,6 +43,8 @@ import ApiKeyService, {
 import SdkApiKeyStorage from '../service/controlPanel/devAssist/SdkApiKeyStorage';
 import ClineCompatibilityService from '../service/controlPanel/devAssist/cline/ClineCompatibilityService';
 import ClineConfigService from '../service/controlPanel/devAssist/cline/ClineConfigService';
+import ClineConfigChangeWatcher from '../service/controlPanel/devAssist/cline/ConfigChangeWatcher';
+import ClineFileStore from '../service/controlPanel/devAssist/cline/FileStore';
 import CliService from '../service/controlPanel/devAssist/CliService';
 import ProxyLifecycleService from '../service/controlPanel/devAssist/proxy/ProxyLifecycleService';
 import ProxyService from '../service/controlPanel/devAssist/proxy/ProxyService';
@@ -48,8 +56,6 @@ import ClineWorkflow, {
 } from './devAssist/workflows/ClineWorkflow';
 import ProxyWorkflow from './devAssist/workflows/ProxyWorkflow';
 
-const SETUP_ACCOUNT_COMMAND_ID = 'suitecloud.setupaccount';
-const PANEL_STATE_STORAGE_KEY = 'suitecloud.controlPanel.state.v1';
 const WALKTHROUGH_CONTEXT_KEYS = {
 	proxyRunning: 'suitecloud.controlPanel.proxyRunning',
 	clineApplied: 'suitecloud.controlPanel.clineApplied',
@@ -114,6 +120,7 @@ class ControlPanelController {
 	private readonly _proxyService: ProxyService;
 	private readonly _proxyWorkflow: ProxyWorkflow;
 	private readonly _clineWorkflow: ClineWorkflow;
+	private readonly _clineConfigChangeWatcher: ClineConfigChangeWatcher;
 	private readonly _messageDispatcher: MessageDispatcher;
 	private readonly _presenter: Presenter;
 	private readonly _preferencesStore: PreferencesStore;
@@ -132,7 +139,8 @@ class ControlPanelController {
 		this._extensionContext = extensionContext;
 		this._sdkDependenciesReady = sdkDependenciesReady;
 		this._cliService = new CliService();
-		const clineAdapter = new ClineIntegrationAdapter();
+		const clineFileStore = new ClineFileStore();
+		const clineAdapter = new ClineIntegrationAdapter(clineFileStore);
 		const clineChatOpener = new ClineChatOpener(vscode.commands);
 		const clineCompatibilityService = new ClineCompatibilityService(clineAdapter);
 		const clineConfigService = new ClineConfigService(
@@ -154,7 +162,8 @@ class ControlPanelController {
 		);
 		this._preferencesStore = new PreferencesStore(
 			this._extensionContext.workspaceState,
-			PANEL_STATE_STORAGE_KEY
+			DEVASSIST.PREFERENCES_STORAGE_KEY,
+			vscode.workspace.getConfiguration(DEVASSIST.CONFIGURATION_SECTION)
 		);
 
 		const defaults = getDefaultPanelSettings();
@@ -242,8 +251,7 @@ class ControlPanelController {
 						SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.clineExtensionRestartRequiredPrompt
 					),
 					{ modal: true },
-					restartExtensionsAction,
-					SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.cancelAction
+					restartExtensionsAction
 				);
 				return selection === restartExtensionsAction;
 			},
@@ -271,7 +279,9 @@ class ControlPanelController {
 				this._postStateUpdate();
 			},
 			setupAccount: async () => {
-				await vscode.commands.executeCommand(SETUP_ACCOUNT_COMMAND_ID);
+				await vscode.commands.executeCommand(
+					commandsInfoMap.setupaccount.vscodeCommandId
+				);
 				await this._refreshAuthIds();
 				this._postStateUpdate();
 			},
@@ -279,7 +289,7 @@ class ControlPanelController {
 			applyClineSettings: () => this._clineWorkflow.applySettings(),
 			openClineMarketplace: async () => {
 				await vscode.commands.executeCommand(
-					'workbench.extensions.search',
+					CLINE_MARKETPLACE_COMMAND_ID,
 					`@id:${CLINE_EXTENSION_ID}`
 				);
 			},
@@ -287,6 +297,21 @@ class ControlPanelController {
 			openClineChat: () => this._clineWorkflow.openChat(),
 			submitFeedback: (payload) => this._submitFeedback(payload),
 		});
+		this._clineConfigChangeWatcher = new ClineConfigChangeWatcher(
+			[
+				clineFileStore.providersFile,
+				clineFileStore.globalStateFile,
+				clineFileStore.secretsFile,
+			],
+			(filePath) => {
+				const homeDirectory = os.homedir();
+				const relativePath = path.relative(homeDirectory, filePath).split(path.sep).join('/');
+				return vscode.workspace.createFileSystemWatcher(
+					new vscode.RelativePattern(homeDirectory, relativePath)
+				);
+			},
+			() => this._enqueueCompatibilityRefresh()
+		);
 	}
 
 	get _workspacePath(): string {
@@ -310,6 +335,7 @@ class ControlPanelController {
 	}
 
 	async dispose(): Promise<void> {
+		this._clineConfigChangeWatcher.dispose();
 		this._apiKeyService.dispose();
 		this._viewHost.dispose();
 		try {
@@ -474,7 +500,6 @@ class ControlPanelController {
 	}
 
 	private async _applyFormChanges(formData: SuiteCloudPanelUpdateFormPayload): Promise<void> {
-		const previousPort = this._state.port;
 		const proxyConfigLocked =
 			this._proxyService.isRunning ||
 			isProxyLifecycleActive(this._state.proxyStatus);
@@ -488,9 +513,6 @@ class ControlPanelController {
 			formData.port !== this._state.port;
 
 		this._state = applyFormChangesToState(this._state, formData);
-		if (this._state.port !== previousPort) {
-			this._state.baseUrl = buildProxyBaseUrl(this._state.port);
-		}
 		await this._persistPreferences();
 
 		if (authIdChangeBlocked) {
@@ -570,7 +592,7 @@ class ControlPanelController {
 		try {
 			await this._persistPreferences();
 		} catch (error) {
-			this._presenter.error(`Unable to persist SuiteCloud Control Panel preferences: ${String(error)}`);
+			this._presenter.error(`Unable to persist Developer Assistant preferences: ${String(error)}`);
 		}
 	}
 

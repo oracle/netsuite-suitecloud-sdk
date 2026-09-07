@@ -3,7 +3,11 @@
 const vscode = acquireVsCodeApi();
 
 const EVENTS = window.__SUITECLOUD_PANEL_EVENTS__;
-const DEFAULT_PROXY_PORT = 8181;
+const PANEL_CONFIG = Object.freeze(window.__SUITECLOUD_PANEL_CONFIG__);
+const DEFAULT_PROXY_PORT = PANEL_CONFIG.defaultProxyPort;
+const MINIMUM_PROXY_PORT = PANEL_CONFIG.minimumProxyPort;
+const MAXIMUM_PROXY_PORT = PANEL_CONFIG.maximumProxyPort;
+const PORT_UPDATE_DEBOUNCE_MS = 250;
 const ACTIVE_PROXY_STATUSES = new Set(['starting', 'running', 'stopping']);
 const STATUS_LABELS = Object.freeze({
 	stopped: 'not running',
@@ -67,7 +71,7 @@ let state = {
 	initializationStatus: 'loading',
 	isSdkReady: false,
 	authId: '',
-	port: 8181,
+	port: DEFAULT_PROXY_PORT,
 	proxyStatus: 'stopped',
 	proxyOwnership: 'none',
 	baseUrl: '',
@@ -91,6 +95,7 @@ let state = {
 };
 
 let apiKeyCountdownIntervalHandle = null;
+let portUpdateTimeoutHandle = null;
 let panelStateLoaded = false;
 let feedbackExpanded = false;
 let lastAuthIdRefreshRequestAt = 0;
@@ -132,7 +137,9 @@ function applyFormUpdate() {
 function validatePort(showMessage) {
 	const portValue = elements.port.value.trim();
 	const port = Number(portValue);
-	const isValid = portValue === '' || (/^\d{4,5}$/.test(portValue) && port >= 1024 && port <= 65535);
+	const isValid =
+		portValue === '' ||
+		(/^\d+$/.test(portValue) && port >= MINIMUM_PROXY_PORT && port <= MAXIMUM_PROXY_PORT);
 	const message = isValid ? '' : UI_STRINGS.invalidPortFormat;
 	elements.port.setCustomValidity(message);
 	elements.portValidation.textContent = message;
@@ -147,8 +154,32 @@ function applyProxyConfigUpdate() {
 	applyFormUpdate();
 }
 
+function clearScheduledPortUpdate() {
+	if (portUpdateTimeoutHandle) {
+		clearTimeout(portUpdateTimeoutHandle);
+		portUpdateTimeoutHandle = null;
+	}
+}
+
+function applyPortUpdate() {
+	clearScheduledPortUpdate();
+	applyProxyConfigUpdate();
+}
+
+function schedulePortUpdate() {
+	clearScheduledPortUpdate();
+	if (!validatePort(false)) {
+		return;
+	}
+	portUpdateTimeoutHandle = setTimeout(() => {
+		portUpdateTimeoutHandle = null;
+		applyProxyConfigUpdate();
+	}, PORT_UPDATE_DEBOUNCE_MS);
+}
+
 function startProxy() {
 	if (validatePort(true)) {
+		clearScheduledPortUpdate();
 		post(EVENTS.START_PROXY, getFormUpdatePayload());
 	}
 }
@@ -230,21 +261,9 @@ function renderClineStatus(icon, label, isReady, readyLabel, notReadyLabel) {
 	label.textContent = isReady ? readyLabel : notReadyLabel;
 }
 
-function getClineSyncDisabledReason({
-	isInstalled,
-	supportsSync,
-	isSynced,
-	isProxyAvailable,
-	hasApiKey
-}) {
-	if (!isInstalled) {
-		return UI_STRINGS.syncClineNotInstalledTitle;
-	}
+function getClineConfigureDisabledReason({ supportsSync, isProxyAvailable, hasApiKey }) {
 	if (!supportsSync) {
 		return UI_STRINGS.syncClineIncompatibleTitle;
-	}
-	if (isSynced) {
-		return UI_STRINGS.syncClineAlreadySyncedTitle;
 	}
 	if (!hasApiKey) {
 		return UI_STRINGS.syncClineMissingApiKeyTitle;
@@ -297,10 +316,8 @@ function getClineActionState({
 
 	return {
 		label: 'Configure',
-		disabledReason: getClineSyncDisabledReason({
-			isInstalled,
+		disabledReason: getClineConfigureDisabledReason({
 			supportsSync,
-			isSynced,
 			isProxyAvailable,
 			hasApiKey
 		}),
@@ -314,6 +331,7 @@ function renderCline(status) {
 	const isWorkspaceManualSetup = state.clineScope === 'workspace';
 	const supportsSync = isInstalled && !!state.isClineCompatible && !isWorkspaceManualSetup;
 	const isSynced = !!state.isClineConfigInSync;
+	const isClineProxyAvailable = status === 'running';
 
 	renderClineStatus(
 		elements.clineInstalledIcon,
@@ -329,11 +347,10 @@ function renderCline(status) {
 		'Configured',
 		'Not Configured'
 	);
-	const isReady = isInstalled && isSynced;
+	const isReady = isInstalled && isSynced && isClineProxyAvailable;
 	elements.clineStatusBadge.textContent = isReady ? 'ready' : 'not ready';
 	elements.clineStatusBadge.className = `statusPill${isReady ? ' ready' : ''}`;
 
-	const isClineProxyAvailable = status === 'running';
 	const actionState = getClineActionState({
 		isInstalled,
 		supportsSync,
@@ -435,7 +452,7 @@ function render() {
 
 	renderAuthIds(state.authIds, state.authId);
 	if (document.activeElement !== elements.port) {
-		elements.port.value = String(state.port || 8181);
+		elements.port.value = String(state.port || DEFAULT_PROXY_PORT);
 	}
 
 	const isStarting = status === 'starting';
@@ -582,8 +599,8 @@ on(elements.expandView, 'click', () => post(EVENTS.OPEN_EXPANDED_VIEW));
 on(elements.submitFeedback, 'click', () => post(EVENTS.SUBMIT_FEEDBACK, getFeedbackPayload()));
 
 on(elements.authId, 'change', applyProxyConfigUpdate);
-on(elements.port, 'change', applyProxyConfigUpdate);
-on(elements.port, 'input', () => validatePort(false));
+on(elements.port, 'change', applyPortUpdate);
+on(elements.port, 'input', schedulePortUpdate);
 on(elements.feedbackText, 'input', () => {
 	resizeFeedbackText();
 	updateFeedbackSubmitState();

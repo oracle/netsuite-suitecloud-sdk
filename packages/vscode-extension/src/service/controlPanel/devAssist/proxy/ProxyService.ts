@@ -37,14 +37,29 @@ export type ProxyServiceDependencies = {
 		executionEnvironmentContext: ExecutionEnvironmentContextInstance
 	) => SuiteCloudAuthProxyServiceInstance;
 	isPortInUse: (port: number) => Promise<boolean>;
+	startupTimeoutMs: number;
 };
 
 type ProxyReadiness = {
 	promise: Promise<void>;
 	resolve: () => void;
 	reject: (error: Error) => void;
+	startTimeout: () => void;
 	dispose: () => void;
 };
+
+type ActiveProxyStart = {
+	proxy: SuiteCloudAuthProxyServiceInstance;
+	readiness: ProxyReadiness;
+	proxyStartPromise: Promise<void>;
+	isCancelled: boolean;
+};
+
+class ProxyStartCancelledError extends Error {
+	constructor() {
+		super('SuiteCloud Proxy startup was cancelled because the Proxy was stopped.');
+	}
+}
 
 const STARTUP_TIMEOUT_MS = 30000;
 
@@ -84,13 +99,14 @@ const isPortInUse = (port: number): Promise<boolean> =>
 		server.once('listening', () => {
 			server.close(() => finish(false));
 		});
-		server.listen(port, '127.0.0.1');
+		server.listen(port, DEVASSIST.PROXY_URL.LOCALHOST_IP);
 	});
 
 const DEFAULT_DEPENDENCIES: ProxyServiceDependencies = {
 	createExecutionEnvironmentContext,
 	createProxy,
 	isPortInUse,
+	startupTimeoutMs: STARTUP_TIMEOUT_MS,
 };
 
 export default class ProxyService {
@@ -101,6 +117,7 @@ export default class ProxyService {
 	private _isStarting = false;
 	private _isStopping = false;
 	private _authorizationRefresh?: Promise<void>;
+	private _activeStart?: ActiveProxyStart;
 
 	constructor(
 		callbacks: ProxyServiceCallbacks,
@@ -127,27 +144,45 @@ export default class ProxyService {
 		this._isStarting = true;
 		let proxy: SuiteCloudAuthProxyServiceInstance | undefined;
 		let readiness: ProxyReadiness | undefined;
+		let activeStart: ActiveProxyStart | undefined;
 		try {
 			proxy = this._dependencies.createProxy(
 				input,
 				this._dependencies.createExecutionEnvironmentContext()
 			);
 			this._proxy = proxy;
-			readiness = this._createReadiness();
+			readiness = this._createReadiness(this._dependencies.startupTimeoutMs);
 			this._registerProxyEvents(proxy, readiness);
+			const proxyStartPromise = proxy.start(input.authId, input.port);
+			activeStart = {
+				proxy,
+				readiness,
+				proxyStartPromise,
+				isCancelled: false,
+			};
+			this._activeStart = activeStart;
 			await Promise.all([
-				proxy.start(input.authId, input.port),
+				proxyStartPromise.then(readiness.startTimeout),
 				readiness.promise,
 			]);
+			if (activeStart.isCancelled || this._proxy !== proxy) {
+				throw new ProxyStartCancelledError();
+			}
 			this._isRunning = true;
 			this._callbacks.onLog(`SuiteCloud Proxy is listening on port ${input.port}.`);
 		} catch (error) {
-			if (proxy) {
+			const startError = activeStart?.isCancelled
+				? new ProxyStartCancelledError()
+				: error;
+			if (proxy && !activeStart?.isCancelled) {
 				await this._stopAfterFailedStart(proxy);
 			}
-			throw this._createStartError(error);
+			throw this._createStartError(startError);
 		} finally {
 			readiness?.dispose();
+			if (this._activeStart?.proxy === proxy) {
+				this._activeStart = undefined;
+			}
 			this._isStarting = false;
 		}
 	}
@@ -156,6 +191,16 @@ export default class ProxyService {
 		const proxy = this._proxy;
 		if (!proxy) {
 			return;
+		}
+		const activeStart = this._activeStart?.proxy === proxy ? this._activeStart : undefined;
+		if (activeStart) {
+			activeStart.isCancelled = true;
+			activeStart.readiness.reject(new ProxyStartCancelledError());
+			try {
+				await activeStart.proxyStartPromise;
+			} catch {
+				// stop() still owns releasing the proxy after a cancelled startup failure.
+			}
 		}
 
 		this._isStopping = true;
@@ -246,18 +291,11 @@ export default class ProxyService {
 		await this._authorizationRefresh;
 	}
 
-	private _createReadiness(): ProxyReadiness {
+	private _createReadiness(startupTimeoutMs: number): ProxyReadiness {
 		let resolvePromise!: () => void;
 		let rejectPromise!: (error: Error) => void;
 		let settled = false;
-		const timeout = setTimeout(() => {
-			if (!settled) {
-				settled = true;
-				rejectPromise(
-					new Error('Timed out while waiting for the SuiteCloud Proxy to become ready.')
-				);
-			}
-		}, STARTUP_TIMEOUT_MS);
+		let timeout: NodeJS.Timeout | undefined;
 
 		const promise = new Promise<void>((resolve, reject) => {
 			resolvePromise = resolve;
@@ -269,18 +307,39 @@ export default class ProxyService {
 			resolve: () => {
 				if (!settled) {
 					settled = true;
-					clearTimeout(timeout);
+					if (timeout) {
+						clearTimeout(timeout);
+					}
 					resolvePromise();
 				}
 			},
 			reject: (error) => {
 				if (!settled) {
 					settled = true;
-					clearTimeout(timeout);
+					if (timeout) {
+						clearTimeout(timeout);
+					}
 					rejectPromise(error);
 				}
 			},
-			dispose: () => clearTimeout(timeout),
+			startTimeout: () => {
+				if (settled || timeout) {
+					return;
+				}
+				timeout = setTimeout(() => {
+					if (!settled) {
+						settled = true;
+						rejectPromise(
+							new Error('Timed out while waiting for the SuiteCloud Proxy to become ready.')
+						);
+					}
+				}, startupTimeoutMs);
+			},
+			dispose: () => {
+				if (timeout) {
+					clearTimeout(timeout);
+				}
+			},
 		};
 	}
 

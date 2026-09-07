@@ -115,6 +115,30 @@ suite('Control Panel Cline Compatibility Service', () => {
 		assert.strictEqual(result.clineConfigSyncMessage, null);
 	});
 
+	test('reports configured again when the Proxy URL is changed back', async () => {
+		const configuredBaseUrl = 'http://localhost:8183';
+		const service = new ClineCompatibilityService({
+			checkCompatibility: async () => ({ compatible: true, message: 'compatible' }),
+			checkConfigSync: async (input) => ({
+				comparable: true,
+				inSync: input.baseUrl === configuredBaseUrl,
+				message: 'compared',
+			}),
+		});
+
+		const changedResult = await service.evaluate({
+			...baseInput,
+			baseUrl: 'http://localhost:8184',
+		});
+		const restoredResult = await service.evaluate({
+			...baseInput,
+			baseUrl: configuredBaseUrl,
+		});
+
+		assert.strictEqual(changedResult.isClineConfigInSync, false);
+		assert.strictEqual(restoredResult.isClineConfigInSync, true);
+	});
+
 	test('preserves an actionable message when configuration cannot be compared', async () => {
 		const service = new ClineCompatibilityService({
 			checkCompatibility: async () => ({ compatible: true, message: 'compatible' }),

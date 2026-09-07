@@ -43,7 +43,7 @@ export function createDevAssistStatusBar(): vscode.StatusBarItem {
 	const devAssistStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, STATUS_BAR_PRIORITY - 2);
 	devAssistStatusBar.tooltip = translationService.getMessage(DEVASSIST_SERVICE.STATUSBAR_TOOLTIP);
 	devAssistStatusBar.hide();
-	devAssistStatusBar.command = 'suitecloud.opencontrolpanel';
+	devAssistStatusBar.command = commandsInfoMap.opencontrolpanel.vscodeCommandId;
 	return devAssistStatusBar;
 }
 

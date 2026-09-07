@@ -5,6 +5,7 @@
 
 export const CLINE_OPENAI_COMPATIBLE_PROVIDER_ID = 'openai-compatible';
 export const CLINE_EXTENSION_ID = 'saoudrizwan.claude-dev';
+export const CLINE_MARKETPLACE_COMMAND_ID = 'workbench.extensions.search';
 
 export const PREFERRED_PROVIDER_KEYS = ['apiProvider'];
 export const PREFERRED_MODEL_KEYS = ['apiModelId', 'openAiModelId'];

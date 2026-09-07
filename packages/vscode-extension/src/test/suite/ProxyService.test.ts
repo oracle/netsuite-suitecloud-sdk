@@ -102,6 +102,22 @@ suite('Control Panel Proxy Service', () => {
 		}]);
 	});
 
+	test('starts the readiness timeout after slow credential retrieval completes', async () => {
+		const proxy = new FakeProxy();
+		proxy.start = async (authId, port) => {
+			proxy.startCalls.push({ authId, port });
+			await new Promise((resolve) => setTimeout(resolve, 20));
+			proxy.emit(SuiteCloudAuthProxyEvents.SERVER_INFO.LISTENING, {
+				localURL: `http://127.0.0.1:${port}`,
+			});
+		};
+		const { service } = createService(proxy, { startupTimeoutMs: 5 });
+
+		await service.start(INPUT);
+
+		assert.strictEqual(service.isRunning, true);
+	});
+
 	test('rejects an occupied port before creating the proxy', async () => {
 		const proxy = new FakeProxy();
 		const { service, createdInputs } = createService(proxy, {
@@ -150,6 +166,44 @@ suite('Control Panel Proxy Service', () => {
 
 		await service.stop();
 
+		assert.strictEqual(proxy.stopCount, 1);
+		assert.strictEqual(service.isRunning, false);
+		assert.strictEqual(getUnexpectedStopCount(), 0);
+	});
+
+	test('does not report a stopped proxy as running when stop overlaps startup', async () => {
+		const proxy = new FakeProxy();
+		let allowStartToFinish!: () => void;
+		let reportStartEntered!: () => void;
+		const startEntered = new Promise<void>((resolve) => {
+			reportStartEntered = resolve;
+		});
+		const canFinishStart = new Promise<void>((resolve) => {
+			allowStartToFinish = resolve;
+		});
+		proxy.start = async (authId, port) => {
+			proxy.startCalls.push({ authId, port });
+			proxy.emit(SuiteCloudAuthProxyEvents.SERVER_INFO.LISTENING, {
+				localURL: `http://127.0.0.1:${port}`,
+			});
+			reportStartEntered();
+			await canFinishStart;
+		};
+		const { service, getUnexpectedStopCount } = createService(proxy);
+
+		const startPromise = service.start(INPUT);
+		const startRejection = assert.rejects(startPromise, /startup was cancelled/);
+		await startEntered;
+		let stopCompleted = false;
+		const stopPromise = service.stop();
+		void stopPromise.then(() => {
+			stopCompleted = true;
+		});
+		await waitForAsyncEventHandler();
+		assert.strictEqual(stopCompleted, false);
+		allowStartToFinish();
+
+		await Promise.all([startRejection, stopPromise]);
 		assert.strictEqual(proxy.stopCount, 1);
 		assert.strictEqual(service.isRunning, false);
 		assert.strictEqual(getUnexpectedStopCount(), 0);

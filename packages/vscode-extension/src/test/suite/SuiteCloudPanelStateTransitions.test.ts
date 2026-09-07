@@ -67,9 +67,32 @@ suite('SuiteCloud Control Panel State Transitions', () => {
 
 		assert.strictEqual(updatedState.authId, 'prod-999');
 		assert.strictEqual(updatedState.port, 9191);
+		assert.strictEqual(
+			updatedState.baseUrl,
+			'http://127.0.0.1:9191/api/internal/devassist'
+		);
 		assert.strictEqual(updatedState.clineScope, 'user');
 		assert.strictEqual(updatedState.disableWelcomeNotification, true);
 		assert.strictEqual(updatedState.hasPendingRuntimeConfig, false);
+	});
+
+	test('restores the matching Cline URL when the local port is changed back', () => {
+		const initialState = createState({
+			port: 8183,
+			baseUrl: 'http://127.0.0.1:8183/api/internal/devassist',
+		});
+
+		const changedState = applyFormChangesToState(initialState, { port: 8184 });
+		const restoredState = applyFormChangesToState(changedState, { port: 8183 });
+
+		assert.strictEqual(
+			changedState.baseUrl,
+			'http://127.0.0.1:8184/api/internal/devassist'
+		);
+		assert.strictEqual(
+			restoredState.baseUrl,
+			'http://127.0.0.1:8183/api/internal/devassist'
+		);
 	});
 
 	test('applyFormChangesToState blocks Auth ID changes while proxy is running', () => {

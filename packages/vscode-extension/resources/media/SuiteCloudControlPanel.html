@@ -26,11 +26,13 @@
     <div id="controlPanelContent" class="controlPanelContent">
       <section class="panelCard localServiceCard">
         <div class="cardHeading">
-          <h2>SuiteCloud Proxy</h2>
+          <h2>Proxy</h2>
           <span id="statusBadge" class="statusPill">not running</span>
         </div>
 
-        <p class="fieldHint proxyDependency">SuiteCloud Developer Assistant requires the SuiteCloud Proxy.</p>
+        <p class="fieldHint proxyDependency">
+          Opens an OpenAI-compatible endpoint at the specified port on this computer. SuiteCloud Developer Assistant requires it to connect Cline or another compatible coding tool.
+        </p>
 
         <div id="authIdField" class="field">
           <label class="fieldLabel" for="authId">Auth ID</label>
@@ -43,6 +45,7 @@
               <span class="codicon codicon-add" aria-hidden="true"></span>
             </button>
           </span>
+          <span class="fieldHint authIdHint">Can be different from the project's Auth ID.</span>
         </div>
 
         <label id="portField" class="field">
@@ -54,9 +57,9 @@
             pattern="[0-9]{4,5}"
             minlength="4"
             maxlength="5"
-            title="Enter a port between 1024 and 65535. Leave empty to use port 8181."
+            title="Enter a port between {{MINIMUM_PROXY_PORT}} and {{MAXIMUM_PROXY_PORT}}. Leave empty to use port {{DEFAULT_PROXY_PORT}}."
             aria-describedby="portValidation"
-            placeholder="8181 by default"
+            placeholder="{{DEFAULT_PROXY_PORT}} by default"
           />
         </label>
         <p id="portValidation" class="inlineError hidden" role="alert"></p>
@@ -104,7 +107,7 @@
             </div>
             <div class="providerField">
               <dt>Model ID</dt>
-              <dd>NetSuite</dd>
+              <dd>{{MODEL_ID}}</dd>
             </div>
           </dl>
         </details>
@@ -233,6 +236,7 @@
   <script nonce="{{SCRIPT_NONCE}}">
     window.__SUITECLOUD_PANEL_STRINGS__ = {{PANEL_STRINGS_JSON}};
     window.__SUITECLOUD_PANEL_EVENTS__ = {{PANEL_EVENTS_JSON}};
+    window.__SUITECLOUD_PANEL_CONFIG__ = {{PANEL_CONFIG_JSON}};
   </script>
   <script nonce="{{SCRIPT_NONCE}}" src="{{CONTROL_PANEL_JS}}"></script>
 </body>
