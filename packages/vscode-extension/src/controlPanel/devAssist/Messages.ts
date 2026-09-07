@@ -42,13 +42,9 @@ export type SuiteCloudPanelSubmitFeedbackPayload = {
 };
 
 type SuiteCloudPanelFromWebviewEvents = typeof SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW;
-type SuiteCloudPanelToWebviewEvents = typeof SUITECLOUD_PANEL_EVENTS.TO_WEBVIEW;
 
 export type SuiteCloudPanelFromWebviewEventType =
 	SuiteCloudPanelFromWebviewEvents[keyof SuiteCloudPanelFromWebviewEvents];
-
-export type SuiteCloudPanelToWebviewEventType =
-	SuiteCloudPanelToWebviewEvents[keyof SuiteCloudPanelToWebviewEvents];
 
 export type SuiteCloudPanelAction = 'SUBMIT_FEEDBACK';
 

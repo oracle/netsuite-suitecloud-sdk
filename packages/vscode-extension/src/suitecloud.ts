@@ -30,7 +30,6 @@ import { VSTranslationService } from './service/VSTranslationService';
 import { suiteCloudOutputChannel } from './service/SuiteCloudOutputChannel';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
 import { createAuthIDStatusBar, createDevAssistStatusBar, createSuiteCloudProjectStatusBar, updateAuthIDStatusBarIfNeeded, updateStatusBars } from './startup/StatusBarItemsFunctions';
-import { openDevAssistFeedbackForm } from './webviews/FeedbackFormWebviewController';
 import {
 	applyPendingSuiteCloudClineConfig,
 	disposeSuiteCloudControlPanel,
@@ -108,10 +107,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		),
 		vscode.commands.registerCommand(commandsInfoMap.opencontrolpanelwalkthrough.vscodeCommandId,
 			() => vscode.commands.executeCommand('workbench.action.openWalkthrough', controlPanelWalkthroughId, false)
-		),
-		// DevAssist Feedback Form WebView
-		vscode.commands.registerCommand(commandsInfoMap.opendevassistfeedbackform.vscodeCommandId,
-			() => openDevAssistFeedbackForm(context))
+		)
 	);
 
 	// add watchers needed to update the status bars
