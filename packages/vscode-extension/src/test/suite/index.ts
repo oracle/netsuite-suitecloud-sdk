@@ -22,6 +22,7 @@ export function run(): Promise<void> {
 			'ClineChatOpener.test.js',
 			'SuiteCloudPanelMessageParser.test.js',
 			'ControlPanelMessageDispatcher.test.js',
+			'ControlPanelTranslations.test.js',
 			'ControlPanelWorkflow.test.js',
 			'ApiKeyService.test.js',
 			'SdkApiKeyStorage.test.js',

@@ -80,7 +80,11 @@ export default class ProxyWorkflow {
 			failedState.lastError = this.summarizeInlineError(friendlyErrorMessage);
 			this._dependencies.presenter.setStoppedStatus();
 			this._dependencies.postStateUpdate();
-			this._dependencies.presenter.showError(`Auto-start failed: ${friendlyErrorMessage}`);
+			this._dependencies.presenter.showError(
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyAutoStartFailed(
+					friendlyErrorMessage
+				)
+			);
 			this._dependencies.presenter.endLogSection();
 		}
 	}
@@ -112,7 +116,10 @@ export default class ProxyWorkflow {
 			resolveApiKey: () => this._dependencies.resolveApiKey(),
 			onStarting: (state) => {
 				presenter.info(
-					`Starting the SuiteCloud Proxy on port ${state.port} with auth ID "${state.authId}".`
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.messages.proxyStarting(
+						state.port,
+						state.authId
+					)
 				);
 				this._dependencies.setState(state);
 				this._dependencies.postStateUpdate();
@@ -151,7 +158,7 @@ export default class ProxyWorkflow {
 			state: this._dependencies.getState(),
 			preserveStartIntent: options.preserveStartIntent === true,
 			onStopping: async (state) => {
-			presenter.info('Stopping the SuiteCloud Proxy.');
+				presenter.info(SUITECLOUD_PANEL_RUNTIME_STRINGS.messages.proxyStopping);
 				this._dependencies.setState(state);
 				await this._dependencies.persistPreferencesNoThrow();
 				this._dependencies.postStateUpdate();

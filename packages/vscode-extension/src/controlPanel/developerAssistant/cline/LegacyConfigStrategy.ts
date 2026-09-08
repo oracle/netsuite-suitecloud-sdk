@@ -18,6 +18,7 @@ import {
 	ClineCompatibilityResult,
 	JsonObject,
 } from './Types';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 export default class ClineLegacyConfigStrategy {
 	private readonly _fileStore: ClineFileStore;
@@ -32,7 +33,7 @@ export default class ClineLegacyConfigStrategy {
 		if (!state) {
 			return {
 				compatible: false,
-				message: 'Cline state file was not found for the selected scope. Configure Cline once before applying settings.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.stateFileMissing,
 			};
 		}
 
@@ -40,7 +41,7 @@ export default class ClineLegacyConfigStrategy {
 		if (!secrets) {
 			return {
 				compatible: false,
-				message: 'Cline secrets file was not found. Configure Cline once before applying settings.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.secretsFileMissing,
 			};
 		}
 
@@ -52,14 +53,13 @@ export default class ClineLegacyConfigStrategy {
 		if (!providerKey || !modelKey || !baseUrlKey || !secretKey) {
 			return {
 				compatible: false,
-				message:
-					'Cline storage format is not recognized on this machine. Use manual copy, or configure Cline once and retry experimental apply.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.storageFormatUnrecognized,
 			};
 		}
 
 		return {
 			compatible: true,
-			message: 'Cline storage compatibility check passed.',
+			message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.storageCompatible,
 			details: {
 				providerKey,
 				baseUrlKey,
@@ -115,14 +115,16 @@ export default class ClineLegacyConfigStrategy {
 
 			return {
 				applied: true,
-				message: 'Cline settings were updated successfully.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.settingsUpdated,
 			};
 		} catch (error) {
 			await this._fileStore.restoreFromBackups(backups, writtenRevisions);
 			await this._fileStore.removeFiles(createdPaths, writtenRevisions);
 			return {
 				applied: false,
-				message: `Unable to apply Cline settings automatically: ${error instanceof Error ? error.message : String(error)}`,
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.clineLegacyApplyFailed(
+					error instanceof Error ? error.message : String(error)
+				),
 			};
 		} finally {
 			await this._fileStore.cleanupBackups(backups);

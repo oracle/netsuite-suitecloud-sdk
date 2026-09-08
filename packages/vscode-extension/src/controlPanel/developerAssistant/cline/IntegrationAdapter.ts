@@ -4,6 +4,7 @@
  */
 
 import { ClineScope } from '../State';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 import {
 	CLINE_OPENAI_COMPATIBLE_PROVIDER_ID,
 } from './Constants';
@@ -24,9 +25,6 @@ export type {
 	ClineCompatibilityResult,
 } from './Types';
 
-const CLINE_CONFIG_MISMATCH_MESSAGE =
-	'Cline uses different settings. Select Configure to use it with SuiteCloud Developer Assistant.';
-
 export default class ClineIntegrationAdapter {
 	private readonly _fileStore: ClineFileStore;
 	private readonly _providersStrategy: ClineProvidersConfigStrategy;
@@ -43,7 +41,7 @@ export default class ClineIntegrationAdapter {
 		if (!dirExists) {
 			return {
 				compatible: false,
-				message: 'Cline storage directory was not found. Open Cline once before configuring it automatically.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.storageDirectoryMissing,
 			};
 		}
 
@@ -76,7 +74,7 @@ export default class ClineIntegrationAdapter {
 			return {
 				comparable: false,
 				inSync: false,
-				message: 'No API key available yet. Generate or rotate the API key before checking Cline configuration.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.apiKeyMissingForComparison,
 			};
 		}
 
@@ -87,7 +85,7 @@ export default class ClineIntegrationAdapter {
 				return {
 					comparable: false,
 					inSync: false,
-					message: 'Cline providers settings are not available for configuration comparison.',
+					message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.providersSettingsNotComparable,
 				};
 			}
 
@@ -99,7 +97,7 @@ export default class ClineIntegrationAdapter {
 				return {
 					comparable: false,
 					inSync: false,
-					message: 'Cline providers settings are missing base URL, model, or API key.',
+					message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.providersSettingsIncomplete,
 				};
 			}
 
@@ -136,8 +134,8 @@ export default class ClineIntegrationAdapter {
 				comparable: true,
 				inSync,
 				message: inSync
-					? 'No change detected. Nothing to apply to Cline config.'
-					: CLINE_CONFIG_MISMATCH_MESSAGE,
+					? SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.noClineConfigChangesDetected
+					: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.configMismatch,
 			};
 		}
 
@@ -160,7 +158,7 @@ export default class ClineIntegrationAdapter {
 			return {
 				comparable: false,
 				inSync: false,
-				message: 'Cline state/secrets are missing for configuration comparison.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.legacySettingsNotComparable,
 			};
 		}
 
@@ -171,7 +169,7 @@ export default class ClineIntegrationAdapter {
 			return {
 				comparable: false,
 				inSync: false,
-				message: 'Cline state/secrets are missing base URL, model, or API key.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.legacySettingsIncomplete,
 			};
 		}
 
@@ -184,8 +182,8 @@ export default class ClineIntegrationAdapter {
 			comparable: true,
 			inSync,
 			message: inSync
-				? 'No change detected. Nothing to apply to Cline config.'
-				: CLINE_CONFIG_MISMATCH_MESSAGE,
+				? SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.noClineConfigChangesDetected
+				: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.configMismatch,
 		};
 	}
 

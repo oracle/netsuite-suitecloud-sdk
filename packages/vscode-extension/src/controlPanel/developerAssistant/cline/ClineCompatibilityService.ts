@@ -5,6 +5,7 @@
 
 import type ClineIntegrationAdapter from './IntegrationAdapter';
 import { ClineScope, SuiteCloudPanelState } from '../State';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 type ClineCompatibilityState = Pick<
 	SuiteCloudPanelState,
@@ -41,7 +42,7 @@ export default class ClineCompatibilityService {
 			return {
 				isClineInstalled: false,
 				isClineCompatible: false,
-				clineCompatibilityMessage: 'Cline is not installed.',
+				clineCompatibilityMessage: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.notInstalled,
 				isClineConfigInSync: false,
 				clineConfigSyncMessage: null,
 			};
@@ -51,11 +52,9 @@ export default class ClineCompatibilityService {
 			return {
 				isClineInstalled: true,
 				isClineCompatible: true,
-				clineCompatibilityMessage:
-					'Workspace Manual Setup is copy-only. Cline provider config is global in supported Cline versions.',
+				clineCompatibilityMessage: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.workspaceManual,
 				isClineConfigInSync: false,
-				clineConfigSyncMessage:
-					'Copy Base URL and Model ID from the SuiteCloud Proxy section, then copy the visible API key after rotating it if needed.',
+				clineConfigSyncMessage: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.workspaceCopyInstructions,
 			};
 		}
 
@@ -69,8 +68,7 @@ export default class ClineCompatibilityService {
 				isClineCompatible: false,
 				clineCompatibilityMessage: compatibility.message,
 				isClineConfigInSync: false,
-				clineConfigSyncMessage:
-					'Automatic Cline update is not supported on this machine. Copy Base URL and API key manually into Cline settings.',
+				clineConfigSyncMessage: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.automaticUpdateUnsupported,
 			};
 		}
 
@@ -78,10 +76,9 @@ export default class ClineCompatibilityService {
 			return {
 				isClineInstalled: true,
 				isClineCompatible: true,
-				clineCompatibilityMessage: 'Automatic Cline update is supported on this machine.',
+				clineCompatibilityMessage: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.automaticUpdateSupported,
 				isClineConfigInSync: false,
-				clineConfigSyncMessage:
-					'Generate an API key to check and configure Cline settings.',
+				clineConfigSyncMessage: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.generateApiKey,
 			};
 		}
 
@@ -95,7 +92,7 @@ export default class ClineCompatibilityService {
 		return {
 			isClineInstalled: true,
 			isClineCompatible: true,
-			clineCompatibilityMessage: 'Automatic Cline update is supported on this machine.',
+			clineCompatibilityMessage: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.automaticUpdateSupported,
 			isClineConfigInSync: syncResult.comparable && syncResult.inSync,
 			clineConfigSyncMessage: syncResult.comparable ? null : syncResult.message,
 		};

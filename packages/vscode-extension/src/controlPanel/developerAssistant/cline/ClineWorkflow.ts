@@ -98,12 +98,14 @@ export default class ClineWorkflow {
 				this._appliedInSession = this._dependencies.getState().isClineConfigInSync;
 				this._dependencies.postStateUpdate();
 				this._dependencies.presenter.info(
-					'Applied pending Cline configuration during SuiteCloud activation.'
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.messages.clinePendingConfigApplied
 				);
 			}
 		} catch (error) {
 			this._dependencies.presenter.error(
-				`Unable to apply pending Cline configuration: ${String(error)}`
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.clinePendingApplyFailed(
+					String(error)
+				)
 			);
 		}
 	}
@@ -223,18 +225,18 @@ export default class ClineWorkflow {
 					recoveryError =
 						proxyError instanceof Error ? proxyError.message : String(proxyError);
 					this._dependencies.presenter.error(
-						`Unable to recover the SuiteCloud Proxy after extension restart failed: ${recoveryError}`
+						SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.clineProxyRecoveryFailed(
+							recoveryError
+						)
 					);
 				}
 			}
 
 			throw new Error(
-				`Unable to restart VS Code extensions automatically: ${restartError}. ` +
-				`Run "Developer: Restart Extension Host" from the Command Palette.${
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.clineExtensionRestartFailed(
+					restartError,
 					recoveryError
-						? ` SuiteCloud Proxy recovery also failed: ${recoveryError}`
-						: ''
-				}`
+				)
 			);
 		}
 	}

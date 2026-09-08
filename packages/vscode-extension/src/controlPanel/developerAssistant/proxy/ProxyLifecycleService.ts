@@ -52,7 +52,9 @@ export default class ProxyLifecycleService {
 		validateProxyStartInputs(input.state, input.unconfiguredAuthId);
 		if (!input.isProxySupported()) {
 			throw new Error(
-				`The bundled @oracle/suitecloud-cli version (${input.getCliVersion()}) does not include the SuiteCloud Proxy. Upgrade the extension CLI dependency and reinstall.`
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyUnavailableInCli(
+					input.getCliVersion()
+				)
 			);
 		}
 

@@ -18,6 +18,7 @@ import {
 	SdkExecutor,
 } from '../../../util/ExtensionUtil';
 import type { ApiKeyStorage } from './ApiKeyService';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 type ProxyGenerateKeyData = {
 	proxyAPIKey?: string;
@@ -51,7 +52,8 @@ export default class SdkApiKeyStorage implements ApiKeyStorage {
 		const readResult = await this._readStoredApiKey();
 		if (readResult.status !== 'SUCCESS' || typeof readResult.data !== 'string') {
 			throw new Error(
-				readResult.errorMessages.join('\n') || 'Unable to read SuiteCloud Proxy API key storage.'
+				readResult.errorMessages.join('\n') ||
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.apiKeyReadFailed
 			);
 		}
 		const apiKey = new ClientAPIKeyObjectWrapper(readResult.data).getDefaultKeyValue();
@@ -62,13 +64,14 @@ export default class SdkApiKeyStorage implements ApiKeyStorage {
 		const result = await this._generateApiKey();
 		if (!result.isSuccess()) {
 			throw new Error(
-				result.errorMessages?.join('\n') || 'Unable to generate and persist the SuiteCloud Proxy API key.'
+				result.errorMessages?.join('\n') ||
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.apiKeyGenerateFailed
 			);
 		}
 
 		const apiKey = result.data?.proxyAPIKey;
 		if (typeof apiKey !== 'string' || !apiKey.trim()) {
-			throw new Error('Generated SuiteCloud Proxy API key is empty.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.apiKeyEmpty);
 		}
 		return apiKey.trim();
 	}

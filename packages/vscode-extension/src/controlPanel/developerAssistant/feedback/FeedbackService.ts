@@ -4,6 +4,7 @@
  */
 
 import { DEVELOPER_ASSISTANT } from '../../../ApplicationConstants';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 import { DeveloperAssistantFeedback } from './Types';
 
 const FEEDBACK_MAX_LENGTH = 1000;
@@ -40,22 +41,24 @@ export default class FeedbackService {
 			typeof input.payload.rating === 'number' ? input.payload.rating : Number.NaN;
 
 		if (!feedback) {
-			throw new Error('Feedback text is required.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackRequired);
 		}
 		if (feedback.length > FEEDBACK_MAX_LENGTH) {
-			throw new Error(`Feedback text must be ${FEEDBACK_MAX_LENGTH} characters or less.`);
+			throw new Error(
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackMaxLength(FEEDBACK_MAX_LENGTH)
+			);
 		}
 		if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-			throw new Error('Rating must be an integer between 1 and 5.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackInvalidRating);
 		}
 		if (topics.length === 0) {
-			throw new Error('Select at least one feedback topic.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackTopicRequired);
 		}
 		if (topics.some((topic) => !FEEDBACK_ALLOWED_TOPICS.has(topic))) {
-			throw new Error('One or more feedback topics are invalid.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackInvalidTopic);
 		}
 		if (!input.apiKey.trim()) {
-			throw new Error('No API key is available. Generate or rotate API key first.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.missingApiKey);
 		}
 
 		const feedbackUrl =
@@ -76,9 +79,7 @@ export default class FeedbackService {
 			});
 		} catch (error) {
 			if (abortController.signal.aborted) {
-				throw new Error(
-					'Feedback submit timed out. Verify the SuiteCloud Proxy is running and retry.'
-				);
+				throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackTimeout);
 			}
 			throw error;
 		} finally {
@@ -90,8 +91,14 @@ export default class FeedbackService {
 			const normalizedBody = responseBody.trim().slice(0, FEEDBACK_ERROR_BODY_MAX_LENGTH);
 			throw new Error(
 				normalizedBody
-					? `Feedback submit failed (${response.status}): ${normalizedBody}`
-					: `Feedback submit failed (${response.status} ${response.statusText})`
+					? SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackSubmitFailedWithBody(
+						response.status,
+						normalizedBody
+					)
+					: SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackSubmitFailed(
+						response.status,
+						response.statusText
+					)
 			);
 		}
 	}

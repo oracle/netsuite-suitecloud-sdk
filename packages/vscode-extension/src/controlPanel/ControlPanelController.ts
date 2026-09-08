@@ -148,7 +148,9 @@ export default class ControlPanelController {
 				});
 				this._presenter.setStoppedStatus();
 				this._postStateUpdate();
-				this._presenter.showError('SuiteCloud Proxy stopped unexpectedly.');
+				this._presenter.showError(
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyStoppedUnexpectedly
+				);
 			},
 			refreshAuthorization: (authId) => this._sdkService.refreshAuthorization(authId),
 		});
@@ -529,12 +531,12 @@ export default class ControlPanelController {
 
 	private async _submitFeedback(payload: SuiteCloudPanelSubmitFeedbackPayload): Promise<void> {
 		if (!this._isProxyAvailable()) {
-			throw new Error('Start the SuiteCloud Proxy before submitting feedback.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.feedbackProxyRequired);
 		}
 
 		const apiKey = await this._resolveApiKeyIgnoringReadErrors();
 		if (!apiKey || !apiKey.trim()) {
-			throw new Error('No API key is available. Generate or rotate API key first.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.missingApiKey);
 		}
 
 		await this._feedbackService.submit({
@@ -542,7 +544,7 @@ export default class ControlPanelController {
 			apiKey,
 			port: this._state.runtimePort || this._state.port,
 		});
-		const successMessage = 'Feedback submitted successfully. Thank you!';
+		const successMessage = SUITECLOUD_PANEL_RUNTIME_STRINGS.messages.feedbackSubmitted;
 		this._presenter.showSuccess(successMessage);
 		this._presenter.postActionSuccess(successMessage, 'SUBMIT_FEEDBACK');
 	}
@@ -563,7 +565,9 @@ export default class ControlPanelController {
 		try {
 			await this._persistPreferences();
 		} catch (error) {
-			this._presenter.error(`Unable to persist Developer Assistant preferences: ${String(error)}`);
+			this._presenter.error(
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.preferencesSaveFailed(String(error))
+			);
 		}
 	}
 
@@ -572,7 +576,9 @@ export default class ControlPanelController {
 		if (!copyableApiKey) {
 			this._state.apiKeyVisible = false;
 			this._postStateUpdate();
-			this._presenter.showError('The API key copy window has expired. Rotate the key to copy a new value.');
+			this._presenter.showError(
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.apiKeyCopyExpired
+			);
 			return;
 		}
 
@@ -605,7 +611,9 @@ export default class ControlPanelController {
 		this._messageQueue = this._messageQueue
 			.then(() => this._handleWebviewMessage(message))
 			.catch((error) => {
-				this._presenter.error(`Unexpected command queue failure: ${String(error)}`);
+				this._presenter.error(
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.commandQueueFailed(String(error))
+				);
 			});
 	}
 
@@ -616,7 +624,9 @@ export default class ControlPanelController {
 				this._postStateUpdate();
 			})
 			.catch((error) => {
-				this._presenter.error(`Unable to refresh panel state: ${String(error)}`);
+				this._presenter.error(
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.stateRefreshFailed(String(error))
+				);
 			});
 	}
 

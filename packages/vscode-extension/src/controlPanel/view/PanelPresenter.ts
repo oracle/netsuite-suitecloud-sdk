@@ -14,7 +14,7 @@ import {
 	SUITECLOUD_PANEL_EVENTS,
 } from '../protocol/Messages';
 
-const OUTPUT_CHANNEL_NAME = 'SuiteCloud: Developer Assistant';
+const OUTPUT_CHANNEL_NAME = SUITECLOUD_PANEL_RUNTIME_STRINGS.presentation.outputChannelName;
 const LOG_PREFIX = SUITECLOUD_PANEL_RUNTIME_STRINGS.logPrefix;
 
 export default class PanelPresenter {
@@ -89,7 +89,7 @@ export default class PanelPresenter {
 	}
 
 	showProxyStartError(message: string): void {
-		const openOutputAction = 'Open Output';
+		const openOutputAction = SUITECLOUD_PANEL_RUNTIME_STRINGS.presentation.openOutputAction;
 		void vscode.window.showErrorMessage(
 			this.formatNotification(message),
 			openOutputAction
@@ -101,7 +101,7 @@ export default class PanelPresenter {
 			},
 			(error) => {
 				this.error(
-					`Unable to show the SuiteCloud Proxy startup error notification: ${String(error)}`
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.notificationFailed(String(error))
 				);
 			}
 		);
@@ -127,18 +127,19 @@ export default class PanelPresenter {
 	}
 
 	setStartingStatus(): void {
-		this._statusBarItem.text = '$(sync~spin) SuiteCloud: Proxy starting';
+		this._statusBarItem.text =
+			`$(sync~spin) ${SUITECLOUD_PANEL_RUNTIME_STRINGS.presentation.proxyStartingStatus}`;
 		this._showStatusBarItem();
 	}
 
 	logApiProviderSettings(baseUrl: string, modelId: string): void {
 		const settings = [
-			'Use these settings in an OpenAI-compatible tool:',
+			SUITECLOUD_PANEL_RUNTIME_STRINGS.presentation.providerSettingsIntro,
 			'',
-			'API Provider: OpenAI Compatible',
-			`Base URL: ${baseUrl}`,
-			'API Key: Generate or rotate the key in Developer Assistant, then copy it.',
-			`Model ID: ${modelId}`,
+			SUITECLOUD_PANEL_RUNTIME_STRINGS.presentation.providerSettingsProvider,
+			SUITECLOUD_PANEL_RUNTIME_STRINGS.presentation.providerSettingsBaseUrl(baseUrl),
+			SUITECLOUD_PANEL_RUNTIME_STRINGS.presentation.providerSettingsApiKey,
+			SUITECLOUD_PANEL_RUNTIME_STRINGS.presentation.providerSettingsModelId(modelId),
 		];
 		const contentWidth = Math.max(...settings.map((line) => line.length));
 		const border = '*'.repeat(contentWidth + 4);
