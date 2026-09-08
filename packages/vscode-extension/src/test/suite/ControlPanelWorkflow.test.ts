@@ -4,10 +4,10 @@
  */
 
 import * as assert from 'assert';
-import { createInitialPanelState } from '../../controlPanel/devAssist/Configuration';
-import { SuiteCloudPanelState } from '../../controlPanel/devAssist/State';
-import ClineWorkflow from '../../controlPanel/devAssist/workflows/ClineWorkflow';
-import ProxyWorkflow from '../../controlPanel/devAssist/workflows/ProxyWorkflow';
+import { createInitialPanelState } from '../../controlPanel/developerAssistant/Configuration';
+import { SuiteCloudPanelState } from '../../controlPanel/developerAssistant/State';
+import ClineWorkflow from '../../controlPanel/developerAssistant/cline/ClineWorkflow';
+import ProxyWorkflow from '../../controlPanel/developerAssistant/proxy/ProxyWorkflow';
 
 const createState = (): SuiteCloudPanelState =>
 	createInitialPanelState(
@@ -36,7 +36,7 @@ suite('Control Panel Workflows', () => {
 			endLogSection: () => calls.push('endLogSection'),
 		};
 		const workflow = new ProxyWorkflow({
-			cliService: {
+			sdkService: {
 				isProxyServiceSupported: () => true,
 				getBundledCliVersion: () => '4.0.0',
 				getSdkPath: () => '/sdk',
@@ -94,7 +94,7 @@ suite('Control Panel Workflows', () => {
 		let lifecycleStarted = false;
 		const state = createState();
 		const workflow = new ProxyWorkflow({
-			cliService: {} as any,
+			sdkService: {} as any,
 			lifecycleService: {
 				start: async () => {
 					lifecycleStarted = true;

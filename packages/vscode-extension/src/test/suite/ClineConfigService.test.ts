@@ -8,7 +8,7 @@ import ClineConfigService, {
 	ApplyPanelClineConfigInput,
 	CLINE_PENDING_CONFIG_STORAGE_KEY,
 	ClineConfigStorage,
-} from '../../service/controlPanel/devAssist/cline/ClineConfigService';
+} from '../../controlPanel/developerAssistant/cline/ClineConfigService';
 
 const baseInput: ApplyPanelClineConfigInput = {
 	isProxyAvailable: true,

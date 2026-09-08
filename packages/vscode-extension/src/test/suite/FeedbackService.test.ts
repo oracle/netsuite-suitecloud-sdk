@@ -4,7 +4,7 @@
  */
 
 import * as assert from 'assert';
-import FeedbackService from '../../service/controlPanel/devAssist/FeedbackService';
+import FeedbackService from '../../controlPanel/developerAssistant/feedback/FeedbackService';
 
 suite('Control Panel Feedback Service', () => {
 	test('preserves the existing feedback server contract', async () => {

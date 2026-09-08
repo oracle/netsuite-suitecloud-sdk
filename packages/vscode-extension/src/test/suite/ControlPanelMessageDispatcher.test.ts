@@ -6,8 +6,8 @@
 import * as assert from 'assert';
 import MessageDispatcher, {
 	ControlPanelMessageHandlers,
-} from '../../controlPanel/devAssist/MessageDispatcher';
-import { SUITECLOUD_PANEL_EVENTS } from '../../controlPanel/devAssist/Messages';
+} from '../../controlPanel/protocol/MessageDispatcher';
+import { SUITECLOUD_PANEL_EVENTS } from '../../controlPanel/protocol/Messages';
 
 suite('Control Panel Message Dispatcher', () => {
 	test('routes every webview event to its matching handler', async () => {

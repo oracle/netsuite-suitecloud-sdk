@@ -29,7 +29,13 @@ import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
 import { suiteCloudOutputChannel } from './service/SuiteCloudOutputChannel';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
-import { createAuthIDStatusBar, createDevAssistStatusBar, createSuiteCloudProjectStatusBar, updateAuthIDStatusBarIfNeeded, updateStatusBars } from './startup/StatusBarItemsFunctions';
+import {
+	createAuthIDStatusBar,
+	createSuiteCloudProjectStatusBar,
+	createSuiteCloudProxyStatusBar,
+	updateAuthIDStatusBarIfNeeded,
+	updateStatusBars,
+} from './startup/StatusBarItemsFunctions';
 import {
 	applyPendingSuiteCloudClineConfig,
 	disposeSuiteCloudControlPanel,
@@ -37,8 +43,7 @@ import {
 	openSuiteCloudControlPanel,
 	showSuiteCloudControlPanelWelcomeIfNeeded,
 	startSuiteCloudControlPanelProxyIfEnabled,
-} from './controlPanel/Controller';
-
+} from './controlPanel';
 
 export const output = suiteCloudOutputChannel;
 
@@ -68,11 +73,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// initialize status bars
-	const devAssistStatusBar = createDevAssistStatusBar();
+	const proxyStatusBar = createSuiteCloudProxyStatusBar();
 	const suitecloudProjectStatusBar = createSuiteCloudProjectStatusBar();
 	const authIDStatusBar = createAuthIDStatusBar();
 	updateStatusBars(vscode.window.activeTextEditor, suitecloudProjectStatusBar, authIDStatusBar);
-	initializeSuiteCloudControlPanel(context, devAssistStatusBar, sdkDependenciesReady);
+	initializeSuiteCloudControlPanel(context, proxyStatusBar, sdkDependenciesReady);
 	void sdkDependenciesReady
 		.then(async () => {
 			await applyPendingSuiteCloudClineConfig();

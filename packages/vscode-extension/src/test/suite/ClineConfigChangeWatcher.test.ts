@@ -6,7 +6,7 @@
 import * as assert from 'assert';
 import ClineConfigChangeWatcher, {
 	ClineConfigFileWatcher,
-} from '../../service/controlPanel/devAssist/cline/ConfigChangeWatcher';
+} from '../../controlPanel/developerAssistant/cline/ConfigChangeWatcher';
 
 type ConfigEvent = 'change' | 'create' | 'delete';
 

@@ -8,7 +8,7 @@ import type * as vscode from 'vscode';
 import PreferencesStore, {
 	LegacyPanelSettings,
 	PersistedPanelPreferences,
-} from '../../service/controlPanel/devAssist/PreferencesStore';
+} from '../../controlPanel/developerAssistant/PreferencesStore';
 
 const DEFAULTS = { authId: 'default-auth', localPort: 8181 };
 

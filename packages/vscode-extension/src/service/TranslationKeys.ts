@@ -99,7 +99,7 @@ export const DEPLOY = {
 	},
 };
 
-export const DEVASSIST_SERVICE = {
+export const SUITECLOUD_PROXY = {
 	IS_RUNNING: {
 		STATUSBAR: 'DEVASSIST_SERVICE_IS_RUNNING_STATUSBAR'
 	},

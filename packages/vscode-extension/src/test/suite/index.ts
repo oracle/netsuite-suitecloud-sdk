@@ -25,6 +25,7 @@ export function run(): Promise<void> {
 			'ControlPanelWorkflow.test.js',
 			'ApiKeyService.test.js',
 			'SdkApiKeyStorage.test.js',
+			'SdkService.test.js',
 			'ClineCompatibilityService.test.js',
 			'ClineConfigService.test.js',
 			'ClineConfigChangeWatcher.test.js',

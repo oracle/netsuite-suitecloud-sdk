@@ -4,12 +4,12 @@
  */
 
 import * as assert from 'assert';
-import { createInitialPanelState } from '../../controlPanel/devAssist/Configuration';
+import { createInitialPanelState } from '../../controlPanel/developerAssistant/Configuration';
 import ProxyLifecycleService, {
 	ProxyRuntime,
 	StartPanelProxyInput,
-} from '../../service/controlPanel/devAssist/proxy/ProxyLifecycleService';
-import { SuiteCloudPanelState } from '../../controlPanel/devAssist/State';
+} from '../../controlPanel/developerAssistant/proxy/ProxyLifecycleService';
+import { SuiteCloudPanelState } from '../../controlPanel/developerAssistant/State';
 
 const createState = () =>
 	createInitialPanelState(
@@ -50,6 +50,7 @@ const createStartInput = (): StartPanelProxyInput => {
 		isProxySupported: () => true,
 		getCliVersion: () => '3.2.0',
 		getSdkPath: () => '/sdk',
+		ensureAuthorizationReady: async () => undefined,
 		resolveApiKey: async () => 'secret',
 		onStarting: () => undefined,
 	};
@@ -114,11 +115,48 @@ suite('Control Panel Proxy Lifecycle Service', () => {
 	test('does not start when API key resolution fails', async () => {
 		const { proxy, starts } = createProxyRuntime();
 		const input = createStartInput();
+		let authorizationChecked = false;
 		input.resolveApiKey = async () => undefined;
+		input.ensureAuthorizationReady = async () => {
+			authorizationChecked = true;
+		};
 
 		await assert.rejects(
 			new ProxyLifecycleService(proxy).start(input),
 			/Generate an API key in the control panel/
+		);
+		assert.strictEqual(starts.length, 0);
+		assert.strictEqual(authorizationChecked, false);
+	});
+
+	test('waits for authorization readiness before starting the proxy', async () => {
+		const { proxy, starts } = createProxyRuntime();
+		const calls: string[] = [];
+		const input = createStartInput();
+		input.ensureAuthorizationReady = async (authId) => {
+			calls.push(`authorize:${authId}`);
+		};
+		input.resolveApiKey = async () => {
+			calls.push('resolveApiKey');
+			return 'secret';
+		};
+
+		await new ProxyLifecycleService(proxy).start(input);
+
+		assert.deepStrictEqual(calls, ['resolveApiKey', 'authorize:account']);
+		assert.strictEqual(starts.length, 1);
+	});
+
+	test('does not start when authorization readiness fails', async () => {
+		const { proxy, starts } = createProxyRuntime();
+		const input = createStartInput();
+		input.ensureAuthorizationReady = async () => {
+			throw new Error('Authorization failed.');
+		};
+
+		await assert.rejects(
+			new ProxyLifecycleService(proxy).start(input),
+			/Authorization failed/
 		);
 		assert.strictEqual(starts.length, 0);
 	});

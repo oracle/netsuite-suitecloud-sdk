@@ -4,7 +4,7 @@
  */
 
 import * as assert from 'assert';
-import SdkApiKeyStorage from '../../service/controlPanel/devAssist/SdkApiKeyStorage';
+import SdkApiKeyStorage from '../../controlPanel/developerAssistant/apiKey/SdkApiKeyStorage';
 import type { ActionResult } from '../../types/ActionResult';
 import type { RawSdkOperationResult } from '../../types/JavascriptNodeCli';
 

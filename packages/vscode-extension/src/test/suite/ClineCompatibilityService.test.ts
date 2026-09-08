@@ -4,7 +4,7 @@
  */
 
 import * as assert from 'assert';
-import ClineCompatibilityService from '../../service/controlPanel/devAssist/cline/ClineCompatibilityService';
+import ClineCompatibilityService from '../../controlPanel/developerAssistant/cline/ClineCompatibilityService';
 
 const baseInput = {
 	isExtensionInstalled: true,
