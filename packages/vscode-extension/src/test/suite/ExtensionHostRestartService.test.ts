@@ -6,7 +6,7 @@
 import * as assert from 'assert';
 import ExtensionHostRestartService, {
 	RESTART_EXTENSION_HOST_COMMAND_ID,
-} from '../../service/controlPanel/devAssist/ExtensionHostRestartService';
+} from '../../controlPanel/developerAssistant/cline/ExtensionHostRestartService';
 
 suite('Extension Host Restart Service', () => {
 	test('restarts the extension host through the isolated VS Code command', async () => {

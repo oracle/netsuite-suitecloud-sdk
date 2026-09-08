@@ -10,17 +10,17 @@ import VSConsoleLogger from '../../loggers/VSConsoleLogger';
 suite('VS Console Logger', () => {
 	test('keeps injected output destinations isolated', () => {
 		const commandMessages: string[] = [];
-		const devAssistMessages: string[] = [];
+		const proxyMessages: string[] = [];
 		const commandOutput = createOutputChannel(commandMessages);
-		const devAssistOutput = createOutputChannel(devAssistMessages);
+		const proxyOutput = createOutputChannel(proxyMessages);
 		const commandLogger = new VSConsoleLogger(false, undefined, commandOutput);
-		const devAssistLogger = new VSConsoleLogger(false, undefined, devAssistOutput);
+		const proxyLogger = new VSConsoleLogger(false, undefined, proxyOutput);
 
 		commandLogger.info('Deploy completed.');
-		devAssistLogger.info('SuiteCloud Proxy started.');
+		proxyLogger.info('SuiteCloud Proxy started.');
 
 		assert.deepStrictEqual(commandMessages, ['Deploy completed.']);
-		assert.deepStrictEqual(devAssistMessages, ['SuiteCloud Proxy started.']);
+		assert.deepStrictEqual(proxyMessages, ['SuiteCloud Proxy started.']);
 	});
 
 	test('separates lifecycle sections without duplicate blank lines', () => {

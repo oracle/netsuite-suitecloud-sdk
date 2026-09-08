@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import {
 	formatProxyStartError,
 	summarizeInlineError,
-} from '../../controlPanel/devAssist/ErrorFormatter';
+} from '../../controlPanel/developerAssistant/proxy/ErrorFormatter';
 
 suite('SuiteCloud Panel Error Formatter', () => {
 	test('adds actionable guidance for known proxy startup failures', () => {
@@ -37,5 +37,14 @@ suite('SuiteCloud Panel Error Formatter', () => {
 		assert.strictEqual(summarizeInlineError('\n First useful line \nDetails'), 'First useful line');
 		assert.strictEqual(summarizeInlineError(''), 'Operation failed.');
 		assert.strictEqual(summarizeInlineError('x'.repeat(200)), `${'x'.repeat(177)}...`);
+	});
+
+	test('identifies NetSuite account connection timeouts', () => {
+		const message =
+			'Connect to 5358634.app.netsuite.com:443 [184.25.192.196] failed: Operation timed out';
+
+		const formatted = formatProxyStartError(message, () => '4.0.0');
+
+		assert.match(formatted, /Verify the VPN or network proxy configuration/);
 	});
 });

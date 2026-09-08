@@ -56,6 +56,11 @@ export const AuthenticationUtils: {
 	[key: string]: any;
 	getProjectDefaultAuthId(projectFolder?: string): string;
 	getAuthIds(sdkPath: string): Promise<ActionResult<AuthListData>>;
+	checkIfReauthorizationIsNeeded(
+		authid: string,
+		sdkPath: string,
+		executionEnvironmentContext: ExecutionEnvironmentContextInstance
+	): Promise<ActionResult<Record<string, boolean | undefined>>>;
 	refreshAuthorization(authid: string, sdkPath: string, executionEnvironmentContext: ExecutionEnvironmentContextInstance): Promise<SdkOperationResult<null>>
 } = require('@oracle/suitecloud-cli/src/utils/AuthenticationUtils');
 

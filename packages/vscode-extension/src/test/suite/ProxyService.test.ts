@@ -8,7 +8,7 @@ import { EventEmitter } from 'events';
 import ProxyService, {
 	ProxyServiceDependencies,
 	StartProxyInput,
-} from '../../service/controlPanel/devAssist/proxy/ProxyService';
+} from '../../controlPanel/developerAssistant/proxy/ProxyService';
 import type {
 	ExecutionEnvironmentContextInstance,
 	SuiteCloudAuthProxyServiceInstance,

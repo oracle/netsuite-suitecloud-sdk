@@ -7,11 +7,13 @@ import * as assert from 'assert';
 import {
 	applyFormChangesToState,
 	calculatePendingRuntimeConfig,
+	clearMissingApiKeyErrorIfResolved,
 	clearRuntimeConfig,
 	isProxyLifecycleActive,
 	markRuntimeConfigAsActive,
-} from '../../controlPanel/devAssist/StateTransitions';
-import { SuiteCloudPanelState } from '../../controlPanel/devAssist/State';
+} from '../../controlPanel/developerAssistant/StateTransitions';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/developerAssistant/Strings';
+import { SuiteCloudPanelState } from '../../controlPanel/developerAssistant/State';
 
 const createState = (overrides: Partial<SuiteCloudPanelState> = {}): SuiteCloudPanelState => ({
 	initializationStatus: 'ready',
@@ -156,6 +158,48 @@ suite('SuiteCloud Control Panel State Transitions', () => {
 
 		assert.strictEqual(updatedState.proxyStatus, 'error');
 		assert.strictEqual(updatedState.lastError, 'Authentication failed.');
+	});
+
+	test('resolving an API key clears the related failed startup state', () => {
+		const initialState = createState({
+			apiKeyExists: true,
+			proxyStatus: 'error',
+			lastError: SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.unableResolveApiKeyForStart,
+		});
+
+		const updatedState = clearMissingApiKeyErrorIfResolved(initialState);
+
+		assert.strictEqual(updatedState.proxyStatus, 'stopped');
+		assert.strictEqual(updatedState.lastError, null);
+	});
+
+	test('resolving an API key preserves unrelated proxy errors', () => {
+		const initialState = createState({
+			apiKeyExists: true,
+			proxyStatus: 'error',
+			lastError: 'Port 8181 is already in use.',
+		});
+
+		const updatedState = clearMissingApiKeyErrorIfResolved(initialState);
+
+		assert.strictEqual(updatedState.proxyStatus, 'error');
+		assert.strictEqual(updatedState.lastError, 'Port 8181 is already in use.');
+	});
+
+	test('keeps the missing API key error until a key is resolved', () => {
+		const initialState = createState({
+			apiKeyExists: false,
+			proxyStatus: 'error',
+			lastError: SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.unableResolveApiKeyForStart,
+		});
+
+		const updatedState = clearMissingApiKeyErrorIfResolved(initialState);
+
+		assert.strictEqual(updatedState.proxyStatus, 'error');
+		assert.strictEqual(
+			updatedState.lastError,
+			SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.unableResolveApiKeyForStart
+		);
 	});
 
 	test('markRuntimeConfigAsActive snapshots runtime config and remembers successful starts', () => {
