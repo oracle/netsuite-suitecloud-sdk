@@ -8,6 +8,7 @@ import * as fsSync from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'crypto';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 import { JsonObject } from './Types';
 
 const POSIX_SECRET_FILE_MODE = 0o600;
@@ -95,7 +96,9 @@ export default class ClineFileStore {
 
 		const parsed = JSON.parse(raw);
 		if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-			throw new Error(`Cline configuration file is not a JSON object: ${filePath}`);
+			throw new Error(
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.clineConfigNotJsonObject(filePath)
+			);
 		}
 		return {
 			data: parsed,
@@ -114,7 +117,9 @@ export default class ClineFileStore {
 			const currentRevision = await this._readRevision(filePath);
 			if (currentRevision !== expectedRevision) {
 				throw new Error(
-					`Cline configuration changed while SuiteCloud was preparing the update: ${path.basename(filePath)}. Retry the operation.`
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.clineConfigChanged(
+						path.basename(filePath)
+					)
 				);
 			}
 		}

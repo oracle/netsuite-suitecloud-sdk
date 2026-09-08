@@ -66,6 +66,7 @@ export const summarizeInlineError = (errorMessage: string): string => {
 	const firstLine = (errorMessage || '')
 		.split('\n')
 		.map((line) => line.trim())
-		.find((line) => line.length > 0) || 'Operation failed.';
+		.find((line) => line.length > 0) ||
+		SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.operationFailed;
 	return firstLine.length <= 180 ? firstLine : `${firstLine.substring(0, 177)}...`;
 };

@@ -13,6 +13,7 @@ import {
 	ClineCompatibilityResult,
 	JsonObject,
 } from './Types';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 export default class ClineProvidersConfigStrategy {
 	private readonly _fileStore: ClineFileStore;
@@ -32,13 +33,13 @@ export default class ClineProvidersConfigStrategy {
 		if (!applicable) {
 			return {
 				compatible: false,
-				message: 'Cline providers settings format is not available.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.providersFormatUnavailable,
 			};
 		}
 
 		return {
 			compatible: true,
-			message: 'Cline providers.json format detected.',
+			message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.providersFormatDetected,
 			details: {
 				providerKey: CLINE_OPENAI_COMPATIBLE_PROVIDER_ID,
 				baseUrlKey: 'baseUrl',
@@ -54,7 +55,7 @@ export default class ClineProvidersConfigStrategy {
 		if (!providers || typeof providers !== 'object') {
 			return {
 				applied: false,
-				message: 'Cline providers settings file is not available.',
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.providersFileUnavailable,
 			};
 		}
 
@@ -166,15 +167,17 @@ export default class ClineProvidersConfigStrategy {
 				applied: true,
 				message:
 					input.scope === 'user'
-						? 'Cline global settings were updated successfully (providers format).'
-						: 'Cline workspace settings were updated successfully (providers format).',
+						? SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.providersGlobalUpdated
+						: SUITECLOUD_PANEL_RUNTIME_STRINGS.cline.providersWorkspaceUpdated,
 			};
 		} catch (error) {
 			await this._fileStore.restoreFromBackups(backups, writtenRevisions);
 			await this._fileStore.removeFiles(createdPaths, writtenRevisions);
 			return {
 				applied: false,
-				message: `Unable to apply providers-format Cline settings: ${error instanceof Error ? error.message : String(error)}`,
+				message: SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.clineProvidersApplyFailed(
+					error instanceof Error ? error.message : String(error)
+				),
 			};
 		} finally {
 			await this._fileStore.cleanupBackups(backups);

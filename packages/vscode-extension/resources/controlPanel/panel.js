@@ -9,14 +9,14 @@ const MINIMUM_PROXY_PORT = PANEL_CONFIG.minimumProxyPort;
 const MAXIMUM_PROXY_PORT = PANEL_CONFIG.maximumProxyPort;
 const PORT_UPDATE_DEBOUNCE_MS = 250;
 const ACTIVE_PROXY_STATUSES = new Set(['starting', 'running', 'stopping']);
-const STATUS_LABELS = Object.freeze({
-	stopped: 'not running',
-	starting: 'starting',
-	running: 'running',
-	stopping: 'stopping',
-	error: 'error'
-});
 const UI_STRINGS = Object.freeze(window.__SUITECLOUD_PANEL_STRINGS__);
+const STATUS_LABELS = Object.freeze({
+	stopped: UI_STRINGS.statusStopped,
+	starting: UI_STRINGS.statusStarting,
+	running: UI_STRINGS.statusRunning,
+	stopping: UI_STRINGS.statusStopping,
+	error: UI_STRINGS.statusError
+});
 
 const byId = (id) => document.getElementById(id);
 const elements = {
@@ -81,7 +81,7 @@ let state = {
 	apiKeyVisible: false,
 	apiKeyVisibleUntilMs: null,
 	apiKeyExists: false,
-	apiKeyActionLabel: 'Generate API Key',
+	apiKeyActionLabel: UI_STRINGS.defaultApiKeyActionLabel,
 	disableWelcomeNotification: false,
 	clineScope: 'user',
 	authIds: [],
@@ -190,7 +190,7 @@ function renderAuthIds(authIds, selectedAuthId) {
 
 	const placeholder = document.createElement('option');
 	placeholder.value = '';
-	placeholder.textContent = authIds && authIds.length ? 'Select from list' : UI_STRINGS.noAccountsAvailable;
+	placeholder.textContent = UI_STRINGS.authIdPlaceholder;
 	placeholder.disabled = true;
 	placeholder.selected = !currentValue;
 	elements.authId.appendChild(placeholder);
@@ -223,7 +223,7 @@ function updateApiKeyCountdown() {
 	elements.apiKeyCountdown.textContent = isCopyAvailable
 		? formatCountdown(remainingMs)
 		: '';
-	elements.apiKeyCountdown.title = isCopyAvailable ? 'Time left to copy API key' : '';
+	elements.apiKeyCountdown.title = isCopyAvailable ? UI_STRINGS.apiKeyCopyCountdownTitle : '';
 	elements.apiKeyCountdown.classList.toggle('hidden', !isCopyAvailable);
 	elements.copyApiKey.classList.toggle('hidden', !isCopyAvailable);
 	elements.copyApiKey.classList.toggle('copyAvailable', isCopyAvailable);
@@ -298,16 +298,16 @@ function getClineActionState({
 }) {
 	if (!isInstalled) {
 		return {
-			label: 'Go to Marketplace',
+			label: UI_STRINGS.clineMarketplaceLabel,
 			disabledReason: '',
-			enabledTitle: 'Open Cline in the Extensions Marketplace.',
+			enabledTitle: UI_STRINGS.clineMarketplaceTitle,
 			eventType: EVENTS.OPEN_CLINE_MARKETPLACE
 		};
 	}
 
 	if (isSynced) {
 		return {
-			label: 'Open Cline',
+			label: UI_STRINGS.clineOpenLabel,
 			disabledReason: isProxyAvailable ? '' : UI_STRINGS.openClineChatDisabledTitle,
 			enabledTitle: UI_STRINGS.openClineChatEnabledTitle,
 			eventType: EVENTS.OPEN_CLINE_CHAT
@@ -315,7 +315,7 @@ function getClineActionState({
 	}
 
 	return {
-		label: 'Configure',
+		label: UI_STRINGS.clineConfigureLabel,
 		disabledReason: getClineConfigureDisabledReason({
 			supportsSync,
 			isProxyAvailable,
@@ -337,18 +337,20 @@ function renderCline(status) {
 		elements.clineInstalledIcon,
 		elements.clineInstalledLabel,
 		isInstalled,
-		'Installed',
-		'Not Installed'
+		UI_STRINGS.clineInstalled,
+		UI_STRINGS.clineNotInstalled
 	);
 	renderClineStatus(
 		elements.clineSyncedIcon,
 		elements.clineSyncedLabel,
 		isSynced,
-		'Configured',
-		'Not Configured'
+		UI_STRINGS.clineConfigured,
+		UI_STRINGS.clineNotConfigured
 	);
 	const isReady = isInstalled && isSynced && isClineProxyAvailable;
-	elements.clineStatusBadge.textContent = isReady ? 'ready' : 'not ready';
+	elements.clineStatusBadge.textContent = isReady
+		? UI_STRINGS.clineReady
+		: UI_STRINGS.clineNotReady;
 	elements.clineStatusBadge.className = `statusPill${isReady ? ' ready' : ''}`;
 
 	const actionState = getClineActionState({
@@ -392,10 +394,10 @@ function updateFeedbackSubmitState() {
 		payload.rating <= 5;
 	elements.submitFeedback.disabled = !isRunning || !isComplete;
 	elements.submitFeedback.title = !isRunning
-		? 'Start the SuiteCloud Proxy to send feedback.'
+		? UI_STRINGS.feedbackProxyRequired
 		: !isComplete
-			? 'Select a topic, choose a rating, and enter your feedback.'
-			: 'Send feedback.';
+			? UI_STRINGS.feedbackIncomplete
+			: UI_STRINGS.feedbackSend;
 }
 
 function renderFeedback() {
@@ -403,7 +405,7 @@ function renderFeedback() {
 	elements.feedbackContent.classList.toggle('feedbackExpanded', feedbackExpanded);
 	elements.feedbackContent.setAttribute('aria-hidden', String(!feedbackExpanded));
 	elements.toggleFeedback.setAttribute('aria-expanded', String(feedbackExpanded));
-	elements.toggleFeedback.textContent = 'Share your feedback';
+	elements.toggleFeedback.textContent = UI_STRINGS.feedbackShare;
 }
 
 function setFeedbackViewOpen(isOpen) {
@@ -418,16 +420,18 @@ function setFeedbackViewOpen(isOpen) {
 }
 
 function renderProviderDisclosure(isRunning) {
-	const disabledReason = 'Start the SuiteCloud Proxy to enable this.';
+	const disabledReason = UI_STRINGS.openClineChatDisabledTitle;
 	elements.providerDisclosure.classList.toggle('disabled', !isRunning);
 	elements.providerDisclosureSummary.setAttribute('aria-disabled', String(!isRunning));
 	elements.providerDisclosureSummary.setAttribute(
 		'aria-label',
-		isRunning ? 'API provider configuration' : `API provider configuration. ${disabledReason}`
+		isRunning
+			? UI_STRINGS.providerConfigurationLabel
+			: `${UI_STRINGS.providerConfigurationLabel}. ${disabledReason}`
 	);
 	elements.providerDisclosureSummary.tabIndex = isRunning ? 0 : -1;
 	elements.providerDisclosureSummary.title = isRunning
-		? 'Show API provider configuration'
+		? UI_STRINGS.providerConfigurationShow
 		: '';
 	setTooltip(elements.providerDisclosure, isRunning ? '' : disabledReason);
 	if (!isRunning) {
@@ -472,7 +476,10 @@ function render() {
 	);
 	elements.authIdField.classList.toggle('lockedField', isProxyConfigLocked);
 	elements.setupAccount.disabled = !isSdkReady;
-	setTooltip(elements.setupAccount, isSdkReady ? 'Set up a new Auth ID' : 'Preparing SuiteCloud SDK...');
+	setTooltip(
+		elements.setupAccount,
+		isSdkReady ? UI_STRINGS.setupAuthId : UI_STRINGS.sdkPreparing
+	);
 	elements.port.disabled = isProxyConfigLocked;
 	elements.port.title = '';
 	setTooltip(
@@ -488,7 +495,7 @@ function render() {
 		? UI_STRINGS.rotateApiKeyTitle
 		: UI_STRINGS.generateApiKeyTitle;
 	setTooltip(elements.rotateKey, !isSdkReady
-		? 'Preparing SuiteCloud SDK...'
+		? UI_STRINGS.sdkPreparing
 		: isProxyConfigLocked
 		? UI_STRINGS.changeApiKeyWhileRunningTitle
 		: apiKeyActionTitle);
@@ -503,32 +510,39 @@ function render() {
 	elements.apiKeyStatusIcon.className =
 		`stateIcon ${hasApiKey ? 'stateIconSuccess' : 'stateIconError'}`;
 	elements.apiKeyStatusText.textContent = hasApiKey
-		? 'API key generated:'
-		: 'API key not generated';
+		? UI_STRINGS.apiKeyGeneratedWithValue
+		: UI_STRINGS.apiKeyNotGenerated;
 	elements.apiKeyStatus.setAttribute(
 		'aria-label',
-		hasApiKey ? 'API key generated' : 'API key not generated'
+		hasApiKey ? UI_STRINGS.apiKeyGenerated : UI_STRINGS.apiKeyNotGenerated
 	);
 	elements.maskedApiKey.textContent = hasApiKey
 		? state.maskedApiKey || UI_STRINGS.notResolved
 		: '';
 	elements.providerBaseUrl.textContent = state.baseUrl || '-';
 	elements.providerApiKey.textContent = hasApiKey
-		? `Use ${state.maskedApiKey || UI_STRINGS.notResolved}, or rotate to generate a new one.`
-		: 'Generate an API key.';
+		? UI_STRINGS.providerApiKeyValueTemplate.replace(
+			'{0}',
+			state.maskedApiKey || UI_STRINGS.notResolved
+		)
+		: UI_STRINGS.providerApiKeyMissing;
 	scheduleApiKeyCountdown();
 
 	const showStartProxy = !isRunning && !isStopping && hasApiKey;
 	elements.startProxy.classList.toggle('hidden', !showStartProxy);
 	elements.stopProxy.classList.toggle('hidden', !isRunning || !isOwnedProxy);
 	elements.startProxy.disabled = !isSdkReady || isStarting || !hasAuthAccounts || !state.authId || !state.apiKeyExists;
-	elements.startProxy.querySelector('span:last-child').textContent = isStarting ? 'Starting' : 'Start';
+	elements.startProxy.querySelector('span:last-child').textContent = isStarting
+		? UI_STRINGS.proxyStarting
+		: UI_STRINGS.proxyStart;
 	elements.startProxy.title = !isSdkReady
-		? 'Preparing SuiteCloud SDK...'
-		: 'Start SuiteCloud Proxy';
+		? UI_STRINGS.sdkPreparing
+		: UI_STRINGS.proxyStartTitle;
 	elements.stopProxy.disabled = isStopping;
-	elements.stopProxy.querySelector('span:last-child').textContent = isStopping ? 'Stopping' : 'Stop';
-	elements.stopProxy.title = 'Stop SuiteCloud Proxy';
+	elements.stopProxy.querySelector('span:last-child').textContent = isStopping
+		? UI_STRINGS.proxyStopping
+		: UI_STRINGS.proxyStop;
+	elements.stopProxy.title = UI_STRINGS.proxyStopTitle;
 	elements.lastError.textContent = state.lastError || '';
 	elements.lastErrorRow.classList.toggle('hidden', !state.lastError);
 

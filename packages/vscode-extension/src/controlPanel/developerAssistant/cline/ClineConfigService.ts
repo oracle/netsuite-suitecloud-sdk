@@ -5,6 +5,7 @@
 
 import type ClineIntegrationAdapter from './IntegrationAdapter';
 import { ClineScope } from '../State';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 export const CLINE_PENDING_CONFIG_STORAGE_KEY =
 	'suitecloud.controlPanel.pendingClineConfig.v1';
@@ -76,7 +77,7 @@ export default class ClineConfigService {
 
 		const apiKey = await resolveApiKey();
 		if (!apiKey) {
-			throw new Error('SuiteCloud CLI API key is not available.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.clineApiKeyUnavailable);
 		}
 
 		const applyResult = await this._adapter.applyConfig({

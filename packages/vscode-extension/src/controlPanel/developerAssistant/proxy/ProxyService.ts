@@ -16,6 +16,7 @@ import {
 	SuiteCloudAuthProxyEvents,
 	SuiteCloudAuthProxyService,
 } from '../../../util/ExtensionUtil';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 export type StartProxyInput = {
 	authId: string;
@@ -57,7 +58,7 @@ type ActiveProxyStart = {
 
 class ProxyStartCancelledError extends Error {
 	constructor() {
-		super('SuiteCloud Proxy startup was cancelled because the Proxy was stopped.');
+		super(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyStartCancelled);
 	}
 }
 
@@ -133,11 +134,11 @@ export default class ProxyService {
 
 	async start(input: StartProxyInput): Promise<void> {
 		if (this._proxy || this._isStarting || this._isRunning) {
-			throw new Error('SuiteCloud Proxy is already running.');
+			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyAlreadyRunning);
 		}
 		if (await this._dependencies.isPortInUse(input.port)) {
 			throw new Error(
-				`Port ${input.port} is already in use by another process. Choose a different local port and retry.`
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyPortInUse(input.port)
 			);
 		}
 
@@ -169,7 +170,9 @@ export default class ProxyService {
 				throw new ProxyStartCancelledError();
 			}
 			this._isRunning = true;
-			this._callbacks.onLog(`SuiteCloud Proxy is listening on port ${input.port}.`);
+			this._callbacks.onLog(
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.messages.proxyListening(input.port)
+			);
 		} catch (error) {
 			const startError = activeStart?.isCancelled
 				? new ProxyStartCancelledError()
@@ -225,7 +228,10 @@ export default class ProxyService {
 		proxy.on(
 			SuiteCloudAuthProxyEvents.PROXY_ERROR.DEFAULT,
 			(payload: SuiteCloudAuthProxyEventPayload) => {
-				const error = this._eventError(payload, 'SuiteCloud Proxy failed to start.');
+				const error = this._eventError(
+					payload,
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyEventStartFailed
+				);
 				if (this._isStarting && !this._isRunning) {
 					readiness.reject(error);
 					return;
@@ -254,7 +260,13 @@ export default class ProxyService {
 	}
 
 	private readonly _logProxyError = (payload: SuiteCloudAuthProxyEventPayload): void => {
-		this._callbacks.onLog(this._eventError(payload, 'SuiteCloud Proxy error.').message, true);
+		this._callbacks.onLog(
+			this._eventError(
+				payload,
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyEventError
+			).message,
+			true
+		);
 	};
 
 	private async _handleAuthorizationRefresh(
@@ -267,7 +279,10 @@ export default class ProxyService {
 		}
 
 		this._callbacks.onLog(
-			this._eventError(payload, 'SuiteCloud authorization must be refreshed.').message,
+			this._eventError(
+				payload,
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyAuthorizationRefreshRequired
+			).message,
 			true
 		);
 		this._authorizationRefresh = (async () => {
@@ -276,11 +291,17 @@ export default class ProxyService {
 				return;
 			}
 			await proxy.reloadAccessToken();
-			this._callbacks.onLog(`Authorization refreshed for auth ID "${payload.authId}".`);
+			this._callbacks.onLog(
+				SUITECLOUD_PANEL_RUNTIME_STRINGS.messages.proxyAuthorizationRefreshed(
+					payload.authId
+				)
+			);
 		})()
 			.catch((error) => {
 				this._callbacks.onLog(
-					`Unable to refresh authorization: ${this._errorMessage(error)}`,
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyAuthorizationRefreshFailed(
+						this._errorMessage(error)
+					),
 					true
 				);
 			})
@@ -330,7 +351,7 @@ export default class ProxyService {
 					if (!settled) {
 						settled = true;
 						rejectPromise(
-							new Error('Timed out while waiting for the SuiteCloud Proxy to become ready.')
+							new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyStartTimeout)
 						);
 					}
 				}, startupTimeoutMs);
@@ -371,7 +392,11 @@ export default class ProxyService {
 	}
 
 	private _createStartError(error: unknown): Error {
-		return new Error(`Unable to start the SuiteCloud Proxy: ${this._errorMessage(error)}`);
+		return new Error(
+			SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyStartFailed(
+				this._errorMessage(error)
+			)
+		);
 	}
 
 	private _errorMessage(error: unknown): string {

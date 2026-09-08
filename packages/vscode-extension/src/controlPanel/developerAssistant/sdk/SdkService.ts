@@ -14,6 +14,7 @@ import {
 	ExecutionEnvironmentContext,
 } from '../../../util/ExtensionUtil';
 import type { ExecutionEnvironmentContextInstance } from '../../../types/JavascriptNodeCli';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 export default class SdkService {
 	getSdkPath(): string {
@@ -42,7 +43,10 @@ export default class SdkService {
 	async getAvailableAuthIds(): Promise<SuiteCloudAuthItem[]> {
 		const authIdsActionResult: ActionResult<AuthListData> = await AuthenticationUtils.getAuthIds(resolveVsCodeSdkPath());
 		if (!authIdsActionResult.isSuccess()) {
-			throw new Error(authIdsActionResult.errorMessages?.join('\n') || 'Unable to list configured auth IDs.');
+			throw new Error(
+				authIdsActionResult.errorMessages?.join('\n') ||
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.authIdsListFailed
+			);
 		}
 
 		return Object.keys(authIdsActionResult.data || {})
@@ -74,7 +78,7 @@ export default class SdkService {
 		if (!result.isSuccess()) {
 			throw new Error(
 				result.errorMessages?.join('\n') ||
-					`Unable to check authorization for "${authId}".`
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.authCheckFailed(authId)
 			);
 		}
 
@@ -99,7 +103,8 @@ export default class SdkService {
 		);
 		if (!result.isSuccess()) {
 			throw new Error(
-				result.errorMessages?.join('\n') || `Unable to refresh authorization for "${authId}".`
+				result.errorMessages?.join('\n') ||
+					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.authRefreshFailed(authId)
 			);
 		}
 	}
