@@ -17,13 +17,14 @@ The NetSuite UI Framework and its TypeScript type declarations follow a versioni
 |     7.0.X      |      2025.1      |
 |     8.0.X      |      2025.2      |
 |     9.0.X      |      2026.1      |
+|    10.0.X      |      2026.2      |
 
 ## Installation
 To use the NetSuite UI Framework TypeScript type declarations, follow these steps:
 1. Add the `@oracle/netsuite-uif-types` dependency to `devDependencies` in your `package.json` and specify an appropriate version based on the NetSuite version you will be developing against. Make sure that a `typescript` dependency is included as well.
 ```json
 "devDependencies": {
-    "@oracle/netsuite-uif-types": "^9.0.0",
+    "@oracle/netsuite-uif-types": "^10.0.0",
     "typescript": "^5.2.0"
 }
 ```

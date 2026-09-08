@@ -110,8 +110,6 @@ declare module '@uif-js/core' {
 
 		setFavicon(url: string, options?: object, type?: Self.AppContext.FaviconType): void;
 
-		private setFaviconProperties(favicon: HTMLElement, url: string, type: Self.AppContext.FaviconType): void;
-
 		registerBeforeEnd(handler: () => boolean): {remove: () => void};
 
 	}
@@ -432,8 +430,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		constructor(array?: globalThis.Array<T>);
@@ -545,8 +541,6 @@ declare module '@uif-js/core' {
 		cancelled: boolean;
 
 		onCancel(callback: (args: object) => void): void;
-
-		private _cancel(args: object): void;
 
 	}
 
@@ -722,10 +716,6 @@ declare module '@uif-js/core' {
 		copy(): Self.Color;
 
 		toString(): string;
-
-		private _eightBitChannelToPercent(channel: number): number;
-
-		private _zeroToOneChannelToPercent(channel: number): number;
 
 		static rgbToHex(rgb: Self.Color.RGB, withAlpha?: boolean, options?: {assert?: boolean}): Self.Color.HEX;
 
@@ -1138,8 +1128,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		onPropertyChanged(propertyName?: string, callback?: (args: Self.PropertyObservable.EventArgs, sender: any) => void): any;
@@ -1324,8 +1312,6 @@ declare module '@uif-js/core' {
 
 		translate(value: (string | number | Self.Translation)): string;
 
-		private _receiveProps(oldProps: object, newProps: object): void;
-
 		whenRendered(action: () => void): Self.EventSource.Handle;
 
 		protected _setProp(name: string, value: any, comparator?: (left: any, right: any) => boolean): boolean;
@@ -1338,41 +1324,11 @@ declare module '@uif-js/core' {
 
 		protected _notifyContentUpdate(args?: object): void;
 
-		private _addChildComponent(component: Self.Component): void;
-
-		private _removeChildComponent(component: Self.Component): void;
-
 		protected _refresh(args?: object): void;
-
-		private _handleDidRender(): void;
-
-		private _handleWillErase(): void;
-
-		private _hookResizeListener(): void;
-
-		private _unhookResizeListener(): void;
-
-		private _updateEffectiveEnabled(reason?: string): void;
-
-		private _removeFocus(): void;
-
-		private _handleResizeEvent(args: Self.ResizeObserver.ResizeArgs): void;
-
-		private _updateAutomationId(): void;
-
-		private _updateAriaLabelledBy(): void;
 
 		protected _getAriaLabelledBy(): (Self.Component | Self.VDomRef | string | number | null);
 
-		private _updateAriaDescribedBy(): void;
-
-		private _attachDragSourceAndTarget(rootElement: HTMLElement): void;
-
-		private _detachDragSourceAndTarget(rootElement: HTMLElement): void;
-
 		protected _updateAriaLabel(): void;
-
-		private _updateValidity(previousStatus: Self.Component.Status, status: Self.Component.Status, reason: (string | null)): void;
 
 		protected _getAriaLabel(): (string | null);
 
@@ -1500,8 +1456,6 @@ declare module '@uif-js/core' {
 		protected _onStatusChanged(args: {status: Self.Component.Status; previousStatus: Self.Component.Status; reason?: string}): void;
 
 		protected _onStatusMessageChanged(args: {message: (string | Self.Translation | Self.Component); previousMessage: (string | Self.Translation | Self.Component); reason?: string}): void;
-
-		private _onAriaLabelChanged(args: {ariaLabel: (string | Self.Translation | null); previousAriaLabel: (string | Self.Translation | null)}): void;
 
 		protected _onContentMeasurementStarted(): void;
 
@@ -1705,8 +1659,6 @@ declare module '@uif-js/core' {
 		protected _fireEvent(eventName: Self.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
@@ -2596,8 +2548,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		constructor(options?: Self.DeviceMetadataService.Options);
@@ -2609,16 +2559,6 @@ declare module '@uif-js/core' {
 		orientation: string;
 
 		screenInfo: Self.DeviceMetadataService.ScreenInfo;
-
-		private _setMediaQueries(): void;
-
-		private _getScreenInfo(): void;
-
-		private _getOrientation(): void;
-
-		private _getViewportSize(): void;
-
-		private _setEvents(): void;
 
 		static Event: Self.DeviceMetadataService.EventTypes;
 
@@ -3063,8 +3003,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		constructor(query: Self.DataSource.QueryCallback<T>);
@@ -3458,8 +3396,6 @@ declare module '@uif-js/core' {
 
 		withThemeSpecificOptions(themeSpecificOptions: (theme: Self.Theme) => object): Self.ImageMetadata;
 
-		private _clone(options: object): Self.ImageMetadata;
-
 		static create(options: (string | Self.Url | globalThis.Array<string> | Self.ImageMetadata | Self.ImageMetadata.Options)): Self.ImageMetadata;
 
 		static withUrl(url: string): Self.ImageMetadata;
@@ -3728,16 +3664,6 @@ declare module '@uif-js/core' {
 
 		isParentOf(subInterface: Self.Interface): void;
 
-		private _sanitizeDefinition(definition: object): void;
-
-		private _isPublicMethod(methodName: string): boolean;
-
-		private _validateDefinition(definition: object): void;
-
-		private _validateParentInterfaces(name: string, interfaces: globalThis.Array<Self.Interface>): void;
-
-		private _validatePublicMethods(name: string, methods: object): void;
-
 		static create(definition: Self.Interface.Options): Self.Interface;
 
 	}
@@ -4005,8 +3931,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		constructor(provider: Self.LazyDataSource.Provider<T>);
@@ -4151,8 +4075,6 @@ declare module '@uif-js/core' {
 
 		clear(): Self.LruCache;
 
-		private _removeLast(): void;
-
 	}
 
 	export namespace LruCache {
@@ -4205,26 +4127,6 @@ declare module '@uif-js/core' {
 		setCreateText(createTextFactory: (args: object) => Self.JSX.Element): void;
 
 		formatText(text: (string | number | Self.Translation), options?: {linkOptions?: PackageComponent.Link.Options; textOptions?: PackageComponent.Text.Options}): globalThis.Array<object>;
-
-		private _formatStyle(): void;
-
-		private _formatLink(): void;
-
-		private _matchBoldGroup(): void;
-
-		private _matchItalicGroup(): void;
-
-		private _matchLinkGroup(): void;
-
-		private _replaceMarkupWithSubstitutes(): void;
-
-		private _replaceBoldWithSubstitute(): void;
-
-		private _replaceItalicWithSubstitute(): void;
-
-		private _replaceEscapedCharsWithAscii(): void;
-
-		private _revertToChars(): void;
 
 	}
 
@@ -4619,13 +4521,7 @@ declare module '@uif-js/core' {
 
 		postMessage(message: Self.RoutedMessage): void;
 
-		private createMessageRoute(message: Self.RoutedMessage): globalThis.Array<Self.RoutedMessage.Filter>;
-
 		protected getMessageHandlers(message: Self.RoutedMessage): globalThis.Array<Self.MessageHandler>;
-
-		private hookOnEventDispatcher(): void;
-
-		private unhookFromEventDispatcher(): void;
 
 		static addElementMessageFilter(element: Element, filter: Self.RoutedMessage.Filter): {remove: ((() => void))};
 
@@ -4793,33 +4689,7 @@ declare module '@uif-js/core' {
 	export class PositionHelper {
 		static getPosition(options: Self.PositionHelper.Options): Self.PositionHelper.FrameDescription;
 
-		private static _choosePosition(options: Self.PositionHelper.HelperOptions): Self.PositionHelper.FrameDescription;
-
-		private static _chooseScreenPosition(options: Self.PositionHelper.HelperOptions): Self.PositionHelper.FrameDescription;
-
-		private static _chooseTargetPosition(options: Self.PositionHelper.HelperOptions): Self.PositionHelper.FrameDescription;
-
-		private static _useStrategy(basePointPosition: Self.PositionHelper.Point, frameDescription: Self.PositionHelper.FrameDescription, result: Self.PositionHelper.BestResult, options: Self.PositionHelper.HelperOptions): void;
-
-		private static _shiftFrame(frameDescription: Self.PositionHelper.FrameDescription, outerFrame: Self.PositionHelper.Coordinates): void;
-
-		private static _getAvailableAlignments(placement: string, options: Self.PositionHelper.HelperOptions): globalThis.Array<Self.PositionHelper.Alignment>;
-
-		private static _getBasePointCoordinates(elementBox: Self.PositionHelper.Coordinates, position: {placement: Self.PositionHelper.Placement; alignment: Self.PositionHelper.Alignment}, userOffset: Self.PositionHelper.Offset): Self.PositionHelper.Point;
-
-		private static _getFramePosition(size: Self.PositionHelper.Size, basePosition: Self.PositionHelper.Point, place: {placement: Self.PositionHelper.Placement; alignment: Self.PositionHelper.Alignment}): Self.Rectangle;
-
-		private static _reduceSize(visibleFrame: Self.PositionHelper.Coordinates, size: Self.PositionHelper.Size, frameDescription: Self.PositionHelper.FrameDescription, centerPoint: Self.PositionHelper.Point): Self.PositionHelper.Size;
-
-		private static _concatAllowedPositions(options: Self.PositionHelper.HelperOptions): globalThis.Array<Self.PositionHelper.Placement>;
-
 		static getOuterFramePosition(frame: (HTMLElement | PackageComponent.Window)): Self.Rectangle;
-
-		private static _initializeOptions(options: Self.PositionHelper.Options): Self.PositionHelper.HelperOptions;
-
-		private static _getBox(target: (Self.Rectangle | Element | object)): Self.Rectangle;
-
-		private static _initializeSizes(options: object): Self.PositionHelper.SizeOptions;
 
 		static DEFAULT_PLACEMENT: globalThis.Array<Self.PositionHelper.Placement>;
 
@@ -5014,8 +4884,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		constructor(options: Self.Presenter.Options);
@@ -5053,8 +4921,6 @@ declare module '@uif-js/core' {
 		dispose(): void;
 
 		translate(value: (string | number | Self.Translation)): string;
-
-		private _createView(): Self.Component;
 
 		protected _createChild(presenterClass: any, options?: {contextName?: string; contextNameSuffix?: string; stateProvider?: Self.Context.StateProviderCallback; state?: object; eventRoot?: boolean; contextOptions?: object; presenterOptions?: object}): Self.Presenter;
 
@@ -6154,6 +6020,10 @@ declare module '@uif-js/core' {
 		R26_2,
 		R27_1,
 		R27_2,
+		R28_1,
+		R28_2,
+		R29_1,
+		R29_2,
 		current,
 		incoming,
 	}
@@ -6309,8 +6179,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		constructor(options: Self.Router.Options);
@@ -6415,8 +6283,6 @@ declare module '@uif-js/core' {
 		protected _fireEvent(eventName: Self.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
@@ -6727,20 +6593,6 @@ declare module '@uif-js/core' {
 	class Storage {
 		constructor(options?: Self.Storage.Options);
 
-		private _useStorage(): Self.Storage;
-
-		private _isSessionStorageSupported(): boolean;
-
-		private _isLocalStorageSupported(): boolean;
-
-		private _setLastUpdate(key: string): void;
-
-		private _cleanup(): void;
-
-		private _getFinalKey(key: string): string;
-
-		private _getItemExpiration(key: string): number;
-
 		getItem(key: string): (string | object);
 
 		setItem(key: string, value: (string | object), expireInDays?: number): void;
@@ -6794,8 +6646,6 @@ declare module '@uif-js/core' {
 		protected _fireEvent(eventName: Self.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
@@ -7531,8 +7381,6 @@ declare module '@uif-js/core' {
 
 		getIcon(id: string): (Self.ImageMetadata | null);
 
-		private generateCssVariablesStyle(): Self.Style;
-
 		static select(preferredTheme: Self.Theme.Name, availableThemes: Record<Self.Theme.Name, Self.Theme>, supportedThemes: (globalThis.Array<Self.Theme.Name> | null)): Self.Theme.Name;
 
 	}
@@ -8007,8 +7855,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		constructor(options: {data: globalThis.Array<any>; childAccessor?: (string | Self.TreeDataSource.ChildAccessorCallback<T>)});
@@ -8223,12 +8069,6 @@ declare module '@uif-js/core' {
 	class UserAgent {
 		constructor(userAgent: string);
 
-		private getDevice(userAgent: string): Self.UserAgent.Device;
-
-		private getDeviceType(userAgent: string): Self.UserAgent.DeviceType;
-
-		private getOS(userAgent: string): Self.UserAgent.OSType;
-
 		device: Self.UserAgent.Device;
 
 		deviceType: Self.UserAgent.DeviceType;
@@ -8272,8 +8112,6 @@ declare module '@uif-js/core' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
 		constructor(message: Self.UserMessageService.MessageOptions);
@@ -8310,8 +8148,6 @@ declare module '@uif-js/core' {
 		protected _fireEvent(eventName: Self.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: Self.EventSource.EventName, listener: Self.EventSource.Listener): Self.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: Self.EventSource.EventName): void;
 
