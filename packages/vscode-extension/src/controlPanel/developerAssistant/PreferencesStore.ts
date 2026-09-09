@@ -6,8 +6,6 @@
 import type * as vscode from 'vscode';
 import { ClineScope } from './State';
 
-export type LegacyPanelSettings = Pick<vscode.WorkspaceConfiguration, 'get'>;
-
 export type PersistedPanelPreferences = {
 	authId: string;
 	port: number;
@@ -19,42 +17,28 @@ export type PersistedPanelPreferences = {
 export default class PreferencesStore {
 	private readonly _workspaceState: vscode.Memento;
 	private readonly _storageKey: string;
-	private readonly _legacySettings?: LegacyPanelSettings;
 
-	constructor(
-		workspaceState: vscode.Memento,
-		storageKey: string,
-		legacySettings?: LegacyPanelSettings
-	) {
+	constructor(workspaceState: vscode.Memento, storageKey: string) {
 		this._workspaceState = workspaceState;
 		this._storageKey = storageKey;
-		this._legacySettings = legacySettings;
 	}
 
 	load(defaultSettings: { authId: string; localPort: number }): PersistedPanelPreferences {
 		const storedPreferences =
 			this._workspaceState.get<Partial<PersistedPanelPreferences>>(this._storageKey);
-		const legacySettings = storedPreferences ? undefined : this._legacySettings;
 
 		return {
 			authId:
 				typeof storedPreferences?.authId === 'string'
 					? storedPreferences.authId
-					: legacySettings?.get('authID', defaultSettings.authId) ?? defaultSettings.authId,
+					: defaultSettings.authId,
 			port:
 				typeof storedPreferences?.port === 'number'
 					? storedPreferences.port
-					: legacySettings?.get('localPort', defaultSettings.localPort) ??
-					  defaultSettings.localPort,
-			// The compact panel exposes one automatic Cline integration path.
-			// Migrate legacy workspace/manual preferences back to global Cline config.
+					: defaultSettings.localPort,
 			clineScope: 'user',
-			autoStartProxyOnStartup:
-				storedPreferences?.autoStartProxyOnStartup === true ||
-				legacySettings?.get<boolean>('enable', false) === true,
-			disableWelcomeNotification:
-				storedPreferences?.disableWelcomeNotification === true ||
-				legacySettings?.get<boolean>('disableWelcomeNotification', false) === true,
+			autoStartProxyOnStartup: storedPreferences?.autoStartProxyOnStartup === true,
+			disableWelcomeNotification: storedPreferences?.disableWelcomeNotification === true,
 		};
 	}
 

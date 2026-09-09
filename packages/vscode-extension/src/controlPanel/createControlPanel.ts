@@ -29,8 +29,7 @@ export const createControlPanel = (
 	const defaults = getDefaultPanelSettings();
 	const preferencesStore = new PreferencesStore(
 		extensionContext.workspaceState,
-		DEVELOPER_ASSISTANT.PREFERENCES_STORAGE_KEY,
-		vscode.workspace.getConfiguration(DEVELOPER_ASSISTANT.CONFIGURATION_SECTION)
+		DEVELOPER_ASSISTANT.PREFERENCES_STORAGE_KEY
 	);
 	const persistedPreferences = preferencesStore.load(defaults);
 

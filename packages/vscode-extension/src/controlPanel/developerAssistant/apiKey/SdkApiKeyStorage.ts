@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 import * as vscode from 'vscode';
 import { VSCODE_PLATFORM } from '../../../ApplicationConstants';
 import SuiteCloudRunner from '../../../core/SuiteCloudRunner';
@@ -14,6 +14,7 @@ import type { RawSdkOperationResult } from '../../../types/JavascriptNodeCli';
 import {
 	ClientAPIKeyObjectWrapper,
 	ExecutionEnvironmentContext,
+	actionResultStatus,
 	readClientAPIKeyFileContents,
 	SdkExecutor,
 } from '../../../util/ExtensionUtil';
@@ -50,7 +51,10 @@ export default class SdkApiKeyStorage implements ApiKeyStorage {
 
 	async getProxyApiKeyFromSdkStorage(): Promise<string | undefined> {
 		const readResult = await this._readStoredApiKey();
-		if (readResult.status !== 'SUCCESS' || typeof readResult.data !== 'string') {
+		if (
+			readResult.status !== actionResultStatus.SUCCESS ||
+			typeof readResult.data !== 'string'
+		) {
 			throw new Error(
 				readResult.errorMessages.join('\n') ||
 					SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.apiKeyReadFailed

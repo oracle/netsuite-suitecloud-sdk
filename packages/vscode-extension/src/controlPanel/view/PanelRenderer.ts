@@ -3,8 +3,8 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import * as crypto from 'crypto';
-import * as path from 'path';
+import * as crypto from 'node:crypto';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { DEVELOPER_ASSISTANT } from '../../ApplicationConstants';
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../developerAssistant/Strings';
