@@ -8,6 +8,7 @@ const FileCabinetService = require('../../../services/FileCabinetService');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { FILE_CABINET } = require('../../../ApplicationConstants').FOLDERS;
 const path = require('path');
+const { UPLOAD_FILE_ACTION } = require('@oracle/suitecloud-sdk-core').commands;
 
 const {
 	COMMAND_UPLOADFILES: { OUTPUT },
@@ -28,12 +29,20 @@ module.exports = class UploadFilesOutputHandler extends BaseOutputHandler {
 
 		if (Array.isArray(data)) {
 			const successfulUploads = data.filter((result) => result.type === UPLOAD_FILE_RESULT_STATUS.SUCCESS);
+			const updatedFiles = successfulUploads.filter((result) => result.action === UPLOAD_FILE_ACTION.UPDATE);
+			const uploadedFiles = successfulUploads.filter((result) => result.action !== UPLOAD_FILE_ACTION.UPDATE);
 			const unsuccessfulUploads = data.filter((result) => result.type === UPLOAD_FILE_RESULT_STATUS.ERROR);
 			const localFileCabinetFolder = path.join(actionResult.projectFolder, FILE_CABINET);
 			this._fileCabinetService = new FileCabinetService(localFileCabinetFolder);
-			if (successfulUploads && successfulUploads.length) {
+			if (uploadedFiles.length) {
 				this._log.result(NodeTranslationService.getMessage(OUTPUT.FILES_UPLOADED));
-				successfulUploads.forEach((result) => {
+				uploadedFiles.forEach((result) => {
+					this._log.result(this._fileCabinetService.getFileCabinetRelativePath(result.file.path));
+				});
+			}
+			if (updatedFiles.length) {
+				this._log.result(NodeTranslationService.getMessage(OUTPUT.FILES_UPDATED));
+				updatedFiles.forEach((result) => {
 					this._log.result(this._fileCabinetService.getFileCabinetRelativePath(result.file.path));
 				});
 			}

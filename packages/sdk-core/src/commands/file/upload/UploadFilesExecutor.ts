@@ -11,8 +11,12 @@ import { basename, dirname, join } from 'node:path';
 import {
 	FILE_COMMAND_STATUS,
 	type FileCommandOperationResult,
+	UPLOAD_FILE_ACTION,
+	type UploadFileAction,
+	type UploadFileResult,
 	type UploadFilesExecutionInput,
 } from '../../../api/file/FileCommand';
+import type { ErrorResult, SuccessResult } from '../../../api/OperationResult';
 import {
 	assertRealPathWithin,
 	PathOutsideRootError,
@@ -41,13 +45,17 @@ const FILE_CABINET_UPLOAD_QUERY_PARENT_FOLDER = 'parentFolder';
 const UPLOAD_RESULT_TYPE_SUCCESS = 'SUCCESS';
 const UPLOAD_RESULT_TYPE_ERROR = 'ERROR';
 
-export async function executeUploadFiles(input: UploadFilesExecutionInput): Promise<FileCommandOperationResult> {
+type UploadFileOperationResult =
+	| (SuccessResult<UploadFileResult> & { data: UploadFileResult })
+	| ErrorResult;
+
+export async function executeUploadFiles(input: UploadFilesExecutionInput): Promise<FileCommandOperationResult<UploadFileResult[]>> {
 	if (!Array.isArray(input.filePaths) || input.filePaths.length === 0) {
 		return errorResultWithMessage(translationService.getMessage(FILE.ERROR.UPLOAD_FILE_PATHS_REQUIRED));
 	}
 
 	try {
-		const uploadResults: Array<{ file: { path: string }; type: string; errorMessage?: string }> = [];
+		const uploadResults: UploadFileResult[] = [];
 		const fileCabinetRoot = join(input.projectFolder, FILE_CABINET_ROOT_FOLDER);
 		for (const filePath of input.filePaths) {
 			const localFilePath = resolveSuiteCloudPath(fileCabinetRoot, filePath);
@@ -60,7 +68,7 @@ export async function executeUploadFiles(input: UploadFilesExecutionInput): Prom
 			if (uploadResult.status === FILE_COMMAND_STATUS.ERROR) {
 				return uploadResult;
 			}
-			uploadResults.push(uploadResult.data as { file: { path: string }; type: string; errorMessage?: string });
+			uploadResults.push(uploadResult.data);
 		}
 
 		return {
@@ -78,7 +86,7 @@ async function uploadSingleFile(
 	parentFolderPath: string,
 	localFilePath: string,
 	fileCabinetRoot: string
-): Promise<FileCommandOperationResult> {
+): Promise<UploadFileOperationResult> {
 	let localFileStats;
 	try {
 		localFileStats = await stat(localFilePath);
@@ -136,11 +144,15 @@ async function uploadSingleFile(
 		status: FILE_COMMAND_STATUS.SUCCESS,
 		data: parsedResponse.errorMessage
 			? { file: { path: localFilePath }, type: UPLOAD_RESULT_TYPE_ERROR, errorMessage: parsedResponse.errorMessage }
-			: { file: { path: localFilePath }, type: UPLOAD_RESULT_TYPE_SUCCESS },
+			: {
+				file: { path: localFilePath },
+				type: UPLOAD_RESULT_TYPE_SUCCESS,
+				...(parsedResponse.action ? { action: parsedResponse.action } : {}),
+			},
 	};
 }
 
-function parseUploadResponse(response: FileCommandHttpResponse): { errorMessage?: string } {
+function parseUploadResponse(response: FileCommandHttpResponse): { action?: UploadFileAction; errorMessage?: string } {
 	if (response.statusCode < 200 || response.statusCode >= 300) {
 		return { errorMessage: getHttpErrorMessage(response) };
 	}
@@ -150,12 +162,17 @@ function parseUploadResponse(response: FileCommandHttpResponse): { errorMessage?
 	}
 	try {
 		const parsedResponse = JSON.parse(responseText);
-		return parsedResponse?.error && typeof parsedResponse.error.message === 'string'
-			? { errorMessage: parsedResponse.error.message }
-			: {};
+		if (parsedResponse?.error && typeof parsedResponse.error.message === 'string') {
+			return { errorMessage: parsedResponse.error.message };
+		}
+		return isUploadFileAction(parsedResponse?.action) ? { action: parsedResponse.action } : {};
 	} catch {
 		return { errorMessage: responseText };
 	}
+}
+
+function isUploadFileAction(action: unknown): action is UploadFileAction {
+	return action === UPLOAD_FILE_ACTION.CREATE || action === UPLOAD_FILE_ACTION.UPDATE;
 }
 
 function buildUploadMultipartBody(boundary: string, filename: string, fileBuffer: Buffer): Buffer {
@@ -175,7 +192,7 @@ function getParentFolderPath(filePath: string): string {
 	return parentPath === '.' ? '/' : parentPath;
 }
 
-function errorResultWithMessage(errorMessage: string): FileCommandOperationResult {
+function errorResultWithMessage(errorMessage: string): ErrorResult {
 	return { status: FILE_COMMAND_STATUS.ERROR, errorMessages: [errorMessage] };
 }
 
