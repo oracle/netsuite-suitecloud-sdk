@@ -3,7 +3,7 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { parseSuiteCloudPanelIncomingMessage } from '../protocol/MessageParser';
 import {

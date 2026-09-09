@@ -5,10 +5,7 @@
 
 import * as assert from 'assert';
 import type * as vscode from 'vscode';
-import PreferencesStore, {
-	LegacyPanelSettings,
-	PersistedPanelPreferences,
-} from '../../controlPanel/developerAssistant/PreferencesStore';
+import PreferencesStore, { PersistedPanelPreferences } from '../../controlPanel/developerAssistant/PreferencesStore';
 
 const DEFAULTS = { authId: 'default-auth', localPort: 8181 };
 
@@ -20,34 +17,20 @@ const createMemento = (
 	keys: () => [],
 });
 
-const createLegacySettings = (values: Record<string, unknown>): LegacyPanelSettings => ({
-	get: <T>(section: string, defaultValue?: T) =>
-		(values[section] as T | undefined) ?? defaultValue,
-});
-
 suite('Control Panel Preferences Store', () => {
-	test('uses legacy Developer Assistant settings when panel preferences do not exist', () => {
-		const store = new PreferencesStore(
-			createMemento(),
-			'panel-state',
-			createLegacySettings({
-				authID: 'legacy-auth',
-				localPort: 9000,
-				enable: true,
-				disableWelcomeNotification: true,
-			})
-		);
+	test('uses defaults when panel preferences do not exist', () => {
+		const store = new PreferencesStore(createMemento(), 'panel-state');
 
 		assert.deepStrictEqual(store.load(DEFAULTS), {
-			authId: 'legacy-auth',
-			port: 9000,
+			authId: 'default-auth',
+			port: 8181,
 			clineScope: 'user',
-			autoStartProxyOnStartup: true,
-			disableWelcomeNotification: true,
+			autoStartProxyOnStartup: false,
+			disableWelcomeNotification: false,
 		});
 	});
 
-	test('prefers saved panel preferences over legacy settings', () => {
+	test('loads saved panel preferences', () => {
 		const savedPreferences: PersistedPanelPreferences = {
 			authId: 'panel-auth',
 			port: 9100,
@@ -55,16 +38,7 @@ suite('Control Panel Preferences Store', () => {
 			autoStartProxyOnStartup: false,
 			disableWelcomeNotification: false,
 		};
-		const store = new PreferencesStore(
-			createMemento(savedPreferences),
-			'panel-state',
-			createLegacySettings({
-				authID: 'legacy-auth',
-				localPort: 9000,
-				enable: true,
-				disableWelcomeNotification: true,
-			})
-		);
+		const store = new PreferencesStore(createMemento(savedPreferences), 'panel-state');
 
 		assert.deepStrictEqual(store.load(DEFAULTS), savedPreferences);
 	});

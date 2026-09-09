@@ -3,8 +3,8 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import * as os from 'os';
-import * as path from 'path';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { commandsInfoMap } from '../commandsMap';
 import type PreferencesStore from './developerAssistant/PreferencesStore';
@@ -535,7 +535,7 @@ export default class ControlPanelController {
 		}
 
 		const apiKey = await this._resolveApiKeyIgnoringReadErrors();
-		if (!apiKey || !apiKey.trim()) {
+		if (!apiKey?.trim()) {
 			throw new Error(SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.missingApiKey);
 		}
 

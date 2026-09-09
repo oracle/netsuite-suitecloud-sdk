@@ -3,11 +3,11 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import * as fs from 'fs/promises';
-import * as fsSync from 'fs';
-import * as path from 'path';
-import * as os from 'os';
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
+import * as fsSync from 'node:fs';
+import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 import { JsonObject } from './Types';
 
@@ -47,10 +47,6 @@ export default class ClineFileStore {
 
 	get secretsFile(): string {
 		return this._secretsFile;
-	}
-
-	get legacyWorkspaceStateFile(): string {
-		return this._legacyWorkspaceStateFile;
 	}
 
 	get providersFile(): string {

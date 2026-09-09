@@ -33,7 +33,6 @@ const DEVELOPER_ASSISTANT_PROXY_BASE_PATH = '/api/internal/devassist';
 
 export const DEVELOPER_ASSISTANT = {
 	ALLOWED_PROXY_PATH_PREFIX: `${DEVELOPER_ASSISTANT_PROXY_BASE_PATH}/`,
-	CONFIGURATION_SECTION: 'suitecloud.developerAssistant',
 	PREFERENCES_STORAGE_KEY: 'suitecloud.controlPanel.state.v1',
 	DEFAULT_VALUES: {
 		localPort: 8181,
