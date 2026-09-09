@@ -24,7 +24,6 @@ The following table shows the extension versions currently available in the Mark
 
 | Extension Versions Available in the Marketplace |
 |:-----------------------------------------------:|
-| 4.1.0 |
 | 4.0.0 |
 | 3.1.3 |
 
