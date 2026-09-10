@@ -6,18 +6,13 @@
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
 export const formatProxyStartError = (errorMessage: string): string => {
-	const normalizedMessage = (errorMessage || '').toLowerCase();
-	const friendlyErrors = SUITECLOUD_PANEL_RUNTIME_STRINGS.friendlyErrors;
+	const { errors, friendlyErrors } = SUITECLOUD_PANEL_RUNTIME_STRINGS;
 
-	if (
-		normalizedMessage ===
-		SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.unableResolveApiKeyForStart.toLowerCase()
-	) {
+	if (errorMessage === errors.unableResolveApiKeyForStart) {
 		return errorMessage;
 	}
-	if (normalizedMessage.startsWith('unable to start suitecloud proxy process:')) {
-		return `${errorMessage}${friendlyErrors.outputHint}`;
-	}
+
+	const normalizedMessage = errorMessage.toLowerCase();
 	if (normalizedMessage.includes('invalid or corrupt jarfile')) {
 		return friendlyErrors.sdkJarInvalid;
 	}
@@ -57,7 +52,7 @@ export const formatProxyStartError = (errorMessage: string): string => {
 };
 
 export const summarizeInlineError = (errorMessage: string): string => {
-	const firstLine = (errorMessage || '')
+	const firstLine = errorMessage
 		.split('\n')
 		.map((line) => line.trim())
 		.find((line) => line.length > 0) ||

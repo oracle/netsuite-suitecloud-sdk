@@ -8,6 +8,7 @@ import {
 	formatProxyStartError,
 	summarizeInlineError,
 } from '../../controlPanel/developerAssistant/proxy/ErrorFormatter';
+import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../../controlPanel/developerAssistant/Strings';
 
 suite('SuiteCloud Panel Error Formatter', () => {
 	test('adds actionable guidance for known proxy startup failures', () => {
@@ -23,8 +24,7 @@ suite('SuiteCloud Panel Error Formatter', () => {
 	});
 
 	test('keeps missing API key guidance concise and actionable', () => {
-		const message =
-			'No API key is available. Generate an API key in the control panel before starting the SuiteCloud Proxy.';
+		const message = SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.unableResolveApiKeyForStart;
 
 		assert.strictEqual(formatProxyStartError(message), message);
 	});
