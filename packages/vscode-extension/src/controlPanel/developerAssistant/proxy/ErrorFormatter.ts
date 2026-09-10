@@ -5,10 +5,7 @@
 
 import { SUITECLOUD_PANEL_RUNTIME_STRINGS } from '../Strings';
 
-export const formatProxyStartError = (
-	errorMessage: string,
-	getBundledCliVersion: () => string
-): string => {
+export const formatProxyStartError = (errorMessage: string): string => {
 	const normalizedMessage = (errorMessage || '').toLowerCase();
 	const friendlyErrors = SUITECLOUD_PANEL_RUNTIME_STRINGS.friendlyErrors;
 
@@ -23,9 +20,6 @@ export const formatProxyStartError = (
 	}
 	if (normalizedMessage.includes('invalid or corrupt jarfile')) {
 		return friendlyErrors.sdkJarInvalid;
-	}
-	if (normalizedMessage.includes('proxy:start') && normalizedMessage.includes('does not exist')) {
-		return friendlyErrors.proxyStartMissing(getBundledCliVersion());
 	}
 	if (
 		normalizedMessage.includes('client api key file') ||

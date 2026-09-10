@@ -104,8 +104,6 @@ export default class ProxyWorkflow {
 		const startResult = await this._dependencies.lifecycleService.start({
 			state: this._dependencies.getState(),
 			unconfiguredAuthId: DEVELOPER_ASSISTANT.DEFAULT_VALUES.authID,
-			isProxySupported: () => this._dependencies.sdkService.isProxyServiceSupported(),
-			getCliVersion: () => this._dependencies.sdkService.getBundledCliVersion(),
 			getSdkPath: () => this._dependencies.sdkService.getSdkPath(),
 			ensureAuthorizationReady: (authId) =>
 				this._dependencies.sdkService.ensureAuthorizationReady(authId, () => {
@@ -191,10 +189,7 @@ export default class ProxyWorkflow {
 	}
 
 	formatStartError(errorMessage: string): string {
-		return formatProxyStartError(
-			errorMessage,
-			() => this._dependencies.sdkService.getBundledCliVersion()
-		);
+		return formatProxyStartError(errorMessage);
 	}
 
 	summarizeInlineError(errorMessage: string): string {

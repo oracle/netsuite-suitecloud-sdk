@@ -21,25 +21,6 @@ export default class SdkService {
 		return resolveVsCodeSdkPath();
 	}
 
-	getBundledCliVersion(): string {
-		try {
-			const cliPackageJson = require('@oracle/suitecloud-cli/package.json');
-			return typeof cliPackageJson?.version === 'string' ? cliPackageJson.version : 'unknown';
-		} catch {
-			return 'unknown';
-		}
-	}
-
-	isProxyServiceSupported(): boolean {
-		try {
-			return typeof require(
-				'@oracle/suitecloud-cli/src/services/SuiteCloudAuthProxyService'
-			).SuiteCloudAuthProxyService === 'function';
-		} catch {
-			return false;
-		}
-	}
-
 	async getAvailableAuthIds(): Promise<SuiteCloudAuthItem[]> {
 		const authIdsActionResult: ActionResult<AuthListData> = await AuthenticationUtils.getAuthIds(resolveVsCodeSdkPath());
 		if (!authIdsActionResult.isSuccess()) {
