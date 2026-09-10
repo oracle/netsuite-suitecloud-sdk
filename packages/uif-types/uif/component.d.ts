@@ -1379,16 +1379,6 @@ declare module '@uif-js/component' {
 
 		autoCollapse(): void;
 
-		private parseChildren(children: PackageCore.VDom.Children): globalThis.Array<Self.BreadcrumbsItem.Options>;
-
-		private createExpandedItems(): globalThis.Array<Self.BreadcrumbsItem>;
-
-		private createCollapsedItems(): globalThis.Array<Self.BreadcrumbsItem>;
-
-		private createCollapsedItem(): Self.BreadcrumbsItem;
-
-		private createItems(): globalThis.Array<Self.BreadcrumbsItem>;
-
 		static getStyles(): void;
 
 		static getRefreshedStyles(): void;
@@ -1463,16 +1453,6 @@ declare module '@uif-js/component' {
 		type: Self.BreadcrumbsItem.Type;
 
 		menu: globalThis.Array<object>;
-
-		private createTextItem(): globalThis.Array<PackageCore.JSX.Element>;
-
-		private createLinkItem(): PackageCore.JSX.Element;
-
-		private createCollapsedItem(): PackageCore.JSX.Element;
-
-		private createSeparator(): PackageCore.JSX.Element;
-
-		private createMenuButton(): PackageCore.JSX.Element;
 
 		static getStyles(): void;
 
@@ -1834,8 +1814,6 @@ declare module '@uif-js/component' {
 		isRangeEnd(date: PackageCore.Date): boolean;
 
 		isRangeSelectable(date: PackageCore.Date): boolean;
-
-		private _coerceDateRestrictions(date: PackageCore.Date, direction?: number): (PackageCore.Date | null);
 
 		static Event: Self.Calendar.EventTypes;
 
@@ -2278,12 +2256,6 @@ declare module '@uif-js/component' {
 
 		calendar: Self.Calendar;
 
-		private _handleDateSelected(args: object, currentDate: PackageCore.Date, oldDate: PackageCore.Date, reason: string): void;
-
-		private _handleDateClicked(args: {date: PackageCore.Date; viewType: Self.Calendar.ViewType}): void;
-
-		private _setActiveDescendant(): void;
-
 	}
 
 	export namespace CalendarPicker {
@@ -2599,10 +2571,6 @@ declare module '@uif-js/component' {
 
 		infinite: boolean;
 
-		private renderItems(): void;
-
-		private renderItem(): void;
-
 		static getStyles(): void;
 
 	}
@@ -2720,7 +2688,14 @@ declare module '@uif-js/component' {
 
 		orientation: Self.Field.Orientation;
 
+		/**
+		 * @deprecated Use toolOffset instead.
+		 */
 		offset: boolean;
+
+		toolOffset: Self.Field.ToolOffset;
+
+		toolOffsetSize: (number | null);
 
 		assistiveContent: (PackageCore.Component | PackageCore.JSX.Element);
 
@@ -2748,6 +2723,10 @@ declare module '@uif-js/component' {
 
 			offset?: boolean;
 
+			toolOffset?: Self.Field.ToolOffset;
+
+			toolOffsetSize?: number;
+
 			mandatory?: boolean;
 
 			fieldLevelHelp?: (Self.Field.FieldLevelHelpCallback | Self.HelpService.FieldLevelHelpOptions);
@@ -2761,6 +2740,8 @@ declare module '@uif-js/component' {
 		}
 
 		export import Size = Self.Field.Size;
+
+		export import ToolOffset = Self.Field.ToolOffset;
 
 	}
 
@@ -3207,8 +3188,6 @@ declare module '@uif-js/component' {
 
 		checkBox: Self.CheckBox;
 
-		private _handleSelectionChanged(args: Self.CheckBox.ActionArgs & {reason: string}): void;
-
 	}
 
 	export namespace CheckBoxPicker {
@@ -3312,64 +3291,6 @@ declare module '@uif-js/component' {
 
 		setWithAlpha(visible: boolean): void;
 
-		private parseSize(): object;
-
-		private getCurrentColor(): PackageCore.Color;
-
-		private drawCanvas(): void;
-
-		private drawIndicator(x: number, y: number): void;
-
-		private drawSquareCanvas(context: object): void;
-
-		private drawTriangleCanvas(context: object): void;
-
-		private drawRainbowCanvas(context: object): void;
-
-		private generateRainbowCanvasImageData(context: object): ImageData;
-
-		private drawWheelCanvas(context: object): void;
-
-		private generateWheelCanvasImageData(context: object): ImageData;
-
-		private getIndicatorPosition(): (object | null);
-
-		private getColorFromSquareCanvasPosition(x: number, y: number): PackageCore.Color;
-
-		private getSquareCanvasIndicatorPosition(saturation: number, value: number): object;
-
-		private getColorFromTriangleCanvasPosition(x: number, y: number): PackageCore.Color;
-
-		private getTriangleCanvasIndicatorPosition(saturation: number, value: number): {x: number; y: number};
-
-		private getColorFromRainbowCanvasPosition(x: number, y: number): PackageCore.Color;
-
-		private getRainbowCanvasIndicatorPosition(hue: number, saturation: number): object;
-
-		private getColorFromWheelCanvasPosition(x: number, y: number): PackageCore.Color;
-
-		private getWheelCanvasIndicatorPosition(hue: number, saturation: number): object;
-
-		private coordinatesToPolar(x: number, y: number, cX?: number, cY?: number): object;
-
-		private radiansToDegrees(rad: number): number;
-
-		private degreesToRadians(deg: number): number;
-
-		private roundFloat(float: number): number;
-
-		private limitValue(value: number, min: number, max: number): number;
-
-		private isPointInTriangle(x: number, y: number): boolean;
-
-		private handleClick(message: {position: {element: {x: number; y: number}}}, result: object): void;
-
-		private createCanvas(): PackageCore.JSX.Element;
-
-		private createSlider(): object;
-
-		private createAlphaSlider(): object;
-
 		static Event: Self.ColorCanvas.EventTypes;
 
 	}
@@ -3443,86 +3364,6 @@ declare module '@uif-js/component' {
 
 		setSlidersVisibility(visibility: boolean): void;
 
-		private createHexModifier(): Self.GridPanel;
-
-		private handleHexChannelChange(_: any, options: {text: (string | null)}): void;
-
-		private handleColorChannelChange(options: object): (PackageCore.Color | null);
-
-		private createRgbModifier(): object;
-
-		private createRgbChannelModifier(colorChannel: string, value: (string | null), text: string): object;
-
-		private handleRgbChannelChange(colorChannel: string, newValue: (string | null)): (PackageCore.Color | null);
-
-		private createCmykModifier(): object;
-
-		private createCmykChannelModifier(colorChannel: string, value: (string | null), text: string): object;
-
-		private handleCmykChannelChange(colorChannel: string, newValue: (string | null)): (PackageCore.Color | null);
-
-		private createHslModifier(): object;
-
-		private createHslChannelModifier(colorChannel: string, value: (string | null), text: string): object;
-
-		private handleHslChannelChange(colorChannel: string, newValue: (string | null)): (PackageCore.Color | null);
-
-		private createHsvModifier(): object;
-
-		private createHsvChannelModifier(colorChannel: string, value: (string | null), text: string): object;
-
-		private handleHsvChannelChange(colorChannel: string, newValue: (string | null)): (PackageCore.Color | null);
-
-		private createHwbModifier(): object;
-
-		private createHwbChannelModifier(colorChannel: string, value: (string | null), text: string): object;
-
-		private handleHwbChannelChange(colorChannel: string, newValue: (string | null)): (PackageCore.Color | null);
-
-		private createGrayscaleModifier(): object;
-
-		private createAlphaModifier(): object;
-
-		private createLabel(text: string): Self.Text;
-
-		private createLabelId(model: string, channel: (string | null)): string;
-
-		private createByteChannelTextBox(value: (string | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string): Self.TextBox;
-
-		private createDegreesChannelTextBox(value: (string | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string): Self.TextBox;
-
-		private createIntegerChannelTextBox(value: (string | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string, maximum: number): Self.TextBox;
-
-		private createFloatChannelTextBox(value: (string | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string): Self.TextBox;
-
-		private createHexTextBox(value: (string | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string): Self.TextBox;
-
-		private createTextBox(value: (string | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, type: Self.ColorModifier.TextBoxType, textValidator: Self.TextBox.TextValidatorCallback, keyValidator: Self.TextBox.KeyValidatorCallback, revertHandler: (((textBox: Self.TextBox) => void) | null), labelId: string): Self.TextBox;
-
-		private createByteChannelSlider(value: (number | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string): Self.Slider;
-
-		private createDegreesChannelSlider(value: (number | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string): Self.Slider;
-
-		private createFloatChannelSlider(value: (number | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string): Self.Slider;
-
-		private createSlider(value: (number | null), handler: (modifier: Self.ColorModifier.Modifier, args: object) => void, labelId: string, items: Self.Slider.ValuesObject): Self.Slider;
-
-		private handleIntegerChannelChanged(value: (string | null), type: Self.ColorModifier.Model, colorModifier: (modifier: number) => (PackageCore.Color | null), modifier: Self.ColorModifier.Modifier, args: object, maximum: object): void;
-
-		private getNewValueFromIntegerModifier(modifier: Self.ColorModifier.Modifier, args: object): (number | null);
-
-		private handleByteChannelChanged(type: Self.ColorModifier.Model, colorModifier: (modifier: number) => (PackageCore.Color | null), modifier: Self.ColorModifier.Modifier, args: object): void;
-
-		private handleDegreesChannelChanged(type: Self.ColorModifier.Model, colorModifier: (modifier: number) => (PackageCore.Color | null), modifier: Self.ColorModifier.Modifier, args: object): void;
-
-		private handleFloatChannelChanged(type: Self.ColorModifier.Model, colorModifier: (modifier: number) => (PackageCore.Color | null), modifier: Self.ColorModifier.Modifier, args: object): void;
-
-		private getNewValueFromFloatModifier(modifier: Self.ColorModifier.Modifier, args: object): (number | null);
-
-		private createModifierGrid(items: globalThis.Array<object>, channelCount: number): object;
-
-		private createModel(model: Self.ColorModifier.Model): object;
-
 		static Event: Self.ColorModifier.EventTypes;
 
 	}
@@ -3593,26 +3434,6 @@ declare module '@uif-js/component' {
 		palettesPanel: Self.AccordionPanel;
 
 		setSelectedColor(color: Self.ColorPalette.ColorValue, args: {reason?: symbol}): void;
-
-		private parsePalettes(palettes: globalThis.Array<any>): globalThis.Array<Self.ColorPalette.PaletteConfig>;
-
-		private createPalette(palette: Self.ColorPalette.PaletteConfig, paletteIndex: number): Self.StackPanel;
-
-		private createColor(paletteIndex: number, colorIndex: number): Self.ColorPaletteBox;
-
-		private createAddButton(paletteIndex: number): Self.Button;
-
-		private getAddButtonTooltipContent(selectedColorInPalette: boolean): PackageCore.Translation;
-
-		private handleColorSelected(args: {color: Self.ColorPalette.ColorValue; selected: boolean; reason: symbol}): void;
-
-		private handleColorDeleted(paletteIndex: number, colorIndex: number, args: {reason: Self.ColorPaletteBox.Reason}): void;
-
-		private colorIsInPalette(color: PackageCore.Color, palette: Self.ColorPalette.PaletteConfig): object;
-
-		private handleAddButtonClicked(paletteIndex: number): void;
-
-		private focusColorBoxByDistance(distance: number): boolean;
 
 		static Event: Self.ColorPalette.EventTypes;
 
@@ -3697,10 +3518,6 @@ declare module '@uif-js/component' {
 
 		delete(): void;
 
-		private createColorClass(): globalThis.Array<PackageCore.Style>;
-
-		private handleActivated(options: {reason: any}): void;
-
 		static Event: Self.ColorPaletteBox.EventTypes;
 
 	}
@@ -3779,22 +3596,6 @@ declare module '@uif-js/component' {
 		closeColorSelectorPicker(): void;
 
 		toggleColorSelectorPicker(): void;
-
-		private createTextBox(): Self.TextBox;
-
-		private colorToText(): string;
-
-		private handleTextBoxTextAccepted(args: {reason: symbol}): void;
-
-		private createIcon(): Self.Image;
-
-		private createColorBox(): Self.ColorPaletteBox;
-
-		private handleToggleClicked(): void;
-
-		private createColorSelectorPicker(): Self.ColorSelectorPicker;
-
-		private handleColorSelectorPickerSelectionChanged(args: {selectedItems: (PackageCore.Color | PackageCore.Color.HEX | null); source: symbol; reason: symbol}): void;
 
 		static default(args: {options?: Self.ColorPicker.Options; customColors?: globalThis.Array<(PackageCore.Color | PackageCore.Color.HEX)>; withNull?: boolean}): Self.ColorPicker;
 
@@ -3910,12 +3711,6 @@ declare module '@uif-js/component' {
 
 		setModifiersExpanded(expanded: boolean): void;
 
-		private createColorPalette(): Self.ColorPalette;
-
-		private createColorCanvas(): Self.ColorCanvas;
-
-		private createColorModifier(): Self.ColorModifier;
-
 		static createDefaultPaletteOptions(options?: (globalThis.Array<(PackageCore.Color | PackageCore.Color.HEX | null)> | {customColors: globalThis.Array<(PackageCore.Color | PackageCore.Color.HEX | null)>; withNull: boolean})): Self.ColorPalette.Options;
 
 		static createPaletteOnlyPaletteOptions(options?: {withNull?: boolean}): Self.ColorPalette.Options;
@@ -4004,12 +3799,6 @@ declare module '@uif-js/component' {
 		colorSelector: Self.ColorSelector;
 
 		setColor(color: (PackageCore.Color | PackageCore.Color.HEX), options?: {modifiersExpanded: boolean; reason: symbol}): void;
-
-		private _handleColorSelected(args: {selectedColor: PackageCore.Color; previousColor: PackageCore.Color; source: Self.ColorSelector.Source; reason: symbol}): void;
-
-		private _handleSelectedColorChanged(args: Self.ColorSelector.ColorChangedArgs): void;
-
-		private _handlePalettesChanged(args: object): void;
 
 	}
 
@@ -4137,8 +3926,6 @@ declare module '@uif-js/component' {
 		protected _fireEvent(eventName: PackageCore.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
@@ -4473,10 +4260,6 @@ declare module '@uif-js/component' {
 
 		protected bindDataRow(args: {dataRow: Self.GridRow; dataStoreEntry: object}): void;
 
-		private configureHeaderCells(overlapCells: globalThis.Map<any, any>, level: number, row: Self.GridRow, column: Self.GridColumn): Self.GridCell;
-
-		private configureDataCells(row: Self.GridRow, column: Self.GridColumn): Self.GridCell;
-
 		static Event: Self.DataGrid.EventTypes;
 
 	}
@@ -4590,7 +4373,7 @@ declare module '@uif-js/component' {
 
 			lockedLevels?: number;
 
-			stickySegments?: Self.DataGrid.StickySegments;
+			stickySegments?: Partial<Self.DataGrid.StickySegments>;
 
 			onSort?: Self.DataGrid.SortCallback;
 
@@ -5264,8 +5047,6 @@ declare module '@uif-js/component' {
 
 		dateRange: Self.DateRange;
 
-		private _handleRangeSelected(args: Self.DateRange.RangeChangedArgs): void;
-
 	}
 
 	export namespace DateRangePicker {
@@ -5640,8 +5421,6 @@ declare module '@uif-js/component' {
 
 		hide(): void;
 
-		private getComponents(): void;
-
 	}
 
 	export namespace EllipsisTooltip {
@@ -5772,7 +5551,16 @@ declare module '@uif-js/component' {
 
 		size: Self.Field.Size;
 
+		/**
+		 * @deprecated Use toolOffset instead.
+		 */
 		offset: boolean;
+
+		toolOffset: Self.Field.ToolOffset;
+
+		toolOffsetSize: (number | null);
+
+		keepBottomOffset: boolean;
 
 		orientation: Self.Field.Orientation;
 
@@ -5814,7 +5602,16 @@ declare module '@uif-js/component' {
 
 		setSize(size: Self.Field.Size): void;
 
+		/**
+		 * @deprecated Use setToolOffset instead.
+		 */
 		setOffset(offset: boolean): void;
+
+		setToolOffset(toolOffset: Self.Field.ToolOffset): void;
+
+		setToolOffsetSize(toolOffsetSize: (number | null)): void;
+
+		setKeepBottomOffset(keepBottomOffset: boolean): void;
 
 		setOrientation(value: Self.Field.Orientation): void;
 
@@ -5872,7 +5669,13 @@ declare module '@uif-js/component' {
 
 			size?: Self.Field.Size;
 
+			keepBottomOffset?: boolean;
+
 			offset?: boolean;
+
+			toolOffset?: Self.Field.ToolOffset;
+
+			toolOffsetSize?: number;
 
 			orientation?: Self.Field.Orientation;
 
@@ -5918,6 +5721,12 @@ declare module '@uif-js/component' {
 			STRETCH,
 		}
 
+		enum ToolOffset {
+			NONE,
+			INSIDE,
+			OUTSIDE,
+		}
+
 		export import Status = PackageCore.Component.Status;
 
 		enum VisualStyle {
@@ -5946,6 +5755,10 @@ declare module '@uif-js/component' {
 
 		onExpanded: Self.FieldGroup.ExpandedCallback;
 
+		dividerTop: boolean;
+
+		dividerBottom: boolean;
+
 	}
 
 	export namespace FieldGroup {
@@ -5961,6 +5774,10 @@ declare module '@uif-js/component' {
 			collapsible?: boolean;
 
 			collapsed?: boolean;
+
+			dividerTop?: boolean;
+
+			dividerBottom?: boolean;
 
 			onExpanded?: Self.FieldGroup.ExpandedCallback;
 
@@ -6045,14 +5862,6 @@ declare module '@uif-js/component' {
 		open(): void;
 
 		clear(options?: {reason?: string}): void;
-
-		private validate(files: globalThis.Array<File>, options?: {showMessage?: boolean}): (globalThis.Promise<boolean> | boolean);
-
-		private renderInput(): void;
-
-		private renderButton(): void;
-
-		private renderClearButton(): void;
 
 		static Event: Self.FilePicker.EventTypes;
 
@@ -6191,30 +6000,6 @@ declare module '@uif-js/component' {
 		closePicker(args?: object): void;
 
 		togglePicker(args?: object): void;
-
-		private renderValuePanel(): PackageCore.JSX.Element;
-
-		private renderSeparator(): PackageCore.JSX.Element;
-
-		private renderValue(selectedValue: any): (PackageCore.Component | PackageCore.JSX.Element);
-
-		private renderValueFromString(text: string): PackageCore.JSX.Element;
-
-		private renderClearButton(): PackageCore.JSX.Element;
-
-		private renderLabel(): PackageCore.JSX.Element;
-
-		private createPicker(definition: Self.FilterChip.PickerCallback): Self.Picker;
-
-		private assignDescribedByProperty(): void;
-
-		private handlePickerOpened(args: object): void;
-
-		private handlePickerClosed(args?: object): void;
-
-		private handlePickerUpdated(): void;
-
-		private isActivated(): boolean;
 
 		static defaultValueComparator(selectedValue: any, emptyValue: any, filterChip: Self.FilterChip): boolean;
 
@@ -6427,14 +6212,6 @@ declare module '@uif-js/component' {
 		valueMember: (Self.DataSourceComponent.ValueMember | null);
 
 		searchMember: (Self.DataSourceComponent.ValueMember | null);
-
-		private handleSelectionChanged(args: Self.ListBox.SelectionChangedArgs): void;
-
-		private handleListItemClicked(args: {buttons: object}): void;
-
-		private handleListCursorMoved(args: {currentItem: PackageCore.Component}): void;
-
-		private forwardMessageToList(message: PackageCore.RoutedMessage, result: object): void;
 
 	}
 
@@ -6808,10 +6585,6 @@ declare module '@uif-js/component' {
 		setWhitespace(value: boolean): void;
 
 		setFormatterAndOptions(formatter: Self.FormattedText.Formatter, options: Self.FormattedText.FormatterOptions): void;
-
-		private _attachEllipsisHelper(i18n: PackageCore.I18n): void;
-
-		private _getFormattedItems(i18n: PackageCore.I18n): any;
 
 		static markdown(text?: (string | number | PackageCore.Translation), options?: Self.FormattedText.Options): Self.FormattedText;
 
@@ -8314,8 +8087,6 @@ declare module '@uif-js/component' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
 		constructor(options: Self.GridColumn.Options);
@@ -8536,8 +8307,6 @@ declare module '@uif-js/component' {
 
 		setMenu(menu: (globalThis.Array<object> | ((column: Self.GridColumn) => globalThis.Array<object>))): void;
 
-		private _onCreateCell(args: object): Self.GridCell;
-
 		static registerColumnFactory(type: string, factory: {createInstance: (options: object) => Self.GridColumn}): void;
 
 		static getColumnFactory(type: string): void;
@@ -8636,11 +8405,11 @@ declare module '@uif-js/component' {
 
 			helperButtons?: Self.GridColumn.HelperButtonProvider;
 
-			helperButtonMode?: boolean;
+			helperButtonMode?: Self.GridColumn.HelperButtonMode;
 
 			headerHelperButtons?: (globalThis.Array<Self.Button> | globalThis.Array<Self.GridCell.HelperButton>);
 
-			headerHelperButtonMode?: boolean;
+			headerHelperButtonMode?: Self.GridColumn.HelperButtonMode;
 
 			searchable?: boolean;
 
@@ -9390,8 +9159,6 @@ declare module '@uif-js/component' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
 		constructor(options: Self.GridPanelArea.Options);
@@ -9442,8 +9209,6 @@ declare module '@uif-js/component' {
 		protected _fireEvent(eventName: PackageCore.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
@@ -9587,8 +9352,6 @@ declare module '@uif-js/component' {
 		protected _fireEvent(eventName: PackageCore.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
@@ -9850,8 +9613,6 @@ declare module '@uif-js/component' {
 		filterMessage(message: object, result: object): void;
 
 		handleMessage(message: object, result: object): void;
-
-		private _moveRowDown(row: Self.GridDataRow): void;
 
 	}
 
@@ -10511,12 +10272,6 @@ declare module '@uif-js/component' {
 
 		setText(text: (string | PackageCore.Translation), options?: object): void;
 
-		private _validate(validator: (Self.InlineEditor.TextValidatorCallback | null), options: object): boolean;
-
-		private _handleInputTextChanged(args: Self.TextBox.TextChangedArgs): void;
-
-		private _handleInputValidityChanged(args: object): void;
-
 		static Event: Self.InlineEditor.EventTypes;
 
 	}
@@ -11015,8 +10770,6 @@ declare module '@uif-js/component' {
 
 		setItems(items: globalThis.Array<any>): void;
 
-		private _renderItems(): HTMLElement;
-
 		static Ordered(props: Self.List.Options): PackageCore.JSX.Element;
 
 		static Definition(props: Self.List.Options): PackageCore.JSX.Element;
@@ -11169,8 +10922,6 @@ declare module '@uif-js/component' {
 		setDropPlaceholderIndex(index: number): void;
 
 		visit(callback: (item: Self.ListItem) => (boolean | null)): void;
-
-		private keySearch(message: object): boolean;
 
 		static Event: Self.ListBox.EventTypes;
 
@@ -11348,14 +11099,6 @@ declare module '@uif-js/component' {
 		listBox: Self.ListBox;
 
 		debounce: number;
-
-		private _handleSelectionChanged(args: {addedItems: globalThis.Array<any>; removedItems: globalThis.Array<any>}, reason: string): void;
-
-		private _handleListItemClicked(args: {buttons: object}): void;
-
-		private _forwardMessageToList(message: PackageCore.RoutedMessage, result: object): void;
-
-		private _createFilter(options: object): (dataSource: PackageCore.DataSource, text: string) => PackageCore.DataSource;
 
 		static createItemFilter(): (dataSource: PackageCore.DataSource, text: string) => PackageCore.DataSource;
 
@@ -12318,8 +12061,6 @@ declare module '@uif-js/component' {
 
 		setShowCurtain(showCurtain: boolean): void;
 
-		private _getProgress(): number;
-
 	}
 
 	export namespace Loader {
@@ -12713,37 +12454,9 @@ declare module '@uif-js/component' {
 
 		highlight(value: string): boolean;
 
-		private handleAction(args: object): void;
-
-		private selectItem(item: Self.MenuItem, reason?: string): boolean;
-
-		private selectNextItem(item?: Self.MenuItem, reason?: string): boolean;
-
-		private selectPreviousItem(item?: Self.MenuItem, reason?: string): boolean;
-
-		private selectFirstItem(reason?: string): boolean;
-
-		private selectLastItem(reason?: string): boolean;
-
-		private hasSubmenu(item: Self.MenuItem): boolean;
-
-		private isSubmenuOpened(item?: Self.MenuItem): (boolean | null);
-
-		private getOpenedSubmenu(item?: Self.MenuItem): (Self.Menu | null);
-
-		private openSubmenu(item: PackageCore.Component, reason?: string): (Self.Menu | null);
-
-		private closeSubmenu(reason?: string): boolean;
-
-		private toggleSubmenu(item: PackageCore.Component, reason?: string): boolean;
-
-		private findItemByComponent(component: PackageCore.Component, transitive?: boolean): (PackageCore.Component | null);
-
 		static vertical(items: globalThis.Array<Self.MenuItem>): void;
 
 		static horizontal(items: globalThis.Array<Self.MenuItem>): void;
-
-		private static _createMenuWindow(menu: Self.Menu, windowOptions?: Self.Window.Options): Self.Window;
 
 		static Event: Self.Menu.EventTypes;
 
@@ -12865,7 +12578,7 @@ declare module '@uif-js/component' {
 		interface Options extends Self.Button.Options {
 			children?: PackageCore.VDom.Children;
 
-			menu: (globalThis.Array<Self.MenuItem.ItemDefinition> | Self.Menu.Options);
+			menu?: (globalThis.Array<Self.MenuItem.ItemDefinition> | Self.Menu.Options);
 
 			openOnHover?: boolean;
 
@@ -12899,11 +12612,7 @@ declare module '@uif-js/component' {
 
 		label: (string | PackageCore.Translation);
 
-		private hasLabel: boolean;
-
 		icon: (Self.Image.Source | null);
-
-		private hasIcon: boolean;
 
 		focusableItems: globalThis.Array<PackageCore.Component>;
 
@@ -12939,8 +12648,6 @@ declare module '@uif-js/component' {
 		submenu: Self.Menu;
 
 		value: (any | Self.MenuItem);
-
-		private _getActionHandler(): void;
 
 		static CustomItem(definition: Self.MenuItem.CustomItemDefinition): Self.MenuItem;
 
@@ -13590,50 +13297,6 @@ declare module '@uif-js/component' {
 
 		acceptChanges(): void;
 
-		private setPickerSelection(items: (globalThis.Array<any> | null)): void;
-
-		private createTagsBox(): PackageCore.JSX.Element;
-
-		private handleTagsBoxTagRemoved(args: {item: any; reason: (string | symbol)}): void;
-
-		private handleTagsBoxSelectedTagIndexChanged(args: {index: (number | null); item: any; reason: (string | symbol)}): void;
-
-		private createTag(value: object): object;
-
-		private createTextBox(): PackageCore.JSX.Element;
-
-		private handleTextBoxActivated(): void;
-
-		private handleTextBoxTextChanged(args: object): void;
-
-		private createPicker(): Self.Picker;
-
-		private setupPicker(options: object): Self.Picker;
-
-		private createDefaultPicker(options: Self.ListBoxPicker.Options): Self.ListBoxPicker;
-
-		private handlePickerOpening(): void;
-
-		private handlePickerOpened(): void;
-
-		private handlePickerClosing(): void;
-
-		private handlePickerClosed(): void;
-
-		private handlePickerSelectionChanged(args: object): void;
-
-		private createChevron(): PackageCore.JSX.Element;
-
-		private changeSelection(selection: globalThis.Array<any>, args: {reason: (string | symbol)}): void;
-
-		private selectItems(selection: globalThis.Array<any>, addedItems: globalThis.Array<any>): globalThis.Array<any>;
-
-		private unselectItems(selection: globalThis.Array<any>, removedItems: globalThis.Array<any>): globalThis.Array<any>;
-
-		private containsItem(array: globalThis.Array<any>, item: any, comparator: (left: any, right: any) => boolean): boolean;
-
-		private compareSelections(left: globalThis.Array<any>, right: globalThis.Array<any>): boolean;
-
 		static Event: Self.MultiselectDropdown.EventTypes;
 
 	}
@@ -13823,10 +13486,6 @@ declare module '@uif-js/component' {
 
 		setRemovable(value: boolean): void;
 
-		private createLabel(): Self.Text;
-
-		private createRemoveButton(): Self.Image;
-
 		static Event: Self.MultiselectDropdownTag.EventTypes;
 
 	}
@@ -13883,20 +13542,6 @@ declare module '@uif-js/component' {
 		setTags(tags: globalThis.Array<any>): void;
 
 		setSelectedTagIndex(index: (number | null), options?: object): void;
-
-		private createTagsBox(): Self.StackPanel;
-
-		private createTag(item: object, index: number): Self.MultiselectDropdownTag;
-
-		private removeTag(index: number): void;
-
-		private handleTagToggled(index: number, args: object): void;
-
-		private scrollToSelectedTag(): void;
-
-		private notifyTagRemoved(item: object, reason: string): void;
-
-		private notifySelectedTagIndexChanged(reason: string): void;
 
 		static TAG_REMOVED_DEFAULT_REASON: string;
 
@@ -13962,20 +13607,6 @@ declare module '@uif-js/component' {
 		setItems(items: globalThis.Array<Self.NavigationDrawer.ItemOptions>): void;
 
 		visitItems(callback: (item: Self.NavigationDrawerItem) => void): void;
-
-		private setItemIndexes(): void;
-
-		private getCollapseButtonTooltipText(): PackageCore.Translation;
-
-		private renderCollapseButton(): PackageCore.JSX.Element;
-
-		private renderChildren(): globalThis.Array<PackageCore.JSX.Element>;
-
-		private renderChild(child: PackageCore.JSX.Element, level: number, isVisible: boolean): PackageCore.JSX.Element;
-
-		private mapVisibleItems(): void;
-
-		private setFocusIndex(): void;
 
 		static Event: Self.NavigationDrawer.EventTypes;
 
@@ -14129,8 +13760,6 @@ declare module '@uif-js/component' {
 		separatorBottom: boolean;
 
 		setSelected(selected: boolean, reason: symbol): void;
-
-		private setExpanded(expanded: boolean, reason: symbol): void;
 
 		update(properties: object): void;
 
@@ -14393,92 +14022,6 @@ declare module '@uif-js/component' {
 
 		setPages(pages: Self.Pagination.Pages, options: Self.Pagination.SetterOptions): void;
 
-		private handlePaginationChanged(reason?: symbol, oldProperties?: object): void;
-
-		private parsePages(pages: Self.Pagination.Pages): void;
-
-		private parseRowsSettings(pages: Self.Pagination.Pages): (object | null);
-
-		private parsePagesSettings(pages: Self.Pagination.Pages): globalThis.Array<object>;
-
-		private parsePagesNumber(pageNumber: number): globalThis.Array<object>;
-
-		private parsePagesArray(pageArray: (globalThis.Array<string> | globalThis.Array<object>)): globalThis.Array<object>;
-
-		private parsePagesObject(pageObject: object): globalThis.Array<object>;
-
-		private renderLayout(): globalThis.Array<PackageCore.Component>;
-
-		private renderRowsPerPageSelector(): (Self.StackPanel | null);
-
-		private renderRowsPerPageSelectorTextBox(): Self.TextBox;
-
-		private renderRowsPerPageSelectorDropdown(): Self.Dropdown;
-
-		private renderRowsPerPageSelectorDropdownData(): PackageCore.ArrayDataSource;
-
-		private renderNavigation(): (Self.StackPanel | null);
-
-		private renderNavigationSegmentation(): (Self.StackPanel | null);
-
-		private renderNavigationPageIndicator(): (Self.Text | Self.TextBox | Self.Dropdown | null);
-
-		private renderNavigationPageIndicatorEditable(): (Self.TextBox | Self.Dropdown);
-
-		private renderNavigationPageIndicatorDropdown(): Self.Dropdown;
-
-		private renderNavigationPageIndicatorTextBox(): Self.TextBox;
-
-		private renderNavigationPageIndicatorStatic(): Self.Text;
-
-		private handleNavigationPageIndicatorTextBoxEdited(args: object): void;
-
-		private renderNavigationButtons(): (Self.StackPanel | null);
-
-		private renderNavigationTotal(): (Self.Text | Self.Button);
-
-		private renderNavigationTotalLabel(): string;
-
-		private renderNavigationTotalButton(label: string, firstPage: boolean, lastPage: boolean): Self.Button;
-
-		private renderNavigationTotalText(label: string): Self.Text;
-
-		private renderNavigationButtonsList(): (Self.List | null);
-
-		private renderNavigationButtonPrevious(): Self.Button;
-
-		private renderNavigationButtonNext(): Self.Button;
-
-		private renderNavigationPageList(): globalThis.Array<PackageCore.JSX.Element>;
-
-		private handleNavigationPageListClick(pageIndex: number): void;
-
-		private renderRowsCounter(): (Self.Text | null);
-
-		private renderRowsCounterTotal(number?: number): Self.Text;
-
-		private renderRowsCounterTotalText(number?: any): string;
-
-		private renderRowsCounterComplete(): Self.Text;
-
-		private renderRowsCounterCompleteText(): string;
-
-		private renderRowsCounterUnknown(): Self.Text;
-
-		private renderRowsCounterUnknownText(): string;
-
-		private renderRowsCounterCustom(): Self.Text;
-
-		private renderLoadMoreButton(): (Self.Button | null);
-
-		private handleLoadMoreButtonClick(): void;
-
-		private notifySelectedPageIndexChanged(previousIndex: number, reason: string): void;
-
-		private parseNavigationSettings(navigation: Self.Pagination.Navigation): (Self.Pagination.Navigation | null);
-
-		private parseLegacyNavigationSettings(navigation: object): void;
-
 		static default(pages: Self.Pagination.Pages, options?: Self.Pagination.Options): Self.Pagination;
 
 		static Default(props: Self.Pagination.Options): Self.Pagination;
@@ -14725,8 +14268,6 @@ declare module '@uif-js/component' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
 		constructor(options?: Self.Picker.Options);
@@ -14751,25 +14292,7 @@ declare module '@uif-js/component' {
 
 		removeInputAttribute(name: string): void;
 
-		private _changeSelection(args?: object): void;
-
-		private _openWindow(args: (object | null)): void;
-
 		protected _createContent(args: object): PackageCore.Component;
-
-		private _createWindow(): Self.Window;
-
-		private _nextToken(): object;
-
-		private _handleWindowOpening(): void;
-
-		private _handleWindowOpened(): void;
-
-		private _handleWindowClosing(): void;
-
-		private _handleWindowClosed(): void;
-
-		private _handlePickerUpdated(): void;
 
 		static Event: Self.Picker.EventTypes;
 
@@ -15100,14 +14623,6 @@ declare module '@uif-js/component' {
 
 		onSelectionChanged: (Self.RadioButtonGroup.SelectionChangedCallback | null);
 
-		private renderChild(child: PackageCore.JSX.Element): PackageCore.JSX.Element;
-
-		private removeFromGroup(ref: PackageCore.VDom.Ref): void;
-
-		private handleToggled(value: boolean, data: any, reason: (string | symbol)): void;
-
-		private handleSelectedItemChanged(previousData: any, data: any, reason: (string | symbol)): void;
-
 		static Event: Self.RadioButtonGroup.EventTypes;
 
 		static Horizontal(props: Self.RadioButtonGroup.Options): PackageCore.JSX.Element;
@@ -15164,8 +14679,6 @@ declare module '@uif-js/component' {
 		protected _fireEvent(eventName: PackageCore.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
@@ -15240,22 +14753,6 @@ declare module '@uif-js/component' {
 
 		valueMember: (Self.DataSourceComponent.ValueMember | null);
 
-		private handleSelectionChanged(item: any, args: Self.RadioButton.ActionArgs): void;
-
-		private forwardMessageToGroup(message: PackageCore.RoutedMessage, result: object): void;
-
-		private selectFirst(topOrBottom: number): void;
-
-		private getDisplayMember(dataItem: object): any;
-
-		private updateContent(selection: any, searchPhrase?: string): void;
-
-		private createPlaceholder(): void;
-
-		private createRadioButton(group: Self.RadioGroup, item: any, value: boolean): void;
-
-		private applySelection(selection: any): void;
-
 	}
 
 	export namespace RadioGroupPicker {
@@ -15295,8 +14792,6 @@ declare module '@uif-js/component' {
 		protected _fireEvent(eventName: PackageCore.EventSource.EventName, args?: any): void;
 
 		protected _disposeEvents(): void;
-
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
 
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
@@ -15364,12 +14859,6 @@ declare module '@uif-js/component' {
 		setColor(color: Self.Ratings.Color): void;
 
 		setReadOnly(readOnly: boolean): void;
-
-		private _createIconPairs(quantity: Self.Ratings.Quantity, imageVariant: Self.Ratings.ImageVariant, tooltips: globalThis.Array<(PackageCore.Component | string | PackageCore.Translation | PackageCore.JSX.Element | null)>): globalThis.Array<Self.Ratings.IconPair>;
-
-		private _createRawIconPairs(quantity: Self.Ratings.Quantity, imageVariant: Self.Ratings.ImageVariant): globalThis.Array<Self.Ratings.IconPair>;
-
-		private _createImage(index: number, icons: Self.Ratings.IconPair): PackageCore.JSX.Element;
 
 		static Event: Self.Ratings.EventTypes;
 
@@ -15562,20 +15051,6 @@ declare module '@uif-js/component' {
 		heightBreakpoint: (Self.ResponsivePanel.BreakpointKey | null);
 
 		heightBreakpoints: Record<Self.ResponsivePanel.BreakpointKey, number>;
-
-		private parseChildren(children: PackageCore.VDom.Children): globalThis.Array<PackageCore.JSX.Element>;
-
-		private parseContent(content: (PackageCore.JSX.Element | PackageCore.Component | globalThis.Array<Self.ResponsivePanel.ItemObject>)): globalThis.Array<PackageCore.JSX.Element>;
-
-		private parseBreakpoints(breakpoints: Record<Self.ResponsivePanel.BreakpointKey, number>): globalThis.Map<Self.ResponsivePanel.BreakpointKey, number>;
-
-		private getBreakpoint(size: number, breakpoints: Self.ResponsivePanel.BreakpointKey): (Self.ResponsivePanel.BreakpointKey | null);
-
-		private updateWidthBreakpoint(): void;
-
-		private updateHeightBreakpoint(): void;
-
-		private renderItem(): PackageCore.JSX.Element;
 
 		static WidthBreakpointContext: string;
 
@@ -15856,8 +15331,6 @@ declare module '@uif-js/component' {
 		scrollToTop(options?: {reason?: any}): boolean;
 
 		scrollToBottom(options?: {reason?: any}): boolean;
-
-		private _createScrollButtons(): void;
 
 		static horizontal(options?: Self.ScrollPanel.Options): Self.ScrollPanel;
 
@@ -16211,7 +15684,7 @@ declare module '@uif-js/component' {
 	export class Shell {
 		constructor(options?: Self.Shell.Options);
 
-		private layout: Self.Shell.LayoutType;
+		layout: Self.Shell.LayoutType;
 
 		theme: PackageCore.Theme;
 
@@ -16230,8 +15703,6 @@ declare module '@uif-js/component' {
 		setTopContent(topContent: (PackageCore.Component | PackageCore.JSX.Element | null)): void;
 
 		setTheme(theme: PackageCore.Theme): void;
-
-		private render(): void;
 
 		run(): void;
 
@@ -16440,10 +15911,6 @@ declare module '@uif-js/component' {
 
 		filter: (dataSource: PackageCore.DataSource, text: string) => PackageCore.DataSource;
 
-		private _handleSelectionChanged(args: {addedItems: globalThis.Array<any>; removedItems: globalThis.Array<any>}, reason: string): void;
-
-		private _forwardKeyDownToShuttle(): void;
-
 	}
 
 	export namespace ShuttleUIPicker {
@@ -16604,10 +16071,6 @@ declare module '@uif-js/component' {
 
 		setTrackBackgroundCheckerboard(value: boolean): void;
 
-		private _handleSelectedItemChanged(handle: Self.SliderRange.Handle, item: Self.Slider.Item, previousItem: Self.Slider.Item, reason: (symbol | string)): void;
-
-		private _handleHandleMoved(handle: Self.SliderRange.Handle, position: number, data: Self.SliderRange.HandleData, reason: (symbol | string)): void;
-
 		static Event: Self.Slider.EventTypes;
 
 	}
@@ -16762,86 +16225,6 @@ declare module '@uif-js/component' {
 		setTrackBackgroundCheckerboard(value: boolean): void;
 
 		enableHandle(handle: Self.SliderRange.Handle, value: boolean): void;
-
-		private _createGridFractions(labelCount: number): globalThis.Array<string>;
-
-		private _createGridElement(items: globalThis.Array<PackageCore.JSX.Element>, gridFractions: globalThis.Array<string>): Self.GridPanel;
-
-		private _createHandlesLabelsAsGridItems(gridFractionsCount: number): void;
-
-		private _createTrackAsGridItem(gridFractionsCount: number): void;
-
-		private _createItemsAsGridItems(gridFractionsCount: number): void;
-
-		private _createEdgeLabelGridItem(label: PackageCore.Component, fractionsCount: number, position: Self.SliderRange.LabelPosition, edgeLabel: Self.SliderRange.EdgeLabel): void;
-
-		private _createLabelGridItem(label: PackageCore.Component, index: number, fractionsCount: number): void;
-
-		private _createLabelComponent(labelValue: (number | string | PackageCore.Translation | PackageCore.ImageMetadata | PackageCore.Component), firstOrLast?: Self.SliderRange.EdgeLabel, position?: Self.SliderRange.LabelPosition): PackageCore.Component;
-
-		private _createHandleLabelContainer(handle: Self.SliderRange.Handle): PackageCore.Component;
-
-		private _createMixedHandleLabelContainer(): PackageCore.JSX.Element;
-
-		private _createHandleLabel(handle: (Self.SliderRange.Handle | null), mixed?: boolean): PackageCore.Component;
-
-		private _parseItems(items: (Self.SliderRange.ValuesObject | globalThis.Array<string> | globalThis.Array<number> | globalThis.Array<object>)): globalThis.Array<Self.SliderRange.Item>;
-
-		private _handleSelectedRangeChanged(previousRange: globalThis.Array<Self.SliderRange.Item>, range: globalThis.Array<Self.SliderRange.Item>, reason: (string | symbol)): void;
-
-		private _handleSelectedItemChanged(handle: Self.SliderRange.Handle, previousItem: Self.SliderRange.Item, item: Self.SliderRange.Item, reason: (string | symbol)): void;
-
-		private _handleHandleMoved(handle: Self.SliderRange.Handle, position: number, reason: (string | symbol)): void;
-
-		private _handleClick(message: object, result: object): void;
-
-		private _handleMove(message: object): void;
-
-		private _handleRelease(): void;
-
-		private _setMixedHandleLabelVisibility(): void;
-
-		private _initLastMovedHandle(): void;
-
-		private _getEdgeLabelMainAxisIndex(edgeLabel: Self.SliderRange.EdgeLabel, rowPosition: Self.SliderRange.LabelPosition, fractionsCount: number): number;
-
-		private _getLabelCrossAxisIndex(labelPosition: Self.SliderRange.LabelPosition): number;
-
-		private _getEdgeLabelMainAxisAlignment(edgeLabel: Self.SliderRange.EdgeLabel): Self.GridPanel.Justification;
-
-		private _getEdgeLabelCrossAxisAlignment(position: Self.SliderRange.LabelPosition): Self.GridPanel.Alignment;
-
-		private _getEdgeLabelMainAxisCellSpan(position: Self.SliderRange.LabelPosition): number;
-
-		private _getHandleClosestItem(mousePosition: object): Self.SliderRange.Item;
-
-		private _getClosestHandle(position: number): (Self.SliderRange.Handle | null);
-
-		private _getMouseTrackPosition(message: object, isFrameworkMessage?: boolean): number;
-
-		private _getBoundedMouseTrackPosition(handleInMotion: Self.SliderRange.Handle, oppositeHandleData: Self.SliderRange.HandleData, mousePosition: number): number;
-
-		private _getItem(item: (string | number | PackageCore.Translation | Self.SliderRange.Item | null)): (Self.SliderRange.Item | null);
-
-		private _getItemByDistance(handle: Self.SliderRange.Handle, distance?: number): Self.SliderRange.Item;
-
-		private _getItemByIndex(handle: Self.SliderRange.Handle, index: number): Self.SliderRange.Item;
-
-		private _getBoundedItemIndex(handle: Self.SliderRange.Handle, index: number): number;
-
-		private _getLongestLabelLength(): void;
-
-		private _getDefaultLabelPosition(): Self.SliderRange.LabelPosition;
-
-		private _isHorizontal(): boolean;
-
-		private _isHorizontalLtr(): boolean;
-
-		private _isHorizontalRtl(): boolean;
-
-		private _isVertical(): boolean;
-
-		private _initDirection(): string;
 
 		static Event: Self.SliderRange.EventTypes;
 
@@ -17058,16 +16441,6 @@ declare module '@uif-js/component' {
 
 	class SliderRangeTrack extends PackageCore.Component {
 		constructor(options?: Self.SliderRangeTrack.Options);
-
-		private _isHorizontalLtr(): boolean;
-
-		private _isHorizontalRtl(): boolean;
-
-		private _createSnaplineElements(): PackageCore.JSX.Element;
-
-		private _createBaseElement(): PackageCore.JSX.Element;
-
-		private _createFillElement(): PackageCore.JSX.Element;
 
 	}
 
@@ -17998,8 +17371,6 @@ declare module '@uif-js/component' {
 
 		items: globalThis.Array<Self.SummaryBox.ItemOptions>;
 
-		private parseChildren(children: PackageCore.VDom.Children): globalThis.Array<Self.SummaryBox.ItemOptions>;
-
 		static Item(props?: Self.SummaryBoxItem.Options): PackageCore.JSX.Element;
 
 		static Total(props?: Self.SummaryBoxTotal.Options): PackageCore.JSX.Element;
@@ -18719,20 +18090,6 @@ declare module '@uif-js/component' {
 		body: globalThis.Array<globalThis.Array<any>>;
 
 		footer: (globalThis.Array<any> | null);
-
-		private renderTableCaption(): PackageCore.JSX.Element;
-
-		private renderTableHeader(): PackageCore.JSX.Element;
-
-		private renderTableBody(): PackageCore.JSX.Element;
-
-		private renderTableFooter(): PackageCore.JSX.Element;
-
-		private renderCell(cellOptions: (string | number | PackageCore.Translation | PackageCore.Component | object), cellType: symbol): PackageCore.JSX.Element;
-
-		private renderTable(): globalThis.Array<PackageCore.JSX.Element>;
-
-		private normalizeContent(content: any): globalThis.Array<(PackageCore.Component | string)>;
 
 		static Header(args: {classList?: (string | globalThis.Array<string> | PackageCore.Style | globalThis.Array<PackageCore.Style>); rootStyle?: object; rootAttributes?: object; children?: PackageCore.VDom.Children; key?: any}): PackageCore.JSX.Element;
 
@@ -19921,8 +19278,6 @@ declare module '@uif-js/component' {
 	export class TimeRangePicker extends Self.Picker {
 		constructor(options: Self.TimeRangePicker.Options);
 
-		private _handleSelectionChanged(args: Self.TimeRange.RangeChangedArgs): void;
-
 	}
 
 	export namespace TimeRangePicker {
@@ -19933,8 +19288,6 @@ declare module '@uif-js/component' {
 
 	export class TimeSelectorPicker extends Self.Picker {
 		constructor(options: Self.TimeSelectorPicker.Options);
-
-		private _handleSelectionChanged(args: Self.TimePicker.TimeChangedArgs): void;
 
 	}
 
@@ -19964,26 +19317,6 @@ declare module '@uif-js/component' {
 		onSelectionChanged: (Self.ToggleGroup.SelectionChangedCallback | null);
 
 		select(values: (Self.ToggleGroup.Value | globalThis.Array<Self.ToggleGroup.Value>), options?: {triggerIndex?: (number | null); triggerValue?: any; triggerButton?: (Self.Button | null); reason?: (string | symbol)}): void;
-
-		private parseChildren(children: PackageCore.VDom.Children): globalThis.Array<Self.ToggleGroup.Button>;
-
-		private createButtons(): globalThis.Array<PackageCore.JSX.Element>;
-
-		private handleButtonClick(triggerValue: any, triggerIndex: number): void;
-
-		private checkNumberOfSelectedValues(selectedValuesCount: number): void;
-
-		private focusButton(index: number): void;
-
-		private focusNextButton(): boolean;
-
-		private focusPreviousButton(): boolean;
-
-		private focusFirstButton(): boolean;
-
-		private focusLastButton(): boolean;
-
-		private focusQueryButton(query: PackageCore.Array.FindResult): boolean;
 
 		static singleSelection(toggleGroupOptions: Self.ToggleGroup.Options): Self.ToggleGroup;
 
@@ -20236,8 +19569,6 @@ declare module '@uif-js/component' {
 
 		protected _disposeEvents(): void;
 
-		private _addEventListener(eventName: PackageCore.EventSource.EventName, listener: PackageCore.EventSource.Listener): PackageCore.EventSource.Handle;
-
 		protected _checkDeprecatedEvent(eventName: PackageCore.EventSource.EventName): void;
 
 		constructor(options?: (string | PackageCore.Translation | PackageCore.Component | PackageCore.JSX.Element | Self.Tooltip.ContentCallback | Self.Tooltip.Options));
@@ -20275,8 +19606,6 @@ declare module '@uif-js/component' {
 		resize(): void;
 
 		dispose(): void;
-
-		private detachCloseTimer(): void;
 
 		static show(options: Self.Tooltip.Options): void;
 
@@ -21170,12 +20499,6 @@ declare module '@uif-js/component' {
 		resize(options?: object): void;
 
 		position(options?: (Self.Window.PositionArgs | null), updateSize?: boolean): void;
-
-		private setRootElementStyle(position: PackageCore.Rectangle): void;
-
-		private alignToDocumentBody(coordinates: PackageCore.PositionHelper.FrameDescription): PackageCore.Rectangle;
-
-		private getPositionOptions(options: PackageCore.PositionHelper.Options, measuredSize: object): PackageCore.PositionHelper.Options;
 
 		static findManagingWindow(): void;
 
