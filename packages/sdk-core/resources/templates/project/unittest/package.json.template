@@ -7,7 +7,7 @@
   "devDependencies": {
 	"jest": "30.5.1",
     "@types/jest": "30.0.0",
-    "@oracle/suitecloud-unit-testing": "^1.9.0"
+    "@oracle/suitecloud-unit-testing": "^1.9.1"
   },
   "overrides": {
     "babel-plugin-istanbul": {

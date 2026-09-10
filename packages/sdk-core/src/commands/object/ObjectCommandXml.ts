@@ -19,6 +19,10 @@ const CUSTOM_SEGMENT_TYPE = 'customsegment';
 const CUSTOM_RECORD_TYPE = 'customrecordtype';
 const CUSTOM_RECORD_PREFIX = 'customrecord';
 const IDE_RESULT_KEY = 'result';
+const UPDATE_OBJECT_TYPE_BY_ROOT_TAG: Readonly<Record<string, string>> = {
+	pluginimplementation: 'plugintypeimpl',
+	savedcsvimport: 'csvimport',
+};
 
 export function buildCustomObjectsXml(customObjects: CustomObjectInfo[]): string {
 	const expandedObjects: CustomObjectInfo[] = [];
@@ -128,12 +132,29 @@ export function extractScriptFileReferences(xmlText: string): string[] {
 }
 
 export function extractRootTagName(xmlText: string): string {
-	const normalizedXml = xmlText.trim().replace(/^<\?xml[^>]*\?>/i, '').trim();
+	let normalizedXml = xmlText.trim();
+	while (normalizedXml.startsWith('<?') || normalizedXml.startsWith('<!--')) {
+		const closingToken = normalizedXml.startsWith('<!--') ? '-->' : '?>';
+		const closingIndex = normalizedXml.indexOf(closingToken);
+		if (closingIndex === -1) {
+			throw new Error(translationService.getMessage(OBJECT.ERROR.ROOT_TAG_PARSE_FAILED));
+		}
+		normalizedXml = normalizedXml.slice(closingIndex + closingToken.length).trimStart();
+	}
 	const tagMatch = normalizedXml.match(/^<([a-zA-Z0-9_:-]+)/);
 	if (!tagMatch) {
 		throw new Error(translationService.getMessage(OBJECT.ERROR.ROOT_TAG_PARSE_FAILED));
 	}
 	return tagMatch[1];
+}
+
+export function extractObjectTypeForUpdate(xmlText: string, scriptId: string): string {
+	const rootTag = extractRootTagName(xmlText).toLowerCase();
+	const unqualifiedScriptId = scriptId.slice(scriptId.lastIndexOf('.') + 1);
+	if (unqualifiedScriptId.startsWith(CUSTOM_RECORD_PREFIX)) {
+		return CUSTOM_RECORD_TYPE;
+	}
+	return UPDATE_OBJECT_TYPE_BY_ROOT_TAG[rootTag] ?? rootTag;
 }
 
 export async function parseIdePayload(xmlText: string): Promise<{ resultText?: string; errorMessage?: string }> {
