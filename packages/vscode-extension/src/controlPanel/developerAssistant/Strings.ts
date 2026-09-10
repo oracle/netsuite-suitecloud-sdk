@@ -138,8 +138,6 @@ export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
 		proxyAuthorizationRefreshRequired: message(CONTROL_PANEL.ERRORS.PROXY_AUTH_REFRESH_REQUIRED),
 		proxyAuthorizationRefreshFailed: (details: string) =>
 			message(CONTROL_PANEL.ERRORS.PROXY_AUTH_REFRESH_FAILED, details),
-		proxyUnavailableInCli: (version: string) =>
-			message(CONTROL_PANEL.ERRORS.PROXY_UNAVAILABLE_IN_CLI, version),
 		proxyAutoStartFailed: (details: string) =>
 			message(CONTROL_PANEL.ERRORS.PROXY_AUTO_START_FAILED, details),
 		feedbackProxyRequired: message(CONTROL_PANEL.ERRORS.FEEDBACK_PROXY_REQUIRED),
@@ -193,8 +191,6 @@ export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
 	friendlyErrors: {
 		outputHint: message(CONTROL_PANEL.FRIENDLY_ERRORS.OUTPUT_HINT),
 		sdkJarInvalid: message(CONTROL_PANEL.FRIENDLY_ERRORS.SDK_JAR_INVALID),
-		proxyStartMissing: (version: string) =>
-			message(CONTROL_PANEL.FRIENDLY_ERRORS.PROXY_START_MISSING, version),
 		apiKeyStorage: (errorMessage: string) =>
 			message(CONTROL_PANEL.FRIENDLY_ERRORS.API_KEY_STORAGE, errorMessage),
 		portConflict: (errorMessage: string) =>

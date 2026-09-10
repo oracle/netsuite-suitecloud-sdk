@@ -17,8 +17,6 @@ export type ProxyRuntime = {
 export type StartPanelProxyInput = {
 	state: SuiteCloudPanelState;
 	unconfiguredAuthId: string;
-	isProxySupported: () => boolean;
-	getCliVersion: () => string;
 	getSdkPath: () => string;
 	ensureAuthorizationReady: (authId: string) => Promise<void>;
 	resolveApiKey: () => Promise<string | undefined>;
@@ -50,13 +48,6 @@ export default class ProxyLifecycleService {
 
 	async start(input: StartPanelProxyInput): Promise<StartPanelProxyResult> {
 		validateProxyStartInputs(input.state, input.unconfiguredAuthId);
-		if (!input.isProxySupported()) {
-			throw new Error(
-				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyUnavailableInCli(
-					input.getCliVersion()
-				)
-			);
-		}
 
 		const startingState: SuiteCloudPanelState = {
 			...input.state,

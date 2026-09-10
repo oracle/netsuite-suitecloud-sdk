@@ -11,16 +11,12 @@ import {
 
 suite('SuiteCloud Panel Error Formatter', () => {
 	test('adds actionable guidance for known proxy startup failures', () => {
-		assert.match(formatProxyStartError('Error: EADDRINUSE', () => '3.2.0'), /choose another Local Port/);
-		assert.match(formatProxyStartError('Authentication timed out', () => '3.2.0'), /network\/auth errors/);
-		assert.match(
-			formatProxyStartError('Command proxy:start does not exist', () => '3.2.0'),
-			/@oracle\/suitecloud-cli v3\.2\.0/
-		);
+		assert.match(formatProxyStartError('Error: EADDRINUSE'), /choose another Local Port/);
+		assert.match(formatProxyStartError('Authentication timed out'), /network\/auth errors/);
 	});
 
 	test('keeps unknown errors and directs users to detailed output', () => {
-		const result = formatProxyStartError('Unexpected startup failure', () => 'unused');
+		const result = formatProxyStartError('Unexpected startup failure');
 
 		assert.match(result, /^Unexpected startup failure/);
 		assert.match(result, /Open Output/);
@@ -30,7 +26,7 @@ suite('SuiteCloud Panel Error Formatter', () => {
 		const message =
 			'No API key is available. Generate an API key in the control panel before starting the SuiteCloud Proxy.';
 
-		assert.strictEqual(formatProxyStartError(message, () => 'unused'), message);
+		assert.strictEqual(formatProxyStartError(message), message);
 	});
 
 	test('reduces multiline errors to a bounded first-line summary', () => {
@@ -43,7 +39,7 @@ suite('SuiteCloud Panel Error Formatter', () => {
 		const message =
 			'Connect to 5358634.app.netsuite.com:443 [184.25.192.196] failed: Operation timed out';
 
-		const formatted = formatProxyStartError(message, () => '4.0.0');
+		const formatted = formatProxyStartError(message);
 
 		assert.match(formatted, /Verify the VPN or network proxy configuration/);
 	});

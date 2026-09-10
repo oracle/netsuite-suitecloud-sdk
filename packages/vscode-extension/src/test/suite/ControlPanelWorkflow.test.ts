@@ -37,8 +37,6 @@ suite('Control Panel Workflows', () => {
 		};
 		const workflow = new ProxyWorkflow({
 			sdkService: {
-				isProxyServiceSupported: () => true,
-				getBundledCliVersion: () => '4.0.0',
 				getSdkPath: () => '/sdk',
 			} as any,
 			lifecycleService: {

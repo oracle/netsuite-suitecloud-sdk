@@ -47,8 +47,6 @@ const createStartInput = (): StartPanelProxyInput => {
 	return {
 		state,
 		unconfiguredAuthId: 'NO_AUTH',
-		isProxySupported: () => true,
-		getCliVersion: () => '3.2.0',
 		getSdkPath: () => '/sdk',
 		ensureAuthorizationReady: async () => undefined,
 		resolveApiKey: async () => 'secret',
@@ -57,38 +55,15 @@ const createStartInput = (): StartPanelProxyInput => {
 };
 
 suite('Control Panel Proxy Lifecycle Service', () => {
-	test('validates inputs before consulting CLI capabilities', async () => {
+	test('validates inputs before starting the proxy', async () => {
 		const { proxy } = createProxyRuntime();
-		let capabilityChecked = false;
 		const input = createStartInput();
 		input.state.authId = 'NO_AUTH';
-		input.isProxySupported = () => {
-			capabilityChecked = true;
-			return true;
-		};
 
 		await assert.rejects(
 			new ProxyLifecycleService(proxy).start(input),
 			/Select a valid auth ID/
 		);
-		assert.strictEqual(capabilityChecked, false);
-	});
-
-	test('reports an unsupported bundled CLI before changing state', async () => {
-		const { proxy } = createProxyRuntime();
-		let startingEmitted = false;
-		const input = createStartInput();
-		input.isProxySupported = () => false;
-		input.getCliVersion = () => '3.1.0';
-		input.onStarting = () => {
-			startingEmitted = true;
-		};
-
-		await assert.rejects(
-			new ProxyLifecycleService(proxy).start(input),
-			/bundled @oracle\/suitecloud-cli version \(3\.1\.0\).*SuiteCloud Proxy/
-		);
-		assert.strictEqual(startingEmitted, false);
 	});
 
 	test('emits starting state and returns the active proxy details', async () => {
