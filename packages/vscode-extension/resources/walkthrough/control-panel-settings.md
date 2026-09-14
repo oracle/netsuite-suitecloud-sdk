@@ -1,6 +1,6 @@
 # Choose whether to show the startup reminder
 
-At the bottom of the control panel, select **Do not show the startup reminder** if you no longer want the Developer Assistant introduction to appear when VS Code starts.
+At the bottom of the control panel, select **Don't show the startup reminder** if you no longer want the Developer Assistant introduction to appear when VS Code starts.
 
 This preference only hides the reminder. It does not disable Developer Assistant, stop the SuiteCloud Proxy, or remove any configuration.
 

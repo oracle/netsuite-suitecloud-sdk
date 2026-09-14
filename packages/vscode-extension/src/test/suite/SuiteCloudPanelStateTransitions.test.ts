@@ -28,7 +28,7 @@ const createState = (overrides: Partial<SuiteCloudPanelState> = {}): SuiteCloudP
 	apiKeyVisible: false,
 	apiKeyVisibleUntilMs: null,
 	apiKeyExists: false,
-	apiKeyActionLabel: 'Generate API Key',
+	apiKeyActionLabel: SUITECLOUD_PANEL_RUNTIME_STRINGS.apiKey.generateLabel,
 	apiKeyVisibilityInfo: null,
 	proxyStatus: 'stopped',
 	proxyOwnership: 'none',
