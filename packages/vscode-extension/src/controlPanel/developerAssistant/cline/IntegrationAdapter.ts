@@ -174,6 +174,7 @@ export default class ClineIntegrationAdapter {
 		}
 
 		const inSync =
+			this._normalizeString(state[compatibility.details.providerKey]) === 'openai' &&
 			detectedBaseUrl === this._normalizeBaseUrl(input.baseUrl) &&
 			detectedModelId === this._normalizeString(input.modelId) &&
 			detectedApiKey === this._normalizeString(input.apiKey);

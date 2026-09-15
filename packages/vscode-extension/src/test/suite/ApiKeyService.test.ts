@@ -84,6 +84,45 @@ suite('Control Panel API Key Service', () => {
 		service.dispose();
 	});
 
+	test('invalidates the copy preview after an external key replacement', async () => {
+		let storedKey = 'generated-secret';
+		const service = new ApiKeyService({
+			getProxyApiKeyFromSdkStorage: async () => storedKey,
+			generateProxyApiKey: async () => storedKey,
+		}, () => undefined);
+		try {
+			await service.generate();
+			storedKey = 'replacement-key';
+			const result = await service.resolve();
+			assert.strictEqual(result.apiKey, storedKey);
+			assert.strictEqual(result.displayState.apiKeyVisible, false);
+			assert.strictEqual(result.displayState.apiKeyVisibleUntilMs, null);
+			assert.strictEqual(service.getCopyableApiKey(), undefined);
+		} finally {
+			service.dispose();
+		}
+	});
+
+	test('preserves the original preview deadline when the stored key is unchanged', async () => {
+		const originalNow = Date.now;
+		let now = originalNow();
+		Date.now = () => now;
+		const service = new ApiKeyService(createStorage('generated-secret'), () => undefined);
+		try {
+			const generated = await service.generate();
+			now += 60_000;
+			const refreshed = await service.resolve();
+			assert.strictEqual(refreshed.displayState.apiKeyVisible, true);
+			assert.strictEqual(refreshed.displayState.apiKeyVisibleUntilMs, generated.displayState.apiKeyVisibleUntilMs);
+			assert.strictEqual(service.getCopyableApiKey(), 'generated-secret');
+			now = generated.displayState.apiKeyVisibleUntilMs!;
+			assert.strictEqual(service.getCopyableApiKey(), undefined);
+		} finally {
+			service.dispose();
+			Date.now = originalNow;
+		}
+	});
+
 	test('only propagates storage failures when a key is required', async () => {
 		const storageError = new Error('secure storage unavailable');
 		const storage: ApiKeyStorage = {
