@@ -22,8 +22,33 @@ const createState = (): SuiteCloudPanelState =>
 	);
 
 suite('Control Panel Workflows', () => {
-	test('preserves the proxy start state and presentation sequence', async () => {
+	test('preserves a running proxy when startup refresh fails', async () => {
+		const state = { ...createState(), autoStartProxyOnStartup: true };
+		const runtime = { isRunning: false };
+		let runningStatusShown = false;
+		const workflow = new ProxyWorkflow({
+			proxyService: runtime,
+			getState: () => state,
+			refreshAuthIds: async () => {
+				runtime.isRunning = true;
+				throw new Error('startup refresh failed');
+			},
+			presenter: {
+				setRunningStatus: () => { runningStatusShown = true; },
+				setStoppedStatus: () => assert.fail('The proxy is still running'),
+				showError: () => undefined,
+				endLogSection: () => undefined,
+			},
+			postStateUpdate: () => undefined,
+		} as any);
+		await workflow.startOnStartupIfEnabled(false, async () => undefined);
+		assert.strictEqual(state.proxyStatus, 'running');
+		assert.strictEqual(runningStatusShown, true);
+	});
+
+	test('starts the proxy once and ignores a repeated start request', async () => {
 		let state = createState();
+		const runtime = { isRunning: false };
 		const calls: string[] = [];
 		const presenter = {
 			clearLog: () => calls.push('clearLog'),
@@ -42,11 +67,12 @@ suite('Control Panel Workflows', () => {
 			lifecycleService: {
 				start: async (input: any) => {
 					calls.push('lifecycleStart');
+					runtime.isRunning = true;
 					input.onStarting({ ...input.state, proxyStatus: 'starting' });
 					return { authId: input.state.authId, port: input.state.port };
 				},
 			} as any,
-			proxyService: { isRunning: false } as any,
+			proxyService: runtime as any,
 			presenter: presenter as any,
 			getState: () => state,
 			setState: (nextState) => { state = nextState; },
@@ -86,6 +112,14 @@ suite('Control Panel Workflows', () => {
 			'logSuccess',
 			'endLogSection',
 		]);
+
+		const runningState = { ...state };
+		calls.length = 0;
+		await workflow.start();
+
+		assert.ok(!calls.includes('confirmStartDisclaimer'), 'A repeated start must not prompt again');
+		assert.ok(!calls.includes('lifecycleStart'), 'A repeated start must not start another proxy');
+		assert.deepStrictEqual(state, runningState);
 	});
 
 	test('does not start the proxy when the disclaimer is declined', async () => {

@@ -76,9 +76,13 @@ export default class ProxyWorkflow {
 			const errorMessage = error instanceof Error ? error.message : String(error);
 			const friendlyErrorMessage = this.formatStartError(errorMessage);
 			const failedState = this._dependencies.getState();
-			failedState.proxyStatus = 'error';
+			failedState.proxyStatus = this.isRunning ? 'running' : 'error';
 			failedState.lastError = this.summarizeInlineError(friendlyErrorMessage);
-			this._dependencies.presenter.setStoppedStatus();
+			if (this.isRunning) {
+				this._dependencies.presenter.setRunningStatus();
+			} else {
+				this._dependencies.presenter.setStoppedStatus();
+			}
 			this._dependencies.postStateUpdate();
 			this._dependencies.presenter.showError(
 				SUITECLOUD_PANEL_RUNTIME_STRINGS.errors.proxyAutoStartFailed(
@@ -93,6 +97,10 @@ export default class ProxyWorkflow {
 		showDisclaimerPrompt = true,
 		emitSuccessMessage = true
 	): Promise<void> {
+		if (this.isRunning) {
+			return;
+		}
+
 		await this._dependencies.ensureSdkDependenciesReady();
 		if (showDisclaimerPrompt && !(await this._dependencies.confirmStartDisclaimer())) {
 			return;
