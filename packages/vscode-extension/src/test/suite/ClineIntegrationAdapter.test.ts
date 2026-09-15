@@ -40,6 +40,27 @@ suite('Cline Integration Adapter', () => {
 		await fs.rm(dataDirectory, { recursive: true, force: true });
 	});
 
+	test('tracks legacy provider changes even when saved OpenAI settings still match', async () => {
+		await fs.unlink(fileStore.providersFile);
+		await fileStore.writeJsonFile(fileStore.secretsFile, { openAiApiKey: API_KEY });
+		for (const provider of ['openai', 'anthropic', 'openai']) {
+			await fileStore.writeJsonFile(fileStore.globalStateFile, {
+				apiProvider: provider,
+				openAiBaseUrl: PANEL_BASE_URL,
+				openAiModelId: MODEL_ID,
+			});
+			const result = await adapter.checkConfigSync({
+				scope: 'user',
+				workspacePath: dataDirectory,
+				apiKey: API_KEY,
+				baseUrl: PANEL_BASE_URL,
+				modelId: MODEL_ID,
+			});
+			assert.strictEqual(result.comparable, true);
+			assert.strictEqual(result.inSync, provider === 'openai');
+		}
+	});
+
 	test('detects when active Cline state uses a different port than providers config', async () => {
 		await fileStore.writeJsonFile(fileStore.globalStateFile, {
 			actModeApiProvider: 'openai',

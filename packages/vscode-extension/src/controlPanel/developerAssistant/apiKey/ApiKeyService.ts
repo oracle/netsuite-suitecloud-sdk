@@ -121,6 +121,8 @@ export default class ApiKeyService {
 			return { apiKey, displayState };
 		}
 
+		this._generatedPreview = undefined;
+		this._clearPreviewHideTimeout();
 		return { apiKey, displayState: this._createHiddenDisplayState() };
 	}
 

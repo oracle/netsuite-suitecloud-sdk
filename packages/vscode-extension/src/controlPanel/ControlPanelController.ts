@@ -378,13 +378,17 @@ export default class ControlPanelController {
 				? this._proxyWorkflow.formatStartError(errorMessage)
 				: errorMessage;
 			if (isProxyStartAction) {
-				this._state.proxyStatus = 'error';
+				this._state.proxyStatus = this._proxyService.isRunning ? 'running' : 'error';
 				this._state.lastError = this._proxyWorkflow.summarizeInlineError(
 					friendlyErrorMessage
 				);
-				this._presenter.setStoppedStatus();
+				if (this._proxyService.isRunning) {
+					this._presenter.setRunningStatus();
+				} else {
+					this._presenter.setStoppedStatus();
+				}
 			} else if (message.eventType === SUITECLOUD_PANEL_EVENTS.FROM_WEBVIEW.STOP_PROXY) {
-				this._state.proxyStatus = this._isProxyAvailable() ? 'running' : 'stopped';
+				this._state.proxyStatus = this._proxyService.isRunning ? 'running' : 'stopped';
 			}
 			this._postStateUpdate();
 			if (isProxyStartAction) {
@@ -485,16 +489,17 @@ export default class ControlPanelController {
 			typeof formData.port === 'number' &&
 			formData.port !== this._state.port;
 
-		this._state = applyFormChangesToState(this._state, formData);
-		await this._persistPreferences();
-
 		if (authIdChangeBlocked) {
 			this._presenter.showError(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.authIdChangeRequiresStoppedProxy);
 			return;
 		}
 		if (portChangeBlocked) {
 			this._presenter.showError(SUITECLOUD_PANEL_RUNTIME_STRINGS.actions.portChangeRequiresStoppedProxy);
+			return;
 		}
+
+		this._state = applyFormChangesToState(this._state, formData);
+		await this._persistPreferences();
 	}
 
 	private async _rotateApiKey(): Promise<void> {
