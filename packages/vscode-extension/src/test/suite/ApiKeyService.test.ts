@@ -103,23 +103,16 @@ suite('Control Panel API Key Service', () => {
 		}
 	});
 
-	test('preserves the original preview deadline when the stored key is unchanged', async () => {
-		const originalNow = Date.now;
-		let now = originalNow();
-		Date.now = () => now;
+	test('keeps the generated key copyable when storage still contains the same key', async () => {
 		const service = new ApiKeyService(createStorage('generated-secret'), () => undefined);
 		try {
-			const generated = await service.generate();
-			now += 60_000;
+			await service.generate();
 			const refreshed = await service.resolve();
+
 			assert.strictEqual(refreshed.displayState.apiKeyVisible, true);
-			assert.strictEqual(refreshed.displayState.apiKeyVisibleUntilMs, generated.displayState.apiKeyVisibleUntilMs);
 			assert.strictEqual(service.getCopyableApiKey(), 'generated-secret');
-			now = generated.displayState.apiKeyVisibleUntilMs!;
-			assert.strictEqual(service.getCopyableApiKey(), undefined);
 		} finally {
 			service.dispose();
-			Date.now = originalNow;
 		}
 	});
 

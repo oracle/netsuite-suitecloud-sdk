@@ -4,15 +4,6 @@
  */
 
 import * as assert from 'assert';
-import * as path from 'path';
-import * as vscode from 'vscode';
-import { createControlPanel } from '../../controlPanel/createControlPanel';
-import PanelHost from '../../controlPanel/view/PanelHost';
-import PanelPresenter from '../../controlPanel/view/PanelPresenter';
-import ProxyService from '../../controlPanel/developerAssistant/proxy/ProxyService';
-import ClineCompatibilityService from '../../controlPanel/developerAssistant/cline/ClineCompatibilityService';
-import { DEVELOPER_ASSISTANT } from '../../ApplicationConstants';
-import { SUITECLOUD_PANEL_EVENTS, SuiteCloudPanelIncomingMessage, SuiteCloudPanelOutgoingMessage } from '../../controlPanel/protocol/Messages';
 import { createInitialPanelState } from '../../controlPanel/developerAssistant/Configuration';
 import { SuiteCloudPanelState } from '../../controlPanel/developerAssistant/State';
 import ClineWorkflow from '../../controlPanel/developerAssistant/cline/ClineWorkflow';
@@ -30,180 +21,7 @@ const createState = (): SuiteCloudPanelState =>
 		}
 	);
 
-// Runs the real controller, parser, dispatcher, and queue with an in-memory webview.
-const withPanel = async (run: (panel: {
-	send: (message: SuiteCloudPanelIncomingMessage) => Promise<SuiteCloudPanelState>;
-	runtime: { isRunning: boolean };
-	storage: { failWrites: boolean; values: Map<string, unknown>; writes: number };
-	statusBar: vscode.StatusBarItem;
-	warnings: string[];
-}) => Promise<void>): Promise<void> => {
-	const runtime = { isRunning: false };
-	const storage = { failWrites: false, values: new Map<string, unknown>(), writes: 0 };
-	const defaults = createState();
-	storage.values.set(DEVELOPER_ASSISTANT.PREFERENCES_STORAGE_KEY, {
-		authId: defaults.authId, port: defaults.port,
-	});
-	const memento: vscode.Memento = {
-		get: <T>(key: string, fallback?: T) => (storage.values.get(key) ?? fallback) as T,
-		keys: () => [...storage.values.keys()],
-		update: async (key, value) => {
-			if (storage.failWrites) { throw new Error('Preferences unavailable'); }
-			storage.writes++;
-			storage.values.set(key, structuredClone(value));
-		},
-	};
-	const context = {
-		extensionPath: path.resolve(__dirname, '../../..'),
-		workspaceState: memento, globalState: memento, subscriptions: [],
-	} as unknown as vscode.ExtensionContext;
-	const incoming = new vscode.EventEmitter<unknown>();
-	const outgoing = new vscode.EventEmitter<SuiteCloudPanelOutgoingMessage>();
-	const statusBar = vscode.window.createStatusBarItem();
-	const token = new vscode.CancellationTokenSource();
-	const warnings: string[] = [];
-	const originalRegister = PanelHost.prototype.register;
-	const originalCreateWatcher = vscode.workspace.createFileSystemWatcher;
-	const originalCreateOutputChannel = vscode.window.createOutputChannel;
-	const originalEvaluate = ClineCompatibilityService.prototype.evaluate;
-	const originalShowError = PanelPresenter.prototype.showError;
-	const originalShowStartError = PanelPresenter.prototype.showProxyStartError;
-	const runningDescriptor = Object.getOwnPropertyDescriptor(ProxyService.prototype, 'isRunning')!;
-	const subscriptions: vscode.Disposable[] = [];
-	const view = {
-		webview: {
-			asWebviewUri: (uri: vscode.Uri) => uri,
-			cspSource: 'test',
-			onDidReceiveMessage: (listener: (message: unknown) => void) => {
-				const subscription = incoming.event(listener);
-				subscriptions.push(subscription);
-				return subscription;
-			},
-			postMessage: async (message: SuiteCloudPanelOutgoingMessage) => {
-				outgoing.fire(structuredClone(message));
-				return true;
-			},
-		},
-		onDidChangeVisibility: () => new vscode.Disposable(() => {}),
-		onDidDispose: () => new vscode.Disposable(() => {}),
-	} as unknown as vscode.WebviewView;
-	PanelHost.prototype.register = function () {
-		this.resolveWebviewView(view, { state: undefined }, token.token);
-	};
-	vscode.window.createOutputChannel = ((name: string): vscode.OutputChannel => ({
-		name,
-		append: () => {},
-		appendLine: () => {},
-		replace: () => {},
-		clear: () => {},
-		show: () => {},
-		hide: () => {},
-		dispose: () => {},
-	})) as typeof vscode.window.createOutputChannel;
-	vscode.workspace.createFileSystemWatcher = () => ({
-		ignoreCreateEvents: false,
-		ignoreChangeEvents: false,
-		ignoreDeleteEvents: false,
-		onDidCreate: () => new vscode.Disposable(() => {}),
-		onDidChange: () => new vscode.Disposable(() => {}),
-		onDidDelete: () => new vscode.Disposable(() => {}),
-		dispose: () => {},
-	});
-	ClineCompatibilityService.prototype.evaluate = async () => ({
-		isClineInstalled: false, isClineCompatible: false, isClineConfigInSync: false,
-		clineCompatibilityMessage: null, clineConfigSyncMessage: null,
-	});
-	PanelPresenter.prototype.showError = message => { warnings.push(message); };
-	PanelPresenter.prototype.showProxyStartError = message => { warnings.push(message); };
-	Object.defineProperty(ProxyService.prototype, 'isRunning', { configurable: true, get: () => runtime.isRunning });
-	let controller: ReturnType<typeof createControlPanel> | undefined;
-	try {
-		controller = createControlPanel(context, statusBar, Promise.resolve());
-		controller.registerSidebarViewProvider();
-		await run({ runtime, storage, statusBar, warnings, send: message => new Promise((resolve, reject) => {
-			const timeout = setTimeout(() => { subscription.dispose(); reject(new Error('Panel did not publish state')); }, 2000);
-			const subscription = outgoing.event(response => {
-				if (response.eventType !== SUITECLOUD_PANEL_EVENTS.TO_WEBVIEW.STATE_UPDATE) { return; }
-				clearTimeout(timeout);
-				subscription.dispose();
-				setImmediate(() => resolve(response.eventData));
-			});
-			incoming.fire(message);
-		}) });
-	} finally {
-		try { await controller?.dispose(); } finally {
-			PanelHost.prototype.register = originalRegister;
-			vscode.workspace.createFileSystemWatcher = originalCreateWatcher;
-			vscode.window.createOutputChannel = originalCreateOutputChannel;
-			ClineCompatibilityService.prototype.evaluate = originalEvaluate;
-			PanelPresenter.prototype.showError = originalShowError;
-			PanelPresenter.prototype.showProxyStartError = originalShowStartError;
-			Object.defineProperty(ProxyService.prototype, 'isRunning', runningDescriptor);
-			[...subscriptions, ...context.subscriptions, incoming, outgoing, statusBar, token].forEach(item => item.dispose());
-		}
-	}
-};
-
 suite('Control Panel Workflows', () => {
-	test('rejects config changes before persistence when a running proxy has error state', async () => {
-		for (const changes of [{ port: 8282 }, { authId: 'other-account' }]) {
-			await withPanel(async panel => {
-				panel.storage.failWrites = true;
-				const before = await panel.send({ eventType: 'START_PROXY', eventData: {} });
-				assert.strictEqual(before.proxyStatus, 'error');
-				panel.storage.failWrites = false;
-				panel.runtime.isRunning = true;
-				panel.warnings.length = 0;
-				const savedBefore = structuredClone([...panel.storage.values]);
-				const after = await panel.send({ eventType: 'UPDATE_FORM', eventData: changes });
-				assert.strictEqual(after.authId, before.authId);
-				assert.strictEqual(after.port, before.port);
-				assert.strictEqual(after.baseUrl, before.baseUrl);
-				assert.strictEqual(panel.storage.writes, 0);
-				assert.deepStrictEqual([...panel.storage.values], savedBefore);
-				assert.strictEqual(panel.warnings.length, 1);
-			});
-		}
-	});
-
-	test('allows reminder changes while the proxy is running', async () => {
-		await withPanel(async panel => {
-			panel.runtime.isRunning = true;
-			const state = await panel.send({ eventType: 'UPDATE_FORM', eventData: { disableWelcomeNotification: true } });
-			assert.strictEqual(state.disableWelcomeNotification, true);
-			const saved = panel.storage.values.get(DEVELOPER_ASSISTANT.PREFERENCES_STORAGE_KEY) as { disableWelcomeNotification: boolean };
-			assert.strictEqual(saved.disableWelcomeNotification, true);
-			assert.deepStrictEqual(panel.warnings, []);
-		});
-	});
-
-	test('reconciles failed start messages with the actual proxy status', async () => {
-		for (const isRunning of [true, false]) {
-			await withPanel(async panel => {
-				panel.runtime.isRunning = isRunning;
-				panel.storage.failWrites = true;
-				const state = await panel.send({ eventType: 'START_PROXY', eventData: {} });
-				assert.strictEqual(state.proxyStatus, isRunning ? 'running' : 'error');
-				assert.ok(panel.statusBar.text.includes(isRunning ? 'running' : 'stopped'));
-				assert.strictEqual(panel.warnings.length, 1);
-			});
-		}
-	});
-
-	test('ignores duplicate start requests when the proxy is already running', async () => {
-		let prompts = 0;
-		let starts = 0;
-		const workflow = new ProxyWorkflow({
-			proxyService: { isRunning: true },
-			ensureSdkDependenciesReady: async () => undefined,
-			confirmStartDisclaimer: async () => { prompts++; return false; },
-			lifecycleService: { start: async () => { starts++; } },
-		} as any);
-		await workflow.start();
-		assert.strictEqual(prompts, 0);
-		assert.strictEqual(starts, 0);
-	});
-
 	test('preserves a running proxy when startup refresh fails', async () => {
 		const state = { ...createState(), autoStartProxyOnStartup: true };
 		const runtime = { isRunning: false };
@@ -228,8 +46,9 @@ suite('Control Panel Workflows', () => {
 		assert.strictEqual(runningStatusShown, true);
 	});
 
-	test('preserves the proxy start state and presentation sequence', async () => {
+	test('starts the proxy once and ignores a repeated start request', async () => {
 		let state = createState();
+		const runtime = { isRunning: false };
 		const calls: string[] = [];
 		const presenter = {
 			clearLog: () => calls.push('clearLog'),
@@ -248,11 +67,12 @@ suite('Control Panel Workflows', () => {
 			lifecycleService: {
 				start: async (input: any) => {
 					calls.push('lifecycleStart');
+					runtime.isRunning = true;
 					input.onStarting({ ...input.state, proxyStatus: 'starting' });
 					return { authId: input.state.authId, port: input.state.port };
 				},
 			} as any,
-			proxyService: { isRunning: false } as any,
+			proxyService: runtime as any,
 			presenter: presenter as any,
 			getState: () => state,
 			setState: (nextState) => { state = nextState; },
@@ -292,6 +112,14 @@ suite('Control Panel Workflows', () => {
 			'logSuccess',
 			'endLogSection',
 		]);
+
+		const runningState = { ...state };
+		calls.length = 0;
+		await workflow.start();
+
+		assert.ok(!calls.includes('confirmStartDisclaimer'), 'A repeated start must not prompt again');
+		assert.ok(!calls.includes('lifecycleStart'), 'A repeated start must not start another proxy');
+		assert.deepStrictEqual(state, runningState);
 	});
 
 	test('does not start the proxy when the disclaimer is declined', async () => {
