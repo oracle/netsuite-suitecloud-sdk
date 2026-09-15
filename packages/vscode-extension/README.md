@@ -1,4 +1,6 @@
-<p align="left"><a href="#"><img width="250" src="resources/Netsuite-logo-ocean-150-bg.png"></a></p>
+<p align="center">
+  <img src="resources/readme/suitecloud-developer-assistant-banner.png" alt="Meet SuiteCloud Developer Assistant: Frontier LLM with NetSuite domain expertise">
+</p>
 
 # SuiteCloud Extension for Visual Studio Code
 <a href="https://marketplace.visualstudio.com/items?itemName=Oracle.suitecloud-vscode-extension">
@@ -124,11 +126,11 @@ To set up SuiteCloud Developer Assistant:
     This will take you to Settings > Workspace tab > Extensions > SuiteCloud.
 
 2.  Next, configure the fields as follows:
-    * **Developer Assistant: Auth ID:** Enter the auth ID you want to use for the SuiteCloud Developer Assistant service.
+    * **Developer Assistant: Auth ID:** Enter the auth ID the SuiteCloud Proxy will use for Developer Assistant requests.
     * **Developer Assistant: Local Port:** Autopopulated by default. Change it if you prefer a different port or if the default port is already in use.
     * **Developer Assistant: Enable:** Check the **Enable** box.
 
-    During the initial setup, when you enable the SuiteCloud Developer Assistant service, a popup window appears displaying an API key. Copy it and follow the instructions provided.
+    SuiteCloud Developer Assistant requires the SuiteCloud Proxy. During the initial setup, when you enable the SuiteCloud Proxy, a popup window appears displaying an API key. Copy it and follow the instructions provided.
 
 3. In the activity bar, go to the Cline extension. Click the provider/model selector and configure the fields as follows:
       * **API Provider:** Select **OpenAI Compatible**.

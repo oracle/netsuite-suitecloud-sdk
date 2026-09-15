@@ -1,0 +1,179 @@
+/*
+ ** Copyright (c) 2026 Oracle and/or its affiliates.  All rights reserved.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
+import * as assert from 'assert';
+import { createInitialPanelState } from '../../controlPanel/developerAssistant/Configuration';
+import ProxyLifecycleService, {
+	ProxyRuntime,
+	StartPanelProxyInput,
+} from '../../controlPanel/developerAssistant/proxy/ProxyLifecycleService';
+import { SuiteCloudPanelState } from '../../controlPanel/developerAssistant/State';
+
+const createState = () =>
+	createInitialPanelState(
+		{ authId: 'NO_AUTH', localPort: 8181 },
+		{
+			authId: 'account',
+			port: 8181,
+			clineScope: 'user',
+			autoStartProxyOnStartup: true,
+			disableWelcomeNotification: false,
+		}
+	);
+
+const createProxyRuntime = (running = false) => {
+	const starts: unknown[] = [];
+	let stopCount = 0;
+	const proxy: ProxyRuntime = {
+		get isRunning() {
+			return running;
+		},
+		start: async (input) => {
+			starts.push(input);
+			running = true;
+		},
+		stop: async () => {
+			stopCount += 1;
+			running = false;
+		},
+	};
+	return { proxy, starts, getStopCount: () => stopCount };
+};
+
+const createStartInput = (): StartPanelProxyInput => {
+	const state = createState();
+	return {
+		state,
+		unconfiguredAuthId: 'NO_AUTH',
+		getSdkPath: () => '/sdk',
+		ensureAuthorizationReady: async () => undefined,
+		resolveApiKey: async () => 'secret',
+		onStarting: () => undefined,
+	};
+};
+
+suite('Control Panel Proxy Lifecycle Service', () => {
+	test('validates inputs before starting the proxy', async () => {
+		const { proxy } = createProxyRuntime();
+		const input = createStartInput();
+		input.state.authId = 'NO_AUTH';
+
+		await assert.rejects(
+			new ProxyLifecycleService(proxy).start(input),
+			/Select a valid auth ID/
+		);
+	});
+
+	test('emits starting state and returns the active proxy details', async () => {
+		const { proxy, starts } = createProxyRuntime();
+		let startingState = createState();
+		const input = createStartInput();
+		input.onStarting = (state) => {
+			startingState = state;
+		};
+
+		const result = await new ProxyLifecycleService(proxy).start(input);
+
+		assert.strictEqual(startingState.proxyStatus, 'starting');
+		assert.strictEqual(startingState.lastError, null);
+		assert.deepStrictEqual(starts, [{
+			authId: 'account',
+			port: 8181,
+			sdkPath: '/sdk',
+			apiKey: 'secret',
+		}]);
+		assert.deepStrictEqual(result, { authId: 'account', port: 8181 });
+	});
+
+	test('does not start when API key resolution fails', async () => {
+		const { proxy, starts } = createProxyRuntime();
+		const input = createStartInput();
+		let authorizationChecked = false;
+		input.resolveApiKey = async () => undefined;
+		input.ensureAuthorizationReady = async () => {
+			authorizationChecked = true;
+		};
+
+		await assert.rejects(
+			new ProxyLifecycleService(proxy).start(input),
+			/Generate an API key in the control panel/
+		);
+		assert.strictEqual(starts.length, 0);
+		assert.strictEqual(authorizationChecked, false);
+	});
+
+	test('waits for authorization readiness before starting the proxy', async () => {
+		const { proxy, starts } = createProxyRuntime();
+		const calls: string[] = [];
+		const input = createStartInput();
+		input.ensureAuthorizationReady = async (authId) => {
+			calls.push(`authorize:${authId}`);
+		};
+		input.resolveApiKey = async () => {
+			calls.push('resolveApiKey');
+			return 'secret';
+		};
+
+		await new ProxyLifecycleService(proxy).start(input);
+
+		assert.deepStrictEqual(calls, ['resolveApiKey', 'authorize:account']);
+		assert.strictEqual(starts.length, 1);
+	});
+
+	test('does not start when authorization readiness fails', async () => {
+		const { proxy, starts } = createProxyRuntime();
+		const input = createStartInput();
+		input.ensureAuthorizationReady = async () => {
+			throw new Error('Authorization failed.');
+		};
+
+		await assert.rejects(
+			new ProxyLifecycleService(proxy).start(input),
+			/Authorization failed/
+		);
+		assert.strictEqual(starts.length, 0);
+	});
+
+	test('reports an absent proxy without attempting to stop it', async () => {
+		const { proxy, getStopCount } = createProxyRuntime(false);
+		const state = { ...createState(), proxyStatus: 'error' as const };
+
+		const result = await new ProxyLifecycleService(proxy).stop({
+			state,
+			preserveStartIntent: false,
+			onStopping: async () => assert.fail('stopping transition should not be emitted'),
+		});
+
+		assert.strictEqual(result.proxyWasRunning, false);
+		assert.strictEqual(result.clearStartIntent, true);
+		assert.strictEqual(getStopCount(), 0);
+	});
+
+	test('emits and completes an owned-proxy stop while preserving start intent', async () => {
+		const { proxy, getStopCount } = createProxyRuntime(true);
+		const state = {
+			...createState(),
+			proxyStatus: 'running' as const,
+			proxyOwnership: 'owned' as const,
+			runtimeAuthId: 'account',
+			runtimePort: 8181,
+		};
+		let stoppingState: SuiteCloudPanelState = state;
+
+		const result = await new ProxyLifecycleService(proxy).stop({
+			state,
+			preserveStartIntent: true,
+			onStopping: async (nextState) => {
+				stoppingState = nextState;
+			},
+		});
+
+		assert.strictEqual(stoppingState.proxyStatus, 'stopping');
+		assert.strictEqual(stoppingState.autoStartProxyOnStartup, true);
+		assert.strictEqual(result.proxyWasRunning, true);
+		assert.strictEqual(result.clearStartIntent, false);
+		assert.strictEqual(getStopCount(), 1);
+	});
+});

@@ -10,12 +10,18 @@ import { commandsInfoMap } from '../../commandsMap';
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	test('Command Names in commandsMap.ts should match the ones defined in the package.json', () => {
-		const packagejson = require('../../../package.json');
-		const vscodeCommandTitles: string[] = packagejson.contributes.commands.map((packageCommand: any) => packageCommand.title);
-		const vscodeCommandNames: string[] = Object.values(commandsInfoMap).map((el) => el.vscodeCommandName);
+	test('commandsMap.ts matches the command IDs and titles in package.json', () => {
+		const packageJson = require('../../../package.json');
+		const manifestCommands = new Map<string, string>(
+			packageJson.contributes.commands.map((command: any) => [command.command, command.title])
+		);
+		const runtimeCommands = new Map<string, string>(
+			Object.values(commandsInfoMap).map((command) => [
+				command.vscodeCommandId,
+				command.vscodeCommandName,
+			])
+		);
 
-		vscodeCommandTitles.forEach((title) => assert(vscodeCommandNames.includes(title), `Missing '${title}' command in commandsInfoMap.`));
-		vscodeCommandNames.forEach((vscodeName) => assert(vscodeCommandTitles.includes(vscodeName), `Missing '${vscodeName}' command in package.json.`));
+		assert.deepStrictEqual(runtimeCommands, manifestCommands);
 	});
 });

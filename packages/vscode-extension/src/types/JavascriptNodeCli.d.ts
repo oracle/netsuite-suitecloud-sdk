@@ -1,4 +1,4 @@
-import { EventEmitter } from 'node:stream';
+import { EventEmitter } from 'node:events';
 
 // This file contains types for javascript @oracle/suitecloud-cli code
 // Most of this types/interfaces will be used in ExtentionUtil.ts
@@ -18,6 +18,20 @@ export type SdkOperationResult<T> = {
 	status:'ERROR';
 	isSuccess(): false;
 }
+
+export type RawSdkOperationResult<T> = {
+	data: T;
+	errorCode?: undefined;
+	errorMessages: string[];
+	resultMessage?: string;
+	status: 'SUCCESS';
+} | {
+	data?: undefined;
+	errorCode?: string;
+	errorMessages: string[];
+	resultMessage?: string;
+	status: 'ERROR';
+};
 
 export interface ConsoleLoggerInstance {
 	info(message: string): void;
@@ -54,4 +68,45 @@ export interface SuiteCloudAuthProxyServiceInstance extends EventEmitter {
 }
 export interface SuiteCloudAuthProxyServiceConstructor {
 	new(sdkPath: string, executionEnvironmentContext: ExecutionEnvironmentContextInstance, allowedPathPrefix?: string, apiKey?: string): SuiteCloudAuthProxyServiceInstance;
+}
+
+export type SuiteCloudAuthProxyEventPayload = {
+	authId: string;
+	message: string;
+	requestUrl?: string;
+};
+
+export type SuiteCloudAuthProxyEvents = {
+	PROXY_ERROR: {
+		DEFAULT: string;
+		MANUAL_AUTH_REFRESH_REQUIRED: string;
+	};
+	REQUEST_ERROR: {
+		PATH_NOT_ALLOWED: string;
+		UNAUTHORIZED: string;
+	};
+	SERVER_ERROR: {
+		DEFAULT: string;
+		ON_AUTH_REFRESH: string;
+	};
+	SERVER_INFO: {
+		LISTENING: string;
+		STOPPED: string;
+		STOP_SKIPPED: string;
+		ACCESS_TOKEN_RELOADED: string;
+	};
+};
+
+export interface SdkExecutorInstance {}
+
+export interface SdkExecutorConstructor {
+	new(sdkPath: string, executionEnvironmentContext?: ExecutionEnvironmentContextInstance): SdkExecutorInstance;
+}
+
+export interface ClientAPIKeyObjectWrapperInstance {
+	getDefaultKeyValue(): string;
+}
+
+export interface ClientAPIKeyObjectWrapperConstructor {
+	new(jsonString: string): ClientAPIKeyObjectWrapperInstance;
 }
