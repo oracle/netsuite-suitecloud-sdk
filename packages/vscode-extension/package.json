@@ -130,7 +130,8 @@
 			"suitecloud": [
 				{
 					"id": "suitecloud.devAssistControlPanelView",
-					"name": "Developer Assistant",
+					"name": "SuiteCloud Developer Assistant",
+					"contextualTitle": "SuiteCloud Developer Assistant",
 					"type": "webview"
 				}
 			]
@@ -143,7 +144,7 @@
 				"steps": [
 					{
 						"id": "suitecloudControlPanel.open",
-						"title": "Open the control panel",
+						"title": "Open the Developer Assistant control panel",
 						"description": "Open SuiteCloud Developer Assistant from the Activity Bar.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-open.md"
@@ -162,8 +163,8 @@
 					},
 					{
 						"id": "suitecloudControlPanel.runtime",
-						"title": "Start the SuiteCloud Proxy",
-						"description": "Start the Proxy required to connect your AI coding tool to Developer Assistant.",
+						"title": "Start SuiteCloud Proxy",
+						"description": "Start the proxy to connect your AI coding tool to SuiteCloud Developer Assistant.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-runtime.md"
 						}
@@ -178,8 +179,8 @@
 					},
 					{
 						"id": "suitecloudControlPanel.settings",
-						"title": "Choose whether to show the startup reminder",
-						"description": "Control the reminder without changing Developer Assistant itself.",
+						"title": "Show or hide the startup reminder",
+						"description": "This setting does not change Developer Assistant.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-settings.md"
 						}
