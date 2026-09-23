@@ -1,10 +1,10 @@
 # Choose an account and create an API key
 
-An **auth ID** identifies the saved NetSuite account and role that Developer Assistant will use.
+An auth ID identifies the NetSuite account and role that Developer Assistant uses.
 
-1. In **SuiteCloud Proxy**, select an account from the **Auth ID** list.
-2. If the account is not listed, select the **+** button to set up a new auth ID. Complete the sign-in flow, then return to the panel and select it.
-3. Select **Generate API key** and confirm the action. This key allows an AI coding tool to connect to SuiteCloud Developer Assistant through the SuiteCloud Proxy.
-4. Copy the generated key if you need to configure a tool manually. For security, the full key is available to copy for five minutes.
+1. In the **SuiteCloud Proxy** section, select an account from the **Auth ID** list.
+2. If the account is not listed, select the **+** icon next to the **Auth ID** list to set up a new auth ID. Complete the sign-in process, then select the new auth ID.
+3. Select **Generate API key**, then confirm the action. The API key lets an AI coding tool connect to SuiteCloud Developer Assistant through SuiteCloud Proxy.
+4. If you need to configure a tool manually, copy the generated key within five minutes.
 
-When an auth ID and API key are ready, the **Start** button becomes available. Stop the SuiteCloud Proxy before changing the auth ID, port, or API key.
+When an auth ID and API key are ready, **Start** becomes available. Stop SuiteCloud Proxy before changing the auth ID, local port, or API key.
