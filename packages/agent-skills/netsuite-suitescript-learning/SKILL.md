@@ -705,7 +705,9 @@ A: Scope.PROTECTED allows cache sharing across all scripts in the same SuiteApp
 Q: A User Event Script is taking too long. According to SAFE Guide Principle 2,
    what's the recommended approach when you need to process 500+ records?
 A: Offload heavy processing to a Map/Reduce script using N/task. User Event
-   Scripts have a 1,000 unit limit; Map/Reduce has 10,000 units per stage.
+   Scripts have a 1,000 unit limit. Map/Reduce varies by phase: 10,000 for
+   `getInputData` and `summarize`, but only 1,000 per `map()` invocation and
+   5,000 per `reduce()` invocation.
    This pattern is called "async offloading."
 ```
 

@@ -92,7 +92,7 @@ This index provides quick access to the 12 SAFE Guide principles and appendices 
 - Client scripts: 1,000 units
 - User events: 1,000 units
 - Scheduled scripts: 10,000 units
-- Map/Reduce: 10,000 units per stage
+- Map/Reduce: 10,000 for `getInputData`/`summarize`; 1,000 per `map()` and 5,000 per `reduce()` invocation
 - See [Principle 2](02-governance-usage-units.md)
 
 ### Script Execution Order

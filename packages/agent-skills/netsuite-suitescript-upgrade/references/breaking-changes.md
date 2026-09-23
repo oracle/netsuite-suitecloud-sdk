@@ -619,7 +619,7 @@ Most governance costs remain the same between SS1.0 and SS2.1, but Map/Reduce sc
 | Suitelet | 1,000 units |
 | RESTlet | 5,000 units |
 | Scheduled Script | 10,000 units |
-| Map/Reduce | 10,000 units per stage |
+| Map/Reduce | 10,000 (`getInputData`, `summarize`); 1,000 per `map()`, 5,000 per `reduce()` |
 | Mass Update | 1,000 units per record |
 | Portlet | 1,000 units |
 | Workflow Action | 1,000 units |

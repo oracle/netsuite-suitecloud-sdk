@@ -649,7 +649,7 @@ define(['N/search', 'N/record', 'N/log', 'N/runtime'], (search, record, log, run
 - Need automatic parallelization (NetSuite runs map/reduce stages concurrently)
 - Need automatic recovery from errors (each key-value pair is independent)
 - Need built-in yield handling (no governance management needed)
-- Governance: 10,000 units per stage invocation
+- Governance: 10,000 units for `getInputData` and `summarize`; 1,000 per `map()` invocation and 5,000 per `reduce()` invocation
 
 ---
 

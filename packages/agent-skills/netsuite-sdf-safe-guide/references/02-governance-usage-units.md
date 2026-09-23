@@ -22,10 +22,27 @@ NetSuite tracks server-side resource consumption using **usage units**. Each API
 | Suitelet | 1,000 units | Per execution |
 | RESTlet | 5,000 units | Per request |
 | Scheduled Script | 10,000 units | Per execution (can yield and resume) |
-| Map/Reduce Script | 10,000 units | Per phase (getInputData, map, reduce, summarize) |
+| Map/Reduce Script | varies by phase — see below | `map()` and `reduce()` are governed per invocation |
 | Workflow Action Script | 1,000 units | Per execution |
 | Mass Update Script | 1,000 units | Per record |
 | Portlet Script | 1,000 units | Per render |
+
+Map/Reduce budgets are **not** uniform across the four phases, and `map()` and
+`reduce()` are charged per invocation rather than per execution:
+
+| Phase | Usage Unit Limit | Charged |
+|-------|------------------|---------|
+| `getInputData` | 10,000 units | Once per execution |
+| `map()` | **1,000 units** | Per invocation (per key) |
+| `reduce()` | **5,000 units** | Per invocation (per key group) |
+| `summarize()` | 10,000 units | Once per execution |
+
+`map()` therefore shares the same tight budget as a User Event Script or a
+Suitelet. A `record.load()` costs ~10 units, so a `map()` that loads records can
+process roughly 100 of them before `SSS_USAGE_LIMIT_EXCEEDED` — a limit that is
+easy to miss in a sandbox with small key volumes and easy to hit in production.
+Move per-record loading into `reduce()`, or use `search.lookupFields()` (1 unit)
+where only a few fields are needed.
 
 ### 2.2 High-Cost API Operations
 
