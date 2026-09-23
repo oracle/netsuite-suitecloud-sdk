@@ -54,7 +54,7 @@
 	"CONTROL_PANEL_ACTION_AUTH_ID_CHANGE_REQUIRES_STOPPED_PROXY": "Stop the SuiteCloud Proxy before changing the auth ID.",
 	"CONTROL_PANEL_ACTION_API_KEY_CHANGE_REQUIRES_STOPPED_PROXY": "Stop the SuiteCloud Proxy before generating or rotating the API key.",
 	"CONTROL_PANEL_ACTION_REAUTHORIZATION_REQUIRED": "Authorization for auth ID \"{0}\" has expired. Complete reauthorization in your browser to continue.",
-	"CONTROL_PANEL_DIALOG_ROTATE_EXISTING_PROMPT": "Rotate the SuiteCloud Proxy API key? Clients using the current key will stop working until you update them",
+	"CONTROL_PANEL_DIALOG_ROTATE_EXISTING_PROMPT": "Rotate the SuiteCloud Proxy API key? Clients using the current key will stop working until you update them.",
 	"CONTROL_PANEL_DIALOG_ROTATE_MISSING_PROMPT": "Generate a SuiteCloud Proxy API key? This key is required to start the SuiteCloud Proxy and connect a client.",
 	"CONTROL_PANEL_DIALOG_CLINE_RESTART_PROMPT": "Restart extensions to apply the Cline configuration? Any running commands, including deployments and validations, will be stopped.",
 	"CONTROL_PANEL_DIALOG_RESTART_EXTENSIONS_ACTION": "Restart extensions",
@@ -94,8 +94,8 @@
 	"CONTROL_PANEL_CLIENT_CLINE_READY": "ready",
 	"CONTROL_PANEL_CLIENT_CLINE_NOT_READY": "not ready",
 	"CONTROL_PANEL_CLIENT_FEEDBACK_PROXY_REQUIRED": "Start SuiteCloud Proxy to share feedback.",
-	"CONTROL_PANEL_CLIENT_FEEDBACK_INCOMPLETE": "Select a topic, choose a rating, and enter your feedback",
-	"CONTROL_PANEL_CLIENT_FEEDBACK_SEND": "Send feedback",
+	"CONTROL_PANEL_CLIENT_FEEDBACK_INCOMPLETE": "Select a topic, choose a rating, and enter your feedback.",
+	"CONTROL_PANEL_CLIENT_FEEDBACK_SEND": "Send feedback.",
 	"CONTROL_PANEL_CLIENT_FEEDBACK_SHARE": "Share your feedback",
 	"CONTROL_PANEL_CLIENT_PROVIDER_CONFIGURATION_LABEL": "API provider configuration",
 	"CONTROL_PANEL_CLIENT_PROVIDER_CONFIGURATION_SHOW": "Show API provider configuration",
@@ -340,7 +340,7 @@
 
 	"SUITECLOUD_PROXY_IS_RUNNING_STATUSBAR": "Proxy: running",
 	"SUITECLOUD_PROXY_IS_STOPPED_STATUSBAR": "Proxy: stopped",
-	"SUITECLOUD_PROXY_STATUSBAR_TOOLTIP": "Shows the status of SuiteCloud Proxy",
+	"SUITECLOUD_PROXY_STATUSBAR_TOOLTIP": "Status of the SuiteCloud Proxy.",
 
 	"UPDATE_OBJECT_ERROR_SDF_OBJECT_MUST_BE_IN_OBJECTS_FOLDER": "The object file to update should be in the Objects folder.",
 	"UPDATE_OBJECT_OVERWRITE": "The following object will be overwritten: {0}.",

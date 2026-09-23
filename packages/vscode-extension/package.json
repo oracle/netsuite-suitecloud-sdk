@@ -156,7 +156,7 @@
 					{
 						"id": "suitecloudControlPanel.auth",
 						"title": "Choose an account and create an API key",
-						"description": "Select a NetSuite account and generate the API key required by the SuiteCloud Proxy.",
+						"description": "Select a NetSuite account and generate the API key required by SuiteCloud Proxy.",
 						"media": {
 							"markdown": "resources/walkthrough/control-panel-auth.md"
 						}
