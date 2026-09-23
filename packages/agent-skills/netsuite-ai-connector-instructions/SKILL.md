@@ -51,7 +51,9 @@ Has user confirmed a custom SuiteQL query is acceptable?
 - ALWAYS call `ns_getRecordTypeMetadata` before any create or update
 - ALWAYS call `ns_getSuiteQLMetadata` before any custom SuiteQL query
 - ALWAYS set `externalId` on every `ns_createRecord` call when the record type supports it, using a unique value from the connector's external ID strategy
-- NEVER skip `ROWNUM <= 1000` on any SuiteQL query
+- NEVER skip the `ROWNUM <= 1000` cap — but place it **outside** a sorted or
+  aggregated query (`SELECT * FROM ( ... ) WHERE ROWNUM <= 1000`), never beside
+  an `ORDER BY` or in the `WHERE` of a `GROUP BY`
 - NEVER run SuiteQL query without user confirmation
 - NEVER auto-retry a failed `ns_createRecord` — ask user to verify in NetSuite first
 
@@ -222,10 +224,17 @@ WHERE t.recordtype     = '[type]'
   AND t.approvalstatus = 2
   AND t.trandate >= TO_DATE('[start]', 'MM/DD/YYYY')
   AND t.trandate <= TO_DATE('[end]',   'MM/DD/YYYY')
-  AND ROWNUM <= 1000
 GROUP BY s.name, s.currency
 ORDER BY base_amount DESC
 ```
+
+> **No `ROWNUM` in an aggregate query.** Oracle assigns `ROWNUM` as rows are
+> read, before grouping, so `AND ROWNUM <= 1000` in this `WHERE` would cap the
+> *input* to `SUM()` and return a subsidiary total computed over an arbitrary
+> 1,000 transaction lines. No error is raised — the number is simply short. A
+> `GROUP BY` over a date range is already bounded by that range. To cap the
+> *output* rows instead, wrap the finished query:
+> `SELECT * FROM ( <the query above> ) WHERE ROWNUM <= 1000`.
 
 ---
 
@@ -239,7 +248,7 @@ ORDER BY base_amount DESC
 □ User has confirmed a custom SuiteQL query is acceptable
 □ ns_getSuiteQLMetadata called for every table in the query
 □ All JOINs verified against metadata
-□ ROWNUM <= 1000 in WHERE clause
+□ ROWNUM <= 1000 — wrapping a sorted inner query, never beside its ORDER BY
 □ NVL() on all nullable amount/text fields
 □ posting = 'T' where GL accuracy required
 □ approvalstatus = 2 where approved-only data required
@@ -268,15 +277,27 @@ WHERE t.recordtype     = '[type]'
   AND t.approvalstatus = 2
   AND t.trandate >= TO_DATE('[start]', 'MM/DD/YYYY')
   AND t.trandate <= TO_DATE('[end]',   'MM/DD/YYYY')
-  AND ROWNUM <= 1000
 ORDER BY t.trandate DESC
 ```
+
+Wrap it to cap the rows — the `ROWNUM` goes **outside** the sorted query:
+
+```sql
+SELECT * FROM (
+  <the query above>
+) WHERE ROWNUM <= 1000
+```
+
+> Oracle assigns `ROWNUM` before the sort runs. `... AND ROWNUM <= 1000 ORDER
+> BY t.trandate DESC` returns 1,000 **arbitrary** transactions and then sorts
+> those — not the 1,000 most recent. The row count looks right, so it passes a
+> spot check and misleads in production.
 
 ### Common Mistakes → Correct Approach
 
 | Mistake                      | Correct Approach                          |
 |------------------------------|-------------------------------------------|
-| No ROWNUM limit              | Always `AND ROWNUM <= 1000`               |
+| No ROWNUM limit              | `SELECT * FROM (...) WHERE ROWNUM <= 1000` |
 | `SELECT *`                   | Always list columns explicitly            |
 | Missing NVL on amounts       | `NVL(amount, 0)` on every amount field    |
 | JOIN without metadata check  | Always call `ns_getSuiteQLMetadata` first |
@@ -345,7 +366,7 @@ LINKS:    hyperlink every transaction + entity  |  color #36677D
 ARTIFACT: 3+ metrics OR 10+ rows OR dashboard/report/compare request
 REDWOOD:  #003764 headers  #D64700 alerts  #3D7A41 positive  #B95C00 warning
 CREATES:  always set externalId when supported  |  use a unique externalId  |  never auto-retry on failure
-SUITEQL:  user must confirm  |  ROWNUM<=1000  |  NVL all amounts
+SUITEQL:  user must confirm  |  ROWNUM<=1000 OUTSIDE sort/aggregate  |  NVL amounts
 ```
 
 ## SafeWords
