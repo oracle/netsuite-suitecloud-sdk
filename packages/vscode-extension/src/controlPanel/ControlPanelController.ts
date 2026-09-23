@@ -346,7 +346,6 @@ export default class ControlPanelController {
 		const selection = await vscode.window.showInformationMessage(
 			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeMessage,
 			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeOpenPanelAction,
-			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeRemindAction,
 			SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeDisableAction
 		);
 		if (selection === SUITECLOUD_PANEL_RUNTIME_STRINGS.dialogs.welcomeOpenPanelAction) {

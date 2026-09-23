@@ -59,8 +59,11 @@ const elements = {
 	clineAction: byId('clineAction'),
 	toggleFeedback: byId('toggleFeedback'),
 	feedbackContent: byId('feedbackContent'),
+	feedbackProxyWarning: byId('feedbackProxyWarning'),
+	feedbackProxyWarningText: byId('feedbackProxyWarningText'),
 	closeFeedback: byId('closeFeedback'),
 	feedbackText: byId('feedbackText'),
+	submitFeedbackTooltip: byId('submitFeedbackTooltip'),
 	submitFeedback: byId('submitFeedback'),
 	controlPanelContent: byId('controlPanelContent'),
 	expandedViewInfo: byId('expandedViewInfo'),
@@ -386,6 +389,10 @@ function renderCline(status) {
 function updateFeedbackSubmitState() {
 	const payload = getFeedbackPayload();
 	const isRunning = String(state.proxyStatus || '').toLowerCase() === 'running';
+	if (elements.feedbackProxyWarningText.textContent !== UI_STRINGS.feedbackProxyRequired) {
+		elements.feedbackProxyWarningText.textContent = UI_STRINGS.feedbackProxyRequired;
+	}
+	elements.feedbackProxyWarning.classList.toggle('hidden', isRunning);
 	const isComplete =
 		!!payload.feedback &&
 		payload.topics.length > 0 &&
@@ -393,11 +400,14 @@ function updateFeedbackSubmitState() {
 		payload.rating >= 1 &&
 		payload.rating <= 5;
 	elements.submitFeedback.disabled = !isRunning || !isComplete;
-	elements.submitFeedback.title = !isRunning
+	const tooltip = !isRunning
 		? UI_STRINGS.feedbackProxyRequired
 		: !isComplete
 			? UI_STRINGS.feedbackIncomplete
 			: UI_STRINGS.feedbackSend;
+	setTooltip(elements.submitFeedbackTooltip, tooltip);
+	elements.submitFeedbackTooltip.tabIndex = elements.submitFeedback.disabled ? 0 : -1;
+	elements.submitFeedbackTooltip.setAttribute('aria-label', tooltip);
 }
 
 function renderFeedback() {

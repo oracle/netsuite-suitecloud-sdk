@@ -16,7 +16,7 @@
   <main class="container">
     <section id="initializationView" class="initializationView" role="status" aria-live="polite">
       <span class="codicon codicon-loading codicon-modifier-spin" aria-hidden="true"></span>
-      <span>Checking Developer Assistant setup...</span>
+      <span>Checking SuiteCloud Developer Assistant setup...</span>
     </section>
 
     <section id="expandedViewInfo" class="notice hidden">
@@ -188,6 +188,11 @@
         <p>Tell us about your experience with SuiteCloud Developer Assistant.</p>
       </header>
 
+      <div id="feedbackProxyWarning" class="feedbackWarning hidden" role="status">
+        <span class="codicon codicon-warning" aria-hidden="true"></span>
+        <span id="feedbackProxyWarningText"></span>
+      </div>
+
       <div class="feedbackForm">
         <fieldset class="feedbackTopics">
           <legend class="feedbackFieldLabel">Your feedback is about</legend>
@@ -229,7 +234,9 @@
 
         <label class="srOnly" for="feedbackText">How can we improve it?</label>
         <textarea id="feedbackText" maxlength="1000" rows="7" placeholder="How can we improve it?"></textarea>
-        <button id="submitFeedback" type="button" class="primaryButton fullWidthButton">Send feedback</button>
+        <div id="submitFeedbackTooltip" class="controlTooltipHost" role="group">
+          <button id="submitFeedback" type="button" class="primaryButton fullWidthButton">Send feedback</button>
+        </div>
       </div>
     </section>
   </main>

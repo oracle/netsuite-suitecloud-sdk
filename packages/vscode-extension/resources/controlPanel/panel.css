@@ -172,6 +172,23 @@ body[data-view-mode="panel"] .container {
   line-height: 1.35;
 }
 
+.feedbackWarning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 10px;
+  border: 1px solid var(--vscode-inputValidation-warningBorder, var(--vscode-editorWarning-foreground, #cca700));
+  border-radius: var(--radius);
+  background: var(--vscode-inputValidation-warningBackground, var(--panel-card));
+  overflow-wrap: anywhere;
+}
+
+.feedbackWarning .codicon {
+  flex-shrink: 0;
+  color: var(--vscode-editorWarning-foreground, #cca700);
+}
+
 .feedbackForm {
   min-width: 0;
   padding: 14px;
@@ -351,6 +368,10 @@ body[data-view-mode="panel"] .container {
 .providerDisclosure[data-tooltip]:focus-within::after {
   opacity: 1;
   transform: translateY(0);
+}
+
+.controlTooltipHost > button:disabled {
+  pointer-events: none;
 }
 
 .authIdActionButton:disabled,
