@@ -77,6 +77,7 @@ jest.mock('@oracle/suitecloud-sdk-core', () => {
 			}),
 			PROJECT_COMMAND: {
 				VALIDATE: 'validate',
+				ANALYZE: 'analyze',
 			},
 			SDK_OPERATION_STATUS: {
 				SUCCESS: 'SUCCESS',
@@ -99,6 +100,25 @@ const {
 const NodeTranslationService = require('../../../../src/services/NodeTranslationService');
 
 describe('ValidateAction', () => {
+	it('rejects analysis for account customization projects before contacting the server', async () => {
+		const projectInfoService = require('../../../../src/services/ProjectInfoService');
+		projectInfoService.mockImplementationOnce(() => ({ getProjectType: () => 'ACCOUNTCUSTOMIZATION' }));
+		const action = new ValidateAction({ projectFolder: '/tmp/project', commandMetadata: { name: 'project:validate', options: {} },
+			executionPath: '/tmp/project', sdkPath: '/tmp/sdk.jar', log: { warning: jest.fn(), info: jest.fn() } });
+		const result = await action.execute({ analyze: true });
+		expect(executeProjectCommand).not.toHaveBeenCalled();
+		expect(result.errorMessages).toContain('COMMAND_VALIDATE_ERRORS_ANALYZE_REQUIRES_SUITEAPP');
+	});
+
+	it('forwards --analyze using the registered command metadata', async () => {
+		const commandMetadata = require('../../../../src/metadata/SdkCommandsMetadata.json')['project:validate'];
+		expect(commandMetadata.options.analyze.type).toBe('FLAG');
+		const action = new ValidateAction({ projectFolder: '/tmp/project', commandMetadata,
+			executionPath: '/tmp/project', sdkPath: '/tmp/sdk.jar', log: { warning: jest.fn(), info: jest.fn() } });
+		await action.execute({ project: '"/tmp/project"', authid: 'myAuth', analyze: true });
+		expect(executeProjectCommand).toHaveBeenCalledWith(expect.objectContaining({ command: 'validate', params: expect.objectContaining({ analyze: true }) }));
+	});
+
 	beforeEach(() => {
 		executeProjectCommand.mockClear();
 		executeWithAuthRetry.mockClear();
@@ -309,5 +329,36 @@ describe('ValidateAction', () => {
 		expect(executeWithSpinner).toHaveBeenCalledTimes(1);
 		expect(executeProjectCommand.mock.calls[1][0].accessToken).toBe('refreshed-token');
 		expect(actionResult.isSuccess()).toBe(true);
+	});
+});
+
+describe('POC analysis commands reuse project transport', () => {
+	beforeEach(() => executeProjectCommand.mockClear());
+	it('forwards the Commander camel-case skipAnalysis option', async () => {
+		const commandMetadata = require('../../../../src/metadata/SdkCommandsMetadata.json')['project:validate'];
+		// Exercise real Commander outside Jest's ESM module loader.
+		const { execFileSync } = require('node:child_process');
+		const parsed = JSON.parse(execFileSync(process.execPath, ['-e', "const { Command } = require('commander'); process.stdout.write(JSON.stringify(new Command().option('--skip-analysis').parse(['--skip-analysis'], { from: 'user' }).opts()));"], { encoding: 'utf8' }));
+		const action = new ValidateAction({ projectFolder: '/tmp/project', commandMetadata, executionPath: '/tmp/project', log: { info: jest.fn(), warning: jest.fn() } });
+		await action.execute({ project: '"/tmp/project"', authid: 'myAuth', ...parsed });
+		expect(executeProjectCommand).toHaveBeenCalledWith(expect.objectContaining({ params: expect.objectContaining({ skipAnalysis: true }) }));
+	});
+	it('rejects contradictory flags before auth or upload', async () => {
+		const commandMetadata = require('../../../../src/metadata/SdkCommandsMetadata.json')['project:validate'];
+		const action = new ValidateAction({ projectFolder: '/tmp/project', commandMetadata, executionPath: '/tmp/project', log: {} });
+		const result = await action.execute({ project: '"/tmp/project"', authid: 'myAuth', analyze: true, skipAnalysis: true });
+		expect(result.isSuccess()).toBe(false);
+		expect(executeProjectCommand).not.toHaveBeenCalled();
+	});
+	it('registers standalone analysis and dispatches analyze through SDK core', async () => {
+		const AnalyzeAction = require('../../../../src/commands/project/analyze/AnalyzeAction');
+		const commandMetadata = require('../../../../src/metadata/SdkCommandsMetadata.json')['project:analyze'];
+		const generators = require('../../../../src/metadata/CommandGenerators.json');
+		expect(generators.filter(item => item.commandName === commandMetadata.name)).toHaveLength(1);
+		const action = new AnalyzeAction({ projectFolder: '/tmp/project', commandMetadata, executionPath: '/tmp/project', log: { info: jest.fn(), warning: jest.fn() } });
+		const params = action.preExecute({ json: true });
+		expect(params.applyinstallprefs).toBeUndefined();
+		await action.execute(params);
+		expect(executeProjectCommand).toHaveBeenCalledWith(expect.objectContaining({ command: 'analyze', rawOutput: true, flags: [] }));
 	});
 });

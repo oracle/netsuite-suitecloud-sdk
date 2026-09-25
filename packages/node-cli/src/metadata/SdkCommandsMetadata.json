@@ -721,9 +721,19 @@
 		"name": "project:validate",
 		"sdkCommand": "validate",
 		"usage": "",
-		"description": "Validates the folder containing the SuiteCloud project.",
+		"description": "Validates the project and runs SuiteApp Analyzer independently (POC).",
 		"isSetupRequired": true,
 		"options": {
+			"analyze": {
+				"name": "analyze",
+				"option": "analyze",
+				"description": "Compatibility option: analysis already runs by default. Cannot be combined with --skip-analysis.",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
 			"accountspecificvalues": {
 				"name": "accountspecificvalues",
 				"option": "accountspecificvalues",
@@ -784,6 +794,16 @@
 				"defaultOption": false,
 				"disableInIntegrationMode": false,
 				"hidden": true
+			},
+			"skipAnalysis": {
+				"name": "skip-analysis",
+				"option": "skip-analysis",
+				"description": "Skips SuiteApp analysis and runs only SDF validation.",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
 			}
 		}
 	},
@@ -794,5 +814,55 @@
 		"description": "Generates a new API key for proxy authentication.",
 		"isSetupRequired": false,
 		"options": {}
+	},
+	"project:analyze": {
+		"name": "project:analyze",
+		"sdkCommand": "analyze",
+		"usage": "",
+		"description": "Analyzes a SuiteApp project for security findings without SDF validation (POC).",
+		"isSetupRequired": true,
+		"options": {
+			"authid": {
+				"name": "authid",
+				"option": "authid",
+				"description": "References the custom alias you give to a specific account-role combination. Referred to as authentication ID and auth ID in the documentation.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"project": {
+				"name": "project",
+				"option": "project",
+				"description": "Sets the folder or zipped file containing the project. It overrides the default project.",
+				"mandatory": true,
+				"type": "SINGLE",
+				"usage": "c:\/project\/",
+				"defaultOption": false,
+				"disableInIntegrationMode": true
+			},
+			"log": {
+				"name": "log",
+				"option": "log",
+				"description": "Writes analysis output to the specified log file or directory.",
+				"mandatory": false,
+				"type": "SINGLE",
+				"usage": "d:\/path\/test.log",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			},
+			"json": {
+				"name": "json",
+				"option": "json",
+				"alias": "j",
+				"description": "Prints structured JSON including the complete SARIF report.",
+				"mandatory": false,
+				"type": "FLAG",
+				"usage": "",
+				"defaultOption": false,
+				"disableInIntegrationMode": false
+			}
+		}
 	}
 }

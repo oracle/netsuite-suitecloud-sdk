@@ -7,8 +7,8 @@
 const ConsoleLogger = require('./ConsoleLogger');
 
 const loadLoggerFontFormatter = async () => {
-	const { COLORS, BOLD } = await import('./LoggerFontFormatter.mjs');
-	return { COLORS, BOLD };
+	const { COLORS, BOLD, DIM } = await import('./LoggerFontFormatter.mjs');
+	return { COLORS, BOLD, DIM };
 };
 const fontFormatterPromise = loadLoggerFontFormatter();
 
@@ -22,6 +22,14 @@ class NodeConsoleLogger extends ConsoleLogger {
 
 	plain(message) {
 		console.log(message);
+	}
+
+	styled(parts) {
+		// Use the same promise as colored output so mixed styles retain line order.
+		return fontFormatterPromise.then(({ COLORS, BOLD, DIM }) => {
+			const styles = { bold: BOLD, dim: DIM, warning: COLORS.WARNING, error: COLORS.ERROR, result: COLORS.RESULT };
+			console.log(parts.map(({ text, style }) => styles[style] ? styles[style](text) : text).join(''));
+		});
 	}
 
 	result(message) {

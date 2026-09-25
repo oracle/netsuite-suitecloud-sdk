@@ -8,6 +8,9 @@
 // - cli/.../handler/ValidateHandler.java
 export const VALIDATE_COMMAND = {
 	OPTIONS: {
+		ANALYZE: 'analyze',
+		SKIP_ANALYSIS: 'skipAnalysis',
+		SKIP_ANALYSIS_QUERY: 'skipanalysis',
 		APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	},
 } as const;
@@ -27,6 +30,9 @@ type ValidateExecutionPlan = {
 
 export function prepareValidateExecution(params: ValidateExecutionParams): ValidateExecutionPlan {
 	const normalizedParams = { ...params };
+	if (params[VALIDATE_COMMAND.OPTIONS.ANALYZE] && params[VALIDATE_COMMAND.OPTIONS.SKIP_ANALYSIS]) {
+		throw new Error('Cannot combine --analyze with --skip-analysis.');
+	}
 	const flags: string[] = [];
 	let installationPreferencesApplied = false;
 	delete normalizedParams.server;

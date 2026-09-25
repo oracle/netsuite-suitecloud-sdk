@@ -15,3 +15,4 @@ export const COLORS = {
 };
 
 export const BOLD = chalk.bold;
+export const DIM = chalk.dim;

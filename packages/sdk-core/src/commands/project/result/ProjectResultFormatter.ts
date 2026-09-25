@@ -10,6 +10,8 @@ import type {
 } from '../../../api/project/ProjectCommand';
 import { PROJECT_API } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
+import { PROJECT_COMMAND, ANALYSIS_STATUS, VALIDATION_STATUS } from '../../../api/project/ProjectCommand';
+import { formatAnalyzerReport, getAnalyzerReportError } from './AnalyzerReportFormatter';
 
 const STEP_STATUS_SUCCESSFUL = 'SUCCESSFUL';
 const STEP_STATUS_MARK_SUCCESS = '✔';
@@ -32,7 +34,14 @@ export function formatSdfProjectResultOutput(
 	} = {}
 ): { lines: string[]; hasFailures: boolean } {
 	const evaluationSummary = evaluateSdfProjectPayload(payload);
+	if (command === PROJECT_COMMAND.ANALYZE) {
+		const lines = formatAnalysisOutcome(payload, evaluationSummary.hasFailures ? 'failed' : 'completed');
+		if (payload.errorMessage) lines.push('ERROR: ' + String(payload.errorMessage));
+		return { lines, hasFailures: evaluationSummary.hasFailures };
+	}
 	const validationLines = formatSdfProjectValidationResults(payload.validationResults);
+	const separateChecks = command === PROJECT_COMMAND.VALIDATE
+		&& (payload.analysisStatus !== undefined || payload.analyzerReport !== undefined || payload.analysisError !== undefined);
 	const summaryMetadataLines = buildSummaryMetadataLines(options);
 	const lines = [
 		translationService.getMessage(PROJECT_API.RESULT.INFO.SUMMARY, command.toUpperCase()),
@@ -46,12 +55,23 @@ export function formatSdfProjectResultOutput(
 		translationService.getMessage(PROJECT_API.RESULT.INFO.SDF_ERRORS, evaluationSummary.hasEndpointError ? 'present' : 'none'),
 		...summaryMetadataLines,
 		COMMAND_OUTPUT_SEPARATOR_LINE,
+		...(separateChecks ? [
+			translationService.getMessage(PROJECT_API.RESULT.INFO.SDF_SECTION),
+			...(payload.validationStatus ? ['SDF validation: ' + String(payload.validationStatus)] : []),
+			'',
+		] : []),
 		...formatSdfProjectSteps(payload.steps),
 		...validationLines,
 	];
 	const endpointErrorMessage = asStringOrUndefined(payload.errorMessage);
 	if (endpointErrorMessage && endpointErrorMessage.trim()) {
 		lines.push(...formatEndpointErrorSection(endpointErrorMessage, validationLines.length > 0));
+	}
+	if (payload.validationStatus && !separateChecks) lines.push('SDF validation: ' + String(payload.validationStatus));
+	if (separateChecks) lines.push('', COMMAND_OUTPUT_SEPARATOR_LINE, translationService.getMessage(PROJECT_API.ANALYZER.SECTION));
+	lines.push(...formatAnalysisOutcome(payload, undefined, !separateChecks));
+	if (separateChecks && payload.analysisStatus !== ANALYSIS_STATUS.SKIPPED) {
+		lines.push('', translationService.getMessage(PROJECT_API.ANALYZER.SKIP_HINT));
 	}
 	return { lines, hasFailures: evaluationSummary.hasFailures };
 }
@@ -79,7 +99,9 @@ export function evaluateSdfProjectPayload(payload: Record<string, unknown>): {
 		warningResults,
 		errorResults,
 		hasEndpointError,
-		hasFailures: failedSteps > 0 || errorResults > 0 || hasEndpointError,
+		hasFailures: failedSteps > 0 || errorResults > 0 || hasEndpointError || payload.validationStatus === VALIDATION_STATUS.FAILED
+			|| payload.analysisStatus === ANALYSIS_STATUS.FAILED || !!payload.analysisError
+			|| ((payload.analyzerReport !== undefined || payload.analysisStatus === ANALYSIS_STATUS.COMPLETED) && !!getAnalyzerReportError(payload.analyzerReport)),
 	};
 }
 
@@ -313,4 +335,20 @@ function parseTimestamp(value: unknown): Date | undefined {
 	}
 	const parsedTimestamp = new Date(value.trim());
 	return Number.isNaN(parsedTimestamp.getTime()) ? undefined : parsedTimestamp;
+}
+
+function formatAnalysisOutcome(payload: Record<string, unknown>, standaloneStatus?: 'completed' | 'failed', includeReportHeading = true): string[] {
+	if (payload.analysisStatus === ANALYSIS_STATUS.SKIPPED) {
+		return ['', 'SuiteApp Analyzer: SKIPPED — ' + String(payload.analysisReason || 'Analysis was not requested.')];
+	}
+	const lines = standaloneStatus ? [translationService.getMessage(standaloneStatus === 'completed'
+		? PROJECT_API.ANALYZER.COMPLETED : PROJECT_API.ANALYZER.FAILED)] : [];
+	if (payload.analyzerReport !== undefined) lines.push(...formatAnalyzerReport(payload.analyzerReport, { includeHeading: !standaloneStatus && includeReportHeading }));
+	if (payload.analysisError || payload.analysisStatus === ANALYSIS_STATUS.FAILED) {
+		if (!standaloneStatus) lines.push('', 'SuiteApp Analyzer: FAILED');
+		lines.push('ERROR: ' + String(payload.analysisError || 'Analysis did not complete.'));
+	} else if (payload.analysisStatus === ANALYSIS_STATUS.COMPLETED && !standaloneStatus) {
+		lines.unshift('SuiteApp Analyzer: COMPLETED');
+	}
+	return lines;
 }

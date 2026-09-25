@@ -7,7 +7,8 @@
 import { randomBytes } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { basename } from 'node:path';
-import type { ProjectCommandType } from '../../api/project/ProjectCommand';
+import { PROJECT_COMMAND, type ProjectCommandType } from '../../api/project/ProjectCommand';
+import { VALIDATE_COMMAND } from './validate/ValidateHandler';
 import { sendSuiteCloudRequest } from '../../services/http/SuiteCloudRequestService';
 import { PROJECT_API } from '../../services/translation/TranslationKeys';
 import { translationService } from '../../services/translation/TranslationService';
@@ -46,7 +47,7 @@ export async function sendProjectCommandRequest(
 	const multipartPayload = await buildMultipartPayload(request.command, request.projectArchivePath);
 	return sendHttpsMultipartRequest({
 		hostName: request.hostName,
-		pathname: buildProjectRequestPath(request.params, request.flags),
+		pathname: buildProjectRequestPath(request.command, request.params, request.flags),
 		accessToken: request.accessToken,
 		payload: multipartPayload.payload,
 		boundary: multipartPayload.boundary,
@@ -56,13 +57,22 @@ export async function sendProjectCommandRequest(
 	});
 }
 
-function buildProjectRequestPath(params: Record<string, unknown>, flags: string[]): string {
+function buildProjectRequestPath(command: ProjectCommandType, params: Record<string, unknown>, flags: string[]): string {
 	const queryParams = new URLSearchParams();
+	if (command === PROJECT_COMMAND.ANALYZE) return PROJECT_API_PATH;
 	queryParams.set(
 		QUERY_PARAM_APPLY_INSTALLATION_PREFERENCES,
 		resolveApplyInstallationPreferencesValue(params, flags) ? BOOLEAN_TRUE_T : BOOLEAN_FALSE_F
 	);
 	queryParams.set(QUERY_PARAM_ACCOUNT_SPECIFIC_VALUES, resolveAccountSpecificValuesValue(params));
+	if (command === PROJECT_COMMAND.VALIDATE) {
+		if (params[VALIDATE_COMMAND.OPTIONS.SKIP_ANALYSIS] === true) {
+			queryParams.set(VALIDATE_COMMAND.OPTIONS.SKIP_ANALYSIS_QUERY, 'true');
+		} else {
+			// Explicit intent also lets the POC detect servers that omit requested analysis.
+			queryParams.set(VALIDATE_COMMAND.OPTIONS.ANALYZE, 'true');
+		}
+	}
 	return `${PROJECT_API_PATH}?${queryParams.toString()}`;
 }
 

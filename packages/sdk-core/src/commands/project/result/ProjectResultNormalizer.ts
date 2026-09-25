@@ -5,8 +5,11 @@
 'use strict';
 
 import { evaluateSdfProjectPayload, formatSdfProjectResultOutput } from './ProjectResultFormatter';
+import { getAnalyzerReportError } from './AnalyzerReportFormatter';
 import {
 	SDK_OPERATION_STATUS,
+	PROJECT_COMMAND,
+	ANALYSIS_STATUS,
 	type OperationResult,
 	type ProjectCommandSummaryContext,
 	type ProjectCommandType,
@@ -19,9 +22,22 @@ export function normalizeProjectOperationResult(
 	command: ProjectCommandType,
 	rawOutput: boolean,
 	summaryContext?: ProjectCommandSummaryContext,
-	serverTimestamp?: string
+	serverTimestamp?: string,
+	analysisRequested = false
 ): OperationResult {
-	const parsedBody = parseJsonBody(rawBody);
+	let parsedBody = parseJsonBody(rawBody);
+	if (analysisRequested && statusCode >= 200 && statusCode < 300 && isRecord(parsedBody)) {
+		const skipped = parsedBody.analysisStatus === ANALYSIS_STATUS.SKIPPED && command === PROJECT_COMMAND.VALIDATE;
+		const invalidStatus = parsedBody.analysisStatus !== undefined && !Object.values(ANALYSIS_STATUS).includes(parsedBody.analysisStatus);
+		const analysisError = invalidStatus ? 'SuiteApp Analyzer returned an unknown execution status.'
+			: skipped ? undefined : parsedBody.analysisError || getAnalyzerReportError(parsedBody.analyzerReport);
+		if (analysisError) {
+			// Do not overwrite errorMessage: it can contain the SDF validation failure.
+			parsedBody = { ...parsedBody, analysisStatus: ANALYSIS_STATUS.FAILED, analysisError };
+		}
+	} else if (analysisRequested && statusCode >= 200 && statusCode < 300) {
+		parsedBody = { analysisStatus: ANALYSIS_STATUS.FAILED, analysisError: getAnalyzerReportError(undefined) };
+	}
 	if (rawOutput) {
 		return normalizeRawOutputResult(statusCode, rawBody, parsedBody, command);
 	}
@@ -52,7 +68,7 @@ function normalizeSuccessResult(
 	summaryContext?: ProjectCommandSummaryContext,
 	serverTimestamp?: string
 ): OperationResult {
-	if (isSdkOperationLike(parsedBody)) {
+	if (parsedBody?.errorMessage === undefined && parsedBody?.analysisError === undefined && isSdkOperationLike(parsedBody)) {
 		if (parsedBody.status === SDK_OPERATION_STATUS.SUCCESS) {
 			return {
 				status: SDK_OPERATION_STATUS.SUCCESS,
@@ -145,7 +161,7 @@ function isSdkOperationLike(value: unknown): value is { status: string; data?: u
 }
 
 function isSdfProjectResultPayload(value: unknown): value is Record<string, unknown> {
-	return isRecord(value) && (Array.isArray(value.steps) || Array.isArray(value.validationResults) || value.errorMessage !== undefined);
+	return isRecord(value) && (Array.isArray(value.steps) || Array.isArray(value.validationResults) || value.errorMessage !== undefined || value.analysisStatus !== undefined || value.analyzerReport !== undefined);
 }
 
 function extractErrorMessageFromParsedBody(parsedBody: Record<string, unknown>): string | undefined {

@@ -17,7 +17,12 @@ export const PROJECT_COMMAND = {
 	DEPLOY: 'deploy',
 	PREVIEW: 'preview',
 	VALIDATE: 'validate',
+	ANALYZE: 'analyze',
 } as const;
+
+/** Independent check outcomes returned by the project endpoint. */
+export const ANALYSIS_STATUS = { COMPLETED: 'COMPLETED', FAILED: 'FAILED', SKIPPED: 'SKIPPED' } as const;
+export const VALIDATION_STATUS = { PASSED: 'PASSED', FAILED: 'FAILED', NOT_RUN: 'NOT_RUN' } as const;
 
 export type ProjectCommandType = (typeof PROJECT_COMMAND)[keyof typeof PROJECT_COMMAND];
 

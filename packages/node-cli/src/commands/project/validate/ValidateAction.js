@@ -18,7 +18,7 @@ const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
 const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
-const { prepareValidateExecution } = require('@oracle/suitecloud-sdk-core').commands;
+const { prepareValidateExecution, VALIDATE_COMMAND } = require('@oracle/suitecloud-sdk-core').commands;
 const {
 	executeProjectCommand,
 	PROJECT_COMMAND,
@@ -30,7 +30,8 @@ const {
 } = require('@oracle/suitecloud-sdk-core').auth;
 
 const {
-	COMMAND_VALIDATE: { MESSAGES, WARNINGS },
+	COMMAND_VALIDATE: { MESSAGES, WARNINGS, ERRORS },
+	COMMAND_ANALYZE,
 	PROJECT_COMMAND_LOG,
 } = require('../../../services/TranslationKeys');
 
@@ -60,10 +61,13 @@ module.exports = class ValidateAction extends BaseAction {
 			: undefined;
 	}
 
+	_getProjectCommand() { return PROJECT_COMMAND.VALIDATE; }
+
 	preExecute(params) {
 		params[COMMAND_OPTIONS.PROJECT] = CommandUtils.quoteString(this._projectFolder);
 		params[COMMAND_OPTIONS.AUTH_ID] = getProjectDefaultAuthId(this._executionPath);
 
+		if (this._getProjectCommand() === PROJECT_COMMAND.ANALYZE) return params;
 		AccountSpecificValuesUtils.validate(params, this._projectFolder);
 		ApplyInstallationPreferencesUtils.validate(params, this._projectFolder, this._commandMetadata.name, this._log);
 
@@ -76,6 +80,9 @@ module.exports = class ValidateAction extends BaseAction {
 	async execute(params) {
 		let installationPreferencesApplied = !!params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES];
 		try {
+			if ((this._getProjectCommand() === PROJECT_COMMAND.ANALYZE || params[VALIDATE_COMMAND.OPTIONS.ANALYZE]) && this._projectType !== PROJECT_SUITEAPP) {
+				throw new Error(NodeTranslationService.getMessage(ERRORS.ANALYZE_REQUIRES_SUITEAPP));
+			}
 			if (params[IGNORED_OPTIONS.SERVER]) {
 				await this._log.warning(NodeTranslationService.getMessage(WARNINGS.SERVER_OPTION_IGNORED));
 			}
@@ -87,11 +94,11 @@ module.exports = class ValidateAction extends BaseAction {
 			const sdkParams = CommandUtils.extractCommandOptions(validateExecution.params, this._commandMetadata);
 			const projectFolder = CommandUtils.unquoteString(sdkParams[COMMAND_OPTIONS.PROJECT]);
 			const operationResult = await this._executeProjectCommandWithAuthRetry({
-				command: PROJECT_COMMAND.VALIDATE,
+				command: this._getProjectCommand(),
 				projectFolder,
 				sdkParams,
 				flags,
-					message: NodeTranslationService.getMessage(MESSAGES.VALIDATING, this._suiteAppId || this._projectName, getProjectDefaultAuthId(this._executionPath)),
+					message: NodeTranslationService.getMessage(this._getProjectCommand() === PROJECT_COMMAND.ANALYZE ? COMMAND_ANALYZE.MESSAGES.ANALYZING : MESSAGES.VALIDATING, this._suiteAppId || this._projectName, getProjectDefaultAuthId(this._executionPath)),
 			});
 
 			return operationResult.status === SDK_OPERATION_STATUS.SUCCESS

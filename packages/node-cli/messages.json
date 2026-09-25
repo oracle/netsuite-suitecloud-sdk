@@ -1,4 +1,6 @@
 {
+	"COMMAND_VALIDATE_ERRORS_ANALYZE_REQUIRES_SUITEAPP": "SuiteApp analysis requires a SuiteApp project with publisher ID, project ID, and project version in manifest.xml.",
+	"COMMAND_ANALYZE_MESSAGES_ANALYZING": "Analyzing {0} using auth ID {1}...",
 	"ACCOUNT_TYPE_RELEASE_PREVIEW": "Release Preview",
 	"ACCOUNT_TYPE_SANDBOX": "Sandbox",
 	"ACCOUNT_TYPE_PRODUCTION": "Production",

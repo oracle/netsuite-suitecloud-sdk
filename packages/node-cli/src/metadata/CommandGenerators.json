@@ -93,5 +93,10 @@
 		"commandName": "object:create",
 		"supportsInteractiveMode": true,
 		"generator": "commands/object/create/CreateObjectCommand"
+	},
+	{
+		"commandName": "project:analyze",
+		"supportsInteractiveMode": false,
+		"generator": "commands/project/analyze/AnalyzeCommand"
 	}
 ]

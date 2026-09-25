@@ -22,12 +22,15 @@ import {
 	type ProjectCommandRequest,
 } from './ProjectCommandClient';
 import { normalizeProjectOperationResult } from './result/ProjectResultNormalizer';
+import { VALIDATE_COMMAND } from './validate/ValidateHandler';
 import {
 	writeProjectCommandLog,
 	type ProjectCommandLogInput,
 } from './result/ProjectCommandLog';
 
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
+// The server gives Analyzer up to 15 minutes, in addition to normal SDF validation.
+const ANALYSIS_TIMEOUT_MS = DEFAULT_TIMEOUT_MS + 15 * 60 * 1000;
 
 type ProjectCommandDependencies = {
 	createProjectArchive?: (projectFolder: string) => Promise<string>;
@@ -45,9 +48,14 @@ export async function executeProjectCommand(
 	const sendRequest = dependencies.sendProjectRequest ?? sendProjectCommandRequest;
 	const writeLog = dependencies.writeProjectLog ?? writeProjectCommandLog;
 	let projectArchivePath: string | undefined;
+	const analysisRequested = input?.command === PROJECT_COMMAND.ANALYZE || (input?.command === PROJECT_COMMAND.VALIDATE
+		&& input.params?.[VALIDATE_COMMAND.OPTIONS.SKIP_ANALYSIS] !== true);
 
 	try {
 		validateExecutionInput(input);
+		if (input.params?.[VALIDATE_COMMAND.OPTIONS.SKIP_ANALYSIS] && (input.command === PROJECT_COMMAND.ANALYZE || input.params?.[VALIDATE_COMMAND.OPTIONS.ANALYZE])) {
+			throw new Error('Cannot combine analysis with --skip-analysis.');
+		}
 		projectArchivePath = await createArchive(input.projectFolder);
 		const response = await sendRequest({
 			command: input.command,
@@ -57,7 +65,7 @@ export async function executeProjectCommand(
 			params: input.params || {},
 			flags: input.flags || [],
 			userAgent: input.userAgent,
-			timeoutMs: input.timeoutMs || DEFAULT_TIMEOUT_MS,
+			timeoutMs: input.timeoutMs || (analysisRequested ? ANALYSIS_TIMEOUT_MS : DEFAULT_TIMEOUT_MS),
 		});
 
 		const operationResult = normalizeProjectOperationResult(
@@ -66,7 +74,8 @@ export async function executeProjectCommand(
 			input.command,
 			input.rawOutput === true,
 			input.summaryContext,
-			response.serverTimestamp
+			response.serverTimestamp,
+			analysisRequested
 		);
 		if (!input.logFileLocation) {
 			return operationResult;
