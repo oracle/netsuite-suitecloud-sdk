@@ -7,6 +7,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { commandsInfoMap } from '../commandsMap';
+import ReportedSdkError from '../core/sdksetup/ReportedSdkError';
 import type PreferencesStore from './developerAssistant/PreferencesStore';
 import type { PersistedPanelPreferences } from './developerAssistant/PreferencesStore';
 import type ClineChatOpener from './developerAssistant/cline/ChatOpener';
@@ -390,6 +391,9 @@ export default class ControlPanelController {
 				this._state.proxyStatus = this._proxyService.isRunning ? 'running' : 'stopped';
 			}
 			this._postStateUpdate();
+			if (error instanceof ReportedSdkError) {
+				return;
+			}
 			if (isProxyStartAction) {
 				this._presenter.error(friendlyErrorMessage);
 				this._presenter.endLogSection();
@@ -415,7 +419,9 @@ export default class ControlPanelController {
 			await this._ensureSdkDependenciesReady();
 		} catch (error) {
 			sdkDependenciesAvailable = false;
-			loadErrors.push(error instanceof Error ? error.message : String(error));
+			if (!(error instanceof ReportedSdkError)) {
+				loadErrors.push(error instanceof Error ? error.message : String(error));
+			}
 		}
 
 		if (sdkDependenciesAvailable) {
