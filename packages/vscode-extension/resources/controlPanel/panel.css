@@ -1,7 +1,7 @@
 :root {
-  --panel-card: #2A2A2A;
+  --panel-card: var(--vscode-editorWidget-background);
   --panel-card-border: color-mix(in srgb, var(--vscode-panel-border) 72%, transparent);
-  --control-surface: #3B3B3B;
+  --control-surface: var(--vscode-input-background);
   --control-border: var(--vscode-input-border, color-mix(in srgb, var(--vscode-foreground) 18%, transparent));
   --muted: var(--vscode-descriptionForeground);
   --success: var(--vscode-testing-iconPassed, #73c779);
