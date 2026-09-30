@@ -26,8 +26,8 @@ The following table shows the extension versions currently available in the Mark
 
 | Extension Versions Available in the Marketplace |
 |:-----------------------------------------------:|
+| 4.1.0 |
 | 4.0.0 |
-| 3.1.3 |
 
 ## Installing SuiteCloud Extension for Visual Studio Code
 To install SuiteCloud Extension for Visual Studio Code, follow these steps:
@@ -120,33 +120,28 @@ You can now configure the SuiteCloud Developer Assistant using Cline in SuiteClo
   * Approve all the suggested tasks before they are implemented
 
 To set up SuiteCloud Developer Assistant:
-1.  Open Visual Studio Code with the SuiteCloud Extension installed and click the SuiteCloud Developer Assistant welcome message to go to the extension settings.
+1.  Open Visual Studio Code with the SuiteCloud Extension installed and click the SuiteCloud Developer Assistant welcome message to go to the SuiteCloud Developer Assistant panel.
 
-    This will take you to Settings > Workspace tab > Extensions > SuiteCloud.
+    Return to the SuiteCloud Developer Assistant Panel at any time by clicking the SuiteCloud icon in the Activity Bar.
 
-2.  Next, configure the fields as follows:
-    * **Developer Assistant: Auth ID:** Enter the auth ID the SuiteCloud Proxy will use for Developer Assistant requests.
-    * **Developer Assistant: Local Port:** Autopopulated by default. Change it if you prefer a different port or if the default port is already in use.
-    * **Developer Assistant: Enable:** Check the **Enable** box.
+2.  In SuiteCloud Proxy, configure the fields as follows:
+    * **Auth ID:** Enter the auth ID you want to use for SuiteCloud Proxy.
+    * **Local Port:** Populated automatically. Change it if the default port is in use or you want to use a different port.
+    * If an API key has not been generated, click **Generate**. Copy the API key within five minutes. You may need it to configure other clients.
+    * When the API key is generated, click **Start** to start SuiteCloud Proxy.
+    * Read the disclaimer in the popup window and click **Start Proxy**. To stop SuiteCloud Proxy, click **Stop**.
 
-    SuiteCloud Developer Assistant requires the SuiteCloud Proxy. During the initial setup, when you enable the SuiteCloud Proxy, a popup window appears displaying an API key. Copy it and follow the instructions provided.
+3. When SuiteCloud Proxy is running, you can see the API provider configuration details: API provider, API key, base URL, and model ID.
 
-3. In the activity bar, go to the Cline extension. Click the provider/model selector and configure the fields as follows:
-      * **API Provider:** Select **OpenAI Compatible**.
-      * **OpenAI Compatible API Key:** Paste the generated API key.
-      * **Base URL:** Enter the URL provided by SuiteCloud Extension for VS Code during SuiteCloud Developer Assistant configuration. To see it again, refer to the SuiteCloud output panel.
-      * **Model ID:** If this isn't autopopulated, enter **NetSuite**.
-      * In **Model Configuration:**
-        * Clear the **Supports Images** checkbox.
-        * Set the **Context Window Size** to `1000000`.
+4. In the Cline extension section, check if the Cline extension is installed and configured. 
+
+    * If Cline is not installed, click **Go to Marketplace** to open the VS Code marketplace and install it.
+    * If Cline is installed but not configured, click **Configure** to start the configuration process, and then click **Restart extensions**. 
+    * When Cline is installed and configured, click **Open Cline** to start using SuiteCloud Developer Assistant.
 
 You can start vibe-coding with SuiteCloud Developer Assistant.
 
 Want more information? See <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/subsect_1121114206.html" rel="noopener noreferrer" target=blank>Setting up SuiteCloud Developer Assistant using Cline in SuiteCloud Extension for Visual Studio Code</a> and <a href="https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_1171315103" rel="noopener noreferrer" target=blank>SuiteCloud Developer Assistant Guide</a>. 
-
-🎞 You can also watch the following video:
-
-<a href="https://videohub.oracle.com/media/Setting+Up+SuiteCloud+Developer+Assistant+in+Visual+Studio+Code/1_0wbrln2u"><img src="resources/video_setting_up_suitecloud_developer_assistant.png" alt="Setting up SuiteCloud Developer Assistant in Visual Studio Code" width="400"></a>
 
 >**Note:** You can now use SuiteCloud Developer Assistant with other tools (IDEs and CLIs) and AI Coding Assistants. For more information, see [Setting Up SuiteCloud Developer Assistant with Other Third-Party Tools and AI Coding Assistants](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_0430105109.html).
 
