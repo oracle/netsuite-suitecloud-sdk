@@ -127,11 +127,12 @@ To set up SuiteCloud Developer Assistant:
 2.  In SuiteCloud Proxy, configure the fields as follows:
     * **Auth ID:** Enter the auth ID you want to use for SuiteCloud Proxy.
     * **Local Port:** Populated automatically. Change it if the default port is in use or you want to use a different port.
-    * If an API key has not been generated, click **Generate**. Copy the API key within five minutes. You may need it to configure other clients.
+    * If you have not generated an API key, click **Generate**. You don't need to copy the key for Cline; it is applied automatically when you click **Configure** in the Cline extension section below. To manually configure another client, copy the API key within five minutes.
     * When the API key is generated, click **Start** to start SuiteCloud Proxy.
     * Read the disclaimer in the popup window and click **Start Proxy**. To stop SuiteCloud Proxy, click **Stop**.
 
-3. When SuiteCloud Proxy is running, you can see the API provider configuration details: API provider, API key, base URL, and model ID.
+3. When SuiteCloud Proxy is running, click **See SuiteCloud Proxy logs** to view the logs in the Output section.
+    >**Optional:** Open the API provider configuration details section when you need SuiteCloud Proxy configuration information or want to manually configure another client. The section includes the following details: API provider, API key, base URL, and model ID.
 
 4. In the Cline extension section, check if the Cline extension is installed and configured. 
 
