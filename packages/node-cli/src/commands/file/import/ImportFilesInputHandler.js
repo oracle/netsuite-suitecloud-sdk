@@ -13,7 +13,6 @@ const ProjectInfoService = require('../../../services/ProjectInfoService');
 const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
 const BaseInputHandler = require('../../base/BaseInputHandler');
-const SdkExecutor = require('../../../SdkExecutor');
 const { showValidationResults, validateArrayIsNotEmpty } = require('../../../validation/InteractiveAnswersValidator');
 const {
 	COMMAND_IMPORTFILES: { ERRORS, QUESTIONS, MESSAGES },
@@ -37,9 +36,6 @@ const COMMAND_ANSWERS = {
 module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 	constructor(options) {
 		super(options);
-		// TODO input handlers shouldn't execute actions. rework this
-		this._sdkExecutor = new SdkExecutor(this._sdkPath, this._executionEnvironmentContext);
-
 		this._projectInfoService = new ProjectInfoService(this._projectFolder);
 		this._authId = getProjectDefaultAuthId(this._executionPath);
 	}
@@ -80,7 +76,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 	_generateSelectFolderQuestion(listFoldersResult) {
 		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: COMMAND_OPTIONS.FOLDER,
 			message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
 			default: SUITE_SCRIPTS_FOLDER,
@@ -105,7 +101,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 				validate: (fieldValue) => showValidationResults(fieldValue, validateArrayIsNotEmpty),
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_OPTIONS.EXCLUDE_PROPERTIES,
 				message: NodeTranslationService.getMessage(QUESTIONS.EXCLUDE_PROPERTIES),
 				choices: [
@@ -118,7 +114,7 @@ module.exports = class ImportFilesInputHandler extends BaseInputHandler {
 
 	_generateOverwriteQuestion() {
 		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
 			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
 			default: true,

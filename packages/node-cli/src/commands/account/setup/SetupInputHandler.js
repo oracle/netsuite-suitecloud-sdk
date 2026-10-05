@@ -114,7 +114,7 @@ module.exports = class SetupInputHandler extends BaseInputHandler {
 			choices.push(new Separator());
 			authIdAnswer = await prompt([
 				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
+					type: CommandUtils.INQUIRER_TYPES.SELECT,
 					name: ANSWERS.SELECTED_AUTH_ID,
 					message: NodeTranslationService.getMessage(QUESTIONS.SELECT_AUTHID),
 					choices: choices,

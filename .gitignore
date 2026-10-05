@@ -11,6 +11,11 @@
 
 # transpiled .js files
 packages/**/dist
+packages/sdk-core/build/
+packages/sdk-core/*.tsbuildinfo
+
+# packaged release artifacts
+/dist/
 
 # distribution files for ai-plugins
 dist/ai-plugins/

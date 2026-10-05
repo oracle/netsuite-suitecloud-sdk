@@ -1,0 +1,30 @@
+{
+  "name": "@oracle/suitecloud-sdk-core",
+  "version": "1.0.0",
+  "license": "UPL-1.0",
+  "private": true,
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "clean": "node scripts/clean-build.js",
+    "build": "npm run clean && tsc -p tsconfig.build.json && npm run copy:resources",
+    "copy:resources": "node scripts/copy-resources.js",
+    "prepack": "npm run build",
+    "build:watch": "npm run clean && npm run copy:resources && tsc -p tsconfig.build.json --watch"
+  },
+  "dependencies": {
+    "adm-zip": "0.6.0",
+    "xml2js": "0.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.1",
+    "typescript": "5.9.3"
+  },
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  }
+}

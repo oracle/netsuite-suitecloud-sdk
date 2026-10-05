@@ -114,7 +114,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 	async _questionFilterByScriptId() {
 		return await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: ANSWERS_NAMES.FILTER_BY_SCRIPT_ID,
 				message: NodeTranslationService.getMessage(QUESTIONS.FILTER_BY_SCRIPT_ID),
 				default: false,
@@ -137,7 +137,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 	async _includeCustomInstancesQuestion(customRecordsAndSegments) {
 		const includeCustomInstancesQuestions = {
 			when: customRecordsAndSegments.length >= 1,
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: ANSWERS_NAMES.INCLUDE_CUSTOM_INSTANCES,
 			message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_CUSTOM_INSTANCES),
 			default: false,
@@ -155,7 +155,7 @@ module.exports = class UpdateInputHandler extends BaseInputHandler {
 			? NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS_WITH_CUSTOM_INSTANCES)
 			: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_OBJECTS);
 		const overwriteObjectsQuestion = {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: ANSWERS_NAMES.OVERWRITE_OBJECTS,
 			message: message,
 			default: true,

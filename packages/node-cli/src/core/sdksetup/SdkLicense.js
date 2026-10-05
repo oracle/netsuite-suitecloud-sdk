@@ -11,7 +11,8 @@ const WINDOWS_CMD = 'start';
 const LINUX_CMD = 'xdg-open';
 const OSX_CMD = 'open';
 const ERROR_MESSAGE = 'Something went wrong.';
-const LICENSE_MESSAGE = 'Use the --acceptsuitecloudsdklicense flag to accept the FUTC license:' +
+const LICENSE_ACCEPTANCE_ENV_VAR = 'SUITECLOUD_CLI_ACCEPT_LICENSE';
+const LICENSE_MESSAGE = 'Set SUITECLOUD_CLI_ACCEPT_LICENSE=true to accept the FUTC license:' +
 	' https://www.oracle.com/downloads/licenses/oracle-free-license.html';
 const supportedPlatformsCommands = {
 	[WINDOWS_PLATFORM]: WINDOWS_CMD,
@@ -22,7 +23,7 @@ const supportedPlatformsCommands = {
 class SdkLicense {
 
 	show() {
-		if (process.env.npm_config_acceptsuitecloudsdklicense || process.env.npm_config_acceptSuiteCloudSDKLicense) {
+		if (this._isLicenseAccepted()) {
 			return;
 		}
 		const currentPlatform = os.platform();
@@ -33,6 +34,15 @@ class SdkLicense {
 			console.error(LICENSE_MESSAGE);
 			return process.exit(execution.error?.errno || execution.status);
 		}
+	}
+
+	_isLicenseAccepted() {
+		if (process.env[LICENSE_ACCEPTANCE_ENV_VAR] === 'true') {
+			return true;
+		}
+
+		// Keep existing scripted installations working while callers migrate away from npm config.
+		return Boolean(process.env.npm_config_acceptsuitecloudsdklicense || process.env.npm_config_acceptSuiteCloudSDKLicense);
 	}
 }
 

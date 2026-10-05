@@ -8,7 +8,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { Uri } from 'vscode';
-import { ACP_UNRESTRICTED_FOLDERS } from '../ApplicationConstants';
+import { ACP_UNRESTRICTED_FOLDERS, FILES } from '../ApplicationConstants';
 import { COMPARE_FILE } from '../service/TranslationKeys';
 import { actionResultStatus, ApplicationConstants, ProjectInfoService } from '../util/ExtensionUtil';
 import FileImportCommon from './FileImportCommon';
@@ -46,17 +46,17 @@ export default class CompareFile extends FileImportCommon {
 
 	protected async execute() {
 		const activeFilePath = this.activeFile!;
+		const fileCabinetRelativePath = path.relative(this.getFileCabinetFolderPath(), activeFilePath);
+		const suiteCloudFilePath = this.toSuiteCloudPath(fileCabinetRelativePath);
 		// create temp project folder to import file to be compared
 		const tempProjectFolderPath = fs.mkdtempSync(path.join(os.tmpdir(), CompareFile.TEMP_FOLDER_PREFIX));
-		// temp project prepartion to import file
-		this.copyManifestFileToTempFolder(tempProjectFolderPath);
-		this.copyProjectJsonToTempFolder(tempProjectFolderPath);
-		const activeFileRelativePath = activeFilePath.split(this.getFileCabinetFolderPath())[1]?.replace(/\\/g, '/');
-		const importFilePath = this.getImportFilePath(tempProjectFolderPath, activeFilePath, activeFileRelativePath);
+		// prepare temp project to import file
+		this.prepareTemporaryProject(tempProjectFolderPath);
+		const importFilePath = this.getImportFilePath(tempProjectFolderPath, fileCabinetRelativePath);
 
 		// file:import args preparation and trigger
 		const fileImportArgs = {
-			paths: [activeFileRelativePath],
+			paths: [suiteCloudFilePath],
 			excludeproperties: 'true',
 			calledfromcomparefiles: 'true',
 		};
@@ -102,35 +102,64 @@ export default class CompareFile extends FileImportCommon {
 	private activeFileIsUnderSuiteAppsAppIdFolder(projectInfoService: typeof ProjectInfoService): boolean {
 		const suiteAppFileCabinetPath = path.join(
 			this.getFileCabinetFolderPath(),
-			ApplicationConstants.FOLDERS.SUITEAPPS,
+			path.basename(ApplicationConstants.FOLDERS.SUITEAPPS),
 			projectInfoService.getApplicationId()
 		);
-		return this.activeFile!.startsWith(suiteAppFileCabinetPath);
+		return this.activeFileIsInside(suiteAppFileCabinetPath);
 	}
 
 	private activeFileIsUnderAcpUnrestrictedFolder(): boolean {
-		const activeFileRelativePath = this.activeFile?.replace(this.getFileCabinetFolderPath(), '').replace(/\\/g, '/');
-		return ACP_UNRESTRICTED_FOLDERS.some((unrestricedPath) => activeFileRelativePath?.startsWith(unrestricedPath));
+		const fileCabinetRelativePath = path.relative(this.getFileCabinetFolderPath(), this.activeFile!);
+		const suiteCloudFilePath = this.toSuiteCloudPath(fileCabinetRelativePath);
+		return ACP_UNRESTRICTED_FOLDERS.some(
+			(unrestrictedPath) => suiteCloudFilePath === unrestrictedPath || suiteCloudFilePath.startsWith(`${unrestrictedPath}/`)
+		);
 	}
 
 	private getFileCabinetFolderPath(): string {
 		return path.join(this.getProjectFolderPath(), ApplicationConstants.FOLDERS.FILE_CABINET);
 	}
 
-	private getImportFilePath(tempFolderPath: string, activeFilePath: string, activeFileRelativePath: string): string {
-		const importFileParentFolderPath = path.join(tempFolderPath, ApplicationConstants.FOLDERS.FILE_CABINET, path.dirname(activeFileRelativePath));
-		fs.mkdirSync(importFileParentFolderPath, { recursive: true });
-
-		return path.join(importFileParentFolderPath, path.basename(activeFilePath));
+	private activeFileIsInside(folderPath: string): boolean {
+		const relativePath = path.relative(folderPath, this.activeFile!);
+		return (
+			relativePath !== '' &&
+			relativePath !== '..' &&
+			!relativePath.startsWith(`..${path.sep}`) &&
+			!path.isAbsolute(relativePath)
+		);
 	}
 
-	private copyProjectJsonToTempFolder(tempFolderPath: string) {
-		const projectJsonPath = path.join(this.rootWorkspaceFolder!, ApplicationConstants.FILES.PROJECT_JSON);
-		fs.copyFileSync(projectJsonPath, path.join(tempFolderPath, ApplicationConstants.FILES.PROJECT_JSON));
+	private toSuiteCloudPath(relativePath: string): string {
+		return `/${relativePath.split(path.sep).join('/')}`;
 	}
 
-	private copyManifestFileToTempFolder(tempFolderPath: string) {
-		const manifestFilePath = path.join(this.getProjectFolderPath(), ApplicationConstants.FILES.MANIFEST_XML);
-		fs.copyFileSync(manifestFilePath, path.join(tempFolderPath, ApplicationConstants.FILES.MANIFEST_XML));
+	private getImportFilePath(tempFolderPath: string, fileCabinetRelativePath: string): string {
+		const importFilePath = path.join(
+			tempFolderPath,
+			path.basename(ApplicationConstants.FOLDERS.FILE_CABINET),
+			fileCabinetRelativePath
+		);
+		fs.mkdirSync(path.dirname(importFilePath), { recursive: true });
+		return importFilePath;
+	}
+
+	private prepareTemporaryProject(tempFolderPath: string) {
+		const projectJsonPath = path.join(this.rootWorkspaceFolder!, FILES.PROJECT_JSON);
+		fs.copyFileSync(projectJsonPath, path.join(tempFolderPath, FILES.PROJECT_JSON));
+
+		const projectFolderPath = this.getProjectFolderPath();
+		for (const projectFile of [FILES.MANIFEST_XML, FILES.DEPLOY_XML]) {
+			fs.copyFileSync(path.join(projectFolderPath, projectFile), path.join(tempFolderPath, projectFile));
+		}
+
+		const suiteCloudConfig = [
+			'module.exports = {',
+			"\tdefaultProjectFolder: '.',",
+			'\tcommands: {},',
+			'};',
+			'',
+		].join(os.EOL);
+		fs.writeFileSync(path.join(tempFolderPath, FILES.SUITECLOUD_CONFIG_JS), suiteCloudConfig, 'utf8');
 	}
 }

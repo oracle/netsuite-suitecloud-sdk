@@ -6,7 +6,11 @@
 const BaseOutputHandler = require('../../base/BaseOutputHandler');
 const ActionResultUtils = require('../../../utils/ActionResultUtils');
 const AccountCredentialsFormatter = require('../../../utils/AccountCredentialsFormatter');
+const NodeTranslationService = require('../../../services/NodeTranslationService');
 const { MANAGE_ACTION } = require('../../../services/actionresult/ManageAccountActionResult');
+const {
+	COMMAND_MANAGE_ACCOUNT: { OUTPUT },
+} = require('../../../services/TranslationKeys');
 
 module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler {
 	constructor(consoleLogger) {
@@ -21,9 +25,14 @@ module.exports = class ManageAccountOutputFormatter extends BaseOutputHandler {
 		if (actionResult.actionExecuted === MANAGE_ACTION.INFO) {
 			this._log.result(AccountCredentialsFormatter.getInfoString(actionResult.data));
 		} else if (actionResult.actionExecuted === MANAGE_ACTION.LIST) {
-			Object.keys(actionResult.data).forEach((authId) =>
-				this._log.result(AccountCredentialsFormatter.getListItemString(authId, actionResult.data[authId]))
-			);
+			const authIds = Object.keys(actionResult.data);
+			if (authIds.length === 0) {
+				this._log.info(NodeTranslationService.getMessage(OUTPUT.NO_AUTHENTICATION_IDS));
+			} else {
+				authIds.forEach((authId) =>
+					this._log.result(AccountCredentialsFormatter.getListItemString(authId, actionResult.data[authId]))
+				);
+			}
 		}
 		return actionResult;
 	}

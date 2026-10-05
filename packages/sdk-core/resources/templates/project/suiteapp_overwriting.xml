@@ -1,0 +1,31 @@
+<!-- This file is used for overwriting or preserving the objects in your SuiteApp when deploying to a NetSuite account. -->
+<!-- This configuration is only applied when the "Apply Installation Preferences" option is provided through SuiteCloud SDK. Otherwise this file is ignored. -->
+<!-- For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_160751417871.html -->
+
+<preference type="OVERWRITING">
+    <!-- SCRIPT DEPLOYMENTS -->
+    <!-- The configuration below overwrites all scriptdeployments except for the ones specified with the action tag PRESERVE. -->
+    <!-- <scriptdeployments defaultAction="OVERWRITE">
+            <scriptdeployment scriptid="customscript_user_event_example.customdeploy_ue_example" action="PRESERVE" />
+    </scriptdeployments> -->
+
+    <!-- CUSTOM RECORD TYPES -->
+    <!-- The configuration below preserves all instances of customrecord_type_example except for the ones with the action tag OVERWRITE. -->
+    <!-- <customrecordtypes>
+        <customrecordtype scriptid="customrecord_type_example">
+            <instances defaultAction="PRESERVE">
+                <instance scriptid="customrecord_instance_example" action="OVERWRITE" />
+            </instances>
+        </customrecordtype>
+    </customrecordtypes> -->
+
+    <!-- CUSTOM LISTS -->
+    <!-- The configuration below overwrites all customvalues of customlist_example except for the ones with the action tag PRESERVE. -->
+    <!-- <customlists>
+        <customlist scriptid="customlist_example">
+            <customvalues defaultAction="OVERWRITE">
+                <customvalue scriptid="customlist_value_example" action="PRESERVE" />
+            </customvalues>
+        </customlist>
+    </customlists> -->
+</preference>

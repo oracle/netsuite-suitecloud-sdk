@@ -83,7 +83,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 		return [
 			{
 				message: NodeTranslationService.getMessage(QUESTIONS.SELECT_FOLDER),
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_ANSWERS.SELECTED_FOLDER,
 				choices: localFileCabinetFoldersChoices,
 			},
@@ -112,7 +112,7 @@ module.exports = class UploadFilesInputHandler extends BaseInputHandler {
 
 	_generateOverwriteQuestion() {
 		return {
-			type: CommandUtils.INQUIRER_TYPES.LIST,
+			type: CommandUtils.INQUIRER_TYPES.SELECT,
 			name: COMMAND_ANSWERS.OVERWRITE_FILES,
 			message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_FILES),
 			default: true,

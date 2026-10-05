@@ -36,7 +36,6 @@ export default abstract class DeployValidateCommon extends BaseAction {
 			this.statusBarMessage = this.translationService.getMessage(DEPLOY.DEPLOYING);
 		} else {
 			this.statusBarMessage = this.translationService.getMessage(VALIDATE.VALIDATING);
-			this.commandOptions.server = 'T';
 		}
 	}
 

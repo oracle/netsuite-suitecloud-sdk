@@ -28,8 +28,21 @@
             "request": "launch",
             "name": "Launch suitecloud project:deploy",
             "program": "${workspaceFolder}/packages/node-cli/src/suitecloud.js",
-            "cwd": "/path/to/your/suitecloud/project",
-            "args": ["project:deploy"],
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "project:deploy"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/packages/sdk-core/build/**/*.js"
+            ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
             "outputCapture": "std",
             "console": "integratedTerminal"
         },

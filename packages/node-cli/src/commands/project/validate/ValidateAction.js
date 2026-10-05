@@ -5,36 +5,59 @@
 
 'use strict';
 
+const { resolve } = require('node:path');
 const BaseAction = require('../../base/BaseAction');
 const DeployActionResult = require('../../../services/actionresult/DeployActionResult');
-const SdkExecutionContext = require('../../../SdkExecutionContext');
-const SdkOperationResultUtils = require('../../../utils/SdkOperationResultUtils');
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ProjectInfoService = require('../../../services/ProjectInfoService');
 const AccountSpecificValuesUtils = require('../../../utils/AccountSpecificValuesUtils');
 const ApplyInstallationPreferencesUtils = require('../../../utils/ApplyInstallationPreferencesUtils');
+const { PROJECT_SUITEAPP } = require('../../../ApplicationConstants');
 const { executeWithSpinner } = require('../../../ui/CliSpinner');
 const { getProjectDefaultAuthId } = require('../../../utils/AuthenticationUtils');
+const { toErrorMessages } = require('../../../utils/ErrorMessageUtils');
+const { createCredentialSessionProvider } = require('../../../utils/AuthSessionProvider');
+const { prepareValidateExecution } = require('@oracle/suitecloud-sdk-core').commands;
+const {
+	executeProjectCommand,
+	PROJECT_COMMAND,
+	SDK_OPERATION_STATUS,
+} = require('@oracle/suitecloud-sdk-core').commands;
+const {
+	executeWithAuthRetry,
+	shouldRetryAuthByResult,
+} = require('@oracle/suitecloud-sdk-core').auth;
 
 const {
-	COMMAND_VALIDATE: { MESSAGES },
+	COMMAND_VALIDATE: { MESSAGES, WARNINGS },
+	PROJECT_COMMAND_LOG,
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
-	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
+	JSON: 'json',
+	LOG: 'log',
 	PROJECT: 'project',
 	AUTH_ID: 'authid',
+};
+
+const IGNORED_OPTIONS = {
+	SERVER: 'server',
 };
 
 module.exports = class ValidateAction extends BaseAction {
 	constructor(options) {
 		super(options);
 		const projectInfoService = new ProjectInfoService(this._projectFolder);
-		this._projectType = projectInfoService.getProjectType()
-		this._projectName = projectInfoService.getProjectName()
+		this._projectType = projectInfoService.getProjectType();
+		this._projectName = normalizeManifestValue(getProjectInfoValue(projectInfoService, 'getProjectName'));
+		const publisherId = normalizeManifestValue(getProjectInfoValue(projectInfoService, 'getPublisherId'));
+		const projectId = normalizeManifestValue(getProjectInfoValue(projectInfoService, 'getProjectId'));
+		this._suiteAppId = this._projectType === PROJECT_SUITEAPP && publisherId && projectId
+			? `${publisherId}.${projectId}`
+			: undefined;
 	}
 
 	preExecute(params) {
@@ -51,37 +74,27 @@ module.exports = class ValidateAction extends BaseAction {
 	}
 
 	async execute(params) {
+		let installationPreferencesApplied = !!params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES];
 		try {
-			let isServerValidation = false;
-			let installationPreferencesApplied = false;
-			const flags = [];
-
-			if (params[COMMAND_OPTIONS.SERVER]) {
-				flags.push(COMMAND_OPTIONS.SERVER);
-				isServerValidation = true;
-				delete params[COMMAND_OPTIONS.SERVER];
+			if (params[IGNORED_OPTIONS.SERVER]) {
+				await this._log.warning(NodeTranslationService.getMessage(WARNINGS.SERVER_OPTION_IGNORED));
 			}
+			const validateExecution = prepareValidateExecution(params);
+			const flags = validateExecution.flags;
+			const isServerValidation = validateExecution.isServerValidation;
+			installationPreferencesApplied = validateExecution.installationPreferencesApplied;
 
-			if (params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES]) {
-				delete params[COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES];
-				flags.push(COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES);
-				installationPreferencesApplied = true;
-			}
-
-			const sdkParams = CommandUtils.extractCommandOptions(params, this._commandMetadata);
-
-			const executionContext = SdkExecutionContext.Builder.forCommand(this._commandMetadata.sdkCommand)
-				.integration()
-				.addParams(sdkParams)
-				.addFlags(flags)
-				.build();
-
-			const operationResult = await executeWithSpinner({
-				action: this._sdkExecutor.execute(executionContext),
-				message: NodeTranslationService.getMessage(MESSAGES.VALIDATING, this._projectName, getProjectDefaultAuthId(this._executionPath)),
+			const sdkParams = CommandUtils.extractCommandOptions(validateExecution.params, this._commandMetadata);
+			const projectFolder = CommandUtils.unquoteString(sdkParams[COMMAND_OPTIONS.PROJECT]);
+			const operationResult = await this._executeProjectCommandWithAuthRetry({
+				command: PROJECT_COMMAND.VALIDATE,
+				projectFolder,
+				sdkParams,
+				flags,
+					message: NodeTranslationService.getMessage(MESSAGES.VALIDATING, this._suiteAppId || this._projectName, getProjectDefaultAuthId(this._executionPath)),
 			});
 
-			return operationResult.status === SdkOperationResultUtils.STATUS.SUCCESS
+			return operationResult.status === SDK_OPERATION_STATUS.SUCCESS
 				? DeployActionResult.Builder.withData(operationResult.data)
 						.withResultMessage(operationResult.resultMessage)
 						.withServerValidation(isServerValidation)
@@ -93,11 +106,97 @@ module.exports = class ValidateAction extends BaseAction {
 						.build()
 				: DeployActionResult.Builder.withErrors(operationResult.errorMessages)
 						.withServerValidation(isServerValidation)
+						.withAppliedInstallationPreferences(installationPreferencesApplied)
+						.withProjectType(this._projectType)
 						.withCommandParameters(sdkParams)
 						.withCommandFlags(flags)
 						.build();
 		} catch (error) {
-			return DeployActionResult.Builder.withErrors([error]).build();
+			return DeployActionResult.Builder.withErrors(toErrorMessages(error))
+				.withAppliedInstallationPreferences(installationPreferencesApplied)
+				.withProjectType(this._projectType)
+				.withCommandParameters(params)
+				.build();
 		}
 	}
+
+	async _executeProjectCommandWithAuthRetry({ command, projectFolder, sdkParams, flags, message }) {
+		const authId = sdkParams[COMMAND_OPTIONS.AUTH_ID];
+		const authSessionProvider = createCredentialSessionProvider(this._sdkPath, this._executionEnvironmentContext);
+		const operationResult = await executeWithSpinner({
+			action: executeWithAuthRetry({
+				authId,
+				authSessionProvider,
+				shouldRetryAuth: shouldRetryAuthByResult,
+				executeWithAuthSession: (authCredentials) => this._executeProjectCommand({
+					command,
+					projectFolder,
+					sdkParams,
+					flags,
+					authCredentials,
+				}),
+			}),
+			message,
+		});
+		if (operationResult.logFilePath) {
+			this._log.info(NodeTranslationService.getMessage(PROJECT_COMMAND_LOG.MESSAGES.WRITING, operationResult.logFilePath));
+		}
+		if (operationResult.logWriteWarning) {
+			this._log.warning(operationResult.logWriteWarning);
+		}
+		return operationResult;
+	}
+
+	_executeProjectCommand({ command, projectFolder, sdkParams, flags, authCredentials }) {
+		return executeProjectCommand({
+			command,
+			projectFolder,
+			hostName: authCredentials.hostName,
+			accessToken: authCredentials.accessToken,
+			rawOutput: isRawOutputRequested(sdkParams),
+			logFileLocation: sdkParams[COMMAND_OPTIONS.LOG]
+				? resolve(this._executionPath, CommandUtils.unquoteString(sdkParams[COMMAND_OPTIONS.LOG]))
+				: undefined,
+			params: sdkParams,
+			flags,
+			userAgent: this._executionEnvironmentContext?.toUserAgentString?.(),
+			summaryContext: this._buildSummaryContext(authCredentials, flags),
+		});
+	}
+
+	_buildSummaryContext(authCredentials, flags = []) {
+		const accountInfo = authCredentials && authCredentials.accountInfo ? authCredentials.accountInfo : {};
+		return {
+			accountName: accountInfo.companyName,
+			accountId: accountInfo.companyId,
+			roleName: accountInfo.roleName,
+			...(this._projectType === PROJECT_SUITEAPP && this._suiteAppId
+				? {
+					suiteAppId: this._suiteAppId,
+					applyInstallationPreferences: flags.includes(COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES),
+				}
+				: { projectName: this._projectName }),
+		};
+	}
 };
+
+function isRawOutputRequested(commandParameters) {
+	return !!commandParameters[COMMAND_OPTIONS.JSON];
+}
+
+function normalizeManifestValue(value) {
+	if (Array.isArray(value)) {
+		return value.length > 0 ? String(value[0]) : '';
+	}
+	if (value === undefined || value === null) {
+		return '';
+	}
+	return String(value);
+}
+
+function getProjectInfoValue(projectInfoService, methodName) {
+	if (!projectInfoService || typeof projectInfoService[methodName] !== 'function') {
+		return '';
+	}
+	return projectInfoService[methodName]();
+}

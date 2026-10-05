@@ -1,0 +1,10 @@
+<!-- This file is used for hiding the content of your SuiteApp when deploying to a NetSuite account. -->
+<!-- The configuration below hides all content except for the files and objects specified under the apply tag. Use the commented lines as examples. -->
+<!-- This configuration is only applied when the "Apply Installation Preferences" option is provided through SuiteCloud SDK. Otherwise this file is ignored. -->
+<!-- For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html -->
+
+<preference type="HIDING" defaultAction="HIDE">
+    <apply action="UNHIDE">
+        <!-- <path>~/FileCabinet/SuiteApps/xxx.xxx.xxx/MyScript.js</path> -->
+    </apply>
+</preference>

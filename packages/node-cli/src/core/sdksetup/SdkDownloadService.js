@@ -16,16 +16,14 @@ const { ENCODING, EVENT, HEADER } = require('../../utils/http/HttpConstants');
 const HOME_PATH = require('os').homedir();
 
 const { FOLDERS } = require('../../ApplicationConstants');
+const { http: suiteCloudHttp } = require('@oracle/suitecloud-sdk-core');
 
 const unwrapExceptionMessage = require('../../utils/ExceptionUtils').unwrapExceptionMessage;
-const ProxyEnvironmentUtils = require('../../services/proxy/ProxyEnvironmentUtils');
 
 const NodeTranslationService = require('../../services/NodeTranslationService');
 const FileSystemService = require('../../services/FileSystemService');
 
 const { SDK_DOWNLOAD_SERVICE } = require('../../services/TranslationKeys');
-
-const ProxyService = require('../../services/proxy/ProxyAgentService');
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
 const ERROR_CODE = -1;
@@ -44,7 +42,7 @@ class SdkDownloadService {
 		const fullURL = `${SdkProperties.getDownloadURL()}/${SdkProperties.getSdkFileName()}`;
 		const destinationFilePath = path.join(sdkDirectory, SdkProperties.getSdkFileName());
 		const temporaryDestinationFilePath = `${destinationFilePath}.tmp`;
-		const proxy =  ProxyEnvironmentUtils.resolveSdkDownloadProxyFromEnv();
+		const proxy = suiteCloudHttp.resolveSdkDownloadProxyFromEnv();
 		const skipProxy = SdkProperties.isCustomSdkMetadataUsed();
 
 		try {
@@ -65,7 +63,7 @@ class SdkDownloadService {
 
 		const requestOptions = {
 			encoding: ENCODING.BINARY,
-			...(proxy && !skipProxy && { agent: ProxyService.getProxyAgent(proxy) }),
+			...(proxy && !skipProxy && { agent: suiteCloudHttp.getProxyAgent(proxy) }),
 		};
 
 		if (!/^https:$/.test(downloadUrlProtocol)) {

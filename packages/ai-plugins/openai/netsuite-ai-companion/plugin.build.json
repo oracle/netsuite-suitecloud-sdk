@@ -20,7 +20,7 @@
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
 		"interface": {
 			"displayName": "NetSuite AI Companion",
-			"shortDescription": "Guide AI assistants using NetSuite AI Connector.",
+			"shortDescription": "Guide NetSuite AI Connector",
 			"longDescription": "This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multiple-subsidiary and currency handling, and SuiteQL safety guardrails.",
 			"developerName": "Oracle NetSuite",
 			"category": "Business & Operations",

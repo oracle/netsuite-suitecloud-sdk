@@ -20,7 +20,6 @@ const {
 } = require('../../../services/TranslationKeys');
 
 const COMMAND_OPTIONS = {
-	SERVER: 'server',
 	ACCOUNT_SPECIFIC_VALUES: 'accountspecificvalues',
 	APPLY_INSTALLATION_PREFERENCES: 'applyinstallprefs',
 	PROJECT: 'project',
@@ -37,24 +36,8 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 
 		const answers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
-				name: COMMAND_OPTIONS.SERVER,
-				message: NodeTranslationService.getMessage(QUESTIONS.SERVER_SIDE),
-				default: true,
-				choices: [
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.ACCOUNT),
-						value: true,
-					},
-					{
-						name: NodeTranslationService.getMessage(QUESTIONS_CHOICES.ACCOUNT_OR_LOCAL.LOCAL),
-						value: false,
-					},
-				],
-			},
-			{
 				when: this._projectInfoService.getProjectType() === PROJECT_ACP,
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_OPTIONS.ACCOUNT_SPECIFIC_VALUES,
 				message: NodeTranslationService.getMessage(QUESTIONS.ACCOUNT_SPECIFIC_VALUES),
 				default: ACCOUNT_SPECIFIC_VALUES_OPTIONS.ERROR,
@@ -71,7 +54,7 @@ module.exports = class ValidateInputHandler extends BaseInputHandler {
 			},
 			{
 				when: this._projectInfoService.getProjectType() === PROJECT_SUITEAPP && this._projectInfoService.hasLockAndHideFiles(),
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_OPTIONS.APPLY_INSTALLATION_PREFERENCES,
 				message: NodeTranslationService.getMessage(QUESTIONS.APPLY_INSTALLATION_PREFERENCES),
 				default: false,

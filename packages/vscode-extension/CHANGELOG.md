@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.0.0
+
+- Updated output for **SuiteCloud: Deploy Project** command
+- Updated output for **SuiteCloud: Validate Project** command
+
 ## 3.1.3
 
 - Fix for security vulnerabilities

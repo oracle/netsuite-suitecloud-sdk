@@ -55,7 +55,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 	async getParameters(params) {
 		const answers = await prompt([
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_OPTIONS.TYPE,
 				message: NodeTranslationService.getMessage(QUESTIONS.CHOOSE_PROJECT_TYPE),
 				default: ApplicationConstants.PROJECT_ACP,
@@ -109,7 +109,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 				validate: (fieldValue) => showValidationResults(fieldValue, validateProjectVersion),
 			},
 			{
-				type: CommandUtils.INQUIRER_TYPES.LIST,
+				type: CommandUtils.INQUIRER_TYPES.SELECT,
 				name: COMMAND_OPTIONS.INCLUDE_UNIT_TESTING,
 				message: NodeTranslationService.getMessage(QUESTIONS.INCLUDE_UNIT_TESTING),
 				default: true,
@@ -126,7 +126,7 @@ module.exports = class CreateObjectInputHandler extends BaseInputHandler {
 		if (this._fileSystemService.folderExists(projectAbsolutePath) && !this._fileSystemService.isFolderEmpty(projectAbsolutePath)) {
 			const overwriteAnswer = await prompt([
 				{
-					type: CommandUtils.INQUIRER_TYPES.LIST,
+					type: CommandUtils.INQUIRER_TYPES.SELECT,
 					name: COMMAND_OPTIONS.OVERWRITE,
 					message: NodeTranslationService.getMessage(QUESTIONS.OVERWRITE_PROJECT, projectAbsolutePath),
 					default: false,

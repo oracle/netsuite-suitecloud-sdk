@@ -32,6 +32,7 @@ export interface ConsoleLoggerConstructor {
 export interface ExecutionEnvironmentContextInstance {
 	getPlatform(): string;
 	getPlatformVersion(): string;
+	toUserAgentString(): string | undefined;
 }
 export interface ExecutionEnvironmentContextConstructor {
 	new(params?: { platform?: string, platformVersion?: string }): ExecutionEnvironmentContextInstance;

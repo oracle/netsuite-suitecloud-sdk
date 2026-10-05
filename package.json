@@ -3,10 +3,20 @@
 	"version": "0.0.0",
 	"license": "UPL-1.0",
 	"private": true,
+	"scripts": {
+		"build:sdk-core": "npm run build --workspace @oracle/suitecloud-sdk-core",
+		"build": "npm run build:sdk-core",
+		"pack:cli": "node scripts/pack-cli.js"
+	},
 	"workspaces": [
 		"packages/ai-plugins",
 		"packages/agent-skills",
+		"packages/sdk-core",
 		"packages/node-cli",
 		"packages/unit-testing"
-	]
+	],
+	"overrides": {
+		"babel-plugin-istanbul": "^8.0.0",
+		"test-exclude": "^7.0.1"
+	}
 }

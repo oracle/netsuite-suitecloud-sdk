@@ -26,7 +26,8 @@ module.exports = {
 
 function _generateOptionsString(commandMetadata, actionResult) {
 	const flagsReducer = (accumulator, key) => `${accumulator}--${key} `;
-	const commandReducer = (accumulator, key) => `${accumulator} --${key} ${actionResult.commandParameters[key]}`;
+	const commandReducer = (accumulator, key) =>
+		`${accumulator} --${key} ${_formatOptionValue(actionResult.commandParameters[key])}`;
 
 	const flags = actionResult.commandFlags && actionResult.commandFlags.length > 0
 		? `${actionResult.commandFlags.filter(key => _hasToBeShown(key, commandMetadata.options)).reduce(flagsReducer, '')}`.trim()
@@ -37,6 +38,10 @@ function _generateOptionsString(commandMetadata, actionResult) {
 			.filter(key => _hasToBeShown(key, commandMetadata.options))
 			.reduce(commandReducer, flags).trim()
 		: '';
+}
+
+function _formatOptionValue(value) {
+	return Array.isArray(value) ? value.join(' ') : value;
 }
 
 function _hasToBeShown(key, options) {

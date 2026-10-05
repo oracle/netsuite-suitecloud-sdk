@@ -86,38 +86,58 @@ async function downloadFile(url: string, sdkDirectory: string) {
 		method: 'GET',
 		protocol: sdkDownloadUrlObject.protocol,
 		host: sdkDownloadUrlObject.host,
-		path: sdkDownloadUrlObject.pathname,
+		path: `${sdkDownloadUrlObject.pathname}${sdkDownloadUrlObject.search}`,
 	};
 
 	let file: fs.WriteStream | undefined;
 	try {
 		file = fs.createWriteStream(temporarySdkDestinationFile);
 		const sdk = await save(options, file);
-		file.close();
 		SdkArtifactVerifier.verify(sdk, sdkProperties);
+		removeFileIfExists(sdkDestinationFile);
 		fs.renameSync(temporarySdkDestinationFile, sdkDestinationFile);
 		if (!(await validateSdk(sdkDestinationFile))) {
 			throw translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_INVALID);
 		}
 	} finally {
+		if (file) {
+			file.destroy();
+		}
 		removeFileIfExists(temporarySdkDestinationFile);
 	}
 }
 
 function save(options: https.RequestOptions, file: fs.WriteStream): Promise<string> {
 	return new Promise((resolve, reject) => {
+		let settled = false;
+		const rejectOnce = (error: unknown) => {
+			if (!settled) {
+				settled = true;
+				file.destroy();
+				reject(error);
+			}
+		};
+		const resolveOnce = () => {
+			if (!settled) {
+				settled = true;
+				resolve(file.path.toString('utf8'));
+			}
+		};
+
+		file.once('error', rejectOnce);
+		file.once('close', resolveOnce);
+
 		https.get(options, (response) => {
 			const contentType = response.headers['content-type'];
 			if (!isSuccessStatusCode(response.statusCode) || !isValidJarContentType(contentType)) {
-				reject(translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_NOT_AVAILABLE));
+				response.resume();
+				rejectOnce(translationService.getMessage(EXTENSION_INSTALLATION.ERROR.SDK_NOT_AVAILABLE));
 				return;
 			}
+			response.once('error', rejectOnce);
 			response.pipe(file);
-			file.on('finish', () => {
-				return resolve(file.path.toString('utf8'));
-			});
 		}).on('error', (err) => {
-			return reject(err);
+			return rejectOnce(err);
 		});
 	});
 }
@@ -139,7 +159,6 @@ function isSdkArtifactTrusted(sdkPath: string) {
 }
 
 function isSuccessStatusCode(statusCode: number | undefined) {
-	// HTTP 2xx status codes indicate a successful response.
 	return statusCode !== undefined && statusCode >= 200 && statusCode < 300;
 }
 
