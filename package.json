@@ -6,8 +6,13 @@
 	"scripts": {
 		"build:sdk-core": "npm run build --workspace @oracle/suitecloud-sdk-core",
 		"build": "npm run build:sdk-core",
-		"build:exe": "npm run build && npm run build:exe --workspace @oracle/suitecloud-cli",
-		"pack:cli": "node scripts/pack-cli.js"
+		"build:exe": "npm run build && npm run build:exe --workspace @oracle/suitecloud-cli --",
+		"pack:cli": "node scripts/pack-cli.js",
+		"build:exe:all": "npm run build:exe -- all",
+		"test:sea": "npm run test:sea --workspace @oracle/suitecloud-cli",
+		"sign:exe": "node packages/node-cli/scripts/sign-sea.js",
+		"build:exe:signed": "npm run build:exe -- win32-x64,linux-x64 && npm run sign:exe",
+		"test:signing": "node --test packages/node-cli/scripts/sign-sea.checks.cjs"
 	},
 	"workspaces": [
 		"packages/sdk-core",

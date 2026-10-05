@@ -292,16 +292,14 @@ this._cliConfig = createRequire(__filename)(cliConfigFile);</code></pre>
 	<ol>
 		<li>Write a temporary SEA configuration that names <code>dist/suitecloud.js</code> as its main script.</li>
 		<li>Run the current Node binary with <code>--experimental-sea-config</code> to generate a blob.</li>
-		<li>Copy <code>process.execPath</code> to the platform-appropriate output name.</li>
+		<li>Copy the current Node runtime for native builds, or download and checksum-verify the exact same Node release for the requested target.</li>
 		<li>On macOS, remove the copied binary's signature before injection.</li>
 		<li>Inject <code>NODE_SEA_BLOB</code> with <code>postject</code> and the Node SEA sentinel fuse.</li>
-		<li>Set executable permissions on non-Windows platforms and apply an ad-hoc macOS signature.</li>
+		<li>Set executable permissions on non-Windows targets. Apply an ad-hoc macOS signature when building on a Mac; otherwise report that signing on a Mac is required.</li>
 		<li>Remove the temporary configuration and blob in a <code>finally</code> block.</li>
 	</ol>
 	<p>
-		The builder rejects unsupported platforms and accidental cross-platform requests. SEA executables must be created
-		natively on their target operating system. Using <code>process.execPath</code> for both blob generation and the copied
-		runtime guarantees compatible Node versions.
+		The builder supports cross-platform packaging with snapshots and code caching disabled. Run <code>npm run build:exe:all</code> for Windows x64, macOS ARM64, and Linux x64, or pass an explicit target list to <code>npm run build:exe --</code>. Downloaded runtimes match the generating Node version exactly. See <code>packages/node-cli/README.md</code> for target selection and TeamCity signing steps.
 	</p>
 
 	<h3>10. Test and documentation support</h3>
@@ -404,7 +402,7 @@ this._cliConfig = createRequire(__filename)(cliConfigFile);</code></pre>
 		<li>Compile SDK core before invoking the CLI webpack build.</li>
 		<li>Run both webpack modes; they intentionally exercise different module-resolution models.</li>
 		<li>After changing dependencies, regenerate and commit the root lockfile.</li>
-		<li>Build SEA artifacts on the target platform and sign the final executable after blob injection.</li>
+		<li>Build SEA artifacts for the requested targets, then sign and test them on the destination platforms before release.</li>
 	</ol>
 
 	<h2>Conclusion</h2>

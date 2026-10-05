@@ -52,6 +52,8 @@
 		"build:single": "webpack --config webpack.single.config.js",
 		"build:exe": "npm run build:single && node scripts/build-sea.js",
 		"test": "jest",
-		"postinstall": "node postinstall.js"
+		"postinstall": "node postinstall.js",
+		"build:exe:all": "npm run build:exe -- all",
+		"test:sea": "node --test scripts/build-sea.checks.cjs"
 	}
 }
