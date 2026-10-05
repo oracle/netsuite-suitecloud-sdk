@@ -3,7 +3,7 @@
 # SuiteCloud SDK
 SuiteCloud Software Development Kit (SuiteCloud SDK) are the set of tools that let you customize accounts and create SuiteApps through SuiteCloud Development Framework (SDF).
 
-In this GitHub repository, the following SuiteCloud SDK tools and packages are available:
+In this GitHub repository, the following SuiteCloud SDK tools, packages, and API references are available:
 
 - [SuiteCloud Agent Skills](./packages/agent-skills/)
 
@@ -26,6 +26,8 @@ In this GitHub repository, the following SuiteCloud SDK tools and packages are a
     <img src="https://img.shields.io/npm/dm/@oracle/netsuite-uif-types.svg" alt="npm-uif-types"/>
     <img src="https://img.shields.io/npm/v/@oracle/netsuite-uif-types.svg" alt="npm-uif-types"/>
 </a>
+
+- [SuiteApp Control Center REST API](./api/suiteapp-control-center/README.md)
 
 ## Release Notes & Documentation
 To read NetSuite release notes and documentation, check the following sections of NetSuite's Help Center:
