@@ -8,9 +8,9 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 import { parseStringPromise } from 'xml2js';
 import type { ArchiveEntry } from '../../../services/archive/ZipArchive';
-import { inspectProjectControls } from '../../../services/project/ProjectControlService';
+import { inspectControlFilesAndGetProjectDescription } from '../../../services/project/ProjectControlService';
 import type { DeployGroup, ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
-import { FILES, FOLDERS, PROJECT_TYPES, XML_TAGS } from '../../../services/project/SuiteCloudProjectConstants';
+import { FOLDERS, PROJECT_TYPES, XML_TAGS } from '../../../services/project/SuiteCloudProjectConstants';
 import { parseXmlRoot } from '../../../services/project/XmlControlFileParser';
 
 type XmlValue = Record<string, any>;
@@ -23,14 +23,17 @@ export type ProjectArchivePlan = {
 };
 
 export async function createPackageArchivePlan(projectFolder: string): Promise<ProjectArchivePlan> {
-	const { manifest, controlFiles, deployGroups } = await inspectProjectControls(projectFolder);
+	const { manifest, controlFiles, deployGroups } = await inspectControlFilesAndGetProjectDescription(projectFolder);
 	const entries: ArchiveEntry[] = [];
 	const seen = new Set<string>();
 	addEntry(entries, seen, controlFiles.deploy.filename);
 	addEntry(entries, seen, controlFiles.manifest.filename);
-	if (await isRegularFile(join(projectFolder, FILES.APPLICATION_XML))) {
-		parseXmlRoot(await readFile(join(projectFolder, FILES.APPLICATION_XML), 'utf8'), FILES.APPLICATION_XML);
-		addEntry(entries, seen, FILES.APPLICATION_XML);
+	if (controlFiles.application) {
+		const applicationFileName = controlFiles.application.filename
+
+		// check for valid "application.xml" content
+		parseXmlRoot(await readFile(join(projectFolder, applicationFileName), 'utf8'), applicationFileName);
+		addEntry(entries, seen, controlFiles.application.filename);
 	}
 
 	if (manifest.projectType === PROJECT_TYPES.ACP) {

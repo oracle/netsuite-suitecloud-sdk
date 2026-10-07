@@ -87,6 +87,9 @@ export async function executeImportObjects(
 			};
 		}
 
+		// Resolve manifest metadata before downloading or writing imported objects.
+		const canImportReferencedFiles = !input.excludeFiles &&
+			getProjectManifestFile(input.projectFolder).projectType !== PROJECT_TYPES.SUITEAPP;
 		const customObjectsToImport = await resolveObjectsToImport(input, scriptIds);
 		if (customObjectsToImport.length === 0) {
 			return {
@@ -152,8 +155,6 @@ export async function executeImportObjects(
 		const importStatusItems = await parseImportObjectStatus(statusXml);
 		const importResult = extractImportObjectsResult(importStatusItems);
 
-		const canImportReferencedFiles = !input.excludeFiles &&
-			getProjectManifestFile(input.projectFolder).projectType !== PROJECT_TYPES.SUITEAPP;
 		if (canImportReferencedFiles) {
 			const referencedFilesResult = await importReferencedFiles(
 				{ ...input, targetFolder },

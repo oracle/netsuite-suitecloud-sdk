@@ -9,7 +9,7 @@ const FileUtils = require('../../utils/FileUtils');
 const CLIException = require('../../CLIException');
 const path = require('path');
 const fs = require('fs');
-const { discoverProjectControlsSync } = require('@oracle/suitecloud-sdk-core').services;
+const { getAllProjectControlFiles } = require('@oracle/suitecloud-sdk-core').services;
 const NodeTranslationService = require('./../../services/NodeTranslationService');
 const { ERRORS } = require('./../../services/TranslationKeys');
 const CommandUserExtension = require('./CommandUserExtension');
@@ -81,7 +81,7 @@ module.exports = class CLIConfigurationService {
 			errors.push(`Project folder does not exist: ${projectFolder}`);
 		} else {
 			try {
-				discoverProjectControlsSync(projectFolder);
+				getAllProjectControlFiles(projectFolder);
 			} catch (error) {
 				errors.push(error.message);
 			}

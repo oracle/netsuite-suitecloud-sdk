@@ -4,17 +4,17 @@
  */
 'use strict';
 
-const { services } = require('@oracle/suitecloud-sdk-core');
+const { http } = require('@oracle/suitecloud-sdk-core');
 
 describe('SuiteCloud request telemetry', () => {
 	it('keeps the telemetry context through asynchronous command work', async () => {
 		const telemetry = { userAgent: 'VSCode/1.99 Linux SuiteCloudSDK/2026.1.0 Java/17.0.6;amd64' };
 
-		await services.runWithSuiteCloudRequestTelemetry(telemetry, async () => {
+		await http.runWithSuiteCloudRequestTelemetry(telemetry, async () => {
 			await Promise.resolve();
-			expect(services.getSuiteCloudRequestTelemetry()).toEqual(telemetry);
+			expect(http.getSuiteCloudRequestTelemetry()).toEqual(telemetry);
 		});
 
-		expect(services.getSuiteCloudRequestTelemetry()).toBeUndefined();
+		expect(http.getSuiteCloudRequestTelemetry()).toBeUndefined();
 	});
 });

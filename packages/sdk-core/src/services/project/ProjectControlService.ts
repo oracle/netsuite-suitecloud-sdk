@@ -21,73 +21,43 @@ import {
 } from './SuiteCloudControlFileTypes';
 import { parseXmlDeploy } from './XmlDeployParser';
 import { parseXmlManifest } from './XmlManifestParser';
+import { parseXmlRoot } from './XmlControlFileParser';
 
 const CONTROL_FILE_NAME_VALUES = new Set<string>(Object.values(FILES.FILE_NAMES));
 const CONTROL_FILE_FORMAT_VALUES = new Set<string>(Object.values(FILES.FILE_FORMATS));
 
 
+/** Verify and get Manifest File Content's in project folder */
+export function getProjectManifestFile(projectFolder: string): ProjectManifest {
+	const candidates = discoverAllControlFileCandidates(projectFolder);
+	const manifest = validateControlFileSetup(candidates, FILES.FILE_NAMES.MANIFEST, projectFolder);
+	assertXmlFormat(manifest);
+	const fileContents = readFileSync(manifest.filepath, 'utf8');
+	return parseManifestMetadata(fileContents, manifest.filename);
+}
+
+
 /** Phase 1 inspection. Later phases extend it with content and path validation. */
-export async function inspectProjectControls(projectFolder: string): Promise<ProjectDescription> {
-	const manifest = getProjectManifestFile(projectFolder);
-	const controlFiles = discoverProjectControlsSync(projectFolder);
-	const deployContents = await readFile(controlFiles.deploy.filepath, 'utf8');
+export async function inspectControlFilesAndGetProjectDescription(projectFolder: string): Promise<ProjectDescription> {
+	const controlFiles = getProjectControlFiles(projectFolder);
+	const [manifestContents, deployContents] = await Promise.all([
+		readFile(controlFiles.manifest.filepath, 'utf8'),
+		readFile(controlFiles.deploy.filepath, 'utf8'),
+	]);
+	const manifest = parseManifestMetadata(manifestContents, controlFiles.manifest.filename);
 	const deployGroups = parseXmlDeploy(deployContents, controlFiles.deploy.filename);
+
 	return { controlFiles, manifest, deployGroups };
 }
 
 
-export function getProjectManifestFile(projectFolder: string): ProjectManifest {
-	const controlFiles = discoverProjectControlsSync(projectFolder);
-	assertXmlGeneration(controlFiles);
-	const fileContents = readFileSync(controlFiles.manifest.filepath, 'utf8');
-	return parseManifestMetadata(fileContents, controlFiles.manifest.filename);
-}
+/** Get list of Project control files without reading their contents. Validates for not missing, no duplicates and valid SDFv1/SDFv2 setups */
+export function getProjectControlFiles(projectFolder: string): SdfProjectControlFiles {
+	const candidates = discoverAllControlFileCandidates(projectFolder);
+	const manifest = validateControlFileSetup(candidates, FILES.FILE_NAMES.MANIFEST, projectFolder);
+	const deploy = validateControlFileSetup(candidates, FILES.FILE_NAMES.DEPLOY, projectFolder);
+	const application = validateControlFileSetup(candidates, FILES.FILE_NAMES.APPLICATION, projectFolder);
 
-
-/** Discover control files without reading their contents. */
-export function discoverProjectControlsSync(projectFolder: string): SdfProjectControlFiles {
-	return selectControlFiles(readdirSync(projectFolder, { withFileTypes: true })
-		.filter((entry) => entry.isFile())
-		.map((entry) => entry.name), projectFolder);
-}
-
-
-function selectControlFiles(filenames: string[], projectFolder: string): SdfProjectControlFiles {
-	const files: Record<SuiteCloudControlFileKind, SuiteCloudControlFile[]> = {
-		[FILES.FILE_NAMES.MANIFEST]: [],
-		[FILES.FILE_NAMES.DEPLOY]: [],
-	};
-	for (const filename of filenames) {
-		const dot = filename.lastIndexOf(FILES.DELIMITER);
-		const fileStem = filename.slice(0, dot);
-		const fileExtension = filename.slice(dot + 1);
-		if (dot < 0 || !CONTROL_FILE_NAME_VALUES.has(fileStem) || !CONTROL_FILE_FORMAT_VALUES.has(fileExtension)) {
-			continue;
-		}
-		const kind = fileStem as SuiteCloudControlFileKind;
-		const format = fileExtension as FileFormat;
-		files[kind].push({ kind, filename, filepath: resolve(projectFolder, filename), format });
-	}
-
-	for (const kind of Object.values(FILES.FILE_NAMES)) {
-		if (files[kind].length > 1) {
-			throw new Error(
-				translationService.getMessage(
-					PROJECT_CONTROL.ERROR.DUPLICATE,
-					kind,
-					files[kind].map((file) => file.filename).join(', ')
-				)
-			);
-		}
-	}
-	for (const kind of [FILES.FILE_NAMES.MANIFEST, FILES.FILE_NAMES.DEPLOY]) {
-		if (!files[kind].length) {
-			throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.MISSING, kind, projectFolder));
-		}
-	}
-
-	const manifest = files[FILES.FILE_NAMES.MANIFEST][0];
-	const deploy = files[FILES.FILE_NAMES.DEPLOY][0];
 	const sdfFrameworkVersion: SdfFrameworkVersion = manifest.format === FILES.FILE_FORMATS.XML
 		? SDF_FRAMEWORK_VERSIONS.SDFv1
 		: SDF_FRAMEWORK_VERSIONS.SDFv2;
@@ -99,13 +69,60 @@ function selectControlFiles(filenames: string[], projectFolder: string): SdfProj
 			)
 		);
 	}
-	return { sdfFrameworkVersion, manifest, deploy };
+	return { sdfFrameworkVersion, manifest, deploy, application };
+}
+
+
+function discoverAllControlFileCandidates(projectFolder: string): SuiteCloudControlFile[] {
+	const candidates: SuiteCloudControlFile[] = [];
+	for (const entry of readdirSync(projectFolder, { withFileTypes: true })) {
+		if (!entry.isFile()) {
+			continue;
+		}
+		const filename = entry.name;
+		const dot = filename.lastIndexOf(FILES.DELIMITER);
+		const fileStem = filename.slice(0, dot);
+		const fileExtension = filename.slice(dot + 1);
+		if (dot < 0 || !CONTROL_FILE_NAME_VALUES.has(fileStem) || !CONTROL_FILE_FORMAT_VALUES.has(fileExtension)) {
+			continue;
+		}
+
+		// TODO: support application.yaml, application.yml and application.json
+		//  For now only application.xml is allowed for application control file.
+		if (fileStem === FILES.FILE_NAMES.APPLICATION && fileExtension !== FILES.FILE_FORMATS.XML) {
+			continue;
+		}
+
+		const kind = fileStem as SuiteCloudControlFileKind;
+		const format = fileExtension as FileFormat;
+		candidates.push({ kind, filename, filepath: resolve(projectFolder, filename), format });
+	}
+	return candidates;
+}
+
+// Application is optional; manifest and deploy always return a selected file.
+function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: SuiteCloudControlFileKind, projectFolder: string): SuiteCloudControlFile | undefined {
+	const matches = candidates.filter((file) => file.kind === kind);
+	if (matches.length > 1) {
+		throw new Error(
+			translationService.getMessage(
+				PROJECT_CONTROL.ERROR.DUPLICATE,
+				kind,
+				matches.map((file) => file.filename).join(', ')
+			)
+		);
+	}
+	const file = matches[0];
+	if (!file && kind !== FILES.FILE_NAMES.APPLICATION) {
+		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.MISSING, kind, projectFolder));
+	}
+	return file;
 }
 
 //TODO: Update or remove method
-function assertXmlGeneration(files: SdfProjectControlFiles): void {
-	if (files.sdfFrameworkVersion === SDF_FRAMEWORK_VERSIONS.SDFv2) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FORMAT_UNSUPPORTED, files.manifest.filename));
+function assertXmlFormat(file: SuiteCloudControlFile): void {
+	if (file.format !== FILES.FILE_FORMATS.XML) {
+		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FORMAT_UNSUPPORTED, file.filename));
 	}
 }
 

@@ -12,10 +12,10 @@ export const FILES = {
 		YML: 'yml',
 	},
 	FILE_NAMES: {
+		APPLICATION: 'application',
 		DEPLOY: 'deploy',
 		MANIFEST: 'manifest',
 	},
-	APPLICATION_XML: 'application.xml',
 	DELIMITER: '.',
 	HIDING_PREFERENCE_XML: 'hiding.xml',
 	LOCKING_PREFERENCE_XML: 'locking.xml',

@@ -5,8 +5,8 @@
 'use strict';
 
 export {
-	discoverProjectControlsSync,
-	inspectProjectControls,
+	getProjectControlFiles,
+	inspectControlFilesAndGetProjectDescription,
 	getProjectManifestFile,
 } from '../services/project/ProjectControlService';
 export type {

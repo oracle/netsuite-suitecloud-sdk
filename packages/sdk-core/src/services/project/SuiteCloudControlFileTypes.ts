@@ -22,6 +22,7 @@ export type SdfProjectControlFiles = {
 	sdfFrameworkVersion: SdfFrameworkVersion;
 	manifest: SuiteCloudControlFile;
 	deploy: SuiteCloudControlFile;
+	application?: SuiteCloudControlFile;
 };
 
 // TODO: Is this necessary
@@ -41,6 +42,8 @@ export type ProjectManifest = {
 	propertyPaths: Record<'projectType' | 'projectName' | 'publisherId' | 'projectId' | 'projectVersion' | 'frameworkVersion', string>;
 };
 
+
+// TODO: Should we maintain current flows and proceed with unstructured/unvalidated "DeployGroups" or should we define a ProjectDeploy type (with specific DeployGroups)?
 export type DeployPath = { value: string; source: SourceLocation };
 export type DeployScript = {
 	path: DeployPath;

@@ -62,7 +62,7 @@ export async function executeUpdateObjects(
 			);
 		}
 
-		const packageRoot = getProjectManifestFile(input.projectFolder).applicationId;
+		const packageRoot = getProjectManifestFile(input.projectFolder).applicationId ?? '';
 		const scriptIds = normalizeScriptIds(input.scriptIds);
 		for (const scriptId of scriptIds) {
 			const objectFile = await findObjectFileByScriptId(input.projectFolder, scriptId);
