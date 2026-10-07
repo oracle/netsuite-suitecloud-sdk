@@ -19,9 +19,7 @@ import {
 	type SuiteCloudControlFile,
 	type SuiteCloudControlFileKind,
 } from './SuiteCloudControlFileTypes';
-import { parseXmlDeploy } from './XmlDeployParser';
-import { parseXmlManifest } from './XmlManifestParser';
-import { parseXmlRoot } from './XmlControlFileParser';
+import { getControlFileAdapter } from './ControlFileAdapterRegistry';
 
 const CONTROL_FILE_NAME_VALUES = new Set<string>(Object.values(FILES.FILE_NAMES));
 const CONTROL_FILE_FORMAT_VALUES = new Set<string>(Object.values(FILES.FILE_FORMATS));
@@ -31,9 +29,8 @@ const CONTROL_FILE_FORMAT_VALUES = new Set<string>(Object.values(FILES.FILE_FORM
 export function getProjectManifestFile(projectFolder: string): ProjectManifest {
 	const candidates = discoverAllControlFileCandidates(projectFolder);
 	const manifest = validateControlFileSetup(candidates, FILES.FILE_NAMES.MANIFEST, projectFolder);
-	assertXmlFormat(manifest);
 	const fileContents = readFileSync(manifest.filepath, 'utf8');
-	return parseManifestMetadata(fileContents, manifest.filename);
+	return parseManifestMetadata(fileContents, manifest);
 }
 
 
@@ -44,8 +41,11 @@ export async function inspectControlFilesAndGetProjectDescription(projectFolder:
 		readFile(controlFiles.manifest.filepath, 'utf8'),
 		readFile(controlFiles.deploy.filepath, 'utf8'),
 	]);
-	const manifest = parseManifestMetadata(manifestContents, controlFiles.manifest.filename);
-	const deployGroups = parseXmlDeploy(deployContents, controlFiles.deploy.filename);
+	const manifest = parseManifestMetadata(manifestContents, controlFiles.manifest);
+	const deployAdapter = getControlFileAdapter(controlFiles.deploy);
+	const deployDocument = deployAdapter.parseDocument(deployContents, controlFiles.deploy.filename);
+	const deployGroups = deployAdapter.normalizeDeploy(deployDocument, controlFiles.deploy.filename);
+	// ignoring application control file on purpose here
 
 	return { controlFiles, manifest, deployGroups };
 }
@@ -101,6 +101,8 @@ function discoverAllControlFileCandidates(projectFolder: string): SuiteCloudCont
 }
 
 // Application is optional; manifest and deploy always return a selected file.
+function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: 'application', projectFolder: string): SuiteCloudControlFile | undefined;
+function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: 'manifest' | 'deploy', projectFolder: string): SuiteCloudControlFile;
 function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: SuiteCloudControlFileKind, projectFolder: string): SuiteCloudControlFile | undefined {
 	const matches = candidates.filter((file) => file.kind === kind);
 	if (matches.length > 1) {
@@ -119,20 +121,15 @@ function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: Sui
 	return file;
 }
 
-//TODO: Update or remove method
-function assertXmlFormat(file: SuiteCloudControlFile): void {
-	if (file.format !== FILES.FILE_FORMATS.XML) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FORMAT_UNSUPPORTED, file.filename));
+function parseManifestMetadata(contents: string, file: SuiteCloudControlFile): ProjectManifest {
+	const adapter = getControlFileAdapter(file);
+	const parsedDocument = adapter.parseDocument(contents, file.filename);
+	const manifestMetadata = adapter.normalizeManifest(parsedDocument, file.filename);
+	if (!manifestMetadata.projectType) {
+		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_MISSING, file.filename));
 	}
-}
-
-function parseManifestMetadata(contents: string, filename: string): ProjectManifest {
-	const manifest = parseXmlManifest(contents, filename);
-	if (!manifest.projectType) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_MISSING, filename));
+	if (manifestMetadata.projectType !== PROJECT_TYPES.ACP && manifestMetadata.projectType !== PROJECT_TYPES.SUITEAPP) {
+		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_INVALID, file.filename));
 	}
-	if (manifest.projectType !== PROJECT_TYPES.ACP && manifest.projectType !== PROJECT_TYPES.SUITEAPP) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_INVALID, filename));
-	}
-	return manifest;
+	return manifestMetadata;
 }

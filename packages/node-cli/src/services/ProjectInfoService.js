@@ -19,7 +19,7 @@ const CLIException = require('../CLIException');
 const FileUtils = require('../utils/FileUtils');
 const NodeTranslationService = require('./NodeTranslationService');
 const { lineBreak } = require('../loggers/LoggerOsConstants');
-const { getAllProjectControlFiles, getProjectManifestFile, } = require('@oracle/suitecloud-sdk-core').services;
+const { getProjectControlFiles, getProjectManifestFile, } = require('@oracle/suitecloud-sdk-core').services;
 
 module.exports = class ProjectInfoService {
 	constructor(projectFolder) {
@@ -92,7 +92,7 @@ module.exports = class ProjectInfoService {
 
 	checkWorkingDirectoryContainsValidProject(commandName) {
 		try {
-			getAllProjectControlFiles(this._projectFolder);
+			getProjectControlFiles(this._projectFolder);
 		} catch (error) {
 			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
 			throw new CLIException(`${commandName}: ${error.message}${lineBreak}${guidance}`);

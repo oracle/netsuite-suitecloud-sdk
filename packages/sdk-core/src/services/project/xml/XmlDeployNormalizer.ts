@@ -4,9 +4,9 @@
  */
 'use strict';
 
-import type { DeployGroup, DeployPath, DeployScript } from './SuiteCloudControlFileTypes';
-import { XML_TAGS } from './SuiteCloudProjectConstants';
-import { parseXmlRoot, xmlChildren, xmlText, type XmlNode } from './XmlControlFileParser';
+import type { DeployGroup, DeployPath, DeployScript } from '../SuiteCloudControlFileTypes';
+import { XML_TAGS } from '../SuiteCloudProjectConstants';
+import { getXmlRoot, xmlChildren, xmlText, type XmlNode } from './XmlControlFileParser';
 
 /* As of now Deploy.xml is only scanning for DeployGroups and doesn't check what it's actually packing.
  * Allowed groups (extracted from Java):
@@ -23,8 +23,8 @@ import { parseXmlRoot, xmlChildren, xmlText, type XmlNode } from './XmlControlFi
  *   	TBD: Leave as it is or go for an approach more similar to ProjectManifest.
  */
 
-export function parseXmlDeploy(contents: string, filename: string): DeployGroup[] {
-	const deploy = parseXmlRoot(contents, filename, XML_TAGS.DEPLOY);
+export function normalizeXmlDeploy(document: unknown, filename: string): DeployGroup[] {
+	const deploy = getXmlRoot(document, filename, XML_TAGS.DEPLOY);
 	const counts = new Map<string, number>();
 	const groups: DeployGroup[] = [];
 	for (const child of xmlChildren(deploy)) {

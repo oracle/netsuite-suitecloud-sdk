@@ -4,12 +4,12 @@
  */
 'use strict';
 
-import type { ProjectManifest } from './SuiteCloudControlFileTypes';
-import { XML_TAGS } from './SuiteCloudProjectConstants';
-import { parseXmlRoot, xmlText } from './XmlControlFileParser';
+import type { ProjectManifest } from '../SuiteCloudControlFileTypes';
+import { XML_TAGS } from '../SuiteCloudProjectConstants';
+import { getXmlRoot, xmlText } from './XmlControlFileParser';
 
-export function parseXmlManifest(contents: string, filename: string): ProjectManifest {
-	const manifest = parseXmlRoot(contents, filename, XML_TAGS.MANIFEST);
+export function normalizeXmlManifest(document: unknown, filename: string): ProjectManifest {
+	const manifest = getXmlRoot(document, filename, XML_TAGS.MANIFEST);
 	const publisherId = xmlText(manifest[XML_TAGS.PUBLISHER_ID]);
 	const projectId = xmlText(manifest[XML_TAGS.PROJECT_ID]);
 	const rootPath = `/${XML_TAGS.MANIFEST}`;

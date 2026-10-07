@@ -8,8 +8,8 @@ const { mkdtemp, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const {
-	getAllProjectControlFiles,
-	inspectProjectControls,
+	getProjectControlFiles,
+	inspectControlFilesAndGetProjectDescription,
 	getProjectManifestFile,
 } = require('@oracle/suitecloud-sdk-core').services;
 const ProjectInfoService = require('../../src/services/ProjectInfoService');
@@ -37,9 +37,9 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, 'application.xml'), '<application/>');
 		await writeFile(join(projectFolder, 'messages.xlf'), '<xliff/>');
 
-		const description = await inspectProjectControls(projectFolder);
+		const description = await inspectControlFilesAndGetProjectDescription(projectFolder);
 		const cliInfo = new ProjectInfoService(projectFolder);
-		expect(description.controlFiles).toEqual(getAllProjectControlFiles(projectFolder));
+		expect(description.controlFiles).toEqual(getProjectControlFiles(projectFolder));
 		expect(description.controlFiles).toMatchObject({
 			sdfFrameworkVersion: '1.0',
 			manifest: { filepath: join(projectFolder, 'manifest.xml') },
@@ -67,7 +67,7 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, 'manifest.yaml'), 'frameworkversion: 2.0');
 		await writeFile(join(projectFolder, 'deploy.json'), '{}');
 		await writeFile(join(projectFolder, 'translation.xml'), '<xliff/>');
-		expect(getAllProjectControlFiles(projectFolder)).toMatchObject({
+		expect(getProjectControlFiles(projectFolder)).toMatchObject({
 			sdfFrameworkVersion: '2.0',
 			manifest: { filename: 'manifest.yaml', filepath: join(projectFolder, 'manifest.yaml') },
 			deploy: { filename: 'deploy.json', filepath: join(projectFolder, 'deploy.json') },
@@ -77,24 +77,32 @@ describe('ProjectControlService', () => {
 
 	it('rejects missing, duplicate, and mixed-generation control files', async () => {
 		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest/>');
-		expect(() => getAllProjectControlFiles(projectFolder)).toThrow('Missing deploy control file');
+		expect(() => getProjectControlFiles(projectFolder)).toThrow('Missing deploy control file');
 		await writeFile(join(projectFolder, 'deploy.yaml'), 'files: []');
-		expect(() => getAllProjectControlFiles(projectFolder)).toThrow('cannot be mixed');
+		expect(() => getProjectControlFiles(projectFolder)).toThrow('cannot be mixed');
 		await writeFile(join(projectFolder, 'manifest.json'), '{}');
-		expect(() => getAllProjectControlFiles(projectFolder)).toThrow('Multiple manifest control files');
+		expect(() => getProjectControlFiles(projectFolder)).toThrow('Multiple manifest control files');
 	});
 
 	it('selects a V2 control pair alongside application.xml', async () => {
 		await writeFile(join(projectFolder, 'manifest.json'), '{}');
 		await writeFile(join(projectFolder, 'deploy.yml'), '{}');
 		await writeFile(join(projectFolder, 'application.xml'), '<application/>');
-		const controlFiles = getAllProjectControlFiles(projectFolder);
+		const controlFiles = getProjectControlFiles(projectFolder);
 		expect(controlFiles).toMatchObject({
 			sdfFrameworkVersion: '2.0',
 			manifest: { filename: 'manifest.json' },
 			deploy: { filename: 'deploy.yml' },
 			application: { filename: 'application.xml', format: 'xml' },
 		});
+	});
+
+	it.each(['json', 'yaml', 'yml'])('reports unsupported manifest.%s consistently during metadata reads and inspection', async (format) => {
+		await writeFile(join(projectFolder, `manifest.${format}`), '{}');
+		await writeFile(join(projectFolder, 'deploy.json'), '{}');
+		const errorMessage = `The control-file format of manifest.${format} is not supported yet.`;
+		expect(() => getProjectManifestFile(projectFolder)).toThrow(errorMessage);
+		await expect(inspectControlFilesAndGetProjectDescription(projectFolder)).rejects.toThrow(errorMessage);
 	});
 
 	it.each([
@@ -109,7 +117,7 @@ describe('ProjectControlService', () => {
 		await Promise.all(deployFiles.map((filename) => writeFile(join(projectFolder, filename), '<deploy>')));
 
 		expect(getProjectManifestFile(projectFolder).applicationId).toBe('com.example.app');
-		await expect(inspectProjectControls(projectFolder)).rejects.toThrow(inspectionError);
+		await expect(inspectControlFilesAndGetProjectDescription(projectFolder)).rejects.toThrow(inspectionError);
 	});
 
 	it('still rejects missing and duplicate manifests during metadata reads', async () => {
@@ -131,7 +139,7 @@ describe('ProjectControlService', () => {
 			await writeFile(join(projectFolder, 'application.xml'), '<application/>');
 		}
 
-		const description = await inspectProjectControls(projectFolder);
+		const description = await inspectControlFilesAndGetProjectDescription(projectFolder);
 		expect(description.controlFiles.application?.filename).toBe(hasApplicationXml ? 'application.xml' : undefined);
 	});
 
@@ -139,16 +147,16 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"/>');
 		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>');
 		await writeFile(join(projectFolder, 'application.xml'), contents);
-		await expect(inspectProjectControls(projectFolder)).rejects.toThrow('Invalid application.xml');
+		await expect(inspectControlFilesAndGetProjectDescription(projectFolder)).rejects.toThrow('Invalid application.xml');
 	});
 
 	it('reports a malformed manifest and wrong deploy root with their filenames', async () => {
 		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest>');
 		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>');
-		await expect(inspectProjectControls(projectFolder)).rejects.toThrow('Invalid manifest.xml');
+		await expect(inspectControlFilesAndGetProjectDescription(projectFolder)).rejects.toThrow('Invalid manifest.xml');
 		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"/>');
 		await writeFile(join(projectFolder, 'deploy.xml'), '<other/>');
-		await expect(inspectProjectControls(projectFolder)).rejects.toThrow('Invalid deploy.xml: expected <deploy>');
+		await expect(inspectControlFilesAndGetProjectDescription(projectFolder)).rejects.toThrow('Invalid deploy.xml: expected <deploy>');
 	});
 
 	it('keeps existing project type checks in the shared metadata reader', async () => {
