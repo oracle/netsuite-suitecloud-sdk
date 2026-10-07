@@ -283,7 +283,7 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"dependencies": {
-		"@oracle/suitecloud-cli": "^4.1.0",
+		"@oracle/suitecloud-cli": "^4.1.1",
 		"@vscode/codicons": "^0.0.46-24"
 	},
 	"devDependencies": {
