@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="resources/readme/suitecloud-developer-assistant-banner.png" alt="Meet SuiteCloud Developer Assistant: Frontier LLM with NetSuite domain expertise">
+  <img src="resources/readme/suitecloud-developer-assistant-banner.png" alt="Meet SuiteCloud Developer Assistant: AI coding assistance for SuiteCloud development">
 </p>
 
 # SuiteCloud Extension for Visual Studio Code
