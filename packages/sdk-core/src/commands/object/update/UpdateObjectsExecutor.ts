@@ -17,7 +17,8 @@ import {
 	type UpdateObjectsExecutionInput,
 } from '../../../api/object/ObjectCommand';
 import { extractZipArchive } from '../../../services/archive/ZipArchive';
-import { getPackageRoot } from '../../../services/project/ProjectManifestService';
+import { getProjectManifestFile } from '../../../services/project/ProjectControlService';
+import { FILES } from '../../../services/project/SuiteCloudProjectConstants';
 import { OBJECT } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import {
@@ -40,7 +41,6 @@ import {
 } from '../ObjectCommandXml';
 
 const IDE_ENDPOINT_PATH = '/app/ide/ide.nl';
-const STATUS_XML_FILENAME = 'status.xml';
 const ACTION_FETCH_CUSTOM_OBJECT_XML = 'FetchCustomObjectXml';
 const IDE_ACTION_KEY = 'action';
 const IDE_PARAM_PACKAGE_ROOT = 'package_root';
@@ -62,7 +62,7 @@ export async function executeUpdateObjects(
 			);
 		}
 
-		const packageRoot = await getPackageRoot(input.projectFolder);
+		const packageRoot = getProjectManifestFile(input.projectFolder).applicationId;
 		const scriptIds = normalizeScriptIds(input.scriptIds);
 		for (const scriptId of scriptIds) {
 			const objectFile = await findObjectFileByScriptId(input.projectFolder, scriptId);
@@ -153,7 +153,7 @@ async function mergeUpdatedObjectXml(
 		await mkdir(unzipFolder, { recursive: true });
 		await extractZipArchive(zipFilePath, unzipFolder);
 
-		const statusFilePath = join(unzipFolder, STATUS_XML_FILENAME);
+		const statusFilePath = join(unzipFolder, FILES.STATUS_XML);
 		const statusXml = await readOptionalFile(statusFilePath);
 		if (statusXml) {
 			const statusItem = (await parseImportObjectStatus(statusXml)).find((item) => item.id === scriptId);

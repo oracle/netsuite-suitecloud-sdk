@@ -22,7 +22,8 @@ import {
 	assertPathWithin,
 	PathOutsideRootError,
 } from '../../../services/project/ProjectPathResolver';
-import { isSuiteAppProject } from '../../../services/project/ProjectManifestService';
+import { getProjectManifestFile } from '../../../services/project/ProjectControlService';
+import { FILES, FOLDERS, PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
 import { OBJECT } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import {
@@ -47,8 +48,6 @@ import { executeListObjects } from '../list/ListObjectsExecutor';
 import { importReferencedFiles } from './ReferencedFilesImporter';
 
 const IDE_ENDPOINT_PATH = '/app/ide/ide.nl';
-const OBJECTS_FOLDER_NAME = 'Objects';
-const STATUS_XML_FILENAME = 'status.xml';
 const ACTION_FETCH_CUSTOM_OBJECT_XML = 'FetchCustomObjectXml';
 const IDE_ACTION_KEY = 'action';
 const IDE_PARAM_CUSTOM_OBJECTS = 'custom_objects';
@@ -75,7 +74,7 @@ export async function executeImportObjects(
 				undefined
 			);
 		}
-		const objectsFolder = join(input.projectFolder, OBJECTS_FOLDER_NAME);
+		const objectsFolder = join(input.projectFolder, FOLDERS.OBJECTS);
 		const unresolvedTargetFolder = assertPathWithin(objectsFolder, input.targetFolder);
 		const targetFolder = await assertCreatablePathWithin(input.projectFolder, unresolvedTargetFolder);
 
@@ -137,7 +136,7 @@ export async function executeImportObjects(
 		await mkdir(unzipFolder, { recursive: true });
 		await unzipArchive(zipFilePath, unzipFolder);
 
-		const statusFilePath = join(unzipFolder, STATUS_XML_FILENAME);
+		const statusFilePath = join(unzipFolder, FILES.STATUS_XML);
 		const statusXml = await readOptionalFile(statusFilePath);
 		if (!statusXml) {
 			return errorResultWithMessage(
@@ -153,7 +152,8 @@ export async function executeImportObjects(
 		const importStatusItems = await parseImportObjectStatus(statusXml);
 		const importResult = extractImportObjectsResult(importStatusItems);
 
-		const canImportReferencedFiles = !input.excludeFiles && !(await isSuiteAppProject(input.projectFolder));
+		const canImportReferencedFiles = !input.excludeFiles &&
+			getProjectManifestFile(input.projectFolder).projectType !== PROJECT_TYPES.SUITEAPP;
 		if (canImportReferencedFiles) {
 			const referencedFilesResult = await importReferencedFiles(
 				{ ...input, targetFolder },

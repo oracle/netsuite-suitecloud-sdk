@@ -18,6 +18,7 @@ import {
 } from '../archive/ProjectArchivePlan';
 import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
+import { PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
 
 /** Compatibility alias for existing command consumers. */
 export const PACKAGE_PROJECT_OPERATION_STATUS = SDK_OPERATION_STATUS;
@@ -28,8 +29,6 @@ export type PackageProjectExecutionInput = {
 	projectFolder: string;
 	destinationFolder: string;
 };
-
-const PROJECT_TYPE_SUITEAPP = 'SUITEAPP';
 
 export async function executePackageProject(
 	input: PackageProjectExecutionInput
@@ -65,13 +64,11 @@ function getTargetZipFilePath(manifestData: ProjectManifestData, destinationFold
 	const datePart = formatDatePart(new Date());
 
 	if (
-		manifestData.projectType === PROJECT_TYPE_SUITEAPP &&
-		manifestData.publisherId &&
-		manifestData.projectId &&
+		manifestData.projectType === PROJECT_TYPES.SUITEAPP &&
+		manifestData.applicationId &&
 		manifestData.projectVersion
 	) {
-		const fullAppId = `${manifestData.publisherId}.${manifestData.projectId}`;
-		return join(destinationFolder, `${fullAppId}-${manifestData.projectVersion}-${datePart}.zip`);
+		return join(destinationFolder, `${manifestData.applicationId}-${manifestData.projectVersion}-${datePart}.zip`);
 	}
 
 	const projectName = manifestData.projectName || 'suitecloud-project';

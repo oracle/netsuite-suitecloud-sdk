@@ -48,6 +48,11 @@ describe('ProjectArchivePlan', () => {
 
 		expect(await listFiles(extractionFolder)).toEqual(expectedArchiveFiles());
 	});
+
+	it('rejects malformed application.xml before packaging', async () => {
+		await writeFile(join(projectFolder, 'application.xml'), '<application>', 'utf8');
+		await expect(createPackageArchivePlan(projectFolder)).rejects.toThrow('Invalid application.xml');
+	});
 });
 
 async function createSuiteAppProject() {
@@ -59,6 +64,7 @@ async function createSuiteAppProject() {
 	]);
 
 	await Promise.all([
+		writeFile(join(projectFolder, 'application.xml'), '<application/>', 'utf8'),
 		writeFile(
 			join(projectFolder, 'manifest.xml'),
 			'<manifest projecttype="SUITEAPP">' +
@@ -111,6 +117,7 @@ function expectedArchiveFiles() {
 		'FileCabinet/SuiteScripts/selected.js',
 		'Objects/customrecord_selected.xml',
 		'Objects/customscript_install.xml',
+		'application.xml',
 		'deploy.xml',
 		'manifest.xml',
 	];
