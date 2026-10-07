@@ -134,10 +134,10 @@ To set up SuiteCloud Developer Assistant:
 3. When SuiteCloud Proxy is running, click **See SuiteCloud Proxy logs** to view the logs in the Output section.
     >**Optional:** Open the API provider configuration details section when you need SuiteCloud Proxy configuration information or want to manually configure another client. The section includes the following details: API provider, API key, base URL, and model ID.
 
-4. In the Cline extension section, check if the Cline extension is installed and configured.
+4. In the Cline extension section, check if the Cline extension is installed and configured. 
 
     * If Cline is not installed, click **Go to Marketplace** to open the VS Code marketplace and install it.
-    * If Cline is installed but not configured, click **Configure** to start the configuration process, and then click **Restart extensions**.
+    * If Cline is installed but not configured, click **Configure** to start the configuration process, and then click **Restart extensions**. 
     * When Cline is installed and configured, click **Open Cline** to start using SuiteCloud Developer Assistant.
 
 You can start vibe-coding with SuiteCloud Developer Assistant.
