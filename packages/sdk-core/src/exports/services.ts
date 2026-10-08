@@ -20,9 +20,9 @@ export type {
 	SuiteCloudControlFileKind,
 } from '../services/project/SuiteCloudControlFileTypes';
 export {
+	CONTROL_FILE_FIELDS,
 	FILES,
 	FOLDERS,
 	PROJECT_TYPES,
 	SDF_FRAMEWORK_VERSIONS,
-	XML_TAGS,
 } from '../services/project/SuiteCloudProjectConstants';

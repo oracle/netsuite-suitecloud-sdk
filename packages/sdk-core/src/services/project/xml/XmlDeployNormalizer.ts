@@ -5,7 +5,7 @@
 'use strict';
 
 import type { DeployGroup, DeployPath, DeployScript } from '../SuiteCloudControlFileTypes';
-import { XML_TAGS } from '../SuiteCloudProjectConstants';
+import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
 import { getXmlRoot, xmlChildren, xmlText, type XmlNode } from './XmlControlFileParser';
 
 /* As of now Deploy.xml is only scanning for DeployGroups and doesn't check what it's actually packing.
@@ -24,35 +24,35 @@ import { getXmlRoot, xmlChildren, xmlText, type XmlNode } from './XmlControlFile
  */
 
 export function normalizeXmlDeploy(document: unknown, filename: string): DeployGroup[] {
-	const deploy = getXmlRoot(document, filename, XML_TAGS.DEPLOY);
+	const deploy = getXmlRoot(document, filename, CONTROL_FILE_FIELDS.DEPLOY);
 	const counts = new Map<string, number>();
 	const groups: DeployGroup[] = [];
 	for (const child of xmlChildren(deploy)) {
 		const kind = child['#name'];
 		const index = (counts.get(kind) ?? 0) + 1;
 		counts.set(kind, index);
-		const propertyPath = `/${XML_TAGS.DEPLOY}/${kind}[${index}]`;
-		const paths = xmlChildren(child, XML_TAGS.PATH).map((path, pathIndex) => ({
+		const propertyPath = `/${CONTROL_FILE_FIELDS.DEPLOY}/${kind}[${index}]`;
+		const paths = xmlChildren(child, CONTROL_FILE_FIELDS.PATH).map((path, pathIndex) => ({
 			value: xmlText(path),
-			source: { file: filename, propertyPath: `${propertyPath}/${XML_TAGS.PATH}[${pathIndex + 1}]` },
+			source: { file: filename, propertyPath: `${propertyPath}/${CONTROL_FILE_FIELDS.PATH}[${pathIndex + 1}]` },
 		}));
-		const scripts = kind === XML_TAGS.RUN ? parseScripts(child, filename, propertyPath) : [];
+		const scripts = kind === CONTROL_FILE_FIELDS.RUN ? parseScripts(child, filename, propertyPath) : [];
 		groups.push({ kind, paths, scripts, source: { file: filename, propertyPath } });
 	}
 	return groups;
 }
 
 function parseScripts(run: XmlNode, filename: string, groupPath: string): DeployScript[] {
-	return xmlChildren(run, XML_TAGS.SCRIPT).map((script, index) => {
-		const propertyPath = `${groupPath}/${XML_TAGS.SCRIPT}[${index + 1}]`;
+	return xmlChildren(run, CONTROL_FILE_FIELDS.SCRIPT).map((script, index) => {
+		const propertyPath = `${groupPath}/${CONTROL_FILE_FIELDS.SCRIPT}[${index + 1}]`;
 		const path: DeployPath = {
-			value: xmlText(xmlChildren(script, XML_TAGS.PATH)[0]),
-			source: { file: filename, propertyPath: `${propertyPath}/${XML_TAGS.PATH}[1]` },
+			value: xmlText(xmlChildren(script, CONTROL_FILE_FIELDS.PATH)[0]),
+			source: { file: filename, propertyPath: `${propertyPath}/${CONTROL_FILE_FIELDS.PATH}[1]` },
 		};
 		return {
 			path,
-			deployment: xmlText(xmlChildren(script, XML_TAGS.DEPLOYMENT)[0]),
-			deploymentSource: { file: filename, propertyPath: `${propertyPath}/${XML_TAGS.DEPLOYMENT}[1]` },
+			deployment: xmlText(xmlChildren(script, CONTROL_FILE_FIELDS.DEPLOYMENT)[0]),
+			deploymentSource: { file: filename, propertyPath: `${propertyPath}/${CONTROL_FILE_FIELDS.DEPLOYMENT}[1]` },
 			source: { file: filename, propertyPath },
 		};
 	});

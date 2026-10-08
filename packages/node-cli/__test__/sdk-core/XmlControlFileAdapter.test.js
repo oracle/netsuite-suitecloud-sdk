@@ -4,58 +4,112 @@
  */
 'use strict';
 
-const { getControlFileAdapter } = require('../../../sdk-core/build/services/project/ControlFileAdapterRegistry');
+const { parseControlFile, defineProjectParsingTests } = require('./helpers/ControlFileAdapterAssertions');
+
+// XML equivalents of the JSON/YAML examples retain attributes and dependency wrappers.
+const fixtures = {
+	suiteapp: {
+		manifest: `<manifest projecttype="SUITEAPP">
+  <frameworkversion>1.0</frameworkversion>
+  <publisherid>com.netsuite</publisherid>
+  <projectid>sampleapp</projectid>
+  <projectname> Sample App </projectname>
+  <projectversion>1.0.0</projectversion>
+  <description>Example SuiteApp manifest</description>
+  <dependencies>
+    <features>
+      <feature required="true">CUSTOMRECORD</feature>
+      <feature required="false">MULTILANGUAGE</feature>
+    </features>
+    <bundles>
+      <bundle id="123|456"><objects><object>customrecord_shared</object></objects></bundle>
+    </bundles>
+    <applications>
+      <application id="com.netsuite.shared">
+        <objects><object>customrecord_shared</object></objects>
+        <platformextensions><platformextension>com.netsuite.extension</platformextension></platformextensions>
+      </application>
+    </applications>
+  </dependencies>
+</manifest>`,
+		deploy: `<deploy>
+  <files>
+    <path>~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/setup.js</path>
+    <path>~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/helper.js</path>
+  </files>
+  <run>
+    <script><path>~/Objects/customscript_setup.xml</path><deployment>customdeploy_setup</deployment></script>
+    <script><path>~/Objects/customscript_defaults.xml</path><deployment>customdeploy_defaults</deployment></script>
+  </run>
+  <objects>
+    <path>~/Objects/customrecord_settings.xml</path>
+    <path>~/Objects/customscript_setup.xml</path>
+  </objects>
+  <files><path>~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/*</path></files>
+  <translationimports><path>~/Translations/custcollection_strings_fr_FR.xlf</path></translationimports>
+</deploy>`,
+	},
+	acp: {
+		manifest: `<manifest projecttype="ACCOUNTCUSTOMIZATION">
+  <frameworkversion>1.0</frameworkversion>
+  <projectname>Account Customization Project</projectname>
+  <description>Example account customization project</description>
+  <dependencies>
+    <objects><object>customrecord_settings</object></objects>
+    <files><file>/SuiteScripts/acp-helper.js</file></files>
+    <folders><folder>/SuiteScripts/</folder></folders>
+    <platformextensions><platformextension>com.netsuite.extension</platformextension></platformextensions>
+    <applications>
+      <application id="com.netsuite.shared"><objects><object>customrecord_shared</object></objects></application>
+    </applications>
+  </dependencies>
+</manifest>`,
+		deploy: `<deploy>
+  <configuration><path>~/AccountConfiguration/features.xml</path></configuration>
+  <configuration><path>~/AccountConfiguration/preferences.xml</path></configuration>
+  <files><path>~/FileCabinet/SuiteScripts/account-utility.js</path></files>
+  <objects><path>~/Objects/customrecord_accountsettings.xml</path></objects>
+  <translationimports><path>~/Translations/custcollection_accountstrings_es_ES.xlf</path></translationimports>
+</deploy>`,
+	},
+};
 
 describe('XML control-file adapter', () => {
-	it('retains original manifest declarations when normalizing metadata', () => {
-		const adapter = getControlFileAdapter({ kind: 'manifest', filename: 'manifest.xml', format: 'xml' });
-		const document = adapter.parseDocument(
-			'<manifest projecttype="SUITEAPP"><publisherid>com.example</publisherid><projectid>app</projectid>' +
-			'<features><feature required="true">FIRST</feature><feature required="false">SECOND</feature></features></manifest>',
-			'manifest.xml'
-		);
-		const originalDocument = JSON.stringify(document);
-		const manifest = adapter.normalizeManifest(document, 'manifest.xml');
+	defineProjectParsingTests('xml', fixtures);
 
-		expect(manifest).toMatchObject({ projectType: 'SUITEAPP', applicationId: 'com.example.app' });
-		expect(document.manifest.features.feature).toHaveLength(2);
-		expect(JSON.stringify(document)).toBe(originalDocument);
-	});
-
-	it('preserves repeated deploy groups and installation-script source locations', () => {
-		const adapter = getControlFileAdapter({ kind: 'deploy', filename: 'deploy.xml', format: 'xml' });
-		const document = adapter.parseDocument(
-			'<deploy><files><path>~/FileCabinet/first.js</path></files>' +
-			'<run><script><path>~/Objects/install.xml</path><deployment>customdeploy_install</deployment></script></run>' +
-			'<files><path>~/FileCabinet/second.js</path></files></deploy>',
-			'deploy.xml'
-		);
-		const groups = adapter.normalizeDeploy(document, 'deploy.xml');
-
-		expect(groups.map((group) => group.kind)).toEqual(['files', 'run', 'files']);
-		expect(groups[2].paths[0]).toEqual({
-			value: '~/FileCabinet/second.js',
-			source: { file: 'deploy.xml', propertyPath: '/deploy/files[2]/path[1]' },
-		});
-		expect(groups[1].scripts[0]).toEqual({
-			path: {
-				value: '~/Objects/install.xml',
-				source: { file: 'deploy.xml', propertyPath: '/deploy/run[1]/script[1]/path[1]' },
-			},
-			deployment: 'customdeploy_install',
-			deploymentSource: { file: 'deploy.xml', propertyPath: '/deploy/run[1]/script[1]/deployment[1]' },
-			source: { file: 'deploy.xml', propertyPath: '/deploy/run[1]/script[1]' },
+	it('retains SuiteApp feature attributes, bundles, and application dependencies', () => {
+		const { document } = parseControlFile('xml', 'manifest', fixtures.suiteapp.manifest);
+		expect(document.manifest.dependencies).toMatchObject({
+			features: { feature: [{ _: 'CUSTOMRECORD', $: { required: 'true' } }, { _: 'MULTILANGUAGE', $: { required: 'false' } }] },
+			bundles: { bundle: { $: { id: '123|456' }, objects: { object: 'customrecord_shared' } } },
+			applications: { application: {
+				$: { id: 'com.netsuite.shared' }, objects: { object: 'customrecord_shared' },
+				platformextensions: { platformextension: 'com.netsuite.extension' },
+			} },
 		});
 	});
 
-	it.each([
-		['manifest', 'normalizeManifest'],
-		['deploy', 'normalizeDeploy'],
-	])('rejects a wrong %s root during normalization', (kind, normalizeMethod) => {
-		const filename = `${kind}.xml`;
-		const adapter = getControlFileAdapter({ kind, filename, format: 'xml' });
-		const document = adapter.parseDocument('<other/>', filename);
-		expect(() => adapter[normalizeMethod](document, filename))
-			.toThrow(`Invalid ${filename}: expected <${kind}> as the root element.`);
+	it('retains ACP file, folder, object, and application dependency declarations', () => {
+		const { document } = parseControlFile('xml', 'manifest', fixtures.acp.manifest);
+		expect(document.manifest.dependencies).toMatchObject({
+			objects: { object: 'customrecord_settings' }, files: { file: '/SuiteScripts/acp-helper.js' },
+			folders: { folder: '/SuiteScripts/' }, platformextensions: { platformextension: 'com.netsuite.extension' },
+			applications: { application: { $: { id: 'com.netsuite.shared' }, objects: { object: 'customrecord_shared' } } },
+		});
+	});
+
+	it.each(['manifest', 'deploy'])('rejects a wrong %s root during normalization', (kind) => {
+		expect(() => parseControlFile('xml', kind, '<other/>'))
+			.toThrow(`Invalid ${kind}.xml: expected <${kind}> as the root element.`);
+	});
+
+	it.each(['manifest', 'deploy'])('rejects malformed or empty %s XML with the filename', (kind) => {
+		for (const contents of ['', `<${kind}>`, `<${kind}></other>`]) {
+			expect(() => parseControlFile('xml', kind, contents)).toThrow(`Invalid ${kind}.xml`);
+		}
+	});
+
+	it('accepts an empty deploy root while content validation is deferred', () => {
+		expect(parseControlFile('xml', 'deploy', '<deploy/>').normalized).toEqual([]);
 	});
 });

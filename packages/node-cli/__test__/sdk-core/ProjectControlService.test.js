@@ -64,15 +64,18 @@ describe('ProjectControlService', () => {
 	});
 
 	it('discovers a mixed JSON and YAML V2 pair without misclassifying unrelated files', async () => {
-		await writeFile(join(projectFolder, 'manifest.yaml'), 'frameworkversion: 2.0');
-		await writeFile(join(projectFolder, 'deploy.json'), '{}');
+		await writeFile(join(projectFolder, 'manifest.yaml'), 'manifest:\n  projecttype: ACCOUNTCUSTOMIZATION\n  frameworkversion: "2.0"');
+		await writeFile(join(projectFolder, 'deploy.json'), '{"deploy": []}');
 		await writeFile(join(projectFolder, 'translation.xml'), '<xliff/>');
 		expect(getProjectControlFiles(projectFolder)).toMatchObject({
 			sdfFrameworkVersion: '2.0',
 			manifest: { filename: 'manifest.yaml', filepath: join(projectFolder, 'manifest.yaml') },
 			deploy: { filename: 'deploy.json', filepath: join(projectFolder, 'deploy.json') },
 		});
-		expect(() => getProjectManifestFile(projectFolder)).toThrow('not supported yet');
+		const description = await inspectControlFilesAndGetProjectDescription(projectFolder);
+		expect(description.manifest).toEqual(getProjectManifestFile(projectFolder));
+		expect(description.manifest.frameworkVersion).toBe('2.0');
+		expect(description.deployGroups).toEqual([]);
 	});
 
 	it('rejects missing, duplicate, and mixed-generation control files', async () => {
@@ -97,12 +100,43 @@ describe('ProjectControlService', () => {
 		});
 	});
 
-	it.each(['json', 'yaml', 'yml'])('reports unsupported manifest.%s consistently during metadata reads and inspection', async (format) => {
-		await writeFile(join(projectFolder, `manifest.${format}`), '{}');
-		await writeFile(join(projectFolder, 'deploy.json'), '{}');
-		const errorMessage = `The control-file format of manifest.${format} is not supported yet.`;
+	it.each(['json', 'yaml', 'yml'])('reports invalid manifest.%s consistently during metadata reads and inspection', async (format) => {
+		await writeFile(join(projectFolder, `manifest.${format}`), '{');
+		await writeFile(join(projectFolder, 'deploy.json'), '{"deploy": []}');
+		const errorMessage = `Invalid manifest.${format}:`;
 		expect(() => getProjectManifestFile(projectFolder)).toThrow(errorMessage);
 		await expect(inspectControlFilesAndGetProjectDescription(projectFolder)).rejects.toThrow(errorMessage);
+	});
+
+	it.each([
+		['json', 'yaml'], ['json', 'yml'], ['json', 'json'],
+		['yaml', 'json'], ['yaml', 'yaml'], ['yaml', 'yml'],
+		['yml', 'json'], ['yml', 'yaml'], ['yml', 'yml'],
+	])('shares manifest.%s and deploy.%s metadata with the synchronous CLI facade', async (manifestFormat, deployFormat) => {
+		const manifestContents = manifestFormat === 'json'
+			? JSON.stringify({ manifest: { projecttype: 'SUITEAPP', publisherid: 'com.example', projectid: 'app', frameworkversion: '2.0' } })
+			: 'manifest:\n  projecttype: SUITEAPP\n  publisherid: com.example\n  projectid: app\n  frameworkversion: "2.0"';
+		const deployContents = deployFormat === 'json'
+			? JSON.stringify({ deploy: [{ files: { path: '~/FileCabinet/first.js' } }, { files: { path: '~/FileCabinet/second.js' } }] })
+			: 'deploy:\n  - files:\n      path: ~/FileCabinet/first.js\n  - files:\n      path: ~/FileCabinet/second.js';
+		await writeFile(join(projectFolder, `manifest.${manifestFormat}`), manifestContents);
+		await writeFile(join(projectFolder, `deploy.${deployFormat}`), deployContents);
+
+		const description = await inspectControlFilesAndGetProjectDescription(projectFolder);
+		const cliInfo = new ProjectInfoService(projectFolder);
+		expect(description.manifest).toEqual(getProjectManifestFile(projectFolder));
+		expect(description.manifest.applicationId).toBe(cliInfo.getApplicationId());
+		expect(cliInfo.getApplicationId()).toBe('com.example.app');
+		expect(description.controlFiles.sdfFrameworkVersion).toBe('2.0');
+		expect(description.deployGroups.map((group) => group.paths[0].value))
+			.toEqual(['~/FileCabinet/first.js', '~/FileCabinet/second.js']);
+	});
+
+	it.each(['json', 'yaml', 'yml'])('rejects malformed deploy.%s during inspection while metadata reads remain independent', async (format) => {
+		await writeFile(join(projectFolder, 'manifest.json'), '{"manifest": {"projecttype": "ACCOUNTCUSTOMIZATION"}}');
+		await writeFile(join(projectFolder, `deploy.${format}`), '{');
+		expect(getProjectManifestFile(projectFolder).projectType).toBe('ACCOUNTCUSTOMIZATION');
+		await expect(inspectControlFilesAndGetProjectDescription(projectFolder)).rejects.toThrow(`Invalid deploy.${format}:`);
 	});
 
 	it.each([

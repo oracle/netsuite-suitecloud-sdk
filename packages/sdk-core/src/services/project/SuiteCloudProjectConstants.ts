@@ -44,7 +44,8 @@ export const SDF_FRAMEWORK_VERSIONS = {
 	SDFv2: '2.0',
 } as const;
 
-export const XML_TAGS = {
+// XML, JSON, and YAML control files use the same field IDs.
+export const CONTROL_FILE_FIELDS = {
 	CONFIGURATION: 'configuration',
 	DEPLOY: FILES.FILE_NAMES.DEPLOY,
 	DEPLOYMENT: 'deployment',

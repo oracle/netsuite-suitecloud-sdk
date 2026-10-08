@@ -9,11 +9,15 @@ import { translationService } from '../translation/TranslationService';
 import type { ControlFileAdapter } from './ControlFileAdapterTypes';
 import type { FileFormat, SuiteCloudControlFile } from './SuiteCloudControlFileTypes';
 import { FILES } from './SuiteCloudProjectConstants';
+import { jsonControlFileAdapter } from './json/JsonControlFileAdapter';
 import { xmlControlFileAdapter } from './xml/XmlControlFileAdapter';
+import { yamlControlFileAdapter } from './yaml/YamlControlFileAdapter';
 
-// Discovery recognizes future formats; Phase 1 only provides the XML adapter.
-const CONTROL_FILE_ADAPTERS: Partial<Record<FileFormat, ControlFileAdapter>> = {
+const CONTROL_FILE_ADAPTERS: Record<FileFormat, ControlFileAdapter> = {
 	[FILES.FILE_FORMATS.XML]: xmlControlFileAdapter,
+	[FILES.FILE_FORMATS.JSON]: jsonControlFileAdapter,
+	[FILES.FILE_FORMATS.YAML]: yamlControlFileAdapter,
+	[FILES.FILE_FORMATS.YML]: yamlControlFileAdapter,
 };
 
 export function getControlFileAdapter(file: SuiteCloudControlFile): ControlFileAdapter {

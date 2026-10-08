@@ -5,30 +5,30 @@
 'use strict';
 
 import type { ProjectManifest } from '../SuiteCloudControlFileTypes';
-import { XML_TAGS } from '../SuiteCloudProjectConstants';
+import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
 import { getXmlRoot, xmlText } from './XmlControlFileParser';
 
 export function normalizeXmlManifest(document: unknown, filename: string): ProjectManifest {
-	const manifest = getXmlRoot(document, filename, XML_TAGS.MANIFEST);
-	const publisherId = xmlText(manifest[XML_TAGS.PUBLISHER_ID]);
-	const projectId = xmlText(manifest[XML_TAGS.PROJECT_ID]);
-	const rootPath = `/${XML_TAGS.MANIFEST}`;
+	const manifest = getXmlRoot(document, filename, CONTROL_FILE_FIELDS.MANIFEST);
+	const publisherId = xmlText(manifest[CONTROL_FILE_FIELDS.PUBLISHER_ID]);
+	const projectId = xmlText(manifest[CONTROL_FILE_FIELDS.PROJECT_ID]);
+	const rootPath = `/${CONTROL_FILE_FIELDS.MANIFEST}`;
 	return {
-		projectType: xmlText(manifest.$?.[XML_TAGS.PROJECT_TYPE]),
-		projectName: xmlText(manifest[XML_TAGS.PROJECT_NAME]),
+		projectType: xmlText(manifest.$?.[CONTROL_FILE_FIELDS.PROJECT_TYPE]),
+		projectName: xmlText(manifest[CONTROL_FILE_FIELDS.PROJECT_NAME]),
 		publisherId,
 		projectId,
 		applicationId: publisherId && projectId ? `${publisherId}.${projectId}` : undefined,
-		projectVersion: xmlText(manifest[XML_TAGS.PROJECT_VERSION]),
-		frameworkVersion: xmlText(manifest[XML_TAGS.FRAMEWORK_VERSION]),
+		projectVersion: xmlText(manifest[CONTROL_FILE_FIELDS.PROJECT_VERSION]),
+		frameworkVersion: xmlText(manifest[CONTROL_FILE_FIELDS.FRAMEWORK_VERSION]),
 		source: { file: filename, propertyPath: rootPath },
 		propertyPaths: {
-			projectType: `${rootPath}/@${XML_TAGS.PROJECT_TYPE}`,
-			projectName: `${rootPath}/${XML_TAGS.PROJECT_NAME}`,
-			publisherId: `${rootPath}/${XML_TAGS.PUBLISHER_ID}`,
-			projectId: `${rootPath}/${XML_TAGS.PROJECT_ID}`,
-			projectVersion: `${rootPath}/${XML_TAGS.PROJECT_VERSION}`,
-			frameworkVersion: `${rootPath}/${XML_TAGS.FRAMEWORK_VERSION}`,
+			projectType: `${rootPath}/@${CONTROL_FILE_FIELDS.PROJECT_TYPE}`,
+			projectName: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_NAME}`,
+			publisherId: `${rootPath}/${CONTROL_FILE_FIELDS.PUBLISHER_ID}`,
+			projectId: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_ID}`,
+			projectVersion: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_VERSION}`,
+			frameworkVersion: `${rootPath}/${CONTROL_FILE_FIELDS.FRAMEWORK_VERSION}`,
 		},
 	};
 }
