@@ -80,7 +80,7 @@
   "PROJECT_CONTROL_ERROR_DUPLICATE": "Multiple {0} control files found: {1}.",
   "PROJECT_CONTROL_ERROR_DOCUMENT_INVALID": "Invalid {0}: {1}",
   "PROJECT_CONTROL_ERROR_FORMAT_UNSUPPORTED": "The control-file format of {0} is not supported yet.",
-  "PROJECT_CONTROL_ERROR_MISSING": "Missing {0} control file in {1}.",
+  "PROJECT_CONTROL_ERROR_MISSING": "Missing {0} control file in {1}. Expected one of: {0}.xml, {0}.json, {0}.yaml, {0}.yml.",
   "PROJECT_CONTROL_ERROR_MIXED_GENERATION": "SDF v1 and v2 control files cannot be mixed: {0}.",
   "PROJECT_CONTROL_ERROR_PROJECT_TYPE_INVALID": "The projecttype attribute in {0} must be either SUITEAPP or ACCOUNTCUSTOMIZATION.",
   "PROJECT_CONTROL_ERROR_PROJECT_TYPE_MISSING": "The manifest field does not contain the projecttype attribute in {0}.",
