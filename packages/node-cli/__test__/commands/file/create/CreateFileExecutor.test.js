@@ -39,6 +39,7 @@ describe('CreateFileExecutor', () => {
 			'<manifest projecttype="SUITEAPP"><publisherid>com.netsuite</publisherid><projectid>311</projectid></manifest>',
 			'utf8'
 		);
+		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>', 'utf8');
 	});
 
 	afterEach(async () => {

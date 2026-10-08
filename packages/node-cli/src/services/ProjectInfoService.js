@@ -1,8 +1,11 @@
 /*
  ** Copyright (c) 2024 Oracle and/or its affiliates.  All rights reserved.
- ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/upl.
  */
 'use strict';
+
+const assert = require('assert');
+const path = require('path');
 
 const { ERRORS } = require('./TranslationKeys');
 const {
@@ -14,154 +17,46 @@ const {
 } = require('../ApplicationConstants');
 const CLIException = require('../CLIException');
 const FileUtils = require('../utils/FileUtils');
-const path = require('path');
 const NodeTranslationService = require('./NodeTranslationService');
-const xml2js = require('xml2js');
-const assert = require('assert');
 const { lineBreak } = require('../loggers/LoggerOsConstants');
-
-const MANIFEST_TAG_XML_PATH = '/manifest';
-const PROJECT_TYPE_ATTRIBUTE = 'projecttype';
-const MANIFEST_TAG_REGEX = '[\\s\\n]*<manifest.*>[^]*</manifest>[\\s\\n]*$';
+const { getProjectControlFiles, getProjectManifestFile, } = require('@oracle/suitecloud-sdk-core').services;
 
 module.exports = class ProjectInfoService {
 	constructor(projectFolder) {
 		assert(projectFolder);
-		this._CACHED_PROJECT_TYPE = null;
-		this._CACHED_PROJECT_NAME = null;
-		this._CACHED_PUBLISHER_ID = null;
-		this._CACHED_PROJECT_ID = null;
 		this._projectFolder = projectFolder;
+		this._manifest = null;
 	}
 
-	/**
-	 * This validation function has to be defined in xml2js.Parser in the "validator" option
-	 * When calling parserString this function will be executed for every tag of the xml we are
-	 * parsing.
-	 * @param {string} xmlPath Path of the tag that it's being evaluated at the current moment.
-	 * @param {Object} previousValue Existing value at this path if there is already one (e.g. this
-	 * 								  is the second or later item in an array).
-	 * @param {Object} newValue Value of the tag that it's being evaluated at the current moment.
-	 * @throws ValidationError if the validation fails
-	 */
-	_validateXml(xmlPath, previousValue, newValue) {
-		//TODO Add more cases
-		if (xmlPath === MANIFEST_TAG_XML_PATH) {
-			let manifestTagAttributes = newValue['$'];
-			if (!manifestTagAttributes || !manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE]) {
-				throw new xml2js.ValidationError(
-					NodeTranslationService.getMessage(ERRORS.XML_PROJECTTYPE_ATTRIBUTE_MISSING)
-				);
-			} else if (
-				manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE] !== PROJECT_SUITEAPP &&
-				manifestTagAttributes[PROJECT_TYPE_ATTRIBUTE] !== PROJECT_ACP
-			) {
-				throw new xml2js.ValidationError(
-					NodeTranslationService.getMessage(ERRORS.XML_PROJECTTYPE_INCORRECT)
-				);
+	_getManifest() {
+		if (!this._manifest) {
+			try {
+				this._manifest = getProjectManifestFile(this._projectFolder);
+			} catch (error) {
+				throw new CLIException(error.message);
 			}
 		}
-		return newValue;
+		return this._manifest;
 	}
 
 	getProjectType() {
-		if (!this._CACHED_PROJECT_TYPE) {
-			this._parseManifest();
-		}
-
-		return this._CACHED_PROJECT_TYPE;
+		return this._getManifest().projectType;
 	}
 
 	getProjectName() {
-		if (!this._CACHED_PROJECT_NAME) {
-			this._parseManifest();
-		}
-		return this._CACHED_PROJECT_NAME;
+		return this._getManifest().projectName;
 	}
 
 	getPublisherId() {
-		if (!this._CACHED_PUBLISHER_ID) {
-			this._parseManifest();
-		}
-
-		return this._CACHED_PUBLISHER_ID;
+		return this._getManifest().publisherId;
 	}
 
 	getProjectId() {
-		if (!this._CACHED_PROJECT_ID) {
-			this._parseManifest();
-		}
-
-		return this._CACHED_PROJECT_ID;
+		return this._getManifest().projectId;
 	}
 
 	getApplicationId() {
-		return this.getPublisherId() + '.' + this.getProjectId();
-	}
-
-	_parseManifest() {
-		const manifestPath = this._getManifestPath();
-		const manifestString = this._getManifestString(manifestPath);
-
-		let projectName;
-		let projectType;
-		let publisherId;
-		let projectId;
-		let validationError;
-
-		let parser = new xml2js.Parser({ validator: this._validateXml });
-
-		parser.parseString(manifestString, function (err, result) {
-			if (err) {
-				const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
-					' ' +
-					NodeTranslationService.getMessage(ERRORS.FILE, manifestPath);
-				validationError = errorMessage + ' ' + err;
-			}
-
-			if (result) {
-				projectType = result.manifest.$.projecttype;
-				projectName = result.manifest.projectname;
-				publisherId = result.manifest.publisherid;
-				projectId = result.manifest.projectid;
-			}
-		});
-
-		//TODO CHECK XML IS VALID
-		if (validationError) {
-			throw new CLIException(validationError);
-		}
-		this._CACHED_PROJECT_TYPE = projectType;
-		this._CACHED_PROJECT_NAME = projectName;
-		this._CACHED_PUBLISHER_ID = publisherId;
-		this._CACHED_PROJECT_ID = projectId;
-	}
-
-	_getManifestPath() {
-		const manifestPath = path.join(this._projectFolder, FILES.MANIFEST_XML);
-
-		if (!FileUtils.exists(manifestPath)) {
-			const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
-				' ' +
-				NodeTranslationService.getMessage(ERRORS.FILE_NOT_EXIST, manifestPath) +
-				lineBreak +
-				NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
-
-			throw new CLIException(errorMessage);
-		}
-		return manifestPath;
-	}
-
-	_getManifestString(manifestPath) {
-		const manifestString = FileUtils.readAsString(manifestPath);
-
-		if (!manifestString.match(MANIFEST_TAG_REGEX)) {
-			const errorMessage = NodeTranslationService.getMessage(ERRORS.PROCESS_FAILED) +
-				' ' +
-				NodeTranslationService.getMessage(ERRORS.XML_MANIFEST_TAG_MISSING);
-			throw new CLIException(errorMessage);
-		}
-		return manifestString;
+		return this._getManifest().applicationId || '';
 	}
 
 	hasLockAndHideFiles() {
@@ -170,19 +65,15 @@ module.exports = class ProjectInfoService {
 			FOLDERS.INSTALLATION_PREFERENCES
 		);
 		return (
-			FileUtils.exists(
-				path.join(pathToInstallationPreferences, FILES.HIDING_PREFERENCE)
-			) &&
-			FileUtils.exists(
-				path.join(pathToInstallationPreferences, FILES.LOCKING_PREFERENCE)
-			)
+			FileUtils.exists(path.join(pathToInstallationPreferences, FILES.HIDING_PREFERENCE_XML)) &&
+			FileUtils.exists(path.join(pathToInstallationPreferences, FILES.LOCKING_PREFERENCE_XML))
 		);
 	}
 
 	isAccountCustomizationProject() {
 		try {
 			return this.getProjectType() === PROJECT_ACP;
-		} catch (error) {
+		} catch {
 			return false;
 		}
 	}
@@ -190,7 +81,7 @@ module.exports = class ProjectInfoService {
 	isSuiteAppProject() {
 		try {
 			return this.getProjectType() === PROJECT_SUITEAPP;
-		} catch (error) {
+		} catch {
 			return false;
 		}
 	}
@@ -200,10 +91,11 @@ module.exports = class ProjectInfoService {
 	}
 
 	checkWorkingDirectoryContainsValidProject(commandName) {
-		if (!FileUtils.exists(path.join(this._projectFolder, FILES.MANIFEST_XML))) {
-			const errorMessage = NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, FILES.MANIFEST_XML, this._projectFolder, commandName)
-				+ lineBreak + NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
-			throw new CLIException(errorMessage);
+		try {
+			getProjectControlFiles(this._projectFolder);
+		} catch (error) {
+			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
+			throw new CLIException(`${commandName}: ${error.message}${lineBreak}${guidance}`);
 		}
 	}
 

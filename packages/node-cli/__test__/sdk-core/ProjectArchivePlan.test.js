@@ -48,6 +48,21 @@ describe('ProjectArchivePlan', () => {
 
 		expect(await listFiles(extractionFolder)).toEqual(expectedArchiveFiles());
 	});
+
+	it('rejects malformed application.xml before packaging', async () => {
+		await writeFile(join(projectFolder, 'application.xml'), '<application>', 'utf8');
+		await expect(createPackageArchivePlan(projectFolder)).rejects.toThrow('Invalid application.xml');
+	});
+
+	it('packages without application.xml and ignores JSON and YAML application files', async () => {
+		await rm(join(projectFolder, 'application.xml'));
+		await Promise.all(['json', 'yaml', 'yml'].map((format) =>
+			writeFile(join(projectFolder, `application.${format}`), 'invalid contents')));
+		const archivePlan = await createPackageArchivePlan(projectFolder);
+		expect(listPlannedFiles(archivePlan.entries)).toEqual(
+			expectedArchiveFiles().filter((filename) => filename !== 'application.xml')
+		);
+	});
 });
 
 async function createSuiteAppProject() {
@@ -59,6 +74,7 @@ async function createSuiteAppProject() {
 	]);
 
 	await Promise.all([
+		writeFile(join(projectFolder, 'application.xml'), '<application/>', 'utf8'),
 		writeFile(
 			join(projectFolder, 'manifest.xml'),
 			'<manifest projecttype="SUITEAPP">' +
@@ -111,6 +127,7 @@ function expectedArchiveFiles() {
 		'FileCabinet/SuiteScripts/selected.js',
 		'Objects/customrecord_selected.xml',
 		'Objects/customscript_install.xml',
+		'application.xml',
 		'deploy.xml',
 		'manifest.xml',
 	];

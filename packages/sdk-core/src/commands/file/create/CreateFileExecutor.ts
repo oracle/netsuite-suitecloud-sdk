@@ -4,8 +4,8 @@
  */
 'use strict';
 
-import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
-import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { mkdir, stat, writeFile } from 'node:fs/promises';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 
 import {
 	SDK_OPERATION_STATUS,
@@ -14,6 +14,8 @@ import {
 import { FILE_CREATE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { generateSuiteScriptTemplate } from '../../../templates/SuiteScriptTemplateService';
+import { getProjectManifestFile } from '../../../services/project/ProjectControlService';
+import { FOLDERS, PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
 
 /** Compatibility alias for existing command consumers. */
 export const FILE_CREATE_STATUS = SDK_OPERATION_STATUS;
@@ -27,18 +29,13 @@ type ExecuteCreateFileInput = {
 	module?: string | string[];
 };
 
-const MANIFEST_RELATIVE_PATH = 'manifest.xml';
-const SUITE_SCRIPTS_ROOT = '/SuiteScripts';
-const SUITE_APPS_ROOT = '/SuiteApps';
-const WEB_HOSTING_ROOT = '/Web Site Hosting Files';
-
 export async function executeCreateFile(input: ExecuteCreateFileInput): Promise<FileCreateResult> {
 	try {
 		const normalizedPath = normalizeSuiteScriptPath(input.path);
-		const manifest = await readManifest(join(input.projectFolder, MANIFEST_RELATIVE_PATH));
-		validateFileCabinetPath(normalizedPath, manifest);
+		const manifest = getProjectManifestFile(input.projectFolder);
+		validateFileCabinetPath(normalizedPath, { projectType: manifest.projectType, appId: manifest.applicationId });
 
-		const fileCabinetRoot = resolve(input.projectFolder, 'FileCabinet');
+		const fileCabinetRoot = resolve(input.projectFolder, FOLDERS.FILE_CABINET);
 		const fileAbsolutePath = resolveFileCabinetPath(fileCabinetRoot, normalizedPath);
 		await assertFileDoesNotExist(fileAbsolutePath);
 		const content = await generateSuiteScriptTemplate(input.type, input.module);
@@ -63,27 +60,18 @@ function normalizeSuiteScriptPath(filePath: string): string {
 	return normalized.startsWith('/') ? normalized : `/${normalized}`;
 }
 
-async function readManifest(manifestPath: string): Promise<{ projectType: string; appId?: string }> {
-	const xml = await readFile(manifestPath, 'utf8');
-	const projectType = extractFirstMatch(xml, /projecttype\s*=\s*"([^"]+)"/i)?.toUpperCase() || '';
-	const publisherId = extractFirstMatch(xml, /<publisherid>([^<]+)<\/publisherid>/i)?.trim();
-	const projectId = extractFirstMatch(xml, /<projectid>([^<]+)<\/projectid>/i)?.trim();
-	const appId = publisherId && projectId ? `${publisherId}.${projectId}` : undefined;
-	return { projectType, appId };
-}
-
 function validateFileCabinetPath(pathValue: string, manifest: { projectType: string; appId?: string }): void {
 	if (pathValue.split('/').includes('..')) {
 		throw pathOutsideFileCabinetError(pathValue);
 	}
 
 	const requiredFolder =
-		manifest.projectType === 'SUITEAPP'
-			? `${SUITE_APPS_ROOT}/${manifest.appId || ''}`
-			: SUITE_SCRIPTS_ROOT;
-	const hasRequiredAppId = manifest.projectType !== 'SUITEAPP' || Boolean(manifest.appId);
+		manifest.projectType === PROJECT_TYPES.SUITEAPP
+			? `/${FOLDERS.SUITE_APPS}/${manifest.appId || ''}`
+			: `/${FOLDERS.SUITE_SCRIPTS}`;
+	const hasRequiredAppId = manifest.projectType !== PROJECT_TYPES.SUITEAPP || Boolean(manifest.appId);
 	const isValidProjectPath = hasRequiredAppId && pathValue.startsWith(`${requiredFolder}/`);
-	const isValidWebHostingPath = pathValue.startsWith(`${WEB_HOSTING_ROOT}/`);
+	const isValidWebHostingPath = pathValue.startsWith(`/${FOLDERS.WEB_SITE_HOSTING_FILES}/`);
 
 	if (pathValue.endsWith('/') || (!isValidProjectPath && !isValidWebHostingPath)) {
 		throw invalidFileCabinetPathError(pathValue, requiredFolder);
@@ -134,10 +122,6 @@ async function assertFileDoesNotExist(filePath: string): Promise<void> {
 		}
 		throw error;
 	}
-}
-
-function extractFirstMatch(input: string, pattern: RegExp): string | undefined {
-	return input.match(pattern)?.[1];
 }
 
 function toErrorMessage(error: unknown): string {

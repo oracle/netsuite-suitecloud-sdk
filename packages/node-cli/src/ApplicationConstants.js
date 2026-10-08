@@ -21,8 +21,8 @@ module.exports = {
 	FILES: {
 		CLIENT_API_KEY: 'client_api_key.p12',
 		PROJECT_JSON: 'project.json',
-		HIDING_PREFERENCE: 'hiding.xml',
-		LOCKING_PREFERENCE: 'locking.xml',
+		HIDING_PREFERENCE_XML: 'hiding.xml',
+		LOCKING_PREFERENCE_XML: 'locking.xml',
 		MANIFEST_XML: 'manifest.xml',
 		SDK_SETTINGS: 'suitecloud-sdk-settings.json',
 	},

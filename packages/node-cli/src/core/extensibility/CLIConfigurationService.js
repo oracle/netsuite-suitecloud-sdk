@@ -9,12 +9,11 @@ const FileUtils = require('../../utils/FileUtils');
 const CLIException = require('../../CLIException');
 const path = require('path');
 const fs = require('fs');
+const { getProjectControlFiles } = require('@oracle/suitecloud-sdk-core').services;
 const NodeTranslationService = require('./../../services/NodeTranslationService');
 const { ERRORS } = require('./../../services/TranslationKeys');
 const CommandUserExtension = require('./CommandUserExtension');
 const CLI_CONFIG_JS_FILE = 'suitecloud.config.js';
-const MANIFEST_XML_FILE = 'manifest.xml';
-const DEPLOY_XML_FILE = 'deploy.xml';
 const {
 	LINKS: { INFO },
 } = require('../../ApplicationConstants');
@@ -81,13 +80,10 @@ module.exports = class CLIConfigurationService {
 		if (!FileUtils.exists(projectFolder) || !fs.statSync(projectFolder).isDirectory()) {
 			errors.push(`Project folder does not exist: ${projectFolder}`);
 		} else {
-			const manifestPath = path.join(projectFolder, MANIFEST_XML_FILE);
-			const deployPath = path.join(projectFolder, DEPLOY_XML_FILE);
-			if (!FileUtils.exists(manifestPath)) {
-				errors.push(`Missing ${MANIFEST_XML_FILE} in ${projectFolder}.`);
-			}
-			if (!FileUtils.exists(deployPath)) {
-				errors.push(`Missing ${DEPLOY_XML_FILE} in ${projectFolder}.`);
+			try {
+				getProjectControlFiles(projectFolder);
+			} catch (error) {
+				errors.push(error.message);
 			}
 		}
 

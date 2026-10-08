@@ -15,7 +15,8 @@ import {
 	type UpdateCustomRecordWithInstancesExecutionInput,
 } from '../../../api/object/ObjectCommand';
 import { extractZipArchive } from '../../../services/archive/ZipArchive';
-import { getPackageRoot } from '../../../services/project/ProjectManifestService';
+import { getProjectManifestFile } from '../../../services/project/ProjectControlService';
+import { FILES } from '../../../services/project/SuiteCloudProjectConstants';
 import { OBJECT } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import {
@@ -33,7 +34,6 @@ import {
 import { parseIdePayload, parseImportObjectStatus } from '../ObjectCommandXml';
 
 const ENDPOINT_PATH = '/app/ide/fetchcustomrecordwithinstancesxml.nl';
-const STATUS_XML_FILENAME = 'status.xml';
 const SDF_ACTION = 'updatecustomrecordwithinstances';
 const DEFAULT_TIMEOUT_MS = 5 * 60 * 1000;
 
@@ -55,7 +55,7 @@ export async function executeUpdateCustomRecordWithInstances(
 			return errorResult(translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId));
 		}
 
-		const packageRoot = await getPackageRoot(input.projectFolder);
+		const packageRoot = getProjectManifestFile(input.projectFolder).applicationId;
 		const params: Record<string, string | string[]> = { scriptid: input.scriptId };
 		if (packageRoot) {
 			params.appid = packageRoot;
@@ -91,7 +91,7 @@ export async function executeUpdateCustomRecordWithInstances(
 		await mkdir(unzipFolder, { recursive: true });
 		await extractZipArchive(zipFilePath, unzipFolder);
 
-		const statusFilePath = join(unzipFolder, STATUS_XML_FILENAME);
+		const statusFilePath = join(unzipFolder, FILES.STATUS_XML);
 		const statusXml = await readOptionalFile(statusFilePath);
 		if (statusXml) {
 			const failedStatus = (await parseImportObjectStatus(statusXml))
