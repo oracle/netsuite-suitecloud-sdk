@@ -23,16 +23,16 @@ Download the OpenAPI YAML file and open it in an OpenAPI-compatible viewer or
 
 - A NetSuite account with access to SuiteApp Control Center.
 - REST Web Services and OAuth 2.0 enabled in the account.
-- A user with an OAuth 2.0 role and the **SuiteApp Management** permission at the
+- A user with an OAuth 2.0 role and the SuiteApp Management permission at the
   **Full** level.
 - A NetSuite integration record configured for **Authorization Code Grant** and
   the **REST Web Services** scope.
 - Postman to use the supplied collection.
 
-For account and role setup, see NetSuite's
+For account and role setup, see
 [Getting Started with OAuth 2.0](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_157771281570.html).
 
-For integration setup, see NetSuite's
+For integration setup, see
 [Create Integration Records for Applications to Use OAuth 2.0](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_157771733782.html).
 
 ## Use the Postman collection
