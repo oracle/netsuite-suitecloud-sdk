@@ -1,4 +1,7 @@
 {
+  "CONFIGURATION_ERROR_DESTINATION_OUTSIDE_PROJECT": "Account configuration must be imported into the AccountConfiguration folder within the project.",
+  "CONFIGURATION_ERROR_PROJECT_FOLDER_REQUIRED": "A project folder is required for configuration import.",
+  "CONFIGURATION_ERROR_UNKNOWN_SERVER_RESPONSE": "Unable to recognize the response from server.",
   "FILE_CREATE_ERROR_FILE_ALREADY_EXISTS": "The SuiteScript file already exists in \"{0}\".",
   "FILE_CREATE_ERROR_INVALID_FILE_CABINET_PATH": "The file cabinet path \"{0}\" is invalid. It must refer to a file in a \"{1}\" folder or in any \"/Web Site Hosting Files\" subfolder. For example, \"{1}/file.js\".",
   "FILE_CREATE_ERROR_PATH_OUTSIDE_FILE_CABINET": "Invalid path \"{0}\". Path must remain inside the project's FileCabinet folder.",

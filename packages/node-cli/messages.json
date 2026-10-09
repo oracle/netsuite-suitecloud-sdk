@@ -35,6 +35,12 @@
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_DEPENDENCIES_ADDED_TO_MANIFEST": "The following dependencies were added to the manifest:",
 	"COMMAND_ADDDEPENDENCIES_MESSAGE_NO_UNRESOLVED_DEPENDENCIES": "There are no dependencies to add to the manifest.xml file.",
 
+	"COMMAND_CONFIGIMPORT_ERRORS_IS_SUITEAPP": "The \"config:import\" command is only applicable for Account Customization project.",
+	"COMMAND_CONFIGIMPORT_MESSAGES_IMPORTING": "Importing account features...",
+	"COMMAND_CONFIGIMPORT_OUTPUT_IMPORTED": "The following objects have been imported:",
+	"COMMAND_CONFIGIMPORT_OUTPUT_NONE_IMPORTED": "No objects were imported.",
+	"COMMAND_CONFIGIMPORT_OUTPUT_NOT_IMPORTED": "The following objects have not been imported:",
+
 	"COMMAND_CREATEFILE_ADD_SUITESCRIPT_MODULES": "Do you want to add SuiteScript modules to the file?",
 	"COMMAND_CREATEFILE_CHOOSE_SUITESCRIPT_TYPE": "What type of SuiteScript do you want to create?",
 	"COMMAND_CREATEFILE_ENTER_NAME": "Enter a name for the SuiteScript file.",

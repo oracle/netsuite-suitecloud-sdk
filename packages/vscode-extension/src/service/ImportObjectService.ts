@@ -12,7 +12,6 @@ const IMPORT_OBJECT_COMMAND_NAME = 'object:import';
 const LIST_OBJECT_COMMAND_NAME = 'object:list';
 
 export default class CustomObjectService {
-	private executionPath?: string;
 	private readonly messageService: MessageService;
 	private translationService: VSTranslationService;
 
@@ -29,7 +28,6 @@ export default class CustomObjectService {
 		executionPath: string,
 		consoleLogger: VSConsoleLogger
 	) {
-		this.executionPath = executionPath;
 		//We choose 'ALL' types because it is chosen before which scriptIds should be imported and not by type
 		let commandArgs: any = { type: 'ALL', destinationfolder: destinationFolder };
 
@@ -43,14 +41,18 @@ export default class CustomObjectService {
 			commandArgs.excludefiles = true;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, IMPORT_OBJECT_COMMAND_NAME, consoleLogger);
+		const commandActionPromise = this.runSuiteCloudCommand(
+			commandArgs,
+			IMPORT_OBJECT_COMMAND_NAME,
+			consoleLogger,
+			executionPath
+		);
 		const statusBarMessage = this.translationService.getMessage(IMPORT_OBJECTS.IMPORTING_OBJECTS);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return commandActionPromise;
 	}
 
 	async listObjects(appId: string, types: string[], scriptId: string, executionPath: string, consoleLogger: VSConsoleLogger) {
-		this.executionPath = executionPath;
 		let commandArgs: any = { type: types.join(' ') };
 
 		if (appId !== '') {
@@ -60,14 +62,24 @@ export default class CustomObjectService {
 			commandArgs.scriptid = scriptId;
 		}
 
-		const commandActionPromise = this.runSuiteCloudCommand(commandArgs, LIST_OBJECT_COMMAND_NAME, consoleLogger);
+		const commandActionPromise = this.runSuiteCloudCommand(
+			commandArgs,
+			LIST_OBJECT_COMMAND_NAME,
+			consoleLogger,
+			executionPath
+		);
 		const statusBarMessage = this.translationService.getMessage(LIST_OBJECTS.LISTING);
 		this.messageService.showStatusBarMessage(statusBarMessage, true, commandActionPromise);
 		return commandActionPromise;
 	}
 
-	protected async runSuiteCloudCommand(args: { [key: string]: string } = {}, command: string, consoleLogger: VSConsoleLogger) {
-		return new SuiteCloudRunner(consoleLogger, this.executionPath).run({
+	protected async runSuiteCloudCommand(
+		args: { [key: string]: string } = {},
+		command: string,
+		consoleLogger: VSConsoleLogger,
+		executionPath: string
+	) {
+		return new SuiteCloudRunner(consoleLogger, executionPath).run({
 			commandName: command,
 			arguments: args,
 		});
