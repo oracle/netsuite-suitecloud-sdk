@@ -1,7 +1,7 @@
 # SuiteApp Control Center REST API Documentation
 
 This repository contains the OpenAPI specification and Postman collection for
-**SuiteApp Control Center REST API v1**. Use this API to create, publish, and
+[SuiteApp Control Center REST API Endpoints](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_2085345571.html). Use this API to create, publish, and
 deprecate SuiteApp versions, list installations, and request installation upgrades.
 
 ## Available API resources
@@ -77,4 +77,12 @@ Select the collection and open **Variables**.
 For callback configuration and browser authorization options, see
 [OAuth 2.0 in Postman](https://learning.postman.com/docs/use/send-requests/authorization/oauth-20).
 
-Copyright © 2026, Oracle and/or its affiliates. All rights reserved.
+## Contributing
+
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](/CONTRIBUTING.md).
+
+## [License](/LICENSE.txt)
+
+Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+
+By installing SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
