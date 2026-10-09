@@ -1,0 +1,330 @@
+{
+  "info": {
+    "name": "SuiteApp Control Center REST API",
+    "description": "SuiteApp Control Center REST API v1 enables you to manage SuiteApp versions and installations in SuiteApp Control Center.\n\nAll requests require an OAuth 2.0 access token with the REST Web Services scope. The authenticated user must have the SuiteApp Management permission at the Full level.\n\nBefore requesting an access token, create a Postman Vault secret named `netsuiteClientSecret`. Do not store client secrets, access tokens, or other credentials as shared collection or environment variable values.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "ControlCenter",
+      "item": [
+        {
+          "name": "Version",
+          "item": [
+            {
+              "name": "Create SuiteApp Version",
+              "protocolProfileBehavior": {
+                "disabledSystemHeaders": {}
+              },
+              "request": {
+                "method": "POST",
+                "description": "Upload a SuiteApp ZIP archive and create a new version in the specified release phase. The newly created version has PENDING status.",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "phase",
+                      "value": "",
+                      "description": "Release phase for the new version. Allowed values are LEADING and LAGGING.",
+                      "type": "text"
+                    },
+                    {
+                      "key": "nsVersion",
+                      "value": "",
+                      "description": "Minimum NetSuite version required by the SuiteApp. Use the YYYY.N format, for example 2026.1.",
+                      "type": "text"
+                    },
+                    {
+                      "key": "file",
+                      "description": "SuiteApp ZIP archive.",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{companyUrl}}/services/rest/suiteappcontrolcenter/v1/suiteapp/{{applicationId}}/version",
+                  "host": [
+                    "{{companyUrl}}"
+                  ],
+                  "path": [
+                    "services",
+                    "rest",
+                    "suiteappcontrolcenter",
+                    "v1",
+                    "suiteapp",
+                    "{{applicationId}}",
+                    "version"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update SuiteApp Version",
+              "request": {
+                "method": "PATCH",
+                "description": "Publish or deprecate a SuiteApp version. The status field accepts PUBLISH_WITH_DEPRECATION, PUBLISH_WITH_PHASE_SHIFT, or DEPRECATE.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"status\": \"PUBLISH_WITH_DEPRECATION\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{companyUrl}}/services/rest/suiteappcontrolcenter/v1/suiteapp/{{applicationId}}/version/{{version}}",
+                  "host": [
+                    "{{companyUrl}}"
+                  ],
+                  "path": [
+                    "services",
+                    "rest",
+                    "suiteappcontrolcenter",
+                    "v1",
+                    "suiteapp",
+                    "{{applicationId}}",
+                    "version",
+                    "{{version}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Installation",
+          "item": [
+            {
+              "name": "Get SuiteApp Installations",
+              "request": {
+                "method": "GET",
+                "description": "Return installations with optional filtering, ordering, and pagination. The response uses the Oracle vendor media type; the implementation returns application/vnd.oracle.resource+json;type=single.",
+                "header": [],
+                "url": {
+                  "raw": "{{companyUrl}}/services/rest/suiteappcontrolcenter/v1/suiteapp/{{applicationId}}/installation",
+                  "host": [
+                    "{{companyUrl}}"
+                  ],
+                  "path": [
+                    "services",
+                    "rest",
+                    "suiteappcontrolcenter",
+                    "v1",
+                    "suiteapp",
+                    "{{applicationId}}",
+                    "installation"
+                  ],
+                  "query": [
+                    {
+                      "key": "upgradable",
+                      "value": "false",
+                      "description": "When true, return only installations eligible for the selected upgrade phase.",
+                      "disabled": true
+                    },
+                    {
+                      "key": "upgradePhase",
+                      "value": "LEADING",
+                      "type": "text",
+                      "description": "Release phase used only when upgradable=true. LEADING and LAGGING are accepted case-insensitively.",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20",
+                      "description": "Maximum installations to return. 0 or omission uses the default page size of 20.",
+                      "disabled": true
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0",
+                      "description": "Zero-based offset of the first installation to return.",
+                      "disabled": true
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "status:asc",
+                      "description": "Case-sensitive sort expression: one of compId, name, lastUpdated, status, version, nsVersion, or accountType, optionally followed by :asc or :desc.",
+                      "disabled": true
+                    },
+                    {
+                      "key": "q",
+                      "value": "status eq \"INSTALLED\"",
+                      "description": "Case-sensitive SCIM-style filter. Use the same field names allowed by orderBy, quoted values up to 1,000 characters, eq or co comparisons, and and to join comparisons. Supply an unencoded value; Postman encodes it in the request URL.",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Upgrade SuiteApp Installations",
+              "request": {
+                "method": "PUT",
+                "description": "Start upgrades for the specified account IDs. A 202 response means that the request was accepted.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"version\": \"{{version}}\",\r\n    \"companyIds\": {{companyIds}}\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{companyUrl}}/services/rest/suiteappcontrolcenter/v1/suiteapp/{{applicationId}}/installation",
+                  "host": [
+                    "{{companyUrl}}"
+                  ],
+                  "path": [
+                    "services",
+                    "rest",
+                    "suiteappcontrolcenter",
+                    "v1",
+                    "suiteapp",
+                    "{{applicationId}}",
+                    "installation"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "grant_type",
+        "value": "authorization_code",
+        "type": "string"
+      },
+      {
+        "key": "client_authentication",
+        "value": "header",
+        "type": "string"
+      },
+      {
+        "key": "state",
+        "value": "{{oauthState}}",
+        "type": "string"
+      },
+      {
+        "key": "scope",
+        "value": "{{scope}}",
+        "type": "string"
+      },
+      {
+        "key": "clientSecret",
+        "value": "{{vault:netsuiteClientSecret}}",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "{{clientId}}",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "{{companyUrl}}/services/rest/auth/oauth2/v1/token",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "{{companyUrl}}/app/login/oauth2/authorize.nl",
+        "type": "string"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "{{callbackUrl}}",
+        "type": "string"
+      },
+      {
+        "key": "tokenName",
+        "value": "SuiteApp Control Center REST API Token",
+        "type": "string"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "companyUrl",
+      "value": "https://{{accountId}}.app.netsuite.com",
+      "description": "NetSuite company URL including the protocol and without a trailing slash. By default, it is derived from accountId."
+    },
+    {
+      "key": "accountId",
+      "value": "",
+      "description": "Your NetSuite account ID, for example 1234567."
+    },
+    {
+      "key": "callbackUrl",
+      "value": "",
+      "description": "OAuth 2.0 callback URL. It must exactly match a Redirect URI configured on the NetSuite integration record."
+    },
+    {
+      "key": "clientId",
+      "value": "",
+      "description": "OAuth 2.0 client ID (Consumer Key) from the NetSuite integration record."
+    },
+    {
+      "key": "scope",
+      "value": "rest_webservices",
+      "description": "OAuth 2.0 scope required by this API."
+    },
+    {
+      "key": "oauthState",
+      "value": "",
+      "description": "OAuth 2.0 state value. It must be between 22 and 1,024 printable ASCII characters and unique for each authorization flow."
+    },
+    {
+      "key": "applicationId",
+      "value": "",
+      "description": "SuiteApp application ID with three lowercase alphanumeric dot-separated segments, up to 80 characters, for example com.netsuite.example."
+    },
+    {
+      "key": "version",
+      "value": "",
+      "description": "SuiteApp version whose status should be updated or to which the selected installations should be upgraded, for example 1.2.3."
+    },
+    {
+      "key": "companyIds",
+      "value": "[]",
+      "description": "JSON array of NetSuite account IDs whose SuiteApp installations should be upgraded, for example [\"1234567\", \"7654321\"]."
+    }
+  ]
+}
