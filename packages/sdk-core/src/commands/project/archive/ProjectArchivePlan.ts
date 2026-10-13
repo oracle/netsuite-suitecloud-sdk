@@ -23,7 +23,7 @@ export type ProjectArchivePlan = {
 };
 
 export async function createPackageArchivePlan(projectFolder: string): Promise<ProjectArchivePlan> {
-	const { manifest, controlFiles, deployGroups } = await inspectControlFilesAndGetProjectDescription(projectFolder);
+	const { manifest, controlFiles, deployGroups } = inspectControlFilesAndGetProjectDescription(projectFolder);
 	const entries: ArchiveEntry[] = [];
 	const seen = new Set<string>();
 	addEntry(entries, seen, controlFiles.deploy.filename);

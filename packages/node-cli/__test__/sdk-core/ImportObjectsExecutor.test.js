@@ -53,7 +53,7 @@ describe('ImportObjectsExecutor manifest checks', () => {
 		['missing', [], 'Missing manifest control file'],
 		['malformed', [['manifest.xml', '<manifest>']], 'Invalid manifest.xml'],
 		['duplicate', [
-			['manifest.xml', '<manifest projecttype="ACCOUNTCUSTOMIZATION"/>'],
+			['manifest.xml', '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>'],
 			['manifest.json', '{}'],
 		], 'Multiple manifest control files'],
 	])('rejects a %s manifest before requesting or writing objects', async (_name, files, errorMessage) => {
@@ -66,7 +66,7 @@ describe('ImportObjectsExecutor manifest checks', () => {
 	});
 
 	it('imports objects with a valid manifest and no deploy file', async () => {
-		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"/>');
+		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>');
 		const result = await executeImportObjects(input);
 		expect(result.status).toBe('SUCCESS');
 		expect(result.data.successfulImports).toHaveLength(1);

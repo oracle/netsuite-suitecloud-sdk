@@ -17,6 +17,7 @@ const ExecutionEnvironmentContext = require('../ExecutionEnvironmentContext');
 const { checkIfReauthorizationIsNeeded, getAuthInfo, refreshAuthorization } = require('../utils/AuthenticationUtils');
 const { AUTHORIZATION_PROPERTIES_KEYS } = require('../ApplicationConstants');
 const { runWithSuiteCloudRequestTelemetry } = require('@oracle/suitecloud-sdk-core').http;
+const { inspectControlFilesAndGetProjectDescription } = require('@oracle/suitecloud-sdk-core').services;
 
 module.exports = class CommandActionExecutor {
 	constructor(dependencies) {
@@ -72,6 +73,11 @@ module.exports = class CommandActionExecutor {
 				arguments: commandMetadata.isSetupRequired ? this._applyDefaultContextParams(commandArguments, defaultAuthId) : commandArguments,
 			});
 			const overriddenArguments = beforeExecutingOutput.arguments;
+
+			// Validate control-file contents after the user hook and before authorization requests.
+			if (commandName === 'project:deploy' || commandName === 'project:package' || commandName === 'project:deploy') {
+				inspectControlFilesAndGetProjectDescription(projectFolder);
+			}
 			
 			if (commandMetadata.isSetupRequired && !context.arguments[AUTHORIZATION_PROPERTIES_KEYS.SKIP_AUHTORIZATION_CHECK]) {
 				// check if reauthz is needed to show proper message before continuing with the execution

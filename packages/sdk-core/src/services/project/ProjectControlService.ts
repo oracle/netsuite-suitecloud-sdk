@@ -5,7 +5,6 @@
 'use strict';
 
 import { readFileSync, readdirSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { PROJECT_CONTROL } from '../translation/TranslationKeys';
 import { translationService } from '../translation/TranslationService';
@@ -35,12 +34,11 @@ export function getProjectManifestFile(projectFolder: string): ProjectManifest {
 
 
 /** Phase 1 inspection. Later phases extend it with content and path validation. */
-export async function inspectControlFilesAndGetProjectDescription(projectFolder: string): Promise<ProjectDescription> {
+export function inspectControlFilesAndGetProjectDescription(projectFolder: string): ProjectDescription {
 	const controlFiles = getProjectControlFiles(projectFolder);
-	const [manifestContents, deployContents] = await Promise.all([
-		readFile(controlFiles.manifest.filepath, 'utf8'),
-		readFile(controlFiles.deploy.filepath, 'utf8'),
-	]);
+	const manifestContents = readFileSync(controlFiles.manifest.filepath, 'utf8');
+	const deployContents = readFileSync(controlFiles.deploy.filepath, 'utf8');
+
 	const manifest = parseManifestMetadata(manifestContents, controlFiles.manifest);
 	const deployAdapter = getControlFileAdapter(controlFiles.deploy);
 	const deployDocument = deployAdapter.parseDocument(deployContents, controlFiles.deploy.filename);
@@ -125,11 +123,24 @@ function parseManifestMetadata(contents: string, file: SuiteCloudControlFile): P
 	const adapter = getControlFileAdapter(file);
 	const parsedDocument = adapter.parseDocument(contents, file.filename);
 	const manifestMetadata = adapter.normalizeManifest(parsedDocument, file.filename);
+
 	if (!manifestMetadata.projectType) {
 		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_MISSING, file.filename));
 	}
+
 	if (manifestMetadata.projectType !== PROJECT_TYPES.ACP && manifestMetadata.projectType !== PROJECT_TYPES.SUITEAPP) {
 		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_INVALID, file.filename));
 	}
+
+	if (!manifestMetadata.frameworkVersion) {
+		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FRAMEWORK_VERSION_MISSING, file.filename));
+	}
+	const expectedFrameworkVersion = file.format === FILES.FILE_FORMATS.XML
+		? SDF_FRAMEWORK_VERSIONS.SDFv1
+		: SDF_FRAMEWORK_VERSIONS.SDFv2;
+	if (manifestMetadata.frameworkVersion !== expectedFrameworkVersion) {
+		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FRAMEWORK_VERSION_MISMATCH, file.filename, manifestMetadata.frameworkVersion));
+	}
+
 	return manifestMetadata;
 }

@@ -36,7 +36,7 @@ describe('CreateFileExecutor', () => {
 		projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-createfile-'));
 		await writeFile(
 			join(projectFolder, 'manifest.xml'),
-			'<manifest projecttype="SUITEAPP"><publisherid>com.netsuite</publisherid><projectid>311</projectid></manifest>',
+			'<manifest projecttype="SUITEAPP"><publisherid>com.netsuite</publisherid><projectid>311</projectid><frameworkversion>1.0</frameworkversion></manifest>',
 			'utf8'
 		);
 		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>', 'utf8');

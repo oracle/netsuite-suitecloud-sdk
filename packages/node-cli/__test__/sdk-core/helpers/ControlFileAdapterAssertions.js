@@ -126,14 +126,14 @@ function defineProjectParsingTests(format, fixtures) {
 			});
 		});
 
-		it('reads the physical control-file pair through synchronous metadata and asynchronous inspection', async () => {
+		it('reads the physical control-file pair through synchronous metadata and inspection', async () => {
 			const projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-control-file-examples-'));
 			try {
 				await Promise.all([
 					writeFile(join(projectFolder, manifestFilename), manifest),
 					writeFile(join(projectFolder, deployFilename), deploy),
 				]);
-				const description = await inspectControlFilesAndGetProjectDescription(projectFolder);
+				const description = inspectControlFilesAndGetProjectDescription(projectFolder);
 				expect(description.manifest).toEqual(getProjectManifestFile(projectFolder));
 				expect(description.manifest).toMatchObject({ ...EXPECTED_MANIFESTS[projectType], frameworkVersion });
 				expect(description.controlFiles).toMatchObject({
