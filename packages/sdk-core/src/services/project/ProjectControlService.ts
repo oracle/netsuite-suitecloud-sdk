@@ -23,7 +23,7 @@ import { getControlFileAdapter } from './ControlFileAdapterRegistry';
 const CONTROL_FILE_NAME_VALUES = new Set<string>(Object.values(FILES.FILE_NAMES));
 const CONTROL_FILE_FORMAT_VALUES = new Set<string>(Object.values(FILES.FILE_FORMATS));
 
-
+// TODO: Should the methods in this class be SYNC? ASYNC? IMPLEMENT BOTH (duplicate methods)?
 /** Verify and get Manifest File Content's in project folder */
 export function getProjectManifestFile(projectFolder: string): ProjectManifest {
 	const candidates = discoverAllControlFileCandidates(projectFolder);
@@ -33,7 +33,7 @@ export function getProjectManifestFile(projectFolder: string): ProjectManifest {
 }
 
 
-/** Phase 1 inspection. Later phases extend it with content and path validation. */
+/** Get Full Project Setup and Context. Finds location and contents of all control files. */
 export function inspectControlFilesAndGetProjectDescription(projectFolder: string): ProjectDescription {
 	const controlFiles = getProjectControlFiles(projectFolder);
 	const manifestContents = readFileSync(controlFiles.manifest.filepath, 'utf8');
