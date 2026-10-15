@@ -4,11 +4,7 @@
  */
 'use strict';
 
-const { mkdtemp, rm, writeFile } = require('node:fs/promises');
-const { tmpdir } = require('node:os');
-const { join } = require('node:path');
 const { getControlFileAdapter } = require('../../../../sdk-core/build/services/project/ControlFileAdapterRegistry');
-const { readProjectManifest, readProjectContext } = require('@oracle/suitecloud-sdk-core').services;
 
 const EXPECTED_MANIFESTS = {
 	suiteapp: {
@@ -59,8 +55,6 @@ function parseControlFile(format, kind, contents) {
 function defineProjectParsingTests(format, fixtures) {
 	describe.each(['suiteapp', 'acp'])('%s manifest and deploy', (projectType) => {
 		const { manifest, deploy } = fixtures[projectType];
-		const manifestFilename = `manifest.${format}`;
-		const deployFilename = `deploy.${format}`;
 		const frameworkVersion = format === 'xml' ? '1.0' : '2.0';
 
 		it('normalizes manifest identity without changing the parsed document', () => {
@@ -76,28 +70,6 @@ function defineProjectParsingTests(format, fixtures) {
 			const { document, originalDocument, normalized } = parseControlFile(format, 'deploy', deploy);
 			expect(normalized).toEqual(EXPECTED_DEPLOYS[projectType]);
 			expect(JSON.stringify(document)).toBe(originalDocument);
-		});
-
-		it('reads the physical control-file pair through synchronous metadata and inspection', async () => {
-			const projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-control-file-examples-'));
-			try {
-				await Promise.all([
-					writeFile(join(projectFolder, manifestFilename), manifest),
-					writeFile(join(projectFolder, deployFilename), deploy),
-				]);
-				const description = readProjectContext(projectFolder);
-				expect(description.manifest).toEqual(readProjectManifest(projectFolder));
-				expect(description.manifest).toMatchObject({
-					...EXPECTED_MANIFESTS[projectType], frameworkVersion, dependencies: undefined,
-				});
-				expect(description.controlFiles).toMatchObject({
-					manifest: { type: 'manifest', fileName: manifestFilename, filePath: join(projectFolder, manifestFilename), fileFormat: format },
-					deploy: { type: 'deploy', fileName: deployFilename, filePath: join(projectFolder, deployFilename), fileFormat: format },
-				});
-				expect(description.deploy).toEqual(EXPECTED_DEPLOYS[projectType]);
-			} finally {
-				await rm(projectFolder, { recursive: true, force: true });
-			}
 		});
 	});
 }

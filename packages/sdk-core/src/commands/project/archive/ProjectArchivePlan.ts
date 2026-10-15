@@ -11,7 +11,7 @@ import type { ArchiveEntry } from '../../../services/archive/ZipArchive';
 import { readProjectContext } from '../../../services/project/ProjectControlService';
 import type { DeployScript, ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
 import { FOLDERS, SDF_PROJECT_TYPES, CONTROL_FILE_FIELDS } from '../../../services/project/SuiteCloudProjectConstants';
-import { parseXmlDocument } from '../../../services/project/xml/XmlControlFileParser';
+import { getControlFileAdapter } from '../../../services/project/ControlFileAdapterRegistry';
 
 const { DEPLOY } = CONTROL_FILE_FIELDS;
 
@@ -31,10 +31,11 @@ export async function createPackageArchivePlan(projectFolder: string): Promise<P
 	addEntry(entries, seen, controlFiles.deploy.fileName);
 	addEntry(entries, seen, controlFiles.manifest.fileName);
 	if (controlFiles.application) {
-		const applicationFileName = controlFiles.application.fileName
 
-		// check for valid "application.xml" content
-		parseXmlDocument(await readFile(join(projectFolder, applicationFileName), 'utf8'), applicationFileName);
+		// check for valid application file contents
+		const application = controlFiles.application;
+		const contents = await readFile(application.filePath, 'utf8');
+		getControlFileAdapter(application).parseDocument(contents, application.fileName);
 		addEntry(entries, seen, controlFiles.application.fileName);
 	}
 

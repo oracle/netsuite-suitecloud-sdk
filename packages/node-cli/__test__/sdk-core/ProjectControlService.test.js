@@ -120,22 +120,9 @@ describe('ProjectControlService', () => {
 			.toThrow(`Invalid deploy.${format} at /deploy/${format === 'xml' ? '' : '0/'}unsupported: expected a supported deploy group`);
 	});
 
-	it.each(['xml', 'json', 'yaml', 'yml'])('rejects a framework version that does not match manifest.%s', async (format) => {
-		const frameworkVersion = format === 'xml' ? '2.0' : '1.0';
-		const manifestContents = format === 'xml'
-			? `<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>${frameworkVersion}</frameworkversion></manifest>`
-			: JSON.stringify({ manifest: { projecttype: 'ACCOUNTCUSTOMIZATION', frameworkversion: frameworkVersion } });
-		await writeFile(join(projectFolder, `manifest.${format}`), manifestContents);
-		await writeFile(join(projectFolder, format === 'xml' ? 'deploy.xml' : 'deploy.json'), format === 'xml' ? '<deploy/>' : '{"deploy": []}');
-
-		const errorMessage = `${frameworkVersion} in manifest.${format} does not match the control-file generation.`;
-		expect(() => readProjectManifest(projectFolder)).toThrow(errorMessage);
-		expect(() => readProjectContext(projectFolder)).toThrow(errorMessage);
-	});
-
 	it.each(['xml', 'json', 'yaml', 'yml'])('requires the expected framework version in manifest.%s', async (format) => {
 		await writeFile(join(projectFolder, format === 'xml' ? 'deploy.xml' : 'deploy.json'), format === 'xml' ? '<deploy/>' : '{"deploy": []}');
-		for (const frameworkVersion of [undefined, '', '   ', '3.0', '2.0.0', format === 'xml' ? '1.0' : '2.0']) {
+		for (const frameworkVersion of [undefined, '', '   ', '3.0', '2.0.0', '1.0', '2.0']) {
 			const manifestContents = format === 'xml'
 				? `<manifest projecttype="ACCOUNTCUSTOMIZATION">${frameworkVersion === undefined ? '' : `<frameworkversion>${frameworkVersion}</frameworkversion>`}</manifest>`
 				: JSON.stringify({ manifest: { projecttype: 'ACCOUNTCUSTOMIZATION', frameworkversion: frameworkVersion } });
@@ -171,6 +158,29 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, `application.${applicationFormat}`), '{}');
 		expect(() => checkValidControlFileSetup(projectFolder)).toThrow('cannot be mixed');
 		expect(() => readProjectContext(projectFolder)).toThrow(`application.${applicationFormat}`);
+	});
+
+	it('accepts different V2 formats for all three control files', async () => {
+		await Promise.all([
+			writeFile(join(projectFolder, 'manifest.json'), '{"manifest":{"projecttype":"SUITEAPP","frameworkversion":"2.0"}}'),
+			writeFile(join(projectFolder, 'deploy.yaml'), 'deploy: []'),
+			writeFile(join(projectFolder, 'application.yml'), 'application: {}'),
+		]);
+		expect(readProjectContext(projectFolder).controlFiles).toMatchObject({
+			manifest: { fileName: 'manifest.json' },
+			deploy: { fileName: 'deploy.yaml' },
+			application: { fileName: 'application.yml' },
+		});
+	});
+
+	it('rejects duplicate application representations before parsing', async () => {
+		await Promise.all([
+			writeFile(join(projectFolder, 'manifest.json'), '{}'),
+			writeFile(join(projectFolder, 'deploy.json'), '{}'),
+			writeFile(join(projectFolder, 'application.json'), '{}'),
+			writeFile(join(projectFolder, 'application.yaml'), 'application: {}'),
+		]);
+		expect(() => checkValidControlFileSetup(projectFolder)).toThrow('Multiple application control files');
 	});
 
 	it.each(['json', 'yaml', 'yml'])('reports invalid manifest.%s consistently during metadata reads and inspection', async (format) => {

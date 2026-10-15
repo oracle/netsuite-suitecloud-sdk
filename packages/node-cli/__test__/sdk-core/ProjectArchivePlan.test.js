@@ -57,6 +57,21 @@ describe('ProjectArchivePlan', () => {
 		await expect(createPackageArchivePlan(projectFolder)).rejects.toThrow('Invalid application.xml');
 	});
 
+	it.each(['json', 'yaml', 'yml'])('packages a V2 application.%s and rejects malformed syntax', async (format) => {
+		await Promise.all([
+			rm(join(projectFolder, 'manifest.xml')),
+			rm(join(projectFolder, 'deploy.xml')),
+			rm(join(projectFolder, 'application.xml')),
+			writeFile(join(projectFolder, 'manifest.json'), '{"manifest":{"projecttype":"SUITEAPP","frameworkversion":"2.0"}}'),
+			writeFile(join(projectFolder, 'deploy.json'), '{"deploy":[]}'),
+			writeFile(join(projectFolder, `application.${format}`), format === 'json' ? '{"application":{}}' : 'application: {}'),
+		]);
+		const archivePlan = await createPackageArchivePlan(projectFolder);
+		expect(listPlannedFiles(archivePlan.entries)).toContain(`application.${format}`);
+		await writeFile(join(projectFolder, `application.${format}`), '{');
+		await expect(createPackageArchivePlan(projectFolder)).rejects.toThrow(`Invalid application.${format}:`);
+	});
+
 	it.each([
 		['json', 'json'], ['yaml', 'yaml'], ['yml', 'yml'],
 		['json', 'yaml'], ['json', 'yml'], ['yaml', 'json'],
