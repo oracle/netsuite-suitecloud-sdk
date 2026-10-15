@@ -9602,6 +9602,8 @@ declare module '@uif-js/component' {
 
 		userData: object;
 
+		dataItem: any;
+
 		enabled: boolean;
 
 		effectiveEnabled: boolean;
