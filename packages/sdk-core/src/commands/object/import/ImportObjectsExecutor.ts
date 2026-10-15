@@ -22,7 +22,7 @@ import {
 	assertPathWithin,
 	PathOutsideRootError,
 } from '../../../services/project/ProjectPathResolver';
-import { getProjectManifestFile } from '../../../services/project/ProjectControlService';
+import { readProjectManifest } from '../../../services/project/ProjectControlService';
 import { FILES, FOLDERS, SDF_PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
 import { OBJECT } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
@@ -89,7 +89,7 @@ export async function executeImportObjects(
 
 		// Resolve manifest metadata before downloading or writing imported objects.
 		const canImportReferencedFiles = !input.excludeFiles &&
-			getProjectManifestFile(input.projectFolder).projectType !== SDF_PROJECT_TYPES.SUITEAPP;
+			readProjectManifest(input.projectFolder).projectType !== SDF_PROJECT_TYPES.SUITEAPP;
 		const customObjectsToImport = await resolveObjectsToImport(input, scriptIds);
 		if (customObjectsToImport.length === 0) {
 			return {

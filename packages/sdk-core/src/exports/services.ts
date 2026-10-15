@@ -5,18 +5,19 @@
 'use strict';
 
 export {
-	getProjectControlFiles,
-	inspectControlFilesAndGetProjectDescription,
-	getProjectManifestFile,
+	checkValidProjectContext,
+	checkValidControlFileSetup,
+	readProjectControlFilesSetup,
+	readProjectContext,
+	readProjectManifest,
 } from '../services/project/ProjectControlService';
 export type {
 	DeployScript,
 	ProjectDeploy,
-	ProjectDeploySkeleton,
 	SdfSupportedFileFormat,
 	SdfFrameworkVersion,
 	SdfProjectType,
-	ProjectDescription,
+	ProjectContext,
 	ProjectManifest,
 	ProjectManifestSkeleton,
 	ManifestDependencies,
@@ -24,6 +25,6 @@ export type {
 	ManifestApplicationDependency,
 	ManifestBundleDependency,
 	SdfProjectControlFiles,
-	SuiteCloudControlFile,
+	SdfProjectControlFile,
 	SdfControlFileType,
 } from '../services/project/SuiteCloudControlFileTypes';

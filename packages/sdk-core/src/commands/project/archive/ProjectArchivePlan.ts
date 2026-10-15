@@ -8,7 +8,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 import { parseStringPromise } from 'xml2js';
 import type { ArchiveEntry } from '../../../services/archive/ZipArchive';
-import { inspectControlFilesAndGetProjectDescription } from '../../../services/project/ProjectControlService';
+import { readProjectContext } from '../../../services/project/ProjectControlService';
 import type { DeployScript, ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
 import { FOLDERS, SDF_PROJECT_TYPES, CONTROL_FILE_FIELDS } from '../../../services/project/SuiteCloudProjectConstants';
 import { parseXmlDocument } from '../../../services/project/xml/XmlControlFileParser';
@@ -25,7 +25,7 @@ export type ProjectArchivePlan = {
 };
 
 export async function createPackageArchivePlan(projectFolder: string): Promise<ProjectArchivePlan> {
-	const { manifest, controlFiles, deploy } = inspectControlFilesAndGetProjectDescription(projectFolder);
+	const { manifest, controlFiles, deploy } = readProjectContext(projectFolder);
 	const entries: ArchiveEntry[] = [];
 	const seen = new Set<string>();
 	addEntry(entries, seen, controlFiles.deploy.fileName);

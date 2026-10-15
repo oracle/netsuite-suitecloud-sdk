@@ -5,13 +5,13 @@ const mockGetAuthInfo = jest.fn();
 const mockRefreshAuthorization = jest.fn();
 const mockExecuteWithSpinner = jest.fn(({ action }) => action);
 const mockGetProjectDefaultAuthId = jest.fn();
-const mockInspectControlFiles = jest.fn();
+const mockCheckValidProjectContext = jest.fn();
 
 jest.mock('@oracle/suitecloud-sdk-core', () => ({
 	...jest.requireActual('@oracle/suitecloud-sdk-core'),
 	services: {
 		...jest.requireActual('@oracle/suitecloud-sdk-core').services,
-		inspectControlFilesAndGetProjectDescription: (...args) => mockInspectControlFiles(...args),
+		checkValidProjectContext: (...args) => mockCheckValidProjectContext(...args),
 	},
 }));
 
@@ -127,7 +127,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		mockRefreshAuthorization.mockReset();
 		mockExecuteWithSpinner.mockClear();
 		mockGetProjectDefaultAuthId.mockReset();
-		mockInspectControlFiles.mockReset().mockReturnValue({});
+		mockCheckValidProjectContext.mockReset().mockReturnValue({});
 		mockConsoleLogger.error.mockClear();
 	});
 
@@ -208,7 +208,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 				writeFile(join(projectFolder, `manifest.${format}`), invalidKind === 'manifest' ? '{' : format === 'json' ? JSON.stringify(manifest) : stringify(manifest)),
 				writeFile(join(projectFolder, `deploy.${format}`), invalidKind === 'deploy' ? '{' : format === 'json' ? JSON.stringify(deploy) : stringify(deploy)),
 			]);
-			mockInspectControlFiles.mockImplementation(jest.requireActual('@oracle/suitecloud-sdk-core').services.inspectControlFilesAndGetProjectDescription);
+			mockCheckValidProjectContext.mockImplementation(jest.requireActual('@oracle/suitecloud-sdk-core').services.checkValidProjectContext);
 			mockGetProjectDefaultAuthId.mockReturnValue('myAuth');
 			commandExecutor._cliConfigurationService.getProjectFolder.mockReturnValue(projectFolder);
 			commandExecutor._commandsMetadataService.getCommandMetadataByName.mockReturnValue({ isSetupRequired: true, supportsInteractiveMode: true, options: {} });
@@ -239,16 +239,16 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandExecutor._cliConfigurationService.getProjectFolder.mockReturnValue(projectFolder);
 			commandExecutor._commandsMetadataService.getCommandMetadataByName.mockReturnValue({ isSetupRequired: true, supportsInteractiveMode: true, options: {} });
 			mockGetProjectDefaultAuthId.mockReturnValue('myAuth');
-			mockInspectControlFiles.mockImplementation(jest.requireActual('@oracle/suitecloud-sdk-core').services.inspectControlFilesAndGetProjectDescription);
+			mockCheckValidProjectContext.mockImplementation(jest.requireActual('@oracle/suitecloud-sdk-core').services.checkValidProjectContext);
 			mockCheckIfReauthorizationIsNeeded.mockResolvedValue({ isSuccess: () => true, data: { needsReauthorization: false } });
 			const getCommand = jest.spyOn(commandExecutor, '_getCommand');
 
 			const result = await commandExecutor.executeAction({ commandName, runInInteractiveMode: false, arguments: {} });
 
 			expect(result.isSuccess()).toBe(true);
-			expect(mockInspectControlFiles).toHaveBeenCalledWith(projectFolder);
-			expect(beforeExecuting.mock.invocationCallOrder[0]).toBeLessThan(mockInspectControlFiles.mock.invocationCallOrder[0]);
-			expect(mockInspectControlFiles.mock.invocationCallOrder[0]).toBeLessThan(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]);
+			expect(mockCheckValidProjectContext).toHaveBeenCalledWith(projectFolder);
+			expect(beforeExecuting.mock.invocationCallOrder[0]).toBeLessThan(mockCheckValidProjectContext.mock.invocationCallOrder[0]);
+			expect(mockCheckValidProjectContext.mock.invocationCallOrder[0]).toBeLessThan(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]);
 			expect(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]).toBeLessThan(getCommand.mock.invocationCallOrder[0]);
 		} finally {
 			await rm(projectFolder, { recursive: true, force: true });

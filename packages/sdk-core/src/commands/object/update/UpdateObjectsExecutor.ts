@@ -17,7 +17,7 @@ import {
 	type UpdateObjectsExecutionInput,
 } from '../../../api/object/ObjectCommand';
 import { extractZipArchive } from '../../../services/archive/ZipArchive';
-import { getProjectManifestFile } from '../../../services/project/ProjectControlService';
+import { readProjectManifest } from '../../../services/project/ProjectControlService';
 import { FILES } from '../../../services/project/SuiteCloudProjectConstants';
 import { OBJECT } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
@@ -62,7 +62,7 @@ export async function executeUpdateObjects(
 			);
 		}
 
-		const packageRoot = getProjectManifestFile(input.projectFolder).applicationId ?? '';
+		const packageRoot = readProjectManifest(input.projectFolder).applicationId ?? '';
 		const scriptIds = normalizeScriptIds(input.scriptIds);
 		for (const scriptId of scriptIds) {
 			const objectFile = await findObjectFileByScriptId(input.projectFolder, scriptId);

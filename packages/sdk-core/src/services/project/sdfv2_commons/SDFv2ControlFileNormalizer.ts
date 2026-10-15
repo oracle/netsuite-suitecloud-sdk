@@ -7,8 +7,7 @@
 import { PROJECT_CONTROL } from '../../translation/TranslationKeys';
 import { translationService } from '../../translation/TranslationService';
 import type { DeployScript, ProjectDeploySkeleton, ProjectManifestSkeleton } from '../SuiteCloudControlFileTypes';
-import { createProjectDeploySkeleton, getDeployPathGroup } from '../sdf_commons/ProjectDeployNormalizer';
-import { normalizeManifestDependencies } from '../sdf_commons/ManifestDependenciesNormalizer';
+import { createProjectDeploySkeleton, getDeployPathGroup } from '../utils/ProjectDeployNormalizerUtils';
 import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
 
 const { MANIFEST, DEPLOY } = CONTROL_FILE_FIELDS;
@@ -27,7 +26,8 @@ export function normalizeSdfV2Manifest(document: unknown, filename: string): Pro
 		applicationId: publisherId && projectId ? `${publisherId}.${projectId}` : undefined,
 		projectVersion: scalarText(manifest[MANIFEST.PROJECT_VERSION]),
 		frameworkVersion: scalarText(manifest[MANIFEST.FRAMEWORK_VERSION]),
-		dependencies: normalizeManifestDependencies(manifest[MANIFEST.DEPENDENCIES], filename),
+		// TODO: Implement ManifestDependencies Normalization (as of now it's not required).
+		dependencies: undefined,
 	};
 }
 

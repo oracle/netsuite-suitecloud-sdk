@@ -76,13 +76,14 @@ describe('ProjectArchivePlan', () => {
 		await Promise.all([
 			rm(join(projectFolder, 'manifest.xml')),
 			rm(join(projectFolder, 'deploy.xml')),
+			rm(join(projectFolder, 'application.xml')),
 			writeFile(join(projectFolder, `manifest.${manifestFormat}`), manifestFormat === 'json' ? JSON.stringify(manifest) : stringify(manifest)),
 			writeFile(join(projectFolder, `deploy.${deployFormat}`), deployFormat === 'json' ? JSON.stringify(deploy) : stringify(deploy)),
 			writeFile(join(projectFolder, 'FileCabinet', 'SuiteScripts', 'wildcard', 'first.js'), 'first'),
 			writeFile(join(projectFolder, 'FileCabinet', 'SuiteScripts', 'wildcard', 'nested', 'second.js'), 'second'),
 		]);
 		const expectedFiles = expectedArchiveFiles()
-			.filter((filename) => filename !== 'manifest.xml' && filename !== 'deploy.xml')
+			.filter((filename) => filename !== 'manifest.xml' && filename !== 'deploy.xml' && filename !== 'application.xml')
 			.concat(`manifest.${manifestFormat}`, `deploy.${deployFormat}`,
 				'FileCabinet/SuiteScripts/wildcard/first.js', 'FileCabinet/SuiteScripts/wildcard/nested/second.js')
 			.sort();
@@ -94,15 +95,14 @@ describe('ProjectArchivePlan', () => {
 		expect(await listFiles(extractionFolder)).toEqual(expectedFiles);
 	});
 
-	it('packages without application.xml and ignores JSON and YAML application files', async () => {
+	it('packages without an optional application control file', async () => {
 		await rm(join(projectFolder, 'application.xml'));
-		await Promise.all(['json', 'yaml', 'yml'].map((format) =>
-			writeFile(join(projectFolder, `application.${format}`), 'invalid contents')));
 		const archivePlan = await createPackageArchivePlan(projectFolder);
 		expect(listPlannedFiles(archivePlan.entries)).toEqual(
 			expectedArchiveFiles().filter((filename) => filename !== 'application.xml')
 		);
 	});
+
 });
 
 async function createSuiteAppProject() {

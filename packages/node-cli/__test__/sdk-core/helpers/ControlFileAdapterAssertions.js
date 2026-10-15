@@ -8,7 +8,7 @@ const { mkdtemp, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const { getControlFileAdapter } = require('../../../../sdk-core/build/services/project/ControlFileAdapterRegistry');
-const { getProjectManifestFile, inspectControlFilesAndGetProjectDescription } = require('@oracle/suitecloud-sdk-core').services;
+const { readProjectManifest, readProjectContext } = require('@oracle/suitecloud-sdk-core').services;
 
 const EXPECTED_MANIFESTS = {
 	suiteapp: {
@@ -18,19 +18,6 @@ const EXPECTED_MANIFESTS = {
 	acp: {
 		projectType: 'ACCOUNTCUSTOMIZATION', projectName: 'Account Customization Project', publisherId: '', projectId: '',
 		applicationId: undefined, projectVersion: '',
-	},
-};
-
-const EXPECTED_DEPENDENCIES = {
-	suiteapp: {
-		features: [{ name: 'CUSTOMRECORD', required: 'true' }, { name: 'MULTILANGUAGE', required: 'false' }],
-		bundles: [{ id: '123|456', objects: ['customrecord_shared'] }],
-		applications: [{ id: 'com.netsuite.shared', objects: ['customrecord_shared'], platformextensions: ['com.netsuite.extension'] }],
-	},
-	acp: {
-		objects: ['customrecord_settings'], files: ['/SuiteScripts/acp-helper.js'], folders: ['/SuiteScripts/'],
-		platformextensions: ['com.netsuite.extension'],
-		applications: [{ id: 'com.netsuite.shared', objects: ['customrecord_shared'] }],
 	},
 };
 
@@ -58,14 +45,6 @@ const EXPECTED_DEPLOYS = {
 	},
 };
 
-function expectedDependencies(projectType) {
-	const dependencies = EXPECTED_DEPENDENCIES[projectType];
-	return {
-		...dependencies,
-		features: dependencies.features?.map((feature) => ({ ...feature, required: feature.required === 'true' })),
-	};
-}
-
 function parseControlFile(format, kind, contents) {
 	const filename = `${kind}.${format}`;
 	const adapter = getControlFileAdapter({ type: kind, fileName: filename, fileFormat: format });
@@ -84,16 +63,13 @@ function defineProjectParsingTests(format, fixtures) {
 		const deployFilename = `deploy.${format}`;
 		const frameworkVersion = format === 'xml' ? '1.0' : '2.0';
 
-		it('normalizes manifest identity and dependencies without changing the parsed document', () => {
+		it('normalizes manifest identity without changing the parsed document', () => {
 			const { document, originalDocument, normalized } = parseControlFile(format, 'manifest', manifest);
 			expect(normalized).toEqual({
 				...EXPECTED_MANIFESTS[projectType], frameworkVersion,
-				dependencies: expectedDependencies(projectType),
+				dependencies: undefined,
 			});
 			expect(JSON.stringify(document)).toBe(originalDocument);
-			if (format !== 'xml') {
-				expect(document.manifest.dependencies).toEqual(EXPECTED_DEPENDENCIES[projectType]);
-			}
 		});
 
 		it('preserves path and script order within each supported section without changing the parsed document', () => {
@@ -109,10 +85,10 @@ function defineProjectParsingTests(format, fixtures) {
 					writeFile(join(projectFolder, manifestFilename), manifest),
 					writeFile(join(projectFolder, deployFilename), deploy),
 				]);
-				const description = inspectControlFilesAndGetProjectDescription(projectFolder);
-				expect(description.manifest).toEqual(getProjectManifestFile(projectFolder));
+				const description = readProjectContext(projectFolder);
+				expect(description.manifest).toEqual(readProjectManifest(projectFolder));
 				expect(description.manifest).toMatchObject({
-					...EXPECTED_MANIFESTS[projectType], frameworkVersion, dependencies: expectedDependencies(projectType),
+					...EXPECTED_MANIFESTS[projectType], frameworkVersion, dependencies: undefined,
 				});
 				expect(description.controlFiles).toMatchObject({
 					manifest: { type: 'manifest', fileName: manifestFilename, filePath: join(projectFolder, manifestFilename), fileFormat: format },

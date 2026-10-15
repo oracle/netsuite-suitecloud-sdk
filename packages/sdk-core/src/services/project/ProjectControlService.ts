@@ -17,64 +17,87 @@ import {
 import {
 	type SdfSupportedFileFormat,
 	type SdfProjectControlFiles,
-	type ProjectDescription,
+	type ProjectContext,
 	type ProjectDeploy,
 	type ProjectManifest,
-	type SuiteCloudControlFile,
+	type ProjectManifestSkeleton,
+	type SdfProjectControlFile,
 	type SdfControlFileType,
 } from './SuiteCloudControlFileTypes';
 import { getControlFileAdapter } from './ControlFileAdapterRegistry';
 
+
 const CONTROL_FILE_NAME_VALUES = new Set<string>(Object.values(FILES.CONTROL_FILES));
 const CONTROL_FILE_FORMAT_VALUES = new Set<string>(Object.values(SDF_SUPPORTED_FILE_FORMATS));
 
-// TODO: Should the methods in this class be SYNC? ASYNC? IMPLEMENT BOTH (duplicate methods)?
-/** Verify and get Manifest File Content's in project folder */
-export function getProjectManifestFile(projectFolder: string): ProjectManifest {
-	const candidates = discoverAllControlFileCandidates(projectFolder);
-	const manifest = validateControlFileSetup(candidates, FILES.CONTROL_FILES.MANIFEST, projectFolder);
-	const fileContents = readFileSync(manifest.filePath, 'utf8');
-	return parseManifestMetadata(fileContents, manifest);
+
+/** Check discovery, syntax, normalization structure, and manifest context rules; no schema validation. */
+export function checkValidProjectContext(projectFolder: string): void {
+	readProjectContext(projectFolder);
+}
+
+/** Check required files, duplicates, and generation compatibility without reading file contents. */
+export function checkValidControlFileSetup(projectFolder: string): void {
+	readProjectControlFilesSetup(projectFolder);
 }
 
 
-/** Get Full Project Setup and Context. Finds location and contents of all control files. */
-export function inspectControlFilesAndGetProjectDescription(projectFolder: string): ProjectDescription {
-	const controlFiles = getProjectControlFiles(projectFolder);
-	const manifestContents = readFileSync(controlFiles.manifest.filePath, 'utf8');
-	const deployContents = readFileSync(controlFiles.deploy.filePath, 'utf8');
+/** Read manifest metadata independently of deploy and application contents. Must be executed in a valid project context */
+export function readProjectManifest(projectFolder: string): ProjectManifest {
+	const candidates = discoverControlFilesInProject(projectFolder);
+	const file = selectControlFile(candidates, FILES.CONTROL_FILES.MANIFEST, projectFolder);
+	const manifest = readAndNormalizeManifestFile(file);
+	validateManifestContext(manifest, file);
+	return manifest;
+}
 
-	const manifest = parseManifestMetadata(manifestContents, controlFiles.manifest);
-	const deployAdapter = getControlFileAdapter(controlFiles.deploy);
-	const deployDocument = deployAdapter.parseDocument(deployContents, controlFiles.deploy.fileName);
-	const deploy: ProjectDeploy = deployAdapter.normalizeDeploy(deployDocument, controlFiles.deploy.fileName);
-	// ignoring application control file on purpose here
+/** Read physical control-file locations after validating their discovery and generation. */
+export function readProjectControlFilesSetup(projectFolder: string): SdfProjectControlFiles {
+	const candidates = discoverControlFilesInProject(projectFolder);
+	const controlFiles = {
+		manifest: selectControlFile(candidates, FILES.CONTROL_FILES.MANIFEST, projectFolder),
+		deploy: selectControlFile(candidates, FILES.CONTROL_FILES.DEPLOY, projectFolder),
+		application: selectControlFile(candidates, FILES.CONTROL_FILES.APPLICATION, projectFolder),
+	};
+
+	// validate control file generation (all files should use either SDFv1 or SDFv2 formats)
+	const files = [controlFiles.manifest, controlFiles.deploy];
+	if (controlFiles.application) {
+		files.push(controlFiles.application);
+	}
+	const isXml = controlFiles.manifest.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML;
+	if (files.some((file) => (file.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML) !== isXml)) {
+		throw new Error(
+			translationService.getMessage(
+				PROJECT_CONTROL.ERROR.MIXED_GENERATION,
+				files.map((file) => file.fileName).join(', ')
+			)
+		);
+	}
+
+	return controlFiles;
+}
+
+/** Read selected control files and normalized manifest/deploy data using the same checks as preflight. */
+export function readProjectContext(projectFolder: string): ProjectContext {
+	const controlFiles = readProjectControlFilesSetup(projectFolder);
+	const manifest = readAndNormalizeManifestFile(controlFiles.manifest);
+	validateManifestContext(manifest, controlFiles.manifest);
+
+	const deploy = readAndNormalizeDeployFile(controlFiles.deploy);
+
+	// Application can only be present in SUITE_APP projects. It's contents are only validated during packaging.
+	if (controlFiles.application && manifest.projectType !== SDF_PROJECT_TYPES.SUITEAPP) {
+		throw new Error(translationService.getMessage(
+			PROJECT_CONTROL.ERROR.APPLICATION_REQUIRES_SUITEAPP, controlFiles.application.fileName
+		));
+	}
 
 	return { controlFiles, manifest, deploy };
 }
 
-
-/** Get list of Project control files without reading their contents. Validates for not missing, no duplicates and valid SDFv1/SDFv2 setups */
-export function getProjectControlFiles(projectFolder: string): SdfProjectControlFiles {
-	const candidates = discoverAllControlFileCandidates(projectFolder);
-	const manifest = validateControlFileSetup(candidates, FILES.CONTROL_FILES.MANIFEST, projectFolder);
-	const deploy = validateControlFileSetup(candidates, FILES.CONTROL_FILES.DEPLOY, projectFolder);
-	const application = validateControlFileSetup(candidates, FILES.CONTROL_FILES.APPLICATION, projectFolder);
-
-	if ((deploy.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML) !== (manifest.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML)) {
-		throw new Error(
-			translationService.getMessage(
-				PROJECT_CONTROL.ERROR.MIXED_GENERATION,
-				[manifest, deploy].map((file) => file.fileName).join(', ')
-			)
-		);
-	}
-	return { manifest, deploy, application };
-}
-
-
-function discoverAllControlFileCandidates(projectFolder: string): SuiteCloudControlFile[] {
-	const candidates: SuiteCloudControlFile[] = [];
+function discoverControlFilesInProject(projectFolder: string): SdfProjectControlFile[] {
+	const candidates: SdfProjectControlFile[] = [];
 	for (const entry of readdirSync(projectFolder, { withFileTypes: true })) {
 		if (!entry.isFile()) {
 			continue;
@@ -87,12 +110,6 @@ function discoverAllControlFileCandidates(projectFolder: string): SuiteCloudCont
 			continue;
 		}
 
-		// TODO: support application.yaml, application.yml and application.json
-		//  For now only application.xml is allowed for application control file.
-		if (fileStem === FILES.CONTROL_FILES.APPLICATION && fileExtension !== SDF_SUPPORTED_FILE_FORMATS.XML) {
-			continue;
-		}
-
 		const kind = fileStem as SdfControlFileType;
 		const format = fileExtension as SdfSupportedFileFormat;
 		candidates.push({ type: kind, fileName: filename, filePath: resolve(projectFolder, filename), fileFormat: format });
@@ -101,9 +118,9 @@ function discoverAllControlFileCandidates(projectFolder: string): SuiteCloudCont
 }
 
 // Application is optional; manifest and deploy always return a selected file.
-function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: 'application', projectFolder: string): SuiteCloudControlFile | undefined;
-function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: 'manifest' | 'deploy', projectFolder: string): SuiteCloudControlFile;
-function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: SdfControlFileType, projectFolder: string): SuiteCloudControlFile | undefined {
+function selectControlFile(candidates: SdfProjectControlFile[], kind: 'application', projectFolder: string): SdfProjectControlFile | undefined;
+function selectControlFile(candidates: SdfProjectControlFile[], kind: 'manifest' | 'deploy', projectFolder: string): SdfProjectControlFile;
+function selectControlFile(candidates: SdfProjectControlFile[], kind: SdfControlFileType, projectFolder: string): SdfProjectControlFile | undefined {
 	const matches = candidates.filter((file) => file.type === kind);
 	if (matches.length > 1) {
 		throw new Error(
@@ -121,10 +138,25 @@ function validateControlFileSetup(candidates: SuiteCloudControlFile[], kind: Sdf
 	return file;
 }
 
-function parseManifestMetadata(contents: string, file: SuiteCloudControlFile): ProjectManifest {
-	const adapter = getControlFileAdapter(file);
-	const parsedDocument = adapter.parseDocument(contents, file.fileName);
-	const manifestMetadata = adapter.normalizeManifest(parsedDocument, file.fileName);
+
+function readAndNormalizeManifestFile(file: SdfProjectControlFile): ProjectManifestSkeleton {
+	const fileContents = readFileSync(file.filePath, 'utf8');
+	const controlFileAdapter = getControlFileAdapter(file);
+	const parsedDocument = controlFileAdapter.parseDocument(fileContents, file.fileName);
+
+	return controlFileAdapter.normalizeManifest(parsedDocument, file.fileName);
+}
+
+function readAndNormalizeDeployFile(file: SdfProjectControlFile): ProjectDeploy {
+	const fileContents = readFileSync(file.filePath, 'utf8');
+	const controlFileAdapter = getControlFileAdapter(file);
+	const parsedDocument = controlFileAdapter.parseDocument(fileContents, file.fileName);
+
+	return controlFileAdapter.normalizeDeploy(parsedDocument, file.fileName);
+}
+
+/** Narrow project type and framework version only; this does not validate the manifest schema. */
+function validateManifestContext(manifestMetadata: ProjectManifestSkeleton, file: SdfProjectControlFile): asserts manifestMetadata is ProjectManifest {
 	const { projectType, frameworkVersion } = manifestMetadata;
 
 	if (!projectType) {
@@ -144,6 +176,4 @@ function parseManifestMetadata(contents: string, file: SuiteCloudControlFile): P
 	if (frameworkVersion !== expectedFrameworkVersion) {
 		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FRAMEWORK_VERSION_MISMATCH, file.fileName, frameworkVersion));
 	}
-
-	return manifestMetadata as ProjectManifest;
 }

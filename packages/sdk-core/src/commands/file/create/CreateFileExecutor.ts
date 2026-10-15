@@ -14,7 +14,7 @@ import {
 import { FILE_CREATE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { generateSuiteScriptTemplate } from '../../../templates/SuiteScriptTemplateService';
-import { getProjectManifestFile } from '../../../services/project/ProjectControlService';
+import { readProjectManifest } from '../../../services/project/ProjectControlService';
 import { FOLDERS, SDF_PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
 
 /** Compatibility alias for existing command consumers. */
@@ -32,7 +32,7 @@ type ExecuteCreateFileInput = {
 export async function executeCreateFile(input: ExecuteCreateFileInput): Promise<FileCreateResult> {
 	try {
 		const normalizedPath = normalizeSuiteScriptPath(input.path);
-		const manifest = getProjectManifestFile(input.projectFolder);
+		const manifest = readProjectManifest(input.projectFolder);
 		validateFileCabinetPath(normalizedPath, { projectType: manifest.projectType, appId: manifest.applicationId });
 
 		const fileCabinetRoot = resolve(input.projectFolder, FOLDERS.FILE_CABINET);

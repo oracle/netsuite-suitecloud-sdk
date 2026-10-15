@@ -12,23 +12,23 @@ export type SdfProjectType = `${SDF_PROJECT_TYPES}`;
 export type SdfControlFileType = typeof FILES.CONTROL_FILES[keyof typeof FILES.CONTROL_FILES];
 
 
-export type SuiteCloudControlFile = {
+export type SdfProjectControlFile = {
 	type: SdfControlFileType;
 	fileName: string;
 	filePath: string;
 	fileFormat: SdfSupportedFileFormat;
 };
 
-export type ProjectDescription = {
+export type ProjectContext = {
 	controlFiles: SdfProjectControlFiles;
 	manifest: ProjectManifest;
 	deploy: ProjectDeploy;
 };
 
 export type SdfProjectControlFiles = {
-	manifest: SuiteCloudControlFile;
-	deploy: SuiteCloudControlFile;
-	application?: SuiteCloudControlFile;
+	manifest: SdfProjectControlFile;
+	deploy: SdfProjectControlFile;
+	application?: SdfProjectControlFile;
 };
 
 export type ProjectManifestSkeleton = {
@@ -45,6 +45,9 @@ export type ProjectManifest = {
 	frameworkVersion: SdfFrameworkVersion;
 	dependencies?: ManifestDependencies;
 };
+
+// As of writing this, ManifestDependencies is always left undefined
+// TODO: Implement support for ManifestDependencies validation && normalization.
 
 export type ManifestDependencies = {
 	features?: ManifestFeatureDependency[];

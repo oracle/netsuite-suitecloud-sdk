@@ -77,27 +77,6 @@ const fixtures = {
 describe('XML control-file adapter', () => {
 	defineProjectParsingTests('xml', fixtures);
 
-	it('retains SuiteApp feature attributes, bundles, and application dependencies', () => {
-		const { document } = parseControlFile('xml', 'manifest', fixtures.suiteapp.manifest);
-		expect(document.manifest.dependencies).toMatchObject({
-			features: { feature: [{ _: 'CUSTOMRECORD', $: { required: 'true' } }, { _: 'MULTILANGUAGE', $: { required: 'false' } }] },
-			bundles: { bundle: { $: { id: '123|456' }, objects: { object: 'customrecord_shared' } } },
-			applications: { application: {
-				$: { id: 'com.netsuite.shared' }, objects: { object: 'customrecord_shared' },
-				platformextensions: { platformextension: 'com.netsuite.extension' },
-			} },
-		});
-	});
-
-	it('retains ACP file, folder, object, and application dependency declarations', () => {
-		const { document } = parseControlFile('xml', 'manifest', fixtures.acp.manifest);
-		expect(document.manifest.dependencies).toMatchObject({
-			objects: { object: 'customrecord_settings' }, files: { file: '/SuiteScripts/acp-helper.js' },
-			folders: { folder: '/SuiteScripts/' }, platformextensions: { platformextension: 'com.netsuite.extension' },
-			applications: { application: { $: { id: 'com.netsuite.shared' }, objects: { object: 'customrecord_shared' } } },
-		});
-	});
-
 	it.each(['manifest', 'deploy'])('rejects a wrong %s root during normalization', (kind) => {
 		expect(() => parseControlFile('xml', kind, '<other/>'))
 			.toThrow(`Invalid ${kind}.xml: expected <${kind}> as the root element.`);

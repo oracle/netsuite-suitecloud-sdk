@@ -5,7 +5,7 @@
 'use strict';
 
 import type { DeployScript, ProjectDeploySkeleton } from '../SuiteCloudControlFileTypes';
-import { createProjectDeploySkeleton, getDeployPathGroup } from '../sdf_commons/ProjectDeployNormalizer';
+import { createProjectDeploySkeleton, getDeployPathGroup } from '../utils/ProjectDeployNormalizerUtils';
 import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
 import { getXmlRoot, xmlChildren, xmlText, type XmlNode } from './XmlControlFileParser';
 
