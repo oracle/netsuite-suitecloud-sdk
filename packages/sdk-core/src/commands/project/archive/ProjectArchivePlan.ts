@@ -9,9 +9,11 @@ import { join, relative, resolve, sep } from 'node:path';
 import { parseStringPromise } from 'xml2js';
 import type { ArchiveEntry } from '../../../services/archive/ZipArchive';
 import { inspectControlFilesAndGetProjectDescription } from '../../../services/project/ProjectControlService';
-import type { DeployGroup, ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
-import { FOLDERS, PROJECT_TYPES, CONTROL_FILE_FIELDS } from '../../../services/project/SuiteCloudProjectConstants';
+import type { DeployScript, ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
+import { FOLDERS, SDF_PROJECT_TYPES, CONTROL_FILE_FIELDS } from '../../../services/project/SuiteCloudProjectConstants';
 import { parseXmlDocument } from '../../../services/project/xml/XmlControlFileParser';
+
+const { DEPLOY } = CONTROL_FILE_FIELDS;
 
 type XmlValue = Record<string, any>;
 
@@ -23,37 +25,31 @@ export type ProjectArchivePlan = {
 };
 
 export async function createPackageArchivePlan(projectFolder: string): Promise<ProjectArchivePlan> {
-	const { manifest, controlFiles, deployGroups } = inspectControlFilesAndGetProjectDescription(projectFolder);
+	const { manifest, controlFiles, deploy } = inspectControlFilesAndGetProjectDescription(projectFolder);
 	const entries: ArchiveEntry[] = [];
 	const seen = new Set<string>();
-	addEntry(entries, seen, controlFiles.deploy.filename);
-	addEntry(entries, seen, controlFiles.manifest.filename);
+	addEntry(entries, seen, controlFiles.deploy.fileName);
+	addEntry(entries, seen, controlFiles.manifest.fileName);
 	if (controlFiles.application) {
-		const applicationFileName = controlFiles.application.filename
+		const applicationFileName = controlFiles.application.fileName
 
 		// check for valid "application.xml" content
 		parseXmlDocument(await readFile(join(projectFolder, applicationFileName), 'utf8'), applicationFileName);
-		addEntry(entries, seen, controlFiles.application.filename);
+		addEntry(entries, seen, controlFiles.application.fileName);
 	}
 
-	if (manifest.projectType === PROJECT_TYPES.ACP) {
-		await addDeployPaths(projectFolder, getGroupPaths(deployGroups, CONTROL_FILE_FIELDS.CONFIGURATION), entries, seen);
+	if (manifest.projectType === SDF_PROJECT_TYPES.ACP) {
+		await addDeployPaths(projectFolder, deploy.configurations, entries, seen);
 	} else {
 		await addFolderContents(projectFolder, FOLDERS.INSTALLATION_PREFERENCES, entries, seen);
-		await addInstallationScripts(projectFolder, deployGroups, entries, seen);
+		await addInstallationScripts(projectFolder, deploy.run, entries, seen);
 	}
 
-	await addDeployPaths(projectFolder, getGroupPaths(deployGroups, CONTROL_FILE_FIELDS.FILES), entries, seen);
-	await addDeployPaths(projectFolder, getGroupPaths(deployGroups, CONTROL_FILE_FIELDS.OBJECTS), entries, seen);
-	await addDeployPaths(projectFolder, getGroupPaths(deployGroups, CONTROL_FILE_FIELDS.TRANSLATION_IMPORTS), entries, seen);
+	await addDeployPaths(projectFolder, deploy.files, entries, seen);
+	await addDeployPaths(projectFolder, deploy.objects, entries, seen);
+	await addDeployPaths(projectFolder, deploy.translationimports, entries, seen);
 
 	return { manifest, entries };
-}
-
-function getGroupPaths(groups: DeployGroup[], kind: DeployGroup['kind']): string[] {
-	return groups.filter((group) => group.kind === kind)
-		.flatMap((group) => group.paths.map((path) => path.value))
-		.filter(Boolean);
 }
 
 async function addDeployPaths(
@@ -77,46 +73,44 @@ async function addDeployPaths(
 
 async function addInstallationScripts(
 	projectFolder: string,
-	groups: DeployGroup[],
+	scripts: DeployScript[],
 	entries: ArchiveEntry[],
 	seen: Set<string>
 ): Promise<void> {
-	for (const run of groups.filter((group) => group.kind === CONTROL_FILE_FIELDS.RUN)) {
-		for (const script of run.scripts) {
-			const scriptPath = toProjectRelativePath(script.path.value);
-			if (
-				!scriptPath ||
-				scriptPath.endsWith('/*') ||
-				!(await isRegularFile(join(projectFolder, ...scriptPath.split('/'))))
-			) {
+	for (const script of scripts) {
+		const scriptPath = toProjectRelativePath(script.path);
+		if (
+			!scriptPath ||
+			scriptPath.endsWith('/*') ||
+			!(await isRegularFile(join(projectFolder, ...scriptPath.split('/'))))
+		) {
+			continue;
+		}
+
+		addEntry(entries, seen, scriptPath);
+		try {
+			const parsed = await parseStringPromise(
+				await readFile(join(projectFolder, ...scriptPath.split('/')), 'utf8'),
+				{
+					explicitArray: false,
+					trim: true,
+				}
+			);
+			const rootTag = getRootTag(parsed);
+			if (rootTag?.name !== DEPLOY.SDF_INSTALLATION_SCRIPT) {
 				continue;
 			}
-
-			addEntry(entries, seen, scriptPath);
-			try {
-				const parsed = await parseStringPromise(
-					await readFile(join(projectFolder, ...scriptPath.split('/')), 'utf8'),
-					{
-						explicitArray: false,
-						trim: true,
-					}
+			const scriptFile = getReferenceValue(asText(rootTag.value?.[DEPLOY.SCRIPT_FILE]));
+			if (scriptFile) {
+				await addDeployPaths(
+					projectFolder,
+					[`~/${FOLDERS.FILE_CABINET}${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`],
+					entries,
+					seen
 				);
-				const rootTag = getRootTag(parsed);
-				if (rootTag?.name !== CONTROL_FILE_FIELDS.SDF_INSTALLATION_SCRIPT) {
-					continue;
-				}
-			const scriptFile = getReferenceValue(asText(rootTag.value?.[CONTROL_FILE_FIELDS.SCRIPT_FILE]));
-				if (scriptFile) {
-					await addDeployPaths(
-						projectFolder,
-						[`~/${FOLDERS.FILE_CABINET}${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`],
-						entries,
-						seen
-					);
-				}
-			} catch {
-				// Java packaging keeps the installation script and skips an unreadable or invalid referenced file.
 			}
+		} catch {
+			// Java packaging keeps the installation script and skips an unreadable or invalid referenced file.
 		}
 	}
 }

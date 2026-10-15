@@ -129,9 +129,8 @@ describe.each(['yaml', 'yml'])('%s control-file adapter', (format) => {
       path: ["~/FileCabinet/first.js"]
   - files: *files
 `);
-		expect(normalized.map((group) => group.paths[0].value))
+		expect(normalized.files)
 			.toEqual(['~/FileCabinet/first.js', '~/FileCabinet/first.js']);
-		expect(normalized[1].paths[0].source.propertyPath).toBe('/deploy/1/files/path/0');
 	});
 
 	it('limits alias expansion', () => {
@@ -145,7 +144,7 @@ describe.each(['yaml', 'yml'])('%s control-file adapter', (format) => {
 		expect(document.manifest.frameworkversion).toBe('2.0');
 		expect(normalized.projectVersion).toBe('1.0.0');
 		expect(document.manifest.dependencies.features.map((feature) => feature.required)).toEqual(['true', 'false']);
-		const adapter = getControlFileAdapter({ kind: 'manifest', filename: `manifest.${format}`, format });
+		const adapter = getControlFileAdapter({ type: 'manifest', fileName: `manifest.${format}`, fileFormat: format });
 		expect(adapter.parseDocument('manifest:\n  projectname: on\n  frameworkversion: 2.0', `manifest.${format}`).manifest)
 			.toEqual({ projectname: 'on', frameworkversion: 2 });
 	});

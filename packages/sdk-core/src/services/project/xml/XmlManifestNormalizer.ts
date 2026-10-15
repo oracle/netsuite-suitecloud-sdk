@@ -4,31 +4,54 @@
  */
 'use strict';
 
-import type { ProjectManifest } from '../SuiteCloudControlFileTypes';
 import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
-import { getXmlRoot, xmlText } from './XmlControlFileParser';
+import { normalizeManifestDependencies } from '../sdf_commons/ManifestDependenciesNormalizer';
+import { getXmlRoot, xmlText, xmlChildren, type XmlNode } from './XmlControlFileParser';
+import type { ManifestDependencies, ProjectManifestSkeleton } from '../SuiteCloudControlFileTypes';
 
-export function normalizeXmlManifest(document: unknown, filename: string): ProjectManifest {
-	const manifest = getXmlRoot(document, filename, CONTROL_FILE_FIELDS.MANIFEST);
-	const publisherId = xmlText(manifest[CONTROL_FILE_FIELDS.PUBLISHER_ID]);
-	const projectId = xmlText(manifest[CONTROL_FILE_FIELDS.PROJECT_ID]);
-	const rootPath = `/${CONTROL_FILE_FIELDS.MANIFEST}`;
+const { MANIFEST } = CONTROL_FILE_FIELDS;
+
+export function normalizeXmlManifest(document: unknown, filename: string): ProjectManifestSkeleton {
+	const manifest = getXmlRoot(document, filename, MANIFEST.ROOT);
+	const publisherId = xmlText(manifest[MANIFEST.PUBLISHER_ID]);
+	const projectId = xmlText(manifest[MANIFEST.PROJECT_ID]);
 	return {
-		projectType: xmlText(manifest.$?.[CONTROL_FILE_FIELDS.PROJECT_TYPE]),
-		projectName: xmlText(manifest[CONTROL_FILE_FIELDS.PROJECT_NAME]),
+		projectType: xmlText(manifest.$?.[MANIFEST.PROJECT_TYPE]),
+		projectName: xmlText(manifest[MANIFEST.PROJECT_NAME]),
 		publisherId,
 		projectId,
 		applicationId: publisherId && projectId ? `${publisherId}.${projectId}` : undefined,
-		projectVersion: xmlText(manifest[CONTROL_FILE_FIELDS.PROJECT_VERSION]),
-		frameworkVersion: xmlText(manifest[CONTROL_FILE_FIELDS.FRAMEWORK_VERSION]),
-		source: { file: filename, propertyPath: rootPath },
-		propertyPaths: {
-			projectType: `${rootPath}/@${CONTROL_FILE_FIELDS.PROJECT_TYPE}`,
-			projectName: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_NAME}`,
-			publisherId: `${rootPath}/${CONTROL_FILE_FIELDS.PUBLISHER_ID}`,
-			projectId: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_ID}`,
-			projectVersion: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_VERSION}`,
-			frameworkVersion: `${rootPath}/${CONTROL_FILE_FIELDS.FRAMEWORK_VERSION}`,
-		},
+		projectVersion: xmlText(manifest[MANIFEST.PROJECT_VERSION]),
+		frameworkVersion: xmlText(manifest[MANIFEST.FRAMEWORK_VERSION]),
+		dependencies: normalizeXmlDependencies(manifest, filename),
 	};
+}
+
+function normalizeXmlDependencies(manifest: XmlNode, filename: string): ManifestDependencies | undefined {
+	const dependencies = xmlChildren(manifest, MANIFEST.DEPENDENCIES)[0];
+	if (!dependencies) {
+		return undefined;
+	}
+	return normalizeManifestDependencies({
+		features: selections(dependencies, MANIFEST.FEATURES, MANIFEST.FEATURE)?.map((feature) => ({
+			name: xmlText(feature), required: xmlText(feature.$?.[MANIFEST.REQUIRED]),
+		})),
+		applications: selections(dependencies, MANIFEST.APPLICATIONS, MANIFEST.APPLICATION)?.map((application) => ({
+			id: xmlText(application.$?.[MANIFEST.ID]),
+			objects: selections(application, MANIFEST.OBJECTS, MANIFEST.OBJECT)?.map(xmlText),
+			platformextensions: selections(application, MANIFEST.PLATFORM_EXTENSIONS, MANIFEST.PLATFORM_EXTENSION)?.map(xmlText),
+		})),
+		bundles: selections(dependencies, MANIFEST.BUNDLES, MANIFEST.BUNDLE)?.map((bundle) => ({
+			id: xmlText(bundle.$?.[MANIFEST.ID]), objects: selections(bundle, MANIFEST.OBJECTS, MANIFEST.OBJECT)?.map(xmlText),
+		})),
+		files: selections(dependencies, MANIFEST.FILES, MANIFEST.FILE)?.map(xmlText),
+		folders: selections(dependencies, MANIFEST.FOLDERS, MANIFEST.FOLDER)?.map(xmlText),
+		objects: selections(dependencies, MANIFEST.OBJECTS, MANIFEST.OBJECT)?.map(xmlText),
+		platformextensions: selections(dependencies, MANIFEST.PLATFORM_EXTENSIONS, MANIFEST.PLATFORM_EXTENSION)?.map(xmlText),
+	}, filename);
+}
+
+function selections(node: XmlNode, wrapper: string, item: string): XmlNode[] | undefined {
+	const group = xmlChildren(node, wrapper)[0];
+	return group ? xmlChildren(group, item) : undefined;
 }

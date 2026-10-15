@@ -4,14 +4,26 @@
  */
 'use strict';
 
+
+export enum SDF_PROJECT_TYPES {
+	ACP = 'ACCOUNTCUSTOMIZATION',
+	SUITEAPP = 'SUITEAPP',
+}
+
+export enum SDF_FRAMEWORK_VERSIONS {
+	SDFv1 = '1.0',
+	SDFv2 = '2.0',
+}
+
+export enum SDF_SUPPORTED_FILE_FORMATS  {
+	JSON = 'json',
+	XML = 'xml',
+	YAML = 'yaml',
+	YML = 'yml',
+}
+
 export const FILES = {
-	FILE_FORMATS: {
-		JSON: 'json',
-		XML: 'xml',
-		YAML: 'yaml',
-		YML: 'yml',
-	},
-	FILE_NAMES: {
+	CONTROL_FILES: {
 		APPLICATION: 'application',
 		DEPLOY: 'deploy',
 		MANIFEST: 'manifest',
@@ -34,34 +46,47 @@ export const FOLDERS = {
 	WEB_SITE_HOSTING_FILES: 'Web Site Hosting Files',
 } as const;
 
-export const PROJECT_TYPES = {
-	ACP: 'ACCOUNTCUSTOMIZATION',
-	SUITEAPP: 'SUITEAPP',
-} as const;
-
-export const SDF_FRAMEWORK_VERSIONS = {
-	SDFv1: '1.0',
-	SDFv2: '2.0',
-} as const;
 
 // XML, JSON, and YAML control files use the same field IDs.
 export const CONTROL_FILE_FIELDS = {
-	CONFIGURATION: 'configuration',
-	DEPLOY: FILES.FILE_NAMES.DEPLOY,
-	DEPLOYMENT: 'deployment',
-	FILES: 'files',
-	FRAMEWORK_VERSION: 'frameworkversion',
-	MANIFEST: FILES.FILE_NAMES.MANIFEST,
-	OBJECTS: 'objects',
-	PATH: 'path',
-	PROJECT_ID: 'projectid',
-	PROJECT_NAME: 'projectname',
-	PROJECT_TYPE: 'projecttype',
-	PROJECT_VERSION: 'projectversion',
-	PUBLISHER_ID: 'publisherid',
-	RUN: 'run',
-	SCRIPT: 'script',
-	SCRIPT_FILE: 'scriptfile',
-	SDF_INSTALLATION_SCRIPT: 'sdfinstallationscript',
-	TRANSLATION_IMPORTS: 'translationimports',
+	MANIFEST: {
+		ROOT: FILES.CONTROL_FILES.MANIFEST,
+		APPLICATION: 'application',
+		APPLICATIONS: 'applications',
+		BUNDLE: 'bundle',
+		BUNDLES: 'bundles',
+		DEPENDENCIES: 'dependencies',
+		FEATURE: 'feature',
+		FEATURES: 'features',
+		FILE: 'file',
+		FILES: 'files',
+		FOLDER: 'folder',
+		FOLDERS: 'folders',
+		FRAMEWORK_VERSION: 'frameworkversion',
+		ID: 'id',
+		NAME: 'name',
+		OBJECT: 'object',
+		OBJECTS: 'objects',
+		PLATFORM_EXTENSION: 'platformextension',
+		PLATFORM_EXTENSIONS: 'platformextensions',
+		PROJECT_ID: 'projectid',
+		PROJECT_NAME: 'projectname',
+		PROJECT_TYPE: 'projecttype',
+		PROJECT_VERSION: 'projectversion',
+		PUBLISHER_ID: 'publisherid',
+		REQUIRED: 'required',
+	},
+	DEPLOY: {
+		ROOT: FILES.CONTROL_FILES.DEPLOY,
+		CONFIGURATION: 'configuration',
+		DEPLOYMENT: 'deployment',
+		FILES: 'files',
+		OBJECTS: 'objects',
+		PATH: 'path',
+		RUN: 'run',
+		SCRIPT: 'script',
+		SCRIPT_FILE: 'scriptfile',
+		SDF_INSTALLATION_SCRIPT: 'sdfinstallationscript',
+		TRANSLATION_IMPORTS: 'translationimports',
+	},
 } as const;

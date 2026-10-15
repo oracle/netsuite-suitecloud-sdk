@@ -18,7 +18,7 @@ import {
 } from '../archive/ProjectArchivePlan';
 import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
-import { PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
+import { SDF_PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
 
 /** Compatibility alias for existing command consumers. */
 export const PACKAGE_PROJECT_OPERATION_STATUS = SDK_OPERATION_STATUS;
@@ -64,7 +64,7 @@ function getTargetZipFilePath(manifestData: ProjectManifestData, destinationFold
 	const datePart = formatDatePart(new Date());
 
 	if (
-		manifestData.projectType === PROJECT_TYPES.SUITEAPP &&
+		manifestData.projectType === SDF_PROJECT_TYPES.SUITEAPP &&
 		manifestData.applicationId &&
 		manifestData.projectVersion
 	) {

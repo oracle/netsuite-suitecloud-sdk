@@ -75,7 +75,7 @@ module.exports = class CommandActionExecutor {
 			const overriddenArguments = beforeExecutingOutput.arguments;
 
 			// Validate control-file contents after the user hook and before authorization requests.
-			if (commandName === 'project:deploy' || commandName === 'project:package' || commandName === 'project:deploy') {
+			if (commandName === 'project:validate' || commandName === 'project:package' || commandName === 'project:deploy') {
 				inspectControlFilesAndGetProjectDescription(projectFolder);
 			}
 			

@@ -7,23 +7,23 @@
 import { PROJECT_CONTROL } from '../translation/TranslationKeys';
 import { translationService } from '../translation/TranslationService';
 import type { ControlFileAdapter } from './ControlFileAdapterTypes';
-import type { FileFormat, SuiteCloudControlFile } from './SuiteCloudControlFileTypes';
-import { FILES } from './SuiteCloudProjectConstants';
+import type { SdfSupportedFileFormat, SuiteCloudControlFile } from './SuiteCloudControlFileTypes';
+import { SDF_SUPPORTED_FILE_FORMATS } from './SuiteCloudProjectConstants';
 import { jsonControlFileAdapter } from './json/JsonControlFileAdapter';
 import { xmlControlFileAdapter } from './xml/XmlControlFileAdapter';
 import { yamlControlFileAdapter } from './yaml/YamlControlFileAdapter';
 
-const CONTROL_FILE_ADAPTERS: Record<FileFormat, ControlFileAdapter> = {
-	[FILES.FILE_FORMATS.XML]: xmlControlFileAdapter,
-	[FILES.FILE_FORMATS.JSON]: jsonControlFileAdapter,
-	[FILES.FILE_FORMATS.YAML]: yamlControlFileAdapter,
-	[FILES.FILE_FORMATS.YML]: yamlControlFileAdapter,
+const CONTROL_FILE_ADAPTERS: Record<SdfSupportedFileFormat, ControlFileAdapter> = {
+	[SDF_SUPPORTED_FILE_FORMATS.XML]: xmlControlFileAdapter,
+	[SDF_SUPPORTED_FILE_FORMATS.JSON]: jsonControlFileAdapter,
+	[SDF_SUPPORTED_FILE_FORMATS.YAML]: yamlControlFileAdapter,
+	[SDF_SUPPORTED_FILE_FORMATS.YML]: yamlControlFileAdapter,
 };
 
 export function getControlFileAdapter(file: SuiteCloudControlFile): ControlFileAdapter {
-	const adapter = CONTROL_FILE_ADAPTERS[file.format];
+	const adapter = CONTROL_FILE_ADAPTERS[file.fileFormat];
 	if (!adapter) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FORMAT_UNSUPPORTED, file.filename));
+		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FORMAT_UNSUPPORTED, file.fileName));
 	}
 	return adapter;
 }

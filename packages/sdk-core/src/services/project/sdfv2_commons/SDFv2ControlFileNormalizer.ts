@@ -6,39 +6,35 @@
 
 import { PROJECT_CONTROL } from '../../translation/TranslationKeys';
 import { translationService } from '../../translation/TranslationService';
-import type { DeployGroup, DeployScript, ProjectManifest } from '../SuiteCloudControlFileTypes';
+import type { DeployScript, ProjectDeploySkeleton, ProjectManifestSkeleton } from '../SuiteCloudControlFileTypes';
+import { createProjectDeploySkeleton, getDeployPathGroup } from '../sdf_commons/ProjectDeployNormalizer';
+import { normalizeManifestDependencies } from '../sdf_commons/ManifestDependenciesNormalizer';
 import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
 
+const { MANIFEST, DEPLOY } = CONTROL_FILE_FIELDS;
+
 // JSON and YAML share normalization without modifying the parsed document.
-export function normalizeSdfV2Manifest(document: unknown, filename: string): ProjectManifest {
-	const rootPath = `/${CONTROL_FILE_FIELDS.MANIFEST}`;
-	const manifest = requireMapping(getRoot(document, filename, CONTROL_FILE_FIELDS.MANIFEST), filename, rootPath);
-	const publisherId = scalarText(manifest[CONTROL_FILE_FIELDS.PUBLISHER_ID]);
-	const projectId = scalarText(manifest[CONTROL_FILE_FIELDS.PROJECT_ID]);
+export function normalizeSdfV2Manifest(document: unknown, filename: string): ProjectManifestSkeleton {
+	const rootPath = `/${MANIFEST.ROOT}`;
+	const manifest = requireMapping(getRoot(document, filename, MANIFEST.ROOT), filename, rootPath);
+	const publisherId = scalarText(manifest[MANIFEST.PUBLISHER_ID]);
+	const projectId = scalarText(manifest[MANIFEST.PROJECT_ID]);
 	return {
-		projectType: scalarText(manifest[CONTROL_FILE_FIELDS.PROJECT_TYPE]),
-		projectName: scalarText(manifest[CONTROL_FILE_FIELDS.PROJECT_NAME]),
+		projectType: scalarText(manifest[MANIFEST.PROJECT_TYPE]),
+		projectName: scalarText(manifest[MANIFEST.PROJECT_NAME]),
 		publisherId,
 		projectId,
 		applicationId: publisherId && projectId ? `${publisherId}.${projectId}` : undefined,
-		projectVersion: scalarText(manifest[CONTROL_FILE_FIELDS.PROJECT_VERSION]),
-		frameworkVersion: scalarText(manifest[CONTROL_FILE_FIELDS.FRAMEWORK_VERSION]),
-		source: { file: filename, propertyPath: rootPath },
-		propertyPaths: {
-			projectType: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_TYPE}`,
-			projectName: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_NAME}`,
-			publisherId: `${rootPath}/${CONTROL_FILE_FIELDS.PUBLISHER_ID}`,
-			projectId: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_ID}`,
-			projectVersion: `${rootPath}/${CONTROL_FILE_FIELDS.PROJECT_VERSION}`,
-			frameworkVersion: `${rootPath}/${CONTROL_FILE_FIELDS.FRAMEWORK_VERSION}`,
-		},
+		projectVersion: scalarText(manifest[MANIFEST.PROJECT_VERSION]),
+		frameworkVersion: scalarText(manifest[MANIFEST.FRAMEWORK_VERSION]),
+		dependencies: normalizeManifestDependencies(manifest[MANIFEST.DEPENDENCIES], filename),
 	};
 }
 
-export function normalizeSdfV2Deploy(document: unknown, filename: string): DeployGroup[] {
-	const deploy = getRoot(document, filename, CONTROL_FILE_FIELDS.DEPLOY);
-	const rootPath = `/${CONTROL_FILE_FIELDS.DEPLOY}`;
-	const groups: DeployGroup[] = [];
+export function normalizeSdfV2Deploy(document: unknown, filename: string): ProjectDeploySkeleton {
+	const deploy = getRoot(document, filename, DEPLOY.ROOT);
+	const rootPath = `/${DEPLOY.ROOT}`;
+	const result = createProjectDeploySkeleton();
 	if (!Array.isArray(deploy)) {
 		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.STRUCTURE_INVALID, filename, rootPath, 'an ordered array of deploy groups'));
 	}
@@ -53,16 +49,14 @@ export function normalizeSdfV2Deploy(document: unknown, filename: string): Deplo
 		const [kind, value] = entries[0];
 		const propertyPath = `${entryPath}/${escapePointer(kind)}`;
 		const group = requireMapping(value, filename, propertyPath);
-		const paths = asList(group[CONTROL_FILE_FIELDS.PATH]).map((path, pathIndex) => ({
-			value: scalarText(path),
-			source: { file: filename, propertyPath: itemPath(group[CONTROL_FILE_FIELDS.PATH], `${propertyPath}/${CONTROL_FILE_FIELDS.PATH}`, pathIndex) },
-		}));
-		const scripts = kind === CONTROL_FILE_FIELDS.RUN
-			? normalizeScripts(group[CONTROL_FILE_FIELDS.SCRIPT], filename, `${propertyPath}/${CONTROL_FILE_FIELDS.SCRIPT}`)
-			: [];
-		groups.push({ kind, paths, scripts, source: { file: filename, propertyPath } });
+		if (kind === DEPLOY.RUN) {
+			result.run.push(...normalizeScripts(group[DEPLOY.SCRIPT], filename, `${propertyPath}/${DEPLOY.SCRIPT}`));
+		} else {
+			const paths = getDeployPathGroup(result, kind, filename, propertyPath);
+			paths.push(...asList(group[DEPLOY.PATH]).map(scalarText));
+		}
 	}
-	return groups;
+	return result;
 }
 
 function getRoot(document: unknown, filename: string, name: string): unknown {
@@ -85,10 +79,8 @@ function normalizeScripts(value: unknown, filename: string, propertyPath: string
 		const scriptPath = itemPath(value, propertyPath, index);
 		const script = requireMapping(entry, filename, scriptPath);
 		return {
-			path: { value: scalarText(script[CONTROL_FILE_FIELDS.PATH]), source: { file: filename, propertyPath: `${scriptPath}/${CONTROL_FILE_FIELDS.PATH}` } },
-			deployment: scalarText(script[CONTROL_FILE_FIELDS.DEPLOYMENT]),
-			deploymentSource: { file: filename, propertyPath: `${scriptPath}/${CONTROL_FILE_FIELDS.DEPLOYMENT}` },
-			source: { file: filename, propertyPath: scriptPath },
+			path: scalarText(script[DEPLOY.PATH]),
+			deployment: scalarText(script[DEPLOY.DEPLOYMENT]),
 		};
 	});
 }

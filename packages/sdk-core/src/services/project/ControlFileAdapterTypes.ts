@@ -4,10 +4,9 @@
  */
 'use strict';
 
-import type { DeployGroup, ProjectManifest } from './SuiteCloudControlFileTypes';
-
+import type { ProjectDeploySkeleton, ProjectManifestSkeleton } from './SuiteCloudControlFileTypes';
 export type ControlFileAdapter = {
 	parseDocument(contents: string, filename: string): unknown;
-	normalizeManifest(document: unknown, filename: string): ProjectManifest;
-	normalizeDeploy(document: unknown, filename: string): DeployGroup[];
+	normalizeManifest(document: unknown, filename: string): ProjectManifestSkeleton;
+	normalizeDeploy(document: unknown, filename: string): ProjectDeploySkeleton;
 };

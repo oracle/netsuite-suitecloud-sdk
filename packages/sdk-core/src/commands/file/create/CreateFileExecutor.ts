@@ -15,7 +15,7 @@ import { FILE_CREATE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { generateSuiteScriptTemplate } from '../../../templates/SuiteScriptTemplateService';
 import { getProjectManifestFile } from '../../../services/project/ProjectControlService';
-import { FOLDERS, PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
+import { FOLDERS, SDF_PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
 
 /** Compatibility alias for existing command consumers. */
 export const FILE_CREATE_STATUS = SDK_OPERATION_STATUS;
@@ -66,10 +66,10 @@ function validateFileCabinetPath(pathValue: string, manifest: { projectType: str
 	}
 
 	const requiredFolder =
-		manifest.projectType === PROJECT_TYPES.SUITEAPP
+		manifest.projectType === SDF_PROJECT_TYPES.SUITEAPP
 			? `/${FOLDERS.SUITE_APPS}/${manifest.appId || ''}`
 			: `/${FOLDERS.SUITE_SCRIPTS}`;
-	const hasRequiredAppId = manifest.projectType !== PROJECT_TYPES.SUITEAPP || Boolean(manifest.appId);
+	const hasRequiredAppId = manifest.projectType !== SDF_PROJECT_TYPES.SUITEAPP || Boolean(manifest.appId);
 	const isValidProjectPath = hasRequiredAppId && pathValue.startsWith(`${requiredFolder}/`);
 	const isValidWebHostingPath = pathValue.startsWith(`/${FOLDERS.WEB_SITE_HOSTING_FILES}/`);
 

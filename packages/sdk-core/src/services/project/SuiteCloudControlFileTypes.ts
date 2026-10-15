@@ -4,62 +4,87 @@
  */
 'use strict';
 
-import { FILES, SDF_FRAMEWORK_VERSIONS } from './SuiteCloudProjectConstants';
+import { FILES, SDF_FRAMEWORK_VERSIONS, SDF_PROJECT_TYPES, SDF_SUPPORTED_FILE_FORMATS } from './SuiteCloudProjectConstants';
 
-export type FileFormat = typeof FILES.FILE_FORMATS[keyof typeof FILES.FILE_FORMATS];
-export type SdfFrameworkVersion = typeof SDF_FRAMEWORK_VERSIONS[keyof typeof SDF_FRAMEWORK_VERSIONS];
-export type SuiteCloudControlFileKind = typeof FILES.FILE_NAMES[keyof typeof FILES.FILE_NAMES];
+export type SdfSupportedFileFormat = `${SDF_SUPPORTED_FILE_FORMATS}`;
+export type SdfFrameworkVersion = `${SDF_FRAMEWORK_VERSIONS}`;
+export type SdfProjectType = `${SDF_PROJECT_TYPES}`;
+export type SdfControlFileType = typeof FILES.CONTROL_FILES[keyof typeof FILES.CONTROL_FILES];
 
-// TODO: Rethink this type. Is it needed? Is there a better way of doing things
+
 export type SuiteCloudControlFile = {
-	kind: SuiteCloudControlFileKind;
-	filename: string;
-	filepath: string;
-	format: FileFormat;
-};
-
-export type SdfProjectControlFiles = {
-	sdfFrameworkVersion: SdfFrameworkVersion;
-	manifest: SuiteCloudControlFile;
-	deploy: SuiteCloudControlFile;
-	application?: SuiteCloudControlFile;
-};
-
-// TODO: Is this necessary
-export type SourceLocation = { file: string; propertyPath: string };
-
-export type ProjectManifest = {
-	projectType: string;
-	projectName: string;
-	publisherId?: string;
-	projectId?: string;
-	applicationId?: string;
-	projectVersion?: string;
-	frameworkVersion: string;
-
-	// TODO: are "SourceLocation" and "propertyPaths" required?
-	source: SourceLocation;
-	propertyPaths: Record<'projectType' | 'projectName' | 'publisherId' | 'projectId' | 'projectVersion' | 'frameworkVersion', string>;
-};
-
-
-// TODO: Should we maintain current flows and proceed with unstructured/unvalidated "DeployGroups" or should we define a ProjectDeploy type (with specific DeployGroups)?
-export type DeployPath = { value: string; source: SourceLocation };
-export type DeployScript = {
-	path: DeployPath;
-	deployment: string;
-	deploymentSource: SourceLocation;
-	source: SourceLocation;
-};
-export type DeployGroup = {
-	kind: string;
-	paths: DeployPath[];
-	scripts: DeployScript[];
-	source: SourceLocation;
+	type: SdfControlFileType;
+	fileName: string;
+	filePath: string;
+	fileFormat: SdfSupportedFileFormat;
 };
 
 export type ProjectDescription = {
 	controlFiles: SdfProjectControlFiles;
 	manifest: ProjectManifest;
-	deployGroups: DeployGroup[];
+	deploy: ProjectDeploy;
+};
+
+export type SdfProjectControlFiles = {
+	manifest: SuiteCloudControlFile;
+	deploy: SuiteCloudControlFile;
+	application?: SuiteCloudControlFile;
+};
+
+export type ProjectManifestSkeleton = {
+	[Key in keyof ProjectManifest]: ProjectManifest[Key] extends string | undefined ? string : ProjectManifest[Key];
+};
+
+export type ProjectManifest = {
+	projectType: SdfProjectType;
+	projectName: string;
+	publisherId?: string;
+	projectId?: string;
+	applicationId?: string;
+	projectVersion?: string;
+	frameworkVersion: SdfFrameworkVersion;
+	dependencies?: ManifestDependencies;
+};
+
+export type ManifestDependencies = {
+	features?: ManifestFeatureDependency[];
+	applications?: ManifestApplicationDependency[];
+	bundles?: ManifestBundleDependency[];
+	files?: string[];
+	folders?: string[];
+	objects?: string[];
+	platformextensions?: string[];
+};
+
+export type ManifestFeatureDependency = {
+	name: string;
+	required: boolean;
+};
+
+export type ManifestApplicationDependency = {
+	id: string;
+	objects?: string[];
+	platformextensions?: string[];
+};
+
+export type ManifestBundleDependency = {
+	id: string;
+	objects?: string[];
+};
+
+
+// Deploy fields do not need additional type narrowing at this stage.
+export type ProjectDeploySkeleton = ProjectDeploy;
+
+export type ProjectDeploy = {
+	files: string[];
+	objects: string[];
+	run: DeployScript[];
+	translationimports: string[];
+	configurations: string[];
+};
+
+export type DeployScript = {
+	path: string;
+	deployment: string;
 };

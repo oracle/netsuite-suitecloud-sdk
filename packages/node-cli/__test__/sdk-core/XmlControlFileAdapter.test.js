@@ -110,6 +110,6 @@ describe('XML control-file adapter', () => {
 	});
 
 	it('accepts an empty deploy root while content validation is deferred', () => {
-		expect(parseControlFile('xml', 'deploy', '<deploy/>').normalized).toEqual([]);
+		expect(parseControlFile('xml', 'deploy', '<deploy/>').normalized).toEqual({ files: [], objects: [], run: [], translationimports: [], configurations: [] });
 	});
 });

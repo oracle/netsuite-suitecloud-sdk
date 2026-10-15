@@ -11,9 +11,12 @@ import {
 	SDK_OPERATION_STATUS,
 	type OperationResult,
 } from '../../../api/OperationResult';
+import { CONTROL_FILE_FIELDS } from '../../../services/project/SuiteCloudProjectConstants';
 import { PROJECT_CREATE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { loadTemplate, renderTemplate, setXmlElementValues } from '../../../templates/TemplateLoader';
+
+const { MANIFEST } = CONTROL_FILE_FIELDS;
 
 /** Compatibility alias for existing command consumers. */
 export const CREATE_PROJECT_OPERATION_STATUS = SDK_OPERATION_STATUS;
@@ -89,9 +92,9 @@ export async function executeCreateProject(
 		}
 		if (projectType === PROJECT_TYPE_SUITEAPP) {
 			const missingField = [
-				['publisherid', input.publisherid],
-				['projectid', input.projectid],
-				['projectversion', input.projectversion],
+				[MANIFEST.PUBLISHER_ID, input.publisherid],
+				[MANIFEST.PROJECT_ID, input.projectid],
+				[MANIFEST.PROJECT_VERSION, input.projectversion],
 			].find(([, value]) => !String(value ?? '').trim());
 			if (missingField) {
 				return errorResult(
@@ -157,11 +160,11 @@ async function createSuiteAppProject(
 	await writeFile(
 		join(projectFolder, MANIFEST_FILENAME),
 		setXmlElementValues(manifestTemplate, {
-			publisherid: publisherId,
-			projectid: projectId,
-			projectname: projectName,
-			projectversion: projectVersion,
-			frameworkversion: FRAMEWORK_VERSION,
+			[MANIFEST.PUBLISHER_ID]: publisherId,
+			[MANIFEST.PROJECT_ID]: projectId,
+			[MANIFEST.PROJECT_NAME]: projectName,
+			[MANIFEST.PROJECT_VERSION]: projectVersion,
+			[MANIFEST.FRAMEWORK_VERSION]: FRAMEWORK_VERSION,
 		}),
 		'utf8'
 	);
@@ -201,8 +204,8 @@ async function createAcpProject(projectFolder: string, projectName: string): Pro
 	await writeFile(
 		join(projectFolder, MANIFEST_FILENAME),
 		setXmlElementValues(manifestTemplate, {
-			projectname: projectName,
-			frameworkversion: FRAMEWORK_VERSION,
+			[MANIFEST.PROJECT_NAME]: projectName,
+			[MANIFEST.FRAMEWORK_VERSION]: FRAMEWORK_VERSION,
 		}),
 		'utf8'
 	);

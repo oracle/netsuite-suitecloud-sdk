@@ -10,19 +10,20 @@ export {
 	getProjectManifestFile,
 } from '../services/project/ProjectControlService';
 export type {
-	DeployGroup,
-	FileFormat,
+	DeployScript,
+	ProjectDeploy,
+	ProjectDeploySkeleton,
+	SdfSupportedFileFormat,
+	SdfFrameworkVersion,
+	SdfProjectType,
 	ProjectDescription,
 	ProjectManifest,
-	SdfFrameworkVersion,
+	ProjectManifestSkeleton,
+	ManifestDependencies,
+	ManifestFeatureDependency,
+	ManifestApplicationDependency,
+	ManifestBundleDependency,
 	SdfProjectControlFiles,
 	SuiteCloudControlFile,
-	SuiteCloudControlFileKind,
+	SdfControlFileType,
 } from '../services/project/SuiteCloudControlFileTypes';
-export {
-	CONTROL_FILE_FIELDS,
-	FILES,
-	FOLDERS,
-	PROJECT_TYPES,
-	SDF_FRAMEWORK_VERSIONS,
-} from '../services/project/SuiteCloudProjectConstants';

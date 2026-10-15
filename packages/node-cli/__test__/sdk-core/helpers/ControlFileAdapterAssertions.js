@@ -34,44 +34,47 @@ const EXPECTED_DEPENDENCIES = {
 	},
 };
 
-const EXPECTED_DEPLOY_GROUPS = {
-	suiteapp: [
-		{ kind: 'files', paths: ['~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/setup.js',
-			'~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/helper.js'], scripts: [] },
-		{ kind: 'run', paths: [], scripts: [
+const EXPECTED_DEPLOYS = {
+	suiteapp: {
+		files: [
+			'~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/setup.js',
+			'~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/helper.js',
+			'~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/*',
+		],
+		objects: ['~/Objects/customrecord_settings.xml', '~/Objects/customscript_setup.xml'],
+		run: [
 			{ path: '~/Objects/customscript_setup.xml', deployment: 'customdeploy_setup' },
 			{ path: '~/Objects/customscript_defaults.xml', deployment: 'customdeploy_defaults' },
-		] },
-		{ kind: 'objects', paths: ['~/Objects/customrecord_settings.xml', '~/Objects/customscript_setup.xml'], scripts: [] },
-		{ kind: 'files', paths: ['~/FileCabinet/SuiteApps/com.netsuite.sampleapp/Scripts/*'], scripts: [] },
-		{ kind: 'translationimports', paths: ['~/Translations/custcollection_strings_fr_FR.xlf'], scripts: [] },
-	],
-	acp: [
-		{ kind: 'configuration', paths: ['~/AccountConfiguration/features.xml'], scripts: [] },
-		{ kind: 'configuration', paths: ['~/AccountConfiguration/preferences.xml'], scripts: [] },
-		{ kind: 'files', paths: ['~/FileCabinet/SuiteScripts/account-utility.js'], scripts: [] },
-		{ kind: 'objects', paths: ['~/Objects/customrecord_accountsettings.xml'], scripts: [] },
-		{ kind: 'translationimports', paths: ['~/Translations/custcollection_accountstrings_es_ES.xlf'], scripts: [] },
-	],
+		],
+		translationimports: ['~/Translations/custcollection_strings_fr_FR.xlf'],
+		configurations: [],
+	},
+	acp: {
+		files: ['~/FileCabinet/SuiteScripts/account-utility.js'],
+		objects: ['~/Objects/customrecord_accountsettings.xml'],
+		run: [],
+		translationimports: ['~/Translations/custcollection_accountstrings_es_ES.xlf'],
+		configurations: ['~/AccountConfiguration/features.xml', '~/AccountConfiguration/preferences.xml'],
+	},
 };
+
+function expectedDependencies(projectType) {
+	const dependencies = EXPECTED_DEPENDENCIES[projectType];
+	return {
+		...dependencies,
+		features: dependencies.features?.map((feature) => ({ ...feature, required: feature.required === 'true' })),
+	};
+}
 
 function parseControlFile(format, kind, contents) {
 	const filename = `${kind}.${format}`;
-	const adapter = getControlFileAdapter({ kind, filename, format });
+	const adapter = getControlFileAdapter({ type: kind, fileName: filename, fileFormat: format });
 	const document = adapter.parseDocument(contents, filename);
 	const originalDocument = JSON.stringify(document);
 	const normalized = kind === 'manifest'
 		? adapter.normalizeManifest(document, filename)
 		: adapter.normalizeDeploy(document, filename);
 	return { document, originalDocument, normalized };
-}
-
-function assertDeployValues(groups, projectType) {
-	expect(groups.map((group) => ({
-		kind: group.kind,
-		paths: group.paths.map((path) => path.value),
-		scripts: group.scripts.map((script) => ({ path: script.path.value, deployment: script.deployment })),
-	}))).toEqual(EXPECTED_DEPLOY_GROUPS[projectType]);
 }
 
 function defineProjectParsingTests(format, fixtures) {
@@ -81,16 +84,11 @@ function defineProjectParsingTests(format, fixtures) {
 		const deployFilename = `deploy.${format}`;
 		const frameworkVersion = format === 'xml' ? '1.0' : '2.0';
 
-		it('parses every identity field and its original property location', () => {
+		it('normalizes manifest identity and dependencies without changing the parsed document', () => {
 			const { document, originalDocument, normalized } = parseControlFile(format, 'manifest', manifest);
 			expect(normalized).toEqual({
 				...EXPECTED_MANIFESTS[projectType], frameworkVersion,
-				source: { file: manifestFilename, propertyPath: '/manifest' },
-				propertyPaths: {
-					projectType: format === 'xml' ? '/manifest/@projecttype' : '/manifest/projecttype',
-					projectName: '/manifest/projectname', publisherId: '/manifest/publisherid', projectId: '/manifest/projectid',
-					projectVersion: '/manifest/projectversion', frameworkVersion: '/manifest/frameworkversion',
-				},
+				dependencies: expectedDependencies(projectType),
 			});
 			expect(JSON.stringify(document)).toBe(originalDocument);
 			if (format !== 'xml') {
@@ -98,32 +96,10 @@ function defineProjectParsingTests(format, fixtures) {
 			}
 		});
 
-		it('preserves all paths, scripts, and repeated deploy groups in declaration order', () => {
+		it('preserves path and script order within each supported section without changing the parsed document', () => {
 			const { document, originalDocument, normalized } = parseControlFile(format, 'deploy', deploy);
-			assertDeployValues(normalized, projectType);
+			expect(normalized).toEqual(EXPECTED_DEPLOYS[projectType]);
 			expect(JSON.stringify(document)).toBe(originalDocument);
-
-			if (projectType === 'suiteapp') {
-				expect(normalized[3].paths[0].source).toEqual({
-					file: deployFilename,
-					propertyPath: format === 'xml' ? '/deploy/files[2]/path[1]' : '/deploy/3/files/path/0',
-				});
-				const scriptPath = format === 'xml' ? '/deploy/run[1]/script[2]' : '/deploy/1/run/script/1';
-				expect(normalized[1].scripts[1]).toMatchObject({
-					source: { file: deployFilename, propertyPath: scriptPath },
-					path: { source: { file: deployFilename, propertyPath: `${scriptPath}/path${format === 'xml' ? '[1]' : ''}` } },
-					deploymentSource: { file: deployFilename, propertyPath: `${scriptPath}/deployment${format === 'xml' ? '[1]' : ''}` },
-				});
-			} else {
-				expect(normalized[1].paths[0].source).toEqual({
-					file: deployFilename,
-					propertyPath: format === 'xml' ? '/deploy/configuration[2]/path[1]' : '/deploy/1/configuration/path/0',
-				});
-			}
-			expect(normalized[4].source).toEqual({
-				file: deployFilename,
-				propertyPath: format === 'xml' ? '/deploy/translationimports[1]' : '/deploy/4/translationimports',
-			});
 		});
 
 		it('reads the physical control-file pair through synchronous metadata and inspection', async () => {
@@ -135,13 +111,14 @@ function defineProjectParsingTests(format, fixtures) {
 				]);
 				const description = inspectControlFilesAndGetProjectDescription(projectFolder);
 				expect(description.manifest).toEqual(getProjectManifestFile(projectFolder));
-				expect(description.manifest).toMatchObject({ ...EXPECTED_MANIFESTS[projectType], frameworkVersion });
-				expect(description.controlFiles).toMatchObject({
-					sdfFrameworkVersion: frameworkVersion,
-					manifest: { filename: manifestFilename, filepath: join(projectFolder, manifestFilename), format },
-					deploy: { filename: deployFilename, filepath: join(projectFolder, deployFilename), format },
+				expect(description.manifest).toMatchObject({
+					...EXPECTED_MANIFESTS[projectType], frameworkVersion, dependencies: expectedDependencies(projectType),
 				});
-				assertDeployValues(description.deployGroups, projectType);
+				expect(description.controlFiles).toMatchObject({
+					manifest: { type: 'manifest', fileName: manifestFilename, filePath: join(projectFolder, manifestFilename), fileFormat: format },
+					deploy: { type: 'deploy', fileName: deployFilename, filePath: join(projectFolder, deployFilename), fileFormat: format },
+				});
+				expect(description.deploy).toEqual(EXPECTED_DEPLOYS[projectType]);
 			} finally {
 				await rm(projectFolder, { recursive: true, force: true });
 			}
@@ -166,6 +143,7 @@ function defineStructuredControlFileTests(format) {
 		['deploy', { deploy: [{ files: {}, objects: {} }] }, '/deploy/0'],
 		['deploy', { deploy: [{ files: 'invalid' }] }, '/deploy/0/files'],
 		['deploy', { deploy: [{ files: [] }] }, '/deploy/0/files'],
+		['deploy', { deploy: [{ 'custom/group~name': null }] }, '/deploy/0/custom~1group~0name'],
 		['deploy', { deploy: [{ run: { script: ['invalid'] } }] }, '/deploy/0/run/script/0'],
 	])('reports an unreadable %s control file with its property location (case %#)', (kind, document, propertyPath) => {
 		// JSON is also valid YAML; these cases exercise the shared structure contract through both parsers.
@@ -173,23 +151,21 @@ function defineStructuredControlFileTests(format) {
 			.toThrow(`Invalid ${kind}.${format} at ${propertyPath}:`);
 	});
 
-	it('preserves singleton selections, empty paths, and escaped JSON Pointer locations', () => {
+	it('preserves singleton selections and empty paths', () => {
 		const { normalized } = parseControlFile(format, 'deploy', JSON.stringify({ deploy: [
 			{ objects: { path: '~/Objects/*' } },
 			{ run: { script: { path: '~/Objects/install.xml', deployment: 'customdeploy_install' } } },
 			{ files: { path: [] } },
-			{ 'custom/group~name': {} },
 		] }));
-		expect(normalized[0].paths[0]).toEqual({
-			value: '~/Objects/*', source: { file: `deploy.${format}`, propertyPath: '/deploy/0/objects/path' },
+		expect(normalized).toEqual({
+			files: [], objects: ['~/Objects/*'],
+			run: [{ path: '~/Objects/install.xml', deployment: 'customdeploy_install' }],
+			translationimports: [], configurations: [],
 		});
-		expect(normalized[1].scripts[0].source.propertyPath).toBe('/deploy/1/run/script');
-		expect(normalized[2].paths).toEqual([]);
-		expect(normalized[3].source.propertyPath).toBe('/deploy/3/custom~1group~0name');
 	});
 
 	it('accepts an empty deploy array while content validation is deferred', () => {
-		expect(parseControlFile(format, 'deploy', '{"deploy": []}').normalized).toEqual([]);
+		expect(parseControlFile(format, 'deploy', '{"deploy": []}').normalized).toEqual({ files: [], objects: [], run: [], translationimports: [], configurations: [] });
 	});
 
 	it.each(['1.0', '2.0', '2.0.0', undefined])('leaves framework-version validation deferred: %s', (frameworkversion) => {
