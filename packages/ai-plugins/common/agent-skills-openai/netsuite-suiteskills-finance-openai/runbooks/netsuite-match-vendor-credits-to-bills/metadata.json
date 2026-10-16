@@ -1,0 +1,49 @@
+{
+  "access_mode": "read_only",
+  "aliases": [
+    "S25",
+    "WF-FIN-003",
+    "match-vendor-credits-to-bills"
+  ],
+  "category": "netsuite-suiteskills-finance-openai",
+  "description": "Find unused vendor credits and propose allocations to compatible open bills using verified remaining balances, vendor, subsidiary, currency and accounts payable account. Show oldest-eligible-bill matches, residuals and unverified pairs. Read-only; does not apply credits or prioritize unrelated payments.",
+  "display_name": "Match Vendor Credits to Bills",
+  "first_included_date": "2026-10-08",
+  "id": "RB-FIN-003",
+  "integration_release_date": "2026-10-15",
+  "integration_version": "0.7.5",
+  "name": "netsuite-match-vendor-credits-to-bills",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-match-vendor-credits-to-bills/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "8306e5431fc70ef8220bfe7acc185c1c85792297cb054b53446328b66b0f0b8d",
+  "source_release_date": "not_collected",
+  "source_version": "1.0.2",
+  "version": "1.0.2",
+  "version_basis": "existing_source_version"
+}

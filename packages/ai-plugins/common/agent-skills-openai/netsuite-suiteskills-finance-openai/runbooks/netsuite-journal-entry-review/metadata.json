@@ -1,0 +1,52 @@
+{
+  "access_mode": "operation_dependent",
+  "account_execution": "not_run",
+  "action_scope": "Journal review and specifically authorized correcting entries; no automatic posting from screening results.",
+  "aliases": [],
+  "category": "netsuite-suiteskills-finance-openai",
+  "description": "Use to screen posted and unposted journals for evidenced review criteria, explain each flagged entry and report assessment coverage. Prepare requested correcting-entry drafts; post only through a supported authorized workflow after validating the exact entry and accounting impact.",
+  "display_name": "Journal Entry Review",
+  "edition": "non-read-only",
+  "first_included_date": "2026-10-13",
+  "host_execution": "not_run",
+  "id": "RB-FIN-012",
+  "integration_release_date": "2026-10-15",
+  "integration_version": "0.7.5",
+  "name": "netsuite-journal-entry-review",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "Account requirements have not been collected; no account operations performed.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "Account requirements have not been collected; no account operations performed.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "Account requirements have not been collected; no account operations performed.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "Account requirements have not been collected; no account operations performed.",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-journal-entry-review/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/RETRIEVAL.md",
+    "shared/contracts/ACTIONS.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "e33ebc7c5dddb6c839357254fe6d951f54c0666c9052ede03b0abca8dcce8b3d",
+  "source_release_date": "not_collected",
+  "source_version": "unknown",
+  "source_version_status": "not_collected",
+  "version": "1.0.0",
+  "version_basis": "assigned_default_per_user"
+}

@@ -1,0 +1,259 @@
+[
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S34",
+      "WF-PPL-001",
+      "payroll-clarity-readiness"
+    ],
+    "category": "netsuite-suiteskills-people",
+    "description": "Audit an existing or planned NetSuite payroll for employee setup, payroll inputs, calculated results and readiness gaps. Use for human resources (HR) and controller reviews; includes an evidence dashboard and explicit sample mode. Does not calculate, submit, approve or pay payroll.",
+    "display_name": "Payroll Clarity Readiness",
+    "first_included_date": "2026-10-08",
+    "id": "RB-PPL-001",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-payroll-clarity-readiness",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account prerequisites not collected in local source review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account prerequisites not collected in local source review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account prerequisites not collected in local source review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account prerequisites not collected in local source review.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "a5d0b1e5ecf798709b57aa5312963f7e936fe2d2f47b8fd452236b96e88da0ee",
+    "source_release_date": "not_collected",
+    "source_version": "1.0.0",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-PPL-007",
+      "absence-management-advisor"
+    ],
+    "category": "netsuite-suiteskills-people",
+    "description": "Analyze planned absences, upcoming expiry, carryover, accrual limits, idle balances and individual time-off balances in SuitePeople Human Resources (HR). Use for factual absence insights and requested expiry contact priorities; excludes administration, policy recommendations and employment judgments.",
+    "display_name": "Absence Management Advisor",
+    "first_included_date": "2026-10-08",
+    "id": "RB-PPL-007",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-absence-management-advisor",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "ef75c04e7838eaf55414044c36077e6a8f5f176ee48b8e8b2e8d4fe6f325f643",
+    "source_release_date": "not_collected",
+    "source_version": "0.10.3",
+    "source_version_status": "previously_user_assigned",
+    "version": "0.10.3",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-PPL-008",
+      "benefits-portfolio-monitor"
+    ],
+    "category": "netsuite-suiteskills-people",
+    "description": "Review current NetSuite Benefits Tracking assignments, employee coverage, monthly recorded costs and complete gap or assignment-review worklists for human resources (HR) users. Use for focused questions or portfolio snapshots. Does not determine eligibility, process payroll or change records.",
+    "display_name": "Benefits Portfolio Monitor",
+    "first_included_date": "2026-10-08",
+    "id": "RB-PPL-008",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-benefits-portfolio-monitor",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account prerequisites not collected in local source review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account prerequisites not collected in local source review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account prerequisites not collected in local source review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account prerequisites not collected in local source review.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "f9954af9d570b4595dc51c0d2684560fd9c61b90c20defbcaeb3955e73ff34d8",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "account_execution": "not_run",
+    "action_scope": "Review and exactly confirmed native Approve or Reject actions; no status-field emulation.",
+    "aliases": [
+      "time-approval-review"
+    ],
+    "category": "netsuite-suiteskills-people",
+    "description": "Review pending NetSuite Actual Time and generate an HTML dashboard, then approve or reject exact entries or timesheets after action qualification and confirmed preview. Excludes creating, editing, submitting or retracting time.",
+    "display_name": "Time Approval Review",
+    "edition": "non-read-only",
+    "first_included_date": "2026-10-13",
+    "host_execution": "not_run",
+    "id": "RB-PPL-009",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-time-approval-review",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-approval-review/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/RETRIEVAL.md",
+      "shared/contracts/ACTIONS.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "faba718e47e06bae7f8eec590c03d3699affaa5a445fbf76845d5df24aa77303",
+    "source_release_date": "unknown",
+    "source_version": "0.12.1",
+    "source_version_status": "not_collected",
+    "version": "0.12.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "account_execution": "not_run",
+    "action_scope": "New Actual Time records only, after exact review and Save; verify each created record.",
+    "aliases": [
+      "netsuite-time-entry-drafting",
+      "time-entry-creation"
+    ],
+    "category": "netsuite-suiteskills-people",
+    "description": "Draft and create new NetSuite Actual Time entries from a direct request or permitted work activity, with a chat table review and a separate Save decision. Do not use for timesheet submission or approval.",
+    "display_name": "Time Entry Creation",
+    "edition": "non-read-only",
+    "first_included_date": "2026-10-13",
+    "host_execution": "not_run",
+    "id": "RB-PPL-010",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-time-entry-creation",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/RETRIEVAL.md",
+      "shared/contracts/ACTIONS.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "af2e7595e9b8b10aba636e197aea6915173f242cfb24e4579124668ee3561ece",
+    "source_release_date": "unknown",
+    "source_version": "unknown",
+    "source_version_status": "not_collected",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  }
+]

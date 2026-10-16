@@ -1,0 +1,54 @@
+{
+  "access_mode": "operation_dependent",
+  "account_execution": "not_run",
+  "action_scope": "Review and exactly confirmed native Approve or Reject actions; no status-field emulation.",
+  "aliases": [
+    "time-approval-review"
+  ],
+  "category": "netsuite-suiteskills-people-openai",
+  "description": "Review pending NetSuite Actual Time and generate an HTML dashboard, then approve or reject exact entries or timesheets after action qualification and confirmed preview. Excludes creating, editing, submitting or retracting time.",
+  "display_name": "Time Approval Review",
+  "edition": "non-read-only",
+  "first_included_date": "2026-10-13",
+  "host_execution": "not_run",
+  "id": "RB-PPL-009",
+  "integration_release_date": "2026-10-15",
+  "integration_version": "0.7.5",
+  "name": "netsuite-time-approval-review",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-time-approval-review/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/RETRIEVAL.md",
+    "shared/contracts/ACTIONS.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "faba718e47e06bae7f8eec590c03d3699affaa5a445fbf76845d5df24aa77303",
+  "source_release_date": "unknown",
+  "source_version": "0.12.1",
+  "source_version_status": "not_collected",
+  "version": "0.12.1",
+  "version_basis": "existing_source_version"
+}

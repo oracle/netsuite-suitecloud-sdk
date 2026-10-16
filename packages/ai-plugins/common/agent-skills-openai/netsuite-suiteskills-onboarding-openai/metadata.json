@@ -1,0 +1,81 @@
+{
+  "account_execution": "not_run",
+  "accountable_owner": "unknown",
+  "automatic_persistence": "not_implemented",
+  "background_scheduling": "not_implemented",
+  "category": "utility",
+  "default_surface": "native_in_chat_questions_and_inline_goal_card",
+  "description": "Use for SuiteSkills or connected NetSuite orientation when the user asks to get started, what can I do, I just connected, which skills are available, or where to start; also explore available workflows, resume an onboarding goal, or refresh suggestions after an account or role change. Yield a concrete business task directly to its available specialist without an onboarding interview. Unrelated greetings do not select this skill.",
+  "display_name": "Plugin Onboarding",
+  "effect_classification": "orientation_optional_local_snapshot_and_explicitly_selected_domain_work",
+  "fallback_surface": "grouped_chat_text",
+  "host_execution": "not_run",
+  "id": "SKL-CS-ONBOARDING",
+  "integration_release_date": "2026-10-15",
+  "integration_version": "0.7.9",
+  "kind": "skill",
+  "name": "netsuite-suiteskills-onboarding-openai",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "Exact current connector/account requirements and effective access not collected; each selected specialist retains its own requirements.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "Exact current connector/account requirements and effective access not collected; each selected specialist retains its own requirements.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "Exact current connector/account requirements and effective access not collected; each selected specialist retains its own requirements.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "Exact current connector/account requirements and effective access not collected; each selected specialist retains its own requirements.",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "optional_capabilities": [
+    "Reviewed local Markdown progress snapshot",
+    "Supported Project preference handoff"
+  ],
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-onboarding-openai/SKILL.md",
+  "reference_plugin": {
+    "name": "netsuite-suiteskills",
+    "version": "0.7.5"
+  },
+  "release_date": "2026-10-15",
+  "resources": [
+    "CHANGELOG.md",
+    "PLUGIN-CONTEXT.md",
+    "assets/icon.svg",
+    "examples/showcase-prompts.md",
+    "metadata.json",
+    "reference/examples/happy-path.md",
+    "reference/gotchas.md",
+    "reference/interactive-surfaces.md",
+    "reference/memory-file.md",
+    "reference/onboard-checklist.md",
+    "reference/personas.md",
+    "reference/prompt-catalog.md",
+    "reference/role-reconciliation.md",
+    "FOUNDATION-LOCK.json"
+  ],
+  "revision_status": "testing_candidate",
+  "runtime_requirements": [
+    "Conversational host; native question and inline card surfaces when actually exposed, otherwise grouped text in the same chat",
+    "Current supported NetSuite connector and selected domain skill for account work"
+  ],
+  "separate_welcome_center": "removed_from_successor_candidate",
+  "source_package_sha256": "8c8eed3b570acd6da81736f3349a1eae980a2ab7f6e282491e0a72d94fde9482",
+  "source_package_version": "1.8.1",
+  "source_release_date": "not_collected",
+  "source_skill_history_date": "2026-10-13",
+  "source_version": "2.5.0",
+  "target_plugin": "netsuite-suiteskills",
+  "target_profile": "authorized_supported_actions",
+  "version": "0.7.5"
+}

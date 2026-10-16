@@ -1,0 +1,49 @@
+{
+  "access_mode": "read_only",
+  "aliases": [
+    "S16",
+    "WF-OPS-011",
+    "supply-chain-persona-based-responses"
+  ],
+  "category": "netsuite-suiteskills-operations",
+  "description": "Use for read-only supply-chain planning and operational inventory-count reconciliation, adapting recommendations to warehouse, purchasing, regional or executive audiences. Route bare stock balances, transaction impact, fulfillment performance and selected-item purchasing history to their focused skills.",
+  "display_name": "Supply Chain Persona-Based Responses",
+  "first_included_date": "2026-10-08",
+  "id": "RB-OPS-011",
+  "integration_release_date": "2026-10-14",
+  "integration_version": "0.7.4",
+  "name": "netsuite-supply-chain-persona-based-responses",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "No publisher industry applicability evidence was supplied.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "No host plugin manifest or account feature inventory was supplied; no installation claim made.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "No publisher locality or localization applicability evidence was supplied.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "No effective role-permission inventory or account test was supplied; read access varies by evidence source.",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-supply-chain-persona-based-responses/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "00bcb77e78e0ed4f99eee2386ff58637f15cb8f09d6cfe119e6c8fbaf5ecb233",
+  "source_release_date": "2026-10-06",
+  "source_version": "2.0.1",
+  "version": "2.0.1",
+  "version_basis": "existing_source_version"
+}

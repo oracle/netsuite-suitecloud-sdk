@@ -1,0 +1,1047 @@
+[
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S11",
+      "WF-OPS-001",
+      "fulfillment-performance-insights"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Use for NetSuite fulfillment performance insights. Analyze NetSuite Item Fulfillment picking, packing, shipping, and lead times. Use for timing comparisons, slow or fast fulfillments, warehouse timing, SLA compliance, breaches, and timing-based operational recommendations. Do not use for status-only lookups, inventory, quantities, or general record details. Provides read-only timing analysis, recommendations and requested local outputs; does not perform account changes.",
+    "display_name": "Fulfillment performance insights",
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-001",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-fulfillment-performance-insights",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-fulfillment-performance-insights/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_release_date": "not_collected",
+    "source_version": "1.0.0",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "WF-OPS-002",
+      "inventory-exceptions-review"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "compatibility": {
+      "layout": "integrated_runbook",
+      "operation_binding": "Verify exposed read operations against current schemas; examples are not an allowlist.",
+      "plugin_edition": "action_capable",
+      "target_host": "authorized_netsuite_mcp_connection"
+    },
+    "description": "Use for NetSuite inventory exceptions review. Review NetSuite WMS exceptions: negative inventory, late inbound orders, shipping delays, failed picks, expiring lots, and putaway aging. Use for scoped, warehouse exception reviews. Provides scoped findings and requested local outputs. Requested actions depend on authorization, supported tools and business prerequisites.",
+    "display_name": "Inventory Exceptions Review",
+    "effects": {
+      "account_network_access": "Existing authorized connector only.",
+      "account_reads": true,
+      "account_writes": false,
+      "external_sends": false,
+      "local_file_output": "Compiler output where present; optional user-facing exports only as described in the skill.",
+      "local_script_network_access": "No network calls documented in packaged local compiler.",
+      "process_execution": "Local Python compiler only; no subprocess calls in compiler."
+    },
+    "effects_basis": "Packaged analysis and helper effects only; not a permission ban. Requested actions depend on the shared action contract and actually available capabilities; live write execution not_run.",
+    "execution": {
+      "budget": "20 account reads total; null-bin fallback attempts count toward this ceiling.",
+      "custom_sql": "yes",
+      "dependency_evidence": "Packaged source declarations; not proof of installed services or effective role access.",
+      "pagination": "disabled",
+      "python": "yes",
+      "python_assets": [
+        {
+          "dependencies": [
+            "Python 3.10+ standard library"
+          ],
+          "network_calls": false,
+          "path": "scripts/compile_query.py",
+          "purpose": "Validate declared inputs and template digests and create a local query request",
+          "reads": [
+            "queries/catalog.json",
+            "queries/*.sql",
+            "task-local input JSON"
+          ],
+          "subprocess_calls": false,
+          "writes": [
+            "new task-local output JSON outside the skill directory"
+          ]
+        }
+      ],
+      "python_requirement": "Python 3.10+ standard library for packaged local compilation.",
+      "sql_inventory": [
+        {
+          "grain": "One item/lot/expiration-date/location/bin aggregate across underlying inventory-status balances.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#expired_lots",
+          "path": "queries/expired_lots.sql",
+          "purpose": "Bounded list of expired lot inventory and lot inventory expiring within one day",
+          "tables": [
+            "InventoryBalance",
+            "InventoryNumber",
+            "Item"
+          ]
+        },
+        {
+          "grain": "One failed PickAction and its optional PickActionInventoryDetail row; detail ID is used to sort but is not projected.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#failed_pick_tasks",
+          "path": "queries/failed_pick_tasks.sql",
+          "purpose": "Bounded list of failed WMS Pick Actions with their owning Pick Task and action inventory detail",
+          "tables": [
+            "PickAction",
+            "PickActionInventoryDetail",
+            "PickTask"
+          ]
+        },
+        {
+          "grain": "One direct DropShip or SpecOrd transaction-line link from a selected PO line to a Sales Order line; open Sales Order status is not checked.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#inbound_po_linked_sales_orders",
+          "path": "queries/inbound_po_linked_sales_orders.sql",
+          "purpose": "Direct drop-ship and special-order sales order links for selected purchase orders",
+          "tables": [
+            "PreviousTransactionLineLink"
+          ]
+        },
+        {
+          "grain": "One open purchase-order item line with outstanding received quantity and a past expected-receipt date.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#inbound_po_overdue",
+          "path": "queries/inbound_po_overdue.sql",
+          "purpose": "Prioritized purchase order lines with an expected receipt date before the as-of date and quantity still expected",
+          "tables": [
+            "PurchaseOrder",
+            "PurchaseOrderItem"
+          ]
+        },
+        {
+          "grain": "One destination-side open transfer-order item line with negative source quantity and outstanding receipt quantity.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#inbound_transfer_order_overdue",
+          "path": "queries/inbound_transfer_order_overdue.sql",
+          "purpose": "Prioritized destination-side transfer order lines with an expected receipt date before the as-of date and quantity still expected",
+          "tables": [
+            "TransferOrder",
+            "TransferOrderItem"
+          ]
+        },
+        {
+          "grain": "One source InventoryBalance row: item, location, bin, inventory number; underlying inventory-status variants must not be deduplicated.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#negative_inventory_quantity",
+          "path": "queries/negative_inventory_quantity.sql",
+          "purpose": "Bounded list of item, location, bin, and inventory-number balances with negative on-hand or available quantity",
+          "tables": [
+            "InventoryBalance"
+          ]
+        },
+        {
+          "grain": "Latest inventory-affecting transaction line for each selected item/location pair; ignore pairs absent from the primary result.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#negative_inventory_transactions",
+          "path": "queries/negative_inventory_transactions.sql",
+          "purpose": "Latest inventory-affecting transaction for every selected item and location combination from Transaction and TransactionLine UMDs",
+          "tables": [
+            "Transaction",
+            "TransactionLine"
+          ]
+        },
+        {
+          "grain": "One positive balance partitioned by item/location/bin/inventory-number/inventory-status and matched receipt quantity.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#putaway_aging",
+          "path": "queries/putaway_aging.sql",
+          "purpose": "Bounded list of positive inventory balances remaining without a bin or in an inbound staging bin beyond a supplied putaway SLA, aged from the oldest recent receipt layer needed to cover current on-hand",
+          "tables": [
+            "Bin",
+            "InventoryAssignment",
+            "InventoryBalance",
+            "ItemReceipt",
+            "ItemReceiptItem"
+          ]
+        },
+        {
+          "grain": "One selected Sales Order whose full ordered quantity across all open item lines has reached at least picked; account-label enrichment.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#sales_order_fulfillment_status",
+          "path": "queries/sales_order_fulfillment_status.sql",
+          "purpose": "Current account label for the highest Item Fulfillment stage reached by the full ordered quantity",
+          "tables": [
+            "ItemFulfillmentStatus",
+            "SalesOrderItem"
+          ]
+        },
+        {
+          "grain": "One Sales Order aggregated from date-bearing open item lines matching the requested location/item scope.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#sales_order_ship_date_risk",
+          "path": "queries/sales_order_ship_date_risk.sql",
+          "purpose": "Open sales orders at risk of missing their ship date, prioritized by the earliest incomplete warehouse execution stage and oldest applicable ship date",
+          "tables": [
+            "SalesOrder",
+            "SalesOrderItem"
+          ]
+        },
+        {
+          "grain": "One generic Transaction record per exact selected transaction ID.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#transaction_refs",
+          "path": "queries/transaction_refs.sql",
+          "purpose": "Generic clickable transaction references for exact transaction internal IDs",
+          "tables": [
+            "Transaction"
+          ]
+        },
+        {
+          "grain": "One returned underlying balance row; no aggregation, no receipt join, no age inference.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#putaway_balances",
+          "path": "queries/putaway_balances.sql",
+          "purpose": "Visible positive receiving/staging balances without age or SLA classification",
+          "tables": [
+            "InventoryBalance",
+            "Bin"
+          ]
+        },
+        {
+          "grain": "One positive balance partitioned by item/location/bin/inventory-number/inventory-status and matched receipt quantity.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#putaway_aging_no_bin",
+          "path": "queries/putaway_aging_no_bin.sql",
+          "purpose": "Bounded list of positive inventory balances remaining without a bin or in an inbound staging bin beyond a supplied putaway SLA, aged from the oldest recent receipt layer needed to cover current on-hand; null bins only, with no Bin table or bin-type dependency",
+          "tables": [
+            "InventoryAssignment",
+            "InventoryBalance",
+            "ItemReceipt",
+            "ItemReceiptItem"
+          ]
+        },
+        {
+          "grain": "One returned underlying balance row; no aggregation, no receipt join, no age inference.",
+          "kind": "packaged_select",
+          "limit": "One connector response, at most 100 rows; original SQL cap may be tighter",
+          "parameters_reference": "queries/catalog.json#putaway_balances_no_bin",
+          "path": "queries/putaway_balances_no_bin.sql",
+          "purpose": "Visible positive receiving/staging balances without age or SLA classification; null bins only, with no Bin table or bin-type dependency",
+          "tables": [
+            "InventoryBalance"
+          ]
+        }
+      ]
+    },
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-002",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-inventory-exceptions-review",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "No evidence-backed determination of industry requirements or tested fit has been collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Exact SuiteApp, Bundle and feature identifiers, installation conditions and versions have not been verified for a target account.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "No evidence-backed determination of country, region or localization requirements has been collected. Date/time rules in the skill do not establish locality coverage.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Exact permission identifiers, minimum levels and effective role access have not been collected. Required read operations are documented below.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operations": [
+      {
+        "condition": "User filters are not yet resolved",
+        "operation": "resolve_exact_record_scope",
+        "source": "references/connection.md",
+        "status": "conditional"
+      },
+      {
+        "condition": "Selected live scenario",
+        "operation": "execute_bounded_packaged_exception_select",
+        "source": "queries/catalog.json",
+        "status": "required"
+      },
+      {
+        "condition": "Returned primary records require useful labels and budget remains",
+        "operation": "read_exact_reference_labels",
+        "source": "references/connection.md",
+        "status": "optional"
+      },
+      {
+        "condition": "Bin type is unavailable or user requested NO_BIN; no explicit non-null bin filter",
+        "operation": "execute_null_bin_putaway_select",
+        "source": "references/putaway-aging.md",
+        "status": "conditional"
+      }
+    ],
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-exceptions-review/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_release_date": "not_collected",
+    "source_version": "6.0.0",
+    "version": "6.0.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-OPS-003",
+      "inventory-impact-review",
+      "inventory-transaction-impact-verification"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "compatibility": {
+      "layout": "integrated_runbook",
+      "operation_binding": "Verify exposed read operations against current schemas; examples are not an allowlist.",
+      "plugin_edition": "action_capable",
+      "target_host": "authorized_netsuite_mcp_connection"
+    },
+    "description": "Verify and explain the inventory impact of existing NetSuite transactions, including typed or untyped document references, record links, explicit internal IDs, selected lines, and bounded comparisons. Use for questions about whether a transaction changed inventory; not for estimating planned inventory changes.",
+    "display_name": "Transaction Inventory Impact",
+    "effects": {
+      "account_network_access": "Existing authorized connector only.",
+      "account_reads": true,
+      "account_writes": false,
+      "external_sends": false,
+      "local_file_output": "Compiler output where present; optional user-facing exports only as described in the skill.",
+      "local_script_network_access": "No network calls documented in packaged local compiler.",
+      "process_execution": "Local Python compiler only; no subprocess calls in compiler."
+    },
+    "effects_basis": "Packaged analysis and helper effects only; not a permission ban. Requested actions depend on the shared action contract and actually available capabilities; live write execution not_run.",
+    "execution": {
+      "custom_sql": "yes",
+      "dependency_evidence": "Packaged source declarations; not proof of installed services or effective role access.",
+      "pagination": "disabled",
+      "python": "yes",
+      "python_assets": [
+        {
+          "dependencies": [
+            "Python 3.10+ standard library"
+          ],
+          "network_calls": false,
+          "path": "scripts/compile_query.py",
+          "purpose": "Validate typed inputs and template digests and write local SQL",
+          "reads": [
+            "scripts/*.sql",
+            "scripts/template-digests.json",
+            "task-local input JSON"
+          ],
+          "subprocess_calls": false,
+          "writes": [
+            "new task-local SQL outside the skill directory"
+          ]
+        }
+      ],
+      "python_requirement": "Python 3.10+ standard library for packaged local compilation.",
+      "sql_inventory": [
+        {
+          "kind": "packaged_select",
+          "limit": "six candidates, first response",
+          "parameters_reference": "references/execution.md",
+          "path": "scripts/resolve_typed_reference.sql",
+          "purpose": "Exact typed document identity",
+          "tables": [
+            "Transaction"
+          ]
+        },
+        {
+          "kind": "packaged_select",
+          "limit": "six candidates, first response",
+          "parameters_reference": "references/execution.md",
+          "path": "scripts/resolve_exact_reference.sql",
+          "purpose": "Exact untyped document identity",
+          "tables": [
+            "Transaction"
+          ]
+        },
+        {
+          "kind": "packaged_select",
+          "limit": "exact primary ID",
+          "parameters_reference": "references/execution.md",
+          "path": "scripts/resolve_internal_id.sql",
+          "purpose": "Explicit internal ID identity verification",
+          "tables": [
+            "Transaction"
+          ]
+        },
+        {
+          "kind": "packaged_select",
+          "limit": "one aggregate row over the requested accessible scope",
+          "parameters_reference": "references/execution.md",
+          "path": "scripts/classify_inventory_impact.sql",
+          "purpose": "Aggregate impact flags and counts for selected transaction/line scope",
+          "tables": [
+            "TransactionLine"
+          ]
+        },
+        {
+          "kind": "packaged_select",
+          "limit": "sort before 400-row cap; first response only",
+          "parameters_reference": "references/execution.md",
+          "path": "scripts/inventory_impact_lines.sql",
+          "purpose": "Confirmed impacting line detail",
+          "tables": [
+            "TransactionLine"
+          ]
+        }
+      ]
+    },
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-003",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-inventory-impact-review",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "No evidence-backed determination of industry requirements or tested fit has been collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Exact SuiteApp, Bundle and feature identifiers, installation conditions and versions have not been verified for a target account.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "No evidence-backed determination of country, region or localization requirements has been collected. Date/time rules in the skill do not establish locality coverage.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Exact permission identifiers, minimum levels and effective role access have not been collected. Required read operations are documented below.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operations": [
+      {
+        "condition": "Before impact classification; up to three targeted attempts per reference",
+        "operation": "resolve_and_verify_exact_transaction_identity",
+        "source": "references/resolution-rules.md",
+        "status": "required"
+      },
+      {
+        "condition": "Verified transaction and resolved line scope",
+        "operation": "read_transaction_line_impact_classification",
+        "source": "references/execution.md",
+        "status": "required"
+      },
+      {
+        "condition": "Confirmed classification; one bounded response",
+        "operation": "read_confirmed_impacting_line_details",
+        "source": "references/positive-impact-line-detail.md",
+        "status": "conditional"
+      },
+      {
+        "condition": "Dynamic header or line field selection needs current table-specific evidence",
+        "operation": "read_relevant_field_metadata",
+        "source": "references/execution.md",
+        "status": "conditional"
+      },
+      {
+        "condition": "At most one permitted enrichment read for returned detail rows",
+        "operation": "read_targeted_line_or_item_enrichment",
+        "source": "references/retrieval-budget.md",
+        "status": "optional"
+      }
+    ],
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-impact-review/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "89e84d7830557688c22a449664c542b7415fe883e48cbea353d70b3979eb10f3",
+    "source_release_date": "2026-10-14",
+    "source_version": "7.0",
+    "version": "7.0.0",
+    "version_basis": "normalized_source_version_per_user"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S14",
+      "WF-OPS-004",
+      "inventory-movement-insights"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Use for NetSuite inventory movement insights. Analyze NetSuite inventory movement, demand, supply, and shortages by item and location. Use for incoming or outgoing movement, net inventory reduction, movement trends, historical or open demand, on-hand and incoming supply, receiving priorities, or prioritizing existing transfer orders. Provide insights using the connected NetSuite tools and bundled queries. Provides scoped findings and requested local outputs. Requested actions depend on authorization, supported tools and business prerequisites.",
+    "display_name": "Inventory movement insights",
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-004",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-inventory-movement-insights",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-movement-insights/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_release_date": "not_collected",
+    "source_version": "1.0.0",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S04",
+      "WF-OPS-005"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Use for NetSuite inventory availability lookup. Helps authorized sales, customer-service, warehouse, and fulfillment users at organizations that use NetSuite establish current item availability. Also use when the user explicitly asks about future incoming supply, open purchase orders, or recorded receipt dates. Do not use to explain an existing sales order, allocate or move inventory, fulfill an order, or promise availability, receipt, shipment, or delivery. Provides scoped findings and requested local outputs. Requested actions depend on authorization, supported tools and business prerequisites.",
+    "display_name": "NetSuite Inventory Availability Lookup",
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-005",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-inventory-availability-lookup",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-availability-lookup/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_release_date": "not_collected",
+    "source_version": "1.0.0",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "action_policy": "user_authorized_supported_operations",
+    "aliases": [
+      "WF-OPS-006"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Use to review customer return authorizations (RMAs), linked receipt, credit and refund evidence, refund readiness, or scoped return reports; draft linked or standalone return proposals in chat. Excludes creating or changing records, return approval or receipt, credits, refunds, and replacement orders.",
+    "display_name": "Return Authorization Assistant",
+    "first_included_date": "2026-10-14",
+    "id": "RB-OPS-006",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-return-authorization-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operation_inventory_is_allowlist": false,
+    "origin": "team_expansion_2026_10_05",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-return-authorization-assistant/RUNBOOK.md",
+    "purpose": "Review customer return authorizations (RMAs), linked receipt, credit and refund evidence, refund readiness and scoped return reports. Prepare linked or standalone return proposals in chat only; do not create, update, transform, approve, receive or close records, issue credits or refunds, or create replacement orders.",
+    "runtime_status": "not_run",
+    "source_candidate_sha256": "3a75b09e32b46173f1c13bba85a2617e3951c2cf847eafaf0d6061a79260e568",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S16",
+      "WF-OPS-011",
+      "supply-chain-persona-based-responses"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Use for read-only supply-chain planning and operational inventory-count reconciliation, adapting recommendations to warehouse, purchasing, regional or executive audiences. Route bare stock balances, transaction impact, fulfillment performance and selected-item purchasing history to their focused skills.",
+    "display_name": "Supply Chain Persona-Based Responses",
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-011",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-supply-chain-persona-based-responses",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "No publisher industry applicability evidence was supplied.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "No host plugin manifest or account feature inventory was supplied; no installation claim made.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "No publisher locality or localization applicability evidence was supplied.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "No effective role-permission inventory or account test was supplied; read access varies by evidence source.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-supply-chain-persona-based-responses/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "00bcb77e78e0ed4f99eee2386ff58637f15cb8f09d6cfe119e6c8fbaf5ecb233",
+    "source_release_date": "2026-10-06",
+    "source_version": "2.0.1",
+    "version": "2.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S31",
+      "WF-OPS-012",
+      "netsuite-vendor-selection-optimization",
+      "vendor-optimization"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Compare the user’s existing vendors, applicable quotes, contracts or purchasing history for a buying decision, including supplied fictional cases. Assess comparable cost, packs, conditional discounts, delivery evidence and supported savings. Read-only; excludes open-market supplier discovery, spend concentration and credit-to-bill matching.",
+    "display_name": "Vendor Optimization",
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-012",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-vendor-optimization",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-vendor-optimization/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "05a24ee692af798a2068c38733544377aae31c147ac2b9113e6ee1d75f6a7f34",
+    "source_release_date": "not_collected",
+    "source_version": "1.0.1",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "account_execution": "not_run",
+    "action_scope": "Source-supported service-work, scheduling, configuration and report publication or activation procedures.",
+    "aliases": [
+      "fsm-netsuite"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Explain and review customer-account Field Service Management (FSM), or perform supported authorized changes to service work, schedules, time, materials, configuration and service reports. Prepare report templates and companion drafts. Internal administration and synchronization-monitor diagnostics are unavailable; verify actual account and rendering capabilities.",
+    "display_name": "Field Service Management",
+    "edition": "non-read-only",
+    "first_included_date": "2026-10-13",
+    "host_execution": "not_run",
+    "id": "RB-OPS-014",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-field-service-management",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-field-service-management/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/RETRIEVAL.md",
+      "shared/contracts/ACTIONS.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "cab9a4da01474e6641f39b6296313d220208d12c6579b57e351ae3b944b7d4a5",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "source_version_status": "not_collected",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "WF-OPS-015",
+      "inventory-balance-viewer"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "compatibility": {
+      "layout": "integrated_runbook",
+      "operation_binding": "Verify exposed read operations against current schemas; examples are not an allowlist.",
+      "plugin_edition": "action_capable",
+      "target_host": "authorized_netsuite_mcp_connection"
+    },
+    "description": "Use for NetSuite inventory balance viewer. Show current NetSuite on-hand and available stock by item, location, or bin. Use for inventory levels, warehouse snapshots, and bin breakdowns with a compatible NetSuite connection. Provides scoped findings and requested local outputs. Requested actions depend on authorization, supported tools and business prerequisites.",
+    "display_name": "Inventory Balance Viewer",
+    "effects": {
+      "account_network_access": "Existing authorized connector only.",
+      "account_reads": true,
+      "account_writes": false,
+      "external_sends": false,
+      "local_file_output": "Compiler output where present; optional user-facing exports only as described in the skill.",
+      "local_script_network_access": "No packaged local scripts.",
+      "process_execution": "No packaged local executable; optional host export implementation is not specified."
+    },
+    "effects_basis": "Packaged analysis and helper effects only; not a permission ban. Requested actions depend on the shared action contract and actually available capabilities; live write execution not_run.",
+    "execution": {
+      "custom_sql": "yes",
+      "dependency_evidence": "Packaged source declarations; not proof of installed services or effective role access.",
+      "pagination": "disabled",
+      "python": "unknown",
+      "python_assets": [],
+      "python_requirement": "No Python files or required Python commands are packaged; optional host export dependencies are not determined.",
+      "sql_inventory": [
+        {
+          "fields_reference": "references/known-good-suiteql-fields.json",
+          "kind": "inline_template",
+          "limit": "First bounded connector response; probe at most one row",
+          "parameters": "Resolved integer item/location/bin IDs only",
+          "path": "references/suiteql-fallback.md",
+          "purpose": "Current balance SELECT and bounded qualification probe",
+          "scope": "Item always preserved; displayed dimensions item/location/bin only",
+          "tables": [
+            "InventoryBalance"
+          ]
+        }
+      ]
+    },
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-015",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-inventory-balance-viewer",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "No evidence-backed determination of industry requirements or tested fit has been collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Exact SuiteApp, Bundle and feature identifiers, installation conditions and versions have not been verified for a target account.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "No evidence-backed determination of country, region or localization requirements has been collected. Date/time rules in the skill do not establish locality coverage.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Exact permission identifiers, minimum levels and effective role access have not been collected. Required read operations are documented below.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operations": [
+      {
+        "condition": "Names or external references require resolution",
+        "operation": "resolve_exact_item_location_bin",
+        "source": "RUNBOOK.md",
+        "status": "conditional"
+      },
+      {
+        "condition": "Live stock answer",
+        "operation": "read_current_inventory_balances",
+        "source": "references/connection.md",
+        "status": "required"
+      },
+      {
+        "condition": "No compatible dedicated balance read and narrow SuiteQL fallback is used",
+        "operation": "read_scoped_schema_and_execute_narrow_balance_select",
+        "source": "references/suiteql-fallback.md",
+        "status": "conditional"
+      },
+      {
+        "condition": "Useful and supported by available host capabilities",
+        "operation": "create_local_table_export",
+        "source": "references/presentation.md",
+        "status": "optional"
+      }
+    ],
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-balance-viewer/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_release_date": "not_collected",
+    "source_version": "4.0.0",
+    "version": "4.0.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-OPS-016",
+      "item-purchasing-history"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Use when a buyer asks who supplies one named item, its latest billed or ordered unit rate, price movement, or open orders. Provide a scoped purchasing brief; receipt lead time requires verified item-level receipt evidence. Do not treat a bill rate as proof of payment.",
+    "display_name": "Item Purchasing History",
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-016",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-item-purchasing-history",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account applicability and exact requirements not collected in this local review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account applicability and exact requirements not collected in this local review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account applicability and exact requirements not collected in this local review.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account applicability and exact requirements not collected in this local review.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-item-purchasing-history/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "192b76dad77935d74849b3abf74e93bf9aeb05ec165e4a4d1ab3509d8b7a5904",
+    "source_release_date": "not_collected",
+    "source_version": "0.1.0",
+    "version": "0.1.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-OPS-019",
+      "netsuite-project-risk-dashboard",
+      "project-risk-assistant"
+    ],
+    "category": "netsuite-suiteskills-operations",
+    "description": "Investigate NetSuite project deadlines, overdue or explicitly blocked tasks, ownership gaps, and hours or supported monetary budget overage. Produce an evidence-backed risk dashboard unless another format is requested. Review proposed statements of work separately as plan-stage risk. Do not infer resource availability from named ownership or execute project changes.",
+    "display_name": "Project Risk Assistant",
+    "first_included_date": "2026-10-08",
+    "id": "RB-OPS-019",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-project-risk-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-project-risk-assistant/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "2099f2d9e50b05460348e01985cc9c7bb24da1fadd7d7d350b5da58c13b07029",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "local_artifacts_and_supported_reads",
+    "category": "netsuite-suiteskills-operations",
+    "compatibility": {
+      "file_engine": "checked_executor_and_source_publication_profile",
+      "host": "claude",
+      "host_delivery": "observed_host_transport_and_readback; managed_collision_avoidance_not_atomic",
+      "layout": "isolated_category_runbook",
+      "linux_execution": "not_run",
+      "native_delivery": "not_run",
+      "unsupported_file_engine": "facts_or_Markdown_table_only"
+    },
+    "description": "Create focused nonfinancial charts and snapshot views from verified results or supplied data. Generate validated HTML on supported executors and deliver through observed host facilities; PDF/PowerPoint require qualified Darwin export dependencies. Preserve source scope and plain-text references without verified origin. Financial visuals require the unavailable actual Finance Analyst handoff.",
+    "display_name": "Data Visualization",
+    "effects": {
+      "account_reads": "supported connector only, when requested",
+      "account_writes": false,
+      "local_file_output": "private validated source files; observed host transfer only with collision checks and readback",
+      "local_script_network_access": false,
+      "process_execution": "reviewed local browser bridge for PDF/PPTX"
+    },
+    "first_included_date": "2026-10-08",
+    "foundation_sha256": "fc1c63bb69b2d199cd8a14b6dcc6d0a93a18f0ae29d1be57fece56a1d9b22541",
+    "id": "RB-OPS-020",
+    "integration_release_date": "2026-10-15",
+    "integration_version": "0.7.9",
+    "local_dependencies": {
+      "finance_analyst": "unavailable; not substituted",
+      "html": "Python 3.12 standard library and reviewed packaged assets",
+      "pdf": "Reviewed Node.js/Playwright/matching Chromium, pypdf and exact qualified host Arial Unicode MS 1.01x font; see references/publication.md",
+      "pptx": "Python 3.12 standard library plus existing reviewed Node.js, Playwright and matching Chromium for every graphical PowerPoint export"
+    },
+    "name": "netsuite-data-visualization",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "No account or entitlement checks performed; local rendering requires no NetSuite operation.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "No account or entitlement checks performed; local rendering requires no NetSuite operation.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "No account or entitlement checks performed; local rendering requires no NetSuite operation.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "No account or entitlement checks performed; local rendering requires no NetSuite operation.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operations": [
+      {
+        "condition": "Fresh NetSuite evidence requested; actual supported connector required",
+        "operation": "read_verified_nonfinancial_source",
+        "status": "conditional"
+      },
+      {
+        "condition": "Requested file and qualified host/storage/dependencies available",
+        "operation": "create_validated_local_visualization",
+        "status": "conditional"
+      }
+    ],
+    "owner": "Oracle NetSuite",
+    "package_format": "suiteskills_integrated_runbook_candidate",
+    "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/RUNBOOK.md",
+    "platform": "Darwin/local APFS; checked Linux glibc 2.39 LP64 ext-family HTML candidate; native delivery conditional",
+    "product_team": "Administration",
+    "release_status": "unreleased_integration_candidate",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md",
+      "shared/contracts/RETRIEVAL.md",
+      "shared/contracts/LINKS.md",
+      "shared/contracts/EVIDENCE.md"
+    ],
+    "source_release_date": "2026-10-15",
+    "source_version": "2.1.0-rc.1",
+    "standardized_from_release": "0.7.2",
+    "target_plugin": {
+      "name": "netsuite-suiteskills",
+      "version": "0.7.9"
+    },
+    "upstream_source_version": "1.4.0",
+    "version": "2.1.0-rc.1",
+    "version_basis": "runtime_adapters_and_verified_host_delivery"
+  }
+]

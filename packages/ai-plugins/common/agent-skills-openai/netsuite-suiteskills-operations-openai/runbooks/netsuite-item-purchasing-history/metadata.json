@@ -1,0 +1,48 @@
+{
+  "access_mode": "read_only",
+  "aliases": [
+    "WF-OPS-016",
+    "item-purchasing-history"
+  ],
+  "category": "netsuite-suiteskills-operations-openai",
+  "description": "Use when a buyer asks who supplies one named item, its latest billed or ordered unit rate, price movement, or open orders. Provide a scoped purchasing brief; receipt lead time requires verified item-level receipt evidence. Do not treat a bill rate as proof of payment.",
+  "display_name": "Item Purchasing History",
+  "first_included_date": "2026-10-08",
+  "id": "RB-OPS-016",
+  "integration_release_date": "2026-10-15",
+  "integration_version": "0.7.5",
+  "name": "netsuite-item-purchasing-history",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "Account applicability and exact requirements not collected in this local review.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "Account applicability and exact requirements not collected in this local review.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "Account applicability and exact requirements not collected in this local review.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "Account applicability and exact requirements not collected in this local review.",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-item-purchasing-history/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "192b76dad77935d74849b3abf74e93bf9aeb05ec165e4a4d1ab3509d8b7a5904",
+  "source_release_date": "not_collected",
+  "source_version": "0.1.0",
+  "version": "0.1.0",
+  "version_basis": "existing_source_version"
+}

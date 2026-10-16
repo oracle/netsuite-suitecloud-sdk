@@ -1,0 +1,49 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "author": {
+    "name": "Oracle NetSuite",
+    "url": "https://www.netsuite.com"
+  },
+  "description": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "brandColor": "#294B5F",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "category": "Productivity",
+        "composerIcon": "./assets/suiteskills.svg",
+        "defaultPrompt": [
+          "Help me get started with SuiteSkills.",
+          "Review my inventory exceptions.",
+          "Show my customer credit exposure."
+        ],
+        "developerName": "Oracle NetSuite",
+        "displayName": "SuiteSkills",
+        "logo": "./assets/suiteskills.svg",
+        "longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Output capabilities depend on the host. Internal testing candidate; native and live-account qualification pending.",
+        "privacyPolicyURL": "https://www.oracle.com/legal/privacy/",
+        "shortDescription": "NetSuite business workflows",
+        "websiteURL": "https://www.netsuite.com"
+      },
+      "onboardingSkill": "./skills/netsuite-suiteskills-onboarding-openai/SKILL.md",
+      "publication": {
+        "release_notes": "SuiteSkills OpenAI 0.7.7 normalizes inherited product labels, schema IDs and foundation markers to SuiteSkills. Retains 48 business runbooks and the secured Data Visualization 2.0.0-rc.1 core. Native/account/security qualification remains separate."
+      }
+    }
+  },
+  "keywords": [
+    "netsuite",
+    "business",
+    "finance",
+    "operations",
+    "workforce",
+    "mcp"
+  ],
+  "license": "LicenseRef-SuiteSkills-Review-Pending",
+  "name": "netsuite-suiteskills",
+  "repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
+  "version": "0.7.9"
+}

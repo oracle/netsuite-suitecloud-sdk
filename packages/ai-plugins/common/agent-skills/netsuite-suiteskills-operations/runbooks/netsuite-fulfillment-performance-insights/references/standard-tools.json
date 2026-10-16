@@ -1,0 +1,165 @@
+{
+  "live_execution": "not_run",
+  "source": "SuiteSkills Skill Builder / shared Standard Tools snapshot",
+  "tools": {
+    "ns_getRecord": {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Get Record"
+      },
+      "inputSchema": {
+        "properties": {
+          "fields": {
+            "description": "Optional comma-separated list of specific fields to retrieve (e.g., 'companyname, email, phone')",
+            "type": "string"
+          },
+          "recordId": {
+            "description": "The internal ID of the record to retrieve",
+            "type": "string"
+          },
+          "recordType": {
+            "description": "The NetSuite record type (e.g., 'customer', 'item', 'salesorder')",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recordType",
+          "recordId"
+        ],
+        "type": "object"
+      },
+      "source_schema_sha256": "8f56bcb0adb763c62bed2c008cd5f9995ea6c03b83abcd847206d7cf98f3110d"
+    },
+    "ns_getRecordTypeMetadata": {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Get Record Type Metadata"
+      },
+      "inputSchema": {
+        "properties": {
+          "recordType": {
+            "description": "Optional NetSuite record type to get metadata for (e.g., 'customer', 'item', 'salesorder'), if not provided, metadatas are returned for all record types available for the tool",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      },
+      "source_schema_sha256": "8f56bcb0adb763c62bed2c008cd5f9995ea6c03b83abcd847206d7cf98f3110d"
+    },
+    "ns_getSuiteQLMetadata": {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Get SuiteQL Metadata"
+      },
+      "inputSchema": {
+        "properties": {
+          "recordType": {
+            "description": "Optional NetSuite record type to get metadata for (e.g., 'customer', 'item', 'salesorder', 'entity', 'transaction'), if not provided, metadatas are returned for all record types available for the tool",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      },
+      "source_schema_sha256": "bed19d457da7b82b6542486d626bc746ccf3d1483e822507360e8c8549d9d0d6"
+    },
+    "ns_listSavedSearches": {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "List Saved Searches"
+      },
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "description": "Optional query to filter the resutls",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      },
+      "source_schema_sha256": "b992ba8f9f9aba5c445f7b956824b4ce7e0ca1268f1db7aa5dfe4ea7570b2ac4"
+    },
+    "ns_runCustomSuiteQL": {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Run Custom SuiteQL"
+      },
+      "inputSchema": {
+        "properties": {
+          "description": {
+            "description": "Human-readable description of what this query does (e.g., 'Get all customers - page 3 of 8').",
+            "type": "string"
+          },
+          "pageIndex": {
+            "description": "Zero-based page index. Set to 0 for the first page, then increment through numberOfPages-1 to retrieve all records. Must be used together with pageSize. Always check totalResults and numberOfPages in the first response to determine how many additional pages to fetch.",
+            "type": "number"
+          },
+          "pageSize": {
+            "description": "Number of records per page. Required whenever querying high-volume record types (customer, item, transaction, salesorder, etc.). Recommended value: 1000. Must be used together with pageIndex.",
+            "type": "number"
+          },
+          "sqlQuery": {
+            "description": "SuiteQL query string, only SuiteQL syntax is allowed",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sqlQuery"
+        ],
+        "type": "object"
+      },
+      "source_schema_sha256": "bed19d457da7b82b6542486d626bc746ccf3d1483e822507360e8c8549d9d0d6"
+    },
+    "ns_runSavedSearch": {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Run Saved Search"
+      },
+      "inputSchema": {
+        "properties": {
+          "range_end": {
+            "description": "The higher bound of the range of the results",
+            "type": "number"
+          },
+          "range_start": {
+            "description": "The lower bound of the range of the results",
+            "type": "number"
+          },
+          "searchId": {
+            "description": "The saved search ID.",
+            "type": "string"
+          },
+          "type": {
+            "description": "This parameter is required if the saved search to load uses a standalone search type. A standalone search type is a search type that does not have a corresponding record type. Typically, the search type of the saved search can be determined automatically based on the corresponding record type. In this case, this parameter is not required. For standalone search types, you must specify the search type explicitly using this parameter.The following is a list of standalone search types:DeletedRecord,EndToEndTime,ExpenseAmortPlanAndSchedule,RevRecPlanAndSchedule,GlLinesAuditLog,Crosschargeable,FinRptAggregateFR,BillingAccountBillCycle,BillingAccountBillRequest,BinItemBalance,PaymentEvent,Permission,GatewayNotification,TimeApproval,RecentRecord,Role,SavedSearch,ShoppingCart,SubscriptionRenewalHistory,SuiteScriptDetail,SupplyChainSnapshotDetails,SystemNote,TaxDetail,TimesheetApproval,Uber,ResAllocationTimeOffConflict,ComSearchOneWaySyn,ComSearchGroupSyn,Installment,InventoryBalance,InventoryNumberBin,InventoryNumberItem,InventoryStatusLocation,InvtNumberItemBalance,ItemBinNumber",
+            "type": "string"
+          }
+        },
+        "required": [
+          "searchId"
+        ],
+        "type": "object"
+      },
+      "source_schema_sha256": "b992ba8f9f9aba5c445f7b956824b4ce7e0ca1268f1db7aa5dfe4ea7570b2ac4"
+    }
+  }
+}

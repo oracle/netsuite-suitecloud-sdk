@@ -1,0 +1,51 @@
+{
+  "cssTokens": "redwood-tokens.css",
+  "defaultTheme": "light",
+  "proposedUI": {
+    "bodyLineHeight": 1.5,
+    "bodyPx": 16,
+    "fontStack": [
+      "Segoe UI",
+      "Arial",
+      "sans-serif"
+    ],
+    "headingPx": [
+      22,
+      26,
+      32
+    ],
+    "highlightText": "#13212C",
+    "lightLink": "#00688C",
+    "maxWidthPx": 1200,
+    "secondaryTextOnDark": "#D0E5ED",
+    "smallPx": 14,
+    "spacingPx": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32,
+      48
+    ]
+  },
+  "referenceColors": {
+    "darkSurface": "#13212C",
+    "footer": "#D0E5ED",
+    "lightSurface": "#FBF9F8",
+    "linkOnDark": "#E2C06B",
+    "ocean120": "#36677D",
+    "printedOcean180": "#13212C",
+    "subtitleOnDark": "#94BFCE",
+    "tableBorder": "#36677D",
+    "tableHighlight": "#94BFCE",
+    "tableSurface": "#264759",
+    "textOnDark": "#FFFFFF",
+    "themeDarkInk": "#13212C"
+  },
+  "scope": "product-owned surfaces only; native conversation retains host styling",
+  "sourceSkillVersion": "1.3.0",
+  "status": "Shared design source updated; host rendering and account behavior require separate qualification.",
+  "themeSelection": "Explicit data-theme=\"ocean-dark\" for a requested presentation treatment; no automatic OS dark switch.",
+  "version": "presentation-0.6.0"
+}

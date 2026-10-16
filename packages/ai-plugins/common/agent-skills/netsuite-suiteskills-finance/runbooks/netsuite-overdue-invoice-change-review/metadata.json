@@ -1,0 +1,48 @@
+{
+  "access_mode": "read_only",
+  "aliases": [
+    "WF-FIN-024",
+    "overdue-invoice-change-review"
+  ],
+  "category": "netsuite-suiteskills-finance",
+  "description": "Investigate payments, credits and audited amount edits affecting current overdue invoices or a selected invoice. Use to explain observed receivable changes with evidence and an explicitly qualified bridge when a prior amount is supplied. Historical aging reconstruction, collections outreach and record changes are outside scope.",
+  "display_name": "Overdue Invoice Change Review",
+  "first_included_date": "2026-10-08",
+  "id": "RB-FIN-024",
+  "integration_release_date": "2026-10-14",
+  "integration_version": "0.7.4",
+  "name": "netsuite-overdue-invoice-change-review",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-overdue-invoice-change-review/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "e6a445e708678b6bdb9c31ee1d864e6a04de5267184f4a872652aa8b51cc8a6d",
+  "source_release_date": "unknown",
+  "source_version": "0.1.0",
+  "version": "0.1.0",
+  "version_basis": "existing_source_version"
+}

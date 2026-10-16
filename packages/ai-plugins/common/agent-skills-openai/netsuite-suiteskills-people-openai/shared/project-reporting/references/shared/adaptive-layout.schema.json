@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allow_execution": {
+      "const": false,
+      "type": "boolean"
+    },
+    "arrangement": {
+      "enum": [
+        "balanced",
+        "table-led",
+        "chart-led"
+      ],
+      "type": "string"
+    },
+    "card_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "density": {
+      "enum": [
+        "comfortable",
+        "compact",
+        "spacious"
+      ],
+      "type": "string"
+    },
+    "detail_panels": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "insight_panels": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "interaction_scope": {
+      "enum": [
+        "approved_snapshot_only"
+      ],
+      "type": "string"
+    },
+    "layout_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "layout_version": {
+      "enum": [
+        "LAYOUT-1.0.0"
+      ],
+      "type": "string"
+    },
+    "missing_preset_inputs": {
+      "type": "boolean"
+    },
+    "overview_panels": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "presentation_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "preset": {
+      "enum": [
+        "narrative-review",
+        "pm-portfolio",
+        "compact",
+        "classic"
+      ],
+      "type": "string"
+    },
+    "root_scope_unchanged": {
+      "const": true,
+      "type": "boolean"
+    },
+    "show_charts": {
+      "type": "boolean"
+    },
+    "theme": {
+      "enum": [
+        "auto",
+        "light",
+        "dark"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "layout_version",
+    "preset",
+    "density",
+    "theme",
+    "arrangement",
+    "interaction_scope",
+    "presentation_sha256",
+    "layout_sha256",
+    "card_ids",
+    "overview_panels",
+    "insight_panels",
+    "detail_panels",
+    "root_scope_unchanged",
+    "allow_execution",
+    "show_charts",
+    "missing_preset_inputs"
+  ],
+  "title": "Allowlisted adaptive presentation layout",
+  "type": "object"
+}

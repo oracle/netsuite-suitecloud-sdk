@@ -1,0 +1,48 @@
+{
+  "access_mode": "operation_dependent",
+  "aliases": [
+    "S19",
+    "WF-FIN-006"
+  ],
+  "category": "netsuite-suiteskills-finance",
+  "description": "Assess cash position, accessible versus restricted cash, near-term funding pressure and runway for a specified entity and period. Use for liquidity and payroll-coverage questions; state verified inputs and scenario assumptions. The formal cash flow statement and invoice collections belong to their respective workflows.",
+  "display_name": "Cash and Liquidity",
+  "first_included_date": "2026-10-08",
+  "id": "RB-FIN-006",
+  "integration_release_date": "2026-10-14",
+  "integration_version": "0.7.4",
+  "name": "netsuite-cash-and-liquidity",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cash-and-liquidity/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "da8b07a72b352f3ee19bb878d9c5afd9a0c2593e5dc73a0f9b11c760d7cf9828",
+  "source_release_date": "unknown",
+  "source_version": "1.0.1",
+  "version": "1.0.1",
+  "version_basis": "existing_source_version"
+}

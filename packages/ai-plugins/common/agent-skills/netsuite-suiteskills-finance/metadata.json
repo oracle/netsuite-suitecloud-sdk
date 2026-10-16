@@ -1,0 +1,12 @@
+{
+  "access_mode": "operation_dependent",
+  "code": "FIN",
+  "edition": "non-read-only",
+  "id": "CAT-FIN",
+  "name": "Finance and Accounting",
+  "owner": "Oracle NetSuite",
+  "release_date": "2026-10-15",
+  "runbook_count": 22,
+  "slug": "netsuite-suiteskills-finance",
+  "version": "0.7.9"
+}

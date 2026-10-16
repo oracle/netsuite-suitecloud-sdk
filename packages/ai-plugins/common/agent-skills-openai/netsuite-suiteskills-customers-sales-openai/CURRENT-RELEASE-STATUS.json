@@ -1,0 +1,53 @@
+{
+  "authoring_tools": "SuiteSkills Builder 2.5.21 and Evaluator 1.1.21; matching foundation required",
+  "base_release": "0.7.8",
+  "connection_binding": "not_configured",
+  "customer_release": "blocked_pending_security_and_source_rights_requirements",
+  "data_visualization": {
+    "IQ_scan": "not_run",
+    "file_platform": "checked_executor; Linux_candidate; managed_transfer_collision_avoidance_not_atomic",
+    "id": "RB-OPS-020",
+    "linux_execution": "not_run",
+    "native_delivery": "not_run",
+    "native_host": "not_run",
+    "security_approval": "not_run",
+    "source_version": "2.1.0-rc.1",
+    "state": "included_internal_testing_candidate"
+  },
+  "data_visualization_browser_export_validation": "fresh_results_in_external_verification; native_not_run",
+  "data_visualization_source_version": "2.1.0-rc.1",
+  "edition": "non-read-only",
+  "excluded_runbooks": [
+    "RB-OPS-013",
+    "RB-OPS-017",
+    "RB-OPS-018"
+  ],
+  "inherited_security_evidence": {
+    "path": "SECURITY-RELEASE-STATUS.json",
+    "scope": "Historical evidence only; current membership is CATALOG.json. Unresolved security/rights findings remain open."
+  },
+  "license": "LicenseRef-SuiteSkills-Review-Pending",
+  "live_account": "not_run",
+  "native_host": "not_run",
+  "onboarding": "packaged_setup_skill_native_not_run",
+  "plugin": "netsuite-suiteskills",
+  "public_submission": "blocked_pending_license_security_and_source_rights_review",
+  "release_line": "openai_internal",
+  "release_status": "internal_testing_candidate",
+  "replaced_runbooks": {
+    "RB-FIN-004": "RB-FIN-026"
+  },
+  "sdk_build": "see external VERIFICATION.json",
+  "security_approval": "not_run",
+  "source_rights": "not_collected",
+  "version": "0.7.9",
+  "version_basis": "visualizer_runtime_and_host_delivery",
+  "welcome_dashboard": "removed",
+  "working_revision": "openai-079-2026-10-15",
+  "writer_remediation": {
+    "iq_scan": "not_run",
+    "native_host": "not_run",
+    "shared_writer_files": 18,
+    "specialized_runbook_consumers": 7
+  }
+}

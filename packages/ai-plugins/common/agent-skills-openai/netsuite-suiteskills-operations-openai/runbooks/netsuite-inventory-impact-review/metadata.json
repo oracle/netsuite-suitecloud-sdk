@@ -1,0 +1,175 @@
+{
+  "access_mode": "read_only",
+  "aliases": [
+    "WF-OPS-003",
+    "inventory-impact-review",
+    "inventory-transaction-impact-verification"
+  ],
+  "category": "netsuite-suiteskills-operations-openai",
+  "compatibility": {
+    "layout": "integrated_runbook",
+    "operation_binding": "Verify exposed read operations against current schemas; examples are not an allowlist.",
+    "plugin_edition": "action_capable",
+    "target_host": "authorized_netsuite_mcp_connection"
+  },
+  "description": "Verify and explain the inventory impact of existing NetSuite transactions, including typed or untyped document references, record links, explicit internal IDs, selected lines, and bounded comparisons. Use for questions about whether a transaction changed inventory; not for estimating planned inventory changes.",
+  "display_name": "Transaction Inventory Impact",
+  "effects": {
+    "account_network_access": "Existing authorized connector only.",
+    "account_reads": true,
+    "account_writes": false,
+    "external_sends": false,
+    "local_file_output": "Compiler output where present; optional user-facing exports only as described in the skill.",
+    "local_script_network_access": "No network calls documented in packaged local compiler.",
+    "process_execution": "Local Python compiler only; no subprocess calls in compiler."
+  },
+  "effects_basis": "Packaged analysis and helper effects only; not a permission ban. Requested actions depend on the shared action contract and actually available capabilities; live write execution not_run.",
+  "execution": {
+    "custom_sql": "yes",
+    "dependency_evidence": "Packaged source declarations; not proof of installed services or effective role access.",
+    "pagination": "disabled",
+    "python": "yes",
+    "python_assets": [
+      {
+        "dependencies": [
+          "Python 3.10+ standard library"
+        ],
+        "network_calls": false,
+        "path": "scripts/compile_query.py",
+        "purpose": "Validate typed inputs and template digests and write local SQL",
+        "reads": [
+          "scripts/*.sql",
+          "scripts/template-digests.json",
+          "task-local input JSON"
+        ],
+        "subprocess_calls": false,
+        "writes": [
+          "new task-local SQL outside the skill directory"
+        ]
+      }
+    ],
+    "python_requirement": "Python 3.10+ standard library for packaged local compilation.",
+    "sql_inventory": [
+      {
+        "kind": "packaged_select",
+        "limit": "six candidates, first response",
+        "parameters_reference": "references/execution.md",
+        "path": "scripts/resolve_typed_reference.sql",
+        "purpose": "Exact typed document identity",
+        "tables": [
+          "Transaction"
+        ]
+      },
+      {
+        "kind": "packaged_select",
+        "limit": "six candidates, first response",
+        "parameters_reference": "references/execution.md",
+        "path": "scripts/resolve_exact_reference.sql",
+        "purpose": "Exact untyped document identity",
+        "tables": [
+          "Transaction"
+        ]
+      },
+      {
+        "kind": "packaged_select",
+        "limit": "exact primary ID",
+        "parameters_reference": "references/execution.md",
+        "path": "scripts/resolve_internal_id.sql",
+        "purpose": "Explicit internal ID identity verification",
+        "tables": [
+          "Transaction"
+        ]
+      },
+      {
+        "kind": "packaged_select",
+        "limit": "one aggregate row over the requested accessible scope",
+        "parameters_reference": "references/execution.md",
+        "path": "scripts/classify_inventory_impact.sql",
+        "purpose": "Aggregate impact flags and counts for selected transaction/line scope",
+        "tables": [
+          "TransactionLine"
+        ]
+      },
+      {
+        "kind": "packaged_select",
+        "limit": "sort before 400-row cap; first response only",
+        "parameters_reference": "references/execution.md",
+        "path": "scripts/inventory_impact_lines.sql",
+        "purpose": "Confirmed impacting line detail",
+        "tables": [
+          "TransactionLine"
+        ]
+      }
+    ]
+  },
+  "first_included_date": "2026-10-08",
+  "id": "RB-OPS-003",
+  "integration_release_date": "2026-10-15",
+  "integration_version": "0.7.5",
+  "name": "netsuite-inventory-impact-review",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "No evidence-backed determination of industry requirements or tested fit has been collected.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "Exact SuiteApp, Bundle and feature identifiers, installation conditions and versions have not been verified for a target account.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "No evidence-backed determination of country, region or localization requirements has been collected. Date/time rules in the skill do not establish locality coverage.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "Exact permission identifiers, minimum levels and effective role access have not been collected. Required read operations are documented below.",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "operations": [
+    {
+      "condition": "Before impact classification; up to three targeted attempts per reference",
+      "operation": "resolve_and_verify_exact_transaction_identity",
+      "source": "references/resolution-rules.md",
+      "status": "required"
+    },
+    {
+      "condition": "Verified transaction and resolved line scope",
+      "operation": "read_transaction_line_impact_classification",
+      "source": "references/execution.md",
+      "status": "required"
+    },
+    {
+      "condition": "Confirmed classification; one bounded response",
+      "operation": "read_confirmed_impacting_line_details",
+      "source": "references/positive-impact-line-detail.md",
+      "status": "conditional"
+    },
+    {
+      "condition": "Dynamic header or line field selection needs current table-specific evidence",
+      "operation": "read_relevant_field_metadata",
+      "source": "references/execution.md",
+      "status": "conditional"
+    },
+    {
+      "condition": "At most one permitted enrichment read for returned detail rows",
+      "operation": "read_targeted_line_or_item_enrichment",
+      "source": "references/retrieval-budget.md",
+      "status": "optional"
+    }
+  ],
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-impact-review/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "89e84d7830557688c22a449664c542b7415fe883e48cbea353d70b3979eb10f3",
+  "source_release_date": "2026-10-14",
+  "source_version": "7.0",
+  "version": "7.0.0",
+  "version_basis": "normalized_source_version_per_user"
+}

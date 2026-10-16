@@ -1,0 +1,55 @@
+{
+  "access_mode": "operation_dependent",
+  "account_execution": "not_run",
+  "action_scope": "New Actual Time records only, after exact review and Save; verify each created record.",
+  "aliases": [
+    "netsuite-time-entry-drafting",
+    "time-entry-creation"
+  ],
+  "category": "netsuite-suiteskills-people-openai",
+  "description": "Draft and create new NetSuite Actual Time entries from a direct request or permitted work activity, with a chat table review and a separate Save decision. Do not use for timesheet submission or approval.",
+  "display_name": "Time Entry Creation",
+  "edition": "non-read-only",
+  "first_included_date": "2026-10-13",
+  "host_execution": "not_run",
+  "id": "RB-PPL-010",
+  "integration_release_date": "2026-10-15",
+  "integration_version": "0.7.5",
+  "name": "netsuite-time-entry-creation",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/RETRIEVAL.md",
+    "shared/contracts/ACTIONS.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "af2e7595e9b8b10aba636e197aea6915173f242cfb24e4579124668ee3561ece",
+  "source_release_date": "unknown",
+  "source_version": "unknown",
+  "source_version_status": "not_collected",
+  "version": "1.0.0",
+  "version_basis": "assigned_default_per_user"
+}

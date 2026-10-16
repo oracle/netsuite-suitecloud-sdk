@@ -1,0 +1,1076 @@
+[
+  {
+    "access_mode": "operation_dependent",
+    "account_execution": "not_run",
+    "action_scope": "Expense exception review, requested external drafts and explicitly authorized sends; no expense approval or period-close execution.",
+    "aliases": [
+      "expense-close-assistant"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Review NetSuite expense-report exceptions before close, show an interactive exception dashboard, and prepare owner-directed follow-ups. Supports communication drafts or explicitly authorized messages; excludes expense-record changes and period closure.",
+    "display_name": "Expense Close Assistant",
+    "edition": "non-read-only",
+    "first_included_date": "2026-10-13",
+    "host_execution": "not_run",
+    "id": "RB-FIN-002",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-expense-close-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Source-only review; current account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-expense-close-assistant/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/RETRIEVAL.md",
+      "shared/contracts/ACTIONS.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "c2ea729e33ede8bac8d13d66ae472e647d1f03e1886bc02c8626638e2bfc42d5",
+    "source_release_date": "not_collected",
+    "source_version": "0.2.1",
+    "source_version_status": "declared_in_submission",
+    "version": "0.2.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S25",
+      "WF-FIN-003",
+      "match-vendor-credits-to-bills"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Find unused vendor credits and propose allocations to compatible open bills using verified remaining balances, vendor, subsidiary, currency and accounts payable account. Show oldest-eligible-bill matches, residuals and unverified pairs. Read-only; does not apply credits or prioritize unrelated payments.",
+    "display_name": "Match Vendor Credits to Bills",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-003",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-match-vendor-credits-to-bills",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-match-vendor-credits-to-bills/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "8306e5431fc70ef8220bfe7acc185c1c85792297cb054b53446328b66b0f0b8d",
+    "source_release_date": "not_collected",
+    "source_version": "1.0.2",
+    "version": "1.0.2",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S19",
+      "WF-FIN-006"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Assess cash position, accessible versus restricted cash, near-term funding pressure and runway for a specified entity and period. Use for liquidity and payroll-coverage questions; state verified inputs and scenario assumptions. The formal cash flow statement and invoice collections belong to their respective workflows.",
+    "display_name": "Cash and Liquidity",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-006",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-cash-and-liquidity",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cash-and-liquidity/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "da8b07a72b352f3ee19bb878d9c5afd9a0c2593e5dc73a0f9b11c760d7cf9828",
+    "source_release_date": "unknown",
+    "source_version": "1.0.1",
+    "version": "1.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S20",
+      "WF-FIN-007"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Use to assemble an executive or board finance package from named upstream finance-skill results. Preserve metric provenance and tie-outs, surface incomplete evidence, and prepare a scoped narrative and proposed actions; route missing analysis to its owning skill.",
+    "display_name": "Executive Financial Reporting",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-007",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-executive-finance-reporting",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-executive-finance-reporting/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "c2daa1e547a1a09cbbbed4bd218b09cbabe09bbb58aebfacef405d8cdbfc33a6",
+    "source_release_date": "not_collected",
+    "source_version": "1.0.1",
+    "version": "1.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S21",
+      "WF-FIN-008"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Use to review finance control exceptions across periods, document evidence coverage and recurrence, and propose remediation. Distinguish isolated observations from potential deficiencies; the control owner makes the deficiency determination.",
+    "display_name": "Finance Controls Review",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-008",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-finance-controls-review",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-finance-controls-review/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "27d7baff06d4151edc92d5a9d392d4a7ce6e2f997d130a1101ffa19c91be6087",
+    "source_release_date": "not_collected",
+    "source_version": "1.0.1",
+    "version": "1.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S22",
+      "WF-FIN-009"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Use to retrieve and interpret an income statement, balance sheet, or cash flow statement for a resolved period, entity, currency and accounting book. Reconcile statement relationships, calculate supported financial indicators, and label open-period or incomplete results; route driver analysis and board-package assembly to their owning skills.",
+    "display_name": "Financial Statement Review",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-009",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-financial-statement-review",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-financial-statement-review/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "575d2b80292573dd09ef56dee61e2e32835e54343b1fb9b195189918db21e742",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "account_execution": "not_run",
+    "action_scope": "Collections analysis and scoped authorized outreach, follow-up tasks and customer credit holds.",
+    "aliases": [],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Build an evidence-based collections queue for open receivables, separating contact blockers before ranking verified recovery factors. Use for invoice follow-up priorities and outreach drafts; sending messages or creating follow-up tasks requires the specific authorized scope and a supported capability. General ledger reconciliation and standalone days-sales-outstanding trends belong to other workflows.",
+    "display_name": "Invoice Collections",
+    "edition": "non-read-only",
+    "first_included_date": "2026-10-13",
+    "host_execution": "not_run",
+    "id": "RB-FIN-011",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-invoice-collections",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-invoice-collections/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/RETRIEVAL.md",
+      "shared/contracts/ACTIONS.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "bbc0d88cde1a2c4bbc753b91ac4fa5d6e648ff297cc7cc55beb4f1dacef6fb42",
+    "source_release_date": "unknown",
+    "source_version": "1.0.1",
+    "source_version_status": "not_collected",
+    "version": "1.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "account_execution": "not_run",
+    "action_scope": "Journal review and specifically authorized correcting entries; no automatic posting from screening results.",
+    "aliases": [],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Use to screen posted and unposted journals for evidenced review criteria, explain each flagged entry and report assessment coverage. Prepare requested correcting-entry drafts; post only through a supported authorized workflow after validating the exact entry and accounting impact.",
+    "display_name": "Journal Entry Review",
+    "edition": "non-read-only",
+    "first_included_date": "2026-10-13",
+    "host_execution": "not_run",
+    "id": "RB-FIN-012",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-journal-entry-review",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-journal-entry-review/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/RETRIEVAL.md",
+      "shared/contracts/ACTIONS.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "e33ebc7c5dddb6c839357254fe6d951f54c0666c9052ede03b0abca8dcce8b3d",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "source_version_status": "not_collected",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S27",
+      "WF-FIN-013"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Use when asked where the close stands, what is blocking period close, or whether the target lock date can be met. Review observed accounting-period states, close-task evidence, owners, dependencies and pending financial activity. Keep missing evidence and specialist coverage explicit. Read-only; does not execute close tasks or lock a period.",
+    "display_name": "Period Close Status",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-013",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-period-close-status",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-period-close-status/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "b6ca89047fa1f8ee68c795c962f4222762d27bb699983778ba09682afd90fe36",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S29",
+      "WF-FIN-015"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Use to explain material differences from a verified budget, forecast, prior period or prior year. Reconcile evidence-backed drivers to the total variance, distinguish recurring and timing effects, and disclose unexplained residuals; do not silently substitute a missing comparison basis.",
+    "display_name": "Variance and Flux Analysis",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-015",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-variance-analysis",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Account requirements have not been collected; no account operations performed.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-variance-analysis/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "fbbe4e35ae4550461c90fa78b8737c5cdc0e274b0b87092e3ee35f444874f024",
+    "source_release_date": "not_collected",
+    "source_version": "1.0.1",
+    "version": "1.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S26",
+      "WF-FIN-016",
+      "payment-prioritization"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Build read-only NetSuite payment proposals across Payment Run-eligible A/P with compatible vendor-credit and negative bill-payment or journal offsets. Prioritize by due dates, payee importance, discounts and cash constraints; explain selections and follow-ups. Use AP analytics for timing-only questions.",
+    "display_name": "Payment Prioritization",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-016",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-payment-prioritization",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-payment-prioritization/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "e544e0b721e7068021a6fa7465e7a367a1b443c5a57314bfae9ef1257f7a6882",
+    "source_release_date": "not_collected",
+    "source_version": "0.2.9",
+    "version": "0.2.9",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S30",
+      "WF-FIN-017",
+      "vendor-bill-processing-time"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Analyze NetSuite accounts-payable vendor bill lifecycle performance through the available MCP connector: days-to-pay including prepayment applications, first cash payment versus final settlement, approval duration, entry lag, payment-terms compliance, open-bill aging, trends and outliers. Use for AP processing-time, payment-speed, slow-vendor, or bill lifecycle questions and dashboards, including “invoice” when the context is AP. Read-only analytics; does not create or approve payments. Use payment prioritization when the user wants to decide which bills to pay next.",
+    "display_name": "Vendor Bill Processing Time",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-017",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-vendor-bill-processing-time",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-vendor-bill-processing-time/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "b97ba8134502cd39b997d177b2c1d75883ea2bff37d4d18bcc908debe7b42ecd",
+    "source_release_date": "not_collected",
+    "source_version": "0.2.5",
+    "version": "0.2.5",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "operation_dependent",
+    "aliases": [
+      "S32",
+      "WF-FIN-018",
+      "vendor-spend-analysis"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Ranks vendors by spend or current open balance and shows each vendor's share of the total, recent spend movement, aging, and other concentration signals in an in-chat bar chart with linked records. Use to identify top or biggest vendors, see where accounts payable (AP) spend is concentrated, compare vendor spend for a period, find vendors above an amount, or answer who the business owes the most. Read-only; use for vendor-level ranking and concentration review, not bill-level processing-time analysis or decisions about which bills to pay.",
+    "display_name": "Vendor Spend Analysis",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-018",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-vendor-spend-analysis",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-vendor-spend-analysis/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "0ef6ccae79c8b5787a24ff4660f1e562429ff5a66610e02a46191e9039f1d47d",
+    "source_release_date": "not_collected",
+    "source_version": "1.0.1",
+    "version": "1.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-FIN-019",
+      "labor-cost-advisor"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Build a payroll-backed labor-cost dashboard when Payroll, both labor reports, and Labor Costs Setup are accessible; otherwise provide the bundled illustrative dashboard preview. Use for labor-cost what-if scenarios.",
+    "display_name": "Labor Cost Advisor",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-019",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-labor-cost-advisor",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-labor-cost-advisor/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "c14eed24f76ff98efc0ba5c68d26caf54a3ff76fd504bc46e0affddf23b788e1",
+    "source_release_date": "unknown",
+    "source_version": "unknown",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-FIN-020"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Analyze customer acquisition-month retention and annual recurring revenue (ARR) exposure for a chief financial officer (CFO). Use for gross revenue retention (GRR), net revenue retention (NRR), logo retention, churn, downsell, within-cohort product or segment cuts, renewal exposure and bounded what-ifs. Excludes customer renewal books, billing queues, forecast creation and commercial changes.",
+    "display_name": "CFO Cohort Analysis",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-020",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "license": "proprietary",
+    "name": "netsuite-cohort-analysis",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cohort-analysis/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "1e11659bb7a7b4c3b283a79157bf9afed2657956b9bceb39e5e6bcc0bd5be0a5",
+    "source_release_date": "not_collected",
+    "source_version": "0.8.0",
+    "version": "0.8.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-FIN-021"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Review potential invoicing shortfalls, credits requiring review and Advanced Revenue Management (ARM) plan or element exceptions as of a date. Use for underbilling, unbilled delivery, recorded subscription or schedule gaps, held plans and missing elements. Reports separate billing and accounting findings with coverage; excludes recurring-retention dashboards, transaction correction, collections and revenue-recognition certification.",
+    "display_name": "Revenue Leakage",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-021",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-revenue-leakage",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-revenue-leakage/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "5fbc4bd1a7d455df0bea372924eca7bd992856122cd20f8073f3607ceebd5329",
+    "source_release_date": "not_collected",
+    "source_version": "1.0.1",
+    "version": "1.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-FIN-022",
+      "intercompany-balance-explorer",
+      "ns-intercompany-balance-explorer"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Review intercompany exposure, subsidiary-pair differences and journal activity for a date range or as-of date. Use for read-only intercompany investigation with verified non-overlapping subsidiaries and comparable currency, book and posting bases; posting, approval and elimination actions require a separate workflow.",
+    "display_name": "Intercompany Balance Explorer",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-022",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "license": "The Universal Permissive License (UPL), Version 1.0",
+    "name": "netsuite-intercompany-balance-explorer",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-intercompany-balance-explorer/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "529b3b6cc9fc4993b94c45e1609766d4343a32c24e9eb00ce2c8b50c24ce6349",
+    "source_release_date": "unknown",
+    "source_version": "1.1.3",
+    "version": "1.1.3",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "action_policy": "user_authorized_supported_operations",
+    "aliases": [
+      "WF-FIN-023",
+      "suitetax-nexus-explainer"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Explain automatic SuiteTax nexus selection, fallback or failure for sales and purchases, using transaction addresses, registration validity and override evidence. Use for general rules or a specific transaction; distinguish business-to-business and business-to-consumer treatment. Tax amounts, legal advice and record changes are outside scope.",
+    "display_name": "SuiteTax Nexus Explainer",
+    "first_included_date": "2026-10-14",
+    "id": "RB-FIN-023",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-suitetax-nexus-explainer",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operation_inventory_is_allowlist": false,
+    "origin": "team_expansion_2026_10_05",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-suitetax-nexus-explainer/RUNBOOK.md",
+    "purpose": "Explain why SuiteTax selected, changed, or failed to determine the transaction nexus for sales and purchases. Use for transaction-specific or general questions about SuiteTax address sourcing, B2B/B2C classification, subsidiary tax registrations, transaction-date validity, nexus candidates, and fallback logic. Do not use as independent tax or legal advice or to invent a tax result without the required NetSuite data.",
+    "runtime_status": "not_run",
+    "source_candidate_sha256": "7b2890c5106093d56cce1090da52f3f47c5b84034241d0c7b0f3703a5e292990",
+    "source_release_date": "unknown",
+    "source_version": "0.6.8",
+    "version": "0.6.8",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "WF-FIN-024",
+      "overdue-invoice-change-review"
+    ],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Investigate payments, credits and audited amount edits affecting current overdue invoices or a selected invoice. Use to explain observed receivable changes with evidence and an explicitly qualified bridge when a prior amount is supplied. Historical aging reconstruction, collections outreach and record changes are outside scope.",
+    "display_name": "Overdue Invoice Change Review",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-024",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-overdue-invoice-change-review",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-overdue-invoice-change-review/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "e6a445e708678b6bdb9c31ee1d864e6a04de5267184f4a872652aa8b51cc8a6d",
+    "source_release_date": "unknown",
+    "source_version": "0.1.0",
+    "version": "0.1.0",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "account_execution": "not_run",
+    "action_scope": "Project financial diagnostics and local reporting; no new accounting procedure.",
+    "aliases": [],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Review project revenue, observed cost, profitability, unbilled balances and aging from authorized NetSuite evidence. Use for project financial exceptions; produce a local HTML dashboard by default or honor an explicit text/data format. Read-only; budget-versus-actual comparison is unavailable in this renderer.",
+    "display_name": "Project Financial Assistant",
+    "edition": "non-read-only",
+    "first_included_date": "2026-10-13",
+    "host_execution": "not_run",
+    "id": "RB-FIN-025",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-project-financial-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-project-financial-assistant/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/RETRIEVAL.md",
+      "shared/contracts/ACTIONS.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "95027e7571fff52cf64c8deb960d441af3696fe587c91b6772b5b9b4bbc2fc8a",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "source_version_status": "not_collected",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Assess and prioritize native bank and credit-card reconciliation work: matching queues, suggestions, differences and supported close-readiness conclusions. Read-only; excludes account changes, enterprise performance management reconciliation and payment-processor settlement.",
+    "display_name": "Bank reconciliation prioritization",
+    "first_included_date": "2026-10-14",
+    "id": "RB-FIN-026",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-bank-reconciliation-prioritization",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-bank-reconciliation-prioritization/RUNBOOK.md",
+    "source_candidate_sha256": "303d81418d33e50770b177fbf5fe453dd7ceac0cce77174f25f5b2e9b47c7fd3",
+    "source_release_date": "not_collected",
+    "source_version": "2.0.1",
+    "version": "2.0.1",
+    "version_basis": "existing_source_version"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [],
+    "category": "netsuite-suiteskills-finance",
+    "description": "Review today's customer credit exposure, limit exceptions and signed overdue aging. Use for current customer or portfolio credit reviews; default undated requests to all role-accessible customer records today. Historical comparisons, collections outreach and record changes are outside scope.",
+    "display_name": "Credit Management",
+    "first_included_date": "2026-10-08",
+    "id": "RB-FIN-027",
+    "integration_release_date": "2026-10-14",
+    "integration_version": "0.7.4",
+    "name": "netsuite-credit-management",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-credit-management/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "09dcf1472e2b2b82076ba1ae713a8765b6d7b32c454c1234bf1e1d7d2c3f1e2c",
+    "source_release_date": "unknown",
+    "source_version": "unknown",
+    "source_version_status": "previously_user_assigned",
+    "version": "1.0.0",
+    "version_basis": "assigned_default_per_user"
+  }
+]

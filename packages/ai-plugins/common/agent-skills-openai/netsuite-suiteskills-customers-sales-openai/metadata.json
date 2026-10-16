@@ -1,0 +1,12 @@
+{
+  "access_mode": "operation_dependent",
+  "code": "CRM",
+  "edition": "non-read-only",
+  "id": "CAT-CRM",
+  "name": "Customers, Sales and Support",
+  "owner": "Oracle NetSuite",
+  "release_date": "2026-10-15",
+  "runbook_count": 8,
+  "slug": "netsuite-suiteskills-customers-sales-openai",
+  "version": "0.7.9"
+}

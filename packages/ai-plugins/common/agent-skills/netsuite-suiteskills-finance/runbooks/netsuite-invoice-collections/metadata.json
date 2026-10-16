@@ -1,0 +1,52 @@
+{
+  "access_mode": "operation_dependent",
+  "account_execution": "not_run",
+  "action_scope": "Collections analysis and scoped authorized outreach, follow-up tasks and customer credit holds.",
+  "aliases": [],
+  "category": "netsuite-suiteskills-finance",
+  "description": "Build an evidence-based collections queue for open receivables, separating contact blockers before ranking verified recovery factors. Use for invoice follow-up priorities and outreach drafts; sending messages or creating follow-up tasks requires the specific authorized scope and a supported capability. General ledger reconciliation and standalone days-sales-outstanding trends belong to other workflows.",
+  "display_name": "Invoice Collections",
+  "edition": "non-read-only",
+  "first_included_date": "2026-10-13",
+  "host_execution": "not_run",
+  "id": "RB-FIN-011",
+  "integration_release_date": "2026-10-14",
+  "integration_version": "0.7.4",
+  "name": "netsuite-invoice-collections",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-invoice-collections/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/RETRIEVAL.md",
+    "shared/contracts/ACTIONS.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "bbc0d88cde1a2c4bbc753b91ac4fa5d6e648ff297cc7cc55beb4f1dacef6fb42",
+  "source_release_date": "unknown",
+  "source_version": "1.0.1",
+  "source_version_status": "not_collected",
+  "version": "1.0.1",
+  "version_basis": "existing_source_version"
+}

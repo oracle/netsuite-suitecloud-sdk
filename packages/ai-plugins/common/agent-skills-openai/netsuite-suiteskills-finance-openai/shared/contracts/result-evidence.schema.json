@@ -1,0 +1,147 @@
+{
+  "$id": "urn:suiteskills:result-evidence:1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "coverage": {
+      "enum": [
+        "complete",
+        "partial",
+        "unknown",
+        "empty"
+      ]
+    },
+    "domain_review": {
+      "type": "object"
+    },
+    "foundation_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "grain": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "lineage": {
+      "type": "object"
+    },
+    "observed_at": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "type": "object"
+    },
+    "rows": {
+      "items": {
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "state": {
+                  "enum": [
+                    "unknown",
+                    "not_collected",
+                    "denied",
+                    "unavailable",
+                    "not_applicable"
+                  ]
+                }
+              },
+              "required": [
+                "state"
+              ],
+              "type": "object"
+            }
+          ]
+        },
+        "type": "object"
+      },
+      "maxItems": 10000,
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "scope": {
+      "type": "object"
+    },
+    "sources": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "independent_control": {
+            "type": "boolean"
+          },
+          "locator": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "scope": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "locator",
+          "scope",
+          "independent_control",
+          "data"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "producer",
+    "foundation_digest",
+    "scope",
+    "grain",
+    "observed_at",
+    "coverage",
+    "sources",
+    "rows",
+    "lineage",
+    "domain_review"
+  ],
+  "type": "object"
+}

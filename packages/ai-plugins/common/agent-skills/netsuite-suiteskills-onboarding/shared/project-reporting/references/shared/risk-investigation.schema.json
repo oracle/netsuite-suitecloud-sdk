@@ -1,0 +1,563 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Protected runtime state, not publishable as-is. risk_gate.py adds semantic scope/chronology/count constraints; host verifies source truth and authority.",
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "candidates": {
+      "items": {
+        "properties": {
+          "conclusion": {
+            "enum": [
+              "Verified",
+              "Not verified",
+              "Not applicable",
+              "Unavailable after alternatives"
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "execution_state": {
+            "const": "Terminal"
+          },
+          "finding_key": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "search_ids": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "severity": {
+            "enum": [
+              "High",
+              "Medium",
+              "Low",
+              "Unrated"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "search_ids",
+          "condition_key",
+          "affected_keys",
+          "project_ids",
+          "resource_keys",
+          "statement",
+          "applicability_basis",
+          "evidence_refs",
+          "window",
+          "as_of",
+          "timezone",
+          "execution_state",
+          "conclusion",
+          "finding_key",
+          "limitations"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "contract_version": {
+      "const": "PM-4.0.0"
+    },
+    "indicator_phase": {
+      "properties": {
+        "accounted_for": {
+          "const": true
+        },
+        "attempted": {
+          "const": true
+        },
+        "before_derived_analysis": {
+          "const": true
+        },
+        "completed_sequence": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "coverage_prioritized": {
+          "const": true
+        },
+        "evidence_refs": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "remaining_usable_channels": {
+          "maxItems": 0,
+          "type": "array"
+        }
+      },
+      "required": [
+        "attempted",
+        "accounted_for",
+        "before_derived_analysis",
+        "coverage_prioritized",
+        "remaining_usable_channels",
+        "completed_sequence",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "pending_batches": {
+      "maxItems": 0,
+      "type": "array"
+    },
+    "pending_pages": {
+      "maxItems": 0,
+      "type": "array"
+    },
+    "pending_periods": {
+      "maxItems": 0,
+      "type": "array"
+    },
+    "plan": {
+      "properties": {
+        "area_decisions": {
+          "items": {
+            "properties": {
+              "applicability": {
+                "enum": [
+                  "applicable",
+                  "not_applicable",
+                  "unknown"
+                ]
+              },
+              "area": {
+                "enum": [
+                  "delivery",
+                  "people_time",
+                  "financial",
+                  "commercial",
+                  "governance"
+                ]
+              },
+              "basis": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "area",
+              "applicability",
+              "basis"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "context_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "broad",
+            "focused"
+          ]
+        },
+        "project_ids": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "request_signature": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "resource_keys": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "revision": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "searches": {
+          "items": {
+            "properties": {
+              "area": {
+                "enum": [
+                  "delivery",
+                  "people_time",
+                  "financial",
+                  "commercial",
+                  "governance"
+                ]
+              },
+              "expected_members": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "fields": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "method": {
+                "enum": [
+                  "temporal",
+                  "ownership",
+                  "reconciliation",
+                  "workflow",
+                  "requirement",
+                  "relationships"
+                ]
+              },
+              "population_unit": {
+                "enum": [
+                  "projects",
+                  "resources"
+                ]
+              },
+              "project_ids": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "resource_keys": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "window": {
+                "minProperties": 1,
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "area",
+              "method",
+              "definition",
+              "grain",
+              "source_definition_ref",
+              "project_ids",
+              "resource_keys",
+              "population_unit",
+              "expected_members",
+              "fields",
+              "window"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "version": {
+          "const": "DISCOVERY-1.0.0"
+        }
+      },
+      "required": [
+        "version",
+        "id",
+        "revision",
+        "mode",
+        "request_signature",
+        "context_sha256",
+        "project_ids",
+        "resource_keys",
+        "as_of",
+        "timezone",
+        "area_decisions",
+        "searches"
+      ],
+      "type": "object"
+    },
+    "plan_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "scope": {
+      "properties": {
+        "evidence_refs": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "population_mismatches": {
+          "maxItems": 0,
+          "type": "array"
+        },
+        "project_ids": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "reconciled": {
+          "const": true
+        },
+        "resource_keys": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "project_ids",
+        "resource_keys",
+        "reconciled",
+        "population_mismatches",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "searches": {
+      "items": {
+        "properties": {
+          "candidate_ids": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "definition": {
+            "properties": {
+              "area": {
+                "enum": [
+                  "delivery",
+                  "people_time",
+                  "financial",
+                  "commercial",
+                  "governance"
+                ]
+              },
+              "expected_members": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "fields": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "method": {
+                "enum": [
+                  "temporal",
+                  "ownership",
+                  "reconciliation",
+                  "workflow",
+                  "requirement",
+                  "relationships"
+                ]
+              },
+              "population_unit": {
+                "enum": [
+                  "projects",
+                  "resources"
+                ]
+              },
+              "project_ids": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "resource_keys": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "window": {
+                "minProperties": 1,
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "area",
+              "method",
+              "definition",
+              "grain",
+              "source_definition_ref",
+              "project_ids",
+              "resource_keys",
+              "population_unit",
+              "expected_members",
+              "fields",
+              "window"
+            ],
+            "type": "object"
+          },
+          "evidence_refs": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "partitions": {
+            "properties": {
+              "evaluated": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "not_applicable": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "unavailable": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "unresolved": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "evaluated",
+              "unavailable",
+              "not_applicable",
+              "unresolved"
+            ],
+            "type": "object"
+          },
+          "state": {
+            "enum": [
+              "exhausted",
+              "not_applicable",
+              "unavailable"
+            ]
+          }
+        },
+        "required": [
+          "definition",
+          "state",
+          "evidence_refs",
+          "partitions",
+          "candidate_ids",
+          "started_sequence",
+          "completed_sequence",
+          "limitations"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "timezone": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "unresolved_queue": {
+      "maxItems": 0,
+      "type": "array"
+    }
+  },
+  "required": [
+    "contract_version",
+    "plan",
+    "plan_sha256",
+    "scope",
+    "as_of",
+    "timezone",
+    "indicator_phase",
+    "searches",
+    "candidates",
+    "pending_pages",
+    "pending_periods",
+    "pending_batches",
+    "unresolved_queue"
+  ],
+  "title": "Protected evidence-led investigation state",
+  "type": "object"
+}

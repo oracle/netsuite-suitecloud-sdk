@@ -1,0 +1,49 @@
+{
+  "access_mode": "read_only",
+  "aliases": [
+    "WF-OPS-019",
+    "netsuite-project-risk-dashboard",
+    "project-risk-assistant"
+  ],
+  "category": "netsuite-suiteskills-operations-openai",
+  "description": "Investigate NetSuite project deadlines, overdue or explicitly blocked tasks, ownership gaps, and hours or supported monetary budget overage. Produce an evidence-backed risk dashboard unless another format is requested. Review proposed statements of work separately as plan-stage risk. Do not infer resource availability from named ownership or execute project changes.",
+  "display_name": "Project Risk Assistant",
+  "first_included_date": "2026-10-08",
+  "id": "RB-OPS-019",
+  "integration_release_date": "2026-10-15",
+  "integration_version": "0.7.5",
+  "name": "netsuite-project-risk-assistant",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-risk-assistant/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "2099f2d9e50b05460348e01985cc9c7bb24da1fadd7d7d350b5da58c13b07029",
+  "source_release_date": "not_collected",
+  "source_version": "unknown",
+  "version": "1.0.0",
+  "version_basis": "assigned_default_per_user"
+}
