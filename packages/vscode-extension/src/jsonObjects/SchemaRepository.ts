@@ -3,57 +3,30 @@
  ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import { createHash } from 'crypto';
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { JSON_OBJECTS } from './Configuration';
+import { checkSchemaAccess, loadSchemaDocument, refreshSchemaDocuments } from './SchemaDownloads';
 
 // Schemas are data from the configured catalog, not executable modules.
 export type Schema = boolean | { [keyword: string]: any };
 export interface SchemaNode { schema: Schema; base: string; }
 export type SchemaLoader = (url: string) => Promise<string>;
 
-async function download(url: string): Promise<string> {
-	const response = await fetch(url, { signal: AbortSignal.timeout(JSON_OBJECTS.DOWNLOAD_TIMEOUT_MS) });
-	if (!response.ok) { throw new Error(`Schema download failed (${response.status}): ${url}`); }
-	return response.text();
-}
-
-/** Shared catalog loader for discovery and templates, with an offline disk cache. */
+/** In-session catalog resolution; the editor's schema provider owns downloading and disk caching. */
 export class SchemaRepository {
 	private readonly documents = new Map<string, Promise<Schema>>();
-	constructor(private readonly cacheDirectory: string, private readonly log: (message: string) => void,
-		private readonly loader: SchemaLoader = download) {}
+	constructor(private readonly loader: SchemaLoader = loadSchemaDocument,
+		private readonly checkAccess: (url: string) => void = checkSchemaAccess) {}
 
-	clear(): void { this.documents.clear(); }
+	clear(): void { this.documents.clear(); refreshSchemaDocuments(); }
 
 	private document(url: string): Promise<Schema> {
 		if (new URL(url).protocol !== 'https:') { throw new Error(`Schema URLs must use HTTPS: ${url}`); }
+		this.checkAccess(url);
 		let pending = this.documents.get(url);
 		if (!pending) {
-			pending = this.read(url).catch(error => { this.documents.delete(url); throw error; });
+			pending = this.loader(url).then(text => this.parse(text)).catch(error => { this.documents.delete(url); throw error; });
 			this.documents.set(url, pending);
 		}
 		return pending;
-	}
-
-	private async read(url: string): Promise<Schema> {
-		const filename = path.join(this.cacheDirectory, `${createHash('sha256').update(url).digest('hex')}.json`);
-		let schema: Schema;
-		try {
-			schema = this.parse(await this.loader(url));
-		} catch (error) {
-			try {
-				schema = this.parse(await fs.readFile(filename, 'utf8'));
-				this.log(`Using cached JSON schema: ${url}`);
-				return schema;
-			} catch { throw error; }
-		}
-		try {
-			await fs.mkdir(this.cacheDirectory, { recursive: true });
-			await fs.writeFile(filename, JSON.stringify(schema));
-		} catch (error) { this.log(`Could not cache JSON schema: ${String(error)}`); }
-		return schema;
 	}
 
 	private parse(text: string): Schema {
@@ -101,32 +74,4 @@ export class SchemaRepository {
 		return resolved;
 	}
 
-	/** Exact URLs with empty matches let VS Code trust catalog references without changing user settings. */
-	async dependencies(url: string): Promise<string[]> {
-		const visited = new Set<string>();
-		const visit = async (reference: string): Promise<void> => {
-			const documentUrl = new URL(reference); documentUrl.hash = '';
-			if (visited.has(documentUrl.href)) { return; }
-			if (visited.size >= 100) { throw new Error('The JSON schema catalog exceeds 100 documents.'); }
-			visited.add(documentUrl.href);
-			const node = await this.load(documentUrl.href);
-			const walk = async (schema: any, base: string): Promise<void> => {
-				if (!schema || typeof schema !== 'object') { return; }
-				if (schema.$id) { base = new URL(schema.$id, base).href; }
-				if (typeof schema.$ref === 'string') { await visit(new URL(schema.$ref, base).href); }
-				for (const key of ['$defs', 'definitions', 'properties', 'patternProperties', 'dependentSchemas']) {
-					for (const value of Object.values(schema[key] ?? {})) { await walk(value, base); }
-				}
-				for (const key of ['allOf', 'anyOf', 'oneOf', 'prefixItems']) {
-					for (const value of schema[key] ?? []) { await walk(value, base); }
-				}
-				for (const key of ['items', 'additionalProperties', 'if', 'then', 'else', 'contains', 'not', 'propertyNames', 'unevaluatedItems', 'unevaluatedProperties']) {
-					await walk(schema[key], base);
-				}
-			};
-			await walk(node.schema, node.base);
-		};
-		await visit(url);
-		return [...visited];
-	}
 }

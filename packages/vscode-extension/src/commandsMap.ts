@@ -45,11 +45,11 @@ export type CommandsInfoMapType =
 export const commandsInfoMap: CommandsInfoMapType = {
 	createjsonobject: {
 		vscodeCommandId: 'suitecloud.createjsonobject',
-		vscodeCommandName: 'Create JSON Object',
+		vscodeCommandName: 'Create JSON or YAML Object',
 	},
 	refreshjsonschemas: {
 		vscodeCommandId: 'suitecloud.refreshjsonschemas',
-		vscodeCommandName: 'Refresh JSON Schemas',
+		vscodeCommandName: 'Refresh Object Schemas',
 	},
 	adddependencies: {
 		vscodeCommandId: 'suitecloud.adddependencies',

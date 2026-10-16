@@ -11,8 +11,8 @@ export const JSON_OBJECTS = {
 	REGISTRY_URI: 'suitecloud-schema://registry/associations.json',
 	DISCOVERY_EXCLUDE: '**/{node_modules,.git,.vscode-test,.suitecloud-sdk}/**',
 	REFRESH_DELAY_MS: 250,
-	DOWNLOAD_TIMEOUT_MS: 15000,
-	CACHE_DIRECTORY: 'json-schemas',
+	YAML_EXTENSION: 'redhat.vscode-yaml',
+	YAML_SCHEMA_SCHEME: 'suitecloud-yaml',
 };
 
 export interface ObjectProject {
