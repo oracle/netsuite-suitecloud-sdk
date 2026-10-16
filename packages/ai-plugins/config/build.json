@@ -2,7 +2,7 @@
 	"version": 1,
 	"licenseFile": "../../LICENSE.txt",
 	"skillsRoot": "../agent-skills",
-	"commonLayersRoot": "./common",
+	"commonLayersRoot": "./common/layers",
 	"pluginDistRoot": "../../dist/ai-plugins",
 	"globalExcludes": [
 		"**/.DS_Store",
@@ -15,6 +15,6 @@
 		"**/dist/**"
 	],
 	"skillSources": {
-		"plugin-only": "./common/agent-skills"
+		"suiteskills": "./common/skills/suiteskills"
 	}
 }

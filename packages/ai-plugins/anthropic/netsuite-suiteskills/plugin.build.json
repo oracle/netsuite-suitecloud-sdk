@@ -4,6 +4,9 @@
     {
       "name": "suiteskills",
       "include": [
+        "ID-REGISTER.json",
+        "INSTALL-LAYOUT.json",
+        "NOTICE.md",
         "shared/CHANGELOG.md",
         "shared/README.md",
         "shared/RESOURCE-MAP.json",
@@ -167,10 +170,7 @@
         "CHANGELOG.md",
         "CURRENT-RELEASE-STATUS.json",
         "FOUNDATION-SNAPSHOT.json",
-        "ID-REGISTER.json",
-        "INSTALL-LAYOUT.json",
         "INVENTORY.json",
-        "NOTICE.md",
         "README.md",
         "SECURITY-RELEASE-STATUS.json"
       ],
@@ -205,5 +205,5 @@
     "netsuite-suiteskills-people"
   ],
   "version": "0.7.9",
-  "skillSource": "plugin-only"
+  "skillSource": "suiteskills"
 }

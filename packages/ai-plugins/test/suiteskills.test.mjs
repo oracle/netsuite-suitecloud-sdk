@@ -16,6 +16,9 @@ const expectedRoutes = {
  'netsuite-suiteskills-operations': ['RB-OPS-001','RB-OPS-002','RB-OPS-003','RB-OPS-004','RB-OPS-005','RB-OPS-006','RB-OPS-011','RB-OPS-012','RB-OPS-014','RB-OPS-015','RB-OPS-016','RB-OPS-019','RB-OPS-020'],
  'netsuite-suiteskills-people': ['RB-PPL-001','RB-PPL-007','RB-PPL-008','RB-PPL-009','RB-PPL-010'],
 };
+const commonRootFiles = ['ID-REGISTER.json','INSTALL-LAYOUT.json','NOTICE.md'];
+const commonLayerRoot = path.join(packageRoot,'common/layers/suiteskills');
+const commonSkillsRoot = path.join(packageRoot,'common/skills/suiteskills');
 const categories = ['Finance and Accounting','Customers, Sales and Support','Inventory and Operations','People and Workforce'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
@@ -35,7 +38,13 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    const files = await listRelativeFiles(root);
    const plugin = result.plugin;
    const catalog = await json('CATALOG.json');
-   assert.equal(plugin.skillSource,'plugin-only');
+   assert.equal(plugin.skillSource,'suiteskills');
+   assert.deepEqual(workspace.buildConfig.skillSources,{suiteskills:'./common/skills/suiteskills'});
+   assert.equal(workspace.buildConfig.commonLayersRoot,'./common/layers');
+   assert.equal(workspace.commonLayersRoot,path.join(packageRoot,'common/layers'));
+   assert.equal(plugin.selectedSkillsRoot,commonSkillsRoot);
+   assert.equal(plugin.validatedSkillSource.rootDir,commonSkillsRoot);
+   for (const name of plugin.skills) assert.equal(plugin.skillDirectories.get(name).rootDir,path.join(commonSkillsRoot,name));
    assert.equal(catalog.version,plugin.version);
    assert.deepEqual(catalog.categories.map(c=>c.name), categories);
    assert.equal(new Set(catalog.runbooks.map(r=>r.id)).size,48);
@@ -83,8 +92,16 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    const sharedInventory=Object.keys(inventory).filter(f=>f.startsWith('shared/')).sort();
    assert.equal(sharedInventory.length,149);
    const layer=plugin.commonLayers.find(layer=>layer.name==='suiteskills');
-   assert.deepEqual(layer,{name:'suiteskills',include:sharedInventory,exclude:[]});
-   assert.deepEqual((await listRelativeFiles(path.join(packageRoot,'common/suiteskills'))).sort(),sharedInventory);
+   const layerInventory=[...commonRootFiles,...sharedInventory].sort();
+   assert.equal(layerInventory.length,152);
+   assert.deepEqual(layer,{name:'suiteskills',include:layerInventory,exclude:[]});
+   assert.equal(plugin.validatedCommonLayers.find(layer=>layer.name==='suiteskills').rootDir,commonLayerRoot);
+   assert.deepEqual((await listRelativeFiles(commonLayerRoot)).sort(),layerInventory);
+   for (const file of commonRootFiles) {
+    await assert.rejects(()=>fs.access(path.join(plugin.pluginDirectory,'src',file)),/ENOENT/);
+    assert(!plugin.inputs.some(input=>input.include.includes(file)));
+    assert((await read(file)).equals(await fs.readFile(path.join(commonLayerRoot,file))),file);
+   }
    await assert.rejects(()=>fs.access(path.join(plugin.pluginDirectory,'src/shared')),/ENOENT/);
    assert(!plugin.inputs.some(input=>input.include.some(file=>file.startsWith('shared/'))));
    assert.deepEqual(files.filter(f=>!Object.hasOwn(inventory,f)).sort(),[manifestPath,'INVENTORY.json','LICENSE.txt'].sort());
@@ -109,7 +126,7 @@ test('SuiteSkills layer allowlists exclude unlisted ordinary files', async t => 
  const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'suiteskills-filter-'));
  t.after(()=>fs.rm(temporary,{recursive:true,force:true}));
  const root=path.join(temporary,'suiteskills');
- await fs.cp(path.join(packageRoot,'common/suiteskills'),root,{recursive:true});
+ await fs.cp(commonLayerRoot,root,{recursive:true});
  await fs.writeFile(path.join(root,'shared/unlisted.md'),'not selected\n');
  await fs.writeFile(path.join(root,'unlisted.md'),'not selected\n');
  const workspace=await loadWorkspace(packageRoot);
@@ -121,6 +138,6 @@ test('SuiteSkills layer allowlists exclude unlisted ordinary files', async t => 
   t.after(()=>fs.rm(path.dirname(result.outputDir),{recursive:true,force:true}));
   assert(!result.files.includes('shared/unlisted.md'));
   assert(!result.files.includes('unlisted.md'));
-  assert.deepEqual(result.files.filter(file=>file.startsWith('shared/')).sort(),layer.include.slice().sort());
+  assert.deepEqual(result.files.filter(file=>file.startsWith('shared/') || commonRootFiles.includes(file)).sort(),layer.include.slice().sort());
  }
 });
