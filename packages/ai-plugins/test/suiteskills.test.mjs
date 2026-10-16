@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { loadWorkspace } from '../scripts/lib/build-config.mjs';
@@ -79,6 +80,13 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     assert.match((await read(path.posix.join(path.posix.dirname(row.path),'scripts/capabilities.py'))).toString(),/pypdf/);
    });
    const inventory=await json('INVENTORY.json');
+   const sharedInventory=Object.keys(inventory).filter(f=>f.startsWith('shared/')).sort();
+   assert.equal(sharedInventory.length,149);
+   const layer=plugin.commonLayers.find(layer=>layer.name==='suiteskills');
+   assert.deepEqual(layer,{name:'suiteskills',include:sharedInventory,exclude:[]});
+   assert.deepEqual((await listRelativeFiles(path.join(packageRoot,'common/suiteskills'))).sort(),sharedInventory);
+   await assert.rejects(()=>fs.access(path.join(plugin.pluginDirectory,'src/shared')),/ENOENT/);
+   assert(!plugin.inputs.some(input=>input.include.some(file=>file.startsWith('shared/'))));
    assert.deepEqual(files.filter(f=>!Object.hasOwn(inventory,f)).sort(),[manifestPath,'INVENTORY.json','LICENSE.txt'].sort());
    for(const [file,digest] of Object.entries(inventory)) assert.equal(hash(await read(file)),digest,file);
    for(const file of files.filter(f=>f.endsWith('/RESOURCE-MAP.json'))) {
@@ -95,4 +103,24 @@ test('SuiteSkills assembled packaging for both providers', async t => {
   assert.deepEqual(aFiles,oFiles.filter(f=>!f.endsWith('/agents/openai.yaml')));
   for(const file of aFiles) assert((await fs.readFile(path.join(a.outputDir,file))).equals(await fs.readFile(path.join(o.outputDir,file))),file);
  });
+});
+
+test('SuiteSkills layer allowlists exclude unlisted ordinary files', async t => {
+ const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'suiteskills-filter-'));
+ t.after(()=>fs.rm(temporary,{recursive:true,force:true}));
+ const root=path.join(temporary,'suiteskills');
+ await fs.cp(path.join(packageRoot,'common/suiteskills'),root,{recursive:true});
+ await fs.writeFile(path.join(root,'shared/unlisted.md'),'not selected\n');
+ await fs.writeFile(path.join(root,'unlisted.md'),'not selected\n');
+ const workspace=await loadWorkspace(packageRoot);
+ for(const provider of ['anthropic','openai']) {
+  const plugin=workspace.plugins.find(plugin=>plugin.sourceKey===`${provider}/netsuite-suiteskills`);
+  const layer=plugin.validatedCommonLayers.find(layer=>layer.name==='suiteskills');
+  layer.rootDir=root; layer.boundaryDir=temporary;
+  const result=await buildPlugin(plugin.sourceKey,{workspace,writeOutput:false});
+  t.after(()=>fs.rm(path.dirname(result.outputDir),{recursive:true,force:true}));
+  assert(!result.files.includes('shared/unlisted.md'));
+  assert(!result.files.includes('unlisted.md'));
+  assert.deepEqual(result.files.filter(file=>file.startsWith('shared/')).sort(),layer.include.slice().sort());
+ }
 });

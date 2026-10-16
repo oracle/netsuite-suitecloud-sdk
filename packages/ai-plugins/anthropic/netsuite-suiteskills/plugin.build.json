@@ -1,22 +1,9 @@
 {
   "$schema": "../../schemas/plugin-build.schema.json",
-  "commonLayers": [],
-  "id": "netsuite-suiteskills",
-  "inputs": [
+  "commonLayers": [
     {
-      "destination": ".",
-      "exclude": [],
+      "name": "suiteskills",
       "include": [
-        "CATALOG.json",
-        "CHANGELOG.md",
-        "CURRENT-RELEASE-STATUS.json",
-        "FOUNDATION-SNAPSHOT.json",
-        "ID-REGISTER.json",
-        "INSTALL-LAYOUT.json",
-        "INVENTORY.json",
-        "NOTICE.md",
-        "README.md",
-        "SECURITY-RELEASE-STATUS.json",
         "shared/CHANGELOG.md",
         "shared/README.md",
         "shared/RESOURCE-MAP.json",
@@ -166,6 +153,26 @@
         "shared/tools/period_coverage.py",
         "shared/tools/result_evidence.py",
         "shared/tools/standard-tools.json"
+      ],
+      "exclude": []
+    }
+  ],
+  "id": "netsuite-suiteskills",
+  "inputs": [
+    {
+      "destination": ".",
+      "exclude": [],
+      "include": [
+        "CATALOG.json",
+        "CHANGELOG.md",
+        "CURRENT-RELEASE-STATUS.json",
+        "FOUNDATION-SNAPSHOT.json",
+        "ID-REGISTER.json",
+        "INSTALL-LAYOUT.json",
+        "INVENTORY.json",
+        "NOTICE.md",
+        "README.md",
+        "SECURITY-RELEASE-STATUS.json"
       ],
       "root": "src"
     }

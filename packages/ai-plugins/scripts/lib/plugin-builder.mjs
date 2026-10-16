@@ -173,8 +173,8 @@ async function stagePlannedFiles({ workspace, pluginConfig, stageDir }) {
 		const files = await collectFiles({
 			rootDir: layer.rootDir,
 			boundaryDir: layer.boundaryDir,
-			include: ['**/*'],
-			exclude: [],
+			include: layer.include,
+			exclude: layer.exclude,
 			globalExcludes: workspace.buildConfig.globalExcludes,
 			label: `common layer ${layer.name}`,
 		});

@@ -214,6 +214,21 @@ function validatePluginConfigShape(pluginConfig, pluginDirectoryName) {
 		throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: "inputs" must not be empty`);
 	}
 
+	for (const layer of pluginConfig.commonLayers) {
+		const invalid = () => new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: commonLayers entries must be non-empty strings or objects with name, include and exclude`);
+		if (typeof layer === 'string') {
+			if (layer.length === 0) throw invalid();
+			continue;
+		}
+		if (!isPlainObject(layer) || Object.keys(layer).some((key) => !['name', 'include', 'exclude'].includes(key)) ||
+			typeof layer.name !== 'string' || layer.name.length === 0 ||
+			!Array.isArray(layer.include) || layer.include.length === 0 ||
+			!Array.isArray(layer.exclude) ||
+			[...layer.include, ...layer.exclude].some((value) => typeof value !== 'string' || value.length === 0)) {
+			throw invalid();
+		}
+	}
+
 	for (const input of pluginConfig.inputs) {
 		if (!isPlainObject(input)) {
 			throw new Error(`Invalid plugin.build.json for ${pluginDirectoryName}: each input must be an object`);
@@ -313,7 +328,9 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 		}
 		const selectedSkillsRoot = pluginConfig.skillSource === undefined ? skillsRoot : skillSources.get(pluginConfig.skillSource).rootDir;
 		const validatedCommonLayers = [];
-		for (const layerName of pluginConfig.commonLayers) {
+		for (const entry of pluginConfig.commonLayers) {
+			const layer = typeof entry === 'string' ? { name: entry, include: ['**/*'], exclude: [] } : entry;
+			const layerName = layer.name;
 			assertRelativePath(layerName, `common layer for ${pluginDirectoryName}`);
 			const layerPath = path.resolve(commonLayersRoot, layerName);
 			const validatedRoot = await validateCollectionRoot({
@@ -321,7 +338,7 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 				allowedParent: commonLayersRoot,
 				label: `common layer ${layerName} for ${pluginDirectoryName}`,
 			});
-			validatedCommonLayers.push({ name: layerName, ...validatedRoot });
+			validatedCommonLayers.push({ ...layer, ...validatedRoot });
 		}
 
 		const validatedInputs = [];

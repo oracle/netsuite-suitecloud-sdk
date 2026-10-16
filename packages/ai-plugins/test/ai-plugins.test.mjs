@@ -821,3 +821,113 @@ test('named source root is revalidated before staging', async t => {
  await fs.symlink(path.dirname(f.skillDir), f.namedRoot, 'dir');
  await assert.rejects(() => buildPlugin('boundary-plugin', { workspace, writeOutput: true }), /skill source named root: symbolic links/);
 });
+
+async function createLayerFixture(t, commonLayers) {
+	const fixture = await createBoundaryWorkspace({ commonLayers });
+	t.after(() => fs.rm(fixture.tempRoot, { recursive: true, force: true }));
+	return fixture;
+}
+
+async function buildLayerFixture(fixture) {
+	const workspace = await loadWorkspace(fixture.packageDir);
+	return buildPlugin('boundary-plugin', { workspace, writeOutput: true });
+}
+
+test('common layers preserve legacy selection and filter object selections with global exclusions', async t => {
+	for (const legacy of [true, false]) {
+		await t.test(legacy ? 'legacy string' : 'filtered object', async t => {
+			const layer = { name: 'shared', include: ['COMMON.md', 'docs/**'], exclude: ['docs/excluded.md'] };
+			const f = await createLayerFixture(t, [legacy ? 'shared' : layer]);
+			await fs.mkdir(path.join(f.commonLayerDir, 'docs'));
+			for (const file of ['unlisted.md', 'docs/keep.md', 'docs/excluded.md', 'docs/global.md']) {
+				await fs.writeFile(path.join(f.commonLayerDir, file), file);
+			}
+			const configPath = path.join(f.packageDir, 'config/build.json');
+			const config = JSON.parse(await fs.readFile(configPath, 'utf8'));
+			config.globalExcludes = ['**/global.md'];
+			await writeJson(configPath, config);
+			const result = await buildLayerFixture(f);
+			assert.deepEqual(result.files.sort(), [
+				'.claude-plugin/plugin.json', 'COMMON.md', 'LICENSE.txt', 'README.md',
+				'docs/keep.md', 'skills/netsuite-good-skill/SKILL.md',
+				...(legacy ? ['docs/excluded.md', 'unlisted.md'] : []),
+			].sort());
+		});
+	}
+});
+
+test('common layers reject invalid configuration', async t => {
+	const invalidEntries = [null, 1, [], '', {}, { name: 'shared' },
+		{ name: '', include: ['**/*'], exclude: [] },
+		{ name: 1, include: ['**/*'], exclude: [] },
+		{ name: 'shared', include: [], exclude: [] },
+		{ name: 'shared', include: '**/*', exclude: [] },
+		{ name: 'shared', include: [1], exclude: [] },
+		{ name: 'shared', include: [''], exclude: [] },
+		{ name: 'shared', include: ['**/*'] },
+		{ name: 'shared', include: ['**/*'], exclude: null },
+		{ name: 'shared', include: ['**/*'], exclude: [false] },
+		{ name: 'shared', include: ['**/*'], exclude: [''] },
+		{ name: 'shared', include: ['**/*'], exclude: [], destination: 'elsewhere' },
+	];
+	for (const entry of invalidEntries) {
+		await t.test(JSON.stringify(entry), async t => {
+			const f = await createLayerFixture(t, [entry]);
+			await assert.rejects(() => loadWorkspace(f.packageDir), /commonLayers entries/);
+		});
+	}
+});
+
+test('filtered common layers reject empty selections and unsafe sources or destinations', async t => {
+	for (const scenario of ['no match', 'all excluded', 'globally excluded', 'missing root', 'file root',
+		'escape', 'absolute root', 'ancestor escape', 'root symlink', 'nested symlink',
+		'generated claude manifest', 'generated codex manifest', 'duplicate layer', 'input collision', 'skill collision']) {
+		await t.test(scenario, async t => {
+			const layer = { name: 'shared', include: ['**/*'], exclude: [] };
+			const f = await createLayerFixture(t, [layer]);
+			let expected = /Case-insensitive destination collision/;
+			switch (scenario) {
+				case 'no match': layer.include = ['missing/**']; expected = /did not resolve to any files/; break;
+				case 'all excluded': layer.exclude = ['**/*']; expected = /did not resolve to any files/; break;
+				case 'globally excluded': {
+					const configPath = path.join(f.packageDir, 'config/build.json');
+					const config = JSON.parse(await fs.readFile(configPath, 'utf8'));
+					config.globalExcludes = ['COMMON.md'];
+					await writeJson(configPath, config);
+					expected = /did not resolve to any files/; break;
+				}
+				case 'missing root': layer.name = 'missing'; expected = /root does not exist/; break;
+				case 'file root': await fs.rm(f.commonLayerDir, { recursive: true }); await fs.writeFile(f.commonLayerDir, 'file'); expected = /expected an existing directory/; break;
+				case 'escape': layer.name = '../boundary-plugin/src'; expected = /must stay inside the package/; break;
+				case 'absolute root': layer.name = f.sourceDir; expected = /must be relative/; break;
+				case 'ancestor escape':
+					await fs.mkdir(path.join(f.outsideDir, 'nested'));
+					await fs.symlink(f.outsideDir, path.join(f.packageDir, 'common/link'), 'dir');
+					layer.name = 'link/nested'; expected = /outside allowed parent/; break;
+				case 'root symlink':
+					await fs.rm(f.commonLayerDir, { recursive: true });
+					await fs.symlink(f.sourceDir, f.commonLayerDir, 'dir'); expected = /symbolic links are not allowed/; break;
+				case 'nested symlink':
+					await fs.symlink(f.outsideDir, path.join(f.commonLayerDir, 'nested'), 'dir');
+					layer.include = ['COMMON.md']; expected = /Symlinks are not allowed/; break;
+				case 'generated claude manifest':
+				case 'generated codex manifest': {
+					const dir = scenario.includes('claude') ? '.claude-plugin' : '.codex-plugin';
+					await fs.mkdir(path.join(f.commonLayerDir, dir));
+					await fs.writeFile(path.join(f.commonLayerDir, dir, 'plugin.json'), '{}');
+					expected = /Generated manifest path cannot be supplied by common layer/; break;
+				}
+				case 'input collision': await fs.writeFile(path.join(f.commonLayerDir, 'readme.MD'), 'collision'); break;
+				case 'skill collision':
+					await fs.mkdir(path.join(f.commonLayerDir, 'skills/netsuite-good-skill'), { recursive: true });
+					await fs.writeFile(path.join(f.commonLayerDir, 'skills/netsuite-good-skill/skill.md'), 'collision'); break;
+			}
+			const pluginPath = path.join(f.pluginDir, 'plugin.build.json');
+			const plugin = JSON.parse(await fs.readFile(pluginPath, 'utf8'));
+			plugin.commonLayers = scenario === 'duplicate layer' ? ['shared', layer] : [layer];
+			await writeJson(pluginPath, plugin);
+			await assert.rejects(() => buildLayerFixture(f), expected);
+			await assert.rejects(() => fs.access(path.join(f.tempRoot, 'dist/boundary-plugin')), /ENOENT/);
+		});
+	}
+});
