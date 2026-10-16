@@ -1,0 +1,23 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "SuiteCloud Objects",
+	"description": "A SuiteCloud object document containing exactly one supported object type.",
+	"type": "object",
+	"oneOf": [
+		{ "$ref": "./custom-field-1.0.0.json" },
+		{ "$ref": "./custom-record-1.0.0.json" },
+		{ "$ref": "./dataset-builder-plugin-1.0.0.json" },
+		{ "$ref": "./fi-connectivity-plugin-1.0.0.json" },
+		{ "$ref": "./fi-parser-plugin-1.0.0.json" },
+		{ "$ref": "./integration-1.0.0.json" },
+		{ "$ref": "./map-reduce-deployment-1.0.0.json" },
+		{ "$ref": "./map-reduce-script-1.0.0.json" },
+		{ "$ref": "./permission-set-1.0.0.json" },
+		{ "$ref": "./sdf-installation-deployment-1.0.0.json" },
+		{ "$ref": "./sdf-installation-script-1.0.0.json" },
+		{ "$ref": "./secret-1.0.0.json" },
+		{ "$ref": "./suitecloud-ui-app-1.0.0.json" },
+		{ "$ref": "./tax-calculation-plugin-1.0.0.json" },
+		{ "$ref": "./workbook-builder-plugin-1.0.0.json" }
+	]
+}
