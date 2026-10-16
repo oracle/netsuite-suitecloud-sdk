@@ -158,6 +158,14 @@
         "shared/tools/standard-tools.json"
       ],
       "exclude": []
+    },
+    {
+      "name": "openai",
+      "include": [
+        "assets/netsuite-icon.png",
+        "assets/netsuite-logo.png"
+      ],
+      "exclude": []
     }
   ],
   "id": "netsuite-suiteskills",
@@ -173,7 +181,6 @@
         "INVENTORY.json",
         "README.md",
         "SECURITY-RELEASE-STATUS.json",
-        "assets/suiteskills.svg",
         "skills/netsuite-suiteskills-finance/agents/openai.yaml",
         "skills/netsuite-suiteskills-customers-sales/agents/openai.yaml",
         "skills/netsuite-suiteskills-operations/agents/openai.yaml",
@@ -204,7 +211,7 @@
         "Write"
       ],
       "category": "Productivity",
-      "composerIcon": "./assets/suiteskills.svg",
+      "composerIcon": "./assets/netsuite-icon.png",
       "defaultPrompt": [
         "Help me get started with SuiteSkills.",
         "Review my inventory exceptions.",
@@ -212,7 +219,7 @@
       ],
       "developerName": "Oracle NetSuite",
       "displayName": "SuiteSkills",
-      "logo": "./assets/suiteskills.svg",
+      "logo": "./assets/netsuite-logo.png",
       "longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Output capabilities depend on the host. Internal testing candidate; native and live-account qualification pending.",
       "privacyPolicyURL": "https://www.oracle.com/legal/privacy/",
       "shortDescription": "NetSuite business workflows",

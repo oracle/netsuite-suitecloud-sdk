@@ -70,18 +70,26 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    assert(!files.includes('plugin.json'));
    assert(!files.includes(provider==='openai'?'.claude-plugin/plugin.json':'.codex-plugin/plugin.json'));
    const displayFiles=files.filter(f=>f.endsWith('/agents/openai.yaml'));
+   const brandingFiles=['assets/netsuite-icon.png','assets/netsuite-logo.png'];
+   assert(!files.includes('assets/suiteskills.svg'));
    if (provider==='openai') {
     const i=plugin.metadata.interface;
     for (const [key,max] of [['displayName',30],['shortDescription',30],['longDescription',4000],['developerName',80]]) assert(i[key].length>0 && i[key].length<=max,key);
     assert(Array.isArray(i.capabilities) && i.capabilities.length<=20);
     for (const asset of [i.logo,i.composerIcon]) await exists(asset);
-    await exists('assets/suiteskills.svg');
+    assert.equal(i.composerIcon,'./assets/netsuite-icon.png');
+    assert.equal(i.logo,'./assets/netsuite-logo.png');
+    assert.deepEqual(plugin.commonLayers.find(layer=>layer.name==='openai'),{name:'openai',include:brandingFiles,exclude:[]});
+    for (const file of brandingFiles) assert.deepEqual(await read(file),await fs.readFile(path.join(packageRoot,'common/layers/openai',file)),file);
     assert.equal(plugin.metadata.extensions['com.openai'].onboardingSkill,'./skills/netsuite-suiteskills-onboarding/SKILL.md');
     await exists(plugin.metadata.extensions['com.openai'].onboardingSkill);
     assert.deepEqual(displayFiles,plugin.skills.map(s=>`skills/${s}/agents/openai.yaml`).sort());
     for(const file of displayFiles) assert.match((await read(file)).toString(),/interface:\n  display_name:.*\n  short_description:/);
     assert.equal(plugin.metadata.apps,undefined); assert.equal(plugin.metadata.mcpServers,undefined);
-   } else { assert.deepEqual(displayFiles,[]); assert(!files.includes('assets/suiteskills.svg')); }
+   } else {
+    assert.deepEqual(displayFiles,[]);
+    for (const file of brandingFiles) assert(!files.includes(file),file);
+   }
    await t.test('visualization prerequisites and export-gate packaging',async()=>{
     const row=catalog.runbooks.find(r=>r.id==='RB-OPS-020');
     assert.match((await read(row.path)).toString(),/Finance Analyst/);
