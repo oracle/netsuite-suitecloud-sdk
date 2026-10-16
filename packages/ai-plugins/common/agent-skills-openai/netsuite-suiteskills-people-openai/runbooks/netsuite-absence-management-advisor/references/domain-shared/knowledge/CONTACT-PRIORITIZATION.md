@@ -1,9 +1,0 @@
-# Contact-Priority Ranking
-
-Use this only when the user explicitly asks who to contact first about expiring time off. A default expiry response offers a contact list but does not print or rank one. Never use this primary-type method for planned-absence coverage or availability; those analyses include every time-off type unless the user requests a specific type.
-
-For each time-off plan represented in the requested population, identify the primary time-off type from upcoming expiry data: the enrolled type with the largest aggregate net hours at risk for the selected next expiry event across that plan's population. Do not use current `Balance` or report -307 for this selection, and do not infer priority from a type name such as Vacation or PTO. Name the selected primary type and event date in the result. Do not drop an employee with known nonzero expiry exposure because an unrelated current-balance lookup is empty.
-
-Rank affected employees by hours at risk for that primary type's next upcoming expiry event only, descending. Include only employees whose enrolled type has an expiry mechanism and a nonzero net expiry exposure; do not show an expiry figure for an uncapped, no-expiry plan. Keep year-end expiry and later carryover expiry separate; do not add them or project the later-event amount. If multiple plans have different primary types, present their plan-specific rankings separately and state the plan basis. If no upcoming expiry data is available, state that a data-based primary type cannot be determined and ask the user to choose a type rather than guessing.
-
-Offer an all-types combined contact ranking as a follow-up. Produce it only when requested, list the included types, and combine only exposure for the same expiry event. Do not combine year-end and carryover-expiry figures.

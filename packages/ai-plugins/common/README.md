@@ -2,7 +2,7 @@
 
 Add reusable payloads to a `<layer-name>/` subdirectory in this directory. Each layer is copied after the plug-in-specific `src/` content and before the `LICENSE.txt` and `skills/` directory are generated. `commonLayers` accepts a layer name (all files) or an object with required `name`, nonempty `include` patterns and `exclude` patterns. Both forms apply global exclusions, preserve paths relative to the layer root and reject destination collisions; layers never overwrite other inputs.
 
-`agent-skills/` is the named `plugin-only` skill source for both SuiteSkills distributions. `agent-skills-openai/` is an unused reference retained for later removal, not a common layer or fallback source.
+`agent-skills/` is the named `plugin-only` skill source for both SuiteSkills distributions.
 
 Existing plugins omit `skillSource` and continue to use `buildConfig.skillsRoot`. A plugin selecting a named source resolves all its skills exclusively there; unknown sources and missing skills fail validation. Each plugin retains its validated skill directories, so identical names in different sources cannot substitute for one another. Source roots must stay inside this package and pass directory, containment and symlink checks. All selected files still pass strict destination collision checks.
 
