@@ -18,6 +18,7 @@ export function run(): Promise<void> {
 	return new Promise((c, e) => {
 
 		const files: string[] = [
+			'JsonObjects.test.js',
 			'extension.test.js',
 			'ClineChatOpener.test.js',
 			'SuiteCloudPanelMessageParser.test.js',

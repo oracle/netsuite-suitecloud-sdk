@@ -33,6 +33,8 @@ export type CliCommandsInfoMapType = {
 };
 
 export type VSCodeSpecificCommandsInfoMapType = {
+	createjsonobject: CommandInfo;
+	refreshjsonschemas: CommandInfo;
 	opencontrolpanel: CommandInfo;
 	opencontrolpanelwalkthrough: CommandInfo;
 };
@@ -41,6 +43,14 @@ export type CommandsInfoMapType =
 	CliCommandsInfoMapType & VSCodeSpecificCommandsInfoMapType;
 
 export const commandsInfoMap: CommandsInfoMapType = {
+	createjsonobject: {
+		vscodeCommandId: 'suitecloud.createjsonobject',
+		vscodeCommandName: 'Create JSON Object',
+	},
+	refreshjsonschemas: {
+		vscodeCommandId: 'suitecloud.refreshjsonschemas',
+		vscodeCommandName: 'Refresh JSON Schemas',
+	},
 	adddependencies: {
 		vscodeCommandId: 'suitecloud.adddependencies',
 		cliCommandName: 'project:adddependencies',

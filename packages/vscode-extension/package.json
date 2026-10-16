@@ -20,7 +20,7 @@
 		"directory": "packages/vscode-extension"
 	},
 	"engines": {
-		"vscode": "^1.106.0"
+		"vscode": "^1.141.0"
 	},
 	"categories": [
 		"Other"
@@ -114,6 +114,16 @@
 			{
 				"command": "suitecloud.opencontrolpanelwalkthrough",
 				"title": "Open Developer Assistant Walkthrough",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.createjsonobject",
+				"title": "Create JSON Object",
+				"category": "SuiteCloud"
+			},
+			{
+				"command": "suitecloud.refreshjsonschemas",
+				"title": "Refresh JSON Schemas",
 				"category": "SuiteCloud"
 			}
 		],
@@ -263,6 +273,11 @@
 					"when": "!explorerResourceIsFolder && resource =~ /\\/FileCabinet\\/(SuiteApps|SuiteScripts|Templates\\/(E-mail%20Templates|Marketing%20Templates)|Web%20Site%20Hosting%20Files)\\/.+$/",
 					"command": "suitecloud.comparefile",
 					"group": "suitecloud@1"
+				},
+				{
+					"command": "suitecloud.createjsonobject",
+					"when": "explorerResourceIsFolder && resource =~ /\\/Objects(\\/.+)*$/",
+					"group": "suitecloud@1"
 				}
 			]
 		},
@@ -274,13 +289,36 @@
 					"fontCharacter": "\\E900"
 				}
 			}
+		},
+		"jsonValidationRegistry": [
+			{
+				"url": "suitecloud-schema://registry/associations.json"
+			}
+		],
+		"configuration": {
+			"title": "SuiteCloud JSON Objects",
+			"properties": {
+				"suitecloud.jsonObjects.enabled": {
+					"type": "boolean",
+					"default": true,
+					"scope": "resource",
+					"description": "Enable schema completion, validation, and template creation for discovered SuiteCloud object directories."
+				},
+				"suitecloud.jsonObjects.schemaUrl": {
+					"type": "string",
+					"default": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/poc/json-parent-schema/packages/schemas/suitecloud-objects-1.0.0.json",
+					"scope": "resource",
+					"description": "URL of the parent JSON schema. Use a raw GitHub branch or commit URL."
+				}
+			}
 		}
 	},
 	"scripts": {
 		"clean": "node scripts/clean-build.js",
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./"
+		"watch": "tsc -watch -p ./",
+		"test:jsonObjects": "npm run compile && node dist/test/runJsonObjectsTest.js"
 	},
 	"dependencies": {
 		"@oracle/suitecloud-cli": "^4.0.0",

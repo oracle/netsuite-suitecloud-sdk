@@ -88,6 +88,53 @@ The selected account is set as default for the project.
   <img src="resources/SetUpAccount.gif" alt="animated" />
 </p>
 
+## JSON object schema demo (VS Code 1.141+)
+
+This branch adds completion, hover documentation, inline validation, and required-field templates for SuiteCloud JSON objects. It uses the parent schema and its 15 child schemas hosted on the [`poc/json-parent-schema` branch](https://github.com/oracle/netsuite-suitecloud-sdk/tree/poc/json-parent-schema/packages/schemas).
+
+### Automatic project discovery
+
+Open and trust your SuiteCloud workspace. The extension finds `suitecloud.config.js` in each workspace folder and in nested projects, and resolves `defaultProjectFolder` with the bundled CLI configuration service. A source folder opened directly is also recognized when it contains a valid SuiteCloud `manifest.xml`.
+
+For example, both projects work independently in a multi-root workspace:
+
+```text
+project-a/                       repository-b/
+  suitecloud.config.js            nested-project/
+    defaultProjectFolder: src       suitecloud.config.js
+  src/                                defaultProjectFolder: application
+    manifest.xml                    application/
+    Objects/*.json                    manifest.xml
+                                      Objects/**/*.json
+```
+
+Only JSON files inside each resolved `Objects` directory are associated with the parent schema. Nested project roots form separate boundaries. Files elsewhere, including `package.json` and unrelated `Objects` folders, receive no SuiteCloud association. The extension also includes source-folder overrides configured for `object:import` and `account:import`.
+
+Discovery refreshes when workspace folders, `suitecloud.config.js`, manifests, or the JSON object settings change. No `json.schemas` settings are written, and object files need no `$schema` property. Files created after activation—including files brought in through `account:import`, other import commands, Git, or the terminal—are covered by the directory association as soon as they are opened. This feature does not change the CLI's import or deployment capabilities.
+
+### Create an object template
+
+1. Run **SuiteCloud: Create JSON Object**, or right-click an `Objects` folder or one of its subfolders and choose **Create JSON Object**.
+2. Choose a project if the current editor does not identify one, then choose an object type from the parent schema catalog.
+3. Enter its script ID. The extension creates `<scriptId>.json` and opens it. Existing files are never overwritten.
+4. Complete the remaining values using JSON completion and inline validation.
+
+The generator extends the `poc-json-object-template-generator` PoC: it recursively includes mandatory fields, resolves relative `$ref` and JSON Pointer references, preserves defaults (including `false`, `0`, and `null`), and uses the first enum value when no default exists. It supports required array entries and simple conditional requirements using property `const`/`enum` checks. Optional fields are omitted unless supplied by a schema default.
+
+Templates are editable starting points: empty names, script-file paths, URLs, and other placeholders can still need values before validation succeeds. Nested `oneOf`/`anyOf`/`allOf`, named anchors, `$ref` constraint siblings, and recursive mandatory structures produce an explicit generation error. These template-generator limits do not restrict the built-in JSON validator.
+
+### Configuration and refresh
+
+- **`suitecloud.jsonObjects.enabled`**: enables this feature; configurable per workspace folder.
+- **`suitecloud.jsonObjects.schemaUrl`**: the raw HTTPS parent-schema URL; configurable per workspace folder. The demo defaults to the parent-schema branch above. Use a commit URL for a reproducible catalog.
+- **SuiteCloud: Refresh JSON Schemas**: rediscovers projects and refreshes both template and VS Code JSON caches. Use this after updating schemas on the same GitHub branch URL, changing a helper module imported by the project configuration, or changing an external source folder.
+
+The first use needs access to GitHub. Template schemas are cached in extension storage for offline fallback; editor schema caching and download controls are provided by VS Code. Discovery runs only in trusted workspaces because SuiteCloud configuration files are JavaScript. This demo supports local filesystem workspaces; virtual workspaces are not included.
+
+### Run the regression demo
+
+From `packages/vscode-extension`, install dependencies and run `npm run test:jsonObjects`. The runner uses a temporary multi-root workspace and a separate VS Code profile. Set `VSCODE_EXECUTABLE_PATH` to a local VS Code 1.141+ application executable to avoid downloading VS Code. The suite exercises live GitHub schemas, automatic registration, imported-file completion and diagnostics, source changes, enable/disable, workspace removal, template creation, and the existing extension regressions.
+
 ## SuiteCloud Commands
 The following SuiteCloud commands are available through the Command Palette:
 
