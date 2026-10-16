@@ -28,6 +28,7 @@ import { installIfNeeded } from './core/sdksetup/SdkServices';
 import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
 import { suiteCloudOutputChannel } from './service/SuiteCloudOutputChannel';
+import { initializeJsonObjects } from './jsonObjects/JsonObjects';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
 import {
 	createAuthIDStatusBar,
@@ -66,6 +67,7 @@ let sdkDependenciesDownloadedAndValidated = false;
 export async function activate(context: vscode.ExtensionContext) {
 	const controlPanelWalkthroughId = `${context.extension.id}#suitecloudControlPanelWalkthrough`;
 	context.subscriptions.push(output);
+	initializeJsonObjects(context, text => output.appendLine(text));
 
 	const sdkDependenciesReady = installIfNeeded().then(() => {
 		sdkDependenciesDownloadedAndValidated = true;
