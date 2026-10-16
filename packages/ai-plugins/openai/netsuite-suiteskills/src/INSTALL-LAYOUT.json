@@ -1,11 +1,11 @@
 {
   "canonical_source": "shared/",
   "copies": {
-    "netsuite-suiteskills-customers-sales-openai": "skills/netsuite-suiteskills-customers-sales-openai/shared/",
-    "netsuite-suiteskills-finance-openai": "skills/netsuite-suiteskills-finance-openai/shared/",
-    "netsuite-suiteskills-onboarding-openai": "skills/netsuite-suiteskills-onboarding-openai/shared/",
-    "netsuite-suiteskills-operations-openai": "skills/netsuite-suiteskills-operations-openai/shared/",
-    "netsuite-suiteskills-people-openai": "skills/netsuite-suiteskills-people-openai/shared/"
+    "netsuite-suiteskills-customers-sales": "skills/netsuite-suiteskills-customers-sales/shared/",
+    "netsuite-suiteskills-finance": "skills/netsuite-suiteskills-finance/shared/",
+    "netsuite-suiteskills-onboarding": "skills/netsuite-suiteskills-onboarding/shared/",
+    "netsuite-suiteskills-operations": "skills/netsuite-suiteskills-operations/shared/",
+    "netsuite-suiteskills-people": "skills/netsuite-suiteskills-people/shared/"
   },
   "layout": "isolated_category",
   "native_upload_readback": "not_run",

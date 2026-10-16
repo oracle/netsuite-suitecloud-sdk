@@ -9,6 +9,8 @@ AI Agent Plug-ins package skills for installation on supported AI platforms. The
 - **NetSuite AI Companion Plug-in (netsuite-ai-companion):** Includes the NetSuite AI Connector Instructions skill. This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails. 
 - **NetSuite Finance Analyst Plug-in (netsuite-finance-analyst):** Includes the NetSuite Finance Analyst skill. This plug-in provides Director-level finance analysis on live NetSuite data, including financial reporting, period-close activities, variance, aging, and reconciliation reviews, cash reporting, and board-ready financial narratives with clear next actions.
 
+- **SuiteSkills (netsuite-suiteskills), internal testing candidate:** Includes five shared skills with 48 business runbooks across finance, customers and sales, operations, and workforce, plus conversational onboarding. Available under `anthropic/netsuite-suiteskills` and `openai/netsuite-suiteskills`; native host and account qualification remain pending.
+
 ### SuiteCloud Development Plug-ins
 - **NetSuite SuiteCloud Plug-in (netsuite-suitecloud):** It includes skills that support key areas of SuiteCloud development, such as SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, and maintainable code and project artifacts.
 

@@ -51,316 +51,316 @@
   ],
   "allocations": [
     {
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "id": "RB-CRM-004",
       "name": "netsuite-customer-service-order-triage",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-customer-service-order-triage/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-service-order-triage/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "id": "RB-CRM-008",
       "name": "netsuite-marketing-campaign-assistant",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-marketing-campaign-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-marketing-campaign-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "id": "RB-CRM-009",
       "name": "netsuite-pricing-policy-and-exception-review",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-pricing-policy-and-exception-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-pricing-policy-and-exception-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-003",
       "name": "netsuite-match-vendor-credits-to-bills",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-match-vendor-credits-to-bills/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-match-vendor-credits-to-bills/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-004",
       "name": "netsuite-account-reconciliation-review",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-account-reconciliation-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-account-reconciliation-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-006",
       "name": "netsuite-cash-and-liquidity",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-cash-and-liquidity/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cash-and-liquidity/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-007",
       "name": "netsuite-executive-finance-reporting",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-executive-finance-reporting/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-executive-finance-reporting/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-008",
       "name": "netsuite-finance-controls-review",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-finance-controls-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-finance-controls-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-009",
       "name": "netsuite-financial-statement-review",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-financial-statement-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-financial-statement-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-013",
       "name": "netsuite-period-close-status",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-period-close-status/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-period-close-status/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-015",
       "name": "netsuite-variance-analysis",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-variance-analysis/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-variance-analysis/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-016",
       "name": "netsuite-payment-prioritization",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-payment-prioritization/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-payment-prioritization/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-017",
       "name": "netsuite-vendor-bill-processing-time",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-vendor-bill-processing-time/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-vendor-bill-processing-time/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-018",
       "name": "netsuite-vendor-spend-analysis",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-vendor-spend-analysis/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-vendor-spend-analysis/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-019",
       "name": "netsuite-labor-cost-advisor",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-labor-cost-advisor/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-labor-cost-advisor/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-020",
       "name": "netsuite-cohort-analysis",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-cohort-analysis/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cohort-analysis/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-021",
       "name": "netsuite-revenue-leakage",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-revenue-leakage/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-revenue-leakage/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-022",
       "name": "netsuite-intercompany-balance-explorer",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-intercompany-balance-explorer/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-intercompany-balance-explorer/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-024",
       "name": "netsuite-overdue-invoice-change-review",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-overdue-invoice-change-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-overdue-invoice-change-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-001",
       "name": "netsuite-fulfillment-performance-insights",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-fulfillment-performance-insights/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-fulfillment-performance-insights/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-002",
       "name": "netsuite-inventory-exceptions-review",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-exceptions-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-exceptions-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-003",
       "name": "netsuite-inventory-impact-review",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-impact-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-impact-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-004",
       "name": "netsuite-inventory-movement-insights",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-movement-insights/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-movement-insights/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-005",
       "name": "netsuite-inventory-availability-lookup",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-availability-lookup/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-availability-lookup/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-011",
       "name": "netsuite-supply-chain-persona-based-responses",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-supply-chain-persona-based-responses/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-supply-chain-persona-based-responses/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-012",
       "name": "netsuite-vendor-optimization",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-vendor-optimization/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-vendor-optimization/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-013",
       "name": "netsuite-wo-deviations",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-wo-deviations/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-wo-deviations/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-015",
       "name": "netsuite-inventory-balance-viewer",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-balance-viewer/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-balance-viewer/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-016",
       "name": "netsuite-item-purchasing-history",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-item-purchasing-history/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-item-purchasing-history/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-019",
       "name": "netsuite-project-risk-assistant",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-risk-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-project-risk-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "id": "RB-PPL-001",
       "name": "netsuite-payroll-clarity-readiness",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "id": "RB-PPL-007",
       "name": "netsuite-absence-management-advisor",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-absence-management-advisor/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "id": "RB-PPL-008",
       "name": "netsuite-benefits-portfolio-monitor",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-027",
       "name": "netsuite-credit-management",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-credit-management/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-credit-management/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-020",
       "name": "netsuite-data-visualization",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-data-visualization/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-017",
       "name": "netsuite-project-portfolio-health-assistant",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-portfolio-health-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-project-portfolio-health-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-025",
       "name": "netsuite-project-financial-assistant",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-project-financial-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-project-financial-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-018",
       "name": "netsuite-project-operations-assistant",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-operations-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-project-operations-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-011",
       "name": "netsuite-invoice-collections",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-invoice-collections/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-invoice-collections/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-012",
       "name": "netsuite-journal-entry-review",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-journal-entry-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-journal-entry-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-002",
       "name": "netsuite-expense-close-assistant",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-expense-close-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-expense-close-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-014",
       "name": "netsuite-field-service-management",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-field-service-management/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-field-service-management/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "id": "RB-PPL-009",
       "name": "netsuite-time-approval-review",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-time-approval-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-approval-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "id": "RB-PPL-010",
       "name": "netsuite-time-entry-creation",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-time-entry-creation/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "id": "RB-CRM-002",
       "name": "netsuite-advanced-pricing-price-rule-management",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-advanced-pricing-price-rule-management/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-advanced-pricing-price-rule-management/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "id": "RB-CRM-006",
       "name": "netsuite-knowledge-quality-assistant",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-knowledge-quality-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-knowledge-quality-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "id": "RB-CRM-007",
       "name": "netsuite-lead-management-assistant",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-lead-management-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-lead-management-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "id": "RB-CRM-010",
       "name": "netsuite-sales-assistant",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-sales-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-sales-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-023",
       "name": "netsuite-suitetax-nexus-explainer",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-suitetax-nexus-explainer/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-suitetax-nexus-explainer/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "id": "RB-FIN-026",
       "name": "netsuite-bank-reconciliation-prioritization",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-bank-reconciliation-prioritization/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-bank-reconciliation-prioritization/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "id": "RB-OPS-006",
       "name": "netsuite-return-authorization-assistant",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-return-authorization-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-return-authorization-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "id": "RB-CRM-005",
       "name": "netsuite-customer-support-assistant",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-customer-support-assistant/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-support-assistant/RUNBOOK.md"
     }
   ],
   "edition": "non-read-only",
@@ -400,7 +400,7 @@
     {
       "id": "SKL-CS-ONBOARDING",
       "name": "netsuite-onboarding",
-      "path": "skills/netsuite-suiteskills-onboarding-openai/SKILL.md"
+      "path": "skills/netsuite-suiteskills-onboarding/SKILL.md"
     }
   ],
   "version": "0.7.9"

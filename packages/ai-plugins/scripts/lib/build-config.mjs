@@ -272,6 +272,21 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 		getPluginDirectories(packageRoot),
 	]);
 	const skillsRoot = path.resolve(packageRoot, buildConfig.skillsRoot);
+	if (buildConfig.skillSources !== undefined && !isPlainObject(buildConfig.skillSources)) {
+		throw new Error('skillSources must be an object');
+	}
+	const skillSources = new Map();
+	for (const [name, source] of Object.entries(buildConfig.skillSources ?? {})) {
+		if (typeof source !== 'string' || source.length === 0) {
+			throw new Error(`Invalid skill source: ${name}`);
+		}
+		assertRelativePath(source, `skill source ${name}`);
+		skillSources.set(name, await validateCollectionRoot({
+			rootDir: path.resolve(packageRoot, source),
+			allowedParent: packageRoot,
+			label: `skill source ${name}`,
+		}));
+	}
 	const commonLayersRoot = path.resolve(packageRoot, buildConfig.commonLayersRoot);
 
 	const plugins = [];
@@ -293,6 +308,10 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 			throw new Error(`Plugin ${pluginDirectoryName} has invalid release version: ${pluginConfig.version}`);
 		}
 
+		if (pluginConfig.skillSource !== undefined && (typeof pluginConfig.skillSource !== 'string' || !skillSources.has(pluginConfig.skillSource))) {
+			throw new Error(`Unknown skill source for ${pluginDirectoryName}: ${pluginConfig.skillSource}`);
+		}
+		const selectedSkillsRoot = pluginConfig.skillSource === undefined ? skillsRoot : skillSources.get(pluginConfig.skillSource).rootDir;
 		const validatedCommonLayers = [];
 		for (const layerName of pluginConfig.commonLayers) {
 			assertRelativePath(layerName, `common layer for ${pluginDirectoryName}`);
@@ -321,6 +340,8 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 			...pluginConfig,
 			inputs: validatedInputs,
 			validatedCommonLayers,
+			selectedSkillsRoot,
+			validatedSkillSource: skillSources.get(pluginConfig.skillSource),
 			sourceDirectoryName: pluginDirectoryName,
 			sourceKey: pluginDirectoryName,
 			pluginDirectory,
@@ -328,35 +349,39 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 		});
 	}
 
-	const skillDirectories = new Map();
-	for (const skillName of new Set(plugins.flatMap((plugin) => plugin.skills))) {
-		if (!/^netsuite[-_a-z0-9]+$/.test(skillName)) {
-			throw new Error(`Invalid skill name in plugin config: ${skillName}`);
-		}
-
-		const skillDir = path.join(skillsRoot, skillName);
-		let validatedRoot;
-		try {
-			validatedRoot = await validateCollectionRoot({
-				rootDir: skillDir,
-				allowedParent: skillsRoot,
-				label: `skill ${skillName}`,
-			});
-		} catch (error) {
-			if (error.message.startsWith(`skill ${skillName} root does not exist:`)) {
-				throw new Error(`Missing skill directory for ${skillName}`);
+	for (const plugin of plugins) {
+		const skillDirectories = new Map();
+		for (const skillName of new Set(plugin.skills)) {
+			if (!/^netsuite[-_a-z0-9]+$/.test(skillName)) {
+				throw new Error(`Invalid skill name in plugin config: ${skillName}`);
 			}
-			throw error;
+
+			const skillDir = path.join(plugin.selectedSkillsRoot, skillName);
+			let validatedRoot;
+			try {
+				validatedRoot = await validateCollectionRoot({
+					rootDir: skillDir,
+					allowedParent: plugin.selectedSkillsRoot,
+					label: `skill ${skillName}`,
+				});
+			} catch (error) {
+				if (error.message.startsWith(`skill ${skillName} root does not exist:`)) {
+					throw new Error(`Missing skill directory for ${skillName}`);
+				}
+				throw error;
+			}
+
+			const skillFilePath = path.join(validatedRoot.rootDir, 'SKILL.md');
+			const skillFileContents = await fs.readFile(skillFilePath, 'utf8').catch(() => null);
+			if (skillFileContents === null) {
+				throw new Error(`Skill ${skillName} is missing SKILL.md`);
+			}
+
+			parseSkillFrontmatter(skillFileContents, skillName);
+			skillDirectories.set(skillName, validatedRoot);
 		}
 
-		const skillFilePath = path.join(validatedRoot.rootDir, 'SKILL.md');
-		const skillFileContents = await fs.readFile(skillFilePath, 'utf8').catch(() => null);
-		if (skillFileContents === null) {
-			throw new Error(`Skill ${skillName} is missing SKILL.md`);
-		}
-
-		parseSkillFrontmatter(skillFileContents, skillName);
-		skillDirectories.set(skillName, validatedRoot);
+		plugin.skillDirectories = skillDirectories;
 	}
 
 	return {
@@ -364,7 +389,6 @@ export async function loadWorkspace(packageRoot = process.cwd()) {
 		buildConfig,
 		skillsRoot: await fs.realpath(skillsRoot).catch(() => skillsRoot),
 		commonLayersRoot: await fs.realpath(commonLayersRoot).catch(() => commonLayersRoot),
-		skillDirectories,
 		plugins,
 	};
 }

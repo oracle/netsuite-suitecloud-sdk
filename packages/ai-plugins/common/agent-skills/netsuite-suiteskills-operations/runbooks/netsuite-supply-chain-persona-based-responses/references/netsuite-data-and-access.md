@@ -2,7 +2,7 @@
 
 Use whenever the answer depends on account data, an artifact, a direct link, custom configuration, or permissions.
 
-## Claude connection and evidence
+## the host connection and evidence
 
 Inspect the existing authorized NetSuite connector's actual available read-only capabilities and argument schemas. Use documented equivalents for the evidence order below; no tool name, server, account schema, or feature is assumed. Do not install services, request credentials, issue trial writes, or bypass the connector through direct network scripts.
 

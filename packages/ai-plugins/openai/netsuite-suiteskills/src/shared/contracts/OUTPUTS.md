@@ -81,3 +81,9 @@ Use the user's requested format and the domain's required facts and verification
 ## Optional review detail
 
 Use the [fixed review view](../rendering/REVIEW-VIEW.md) only when it serves the requested output. Preserve existing graphics, verified links, specialized exports and permitted fallbacks; the new detail view does not replace them.
+
+## Supported presentation and execution
+
+Conversation text and Markdown tables are the reliable factual baseline. When requested or appropriate to the runbook, use available interactive, HTML, chart or file presentation and verify its actual output. A downloadable HTML file is not an inline interactive surface. If a renderer or file format is unavailable, supply equivalent supported facts and disclose the format limitation. Preserve domain calculations, coverage, Finance Analyst prerequisites, and final/preliminary labels; never invent chart values.
+
+Before executing packaged scripts, verify the packaged entry point, required Python version (at least 3.9 unless the runbook requires newer), dependencies, and a writable user-authorized destination outside installed assets. Follow the selected publisher's exact platform and filesystem gates, including POSIX O_NOFOLLOW, dirfd and hard-link requirements where applicable. Unsupported execution fails closed; never remove safeguards. Use absolute resolved paths and a new direct-child filename without overwrite. Where the runbook permits, provide an equivalent factual answer; if a required computation cannot run or be independently verified, mark it unavailable. Claim creation, rendering, persistence and live execution only after observing success.

@@ -3,7 +3,7 @@
   "category": "netsuite-suiteskills-operations",
   "compatibility": {
     "file_engine": "checked_executor_and_source_publication_profile",
-    "host": "claude",
+    "host": "capability_dependent",
     "host_delivery": "observed_host_transport_and_readback; managed_collision_avoidance_not_atomic",
     "layout": "isolated_category_runbook",
     "linux_execution": "not_run",

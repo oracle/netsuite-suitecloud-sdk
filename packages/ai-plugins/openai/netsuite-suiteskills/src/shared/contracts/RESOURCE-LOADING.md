@@ -11,7 +11,7 @@ Distinguish:
 - `host_access_unavailable`: the host does not expose or allow the resource.
 - `not_checked`: no installed-resource read has established its availability.
 
-A local release ZIP containing the file does not prove the assistant can read its installed copy. A failed relative lookup does not establish a packaging defect. Do not claim to apply an unread shared revision. Continue independently supported work using accessible instructions and state only the material limitation. Use an accessible fallback only if the selected runbook permits it and all required authorization, disclosure, analyst and export gates can still be satisfied. Report an unmet gate instead of treating a fallback theme as verified shared behavior.
+A local release ZIP containing the file does not prove the host can read its installed copy. A failed relative lookup does not establish a packaging defect. Do not claim to apply an unread shared revision. Continue independently supported work using accessible instructions and state only the material limitation. Use an accessible fallback only if the selected runbook permits it and all required authorization, disclosure, analyst and export gates can still be satisfied. Report an unmet gate instead of treating a fallback theme as verified shared behavior.
 
 ## Installation qualification
 

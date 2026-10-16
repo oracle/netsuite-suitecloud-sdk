@@ -39,7 +39,7 @@ Use an available communication integration to create drafts when the user select
 
 ## Interactive dashboard
 
-Read [references/REFERENCE.md](references/REFERENCE.md) before generating the dashboard. Present the exception cockpit as an interactive HTML artifact in Claude's conversation when supported, with a short text summary alongside it. Use only embedded HTML, CSS, and JavaScript; no frameworks, external libraries, fonts, build tools, or additional language runtimes are required. If interactive rendering is unavailable, provide the self-contained HTML and the text review.
+Read [references/REFERENCE.md](references/REFERENCE.md) before generating the dashboard. Present the exception cockpit as an interactive HTML artifact in the host's conversation when supported, with a short text summary alongside it. Use only embedded HTML, CSS, and JavaScript; no frameworks, external libraries, fonts, build tools, or additional language runtimes are required. Always provide the factual exception review in chat. When requested or appropriate, present supported interactive HTML or a verified downloadable HTML file. If HTML creation or presentation is unavailable, provide the equivalent factual text review with scope, exceptions, owners and limitations.
 
 The [cockpit example](assets/expense-close-cockpit-example.html) preserves the visual concept shown during design. Its one report is an illustrative snapshot, not current account data or a complete close review. Use [the reusable dashboard template](assets/expense-close-dashboard.html) for fresh reviews and follow the reference guide to adapt it.
 

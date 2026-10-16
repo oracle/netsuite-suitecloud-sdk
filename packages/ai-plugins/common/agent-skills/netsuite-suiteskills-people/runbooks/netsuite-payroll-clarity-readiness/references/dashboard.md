@@ -1,6 +1,6 @@
 # Dashboard output
 
-Use `../assets/dashboard.html` as the reusable visual starting point for the final assessment. In Claude, create an interactive HTML Artifact from a populated copy. In another host, use its supported HTML preview or provide a standalone HTML file. Do not claim an Artifact was created unless the host renders it. If interactive output is unavailable or the user requests text, return compact Markdown summary, findings, and check-coverage tables.
+Use `../assets/dashboard.html` as the reusable visual starting point for the final assessment. When supported, create an interactive HTML Artifact from a populated copy. Use the available supported HTML preview or a verified standalone HTML file. Do not claim an Artifact was created unless the host renders it. If interactive output is unavailable or the user requests text, return compact Markdown summary, findings, and check-coverage tables.
 
 ## Populate the assessment
 

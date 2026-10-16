@@ -51,11 +51,11 @@ The focused-skill exclusions take precedence over explicit invocation of this sk
 
 Supported styles are Execution (Shop floor user, Warehouse user), Ops-Mgmt (Shop floor manager, Warehouse manager, Inventory manager), Network (Regional warehouse manager, Purchasing manager), and Exec (Founder, CEO, CMO, COO, Board of directors). Keep item costing, pricing, valuation, payments, accounting, cash, close, financial-control, financial reconciliation, and audit-evidence requests outside this skill.
 
-## Claude runtime
+## the host runtime
 
-Use this skill's bundled references and write the response directly in Claude. Default to concise Markdown bullets and tables where useful. No specialized renderer or executable script is required. Apply the pinned SuiteSkills Non Read Only 0.6.11 shared guidance supplied by plugin context. If an artifact or file is explicitly requested, use available Claude capabilities and claim creation only after it succeeds.
+Use this skill's bundled references and write the response directly in the host. Default to concise Markdown bullets and tables where useful. No specialized renderer or executable script is required. Apply the pinned SuiteSkills Non Read Only 0.6.11 shared guidance supplied by plugin context. If an artifact or file is explicitly requested, use available the host capabilities and claim creation only after it succeeds.
 
-Use account data already supplied in the conversation or an existing authorized read-only NetSuite connection, following the data/access reference. This ZIP does not establish that connection or grant account access. Never claim to have queried NetSuite from general knowledge or illustrative inputs. Record-changing steps in any tier are recommendations for an authorized user, never instructions for Claude to perform writes. Do not send messages, assign work in external systems, or approve records.
+Use account data already supplied in the conversation or an existing authorized read-only NetSuite connection, following the data/access reference. This ZIP does not establish that connection or grant account access. Never claim to have queried NetSuite from general knowledge or illustrative inputs. Record-changing steps in any tier are recommendations for an authorized user, never instructions for the host to perform writes. Do not send messages, assign work in external systems, or approve records.
 
 ## Persona Resolution
 

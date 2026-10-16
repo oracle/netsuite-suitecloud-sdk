@@ -1003,7 +1003,7 @@
         "vendor-bill-processing-time"
       ],
       "category": "netsuite-suiteskills-finance",
-      "description": "Analyze NetSuite accounts-payable vendor bill lifecycle performance through the available MCP connector: days-to-pay including prepayment applications, first cash payment versus final settlement, approval duration, entry lag, payment-terms compliance, open-bill aging, trends and outliers. Use for AP processing-time, payment-speed, slow-vendor, or bill lifecycle questions and dashboards, including “invoice” when the context is AP. Read-only analytics; does not create or approve payments. Use payment prioritization when the user wants to decide which bills to pay next.",
+      "description": "Analyze NetSuite accounts-payable vendor bill lifecycle performance through the available MCP connector: days-to-pay including prepayment applications, first cash payment versus final settlement, approval duration, entry lag, payment-terms compliance, open-bill aging, trends and outliers. Use for AP processing-time, payment-speed, slow-vendor, or bill lifecycle questions and dashboards, including \u201cinvoice\u201d when the context is AP. Read-only analytics; does not create or approve payments. Use payment prioritization when the user wants to decide which bills to pay next.",
       "display_name": "Vendor Bill Processing Time",
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-017",
@@ -2173,7 +2173,7 @@
         "vendor-optimization"
       ],
       "category": "netsuite-suiteskills-operations",
-      "description": "Compare the user’s existing vendors, applicable quotes, contracts or purchasing history for a buying decision, including supplied fictional cases. Assess comparable cost, packs, conditional discounts, delivery evidence and supported savings. Read-only; excludes open-market supplier discovery, spend concentration and credit-to-bill matching.",
+      "description": "Compare the user\u2019s existing vendors, applicable quotes, contracts or purchasing history for a buying decision, including supplied fictional cases. Assess comparable cost, packs, conditional discounts, delivery evidence and supported savings. Read-only; excludes open-market supplier discovery, spend concentration and credit-to-bill matching.",
       "display_name": "Vendor Optimization",
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-012",
@@ -2739,7 +2739,7 @@
       "category": "netsuite-suiteskills-operations",
       "compatibility": {
         "file_engine": "checked_executor_and_source_publication_profile",
-        "host": "claude",
+        "host": "capability_dependent",
         "host_delivery": "observed_host_transport_and_readback; managed_collision_avoidance_not_atomic",
         "layout": "isolated_category_runbook",
         "linux_execution": "not_run",

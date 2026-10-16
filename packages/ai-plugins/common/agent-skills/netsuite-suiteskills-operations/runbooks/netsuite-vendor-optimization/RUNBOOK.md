@@ -45,7 +45,7 @@ Do not fill a gap by selecting the most plausible explanation. If why a value ex
 
 ### Clarify with selectable options
 
-When an unresolved choice would materially change the answer, ask a specific question with 2–4 relevant predefined options using the current Claude environment's genuine selectable-question tool, if exposed. Wait for the submitted choice; a highlighted default is not a response. Derive item, vendor, subsidiary and unit choices from supplied or authorized retrieved records. Ask only the minimum questions needed; use the stated default for a broad review rather than forcing an interview.
+When an unresolved choice would materially change the answer, ask a specific question with 2–4 relevant predefined options using the current the host environment's genuine selectable-question tool, if exposed. Wait for the submitted choice; a highlighted default is not a response. Derive item, vendor, subsidiary and unit choices from supplied or authorized retrieved records. Ask only the minimum questions needed; use the stated default for a broad review rather than forcing an interview.
 
 For preferences, useful choices include “Lowest comparable payable cost,” “Meet the required delivery date first,” or “Show the trade-offs.” Do not offer an invented quantity or deadline as a factual default. If those inputs are missing, offer an evidence-based order to use, a documented recent order quantity as an explicitly proposed assumption, or a scope that can be answered without that input. Choosing a preference cannot establish missing price terms, approval, freight or performance facts.
 
@@ -102,7 +102,7 @@ A quote confirms only the terms it actually states. It does not by itself establ
 
 Link the core records and source evidence using the verified-link workflow below. Use the complete text comparison or, when supported and useful, an optional in-chat visual component. For no-data or non-comparable cases, use a compact evidence-status table instead of inventing a graph. A rendering failure is a presentation limitation, not a change in data correctness or grounds for withholding useful results. Before sending, check every conclusion against the ledger and every derived number against the checked arithmetic. In particular: no unexplained zero reclassification, guessed tier, unverified approval/current price, invented performance metric, unsupported price bound or realized saving. Delete an unsupported claim rather than attaching “likely” or a later disclaimer.
 
-## 5. Make the answer visual and traceable in Claude
+## 5. Make the answer visual and traceable in the host
 
 ### Verified record links
 
@@ -114,7 +114,7 @@ Render genuine links as `[record label](trusted returned URL)`; escape labels an
 
 ### In-chat comparison components
 
-Present a short decision headline followed by a compact text comparison. An inline component is optional when the current Claude surface supports it and the package operating/output requirements allow it. Never require a widget or named rendering tool to complete the analysis, and do not deliver the comparison only as an HTML file or downloadable artifact. Keep the recommendation, exact figures, evidence links and material caveats in the chat even when a component is also produced.
+Present a short decision headline followed by a compact text comparison. An inline component is optional when the current the host surface supports it and the package operating/output requirements allow it. Never require a widget or named rendering tool to complete the analysis, and do not deliver the comparison only as an HTML file or downloadable artifact. Keep the recommendation, exact figures, evidence links and material caveats in the chat even when a component is also produced.
 
 If charting comparable offers, use horizontal cost bars with vendor labels, the same zero-based scale and cost basis, and exact currency amounts alongside. Show actual payable quantity, unit/pack conversion, surplus and conditional discounts in adjacent compact cards or a table. Include verified source-returned links next to the facts they support, or readable identifiers when links are unavailable. If chart labels cannot be clickable, provide a corresponding row or legend for each plotted vendor and important source record.
 

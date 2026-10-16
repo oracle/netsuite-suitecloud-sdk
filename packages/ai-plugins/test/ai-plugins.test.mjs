@@ -4,6 +4,7 @@
  */
 
 import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
@@ -28,7 +29,7 @@ import {
 } from '../scripts/release-version.mjs';
 import { verifyRootReadme } from '../scripts/verify-release.mjs';
 
-const packageRoot = path.resolve(process.cwd());
+const packageRoot = fileURLToPath(new URL('../', import.meta.url));
 const execFileAsync = promisify(execFile);
 const suitecloudSkills = [
 	'netsuite-owasp-secure-coding',
@@ -207,19 +208,21 @@ test('release-version command validates generated manifests and version increase
 	);
 });
 
-test('workspace config recursively discovers six provider-qualified plugins with expected platforms and skills', async () => {
+test('workspace config recursively discovers eight provider-qualified plugins with expected platforms and skills', async () => {
 	const workspace = await loadWorkspace(packageRoot);
 
-	assert.equal(workspace.plugins.length, 6);
+	assert.equal(workspace.plugins.length, 8);
 	assert.deepEqual(
 		workspace.plugins.map((plugin) => plugin.sourceKey),
 		[
 			'anthropic/netsuite-ai-companion',
 			'anthropic/netsuite-finance-analyst',
 			'anthropic/netsuite-suitecloud',
+			'anthropic/netsuite-suiteskills',
 			'openai/netsuite-ai-companion',
 			'openai/netsuite-finance-analyst',
 			'openai/netsuite-suitecloud',
+			'openai/netsuite-suiteskills',
 		]
 	);
 
@@ -720,4 +723,101 @@ test('buildPlugin rejects nested symlinks and accepts in-bound collection roots'
 		'README.md',
 		'skills/netsuite-good-skill/SKILL.md',
 	]);
+});
+
+async function createNamedSourceFixture(t) {
+ const f = await createBoundaryWorkspace();
+ t.after(() => fs.rm(f.tempRoot, { recursive: true, force: true }));
+ const configPath = path.join(f.packageDir, 'config/build.json');
+ const pluginPath = path.join(f.pluginDir, 'plugin.build.json');
+ const config = JSON.parse(await fs.readFile(configPath, 'utf8'));
+ const plugin = JSON.parse(await fs.readFile(pluginPath, 'utf8'));
+ const namedRoot = path.join(f.packageDir, 'common/named-skills');
+ const namedSkill = path.join(namedRoot, 'netsuite-good-skill');
+ await fs.mkdir(namedSkill, { recursive: true });
+ await fs.writeFile(path.join(namedSkill, 'SKILL.md'), '---\nname: netsuite-good-skill\ndescription: named source\nlicense: UPL\n---\n');
+ config.skillSources = { named: './common/named-skills' };
+ await writeJson(configPath, config);
+ return { ...f, configPath, pluginPath, config, plugin, namedRoot, namedSkill };
+}
+
+test('default and named sources keep identical skill names isolated per plugin', async t => {
+ const f = await createNamedSourceFixture(t);
+ const namedPluginDir = path.join(f.packageDir, 'named-plugin');
+ await fs.mkdir(path.join(namedPluginDir, 'src'), { recursive: true });
+ await fs.writeFile(path.join(namedPluginDir, 'src/README.md'), '# Named\n');
+ await writeJson(path.join(namedPluginDir, 'plugin.build.json'), { ...f.plugin, id: 'named-plugin', skillSource: 'named' });
+ const workspace = await loadWorkspace(f.packageDir);
+ assert.equal(workspace.buildConfig.skillsRoot, '../skills');
+ for (const [name, expected] of [['boundary-plugin', 'description: good'], ['named-plugin', 'description: named source']]) {
+  const result = await buildPlugin(name, { workspace, writeOutput: false });
+  t.after(() => fs.rm(path.dirname(result.outputDir), { recursive: true, force: true }));
+  assert.match(await fs.readFile(path.join(result.outputDir, 'skills/netsuite-good-skill/SKILL.md'), 'utf8'), new RegExp(expected));
+ }
+});
+
+test('named sources reject invalid configuration and missing skills without fallback', async t => {
+ for (const scenario of ['unknown', 'missing skill', 'missing source', 'source file', 'escaping source', 'absolute source', 'invalid registry', 'invalid entry', 'invalid frontmatter']) {
+  await t.test(scenario, async t => {
+   const f = await createNamedSourceFixture(t);
+   let expected;
+   f.plugin.skillSource = 'named';
+   switch (scenario) {
+    case 'unknown': f.plugin.skillSource = 'other'; expected = /Unknown skill source/; break;
+    case 'missing skill': await fs.rm(f.namedSkill, { recursive: true }); expected = /Missing skill directory/; break;
+    case 'missing source': await fs.rm(f.namedRoot, { recursive: true }); expected = /root does not exist/; break;
+    case 'source file': await fs.rm(f.namedRoot, { recursive: true }); await fs.writeFile(f.namedRoot, 'file'); expected = /expected an existing directory/; break;
+    case 'escaping source': f.config.skillSources.named = '../skills'; expected = /must stay inside the package/; break;
+    case 'absolute source': f.config.skillSources.named = f.namedRoot; expected = /must be relative/; break;
+    case 'invalid registry': f.config.skillSources = []; expected = /skillSources must be an object/; break;
+    case 'invalid entry': f.config.skillSources.named = null; expected = /Invalid skill source/; break;
+    case 'invalid frontmatter': await fs.writeFile(path.join(f.namedSkill, 'SKILL.md'), '---\nname: netsuite-wrong-name\ndescription: wrong\nlicense: UPL\n---\n'); expected = /name must match directory name/; break;
+   }
+   await writeJson(f.configPath, f.config);
+   await writeJson(f.pluginPath, f.plugin);
+   await assert.rejects(() => loadWorkspace(f.packageDir), expected);
+  });
+ }
+});
+
+test('named sources reject symlinks, containment escapes and destination collisions', async t => {
+ for (const scenario of ['source symlink', 'skill symlink', 'ancestor escape', 'nested symlink', 'case collision', 'input collision']) {
+  await t.test(scenario, async t => {
+   const f = await createNamedSourceFixture(t);
+   f.plugin.skillSource = 'named';
+   await writeJson(f.pluginPath, f.plugin);
+   if (scenario === 'source symlink') {
+    await fs.rm(f.namedRoot, { recursive: true });
+    await fs.symlink(path.dirname(f.skillDir), f.namedRoot, 'dir');
+    await assert.rejects(() => loadWorkspace(f.packageDir), /skill source named root: symbolic links/);
+   } else if (scenario === 'skill symlink') {
+    await fs.rm(f.namedSkill, { recursive: true });
+    await fs.symlink(f.skillDir, f.namedSkill, 'dir');
+    await assert.rejects(() => loadWorkspace(f.packageDir), /skill netsuite-good-skill root: symbolic links/);
+   } else if (scenario === 'ancestor escape') {
+    await fs.mkdir(path.join(f.outsideDir, 'nested'));
+    await fs.symlink(f.outsideDir, path.join(f.packageDir, 'common/link'), 'dir');
+    f.config.skillSources.named = './common/link/nested';
+    await writeJson(f.configPath, f.config);
+    await assert.rejects(() => loadWorkspace(f.packageDir), /outside allowed parent/);
+   } else {
+    const workspace = await loadWorkspace(f.packageDir);
+    if (scenario === 'nested symlink') await fs.symlink(f.outsideDir, path.join(f.namedSkill, 'nested'), 'dir');
+    if (scenario === 'case collision' || scenario === 'input collision') {
+     await fs.mkdir(path.join(f.sourceDir, 'skills/netsuite-good-skill'), { recursive: true });
+     await fs.writeFile(path.join(f.sourceDir, 'skills/netsuite-good-skill', scenario === 'case collision' ? 'skill.md' : 'SKILL.md'), 'collision');
+    }
+    await assert.rejects(() => buildPlugin('boundary-plugin', { workspace, writeOutput: true }), scenario === 'nested symlink' ? /Symlinks are not allowed/ : /Case-insensitive destination collision/);
+   }
+  });
+ }
+});
+
+test('named source root is revalidated before staging', async t => {
+ const f = await createNamedSourceFixture(t);
+ await writeJson(f.pluginPath, { ...f.plugin, skillSource: 'named' });
+ const workspace = await loadWorkspace(f.packageDir);
+ await fs.rm(f.namedRoot, { recursive: true });
+ await fs.symlink(path.dirname(f.skillDir), f.namedRoot, 'dir');
+ await assert.rejects(() => buildPlugin('boundary-plugin', { workspace, writeOutput: true }), /skill source named root: symbolic links/);
 });

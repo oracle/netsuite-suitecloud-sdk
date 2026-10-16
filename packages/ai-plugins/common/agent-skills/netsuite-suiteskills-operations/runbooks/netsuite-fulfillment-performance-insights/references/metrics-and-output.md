@@ -46,7 +46,7 @@ The current timing query returns `sourceTransactionCreationTimestamp`, `pickedTi
 - Show at most the two largest nonzero units, using days, hours, minutes, seconds. Spell out units, separate with spaces, and truncate omitted lower units. Example: 90,061 seconds displays as **1 day 1 hour**. Zero displays as **0 seconds**. Never show raw total seconds in a normal business answer.
 - Preserve the precision of returned timestamps. When date and time through seconds are present, format as `Sunday, 19 July 2026, 8:42:25 AM`. If only a date is returned, show a readable date followed by `(time not provided)`. If the numeric date format is ambiguous and its locale is unknown, preserve the original string and state that its format is unverified. For other partial timestamps, retain only the supplied components; never invent seconds, midnight, or a timezone. Do not convert an unknown timezone.
 - Identify a fulfillment by `tranId`, and a source as `<Source Type> #<source tranId>` when both are verified. Preserve an existing verified display label when those components are unavailable. Use **Unavailable source transaction** or **Unavailable status** if needed.
-- Link names only when a verified connector URL or native record reference exists. A plain-text fallback is valid in Claude.
+- Link names only when a verified connector URL or native record reference exists. A plain-text fallback is valid in the host.
 - Hide `resultStatus`, internal IDs, and unrequested technical fields.
 
 ## Single fulfillment

@@ -32,9 +32,9 @@ identity, authorization, storage and text review, not this library.
 
 ## CLI (run from the edition root; paths are examples, not connector URLs)
 ```sh
-python -B skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-portfolio-health-assistant/scripts/presentation_disclosure.py project protected.dataset.json --policy approved.policy.json --output presentation.json
-python -B skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_render.py protected.dataset.json --policy approved.policy.json --format html --output report.html
-python -B skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_render.py protected.dataset.json --policy approved.policy.json --format markdown --output report.md
+python -B skills/netsuite-suiteskills-operations/runbooks/netsuite-project-portfolio-health-assistant/scripts/presentation_disclosure.py project protected.dataset.json --policy approved.policy.json --output presentation.json
+python -B skills/netsuite-suiteskills-operations/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_render.py protected.dataset.json --policy approved.policy.json --format html --output report.html
+python -B skills/netsuite-suiteskills-operations/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_render.py protected.dataset.json --policy approved.policy.json --format markdown --output report.md
 ```
 Do not put the protected input or live policy into the skill source/distribution.
 

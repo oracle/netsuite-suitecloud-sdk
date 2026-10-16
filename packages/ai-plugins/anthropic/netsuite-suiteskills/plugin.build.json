@@ -197,5 +197,6 @@
     "netsuite-suiteskills-operations",
     "netsuite-suiteskills-people"
   ],
-  "version": "0.7.9"
+  "version": "0.7.9",
+  "skillSource": "plugin-only"
 }

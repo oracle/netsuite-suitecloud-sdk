@@ -100,7 +100,7 @@ if __name__ == '__main__':
     if args.parameters.stat().st_size>100000:
         raise ValueError('Parameters exceed size limit')
     output=args.output
-    package=next((p for p in ROOT.parents if (p/'.claude-plugin/plugin.json').exists()),ROOT)
+    package=next((p for p in ROOT.parents if any((p/marker/'plugin.json').exists() for marker in ('.claude-plugin', '.codex-plugin'))),ROOT)
     if output.is_relative_to(package):
         raise ValueError('Write outputs outside the installed plugin')
     result=prepare(args.query,json.loads(args.parameters.read_text(),object_pairs_hook=pairs))

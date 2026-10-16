@@ -26,7 +26,7 @@ These are working product definitions, not Oracle platform claims. The [plugin g
 
 | Term | Meaning in this project |
 |---|---|
-| **AI plugin** | Our shared product delivered through supported ChatGPT and Codex packaging. Qualify this term to avoid confusion with NetSuite's own plug-in architecture. |
+| **AI plugin** | Our shared product delivered through supported provider packaging. Qualify this term to avoid confusion with NetSuite's own plug-in architecture. |
 | **Skill** | A host-registered entry point that selects or performs a business workflow. |
 | **Runbook** | A separately specified and tested business procedure; it can be supporting content beneath a category skill. |
 | **Tool** | An operation the assistant can invoke through an available integration. Tool visibility does not prove successful execution. |

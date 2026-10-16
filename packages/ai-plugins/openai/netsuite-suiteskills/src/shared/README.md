@@ -1,7 +1,5 @@
 # Shared guidance
 
-For this host, apply [ChatGPT and Codex execution](contracts/OPENAI-HOST.md) before tool selection or output generation.
-
 Apply the [shared baseline](contracts/BASELINE.md) and [concise response rules](communication/RESPONSE-STYLE-RUNTIME.md) when entering a category or directly selected runbook; reuse them within the unchanged session. When a reviewed profile is available in the current Project instructions or an explicitly selected local reader, apply [profile context](contracts/PROFILE-CONTEXT.md) once per relevant request; absence or unavailable storage must not block business work. Load further references by task, not as a checklist before every answer. For analysis, apply [evidence and scope](contracts/EVIDENCE.md). For record-based findings or visualizations, load [links](contracts/LINKS.md); for visual output also apply [dashboard guidance](design/DASHBOARDS.md). If a resource cannot be opened, follow [resource loading](contracts/RESOURCE-LOADING.md).
 
 ## Requirements, defaults and examples

@@ -18,7 +18,6 @@
         "README.md",
         "SECURITY-RELEASE-STATUS.json",
         "assets/suiteskills.svg",
-        "plugin.json",
         "shared/CHANGELOG.md",
         "shared/README.md",
         "shared/RESOURCE-MAP.json",
@@ -39,7 +38,6 @@
         "shared/contracts/CALCULATION-CHECKS.md",
         "shared/contracts/EVIDENCE.md",
         "shared/contracts/LINKS.md",
-        "shared/contracts/OPENAI-HOST.md",
         "shared/contracts/OUTPUTS.md",
         "shared/contracts/PERIOD-COVERAGE.md",
         "shared/contracts/PROFILE-CONTEXT.md",
@@ -168,7 +166,12 @@
         "shared/tools/compile_query.py",
         "shared/tools/period_coverage.py",
         "shared/tools/result_evidence.py",
-        "shared/tools/standard-tools.json"
+        "shared/tools/standard-tools.json",
+        "skills/netsuite-suiteskills-finance/agents/openai.yaml",
+        "skills/netsuite-suiteskills-customers-sales/agents/openai.yaml",
+        "skills/netsuite-suiteskills-operations/agents/openai.yaml",
+        "skills/netsuite-suiteskills-people/agents/openai.yaml",
+        "skills/netsuite-suiteskills-onboarding/agents/openai.yaml"
       ],
       "root": "src"
     }
@@ -181,7 +184,7 @@
     "description": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector.",
     "extensions": {
       "com.openai": {
-        "onboardingSkill": "./skills/netsuite-suiteskills-onboarding-openai/SKILL.md",
+        "onboardingSkill": "./skills/netsuite-suiteskills-onboarding/SKILL.md",
         "publication": {
           "release_notes": "SuiteSkills OpenAI 0.7.7 normalizes inherited product labels, schema IDs and foundation markers to SuiteSkills. Retains 48 business runbooks and the secured Data Visualization 2.0.0-rc.1 core. Native/account/security qualification remains separate."
         }
@@ -228,5 +231,6 @@
     "netsuite-suiteskills-people",
     "netsuite-suiteskills-onboarding"
   ],
-  "version": "0.7.9"
+  "version": "0.7.9",
+  "skillSource": "plugin-only"
 }

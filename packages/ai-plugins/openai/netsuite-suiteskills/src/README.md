@@ -1,13 +1,7 @@
 # SuiteSkills 0.7.9 internal testing candidate
 
-Data Visualization 2.1.0-rc.1 adds checked execution profiles and verified host-file handoff. Exact Linux/native tests remain pending; shared writers retain their 0.7.8 support scope.
+The openai distribution assembles five shared skills: Finance and Accounting; Customers, Sales and Support; Inventory and Operations; People and Workforce; and conversational onboarding. The [catalog](CATALOG.json) contains all 48 business routes. Read [shared guidance](shared/README.md) and [current status](CURRENT-RELEASE-STATUS.json).
 
-# SuiteSkills 0.7.8 for ChatGPT and Codex
+Install the assembled `openai/netsuite-suiteskills` directory using the host's supported plugin installation flow. Skills use unsuffixed `skills/netsuite-suiteskills-*/` directories with isolated shared resources. The build generates the native `.codex-plugin/plugin.json` from `plugin.build.json`. OpenAI display metadata is supplied by five agents/openai.yaml files; onboarding is declared in the generated manifest.
 
-Internal testing candidate based on SuiteSkills 0.7.5. It restores Data Visualization RB-OPS-020 at source version 2.0.0-rc.1, for 48 business runbooks in four category skills plus onboarding. Use [catalog](CATALOG.json), [shared guidance](shared/README.md) and [current status](CURRENT-RELEASE-STATUS.json). Other business procedures and shared bytes retain their baseline scope.
-
-The packaged visualization engine has qualified macOS/APFS storage and external host dependency requirements; unsupported hosts preserve facts in conversation and disclose unavailable file formats. The actual Finance Analyst dependency remains absent. No connector or account privileges are supplied. Native host/routing, live account, IQ and security approval remain not_run; rights remain not_collected.
-
-Use netsuite-suiteskills-openai-0.7.8.zip with the host's supported plugin installation flow. The separate SDK handoff contains source for SDK maintainers and is not an installable plugin. Builder 2.5.19 and Evaluator 1.1.19 carry the matching OpenAI foundation. Historical security status remains reference evidence; current membership is this catalog. Prior releases remain unchanged.
-
-Internal schema and foundation-marker names use SuiteSkills. Older portable units require explicit re-export against this matching foundation.
+Connector schemas, account and role permissions, rendering, native question controls and script execution are discovered in the actual session. Missing presentation capabilities preserve equivalent factual answers where the runbook permits. Finance Analyst handoff requirements and export gates remain mandatory. Data Visualization 2.1.0-rc.1 has separate checked runtime profiles; shared writers retain their 0.7.8 scope. Native host/routing and live account qualification remain not_run; rights remain not_collected. Historical provenance and qualification records are retained, not renewed by this integration.

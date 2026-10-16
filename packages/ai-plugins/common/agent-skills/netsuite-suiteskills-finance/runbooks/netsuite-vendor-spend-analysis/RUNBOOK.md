@@ -96,7 +96,7 @@ In one or two sentences, state the ranking basis, actual period or as-of date, f
 
 ### Ranked horizontal chart
 
-Render a horizontal bar chart directly in the conversation using the available chart/component renderer or a Claude artifact that is visible inline. Display up to the requested count, with an overall maximum of 20 vendors; if currency groups require truncation, state what is shown. Sort descending within each comparable currency group. Label the chart with the measure, currency, period/as-of date, and denominator scope.
+Render a horizontal bar chart directly in the conversation using the available chart/component renderer or a the host artifact that is visible inline. Display up to the requested count, with an overall maximum of 20 vendors; if currency groups require truncation, state what is shown. Sort descending within each comparable currency group. Label the chart with the measure, currency, period/as-of date, and denominator scope.
 
 Each row must show the linked vendor name, exact amount, and supported share of the complete total. Format money with an unambiguous currency and its appropriate precision. Scale bars proportionally from zero, use a consistent scale within each comparison, and do not turn missing values into zero-length bars. Do not put period spend and current balance on one common scale as if they were the same measure.
 

@@ -2,9 +2,9 @@
 
 Support the user’s requested analysis and authorized actions through available, supported tools. Establish the target, intended effect and required business inputs before acting; reuse authorization already given for that exact scope. Tool availability and source examples do not grant authorization. Preserve business validation, actual host approvals and account permissions. If the operation or required procedure is unavailable, explain the specific gap and provide a useful proposal without claiming execution.
 
-# Present inventory balances in Claude
+# Present inventory balances in the host
 
-Use native Markdown tables. For larger results, use a Claude artifact or downloadable table only if available and useful; otherwise provide a bounded inline preview. Do not require a proprietary canvas, finalizer, generated UI-table object, or host-specific response envelope. Never lose rows silently because an artifact tool is unavailable. Keep all displayed quantities traceable to the retrieved evidence.
+Use native Markdown tables. For larger results, use a the host artifact or downloadable table only if available and useful; otherwise provide a bounded inline preview. Do not require a proprietary canvas, finalizer, generated UI-table object, or host-specific response envelope. Never lose rows silently because an artifact tool is unavailable. Keep all displayed quantities traceable to the retrieved evidence.
 
 ## Supported answers
 

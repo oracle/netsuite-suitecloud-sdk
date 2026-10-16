@@ -1,4 +1,4 @@
-# SuiteSkills for Claude
+# SuiteSkills host capabilities
 
 Select RB-OPS-020 through Inventory and Operations. Inspect the actual executor, not the desktop OS or host product name. Follow [delivery](delivery.md) and [publication](publication.md). HTML uses the standard library on checked source-publication profiles; Linux glibc 2.39 ext-family is an internal candidate until exact-package tests run in the intended sandbox. Requested PDF/PowerPoint remain conditional Darwin exports.
 

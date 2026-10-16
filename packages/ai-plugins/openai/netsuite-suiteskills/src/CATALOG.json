@@ -12,7 +12,7 @@
       "owner": "Oracle NetSuite",
       "release_date": "2026-10-15",
       "runbook_count": 22,
-      "slug": "netsuite-suiteskills-finance-openai",
+      "slug": "netsuite-suiteskills-finance",
       "version": "0.7.9"
     },
     {
@@ -24,7 +24,7 @@
       "owner": "Oracle NetSuite",
       "release_date": "2026-10-15",
       "runbook_count": 8,
-      "slug": "netsuite-suiteskills-customers-sales-openai",
+      "slug": "netsuite-suiteskills-customers-sales",
       "version": "0.7.9"
     },
     {
@@ -36,7 +36,7 @@
       "owner": "Oracle NetSuite",
       "release_date": "2026-10-15",
       "runbook_count": 13,
-      "slug": "netsuite-suiteskills-operations-openai",
+      "slug": "netsuite-suiteskills-operations",
       "version": "0.7.9"
     },
     {
@@ -48,7 +48,7 @@
       "owner": "Oracle NetSuite",
       "release_date": "2026-10-15",
       "runbook_count": 5,
-      "slug": "netsuite-suiteskills-people-openai",
+      "slug": "netsuite-suiteskills-people",
       "version": "0.7.9"
     }
   ],
@@ -72,7 +72,7 @@
       "aliases": [
         "WF-CRM-002"
       ],
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "description": "Review Advanced Pricing Price Rule applicability and prepare a new-rule or change proposal from read-only evidence. Use for rule dates, Price Level, customer-group, and item-collection scope; exclude record changes, item-price updates, and pricing-exception approval.",
       "display_name": "Advanced Pricing Price Rule Review",
       "first_included_date": "2026-10-14",
@@ -105,7 +105,7 @@
       "operation_inventory_is_allowlist": false,
       "origin": "team_expansion_2026_10_05",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-advanced-pricing-price-rule-management/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-advanced-pricing-price-rule-management/RUNBOOK.md",
       "purpose": "Review Advanced Pricing Price Rule applicability and prepare a new-rule or change proposal in chat using read-only evidence about dates, Price Level, customer groups and item collections. Do not create or modify rules, Price Levels, groups, collections or item prices, or approve pricing exceptions.",
       "runtime_status": "not_run",
       "source_candidate_sha256": "8e981fa5af05b56152f41af210ed81a18c944ce4ccc7bb97f5507e41d16d217d",
@@ -120,7 +120,7 @@
         "S02",
         "WF-CRM-004"
       ],
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "description": "Use for read-only sales-order triage: explain verified order, fulfillment, shipment, billing, backorder, hold, or cancellation evidence and prepare a factual next-step handoff. Excludes order changes, customer commitments, support-case management, and return processing.",
       "display_name": "Customer Service Order Triage",
       "first_included_date": "2026-10-08",
@@ -151,7 +151,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-customer-service-order-triage/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-service-order-triage/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -165,7 +165,7 @@
     },
     {
       "access_mode": "read_only",
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "description": "Use for read-only NetSuite support: count open or escalated cases, review my queue or unassigned cases, investigate cases and messages, draft replies, and assess lifecycle or escalation readiness. Excludes sending or logging replies, case changes, knowledge publication, and return processing.",
       "display_name": "Customer Support Assistant",
       "effect_classification": "Read-only",
@@ -197,7 +197,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-customer-support-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-support-assistant/RUNBOOK.md",
       "purpose": "Review case counts, personal or shared queues, selected-case status and accessible messages; prepare reply drafts and assess lifecycle or escalation readiness without changing cases or sending replies. Sentiment charts, dashboards and whole-case sentiment are unavailable; documented partial text/table or requested spreadsheet analysis requires accepted scope and evidence checks.",
       "runtime_status": "not_run",
       "source_candidate_sha256": "35da49ef12a543140bb76a87ce658503cc59dcfa4d7e17b39cc8bcb3cebf6578",
@@ -213,7 +213,7 @@
       "aliases": [
         "WF-CRM-006"
       ],
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "description": "Use to assess coverage of the NetSuite Knowledge Base and draft NetSuite Solution content from verified support evidence for human review. Excludes external or local knowledge bases, record creation or updates, publication, customer replies, and case changes.",
       "display_name": "Knowledge Base Quality Assistant",
       "first_included_date": "2026-10-14",
@@ -246,7 +246,7 @@
       "operation_inventory_is_allowlist": false,
       "origin": "team_expansion_2026_10_05",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-knowledge-quality-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-knowledge-quality-assistant/RUNBOOK.md",
       "purpose": "Helps authorized customer-support teams at organizations that use NetSuite assess NetSuite Knowledge Base feature coverage and prepare reviewer-ready NetSuite Solution drafts from verified recurring support evidence. Use only when the knowledge content is managed in NetSuite; do not use for local, external, or other-vendor knowledge bases, or to publish content, send customer replies, or change cases.",
       "runtime_status": "not_run",
       "source_candidate_sha256": "6d03ab683a514cf160c0972e1aafd6dfd0611798969c2280a79e86d889b68c27",
@@ -261,7 +261,7 @@
       "aliases": [
         "WF-CRM-007"
       ],
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "description": "Prioritize and qualify leads, prepare seller discovery and assess conversion or update readiness using read-only evidence. Use for lead queues, selected-lead context, qualification gaps and chat proposals. Excludes creating, updating, converting or contacting leads; campaign audience and performance work belongs to Marketing Campaign Assistant.",
       "display_name": "Lead Management Assistant",
       "first_included_date": "2026-10-14",
@@ -294,7 +294,7 @@
       "operation_inventory_is_allowlist": false,
       "origin": "team_expansion_2026_10_05",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-lead-management-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-lead-management-assistant/RUNBOOK.md",
       "purpose": "Prioritize and qualify leads, prepare seller discovery, identify qualification gaps and assess conversion or update readiness from read-only evidence. Keep proposals in chat; do not create, update, convert or contact leads. Campaign audience and performance work belongs to Marketing Campaign Assistant.",
       "runtime_status": "not_run",
       "source_candidate_sha256": "83e1f1f9cc929bcf17b0ad4a7800b23f53306250e3f07aa384b47dca1b8f264a",
@@ -309,7 +309,7 @@
         "S07",
         "WF-CRM-008"
       ],
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "description": "Select or review a marketing audience, prepare a campaign plan and analyze recorded campaign performance using read-only evidence. Use for campaign events, responses, lead sources and return on investment (ROI). Excludes lead qualification, customer-success campaigns, campaign execution, outreach and marketing configuration changes.",
       "display_name": "Marketing Campaign Assistant",
       "first_included_date": "2026-10-08",
@@ -340,7 +340,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-marketing-campaign-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-marketing-campaign-assistant/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -358,7 +358,7 @@
         "S08",
         "WF-CRM-009"
       ],
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "description": "Resolve and explain sales item prices from read-only evidence for existing transaction lines, customer-item inquiries, prospective transaction preparation, and pricing discrepancies. Distinguish recorded rates, verified pricing provenance, and configuration expectations; do not change prices or transactions.",
       "display_name": "Pricing Policy and Exception Review",
       "first_included_date": "2026-10-08",
@@ -389,7 +389,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-pricing-policy-and-exception-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-pricing-policy-and-exception-review/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -407,7 +407,7 @@
       "aliases": [
         "WF-CRM-010"
       ],
-      "category": "netsuite-suiteskills-customers-sales-openai",
+      "category": "netsuite-suiteskills-customers-sales",
       "description": "Review account conversations, customer growth, pipeline, forecasts, and quote readiness using read-only evidence. Prepare sales proposals and chat drafts, with requested pipeline workbooks or interactive dashboards when supported. Exclude lead qualification, returns, and record changes.",
       "display_name": "Sales Assistant",
       "first_included_date": "2026-10-14",
@@ -440,7 +440,7 @@
       "operation_inventory_is_allowlist": false,
       "origin": "team_expansion_2026_10_05",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-customers-sales-openai/runbooks/netsuite-sales-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-sales-assistant/RUNBOOK.md",
       "purpose": "Helps authorized sales and customer-success representatives at organizations that use NetSuite manage the connected sales workflow: account conversations, customer growth, pipeline review, estimate/quote work, and controlled follow-up actions. Use for one or more sequential sales-workflow steps; do not use for lead qualification/conversion, returns, or generic CRM administration.",
       "runtime_status": "not_run",
       "source_candidate_sha256": "87d094e816bfe5eb1b2eff87bd3a046669ae0423646d108df36e30e91a0a348a",
@@ -456,7 +456,7 @@
       "aliases": [
         "expense-close-assistant"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Review NetSuite expense-report exceptions before close, show an interactive exception dashboard, and prepare owner-directed follow-ups. Supports communication drafts or explicitly authorized messages; excludes expense-record changes and period closure.",
       "display_name": "Expense Close Assistant",
       "edition": "non-read-only",
@@ -489,7 +489,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-expense-close-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-expense-close-assistant/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/RETRIEVAL.md",
@@ -510,7 +510,7 @@
         "WF-FIN-003",
         "match-vendor-credits-to-bills"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Find unused vendor credits and propose allocations to compatible open bills using verified remaining balances, vendor, subsidiary, currency and accounts payable account. Show oldest-eligible-bill matches, residuals and unverified pairs. Read-only; does not apply credits or prioritize unrelated payments.",
       "display_name": "Match Vendor Credits to Bills",
       "first_included_date": "2026-10-08",
@@ -541,7 +541,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-match-vendor-credits-to-bills/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-match-vendor-credits-to-bills/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -558,7 +558,7 @@
         "S19",
         "WF-FIN-006"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Assess cash position, accessible versus restricted cash, near-term funding pressure and runway for a specified entity and period. Use for liquidity and payroll-coverage questions; state verified inputs and scenario assumptions. The formal cash flow statement and invoice collections belong to their respective workflows.",
       "display_name": "Cash and Liquidity",
       "first_included_date": "2026-10-08",
@@ -589,7 +589,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-cash-and-liquidity/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cash-and-liquidity/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -606,7 +606,7 @@
         "S20",
         "WF-FIN-007"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Use to assemble an executive or board finance package from named upstream finance-skill results. Preserve metric provenance and tie-outs, surface incomplete evidence, and prepare a scoped narrative and proposed actions; route missing analysis to its owning skill.",
       "display_name": "Executive Financial Reporting",
       "first_included_date": "2026-10-08",
@@ -637,7 +637,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-executive-finance-reporting/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-executive-finance-reporting/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -654,7 +654,7 @@
         "S21",
         "WF-FIN-008"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Use to review finance control exceptions across periods, document evidence coverage and recurrence, and propose remediation. Distinguish isolated observations from potential deficiencies; the control owner makes the deficiency determination.",
       "display_name": "Finance Controls Review",
       "first_included_date": "2026-10-08",
@@ -685,7 +685,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-finance-controls-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-finance-controls-review/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -702,7 +702,7 @@
         "S22",
         "WF-FIN-009"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Use to retrieve and interpret an income statement, balance sheet, or cash flow statement for a resolved period, entity, currency and accounting book. Reconcile statement relationships, calculate supported financial indicators, and label open-period or incomplete results; route driver analysis and board-package assembly to their owning skills.",
       "display_name": "Financial Statement Review",
       "first_included_date": "2026-10-08",
@@ -733,7 +733,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-financial-statement-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-financial-statement-review/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -750,7 +750,7 @@
       "account_execution": "not_run",
       "action_scope": "Collections analysis and scoped authorized outreach, follow-up tasks and customer credit holds.",
       "aliases": [],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Build an evidence-based collections queue for open receivables, separating contact blockers before ranking verified recovery factors. Use for invoice follow-up priorities and outreach drafts; sending messages or creating follow-up tasks requires the specific authorized scope and a supported capability. General ledger reconciliation and standalone days-sales-outstanding trends belong to other workflows.",
       "display_name": "Invoice Collections",
       "edition": "non-read-only",
@@ -783,7 +783,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-invoice-collections/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-invoice-collections/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/RETRIEVAL.md",
@@ -802,7 +802,7 @@
       "account_execution": "not_run",
       "action_scope": "Journal review and specifically authorized correcting entries; no automatic posting from screening results.",
       "aliases": [],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Use to screen posted and unposted journals for evidenced review criteria, explain each flagged entry and report assessment coverage. Prepare requested correcting-entry drafts; post only through a supported authorized workflow after validating the exact entry and accounting impact.",
       "display_name": "Journal Entry Review",
       "edition": "non-read-only",
@@ -835,7 +835,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-journal-entry-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-journal-entry-review/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/RETRIEVAL.md",
@@ -855,7 +855,7 @@
         "S27",
         "WF-FIN-013"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Use when asked where the close stands, what is blocking period close, or whether the target lock date can be met. Review observed accounting-period states, close-task evidence, owners, dependencies and pending financial activity. Keep missing evidence and specialist coverage explicit. Read-only; does not execute close tasks or lock a period.",
       "display_name": "Period Close Status",
       "first_included_date": "2026-10-08",
@@ -886,7 +886,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-period-close-status/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-period-close-status/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -904,7 +904,7 @@
         "S29",
         "WF-FIN-015"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Use to explain material differences from a verified budget, forecast, prior period or prior year. Reconcile evidence-backed drivers to the total variance, distinguish recurring and timing effects, and disclose unexplained residuals; do not silently substitute a missing comparison basis.",
       "display_name": "Variance and Flux Analysis",
       "first_included_date": "2026-10-08",
@@ -935,7 +935,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-variance-analysis/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-variance-analysis/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -953,7 +953,7 @@
         "WF-FIN-016",
         "payment-prioritization"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Build read-only NetSuite payment proposals across Payment Run-eligible A/P with compatible vendor-credit and negative bill-payment or journal offsets. Prioritize by due dates, payee importance, discounts and cash constraints; explain selections and follow-ups. Use AP analytics for timing-only questions.",
       "display_name": "Payment Prioritization",
       "first_included_date": "2026-10-08",
@@ -984,7 +984,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-payment-prioritization/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-payment-prioritization/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1002,8 +1002,8 @@
         "WF-FIN-017",
         "vendor-bill-processing-time"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
-      "description": "Analyze NetSuite accounts-payable vendor bill lifecycle performance through the available MCP connector: days-to-pay including prepayment applications, first cash payment versus final settlement, approval duration, entry lag, payment-terms compliance, open-bill aging, trends and outliers. Use for AP processing-time, payment-speed, slow-vendor, or bill lifecycle questions and dashboards, including “invoice” when the context is AP. Read-only analytics; does not create or approve payments. Use payment prioritization when the user wants to decide which bills to pay next.",
+      "category": "netsuite-suiteskills-finance",
+      "description": "Analyze NetSuite accounts-payable vendor bill lifecycle performance through the available MCP connector: days-to-pay including prepayment applications, first cash payment versus final settlement, approval duration, entry lag, payment-terms compliance, open-bill aging, trends and outliers. Use for AP processing-time, payment-speed, slow-vendor, or bill lifecycle questions and dashboards, including \u201cinvoice\u201d when the context is AP. Read-only analytics; does not create or approve payments. Use payment prioritization when the user wants to decide which bills to pay next.",
       "display_name": "Vendor Bill Processing Time",
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-017",
@@ -1033,7 +1033,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-vendor-bill-processing-time/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-vendor-bill-processing-time/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1051,7 +1051,7 @@
         "WF-FIN-018",
         "vendor-spend-analysis"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Ranks vendors by spend or current open balance and shows each vendor's share of the total, recent spend movement, aging, and other concentration signals in an in-chat bar chart with linked records. Use to identify top or biggest vendors, see where accounts payable (AP) spend is concentrated, compare vendor spend for a period, find vendors above an amount, or answer who the business owes the most. Read-only; use for vendor-level ranking and concentration review, not bill-level processing-time analysis or decisions about which bills to pay.",
       "display_name": "Vendor Spend Analysis",
       "first_included_date": "2026-10-08",
@@ -1082,7 +1082,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-vendor-spend-analysis/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-vendor-spend-analysis/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1099,7 +1099,7 @@
         "WF-FIN-019",
         "labor-cost-advisor"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Build a payroll-backed labor-cost dashboard when Payroll, both labor reports, and Labor Costs Setup are accessible; otherwise provide the bundled illustrative dashboard preview. Use for labor-cost what-if scenarios.",
       "display_name": "Labor Cost Advisor",
       "first_included_date": "2026-10-08",
@@ -1130,7 +1130,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-labor-cost-advisor/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-labor-cost-advisor/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1147,7 +1147,7 @@
       "aliases": [
         "WF-FIN-020"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Analyze customer acquisition-month retention and annual recurring revenue (ARR) exposure for a chief financial officer (CFO). Use for gross revenue retention (GRR), net revenue retention (NRR), logo retention, churn, downsell, within-cohort product or segment cuts, renewal exposure and bounded what-ifs. Excludes customer renewal books, billing queues, forecast creation and commercial changes.",
       "display_name": "CFO Cohort Analysis",
       "first_included_date": "2026-10-08",
@@ -1179,7 +1179,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-cohort-analysis/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cohort-analysis/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1195,7 +1195,7 @@
       "aliases": [
         "WF-FIN-021"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Review potential invoicing shortfalls, credits requiring review and Advanced Revenue Management (ARM) plan or element exceptions as of a date. Use for underbilling, unbilled delivery, recorded subscription or schedule gaps, held plans and missing elements. Reports separate billing and accounting findings with coverage; excludes recurring-retention dashboards, transaction correction, collections and revenue-recognition certification.",
       "display_name": "Revenue Leakage",
       "first_included_date": "2026-10-08",
@@ -1226,7 +1226,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-revenue-leakage/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-revenue-leakage/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1244,7 +1244,7 @@
         "intercompany-balance-explorer",
         "ns-intercompany-balance-explorer"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Review intercompany exposure, subsidiary-pair differences and journal activity for a date range or as-of date. Use for read-only intercompany investigation with verified non-overlapping subsidiaries and comparable currency, book and posting bases; posting, approval and elimination actions require a separate workflow.",
       "display_name": "Intercompany Balance Explorer",
       "first_included_date": "2026-10-08",
@@ -1276,7 +1276,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-intercompany-balance-explorer/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-intercompany-balance-explorer/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1294,7 +1294,7 @@
         "WF-FIN-023",
         "suitetax-nexus-explainer"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Explain automatic SuiteTax nexus selection, fallback or failure for sales and purchases, using transaction addresses, registration validity and override evidence. Use for general rules or a specific transaction; distinguish business-to-business and business-to-consumer treatment. Tax amounts, legal advice and record changes are outside scope.",
       "display_name": "SuiteTax Nexus Explainer",
       "first_included_date": "2026-10-14",
@@ -1327,7 +1327,7 @@
       "operation_inventory_is_allowlist": false,
       "origin": "team_expansion_2026_10_05",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-suitetax-nexus-explainer/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-suitetax-nexus-explainer/RUNBOOK.md",
       "purpose": "Explain why SuiteTax selected, changed, or failed to determine the transaction nexus for sales and purchases. Use for transaction-specific or general questions about SuiteTax address sourcing, B2B/B2C classification, subsidiary tax registrations, transaction-date validity, nexus candidates, and fallback logic. Do not use as independent tax or legal advice or to invent a tax result without the required NetSuite data.",
       "runtime_status": "not_run",
       "source_candidate_sha256": "7b2890c5106093d56cce1090da52f3f47c5b84034241d0c7b0f3703a5e292990",
@@ -1342,7 +1342,7 @@
         "WF-FIN-024",
         "overdue-invoice-change-review"
       ],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Investigate payments, credits and audited amount edits affecting current overdue invoices or a selected invoice. Use to explain observed receivable changes with evidence and an explicitly qualified bridge when a prior amount is supplied. Historical aging reconstruction, collections outreach and record changes are outside scope.",
       "display_name": "Overdue Invoice Change Review",
       "first_included_date": "2026-10-08",
@@ -1373,7 +1373,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-overdue-invoice-change-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-overdue-invoice-change-review/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1389,7 +1389,7 @@
       "account_execution": "not_run",
       "action_scope": "Project financial diagnostics and local reporting; no new accounting procedure.",
       "aliases": [],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Review project revenue, observed cost, profitability, unbilled balances and aging from authorized NetSuite evidence. Use for project financial exceptions; produce a local HTML dashboard by default or honor an explicit text/data format. Read-only; budget-versus-actual comparison is unavailable in this renderer.",
       "display_name": "Project Financial Assistant",
       "edition": "non-read-only",
@@ -1422,7 +1422,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-project-financial-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-project-financial-assistant/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/RETRIEVAL.md",
@@ -1439,7 +1439,7 @@
     {
       "access_mode": "read_only",
       "aliases": [],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Assess and prioritize native bank and credit-card reconciliation work: matching queues, suggestions, differences and supported close-readiness conclusions. Read-only; excludes account changes, enterprise performance management reconciliation and payment-processor settlement.",
       "display_name": "Bank reconciliation prioritization",
       "first_included_date": "2026-10-14",
@@ -1470,7 +1470,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-bank-reconciliation-prioritization/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-bank-reconciliation-prioritization/RUNBOOK.md",
       "source_candidate_sha256": "303d81418d33e50770b177fbf5fe453dd7ceac0cce77174f25f5b2e9b47c7fd3",
       "source_release_date": "not_collected",
       "source_version": "2.0.1",
@@ -1480,7 +1480,7 @@
     {
       "access_mode": "read_only",
       "aliases": [],
-      "category": "netsuite-suiteskills-finance-openai",
+      "category": "netsuite-suiteskills-finance",
       "description": "Review today's customer credit exposure, limit exceptions and signed overdue aging. Use for current customer or portfolio credit reviews; default undated requests to all role-accessible customer records today. Historical comparisons, collections outreach and record changes are outside scope.",
       "display_name": "Credit Management",
       "first_included_date": "2026-10-08",
@@ -1511,7 +1511,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-finance-openai/runbooks/netsuite-credit-management/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-credit-management/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1530,7 +1530,7 @@
         "WF-OPS-001",
         "fulfillment-performance-insights"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "description": "Use for NetSuite fulfillment performance insights. Analyze NetSuite Item Fulfillment picking, packing, shipping, and lead times. Use for timing comparisons, slow or fast fulfillments, warehouse timing, SLA compliance, breaches, and timing-based operational recommendations. Do not use for status-only lookups, inventory, quantities, or general record details. Provides read-only timing analysis, recommendations and requested local outputs; does not perform account changes.",
       "display_name": "Fulfillment performance insights",
       "first_included_date": "2026-10-08",
@@ -1539,7 +1539,7 @@
       "integration_version": "0.7.5",
       "name": "netsuite-fulfillment-performance-insights",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-fulfillment-performance-insights/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-fulfillment-performance-insights/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1556,7 +1556,7 @@
         "WF-OPS-002",
         "inventory-exceptions-review"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "compatibility": {
         "layout": "integrated_runbook",
         "operation_binding": "Verify exposed read operations against current schemas; examples are not an allowlist.",
@@ -1829,7 +1829,7 @@
         }
       ],
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-exceptions-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-exceptions-review/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -1846,7 +1846,7 @@
         "inventory-impact-review",
         "inventory-transaction-impact-verification"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "compatibility": {
         "layout": "integrated_runbook",
         "operation_binding": "Verify exposed read operations against current schemas; examples are not an allowlist.",
@@ -2003,7 +2003,7 @@
         }
       ],
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-impact-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-impact-review/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2021,7 +2021,7 @@
         "WF-OPS-004",
         "inventory-movement-insights"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "description": "Use for NetSuite inventory movement insights. Analyze NetSuite inventory movement, demand, supply, and shortages by item and location. Use for incoming or outgoing movement, net inventory reduction, movement trends, historical or open demand, on-hand and incoming supply, receiving priorities, or prioritizing existing transfer orders. Provide insights using the connected NetSuite tools and bundled queries. Provides scoped findings and requested local outputs. Requested actions depend on authorization, supported tools and business prerequisites.",
       "display_name": "Inventory movement insights",
       "first_included_date": "2026-10-08",
@@ -2030,7 +2030,7 @@
       "integration_version": "0.7.5",
       "name": "netsuite-inventory-movement-insights",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-movement-insights/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-movement-insights/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2047,7 +2047,7 @@
         "S04",
         "WF-OPS-005"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "description": "Use for NetSuite inventory availability lookup. Helps authorized sales, customer-service, warehouse, and fulfillment users at organizations that use NetSuite establish current item availability. Also use when the user explicitly asks about future incoming supply, open purchase orders, or recorded receipt dates. Do not use to explain an existing sales order, allocate or move inventory, fulfill an order, or promise availability, receipt, shipment, or delivery. Provides scoped findings and requested local outputs. Requested actions depend on authorization, supported tools and business prerequisites.",
       "display_name": "NetSuite Inventory Availability Lookup",
       "first_included_date": "2026-10-08",
@@ -2056,7 +2056,7 @@
       "integration_version": "0.7.5",
       "name": "netsuite-inventory-availability-lookup",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-availability-lookup/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-availability-lookup/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2073,7 +2073,7 @@
       "aliases": [
         "WF-OPS-006"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "description": "Use to review customer return authorizations (RMAs), linked receipt, credit and refund evidence, refund readiness, or scoped return reports; draft linked or standalone return proposals in chat. Excludes creating or changing records, return approval or receipt, credits, refunds, and replacement orders.",
       "display_name": "Return Authorization Assistant",
       "first_included_date": "2026-10-14",
@@ -2106,7 +2106,7 @@
       "operation_inventory_is_allowlist": false,
       "origin": "team_expansion_2026_10_05",
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-return-authorization-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-return-authorization-assistant/RUNBOOK.md",
       "purpose": "Review customer return authorizations (RMAs), linked receipt, credit and refund evidence, refund readiness and scoped return reports. Prepare linked or standalone return proposals in chat only; do not create, update, transform, approve, receive or close records, issue credits or refunds, or create replacement orders.",
       "runtime_status": "not_run",
       "source_candidate_sha256": "3a75b09e32b46173f1c13bba85a2617e3951c2cf847eafaf0d6061a79260e568",
@@ -2122,7 +2122,7 @@
         "WF-OPS-011",
         "supply-chain-persona-based-responses"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "description": "Use for read-only supply-chain planning and operational inventory-count reconciliation, adapting recommendations to warehouse, purchasing, regional or executive audiences. Route bare stock balances, transaction impact, fulfillment performance and selected-item purchasing history to their focused skills.",
       "display_name": "Supply Chain Persona-Based Responses",
       "first_included_date": "2026-10-08",
@@ -2153,7 +2153,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-supply-chain-persona-based-responses/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-supply-chain-persona-based-responses/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2172,8 +2172,8 @@
         "netsuite-vendor-selection-optimization",
         "vendor-optimization"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
-      "description": "Compare the user’s existing vendors, applicable quotes, contracts or purchasing history for a buying decision, including supplied fictional cases. Assess comparable cost, packs, conditional discounts, delivery evidence and supported savings. Read-only; excludes open-market supplier discovery, spend concentration and credit-to-bill matching.",
+      "category": "netsuite-suiteskills-operations",
+      "description": "Compare the user\u2019s existing vendors, applicable quotes, contracts or purchasing history for a buying decision, including supplied fictional cases. Assess comparable cost, packs, conditional discounts, delivery evidence and supported savings. Read-only; excludes open-market supplier discovery, spend concentration and credit-to-bill matching.",
       "display_name": "Vendor Optimization",
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-012",
@@ -2203,7 +2203,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-vendor-optimization/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-vendor-optimization/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2222,7 +2222,7 @@
       "aliases": [
         "fsm-netsuite"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "description": "Explain and review customer-account Field Service Management (FSM), or perform supported authorized changes to service work, schedules, time, materials, configuration and service reports. Prepare report templates and companion drafts. Internal administration and synchronization-monitor diagnostics are unavailable; verify actual account and rendering capabilities.",
       "display_name": "Field Service Management",
       "edition": "non-read-only",
@@ -2255,7 +2255,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-field-service-management/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-field-service-management/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/RETRIEVAL.md",
@@ -2275,7 +2275,7 @@
         "WF-OPS-015",
         "inventory-balance-viewer"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "compatibility": {
         "layout": "integrated_runbook",
         "operation_binding": "Verify exposed read operations against current schemas; examples are not an allowlist.",
@@ -2370,7 +2370,7 @@
         }
       ],
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-inventory-balance-viewer/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-balance-viewer/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2386,7 +2386,7 @@
         "WF-OPS-016",
         "item-purchasing-history"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "description": "Use when a buyer asks who supplies one named item, its latest billed or ordered unit rate, price movement, or open orders. Provide a scoped purchasing brief; receipt lead time requires verified item-level receipt evidence. Do not treat a bill rate as proof of payment.",
       "display_name": "Item Purchasing History",
       "first_included_date": "2026-10-08",
@@ -2417,7 +2417,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-item-purchasing-history/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-item-purchasing-history/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2435,7 +2435,7 @@
         "netsuite-project-risk-dashboard",
         "project-risk-assistant"
       ],
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "description": "Investigate NetSuite project deadlines, overdue or explicitly blocked tasks, ownership gaps, and hours or supported monetary budget overage. Produce an evidence-backed risk dashboard unless another format is requested. Review proposed statements of work separately as plan-stage risk. Do not infer resource availability from named ownership or execute project changes.",
       "display_name": "Project Risk Assistant",
       "first_included_date": "2026-10-08",
@@ -2466,7 +2466,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-risk-assistant/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-project-risk-assistant/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2484,7 +2484,7 @@
         "WF-PPL-001",
         "payroll-clarity-readiness"
       ],
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "description": "Audit an existing or planned NetSuite payroll for employee setup, payroll inputs, calculated results and readiness gaps. Use for human resources (HR) and controller reviews; includes an evidence dashboard and explicit sample mode. Does not calculate, submit, approve or pay payroll.",
       "display_name": "Payroll Clarity Readiness",
       "first_included_date": "2026-10-08",
@@ -2515,7 +2515,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2533,7 +2533,7 @@
         "WF-PPL-007",
         "absence-management-advisor"
       ],
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "description": "Analyze planned absences, upcoming expiry, carryover, accrual limits, idle balances and individual time-off balances in SuitePeople Human Resources (HR). Use for factual absence insights and requested expiry contact priorities; excludes administration, policy recommendations and employment judgments.",
       "display_name": "Absence Management Advisor",
       "first_included_date": "2026-10-08",
@@ -2564,7 +2564,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2582,7 +2582,7 @@
         "WF-PPL-008",
         "benefits-portfolio-monitor"
       ],
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "description": "Review current NetSuite Benefits Tracking assignments, employee coverage, monthly recorded costs and complete gap or assignment-review worklists for human resources (HR) users. Use for focused questions or portfolio snapshots. Does not determine eligibility, process payroll or change records.",
       "display_name": "Benefits Portfolio Monitor",
       "first_included_date": "2026-10-08",
@@ -2613,7 +2613,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/OUTPUTS.md"
@@ -2632,7 +2632,7 @@
       "aliases": [
         "time-approval-review"
       ],
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "description": "Review pending NetSuite Actual Time and generate an HTML dashboard, then approve or reject exact entries or timesheets after action qualification and confirmed preview. Excludes creating, editing, submitting or retracting time.",
       "display_name": "Time Approval Review",
       "edition": "non-read-only",
@@ -2665,7 +2665,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-time-approval-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-approval-review/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/RETRIEVAL.md",
@@ -2687,7 +2687,7 @@
         "netsuite-time-entry-drafting",
         "time-entry-creation"
       ],
-      "category": "netsuite-suiteskills-people-openai",
+      "category": "netsuite-suiteskills-people",
       "description": "Draft and create new NetSuite Actual Time entries from a direct request or permitted work activity, with a chat table review and a separate Save decision. Do not use for timesheet submission or approval.",
       "display_name": "Time Entry Creation",
       "edition": "non-read-only",
@@ -2720,7 +2720,7 @@
         }
       },
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-people-openai/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
       "shared_dependencies": [
         "shared/contracts/BASELINE.md",
         "shared/contracts/RETRIEVAL.md",
@@ -2736,10 +2736,10 @@
     },
     {
       "access_mode": "local_artifacts_and_supported_reads",
-      "category": "netsuite-suiteskills-operations-openai",
+      "category": "netsuite-suiteskills-operations",
       "compatibility": {
         "file_engine": "checked_executor_and_source_publication_profile",
-        "host": "openai",
+        "host": "capability_dependent",
         "host_delivery": "observed_host_transport_and_readback; managed_collision_avoidance_not_atomic",
         "layout": "isolated_category_runbook",
         "linux_execution": "not_run",
@@ -2803,7 +2803,7 @@
       ],
       "owner": "Oracle NetSuite",
       "package_format": "suiteskills_integrated_runbook_candidate",
-      "path": "skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-data-visualization/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/RUNBOOK.md",
       "platform": "Darwin/local APFS; checked Linux glibc 2.39 LP64 ext-family HTML candidate; native delivery conditional",
       "product_team": "Administration",
       "release_status": "internal_testing_candidate",
@@ -2812,8 +2812,7 @@
         "shared/contracts/OUTPUTS.md",
         "shared/contracts/RETRIEVAL.md",
         "shared/contracts/LINKS.md",
-        "shared/contracts/EVIDENCE.md",
-        "shared/contracts/OPENAI-HOST.md"
+        "shared/contracts/EVIDENCE.md"
       ],
       "source_release_date": "2026-10-15",
       "source_version": "2.1.0-rc.1",
@@ -2847,7 +2846,7 @@
       "integration_release_date": "2026-10-15",
       "integration_version": "0.7.9",
       "kind": "skill",
-      "name": "netsuite-suiteskills-onboarding-openai",
+      "name": "netsuite-suiteskills-onboarding",
       "netsuite_requirements": {
         "industries": {
           "evidence": "Exact current connector/account requirements and effective access not collected; each selected specialist retains its own requirements.",
@@ -2875,7 +2874,7 @@
         "Supported Project preference handoff"
       ],
       "owner": "Oracle NetSuite",
-      "path": "skills/netsuite-suiteskills-onboarding-openai/SKILL.md",
+      "path": "skills/netsuite-suiteskills-onboarding/SKILL.md",
       "reference_plugin": {
         "name": "netsuite-suiteskills",
         "version": "0.7.5"

@@ -124,10 +124,10 @@ fixtures. They must never be loaded as account data or defaults in a business an
 
 From the edition root, substituting real authorized normalized files:
 ```
-python -B skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_dataset.py build input.json --output visual.json
-python -B skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_dataset.py validate visual.json
-python -B skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_render.py visual.json --format html --output report.html --policy audience.json --execution-context root-task.json --tool-trace tool-pulls.json
-python -B skills/netsuite-suiteskills-operations-openai/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_render.py visual.json --format markdown --output report.md --policy audience.json --execution-context root-task.json --tool-trace tool-pulls.json
+python -B skills/netsuite-suiteskills-operations/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_dataset.py build input.json --output visual.json
+python -B skills/netsuite-suiteskills-operations/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_dataset.py validate visual.json
+python -B skills/netsuite-suiteskills-operations/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_render.py visual.json --format html --output report.html --policy audience.json --execution-context root-task.json --tool-trace tool-pulls.json
+python -B skills/netsuite-suiteskills-operations/runbooks/netsuite-project-portfolio-health-assistant/scripts/visual_render.py visual.json --format markdown --output report.md --policy audience.json --execution-context root-task.json --tool-trace tool-pulls.json
 ```
 These commands write local presentation files only. They never create NetSuite records.
 

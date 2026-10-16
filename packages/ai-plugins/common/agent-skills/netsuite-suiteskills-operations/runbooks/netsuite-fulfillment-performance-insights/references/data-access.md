@@ -70,7 +70,7 @@ Use an existing authorized NetSuite MCP connection. Before each branch, inspect 
 | Execute prepared timing query | `ns_runCustomSuiteQL(sqlQuery, pageSize, pageIndex, description?)` |
 | Optional fitting saved-search lookup | `ns_listSavedSearches(query?)`, then `ns_runSavedSearch(searchId, type?, range_start?, range_end?)` |
 
-Do not assume Claude has `queryRecords`, `readSkillScriptMeta`, `runSuiteQL`, `computeStructuredData`, `finalize`, saved-response column bindings, or `RECORD_REF` column types. Read local files normally, retain returned IDs locally, calculate locally, and write the response directly.
+Do not assume the host has `queryRecords`, `readSkillScriptMeta`, `runSuiteQL`, `computeStructuredData`, `finalize`, saved-response column bindings, or `RECORD_REF` column types. Read local files normally, retain returned IDs locally, calculate locally, and write the response directly.
 
 When the host uses on-demand tool discovery, search for the specific capability needed. If a general lookup search does not expose the timing tool, make a targeted discovery request for `ns_runCustomSuiteQL`; discover `ns_getSuiteQLMetadata` separately when needed. Do not repeat broad discovery or assume the first result is an exhaustive inventory. Describe an unreturned tool as **not observed** unless the host explicitly establishes unavailability. Tool discovery is not an account read; actual metadata and record/query calls count against the read budget.
 

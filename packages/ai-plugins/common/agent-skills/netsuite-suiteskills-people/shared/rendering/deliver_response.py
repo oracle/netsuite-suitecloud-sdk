@@ -397,7 +397,7 @@ def package_root():
     # Installed category helpers live deeper than the package itself. Protect all
     # categories by locating the manifest rather than guessing from folder depth.
     for ancestor in DIRECTORY.parents:
-        if any((ancestor / marker / 'plugin.json').is_file() for marker in ('.claude-plugin',)):
+        if any((ancestor / marker / 'plugin.json').is_file() for marker in ('.claude-plugin', '.codex-plugin')):
             return ancestor
     return DIRECTORY.parent.parent
 

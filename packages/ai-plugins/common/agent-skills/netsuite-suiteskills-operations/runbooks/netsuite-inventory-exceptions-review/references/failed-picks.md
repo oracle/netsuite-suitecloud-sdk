@@ -14,7 +14,7 @@ Use action-detail bin and the first non-null of detailInventoryNumber and taskIn
 
 For non-null relatedTransaction IDs use `transaction_refs`, preserving generic transaction identity; do not assume SalesOrder. Optional label/UI-link enrichments use exact returned IDs separately for Wave, Item, Bin, InventoryNumber and Employee. Resolve each type independently using demonstrated typed reads and the remaining read budget. One failed type must not discard other successful labels. Do not query Location or Units merely for output; they are not columns.
 
-Do not treat numeric relation values as names or URLs. The source's `pickTaskUrl` is a constructed relative route, not a connector-verified absolute UI link. In this Claude edition display the returned pickTaskNumber in plain text unless the exact UI URL is independently verified. For multiple rows, always use plain pickTaskNumber. Never guess the account host or generate another route.
+Do not treat numeric relation values as names or URLs. The source's `pickTaskUrl` is a constructed relative route, not a connector-verified absolute UI link. In this the host edition display the returned pickTaskNumber in plain text unless the exact UI URL is independently verified. For multiple rows, always use plain pickTaskNumber. Never guess the account host or generate another route.
 
 Null picker in bullets is `No assigned picker`; an unresolved non-null picker is `Reference unavailable`. A missing optional relation stays blank in a table. Preserve primary rows if enrichment fails, with one concise limitation. Reference lookups must not consume the budget needed for the primary result.
 
