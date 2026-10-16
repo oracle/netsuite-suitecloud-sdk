@@ -19,7 +19,7 @@ import { ActionResult } from '../types/ActionResult';
 export default class SuiteCloudRunner {
 	private commandActionExecutor: any;
 
-	constructor(vsConsoleLogger: VSConsoleLogger, executionPath?: string) {
+	constructor(vsConsoleLogger: VSConsoleLogger, executionPath: string) {
 		process.argv.push(`${ApplicationConstants.PROJECT_FOLDER_ARG}=${executionPath}`);
 		this.commandActionExecutor = new CommandActionExecutor({
 			//THIS SHOULD BE A FACTORY METHOD INSIDE THE CLI CommandActionExecutorFactory.get({executionPath:executionPath})

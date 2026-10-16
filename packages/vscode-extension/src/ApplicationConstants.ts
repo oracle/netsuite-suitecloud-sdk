@@ -29,28 +29,23 @@ export const ACP_UNRESTRICTED_FOLDERS: string[] = [
 	FOLDERS.WEB_SITE_HOSTING_FILES,
 ];
 
-export const DEVASSIST = {
-	ALLOWED_PROXY_PATH_PREFIX: '/api/internal/devassist/',
-	// CONFIG_KEYS should be in sycn with vscode-extension package.json config properties
-	CONFIG_KEYS: {
-		devAssistSection: 'suitecloud.developerAssistant',
-		proxyEnabled: 'enable',
-		auhtID: 'authID',
-		localPort: 'localPort',
-		startupNotificationDisabled: 'disableWelcomeNotification'
-	},
+const DEVELOPER_ASSISTANT_PROXY_BASE_PATH = '/api/internal/devassist';
+
+export const DEVELOPER_ASSISTANT = {
+	ALLOWED_PROXY_PATH_PREFIX: `${DEVELOPER_ASSISTANT_PROXY_BASE_PATH}/`,
+	PREFERENCES_STORAGE_KEY: 'suitecloud.controlPanel.state.v1',
 	DEFAULT_VALUES: {
-		proxyEnabled: false,
 		localPort: 8181,
 		authID: 'authid-to-be-used-by-dev-assist',
-		startupNotificationDisabled: false,
 	},
-	MODELS_PATH: '/api/internal/devassist/models',
+	PORT_RANGE: {
+		MIN: 1024,
+		MAX: 65535,
+	},
 	PROXY_URL: {
 		SCHEME: 'http://',
 		LOCALHOST_IP: '127.0.0.1',
-		BASE_PATH: '/api/internal/devassist',
-		FEEDBACK_PATH: '/api/internal/devassist/feedback',
+		BASE_PATH: DEVELOPER_ASSISTANT_PROXY_BASE_PATH,
+		FEEDBACK_PATH: `${DEVELOPER_ASSISTANT_PROXY_BASE_PATH}/feedback`,
 	},
-	SECRET_STORAGE_KEY_ID: 'DEVASSIT_SECRET_STORAGE_KEY_ID',
 };

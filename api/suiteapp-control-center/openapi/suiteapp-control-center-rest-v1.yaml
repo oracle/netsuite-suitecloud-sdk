@@ -1,0 +1,385 @@
+openapi: 3.0.4
+info:
+  title: SuiteApp Control Center REST API
+  version: v1
+  description: |-
+    Manage SuiteApp versions and installations in SuiteApp Control Center.
+
+    All endpoints require an OAuth 2.0 access token with the REST Web Services
+    scope. The authenticated user must have the SuiteApp Management permission at
+    the Full level.
+  termsOfService: https://www.netsuite.com/portal/resource/terms-of-service.shtml
+  contact:
+    name: Oracle NetSuite
+    url: https://www.netsuite.com
+servers:
+  - url: https://{accountID}.app.netsuite.com/services/rest/suiteappcontrolcenter/v1
+    variables:
+      accountID:
+        default: '1234567'
+        description: Your NetSuite account ID.
+tags:
+  - name: Versions
+    description: Create, publish, and deprecate SuiteApp versions.
+  - name: Installations
+    description: Retrieve and upgrade SuiteApp installations.
+security:
+  - OAuth2:
+      - rest_webservices
+
+paths:
+  /suiteapp/{applicationId}/version:
+    parameters:
+      - $ref: '#/components/parameters/ApplicationId'
+    post:
+      tags:
+        - Versions
+      summary: Create a new SuiteApp version.
+      description: |
+        Upload a SuiteApp ZIP archive and create a new version in the specified
+        release phase. The newly created version has `PENDING` status.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateSuiteAppVersionRequest'
+      responses:
+        '201':
+          description: Version created. The response has no body and no `Location` header.
+
+  /suiteapp/{applicationId}/version/{version}:
+    parameters:
+      - $ref: '#/components/parameters/ApplicationId'
+      - $ref: '#/components/parameters/Version'
+    patch:
+      tags:
+        - Versions
+      summary: Update a SuiteApp version status.
+      description: Publish or deprecate a SuiteApp version.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionUpdateRequest'
+      responses:
+        '204':
+          description: Version updated. The response has no body.
+
+  /suiteapp/{applicationId}/installation:
+    parameters:
+      - $ref: '#/components/parameters/ApplicationId'
+    get:
+      tags:
+        - Installations
+      summary: List installations of a SuiteApp.
+      description: |
+        Return installations with optional filtering, ordering, and pagination.
+        The response uses the Oracle vendor media type; the implementation returns
+        `application/vnd.oracle.resource+json;type=single`.
+      parameters:
+        - $ref: '#/components/parameters/Upgradable'
+        - $ref: '#/components/parameters/UpgradePhase'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/OrderBy'
+        - $ref: '#/components/parameters/Query'
+      responses:
+        '200':
+          description: Paginated installation list.
+          content:
+            application/vnd.oracle.resource+json;type=single:
+              schema:
+                $ref: '#/components/schemas/InstallationsResponse'
+    put:
+      tags:
+        - Installations
+      summary: Request an upgrade of SuiteApp installations.
+      description: |
+        Start upgrades for the specified account IDs. A `202` response means that
+        the request was accepted.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallationUpgradeRequest'
+      responses:
+        '202':
+          description: Upgrade request accepted. The response body is the upgrade operation ID.
+          content:
+            application/vnd.oracle.resource+json;type=single:
+              schema:
+                type: integer
+                format: int32
+                example: 1
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 authorization code flow for NetSuite REST web services.
+      flows:
+        authorizationCode:
+          authorizationUrl: /app/login/oauth2/authorize.nl
+          tokenUrl: /services/rest/auth/oauth2/v1/token
+          scopes:
+            rest_webservices: REST web services.
+
+  parameters:
+    ApplicationId:
+      in: path
+      name: applicationId
+      required: true
+      description: Application ID with three lowercase alphanumeric dot-separated segments, up to 80 characters.
+      schema:
+        type: string
+        maxLength: 80
+        example: com.netsuite.example
+
+    Version:
+      in: path
+      name: version
+      required: true
+      description: SuiteApp version.
+      schema:
+        type: string
+        example: 1.0.0
+
+    Upgradable:
+      in: query
+      name: upgradable
+      description: When `true`, return only installations eligible for the selected upgrade phase.
+      schema:
+        type: boolean
+        default: false
+
+    UpgradePhase:
+      in: query
+      name: upgradePhase
+      description: Release phase used only when `upgradable=true`. `LEADING` and `LAGGING` are accepted case-insensitively.
+      schema:
+        type: string
+        default: LEADING
+        example: LEADING
+
+    Limit:
+      in: query
+      name: limit
+      description: Maximum installations to return. `0` or omission uses the default page size of 20.
+      schema:
+        type: integer
+        minimum: 0
+        default: 20
+
+    Offset:
+      in: query
+      name: offset
+      description: Zero-based offset of the first installation to return.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+
+    OrderBy:
+      in: query
+      name: orderBy
+      description: |
+        Case-sensitive sort expression: one of `compId`, `name`, `lastUpdated`,
+        `status`, `version`, `nsVersion`, or `accountType`, optionally followed by
+        `:asc` or `:desc`.
+      schema:
+        type: string
+        pattern: '^(compId|name|lastUpdated|status|version|nsVersion|accountType)(:(asc|desc))?$'
+        example: compId:asc
+
+    Query:
+      in: query
+      name: q
+      description: |
+        Case-sensitive SCIM-style filter. Use the same field names allowed by
+        `orderBy`, quoted values up to 1,000 characters, `eq` or `co` comparisons,
+        and `and` to join comparisons. Supply an unencoded value; the client encodes
+        it in the request URL.
+      schema:
+        type: string
+        example: 'status eq "INSTALLED" and accountType co "TEST"'
+
+  schemas:
+    CreateSuiteAppVersionRequest:
+      type: object
+      required:
+        - phase
+        - nsVersion
+        - file
+      properties:
+        phase:
+          type: string
+          enum:
+            - LEADING
+            - LAGGING
+          description: Release phase for the new version.
+          example: LEADING
+        nsVersion:
+          type: string
+          description: Minimum NetSuite version required by the SuiteApp.
+          pattern: '^\d{4}\.\d$'
+          example: '2026.1'
+        file:
+          type: string
+          format: binary
+          description: SuiteApp ZIP archive.
+
+    VersionUpdateRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - PUBLISH_WITH_DEPRECATION
+            - PUBLISH_WITH_PHASE_SHIFT
+            - DEPRECATE
+          description: Requested status transition.
+          example: PUBLISH_WITH_DEPRECATION
+
+    InstallationsResponse:
+      type: object
+      required:
+        - items
+        - links
+      properties:
+        items:
+          type: array
+          description: Installations in the current page.
+          items:
+            $ref: '#/components/schemas/Installation'
+        links:
+          type: array
+          description: Available pagination links. Empty when no additional page is available.
+          items:
+            $ref: '#/components/schemas/Link'
+
+    Installation:
+      type: object
+      required:
+        - account
+        - status
+        - version
+        - nsVersion
+        - errors
+      properties:
+        account:
+          $ref: '#/components/schemas/InstallationAccount'
+        status:
+          type: string
+          description: Current installation status.
+          enum:
+            - NOT_INSTALLED
+            - PENDING
+            - PENDING_UNINSTALLATION
+            - VALIDATING
+            - INSTALLING
+            - UNINSTALLING
+            - INSTALLED
+            - FAILED
+            - FAILED_INITIALIZATION
+            - FAILED_VALIDATION
+            - FAILED_UNINSTALLATION
+          example: FAILED_VALIDATION
+        version:
+          type: string
+          description: Installed SuiteApp version.
+          example: 1.2.3
+        nsVersion:
+          type: string
+          description: NetSuite version of the account.
+          pattern: '^\d{4}\.\d$'
+          example: '2026.1'
+        lastUpdated:
+          type: integer
+          format: int64
+          nullable: true
+          description: Time of the last installation update, as Unix epoch milliseconds.
+          example: 1678281916000
+        errors:
+          type: array
+          description: Installation errors; empty when no errors are recorded.
+          items:
+            $ref: '#/components/schemas/InstallationError'
+
+    InstallationAccount:
+      type: object
+      required:
+        - compId
+        - name
+        - accountType
+      properties:
+        compId:
+          type: string
+          description: Account ID.
+          example: '1234567'
+        name:
+          type: string
+          description: Account name.
+          example: Account_1234567
+        accountType:
+          type: string
+          description: Account type.
+          example: PRODUCTION
+
+    InstallationError:
+      type: object
+      required:
+        - errorMessage
+        - errorDbTicket
+      properties:
+        errorMessage:
+          type: string
+          description: Description of the error.
+          example: Validation failed
+        errorDbTicket:
+          type: string
+          description: Error ticket associated with the error.
+          example: jz478bkv19hqrqnh8gvyj
+
+    Link:
+      type: object
+      required:
+        - rel
+        - href
+      properties:
+        rel:
+          type: string
+          enum:
+            - next
+            - prev
+            - first
+            - last
+          description: Pagination relation.
+        href:
+          type: string
+          format: uri
+          description: Absolute URL for the related page.
+
+    InstallationUpgradeRequest:
+      type: object
+      required:
+        - companyIds
+        - version
+      properties:
+        companyIds:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: Account IDs whose installations should be upgraded.
+          items:
+            type: string
+          example:
+            - '1234567'
+        version:
+          type: string
+          description: Selected SuiteApp version.
+          example: 1.2.3

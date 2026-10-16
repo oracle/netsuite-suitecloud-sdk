@@ -6,11 +6,11 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { DEVASSIST, FILES } from './ApplicationConstants';
+import { FILES } from './ApplicationConstants';
+import { commandsInfoMap } from './commandsMap';
 import AddDependencies from './commands/AddDependencies';
 import BaseAction from './commands/BaseAction';
 import CompareFile from './commands/CompareFile';
-import { createDevAssistApiKey } from './commands/CreateDevAssistApiKey';
 import CreateFile from './commands/CreateFile';
 import CreateProject from './commands/CreateProject';
 import Deploy from './commands/Deploy';
@@ -27,14 +27,25 @@ import Validate from './commands/Validate';
 import { installIfNeeded } from './core/sdksetup/SdkServices';
 import { EXTENSION_INSTALLATION } from './service/TranslationKeys';
 import { VSTranslationService } from './service/VSTranslationService';
-import { devAssistConfigurationChangeHandler, devAssistSecretApiKeyChangeHandler, startDevAssistProxyIfEnabled } from './startup/DevAssistConfiguration';
+import { suiteCloudOutputChannel } from './service/SuiteCloudOutputChannel';
 import { showSetupAccountWarningMessageIfNeeded } from './startup/ShowSetupAccountWarning';
-import { createAuthIDStatusBar, createDevAssistStatusBar, createSuiteCloudProjectStatusBar, updateAuthIDStatusBarIfNeeded, updateStatusBars } from './startup/StatusBarItemsFunctions';
-import { openDevAssistFeedbackForm } from './webviews/FeedbackFormWebviewController';
+import {
+	createAuthIDStatusBar,
+	createSuiteCloudProjectStatusBar,
+	createSuiteCloudProxyStatusBar,
+	updateAuthIDStatusBarIfNeeded,
+	updateStatusBars,
+} from './startup/StatusBarItemsFunctions';
+import {
+	applyPendingSuiteCloudClineConfig,
+	disposeSuiteCloudControlPanel,
+	initializeSuiteCloudControlPanel,
+	openSuiteCloudControlPanel,
+	showSuiteCloudControlPanelWelcomeIfNeeded,
+	startSuiteCloudControlPanelProxyIfEnabled,
+} from './controlPanel';
 
-
-const SCLOUD_OUTPUT_CHANNEL_NAME = 'SuiteCloud';
-export const output: vscode.OutputChannel = vscode.window.createOutputChannel(SCLOUD_OUTPUT_CHANNEL_NAME);
+export const output = suiteCloudOutputChannel;
 
 const translationService = new VSTranslationService();
 
@@ -53,57 +64,61 @@ let sdkDependenciesDownloadedAndValidated = false;
 // this method is called when SuiteCloud extension is activated
 // the extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-	installIfNeeded().then(() => {
+	const controlPanelWalkthroughId = `${context.extension.id}#suitecloudControlPanelWalkthrough`;
+	context.subscriptions.push(output);
+
+	const sdkDependenciesReady = installIfNeeded().then(() => {
 		sdkDependenciesDownloadedAndValidated = true;
 		showSetupAccountWarningMessageIfNeeded();
-		startDevAssistProxyIfEnabled(context, devAssistStatusBar)
 	});
 
 	// initialize status bars
-	const devAssistStatusBar = createDevAssistStatusBar();
+	const proxyStatusBar = createSuiteCloudProxyStatusBar();
 	const suitecloudProjectStatusBar = createSuiteCloudProjectStatusBar();
 	const authIDStatusBar = createAuthIDStatusBar();
 	updateStatusBars(vscode.window.activeTextEditor, suitecloudProjectStatusBar, authIDStatusBar);
+	initializeSuiteCloudControlPanel(context, proxyStatusBar, sdkDependenciesReady);
+	void sdkDependenciesReady
+		.then(async () => {
+			await applyPendingSuiteCloudClineConfig();
+			void showSuiteCloudControlPanelWelcomeIfNeeded();
+			await startSuiteCloudControlPanelProxyIfEnabled();
+		})
+		.catch(() => undefined);
 
 	// register commands
 	context.subscriptions.push(
-		register('suitecloud.adddependencies', new AddDependencies()),
-		register('suitecloud.comparefile', new CompareFile()),
-		register('suitecloud.createfile', new CreateFile()),
-		register('suitecloud.createproject', new CreateProject()),
-		register('suitecloud.deploy', new Deploy()),
-		register('suitecloud.importfiles', new ImportFiles()),
-		register('suitecloud.importobjects', new ImportObjects()),
-		register('suitecloud.listfiles', new ListFiles()),
-		register('suitecloud.listobjects', new ListObjects()),
-		register('suitecloud.manageauth', new ManageAuth()),
-		register('suitecloud.setupaccount', new SetupAccount()),
-		register('suitecloud.updatefile', new UpdateFile()),
-		register('suitecloud.updateobject', new UpdateObject()),
-		register('suitecloud.uploadfile', new UploadFile()),
-		register('suitecloud.validate', new Validate())
+		register(commandsInfoMap.adddependencies.vscodeCommandId, new AddDependencies()),
+		register(commandsInfoMap.comparefile.vscodeCommandId, new CompareFile()),
+		register(commandsInfoMap.createfile.vscodeCommandId, new CreateFile()),
+		register(commandsInfoMap.createproject.vscodeCommandId, new CreateProject()),
+		register(commandsInfoMap.deploy.vscodeCommandId, new Deploy()),
+		register(commandsInfoMap.importfiles.vscodeCommandId, new ImportFiles()),
+		register(commandsInfoMap.importobjects.vscodeCommandId, new ImportObjects()),
+		register(commandsInfoMap.listfiles.vscodeCommandId, new ListFiles()),
+		register(commandsInfoMap.listobjects.vscodeCommandId, new ListObjects()),
+		register(commandsInfoMap.manageauth.vscodeCommandId, new ManageAuth()),
+		register(commandsInfoMap.setupaccount.vscodeCommandId, new SetupAccount()),
+		register(commandsInfoMap.updatefile.vscodeCommandId, new UpdateFile()),
+		register(commandsInfoMap.updateobject.vscodeCommandId, new UpdateObject()),
+		register(commandsInfoMap.uploadfile.vscodeCommandId, new UploadFile()),
+		register(commandsInfoMap.validate.vscodeCommandId, new Validate())
 	);
 
 	// register more commands
 	context.subscriptions.push(
-		// this command is used to open devAssist settings by clicking on devAssistStatusBar
-		vscode.commands.registerCommand('suitecloud.opensettings',
-			() => vscode.commands.executeCommand('workbench.action.openWorkspaceSettings', DEVASSIST.CONFIG_KEYS.devAssistSection)),
-		// DevAssist Feedback Form WebView
-		vscode.commands.registerCommand('suitecloud.opendevassistfeedbackform',
-			() => openDevAssistFeedbackForm(context)),
-		// Command to create and store Developer Assistant service API Key
-		vscode.commands.registerCommand('suitecloud.createdevassistapikey',
-			() => createDevAssistApiKey(context)
+		vscode.commands.registerCommand(commandsInfoMap.opencontrolpanel.vscodeCommandId,
+			() => openSuiteCloudControlPanel()
+		),
+		vscode.commands.registerCommand(commandsInfoMap.opencontrolpanelwalkthrough.vscodeCommandId,
+			() => vscode.commands.executeCommand('workbench.action.openWalkthrough', controlPanelWalkthroughId, false)
 		)
 	);
 
 	// add watchers needed to update the status bars
 	context.subscriptions.push(
 		vscode.window.onDidChangeActiveTextEditor((textEditor) => updateStatusBars(textEditor, suitecloudProjectStatusBar, authIDStatusBar)),
-		vscode.workspace.createFileSystemWatcher(`**/${FILES.PROJECT_JSON}`).onDidChange((uri) => updateAuthIDStatusBarIfNeeded(uri, authIDStatusBar)),
-		vscode.workspace.onDidChangeConfiguration((configurationChangeEvent => devAssistConfigurationChangeHandler(configurationChangeEvent, context, devAssistStatusBar))),
-		context.secrets.onDidChange((secretChangeEvent: vscode.SecretStorageChangeEvent) => devAssistSecretApiKeyChangeHandler(secretChangeEvent, context, devAssistStatusBar))
+		vscode.workspace.createFileSystemWatcher(`**/${FILES.PROJECT_JSON}`).onDidChange((uri) => updateAuthIDStatusBarIfNeeded(uri, authIDStatusBar))
 	);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
@@ -112,4 +127,6 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when SuiteCloud extension is deactivated
-export function deactivate() { }
+export function deactivate() {
+	return disposeSuiteCloudControlPanel();
+}

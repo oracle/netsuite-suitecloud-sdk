@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.1.0
+
+- New SuiteCloud Developer Assistant panel
+- Bug fixes and improvements
+
 ## 4.0.0
 
 - Updated output for **SuiteCloud: Deploy Project** command

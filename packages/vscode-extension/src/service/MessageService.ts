@@ -4,7 +4,7 @@
  */
 
 import { window } from 'vscode';
-import { output } from '../suitecloud';
+import { suiteCloudOutputChannel } from './SuiteCloudOutputChannel';
 import { BUTTONS, COMMAND } from './TranslationKeys';
 import { VSTranslationService } from './VSTranslationService';
 
@@ -143,7 +143,7 @@ export default class MessageService {
 	}
 
 	public showOutput = () => {
-		output.show();
+		suiteCloudOutputChannel.show();
 	}
 
 }

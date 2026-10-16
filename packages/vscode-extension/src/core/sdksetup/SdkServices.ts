@@ -15,6 +15,7 @@ import MessageService from '../../service/MessageService';
 import { validateSdk } from './SdkValidator';
 import { ApplicationConstants, EnvironmentInformationService, FileSystemService, SdkArtifactVerifier } from '../../util/ExtensionUtil';
 import * as SdkProperties from './SdkProperties';
+import ReportedSdkError from './ReportedSdkError';
 import type { SdkArtifactVerificationProperties } from '../../types/JavascriptNodeCli';
 
 const VALID_JAR_CONTENT_TYPES = ['application/java-archive', 'application/x-java-archive', 'application/x-jar'];
@@ -46,11 +47,11 @@ function validateJavaVersion() {
 	if (installedJavaVersion === '') {
 		errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_INSTALLED}`, ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 		messageService.showErrorMessage(errorMessage);
-		throw errorMessage;
+		throw new ReportedSdkError(errorMessage);
 	}
 	errorMessage = translationService.getMessage(`${ERRORS.SDK_JAVA_VERSION_NOT_COMPATIBLE}`, installedJavaVersion, ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS.join(', '));
 	messageService.showErrorMessage(errorMessage);
-	throw errorMessage;
+	throw new ReportedSdkError(errorMessage);
 }
 
 async function install() {
@@ -69,7 +70,7 @@ async function install() {
 		messageService.showInformationMessage(translationService.getMessage(EXTENSION_INSTALLATION.SUCCESS.SDK_DOWNLOADED));
 	} catch (error) {
 		messageService.showErrorMessage(translationService.getMessage(EXTENSION_INSTALLATION.ERROR.GENERAL_ERROR, fullUrl, `${error}`));
-		throw error;
+		throw new ReportedSdkError(error);
 	}
 }
 
