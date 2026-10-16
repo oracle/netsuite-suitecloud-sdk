@@ -6,23 +6,26 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { stringify as stringifyYaml } from 'yaml';
 import { commandsInfoMap } from '../commandsMap';
 import { JSON_OBJECT_MESSAGES } from '../service/TranslationKeys';
 import { VSTranslationService } from '../service/VSTranslationService';
-import { JSON_OBJECTS, ObjectProject } from './Configuration';
+import { ObjectProject } from './Configuration';
 import { containsPath, projectForPath } from './ProjectDiscovery';
 import { SchemaNode, SchemaRepository } from './SchemaRepository';
 import { SchemaRegistry } from './SchemaRegistry';
 import { generateTemplate, JsonValue } from './TemplateGenerator';
+import { YamlSupport } from './YamlSupport';
 
 const translations = new VSTranslationService();
 const message = (key: string, ...parameters: string[]) => translations.getMessage(key, ...parameters);
 
 export function initializeJsonObjects(context: vscode.ExtensionContext, log: (text: string) => void): void {
-	const repository = new SchemaRepository(path.join(context.globalStorageUri.fsPath, JSON_OBJECTS.CACHE_DIRECTORY), log);
-	const registry = new SchemaRegistry(repository, log);
+	const repository = new SchemaRepository();
+	const registry = new SchemaRegistry(log);
+	const yaml = new YamlSupport(registry, repository, log);
 	const objects = new JsonObjects(registry, repository);
-	context.subscriptions.push(registry,
+	context.subscriptions.push(registry, yaml,
 		vscode.commands.registerCommand(commandsInfoMap.createjsonobject.vscodeCommandId, (uri?: vscode.Uri) => objects.create(uri)),
 		vscode.commands.registerCommand(commandsInfoMap.refreshjsonschemas.vscodeCommandId, async () => {
 			repository.clear();
@@ -32,14 +35,18 @@ export function initializeJsonObjects(context: vscode.ExtensionContext, log: (te
 			await vscode.commands.executeCommand('json.clearCache');
 		}));
 	registry.start();
+	void yaml.start().catch(error => log(`SuiteCloud YAML: ${String(error)}`));
 }
 
-export async function writeObject(directory: string, scriptId: string, template: JsonValue): Promise<vscode.Uri> {
+export type ObjectFormat = 'json' | 'yaml' | 'yml';
+
+export async function writeObject(directory: string, scriptId: string, template: JsonValue, format: ObjectFormat = 'json'): Promise<vscode.Uri> {
 	if (!/^[a-zA-Z0-9_]+$/.test(scriptId)) { throw new Error(message(JSON_OBJECT_MESSAGES.SCRIPT_ID_INVALID)); }
+	if (!['json', 'yaml', 'yml'].includes(format)) { throw new Error(`Unsupported object format: ${format}`); }
 	await fs.mkdir(directory, { recursive: true });
-	const uri = vscode.Uri.file(path.join(directory, `${scriptId}.json`));
+	const uri = vscode.Uri.file(path.join(directory, `${scriptId}.${format}`));
 	// Exclusive creation prevents overwriting files created while the prompts were open.
-	await fs.writeFile(uri.fsPath, JSON.stringify(template, null, '\t') + '\n', { flag: 'wx' });
+	await fs.writeFile(uri.fsPath, format === 'json' ? JSON.stringify(template, null, '\t') + '\n' : stringifyYaml(template), { flag: 'wx' });
 	return uri;
 }
 
@@ -69,6 +76,12 @@ export class JsonObjects {
 			const selected = await this.ui.showQuickPick(types, { title: commandsInfoMap.createjsonobject.vscodeCommandName,
 				placeHolder: message(JSON_OBJECT_MESSAGES.CHOOSE_TYPE) });
 			if (!selected) { return; }
+			const format = await this.ui.showQuickPick([
+				{ label: 'JSON (.json)', extension: 'json' as const },
+				{ label: 'YAML (.yaml)', extension: 'yaml' as const },
+				{ label: 'YAML (.yml)', extension: 'yml' as const },
+			], { placeHolder: message(JSON_OBJECT_MESSAGES.CHOOSE_FORMAT) });
+			if (!format) { return; }
 			const template = await generateTemplate(selected.node, this.repository);
 			const wrapper = template && typeof template === 'object' && !Array.isArray(template) ? Object.keys(template)[0] : undefined;
 			const body = wrapper && (template as Record<string, JsonValue>)[wrapper];
@@ -99,7 +112,7 @@ export class JsonObjects {
 			if (contextUri?.scheme === 'file' && containsPath(project.objects, contextUri.fsPath) && (await fs.stat(contextUri.fsPath)).isDirectory()) {
 				directory = contextUri.fsPath;
 			}
-			const uri = await writeObject(directory, scriptId, template);
+			const uri = await writeObject(directory, scriptId, template, format.extension);
 			const document = await vscode.workspace.openTextDocument(uri);
 			await this.ui.showTextDocument(document);
 		} catch (error) {

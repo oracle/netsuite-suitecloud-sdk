@@ -8,8 +8,15 @@ import * as path from 'path';
 import { runTests } from '@vscode/test-electron';
 
 async function main(): Promise<void> {
+	const yamlPath = process.env.YAML_EXTENSION_PATH;
+	if (!yamlPath) { throw new Error('Set YAML_EXTENSION_PATH to an installed redhat.vscode-yaml extension directory.'); }
 	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'suitecloud-json-host-'));
 	try {
+		const profile = path.join(root, 'user-data', 'User');
+		await fs.mkdir(profile, { recursive: true });
+		await fs.writeFile(path.join(profile, 'settings.json'), JSON.stringify({
+			'workbench.startupEditor': 'none', 'chat.disableAIFeatures': true,
+		}));
 		for (const [project, source] of [['project [a]', 'src'], ['repository-b/nested-project', 'application']]) {
 			const directory = path.join(root, project);
 			await fs.mkdir(path.join(directory, source), { recursive: true });
@@ -19,7 +26,7 @@ async function main(): Promise<void> {
 		const workspace = path.join(root, 'test.code-workspace');
 		await fs.writeFile(workspace, JSON.stringify({ folders: [{ path: 'project [a]' }, { path: 'repository-b' }], settings: { 'extensions.autoUpdate': false } }));
 		await runTests({
-			extensionDevelopmentPath: path.resolve(__dirname, '../..'),
+			extensionDevelopmentPath: [path.resolve(__dirname, '../..'), path.resolve(yamlPath)],
 			extensionTestsPath: path.resolve(__dirname, 'suite/index'),
 			vscodeExecutablePath: process.env.VSCODE_EXECUTABLE_PATH,
 			extensionTestsEnv: { SUITECLOUD_JSON_TEST_ROOT: root },

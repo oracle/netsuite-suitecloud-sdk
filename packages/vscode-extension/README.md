@@ -88,9 +88,9 @@ The selected account is set as default for the project.
   <img src="resources/SetUpAccount.gif" alt="animated" />
 </p>
 
-## JSON object schema demo (VS Code 1.141+)
+## JSON and YAML object schema demo (VS Code 1.141+)
 
-This branch adds completion, hover documentation, inline validation, and required-field templates for SuiteCloud JSON objects. It uses the parent schema and its 15 child schemas hosted on the [`poc/json-parent-schema` branch](https://github.com/oracle/netsuite-suitecloud-sdk/tree/poc/json-parent-schema/packages/schemas).
+This branch adds completion, hover documentation, inline validation, and required-field templates for SuiteCloud JSON and YAML objects. It uses the parent schema and its 15 child schemas hosted on the [`poc/json-parent-schema` branch](https://github.com/oracle/netsuite-suitecloud-sdk/tree/poc/json-parent-schema/packages/schemas).
 
 ### Automatic project discovery
 
@@ -108,16 +108,16 @@ project-a/                       repository-b/
                                       Objects/**/*.json
 ```
 
-Only JSON files inside each resolved `Objects` directory are associated with the parent schema. Nested project roots form separate boundaries. Files elsewhere, including `package.json` and unrelated `Objects` folders, receive no SuiteCloud association. The extension also includes source-folder overrides configured for `object:import` and `account:import`.
+Only `.json`, `.yaml`, and `.yml` files inside each resolved `Objects` directory are associated with the parent schema. Nested project roots form separate boundaries. Files elsewhere, including `package.json` and unrelated `Objects` folders, receive no SuiteCloud association. The extension also includes source-folder overrides configured for `object:import` and `account:import`.
 
-Discovery refreshes when workspace folders, `suitecloud.config.js`, manifests, or the JSON object settings change. No `json.schemas` settings are written, and object files need no `$schema` property. Files created after activation—including files brought in through `account:import`, other import commands, Git, or the terminal—are covered by the directory association as soon as they are opened. This feature does not change the CLI's import or deployment capabilities.
+Discovery refreshes when workspace folders, `suitecloud.config.js`, manifests, or the JSON object settings change. No `json.schemas` or `yaml.schemas` settings are written, and object files need no `$schema` property or YAML schema comment. JSON uses VS Code’s dynamic schema registry; YAML uses the Red Hat YAML extension’s schema contributor API. The YAML extension is installed automatically as an extension dependency. Files created after activation—including files brought in through `account:import`, other import commands, Git, or the terminal—are covered by the directory association as soon as they are opened. This feature does not change the CLI's import or deployment capabilities.
 
 ### Create an object template
 
-1. Run **SuiteCloud: Create JSON Object**, or right-click an `Objects` folder or one of its subfolders and choose **Create JSON Object**.
+1. Run **SuiteCloud: Create JSON or YAML Object**, or right-click an `Objects` folder or one of its subfolders and choose **Create JSON or YAML Object**.
 2. Choose a project if the current editor does not identify one, then choose an object type from the parent schema catalog.
-3. Enter its script ID. The extension creates `<scriptId>.json` and opens it. Existing files are never overwritten.
-4. Complete the remaining values using JSON completion and inline validation.
+3. Choose JSON (`.json`), YAML (`.yaml`), or YAML (`.yml`), then enter its script ID. The extension creates the file and opens it. Existing files are never overwritten.
+4. Complete the remaining values using completion and inline validation.
 
 The generator extends the `poc-json-object-template-generator` PoC: it recursively includes mandatory fields, resolves relative `$ref` and JSON Pointer references, preserves defaults (including `false`, `0`, and `null`), and uses the first enum value when no default exists. It supports required array entries and simple conditional requirements using property `const`/`enum` checks. Optional fields are omitted unless supplied by a schema default.
 
@@ -127,13 +127,15 @@ Templates are editable starting points: empty names, script-file paths, URLs, an
 
 - **`suitecloud.jsonObjects.enabled`**: enables this feature; configurable per workspace folder.
 - **`suitecloud.jsonObjects.schemaUrl`**: the raw HTTPS parent-schema URL; configurable per workspace folder. The demo defaults to the parent-schema branch above. Use a commit URL for a reproducible catalog.
-- **SuiteCloud: Refresh JSON Schemas**: rediscovers projects and refreshes both template and VS Code JSON caches. Use this after updating schemas on the same GitHub branch URL, changing a helper module imported by the project configuration, or changing an external source folder.
+- **SuiteCloud: Refresh Object Schemas**: rediscovers projects and reloads the template catalog and both editor schema associations, and clears VS Code’s JSON cache. Use this after updating schemas on the same GitHub branch URL, changing a helper module imported by the project configuration, or changing an external source folder.
 
-The first use needs access to GitHub. Template schemas are cached in extension storage for offline fallback; editor schema caching and download controls are provided by VS Code. Discovery runs only in trusted workspaces because SuiteCloud configuration files are JavaScript. This demo supports local filesystem workspaces; virtual workspaces are not included.
+Schema HTTP requests and disk caches belong to the editor extensions: VS Code’s built-in JSON support handles JSON editing; Red Hat YAML handles YAML and template downloads through its `json-schema` document provider. The PoC has no separate HTTP downloader or disk cache. Its YAML/template adapter checks the existing `json.schemaDownload.enable` and `json.schemaDownload.trustedDomains` settings before loading schemas, including references and memory-cache hits. Both providers use the editor’s `http.proxy` and `http.proxyStrictSSL` settings. The extension contributes a native trusted-domain default scoped to `https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/`; user overrides remain available in VS Code’s existing settings. A custom schema host must be trusted there.
+
+The first use needs access to GitHub. The editor providers offer cached schemas for offline use after a successful download. YAML support is editor assistance; it does not add YAML import or deployment support to the SuiteCloud CLI. Discovery runs only in trusted workspaces because SuiteCloud configuration files are JavaScript. This demo supports local filesystem workspaces; virtual workspaces are not included.
 
 ### Run the regression demo
 
-From `packages/vscode-extension`, install dependencies and run `npm run test:jsonObjects`. The runner uses a temporary multi-root workspace and a separate VS Code profile. Set `VSCODE_EXECUTABLE_PATH` to a local VS Code 1.141+ application executable to avoid downloading VS Code. The suite exercises live GitHub schemas, automatic registration, imported-file completion and diagnostics, source changes, enable/disable, workspace removal, template creation, and the existing extension regressions.
+From `packages/vscode-extension`, install dependencies and run `npm run test:jsonObjects`. The runner uses a temporary multi-root workspace and a separate VS Code profile. Set `YAML_EXTENSION_PATH` to an installed `redhat.vscode-yaml` extension directory (tested with 1.16.0); the runner loads it alongside the development extension. Set `VSCODE_EXECUTABLE_PATH` to a local VS Code 1.141+ application executable to avoid downloading VS Code. The suite exercises live GitHub schemas, automatic registration, JSON/YAML imported-file completion and diagnostics, native download/trust controls, source changes, enable/disable, workspace removal, template creation, and the existing extension regressions.
 
 ## SuiteCloud Commands
 The following SuiteCloud commands are available through the Command Palette:

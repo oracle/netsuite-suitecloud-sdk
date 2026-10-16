@@ -8,7 +8,6 @@ import * as path from 'path';
 import { FILES } from '../ApplicationConstants';
 import { JSON_OBJECTS, ObjectProject, SchemaAssociation } from './Configuration';
 import { containsPath, resolveProjects } from './ProjectDiscovery';
-import { SchemaRepository } from './SchemaRepository';
 
 function escapedUri(uri: vscode.Uri): string {
 	// JSON language service matches decoded URIs. Its glob-to-regexp converter preserves
@@ -16,7 +15,7 @@ function escapedUri(uri: vscode.Uri): string {
 	return uri.toString(true).replace(/[\\?*\[\]{}]/g, character => `\\u${character.charCodeAt(0).toString(16).padStart(4, '0')}`);
 }
 
-export function associationsFor(projects: readonly ObjectProject[], boundaries = projects.map(project => project.root)): SchemaAssociation[] {
+export function associationsFor(projects: readonly ObjectProject[], boundaries: readonly string[] = projects.map(project => project.root)): SchemaAssociation[] {
 	return projects.map(project => ({
 		url: project.schemaUrl,
 		fileMatch: [
@@ -39,9 +38,16 @@ export class SchemaRegistry implements vscode.FileSystemProvider, vscode.Disposa
 	private timer?: ReturnType<typeof setTimeout>;
 	private pending: Promise<void> = Promise.resolve();
 	projects: readonly ObjectProject[] = [];
+	private boundaries: readonly string[] = [];
 	readonly uri = vscode.Uri.parse(JSON_OBJECTS.REGISTRY_URI);
 
-	constructor(private readonly repository: SchemaRepository, private readonly log: (message: string) => void) {}
+	constructor(private readonly log: (message: string) => void) {}
+
+	projectForDocument(uri: vscode.Uri): ObjectProject | undefined {
+		if (uri.scheme !== 'file' || !vscode.workspace.isTrusted) { return undefined; }
+		return this.projects.find(project => containsPath(project.objects, uri.fsPath) &&
+			!this.boundaries.some(root => root !== project.root && containsPath(project.objects, root) && containsPath(root, uri.fsPath)));
+	}
 
 	start(): void {
 		this.subscriptions.push(vscode.workspace.registerFileSystemProvider(JSON_OBJECTS.REGISTRY_SCHEME, this, { isReadonly: true }));
@@ -85,17 +91,10 @@ export class SchemaRegistry implements vscode.FileSystemProvider, vscode.Disposa
 					}
 				}
 			}
-			const dependencies = new Set<string>();
-			await Promise.all([...new Set(projects.map(project => project.schemaUrl))].map(async url => {
-				try { (await this.repository.dependencies(url)).forEach(dependency => dependencies.add(dependency)); }
-				catch (error) { this.log(`JSON schema catalog: ${String(error)}`); }
-			}));
 			if (generation !== this.generation || this.disposed) { return; }
 			this.projects = projects;
-			const content = Buffer.from(JSON.stringify({ schemas: [
-				...associationsFor(projects, [...boundaries]),
-				...[...dependencies].sort().map(url => ({ url, fileMatch: [] })),
-			] }));
+			this.boundaries = [...boundaries];
+			const content = Buffer.from(JSON.stringify({ schemas: associationsFor(projects, this.boundaries) }));
 			if (force || !content.equals(this.content)) {
 				this.content = content;
 				this.modified = Date.now();

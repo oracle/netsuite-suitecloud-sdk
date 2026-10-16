@@ -29,6 +29,7 @@
 		"*"
 	],
 	"main": "./dist/suitecloud.js",
+	"extensionDependencies": ["redhat.vscode-yaml"],
 	"contributes": {
 		"commands": [
 			{
@@ -118,12 +119,12 @@
 			},
 			{
 				"command": "suitecloud.createjsonobject",
-				"title": "Create JSON Object",
+				"title": "Create JSON or YAML Object",
 				"category": "SuiteCloud"
 			},
 			{
 				"command": "suitecloud.refreshjsonschemas",
-				"title": "Refresh JSON Schemas",
+				"title": "Refresh Object Schemas",
 				"category": "SuiteCloud"
 			}
 		],
@@ -295,8 +296,13 @@
 				"url": "suitecloud-schema://registry/associations.json"
 			}
 		],
+		"configurationDefaults": {
+			"json.schemaDownload.trustedDomains": {
+				"https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/": true
+			}
+		},
 		"configuration": {
-			"title": "SuiteCloud JSON Objects",
+			"title": "SuiteCloud Object Schemas",
 			"properties": {
 				"suitecloud.jsonObjects.enabled": {
 					"type": "boolean",
@@ -322,7 +328,8 @@
 	},
 	"dependencies": {
 		"@oracle/suitecloud-cli": "^4.0.0",
-		"@vscode/codicons": "^0.0.46-24"
+		"@vscode/codicons": "^0.0.46-24",
+		"yaml": "2.9.1"
 	},
 	"devDependencies": {
 		"@types/mocha": "10.0.10",
