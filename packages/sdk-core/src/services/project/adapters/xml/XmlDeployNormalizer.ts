@@ -15,11 +15,11 @@ export function normalizeXmlDeploy(document: unknown, filename: string): Project
 	const deploy = getXmlRoot(document, filename, DEPLOY.ROOT);
 	const result: ProjectDeploySkeleton = {};
 	for (const child of xmlChildren(deploy)) {
-		const kind = child['#name'];
-		if (kind === DEPLOY.RUN) {
+		const groupId = child['#name'];
+		if (groupId === DEPLOY.RUN) {
 			(result.run ??= []).push(...parseScripts(child));
 		} else {
-			const paths = getDeployPathGroup(result, kind, filename, `/${DEPLOY.ROOT}/${kind}`);
+			const paths = getDeployPathGroup(result, groupId, filename, `/${DEPLOY.ROOT}/${groupId}`);
 			paths.push(...xmlChildren(child, DEPLOY.PATH).map(xmlText));
 		}
 	}

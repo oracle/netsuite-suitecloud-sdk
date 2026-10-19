@@ -33,8 +33,12 @@ module.exports = class ProjectInfoService {
 		if (!this._manifest) {
 			try {
 				this._manifest = readProjectManifest(this._projectFolder);
-			} catch (error) {
-				throw new CLIException(toErrorMessages(error).join(lineBreak));
+			}
+			catch (error) {
+				const header = NodeTranslationService.getMessage(ERRORS.INVALID_PROJECT_MANIFEST);
+				const details = toErrorMessages(error).map((entry) => ` - ${entry}`).join(lineBreak);
+				const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
+				throw new CLIException(`${header}${lineBreak}${details}${lineBreak}${guidance}`);
 			}
 		}
 		return this._manifest;
@@ -94,15 +98,11 @@ module.exports = class ProjectInfoService {
 	checkWorkingDirectoryContainsValidProject(commandName) {
 		try {
 			validateControlFileSetup(this._projectFolder);
-		} catch (error) {
-			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
-			throw new CLIException(`${commandName}:${lineBreak}${toErrorMessages(error).join(lineBreak)}${lineBreak}${guidance}`);
 		}
-	}
-
-	checkWorkingDirectoryContainsFile(commandName, fileName) {
-		if (!FileUtils.exists(path.join(this._projectFolder, fileName))) {
-			throw new CLIException(NodeTranslationService.getMessage(ERRORS.NOT_PROJECT_FOLDER, fileName, this._projectFolder, commandName));
+		catch (error) {
+			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
+			const details = toErrorMessages(error).map((entry) => ` - ${entry}`).join(lineBreak);
+			throw new CLIException(`Invalid SuiteCloud project context for command "${commandName}".${lineBreak}${details}${lineBreak}${guidance}`);
 		}
 	}
 };

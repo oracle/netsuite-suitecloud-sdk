@@ -13,21 +13,21 @@ const { DEPLOY } = CONTROL_FILE_FIELDS;
 
 export function getDeployPathGroup(
 	deploy: ProjectDeploySkeleton,
-	kind: string,
+	groupId: string,
 	filename: string,
 	propertyPath: string
 ): string[] {
-	switch (kind) {
+	switch (groupId) {
 		case DEPLOY.FILES:
 		case DEPLOY.OBJECTS:
 		case DEPLOY.TRANSLATION_IMPORTS:
-			return deploy[kind] ??= [];
+			return deploy[groupId] ??= [];
 		case DEPLOY.CONFIGURATION:
 			return deploy.configurations ??= [];
 		default:
 			throw new Error(translationService.getMessage(
 				PROJECT_CONTROL.ERROR.STRUCTURE_INVALID, filename, propertyPath,
-				`a supported deploy group (${[DEPLOY.FILES, DEPLOY.OBJECTS, DEPLOY.RUN, DEPLOY.TRANSLATION_IMPORTS, DEPLOY.CONFIGURATION].join(', ')})`
+				`a supported deploy group: ${[DEPLOY.FILES, DEPLOY.OBJECTS, DEPLOY.RUN, DEPLOY.TRANSLATION_IMPORTS, DEPLOY.CONFIGURATION].join(', ')}. Got "${groupId}"`
 			));
 	}
 }

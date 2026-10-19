@@ -286,6 +286,7 @@
 	"ERRORS_FILE_NOT_EXIST": "The file {0} was not found in the project.",
 	"ERRORS_GENERAL_CONNECTION_PROBLEM": "There was an error when communicating with the server. Try again later.",
 	"ERRORS_INTERACTIVE_MODE_MORE_OPTIONS": "The '-i' option cannot be used in combination with other options. Use either the '-i' option, or the other options you specified.",
+	"ERRORS_INVALID_PROJECT_MANIFEST": "Unable to read the SuiteCloud project manifest.",
 	"ERRORS_MISSING_DEFAULT_AUTH_ID": "The {0} property is missing.",
 	"ERRORS_NO_OBJECTS": "There are no objects matching your search criteria. Select a different set of object types, and if applicable, check the specified application ID and script ID.",
 	"ERRORS_NOT_PROJECT_FOLDER": "No {0} file was found in {1}. Run \"{2}\" in a valid project folder.",

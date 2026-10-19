@@ -50,13 +50,13 @@ export function normalizeSdfV2Deploy(document: unknown, filename: string): Proje
 		if (entries.length !== 1) {
 			throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.STRUCTURE_INVALID, filename, entryPath, 'exactly one deploy group'));
 		}
-		const [kind, value] = entries[0];
-		const propertyPath = `${entryPath}/${escapePointer(kind)}`;
+		const [groupId, value] = entries[0];
+		const propertyPath = `${entryPath}/${escapePointer(groupId)}`;
 		const group = requireMapping(value, filename, propertyPath);
-		if (kind === DEPLOY.RUN) {
+		if (groupId === DEPLOY.RUN) {
 			(result.run ??= []).push(...normalizeScripts(group[DEPLOY.SCRIPT], filename, `${propertyPath}/${DEPLOY.SCRIPT}`));
 		} else {
-			const paths = getDeployPathGroup(result, kind, filename, propertyPath);
+			const paths = getDeployPathGroup(result, groupId, filename, propertyPath);
 			paths.push(...asList(group[DEPLOY.PATH]).map(scalarText));
 		}
 	}
