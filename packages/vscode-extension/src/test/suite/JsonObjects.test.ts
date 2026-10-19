@@ -16,6 +16,7 @@ import { parse as parseYaml } from 'yaml';
 import { adaptYamlSchema, yamlSchemaUri } from '../../jsonObjects/YamlSupport';
 import { checkSchemaAccess, isSchemaLocationTrusted } from '../../jsonObjects/SchemaDownloads';
 import { JsonObjects, writeObject } from '../../jsonObjects/JsonObjects';
+import { JSON_OBJECTS } from '../../jsonObjects/Configuration';
 
 suite('SuiteCloud JSON and YAML objects', () => {
 	let directory: string;
@@ -241,6 +242,10 @@ suite('SuiteCloud JSON and YAML objects', () => {
 		const files = await matches();
 		assert(files.includes(pattern(path.join(nested, 'application', 'Objects'))));
 		assert.strictEqual(files.filter(value => !value.startsWith('!')).length, 2);
+		assert.strictEqual(vscode.workspace.getConfiguration('suitecloud.jsonObjects', vscode.Uri.file(first)).get('schemaUrl'),
+			'https://retired.example.invalid/parent.json');
+		const registry = JSON.parse(Buffer.from(await vscode.workspace.fs.readFile(registryUri)).toString());
+		assert.deepStrictEqual(registry.schemas.map((schema: any) => schema.url), [JSON_OBJECTS.PARENT_SCHEMA_URL, JSON_OBJECTS.PARENT_SCHEMA_URL]);
 		assert.strictEqual(vscode.workspace.getConfiguration('json').inspect('schemas')?.workspaceValue, undefined);
 		assert.strictEqual(vscode.workspace.getConfiguration('json').inspect('schemas')?.workspaceFolderValue, undefined);
 	});
@@ -285,7 +290,7 @@ suite('SuiteCloud JSON and YAML objects', () => {
 	}
 
 	test('uses native trust defaults and blocks templates and YAML when downloads are disabled', async () => {
-		const url = vscode.workspace.getConfiguration('suitecloud.jsonObjects').get<string>('schemaUrl')!;
+		const url = JSON_OBJECTS.PARENT_SCHEMA_URL;
 		checkSchemaAccess(url);
 		const config = vscode.workspace.getConfiguration('json');
 		const repository = new SchemaRepository();
@@ -305,7 +310,7 @@ suite('SuiteCloud JSON and YAML objects', () => {
 	});
 
 	test('generates required templates for all 15 object types in the hosted parent catalog', async () => {
-		const url = vscode.workspace.getConfiguration('suitecloud.jsonObjects').get<string>('schemaUrl')!;
+		const url = JSON_OBJECTS.PARENT_SCHEMA_URL;
 		const repository = new SchemaRepository();
 		const parent = await repository.load(url);
 		assert(typeof parent.schema === 'object');
