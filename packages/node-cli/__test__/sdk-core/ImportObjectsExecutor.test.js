@@ -57,6 +57,7 @@ describe('ImportObjectsExecutor manifest checks', () => {
 			['manifest.json', '{}'],
 		], 'Multiple manifest control files'],
 	])('rejects a %s manifest before requesting or writing objects', async (_name, files, errorMessage) => {
+		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>');
 		await Promise.all(files.map(([filename, contents]) => writeFile(join(projectFolder, filename), contents)));
 		const result = await executeImportObjects(input);
 		expect(result.status).toBe('ERROR');
@@ -65,14 +66,24 @@ describe('ImportObjectsExecutor manifest checks', () => {
 		await expect(access(input.targetFolder)).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
-	it('imports objects with a valid manifest and no deploy file', async () => {
+	it('imports objects with valid control-file setup without parsing deploy contents', async () => {
 		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>');
+		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy>');
 		const result = await executeImportObjects(input);
 		expect(result.status).toBe('SUCCESS');
 		expect(result.data.successfulImports).toHaveLength(1);
 		expect(sendFormRequest).toHaveBeenCalledTimes(1);
 		expect(await readFile(join(input.targetFolder, 'customlist_example.xml'), 'utf8'))
 			.toBe('<customlist scriptid="customlist_example"/>');
+	});
+
+	it('rejects missing deploy setup before requesting or writing objects', async () => {
+		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>');
+		const result = await executeImportObjects(input);
+		expect(result.status).toBe('ERROR');
+		expect(result.errorMessages[0]).toContain('Missing deploy control file');
+		expect(sendFormRequest).not.toHaveBeenCalled();
+		await expect(access(input.targetFolder)).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
 	it('preserves skipping manifest reads when referenced files are excluded', async () => {

@@ -31,9 +31,16 @@ export type SdfProjectControlFiles = {
 	application?: SdfProjectControlFile;
 };
 
-export type ProjectManifestSkeleton = {
-	[Key in keyof ProjectManifest]: ProjectManifest[Key] extends string | undefined ? string : ProjectManifest[Key];
-};
+/** Partial normalized data: widen string literals and recursively make object fields optional. */
+export type Skeleton<T> =
+	T extends string ? string :
+	T extends readonly (infer Item)[] ? Skeleton<Item>[] :
+	T extends object ? {
+		[Key in keyof T]?: Skeleton<NonNullable<T[Key]>>;
+	} :
+	T;
+
+export type ProjectManifestSkeleton = Skeleton<ProjectManifest>;
 
 export type ProjectManifest = {
 	projectType: SdfProjectType;
@@ -77,7 +84,7 @@ export type ManifestBundleDependency = {
 
 
 // Deploy fields do not need additional type narrowing at this stage.
-export type ProjectDeploySkeleton = ProjectDeploy;
+export type ProjectDeploySkeleton = Skeleton<ProjectDeploy>;
 
 export type ProjectDeploy = {
 	files: string[];

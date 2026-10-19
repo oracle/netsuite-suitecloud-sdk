@@ -8,12 +8,12 @@ const { mkdtemp, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const {
-	checkValidProjectContext,
-	checkValidControlFileSetup,
-	readProjectControlFilesSetup,
-	readProjectContext,
+	validateControlFileSetup,
 	readProjectManifest,
 } = require('@oracle/suitecloud-sdk-core').services;
+const {
+	readProjectContext,
+} = require('../../../sdk-core/build/services/project/ProjectControlService');
 const ProjectInfoService = require('../../src/services/ProjectInfoService');
 
 describe('ProjectControlService', () => {
@@ -41,9 +41,7 @@ describe('ProjectControlService', () => {
 
 		const description = readProjectContext(projectFolder);
 		const cliInfo = new ProjectInfoService(projectFolder);
-		expect(checkValidProjectContext(projectFolder)).toBeUndefined();
-		expect(checkValidControlFileSetup(projectFolder)).toBeUndefined();
-		expect(description.controlFiles).toEqual(readProjectControlFilesSetup(projectFolder));
+		expect(validateControlFileSetup(projectFolder)).toBeUndefined();
 		expect(description.controlFiles).toMatchObject({
 			manifest: { filePath: join(projectFolder, 'manifest.xml') },
 			deploy: { filePath: join(projectFolder, 'deploy.xml') },
@@ -69,7 +67,7 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, 'manifest.yaml'), 'manifest:\n  projecttype: ACCOUNTCUSTOMIZATION\n  frameworkversion: "2.0"');
 		await writeFile(join(projectFolder, 'deploy.json'), '{"deploy": []}');
 		await writeFile(join(projectFolder, 'translation.xml'), '<xliff/>');
-		expect(readProjectControlFilesSetup(projectFolder)).toMatchObject({
+		expect(readProjectContext(projectFolder).controlFiles).toMatchObject({
 			manifest: { fileName: 'manifest.yaml', filePath: join(projectFolder, 'manifest.yaml') },
 			deploy: { fileName: 'deploy.json', filePath: join(projectFolder, 'deploy.json') },
 		});
@@ -142,11 +140,11 @@ describe('ProjectControlService', () => {
 
 	it('rejects missing, duplicate, and mixed-generation control files', async () => {
 		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest/>');
-		expect(() => checkValidControlFileSetup(projectFolder)).toThrow('Missing deploy control file');
+		expect(() => validateControlFileSetup(projectFolder)).toThrow('Missing deploy control file');
 		await writeFile(join(projectFolder, 'deploy.yaml'), 'files: []');
-		expect(() => checkValidControlFileSetup(projectFolder)).toThrow('cannot be mixed');
+		expect(() => validateControlFileSetup(projectFolder)).toThrow('cannot be mixed');
 		await writeFile(join(projectFolder, 'manifest.json'), '{}');
-		expect(() => checkValidControlFileSetup(projectFolder)).toThrow('Multiple manifest control files');
+		expect(() => validateControlFileSetup(projectFolder)).toThrow('Multiple manifest control files');
 	});
 
 	it.each([
@@ -156,7 +154,7 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, `manifest.${manifestFormat}`), '{}');
 		await writeFile(join(projectFolder, `deploy.${manifestFormat}`), '{}');
 		await writeFile(join(projectFolder, `application.${applicationFormat}`), '{}');
-		expect(() => checkValidControlFileSetup(projectFolder)).toThrow('cannot be mixed');
+		expect(() => validateControlFileSetup(projectFolder)).toThrow('cannot be mixed');
 		expect(() => readProjectContext(projectFolder)).toThrow(`application.${applicationFormat}`);
 	});
 
@@ -180,7 +178,7 @@ describe('ProjectControlService', () => {
 			writeFile(join(projectFolder, 'application.json'), '{}'),
 			writeFile(join(projectFolder, 'application.yaml'), 'application: {}'),
 		]);
-		expect(() => checkValidControlFileSetup(projectFolder)).toThrow('Multiple application control files');
+		expect(() => validateControlFileSetup(projectFolder)).toThrow('Multiple application control files');
 	});
 
 	it.each(['json', 'yaml', 'yml'])('reports invalid manifest.%s consistently during metadata reads and inspection', async (format) => {
@@ -218,9 +216,8 @@ describe('ProjectControlService', () => {
 	it.each(['json', 'yaml', 'yml'])('rejects malformed deploy.%s during inspection while metadata reads remain independent', async (format) => {
 		await writeFile(join(projectFolder, 'manifest.json'), '{"manifest": {"projecttype": "ACCOUNTCUSTOMIZATION", "frameworkversion": "2.0"}}');
 		await writeFile(join(projectFolder, `deploy.${format}`), '{');
-		expect(checkValidControlFileSetup(projectFolder)).toBeUndefined();
+		expect(validateControlFileSetup(projectFolder)).toBeUndefined();
 		expect(readProjectManifest(projectFolder).projectType).toBe('ACCOUNTCUSTOMIZATION');
-		expect(() => checkValidProjectContext(projectFolder)).toThrow(`Invalid deploy.${format}:`);
 		expect(() => readProjectContext(projectFolder)).toThrow(`Invalid deploy.${format}:`);
 	});
 
@@ -228,15 +225,26 @@ describe('ProjectControlService', () => {
 		['missing deploy', [], 'Missing deploy control file'],
 		['duplicate deploy', ['deploy.xml', 'deploy.json'], 'Multiple deploy control files'],
 		['mixed-generation deploy', ['deploy.json'], 'cannot be mixed'],
-		['malformed deploy', ['deploy.xml'], 'Invalid deploy.xml'],
-	])('reads manifest metadata independently of %s and application contents', async (_name, deployFiles, inspectionError) => {
+		['duplicate application', ['deploy.xml', 'application.xml', 'application.yml'], 'Multiple application control files'],
+		['mixed-generation application', ['deploy.xml', 'application.json'], 'cannot be mixed'],
+	])('rejects %s before reading any control-file contents', async (_name, controlFiles, errorMessage) => {
+		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest>');
+		await Promise.all(controlFiles.map((filename) => writeFile(join(projectFolder, filename), '{')));
+
+		for (const read of [validateControlFileSetup, readProjectManifest, readProjectContext]) {
+			expect(() => read(projectFolder)).toThrow(errorMessage);
+		}
+	});
+
+	it('reads XML manifest metadata without parsing deploy or application contents', async () => {
 		await writeFile(join(projectFolder, 'manifest.xml'),
 			'<manifest projecttype="SUITEAPP"><publisherid>com.example</publisherid><projectid>app</projectid><frameworkversion>1.0</frameworkversion></manifest>');
+		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy>');
 		await writeFile(join(projectFolder, 'application.xml'), '<application>');
-		await Promise.all(deployFiles.map((filename) => writeFile(join(projectFolder, filename), '<deploy>')));
 
+		expect(validateControlFileSetup(projectFolder)).toBeUndefined();
 		expect(readProjectManifest(projectFolder).applicationId).toBe('com.example.app');
-		expect(() => readProjectContext(projectFolder)).toThrow(inspectionError);
+		expect(() => readProjectContext(projectFolder)).toThrow('Invalid deploy.xml');
 	});
 
 	it('still rejects missing and duplicate manifests during metadata reads', async () => {
@@ -256,7 +264,6 @@ describe('ProjectControlService', () => {
 			if (projectType === 'SUITEAPP') {
 				expect(readProjectContext(projectFolder).controlFiles.application.fileName).toBe(`application.${format}`);
 			} else {
-				expect(() => checkValidProjectContext(projectFolder)).toThrow(`The application.${format} control file is only allowed in SuiteApp projects.`);
 				expect(() => readProjectContext(projectFolder)).toThrow('only allowed in SuiteApp projects');
 			}
 		}
