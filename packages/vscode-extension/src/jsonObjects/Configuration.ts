@@ -6,7 +6,7 @@
 export const JSON_OBJECTS = {
 	CONFIGURATION: 'suitecloud.jsonObjects',
 	ENABLED: 'enabled',
-	SCHEMA_URL: 'schemaUrl',
+	PARENT_SCHEMA_URL: 'https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/poc/json-parent-schema/packages/schemas/suitecloud-objects-1.0.0.json',
 	REGISTRY_SCHEME: 'suitecloud-schema',
 	REGISTRY_URI: 'suitecloud-schema://registry/associations.json',
 	DISCOVERY_EXCLUDE: '**/{node_modules,.git,.vscode-test,.suitecloud-sdk}/**',

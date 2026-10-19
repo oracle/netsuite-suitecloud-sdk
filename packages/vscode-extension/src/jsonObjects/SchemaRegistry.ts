@@ -82,9 +82,7 @@ export class SchemaRegistry implements vscode.FileSystemProvider, vscode.Disposa
 						const settings = vscode.workspace.getConfiguration(JSON_OBJECTS.CONFIGURATION, vscode.Uri.file(root));
 						if (!settings.get<boolean>(JSON_OBJECTS.ENABLED)) { continue; }
 						try {
-							const schemaUrl = settings.get<string>(JSON_OBJECTS.SCHEMA_URL) ?? '';
-							if (new URL(schemaUrl).protocol !== 'https:') { throw new Error('The parent schema URL must use HTTPS.'); }
-							for (const project of resolveProjects(root, schemaUrl)) {
+							for (const project of resolveProjects(root, JSON_OBJECTS.PARENT_SCHEMA_URL)) {
 								if (!projects.some(existing => existing.source === project.source)) { projects.push(project); }
 							}
 						} catch (error) { this.log(`JSON objects: ${root}: ${String(error)}`); }

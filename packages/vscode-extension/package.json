@@ -309,12 +309,6 @@
 					"default": true,
 					"scope": "resource",
 					"description": "Enable schema completion, validation, and template creation for discovered SuiteCloud object directories."
-				},
-				"suitecloud.jsonObjects.schemaUrl": {
-					"type": "string",
-					"default": "https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/refs/heads/poc/json-parent-schema/packages/schemas/suitecloud-objects-1.0.0.json",
-					"scope": "resource",
-					"description": "URL of the parent JSON schema. Use a raw GitHub branch or commit URL."
 				}
 			}
 		}

@@ -23,6 +23,12 @@ async function main(): Promise<void> {
 			await fs.writeFile(path.join(directory, 'suitecloud.config.js'), `module.exports = { defaultProjectFolder: '${source}' };\n`);
 			await fs.writeFile(path.join(directory, source, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"><projectname>JSON demo</projectname></manifest>');
 		}
+		// A saved override from the earlier PoC must not replace the built-in catalog.
+		const legacySettings = path.join(root, 'project [a]', '.vscode');
+		await fs.mkdir(legacySettings, { recursive: true });
+		await fs.writeFile(path.join(legacySettings, 'settings.json'), JSON.stringify({
+			'suitecloud.jsonObjects.schemaUrl': 'https://retired.example.invalid/parent.json',
+		}));
 		const workspace = path.join(root, 'test.code-workspace');
 		await fs.writeFile(workspace, JSON.stringify({ folders: [{ path: 'project [a]' }, { path: 'repository-b' }], settings: { 'extensions.autoUpdate': false } }));
 		await runTests({
