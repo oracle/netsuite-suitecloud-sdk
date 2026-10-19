@@ -4,9 +4,11 @@
  */
 'use strict';
 
-import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
+import { getApplicationId } from '../utils/ProjectManifestNormalizerUtils';
+
+import { CONTROL_FILE_FIELDS } from '../../SuiteCloudProjectConstants';
 import { getXmlRoot, xmlText } from './XmlControlFileParser';
-import type { ProjectManifestSkeleton } from '../SuiteCloudControlFileTypes';
+import type { ProjectManifestSkeleton } from '../../SuiteCloudControlFileTypes';
 
 const { MANIFEST } = CONTROL_FILE_FIELDS;
 
@@ -19,10 +21,10 @@ export function normalizeXmlManifest(document: unknown, filename: string): Proje
 		projectName: xmlText(manifest[MANIFEST.PROJECT_NAME]),
 		publisherId,
 		projectId,
-		applicationId: publisherId && projectId ? `${publisherId}.${projectId}` : undefined,
 		projectVersion: xmlText(manifest[MANIFEST.PROJECT_VERSION]),
 		frameworkVersion: xmlText(manifest[MANIFEST.FRAMEWORK_VERSION]),
 		// TODO: Implement ManifestDependencies Normalization (as of now it's not required).
 		dependencies: undefined,
+		getApplicationId,
 	};
 }

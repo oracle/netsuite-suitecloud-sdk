@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { getControlFileAdapter } = require('../../../sdk-core/build/services/project/ControlFileAdapterRegistry');
+const { getControlFileAdapter } = require('../../../sdk-core/build/services/project/adapters/ControlFileAdapterRegistry');
 const { parseControlFile, defineProjectParsingTests, defineStructuredControlFileTests } = require('./helpers/ControlFileAdapterAssertions');
 
 // Use native YAML for both project types, including direct dependency lists.

@@ -55,7 +55,7 @@ export async function executeUpdateCustomRecordWithInstances(
 			return errorResult(translationService.getMessage(OBJECT.ERROR.OBJECT_DOES_NOT_EXIST, input.scriptId));
 		}
 
-		const packageRoot = readProjectManifest(input.projectFolder).applicationId;
+		const packageRoot = readProjectManifest(input.projectFolder).getApplicationId();
 		const params: Record<string, string | string[]> = { scriptid: input.scriptId };
 		if (packageRoot) {
 			params.appid = packageRoot;

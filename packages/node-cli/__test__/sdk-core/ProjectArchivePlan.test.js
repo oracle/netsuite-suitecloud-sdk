@@ -44,6 +44,15 @@ describe('ProjectArchivePlan', () => {
 		expect(listPlannedFiles(archivePlan.entries)).toEqual(expectedArchiveFiles());
 	});
 
+	it.each(['SUITEAPP', 'ACCOUNTCUSTOMIZATION'])('packages %s without optional deploy groups', async (projectType) => {
+		await rm(join(projectFolder, 'application.xml'));
+		await writeFile(join(projectFolder, 'manifest.xml'),
+			`<manifest projecttype="${projectType}"><frameworkversion>1.0</frameworkversion></manifest>`);
+		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>');
+		const archivePlan = await createPackageArchivePlan(projectFolder);
+		expect(listPlannedFiles(archivePlan.entries)).toEqual(['deploy.xml', 'manifest.xml']);
+	});
+
 	it('uses the deploy.xml archive plan for project endpoint uploads', async () => {
 		projectArchivePath = await createProjectArchive(projectFolder);
 		extractionFolder = await mkdtemp(join(tmpdir(), 'suitecloud-project-archive-extracted-'));

@@ -33,7 +33,7 @@ export async function executeCreateFile(input: ExecuteCreateFileInput): Promise<
 	try {
 		const normalizedPath = normalizeSuiteScriptPath(input.path);
 		const manifest = readProjectManifest(input.projectFolder);
-		validateFileCabinetPath(normalizedPath, { projectType: manifest.projectType, appId: manifest.applicationId });
+		validateFileCabinetPath(normalizedPath, { projectType: manifest.projectType, appId: manifest.getApplicationId() });
 
 		const fileCabinetRoot = resolve(input.projectFolder, FOLDERS.FILE_CABINET);
 		const fileAbsolutePath = resolveFileCabinetPath(fileCabinetRoot, normalizedPath);

@@ -4,8 +4,8 @@
  */
 'use strict';
 
-import type { ProjectDeploySkeleton, ProjectManifestSkeleton } from './SuiteCloudControlFileTypes';
-export type ControlFileAdapter = {
+import type { ProjectDeploySkeleton, ProjectManifestSkeleton } from '../SuiteCloudControlFileTypes';
+export interface ControlFileAdapter {
 	parseDocument(contents: string, filename: string): unknown;
 	normalizeManifest(document: unknown, filename: string): ProjectManifestSkeleton;
 	normalizeDeploy(document: unknown, filename: string): ProjectDeploySkeleton;

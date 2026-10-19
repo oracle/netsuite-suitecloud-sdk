@@ -4,16 +4,12 @@
  */
 'use strict';
 
-import type { ProjectDeploySkeleton } from '../SuiteCloudControlFileTypes';
-import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
-import { PROJECT_CONTROL } from '../../translation/TranslationKeys';
-import { translationService } from '../../translation/TranslationService';
+import type { ProjectDeploySkeleton } from '../../SuiteCloudControlFileTypes';
+import { CONTROL_FILE_FIELDS } from '../../SuiteCloudProjectConstants';
+import { PROJECT_CONTROL } from '../../../translation/TranslationKeys';
+import { translationService } from '../../../translation/TranslationService';
 
 const { DEPLOY } = CONTROL_FILE_FIELDS;
-
-export function createProjectDeploySkeleton(): ProjectDeploySkeleton {
-	return { files: [], objects: [], run: [], translationimports: [], configurations: [] };
-}
 
 export function getDeployPathGroup(
 	deploy: ProjectDeploySkeleton,
@@ -25,9 +21,9 @@ export function getDeployPathGroup(
 		case DEPLOY.FILES:
 		case DEPLOY.OBJECTS:
 		case DEPLOY.TRANSLATION_IMPORTS:
-			return deploy[kind];
+			return deploy[kind] ??= [];
 		case DEPLOY.CONFIGURATION:
-			return deploy.configurations;
+			return deploy.configurations ??= [];
 		default:
 			throw new Error(translationService.getMessage(
 				PROJECT_CONTROL.ERROR.STRUCTURE_INVALID, filename, propertyPath,

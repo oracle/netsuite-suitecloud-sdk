@@ -5,8 +5,8 @@
 'use strict';
 
 import { parseDocument } from 'yaml';
-import { PROJECT_CONTROL } from '../../translation/TranslationKeys';
-import { translationService } from '../../translation/TranslationService';
+import { PROJECT_CONTROL } from '../../../translation/TranslationKeys';
+import { translationService } from '../../../translation/TranslationService';
 
 export function parseYamlDocument(contents: string, filename: string): unknown {
 	try {

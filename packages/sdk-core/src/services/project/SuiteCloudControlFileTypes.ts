@@ -12,23 +12,23 @@ export type SdfProjectType = `${SDF_PROJECT_TYPES}`;
 export type SdfControlFileType = typeof FILES.CONTROL_FILES[keyof typeof FILES.CONTROL_FILES];
 
 
-export type SdfProjectControlFile = {
+export type SdfControlFileMetadata = {
 	type: SdfControlFileType;
 	fileName: string;
 	filePath: string;
 	fileFormat: SdfSupportedFileFormat;
 };
 
-export type ProjectContext = {
-	controlFiles: SdfProjectControlFiles;
-	manifest: ProjectManifest;
-	deploy: ProjectDeploy;
+export type SdfProjectControlFilesMetadata = {
+	manifest: SdfControlFileMetadata;
+	deploy: SdfControlFileMetadata;
+	application?: SdfControlFileMetadata;
 };
 
-export type SdfProjectControlFiles = {
-	manifest: SdfProjectControlFile;
-	deploy: SdfProjectControlFile;
-	application?: SdfProjectControlFile;
+export type ProjectContext = {
+	controlFilesMetadata: SdfProjectControlFilesMetadata;
+	manifest: ProjectManifest;
+	deploy: ProjectDeploy;
 };
 
 /** Partial normalized data: widen string literals and recursively make object fields optional. */
@@ -40,17 +40,18 @@ export type Skeleton<T> =
 	} :
 	T;
 
-export type ProjectManifestSkeleton = Skeleton<ProjectManifest>;
+export type ProjectManifestSkeleton = Skeleton<Omit<ProjectManifest, 'getApplicationId'>> & Pick<ProjectManifest, 'getApplicationId'>;
 
 export type ProjectManifest = {
 	projectType: SdfProjectType;
 	projectName: string;
 	publisherId?: string;
 	projectId?: string;
-	applicationId?: string;
 	projectVersion?: string;
 	frameworkVersion: SdfFrameworkVersion;
 	dependencies?: ManifestDependencies;
+	
+	getApplicationId(): string | undefined;
 };
 
 // As of writing this, ManifestDependencies is always left undefined
@@ -87,11 +88,11 @@ export type ManifestBundleDependency = {
 export type ProjectDeploySkeleton = Skeleton<ProjectDeploy>;
 
 export type ProjectDeploy = {
-	files: string[];
-	objects: string[];
-	run: DeployScript[];
-	translationimports: string[];
-	configurations: string[];
+	files?: string[];
+	objects?: string[];
+	run?: DeployScript[];
+	translationimports?: string[];
+	configurations?: string[];
 };
 
 export type DeployScript = {

@@ -4,16 +4,16 @@
  */
 'use strict';
 
-const { getControlFileAdapter } = require('../../../../sdk-core/build/services/project/ControlFileAdapterRegistry');
+const { getControlFileAdapter } = require('../../../../sdk-core/build/services/project/adapters/ControlFileAdapterRegistry');
 
 const EXPECTED_MANIFESTS = {
 	suiteapp: {
 		projectType: 'SUITEAPP', projectName: 'Sample App', publisherId: 'com.netsuite', projectId: 'sampleapp',
-		applicationId: 'com.netsuite.sampleapp', projectVersion: '1.0.0',
+		projectVersion: '1.0.0',
 	},
 	acp: {
 		projectType: 'ACCOUNTCUSTOMIZATION', projectName: 'Account Customization Project', publisherId: '', projectId: '',
-		applicationId: undefined, projectVersion: '',
+		projectVersion: '',
 	},
 };
 
@@ -30,12 +30,12 @@ const EXPECTED_DEPLOYS = {
 			{ path: '~/Objects/customscript_defaults.xml', deployment: 'customdeploy_defaults' },
 		],
 		translationimports: ['~/Translations/custcollection_strings_fr_FR.xlf'],
-		configurations: [],
+		configurations: undefined,
 	},
 	acp: {
 		files: ['~/FileCabinet/SuiteScripts/account-utility.js'],
 		objects: ['~/Objects/customrecord_accountsettings.xml'],
-		run: [],
+		run: undefined,
 		translationimports: ['~/Translations/custcollection_accountstrings_es_ES.xlf'],
 		configurations: ['~/AccountConfiguration/features.xml', '~/AccountConfiguration/preferences.xml'],
 	},
@@ -53,6 +53,23 @@ function parseControlFile(format, kind, contents) {
 }
 
 function defineProjectParsingTests(format, fixtures) {
+	it('computes the application ID from the current manifest identity on demand', () => {
+		const { normalized } = parseControlFile(format, 'manifest', fixtures.suiteapp.manifest);
+		expect(normalized).not.toHaveProperty('applicationId');
+		expect(normalized.getApplicationId()).toBe('com.netsuite.sampleapp');
+		normalized.projectId = 'changed';
+		expect(normalized.getApplicationId()).toBe('com.netsuite.changed');
+	});
+
+	it.each([
+		[undefined, 'app'], ['com.example', undefined], ['', 'app'], ['com.example', ''], [undefined, undefined],
+	])('returns undefined for incomplete application identity: %j, %j', (publisherId, projectId) => {
+		const { normalized } = parseControlFile(format, 'manifest', fixtures.suiteapp.manifest);
+		normalized.publisherId = publisherId;
+		normalized.projectId = projectId;
+		expect(normalized.getApplicationId()).toBeUndefined();
+	});
+
 	describe.each(['suiteapp', 'acp'])('%s manifest and deploy', (projectType) => {
 		const { manifest, deploy } = fixtures[projectType];
 		const frameworkVersion = format === 'xml' ? '1.0' : '2.0';
@@ -62,6 +79,7 @@ function defineProjectParsingTests(format, fixtures) {
 			expect(normalized).toEqual({
 				...EXPECTED_MANIFESTS[projectType], frameworkVersion,
 				dependencies: undefined,
+				getApplicationId: expect.any(Function),
 			});
 			expect(JSON.stringify(document)).toBe(originalDocument);
 		});
@@ -108,12 +126,12 @@ function defineStructuredControlFileTests(format) {
 		expect(normalized).toEqual({
 			files: [], objects: ['~/Objects/*'],
 			run: [{ path: '~/Objects/install.xml', deployment: 'customdeploy_install' }],
-			translationimports: [], configurations: [],
+			translationimports: undefined, configurations: undefined,
 		});
 	});
 
 	it('accepts an empty deploy array while content validation is deferred', () => {
-		expect(parseControlFile(format, 'deploy', '{"deploy": []}').normalized).toEqual({ files: [], objects: [], run: [], translationimports: [], configurations: [] });
+		expect(parseControlFile(format, 'deploy', '{"deploy": []}').normalized).toEqual({});
 	});
 
 	it.each(['1.0', '2.0', '2.0.0', undefined])('leaves framework-version validation deferred: %s', (frameworkversion) => {

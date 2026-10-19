@@ -4,11 +4,13 @@
  */
 'use strict';
 
-import { PROJECT_CONTROL } from '../../translation/TranslationKeys';
-import { translationService } from '../../translation/TranslationService';
-import type { DeployScript, ProjectDeploySkeleton, ProjectManifestSkeleton } from '../SuiteCloudControlFileTypes';
-import { createProjectDeploySkeleton, getDeployPathGroup } from '../utils/ProjectDeployNormalizerUtils';
-import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
+import { getApplicationId } from '../utils/ProjectManifestNormalizerUtils';
+
+import { PROJECT_CONTROL } from '../../../translation/TranslationKeys';
+import { translationService } from '../../../translation/TranslationService';
+import type { DeployScript, ProjectDeploySkeleton, ProjectManifestSkeleton } from '../../SuiteCloudControlFileTypes';
+import { getDeployPathGroup } from '../utils/ProjectDeployNormalizerUtils';
+import { CONTROL_FILE_FIELDS } from '../../SuiteCloudProjectConstants';
 
 const { MANIFEST, DEPLOY } = CONTROL_FILE_FIELDS;
 
@@ -23,21 +25,23 @@ export function normalizeSdfV2Manifest(document: unknown, filename: string): Pro
 		projectName: scalarText(manifest[MANIFEST.PROJECT_NAME]),
 		publisherId,
 		projectId,
-		applicationId: publisherId && projectId ? `${publisherId}.${projectId}` : undefined,
 		projectVersion: scalarText(manifest[MANIFEST.PROJECT_VERSION]),
 		frameworkVersion: scalarText(manifest[MANIFEST.FRAMEWORK_VERSION]),
 		// TODO: Implement ManifestDependencies Normalization (as of now it's not required).
 		dependencies: undefined,
+		getApplicationId,
 	};
 }
 
 export function normalizeSdfV2Deploy(document: unknown, filename: string): ProjectDeploySkeleton {
 	const deploy = getRoot(document, filename, DEPLOY.ROOT);
 	const rootPath = `/${DEPLOY.ROOT}`;
-	const result = createProjectDeploySkeleton();
+	const result: ProjectDeploySkeleton = {};
+
 	if (!Array.isArray(deploy)) {
 		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.STRUCTURE_INVALID, filename, rootPath, 'an ordered array of deploy groups'));
 	}
+
 	// Each item contains one group; the array preserves repeated groups and their order.
 	for (let index = 0; index < deploy.length; index++) {
 		const entryPath = `${rootPath}/${index}`;
@@ -50,7 +54,7 @@ export function normalizeSdfV2Deploy(document: unknown, filename: string): Proje
 		const propertyPath = `${entryPath}/${escapePointer(kind)}`;
 		const group = requireMapping(value, filename, propertyPath);
 		if (kind === DEPLOY.RUN) {
-			result.run.push(...normalizeScripts(group[DEPLOY.SCRIPT], filename, `${propertyPath}/${DEPLOY.SCRIPT}`));
+			(result.run ??= []).push(...normalizeScripts(group[DEPLOY.SCRIPT], filename, `${propertyPath}/${DEPLOY.SCRIPT}`));
 		} else {
 			const paths = getDeployPathGroup(result, kind, filename, propertyPath);
 			paths.push(...asList(group[DEPLOY.PATH]).map(scalarText));

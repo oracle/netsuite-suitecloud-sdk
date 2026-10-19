@@ -4,20 +4,20 @@
  */
 'use strict';
 
-import type { DeployScript, ProjectDeploySkeleton } from '../SuiteCloudControlFileTypes';
-import { createProjectDeploySkeleton, getDeployPathGroup } from '../utils/ProjectDeployNormalizerUtils';
-import { CONTROL_FILE_FIELDS } from '../SuiteCloudProjectConstants';
+import type { DeployScript, ProjectDeploySkeleton } from '../../SuiteCloudControlFileTypes';
+import { getDeployPathGroup } from '../utils/ProjectDeployNormalizerUtils';
+import { CONTROL_FILE_FIELDS } from '../../SuiteCloudProjectConstants';
 import { getXmlRoot, xmlChildren, xmlText, type XmlNode } from './XmlControlFileParser';
 
 const { DEPLOY } = CONTROL_FILE_FIELDS;
 
 export function normalizeXmlDeploy(document: unknown, filename: string): ProjectDeploySkeleton {
 	const deploy = getXmlRoot(document, filename, DEPLOY.ROOT);
-	const result = createProjectDeploySkeleton();
+	const result: ProjectDeploySkeleton = {};
 	for (const child of xmlChildren(deploy)) {
 		const kind = child['#name'];
 		if (kind === DEPLOY.RUN) {
-			result.run.push(...parseScripts(child));
+			(result.run ??= []).push(...parseScripts(child));
 		} else {
 			const paths = getDeployPathGroup(result, kind, filename, `/${DEPLOY.ROOT}/${kind}`);
 			paths.push(...xmlChildren(child, DEPLOY.PATH).map(xmlText));

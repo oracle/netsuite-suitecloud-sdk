@@ -42,7 +42,7 @@ describe('ProjectControlService', () => {
 		const description = readProjectContext(projectFolder);
 		const cliInfo = new ProjectInfoService(projectFolder);
 		expect(validateControlFileSetup(projectFolder)).toBeUndefined();
-		expect(description.controlFiles).toMatchObject({
+		expect(description.controlFilesMetadata).toMatchObject({
 			manifest: { filePath: join(projectFolder, 'manifest.xml') },
 			deploy: { filePath: join(projectFolder, 'deploy.xml') },
 			application: { fileName: 'application.xml', filePath: join(projectFolder, 'application.xml'), fileFormat: 'xml' },
@@ -56,10 +56,11 @@ describe('ProjectControlService', () => {
 			frameworkVersion: '1.0',
 		});
 		expect(cliInfo.getApplicationId()).toBe('com.example.app');
-		expect(description.manifest.applicationId).toBe('com.example.app');
+		expect(description.manifest.getApplicationId()).toBe('com.example.app');
+		expect(description.manifest).not.toHaveProperty('applicationId');
 		expect(description.deploy).toEqual({
 			files: ['~/FileCabinet/first.js', '~/FileCabinet/second.js'],
-			objects: ['~/Objects/record.xml'], run: [], translationimports: [], configurations: [],
+			objects: ['~/Objects/record.xml'], run: undefined, translationimports: undefined, configurations: undefined,
 		});
 	});
 
@@ -67,14 +68,26 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, 'manifest.yaml'), 'manifest:\n  projecttype: ACCOUNTCUSTOMIZATION\n  frameworkversion: "2.0"');
 		await writeFile(join(projectFolder, 'deploy.json'), '{"deploy": []}');
 		await writeFile(join(projectFolder, 'translation.xml'), '<xliff/>');
-		expect(readProjectContext(projectFolder).controlFiles).toMatchObject({
+		expect(readProjectContext(projectFolder).controlFilesMetadata).toMatchObject({
 			manifest: { fileName: 'manifest.yaml', filePath: join(projectFolder, 'manifest.yaml') },
 			deploy: { fileName: 'deploy.json', filePath: join(projectFolder, 'deploy.json') },
 		});
 		const description = readProjectContext(projectFolder);
 		expect(description.manifest).toEqual(readProjectManifest(projectFolder));
 		expect(description.manifest.frameworkVersion).toBe('2.0');
-		expect(description.deploy).toEqual({ files: [], objects: [], run: [], translationimports: [], configurations: [] });
+		expect(description.deploy).toEqual({});
+	});
+
+	it.each(['xml', 'json', 'yaml', 'yml'])('preserves explicitly empty optional groups in deploy.%s', async (format) => {
+		await writeFile(join(projectFolder, `manifest.${format}`), format === 'xml'
+			? '<manifest projecttype="SUITEAPP"><frameworkversion>1.0</frameworkversion></manifest>'
+			: '{"manifest":{"projecttype":"SUITEAPP","frameworkversion":"2.0"}}');
+		await writeFile(join(projectFolder, `deploy.${format}`), format === 'xml'
+			? '<deploy><files/><objects/><run/><translationimports/><configuration/></deploy>'
+			: '{"deploy":[{"files":{}},{"objects":{}},{"run":{}},{"translationimports":{}},{"configuration":{}}]}');
+		expect(readProjectContext(projectFolder).deploy).toEqual({
+			files: [], objects: [], run: [], translationimports: [], configurations: [],
+		});
 	});
 
 	it.each(['xml', 'json', 'yaml', 'yml'])('collects repeated path sections and run scripts in deploy.%s', async (format) => {
@@ -98,7 +111,7 @@ describe('ProjectControlService', () => {
 
 		expect(readProjectContext(projectFolder).deploy).toEqual({
 			files: ['~/FileCabinet/first.js', '~/FileCabinet/second.js'],
-			objects: [], translationimports: [], configurations: [],
+			objects: undefined, translationimports: undefined, configurations: undefined,
 			run: [
 				{ path: '~/Objects/first.xml', deployment: 'first' },
 				{ path: '~/Objects/second.xml', deployment: 'second' },
@@ -164,7 +177,7 @@ describe('ProjectControlService', () => {
 			writeFile(join(projectFolder, 'deploy.yaml'), 'deploy: []'),
 			writeFile(join(projectFolder, 'application.yml'), 'application: {}'),
 		]);
-		expect(readProjectContext(projectFolder).controlFiles).toMatchObject({
+		expect(readProjectContext(projectFolder).controlFilesMetadata).toMatchObject({
 			manifest: { fileName: 'manifest.json' },
 			deploy: { fileName: 'deploy.yaml' },
 			application: { fileName: 'application.yml' },
@@ -206,7 +219,7 @@ describe('ProjectControlService', () => {
 		const description = readProjectContext(projectFolder);
 		const cliInfo = new ProjectInfoService(projectFolder);
 		expect(description.manifest).toEqual(readProjectManifest(projectFolder));
-		expect(description.manifest.applicationId).toBe(cliInfo.getApplicationId());
+		expect(description.manifest.getApplicationId()).toBe(cliInfo.getApplicationId());
 		expect(cliInfo.getApplicationId()).toBe('com.example.app');
 		expect(description.manifest.frameworkVersion).toBe('2.0');
 		expect(description.deploy.files)
@@ -243,7 +256,7 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, 'application.xml'), '<application>');
 
 		expect(validateControlFileSetup(projectFolder)).toBeUndefined();
-		expect(readProjectManifest(projectFolder).applicationId).toBe('com.example.app');
+		expect(readProjectManifest(projectFolder).getApplicationId()).toBe('com.example.app');
 		expect(() => readProjectContext(projectFolder)).toThrow('Invalid deploy.xml');
 	});
 
@@ -262,7 +275,7 @@ describe('ProjectControlService', () => {
 				? `<manifest projecttype="${projectType}"><frameworkversion>1.0</frameworkversion></manifest>`
 				: JSON.stringify({ manifest: { projecttype: projectType, frameworkversion: '2.0' } }));
 			if (projectType === 'SUITEAPP') {
-				expect(readProjectContext(projectFolder).controlFiles.application.fileName).toBe(`application.${format}`);
+				expect(readProjectContext(projectFolder).controlFilesMetadata.application.fileName).toBe(`application.${format}`);
 			} else {
 				expect(() => readProjectContext(projectFolder)).toThrow('only allowed in SuiteApp projects');
 			}
@@ -274,7 +287,7 @@ describe('ProjectControlService', () => {
 		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>');
 		await writeFile(join(projectFolder, 'application.xml'), contents);
 		const description = readProjectContext(projectFolder);
-		expect(description.controlFiles.application.fileName).toBe('application.xml');
+		expect(description.controlFilesMetadata.application.fileName).toBe('application.xml');
 	});
 
 	it('reports a malformed manifest and wrong deploy root with their filenames', async () => {

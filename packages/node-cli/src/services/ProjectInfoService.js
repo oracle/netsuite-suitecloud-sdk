@@ -56,7 +56,7 @@ module.exports = class ProjectInfoService {
 	}
 
 	getApplicationId() {
-		return this._getManifest().applicationId || '';
+		return this._getManifest().getApplicationId() ?? '';
 	}
 
 	hasLockAndHideFiles() {

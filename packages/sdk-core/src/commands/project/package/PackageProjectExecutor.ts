@@ -62,13 +62,14 @@ export async function executePackageProject(
 
 function getTargetZipFilePath(manifestData: ProjectManifestData, destinationFolder: string): string {
 	const datePart = formatDatePart(new Date());
+	const applicationId = manifestData.getApplicationId();
 
 	if (
 		manifestData.projectType === SDF_PROJECT_TYPES.SUITEAPP &&
-		manifestData.applicationId &&
+		applicationId &&
 		manifestData.projectVersion
 	) {
-		return join(destinationFolder, `${manifestData.applicationId}-${manifestData.projectVersion}-${datePart}.zip`);
+		return join(destinationFolder, `${applicationId}-${manifestData.projectVersion}-${datePart}.zip`);
 	}
 
 	const projectName = manifestData.projectName || 'suitecloud-project';

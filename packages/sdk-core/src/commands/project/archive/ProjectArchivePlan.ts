@@ -11,7 +11,7 @@ import type { ArchiveEntry } from '../../../services/archive/ZipArchive';
 import { readProjectContext } from '../../../services/project/ProjectControlService';
 import type { DeployScript, ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
 import { FOLDERS, SDF_PROJECT_TYPES, CONTROL_FILE_FIELDS } from '../../../services/project/SuiteCloudProjectConstants';
-import { getControlFileAdapter } from '../../../services/project/ControlFileAdapterRegistry';
+import { getControlFileAdapter } from '../../../services/project/adapters/ControlFileAdapterRegistry';
 
 const { DEPLOY } = CONTROL_FILE_FIELDS;
 
@@ -25,30 +25,30 @@ export type ProjectArchivePlan = {
 };
 
 export async function createPackageArchivePlan(projectFolder: string): Promise<ProjectArchivePlan> {
-	const { manifest, controlFiles, deploy } = readProjectContext(projectFolder);
+	const { manifest, controlFilesMetadata, deploy } = readProjectContext(projectFolder);
 	const entries: ArchiveEntry[] = [];
 	const seen = new Set<string>();
-	addEntry(entries, seen, controlFiles.deploy.fileName);
-	addEntry(entries, seen, controlFiles.manifest.fileName);
-	if (controlFiles.application) {
+	addEntry(entries, seen, controlFilesMetadata.deploy.fileName);
+	addEntry(entries, seen, controlFilesMetadata.manifest.fileName);
+	if (controlFilesMetadata.application) {
 
 		// check for valid application file contents
-		const application = controlFiles.application;
+		const application = controlFilesMetadata.application;
 		const contents = await readFile(application.filePath, 'utf8');
 		getControlFileAdapter(application).parseDocument(contents, application.fileName);
-		addEntry(entries, seen, controlFiles.application.fileName);
+		addEntry(entries, seen, controlFilesMetadata.application.fileName);
 	}
 
 	if (manifest.projectType === SDF_PROJECT_TYPES.ACP) {
-		await addDeployPaths(projectFolder, deploy.configurations, entries, seen);
+		await addDeployPaths(projectFolder, deploy.configurations ?? [], entries, seen);
 	} else {
 		await addFolderContents(projectFolder, FOLDERS.INSTALLATION_PREFERENCES, entries, seen);
-		await addInstallationScripts(projectFolder, deploy.run, entries, seen);
+		await addInstallationScripts(projectFolder, deploy.run ?? [], entries, seen);
 	}
 
-	await addDeployPaths(projectFolder, deploy.files, entries, seen);
-	await addDeployPaths(projectFolder, deploy.objects, entries, seen);
-	await addDeployPaths(projectFolder, deploy.translationimports, entries, seen);
+	await addDeployPaths(projectFolder, deploy.files ?? [], entries, seen);
+	await addDeployPaths(projectFolder, deploy.objects ?? [], entries, seen);
+	await addDeployPaths(projectFolder, deploy.translationimports ?? [], entries, seen);
 
 	return { manifest, entries };
 }

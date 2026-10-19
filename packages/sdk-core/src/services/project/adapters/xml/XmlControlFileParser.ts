@@ -5,8 +5,8 @@
 'use strict';
 
 import { Parser } from 'xml2js';
-import { PROJECT_CONTROL } from '../../translation/TranslationKeys';
-import { translationService } from '../../translation/TranslationService';
+import { PROJECT_CONTROL } from '../../../translation/TranslationKeys';
+import { translationService } from '../../../translation/TranslationService';
 
 export type XmlNode = Record<string, any>;
 

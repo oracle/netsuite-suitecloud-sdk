@@ -4,8 +4,8 @@
  */
 'use strict';
 
-import { PROJECT_CONTROL } from '../../translation/TranslationKeys';
-import { translationService } from '../../translation/TranslationService';
+import { PROJECT_CONTROL } from '../../../translation/TranslationKeys';
+import { translationService } from '../../../translation/TranslationService';
 
 export function parseJsonDocument(contents: string, filename: string): unknown {
 	try {
