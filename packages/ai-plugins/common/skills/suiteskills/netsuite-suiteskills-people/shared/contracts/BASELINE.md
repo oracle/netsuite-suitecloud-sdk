@@ -1,6 +1,6 @@
 # SuiteSkills shared baseline
 
-Select the runbook from the active category index, then load that runbook and the references needed for the question. Only retained catalog aliases resolve to active runbooks. Historical or excluded workflow names/IDs do not create executable routes. Reconciliation legacy aliases continue to resolve to the retained reconciliation runbook. Category SKILL.md files own SafeWords; directly loaded runbooks link to their owning category.
+Select the runbook from the active category index, then load that runbook and the references needed for the question. Only retained catalog aliases resolve to active runbooks. Historical or excluded workflow names/IDs do not create executable routes. Reconciliation legacy aliases continue to resolve to the retained reconciliation runbook. Category SKILL.md files own SafeWords. Before tool use, load the owning entrypoint's SafeWords and apply it throughout the selected runbook, workflows and supporting references, including direct loads. Do not duplicate the general policy in runbooks; retain their domain restrictions and review gates. If the policy cannot be loaded, stop dependent operations and follow resource-loading guidance.
 
 ## How to apply shared guidance
 

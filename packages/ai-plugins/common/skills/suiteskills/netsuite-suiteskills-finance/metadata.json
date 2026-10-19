@@ -5,8 +5,8 @@
   "id": "CAT-FIN",
   "name": "Finance and Accounting",
   "owner": "Oracle NetSuite",
-  "release_date": "2026-10-15",
+  "release_date": "2026-10-16",
   "runbook_count": 22,
   "slug": "netsuite-suiteskills-finance",
-  "version": "0.7.9"
+  "version": "0.8.1"
 }

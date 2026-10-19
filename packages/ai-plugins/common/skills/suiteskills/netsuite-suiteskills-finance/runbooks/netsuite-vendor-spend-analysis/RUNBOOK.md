@@ -5,11 +5,13 @@ metadata:
   owner: "Oracle NetSuite"
   version: "1.0.1"
   source-version: "1.0.1"
-  integration-version: "0.7.4"
+  integration-version: "0.8.1"
   runbook-id: RB-FIN-018
   category: finance
   access-mode: operation_dependent
 ---
+
+Before tool use, load and apply [category SafeWords](../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
 
 # Vendor Spend Analysis
 
@@ -96,7 +98,7 @@ In one or two sentences, state the ranking basis, actual period or as-of date, f
 
 ### Ranked horizontal chart
 
-Render a horizontal bar chart directly in the conversation using the available chart/component renderer or a the host artifact that is visible inline. Display up to the requested count, with an overall maximum of 20 vendors; if currency groups require truncation, state what is shown. Sort descending within each comparable currency group. Label the chart with the measure, currency, period/as-of date, and denominator scope.
+Render a horizontal bar chart directly in the conversation using the available chart/component renderer or a host artifact that is visible inline. Display up to the requested count, with an overall maximum of 20 vendors; if currency groups require truncation, state what is shown. Sort descending within each comparable currency group. Label the chart with the measure, currency, period/as-of date, and denominator scope.
 
 Each row must show the linked vendor name, exact amount, and supported share of the complete total. Format money with an unambiguous currency and its appropriate precision. Scale bars proportionally from zero, use a consistent scale within each comparison, and do not turn missing values into zero-length bars. Do not put period spend and current balance on one common scale as if they were the same measure.
 

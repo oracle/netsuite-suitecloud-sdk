@@ -17,7 +17,6 @@ ROUTES = {
     'itemfulfillment': ('/app/accounting/transactions/itemship.nl', 'id'),
     'savedsearch': ('/app/common/search/searchresults.nl', 'searchid'),
 }
-FINANCE = re.compile(r'\b(financ\w*|accounting|cfo|board|epm|revenue|cash|profit|balance.?sheet|income|expense|variance|receivable|payable|statement|close|budget|forecast|capex|opex|ebitda|wages?|salary|tax|costs?|margin|ar/ap)\b', re.I)
 
 
 def loads(text):
@@ -82,8 +81,6 @@ def validate(model):
     text(model['title'], 160); text(model['question'], 300); basename(model['export_name'])
     if model['domain'] not in ('operations', 'financial'):
         raise ValueError('Unsupported domain')
-    if model['domain'] == 'financial' or FINANCE.search(model['title'] + ' ' + model['question']):
-        raise ValueError('Actual verified Finance Analyst handoff unavailable; no financial output')
     s = model['source']
     shape(s, ('kind', 'label', 'retrieved_at', 'scope', 'filters', 'status', 'completeness', 'expected_rows', 'grain', 'limitations'))
     if s['kind'] not in ('supplied', 'netsuite') or s['status'] not in ('preliminary', 'final', 'limited'):
@@ -113,13 +110,17 @@ def validate(model):
     for col in cols:
         if col.get('type') == 'number':
             shape(col, ('key', 'label', 'type', 'kind', 'unit', 'currency'))
-            if col['kind'] == 'money' or col['currency'] is not None or FINANCE.search(col['key'] + ' ' + col['label']) or re.search(r'(?i)\b(USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|SEK|NOK|DKK|BRL|MXN|ZAR|dollars?|euros?|pounds?|yen)\b|[$€£¥]', str(col['unit'])):
-                raise ValueError('Actual verified Finance Analyst handoff unavailable; no financial output')
-            if col['kind'] not in ('number', 'quantity', 'count', 'ratio'):
+            if col['kind'] not in ('number', 'quantity', 'count', 'ratio', 'money'):
                 raise ValueError('Unknown measure kind')
             text(col['unit'], 80)
-            units={'number':{'dimensionless'},'count':{'records','orders','items','units','events','people','cases','transactions'},'quantity':{'each','units','kg','g','lb','oz','l','ml','m','cm','mm','hours','days','minutes','seconds','boxes','cases','pallets'},'ratio':{'ratio','percent'}}
-            if col['unit'] not in units[col['kind']]:raise ValueError('Unsupported operational unit; financial or ambiguous measures require actual verified Finance Analyst handoff')
+            if col['kind'] == 'money':
+                if not isinstance(col['currency'], str) or not re.fullmatch(r'[A-Z]{3}', col['currency']) or col['unit'] != col['currency']:
+                    raise ValueError('Money requires an explicit three-letter currency code and matching unscaled unit')
+            else:
+                if col['currency'] is not None:
+                    raise ValueError('Only money columns may specify currency')
+                units={'number':{'dimensionless'},'count':{'records','orders','items','units','events','people','cases','transactions'},'quantity':{'each','units','kg','g','lb','oz','l','ml','m','cm','mm','hours','days','minutes','seconds','boxes','cases','pallets','board_feet'},'ratio':{'ratio','percent'}}
+                if col['unit'] not in units[col['kind']]:raise ValueError('Unsupported measure unit; use a reviewed contract extension')
         else:
             shape(col, ('key', 'label', 'type'))
             if col['type'] not in ('text', 'date'): raise ValueError('Unknown column type')
@@ -149,7 +150,7 @@ def validate(model):
     charts = model['charts']
     if not isinstance(charts, list) or not 1 <= len(charts) <= 6: raise ValueError('1–6 charts required')
     for chart in charts:
-        validate_chart(chart, cm, rows, s, FINANCE)
+        validate_chart(chart, cm, rows, s)
     refs = model['references']
     if not isinstance(refs, list) or len(refs) > len(rows) * len(cols): raise ValueError('Invalid references')
     positions = set()

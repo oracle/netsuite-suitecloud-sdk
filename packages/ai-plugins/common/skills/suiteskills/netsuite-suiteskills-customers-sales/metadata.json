@@ -5,8 +5,8 @@
   "id": "CAT-CRM",
   "name": "Customers, Sales and Support",
   "owner": "Oracle NetSuite",
-  "release_date": "2026-10-15",
+  "release_date": "2026-10-16",
   "runbook_count": 8,
   "slug": "netsuite-suiteskills-customers-sales",
-  "version": "0.7.9"
+  "version": "0.8.1"
 }

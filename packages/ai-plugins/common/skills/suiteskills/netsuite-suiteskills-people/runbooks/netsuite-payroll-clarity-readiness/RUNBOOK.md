@@ -5,11 +5,13 @@ metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"
   source-version: "1.0.0"
-  integration-version: "0.7.4"
+  integration-version: "0.8.1"
   runbook-id: RB-PPL-001
   category: people
   access-mode: read_only
 ---
+
+Before tool use, load and apply [category SafeWords](../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
 
 # Payroll Clarity & Readiness
 
@@ -99,7 +101,7 @@ Compare previous runs only on verified comparable currency, run type, period len
 
 ## Report the assessment
 
-Provide the factual readiness review in chat. When requested or appropriate and supported, create an interactive, three-tab dashboard for the final assessment: **Overview**, **Employee worklist**, and **Pay-cycle checkpoints**. Read [references/dashboard.md](references/dashboard.md) and populate [assets/dashboard.html](assets/dashboard.html) from the current audit evidence. Use the approved visual hierarchy and one shared dataset across all views. Provide a concise chat summary with the scope, assessment, priority actions, and material gaps.
+Create an interactive, three-tab dashboard for the final assessment: **Overview**, **Employee worklist**, and **Pay-cycle checkpoints**. Read [references/dashboard.md](references/dashboard.md) and populate [assets/dashboard.html](assets/dashboard.html) from the current audit evidence. Use the approved visual hierarchy and one shared dataset across all views. Provide a concise chat summary with the scope, assessment, priority actions, and material gaps.
 
 Use normal concise chat for selection questions and progress updates. If interactive output is unavailable or the user requests text, use compact Markdown tables for scope, actionable findings, and check coverage.
 
@@ -128,5 +130,3 @@ HR means human resources. SuiteQL is NetSuite’s SQL (Structured Query Language
 
 Apply [category context](../../SKILL.md) and [shared guidance](../../shared/README.md) before the business procedure. This skill targets SuiteSkills only.
 <!-- suiteskills-foundation:end -->
-
-If HTML generation or interactive presentation is unavailable, provide equivalent factual findings, employee worklist and checkpoint coverage in Markdown with the same evidence and gaps. Never substitute sample data for an account review.

@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # Resources, assignment and scheduling
 
 Use the recipe that fits the request. A work review, skill search, availability assessment or proposed schedule is read-only. Follow [SafeWords](../RUNBOOK.md#safewords) for authorization and retrieved content. Use [scheduling data](../references/scheduling-data.md) for relevant reads and their limits, and [scheduling](../references/scheduling.md) for FSM behavior. [Scheduling patterns](scheduling-patterns.md) offers examples. Follow the user's direct choices within the authorized scope.

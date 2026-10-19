@@ -20,9 +20,11 @@
       a.setAttribute('target','_blank');a.setAttribute('rel','noopener noreferrer');
     } else node('span',value,parent);
   }
-  const header=node('header',null,root);node('p','Data Visualization · Supplied snapshot',header,'eyebrow');
+  const header=node('header',null,root);node('p','NetSuite / Data Visualization',header,'eyebrow');
   node('h1',m.title,header);node('p',m.question,header);
-  const meta=node('section',null,root,'scope');
+  node('span',m.source.status.toUpperCase(),header,'badge');
+  const canvas=node('div',null,root,'canvas');
+  const meta=node('section',null,canvas,'scope');
   node('h2','Scope and evidence',meta);
   const s=m.source;
   node('p',`${s.status.toUpperCase()} · ${s.completeness} population · ${m.rows.length} retrieved rows` ,meta,'status');
@@ -30,23 +32,25 @@
   node('p',`Source filters: ${s.filters.join('; ')||'None stated'} · Grain: ${s.grain.map(k=>col[k].label).join(' + ')}`,meta);
   node('p','Local controls reuse this snapshot. Fresh data requires a new supported connector retrieval.',meta);
   node('p','Values are plotted at their supplied row grain. No local summation, currency conversion or unit conversion.',meta);
-  for(const c of m.columns.filter(c=>c.type==='number'))node('p',`${c.label}: ${c.unit}${c.currency?' · '+c.currency:''}`,meta);
+  for(const c of m.columns.filter(c=>c.type==='number'))node('p',`${c.label}: ${c.unit}${c.currency&&c.currency!==c.unit?' · '+c.currency:''}`,meta);
   for(const v of s.limitations)node('p',v,meta,'limitation');
   if(payload.links.some(x=>!x)||!m.references.length)node('p','Some or all references are plain text: trustworthy account binding or a supported route is unavailable.',meta,'limitation');
   if(payload.links.some(Boolean))node('p','Links were checked for structure and source binding. Account permissions and successful navigation were not tested.',meta);
-  const controls=node('section',null,root,'controls');node('label','Search supplied rows ',controls).setAttribute('for','search');
+  const controls=node('section',null,canvas,'controls');node('label','Search supplied rows ',controls).setAttribute('for','search');
   const search=node('input',null,controls);search.id='search';search.type='search';
-  node('label','Filter first grain field ',controls).setAttribute('for','filter');
+  node('label','Filter '+col[s.grain[0]].label+' ',controls).setAttribute('for','filter');
   const filter=node('select',null,controls);filter.id='filter';node('option','All supplied rows',filter).value='';
   [...new Set(original.map(x=>String(x.r[s.grain[0]])))].sort().forEach(v=>{node('option',v,filter).value=v;});
   const sort=node('button','Sort measure: descending',controls);sort.type='button';sort.id='sort';
-  const count=node('p','',root);count.id='counts';count.setAttribute('aria-live','polite');
-  const panels=node('main',null,root);const detail=node('section',null,root);node('h2','Snapshot detail',detail);
-  const table=node('table',null,detail);node('caption','Exact supplied values; same local filters as charts',table);
-  const tr=node('tr',null,node('thead',null,table));m.columns.forEach(c=>node('th',c.label,tr).scope='col');node('th','Drill-down',tr).scope='col';
+  const count=node('p','',canvas);count.id='counts';count.setAttribute('aria-live','polite');
+  const panels=node('main',null,canvas);const detail=node('section',null,canvas,'detail');node('h2','Snapshot detail',detail);
+  const tableWrap=node('div',null,detail,'table-scroll');tableWrap.tabIndex=0;tableWrap.setAttribute('role','region');tableWrap.setAttribute('aria-label','Exact supplied values');
+  const table=node('table',null,tableWrap);node('caption','Exact supplied values; same local filters as charts',table);
+  const tr=node('tr',null,node('thead',null,table));m.columns.forEach(c=>node('th',c.label+(c.unit?' ('+c.unit+')':''),tr).scope='col');node('th','Drill-down',tr).scope='col';
   const tbody=node('tbody',null,table);let descending=true;
   const number=v=>Number.isInteger(v)?new Intl.NumberFormat('en-US').format(v):String(v);
-  const palette=['#245D63','#A55326','#645487','#477236','#AA3F51','#356AA0','#8B671E','#665751'];
+  const palette=['#245D63','#D7790F','#31A09C','#4E4137','#699E61','#B47282','#83401E','#9E7FCC','#A88E00','#58316E','#5999B5','#317A45'];
+  const exact=(v,c)=>String(v)+(c.kind==='money'?' '+c.currency:c.unit==='percent'?'%':'');
   const rowLabel=o=>s.grain.map(k=>String(o.r[k])).join(' / ');
   function paintMark(tag, attributes, parent, row, key, label, color){
     const mark=svg(tag,{...attributes,class:'mark',fill:color,'data-row-index':row.i,'data-series-key':key},parent);
@@ -57,7 +61,7 @@
     node('p',`${measures.map(k=>col[k].label).join(', ')} (${col[c.y].unit}) by ${col[c.x].label} · marks retain supplied row values`,section);
     if(!rows.length){node('p','No rows match the local filters.',section);return;}
     if(c.type==='table'){node('p','See the synchronized exact-value table below.',section);return;}
-    if(c.type==='kpi'){node('p',number(rows[0].r[c.y])+' '+col[c.y].unit,section,'kpi');return;}
+    if(c.type==='kpi'){node('p',exact(rows[0].r[c.y],col[c.y])+(col[c.y].kind==='money'||col[c.y].unit==='percent'?'':' '+col[c.y].unit),section,'kpi');return;}
     if(series.length>1)node('p',series.map((e,j)=>`${j+1}. ${e.label} [${e.key}]`).join(' · '),section);
     const sourceOrder=['pie','donut','funnel','waterfall'].includes(c.type);
     const dateAxis=['line','area','combination'].includes(c.type);
@@ -69,13 +73,14 @@
     }
     const horizontal=['bar','funnel','waterfall','stacked'].includes(c.type);
     const radial=c.type==='pie'||c.type==='donut';
-    const height=horizontal?Math.max(230,rr.length*(c.type==='bar'?Math.max(38,series.length*23+12):40)+80):radial?Math.max(380,rr.length*22+55):380;
-    const chart=svg('svg',{viewBox:`0 0 850 ${height}`,role:'img','aria-label':c.title},section);
+    const height=horizontal?Math.max(230,rr.length*(c.type==='bar'?Math.max(38,series.length*23+12):40)+(series.length>1?155:105)):radial?Math.max(380,rr.length*22+55):380;
+    const width=radial?850:Math.max(340,Math.round(section.clientWidth-32));
+    const chart=svg('svg',{viewBox:`0 0 ${width} ${height}`,role:'img','aria-label':c.title},section);
     svg('title',{},chart,c.title+'; exact supplied values in the synchronized table');
-    const left=225,right=775,top=series.length>1?65:35,bottom=height-65;
+    const left=radial?225:horizontal?120:80,right=radial?775:width-45,top=series.length>1?90:40,bottom=height-65;
     if(series.length>1)series.forEach((e,j)=>{
-      const x=left+j*136;svg('rect',{x,y:32,width:11,height:11,fill:palette[j]},chart);
-      const t=svg('text',{x:x+16,y:42,class:'axis'},chart,e.label.length>14?e.label.slice(0,11)+'…':e.label);svg('title',{},t,e.label+' ['+e.key+']');
+      const x=left+(j%2)*136,y=32+Math.floor(j/2)*22;svg('rect',{x,y,width:9,height:9,fill:palette[j]},chart);
+      const t=svg('text',{x:x+14,y:y+9,class:'axis'},chart,e.label.length>14?e.label.slice(0,11)+'…':e.label);svg('title',{},t,e.label+' ['+e.key+']');
     });
     const values=rr.flatMap(o=>measures.map(k=>o.r[k]));
     if(c.type==='waterfall')values.push(...rr.flatMap(o=>[o.r[c.start],o.r[c.end]]));
@@ -86,13 +91,13 @@
       for(let i=0;i<=4;i++){
         const value=min+i*span/4, pos=orientation==='horizontal'?xp(value):yp(value);
         svg('line',orientation==='horizontal'?{x1:pos,y1:top,x2:pos,y2:bottom,class:'grid'}:{x1:left,y1:pos,x2:right,y2:pos,class:'grid'},chart);
-        svg('text',orientation==='horizontal'?{x:pos,y:height-35,'text-anchor':'middle',class:'axis'}:{x:left-12,y:pos+4,'text-anchor':'end',class:'axis'},chart,number(value));
+        svg('text',orientation==='horizontal'?{x:pos,y:height-35,'text-anchor':'middle',class:'axis'}:{x:left-12,y:pos+4,'text-anchor':'end',class:'axis'},chart,new Intl.NumberFormat('en-US',{notation:'compact',maximumSignificantDigits:3}).format(value));
       }
       if(orientation==='horizontal')svg('text',{x:(left+right)/2,y:height-9,'text-anchor':'middle',class:'axis'},chart,col[c.y].label+' ('+col[c.y].unit+')');
       else svg('text',{x:left,y:16,class:'axis'},chart,col[c.y].label+' ('+col[c.y].unit+')');
     }
     function rowText(o,y){
-      const label=String(o.r[c.x]),t=svg('text',{x:8,y:y+18,class:'axis'},chart,label.length>28?label.slice(0,25)+'…':label);
+      const label=String(o.r[c.x]),t=svg('text',{x:8,y:y+18,class:'axis'},chart,label.length>16?label.slice(0,13)+'…':label);
       svg('title',{},t,rowLabel(o));
     }
     if(c.type==='pie'||c.type==='donut'){
@@ -130,7 +135,7 @@
       rr.forEach((o,j)=>{
         const width=o.r[c.y]/sourceMax*(right-left),y=top+j*40;
         rowText(o,y);paintMark('rect',{x:center-width/2,y,width,height:28},chart,o,c.y,col[c.y].label,palette[0]);
-        svg('text',{x:right+10,y:y+20,class:'axis'},chart,number(o.r[c.y]));
+        svg('text',{x:right+10,y:y+20,class:'axis'},chart,new Intl.NumberFormat('en-US',{notation:'compact',maximumSignificantDigits:3}).format(o.r[c.y]));
       });return;
     }
     if(horizontal){
@@ -145,7 +150,7 @@
           const end=c.type==='waterfall'?o.r[c.end]:c.type==='stacked'?o.r[entry.end]:o.r[entry.key];
           const markY=y+(c.type==='bar'?k*23:0),a=xp(start),b=xp(end);
           const mark=paintMark('rect',{x:Math.min(a,b),y:markY,width:Math.max(0,Math.abs(b-a)),height:c.type==='bar'?19:27},chart,o,entry.key,entry.label,palette[k]);
-          if(c.type==='bar'||c.type==='waterfall')svg('text',{x:b+(end<start?-6:6),y:markY+15,'text-anchor':end<start?'end':'start',class:'axis'},chart,number(o.r[entry.key]));
+          if(c.type==='bar'||c.type==='waterfall')svg('text',{x:b+(end<start?-6:6),y:markY+15,'text-anchor':end<start?'end':'start',class:'axis'},chart,new Intl.NumberFormat('en-US',{notation:'compact',maximumSignificantDigits:3}).format(o.r[entry.key]));
           if(c.type==='waterfall'){
             mark.firstChild.textContent+=` · supplied start ${start}; supplied end ${end}`;
             if(j<rr.length-1&&rr[j+1].i===o.i+1)svg('line',{x1:b,y1:markY+27,x2:b,y2:markY+stride,class:'grid'},chart);
@@ -170,34 +175,36 @@
         const baseline=yp(0),d=`M ${xpositions[0]},${baseline} L ${points.join(' L ')} L ${xpositions.at(-1)},${baseline} Z`;
         svg('path',{d,fill:color,'fill-opacity':.16,stroke:'none'},chart);
       }
-      if(['line','area'].includes(render))svg('polyline',{points:points.join(' '),fill:'none',stroke:color,'stroke-width':2},chart);
+      if(['line','area'].includes(render))svg('polyline',{points:points.join(' '),fill:'none',stroke:color,'stroke-width':2.75,'stroke-dasharray':['none','7 3','2 3','10 3 2 3'][k]},chart);
       rr.forEach((o,i)=>{
         if(render==='bar'){
           const x=xpositions[i]+(barSeries.indexOf(entry)-barSeries.length/2)*barWidth;
           paintMark('rect',{x,y:Math.min(yp(o.r[entry.key]),yp(0)),width:barWidth*.9,height:Math.abs(yp(o.r[entry.key])-yp(0))},chart,o,entry.key,entry.label,color);
         }else{
-          const radius=c.type==='bubble'?Math.sqrt(o.r[c.size]/Math.max(...original.map(o=>o.r[c.size])))*27:5;
+          const radius=c.type==='bubble'?Math.sqrt(o.r[c.size]/Math.max(...original.map(o=>o.r[c.size])))*27:['line','area'].includes(render)&&rr.length>1?2:5;
           const mark=paintMark('circle',{cx:xpositions[i],cy:yp(o.r[entry.key]),r:radius,'fill-opacity':c.type==='bubble'?.65:1,stroke:color},chart,o,entry.key,entry.label,color);
           if(c.type==='bubble')mark.firstChild.textContent+=` · ${col[c.size].label}: ${o.r[c.size]} ${col[c.size].unit} (circle area)`;
         }
       });
     });
     // Axis ticks are unique, numerically ordered positions even when table sorting differs.
-    const sorted=[...new Set(xs)].sort((a,b)=>a-b),ticks=sorted.length<=4?sorted:[sorted[0],sorted.at(-1)];
+    const sorted=[...new Set(xs)].sort((a,b)=>a-b),ticks=sorted.length<=(width<500?2:4)?sorted:[sorted[0],sorted.at(-1)];
     ticks.forEach(v=>svg('text',{x:xx(v),y:height-35,'text-anchor':'middle',class:'axis'},chart,dateAxis?new Date(v).toISOString().slice(0,10):number(v)));
     svg('text',{x:(left+right)/2,y:height-9,'text-anchor':'middle',class:'axis'},chart,col[c.x].label+(col[c.x].unit?' ('+col[c.x].unit+')':''));
   }
   function draw(rows){
-    panels.replaceChildren();tbody.replaceChildren();count.textContent=`${rows.length} visible / ${m.rows.length} retrieved rows · local snapshot`;
+    panels.replaceChildren();panels.className=m.charts.every(c=>c.type==='kpi')?'kpi-grid':'chart-grid';tbody.replaceChildren();count.textContent=`${rows.length} visible / ${m.rows.length} retrieved rows · local snapshot`;
     for(const c of m.charts){
-      const section=node('section',null,panels,'panel');section.dataset.chartType=c.type;node('h2',c.title,section);drawChart(c,rows,section);
+      const section=node('section',null,panels,'panel');section.dataset.chartType=c.type;if(c.type==='kpi')section.classList.add('kpi-panel');node('h2',c.title,section);drawChart(c,rows,section);
     }
-    for(const {r,i} of rows){const tr=node('tr',null,tbody);for(const c of m.columns)linked(node('td',null,tr),r[c.key],i,c.key);
-      const d=node('details',null,node('td',null,tr));node('summary','Inspect row',d);for(const c of m.columns)node('p',c.label+': '+r[c.key],d);
+    for(const {r,i} of rows){const tr=node('tr',null,tbody);for(const c of m.columns)linked(node('td',null,tr,c.type==='number'?'numeric':null),exact(r[c.key],c),i,c.key);
+      const d=node('details',null,node('td',null,tr));node('summary','Inspect row',d);for(const c of m.columns)node('p',c.label+': '+exact(r[c.key],c),d);
     }
   }
   function update(){const term=search.value.toLocaleLowerCase();let rows=original.filter(({r})=>(!filter.value||String(r[s.grain[0]])===filter.value)&&Object.values(r).some(v=>String(v).toLocaleLowerCase().includes(term)));
     const measure=m.charts[0].y;rows.sort((a,b)=>(a.r[measure]-b.r[measure])*(descending?-1:1));draw(rows);}
   search.addEventListener('input',update);filter.addEventListener('change',update);sort.addEventListener('click',()=>{descending=!descending;sort.textContent='Sort measure: '+(descending?'descending':'ascending');update();});
+  let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(update,100);});
+  canvas.appendChild(meta);
   update();document.documentElement.dataset.ready='true';
 })();

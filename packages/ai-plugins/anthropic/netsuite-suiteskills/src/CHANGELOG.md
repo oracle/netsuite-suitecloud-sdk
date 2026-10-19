@@ -1,3 +1,7 @@
+# SuiteSkills 0.8.1 integration
+
+Consolidated SW-01–SW-11 across all five entrypoints, with mandatory loading in 48 runbooks and 15 workflows. Data Visualization 2.2.0-rc.1 accepts financial and operational evidence with explicit currency, updated renderer assets and two supplied financial examples. Shared sources, unsuffixed routes, branding and packaging remain in place. Historical foundation and security evidence remain unchanged.
+
 # SuiteSkills release history
 
 ## 0.7.8 — 2026-10-15

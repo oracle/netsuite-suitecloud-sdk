@@ -31,7 +31,7 @@ Order a substantive analytical view as: finding and scope → relevant KPIs → 
 
 Use the [chart notes](CHARTS.md) for palette order, chart choice, axes, legends and contrast. Use [dashboard and export notes](DASHBOARDS.md) for composition, controls, PDF and presentation treatment. Tokens live in [Redwood CSS](redwood-tokens.css); [legacy-compatible tokens](design-tokens.json) and [shared layout CSS](visual.css) support existing renderers.
 
-Choose the format through [shared output guidance](../contracts/OUTPUTS.md) and the selected runbook. This design alignment does not impose the visualization skill's HTML/export mandate on every answer, install its export kit, or require its Finance Analyst dependency for unrelated runbooks. Apply that skill's own delivery and verification requirements when it is selected. Never display an Export button unless the active renderer implements it.
+Choose the format through [shared output guidance](../contracts/OUTPUTS.md) and the selected runbook. This design alignment does not impose the visualization skill's HTML/export mandate on every answer or install its export kit. Apply that skill's own delivery and verification requirements when it is selected. Never display an Export button unless the active renderer implements it.
 
 ## Accessibility and validation
 

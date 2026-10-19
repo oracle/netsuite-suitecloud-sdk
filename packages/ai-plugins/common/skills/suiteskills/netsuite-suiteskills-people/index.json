@@ -11,8 +11,8 @@
     "display_name": "Payroll Clarity Readiness",
     "first_included_date": "2026-10-08",
     "id": "RB-PPL-001",
-    "integration_release_date": "2026-10-14",
-    "integration_version": "0.7.4",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "0.8.1",
     "name": "netsuite-payroll-clarity-readiness",
     "netsuite_requirements": {
       "industries": {
@@ -60,8 +60,8 @@
     "display_name": "Absence Management Advisor",
     "first_included_date": "2026-10-08",
     "id": "RB-PPL-007",
-    "integration_release_date": "2026-10-14",
-    "integration_version": "0.7.4",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "0.8.1",
     "name": "netsuite-absence-management-advisor",
     "netsuite_requirements": {
       "industries": {
@@ -109,8 +109,8 @@
     "display_name": "Benefits Portfolio Monitor",
     "first_included_date": "2026-10-08",
     "id": "RB-PPL-008",
-    "integration_release_date": "2026-10-14",
-    "integration_version": "0.7.4",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "0.8.1",
     "name": "netsuite-benefits-portfolio-monitor",
     "netsuite_requirements": {
       "industries": {
@@ -161,8 +161,8 @@
     "first_included_date": "2026-10-13",
     "host_execution": "not_run",
     "id": "RB-PPL-009",
-    "integration_release_date": "2026-10-14",
-    "integration_version": "0.7.4",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "0.8.1",
     "name": "netsuite-time-approval-review",
     "netsuite_requirements": {
       "industries": {
@@ -216,8 +216,8 @@
     "first_included_date": "2026-10-13",
     "host_execution": "not_run",
     "id": "RB-PPL-010",
-    "integration_release_date": "2026-10-14",
-    "integration_version": "0.7.4",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "0.8.1",
     "name": "netsuite-time-entry-creation",
     "netsuite_requirements": {
       "industries": {

@@ -5,11 +5,13 @@ metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"
   source-version: "unknown"
-  integration-version: "0.7.4"
+  integration-version: "0.8.1"
   runbook-id: RB-FIN-027
   category: finance
   access-mode: read_only
 ---
+
+Before tool use, load and apply [category SafeWords](../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
 
 # Credit Management
 

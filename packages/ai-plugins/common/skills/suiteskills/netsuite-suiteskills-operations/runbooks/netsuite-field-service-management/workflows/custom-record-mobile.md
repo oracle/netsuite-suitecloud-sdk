@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # Configure a custom record in FSM Mobile
 
 Use this procedure to show, localize, or control the visibility, enablement, or editing of a custom record on CRM Tasks, Project Tasks, or another configured Mobile event. Account configuration, metadata, and permissions determine what is available. Use [effective configuration](../references/configuration.md#effective-configuration) for merge and Preview behavior and [Mobile capture tabs](../references/mobile.md#capture-tabs) for what technicians see and do. Consult the [Oracle configuration index](../references/configuration-index.md) only when the relevant local section does not answer the question.

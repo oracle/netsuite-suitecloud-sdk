@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # EX-13 · Time-Off Balance Explanation
 
 Use to explain why an employee’s time-off balance has its current value. Use `timeoffchange`, not report -306.

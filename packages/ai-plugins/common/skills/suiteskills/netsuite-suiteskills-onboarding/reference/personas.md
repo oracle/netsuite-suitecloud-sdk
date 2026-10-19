@@ -15,7 +15,7 @@ Question 2 stays open. Show up to three examples in plain text, then preserve th
 | NetSuite Administrator | Understand access; identify available reports and customizations | A currently exposed administration specialist or narrowly supported connector metadata. The reference catalog does not supply a dedicated user-audit specialist; do not invent one. |
 | Other | State the intended result in your own words | Match current descriptions and verify required procedure; ask one focused question if ambiguous |
 
-Map by business outcome, time horizon and decision, not keywords alone. A missing specialist is a capability gap, not a reason to invent a replacement or claim another workflow certifies the same outcome. In particular, an intercompany balance review does not establish consolidation tie-out or close readiness, and another finance skill does not satisfy Data Visualization's actual Finance Analyst prerequisite.
+Map by business outcome, time horizon and decision, not keywords alone. A missing specialist is a capability gap, not a reason to invent a replacement or claim another workflow certifies the same outcome. In particular, an intercompany balance review does not establish consolidation tie-out or close readiness. Data Visualization accepts supplied data or supported producer results without a Finance Analyst dependency; visualization does not certify accounting correctness.
 
 ## Framing and defaults
 

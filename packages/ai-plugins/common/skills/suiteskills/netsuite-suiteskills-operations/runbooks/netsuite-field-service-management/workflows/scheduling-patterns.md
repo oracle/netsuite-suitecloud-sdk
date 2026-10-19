@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # Scheduling patterns
 
 These consulting examples inform [scheduling](scheduling.md). Reading one does not adopt its rules. Apply restrictive or numeric rules only when the user explicitly selects them or the customer already follows them. A user can adapt an example for the current request. Do not save a pattern or edit a companion skill automatically.

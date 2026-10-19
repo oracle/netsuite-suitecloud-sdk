@@ -5,11 +5,13 @@ metadata:
   owner: "Oracle NetSuite"
   version: "1.0.1"
   source-version: "1.0.1"
-  integration-version: "0.7.4"
+  integration-version: "0.8.1"
   runbook-id: RB-OPS-012
   category: operations
   access-mode: read_only
 ---
+
+Before tool use, load and apply [category SafeWords](../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
 
 # Vendor Optimization
 
@@ -45,7 +47,7 @@ Do not fill a gap by selecting the most plausible explanation. If why a value ex
 
 ### Clarify with selectable options
 
-When an unresolved choice would materially change the answer, ask a specific question with 2–4 relevant predefined options using the current the host environment's genuine selectable-question tool, if exposed. Wait for the submitted choice; a highlighted default is not a response. Derive item, vendor, subsidiary and unit choices from supplied or authorized retrieved records. Ask only the minimum questions needed; use the stated default for a broad review rather than forcing an interview.
+When an unresolved choice would materially change the answer, ask a specific question with 2–4 relevant predefined options using the current host environment's genuine selectable-question tool, if exposed. Wait for the submitted choice; a highlighted default is not a response. Derive item, vendor, subsidiary and unit choices from supplied or authorized retrieved records. Ask only the minimum questions needed; use the stated default for a broad review rather than forcing an interview.
 
 For preferences, useful choices include “Lowest comparable payable cost,” “Meet the required delivery date first,” or “Show the trade-offs.” Do not offer an invented quantity or deadline as a factual default. If those inputs are missing, offer an evidence-based order to use, a documented recent order quantity as an explicitly proposed assumption, or a scope that can be answered without that input. Choosing a preference cannot establish missing price terms, approval, freight or performance facts.
 
@@ -114,7 +116,7 @@ Render genuine links as `[record label](trusted returned URL)`; escape labels an
 
 ### In-chat comparison components
 
-Present a short decision headline followed by a compact text comparison. An inline component is optional when the current the host surface supports it and the package operating/output requirements allow it. Never require a widget or named rendering tool to complete the analysis, and do not deliver the comparison only as an HTML file or downloadable artifact. Keep the recommendation, exact figures, evidence links and material caveats in the chat even when a component is also produced.
+Present a short decision headline followed by a compact text comparison. An inline component is optional when the current host surface supports it and the package operating/output requirements allow it. Never require a widget or named rendering tool to complete the analysis, and do not deliver the comparison only as an HTML file or downloadable artifact. Keep the recommendation, exact figures, evidence links and material caveats in the chat even when a component is also produced.
 
 If charting comparable offers, use horizontal cost bars with vendor labels, the same zero-based scale and cost basis, and exact currency amounts alongside. Show actual payable quantity, unit/pack conversion, surplus and conditional discounts in adjacent compact cards or a table. Include verified source-returned links next to the facts they support, or readable identifiers when links are unavailable. If chart labels cannot be clickable, provide a corresponding row or legend for each plotted vendor and important source record.
 

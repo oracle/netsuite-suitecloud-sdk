@@ -9,8 +9,8 @@
   "display_name": "Knowledge Base Quality Assistant",
   "first_included_date": "2026-10-14",
   "id": "RB-CRM-006",
-  "integration_release_date": "2026-10-14",
-  "integration_version": "0.7.4",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "0.8.1",
   "name": "netsuite-knowledge-quality-assistant",
   "netsuite_requirements": {
     "industries": {

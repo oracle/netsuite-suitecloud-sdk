@@ -15,25 +15,23 @@ def _shape(value, required, optional=()):
         raise ValueError('Unsupported or missing chart fields')
 
 
-def _text(value, finance_pattern):
+def _text(value):
     if not isinstance(value, str) or not value.strip() or len(value) > 160 or any(
             (ord(c) < 32 and c not in '\n\t') or 0xD800 <= ord(c) <= 0xDFFF for c in value):
         raise ValueError('Expected bounded literal chart text')
-    if finance_pattern.search(value):
-        raise ValueError('Actual verified Finance Analyst handoff unavailable; no financial output')
 
 
 def _close(a, b):
     return math.isclose(a, b, rel_tol=1e-12, abs_tol=1e-9)
 
 
-def validate_chart(chart, columns, rows, source, finance_pattern):
+def validate_chart(chart, columns, rows, source):
     """Validate one chart against already validated columns/rows; never mutate."""
     _shape(chart, ('type', 'title', 'x', 'y'), ('series', 'size', 'start', 'end'))
     kind = chart['type']
     if not isinstance(kind, str) or kind not in TYPES:
         raise ValueError('Unsupported chart type')
-    _text(chart['title'], finance_pattern)
+    _text(chart['title'])
     allowed = {'bar': {'series'}, 'line': {'series'}, 'area': {'series'},
                'combination': {'series'}, 'stacked': {'series'}, 'bubble': {'size'},
                'waterfall': {'start', 'end'}}.get(kind, set())
@@ -51,6 +49,8 @@ def validate_chart(chart, columns, rows, source, finance_pattern):
         return c
 
     xc = column(chart['x']); yc = column(chart['y'], numeric=True)
+    if xc.get('kind') == yc.get('kind') == 'money' and xc['currency'] != yc['currency']:
+        raise ValueError('A chart must not combine different currencies; use separate panels')
     if kind in ('line', 'area', 'combination') and xc['type'] != 'date':
         raise ValueError('Line/area/combination x-axis requires verified calendar dates')
     if kind in ('scatter', 'bubble') and xc['type'] != 'number':
@@ -71,7 +71,7 @@ def validate_chart(chart, columns, rows, source, finance_pattern):
             _shape(entry, required)
             column(entry['key'], numeric=True, compatible=yc)
             if entry['key'] in seen: raise ValueError('Duplicate series key')
-            seen.add(entry['key']); _text(entry['label'], finance_pattern)
+            seen.add(entry['key']); _text(entry['label'])
             if kind == 'combination' and entry['render'] not in ('bar', 'line'):
                 raise ValueError('Combination series render must be bar or line')
             if kind == 'stacked':
@@ -96,7 +96,7 @@ def validate_chart(chart, columns, rows, source, finance_pattern):
     if kind == 'bubble':
         if 'size' not in chart: raise ValueError('Bubble requires supplied positive size column')
         sc = column(chart['size'], numeric=True)
-        if sc['kind'] == 'ratio' or any(r[chart['size']] <= 0 for r in rows):
+        if sc['kind'] not in ('number', 'quantity', 'count') or any(r[chart['size']] <= 0 for r in rows):
             raise ValueError('Bubble size must be positive non-ratio quantities or counts')
     if kind == 'funnel':
         values = [r[chart['y']] for r in rows]

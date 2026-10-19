@@ -172,7 +172,11 @@
         "FOUNDATION-SNAPSHOT.json",
         "INVENTORY.json",
         "README.md",
-        "SECURITY-RELEASE-STATUS.json"
+        "SECURITY-RELEASE-STATUS.json",
+        "SAFEWORDS-COVERAGE.md",
+        "SAFEWORDS-COVERAGE.json",
+        "SECURITY-CHANGELOG.md",
+        "VISUALIZER-CHANGELOG.md"
       ],
       "root": "src"
     }
@@ -204,6 +208,6 @@
     "netsuite-suiteskills-operations",
     "netsuite-suiteskills-people"
   ],
-  "version": "0.7.9",
+  "version": "0.8.1",
   "skillSource": "suiteskills"
 }

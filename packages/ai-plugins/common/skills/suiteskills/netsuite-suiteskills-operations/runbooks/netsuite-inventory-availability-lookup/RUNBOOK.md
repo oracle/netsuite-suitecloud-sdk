@@ -5,14 +5,16 @@ metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"
   source-version: "1.0.0"
-  integration-version: "0.7.4"
-  integration_release_date: "2026-10-15"
+  integration-version: "0.8.1"
+  integration_release_date: "2026-10-16"
   source_release_date: "not_collected"
   first_included_date: "2026-10-08"
   runbook-id: "RB-OPS-005"
   category: "operations"
   access-mode: "operation_dependent"
 ---
+
+Before tool use, load and apply [category SafeWords](../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
 
 ## Release operation scope
 

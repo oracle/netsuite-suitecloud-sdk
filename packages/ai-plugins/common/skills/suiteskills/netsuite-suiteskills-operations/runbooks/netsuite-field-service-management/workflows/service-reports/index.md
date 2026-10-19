@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # FSM service reports
 
 For a new design, build a locally editable HTML report and translate the accepted design into NetSuite FreeMarker/BFO XML with verified field bindings. For a change to an existing report, use the current XML as the source for a revised copy and preserve unaffected behavior. The initial target is a CRM Task service report; check the distinct data contract before adapting one for a Case or Project Task. Never require an FSM source checkout or internal engineering documentation.

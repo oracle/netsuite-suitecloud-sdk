@@ -1,6 +1,6 @@
 # Optional local evidence review view
 
-Use [review_adapter.py](review_adapter.py) for a requested or useful interactive detail table from an optional [result attachment](../contracts/RESULT-EVIDENCE.md). This is an additional fixed view, not a replacement for the shared delivery helper, domain graphics or a general dashboard/export engine. Match the user's requested format. Existing Finance Analyst and financial visualization prerequisites still apply before presenting financial analytical content; the renderer does not enforce or fulfill them.
+Use [review_adapter.py](review_adapter.py) for a requested or useful interactive detail table from an optional [result attachment](../contracts/RESULT-EVIDENCE.md). This is an additional fixed view, not a replacement for the shared delivery helper, domain graphics or a general dashboard/export engine. Match the user's requested format. Preserve the selected producer's source, currency and evidence requirements before presenting financial analytical content. The review renderer does not certify business correctness. Data Visualization has no external Finance Analyst dependency.
 
 ```
 python3 shared/rendering/review_adapter.py result.json config.json new-review.html --receipt receipt.json

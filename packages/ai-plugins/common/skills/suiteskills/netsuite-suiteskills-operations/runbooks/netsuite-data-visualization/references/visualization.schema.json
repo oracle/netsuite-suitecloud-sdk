@@ -2,7 +2,7 @@
   "$id": "urn:suiteskills:data-visualization:specification:1",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "description": "Structural shape; contract.py additionally enforces basename, finance, exact row keys, unique grain, numeric/date meaning, unit and cross-field controls. Financial structure can be represented but actual rendering is unavailable. Chart-specific fields and exact cross-field checks are documented in chart-contract.md.",
+  "description": "Closed supplied-snapshot structure for financial and operational visualizations. contract.py enforces grain, units, currency compatibility, coverage and source-bound links; no external plugin is required.",
   "properties": {
     "charts": {
       "items": {
@@ -578,9 +578,46 @@
           },
           {
             "additionalProperties": false,
+            "allOf": [
+              {
+                "else": {
+                  "properties": {
+                    "currency": {
+                      "type": "null"
+                    }
+                  }
+                },
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "money"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "currency": {
+                      "pattern": "^[A-Z]{3}$",
+                      "type": "string"
+                    },
+                    "unit": {
+                      "pattern": "^[A-Z]{3}$"
+                    }
+                  }
+                }
+              }
+            ],
             "properties": {
               "currency": {
-                "type": "null"
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "pattern": "^[A-Z]{3}$",
+                    "type": "string"
+                  }
+                ]
               },
               "key": {
                 "pattern": "^[a-z][a-z0-9_]{0,39}$",
@@ -591,7 +628,8 @@
                   "number",
                   "quantity",
                   "count",
-                  "ratio"
+                  "ratio",
+                  "money"
                 ]
               },
               "label": {

@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # Review and improve FSM configuration
 
 Use [effective configuration](../references/configuration.md#effective-configuration) to distinguish stored JSON, merged settings and Preview. The other sections of that reference cover access, mappings and Mobile form behavior. Consult the [Oracle configuration index](../references/configuration-index.md) only when you need detailed source guidance, choosing the topic for the affected setting.

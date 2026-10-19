@@ -9,8 +9,8 @@
   "display_name": "Executive Financial Reporting",
   "first_included_date": "2026-10-08",
   "id": "RB-FIN-007",
-  "integration_release_date": "2026-10-14",
-  "integration_version": "0.7.4",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "0.8.1",
   "name": "netsuite-executive-finance-reporting",
   "netsuite_requirements": {
     "industries": {

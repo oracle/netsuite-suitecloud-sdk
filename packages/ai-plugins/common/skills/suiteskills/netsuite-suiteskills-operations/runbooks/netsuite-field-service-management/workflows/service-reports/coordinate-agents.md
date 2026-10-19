@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # Coordinate service-report agents
 
 Use this workflow when the requested work benefits from separate template, configuration, and validation roles. It supplements the existing workflows; delegation does not authorize publication, activation, or extra account access.

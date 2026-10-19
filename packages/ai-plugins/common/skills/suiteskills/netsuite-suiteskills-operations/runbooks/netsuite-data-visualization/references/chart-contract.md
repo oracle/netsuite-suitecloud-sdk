@@ -2,9 +2,9 @@
 
 The renderer implements bar, line, area, scatter, bubble, pie, donut, funnel, waterfall, stacked, combination, table, and KPI views. All charts use the same locally filtered row population as the exact-value table. Table cells retain source row indices when controls sort/filter; record references remain aligned to their original source cells.
 
-The base closed contract validates source coverage, row grain, operational units, numeric/date types, references, bounded literal text and the unavailable Finance Analyst dependency first. `chart_contract.validate_chart(chart, columns_mapping, rows, source, FINANCE)` then validates each chart. No query, expression, formatter, callback, HTML, URL, arbitrary style, arbitrary color, conversion, grouping or aggregation options are accepted. Unknown fields and explicitly null optional fields fail validation. Supplied strings render through `textContent`; SVG paths and coordinates are deterministic renderer geometry.
+The base closed contract validates source coverage, row grain, measure units, numeric/date types, references, bounded literal text and currency consistency first. `chart_contract.validate_chart(chart, columns_mapping, rows, source)` then validates each chart. No query, expression, formatter, callback, HTML, URL, arbitrary style, arbitrary color, conversion, grouping or aggregation options are accepted. Unknown fields and explicitly null optional fields fail validation. Supplied strings render through `textContent`; SVG paths and coordinates are deterministic renderer geometry.
 
-Every chart requires exactly `type`, `title`, `x`, and `y`, plus only the optional/required fields listed below. `x`, `y`, size and interval coordinates name validated supplied columns. `y` is numeric. Numeric source columns use the operational kind/unit allowlist from the base contract. There are 1–6 charts per model, at most 80 row-series marks per graphical chart, and at most four explicit series. Table charts retain the base 2,000-row bound.
+Every chart requires exactly `type`, `title`, `x`, and `y`, plus only the optional/required fields listed below. `x`, `y`, size and interval coordinates name validated supplied columns. `y` is numeric. Numeric source columns use the kind/unit/currency contract from the base contract. There are 1–6 charts per model, at most 80 row-series marks per graphical chart, and at most four explicit series. Table charts retain the base 2,000-row bound.
 
 | Type | Fields beyond the common four | Source constraints and behavior |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Magnitude charts whose plotted quantities are all zero show `All supplied values
 
 ## Copy-ready chart definitions
 
-These snippets replace a chart entry in an otherwise valid model whose named source columns are present; the complete synthetic models are in `examples/charts-standard.json`, `examples/charts-advanced.json`, and `examples/charts-shares.json`.
+These snippets replace a chart entry in an otherwise valid model whose named source columns are present; complete synthetic money and KPI models are in `examples/supplied-revenue.json` and `examples/supplied-kpis.json`.
 
 ```json
 {"type":"area","title":"Observed movement by day","x":"day","y":"qty","series":[{"key":"qty","label":"Primary"},{"key":"other","label":"Secondary"}]}

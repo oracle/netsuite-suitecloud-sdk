@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # Service-report templates
 
 Read the requested mode only. Use the [report access rules](index.md#netsuite-access), [source policy](../../references/service-reports/source-index.md#source-policy), and linked references for that mode. Template preparation does not authorize publication or activation.

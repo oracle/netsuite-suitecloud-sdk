@@ -185,7 +185,11 @@
         "skills/netsuite-suiteskills-customers-sales/agents/openai.yaml",
         "skills/netsuite-suiteskills-operations/agents/openai.yaml",
         "skills/netsuite-suiteskills-people/agents/openai.yaml",
-        "skills/netsuite-suiteskills-onboarding/agents/openai.yaml"
+        "skills/netsuite-suiteskills-onboarding/agents/openai.yaml",
+        "SAFEWORDS-COVERAGE.md",
+        "SAFEWORDS-COVERAGE.json",
+        "SECURITY-CHANGELOG.md",
+        "VISUALIZER-CHANGELOG.md"
       ],
       "root": "src"
     }
@@ -200,7 +204,7 @@
       "com.openai": {
         "onboardingSkill": "./skills/netsuite-suiteskills-onboarding/SKILL.md",
         "publication": {
-          "release_notes": "SuiteSkills OpenAI 0.7.7 normalizes inherited product labels, schema IDs and foundation markers to SuiteSkills. Retains 48 business runbooks and the secured Data Visualization 2.0.0-rc.1 core. Native/account/security qualification remains separate."
+          "release_notes": "SuiteSkills 0.8.1 consolidates SafeWords and adds source-independent financial visualization with Data Visualization 2.2.0-rc.1. Native, account and security qualification remains pending."
         }
       }
     },
@@ -245,6 +249,6 @@
     "netsuite-suiteskills-people",
     "netsuite-suiteskills-onboarding"
   ],
-  "version": "0.7.9",
+  "version": "0.8.1",
   "skillSource": "suiteskills"
 }

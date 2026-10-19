@@ -8,7 +8,7 @@ import re
 from contract import validate, links, loads
 ASSETS=pathlib.Path(__file__).resolve().parent.parent/'assets'
 # Pinned reviewed asset digests, not hashes of scripts discovered in generated output.
-TRUST = {'view.js': '77625ef53dcf05b7837a128be5abf77a04b47e26020770c2f1ece12e43fc7255', 'view.css': 'd790e14a1a4afa53e616f3b5ddf05c0d192cb812909139a23cf38a47625f435f'}  # populated at authoring, never inferred from delivered HTML
+TRUST = {'view.js': '3524241fdd04bcfa6ceb3440fdfec282d33aefba9af1c3dcf0588c4668e90ba7', 'view.css': '388e30e0f85624e5fa7b5dc8aaee2d50b6377424eda39409ee1c1aebe9f1e6fe'}  # reviewed authoring pins
 
 
 def asset(name):

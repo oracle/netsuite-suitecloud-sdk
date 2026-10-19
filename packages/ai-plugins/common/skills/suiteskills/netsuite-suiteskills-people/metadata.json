@@ -5,8 +5,8 @@
   "id": "CAT-PPL",
   "name": "People and Workforce",
   "owner": "Oracle NetSuite",
-  "release_date": "2026-10-15",
+  "release_date": "2026-10-16",
   "runbook_count": 5,
   "slug": "netsuite-suiteskills-people",
-  "version": "0.7.9"
+  "version": "0.8.1"
 }

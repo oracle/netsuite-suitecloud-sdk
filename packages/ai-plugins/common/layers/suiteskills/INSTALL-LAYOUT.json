@@ -10,5 +10,5 @@
   "layout": "isolated_category",
   "native_upload_readback": "not_run",
   "plugin": "netsuite-suiteskills",
-  "version": "0.7.9"
+  "version": "0.8.1"
 }

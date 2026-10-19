@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # EX-11 · Planned-Absence Availability
 
 Use for upcoming planned-absence availability by supervisor team. Coverage includes absences of every time-off type unless the user explicitly asks for one type. Project-assignment analysis is out of scope.

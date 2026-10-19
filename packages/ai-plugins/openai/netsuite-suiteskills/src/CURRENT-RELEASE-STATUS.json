@@ -11,11 +11,11 @@
     "native_delivery": "not_run",
     "native_host": "not_run",
     "security_approval": "not_run",
-    "source_version": "2.1.0-rc.1",
+    "source_version": "2.2.0-rc.1",
     "state": "included_internal_testing_candidate"
   },
   "data_visualization_browser_export_validation": "fresh_results_in_external_verification; native_not_run",
-  "data_visualization_source_version": "2.1.0-rc.1",
+  "data_visualization_source_version": "2.2.0-rc.1",
   "edition": "non-read-only",
   "excluded_runbooks": [
     "RB-OPS-013",
@@ -40,14 +40,15 @@
   "sdk_build": "see external VERIFICATION.json",
   "security_approval": "not_run",
   "source_rights": "not_collected",
-  "version": "0.7.9",
-  "version_basis": "visualizer_runtime_and_host_delivery",
+  "version": "0.8.1",
+  "version_basis": "safewords_consolidation_and_source_independent_financial_visualization",
   "welcome_dashboard": "removed",
-  "working_revision": "openai-079-2026-10-15",
+  "working_revision": "shared-081-2026-10-19",
   "writer_remediation": {
     "iq_scan": "not_run",
     "native_host": "not_run",
     "shared_writer_files": 18,
     "specialized_runbook_consumers": 7
-  }
+  },
+  "integration_verification": "See provider README.md; author-reported results are not receiving-repository qualification."
 }

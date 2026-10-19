@@ -5,8 +5,8 @@
   "id": "CAT-OPS",
   "name": "Inventory and Operations",
   "owner": "Oracle NetSuite",
-  "release_date": "2026-10-15",
+  "release_date": "2026-10-16",
   "runbook_count": 13,
   "slug": "netsuite-suiteskills-operations",
-  "version": "0.7.9"
+  "version": "0.8.1"
 }

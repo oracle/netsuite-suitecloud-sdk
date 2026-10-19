@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "title": "Revenue Overview (SAMPLE DATA)",
+  "question": "Four supplied aggregates for September 2026",
+  "domain": "financial",
+  "export_name": "revenue-performance",
+  "source": {
+    "kind": "supplied",
+    "label": "User supplied monthly report \u2014 synthetic example",
+    "retrieved_at": "2026-10-16T12:00:00Z",
+    "scope": "September 2026; synthetic consolidated aggregates; accrual basis; USD",
+    "filters": [
+      "Sample dataset only"
+    ],
+    "status": "preliminary",
+    "completeness": "complete",
+    "expected_rows": 1,
+    "grain": [
+      "month"
+    ],
+    "limitations": [
+      "Synthetic values; no live account evidence or accounting assurance."
+    ]
+  },
+  "columns": [
+    {
+      "key": "month",
+      "label": "Month",
+      "type": "date"
+    },
+    {
+      "key": "revenue",
+      "label": "Revenue",
+      "type": "number",
+      "kind": "money",
+      "unit": "USD",
+      "currency": "USD"
+    },
+    {
+      "key": "prior",
+      "label": "Prior Year",
+      "type": "number",
+      "kind": "money",
+      "unit": "USD",
+      "currency": "USD"
+    },
+    {
+      "key": "cost",
+      "label": "Cost of Sales",
+      "type": "number",
+      "kind": "money",
+      "unit": "USD",
+      "currency": "USD"
+    },
+    {
+      "key": "margin",
+      "label": "Gross Margin",
+      "type": "number",
+      "kind": "ratio",
+      "unit": "percent",
+      "currency": null
+    }
+  ],
+  "rows": [
+    {
+      "month": "2026-09-01",
+      "revenue": 165000,
+      "prior": 150000,
+      "cost": 99000,
+      "margin": 40
+    }
+  ],
+  "charts": [
+    {
+      "type": "kpi",
+      "title": "Revenue",
+      "x": "month",
+      "y": "revenue"
+    },
+    {
+      "type": "kpi",
+      "title": "Prior Year",
+      "x": "month",
+      "y": "prior"
+    },
+    {
+      "type": "kpi",
+      "title": "Cost of Sales",
+      "x": "month",
+      "y": "cost"
+    },
+    {
+      "type": "kpi",
+      "title": "Gross Margin",
+      "x": "month",
+      "y": "margin"
+    }
+  ],
+  "references": []
+}

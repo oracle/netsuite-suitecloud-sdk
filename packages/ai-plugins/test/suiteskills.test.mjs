@@ -39,6 +39,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    const plugin = result.plugin;
    const catalog = await json('CATALOG.json');
    assert.equal(plugin.skillSource,'suiteskills');
+   assert.equal(plugin.version,'0.8.1');
    assert.deepEqual(workspace.buildConfig.skillSources,{suiteskills:'./common/skills/suiteskills'});
    assert.equal(workspace.buildConfig.commonLayersRoot,'./common/layers');
    assert.equal(workspace.commonLayersRoot,path.join(packageRoot,'common/layers'));
@@ -48,6 +49,8 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    assert.equal(catalog.version,plugin.version);
    assert.deepEqual(catalog.categories.map(c=>c.name), categories);
    assert.equal(new Set(catalog.runbooks.map(r=>r.id)).size,48);
+   // Route IDs, names, categories, paths and aliases pinned to the pre-integration catalog.
+   assert.equal(hash(JSON.stringify(catalog.runbooks.map(r=>Object.fromEntries(['id','name','category','path','aliases'].filter(k=>Object.hasOwn(r,k)).map(k=>[k,r[k]]))))),'7af0c44db4ed2e9dd8ca42b5324f3831fec9dc8a7419ec0aad26ceab15382355');
    assert.deepEqual(catalog.runbooks.map(r=>r.id).sort(),Object.values(expectedRoutes).flat().sort());
    for (const [category,ids] of Object.entries(expectedRoutes)) {
     const rows=catalog.runbooks.filter(r=>r.category===category);
@@ -92,9 +95,77 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    }
    await t.test('visualization prerequisites and export-gate packaging',async()=>{
     const row=catalog.runbooks.find(r=>r.id==='RB-OPS-020');
-    assert.match((await read(row.path)).toString(),/Finance Analyst/);
+    assert.match((await read(row.path)).toString(),/No Finance Analyst plugin or handoff is required/);
+    assert.equal(row.source_version,'2.2.0-rc.1');
+    const visualRoot=path.posix.dirname(row.path);
+    for (const file of ['examples/supplied-revenue.json','examples/supplied-kpis.json','references/visual-design.md']) await exists(path.posix.join(visualRoot,file));
+    const metadata=await json(path.posix.join(visualRoot,'metadata.json'));
+    assert.equal(metadata.local_dependencies.finance_analyst,undefined);
+    assert.deepEqual(row.local_dependencies,metadata.local_dependencies);
+    assert.deepEqual(row.operations,metadata.operations);
+    assert.equal(metadata.compatibility.host,'capability_dependent');
+    for (const file of ['scripts/contract.py','scripts/chart_contract.py','references/delivery.md']) assert.doesNotMatch((await read(path.posix.join(visualRoot,file))).toString(),/actual unavailable Finance Analyst|financial.*keyword|FINANCIAL_WORDS/);
     for (const file of ['scripts/export_gate.py','scripts/capabilities.py','scripts/runtime.py','scripts/publication.py','scripts/verify_delivery.py','scripts/browser.cjs','references/publication.md','references/delivery.md','assets/view.js','assets/view.css']) await exists(path.posix.join(path.posix.dirname(row.path),file));
     assert.match((await read(path.posix.join(path.posix.dirname(row.path),'scripts/capabilities.py'))).toString(),/pypdf/);
+   });
+   await t.test('complete SafeWords coverage and retained execution safeguards',async()=>{
+    for(const name of ['SAFEWORDS-COVERAGE.md','SAFEWORDS-COVERAGE.json','SECURITY-CHANGELOG.md','VISUALIZER-CHANGELOG.md']) {
+     await exists(name); assert(plugin.inputs.some(input=>input.include.includes(name)));
+    }
+    const coverage=await json('SAFEWORDS-COVERAGE.json');
+    assert.equal(coverage.version,'0.8.1');
+    assert.equal(coverage.host,'capability_dependent');
+    assert.deepEqual(coverage.counts,{policy_owners:5,removed_policy_sections:16,runbooks:48,workflows:15});
+    assert.equal(coverage.policy_owners.length,5);
+    assert.deepEqual(coverage.policy_owners.map(r=>r.path).sort(),plugin.skills.map(s=>`skills/${s}/SKILL.md`).sort());
+    assert.deepEqual(coverage.application_references.filter(r=>r.kind==='workflow').map(r=>r.path).sort(),files.filter(f=>f.includes('/workflows/') && f.endsWith('.md')).sort());
+    assert.equal(coverage.application_references.filter(r=>r.kind==='runbook').length,48);
+    assert.equal(coverage.application_references.filter(r=>r.kind==='workflow').length,15);
+    assert.equal(new Set(coverage.application_references.map(r=>r.path)).size,63);
+    assert.deepEqual(coverage.application_references.filter(r=>r.kind==='runbook').map(r=>r.path).sort(),catalog.runbooks.map(r=>r.path).sort());
+    const policies=[];
+    for(const owner of coverage.policy_owners) {
+     const raw=await read(owner.path),lines=raw.toString().split('\n');
+     assert.equal(hash(raw),owner.sha256,owner.path);
+     const policy=lines.slice(owner.start_line-1,owner.end_line).join('\n');
+     assert(policy.startsWith('## SafeWords'));
+     assert.deepEqual([...policy.matchAll(/\*\*(SW-\d{2})\*\*/g)].map(m=>m[1]),Array.from({length:11},(_,i)=>`SW-${String(i+1).padStart(2,'0')}`));
+     policies.push(policy);
+    }
+    for(const policy of policies) assert.equal(policy,policies[0]);
+    for(const row of coverage.application_references) {
+     const raw=await read(row.path),text=raw.toString();
+     assert.equal(hash(raw),row.sha256,row.path);
+     assert(text.split('\n')[row.line-1].includes(`(${row.target})`),row.path);
+     assert.match(text,/If it cannot be loaded, stop dependent operations/);
+     assert.equal(path.posix.normalize(path.posix.join(path.posix.dirname(row.path),row.target.split('#')[0])),row.policy_owner);
+     assert.doesNotMatch(text,/^## SafeWords$/m);
+    }
+    assert.equal(coverage.removed_general_policy_sections.length,16);
+    for(const row of coverage.removed_general_policy_sections) {
+     const text=(await read(row.path)).toString();
+     assert.doesNotMatch(text,/^## SafeWords$/m);
+     if(row.domain_content_in_removed_section) assert.equal(row.domain_content_preservation,'preserved');
+    }
+    const restrictions={
+     'netsuite-suiteskills-finance/runbooks/netsuite-cohort-analysis/RUNBOOK.md':/Never create, update, delete, transform, upload, send, publish, deploy/,
+     'netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md':/read-only by design/,
+     'netsuite-suiteskills-operations/runbooks/netsuite-field-service-management/RUNBOOK.md':/Do not invent diagnostic identifiers/,
+     'netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md':/Only Save on that unchanged review authorizes/,
+    };
+    for(const [file,pattern] of Object.entries(restrictions)) assert.match((await read('skills/'+file)).toString(),pattern);
+    const baseline=(await read('shared/contracts/BASELINE.md')).toString();
+    assert.match(baseline,/Discover the currently exposed integration/);
+    assert.match(baseline,/Preselection is not submission/);
+    const outputs=(await read('shared/contracts/OUTPUTS.md')).toString();
+    assert.match(outputs,/POSIX O_NOFOLLOW/);
+    assert.match(outputs,/Unsupported execution fails closed/);
+    assert.match(outputs,/downloadable HTML file is not an inline interactive surface/);
+    assert(!files.some(f=>f.endsWith('/OPENAI-HOST.md')));
+    for(const file of files.filter(f=>f.endsWith('/deliver_response.py'))) {
+     const text=(await read(file)).toString();
+     assert(text.includes("'.claude-plugin'"),file); assert(text.includes("'.codex-plugin'"),file);
+    }
    });
    const inventory=await json('INVENTORY.json');
    const sharedInventory=Object.keys(inventory).filter(f=>f.startsWith('shared/')).sort();

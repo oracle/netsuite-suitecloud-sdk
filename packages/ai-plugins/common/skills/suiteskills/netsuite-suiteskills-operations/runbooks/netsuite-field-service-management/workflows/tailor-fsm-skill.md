@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # Tailor an FSM skill
 
 Use this recipe when the user asks to create or adapt a reusable skill for their FSM practices. It can cover any FSM topic or a process spanning several topics. An ordinary request to adjust a schedule, explain billing, configure Mobile or work on a report stays with that task's procedure.

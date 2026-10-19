@@ -10,7 +10,7 @@
     "native_delivery": "not_run",
     "unsupported_file_engine": "facts_or_Markdown_table_only"
   },
-  "description": "Create focused nonfinancial charts and snapshot views from verified results or supplied data. Generate validated HTML on supported executors and deliver through observed host facilities; PDF/PowerPoint require qualified Darwin export dependencies. Preserve source scope and plain-text references without verified origin. Financial visuals require the unavailable actual Finance Analyst handoff.",
+  "description": "Create focused financial and operational charts and snapshot views from verified results or supplied data. Generate validated HTML on supported executors and deliver through observed host facilities; PDF/PowerPoint require qualified Darwin export dependencies. Preserve source scope and plain-text references without verified origin. Accept supplied files/tables and supported source results without another plugin.",
   "display_name": "Data Visualization",
   "effects": {
     "account_reads": "supported connector only, when requested",
@@ -22,10 +22,9 @@
   "first_included_date": "2026-10-08",
   "foundation_sha256": "fc1c63bb69b2d199cd8a14b6dcc6d0a93a18f0ae29d1be57fece56a1d9b22541",
   "id": "RB-OPS-020",
-  "integration_release_date": "2026-10-15",
-  "integration_version": "0.7.9",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "0.8.1",
   "local_dependencies": {
-    "finance_analyst": "unavailable; not substituted",
     "html": "Python 3.12 standard library and reviewed packaged assets",
     "pdf": "Reviewed Node.js/Playwright/matching Chromium, pypdf and exact qualified host Arial Unicode MS 1.01x font; see references/publication.md",
     "pptx": "Python 3.12 standard library plus existing reviewed Node.js, Playwright and matching Chromium for every graphical PowerPoint export"
@@ -56,7 +55,7 @@
   "operations": [
     {
       "condition": "Fresh NetSuite evidence requested; actual supported connector required",
-      "operation": "read_verified_nonfinancial_source",
+      "operation": "read_supported_source",
       "status": "conditional"
     },
     {
@@ -78,14 +77,14 @@
     "shared/contracts/LINKS.md",
     "shared/contracts/EVIDENCE.md"
   ],
-  "source_release_date": "2026-10-15",
-  "source_version": "2.1.0-rc.1",
+  "source_release_date": "2026-10-16",
+  "source_version": "2.2.0-rc.1",
   "standardized_from_release": "0.7.2",
   "target_plugin": {
     "name": "netsuite-suiteskills",
-    "version": "0.7.9"
+    "version": "0.8.1"
   },
   "upstream_source_version": "1.4.0",
-  "version": "2.1.0-rc.1",
-  "version_basis": "runtime_adapters_and_verified_host_delivery"
+  "version": "2.2.0-rc.1",
+  "version_basis": "source_independent_financial_visuals_and_redwood_alignment"
 }

@@ -10,8 +10,8 @@
   "display_name": "Payroll Clarity Readiness",
   "first_included_date": "2026-10-08",
   "id": "RB-PPL-001",
-  "integration_release_date": "2026-10-14",
-  "integration_version": "0.7.4",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "0.8.1",
   "name": "netsuite-payroll-clarity-readiness",
   "netsuite_requirements": {
     "industries": {

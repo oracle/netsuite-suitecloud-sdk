@@ -1,3 +1,5 @@
+Before tool use, load and apply [category SafeWords](../../../../SKILL.md#safewords), including when this file is loaded directly. Its requirements govern this entire procedure and its supporting references. Preserve this procedure's domain restrictions and review gates. If it cannot be loaded, stop dependent operations and follow the installed resource-loading guidance.
+
 # EX-14 · Low Usage and Idle-Balance Concentration
 
 Use when the user asks whether low time-off use is concentrated by department or supervisor. This is a Time-Off Change expiry/carryover analysis, not a request analysis.
