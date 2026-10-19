@@ -199,6 +199,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandExecutor._cliConfigurationService = new CLIConfigurationService();
 			commandExecutor._commandsMetadataService.getCommandMetadataByName.mockReturnValue({ isSetupRequired: true, supportsInteractiveMode: true, options: {} });
 			const getCommand = jest.spyOn(commandExecutor, '_getCommand');
+			const getCommandUserExtension = jest.spyOn(commandExecutor._cliConfigurationService, 'getCommandUserExtension');
 
 			const result = await commandExecutor.executeAction({ commandName, runInInteractiveMode: false, arguments: {} });
 
@@ -208,6 +209,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			expect(mockCheckIfReauthorizationIsNeeded).not.toHaveBeenCalled();
 			expect(mockRefreshAuthorization).not.toHaveBeenCalled();
 			expect(getCommand).not.toHaveBeenCalled();
+			expect(getCommandUserExtension).not.toHaveBeenCalled();
 		} finally {
 			await rm(projectFolder, { recursive: true, force: true });
 		}
@@ -230,7 +232,8 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			commandExecutor._commandsMetadataService.getCommandMetadataByName.mockReturnValue({ isSetupRequired: true, supportsInteractiveMode: true, options: {} });
 			mockGetProjectDefaultAuthId.mockReturnValue('myAuth');
 			mockCheckIfReauthorizationIsNeeded.mockResolvedValue({ isSuccess: () => true, data: { needsReauthorization: false } });
-			const getCommand = jest.spyOn(commandExecutor, '_getCommand');
+			const run = jest.fn(async () => ActionResult.Builder.withData([]).build());
+			const getCommand = jest.spyOn(commandExecutor, '_getCommand').mockReturnValue({ run });
 
 			const result = await commandExecutor.executeAction({ commandName, runInInteractiveMode: false, arguments: {} });
 
@@ -239,6 +242,7 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 			expect(validateProjectContext.mock.invocationCallOrder[0]).toBeLessThan(beforeExecuting.mock.invocationCallOrder[0]);
 			expect(beforeExecuting.mock.invocationCallOrder[0]).toBeLessThan(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]);
 			expect(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]).toBeLessThan(getCommand.mock.invocationCallOrder[0]);
+			expect(run).toHaveBeenCalledTimes(1);
 		} finally {
 			await rm(projectFolder, { recursive: true, force: true });
 		}

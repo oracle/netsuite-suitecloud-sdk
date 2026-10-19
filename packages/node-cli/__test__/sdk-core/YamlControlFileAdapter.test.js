@@ -98,7 +98,8 @@ const fixtures = {
 	},
 };
 
-describe.each(['yaml', 'yml'])('%s control-file adapter', (format) => {
+describe('YAML control-file adapter', () => {
+	const format = 'yaml';
 	defineProjectParsingTests(format, fixtures);
 	defineStructuredControlFileTests(format);
 
@@ -147,4 +148,12 @@ describe.each(['yaml', 'yml'])('%s control-file adapter', (format) => {
 		expect(adapter.parseDocument('manifest:\n  projectname: on\n  frameworkversion: 2.0', `manifest.${format}`).manifest)
 			.toEqual({ projectname: 'on', frameworkversion: 2 });
 	});
+});
+
+// Both extensions use the YAML parser; exercise the alias without duplicating its full contract.
+it('supports native YAML control files with the .yml extension', () => {
+	expect(parseControlFile('yml', 'manifest', fixtures.suiteapp.manifest).normalized)
+		.toMatchObject({ projectType: 'SUITEAPP', frameworkVersion: '2.0' });
+	expect(parseControlFile('yml', 'deploy', fixtures.suiteapp.deploy).normalized.files)
+		.toHaveLength(3);
 });

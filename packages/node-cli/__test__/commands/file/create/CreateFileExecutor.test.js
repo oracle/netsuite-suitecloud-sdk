@@ -7,6 +7,7 @@
 const { mkdtemp, readFile, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
+const { stringify } = require('yaml');
 const {
 	executeCreateFile,
 	FILE_CREATE_STATUS,
@@ -68,6 +69,31 @@ describe('CreateFileExecutor', () => {
 		const content = await readFile(result.data.createdFileAbsolutePath, 'utf8');
 		expect(content).toContain('@NApiVersion 2.1');
 		expect(content).toContain('const foo');
+	});
+
+	it.each([
+		['xml', 'ACCOUNTCUSTOMIZATION', '/SuiteScripts/example.js'],
+		['json', 'SUITEAPP', '/SuiteApps/com.example.app/example.js'],
+		['json', 'ACCOUNTCUSTOMIZATION', '/SuiteScripts/example.js'],
+		['yaml', 'SUITEAPP', '/SuiteApps/com.example.app/example.js'],
+		['yml', 'ACCOUNTCUSTOMIZATION', '/SuiteScripts/example.js'],
+	])('creates scripts using manifest.%s for %s', async (format, projectType, filePath) => {
+		await rm(join(projectFolder, 'manifest.xml'));
+		await rm(join(projectFolder, 'deploy.xml'));
+		const manifest = { manifest: {
+			projecttype: projectType, frameworkversion: '2.0', publisherid: 'com.example', projectid: 'app',
+		} };
+		await writeFile(join(projectFolder, `manifest.${format}`), format === 'xml'
+			? '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>'
+			: format === 'json' ? JSON.stringify(manifest) : stringify(manifest));
+		// File creation reads identity without parsing deploy contents.
+		await writeFile(join(projectFolder, format === 'xml' ? 'deploy.xml' : 'deploy.json'), '{');
+
+		const result = await executeCreateFile({ projectFolder, path: filePath });
+
+		expect(result.status).toBe(FILE_CREATE_STATUS.SUCCESS);
+		expect(result.data.createdFileAbsolutePath).toBe(join(projectFolder, 'FileCabinet', filePath));
+		expect(await readFile(result.data.createdFileAbsolutePath, 'utf8')).toContain('@NApiVersion 2.1');
 	});
 
 	it('should normalize modules and render their define, JSDoc, and function parameters', async () => {

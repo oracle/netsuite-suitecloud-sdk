@@ -96,12 +96,13 @@ describe('Grouped project validation errors', () => {
 		]);
 	});
 
-	it('collects metadata, deploy and application eligibility errors independently', async () => {
-		await writeControls('<manifest projecttype="ACCOUNTCUSTOMIZATION"/>', '<other/>');
-		await writeFile(join(projectFolder, 'application.xml'), '<application/>');
+	it.each(['xml', 'json', 'yaml', 'yml'])('collects metadata, deploy and application eligibility errors independently in %s', async (format) => {
+		await writeControls(format === 'xml' ? '<manifest projecttype="ACCOUNTCUSTOMIZATION"/>' : '{"manifest":{"projecttype":"ACCOUNTCUSTOMIZATION"}}',
+			format === 'xml' ? '<other/>' : '{"other":[]}', format);
+		await writeFile(join(projectFolder, `application.${format}`), format === 'xml' ? '<application/>' : 'application: {}');
 		expect(captureError(() => readProjectContext(projectFolder))).toEqual([
 			expect.stringContaining('Missing required "frameworkversion"'),
-			expect.stringContaining('Invalid deploy.xml: expected <deploy>'),
+			expect.stringContaining(`Invalid deploy.${format}`),
 			expect.stringContaining('only allowed in SuiteApp projects'),
 		]);
 	});
@@ -140,6 +141,22 @@ describe('Grouped project validation errors', () => {
 		expect(result.errorMessages[1]).toContain('frameworkversion');
 		expect(result.errorMessages[2]).toContain('Invalid deploy.xml');
 		for (const message of result.errorMessages) expect(message).toContain(projectFolder);
+		expect(sendProjectRequest).not.toHaveBeenCalled();
+	});
+
+	it.each(['json', 'yaml', 'yml'])('rejects malformed V2 %s controls before the project transport is called', async (format) => {
+		await writeControls('{', '{', format);
+		const sendProjectRequest = jest.fn();
+		for (const command of ['validate', 'deploy', 'preview']) {
+			const result = await commands.executeProjectCommand({
+				command, projectFolder, hostName: 'mock.invalid', accessToken: 'mock-token',
+			}, { sendProjectRequest });
+			expect(result.status).toBe('ERROR');
+			expect(result.errorMessages).toEqual([
+				expect.stringContaining(`Invalid manifest.${format}:`),
+				expect.stringContaining(`Invalid deploy.${format}:`),
+			]);
+		}
 		expect(sendProjectRequest).not.toHaveBeenCalled();
 	});
 

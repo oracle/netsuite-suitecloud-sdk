@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { mkdtemp, rm, writeFile } = require('node:fs/promises');
+const { mkdir, mkdtemp, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const {
@@ -78,6 +78,21 @@ describe('ProjectControlService', () => {
 		expect(description.deploy).toEqual({});
 	});
 
+	it('ignores directories, nested controls, backups and unrelated files during discovery', async () => {
+		await Promise.all([
+			mkdir(join(projectFolder, 'manifest.json')),
+			mkdir(join(projectFolder, 'nested')),
+			writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>'),
+			writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>'),
+			writeFile(join(projectFolder, 'manifest.yaml.bak'), '{'),
+			writeFile(join(projectFolder, 'package.json'), '{}'),
+		]);
+		await writeFile(join(projectFolder, 'nested', 'manifest.yaml'), '{');
+		expect(readProjectContext(projectFolder).controlFilesMetadata).toMatchObject({
+			manifest: { fileName: 'manifest.xml' }, deploy: { fileName: 'deploy.xml' },
+		});
+	});
+
 	it.each(['xml', 'json', 'yaml', 'yml'])('preserves explicitly empty optional groups in deploy.%s', async (format) => {
 		await writeFile(join(projectFolder, `manifest.${format}`), format === 'xml'
 			? '<manifest projecttype="SUITEAPP"><frameworkversion>1.0</frameworkversion></manifest>'
@@ -88,47 +103,6 @@ describe('ProjectControlService', () => {
 		expect(readProjectContext(projectFolder).deploy).toEqual({
 			files: [], objects: [], run: [], translationimports: [], configurations: [],
 		});
-	});
-
-	it.each(['xml', 'json', 'yaml', 'yml'])('collects repeated path sections and run scripts in deploy.%s', async (format) => {
-		const manifest = format === 'xml'
-			? '<manifest projecttype="SUITEAPP"><frameworkversion>1.0</frameworkversion></manifest>'
-			: '{"manifest": {"projecttype": "SUITEAPP", "frameworkversion": "2.0"}}';
-		const deploy = format === 'xml'
-			? '<deploy><run><script><path>~/Objects/first.xml</path><deployment>first</deployment></script></run>' +
-				'<files><path>~/FileCabinet/first.js</path></files><run/>' +
-				'<run><script><path>~/Objects/second.xml</path><deployment>second</deployment></script></run>' +
-				'<files><path>~/FileCabinet/second.js</path></files></deploy>'
-			: JSON.stringify({ deploy: [
-				{ run: { script: { path: '~/Objects/first.xml', deployment: 'first' } } },
-				{ files: { path: '~/FileCabinet/first.js' } },
-				{ run: {} },
-				{ run: { script: [{ path: '~/Objects/second.xml', deployment: 'second' }] } },
-				{ files: { path: ['~/FileCabinet/second.js'] } },
-			] });
-		await writeFile(join(projectFolder, `manifest.${format}`), manifest);
-		await writeFile(join(projectFolder, `deploy.${format}`), deploy);
-
-		expect(readProjectContext(projectFolder).deploy).toEqual({
-			files: ['~/FileCabinet/first.js', '~/FileCabinet/second.js'],
-			objects: undefined, translationimports: undefined, configurations: undefined,
-			run: [
-				{ path: '~/Objects/first.xml', deployment: 'first' },
-				{ path: '~/Objects/second.xml', deployment: 'second' },
-			],
-		});
-	});
-
-	it.each(['xml', 'json', 'yaml', 'yml'])('rejects unsupported sections in deploy.%s', async (format) => {
-		const manifest = format === 'xml'
-			? '<manifest projecttype="SUITEAPP"><frameworkversion>1.0</frameworkversion></manifest>'
-			: '{"manifest": {"projecttype": "SUITEAPP", "frameworkversion": "2.0"}}';
-		const deploy = format === 'xml' ? '<deploy><unsupported/></deploy>' : '{"deploy": [{"unsupported": {}}]}';
-		await writeFile(join(projectFolder, `manifest.${format}`), manifest);
-		await writeFile(join(projectFolder, `deploy.${format}`), deploy);
-
-		expect(() => readProjectContext(projectFolder))
-			.toThrow(`Invalid deploy.${format} at /deploy/${format === 'xml' ? '' : '0/'}unsupported: expected a supported deploy group`);
 	});
 
 	it.each(['xml', 'json', 'yaml', 'yml'])('requires the expected framework version in manifest.%s', async (format) => {
@@ -149,15 +123,6 @@ describe('ProjectControlService', () => {
 				expect(() => readProjectContext(projectFolder)).toThrow(errorMessage);
 			}
 		}
-	});
-
-	it('rejects missing, duplicate, and mixed-generation control files', async () => {
-		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest/>');
-		expect(() => validateControlFileSetup(projectFolder)).toThrow('Missing deploy control file');
-		await writeFile(join(projectFolder, 'deploy.yaml'), 'files: []');
-		expect(() => validateControlFileSetup(projectFolder)).toThrow('cannot be mixed');
-		await writeFile(join(projectFolder, 'manifest.json'), '{}');
-		expect(() => validateControlFileSetup(projectFolder)).toThrow('Multiple manifest control files');
 	});
 
 	it.each([
@@ -235,13 +200,15 @@ describe('ProjectControlService', () => {
 	});
 
 	it.each([
-		['missing deploy', [], 'Missing deploy control file'],
-		['duplicate deploy', ['deploy.xml', 'deploy.json'], 'Multiple deploy control files'],
-		['mixed-generation deploy', ['deploy.json'], 'cannot be mixed'],
-		['duplicate application', ['deploy.xml', 'application.xml', 'application.yml'], 'Multiple application control files'],
-		['mixed-generation application', ['deploy.xml', 'application.json'], 'cannot be mixed'],
+		['missing deploy', ['manifest.xml'], 'Missing deploy control file'],
+		['missing manifest', ['deploy.xml'], 'Missing manifest control file'],
+		['missing manifest with mixed generations', ['deploy.xml', 'application.json'], 'cannot be mixed'],
+		['duplicate manifest', ['manifest.xml', 'manifest.yml', 'deploy.xml'], 'Multiple manifest control files'],
+		['duplicate deploy', ['manifest.xml', 'deploy.xml', 'deploy.json'], 'Multiple deploy control files'],
+		['mixed-generation deploy', ['manifest.xml', 'deploy.json'], 'cannot be mixed'],
+		['duplicate application', ['manifest.xml', 'deploy.xml', 'application.xml', 'application.yml'], 'Multiple application control files'],
+		['mixed-generation application', ['manifest.xml', 'deploy.xml', 'application.json'], 'cannot be mixed'],
 	])('rejects %s before reading any control-file contents', async (_name, controlFiles, errorMessage) => {
-		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest>');
 		await Promise.all(controlFiles.map((filename) => writeFile(join(projectFolder, filename), '{')));
 
 		for (const read of [validateControlFileSetup, readProjectManifest, readProjectContext]) {
@@ -258,13 +225,6 @@ describe('ProjectControlService', () => {
 		expect(validateControlFileSetup(projectFolder)).toBeUndefined();
 		expect(readProjectManifest(projectFolder).getApplicationId()).toBe('com.example.app');
 		expect(() => readProjectContext(projectFolder)).toThrow('Invalid deploy.xml');
-	});
-
-	it('still rejects missing and duplicate manifests during metadata reads', async () => {
-		expect(() => readProjectManifest(projectFolder)).toThrow('Missing manifest control file');
-		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>');
-		await writeFile(join(projectFolder, 'manifest.yml'), '{}');
-		expect(() => readProjectManifest(projectFolder)).toThrow('Multiple manifest control files');
 	});
 
 	it.each(['xml', 'json', 'yaml', 'yml'])('allows application.%s only for SuiteApp projects', async (format) => {

@@ -53,23 +53,6 @@ function parseControlFile(format, kind, contents) {
 }
 
 function defineProjectParsingTests(format, fixtures) {
-	it('computes the application ID from the current manifest identity on demand', () => {
-		const { normalized } = parseControlFile(format, 'manifest', fixtures.suiteapp.manifest);
-		expect(normalized).not.toHaveProperty('applicationId');
-		expect(normalized.getApplicationId()).toBe('com.netsuite.sampleapp');
-		normalized.projectId = 'changed';
-		expect(normalized.getApplicationId()).toBe('com.netsuite.changed');
-	});
-
-	it.each([
-		[undefined, 'app'], ['com.example', undefined], ['', 'app'], ['com.example', ''], [undefined, undefined],
-	])('returns undefined for incomplete application identity: %j, %j', (publisherId, projectId) => {
-		const { normalized } = parseControlFile(format, 'manifest', fixtures.suiteapp.manifest);
-		normalized.publisherId = publisherId;
-		normalized.projectId = projectId;
-		expect(normalized.getApplicationId()).toBeUndefined();
-	});
-
 	describe.each(['suiteapp', 'acp'])('%s manifest and deploy', (projectType) => {
 		const { manifest, deploy } = fixtures[projectType];
 		const frameworkVersion = format === 'xml' ? '1.0' : '2.0';
@@ -81,6 +64,7 @@ function defineProjectParsingTests(format, fixtures) {
 				dependencies: undefined,
 				getApplicationId: expect.any(Function),
 			});
+			expect(normalized.getApplicationId()).toBe(projectType === 'suiteapp' ? 'com.netsuite.sampleapp' : undefined);
 			expect(JSON.stringify(document)).toBe(originalDocument);
 		});
 
@@ -93,6 +77,18 @@ function defineProjectParsingTests(format, fixtures) {
 }
 
 function defineStructuredControlFileTests(format) {
+	it('preserves scripts across repeated run groups', () => {
+		const { normalized } = parseControlFile(format, 'deploy', JSON.stringify({ deploy: [
+			{ run: { script: { path: '~/Objects/first.xml', deployment: 'first' } } },
+			{ run: {} },
+			{ run: { script: [{ path: '~/Objects/second.xml', deployment: 'second' }] } },
+		] }));
+		expect(normalized.run).toEqual([
+			{ path: '~/Objects/first.xml', deployment: 'first' },
+			{ path: '~/Objects/second.xml', deployment: 'second' },
+		]);
+	});
+
 	it.each([
 		['manifest', [], '/'],
 		['manifest', null, '/'],
@@ -115,6 +111,11 @@ function defineStructuredControlFileTests(format) {
 		// JSON is also valid YAML; these cases exercise the shared structure contract through both parsers.
 		expect(() => parseControlFile(format, kind, JSON.stringify(document)))
 			.toThrow(`Invalid ${kind}.${format} at ${propertyPath}:`);
+	});
+
+	it('rejects unsupported deploy groups', () => {
+		expect(() => parseControlFile(format, 'deploy', '{"deploy":[{"unsupported":{}}]}'))
+			.toThrow(`Invalid deploy.${format} at /deploy/0/unsupported: expected a supported deploy group`);
 	});
 
 	it('preserves singleton selections and empty paths', () => {

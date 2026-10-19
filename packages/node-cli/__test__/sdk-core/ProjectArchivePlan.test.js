@@ -4,10 +4,12 @@
  */
 'use strict';
 
-const { mkdir, mkdtemp, readdir, rm, writeFile } = require('node:fs/promises');
+const { access, mkdir, mkdtemp, readFile, readdir, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const { stringify } = require('yaml');
+const AdmZip = require('adm-zip');
+const { commands } = require('@oracle/suitecloud-sdk-core');
 
 const {
 	createPackageArchivePlan,
@@ -51,6 +53,38 @@ describe('ProjectArchivePlan', () => {
 		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy/>');
 		const archivePlan = await createPackageArchivePlan(projectFolder);
 		expect(listPlannedFiles(archivePlan.entries)).toEqual(['deploy.xml', 'manifest.xml']);
+	});
+
+	it.each(['xml', 'yaml'])('selects ACP configuration and translation files from deploy.%s', async (format) => {
+		await Promise.all(['manifest.xml', 'deploy.xml', 'application.xml'].map((name) => rm(join(projectFolder, name))));
+		await mkdir(join(projectFolder, 'AccountConfiguration'));
+		await mkdir(join(projectFolder, 'Translations'));
+		await mkdir(join(projectFolder, 'InstallationPreferences'));
+		await Promise.all([
+			writeFile(join(projectFolder, 'AccountConfiguration', 'features.xml'), '<features/>'),
+			writeFile(join(projectFolder, 'Translations', 'strings.xlf'), '<xliff/>'),
+			writeFile(join(projectFolder, 'InstallationPreferences', 'hiding.xml'), '<hiding/>'),
+			writeFile(join(projectFolder, `manifest.${format}`), format === 'xml'
+				? '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>'
+				: 'manifest:\n  projecttype: ACCOUNTCUSTOMIZATION\n  frameworkversion: "2.0"'),
+			writeFile(join(projectFolder, `deploy.${format}`), format === 'xml'
+				? '<deploy><configuration><path>~/AccountConfiguration/features.xml</path></configuration>' +
+					'<translationimports><path>~/Translations/strings.xlf</path></translationimports></deploy>'
+				: stringify({ deploy: [
+					{ configuration: { path: ['~/AccountConfiguration/features.xml'] } },
+					{ translationimports: { path: ['~/Translations/strings.xlf'] } },
+				] })),
+		]);
+		expect(listPlannedFiles((await createPackageArchivePlan(projectFolder)).entries)).toEqual([
+			'AccountConfiguration/features.xml', 'Translations/strings.xlf', `deploy.${format}`, `manifest.${format}`,
+		]);
+	});
+
+	it('includes SuiteApp installation preferences even when deploy does not select them', async () => {
+		await mkdir(join(projectFolder, 'InstallationPreferences'));
+		await writeFile(join(projectFolder, 'InstallationPreferences', 'locking.xml'), '<locking/>');
+		expect(listPlannedFiles((await createPackageArchivePlan(projectFolder)).entries))
+			.toEqual([...expectedArchiveFiles(), 'InstallationPreferences/locking.xml'].sort());
 	});
 
 	it('uses the deploy.xml archive plan for project endpoint uploads', async () => {
@@ -113,10 +147,44 @@ describe('ProjectArchivePlan', () => {
 			.sort();
 		const archivePlan = await createPackageArchivePlan(projectFolder);
 		expect(listPlannedFiles(archivePlan.entries)).toEqual(expectedFiles);
-		projectArchivePath = await createProjectArchive(projectFolder);
+		const packageResult = await commands.executePackageProject({ projectFolder, destinationFolder: join(projectFolder, 'output') });
+		expect(packageResult.status).toBe('SUCCESS');
+		expect(packageResult.data).toMatch(/com\.example\.app-1\.0\.0-.*\.zip$/);
+		projectArchivePath = packageResult.data;
 		extractionFolder = await mkdtemp(join(tmpdir(), 'suitecloud-v2-archive-extracted-'));
 		await extractZipArchive(projectArchivePath, extractionFolder);
 		expect(await listFiles(extractionFolder)).toEqual(expectedFiles);
+		expect(await readFile(join(extractionFolder, `manifest.${manifestFormat}`), 'utf8'))
+			.toBe(await readFile(join(projectFolder, `manifest.${manifestFormat}`), 'utf8'));
+		expect(await readFile(join(extractionFolder, `deploy.${deployFormat}`), 'utf8'))
+			.toBe(await readFile(join(projectFolder, `deploy.${deployFormat}`), 'utf8'));
+	});
+
+	it.each(['validate', 'deploy', 'preview'])('%s uploads a V2 archive and cleans it up after the request', async (command) => {
+		await Promise.all(['manifest.xml', 'deploy.xml', 'application.xml'].map((name) => rm(join(projectFolder, name))));
+		await writeFile(join(projectFolder, 'manifest.yaml'),
+			'manifest:\n  projecttype: SUITEAPP\n  frameworkversion: "2.0"\n  publisherid: com.example\n  projectid: app');
+		await writeFile(join(projectFolder, 'deploy.json'), JSON.stringify({ deploy: [
+			{ files: { path: '~/FileCabinet/SuiteScripts/selected.js' } },
+		] }));
+		const sendProjectRequest = jest.fn(async (request) => {
+			projectArchivePath = request.projectArchivePath;
+			const archive = new AdmZip(projectArchivePath);
+			expect(archive.getEntries().map((entry) => entry.entryName).sort()).toEqual([
+				'FileCabinet/SuiteScripts/selected.js', 'deploy.json', 'manifest.yaml',
+			]);
+			expect(archive.readAsText('FileCabinet/SuiteScripts/selected.js')).toBe('selected');
+			return { statusCode: 200, body: '{"status":"SUCCESS","data":["completed"]}' };
+		});
+
+		const result = await commands.executeProjectCommand({
+			command, projectFolder, hostName: 'mock.invalid', accessToken: 'mock-token',
+		}, { sendProjectRequest });
+
+		expect(result).toMatchObject({ status: 'SUCCESS', data: ['completed'] });
+		expect(sendProjectRequest).toHaveBeenCalledTimes(1);
+		expect(sendProjectRequest).toHaveBeenCalledWith(expect.objectContaining({ command }));
+		await expect(access(projectArchivePath)).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
 	it('packages without an optional application control file', async () => {

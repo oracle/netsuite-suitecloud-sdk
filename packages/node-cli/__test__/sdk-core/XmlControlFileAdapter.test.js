@@ -88,6 +88,22 @@ describe('XML control-file adapter', () => {
 		}
 	});
 
+	it('rejects unsupported deploy groups', () => {
+		expect(() => parseControlFile('xml', 'deploy', '<deploy><unsupported/></deploy>'))
+			.toThrow('Invalid deploy.xml at /deploy/unsupported: expected a supported deploy group');
+	});
+
+	it('preserves scripts across repeated run groups', () => {
+		const { normalized } = parseControlFile('xml', 'deploy', '<deploy>' +
+			'<run><script><path>~/Objects/first.xml</path><deployment>first</deployment></script></run>' +
+			'<run/>' +
+			'<run><script><path>~/Objects/second.xml</path><deployment>second</deployment></script></run></deploy>');
+		expect(normalized.run).toEqual([
+			{ path: '~/Objects/first.xml', deployment: 'first' },
+			{ path: '~/Objects/second.xml', deployment: 'second' },
+		]);
+	});
+
 	it('accepts an empty deploy root while content validation is deferred', () => {
 		expect(parseControlFile('xml', 'deploy', '<deploy/>').normalized).toEqual({});
 	});

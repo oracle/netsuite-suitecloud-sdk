@@ -8,11 +8,16 @@ jest.mock('../../../sdk-core/build/commands/object/ObjectCommandClient', () => (
 	...jest.requireActual('../../../sdk-core/build/commands/object/ObjectCommandClient'),
 	sendFormRequest: jest.fn(),
 }));
+jest.mock('../../../sdk-core/build/commands/object/import/ReferencedFilesImporter', () => ({
+	importReferencedFiles: jest.fn(),
+}));
 
 const { access, mkdtemp, readFile, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const AdmZip = require('adm-zip');
+const { stringify } = require('yaml');
+const { importReferencedFiles } = require('../../../sdk-core/build/commands/object/import/ReferencedFilesImporter');
 const { sendFormRequest } = require('../../../sdk-core/build/commands/object/ObjectCommandClient');
 const { executeImportObjects } = require('../../../sdk-core/build/commands/object/import/ImportObjectsExecutor');
 
@@ -22,6 +27,7 @@ describe('ImportObjectsExecutor manifest checks', () => {
 
 	beforeEach(async () => {
 		jest.clearAllMocks();
+		importReferencedFiles.mockResolvedValue({ status: 'SUCCESS' });
 		projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-import-manifest-'));
 		input = {
 			projectFolder,
@@ -66,15 +72,28 @@ describe('ImportObjectsExecutor manifest checks', () => {
 		await expect(access(input.targetFolder)).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
-	it('imports objects with valid control-file setup without parsing deploy contents', async () => {
-		await writeFile(join(projectFolder, 'manifest.xml'), '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>');
-		await writeFile(join(projectFolder, 'deploy.xml'), '<deploy>');
+	it.each([
+		['xml', 'ACCOUNTCUSTOMIZATION'], ['xml', 'SUITEAPP'],
+		['json', 'ACCOUNTCUSTOMIZATION'], ['json', 'SUITEAPP'],
+		['yaml', 'ACCOUNTCUSTOMIZATION'], ['yaml', 'SUITEAPP'],
+		['yml', 'ACCOUNTCUSTOMIZATION'], ['yml', 'SUITEAPP'],
+	])('imports with manifest.%s for %s and only imports referenced files for ACP', async (format, projectType) => {
+		const manifest = { manifest: { projecttype: projectType, frameworkversion: '2.0' } };
+		await writeFile(join(projectFolder, `manifest.${format}`), format === 'xml'
+			? `<manifest projecttype="${projectType}"><frameworkversion>1.0</frameworkversion></manifest>`
+			: format === 'json' ? JSON.stringify(manifest) : stringify(manifest));
+		await writeFile(join(projectFolder, format === 'xml' ? 'deploy.xml' : 'deploy.json'), '{');
 		const result = await executeImportObjects(input);
 		expect(result.status).toBe('SUCCESS');
 		expect(result.data.successfulImports).toHaveLength(1);
 		expect(sendFormRequest).toHaveBeenCalledTimes(1);
 		expect(await readFile(join(input.targetFolder, 'customlist_example.xml'), 'utf8'))
 			.toBe('<customlist scriptid="customlist_example"/>');
+		if (projectType === 'ACCOUNTCUSTOMIZATION') {
+			expect(importReferencedFiles).toHaveBeenCalledWith(expect.objectContaining({ targetFolder: input.targetFolder }), result.data.successfulImports);
+		} else {
+			expect(importReferencedFiles).not.toHaveBeenCalled();
+		}
 	});
 
 	it('rejects missing deploy setup before requesting or writing objects', async () => {
@@ -90,5 +109,6 @@ describe('ImportObjectsExecutor manifest checks', () => {
 		const result = await executeImportObjects({ ...input, excludeFiles: true });
 		expect(result.status).toBe('SUCCESS');
 		expect(sendFormRequest).toHaveBeenCalledTimes(1);
+		expect(importReferencedFiles).not.toHaveBeenCalled();
 	});
 });

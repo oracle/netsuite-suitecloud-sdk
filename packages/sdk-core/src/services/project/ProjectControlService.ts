@@ -79,7 +79,7 @@ export function readProjectContext(projectFolder: string): ProjectContext {
 	}
 
 	// Application eligibility only needs a recognized project type. Its contents are validated during packaging.
-	if (controlFilesMetadata.application && manifest?.projectType === SDF_PROJECT_TYPES.ACP) {
+	if (controlFilesMetadata.application && manifest?.projectType !== SDF_PROJECT_TYPES.SUITEAPP) {
 		errors.push(translationService.getMessage(
 			PROJECT_CONTROL.ERROR.APPLICATION_REQUIRES_SUITEAPP, controlFilesMetadata.application.fileName
 		));
@@ -149,8 +149,9 @@ function selectControlFilesAndValidateSetup(candidates: SdfControlFileMetadata[]
 	}
 
 	// Check for mixed setup
-	const manifestIsXml = manifest.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML;
-	if (candidates.some((file) => (file.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML) !== manifestIsXml)) {
+	const containsSDFv1File = candidates.some((file) => file.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML);
+	const containsSDFv2File = candidates.some((file) => file.fileFormat !== SDF_SUPPORTED_FILE_FORMATS.XML);
+	if (containsSDFv1File && containsSDFv2File) {
 		errorMessages.push(
 			translationService.getMessage(
 				PROJECT_CONTROL.ERROR.MIXED_GENERATION,
