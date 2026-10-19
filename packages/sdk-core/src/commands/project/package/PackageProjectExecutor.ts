@@ -56,7 +56,7 @@ export async function executePackageProject(
 			resultMessage: translationService.getMessage(PROJECT_PACKAGE.INFO.FILE_CREATED, targetZipFilePath),
 		};
 	} catch (error: unknown) {
-		return errorResult(toErrorMessage(error));
+		return errorResult(Array.isArray(error) ? error : toErrorMessage(error));
 	}
 }
 
@@ -86,10 +86,10 @@ function formatDatePart(date: Date): string {
 	return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
 }
 
-function errorResult(errorMessage: string): PackageProjectOperationResult {
+function errorResult(errorMessage: string | string[]): PackageProjectOperationResult {
 	return {
 		status: PACKAGE_PROJECT_OPERATION_STATUS.ERROR,
-		errorMessages: [errorMessage],
+		errorMessages: Array.isArray(errorMessage) ? errorMessage : [errorMessage],
 	};
 }
 

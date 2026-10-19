@@ -84,7 +84,7 @@ export async function executeProjectCommand(
 	} catch (error: unknown) {
 		return {
 			status: SDK_OPERATION_STATUS.ERROR,
-			errorMessages: [toErrorMessage(error)],
+			errorMessages: Array.isArray(error) ? error : [toErrorMessage(error)],
 		};
 	} finally {
 		if (projectArchivePath) {

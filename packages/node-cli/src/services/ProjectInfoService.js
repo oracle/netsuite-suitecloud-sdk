@@ -16,6 +16,7 @@ const {
 	PROJECT_SUITEAPP
 } = require('../ApplicationConstants');
 const CLIException = require('../CLIException');
+const { toErrorMessages } = require('../utils/ErrorMessageUtils');
 const FileUtils = require('../utils/FileUtils');
 const NodeTranslationService = require('./NodeTranslationService');
 const { lineBreak } = require('../loggers/LoggerOsConstants');
@@ -33,7 +34,7 @@ module.exports = class ProjectInfoService {
 			try {
 				this._manifest = readProjectManifest(this._projectFolder);
 			} catch (error) {
-				throw new CLIException(error.message);
+				throw new CLIException(toErrorMessages(error).join(lineBreak));
 			}
 		}
 		return this._manifest;
@@ -95,7 +96,7 @@ module.exports = class ProjectInfoService {
 			validateControlFileSetup(this._projectFolder);
 		} catch (error) {
 			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
-			throw new CLIException(`${commandName}: ${error.message}${lineBreak}${guidance}`);
+			throw new CLIException(`${commandName}:${lineBreak}${toErrorMessages(error).join(lineBreak)}${lineBreak}${guidance}`);
 		}
 	}
 

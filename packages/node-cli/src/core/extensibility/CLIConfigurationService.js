@@ -7,6 +7,7 @@
 const { lineBreak } = require('../../loggers/LoggerOsConstants');
 const FileUtils = require('../../utils/FileUtils');
 const CLIException = require('../../CLIException');
+const { toErrorMessages } = require('../../utils/ErrorMessageUtils');
 const path = require('path');
 const fs = require('fs');
 const { validateControlFileSetup } = require('@oracle/suitecloud-sdk-core').services;
@@ -83,7 +84,7 @@ module.exports = class CLIConfigurationService {
 			try {
 				validateControlFileSetup(projectFolder);
 			} catch (error) {
-				errors.push(error.message);
+				errors.push(...toErrorMessages(error));
 			}
 		}
 

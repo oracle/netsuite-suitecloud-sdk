@@ -50,7 +50,7 @@ export async function executeCreateFile(input: ExecuteCreateFileInput): Promise<
 	} catch (error: unknown) {
 		return {
 			status: FILE_CREATE_STATUS.ERROR,
-			errorMessages: [toErrorMessage(error)],
+			errorMessages: Array.isArray(error) ? error : [toErrorMessage(error)],
 		};
 	}
 }

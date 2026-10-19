@@ -5,16 +5,6 @@ const mockGetAuthInfo = jest.fn();
 const mockRefreshAuthorization = jest.fn();
 const mockExecuteWithSpinner = jest.fn(({ action }) => action);
 const mockGetProjectDefaultAuthId = jest.fn();
-const mockCheckValidProjectContext = jest.fn();
-
-jest.mock('@oracle/suitecloud-sdk-core', () => ({
-	...jest.requireActual('@oracle/suitecloud-sdk-core'),
-	services: {
-		...jest.requireActual('@oracle/suitecloud-sdk-core').services,
-		checkValidProjectContext: (...args) => mockCheckValidProjectContext(...args),
-	},
-}));
-
 jest.mock('../../src/utils/AuthenticationUtils', () => ({
 	...jest.requireActual('../../src/utils/AuthenticationUtils'),
 	getProjectDefaultAuthId: (...args) => mockGetProjectDefaultAuthId(...args),
@@ -33,7 +23,7 @@ const { ActionResult } = require('../../src/services/actionresult/ActionResult')
 const { mkdtemp, rm, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
-const { stringify } = require('yaml');
+const CLIConfigurationService = require('../../src/core/extensibility/CLIConfigurationService');
 
 describe('CommandActionExecutor ExecuteAction():', function() {
 	// STARTING MOCKS.
@@ -127,7 +117,6 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		mockRefreshAuthorization.mockReset();
 		mockExecuteWithSpinner.mockClear();
 		mockGetProjectDefaultAuthId.mockReset();
-		mockCheckValidProjectContext.mockReset().mockReturnValue({});
 		mockConsoleLogger.error.mockClear();
 	});
 
@@ -199,25 +188,23 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		['project:validate', 'yaml', 'manifest'], ['project:validate', 'yaml', 'deploy'],
 		['project:deploy', 'json', 'manifest'], ['project:deploy', 'json', 'deploy'],
 		['project:deploy', 'yaml', 'manifest'], ['project:deploy', 'yaml', 'deploy'],
-	])('%s rejects malformed %s %s before authorization or command execution', async (commandName, format, invalidKind) => {
+	])('%s rejects missing %s %s before authorization or command execution', async (commandName, format, invalidKind) => {
 		const projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-preflight-'));
 		try {
-			const manifest = { manifest: { projecttype: 'ACCOUNTCUSTOMIZATION', frameworkversion: '2.0' } };
-			const deploy = { deploy: [] };
-			await Promise.all([
-				writeFile(join(projectFolder, `manifest.${format}`), invalidKind === 'manifest' ? '{' : format === 'json' ? JSON.stringify(manifest) : stringify(manifest)),
-				writeFile(join(projectFolder, `deploy.${format}`), invalidKind === 'deploy' ? '{' : format === 'json' ? JSON.stringify(deploy) : stringify(deploy)),
-			]);
-			mockCheckValidProjectContext.mockImplementation(jest.requireActual('@oracle/suitecloud-sdk-core').services.checkValidProjectContext);
-			mockGetProjectDefaultAuthId.mockReturnValue('myAuth');
-			commandExecutor._cliConfigurationService.getProjectFolder.mockReturnValue(projectFolder);
+			await writeFile(join(projectFolder, 'suitecloud.config.js'), 'module.exports = { defaultProjectFolder: "." };');
+			const existingKind = invalidKind === 'manifest' ? 'deploy' : 'manifest';
+			// Setup validation must reject the missing file without parsing the other one's contents.
+			await writeFile(join(projectFolder, `${existingKind}.${format}`), '{');
+			commandExecutor._executionPath = projectFolder;
+			commandExecutor._cliConfigurationService = new CLIConfigurationService();
 			commandExecutor._commandsMetadataService.getCommandMetadataByName.mockReturnValue({ isSetupRequired: true, supportsInteractiveMode: true, options: {} });
 			const getCommand = jest.spyOn(commandExecutor, '_getCommand');
 
 			const result = await commandExecutor.executeAction({ commandName, runInInteractiveMode: false, arguments: {} });
 
 			expect(result.isSuccess()).toBe(false);
-			expect(mockConsoleLogger.error).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining(`Invalid ${invalidKind}.${format}:`) }));
+			expect(result.errorMessages).toEqual([expect.stringContaining(`Missing ${invalidKind} control file`)]);
+			expect(mockGetProjectDefaultAuthId).not.toHaveBeenCalled();
 			expect(mockCheckIfReauthorizationIsNeeded).not.toHaveBeenCalled();
 			expect(mockRefreshAuthorization).not.toHaveBeenCalled();
 			expect(getCommand).not.toHaveBeenCalled();
@@ -226,29 +213,31 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		}
 	});
 
-	it.each(['project:validate', 'project:deploy'])('%s inspects after the user hook and continues through authorization for valid controls', async (commandName) => {
+	it.each(['project:validate', 'project:deploy'])('%s validates setup before the user hook, then authorizes and executes', async (commandName) => {
 		const projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-preflight-hook-'));
 		try {
+			await writeFile(join(projectFolder, 'suitecloud.config.js'), 'module.exports = { defaultProjectFolder: "." };');
 			await writeFile(join(projectFolder, 'manifest.json'), '{');
 			await writeFile(join(projectFolder, 'deploy.json'), '{"deploy": []}');
 			const beforeExecuting = jest.fn(async () => {
 				await writeFile(join(projectFolder, 'manifest.json'), '{"manifest": {"projecttype": "ACCOUNTCUSTOMIZATION", "frameworkversion": "2.0"}}');
 				return { arguments: {} };
 			});
-			commandExecutor._cliConfigurationService.getCommandUserExtension.mockReturnValue({ beforeExecuting });
-			commandExecutor._cliConfigurationService.getProjectFolder.mockReturnValue(projectFolder);
+			commandExecutor._executionPath = projectFolder;
+			commandExecutor._cliConfigurationService = new CLIConfigurationService();
+			const validateProjectContext = jest.spyOn(commandExecutor._cliConfigurationService, 'validateProjectContext');
+			jest.spyOn(commandExecutor._cliConfigurationService, 'getCommandUserExtension').mockReturnValue({ beforeExecuting });
 			commandExecutor._commandsMetadataService.getCommandMetadataByName.mockReturnValue({ isSetupRequired: true, supportsInteractiveMode: true, options: {} });
 			mockGetProjectDefaultAuthId.mockReturnValue('myAuth');
-			mockCheckValidProjectContext.mockImplementation(jest.requireActual('@oracle/suitecloud-sdk-core').services.checkValidProjectContext);
 			mockCheckIfReauthorizationIsNeeded.mockResolvedValue({ isSuccess: () => true, data: { needsReauthorization: false } });
 			const getCommand = jest.spyOn(commandExecutor, '_getCommand');
 
 			const result = await commandExecutor.executeAction({ commandName, runInInteractiveMode: false, arguments: {} });
 
 			expect(result.isSuccess()).toBe(true);
-			expect(mockCheckValidProjectContext).toHaveBeenCalledWith(projectFolder);
-			expect(beforeExecuting.mock.invocationCallOrder[0]).toBeLessThan(mockCheckValidProjectContext.mock.invocationCallOrder[0]);
-			expect(mockCheckValidProjectContext.mock.invocationCallOrder[0]).toBeLessThan(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]);
+			expect(validateProjectContext).toHaveBeenCalledWith(commandName);
+			expect(validateProjectContext.mock.invocationCallOrder[0]).toBeLessThan(beforeExecuting.mock.invocationCallOrder[0]);
+			expect(beforeExecuting.mock.invocationCallOrder[0]).toBeLessThan(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]);
 			expect(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]).toBeLessThan(getCommand.mock.invocationCallOrder[0]);
 		} finally {
 			await rm(projectFolder, { recursive: true, force: true });

@@ -170,7 +170,7 @@ export async function executeImportObjects(
 			data: importResult,
 		};
 	} catch (error: unknown) {
-		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
+		return errorResultWithMessage(Array.isArray(error) ? error : toErrorMessage(error), extractStatusCode(error));
 	} finally {
 		if (tempDirectory) {
 			await removeDirectory(tempDirectory);
@@ -258,13 +258,13 @@ async function unzipArchive(zipFilePath: string, destinationFolder: string): Pro
 }
 
 function errorResultWithMessage<T = unknown>(
-	message: string,
+	message: string | string[],
 	statusCode: number | undefined
 ): ObjectCommandOperationResult<T> {
 	return {
 		status: OBJECT_COMMAND_STATUS.ERROR,
 		httpStatusCode: statusCode,
-		errorMessages: [message],
+		errorMessages: Array.isArray(message) ? message : [message],
 	};
 }
 

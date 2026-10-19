@@ -33,7 +33,7 @@ const CONTROL_FILE_FORMAT_VALUES = new Set<string>(Object.values(SDF_SUPPORTED_F
  * Validate required control files, uniqueness, and SDF generation compatibility without reading contents.
  *
  * @param projectFolder - Project root directory.
- * @throws If setup is invalid or the directory cannot be read.
+ * @throws If setup is invalid or the directory cannot be read. Can throw an array of error messages.
  */
 export function validateControlFileSetup(projectFolder: string): void {
 	resolveProjectControlFiles(projectFolder);
@@ -45,13 +45,12 @@ export function validateControlFileSetup(projectFolder: string): void {
  *
  * @param projectFolder - Project root directory.
  * @returns Manifest metadata with a valid project type and matching framework version.
- * @throws If setup, manifest syntax, structure, or metadata is invalid, or a file operation fails.
+ * @throws If setup, manifest syntax, structure, or metadata is invalid, or a file operation fails. Can throw an array of error messages.
  */
 export function readProjectManifest(projectFolder: string): ProjectManifest {
 	const { manifest } = resolveProjectControlFiles(projectFolder);
 	return readAndValidateProjectManifest(manifest);
 }
-
 
 /**
  * Validate control-file setup and generation, read normalized manifest and deploy data, and validates their contents.
@@ -59,22 +58,37 @@ export function readProjectManifest(projectFolder: string): ProjectManifest {
  *
  * @param projectFolder - Project root directory.
  * @returns Selected control files, validated manifest metadata, and normalized deploy data.
- * @throws If setup, content, or application eligibility checks fail, or a file operation fails.
+ * @throws If setup, content, or application eligibility checks fail, or a file operation fails. Can throw an array of error messages.
  */
 export function readProjectContext(projectFolder: string): ProjectContext {
 	const controlFilesMetadata = resolveProjectControlFiles(projectFolder);
-	const manifest = readAndValidateProjectManifest(controlFilesMetadata.manifest);
+	const errors: unknown[] = [];
+	let manifest: ProjectManifest | undefined;
+	let deploy: ProjectDeploy | undefined;
 
-	const deploy = readNormalizedProjectDeploy(controlFilesMetadata.deploy);
+	try {
+		manifest = readAndValidateProjectManifest(controlFilesMetadata.manifest);
+	} catch (error) {
+		errors.push(error);
+	}
 
-	// Application can only be present in SUITE_APP projects. Its contents are only validated during packaging.
-	if (controlFilesMetadata.application && manifest.projectType !== SDF_PROJECT_TYPES.SUITEAPP) {
-		throw new Error(translationService.getMessage(
+	try {
+		deploy = readNormalizedProjectDeploy(controlFilesMetadata.deploy);
+	} catch (error) {
+		errors.push(error);
+	}
+
+	// Application eligibility only needs a recognized project type. Its contents are validated during packaging.
+	if (controlFilesMetadata.application && manifest?.projectType === SDF_PROJECT_TYPES.ACP) {
+		errors.push(translationService.getMessage(
 			PROJECT_CONTROL.ERROR.APPLICATION_REQUIRES_SUITEAPP, controlFilesMetadata.application.fileName
 		));
 	}
 
-	return { controlFilesMetadata, manifest, deploy };
+	if (errors.length) {
+		throw errors.flatMap((error) => Array.isArray(error) ? error : [error instanceof Error ? error.message : String(error)]);
+	}
+	return { controlFilesMetadata, manifest: manifest as ProjectManifest, deploy: deploy! };
 }
 
 // Discover control files and validate their setup without reading contents.
@@ -107,13 +121,14 @@ function discoverControlFiles(projectFolder: string): SdfControlFileMetadata[] {
 
 // Require unique manifest/deploy files and an optional application file, all from one SDF generation.
 function selectControlFilesAndValidateSetup(candidates: SdfControlFileMetadata[], projectFolder: string): SdfProjectControlFilesMetadata {
+	const errorMessages: string[] = [];
 
 	// Check for duplicates
 	const selectedFiles: Partial<SdfProjectControlFilesMetadata> = {};
 	for (const kind of Object.values(FILES.CONTROL_FILES)) {
 		const matches = candidates.filter((file) => file.type === kind);
 		if (matches.length > 1) {
-			throw new Error(
+			errorMessages.push(
 				translationService.getMessage(
 					PROJECT_CONTROL.ERROR.DUPLICATE,
 					kind,
@@ -127,29 +142,27 @@ function selectControlFilesAndValidateSetup(candidates: SdfControlFileMetadata[]
 	// Check for missing mandatory files
 	const { manifest, deploy, application } = selectedFiles;
 	if (!manifest) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.MISSING, FILES.CONTROL_FILES.MANIFEST, projectFolder));
+		errorMessages.push(translationService.getMessage(PROJECT_CONTROL.ERROR.MISSING, FILES.CONTROL_FILES.MANIFEST, projectFolder));
 	}
 	if (!deploy) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.MISSING, FILES.CONTROL_FILES.DEPLOY, projectFolder));
+		errorMessages.push(translationService.getMessage(PROJECT_CONTROL.ERROR.MISSING, FILES.CONTROL_FILES.DEPLOY, projectFolder));
 	}
 
 	// Check for mixed setup
-	const files = [manifest, deploy];
-	if (application) {
-		files.push(application);
-	}
-	
-	const isXml = manifest.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML;
-	if (files.some((file) => (file.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML) !== isXml)) {
-		throw new Error(
+	const manifestIsXml = manifest.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML;
+	if (candidates.some((file) => (file.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML) !== manifestIsXml)) {
+		errorMessages.push(
 			translationService.getMessage(
 				PROJECT_CONTROL.ERROR.MIXED_GENERATION,
-				files.map((file) => file.fileName).join(', ')
+				candidates.map((file) => file.fileName).join(', ')
 			)
 		);
 	}
 
-	return { manifest, deploy, application };
+	if (errorMessages.length) {
+		throw errorMessages;
+	}
+	return { manifest: manifest!, deploy: deploy!, application };
 }
 
 // Read the Deploy file contents. Doesn't execute any validations aside of ensuring valid internal structure (parsing step).
@@ -178,24 +191,30 @@ function readNormalizedManifest(file: SdfControlFileMetadata): ProjectManifestSk
 
 function validateManifestMetadata(manifest: ProjectManifestSkeleton, file: SdfControlFileMetadata): ProjectManifest {
 	const { projectType, frameworkVersion } = manifest;
+	const errorMessages: string[] = [];
 
 	if (!projectType) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_MISSING, file.fileName));
+		errorMessages.push(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_MISSING, file.fileName));
 	}
-
-	if (projectType !== SDF_PROJECT_TYPES.ACP && projectType !== SDF_PROJECT_TYPES.SUITEAPP) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_INVALID, file.fileName));
+	else if (projectType !== SDF_PROJECT_TYPES.ACP && projectType !== SDF_PROJECT_TYPES.SUITEAPP) {
+		errorMessages.push(translationService.getMessage(PROJECT_CONTROL.ERROR.PROJECT_TYPE_INVALID, file.fileName));
 	}
 
 	if (!frameworkVersion) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FRAMEWORK_VERSION_MISSING, file.fileName));
+		errorMessages.push(translationService.getMessage(PROJECT_CONTROL.ERROR.FRAMEWORK_VERSION_MISSING, file.fileName));
 	}
-	const expectedFrameworkVersion = file.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML
-		? SDF_FRAMEWORK_VERSIONS.SDFv1
-		: SDF_FRAMEWORK_VERSIONS.SDFv2;
-	if (frameworkVersion !== expectedFrameworkVersion) {
-		throw new Error(translationService.getMessage(PROJECT_CONTROL.ERROR.FRAMEWORK_VERSION_MISMATCH, file.fileName, frameworkVersion));
+	else {
+		const expectedFrameworkVersion = file.fileFormat === SDF_SUPPORTED_FILE_FORMATS.XML
+			? SDF_FRAMEWORK_VERSIONS.SDFv1
+			: SDF_FRAMEWORK_VERSIONS.SDFv2;
+
+		if (frameworkVersion !== expectedFrameworkVersion) {
+			errorMessages.push(translationService.getMessage(PROJECT_CONTROL.ERROR.FRAMEWORK_VERSION_MISMATCH, file.fileName, frameworkVersion));
+		}
 	}
 
+	if (errorMessages.length) {
+		throw errorMessages;
+	}
 	return manifest as ProjectManifest;
 }

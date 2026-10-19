@@ -135,7 +135,7 @@ export async function executeUpdateObjects(
 		}
 		return { status: OBJECT_COMMAND_STATUS.SUCCESS, data: results };
 	} catch (error: unknown) {
-		return errorResultWithMessage(toErrorMessage(error), extractStatusCode(error));
+		return errorResultWithMessage(Array.isArray(error) ? error : toErrorMessage(error), extractStatusCode(error));
 	}
 }
 
@@ -183,13 +183,13 @@ async function mergeUpdatedObjectXml(
 }
 
 function errorResultWithMessage<T = unknown>(
-	message: string,
+	message: string | string[],
 	statusCode: number | undefined = undefined
 ): ObjectCommandOperationResult<T> {
 	return {
 		status: OBJECT_COMMAND_STATUS.ERROR,
 		httpStatusCode: statusCode,
-		errorMessages: [message],
+		errorMessages: Array.isArray(message) ? message : [message],
 	};
 }
 

@@ -113,7 +113,7 @@ export async function executeUpdateCustomRecordWithInstances(
 			data: translationService.getMessage(OBJECT.INFO.OBJECT_AND_INSTANCES_UPDATED, input.scriptId),
 		};
 	} catch (error: unknown) {
-		return errorResult(toErrorMessage(error), getStatusCode(error));
+		return errorResult(Array.isArray(error) ? error : toErrorMessage(error), getStatusCode(error));
 	} finally {
 		if (tempDirectory) {
 			await removeDirectory(tempDirectory);
@@ -122,13 +122,13 @@ export async function executeUpdateCustomRecordWithInstances(
 }
 
 function errorResult(
-	message: string,
+	message: string | string[],
 	httpStatusCode?: number
 ): ObjectCommandOperationResult<string> {
 	return {
 		status: OBJECT_COMMAND_STATUS.ERROR,
 		httpStatusCode,
-		errorMessages: [message],
+		errorMessages: Array.isArray(message) ? message : [message],
 	};
 }
 

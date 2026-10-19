@@ -24,6 +24,10 @@ export async function createProjectArchive(projectFolder: string): Promise<strin
 		await createZipArchive(projectFolder, projectArchivePath, archivePlan.entries);
 		return projectArchivePath;
 	} catch (error: unknown) {
+		if (Array.isArray(error)) {
+			throw error.map((message) =>
+				translationService.getMessage(PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, message));
+		}
 		throw new Error(
 			translationService.getMessage(PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, toErrorMessage(error))
 		);
