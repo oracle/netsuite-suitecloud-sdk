@@ -6,10 +6,9 @@ AI Agent Plug-ins package skills for installation on supported AI platforms. The
 ## Included Plug-ins
 
 ### Business User Plug-ins
-- **NetSuite AI Companion Plug-in (netsuite-ai-companion):** Includes the NetSuite AI Connector Instructions skill. This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails. 
+- **NetSuite AI Companion Plug-in (netsuite-ai-companion):** Includes the NetSuite AI Connector Instructions skill. This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multisubsidiary and currency handling, and SuiteQL safety guardrails.
 - **NetSuite Finance Analyst Plug-in (netsuite-finance-analyst):** Includes the NetSuite Finance Analyst skill. This plug-in provides Director-level finance analysis on live NetSuite data, including financial reporting, period-close activities, variance, aging, and reconciliation reviews, cash reporting, and board-ready financial narratives with clear next actions.
-
-- **SuiteSkills Plug-in (netsuite-suiteskills), internal testing candidate:** Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Includes 48 business runbooks plus onboarding for both Anthropic 0.8.2 and OpenAI 0.8.2, with reviewed descriptions for Customers & Sales, Finance, Onboarding, Operations and Workforce, and source-independent Data Visualization 2.2.0-rc.1. File generation requires the runbook's supported executor and declared dependencies. Public release remains pending license, source-rights and security review.
+- **SuiteSkills Plug-in (netsuite-suiteskills):** SuiteSkills by Oracle NetSuite brings role-based AI workflows to NetSuite through the NetSuite AI Connector. It covers Finance, Operations, Customers & Sales, and Workforce, with guided onboarding to get users started. Workflows use live NetSuite data or user-supplied evidence, respect existing role permissions, and require explicit authorization before any change. It includes five skills and 48 business runbooks and is available for Anthropic and OpenAI. Version 0.8.2 remains an internal testing candidate. File generation requires the runbook's supported executor and declared dependencies. Public release remains pending license, source-rights, and security review.
 
 ### SuiteCloud Development Plug-ins
 - **NetSuite SuiteCloud Plug-in (netsuite-suitecloud):** It includes skills that support key areas of SuiteCloud development, such as SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, and maintainable code and project artifacts.
@@ -18,4 +17,4 @@ AI Agent Plug-ins package skills for installation on supported AI platforms. The
 This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](/CONTRIBUTING.md).
 
 ## [License](../../LICENSE.txt)
-Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2019, 2023 Oracle and/or its affiliates. The Universal Permissive License (UPL), Version 1.0.

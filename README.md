@@ -1,9 +1,11 @@
-<p align="left"><a href="#"><img width="250" src="resources/Netsuite-logo-ocean-150-bg.png"></a></p>
+<p align="left"><a href="#"><img width="250" src="resources/Netsuite-logo-ocean-150-bg.png" alt="NetSuite"></a></p>
 
 # SuiteCloud SDK
-SuiteCloud Software Development Kit (SuiteCloud SDK) are the set of tools that let you customize accounts and create SuiteApps through SuiteCloud Development Framework (SDF).
+SuiteCloud Software Development Kit (SuiteCloud SDK) is a set of tools that let you customize accounts and create SuiteApps through SuiteCloud Development Framework (SDF).
 
 This GitHub repository contains the following SuiteCloud SDK tools, packages, and API references:
+
+- [AI Agent Plug-ins](./packages/ai-plugins/)
 
 - [SuiteCloud Agent Skills](./packages/agent-skills/)
 
@@ -44,7 +46,7 @@ If you think you've found a security vulnerability, do not open a GitHub issue. 
 
 
 ## License
-Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2019, 2023 Oracle and/or its affiliates. The Universal Permissive License (UPL), Version 1.0.
 
 By installing SuiteCloud CLI for Node.js, you are accepting the installation of the SuiteCloud SDK dependency under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html) license.
 
