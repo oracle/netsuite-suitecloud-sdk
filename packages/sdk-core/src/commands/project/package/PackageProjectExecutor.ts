@@ -12,12 +12,11 @@ import {
 	type OperationResult,
 } from '../../../api/OperationResult';
 import { createZipArchive } from '../../../services/archive/ZipArchive';
-import {
-	createPackageArchivePlan,
-	type ProjectManifestData,
-} from '../archive/ProjectArchivePlan';
+import { createPackageArchivePlan, } from '../archive/ProjectArchivePlan';
 import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
+import { SDF_PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
+import { ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
 
 /** Compatibility alias for existing command consumers. */
 export const PACKAGE_PROJECT_OPERATION_STATUS = SDK_OPERATION_STATUS;
@@ -28,8 +27,6 @@ export type PackageProjectExecutionInput = {
 	projectFolder: string;
 	destinationFolder: string;
 };
-
-const PROJECT_TYPE_SUITEAPP = 'SUITEAPP';
 
 export async function executePackageProject(
 	input: PackageProjectExecutionInput
@@ -57,21 +54,20 @@ export async function executePackageProject(
 			resultMessage: translationService.getMessage(PROJECT_PACKAGE.INFO.FILE_CREATED, targetZipFilePath),
 		};
 	} catch (error: unknown) {
-		return errorResult(toErrorMessage(error));
+		return errorResult(Array.isArray(error) ? error : toErrorMessage(error));
 	}
 }
 
-function getTargetZipFilePath(manifestData: ProjectManifestData, destinationFolder: string): string {
+function getTargetZipFilePath(manifestData: ProjectManifest, destinationFolder: string): string {
 	const datePart = formatDatePart(new Date());
+	const applicationId = manifestData.getApplicationId();
 
 	if (
-		manifestData.projectType === PROJECT_TYPE_SUITEAPP &&
-		manifestData.publisherId &&
-		manifestData.projectId &&
+		manifestData.projectType === SDF_PROJECT_TYPES.SUITEAPP &&
+		applicationId &&
 		manifestData.projectVersion
 	) {
-		const fullAppId = `${manifestData.publisherId}.${manifestData.projectId}`;
-		return join(destinationFolder, `${fullAppId}-${manifestData.projectVersion}-${datePart}.zip`);
+		return join(destinationFolder, `${applicationId}-${manifestData.projectVersion}-${datePart}.zip`);
 	}
 
 	const projectName = manifestData.projectName || 'suitecloud-project';
@@ -88,10 +84,10 @@ function formatDatePart(date: Date): string {
 	return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
 }
 
-function errorResult(errorMessage: string): PackageProjectOperationResult {
+function errorResult(errorMessage: string | string[]): PackageProjectOperationResult {
 	return {
 		status: PACKAGE_PROJECT_OPERATION_STATUS.ERROR,
-		errorMessages: [errorMessage],
+		errorMessages: Array.isArray(errorMessage) ? errorMessage : [errorMessage],
 	};
 }
 

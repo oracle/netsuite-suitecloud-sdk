@@ -6,7 +6,7 @@
 
 import { randomBytes } from 'node:crypto';
 import { unlink } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { EOL, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createZipArchive } from '../../../services/archive/ZipArchive';
 import { PROJECT_API } from '../../../services/translation/TranslationKeys';
@@ -24,8 +24,11 @@ export async function createProjectArchive(projectFolder: string): Promise<strin
 		await createZipArchive(projectFolder, projectArchivePath, archivePlan.entries);
 		return projectArchivePath;
 	} catch (error: unknown) {
+		const details = Array.isArray(error)
+			? error.map((message) => ` - ${toErrorMessage(message).replace(/\r?\n/g, `${EOL}   `)}`).join(EOL)
+			: toErrorMessage(error);
 		throw new Error(
-			translationService.getMessage(PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, toErrorMessage(error))
+			translationService.getMessage(PROJECT_API.ERROR.ARCHIVE_FAILED, projectFolder, details)
 		);
 	}
 }

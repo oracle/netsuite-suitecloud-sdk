@@ -4,9 +4,10 @@ const mockCheckIfReauthorizationIsNeeded = jest.fn();
 const mockGetAuthInfo = jest.fn();
 const mockRefreshAuthorization = jest.fn();
 const mockExecuteWithSpinner = jest.fn(({ action }) => action);
-
+const mockGetProjectDefaultAuthId = jest.fn();
 jest.mock('../../src/utils/AuthenticationUtils', () => ({
 	...jest.requireActual('../../src/utils/AuthenticationUtils'),
+	getProjectDefaultAuthId: (...args) => mockGetProjectDefaultAuthId(...args),
 	checkIfReauthorizationIsNeeded: (...args) => mockCheckIfReauthorizationIsNeeded(...args),
 	getAuthInfo: (...args) => mockGetAuthInfo(...args),
 	refreshAuthorization: (...args) => mockRefreshAuthorization(...args),
@@ -19,6 +20,10 @@ jest.mock('../../src/ui/CliSpinner', () => ({
 const CommandActionExecutor = require('../../src/core/CommandActionExecutor');
 const sdkPath = require('../../src/core/sdksetup/SdkProperties').getSdkPath();
 const { ActionResult } = require('../../src/services/actionresult/ActionResult');
+const { mkdtemp, rm, writeFile } = require('node:fs/promises');
+const { tmpdir } = require('node:os');
+const { join } = require('node:path');
+const CLIConfigurationService = require('../../src/core/extensibility/CLIConfigurationService');
 
 describe('CommandActionExecutor ExecuteAction():', function() {
 	// STARTING MOCKS.
@@ -111,6 +116,8 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		mockGetAuthInfo.mockReset();
 		mockRefreshAuthorization.mockReset();
 		mockExecuteWithSpinner.mockClear();
+		mockGetProjectDefaultAuthId.mockReset();
+		mockConsoleLogger.error.mockClear();
 	});
 
 	let error = null;
@@ -174,6 +181,71 @@ describe('CommandActionExecutor ExecuteAction():', function() {
 		});
 		expect(mockConsoleLogger.error).toHaveBeenCalledTimes(0);
 		expect(actionResult._status).toBe('SUCCESS');
+	});
+
+	it.each([
+		['project:validate', 'json', 'manifest'], ['project:validate', 'json', 'deploy'],
+		['project:validate', 'yaml', 'manifest'], ['project:validate', 'yaml', 'deploy'],
+		['project:deploy', 'json', 'manifest'], ['project:deploy', 'json', 'deploy'],
+		['project:deploy', 'yaml', 'manifest'], ['project:deploy', 'yaml', 'deploy'],
+	])('%s rejects missing %s %s before authorization or command execution', async (commandName, format, invalidKind) => {
+		const projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-preflight-'));
+		try {
+			await writeFile(join(projectFolder, 'suitecloud.config.js'), 'module.exports = { defaultProjectFolder: "." };');
+			const existingKind = invalidKind === 'manifest' ? 'deploy' : 'manifest';
+			// Setup validation must reject the missing file without parsing the other one's contents.
+			await writeFile(join(projectFolder, `${existingKind}.${format}`), '{');
+			commandExecutor._executionPath = projectFolder;
+			commandExecutor._cliConfigurationService = new CLIConfigurationService();
+			commandExecutor._commandsMetadataService.getCommandMetadataByName.mockReturnValue({ isSetupRequired: true, supportsInteractiveMode: true, options: {} });
+			const getCommand = jest.spyOn(commandExecutor, '_getCommand');
+			const getCommandUserExtension = jest.spyOn(commandExecutor._cliConfigurationService, 'getCommandUserExtension');
+
+			const result = await commandExecutor.executeAction({ commandName, runInInteractiveMode: false, arguments: {} });
+
+			expect(result.isSuccess()).toBe(false);
+			expect(result.errorMessages).toEqual([expect.stringContaining(`Missing ${invalidKind} control file`)]);
+			expect(mockGetProjectDefaultAuthId).not.toHaveBeenCalled();
+			expect(mockCheckIfReauthorizationIsNeeded).not.toHaveBeenCalled();
+			expect(mockRefreshAuthorization).not.toHaveBeenCalled();
+			expect(getCommand).not.toHaveBeenCalled();
+			expect(getCommandUserExtension).not.toHaveBeenCalled();
+		} finally {
+			await rm(projectFolder, { recursive: true, force: true });
+		}
+	});
+
+	it.each(['project:validate', 'project:deploy'])('%s validates setup before the user hook, then authorizes and executes', async (commandName) => {
+		const projectFolder = await mkdtemp(join(tmpdir(), 'suitecloud-preflight-hook-'));
+		try {
+			await writeFile(join(projectFolder, 'suitecloud.config.js'), 'module.exports = { defaultProjectFolder: "." };');
+			await writeFile(join(projectFolder, 'manifest.json'), '{');
+			await writeFile(join(projectFolder, 'deploy.json'), '{"deploy": []}');
+			const beforeExecuting = jest.fn(async () => {
+				await writeFile(join(projectFolder, 'manifest.json'), '{"manifest": {"projecttype": "ACCOUNTCUSTOMIZATION", "frameworkversion": "2.0"}}');
+				return { arguments: {} };
+			});
+			commandExecutor._executionPath = projectFolder;
+			commandExecutor._cliConfigurationService = new CLIConfigurationService();
+			const validateProjectContext = jest.spyOn(commandExecutor._cliConfigurationService, 'validateProjectContext');
+			jest.spyOn(commandExecutor._cliConfigurationService, 'getCommandUserExtension').mockReturnValue({ beforeExecuting });
+			commandExecutor._commandsMetadataService.getCommandMetadataByName.mockReturnValue({ isSetupRequired: true, supportsInteractiveMode: true, options: {} });
+			mockGetProjectDefaultAuthId.mockReturnValue('myAuth');
+			mockCheckIfReauthorizationIsNeeded.mockResolvedValue({ isSuccess: () => true, data: { needsReauthorization: false } });
+			const run = jest.fn(async () => ActionResult.Builder.withData([]).build());
+			const getCommand = jest.spyOn(commandExecutor, '_getCommand').mockReturnValue({ run });
+
+			const result = await commandExecutor.executeAction({ commandName, runInInteractiveMode: false, arguments: {} });
+
+			expect(result.isSuccess()).toBe(true);
+			expect(validateProjectContext).toHaveBeenCalledWith(commandName);
+			expect(validateProjectContext.mock.invocationCallOrder[0]).toBeLessThan(beforeExecuting.mock.invocationCallOrder[0]);
+			expect(beforeExecuting.mock.invocationCallOrder[0]).toBeLessThan(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]);
+			expect(mockCheckIfReauthorizationIsNeeded.mock.invocationCallOrder[0]).toBeLessThan(getCommand.mock.invocationCallOrder[0]);
+			expect(run).toHaveBeenCalledTimes(1);
+		} finally {
+			await rm(projectFolder, { recursive: true, force: true });
+		}
 	});
 
 	it('should show progress while checking whether authorization must be refreshed', async () => {

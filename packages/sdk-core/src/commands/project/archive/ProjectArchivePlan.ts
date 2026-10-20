@@ -4,125 +4,51 @@
  */
 'use strict';
 
-import { access, readFile, readdir, stat } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 import { parseStringPromise } from 'xml2js';
 import type { ArchiveEntry } from '../../../services/archive/ZipArchive';
-import { PROJECT_ARCHIVE } from '../../../services/translation/TranslationKeys';
-import { translationService } from '../../../services/translation/TranslationService';
+import { readProjectContext } from '../../../services/project/ProjectControlService';
+import type { DeployScript, ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
+import { FOLDERS, SDF_PROJECT_TYPES, CONTROL_FILE_FIELDS } from '../../../services/project/SuiteCloudProjectConstants';
+import { getControlFileAdapter } from '../../../services/project/adapters/ControlFileAdapterRegistry';
 
-const DEPLOY_FILENAME = 'deploy.xml';
-const DEPLOY_FILENAME_ROOT = 'deploy';
-
-const MANIFEST_FILENAME = 'manifest.xml';
-const MANIFEST_FILENAME_ROOT = 'manifest';
-
-const APPLICATION_FILENAME = 'application.xml';
-const INSTALLATION_PREFERENCES_FOLDER = 'InstallationPreferences';
-const SDF_INSTALLATION_SCRIPT_ROOT = 'sdfinstallationscript';
-const PROJECT_TYPE_ACP = 'ACCOUNTCUSTOMIZATION';
+const { DEPLOY } = CONTROL_FILE_FIELDS;
 
 type XmlValue = Record<string, any>;
 
-export type ProjectManifestData = {
-	projectType: string;
-	projectName: string;
-	publisherId: string;
-	projectId: string;
-	projectVersion: string;
-};
-
 export type ProjectArchivePlan = {
-	manifest: ProjectManifestData;
+	manifest: ProjectManifest;
 	entries: ArchiveEntry[];
 };
 
 export async function createPackageArchivePlan(projectFolder: string): Promise<ProjectArchivePlan> {
-	const [manifestRoot, deployRoot] = await Promise.all([
-		readRequiredXmlRoot(projectFolder, MANIFEST_FILENAME, MANIFEST_FILENAME_ROOT),
-		readRequiredXmlRoot(projectFolder, DEPLOY_FILENAME, DEPLOY_FILENAME_ROOT),
-	]);
-	await validateOptionalApplicationFile(projectFolder);
-
-	const manifest = readManifestData(manifestRoot);
+	const { manifest, controlFilesMetadata, deploy } = readProjectContext(projectFolder);
 	const entries: ArchiveEntry[] = [];
 	const seen = new Set<string>();
-	addEntry(entries, seen, DEPLOY_FILENAME);
-	addEntry(entries, seen, MANIFEST_FILENAME);
-	if (await pathExists(join(projectFolder, APPLICATION_FILENAME))) {
-		addEntry(entries, seen, APPLICATION_FILENAME);
+	addEntry(entries, seen, controlFilesMetadata.deploy.fileName);
+	addEntry(entries, seen, controlFilesMetadata.manifest.fileName);
+	if (controlFilesMetadata.application) {
+
+		// check for valid application file contents
+		const application = controlFilesMetadata.application;
+		const contents = await readFile(application.filePath, 'utf8');
+		getControlFileAdapter(application).parseDocument(contents, application.fileName);
+		addEntry(entries, seen, controlFilesMetadata.application.fileName);
 	}
 
-	if (manifest.projectType === PROJECT_TYPE_ACP) {
-		await addDeployPaths(projectFolder, getPathValues(deployRoot.configuration), entries, seen);
+	if (manifest.projectType === SDF_PROJECT_TYPES.ACP) {
+		await addDeployPaths(projectFolder, deploy.configurations ?? [], entries, seen);
 	} else {
-		await addFolderContents(projectFolder, INSTALLATION_PREFERENCES_FOLDER, entries, seen);
-		await addInstallationScripts(projectFolder, deployRoot, entries, seen);
+		await addFolderContents(projectFolder, FOLDERS.INSTALLATION_PREFERENCES, entries, seen);
+		await addInstallationScripts(projectFolder, deploy.run ?? [], entries, seen);
 	}
 
-	await addDeployPaths(projectFolder, getPathValues(deployRoot.files), entries, seen);
-	await addDeployPaths(projectFolder, getPathValues(deployRoot.objects), entries, seen);
-	await addDeployPaths(projectFolder, getPathValues(deployRoot.translationimports), entries, seen);
+	await addDeployPaths(projectFolder, deploy.files ?? [], entries, seen);
+	await addDeployPaths(projectFolder, deploy.objects ?? [], entries, seen);
+	await addDeployPaths(projectFolder, deploy.translationimports ?? [], entries, seen);
 
 	return { manifest, entries };
-}
-
-async function readRequiredXmlRoot(projectFolder: string, filename: string, expectedRoot: string): Promise<XmlValue> {
-	const filepath = join(projectFolder, filename);
-	let contents: string;
-	try {
-		contents = await readFile(filepath, 'utf8');
-	} catch (error: any) {
-		if (error?.code === 'ENOENT') {
-			throw new Error(
-				translationService.getMessage(PROJECT_ARCHIVE.ERROR.FILE_MISSING, filename, projectFolder)
-			);
-		}
-		throw error;
-	}
-
-	let parsed: XmlValue;
-	try {
-		parsed = await parseStringPromise(contents, { explicitArray: false, trim: true, explicitRoot: true });
-	} catch (error: any) {
-		throw new Error(
-			translationService.getMessage(PROJECT_ARCHIVE.ERROR.XML_INVALID, filename, error?.message || String(error))
-		);
-	}
-	if (!parsed || typeof parsed !== 'object' || !Object.prototype.hasOwnProperty.call(parsed, expectedRoot)) {
-		throw new Error(
-			translationService.getMessage(PROJECT_ARCHIVE.ERROR.XML_ROOT_INVALID, filename, expectedRoot)
-		);
-	}
-	return parsed[expectedRoot] && typeof parsed[expectedRoot] === 'object' ? parsed[expectedRoot] : {};
-}
-
-async function validateOptionalApplicationFile(projectFolder: string): Promise<void> {
-	const filepath = join(projectFolder, APPLICATION_FILENAME);
-	if (!(await pathExists(filepath))) {
-		return;
-	}
-	try {
-		await parseStringPromise(await readFile(filepath, 'utf8'), { explicitArray: false, trim: true });
-	} catch (error: any) {
-		throw new Error(
-			translationService.getMessage(
-				PROJECT_ARCHIVE.ERROR.XML_INVALID,
-				APPLICATION_FILENAME,
-				error?.message || String(error)
-			)
-		);
-	}
-}
-
-function readManifestData(manifest: XmlValue): ProjectManifestData {
-	return {
-		projectType: asText(manifest.$?.projecttype),
-		projectName: asText(manifest.projectname),
-		publisherId: asText(manifest.publisherid),
-		projectId: asText(manifest.projectid),
-		projectVersion: asText(manifest.projectversion),
-	};
 }
 
 async function addDeployPaths(
@@ -146,46 +72,44 @@ async function addDeployPaths(
 
 async function addInstallationScripts(
 	projectFolder: string,
-	deploy: XmlValue,
+	scripts: DeployScript[],
 	entries: ArchiveEntry[],
 	seen: Set<string>
 ): Promise<void> {
-	for (const run of asArray(deploy.run)) {
-		for (const script of asArray(run?.script)) {
-			const scriptPath = toProjectRelativePath(asText(script?.path));
-			if (
-				!scriptPath ||
-				scriptPath.endsWith('/*') ||
-				!(await isRegularFile(join(projectFolder, ...scriptPath.split('/'))))
-			) {
+	for (const script of scripts) {
+		const scriptPath = toProjectRelativePath(script.path);
+		if (
+			!scriptPath ||
+			scriptPath.endsWith('/*') ||
+			!(await isRegularFile(join(projectFolder, ...scriptPath.split('/'))))
+		) {
+			continue;
+		}
+
+		addEntry(entries, seen, scriptPath);
+		try {
+			const parsed = await parseStringPromise(
+				await readFile(join(projectFolder, ...scriptPath.split('/')), 'utf8'),
+				{
+					explicitArray: false,
+					trim: true,
+				}
+			);
+			const rootTag = getRootTag(parsed);
+			if (rootTag?.name !== DEPLOY.SDF_INSTALLATION_SCRIPT) {
 				continue;
 			}
-
-			addEntry(entries, seen, scriptPath);
-			try {
-				const parsed = await parseStringPromise(
-					await readFile(join(projectFolder, ...scriptPath.split('/')), 'utf8'),
-					{
-						explicitArray: false,
-						trim: true,
-					}
+			const scriptFile = getReferenceValue(asText(rootTag.value?.[DEPLOY.SCRIPT_FILE]));
+			if (scriptFile) {
+				await addDeployPaths(
+					projectFolder,
+					[`~/${FOLDERS.FILE_CABINET}${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`],
+					entries,
+					seen
 				);
-				const rootTag = getRootTag(parsed);
-				if (rootTag?.name !== SDF_INSTALLATION_SCRIPT_ROOT) {
-					continue;
-				}
-				const scriptFile = getReferenceValue(asText(rootTag.value?.scriptfile));
-				if (scriptFile) {
-					await addDeployPaths(
-						projectFolder,
-						[`~/FileCabinet${scriptFile.startsWith('/') ? '' : '/'}${scriptFile}`],
-						entries,
-						seen
-					);
-				}
-			} catch {
-				// Java packaging keeps the installation script and skips an unreadable or invalid referenced file.
 			}
+		} catch {
+			// Java packaging keeps the installation script and skips an unreadable or invalid referenced file.
 		}
 	}
 }
@@ -215,17 +139,6 @@ async function addFolderContents(
 			addEntry(entries, seen, entryPath);
 		}
 	}
-}
-
-function getPathValues(section: unknown): string[] {
-	return asArray(section)
-		.filter(isXmlValue)
-		.flatMap((item) => asArray(item.path).map(asText))
-		.filter(Boolean);
-}
-
-function isXmlValue(value: unknown): value is XmlValue {
-	return !!value && typeof value === 'object' && !Array.isArray(value);
 }
 
 function getRootTag(value: unknown): { name: string; value: XmlValue } | undefined {
@@ -264,10 +177,6 @@ function addEntry(entries: ArchiveEntry[], seen: Set<string>, path: string, isDi
 	}
 }
 
-function asArray<T = any>(value: T | T[] | undefined | null): T[] {
-	return value === undefined || value === null ? [] : Array.isArray(value) ? value : [value];
-}
-
 function asText(value: unknown): string {
 	if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 		return String(value).trim();
@@ -276,15 +185,6 @@ function asText(value: unknown): string {
 		return asText((value as { _: unknown })._);
 	}
 	return '';
-}
-
-async function pathExists(filepath: string): Promise<boolean> {
-	try {
-		await access(filepath);
-		return true;
-	} catch {
-		return false;
-	}
 }
 
 async function isDirectory(filepath: string): Promise<boolean> {

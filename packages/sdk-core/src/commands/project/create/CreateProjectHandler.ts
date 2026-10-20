@@ -5,15 +5,16 @@
 'use strict';
 
 import { join } from 'node:path';
+import { CONTROL_FILE_FIELDS } from '../../../services/project/SuiteCloudProjectConstants';
 import type { CreateProjectExecutionInput } from './CreateProjectExecutor';
 
 export const CREATE_PROJECT_COMMAND_OPTIONS = {
 	OVERWRITE: 'overwrite',
 	PARENT_DIRECTORY: 'parentdirectory',
-	PROJECT_ID: 'projectid',
-	PROJECT_NAME: 'projectname',
-	PROJECT_VERSION: 'projectversion',
-	PUBLISHER_ID: 'publisherid',
+	PROJECT_ID: CONTROL_FILE_FIELDS.MANIFEST.PROJECT_ID,
+	PROJECT_NAME: CONTROL_FILE_FIELDS.MANIFEST.PROJECT_NAME,
+	PROJECT_VERSION: CONTROL_FILE_FIELDS.MANIFEST.PROJECT_VERSION,
+	PUBLISHER_ID: CONTROL_FILE_FIELDS.MANIFEST.PUBLISHER_ID,
 	TYPE: 'type',
 	INCLUDE_UNIT_TESTING: 'includeunittesting',
 	PROJECT_FOLDER_NAME: 'projectfoldername',

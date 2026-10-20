@@ -10,6 +10,7 @@ const NodeTranslationService = require('../../../services/NodeTranslationService
 const ApplicationConstants = require('../../../ApplicationConstants');
 const { throwValidationException, unwrapExceptionMessage } = require('../../../utils/ExceptionUtils');
 const {
+	CREATE_PROJECT_COMMAND_OPTIONS: COMMAND_OPTIONS,
 	ensureCreateProjectLocation,
 	buildCreateProjectSdkParams,
 	toIncludeUnitTestingBoolean,
@@ -32,17 +33,6 @@ const {
 } = require('../../../validation/InteractiveAnswersValidator');
 
 const SOURCE_FOLDER = 'src';
-
-const COMMAND_OPTIONS = {
-	OVERWRITE: 'overwrite',
-	PARENT_DIRECTORY: 'parentdirectory',
-	PROJECT_ID: 'projectid',
-	PROJECT_NAME: 'projectname',
-	PROJECT_VERSION: 'projectversion',
-	PUBLISHER_ID: 'publisherid',
-	TYPE: 'type',
-	INCLUDE_UNIT_TESTING: 'includeunittesting',
-};
 
 module.exports = class CreateProjectAction extends BaseAction {
 	constructor(options) {

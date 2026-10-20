@@ -6,6 +6,7 @@
 
 const { default: { prompt } } = require('inquirer');
 const path = require('path');
+const { CREATE_PROJECT_COMMAND_OPTIONS: COMMAND_OPTIONS } = require('@oracle/suitecloud-sdk-core').commands;
 const NodeTranslationService = require('../../../services/NodeTranslationService');
 const CommandUtils = require('../../../utils/CommandUtils');
 const ApplicationConstants = require('../../../ApplicationConstants');
@@ -28,19 +29,6 @@ const {
 	validateAlphanumericHyphenUnderscoreExtended,
 	validateMaximumLength,
 } = require('../../../validation/InteractiveAnswersValidator');
-
-const COMMAND_OPTIONS = {
-	OVERWRITE: 'overwrite',
-	PARENT_DIRECTORY: 'parentdirectory',
-	PROJECT_ID: 'projectid',
-	PROJECT_NAME: 'projectname',
-	PROJECT_VERSION: 'projectversion',
-	PUBLISHER_ID: 'publisherid',
-	TYPE: 'type',
-	INCLUDE_UNIT_TESTING: 'includeunittesting',
-	PROJECT_ABSOLUTE_PATH: 'projectabsolutepath',
-	PROJECT_FOLDER_NAME: 'projectfoldername',
-};
 
 const ACP_PROJECT_TYPE_DISPLAY = 'Account Customization Project';
 const SUITEAPP_PROJECT_TYPE_DISPLAY = 'SuiteApp';
