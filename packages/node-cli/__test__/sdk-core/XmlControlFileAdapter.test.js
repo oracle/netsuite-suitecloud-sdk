@@ -90,7 +90,7 @@ describe('XML control-file adapter', () => {
 
 	it('rejects unsupported deploy groups', () => {
 		expect(() => parseControlFile('xml', 'deploy', '<deploy><unsupported/></deploy>'))
-			.toThrow('Invalid deploy.xml at "/deploy/unsupported": expected a supported deploy group');
+			.toThrow(new Error('Invalid deploy.xml at "/deploy/unsupported": expected one of the following deploy groups: files, objects, run, translationimports or configuration. Got "unsupported".'));
 	});
 
 	it('preserves scripts across repeated run groups', () => {

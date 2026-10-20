@@ -24,10 +24,11 @@ export function getDeployPathGroup(
 			return deploy[groupId] ??= [];
 		case DEPLOY.CONFIGURATION:
 			return deploy.configurations ??= [];
-		default:
+		default: {
+			const reason = translationService.getMessage(PROJECT_CONTROL.ERROR.UNSUPPORTED_DEPLOY_GROUP, groupId);
 			throw new Error(translationService.getMessage(
-				PROJECT_CONTROL.ERROR.STRUCTURE_INVALID, filename, propertyPath,
-				`a supported deploy group: ${[DEPLOY.FILES, DEPLOY.OBJECTS, DEPLOY.RUN, DEPLOY.TRANSLATION_IMPORTS, DEPLOY.CONFIGURATION].join(', ')}. Got "${groupId}"`
+				PROJECT_CONTROL.ERROR.STRUCTURE_INVALID, filename, propertyPath, reason
 			));
+		}
 	}
 }

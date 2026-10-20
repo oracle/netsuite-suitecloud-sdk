@@ -77,6 +77,7 @@
   "PROJECT_ERROR_PROJECT_FOLDER_REQUIRED": "A project folder is required to run the project command.",
   "PROJECT_ERROR_TARGET_HOST_REQUIRED": "A target host is required to run the project command.",
   "PROJECT_ERROR_UNSUPPORTED_COMMAND": "Unsupported project command \"{0}\".",
+  "PROJECT_CONTROL_ERROR_UNSUPPORTED_DEPLOY_GROUP": "one of the following deploy groups: files, objects, run, translationimports or configuration. Got \"{0}\"",
   "PROJECT_CONTROL_ERROR_DUPLICATE": "Multiple {0} control files found: {1}.",
   "PROJECT_CONTROL_ERROR_DOCUMENT_INVALID": "Invalid {0}: {1}",
   "PROJECT_CONTROL_ERROR_FORMAT_UNSUPPORTED": "The control-file format of {0} is not supported yet.",

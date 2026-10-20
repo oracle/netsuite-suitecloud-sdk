@@ -115,7 +115,7 @@ function defineStructuredControlFileTests(format) {
 
 	it('rejects unsupported deploy groups', () => {
 		expect(() => parseControlFile(format, 'deploy', '{"deploy":[{"unsupported":{}}]}'))
-			.toThrow(`Invalid deploy.${format} at "/deploy/0/unsupported": expected a supported deploy group`);
+			.toThrow(new Error(`Invalid deploy.${format} at "/deploy/0/unsupported": expected one of the following deploy groups: files, objects, run, translationimports or configuration. Got "unsupported".`));
 	});
 
 	it('preserves singleton selections and empty paths', () => {
