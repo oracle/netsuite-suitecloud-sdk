@@ -5,7 +5,7 @@
 'use strict';
 
 const { access, mkdir, mkdtemp, readFile, readdir, rm, writeFile } = require('node:fs/promises');
-const { tmpdir } = require('node:os');
+const { EOL, tmpdir } = require('node:os');
 const { join } = require('node:path');
 const { stringify } = require('yaml');
 const AdmZip = require('adm-zip');
@@ -93,6 +93,18 @@ describe('ProjectArchivePlan', () => {
 		await extractZipArchive(projectArchivePath, extractionFolder);
 
 		expect(await listFiles(extractionFolder)).toEqual(expectedArchiveFiles());
+	});
+
+	it('renders archive validation errors under one header with bullets and no guidance', async () => {
+		await rm(join(projectFolder, 'application.xml'));
+		await writeFile(join(projectFolder, 'manifest.xml'),
+			'<manifest projecttype="INVALID"><frameworkversion>3.0</frameworkversion></manifest>');
+
+		await expect(createProjectArchive(projectFolder)).rejects.toEqual(new Error([
+			`Unable to archive project folder "${projectFolder}":`,
+			' - The projecttype attribute in manifest.xml must be either SUITEAPP or ACCOUNTCUSTOMIZATION.',
+			' - The SDF "frameworkversion" value "3.0" in manifest.xml does not match the control-file generation. XML control files must use version "1.0"; JSON and YAML control files must use version "2.0".',
+		].join(EOL)));
 	});
 
 	it.each(['<application>', ''])('rejects malformed application.xml before packaging: %j', async (contents) => {

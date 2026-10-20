@@ -36,7 +36,7 @@ module.exports = class ProjectInfoService {
 			}
 			catch (error) {
 				const header = NodeTranslationService.getMessage(ERRORS.INVALID_PROJECT_MANIFEST);
-				const details = toErrorMessages(error).map((entry) => ` - ${entry}`).join(lineBreak);
+				const details = toErrorMessages(error).map((entry) => ` - ${entry.replace(/\r?\n/g, `${lineBreak}   `)}`).join(lineBreak);
 				const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
 				throw new CLIException(`${header}${lineBreak}${details}${lineBreak}${guidance}`);
 			}
@@ -101,7 +101,7 @@ module.exports = class ProjectInfoService {
 		}
 		catch (error) {
 			const guidance = NodeTranslationService.getMessage(ERRORS.SEE_PROJECT_STRUCTURE, INFO.PROJECT_STRUCTURE);
-			const details = toErrorMessages(error).map((entry) => ` - ${entry}`).join(lineBreak);
+			const details = toErrorMessages(error).map((entry) => ` - ${entry.replace(/\r?\n/g, `${lineBreak}   `)}`).join(lineBreak);
 			throw new CLIException(`Invalid SuiteCloud project context for command "${commandName}".${lineBreak}${details}${lineBreak}${guidance}`);
 		}
 	}
