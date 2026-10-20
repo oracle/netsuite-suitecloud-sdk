@@ -5,7 +5,7 @@
   "aliases": [
     "time-approval-review"
   ],
-  "category": "netsuite-suiteskills-people",
+  "category": "netsuite-suiteskills-workforce",
   "description": "Review pending NetSuite Actual Time and generate an HTML dashboard, then approve or reject exact entries or timesheets after action qualification and confirmed preview. Excludes creating, editing, submitting or retracting time.",
   "display_name": "Time Approval Review",
   "edition": "non-read-only",
@@ -13,7 +13,7 @@
   "host_execution": "not_run",
   "id": "RB-PPL-009",
   "integration_release_date": "2026-10-16",
-  "integration_version": "0.8.1",
+  "integration_version": "0.8.2",
   "name": "netsuite-time-approval-review",
   "netsuite_requirements": {
     "industries": {
@@ -38,7 +38,7 @@
     }
   },
   "owner": "Oracle NetSuite",
-  "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-approval-review/RUNBOOK.md",
+  "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-approval-review/RUNBOOK.md",
   "shared_dependencies": [
     "shared/contracts/BASELINE.md",
     "shared/contracts/RETRIEVAL.md",

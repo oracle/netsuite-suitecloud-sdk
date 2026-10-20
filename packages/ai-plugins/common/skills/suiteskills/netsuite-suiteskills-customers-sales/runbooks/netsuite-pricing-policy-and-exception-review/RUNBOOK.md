@@ -5,7 +5,7 @@ metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"
   source-version: "unknown"
-  integration-version: "0.8.1"
+  integration-version: "0.8.2"
   runbook-id: RB-CRM-009
   category: customers-sales
   access-mode: read_only

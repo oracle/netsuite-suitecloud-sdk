@@ -1,3 +1,9 @@
+# Workforce changelog
+
+## 0.8.2 — 2026-10-19
+
+Rename the active category from People to Workforce; preserve CAT-PPL, RB-PPL identities, SuitePeople branding and existing procedures.
+
 ## 0.7.2 — 2026-10-14
 
 Refresh owner/version metadata; add approved Customer Support to its category while preserving other business procedures. Native loading and business behavior remain not_run.

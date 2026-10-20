@@ -1,15 +1,19 @@
 ---
-name: netsuite-suiteskills-people
-description: "Use for People and Workforce: Payroll Clarity Readiness, Absence Management Advisor, Benefits Portfolio Monitor, Time Approval Review, Time Entry Creation. Select the matching runbook; supported actions require authorization and business prerequisites."
+name: netsuite-suiteskills-workforce
+description: "Use for Workforce: Payroll Clarity Readiness, Absence Management Advisor, Benefits Portfolio Monitor, Time Approval Review, Time Entry Creation. Select the matching runbook; supported actions require authorization and business prerequisites."
 license: LicenseRef-SuiteSkills-Review-Pending
 metadata:
   owner: "Oracle NetSuite"
-  version: "0.8.1"
+  version: "0.8.2"
   release-date: "2026-10-15"
   category-id: CAT-PPL
 ---
 
-# People and Workforce
+# Workforce
+
+*Payroll readiness, time, absence, and benefits insight for HR and managers.*
+
+Workforce gives HR teams, controllers, and managers a clear view of workforce data in NetSuite and SuitePeople. It audits payroll readiness across employee setup, inputs, and calculated results, without running or submitting payroll. It analyzes absence balances, carryover, and upcoming expirations, and monitors benefits coverage and recorded costs. For time management, it can review pending time and approve or reject entries after a confirmed preview. It can also draft new time entries for the user to review and save. Every change requires explicit user confirmation, and the skill makes no eligibility or employment judgments.
 
 Support the requested analysis and source-supported authorized actions through available tools. Individual analytical procedures do not gain unspecified write operations. Preserve account permissions, business validation and result verification.
 

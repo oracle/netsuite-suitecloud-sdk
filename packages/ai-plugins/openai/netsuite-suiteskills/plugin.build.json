@@ -184,7 +184,7 @@
         "skills/netsuite-suiteskills-finance/agents/openai.yaml",
         "skills/netsuite-suiteskills-customers-sales/agents/openai.yaml",
         "skills/netsuite-suiteskills-operations/agents/openai.yaml",
-        "skills/netsuite-suiteskills-people/agents/openai.yaml",
+        "skills/netsuite-suiteskills-workforce/agents/openai.yaml",
         "skills/netsuite-suiteskills-onboarding/agents/openai.yaml",
         "SAFEWORDS-COVERAGE.md",
         "SAFEWORDS-COVERAGE.json",
@@ -204,7 +204,7 @@
       "com.openai": {
         "onboardingSkill": "./skills/netsuite-suiteskills-onboarding/SKILL.md",
         "publication": {
-          "release_notes": "SuiteSkills 0.8.1 consolidates SafeWords and adds source-independent financial visualization with Data Visualization 2.2.0-rc.1. Native, account and security qualification remains pending."
+          "release_notes": "SuiteSkills 0.8.2 adopts reviewed category descriptions and renames People to Workforce. All 48 runbook identities, source versions, SafeWords and Data Visualization 2.2.0-rc.1 behavior are preserved. Native, account and security qualification remains pending."
         }
       }
     },
@@ -246,9 +246,9 @@
     "netsuite-suiteskills-finance",
     "netsuite-suiteskills-customers-sales",
     "netsuite-suiteskills-operations",
-    "netsuite-suiteskills-people",
+    "netsuite-suiteskills-workforce",
     "netsuite-suiteskills-onboarding"
   ],
-  "version": "0.8.1",
+  "version": "0.8.2",
   "skillSource": "suiteskills"
 }

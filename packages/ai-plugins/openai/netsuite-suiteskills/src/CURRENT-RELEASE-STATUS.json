@@ -1,6 +1,6 @@
 {
-  "authoring_tools": "SuiteSkills Builder 2.5.21 and Evaluator 1.1.21; matching foundation required",
-  "base_release": "0.7.8",
+  "authoring_tools": "pending_realignment; historical Builder foundations unchanged",
+  "base_release": "0.8.1",
   "connection_binding": "not_configured",
   "customer_release": "blocked_pending_security_and_source_rights_requirements",
   "data_visualization": {
@@ -40,15 +40,15 @@
   "sdk_build": "see external VERIFICATION.json",
   "security_approval": "not_run",
   "source_rights": "not_collected",
-  "version": "0.8.1",
-  "version_basis": "safewords_consolidation_and_source_independent_financial_visualization",
+  "version": "0.8.2",
+  "version_basis": "reviewed_copy_and_workforce_rename",
   "welcome_dashboard": "removed",
-  "working_revision": "shared-081-2026-10-19",
+  "working_revision": "shared-082-2026-10-20",
   "writer_remediation": {
     "iq_scan": "not_run",
     "native_host": "not_run",
     "shared_writer_files": 18,
     "specialized_runbook_consumers": 7
   },
-  "integration_verification": "See provider README.md; author-reported results are not receiving-repository qualification."
+  "integration_verification": "See provider README.md; upstream-reported results are not receiving-repository qualification."
 }

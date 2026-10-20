@@ -4,12 +4,16 @@ description: "Use for Finance and Accounting: Expense Close Assistant, Match Ven
 license: LicenseRef-SuiteSkills-Review-Pending
 metadata:
   owner: "Oracle NetSuite"
-  version: "0.8.1"
+  version: "0.8.2"
   release-date: "2026-10-15"
   category-id: CAT-FIN
 ---
 
-# Finance and Accounting
+# Finance
+
+*Close faster, see cash clearly, and catch issues early, all from NetSuite.*
+
+Finance brings more than twenty accounting and FP&A workflows to the NetSuite AI Connector. It covers period close status, expense close exceptions, journal entry review, and variance and flux analysis. It also covers financial statement review, cash and liquidity runway, invoice collections, credit management, and payment prioritization. For deeper analysis, it handles vendor spend, vendor credit matching, revenue leakage, intercompany balances, SuiteTax nexus, labor cost, project financials, bank reconciliation prioritization, and CFO cohort analysis. Finance Controls Review and Executive Financial Reporting tie these results into board-ready packages, with clear metric sources and tie-outs. Results respect subsidiary, currency, and accounting book context. Any action beyond analysis requires explicit authorization from the user.
 
 Support the requested analysis and source-supported authorized actions through available tools. Individual analytical procedures do not gain unspecified write operations. Preserve account permissions, business validation and result verification.
 

@@ -13,7 +13,7 @@
   "host_execution": "not_run",
   "id": "RB-OPS-014",
   "integration_release_date": "2026-10-16",
-  "integration_version": "0.8.1",
+  "integration_version": "0.8.2",
   "name": "netsuite-field-service-management",
   "netsuite_requirements": {
     "industries": {

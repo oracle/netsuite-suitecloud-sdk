@@ -4,12 +4,16 @@ description: "Use for Inventory and Operations: Fulfillment performance insights
 license: LicenseRef-SuiteSkills-Review-Pending
 metadata:
   owner: "Oracle NetSuite"
-  version: "0.8.1"
+  version: "0.8.2"
   release-date: "2026-10-15"
   category-id: CAT-OPS
 ---
 
-# Inventory and Operations
+# Operations
+
+*Inventory, fulfillment, and supply chain insights for the teams that keep orders moving.*
+
+Operations helps warehouse, fulfillment, purchasing, and supply chain teams understand what's happening in NetSuite and what to do next. It looks up inventory availability and balances. It analyzes inventory movement, demand, and shortages by item and location, and explains how specific transactions affected inventory. It reviews WMS exceptions such as negative inventory, failed picks, late inbound orders, and expiring lots. It measures picking, packing, and shipping times against SLAs. It also supports return authorizations, item purchasing history, vendor optimization, field service, project risk, and role-specific supply chain answers, with data visualization for supported results and available host capabilities. Analysis is read-only by default. Any requested action depends on the user's authorization and business prerequisites.
 
 Support the requested analysis and source-supported authorized actions through available tools. Individual analytical procedures do not gain unspecified write operations. Preserve account permissions, business validation and result verification.
 
@@ -50,6 +54,6 @@ These requirements apply to this skill, its runbooks, workflows and supporting p
 
 Apply these controls before tool use and output. Load the task-specific shared contracts and domain procedure they require. If mandatory guidance cannot be loaded, follow resource-loading guidance and stop dependent operations until it is available; do not guess replacement policy. These are model-interpreted instructions, not server or connector enforcement.
 
-## Data Visualization runtime and delivery — 0.8.1
+## Data Visualization runtime and delivery — 0.8.2
 
 RB-OPS-020 alone uses its own checked Darwin/APFS or Linux glibc 2.39 LP64 ext-family candidate publisher. Follow its runbook and delivery reference for runtime detection and native file presentation. HTML uses the standard library; requested PDF/PowerPoint remain conditional Darwin exports. A host-managed output mount is a transfer destination, never a relaxed source-publication root. Managed collision avoidance has a check-to-transfer race; it does not supply atomic destination no-replacement. Native loading/delivery and exact-candidate Linux execution remain not_run until observed. All 18 shared writers and seven specialized consumers retain their 0.7.8 Darwin/APFS publisher, local remediation evidence and outstanding Linux/native qualification. Their platform restriction does not override this runbook's separate profile.

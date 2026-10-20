@@ -6,7 +6,7 @@
     "netsuite-time-entry-drafting",
     "time-entry-creation"
   ],
-  "category": "netsuite-suiteskills-people",
+  "category": "netsuite-suiteskills-workforce",
   "description": "Draft and create new NetSuite Actual Time entries from a direct request or permitted work activity, with a chat table review and a separate Save decision. Do not use for timesheet submission or approval.",
   "display_name": "Time Entry Creation",
   "edition": "non-read-only",
@@ -14,7 +14,7 @@
   "host_execution": "not_run",
   "id": "RB-PPL-010",
   "integration_release_date": "2026-10-16",
-  "integration_version": "0.8.1",
+  "integration_version": "0.8.2",
   "name": "netsuite-time-entry-creation",
   "netsuite_requirements": {
     "industries": {
@@ -39,7 +39,7 @@
     }
   },
   "owner": "Oracle NetSuite",
-  "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
+  "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
   "shared_dependencies": [
     "shared/contracts/BASELINE.md",
     "shared/contracts/RETRIEVAL.md",

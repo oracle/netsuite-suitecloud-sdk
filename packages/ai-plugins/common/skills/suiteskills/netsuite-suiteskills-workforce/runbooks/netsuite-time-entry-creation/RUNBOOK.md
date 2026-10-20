@@ -5,9 +5,9 @@ metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"
   source-version: "unknown"
-  integration-version: "0.8.1"
+  integration-version: "0.8.2"
   runbook-id: RB-PPL-010
-  category: people
+  category: workforce
   access-mode: operation_dependent
 ---
 
@@ -27,7 +27,7 @@ Default to self-entry. Resolve the authenticated employee with the documented `B
 
 Present every draft in a **Markdown table in chat**, including rows that need clarification. Give each row a stable ID and a unique Description so either can select it. For a finite unresolved choice, prefer the host's **native chat interactive multiple-choice input** when the host presents it, especially Billable Yes/No or bounded Location `Name (ID)` candidates. This input is host-controlled and is not guaranteed; if it does not appear, give numbered options in chat and accept a typed choice. Do not make fake clickable Markdown buttons or an HTML dashboard. A choice only edits the draft: validate it and redraw the full table with current values and states. Keep selected incomplete rows selected while asking for missing facts; do not silently omit them from a Save subset. A selection or initial “log time” request is not Save. When every selected row is Ready, show the exact pre-save confirmation as a **rendered Markdown table even for one row**: separate relevant field columns with payload names and IDs, validation/unverified status, and omissions. Bullets or a prose/key-value list cannot replace that table. Ask **Save** or **Cancel** separately after it. Only Save on that unchanged review authorizes `timebill` create. Read back each returned ID and report persisted values in a result table; retain clearly unsaved proposed values for rejected or unattempted rows. Pause the remaining batch on a required-field or invalid-value rejection; correct and re-review before retrying.
 
-In SuiteSkills People, follow the installed resource map's `RETRIEVAL` contract before reads and `ACTIONS` contract before writes. `create_actual_time_entries` is a proposed People action identifier, not a callable connector method by itself. Discover a supported create capability for `timebill` and inspect its live schema and role permissions; a historical generic create tool name does not establish current availability. This skill grants no NetSuite access.
+In SuiteSkills Workforce, follow the installed resource map's `RETRIEVAL` contract before reads and `ACTIONS` contract before writes. `create_actual_time_entries` is a proposed Workforce action identifier, not a callable connector method by itself. Discover a supported create capability for `timebill` and inspect its live schema and role permissions; a historical generic create tool name does not establish current availability. This skill grants no NetSuite access.
 
 <!-- suiteskills-foundation:start -->
 ## Plugin foundation

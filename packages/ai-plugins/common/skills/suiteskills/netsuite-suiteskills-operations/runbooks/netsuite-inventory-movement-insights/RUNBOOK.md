@@ -5,7 +5,7 @@ metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"
   source-version: "1.0.0"
-  integration-version: "0.8.1"
+  integration-version: "0.8.2"
   integration_release_date: "2026-10-16"
   source_release_date: "not_collected"
   first_included_date: "2026-10-08"

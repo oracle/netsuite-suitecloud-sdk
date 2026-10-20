@@ -9,7 +9,7 @@ metadata:
   metadata-file: metadata.json
   owner: "Oracle NetSuite"
   access-mode: "read_only"
-  integration-version: "0.8.1"
+  integration-version: "0.8.2"
   integration_release_date: "2026-10-16"
 ---
 

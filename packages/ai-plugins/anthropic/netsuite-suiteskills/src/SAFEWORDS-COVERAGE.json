@@ -6,7 +6,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-advanced-pricing-price-rule-management/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
-      "sha256": "b930e996bbc19fd00565cc87f4c9e797cd1abc58c489e8dcaecf1957d976e3cb",
+      "sha256": "0ec155adc0e7c9295f036da705e30a160b11bdf984b99cd0e7906da3a90e7009",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -16,7 +16,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-service-order-triage/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
-      "sha256": "8a861b7501dfd170abf6042960d0c6fcc5df7a52090a514c09669375a71d9eef",
+      "sha256": "f281e8d9028c9528cd149c662b3726aa1660a9572bad80fa759e1e60a8aed2ad",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -26,7 +26,7 @@
       "line": 16,
       "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-support-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
-      "sha256": "754c6fbcdd2c9761b60687139613a82a0b12062edb784d82587877a38ec1d414",
+      "sha256": "23a236441ce28f16a61018a93eb5f92ceeb0ee8b2fc2ce6a3744b017d386ce44",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -36,7 +36,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-knowledge-quality-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
-      "sha256": "6dec044c776b168585f76eceda486d1d6dd69d0b7a035de7b16d5d926f81b54e",
+      "sha256": "ce70ae3a403a8ba060caa9b41528a952052036e898a184905b8ca8806b911d1f",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -46,7 +46,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-lead-management-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
-      "sha256": "8b458e3b60b138e2b80527ec81dd1d65b12e8cb115aa4e21421a63da6d4eabd7",
+      "sha256": "a009e108f7a754b0fbc04a1641b1137b436ad9ce023111c172eaa61570ea9bb2",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -56,7 +56,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-marketing-campaign-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
-      "sha256": "f9b613b221d5b5cf2ab2b8f256b0d081fe3a4be33afe4daa76bf866c206fe447",
+      "sha256": "6f4016f0e64ae9903a6a71d128ac38670195917e76e0f7bca8b3cb33d3ebe3ee",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -66,7 +66,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-pricing-policy-and-exception-review/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
-      "sha256": "7ac3f17d0aca7c93a8e0104db0c03f6107f614fe7f754c7e46579f372040e3e3",
+      "sha256": "73c8c9952342cde3bb4b9c8d6591114042b7d69076f2fbb9b5ca989b8b80de85",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -76,7 +76,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-sales-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
-      "sha256": "de0f0e82df167cac9c8e8f2243f34b8b6dbb6fb0c7299d1bb1f6eac16e06a6a5",
+      "sha256": "c720e94d84997c25c446a3b94925c62694dd557e76b9e54a1d55e8e0916f18b1",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -86,7 +86,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-bank-reconciliation-prioritization/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "608388e1bff5caa978f4749242c134fc64be84d7132b31079b3c639bd749168a",
+      "sha256": "7f7bc865752f467bb8c821c0179a0e7eac70a2f20bbd9c19c071d1c34e64b65d",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -96,7 +96,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cash-and-liquidity/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "1febe9f3bf5bc8dde3ed8da76abdf087640a47735d231a0482f861f993b614fc",
+      "sha256": "b212fd9f99fc09a3180493af9fe3cf5d19d1bac69382e2c2a7295373b2aa08f7",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -106,7 +106,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-cohort-analysis/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "37b2a91e1189f98add8e1a86dda2f9eb0022113efa9f67c7a97418b71a6743a2",
+      "sha256": "2c09eeb67db1055c0e5684e6924ad151def19753eaf5ee4c4cb163282307e508",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -116,7 +116,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-credit-management/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "1c56654afd9c43215f23f28b18efafceab62afadf75f3dc9614d0cec63f3e492",
+      "sha256": "7384fd519ba967dc9fdbc57eb4745a12c5ff959327d357b827935fa866632942",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -126,7 +126,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-executive-finance-reporting/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "99e3bb116d4d6a40ca5f10b9f47109b52c537ef44f1d7825b6c7e434e5dfc23b",
+      "sha256": "7932edfbdbfd19fcf00aba392cca07d5fbc2e2746408bc687e192fff37fa9c7f",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -136,7 +136,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-expense-close-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "f5de32aed0e828edb3043e2389400d99698d0b692d1514f053677633fe3a62aa",
+      "sha256": "9b5593e8dba13018462fe5a2b4ee7095e629e0051a05cee7682f9f75c9328c27",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -146,7 +146,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-finance-controls-review/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "5466dbac11a50481a7686c8dbe34b9eb53729019fad04a492475aec1699f096b",
+      "sha256": "8f7cb5ae7d1f15472daa472f39c226c069f0541232b70ef66775dc1ddac9afd2",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -156,7 +156,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-financial-statement-review/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "1a8dbddb2afa24af1efa2987d0d32be020a05bb6c9989dcce7835e45a4d45550",
+      "sha256": "bc106f5f2250c284a58a8cc78035b5f3cafd3f7df8d0e2c2d6f661213f49fe4d",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -166,7 +166,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-intercompany-balance-explorer/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "95b5dbfdbef2d3eee0fef8487de03ccb3b47c771ac37775139a557f9b0d26e1c",
+      "sha256": "681c0fb60cea6149e17ea62a43e2509370365ae4abb6d561b8a8401affea2f69",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -176,7 +176,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-invoice-collections/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "d60cbad7a8c468d8934a8e6e46397d0038bfaab64e6e5c2fd25cb6a58aeecf22",
+      "sha256": "ccbe013ac3e62d454a3d7d8f86fb92a0343a7808f59936becb42fd2a0554e2fd",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -186,7 +186,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-journal-entry-review/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "2eb4681609ae0a7906fc2e8c91343cd7eb32f56463630414e3d13f885bb789c8",
+      "sha256": "19843de6fcebbad5bc79cc7588980fb29923841ecbc4df05e6093a230f736e68",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -196,7 +196,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-labor-cost-advisor/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "f446c7ffc08741d20a56c272149d4b96db902e6b814ee98bac03e81588206da3",
+      "sha256": "29c5304b16c9f2d0530ef4fe15ee42d386ec77f76bc394b183ac61bc4347942f",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -206,7 +206,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-match-vendor-credits-to-bills/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "e496a016f12d330a77a943da60019c97676a4539de23fbd97c8f16f5889b35c7",
+      "sha256": "034b4be7bc9112d0990a84e9326decd390f043ae8a0f15eab875502ee23c77c5",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -216,7 +216,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-overdue-invoice-change-review/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "185c5a9391f4bd89bcb3d56671caf9fb67d446b42c2391a1a709bc4eb5175d43",
+      "sha256": "e7c7fe901668d710446cd59f1cc38e8269ca14b3a317b5e8cc1a24d709b3c7fc",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -226,7 +226,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-payment-prioritization/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "1ea16dfae98d7e36f6e8db0ed52116a2e424052f414226216fd18a11a561d747",
+      "sha256": "67b2614ddc8c42795e3874db12ef564fc4fd2aed64d12c4996cba1384945a3cd",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -236,7 +236,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-period-close-status/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "869a8c6d282c2e16ed91f0051528741c926a2d380c1b8dc88ae1b8f5e2d38953",
+      "sha256": "de37223aa3a04070e11c1f47ddc73d2e0b7a2a8384ac70171dde40f67fb5976d",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -246,7 +246,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-project-financial-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "7b3cd78afb9b06fa5629e44979434d6c8e5780fdfb08bdeb8ddca831698b01f2",
+      "sha256": "be0c5449b65282fe11673dd84997b52af841ba7f87c2cd9b7e8c05871f0ca7ff",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -256,7 +256,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-revenue-leakage/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "6e9d83d2ab27f5bbda6867f04e81fdcc86a635aa96929dca1a6f3e6217268d8c",
+      "sha256": "af3023c3958def264226798b0faab220b614867ed54479c2814024467318075b",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -266,7 +266,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-suitetax-nexus-explainer/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "c0c37d5dddf4152c5226ed099ab6e3d701fd310e2b0d318405d4b4778647e871",
+      "sha256": "84e6518d0d315b560006ada990da9980f89229362db782067eb40c742e0a22e9",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -276,7 +276,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-variance-analysis/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "da73e8940fcacd8aa508c8c7c0a9c12c7f2df3392928c3d57f02b63f26d6e3e4",
+      "sha256": "54db947277637724c00f3c914eec9c440b9986f1231792a646ccd215833cd429",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -286,7 +286,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-vendor-bill-processing-time/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "cff80cfc4c5275e63eb0862e5f09fb2109705b99c45e35fa10f94328064362d7",
+      "sha256": "ccb0e450d43b340280bca11f243b68de4a7a10ffba954343054e67adbfb525a1",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -296,7 +296,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-vendor-spend-analysis/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-finance/SKILL.md",
-      "sha256": "0c2f0980986d3d9467b524cf9b0735250a311a417aeb1177b74336c809413b66",
+      "sha256": "f966677a5febddb0bc4309a0e4acbd7cf9b0c5a24e810a14379b78334ad1b1ec",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -316,7 +316,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-field-service-management/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "a351b6d6fe5151be3390d0e7daa97e5bc34f93b3f6c3659590ba654977c6bc66",
+      "sha256": "9e27faa50539861d9290d0186d16074e869138d63375a2cb0ff7570000dec7f2",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -436,7 +436,7 @@
       "line": 17,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-fulfillment-performance-insights/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "3fdd2721645c8d8107826f90332260efc08a5af1b160dd944416f1de2e364b75",
+      "sha256": "9f2931646f861193a409555f6d146e4dd33347b97d08ad05e10f4fbc36025f3c",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -446,7 +446,7 @@
       "line": 17,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-availability-lookup/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "fa38b804c13e2aaedb162693adf8b632df6c7c9258da6de485b5b387a19d7451",
+      "sha256": "55a57b76bd982d3533fce4120c44100c7ef52a9a20930786905a4c6d78b5b3b7",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -456,7 +456,7 @@
       "line": 17,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-balance-viewer/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "dddd80a5ec6264a8157e694c2e3c3fe71e57ffc366bd80c87ce8041acd0afd1c",
+      "sha256": "6dc537dbc40a8db89a2c2f291add1d313076fc39b4fc8a40f0430bc99d9a2f6c",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -466,7 +466,7 @@
       "line": 17,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-exceptions-review/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "c50083d7991e0badc10dcaf3d17ba76bc6e7c9a6a2bc7a49e5f2e45a65cf2657",
+      "sha256": "85414b9d09b5241f557bf6959fad67af7e46d2af160f398edba5e25c4df138f4",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -476,7 +476,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-impact-review/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "139b402266af0cd11036585507a8e1597cc34eb5b12e57584941b48cd756d622",
+      "sha256": "157226232b17766eab12aeed8e40065e7086fdc70af6600d4756db190dc623fb",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -486,7 +486,7 @@
       "line": 17,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-movement-insights/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "020d9a2fbc2353bef6b10040d81ac0721f3aa927ce3482d3a654481063c4ec8a",
+      "sha256": "254221d2f2c10c0ec6a27871cf5003e76e790023d3935e1a44141ad9eb4c0eae",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -496,7 +496,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-item-purchasing-history/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "55794ce462a213a7c08989839d7fa3236480ba629457cba50270e063590c0b8a",
+      "sha256": "3e30acf1110b22dafc047e4debb8c5e495d951c4412041044e3be35ff2d66334",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -506,7 +506,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-project-risk-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "7fa2e971ef0fd9853434fcec35df600e57129c78435f593dd54cea6f9b3e0a82",
+      "sha256": "d0b16bcfff66c983ac1c6403b33017711ae4e55f7cbf9403928ebd1d4c55b498",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -516,7 +516,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-return-authorization-assistant/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "ca7034c6190468a1dc7d4e6092666bafb28555bd472bd0cde6ff8ce00f865469",
+      "sha256": "ed50e9ca47b535ab334aeccb3868002f409fefd54c9d1dd1d5dfb86d72268c9a",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -526,7 +526,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-supply-chain-persona-based-responses/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "2f2e88e094c856dd8b0d38757bb6597f0fed35bfc129b59db975581e47a55a87",
+      "sha256": "556b4b9af7a58b3067ca7bda45fb3a90c3687f2a4511fde3448c91f74694e1c9",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -536,7 +536,7 @@
       "line": 14,
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-vendor-optimization/RUNBOOK.md",
       "policy_owner": "skills/netsuite-suiteskills-operations/SKILL.md",
-      "sha256": "574f6fe3de9977bb7208901f9e07e7e1aaff06216067739b45df944a17f3e3ab",
+      "sha256": "b78b1a826596f8fcc3de3d54decf00aaa3d90bbee2fd46b2cfc526123ceaac58",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -544,9 +544,9 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "runbook",
       "line": 14,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
-      "sha256": "a1d2981e2ee2ba52f6593c485a9de107de9e8ca29204a4fca31732253d715bc8",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
+      "sha256": "cadf78ed33e13891ae3560b8587383bd1663178a4b451e294b629a501b19314c",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -554,8 +554,8 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "workflow",
       "line": 1,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/workflows/balance-explanation/WORKFLOW.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/workflows/balance-explanation/WORKFLOW.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
       "sha256": "9abd203c23cddb8cd7cc2bd30a0dc9fbc7ea7d42b3aaa5da5395aecc5d6c4280",
       "target": "../../../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
@@ -564,8 +564,8 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "workflow",
       "line": 1,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/workflows/low-time-off-usage/WORKFLOW.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/workflows/low-time-off-usage/WORKFLOW.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
       "sha256": "e394c2d13ee1b9d4bf3ab5c80935a2de0944c4ed00f5d18d0e39030ad4e51f14",
       "target": "../../../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
@@ -574,8 +574,8 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "workflow",
       "line": 1,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/workflows/time-off-balance/WORKFLOW.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/workflows/time-off-balance/WORKFLOW.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
       "sha256": "f1a8e42df8d0570f0e168ee9231f30925d27121237f2e6ef49ad68e6e38749b2",
       "target": "../../../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
@@ -584,8 +584,8 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "workflow",
       "line": 1,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/workflows/time-off-request/WORKFLOW.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/workflows/time-off-request/WORKFLOW.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
       "sha256": "1f0a45157c96073ffd504607d5b6e4639d85335e0a702841d24c39335e6a8b7b",
       "target": "../../../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
@@ -594,9 +594,9 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "runbook",
       "line": 14,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
-      "sha256": "5cd7914c93291b725a66d36232160ab24681be1e4abdf3dedcb6c361b99d327a",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
+      "sha256": "8fcc669eb39ff6a61680d46ed9a025b7ced0c5994abec0edcaed6e007c6bf35b",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -604,9 +604,9 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "runbook",
       "line": 14,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
-      "sha256": "ec0897bfb6a5c325f87cd685589f34e1026d962f99c23fca2c2fa760006b072f",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
+      "sha256": "a3131bcd290ab2774ef0cbb256f6ecd74cb16d42b5474aaa5b2d408c6cd4c83b",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -614,9 +614,9 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "runbook",
       "line": 14,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-approval-review/RUNBOOK.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
-      "sha256": "c3cedc7a84a590f886e56b9c44c097f0de4c81306f33e28a32a75b4a1f67a63f",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-approval-review/RUNBOOK.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
+      "sha256": "189d12013c41205496819df26f92088297bb6a9639daf5fc869eaa7490504312",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     },
@@ -624,9 +624,9 @@
       "application": "mandatory_before_tool_use_including_direct_load",
       "kind": "runbook",
       "line": 14,
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
-      "policy_owner": "skills/netsuite-suiteskills-people/SKILL.md",
-      "sha256": "174d7e97e5a3894734db253c507e6932be39e7f77a50d9b9e2cc5869592c46f5",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
+      "policy_owner": "skills/netsuite-suiteskills-workforce/SKILL.md",
+      "sha256": "e8455658072523ec2ddd5dd1514901e0b9922348862707c7423c857c9a8afa91",
       "target": "../../SKILL.md#safewords",
       "unavailable_policy": "stop_dependent_operations"
     }
@@ -642,7 +642,7 @@
   "native_adherence": "not_run",
   "policy_owners": [
     {
-      "end_line": 45,
+      "end_line": 49,
       "path": "skills/netsuite-suiteskills-customers-sales/SKILL.md",
       "policy_ids": [
         "SW-01",
@@ -658,11 +658,11 @@
         "SW-11"
       ],
       "reason_for_copy": "independently_loadable_skill_requires_local_policy",
-      "sha256": "7d97fa59b99f57e101533ca88cc65090c04e762b9d7b2863daec5a16177f2d39",
-      "start_line": 29
+      "sha256": "14e2de760d8194aacf05a4a6a488806f11a705510c274518f7f389547a14c9de",
+      "start_line": 33
     },
     {
-      "end_line": 59,
+      "end_line": 63,
       "path": "skills/netsuite-suiteskills-finance/SKILL.md",
       "policy_ids": [
         "SW-01",
@@ -678,11 +678,11 @@
         "SW-11"
       ],
       "reason_for_copy": "independently_loadable_skill_requires_local_policy",
-      "sha256": "af5c206ce746e6fba60f7634159c741d22653230b42cfc581bd772d1dd012225",
-      "start_line": 43
+      "sha256": "2abc9c475518532257ac177882b72826f11aa7c14d6b8e9d078a4abd0fbd5807",
+      "start_line": 47
     },
     {
-      "end_line": 39,
+      "end_line": 43,
       "path": "skills/netsuite-suiteskills-onboarding/SKILL.md",
       "policy_ids": [
         "SW-01",
@@ -698,11 +698,11 @@
         "SW-11"
       ],
       "reason_for_copy": "independently_loadable_skill_requires_local_policy",
-      "sha256": "6d3edfe0f9663b024f0d62c57039dffe70899115bf253dcd31518946b500e766",
-      "start_line": 23
+      "sha256": "295293b0166202445d719fecf9a9fcda6447281d10a4bded72ad51f40a22ea1a",
+      "start_line": 27
     },
     {
-      "end_line": 51,
+      "end_line": 55,
       "path": "skills/netsuite-suiteskills-operations/SKILL.md",
       "policy_ids": [
         "SW-01",
@@ -718,12 +718,12 @@
         "SW-11"
       ],
       "reason_for_copy": "independently_loadable_skill_requires_local_policy",
-      "sha256": "eeaef0dbaff4cddfe1cf5fd95ab150319236d7465e54cf2d3d224484ad3004cc",
-      "start_line": 35
+      "sha256": "1ce9dfa50b63d0c9ad1503a3deae2e5ef216ebe443c373e631106efe6591e25a",
+      "start_line": 39
     },
     {
-      "end_line": 42,
-      "path": "skills/netsuite-suiteskills-people/SKILL.md",
+      "end_line": 46,
+      "path": "skills/netsuite-suiteskills-workforce/SKILL.md",
       "policy_ids": [
         "SW-01",
         "SW-02",
@@ -738,8 +738,8 @@
         "SW-11"
       ],
       "reason_for_copy": "independently_loadable_skill_requires_local_policy",
-      "sha256": "395c24ed7e5dbaf5a2902273cd4cc9a6bfb23157536779ca9d7f92e90f24e758",
-      "start_line": 26
+      "sha256": "367239013158e90e91f534a908b09fdeb4f39330e0aeab24e729074844574bee",
+      "start_line": 30
     }
   ],
   "qualification": "static_structure_and_links_only",
@@ -747,19 +747,19 @@
     {
       "domain_content_in_removed_section": true,
       "domain_content_preservation": "preserved",
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
       "removed_common_lines": 12
     },
     {
       "domain_content_in_removed_section": true,
       "domain_content_preservation": "preserved",
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
       "removed_common_lines": 9
     },
     {
       "domain_content_in_removed_section": true,
       "domain_content_preservation": "preserved",
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-approval-review/RUNBOOK.md",
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-approval-review/RUNBOOK.md",
       "removed_common_lines": 11
     },
     {
@@ -843,5 +843,5 @@
   ],
   "schema": "suiteskills-safewords-coverage-1",
   "security_request": "consolidate_policy_and_require_application_without_runbook_duplication",
-  "version": "0.8.1"
+  "version": "0.8.2"
 }

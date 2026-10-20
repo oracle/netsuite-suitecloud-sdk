@@ -1,3 +1,7 @@
+# SuiteSkills 0.8.2 integration
+
+Adopt reviewed category descriptions and taglines for Customers & Sales, Finance, Onboarding, Operations and Workforce. Retire the People entrypoint while retaining CAT-PPL/RB-PPL IDs, aliases, business/source versions, host adaptations and executable bytes. Refresh current SDK foundation and policy evidence; historical Builder/Evaluator evidence remains unchanged and realignment remains pending.
+
 # SuiteSkills 0.8.1 integration
 
 Consolidated SW-01–SW-11 across all five entrypoints, with mandatory loading in 48 runbooks and 15 workflows. Data Visualization 2.2.0-rc.1 accepts financial and operational evidence with explicit currency, updated renderer assets and two supplied financial examples. Shared sources, unsuffixed routes, branding and packaging remain in place. Historical foundation and security evidence remain unchanged.

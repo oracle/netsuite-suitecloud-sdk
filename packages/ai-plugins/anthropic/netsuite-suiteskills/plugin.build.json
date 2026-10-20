@@ -206,8 +206,8 @@
     "netsuite-suiteskills-finance",
     "netsuite-suiteskills-onboarding",
     "netsuite-suiteskills-operations",
-    "netsuite-suiteskills-people"
+    "netsuite-suiteskills-workforce"
   ],
-  "version": "0.8.1",
+  "version": "0.8.2",
   "skillSource": "suiteskills"
 }

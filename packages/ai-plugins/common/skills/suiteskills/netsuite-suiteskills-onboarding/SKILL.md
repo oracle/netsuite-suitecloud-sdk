@@ -3,9 +3,9 @@ name: netsuite-suiteskills-onboarding
 description: "Use for SuiteSkills or connected NetSuite orientation when the user asks to get started, what can I do, I just connected, which skills are available, or where to start; also explore available workflows, resume an onboarding goal, or refresh suggestions after an account or role change. Yield a concrete business task directly to its available specialist without an onboarding interview. Unrelated greetings do not select this skill."
 license: LicenseRef-SuiteSkills-Review-Pending
 metadata:
-  version: "0.8.1"
+  version: "0.8.2"
   source-version: "2.5.0"
-  integration-version: "0.8.1"
+  integration-version: "0.8.2"
   id: SKL-CS-ONBOARDING
   source-package-version: "1.8.1"
   kind: skill
@@ -14,7 +14,11 @@ metadata:
   release-status: testing_candidate
 ---
 
-# Plugin Onboarding
+# Onboarding
+
+*Your guided starting point for SuiteSkills. Find the right workflow for your role in minutes.*
+
+Onboarding helps new users go from "I just connected" to a useful first result. It works out the user's role and access, asks about their goal in their own words, and suggests the SuiteSkills workflows that fit. It then hands off to the right specialist skill with the original request intact. Users can explore what's available, pick up an onboarding goal they started earlier, or refresh suggestions after a role or account change. If a user already has a concrete business question, Onboarding skips the interview and routes them straight to the matching workflow.
 
 Help the user reach a useful first result: role → goal in their words → relevant available workflows → selected workflow → next step → optional reviewed progress file. Keep the original request throughout. This is guided orientation; a connector connection, opened Welcome Center, profile completion or saved file does not establish account readiness or plugin qualification.
 

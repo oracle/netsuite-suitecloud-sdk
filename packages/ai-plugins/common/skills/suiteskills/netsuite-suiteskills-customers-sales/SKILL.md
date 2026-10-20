@@ -4,12 +4,16 @@ description: "Use for Customers, Sales and Support: Advanced Pricing Price Rule 
 license: LicenseRef-SuiteSkills-Review-Pending
 metadata:
   owner: "Oracle NetSuite"
-  version: "0.8.1"
+  version: "0.8.2"
   release-date: "2026-10-15"
   category-id: CAT-CRM
 ---
 
-# Customers, Sales and Support
+# Customers & Sales
+
+*Sales, support, and pricing intelligence from your live NetSuite data.*
+
+Customers & Sales gives sales, marketing, and support teams an AI assistant grounded in their NetSuite records. It can prioritize and qualify leads and prepare discovery notes for sellers. It can plan campaign audiences and analyze recorded campaign performance and ROI. It can triage sales orders across fulfillment, billing, holds, and backorders. It can also review support queues, investigate cases, and draft replies. For pricing teams, it reviews Advanced Pricing rules and pricing exceptions and prepares change proposals. It can also find gaps in Knowledge Base coverage and draft new solution articles for human review. Every workflow uses read-only evidence and respects the user's existing NetSuite permissions. Drafts and proposals are handed off for people to act on.
 
 Support the requested analysis and source-supported authorized actions through available tools. Individual analytical procedures do not gain unspecified write operations. Preserve account permissions, business validation and result verification.
 

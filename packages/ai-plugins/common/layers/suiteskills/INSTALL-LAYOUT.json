@@ -5,10 +5,10 @@
     "netsuite-suiteskills-finance": "skills/netsuite-suiteskills-finance/shared/",
     "netsuite-suiteskills-onboarding": "skills/netsuite-suiteskills-onboarding/shared/",
     "netsuite-suiteskills-operations": "skills/netsuite-suiteskills-operations/shared/",
-    "netsuite-suiteskills-people": "skills/netsuite-suiteskills-people/shared/"
+    "netsuite-suiteskills-workforce": "skills/netsuite-suiteskills-workforce/shared/"
   },
   "layout": "isolated_category",
   "native_upload_readback": "not_run",
   "plugin": "netsuite-suiteskills",
-  "version": "0.8.1"
+  "version": "0.8.2"
 }

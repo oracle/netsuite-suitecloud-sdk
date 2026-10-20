@@ -3,10 +3,10 @@
   "code": "CRM",
   "edition": "non-read-only",
   "id": "CAT-CRM",
-  "name": "Customers, Sales and Support",
+  "name": "Customers & Sales",
   "owner": "Oracle NetSuite",
-  "release_date": "2026-10-16",
+  "release_date": "2026-10-19",
   "runbook_count": 8,
   "slug": "netsuite-suiteskills-customers-sales",
-  "version": "0.8.1"
+  "version": "0.8.2"
 }

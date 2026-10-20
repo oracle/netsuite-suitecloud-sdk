@@ -6,13 +6,13 @@
       "WF-PPL-001",
       "payroll-clarity-readiness"
     ],
-    "category": "netsuite-suiteskills-people",
+    "category": "netsuite-suiteskills-workforce",
     "description": "Audit an existing or planned NetSuite payroll for employee setup, payroll inputs, calculated results and readiness gaps. Use for human resources (HR) and controller reviews; includes an evidence dashboard and explicit sample mode. Does not calculate, submit, approve or pay payroll.",
     "display_name": "Payroll Clarity Readiness",
     "first_included_date": "2026-10-08",
     "id": "RB-PPL-001",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.1",
+    "integration_version": "0.8.2",
     "name": "netsuite-payroll-clarity-readiness",
     "netsuite_requirements": {
       "industries": {
@@ -37,7 +37,7 @@
       }
     },
     "owner": "Oracle NetSuite",
-    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md",
+    "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md",
     "shared_dependencies": [
       "shared/contracts/BASELINE.md",
       "shared/contracts/OUTPUTS.md"
@@ -55,13 +55,13 @@
       "WF-PPL-007",
       "absence-management-advisor"
     ],
-    "category": "netsuite-suiteskills-people",
+    "category": "netsuite-suiteskills-workforce",
     "description": "Analyze planned absences, upcoming expiry, carryover, accrual limits, idle balances and individual time-off balances in SuitePeople Human Resources (HR). Use for factual absence insights and requested expiry contact priorities; excludes administration, policy recommendations and employment judgments.",
     "display_name": "Absence Management Advisor",
     "first_included_date": "2026-10-08",
     "id": "RB-PPL-007",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.1",
+    "integration_version": "0.8.2",
     "name": "netsuite-absence-management-advisor",
     "netsuite_requirements": {
       "industries": {
@@ -86,7 +86,7 @@
       }
     },
     "owner": "Oracle NetSuite",
-    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
+    "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
     "shared_dependencies": [
       "shared/contracts/BASELINE.md",
       "shared/contracts/OUTPUTS.md"
@@ -104,13 +104,13 @@
       "WF-PPL-008",
       "benefits-portfolio-monitor"
     ],
-    "category": "netsuite-suiteskills-people",
+    "category": "netsuite-suiteskills-workforce",
     "description": "Review current NetSuite Benefits Tracking assignments, employee coverage, monthly recorded costs and complete gap or assignment-review worklists for human resources (HR) users. Use for focused questions or portfolio snapshots. Does not determine eligibility, process payroll or change records.",
     "display_name": "Benefits Portfolio Monitor",
     "first_included_date": "2026-10-08",
     "id": "RB-PPL-008",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.1",
+    "integration_version": "0.8.2",
     "name": "netsuite-benefits-portfolio-monitor",
     "netsuite_requirements": {
       "industries": {
@@ -135,7 +135,7 @@
       }
     },
     "owner": "Oracle NetSuite",
-    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
+    "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md",
     "shared_dependencies": [
       "shared/contracts/BASELINE.md",
       "shared/contracts/OUTPUTS.md"
@@ -154,7 +154,7 @@
     "aliases": [
       "time-approval-review"
     ],
-    "category": "netsuite-suiteskills-people",
+    "category": "netsuite-suiteskills-workforce",
     "description": "Review pending NetSuite Actual Time and generate an HTML dashboard, then approve or reject exact entries or timesheets after action qualification and confirmed preview. Excludes creating, editing, submitting or retracting time.",
     "display_name": "Time Approval Review",
     "edition": "non-read-only",
@@ -162,7 +162,7 @@
     "host_execution": "not_run",
     "id": "RB-PPL-009",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.1",
+    "integration_version": "0.8.2",
     "name": "netsuite-time-approval-review",
     "netsuite_requirements": {
       "industries": {
@@ -187,7 +187,7 @@
       }
     },
     "owner": "Oracle NetSuite",
-    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-approval-review/RUNBOOK.md",
+    "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-approval-review/RUNBOOK.md",
     "shared_dependencies": [
       "shared/contracts/BASELINE.md",
       "shared/contracts/RETRIEVAL.md",
@@ -209,7 +209,7 @@
       "netsuite-time-entry-drafting",
       "time-entry-creation"
     ],
-    "category": "netsuite-suiteskills-people",
+    "category": "netsuite-suiteskills-workforce",
     "description": "Draft and create new NetSuite Actual Time entries from a direct request or permitted work activity, with a chat table review and a separate Save decision. Do not use for timesheet submission or approval.",
     "display_name": "Time Entry Creation",
     "edition": "non-read-only",
@@ -217,7 +217,7 @@
     "host_execution": "not_run",
     "id": "RB-PPL-010",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.1",
+    "integration_version": "0.8.2",
     "name": "netsuite-time-entry-creation",
     "netsuite_requirements": {
       "industries": {
@@ -242,7 +242,7 @@
       }
     },
     "owner": "Oracle NetSuite",
-    "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
+    "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-entry-creation/RUNBOOK.md",
     "shared_dependencies": [
       "shared/contracts/BASELINE.md",
       "shared/contracts/RETRIEVAL.md",

@@ -14,12 +14,12 @@ const expectedRoutes = {
  'netsuite-suiteskills-customers-sales': ['RB-CRM-002','RB-CRM-004','RB-CRM-005','RB-CRM-006','RB-CRM-007','RB-CRM-008','RB-CRM-009','RB-CRM-010'],
  'netsuite-suiteskills-finance': ['RB-FIN-002','RB-FIN-003','RB-FIN-006','RB-FIN-007','RB-FIN-008','RB-FIN-009','RB-FIN-011','RB-FIN-012','RB-FIN-013','RB-FIN-015','RB-FIN-016','RB-FIN-017','RB-FIN-018','RB-FIN-019','RB-FIN-020','RB-FIN-021','RB-FIN-022','RB-FIN-023','RB-FIN-024','RB-FIN-025','RB-FIN-026','RB-FIN-027'],
  'netsuite-suiteskills-operations': ['RB-OPS-001','RB-OPS-002','RB-OPS-003','RB-OPS-004','RB-OPS-005','RB-OPS-006','RB-OPS-011','RB-OPS-012','RB-OPS-014','RB-OPS-015','RB-OPS-016','RB-OPS-019','RB-OPS-020'],
- 'netsuite-suiteskills-people': ['RB-PPL-001','RB-PPL-007','RB-PPL-008','RB-PPL-009','RB-PPL-010'],
+ 'netsuite-suiteskills-workforce': ['RB-PPL-001','RB-PPL-007','RB-PPL-008','RB-PPL-009','RB-PPL-010'],
 };
 const commonRootFiles = ['ID-REGISTER.json','INSTALL-LAYOUT.json','NOTICE.md'];
 const commonLayerRoot = path.join(packageRoot,'common/layers/suiteskills');
 const commonSkillsRoot = path.join(packageRoot,'common/skills/suiteskills');
-const categories = ['Finance and Accounting','Customers, Sales and Support','Inventory and Operations','People and Workforce'];
+const categories = ['Finance','Customers & Sales','Operations','Workforce'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
 // These inspect packaged contracts and files; they do not qualify execution or runtime security.
@@ -39,7 +39,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    const plugin = result.plugin;
    const catalog = await json('CATALOG.json');
    assert.equal(plugin.skillSource,'suiteskills');
-   assert.equal(plugin.version,'0.8.1');
+   assert.equal(plugin.version,'0.8.2');
    assert.deepEqual(workspace.buildConfig.skillSources,{suiteskills:'./common/skills/suiteskills'});
    assert.equal(workspace.buildConfig.commonLayersRoot,'./common/layers');
    assert.equal(workspace.commonLayersRoot,path.join(packageRoot,'common/layers'));
@@ -50,7 +50,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    assert.deepEqual(catalog.categories.map(c=>c.name), categories);
    assert.equal(new Set(catalog.runbooks.map(r=>r.id)).size,48);
    // Route IDs, names, categories, paths and aliases pinned to the pre-integration catalog.
-   assert.equal(hash(JSON.stringify(catalog.runbooks.map(r=>Object.fromEntries(['id','name','category','path','aliases'].filter(k=>Object.hasOwn(r,k)).map(k=>[k,r[k]]))))),'7af0c44db4ed2e9dd8ca42b5324f3831fec9dc8a7419ec0aad26ceab15382355');
+   assert.equal(hash(JSON.stringify(catalog.runbooks.map(r=>Object.fromEntries(['id','name','category','path','aliases'].filter(k=>Object.hasOwn(r,k)).map(k=>[k,r[k]])))).replaceAll('netsuite-suiteskills-workforce','netsuite-suiteskills-people')),'7af0c44db4ed2e9dd8ca42b5324f3831fec9dc8a7419ec0aad26ceab15382355');
    assert.deepEqual(catalog.runbooks.map(r=>r.id).sort(),Object.values(expectedRoutes).flat().sort());
    for (const [category,ids] of Object.entries(expectedRoutes)) {
     const rows=catalog.runbooks.filter(r=>r.category===category);
@@ -113,7 +113,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
      await exists(name); assert(plugin.inputs.some(input=>input.include.includes(name)));
     }
     const coverage=await json('SAFEWORDS-COVERAGE.json');
-    assert.equal(coverage.version,'0.8.1');
+    assert.equal(coverage.version,'0.8.2');
     assert.equal(coverage.host,'capability_dependent');
     assert.deepEqual(coverage.counts,{policy_owners:5,removed_policy_sections:16,runbooks:48,workflows:15});
     assert.equal(coverage.policy_owners.length,5);
@@ -149,9 +149,9 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     }
     const restrictions={
      'netsuite-suiteskills-finance/runbooks/netsuite-cohort-analysis/RUNBOOK.md':/Never create, update, delete, transform, upload, send, publish, deploy/,
-     'netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md':/read-only by design/,
+     'netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/RUNBOOK.md':/read-only by design/,
      'netsuite-suiteskills-operations/runbooks/netsuite-field-service-management/RUNBOOK.md':/Do not invent diagnostic identifiers/,
-     'netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md':/Only Save on that unchanged review authorizes/,
+     'netsuite-suiteskills-workforce/runbooks/netsuite-time-entry-creation/RUNBOOK.md':/Only Save on that unchanged review authorizes/,
     };
     for(const [file,pattern] of Object.entries(restrictions)) assert.match((await read('skills/'+file)).toString(),pattern);
     const baseline=(await read('shared/contracts/BASELINE.md')).toString();
@@ -166,6 +166,63 @@ test('SuiteSkills assembled packaging for both providers', async t => {
      const text=(await read(file)).toString();
      assert(text.includes("'.claude-plugin'"),file); assert(text.includes("'.codex-plugin'"),file);
     }
+   });
+   await t.test('reviewed copy, current versions and relative links',async()=>{
+    const copy={
+     'customers-sales':['Customers & Sales','Sales, support, and pricing intelligence from your live NetSuite data.','Drafts and proposals are handed off for people to act on.'],
+     finance:['Finance','Close faster, see cash clearly, and catch issues early, all from NetSuite.','Any action beyond analysis requires explicit authorization from the user.'],
+     onboarding:['Onboarding','Your guided starting point for SuiteSkills. Find the right workflow for your role in minutes.','Onboarding skips the interview and routes them straight to the matching workflow.'],
+     operations:['Operations','Inventory, fulfillment, and supply chain insights for the teams that keep orders moving.',"Any requested action depends on the user's authorization and business prerequisites."],
+     workforce:['Workforce','Payroll readiness, time, absence, and benefits insight for HR and managers.','the skill makes no eligibility or employment judgments.'],
+    };
+    assert(!files.some(file=>file.includes('netsuite-suiteskills-people') || file.includes('-openai/')));
+    const register=await json('ID-REGISTER.json');
+    assert.equal(register.version,'0.8.2');
+    assert.deepEqual(register.active_ids.slice().sort(),catalog.runbooks.map(r=>r.id).sort());
+    assert.equal(catalog.categories.find(c=>c.slug==='netsuite-suiteskills-workforce').id,'CAT-PPL');
+    for(const [suffix,[label,tagline,boundary]] of Object.entries(copy)) {
+     const prefix=`skills/netsuite-suiteskills-${suffix}`;
+     const text=(await read(`${prefix}/SKILL.md`)).toString();
+     assert(text.includes(`# ${label}\n`)); assert(text.includes(`*${tagline}*`)); assert(text.includes(boundary));
+     assert.match(text,/version: "0\.8\.2"/);
+     const metadata=await json(`${prefix}/metadata.json`);
+     assert.equal(metadata.version,'0.8.2');
+     if(provider==='openai') assert((await read(`${prefix}/agents/openai.yaml`)).toString().includes(`display_name: "${label}"`));
+    }
+    assert.match((await read('skills/netsuite-suiteskills-workforce/SKILL.md')).toString(),/NetSuite and SuitePeople/);
+    for(const row of catalog.runbooks) {
+     assert.equal(row.integration_version,'0.8.2');
+     if(row.category==='netsuite-suiteskills-workforce') assert.match((await read(row.path)).toString(),/category: workforce/);
+     const metadata=await json(path.posix.join(path.posix.dirname(row.path),'metadata.json'));
+     assert.equal(metadata.integration_version,'0.8.2');
+     if(typeof metadata.target_plugin==='object') assert.equal(metadata.target_plugin.version,'0.8.2');
+     if(row.id==='RB-FIN-020') { assert.equal(row.source_version,'0.8.0'); assert.equal(metadata.version,'0.8.0'); }
+    }
+    for(const file of files.filter(f=>f.endsWith('.md') && !f.endsWith('CHANGELOG.md'))) {
+     const text=(await read(file)).toString();
+     for(const match of text.matchAll(/(?<!!)\[[^\]]*\]\(([^\s)]+)\)/g)) {
+      const target=match[1].split('#')[0];
+      if(!target || /^(?:[a-zA-Z]+:|\/|\{|<)/.test(target)) continue;
+      assert(files.includes(path.posix.normalize(path.posix.join(path.posix.dirname(file),target))),`${file}: ${target}`);
+     }
+    }
+   });
+   await t.test('current SDK foundation snapshots and onboarding binding',async()=>{
+    const snapshot=await json('FOUNDATION-SNAPSHOT.json');
+    assert.equal(snapshot.plugin.version,'0.8.2');
+    assert.equal(snapshot.native_host_execution,'not_run');
+    assert.match(snapshot.authoring_tools,/pending_realignment/);
+    assert.deepEqual(Object.keys(snapshot.category_source_sha256).sort(),Object.keys(expectedRoutes).sort());
+    assert.deepEqual(Object.keys(snapshot.shared_files).sort(),files.filter(f=>f.startsWith('shared/')).sort());
+    for(const [file,digest] of Object.entries(snapshot.shared_files)) assert.equal(hash(await read(file)),digest,file);
+    for(const [category,digest] of Object.entries(snapshot.category_source_sha256)) assert.equal(hash(await read(`skills/${category}/SKILL.md`)),digest,category);
+    const basis={category_source_sha256:snapshot.category_source_sha256,shared_files:snapshot.shared_files};
+    assert.equal(hash(JSON.stringify(basis,null,2)+'\n'),snapshot.foundation_sha256);
+    const lock=await json('skills/netsuite-suiteskills-onboarding/FOUNDATION-LOCK.json');
+    assert.equal(lock.reference_plugin.version,'0.8.2');
+    assert.equal(lock.foundation_sha256,snapshot.foundation_sha256);
+    assert.deepEqual(lock.shared_files,snapshot.shared_files);
+    assert.equal(lock.utility_context_sha256,hash(await read('skills/netsuite-suiteskills-onboarding/PLUGIN-CONTEXT.md')));
    });
    const inventory=await json('INVENTORY.json');
    const sharedInventory=Object.keys(inventory).filter(f=>f.startsWith('shared/')).sort();
@@ -218,5 +275,23 @@ test('SuiteSkills layer allowlists exclude unlisted ordinary files', async t => 
   assert(!result.files.includes('shared/unlisted.md'));
   assert(!result.files.includes('unlisted.md'));
   assert.deepEqual(result.files.filter(file=>file.startsWith('shared/') || commonRootFiles.includes(file)).sort(),layer.include.slice().sort());
+ }
+});
+
+
+test('SuiteSkills rebuild retires the old People entrypoint',async t=>{
+ const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'suiteskills-upgrade-'));
+ t.after(()=>fs.rm(temporary,{recursive:true,force:true}));
+ const workspace=await loadWorkspace(packageRoot);
+ workspace.buildConfig.pluginDistRoot=temporary;
+ for(const provider of ['anthropic','openai']) {
+  const output=path.join(temporary,provider,'netsuite-suiteskills');
+  const retired=path.join(output,'skills/netsuite-suiteskills-people');
+  await fs.mkdir(retired,{recursive:true});
+  await fs.writeFile(path.join(retired,'SKILL.md'),'stale People entrypoint\n');
+  const result=await buildPlugin(`${provider}/netsuite-suiteskills`,{workspace});
+  await assert.rejects(()=>fs.access(retired),/ENOENT/);
+  assert(result.files.includes('skills/netsuite-suiteskills-workforce/SKILL.md'));
+  assert(!result.files.some(file=>file.includes('netsuite-suiteskills-people')));
  }
 });

@@ -231,22 +231,22 @@
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-project-risk-assistant/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people",
+      "category": "netsuite-suiteskills-workforce",
       "id": "RB-PPL-001",
       "name": "netsuite-payroll-clarity-readiness",
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people",
+      "category": "netsuite-suiteskills-workforce",
       "id": "RB-PPL-007",
       "name": "netsuite-absence-management-advisor",
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people",
+      "category": "netsuite-suiteskills-workforce",
       "id": "RB-PPL-008",
       "name": "netsuite-benefits-portfolio-monitor",
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-benefits-portfolio-monitor/RUNBOOK.md"
     },
     {
       "category": "netsuite-suiteskills-finance",
@@ -303,16 +303,16 @@
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-field-service-management/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people",
+      "category": "netsuite-suiteskills-workforce",
       "id": "RB-PPL-009",
       "name": "netsuite-time-approval-review",
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-approval-review/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-approval-review/RUNBOOK.md"
     },
     {
-      "category": "netsuite-suiteskills-people",
+      "category": "netsuite-suiteskills-workforce",
       "id": "RB-PPL-010",
       "name": "netsuite-time-entry-creation",
-      "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-time-entry-creation/RUNBOOK.md"
+      "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-time-entry-creation/RUNBOOK.md"
     },
     {
       "category": "netsuite-suiteskills-customers-sales",
@@ -403,5 +403,5 @@
       "path": "skills/netsuite-suiteskills-onboarding/SKILL.md"
     }
   ],
-  "version": "0.8.1"
+  "version": "0.8.2"
 }

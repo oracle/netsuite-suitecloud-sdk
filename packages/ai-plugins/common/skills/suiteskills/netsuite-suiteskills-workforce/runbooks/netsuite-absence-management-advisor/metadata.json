@@ -4,13 +4,13 @@
     "WF-PPL-007",
     "absence-management-advisor"
   ],
-  "category": "netsuite-suiteskills-people",
+  "category": "netsuite-suiteskills-workforce",
   "description": "Analyze planned absences, upcoming expiry, carryover, accrual limits, idle balances and individual time-off balances in SuitePeople Human Resources (HR). Use for factual absence insights and requested expiry contact priorities; excludes administration, policy recommendations and employment judgments.",
   "display_name": "Absence Management Advisor",
   "first_included_date": "2026-10-08",
   "id": "RB-PPL-007",
   "integration_release_date": "2026-10-16",
-  "integration_version": "0.8.1",
+  "integration_version": "0.8.2",
   "name": "netsuite-absence-management-advisor",
   "netsuite_requirements": {
     "industries": {
@@ -35,7 +35,7 @@
     }
   },
   "owner": "Oracle NetSuite",
-  "path": "skills/netsuite-suiteskills-people/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
+  "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-absence-management-advisor/RUNBOOK.md",
   "shared_dependencies": [
     "shared/contracts/BASELINE.md",
     "shared/contracts/OUTPUTS.md"
