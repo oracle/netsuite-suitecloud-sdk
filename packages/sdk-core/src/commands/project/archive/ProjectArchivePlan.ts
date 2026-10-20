@@ -17,10 +17,8 @@ const { DEPLOY } = CONTROL_FILE_FIELDS;
 
 type XmlValue = Record<string, any>;
 
-export type ProjectManifestData = ProjectManifest;
-
 export type ProjectArchivePlan = {
-	manifest: ProjectManifestData;
+	manifest: ProjectManifest;
 	entries: ArchiveEntry[];
 };
 

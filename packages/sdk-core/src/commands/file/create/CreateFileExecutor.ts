@@ -16,6 +16,7 @@ import { translationService } from '../../../services/translation/TranslationSer
 import { generateSuiteScriptTemplate } from '../../../templates/SuiteScriptTemplateService';
 import { readProjectManifest } from '../../../services/project/ProjectControlService';
 import { FOLDERS, SDF_PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
+import { ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
 
 /** Compatibility alias for existing command consumers. */
 export const FILE_CREATE_STATUS = SDK_OPERATION_STATUS;
@@ -33,7 +34,7 @@ export async function executeCreateFile(input: ExecuteCreateFileInput): Promise<
 	try {
 		const normalizedPath = normalizeSuiteScriptPath(input.path);
 		const manifest = readProjectManifest(input.projectFolder);
-		validateFileCabinetPath(normalizedPath, { projectType: manifest.projectType, appId: manifest.getApplicationId() });
+		validateFileCabinetPath(normalizedPath, manifest);
 
 		const fileCabinetRoot = resolve(input.projectFolder, FOLDERS.FILE_CABINET);
 		const fileAbsolutePath = resolveFileCabinetPath(fileCabinetRoot, normalizedPath);
@@ -60,16 +61,16 @@ function normalizeSuiteScriptPath(filePath: string): string {
 	return normalized.startsWith('/') ? normalized : `/${normalized}`;
 }
 
-function validateFileCabinetPath(pathValue: string, manifest: { projectType: string; appId?: string }): void {
+function validateFileCabinetPath(pathValue: string, manifest: ProjectManifest): void {
 	if (pathValue.split('/').includes('..')) {
 		throw pathOutsideFileCabinetError(pathValue);
 	}
 
 	const requiredFolder =
 		manifest.projectType === SDF_PROJECT_TYPES.SUITEAPP
-			? `/${FOLDERS.SUITE_APPS}/${manifest.appId || ''}`
+			? `/${FOLDERS.SUITE_APPS}/${manifest.getApplicationId() || ''}`
 			: `/${FOLDERS.SUITE_SCRIPTS}`;
-	const hasRequiredAppId = manifest.projectType !== SDF_PROJECT_TYPES.SUITEAPP || Boolean(manifest.appId);
+	const hasRequiredAppId = manifest.projectType !== SDF_PROJECT_TYPES.SUITEAPP || Boolean(manifest.getApplicationId());
 	const isValidProjectPath = hasRequiredAppId && pathValue.startsWith(`${requiredFolder}/`);
 	const isValidWebHostingPath = pathValue.startsWith(`/${FOLDERS.WEB_SITE_HOSTING_FILES}/`);
 

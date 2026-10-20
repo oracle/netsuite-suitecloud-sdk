@@ -12,13 +12,11 @@ import {
 	type OperationResult,
 } from '../../../api/OperationResult';
 import { createZipArchive } from '../../../services/archive/ZipArchive';
-import {
-	createPackageArchivePlan,
-	type ProjectManifestData,
-} from '../archive/ProjectArchivePlan';
+import { createPackageArchivePlan, } from '../archive/ProjectArchivePlan';
 import { PROJECT_PACKAGE } from '../../../services/translation/TranslationKeys';
 import { translationService } from '../../../services/translation/TranslationService';
 import { SDF_PROJECT_TYPES } from '../../../services/project/SuiteCloudProjectConstants';
+import { ProjectManifest } from '../../../services/project/SuiteCloudControlFileTypes';
 
 /** Compatibility alias for existing command consumers. */
 export const PACKAGE_PROJECT_OPERATION_STATUS = SDK_OPERATION_STATUS;
@@ -60,7 +58,7 @@ export async function executePackageProject(
 	}
 }
 
-function getTargetZipFilePath(manifestData: ProjectManifestData, destinationFolder: string): string {
+function getTargetZipFilePath(manifestData: ProjectManifest, destinationFolder: string): string {
 	const datePart = formatDatePart(new Date());
 	const applicationId = manifestData.getApplicationId();
 
