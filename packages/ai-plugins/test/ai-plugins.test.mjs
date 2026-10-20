@@ -833,11 +833,11 @@ async function buildLayerFixture(fixture) {
 	return buildPlugin('boundary-plugin', { workspace, writeOutput: true });
 }
 
-test('common layers preserve legacy selection and filter object selections with global exclusions', async t => {
-	for (const legacy of [true, false]) {
-		await t.test(legacy ? 'legacy string' : 'filtered object', async t => {
+test('common layers support string and filtered object selections with global exclusions', async t => {
+	for (const stringSelection of [true, false]) {
+		await t.test(stringSelection ? 'string configuration' : 'filtered object', async t => {
 			const layer = { name: 'shared', include: ['COMMON.md', 'docs/**'], exclude: ['docs/excluded.md'] };
-			const f = await createLayerFixture(t, [legacy ? 'shared' : layer]);
+			const f = await createLayerFixture(t, [stringSelection ? 'shared' : layer]);
 			await fs.mkdir(path.join(f.commonLayerDir, 'docs'));
 			for (const file of ['unlisted.md', 'docs/keep.md', 'docs/excluded.md', 'docs/global.md']) {
 				await fs.writeFile(path.join(f.commonLayerDir, file), file);
@@ -850,7 +850,7 @@ test('common layers preserve legacy selection and filter object selections with 
 			assert.deepEqual(result.files.sort(), [
 				'.claude-plugin/plugin.json', 'COMMON.md', 'LICENSE.txt', 'README.md',
 				'docs/keep.md', 'skills/netsuite-good-skill/SKILL.md',
-				...(legacy ? ['docs/excluded.md', 'unlisted.md'] : []),
+				...(stringSelection ? ['docs/excluded.md', 'unlisted.md'] : []),
 			].sort());
 		});
 	}
