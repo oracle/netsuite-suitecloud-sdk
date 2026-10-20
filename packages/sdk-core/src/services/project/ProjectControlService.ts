@@ -79,7 +79,7 @@ export function readProjectContext(projectFolder: string): ProjectContext {
 	}
 
 	// Application eligibility only needs a recognized project type. Its contents are validated during packaging.
-	if (controlFilesMetadata.application && manifest?.projectType !== SDF_PROJECT_TYPES.SUITEAPP) {
+	if (controlFilesMetadata.application && manifest !== undefined && manifest?.projectType !== SDF_PROJECT_TYPES.SUITEAPP) {
 		errors.push(translationService.getMessage(
 			PROJECT_CONTROL.ERROR.APPLICATION_REQUIRES_SUITEAPP, controlFilesMetadata.application.fileName
 		));

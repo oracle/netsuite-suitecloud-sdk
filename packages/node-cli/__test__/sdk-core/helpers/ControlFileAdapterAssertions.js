@@ -110,12 +110,12 @@ function defineStructuredControlFileTests(format) {
 	])('reports an unreadable %s control file with its property location (case %#)', (kind, document, propertyPath) => {
 		// JSON is also valid YAML; these cases exercise the shared structure contract through both parsers.
 		expect(() => parseControlFile(format, kind, JSON.stringify(document)))
-			.toThrow(`Invalid ${kind}.${format} at ${propertyPath}:`);
+			.toThrow(`Invalid ${kind}.${format} at "${propertyPath}":`);
 	});
 
 	it('rejects unsupported deploy groups', () => {
 		expect(() => parseControlFile(format, 'deploy', '{"deploy":[{"unsupported":{}}]}'))
-			.toThrow(`Invalid deploy.${format} at /deploy/0/unsupported: expected a supported deploy group`);
+			.toThrow(`Invalid deploy.${format} at "/deploy/0/unsupported": expected a supported deploy group`);
 	});
 
 	it('preserves singleton selections and empty paths', () => {

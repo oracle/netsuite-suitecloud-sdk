@@ -84,9 +84,8 @@ describe('ProjectInfoService compatibility facade', () => {
 		expect(error.getErrorMessage()).toBe([
 			'Unable to read the SuiteCloud project manifest.',
 			' - The projecttype attribute in manifest.yaml must be either SUITEAPP or ACCOUNTCUSTOMIZATION.',
-			' - The SDF "frameworkversion" value 3.0 in manifest.yaml does not match the control-file generation.',
-			'   XML control files must use framework version 1.0; JSON and YAML control files must use framework version 2.0.',
-			`For more information about the project structure, see ${INFO.PROJECT_STRUCTURE_AND_FILE_COMPONENTS}`,
+			' - The SDF "frameworkversion" value "3.0" in manifest.yaml does not match the control-file generation. XML control files must use version "1.0"; JSON and YAML control files must use version "2.0".',
+			`For more information about the project structure, see ${INFO.PROJECT_STRUCTURE}`,
 		].join(lineBreak));
 	});
 
@@ -106,7 +105,7 @@ describe('ProjectInfoService compatibility facade', () => {
 		expect(error.getErrorMessage()).toBe([
 			'Unable to read the SuiteCloud project manifest.',
 			' - The projecttype attribute in manifest.json must be either SUITEAPP or ACCOUNTCUSTOMIZATION.',
-			`For more information about the project structure, see ${INFO.PROJECT_STRUCTURE_AND_FILE_COMPONENTS}`,
+			`For more information about the project structure, see ${INFO.PROJECT_STRUCTURE}`,
 		].join(lineBreak));
 	});
 

@@ -118,7 +118,7 @@ describe('ProjectControlService', () => {
 			} else {
 				const errorMessage = !frameworkVersion?.trim()
 					? `Missing required "frameworkversion" field in manifest.${format}.`
-					: `${frameworkVersion} in manifest.${format} does not match`;
+					: `"${frameworkVersion}" in manifest.${format} does not match`;
 				expect(() => readProjectManifest(projectFolder)).toThrow(errorMessage);
 				expect(() => readProjectContext(projectFolder)).toThrow(errorMessage);
 			}

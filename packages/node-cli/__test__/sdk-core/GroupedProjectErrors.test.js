@@ -10,7 +10,7 @@ jest.mock('../../../sdk-core/build/commands/object/ObjectCommandClient', () => (
 }));
 
 const { mkdir, mkdtemp, rm, writeFile } = require('node:fs/promises');
-const { tmpdir } = require('node:os');
+const { EOL, tmpdir } = require('node:os');
 const { join } = require('node:path');
 const { services, commands } = require('@oracle/suitecloud-sdk-core');
 const { readProjectContext } = require('../../../sdk-core/build/services/project/ProjectControlService');
@@ -87,21 +87,31 @@ describe('Grouped project validation errors', () => {
 		expect(captureError(() => services.readProjectManifest(projectFolder))).toEqual(metadataErrors);
 	});
 
-	it('groups invalid metadata without guessing application eligibility for an unknown project type', async () => {
+	it('groups invalid project type and framework version metadata', async () => {
 		await writeControls('<manifest projecttype="OTHER"><frameworkversion>2.0</frameworkversion></manifest>');
-		await writeFile(join(projectFolder, 'application.xml'), '<application/>');
 		expect(captureError(() => readProjectContext(projectFolder))).toEqual([
 			expect.stringContaining('must be either SUITEAPP or ACCOUNTCUSTOMIZATION'),
 			expect.stringContaining('does not match'),
 		]);
 	});
 
-	it.each(['xml', 'json', 'yaml', 'yml'])('collects metadata, deploy and application eligibility errors independently in %s', async (format) => {
+	it.each(['xml', 'json', 'yaml', 'yml'])('collects metadata and deploy errors without checking application eligibility for an invalid manifest in %s', async (format) => {
 		await writeControls(format === 'xml' ? '<manifest projecttype="ACCOUNTCUSTOMIZATION"/>' : '{"manifest":{"projecttype":"ACCOUNTCUSTOMIZATION"}}',
 			format === 'xml' ? '<other/>' : '{"other":[]}', format);
 		await writeFile(join(projectFolder, `application.${format}`), format === 'xml' ? '<application/>' : 'application: {}');
 		expect(captureError(() => readProjectContext(projectFolder))).toEqual([
 			expect.stringContaining('Missing required "frameworkversion"'),
+			expect.stringContaining(`Invalid deploy.${format}`),
+		]);
+	});
+
+	it.each(['xml', 'json', 'yaml', 'yml'])('collects deploy and application eligibility errors with a valid ACP manifest in %s', async (format) => {
+		await writeControls(format === 'xml'
+			? '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion></manifest>'
+			: '{"manifest":{"projecttype":"ACCOUNTCUSTOMIZATION","frameworkversion":"2.0"}}',
+			format === 'xml' ? '<other/>' : '{"other":[]}', format);
+		await writeFile(join(projectFolder, `application.${format}`), format === 'xml' ? '<application/>' : 'application: {}');
+		expect(captureError(() => readProjectContext(projectFolder))).toEqual([
 			expect.stringContaining(`Invalid deploy.${format}`),
 			expect.stringContaining('only allowed in SuiteApp projects'),
 		]);
@@ -131,16 +141,17 @@ describe('Grouped project validation errors', () => {
 		expect(sendFormRequest).not.toHaveBeenCalled();
 	});
 
-	it.each(['deploy', 'validate'])('project:%s preserves archive context for each error', async (command) => {
+	it.each(['deploy', 'validate'])('project:%s groups validation errors under the archive context', async (command) => {
 		await writeControls('<manifest/>', '<other/>');
 		const sendProjectRequest = jest.fn();
 		const result = await commands.executeProjectCommand({ command, projectFolder, hostName: 'mock.invalid', accessToken: 'mock-token' }, { sendProjectRequest });
 		expect(result.status).toBe('ERROR');
-		expect(result.errorMessages).toHaveLength(3);
-		expect(result.errorMessages[0]).toContain('projecttype');
-		expect(result.errorMessages[1]).toContain('frameworkversion');
-		expect(result.errorMessages[2]).toContain('Invalid deploy.xml');
-		for (const message of result.errorMessages) expect(message).toContain(projectFolder);
+		expect(result.errorMessages).toEqual([[
+			`Unable to archive project folder "${projectFolder}":`,
+			' - The manifest field does not contain the projecttype attribute in manifest.xml.',
+			' - Missing required "frameworkversion" field in manifest.xml.',
+			' - Invalid deploy.xml: expected <deploy> as the root element.',
+		].join(EOL)]);
 		expect(sendProjectRequest).not.toHaveBeenCalled();
 	});
 
@@ -152,10 +163,11 @@ describe('Grouped project validation errors', () => {
 				command, projectFolder, hostName: 'mock.invalid', accessToken: 'mock-token',
 			}, { sendProjectRequest });
 			expect(result.status).toBe('ERROR');
-			expect(result.errorMessages).toEqual([
-				expect.stringContaining(`Invalid manifest.${format}:`),
-				expect.stringContaining(`Invalid deploy.${format}:`),
-			]);
+			expect(result.errorMessages).toHaveLength(1);
+			expect(result.errorMessages[0]).toContain(`Unable to archive project folder "${projectFolder}":`);
+			for (const kind of ['manifest', 'deploy']) {
+				expect(result.errorMessages[0]).toContain(`${EOL} - Invalid ${kind}.${format}:`);
+			}
 		}
 		expect(sendProjectRequest).not.toHaveBeenCalled();
 	});
