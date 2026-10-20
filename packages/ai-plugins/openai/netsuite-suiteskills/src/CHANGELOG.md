@@ -1,3 +1,9 @@
+# SuiteSkills 1.0.0 candidate
+
+Update the plug-in version and current README headings to 1.0.0. Apply the latest Customers & Sales description and italic introduction, and retain the Workforce name introduced in 0.8.2. Align README wording, accessibility text, and plug-in metadata formatting.
+
+The candidate remains under review. License and source-rights clearance, security approval, and supported-host and live-account qualification remain pending. The remaining integration metadata must be aligned to 1.0.0, and affected integrity records must be regenerated before final-candidate validation, tests, build, and release verification. Historical verification results do not qualify this edited candidate.
+
 # SuiteSkills 0.8.2 integration
 
 Adopt reviewed category descriptions and taglines for Customers & Sales, Finance, Onboarding, Operations and Workforce. Retire the People entrypoint while retaining CAT-PPL/RB-PPL IDs, aliases, business/source versions, host adaptations and executable bytes. Refresh current SDK foundation and policy evidence; historical Builder/Evaluator evidence remains unchanged and realignment remains pending.

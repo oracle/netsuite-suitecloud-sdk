@@ -73,4 +73,6 @@ Native host installation/routing/delivery, live-account operations, Linux execut
 
 ## License
 
-Copyright (c) 2019, 2023 Oracle and/or its affiliates. The Universal Permissive License (UPL), Version 1.0.
+Copyright (c) 2019, 2023 Oracle and/or its affiliates.
+
+The intended license for first-party SuiteSkills content is the Universal Permissive License (UPL), Version 1.0. License and source-rights clearance remain pending; current package metadata uses `LicenseRef-SuiteSkills-Review-Pending`. Applicable third-party licenses and notices must be preserved.
