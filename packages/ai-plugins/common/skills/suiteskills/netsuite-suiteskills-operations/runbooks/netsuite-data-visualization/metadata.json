@@ -23,7 +23,7 @@
   "foundation_sha256": "fc1c63bb69b2d199cd8a14b6dcc6d0a93a18f0ae29d1be57fece56a1d9b22541",
   "id": "RB-OPS-020",
   "integration_release_date": "2026-10-16",
-  "integration_version": "0.8.2",
+  "integration_version": "1.0.0",
   "local_dependencies": {
     "html": "Python 3.12 standard library and reviewed packaged assets",
     "pdf": "Reviewed Node.js/Playwright/matching Chromium, pypdf and exact qualified host Arial Unicode MS 1.01x font; see references/publication.md",
@@ -82,7 +82,7 @@
   "standardized_from_release": "0.7.2",
   "target_plugin": {
     "name": "netsuite-suiteskills",
-    "version": "0.8.2"
+    "version": "1.0.0"
   },
   "upstream_source_version": "1.4.0",
   "version": "2.2.0-rc.1",

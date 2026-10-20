@@ -5,7 +5,7 @@ metadata:
   owner: "Oracle NetSuite"
   version: "0.10.3"
   source-version: "0.10.3"
-  integration-version: "0.8.2"
+  integration-version: "1.0.0"
   runbook-id: RB-PPL-007
   category: workforce
   access-mode: read_only

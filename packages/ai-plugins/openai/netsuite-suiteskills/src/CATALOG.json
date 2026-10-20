@@ -13,7 +13,7 @@
       "release_date": "2026-10-19",
       "runbook_count": 22,
       "slug": "netsuite-suiteskills-finance",
-      "version": "0.8.2"
+      "version": "1.0.0"
     },
     {
       "access_mode": "operation_dependent",
@@ -25,7 +25,7 @@
       "release_date": "2026-10-19",
       "runbook_count": 8,
       "slug": "netsuite-suiteskills-customers-sales",
-      "version": "0.8.2"
+      "version": "1.0.0"
     },
     {
       "access_mode": "operation_dependent",
@@ -37,7 +37,7 @@
       "release_date": "2026-10-19",
       "runbook_count": 13,
       "slug": "netsuite-suiteskills-operations",
-      "version": "0.8.2"
+      "version": "1.0.0"
     },
     {
       "access_mode": "operation_dependent",
@@ -49,7 +49,7 @@
       "release_date": "2026-10-19",
       "runbook_count": 5,
       "slug": "netsuite-suiteskills-workforce",
-      "version": "0.8.2"
+      "version": "1.0.0"
     }
   ],
   "display_name": "SuiteSkills",
@@ -78,7 +78,7 @@
       "first_included_date": "2026-10-14",
       "id": "RB-CRM-002",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-advanced-pricing-price-rule-management",
       "netsuite_requirements": {
         "industries": {
@@ -126,7 +126,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-CRM-004",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-customer-service-order-triage",
       "netsuite_requirements": {
         "industries": {
@@ -172,7 +172,7 @@
       "first_included_date": "2026-10-14",
       "id": "RB-CRM-005",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-customer-support-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -219,7 +219,7 @@
       "first_included_date": "2026-10-14",
       "id": "RB-CRM-006",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-knowledge-quality-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -267,7 +267,7 @@
       "first_included_date": "2026-10-14",
       "id": "RB-CRM-007",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-lead-management-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -315,7 +315,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-CRM-008",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-marketing-campaign-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -364,7 +364,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-CRM-009",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-pricing-policy-and-exception-review",
       "netsuite_requirements": {
         "industries": {
@@ -413,7 +413,7 @@
       "first_included_date": "2026-10-14",
       "id": "RB-CRM-010",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-sales-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -464,7 +464,7 @@
       "host_execution": "not_run",
       "id": "RB-FIN-002",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-expense-close-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -516,7 +516,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-003",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-match-vendor-credits-to-bills",
       "netsuite_requirements": {
         "industries": {
@@ -564,7 +564,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-006",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-cash-and-liquidity",
       "netsuite_requirements": {
         "industries": {
@@ -612,7 +612,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-007",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-executive-finance-reporting",
       "netsuite_requirements": {
         "industries": {
@@ -660,7 +660,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-008",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-finance-controls-review",
       "netsuite_requirements": {
         "industries": {
@@ -708,7 +708,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-009",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-financial-statement-review",
       "netsuite_requirements": {
         "industries": {
@@ -758,7 +758,7 @@
       "host_execution": "not_run",
       "id": "RB-FIN-011",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-invoice-collections",
       "netsuite_requirements": {
         "industries": {
@@ -810,7 +810,7 @@
       "host_execution": "not_run",
       "id": "RB-FIN-012",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-journal-entry-review",
       "netsuite_requirements": {
         "industries": {
@@ -861,7 +861,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-013",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-period-close-status",
       "netsuite_requirements": {
         "industries": {
@@ -910,7 +910,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-015",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-variance-analysis",
       "netsuite_requirements": {
         "industries": {
@@ -959,7 +959,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-016",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-payment-prioritization",
       "netsuite_requirements": {
         "industries": {
@@ -1008,7 +1008,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-017",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-vendor-bill-processing-time",
       "netsuite_requirements": {
         "industries": {
@@ -1057,7 +1057,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-018",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-vendor-spend-analysis",
       "netsuite_requirements": {
         "industries": {
@@ -1105,7 +1105,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-019",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-labor-cost-advisor",
       "netsuite_requirements": {
         "industries": {
@@ -1153,7 +1153,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-020",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "license": "proprietary",
       "name": "netsuite-cohort-analysis",
       "netsuite_requirements": {
@@ -1201,7 +1201,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-021",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-revenue-leakage",
       "netsuite_requirements": {
         "industries": {
@@ -1250,7 +1250,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-022",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "license": "The Universal Permissive License (UPL), Version 1.0",
       "name": "netsuite-intercompany-balance-explorer",
       "netsuite_requirements": {
@@ -1300,7 +1300,7 @@
       "first_included_date": "2026-10-14",
       "id": "RB-FIN-023",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-suitetax-nexus-explainer",
       "netsuite_requirements": {
         "industries": {
@@ -1348,7 +1348,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-024",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-overdue-invoice-change-review",
       "netsuite_requirements": {
         "industries": {
@@ -1397,7 +1397,7 @@
       "host_execution": "not_run",
       "id": "RB-FIN-025",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-project-financial-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -1445,7 +1445,7 @@
       "first_included_date": "2026-10-14",
       "id": "RB-FIN-026",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-bank-reconciliation-prioritization",
       "netsuite_requirements": {
         "industries": {
@@ -1486,7 +1486,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-FIN-027",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-credit-management",
       "netsuite_requirements": {
         "industries": {
@@ -1536,7 +1536,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-001",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-fulfillment-performance-insights",
       "owner": "Oracle NetSuite",
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-fulfillment-performance-insights/RUNBOOK.md",
@@ -1778,7 +1778,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-002",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-inventory-exceptions-review",
       "netsuite_requirements": {
         "industries": {
@@ -1946,7 +1946,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-003",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-inventory-impact-review",
       "netsuite_requirements": {
         "industries": {
@@ -2027,7 +2027,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-004",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-inventory-movement-insights",
       "owner": "Oracle NetSuite",
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-movement-insights/RUNBOOK.md",
@@ -2053,7 +2053,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-005",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-inventory-availability-lookup",
       "owner": "Oracle NetSuite",
       "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-inventory-availability-lookup/RUNBOOK.md",
@@ -2079,7 +2079,7 @@
       "first_included_date": "2026-10-14",
       "id": "RB-OPS-006",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-return-authorization-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -2128,7 +2128,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-011",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-supply-chain-persona-based-responses",
       "netsuite_requirements": {
         "industries": {
@@ -2178,7 +2178,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-012",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-vendor-optimization",
       "netsuite_requirements": {
         "industries": {
@@ -2230,7 +2230,7 @@
       "host_execution": "not_run",
       "id": "RB-OPS-014",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-field-service-management",
       "netsuite_requirements": {
         "industries": {
@@ -2319,7 +2319,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-015",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-inventory-balance-viewer",
       "netsuite_requirements": {
         "industries": {
@@ -2392,7 +2392,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-016",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-item-purchasing-history",
       "netsuite_requirements": {
         "industries": {
@@ -2441,7 +2441,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-OPS-019",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-project-risk-assistant",
       "netsuite_requirements": {
         "industries": {
@@ -2490,7 +2490,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-PPL-001",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-payroll-clarity-readiness",
       "netsuite_requirements": {
         "industries": {
@@ -2539,7 +2539,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-PPL-007",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-absence-management-advisor",
       "netsuite_requirements": {
         "industries": {
@@ -2588,7 +2588,7 @@
       "first_included_date": "2026-10-08",
       "id": "RB-PPL-008",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-benefits-portfolio-monitor",
       "netsuite_requirements": {
         "industries": {
@@ -2640,7 +2640,7 @@
       "host_execution": "not_run",
       "id": "RB-PPL-009",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-time-approval-review",
       "netsuite_requirements": {
         "industries": {
@@ -2695,7 +2695,7 @@
       "host_execution": "not_run",
       "id": "RB-PPL-010",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "name": "netsuite-time-entry-creation",
       "netsuite_requirements": {
         "industries": {
@@ -2759,7 +2759,7 @@
       "foundation_sha256": "1b234fd76ba45ca036beb01fa1b0f63bceea9faffbdfa365a494cd7d1b1932c7",
       "id": "RB-OPS-020",
       "integration_release_date": "2026-10-16",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "local_dependencies": {
         "html": "Python 3.12 standard library and reviewed packaged assets",
         "pdf": "Reviewed Node.js/Playwright/matching Chromium, pypdf and exact qualified host Arial Unicode MS 1.01x font; see references/publication.md",
@@ -2818,7 +2818,7 @@
       "standardized_from_release": "0.7.2",
       "target_plugin": {
         "name": "netsuite-suiteskills",
-        "version": "0.8.2"
+        "version": "1.0.0"
       },
       "upstream_source_version": "1.4.0",
       "version": "2.2.0-rc.1",
@@ -2843,7 +2843,7 @@
       "host_execution": "not_run",
       "id": "SKL-CS-ONBOARDING",
       "integration_release_date": "2026-10-15",
-      "integration_version": "0.8.2",
+      "integration_version": "1.0.0",
       "kind": "skill",
       "name": "netsuite-suiteskills-onboarding",
       "netsuite_requirements": {
@@ -2876,7 +2876,7 @@
       "path": "skills/netsuite-suiteskills-onboarding/SKILL.md",
       "reference_plugin": {
         "name": "netsuite-suiteskills",
-        "version": "0.8.2"
+        "version": "1.0.0"
       },
       "release_date": "2026-10-15",
       "resources": [
@@ -2908,8 +2908,8 @@
       "source_version": "2.5.0",
       "target_plugin": "netsuite-suiteskills",
       "target_profile": "authorized_supported_actions",
-      "version": "0.8.2"
+      "version": "1.0.0"
     }
   ],
-  "version": "0.8.2"
+  "version": "1.0.0"
 }

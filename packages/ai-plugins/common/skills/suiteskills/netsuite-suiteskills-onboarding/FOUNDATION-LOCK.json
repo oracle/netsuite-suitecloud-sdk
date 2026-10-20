@@ -1,10 +1,10 @@
 {
   "category": "utility",
-  "foundation_sha256": "3ba05927e785739fed70845e1d101f65be2ecc36680e6e239940dd792fc41bc4",
+  "foundation_sha256": "6bccc5519163166876e0797bcea3e311b36ea16c60bd891b99f35765877eb480",
   "native_host_execution": "not_run",
   "reference_plugin": {
     "name": "netsuite-suiteskills",
-    "version": "0.8.2"
+    "version": "1.0.0"
   },
   "schema": "suiteskills-sdk-utility-foundation-1",
   "shared_files": {
@@ -158,5 +158,5 @@
     "shared/tools/result_evidence.py": "56e92c13271fe0b2ced62c16cb39edd683fc7b558392336354e2b6c235809f0f",
     "shared/tools/standard-tools.json": "4c341e55fd183c179c82dc338fb62f3806dd89a469423948b839e70deb0441af"
   },
-  "utility_context_sha256": "cef58f32b09d49d94317233650e5cd04fa613f0599add66b8e1bb1cfab81c498"
+  "utility_context_sha256": "77c9539cc989dec1dd1e347865d6542510e4fd0df5033fea26c9001b725ef1e9"
 }

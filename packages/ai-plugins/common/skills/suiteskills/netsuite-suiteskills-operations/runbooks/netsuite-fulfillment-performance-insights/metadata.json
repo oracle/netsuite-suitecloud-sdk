@@ -11,7 +11,7 @@
   "first_included_date": "2026-10-08",
   "id": "RB-OPS-001",
   "integration_release_date": "2026-10-16",
-  "integration_version": "0.8.2",
+  "integration_version": "1.0.0",
   "name": "netsuite-fulfillment-performance-insights",
   "owner": "Oracle NetSuite",
   "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-fulfillment-performance-insights/RUNBOOK.md",

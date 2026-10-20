@@ -11,7 +11,7 @@
   "host_execution": "not_run",
   "id": "RB-FIN-011",
   "integration_release_date": "2026-10-16",
-  "integration_version": "0.8.2",
+  "integration_version": "1.0.0",
   "name": "netsuite-invoice-collections",
   "netsuite_requirements": {
     "industries": {

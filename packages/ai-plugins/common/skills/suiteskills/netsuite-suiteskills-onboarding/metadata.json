@@ -12,7 +12,7 @@
   "host_execution": "not_run",
   "id": "SKL-CS-ONBOARDING",
   "integration_release_date": "2026-10-14",
-  "integration_version": "0.8.2",
+  "integration_version": "1.0.0",
   "kind": "skill",
   "name": "netsuite-suiteskills-onboarding",
   "netsuite_requirements": {
@@ -45,7 +45,7 @@
   "path": "skills/netsuite-suiteskills-onboarding/SKILL.md",
   "reference_plugin": {
     "name": "netsuite-suiteskills",
-    "version": "0.8.2"
+    "version": "1.0.0"
   },
   "release_date": "2026-10-15",
   "resources": [
@@ -77,5 +77,5 @@
   "source_version": "2.5.0",
   "target_plugin": "netsuite-suiteskills",
   "target_profile": "authorized_supported_actions",
-  "version": "0.8.2"
+  "version": "1.0.0"
 }

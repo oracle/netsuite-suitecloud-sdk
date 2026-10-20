@@ -39,7 +39,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    const plugin = result.plugin;
    const catalog = await json('CATALOG.json');
    assert.equal(plugin.skillSource,'suiteskills');
-   assert.equal(plugin.version,'0.8.2');
+   assert.equal(plugin.version,'1.0.0');
    assert.deepEqual(workspace.buildConfig.skillSources,{suiteskills:'./common/skills/suiteskills'});
    assert.equal(workspace.buildConfig.commonLayersRoot,'./common/layers');
    assert.equal(workspace.commonLayersRoot,path.join(packageRoot,'common/layers'));
@@ -118,7 +118,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
      await exists(name); assert(plugin.inputs.some(input=>input.include.includes(name)));
     }
     const coverage=await json('SAFEWORDS-COVERAGE.json');
-    assert.equal(coverage.version,'0.8.2');
+    assert.equal(coverage.version,'1.0.0');
     assert.equal(coverage.host,'capability_dependent');
     assert.equal(coverage.counts.policy_owners,5);
     assert.equal(coverage.counts.runbooks,48);
@@ -169,7 +169,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    });
    await t.test('current skill directories, copy, versions and relative links',async()=>{
     const copy={
-     'customers-sales':['Customers & Sales','Sales, support, and pricing intelligence from your live NetSuite data.','Drafts and proposals are handed off for people to act on.'],
+     'customers-sales':['Customers & Sales','Sales, marketing, service, and pricing assistance grounded in your NetSuite data.','Supported actions require explicit confirmation and validated tools and access; other workflows provide analysis, drafts, and recommendations for human review.'],
      finance:['Finance','Close faster, see cash clearly, and catch issues early, all from NetSuite.','Any action beyond analysis requires explicit authorization from the user.'],
      onboarding:['Onboarding','Your guided starting point for SuiteSkills. Find the right workflow for your role in minutes.','Onboarding skips the interview and routes them straight to the matching workflow.'],
      operations:['Operations','Inventory, fulfillment, and supply chain insights for the teams that keep orders moving.',"Any requested action depends on the user's authorization and business prerequisites."],
@@ -178,25 +178,25 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     const skillDirectories=(await fs.readdir(path.join(root,'skills'),{withFileTypes:true})).filter(entry=>entry.isDirectory()).map(entry=>entry.name).sort();
     assert.deepEqual(skillDirectories,plugin.skills.slice().sort());
     const register=await json('ID-REGISTER.json');
-    assert.equal(register.version,'0.8.2');
+    assert.equal(register.version,'1.0.0');
     assert.deepEqual(register.active_ids.slice().sort(),catalog.runbooks.map(r=>r.id).sort());
     assert.equal(catalog.categories.find(c=>c.slug==='netsuite-suiteskills-workforce').id,'CAT-PPL');
     for(const [suffix,[label,tagline,boundary]] of Object.entries(copy)) {
      const prefix=`skills/netsuite-suiteskills-${suffix}`;
      const text=(await read(`${prefix}/SKILL.md`)).toString();
      assert(text.includes(`# ${label}\n`)); assert(text.includes(`*${tagline}*`)); assert(text.includes(boundary));
-     assert.match(text,/version: "0\.8\.2"/);
+     assert.match(text,/version: "1\.0\.0"/);
      const metadata=await json(`${prefix}/metadata.json`);
-     assert.equal(metadata.version,'0.8.2');
+     assert.equal(metadata.version,'1.0.0');
      if(provider==='openai') assert((await read(`${prefix}/agents/openai.yaml`)).toString().includes(`display_name: "${label}"`));
     }
     assert.match((await read('skills/netsuite-suiteskills-workforce/SKILL.md')).toString(),/NetSuite and SuitePeople/);
     for(const row of catalog.runbooks) {
-     assert.equal(row.integration_version,'0.8.2');
+     assert.equal(row.integration_version,'1.0.0');
      if(row.category==='netsuite-suiteskills-workforce') assert.match((await read(row.path)).toString(),/category: workforce/);
      const metadata=await json(path.posix.join(path.posix.dirname(row.path),'metadata.json'));
-     assert.equal(metadata.integration_version,'0.8.2');
-     if(typeof metadata.target_plugin==='object') assert.equal(metadata.target_plugin.version,'0.8.2');
+     assert.equal(metadata.integration_version,'1.0.0');
+     if(typeof metadata.target_plugin==='object') assert.equal(metadata.target_plugin.version,'1.0.0');
      if(row.id==='RB-FIN-020') { assert.equal(row.source_version,'0.8.0'); assert.equal(metadata.version,'0.8.0'); }
     }
     for(const file of files.filter(f=>f.endsWith('.md') && !f.endsWith('CHANGELOG.md'))) {
@@ -210,7 +210,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    });
    await t.test('current SDK foundation snapshots and onboarding binding',async()=>{
     const snapshot=await json('FOUNDATION-SNAPSHOT.json');
-    assert.equal(snapshot.plugin.version,'0.8.2');
+    assert.equal(snapshot.plugin.version,'1.0.0');
     assert.equal(snapshot.native_host_execution,'not_run');
     assert.match(snapshot.authoring_tools,/pending_realignment/);
     assert.deepEqual(Object.keys(snapshot.category_source_sha256).sort(),Object.keys(expectedRoutes).sort());
@@ -220,7 +220,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     const basis={category_source_sha256:snapshot.category_source_sha256,shared_files:snapshot.shared_files};
     assert.equal(hash(JSON.stringify(basis,null,2)+'\n'),snapshot.foundation_sha256);
     const lock=await json('skills/netsuite-suiteskills-onboarding/FOUNDATION-LOCK.json');
-    assert.equal(lock.reference_plugin.version,'0.8.2');
+    assert.equal(lock.reference_plugin.version,'1.0.0');
     assert.equal(lock.foundation_sha256,snapshot.foundation_sha256);
     assert.deepEqual(lock.shared_files,snapshot.shared_files);
     assert.equal(lock.utility_context_sha256,hash(await read('skills/netsuite-suiteskills-onboarding/PLUGIN-CONTEXT.md')));

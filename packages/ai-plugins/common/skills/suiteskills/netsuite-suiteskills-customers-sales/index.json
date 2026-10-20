@@ -11,7 +11,7 @@
     "first_included_date": "2026-10-14",
     "id": "RB-CRM-002",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.2",
+    "integration_version": "1.0.0",
     "name": "netsuite-advanced-pricing-price-rule-management",
     "netsuite_requirements": {
       "industries": {
@@ -59,7 +59,7 @@
     "first_included_date": "2026-10-08",
     "id": "RB-CRM-004",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.2",
+    "integration_version": "1.0.0",
     "name": "netsuite-customer-service-order-triage",
     "netsuite_requirements": {
       "industries": {
@@ -105,7 +105,7 @@
     "first_included_date": "2026-10-14",
     "id": "RB-CRM-005",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.2",
+    "integration_version": "1.0.0",
     "name": "netsuite-customer-support-assistant",
     "netsuite_requirements": {
       "industries": {
@@ -152,7 +152,7 @@
     "first_included_date": "2026-10-14",
     "id": "RB-CRM-006",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.2",
+    "integration_version": "1.0.0",
     "name": "netsuite-knowledge-quality-assistant",
     "netsuite_requirements": {
       "industries": {
@@ -200,7 +200,7 @@
     "first_included_date": "2026-10-14",
     "id": "RB-CRM-007",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.2",
+    "integration_version": "1.0.0",
     "name": "netsuite-lead-management-assistant",
     "netsuite_requirements": {
       "industries": {
@@ -248,7 +248,7 @@
     "first_included_date": "2026-10-08",
     "id": "RB-CRM-008",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.2",
+    "integration_version": "1.0.0",
     "name": "netsuite-marketing-campaign-assistant",
     "netsuite_requirements": {
       "industries": {
@@ -297,7 +297,7 @@
     "first_included_date": "2026-10-08",
     "id": "RB-CRM-009",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.2",
+    "integration_version": "1.0.0",
     "name": "netsuite-pricing-policy-and-exception-review",
     "netsuite_requirements": {
       "industries": {
@@ -346,7 +346,7 @@
     "first_included_date": "2026-10-14",
     "id": "RB-CRM-010",
     "integration_release_date": "2026-10-16",
-    "integration_version": "0.8.2",
+    "integration_version": "1.0.0",
     "name": "netsuite-sales-assistant",
     "netsuite_requirements": {
       "industries": {

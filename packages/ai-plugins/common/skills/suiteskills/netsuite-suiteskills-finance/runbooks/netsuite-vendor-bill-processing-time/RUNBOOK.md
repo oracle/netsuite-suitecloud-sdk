@@ -5,7 +5,7 @@ metadata:
   owner: "Oracle NetSuite"
   version: "0.2.5"
   source-version: "0.2.5"
-  integration-version: "0.8.2"
+  integration-version: "1.0.0"
   runbook-id: RB-FIN-017
   category: finance
   access-mode: operation_dependent

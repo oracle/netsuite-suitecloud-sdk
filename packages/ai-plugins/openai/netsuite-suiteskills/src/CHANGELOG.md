@@ -2,7 +2,7 @@
 
 Update the plug-in version and current README headings to 1.0.0. Apply the latest Customers & Sales description and italic introduction, and retain the Workforce name introduced in 0.8.2. Align README wording, accessibility text, and plug-in metadata formatting.
 
-The candidate remains under review. License and source-rights clearance, security approval, and supported-host and live-account qualification remain pending. The remaining integration metadata must be aligned to 1.0.0, and affected integrity records must be regenerated before final-candidate validation, tests, build, and release verification. Historical verification results do not qualify this edited candidate.
+The candidate remains under review. License and source-rights clearance, security approval, and supported-host and live-account qualification remain pending. Align current integration metadata and test expectations to 1.0.0. Refresh SafeWords coverage, foundation bindings, and inventories for the final content. Final-candidate validation, tests, build, and release verification are required. Historical verification results do not qualify this edited candidate.
 
 # SuiteSkills 0.8.2 integration
 

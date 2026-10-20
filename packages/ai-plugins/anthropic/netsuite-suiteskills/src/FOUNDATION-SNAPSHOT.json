@@ -1,17 +1,17 @@
 {
   "authoring_tools": "pending_realignment; historical Builder/Evaluator evidence retained in skill provenance",
   "category_source_sha256": {
-    "netsuite-suiteskills-customers-sales": "14e2de760d8194aacf05a4a6a488806f11a705510c274518f7f389547a14c9de",
-    "netsuite-suiteskills-finance": "2abc9c475518532257ac177882b72826f11aa7c14d6b8e9d078a4abd0fbd5807",
-    "netsuite-suiteskills-operations": "1ce9dfa50b63d0c9ad1503a3deae2e5ef216ebe443c373e631106efe6591e25a",
-    "netsuite-suiteskills-workforce": "367239013158e90e91f534a908b09fdeb4f39330e0aeab24e729074844574bee"
+    "netsuite-suiteskills-customers-sales": "875f9d15748aebad912450b05de4999a20138fcb34fdc9eb8f4361dcf5ad106e",
+    "netsuite-suiteskills-finance": "83e618bceede4aee36bb882effa41f939c140f37b1dcc0f1e0b28cd88d61e379",
+    "netsuite-suiteskills-operations": "d1db79f2986262dc5ba1798d768d0ed6fcb208d2f09bdf7309d8fd064ab9ce38",
+    "netsuite-suiteskills-workforce": "9613a85d751574ed17715788391d0bff1a18c1826be1d4421fc87eec906bf837"
   },
   "digest_basis": "SHA-256 of sorted UTF-8 JSON of shared_files and category_source_sha256, 2 spaces, final LF",
-  "foundation_sha256": "3ba05927e785739fed70845e1d101f65be2ecc36680e6e239940dd792fc41bc4",
+  "foundation_sha256": "6bccc5519163166876e0797bcea3e311b36ea16c60bd891b99f35765877eb480",
   "native_host_execution": "not_run",
   "plugin": {
     "name": "netsuite-suiteskills",
-    "version": "0.8.2"
+    "version": "1.0.0"
   },
   "schema": "suiteskills-sdk-foundation-1",
   "shared_files": {
