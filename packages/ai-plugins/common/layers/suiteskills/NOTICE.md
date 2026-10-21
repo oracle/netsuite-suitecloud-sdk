@@ -1,3 +1,5 @@
-# SuiteSkills license and submission status
+# SuiteSkills licensing
 
-License identifier: `LicenseRef-SuiteSkills-Review-Pending`. No new open-source grant is asserted for this submission candidate. The SDK-generated LICENSE.txt is the repository-wide UPL file. The receiving team must verify source and third-party redistribution rights, resolve license declarations in plugin.build.json and all five SKILL.md files, and complete inherited security review before merging for public release or triggering the distribution publisher. Preserve original third-party notices and licenses.
+The selected license for first-party SuiteSkills content is **The Universal Permissive License (UPL), Version 1.0**. Preserve applicable third-party licenses, required notices, and approved exceptions.
+
+The build includes the repository license text as `LICENSE.txt`. Preserve component-specific license declarations and notices in both provider distributions.

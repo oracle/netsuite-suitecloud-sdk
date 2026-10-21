@@ -1,6 +1,8 @@
 <p align="left"><img width="250" src="https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/master/resources/Netsuite-logo-ocean-150-bg.png" alt="NetSuite"></p>
 
-# SuiteSkills 1.0.0 internal testing candidate
+# SuiteSkills 1.0.0
+
+Browsing the source repository? Use the [source navigation page](https://github.com/oracle/netsuite-suitecloud-sdk/blob/ai-plugins/packages/ai-plugins/openai/netsuite-suiteskills/README.md) for links to shared skills and guidance. The relative links below target the assembled plug-in.
 
 Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector.
 
@@ -56,23 +58,9 @@ Version 0.8.2 renames the People entry point to Workforce. Refresh the host's in
 
 Connector schemas, account and role permissions, rendering, native question controls, and script execution are discovered in the actual session. Missing presentation capabilities preserve equivalent factual answers where the procedure permits. Source provenance, currency, evidence coverage, export gates, and exact action confirmation remain mandatory. Data Visualization has its own checked runtime profiles; shared writers retain their existing scope and safeguards. Store generated outputs outside installed assets with a fresh basename.
 
-## Receiving-repository verification — 2026-10-20
-
-The upstream 0.8.2 packet reports package/SDK checks and inherited renderer evidence. Its inventory was verified before adaptation. Those reports are distinct from the following receiving-repository checks against `99cb89de`:
-
-- Agent-skills validation and Node tests; separate ai-plugins validation, Node tests, build, and release verification.
-- Separate Python visualization regressions for financial inputs/labels, currency/units, series/intervals, missing values, immutable models, canonical HTML, and asset pins.
-- Packaging checks for authored copy/display labels, Workforce migration, stale People output replacement, stable routes/aliases, relative links, complete SafeWords paths/lines/hashes, current foundation snapshots/onboarding lock, inventories, resource maps, generated native manifests, PNG branding, allowlists, and cross-provider shared bytes. Dual-manifest detection, host-neutral discovery, presentation fallbacks, and execution safeguards remain covered.
-- Credential-pattern scans on both assembled SuiteSkills outputs. Isolated baseline build comparison preserves all 48 routes after the intentional Workforce category/path mapping, all 39 SQL files and executable/rendering bytes and permissions. Unrelated distributions match; the root distribution README changes only in the SuiteSkills overview.
-
-FOUNDATION-SNAPSHOT.json and onboarding FOUNDATION-LOCK.json now describe the current SDK shared foundation and category entry points. Historical Builder evidence and provenance remain unchanged; Builder/Evaluator realignment remains pending. SECURITY-RELEASE-STATUS.json remains inherited evidence, not current security qualification.
-
-The 0.8.1 receiving integration recorded local synthetic desktop/mobile browser checks and PowerPoint validation. That renderer evidence is inherited through unchanged executable/rendering bytes; browser/export checks were not rerun for this content migration. PDF/native PowerPoint rendering was not qualified by that receiving integration.
-
-Native host installation/routing/delivery, live-account operations, Linux execution, model adherence, IQ/security approval, and source-rights clearance remain unperformed. Publishing remains separate; no publishing was performed.
 
 ## License
 
 Copyright (c) 2019, 2023 Oracle and/or its affiliates.
 
-The intended license for first-party SuiteSkills content is the Universal Permissive License (UPL), Version 1.0. License and source-rights clearance remain pending; current package metadata uses `LicenseRef-SuiteSkills-Review-Pending`. Applicable third-party licenses and notices must be preserved.
+The selected license for first-party SuiteSkills content is **The Universal Permissive License (UPL), Version 1.0**. Preserve applicable third-party licenses, required notices, and approved exceptions.

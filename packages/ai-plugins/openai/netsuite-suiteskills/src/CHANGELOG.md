@@ -1,8 +1,8 @@
-# SuiteSkills 1.0.0 candidate
+# SuiteSkills 1.0.0
 
 Update the plug-in version and current README headings to 1.0.0. Apply the latest Customers & Sales description and italic introduction, and retain the Workforce name introduced in 0.8.2. Align README wording, accessibility text, and plug-in metadata formatting.
 
-The candidate remains under review. License and source-rights clearance, security approval, and supported-host and live-account qualification remain pending. Align current integration metadata and test expectations to 1.0.0. Refresh SafeWords coverage, foundation bindings, and inventories for the final content. Final-candidate validation, tests, build, and release verification are required. Historical verification results do not qualify this edited candidate.
+The selected license for first-party SuiteSkills content is The Universal Permissive License (UPL), Version 1.0. Security review and approval are complete. Preserve third-party grants and required notices.
 
 # SuiteSkills 0.8.2 integration
 

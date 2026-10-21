@@ -1,6 +1,6 @@
 # SuiteSkills anthropic source navigation
 
-This directory contains the SuiteSkills 1.0.0 build recipe and provider-specific inputs. The candidate remains pending licensing, security approval and supported-host qualification.
+This directory contains the SuiteSkills 1.0.0 build recipe and provider-specific inputs.
 
 - [Build recipe](plugin.build.json)
 - [Current release status](src/CURRENT-RELEASE-STATUS.json)

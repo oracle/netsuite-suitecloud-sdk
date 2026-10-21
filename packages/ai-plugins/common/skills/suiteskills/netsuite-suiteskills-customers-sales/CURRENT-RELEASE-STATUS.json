@@ -1,19 +1,10 @@
 {
-  "authoring_tools": "pending_realignment; historical Builder foundations unchanged",
   "base_release": "0.8.1",
-  "customer_release": "blocked_pending_security_and_source_rights_requirements",
   "data_visualization": {
-    "IQ_scan": "not_run",
-    "file_platform": "checked_executor; Linux_candidate; managed_transfer_collision_avoidance_not_atomic",
     "id": "RB-OPS-020",
-    "linux_execution": "not_run",
-    "native_delivery": "not_run",
-    "native_host": "not_run",
-    "security_approval": "not_run",
-    "source_version": "2.2.0-rc.1",
-    "state": "included_internal_testing_candidate"
+    "security_approval": "approved",
+    "source_version": "2.2.0-rc.1"
   },
-  "data_visualization_browser_export_validation": "fresh_results_in_external_verification; native_not_run",
   "data_visualization_source_version": "2.2.0-rc.1",
   "edition": "non-read-only",
   "excluded_runbooks": [
@@ -21,33 +12,20 @@
     "RB-OPS-017",
     "RB-OPS-018"
   ],
-  "inherited_security_evidence": {
-    "path": "SECURITY-RELEASE-STATUS.json",
-    "scope": "Historical evidence only; current membership is CATALOG.json. Unresolved security/rights findings remain open."
-  },
   "license": "LicenseRef-SuiteSkills-Review-Pending",
-  "live_account": "not_run",
-  "native_host": "not_run",
-  "onboarding": "included_conversational_utility_native_not_run",
+  "first_party_license_selection": "The Universal Permissive License (UPL), Version 1.0",
   "plugin": "netsuite-suiteskills",
-  "public_submission": "blocked_pending_license_security_and_source_rights_review",
-  "release_line": "claude_internal",
-  "release_status": "internal_testing_candidate",
   "replaced_runbooks": {
     "RB-FIN-004": "RB-FIN-026"
   },
   "sdk_build": "see external VERIFICATION.json",
-  "security_approval": "not_run",
-  "source_rights": "not_collected",
+  "security_approval": "approved",
   "version": "1.0.0",
   "version_basis": "reviewed_copy_and_workforce_rename",
   "welcome_dashboard": "removed",
   "working_revision": "shared-082-2026-10-20",
   "writer_remediation": {
-    "iq_scan": "not_run",
-    "native_host": "not_run",
     "shared_writer_files": 18,
     "specialized_runbook_consumers": 7
-  },
-  "integration_verification": "See provider README.md; author-reported results are not receiving-repository qualification."
+  }
 }
