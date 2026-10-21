@@ -5,6 +5,7 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const sourceExcludedDirectories = new Set(['.git', 'node_modules', 'dist']);
 const generatedExcludedDirectories = new Set(['.git', 'node_modules']);
@@ -113,7 +114,7 @@ async function main() {
 	console.log(`${command} gate passed: ${directory}`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
 	main().catch((error) => {
 		console.error(error.message);
 		process.exitCode = 1;
