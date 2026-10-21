@@ -5,7 +5,7 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { isDirectExecution } from './lib/cli-entrypoint.mjs';
 import { spawn } from 'node:child_process';
 import { loadWorkspace } from './lib/build-config.mjs';
 import { buildPlugins } from './lib/plugin-builder.mjs';
@@ -108,6 +108,6 @@ async function main() {
 	}
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+if (await isDirectExecution(import.meta.url)) {
 	await main();
 }
