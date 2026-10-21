@@ -1,7 +1,7 @@
 ---
 name: netsuite-data-visualization
 description: "Create focused financial and operational charts and snapshot views from verified results or supplied data. Generate validated HTML on supported executors and deliver through observed host facilities; PDF/PowerPoint require qualified Darwin export dependencies. Preserve source scope and plain-text references without verified origin. Accept supplied files/tables and supported source results without another plugin."
-license: LicenseRef-SuiteSkills-Review-Pending
+license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   owner: "Oracle NetSuite"
   version: "2.2.0-rc.1"

@@ -12,7 +12,6 @@ common/
     ├── suiteskills/
     │   ├── ID-REGISTER.json
     │   ├── INSTALL-LAYOUT.json
-    │   ├── NOTICE.md
     │   └── shared/
     └── openai/
         └── assets/
@@ -22,8 +21,8 @@ common/
 
 Add reusable packaging payloads to a `<layer-name>/` subdirectory in `layers/`, configured by `commonLayersRoot`. Each layer is copied after the plug-in-specific `src/` content and before the `LICENSE.txt` and `skills/` directory are generated. `commonLayers` accepts a layer name (all files) or an object with required `name`, nonempty `include` patterns and `exclude` patterns. Both forms apply global exclusions, preserve paths relative to the layer root and reject destination collisions; layers never overwrite other inputs.
 
-Both SuiteSkills plugins select the same 152 literal paths from `layers/suiteskills/`: 149 `shared/...` resources plus `ID-REGISTER.json`, `INSTALL-LAYOUT.json` and `NOTICE.md`. These files are supplied exclusively by the common layer. Unlisted files in that layer are not packaged. Category skills retain their isolated shared copies. Root and category `shared/` resources remain packaged with explicit payload inventories. Current inventory hashes exclude INVENTORY.json itself, the builder-supplied LICENSE.txt and the generated native manifest; historical provenance digests remain unchanged.
+Both SuiteSkills plugins select the same 151 literal paths from `layers/suiteskills/`: 149 `shared/...` resources plus `ID-REGISTER.json` and `INSTALL-LAYOUT.json`. These files are supplied exclusively by the common layer. Unlisted files in that layer are not packaged. Category skills retain their isolated shared copies. Root and category `shared/` resources remain packaged with explicit payload inventories. Current inventory hashes exclude INVENTORY.json itself, the builder-supplied LICENSE.txt and the generated native manifest; historical provenance digests remain unchanged.
 
-Provider-specific READMEs, catalogs, changelogs, inventories, status files and historical foundation snapshots remain local. OpenAI SuiteSkills consumes shared branding from `layers/openai/` with an explicit allowlist containing `assets/netsuite-icon.png` and `assets/netsuite-logo.png`. Its metadata remains provider-local, and its explicit inputs include only the five declared `src/skills/<unsuffixed-name>/agents/openai.yaml` files for skill display metadata; Anthropic includes none of those OpenAI files or branding PNGs. Other OpenAI plugins continue to consume the shared OpenAI layer. Manifests are generated from `plugin.build.json` in `.codex-plugin/` or `.claude-plugin/`; OpenAI has no source root `plugin.json`.
+Provider-specific READMEs, catalogs, changelogs, inventories and retained foundation snapshots remain local. OpenAI SuiteSkills consumes shared branding from `layers/openai/` with an explicit allowlist containing `assets/netsuite-icon.png` and `assets/netsuite-logo.png`. Its metadata remains provider-local, and its explicit inputs include only the five declared `src/skills/<unsuffixed-name>/agents/openai.yaml` files for skill display metadata; Anthropic includes none of those OpenAI files or branding PNGs. Other OpenAI plugins continue to consume the shared OpenAI layer. Manifests are generated from `plugin.build.json` in `.codex-plugin/` or `.claude-plugin/`; OpenAI has no source root `plugin.json`.
 
-Run agent-skills validation and tests, then plugin validation and tests, then build and release verification as separate commands. Packaging checks do not establish native-host or runtime security qualification.
+Run agent-skills validation and tests, then plugin validation and tests, then build and release verification as separate commands. Packaging checks do not establish native-host, model, account or output/runtime qualification. SuiteSkills 1.0.0 remains an internal testing candidate pending final validation and these qualifications; full-plugin security approval has been obtained.

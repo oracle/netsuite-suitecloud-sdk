@@ -1,7 +1,7 @@
 ---
 name: netsuite-suiteskills-workforce
 description: "Use for Workforce: Payroll Clarity Readiness, Absence Management Advisor, Benefits Portfolio Monitor, Time Approval Review, Time Entry Creation. Select the matching runbook; supported actions require authorization and business prerequisites."
-license: LicenseRef-SuiteSkills-Review-Pending
+license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"

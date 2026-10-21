@@ -1,7 +1,7 @@
 ---
 name: netsuite-suiteskills-onboarding
 description: "Use for SuiteSkills or connected NetSuite orientation when the user asks to get started, what can I do, I just connected, which skills are available, or where to start; also explore available workflows, resume an onboarding goal, or refresh suggestions after an account or role change. Yield a concrete business task directly to its available specialist without an onboarding interview. Unrelated greetings do not select this skill."
-license: LicenseRef-SuiteSkills-Review-Pending
+license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   version: "1.0.0"
   source-version: "2.5.0"

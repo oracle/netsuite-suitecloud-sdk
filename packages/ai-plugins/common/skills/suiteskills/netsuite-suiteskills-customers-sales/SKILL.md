@@ -1,7 +1,7 @@
 ---
 name: netsuite-suiteskills-customers-sales
 description: "Use for Customers & Sales: Advanced Pricing Price Rule Review, Customer Service Order Triage, Customer Support Assistant, Knowledge Base Quality Assistant, Lead Management Assistant, Marketing Campaign Assistant, Pricing Policy and Exception Review, Sales Assistant. Select the matching runbook; supported actions require authorization and business prerequisites."
-license: LicenseRef-SuiteSkills-Review-Pending
+license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"

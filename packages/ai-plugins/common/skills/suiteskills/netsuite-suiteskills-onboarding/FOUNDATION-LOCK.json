@@ -1,6 +1,6 @@
 {
   "category": "utility",
-  "foundation_sha256": "6bccc5519163166876e0797bcea3e311b36ea16c60bd891b99f35765877eb480",
+  "foundation_sha256": "51dee76d96c972382feccd8826abc810826d43ee3e3b5bfd512de6ec381c2d52",
   "native_host_execution": "not_run",
   "reference_plugin": {
     "name": "netsuite-suiteskills",

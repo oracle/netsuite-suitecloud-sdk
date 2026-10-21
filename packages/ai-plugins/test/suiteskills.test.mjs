@@ -16,11 +16,55 @@ const expectedRoutes = {
  'netsuite-suiteskills-operations': ['RB-OPS-001','RB-OPS-002','RB-OPS-003','RB-OPS-004','RB-OPS-005','RB-OPS-006','RB-OPS-011','RB-OPS-012','RB-OPS-014','RB-OPS-015','RB-OPS-016','RB-OPS-019','RB-OPS-020'],
  'netsuite-suiteskills-workforce': ['RB-PPL-001','RB-PPL-007','RB-PPL-008','RB-PPL-009','RB-PPL-010'],
 };
-const commonRootFiles = ['ID-REGISTER.json','INSTALL-LAYOUT.json','NOTICE.md'];
+const commonRootFiles = ['ID-REGISTER.json','INSTALL-LAYOUT.json'];
 const commonLayerRoot = path.join(packageRoot,'common/layers/suiteskills');
 const commonSkillsRoot = path.join(packageRoot,'common/skills/suiteskills');
 const categories = ['Finance','Customers & Sales','Operations','Workforce'];
+const retiredDistributionPaths = [
+ 'NOTICE.md','CURRENT-RELEASE-STATUS.json','SECURITY-RELEASE-STATUS.json','SAFEWORDS-COVERAGE.md',
+ ...[...Object.keys(expectedRoutes),'netsuite-suiteskills-onboarding'].flatMap(name=>[
+  `skills/${name}/CURRENT-RELEASE-STATUS.json`,`skills/${name}/SECURITY-RELEASE-STATUS.json`,
+ ]),
+];
+const retiredSourcePaths = [
+ 'common/layers/suiteskills/NOTICE.md',
+ ...['openai','anthropic'].flatMap(provider=>['CURRENT-RELEASE-STATUS.json','SECURITY-RELEASE-STATUS.json','SAFEWORDS-COVERAGE.md'].map(name=>`${provider}/netsuite-suiteskills/src/${name}`)),
+ ...[...Object.keys(expectedRoutes),'netsuite-suiteskills-onboarding'].flatMap(name=>['CURRENT-RELEASE-STATUS.json','SECURITY-RELEASE-STATUS.json'].map(file=>`common/skills/suiteskills/${name}/${file}`)),
+];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+
+test('SuiteSkills UPL licensing is consistent in SDK sources', async () => {
+ const upl='The Universal Permissive License (UPL), Version 1.0';
+ const readJson=async p=>JSON.parse(await fs.readFile(p,'utf8'));
+ for(const provider of ['openai','anthropic']) {
+  const root=path.join(packageRoot,provider,'netsuite-suiteskills');
+  assert.equal((await readJson(path.join(root,'plugin.build.json'))).metadata.license,upl);
+  const catalog=await readJson(path.join(root,'src/CATALOG.json'));
+  assert.equal(catalog.runbooks.find(r=>r.id==='RB-FIN-020').license,upl);
+ }
+ for(const name of [...Object.keys(expectedRoutes),'netsuite-suiteskills-onboarding']) {
+  const root=path.join(commonSkillsRoot,name);
+  assert.equal((await fs.readFile(path.join(root,'SKILL.md'),'utf8')).split('\n').find(l=>l.startsWith('license: ')),`license: ${upl}`);
+ }
+ const finance=path.join(commonSkillsRoot,'netsuite-suiteskills-finance');
+ assert.equal((await readJson(path.join(finance,'runbooks/netsuite-cohort-analysis/metadata.json'))).license,upl);
+ assert.equal((await readJson(path.join(finance,'index.json'))).find(r=>r.id==='RB-FIN-020').license,upl);
+ const visual=path.join(commonSkillsRoot,'netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/RUNBOOK.md');
+ assert.equal((await fs.readFile(visual,'utf8')).split('\n').find(l=>l.startsWith('license: ')),`license: ${upl}`);
+ const license=await fs.readFile(path.resolve(packageRoot,'../../LICENSE.txt'),'utf8');
+ assert(license.includes(upl));
+ assert.match(license,/permission is hereby granted/);
+ for(const provider of ['openai','anthropic']) {
+  const readme=await fs.readFile(path.join(packageRoot,provider,'netsuite-suiteskills/src/README.md'),'utf8');
+  assert(readme.includes(upl));
+  assert.doesNotMatch(readme,/LicenseRef-SuiteSkills-Review-Pending|No new open-source grant/);
+ }
+});
+
+test('SuiteSkills cleanup removes exactly the 17 retired source paths', async () => {
+ assert.equal(retiredSourcePaths.length,17);
+ for(const file of retiredSourcePaths) await assert.rejects(()=>fs.access(path.join(packageRoot,file)),{code:'ENOENT'},file);
+});
 
 // These inspect packaged contracts and files; they do not qualify execution or runtime security.
 test('SuiteSkills assembled packaging for both providers', async t => {
@@ -36,6 +80,17 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    const json = async file => JSON.parse(await read(file));
    const exists = async file => assert((await fs.stat(path.join(root,file))).isFile(),file);
    const files = await listRelativeFiles(root);
+   await t.test('all 14 retired distribution paths are absent from assembly and inventory',async()=>{
+    assert.equal(retiredDistributionPaths.length,14);
+    const inventory=await json('INVENTORY.json');
+    for(const file of retiredDistributionPaths) {
+     assert(!files.includes(file),file);
+     assert(!Object.hasOwn(inventory,file),file);
+     await assert.rejects(()=>fs.access(path.join(root,file)),{code:'ENOENT'},file);
+    }
+    const recipe=await fs.readFile(path.join(packageRoot,provider,'netsuite-suiteskills/plugin.build.json'),'utf8');
+    assert.doesNotMatch(recipe,/NOTICE\.md|CURRENT-RELEASE-STATUS\.json|SECURITY-RELEASE-STATUS\.json|SAFEWORDS-COVERAGE\.md/);
+   });
    const plugin = result.plugin;
    const catalog = await json('CATALOG.json');
    assert.equal(plugin.skillSource,'suiteskills');
@@ -114,7 +169,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     assert.match((await read(path.posix.join(path.posix.dirname(row.path),'scripts/capabilities.py'))).toString(),/pypdf/);
    });
    await t.test('current SafeWords policy ownership, coverage and execution safeguards',async()=>{
-    for(const name of ['SAFEWORDS-COVERAGE.md','SAFEWORDS-COVERAGE.json','SECURITY-CHANGELOG.md','VISUALIZER-CHANGELOG.md']) {
+    for(const name of ['SAFEWORDS-COVERAGE.json','SECURITY-CHANGELOG.md','VISUALIZER-CHANGELOG.md']) {
      await exists(name); assert(plugin.inputs.some(input=>input.include.includes(name)));
     }
     const coverage=await json('SAFEWORDS-COVERAGE.json');
@@ -230,7 +285,7 @@ test('SuiteSkills assembled packaging for both providers', async t => {
    assert.equal(sharedInventory.length,149);
    const layer=plugin.commonLayers.find(layer=>layer.name==='suiteskills');
    const layerInventory=[...commonRootFiles,...sharedInventory].sort();
-   assert.equal(layerInventory.length,152);
+   assert.equal(layerInventory.length,151);
    assert.deepEqual(layer,{name:'suiteskills',include:layerInventory,exclude:[]});
    assert.equal(plugin.validatedCommonLayers.find(layer=>layer.name==='suiteskills').rootDir,commonLayerRoot);
    assert.deepEqual((await listRelativeFiles(commonLayerRoot)).sort(),layerInventory);

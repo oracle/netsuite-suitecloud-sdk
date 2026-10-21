@@ -1,7 +1,7 @@
 ---
 name: netsuite-suiteskills-operations
 description: "Use for Inventory and Operations: Fulfillment performance insights, Inventory Exceptions Review, Transaction Inventory Impact, Inventory movement insights, NetSuite Inventory Availability Lookup, Return Authorization Assistant, Supply Chain Persona-Based Responses, Vendor Optimization, Field Service Management, Inventory Balance Viewer, Item Purchasing History, Project Risk Assistant, Data Visualization. Select the matching runbook; supported actions require authorization and business prerequisites."
-license: LicenseRef-SuiteSkills-Review-Pending
+license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"

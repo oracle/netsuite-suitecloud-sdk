@@ -1153,7 +1153,7 @@
       "id": "RB-FIN-020",
       "integration_release_date": "2026-10-16",
       "integration_version": "1.0.0",
-      "license": "proprietary",
+      "license": "The Universal Permissive License (UPL), Version 1.0",
       "name": "netsuite-cohort-analysis",
       "netsuite_requirements": {
         "industries": {

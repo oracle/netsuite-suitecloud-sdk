@@ -1,11 +1,17 @@
-# Data Visualization candidate changes
+# SuiteSkills visualization change notes
 
-2026-10-16 — SuiteSkills 0.8.0 to 0.8.1-rc.1; RB-OPS-020 2.1.0-rc.1 to 2.2.0-rc.1.
+## 1.0.0 — Data Visualization source 2.2.0-rc.1
 
-- Removed unconditional Finance Analyst plugin and finance-word blocking from instructions, validation and active routing/shared guidance. Supplied files/tables, supported NetSuite results and other source results are accepted with provenance.
-- Added explicit unscaled money currency columns, same-currency series/interval checks and financial examples. Missing values remain distinct from zero. No local totals or FX conversion. Added board_feet as an operational unit.
-- Restored Ocean header, grey background, original twelve-color palette, flat portlets, 16px gutters, desktop two-column charts, compact four-KPI strip and responsive layouts. Fixed-renderer geometry, local system font fallback and minimal secured exports remain; this is visual similarity rather than pixel parity or the original template binary.
-- Retained script-safe JSON, text nodes, reviewed asset hashes/CSP, account-bound route validation, safe basenames and exclusive publication. The legacy authored HTML, JSZip/pako and template/export binaries remain absent.
-- Retained category-owned SafeWords and mandatory runbook/workflow references. Coverage hashes reflect this candidate; historical 0.8.0 security changelog is retained.
+Data Visualization (RB-OPS-020) accepts supplied files/tables and supported NetSuite or other producer results with provenance, without requiring Finance Analyst. Money requires explicit currency and compatible series/interval units. Missing values remain distinct from zero; the renderer performs no local totals or FX conversion.
 
-Local synthetic financial, security, responsive-browser and export checks are recorded outside runtime in the verification bundle. These do not establish installed-host/account operation, IQ/security approval or source rights. Original 0.8.0 sources and download archives remain unchanged. Runtime-only candidate: SDK and matching authoring tools have not been released for this revision.
+The secured renderer uses the Ocean header, grey canvas, twelve-color palette, flat panels, compact KPI strip and responsive layout. Script-safe JSON, text nodes, pinned assets/CSP, account-bound route validation, safe fresh basenames and exclusive directory-bound publication remain required. Without verified account-origin evidence, record references remain plain text. The legacy authored HTML and template/export binaries are excluded.
+
+### Runtime and delivery limits
+
+Follow the runbook's [runtime and host delivery procedure](skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/references/delivery.md) for exact execution gates. Python 3.12 and the runbook's declared dependencies are required. HTML capability probing is separate from browser/font availability. The runtime gates recognize local Darwin/APFS and the exact Linux glibc 2.39 little-endian LP64 x86_64/aarch64 ext-family HTML candidate profile; other layouts fail closed. Exact-host qualification remains required. This does not broaden the separate shared writers' Darwin requirements.
+
+PDF and PowerPoint require an explicit request and qualified Darwin export dependencies, including the applicable browser/Playwright/Chromium, font and PDF tooling. Graphical PowerPoint generation, native rendering and PDF validity require separate validation. Externally supplied software and fonts retain their own license terms.
+
+Generate outside installed assets. Managed host delivery is separate from source publication: use a fresh random basename, an immediate destination check, the observed host transfer facility and identity/readback verification. The collision-avoidance destination profile can race and does not guarantee atomic no-replacement. Hashes do not authenticate account access or transport. Unsupported execution/export fails closed or provides the documented factual fallback where permitted.
+
+This remains a 1.0.0 internal testing candidate. Final validation, installed-host delivery, model/account behavior, Linux execution and retained output/runtime claims still require qualification. Prior local or synthetic checks do not establish those results. Full-plugin security approval has been obtained; source rights are covered by the SDK contribution process.

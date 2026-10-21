@@ -1,14 +1,10 @@
 <p align="left"><img width="250" src="https://raw.githubusercontent.com/oracle/netsuite-suitecloud-sdk/master/resources/Netsuite-logo-ocean-150-bg.png" alt="NetSuite"></p>
 
-# SuiteSkills 1.0.0
+# SuiteSkills
 
-Release authorization requires recorded component redistribution clearance and engineering acceptance of the final packages. Security approval covers the security review; it does not establish redistribution rights or installed-runtime qualification.
+SuiteSkills provides NetSuite business workflows for ChatGPT and Codex through the NetSuite AI Connector Service. Explore business data, prepare analysis and drafts, and complete supported workflows across finance, sales, customer support, operations and workforce management.
 
-Browsing the source repository? Use the [source navigation page](https://github.com/oracle/netsuite-suitecloud-sdk/blob/ai-plugins/packages/ai-plugins/openai/netsuite-suiteskills/README.md) for links to shared skills and guidance. The relative links below target the assembled plug-in.
-
-Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector.
-
-The [catalog](CATALOG.json) contains 48 business runbooks and conversational onboarding. Source evidence, currency, coverage, and preliminary/limited-result disclosure remain required. Data Visualization retains source version 2.2.0-rc.1 and accepts supplied files/tables and supported producer results without a Finance Analyst dependency. Read [shared guidance](shared/README.md).
+Version 1.0.0 is an internal testing candidate. The [catalog](CATALOG.json) contains 48 business runbooks exposed through the five skills below. Full-plugin security approval has been obtained; final validation and installed-host, model, live-account and output/runtime qualification remain pending.
 
 ## Included Skills
 
@@ -52,27 +48,26 @@ Workforce gives HR teams, controllers, and managers a clear view of workforce da
 
 [Open Workforce](skills/netsuite-suiteskills-workforce/SKILL.md).
 
-## Installation and migration
+## Prerequisites and limitations
 
-Install the assembled `openai/netsuite-suiteskills` directory through the host's supported plug-in installation flow. The build generates `.codex-plugin/plugin.json` from `plugin.build.json`. Skills use unsuffixed `skills/netsuite-suiteskills-*/` directories and isolated shared resources. Five provider-local `agents/openai.yaml` files and the shared NetSuite PNG branding are included.
+- NetSuite data access requires the NetSuite AI Connector Service, available tools, enabled account features and appropriate role permissions. Discover actual schemas and access in the session; respect denials and disclose missing or partial evidence. Preserve subsidiary, currency and accounting-book context.
+- Supported actions require explicit authorization, validated tools, business prerequisites and the runbook's exact preview/confirmation gates. Do not retry mutations automatically; reconcile ambiguous results with reads. Confirmation cannot enable excluded actions, including Bank Reconciliation Prioritization, which remains read-only.
+- Presentation, native question controls, script execution and file delivery depend on the actual host. Provide equivalent factual answers where the procedure permits when presentation is unavailable. Store generated outputs outside installed assets with a fresh basename. Follow [shared guidance](shared/README.md) and the [security notes](SECURITY-CHANGELOG.md).
+- Data Visualization accepts supplied files/tables and supported producer results without requiring Finance Analyst. It retains source version 2.2.0-rc.1, explicit currency/unit validation, source provenance and guarded output publication. Python 3.12 and declared execution dependencies are required. HTML is the baseline; PDF/PowerPoint require requested, qualified Darwin exports and applicable browser/font/PDF dependencies. The exact Linux HTML candidate profile does not qualify general Linux support. See [visualization support notes](VISUALIZER-CHANGELOG.md) for runtime and delivery limits.
+- Package/static verification does not establish installed-host loading, routing, model adherence, live-account behavior, Linux execution or native rendering/export/delivery. These qualifications and final validation remain pending for this candidate. Builder/Evaluator realignment remains pending. Business/source versions are independent of integration version 1.0.0; Cohort Analysis retains source version 0.8.0.
 
-After upgrading, refresh the host's installed skill inventory. Workforce replaces the former People entrypoint; do not retain both entrypoints. Existing runbook identities and aliases are preserved.
+## Build and installation
 
-Connector schemas, account and role permissions, rendering, native question controls, and script execution are discovered in the actual session. Missing presentation capabilities preserve equivalent factual answers where the procedure permits. Source provenance, currency, evidence coverage, export gates, and exact action confirmation remain mandatory. Data Visualization has its own checked runtime profiles; shared writers retain their existing scope and safeguards. Store generated outputs outside installed assets with a fresh basename.
+From the SDK root, run `npm run build --workspace @oracle/ai-plugins` to generate `dist/ai-plugins/openai/netsuite-suiteskills/`. This README describes that generated directory; relative skill/shared links resolve there. Source editing and navigation are described in the provider's source-root README.
 
-## Requirements and limitations
+The build generates `.codex-plugin/plugin.json` from the provider recipe. Use the host's supported installation flow for the generated directory. Skills use unsuffixed `skills/netsuite-suiteskills-*/` paths with isolated shared resources. The OpenAI build includes five provider-local `agents/openai.yaml` files and shared NetSuite PNG branding.
 
-- Live NetSuite data and actions require a separately authorized NetSuite AI Connector connection, enabled account features, available tools, and sufficient role permissions. Installing the plug-in does not create or authenticate a connection.
-- Actions depend on the selected workflow's scope, business prerequisites, and authorization safeguards. Confirmation does not enable an excluded action. Bank Reconciliation Prioritization is read-only.
-- Presentation, local execution, file delivery, and readback depend on the application and executor in use. If a required capability is unavailable, use the workflow's factual text or table fallback.
-- Shared file writers require the documented macOS/Darwin and local APFS publication profile. Data Visualization has a separate checked execution profile. See its [host capabilities](skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/references/host-compatibility.md) and [export requirements](skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/references/publication.md) before generating files.
-- Data Visualization requires Python 3.12. PDF and PowerPoint exports require macOS/Darwin, reviewed Node.js, Playwright, and matching Chromium dependencies. PDF validation also requires pypdf and the specified host font with applicable use and embedding rights.
-- PowerPoint charts are raster images rather than editable Office charts. Inspect output in an available renderer and verify delivery by readback. Host-managed file transfer does not guarantee atomic prevention of destination replacement.
+## Contributing
 
-Security review and approval are complete.
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](https://github.com/oracle/netsuite-suitecloud-sdk/blob/master/CONTRIBUTING.md).
 
 ## License
 
 Copyright (c) 2019, 2023 Oracle and/or its affiliates.
 
-The selected license for first-party SuiteSkills content is **The Universal Permissive License (UPL), Version 1.0**. Preserve applicable third-party licenses, required notices, and approved exceptions.
+SuiteSkills first-party content is distributed under The Universal Permissive License (UPL), Version 1.0. Source rights are covered by the SDK contribution process. The SDK build includes the repository's [LICENSE.txt](LICENSE.txt); retain its copyright and license notice. Preserve applicable third-party grants and notices. Externally supplied Python, Node.js, Playwright, Chromium, pypdf and host fonts remain subject to their own terms; the SuiteSkills license does not relicense those resources. No runtime library or font binary is supplied by this notice.

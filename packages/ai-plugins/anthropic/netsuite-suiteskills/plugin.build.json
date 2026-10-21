@@ -11,7 +11,7 @@
 			"name": "Oracle NetSuite",
 			"url": "https://www.netsuite.com"
 		},
-		"license": "LicenseRef-SuiteSkills-Review-Pending",
+		"license": "The Universal Permissive License (UPL), Version 1.0",
 		"keywords": [
 			"netsuite",
 			"business",
@@ -37,7 +37,6 @@
 			"include": [
 				"ID-REGISTER.json",
 				"INSTALL-LAYOUT.json",
-				"NOTICE.md",
 				"shared/CHANGELOG.md",
 				"shared/README.md",
 				"shared/RESOURCE-MAP.json",
@@ -198,12 +197,9 @@
 			"include": [
 				"CATALOG.json",
 				"CHANGELOG.md",
-				"CURRENT-RELEASE-STATUS.json",
 				"FOUNDATION-SNAPSHOT.json",
 				"INVENTORY.json",
 				"README.md",
-				"SECURITY-RELEASE-STATUS.json",
-				"SAFEWORDS-COVERAGE.md",
 				"SAFEWORDS-COVERAGE.json",
 				"SECURITY-CHANGELOG.md",
 				"VISUALIZER-CHANGELOG.md"

@@ -10,7 +10,7 @@
 			"name": "Oracle NetSuite",
 			"url": "https://www.netsuite.com"
 		},
-		"license": "LicenseRef-SuiteSkills-Review-Pending",
+		"license": "The Universal Permissive License (UPL), Version 1.0",
 		"keywords": [
 			"netsuite",
 			"business",
@@ -24,7 +24,7 @@
 		"interface": {
 			"displayName": "SuiteSkills",
 			"shortDescription": "NetSuite business workflows",
-			"longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Available output formats depend on the application you use.",
+			"longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Available output formats depend on the application you use. Internal testing candidate; native and live-account qualification pending.",
 			"developerName": "Oracle NetSuite",
 			"category": "Business & Operations",
 			"websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suiteskills",
@@ -46,7 +46,7 @@
 			"com.openai": {
 				"onboardingSkill": "./skills/netsuite-suiteskills-onboarding/SKILL.md",
 				"publication": {
-					"release_notes": "SuiteSkills 1.0.0 includes five skills and 48 business runbooks across Finance, Operations, Customers & Sales, and Workforce, with guided onboarding. Supported actions follow workflow-specific authorization safeguards. File outputs depend on the host, executor, and declared dependencies."
+					"release_notes": "SuiteSkills 1.0.0 introduces five skills and 48 business runbooks spanning customers and sales, finance, operations, and workforce, with onboarding and data visualization. Live data and supported actions require a separately authorized NetSuite AI Connector connection, account permissions, and workflow prerequisites; Bank Reconciliation Prioritization is read-only. Output formats depend on the host and runtime. Native-host and live-account qualification remain pending."
 				}
 			}
 		}
@@ -65,7 +65,6 @@
 			"include": [
 				"ID-REGISTER.json",
 				"INSTALL-LAYOUT.json",
-				"NOTICE.md",
 				"shared/CHANGELOG.md",
 				"shared/README.md",
 				"shared/RESOURCE-MAP.json",
@@ -234,17 +233,14 @@
 			"include": [
 				"CATALOG.json",
 				"CHANGELOG.md",
-				"CURRENT-RELEASE-STATUS.json",
 				"FOUNDATION-SNAPSHOT.json",
 				"INVENTORY.json",
 				"README.md",
-				"SECURITY-RELEASE-STATUS.json",
 				"skills/netsuite-suiteskills-finance/agents/openai.yaml",
 				"skills/netsuite-suiteskills-customers-sales/agents/openai.yaml",
 				"skills/netsuite-suiteskills-operations/agents/openai.yaml",
 				"skills/netsuite-suiteskills-workforce/agents/openai.yaml",
 				"skills/netsuite-suiteskills-onboarding/agents/openai.yaml",
-				"SAFEWORDS-COVERAGE.md",
 				"SAFEWORDS-COVERAGE.json",
 				"SECURITY-CHANGELOG.md",
 				"VISUALIZER-CHANGELOG.md"

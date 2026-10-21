@@ -1,7 +1,7 @@
 ---
 name: netsuite-suiteskills-finance
 description: "Use for Finance and Accounting: Expense Close Assistant, Match Vendor Credits to Bills, Cash and Liquidity, Executive Financial Reporting, Finance Controls Review, Financial Statement Review, Invoice Collections, Journal Entry Review, Period Close Status, Variance and Flux Analysis, Payment Prioritization, Vendor Bill Processing Time, Vendor Spend Analysis, Labor Cost Advisor, CFO Cohort Analysis, Revenue Leakage, Intercompany Balance Explorer, SuiteTax Nexus Explainer, Overdue Invoice Change Review, Project Financial Assistant, Bank reconciliation prioritization, Credit Management. Select the matching runbook; supported actions require authorization and business prerequisites."
-license: LicenseRef-SuiteSkills-Review-Pending
+license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   owner: "Oracle NetSuite"
   version: "1.0.0"
