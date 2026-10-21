@@ -1,9 +1,9 @@
 # SuiteSkills openai source navigation
 
-This directory contains the SuiteSkills 1.0.0 build recipe and provider-specific inputs.
+This directory contains the SuiteSkills 1.0.0 build recipe and provider-specific inputs. Release authorization requires recorded component redistribution clearance and engineering acceptance of the final packages. Security approval covers the security review; it does not establish redistribution rights or installed-runtime qualification.
 
 - [Build recipe](plugin.build.json)
-- [Current release status](src/CURRENT-RELEASE-STATUS.json)
+- [Requirements and limitations](src/README.md#requirements-and-limitations)
 - [Release history](src/CHANGELOG.md)
 - [Shared guidance](../../common/layers/suiteskills/shared/README.md)
 - [Customers & Sales](../../common/skills/suiteskills/netsuite-suiteskills-customers-sales/SKILL.md)

@@ -2,11 +2,13 @@
 
 # SuiteSkills 1.0.0
 
+Release authorization requires recorded component redistribution clearance and engineering acceptance of the final packages. Security approval covers the security review; it does not establish redistribution rights or installed-runtime qualification.
+
 Browsing the source repository? Use the [source navigation page](https://github.com/oracle/netsuite-suitecloud-sdk/blob/ai-plugins/packages/ai-plugins/anthropic/netsuite-suiteskills/README.md) for links to shared skills and guidance. The relative links below target the assembled plug-in.
 
 Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector.
 
-The [catalog](CATALOG.json) contains 48 business runbooks and conversational onboarding. Source evidence, currency, coverage, and preliminary/limited-result disclosure remain required. Data Visualization retains source version 2.2.0-rc.1 and accepts supplied files/tables and supported producer results without a Finance Analyst dependency. Read [shared guidance](shared/README.md) and [current status](CURRENT-RELEASE-STATUS.json).
+The [catalog](CATALOG.json) contains 48 business runbooks and conversational onboarding. Source evidence, currency, coverage, and preliminary/limited-result disclosure remain required. Data Visualization retains source version 2.2.0-rc.1 and accepts supplied files/tables and supported producer results without a Finance Analyst dependency. Read [shared guidance](shared/README.md).
 
 ## Included Skills
 
@@ -54,10 +56,20 @@ Workforce gives HR teams, controllers, and managers a clear view of workforce da
 
 Install the assembled `anthropic/netsuite-suiteskills` directory through the host's supported plug-in installation flow. The build generates `.claude-plugin/plugin.json` from `plugin.build.json`. Skills use unsuffixed `skills/netsuite-suiteskills-*/` directories and isolated shared resources. OpenAI display files and branding are excluded.
 
-Version 0.8.2 renames the People entry point to Workforce. Refresh the host's installed skill inventory after upgrading; do not retain both entry points. CAT-PPL, every RB-PPL ID, all 48 runbook identities, and existing aliases remain stable. Historical names remain in changelogs and provenance. Source/business versions, including Cohort Analysis 0.8.0, are preserved. The receiving repository retains `common/skills/suiteskills/`, the 152-path shared layer, and existing provider recipes; the handoff's older `packages/agent-skills` migration is not applied directly. Handoff utilities, source manifests, archives, and generated outputs are excluded from plug-in inputs.
+After upgrading, refresh the host's installed skill inventory. Workforce replaces the former People entrypoint; do not retain both entrypoints. Existing runbook identities and aliases are preserved.
 
 Connector schemas, account and role permissions, rendering, native question controls, and script execution are discovered in the actual session. Missing presentation capabilities preserve equivalent factual answers where the procedure permits. Source provenance, currency, evidence coverage, export gates, and exact action confirmation remain mandatory. Data Visualization has its own checked runtime profiles; shared writers retain their existing scope and safeguards. Store generated outputs outside installed assets with a fresh basename.
 
+## Requirements and limitations
+
+- Live NetSuite data and actions require a separately authorized NetSuite AI Connector connection, enabled account features, available tools, and sufficient role permissions. Installing the plug-in does not create or authenticate a connection.
+- Actions depend on the selected workflow's scope, business prerequisites, and authorization safeguards. Confirmation does not enable an excluded action. Bank Reconciliation Prioritization is read-only.
+- Presentation, local execution, file delivery, and readback depend on the application and executor in use. If a required capability is unavailable, use the workflow's factual text or table fallback.
+- Shared file writers require the documented macOS/Darwin and local APFS publication profile. Data Visualization has a separate checked execution profile. See its [host capabilities](skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/references/host-compatibility.md) and [export requirements](skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/references/publication.md) before generating files.
+- Data Visualization requires Python 3.12. PDF and PowerPoint exports require macOS/Darwin, reviewed Node.js, Playwright, and matching Chromium dependencies. PDF validation also requires pypdf and the specified host font with applicable use and embedding rights.
+- PowerPoint charts are raster images rather than editable Office charts. Inspect output in an available renderer and verify delivery by readback. Host-managed file transfer does not guarantee atomic prevention of destination replacement.
+
+Security review and approval are complete.
 
 ## License
 

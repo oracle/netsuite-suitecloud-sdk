@@ -22,7 +22,7 @@ The former category policy was two general sentences; the 0.8.0 policy makes the
 
 ## Where to inspect application
 
-[SafeWords locations and application](SAFEWORDS-COVERAGE.md) lists every policy owner and mandatory reference by file and line. [Machine-readable coverage](SAFEWORDS-COVERAGE.json) supplies exact hashes, targets and removed-section accounting. The owning policy is applied throughout supporting references without copying its body into them. Policy text is duplicated only where independently loadable skills require a local copy.
+[Machine-readable SafeWords coverage](SAFEWORDS-COVERAGE.json) lists policy owners and application references by path and line, with exact hashes, targets, and removed-section accounting. The owning policy is applied throughout supporting references without copying its body into them. Policy text is duplicated only where independently loadable skills require a local copy.
 
 ## Preserved domain safeguards
 

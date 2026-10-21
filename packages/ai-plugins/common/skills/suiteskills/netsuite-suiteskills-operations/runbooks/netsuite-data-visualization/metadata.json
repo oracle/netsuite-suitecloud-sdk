@@ -69,7 +69,6 @@
   "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/RUNBOOK.md",
   "platform": "Darwin/local APFS; checked Linux glibc 2.39 LP64 ext-family HTML candidate; native delivery conditional",
   "product_team": "Administration",
-  "release_status": "unreleased_integration_candidate",
   "shared_dependencies": [
     "shared/contracts/BASELINE.md",
     "shared/contracts/OUTPUTS.md",

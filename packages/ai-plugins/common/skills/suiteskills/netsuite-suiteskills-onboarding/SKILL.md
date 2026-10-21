@@ -11,7 +11,6 @@ metadata:
   kind: skill
   category: utility
   owner: "Oracle NetSuite"
-  release-status: testing_candidate
 ---
 
 # Onboarding

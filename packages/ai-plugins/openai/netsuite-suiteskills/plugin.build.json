@@ -24,7 +24,7 @@
 		"interface": {
 			"displayName": "SuiteSkills",
 			"shortDescription": "NetSuite business workflows",
-			"longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Available output formats depend on the application you use. Internal testing candidate; native and live-account qualification pending.",
+			"longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Available output formats depend on the application you use.",
 			"developerName": "Oracle NetSuite",
 			"category": "Business & Operations",
 			"websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suiteskills",
@@ -46,7 +46,7 @@
 			"com.openai": {
 				"onboardingSkill": "./skills/netsuite-suiteskills-onboarding/SKILL.md",
 				"publication": {
-					"release_notes": "SuiteSkills 1.0.0 adopts reviewed category descriptions and renames People to Workforce. All 48 runbook identities, source versions, SafeWords, and Data Visualization 2.2.0-rc.1 behavior are preserved. Native, account, and security qualification remains pending."
+					"release_notes": "SuiteSkills 1.0.0 includes five skills and 48 business runbooks across Finance, Operations, Customers & Sales, and Workforce, with guided onboarding. Supported actions follow workflow-specific authorization safeguards. File outputs depend on the host, executor, and declared dependencies."
 				}
 			}
 		}

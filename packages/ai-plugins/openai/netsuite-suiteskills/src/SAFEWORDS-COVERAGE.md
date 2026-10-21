@@ -8,7 +8,7 @@ Static structure and link verification only. Native model adherence, account beh
 |---|---|---|
 | skills/netsuite-suiteskills-customers-sales/SKILL.md | 33–49 | `875f9d15748aebad912450b05de4999a20138fcb34fdc9eb8f4361dcf5ad106e` |
 | skills/netsuite-suiteskills-finance/SKILL.md | 47–63 | `83e618bceede4aee36bb882effa41f939c140f37b1dcc0f1e0b28cd88d61e379` |
-| skills/netsuite-suiteskills-onboarding/SKILL.md | 27–43 | `d101321772b1ed384d630449c2b56cee66eb1a948e87bc027bb388c73ffe900f` |
+| skills/netsuite-suiteskills-onboarding/SKILL.md | 26–42 | `299a3145ec2d90a8783797df0adddf5985da006af6560316ff290b2e8134fe51` |
 | skills/netsuite-suiteskills-operations/SKILL.md | 39–55 | `d1db79f2986262dc5ba1798d768d0ed6fcb208d2f09bdf7309d8fd064ab9ce38` |
 | skills/netsuite-suiteskills-workforce/SKILL.md | 30–46 | `9613a85d751574ed17715788391d0bff1a18c1826be1d4421fc87eec906bf837` |
 

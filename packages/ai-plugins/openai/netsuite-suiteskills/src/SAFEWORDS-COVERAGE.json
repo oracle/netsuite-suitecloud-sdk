@@ -682,7 +682,7 @@
       "start_line": 47
     },
     {
-      "end_line": 43,
+      "end_line": 42,
       "path": "skills/netsuite-suiteskills-onboarding/SKILL.md",
       "policy_ids": [
         "SW-01",
@@ -698,8 +698,8 @@
         "SW-11"
       ],
       "reason_for_copy": "independently_loadable_skill_requires_local_policy",
-      "sha256": "d101321772b1ed384d630449c2b56cee66eb1a948e87bc027bb388c73ffe900f",
-      "start_line": 27
+      "sha256": "299a3145ec2d90a8783797df0adddf5985da006af6560316ff290b2e8134fe51",
+      "start_line": 26
     },
     {
       "end_line": 55,

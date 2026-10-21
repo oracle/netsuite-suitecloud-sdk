@@ -27,5 +27,8 @@
   "writer_remediation": {
     "shared_writer_files": 18,
     "specialized_runbook_consumers": 7
-  }
+  },
+  "source_rights_clearance": "not_recorded",
+  "final_engineering_acceptance": "not_recorded",
+  "release_authorization": "not_recorded"
 }
