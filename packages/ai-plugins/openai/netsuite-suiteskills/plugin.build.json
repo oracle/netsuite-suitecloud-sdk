@@ -220,7 +220,7 @@
 			"exclude": []
 		},
 		{
-			"name": "openai",
+			"name": "branding",
 			"include": [
 				"assets/netsuite-icon.png",
 				"assets/netsuite-logo.png"
