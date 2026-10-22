@@ -7,7 +7,7 @@
     "netsuite-suiteskills-workforce": "95cdb84bf9873552c8d25750b733e0c264e28b41e9c94aeee6d2c290f280dacb"
   },
   "digest_basis": "SHA-256 of sorted UTF-8 JSON of shared_files and category_source_sha256, 2 spaces, final LF",
-  "foundation_sha256": "51dee76d96c972382feccd8826abc810826d43ee3e3b5bfd512de6ec381c2d52",
+  "foundation_sha256": "eac3c33bc42addcb75b592c5fc146f6bc7cdb66a5b0d67a204fb41d6e15d3640",
   "native_host_execution": "not_run",
   "plugin": {
     "name": "netsuite-suiteskills",
@@ -15,9 +15,9 @@
   },
   "schema": "suiteskills-sdk-foundation-1",
   "shared_files": {
-    "shared/CHANGELOG.md": "caf32d4cdbdfc82f15a38c3286f66e0b6346cf8e852c7ce2cfcaaa83713ee581",
+    "shared/CHANGELOG.md": "d1d1e5936cdbd36b1618343386966b54475f9965cc6138c827b066f868ee389e",
     "shared/README.md": "05aa4eeef12ee873dce86faeaefc41b7dff6b6db3bdf3cfe1ec463a7bdfbe67c",
-    "shared/RESOURCE-MAP.json": "4538cafce108376c6742b7743afdca31f834b24e358c2aae2b2e9a6b64c18e79",
+    "shared/RESOURCE-MAP.json": "9f97a14607332f6f2c22b8b7c5162e2a1c87d96464d4b6596011aea48945eadc",
     "shared/account-context/design/design-tokens.json": "1d8c314347e060aba881061fedc33edd2a7627b16ef394c3f234e1dfb0c25f11",
     "shared/account-context/design/redwood-tokens.css": "db3c10080b66ae9fb37a02818d0538070a0ddeb1e5af201d04efa87f800ce87b",
     "shared/account-context/design/visual.css": "d62020987d2384ff9b178d9cdcbeea14a1fa3fe76825850ef4658d193ae528a2",
@@ -57,7 +57,7 @@
     "shared/knowledge/PLUGIN-TERMS.md": "ac02c40100efca9f5764252af1c140617651f65a5b5bb43c341f70de6672ec98",
     "shared/knowledge/RETRIEVAL-PATTERNS.md": "c0a4a3ddd1bac237ba2cddfeca37b20b6b83316ade5612047966d8a11ed85f83",
     "shared/knowledge/SUPPORT-EVIDENCE.md": "43d0d073ca126f8c88f183524c1c350d77be80657c419428ec34bc14f5f10077",
-    "shared/project-reporting/CHANGELOG.md": "514594b3296e9a31c3e81c0dddde0cedd31c75759f204e520480f224c69d9e87",
+    "shared/project-reporting/CHANGELOG.md": "8886b057961b23f1ffe1cea48b045d299a9830ebe0a989ce669d5b40a11691e4",
     "shared/project-reporting/README.md": "42d101882d84c6076e7a6dbd710899f50a93385163acd0f004d1b688b1b92191",
     "shared/project-reporting/assets/primary-dashboard.html": "3ea8b02ee1af00a4d3324cf0a118de737d1df4ad72c435c26f26f6dcdffccbdd",
     "shared/project-reporting/assets/visual/visual.css": "d87e0fca9994a5ffefa4ea1a4ed0350e80655d0ed629048a6790dbe27cbd370e",

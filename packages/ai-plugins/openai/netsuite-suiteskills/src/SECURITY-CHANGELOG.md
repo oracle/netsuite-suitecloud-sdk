@@ -1,8 +1,8 @@
 # SuiteSkills security change notes
 
-## 1.0.0 — Initial SDK integration
+## Included in SuiteSkills 1.0.0
 
-Five independently loadable skills own the complete SafeWords SW-01–SW-11 policy. All 48 runbooks and 15 workflow documents load and apply their owning policy before tool use, including direct loads. Missing required policy stops dependent operations. [Machine-readable coverage](SAFEWORDS-COVERAGE.json) identifies owners, references, targets and hashes; [shared guidance](shared/README.md) describes resource loading.
+Independently loadable skills own the complete SafeWords SW-01–SW-11 policy. Runbooks and workflow documents load and apply their owning policy before tool use, including direct loads. Missing required policy stops dependent operations. [Machine-readable coverage](SAFEWORDS-COVERAGE.json) identifies owners, references, targets and hashes; [shared guidance](shared/README.md) describes resource loading.
 
 The maintained safeguards require:
 
@@ -15,4 +15,4 @@ The maintained safeguards require:
 
 Bank Reconciliation Prioritization, Return Authorization, Customer Support, Lead Management and other explicitly read-only procedures retain their exclusions after user confirmation. Time Approval retains its confirmed preview, outcome verification and stricter timeout recovery. Absence retains hours-only units and expiry/running-balance semantics; Benefits retains authorized worklist requirements.
 
-Full-plugin security approval has been obtained. Source rights are covered by the SDK contribution process, and first-party content uses The Universal Permissive License (UPL), Version 1.0. Policy and structural checks do not establish model adherence, host loading or connector/account behavior. This 1.0.0 internal testing candidate still requires final validation and installed-host, model, account and runtime qualification.
+First-party content uses The Universal Permissive License (UPL), Version 1.0. Policy and structural checks do not establish model adherence, host loading or connector/account behavior. Installed-host, model, account and runtime qualification remain required.

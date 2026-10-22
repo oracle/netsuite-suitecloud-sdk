@@ -1,13 +1,9 @@
-## Integration 0.7.2 — 2026-10-14
+# Customer Support Assistant changelog
 
-Include the approved narrowed read-only Customer Support procedure as RB-CRM-005, assigned skill version 1.0.0; upstream source version remains unknown. Preserve accepted partial-sentiment boundaries and unavailable chart/dashboard/whole-case sentiment scope. Integrate current owner and explicit skill-version metadata as release 0.7.2. Keep upstream source versions separate and preserve the approved business procedure. Include the administrative scope corrections where applicable; this is not an upstream source release or runtime qualification.
+## Included in SuiteSkills 1.0.0
 
-# Change history
+Component version: 1.0.0. Source version: unknown.
 
-## Unreleased standardization
+Use for read-only NetSuite support: count open or escalated cases, review my queue or unassigned cases, investigate cases and messages, draft replies, and assess lifecycle or escalation readiness. Excludes sending or logging replies, case changes, knowledge publication, and return processing.
 
-Source version was not supplied and remains unknown. Stable source name preserved. Added target metadata and foundation references; removed host-specific discovery files. No release version assigned.
-
-## Unreleased content improvements
-
-Reviewed the preserved standardized baseline. Refined routing description, current capability requirements, and used vocabulary. Applied the specific retrieval and wording corrections recorded in the external assessment. No source release version assigned; no account or host execution performed.
+Partial-sentiment boundaries apply; charts, dashboards and whole-case sentiment are unavailable.

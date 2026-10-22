@@ -1,6 +1,8 @@
 # SuiteSkills visualization change notes
 
-## 1.0.0 — Data Visualization source 2.2.0-rc.1
+## Included in SuiteSkills 1.0.0
+
+Data Visualization source version: 2.2.0-rc.1.
 
 Data Visualization (RB-OPS-020) accepts supplied files/tables and supported NetSuite or other producer results with provenance, without requiring Finance Analyst. Money requires explicit currency and compatible series/interval units. Missing values remain distinct from zero; the renderer performs no local totals or FX conversion.
 
@@ -14,4 +16,4 @@ PDF and PowerPoint require an explicit request and qualified Darwin export depen
 
 Generate outside installed assets. Managed host delivery is separate from source publication: use a fresh random basename, an immediate destination check, the observed host transfer facility and identity/readback verification. The collision-avoidance destination profile can race and does not guarantee atomic no-replacement. Hashes do not authenticate account access or transport. Unsupported execution/export fails closed or provides the documented factual fallback where permitted.
 
-This remains a 1.0.0 internal testing candidate. Final validation, installed-host delivery, model/account behavior, Linux execution and retained output/runtime claims still require qualification. Prior local or synthetic checks do not establish those results. Full-plugin security approval has been obtained; source rights are covered by the SDK contribution process.
+Installed-host delivery, model/account behavior, Linux execution and output/runtime support require exact-host qualification. Local or synthetic checks do not establish those results.
