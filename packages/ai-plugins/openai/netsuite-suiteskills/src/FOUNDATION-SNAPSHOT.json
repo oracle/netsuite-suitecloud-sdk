@@ -6,7 +6,7 @@
     "netsuite-suiteskills-workforce": "95cdb84bf9873552c8d25750b733e0c264e28b41e9c94aeee6d2c290f280dacb"
   },
   "digest_basis": "SHA-256 of sorted UTF-8 JSON of shared_files and category_source_sha256, 2 spaces, final LF",
-  "foundation_sha256": "46a265ff4a337e632c447d6481d2b9521c9750f5980590e80dfcea8ac052e5bb",
+  "foundation_sha256": "f2ddb2bf876982db2c0d783e25adf0ea415ac5e64e37e417baefdfdde217b4fc",
   "native_host_execution": "not_run",
   "plugin": {
     "name": "netsuite-suiteskills",
@@ -16,7 +16,7 @@
   "shared_files": {
     "shared/CHANGELOG.md": "d1d1e5936cdbd36b1618343386966b54475f9965cc6138c827b066f868ee389e",
     "shared/README.md": "d90f72a2020bb3da65f67c14411207f98623971ce32fc6912f62806d17b5c3c7",
-    "shared/RESOURCE-MAP.json": "e79666f32ad763b8615edf92f4514131173338e32e379d0be1c5a670529f1479",
+    "shared/RESOURCE-MAP.json": "24024545a4aa8d3d510dbfa1a7f1c82978a8b2602413cdb4763abf1e172cdf44",
     "shared/account-context/design/design-tokens.json": "1d8c314347e060aba881061fedc33edd2a7627b16ef394c3f234e1dfb0c25f11",
     "shared/account-context/design/redwood-tokens.css": "db3c10080b66ae9fb37a02818d0538070a0ddeb1e5af201d04efa87f800ce87b",
     "shared/account-context/design/visual.css": "d62020987d2384ff9b178d9cdcbeea14a1fa3fe76825850ef4658d193ae528a2",
@@ -24,7 +24,7 @@
     "shared/account-context/rendering/render_response.py": "a2423332a2731132a41a59398222960171f6126ec15758eba0c03834ffbdd0cb",
     "shared/account-context/tools/bind_query.py": "f1004803963828e814ae4f8e8502281bb9f515284a83c1a5c2deb2eb38258869",
     "shared/account-context/tools/compile_query.py": "7484ba69e954c68091e283d8c9c64d59c1368aaf44d5ef32fbbd2475c60c1edd",
-    "shared/account-context/tools/standard-tools.json": "4c341e55fd183c179c82dc338fb62f3806dd89a469423948b839e70deb0441af",
+    "shared/account-context/tools/standard-tools.json": "c569b10fd78493ec7e842c139c432d309ff47844e32b9778441f99cf863aaee0",
     "shared/communication/GUIDED-EXPERIENCE.md": "e594fbb0e13d10a67e56735a48a0709f0dbbda7fda5e5e99530430832a857166",
     "shared/communication/RESPONSE-STYLE-GUIDE.md": "3a09fd76a84dbbaca5f581c5a1ae687da3c9ff3c4ce47b28c04207f021d78fed",
     "shared/communication/RESPONSE-STYLE-RUNTIME.md": "8828f32bb13676b69d34b5d50ccb9c9a3f7c493a06618ff30a4cf24063b8e37f",
@@ -162,6 +162,6 @@
     "shared/tools/compile_query.py": "a939ebdb8aaa6aaa2aa1e681c6520c57e80988dd542750570135a47e1fcc3056",
     "shared/tools/period_coverage.py": "b486b7740b8637a5d39dc4d21c3ff35c7d74a08ac0afe3979ef1337dfd7a51ac",
     "shared/tools/result_evidence.py": "56e92c13271fe0b2ced62c16cb39edd683fc7b558392336354e2b6c235809f0f",
-    "shared/tools/standard-tools.json": "4c341e55fd183c179c82dc338fb62f3806dd89a469423948b839e70deb0441af"
+    "shared/tools/standard-tools.json": "c569b10fd78493ec7e842c139c432d309ff47844e32b9778441f99cf863aaee0"
   }
 }

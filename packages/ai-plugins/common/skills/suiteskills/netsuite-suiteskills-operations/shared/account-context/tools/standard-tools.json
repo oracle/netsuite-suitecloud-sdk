@@ -192,7 +192,7 @@
       "inputSchema": {
         "properties": {
           "query": {
-            "description": "Optional query to filter the resutls",
+            "description": "Optional query to filter the results",
             "type": "string"
           }
         },

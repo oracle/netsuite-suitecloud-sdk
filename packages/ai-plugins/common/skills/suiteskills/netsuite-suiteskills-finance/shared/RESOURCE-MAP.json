@@ -8,7 +8,7 @@
   "shared/account-context/rendering/render_response.py": "a2423332a2731132a41a59398222960171f6126ec15758eba0c03834ffbdd0cb",
   "shared/account-context/tools/bind_query.py": "f1004803963828e814ae4f8e8502281bb9f515284a83c1a5c2deb2eb38258869",
   "shared/account-context/tools/compile_query.py": "7484ba69e954c68091e283d8c9c64d59c1368aaf44d5ef32fbbd2475c60c1edd",
-  "shared/account-context/tools/standard-tools.json": "4c341e55fd183c179c82dc338fb62f3806dd89a469423948b839e70deb0441af",
+  "shared/account-context/tools/standard-tools.json": "c569b10fd78493ec7e842c139c432d309ff47844e32b9778441f99cf863aaee0",
   "shared/communication/GUIDED-EXPERIENCE.md": "e594fbb0e13d10a67e56735a48a0709f0dbbda7fda5e5e99530430832a857166",
   "shared/communication/RESPONSE-STYLE-GUIDE.md": "3a09fd76a84dbbaca5f581c5a1ae687da3c9ff3c4ce47b28c04207f021d78fed",
   "shared/communication/RESPONSE-STYLE-RUNTIME.md": "8828f32bb13676b69d34b5d50ccb9c9a3f7c493a06618ff30a4cf24063b8e37f",
@@ -146,5 +146,5 @@
   "shared/tools/compile_query.py": "a939ebdb8aaa6aaa2aa1e681c6520c57e80988dd542750570135a47e1fcc3056",
   "shared/tools/period_coverage.py": "b486b7740b8637a5d39dc4d21c3ff35c7d74a08ac0afe3979ef1337dfd7a51ac",
   "shared/tools/result_evidence.py": "56e92c13271fe0b2ced62c16cb39edd683fc7b558392336354e2b6c235809f0f",
-  "shared/tools/standard-tools.json": "4c341e55fd183c179c82dc338fb62f3806dd89a469423948b839e70deb0441af"
+  "shared/tools/standard-tools.json": "c569b10fd78493ec7e842c139c432d309ff47844e32b9778441f99cf863aaee0"
 }
