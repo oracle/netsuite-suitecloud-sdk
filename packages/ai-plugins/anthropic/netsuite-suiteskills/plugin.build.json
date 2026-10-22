@@ -5,7 +5,8 @@
 	"platform": "anthropic",
 	"metadata": {
 		"name": "netsuite-suiteskills",
-		"displayName": "SuiteSkills",
+		"displayName": "NetSuite SuiteSkills",
+		"icon": "./assets/netsuite-icon.png",
 		"description": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Available output formats depend on the application you use.",
 		"author": {
 			"name": "Oracle NetSuite",
@@ -195,6 +196,13 @@
 				"shared/tools/period_coverage.py",
 				"shared/tools/result_evidence.py",
 				"shared/tools/standard-tools.json"
+			],
+			"exclude": []
+		},
+		{
+			"name": "branding",
+			"include": [
+				"assets/netsuite-icon.png"
 			],
 			"exclude": []
 		}

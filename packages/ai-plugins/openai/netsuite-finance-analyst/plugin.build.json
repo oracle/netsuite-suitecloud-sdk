@@ -35,7 +35,7 @@
 		"netsuite-finance-analyst"
 	],
 	"commonLayers": [
-		"openai"
+		"branding"
 	],
 	"inputs": [
 		{

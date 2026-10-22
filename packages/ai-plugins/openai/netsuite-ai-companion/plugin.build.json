@@ -35,7 +35,7 @@
 		"netsuite-ai-connector-instructions"
 	],
 	"commonLayers": [
-		"openai"
+		"branding"
 	],
 	"inputs": [
 		{

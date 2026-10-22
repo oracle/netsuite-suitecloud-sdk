@@ -142,8 +142,8 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     for (const asset of [i.logo,i.composerIcon]) await exists(asset);
     assert.equal(i.composerIcon,'./assets/netsuite-icon.png');
     assert.equal(i.logo,'./assets/netsuite-logo.png');
-    assert.deepEqual(plugin.commonLayers.find(layer=>layer.name==='openai'),{name:'openai',include:brandingFiles,exclude:[]});
-    for (const file of brandingFiles) assert.deepEqual(await read(file),await fs.readFile(path.join(packageRoot,'common/layers/openai',file)),file);
+    assert.deepEqual(plugin.commonLayers.find(layer=>layer.name==='branding'),{name:'branding',include:brandingFiles,exclude:[]});
+    for (const file of brandingFiles) assert.deepEqual(await read(file),await fs.readFile(path.join(packageRoot,'common/layers/branding',file)),file);
     assert.equal(plugin.metadata.extensions['com.openai'].onboardingSkill,'./skills/netsuite-suiteskills-onboarding/SKILL.md');
     await exists(plugin.metadata.extensions['com.openai'].onboardingSkill);
     assert.deepEqual(displayFiles,plugin.skills.map(s=>`skills/${s}/agents/openai.yaml`).sort());
@@ -151,7 +151,9 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     assert.equal(plugin.metadata.apps,undefined); assert.equal(plugin.metadata.mcpServers,undefined);
    } else {
     assert.deepEqual(displayFiles,[]);
-    for (const file of brandingFiles) assert(!files.includes(file),file);
+    assert.equal(plugin.metadata.icon,'./assets/netsuite-icon.png');
+    await exists(plugin.metadata.icon);
+    assert(!files.includes('assets/netsuite-logo.png'));
    }
    await t.test('visualization prerequisites and export-gate packaging',async()=>{
     const row=catalog.runbooks.find(r=>r.id==='RB-OPS-020');
