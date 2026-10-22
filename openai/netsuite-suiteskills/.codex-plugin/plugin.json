@@ -17,7 +17,7 @@
   "homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist",
   "repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
   "interface": {
-    "displayName": "SuiteSkills",
+    "displayName": "NetSuite SuiteSkills",
     "shortDescription": "NetSuite business workflows",
     "longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Available output formats depend on the application you use.",
     "developerName": "Oracle NetSuite",
