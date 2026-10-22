@@ -44,7 +44,7 @@ Operations helps warehouse, fulfillment, purchasing, and supply chain teams unde
 
 *Payroll readiness, time, absence, and benefits insight for HR and managers.*
 
-Workforce gives HR teams, controllers, and managers a clear view of workforce data in NetSuite and SuitePeople. It audits payroll readiness across employee setup, inputs, and calculated results, without running or submitting payroll. It analyzes absence balances, carryover, and upcoming expirations, and monitors benefits coverage and recorded costs. For time management, it can review pending time and approve or reject entries after a confirmed preview. It can also draft new time entries for the user to review and save. Every change requires explicit user confirmation, and the skill makes no eligibility or employment decisions.
+Workforce gives HR teams, controllers, and managers a clear view of workforce data in NetSuite and SuitePeople. It audits payroll readiness across employee setup, inputs, and calculated results, without running or submitting payroll. It analyzes absence balances, carryover, and upcoming expirations, and monitors benefits coverage and recorded costs. For time management, it can review pending time and approve or reject entries after a confirmed preview. It can also draft new time entries for the user to review and save. Every change requires explicit user confirmation, and the skill makes no eligibility or employment judgments.
 
 [Open Workforce](skills/netsuite-suiteskills-workforce/SKILL.md)
 
