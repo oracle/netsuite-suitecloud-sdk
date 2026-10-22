@@ -19,7 +19,7 @@
 			"workforce",
 			"mcp"
 		],
-		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suiteskills",
+		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist",
 		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
 		"interface": {
 			"displayName": "SuiteSkills",
