@@ -20,8 +20,17 @@
 			"workforce",
 			"mcp"
 		],
-		"homepage": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/anthropic/netsuite-suiteskills",
-		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk"
+		"homepage": "https://www.netsuite.com",
+		"repository": "https://github.com/oracle/netsuite-suitecloud-sdk",
+		"supportUrl": "https://suiteanswers.custhelp.com/app/home",
+		"privacyPolicyUrl": "https://www.oracle.com/legal/privacy/services-privacy-policy/",
+		"termsOfServiceUrl": "https://www.oracle.com/legal/terms/",
+		"metadata": {
+			"capabilities": [
+				"Read",
+				"Write"
+			]
+		}
 	},
 	"skills": [
 		"netsuite-suiteskills-customers-sales",

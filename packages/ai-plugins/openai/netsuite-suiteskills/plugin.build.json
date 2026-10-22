@@ -24,11 +24,11 @@
 		"interface": {
 			"displayName": "SuiteSkills",
 			"shortDescription": "NetSuite business workflows",
-			"longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Available output formats depend on the application you use. Internal testing candidate; native and live-account qualification pending.",
+			"longDescription": "Put NetSuite expertise to work with SuiteSkills. Explore your business data, uncover actionable insights, and complete supported workflows across finance, sales, customer support, operations, and workforce management through NetSuite AI Connector. Requires a separately authorized NetSuite connection for live data and actions. Available output formats depend on the application you use.",
 			"developerName": "Oracle NetSuite",
 			"category": "Business & Operations",
-			"websiteURL": "https://github.com/oracle/netsuite-suitecloud-sdk/tree/ai-plugins-dist/openai/netsuite-suiteskills",
-			"privacyPolicyURL": "https://www.oracle.com/legal/privacy/",
+			"websiteURL": "https://www.netsuite.com",
+			"privacyPolicyURL": "https://www.oracle.com/legal/privacy/services-privacy-policy/",
 			"logo": "./assets/netsuite-logo.png",
 			"composerIcon": "./assets/netsuite-icon.png",
 			"brandColor": "#294B5F",
@@ -40,13 +40,15 @@
 				"Help me get started with SuiteSkills.",
 				"Review my inventory exceptions.",
 				"Show my customer credit exposure."
-			]
+			],
+			"supportURL": "https://suiteanswers.custhelp.com/app/home",
+			"termsOfServiceURL": "https://www.oracle.com/legal/terms/"
 		},
 		"extensions": {
 			"com.openai": {
 				"onboardingSkill": "./skills/netsuite-suiteskills-onboarding/SKILL.md",
 				"publication": {
-					"release_notes": "SuiteSkills 1.0.0 introduces five skills and 48 business runbooks spanning customers and sales, finance, operations, and workforce, with onboarding and data visualization. Live data and supported actions require a separately authorized NetSuite AI Connector connection, account permissions, and workflow prerequisites; Bank Reconciliation Prioritization is read-only. Output formats depend on the host and runtime. Native-host and live-account qualification remain pending."
+					"release_notes": "SuiteSkills 1.0.0 introduces five skills and 48 business runbooks spanning customers and sales, finance, operations, and workforce, with onboarding and data visualization. Live data and supported actions require a separately authorized NetSuite AI Connector connection, account permissions, and workflow prerequisites; Bank Reconciliation Prioritization is read-only. Output formats depend on the host and runtime."
 				}
 			}
 		}
