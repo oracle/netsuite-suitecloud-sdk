@@ -343,7 +343,11 @@ test('all provider-qualified plugins stage nested artifacts with provider-specif
 			}
 		} else {
 			assert(!files.includes('assets/netsuite-logo.png'));
-			assert(!files.includes('assets/netsuite-icon.png'));
+			if (manifest.icon) {
+				assert(files.includes(manifest.icon.replace(/^\.\//, '')));
+			} else {
+				assert(!files.includes('assets/netsuite-icon.png'));
+			}
 		}
 	}
 });

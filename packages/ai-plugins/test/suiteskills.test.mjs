@@ -151,7 +151,9 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     assert.equal(plugin.metadata.apps,undefined); assert.equal(plugin.metadata.mcpServers,undefined);
    } else {
     assert.deepEqual(displayFiles,[]);
-    for (const file of brandingFiles) assert(!files.includes(file),file);
+    assert.equal(plugin.metadata.icon,'./assets/netsuite-icon.png');
+    await exists(plugin.metadata.icon);
+    assert(!files.includes('assets/netsuite-logo.png'));
    }
    await t.test('visualization prerequisites and export-gate packaging',async()=>{
     const row=catalog.runbooks.find(r=>r.id==='RB-OPS-020');
