@@ -1,0 +1,49 @@
+{
+  "access_mode": "read_only",
+  "aliases": [
+    "WF-FIN-022",
+    "intercompany-balance-explorer",
+    "ns-intercompany-balance-explorer"
+  ],
+  "category": "netsuite-suiteskills-finance",
+  "description": "Review intercompany exposure, subsidiary-pair differences and journal activity for a date range or as-of date. Use for read-only intercompany investigation with verified non-overlapping subsidiaries and comparable currency, book and posting bases; posting, approval and elimination actions require a separate workflow.",
+  "display_name": "Intercompany Balance Explorer",
+  "first_included_date": "2026-10-08",
+  "id": "RB-FIN-022",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "1.0.0",
+  "license": "The Universal Permissive License (UPL), Version 1.0",
+  "name": "netsuite-intercompany-balance-explorer",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-intercompany-balance-explorer/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "529b3b6cc9fc4993b94c45e1609766d4343a32c24e9eb00ce2c8b50c24ce6349",
+  "source_release_date": "unknown",
+  "source_version": "1.1.3",
+  "version": "1.1.3"
+}

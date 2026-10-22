@@ -2,10 +2,12 @@
 	"version": 1,
 	"licenseFile": "../../LICENSE.txt",
 	"skillsRoot": "../agent-skills",
-	"commonLayersRoot": "./common",
+	"commonLayersRoot": "./common/layers",
 	"pluginDistRoot": "../../dist/ai-plugins",
 	"globalExcludes": [
 		"**/.DS_Store",
+		"**/__MACOSX/**",
+		"**/._*",
 		"**/Thumbs.db",
 		"**/*.swp",
 		"**/*.swo",
@@ -13,5 +15,8 @@
 		"**/.git/**",
 		"**/node_modules/**",
 		"**/dist/**"
-	]
+	],
+	"skillSources": {
+		"suiteskills": "./common/skills/suiteskills"
+	}
 }

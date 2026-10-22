@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "title": "Revenue Performance (SAMPLE DATA)",
+  "question": "How did monthly revenue compare with the prior year?",
+  "domain": "financial",
+  "export_name": "revenue-performance",
+  "source": {
+    "kind": "supplied",
+    "label": "User supplied monthly report — synthetic example",
+    "retrieved_at": "2026-10-16T12:00:00Z",
+    "scope": "July–September 2026; consolidated sample; accrual revenue; USD reporting currency; prior year aligned months",
+    "filters": [
+      "Sample dataset only"
+    ],
+    "status": "preliminary",
+    "completeness": "complete",
+    "expected_rows": 3,
+    "grain": [
+      "month"
+    ],
+    "limitations": [
+      "Synthetic values; no live account evidence or accounting assurance."
+    ]
+  },
+  "columns": [
+    {
+      "key": "month",
+      "label": "Month",
+      "type": "date"
+    },
+    {
+      "key": "revenue",
+      "label": "Revenue",
+      "type": "number",
+      "kind": "money",
+      "unit": "USD",
+      "currency": "USD"
+    },
+    {
+      "key": "prior",
+      "label": "Prior Year",
+      "type": "number",
+      "kind": "money",
+      "unit": "USD",
+      "currency": "USD"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2026-07-01",
+      "revenue": 125000.125,
+      "prior": 110000
+    },
+    {
+      "month": "2026-08-01",
+      "revenue": -20000.5,
+      "prior": 120000
+    },
+    {
+      "month": "2026-09-01",
+      "revenue": 165000,
+      "prior": 150000
+    }
+  ],
+  "charts": [
+    {
+      "type": "line",
+      "title": "Monthly Revenue vs Prior Year",
+      "x": "month",
+      "y": "revenue",
+      "series": [
+        {
+          "key": "revenue",
+          "label": "Revenue"
+        },
+        {
+          "key": "prior",
+          "label": "Prior Year"
+        }
+      ]
+    },
+    {
+      "type": "bar",
+      "title": "Revenue by Month",
+      "x": "month",
+      "y": "revenue"
+    }
+  ],
+  "references": []
+}

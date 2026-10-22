@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "context_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "domains": {
+      "items": {
+        "enum": [
+          "delivery",
+          "effort",
+          "work",
+          "staffing",
+          "financial",
+          "risk",
+          "sow"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "ordered_obligations_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "profile": {
+      "enum": [
+        "portfolio-health",
+        "operations",
+        "operations-sow",
+        "financial",
+        "risk"
+      ]
+    },
+    "request_text_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "stages": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "evidence_paths": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "grain": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "members": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "order": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "population_unit": {
+            "enum": [
+              "projects",
+              "resources"
+            ]
+          },
+          "required_fields": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "id",
+          "order",
+          "domain",
+          "grain",
+          "population_unit",
+          "members",
+          "evidence_paths",
+          "required_fields"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "version": {
+      "const": "REVIEW-2.0.0"
+    }
+  },
+  "required": [
+    "version",
+    "profile",
+    "domains",
+    "context_sha256",
+    "request_text_sha256",
+    "ordered_obligations_sha256",
+    "stages"
+  ],
+  "title": "Frozen review-depth plan (generic evidence families, not NetSuite tool arguments)",
+  "type": "object"
+}

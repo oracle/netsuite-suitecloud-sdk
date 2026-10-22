@@ -6,6 +6,7 @@
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { isDirectExecution } from './lib/cli-entrypoint.mjs';
 
 function normalizeRelativePath(filePath) {
 	return filePath.split(path.sep).join('/');
@@ -98,7 +99,7 @@ async function main() {
 	else await verifyIntegrityManifest(rootDir, manifestPath);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (await isDirectExecution(import.meta.url)) {
 	main().catch((error) => {
 		console.error(error.message);
 		process.exitCode = 1;

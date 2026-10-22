@@ -97,8 +97,42 @@
 		"commonLayers": {
 			"type": "array",
 			"items": {
-				"type": "string",
-				"minLength": 1
+				"oneOf": [
+					{
+						"type": "string",
+						"minLength": 1
+					},
+					{
+						"type": "object",
+						"additionalProperties": false,
+						"required": [
+							"name",
+							"include",
+							"exclude"
+						],
+						"properties": {
+							"name": {
+								"type": "string",
+								"minLength": 1
+							},
+							"include": {
+								"type": "array",
+								"minItems": 1,
+								"items": {
+									"type": "string",
+									"minLength": 1
+								}
+							},
+							"exclude": {
+								"type": "array",
+								"items": {
+									"type": "string",
+									"minLength": 1
+								}
+							}
+						}
+					}
+				]
 			}
 		},
 		"inputs": {
@@ -138,6 +172,10 @@
 					}
 				}
 			}
+		},
+		"skillSource": {
+			"type": "string",
+			"minLength": 1
 		}
 	},
 	"allOf": [

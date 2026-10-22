@@ -138,6 +138,10 @@ function createCollisionChecker() {
 }
 
 async function stagePlannedFiles({ workspace, pluginConfig, stageDir }) {
+	if (pluginConfig.validatedSkillSource) {
+		const source = pluginConfig.validatedSkillSource;
+		await validateCollectionRoot({ rootDir: source.rootDir, allowedParent: source.boundaryDir, label: `skill source ${pluginConfig.skillSource}` });
+	}
 	const collisionCheck = createCollisionChecker();
 	const plannedFiles = [];
 
@@ -169,8 +173,8 @@ async function stagePlannedFiles({ workspace, pluginConfig, stageDir }) {
 		const files = await collectFiles({
 			rootDir: layer.rootDir,
 			boundaryDir: layer.boundaryDir,
-			include: ['**/*'],
-			exclude: [],
+			include: layer.include,
+			exclude: layer.exclude,
 			globalExcludes: workspace.buildConfig.globalExcludes,
 			label: `common layer ${layer.name}`,
 		});
@@ -197,7 +201,7 @@ async function stagePlannedFiles({ workspace, pluginConfig, stageDir }) {
 	});
 
 	for (const skillName of getNormalizedSkills(pluginConfig)) {
-		const skillRoot = workspace.skillDirectories.get(skillName);
+		const skillRoot = pluginConfig.skillDirectories.get(skillName);
 		const files = await collectFiles({
 			rootDir: skillRoot.rootDir,
 			boundaryDir: skillRoot.boundaryDir,
