@@ -383,9 +383,7 @@
       "id": "RB-OPS-020",
       "name": "netsuite-data-visualization",
       "previous_state": "retired_by_component_removal",
-      "reason": "User-authorized restoration using independently remediated replacement; original allocation retained.",
-      "source_version": "2.0.0-rc.1",
-      "status": "unreleased_integration_preview"
+      "source_version": "2.0.0-rc.1"
     }
   ],
   "retired_ids": [],

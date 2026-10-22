@@ -43,7 +43,5 @@
   "source_candidate_sha256": "2817caf5f136a0703326a9abe866f397d22effdb827d603515407385857ce84e",
   "source_release_date": "not_collected",
   "source_version": "unknown",
-  "source_version_status": "previously_user_assigned",
-  "version": "1.0.0",
-  "version_basis": "assigned_default_per_user"
+  "version": "1.0.0"
 }

@@ -6,7 +6,7 @@ Data Visualization source version: 2.2.0-rc.1.
 
 Data Visualization (RB-OPS-020) accepts supplied files/tables and supported NetSuite or other producer results with provenance, without requiring Finance Analyst. Money requires explicit currency and compatible series/interval units. Missing values remain distinct from zero; the renderer performs no local totals or FX conversion.
 
-The secured renderer uses the Ocean header, grey canvas, twelve-color palette, flat panels, compact KPI strip and responsive layout. Script-safe JSON, text nodes, pinned assets/CSP, account-bound route validation, safe fresh basenames and exclusive directory-bound publication remain required. Without verified account-origin evidence, record references remain plain text. The legacy authored HTML and template/export binaries are excluded.
+The secured renderer uses the Ocean header, grey canvas, twelve-color palette, flat panels, compact KPI strip and responsive layout. Script-safe JSON, text nodes, pinned assets/CSP, account-bound route validation, safe fresh basenames and exclusive directory-bound publication remain required. Without verified account-origin evidence, record references remain plain text. Authored HTML and template/export binaries are not included.
 
 ### Runtime and delivery limits
 

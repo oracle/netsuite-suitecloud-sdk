@@ -78,12 +78,10 @@
   ],
   "source_release_date": "2026-10-16",
   "source_version": "2.2.0-rc.1",
-  "standardized_from_release": "0.7.2",
   "target_plugin": {
     "name": "netsuite-suiteskills",
     "version": "1.0.0"
   },
   "upstream_source_version": "1.4.0",
-  "version": "2.2.0-rc.1",
-  "version_basis": "source_independent_financial_visuals_and_redwood_alignment"
+  "version": "2.2.0-rc.1"
 }

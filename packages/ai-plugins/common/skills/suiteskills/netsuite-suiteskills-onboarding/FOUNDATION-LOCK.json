@@ -1,6 +1,6 @@
 {
   "category": "utility",
-  "foundation_sha256": "eac3c33bc42addcb75b592c5fc146f6bc7cdb66a5b0d67a204fb41d6e15d3640",
+  "foundation_sha256": "46a265ff4a337e632c447d6481d2b9521c9750f5980590e80dfcea8ac052e5bb",
   "native_host_execution": "not_run",
   "reference_plugin": {
     "name": "netsuite-suiteskills",
@@ -9,8 +9,8 @@
   "schema": "suiteskills-sdk-utility-foundation-1",
   "shared_files": {
     "shared/CHANGELOG.md": "d1d1e5936cdbd36b1618343386966b54475f9965cc6138c827b066f868ee389e",
-    "shared/README.md": "05aa4eeef12ee873dce86faeaefc41b7dff6b6db3bdf3cfe1ec463a7bdfbe67c",
-    "shared/RESOURCE-MAP.json": "9f97a14607332f6f2c22b8b7c5162e2a1c87d96464d4b6596011aea48945eadc",
+    "shared/README.md": "d90f72a2020bb3da65f67c14411207f98623971ce32fc6912f62806d17b5c3c7",
+    "shared/RESOURCE-MAP.json": "e79666f32ad763b8615edf92f4514131173338e32e379d0be1c5a670529f1479",
     "shared/account-context/design/design-tokens.json": "1d8c314347e060aba881061fedc33edd2a7627b16ef394c3f234e1dfb0c25f11",
     "shared/account-context/design/redwood-tokens.css": "db3c10080b66ae9fb37a02818d0538070a0ddeb1e5af201d04efa87f800ce87b",
     "shared/account-context/design/visual.css": "d62020987d2384ff9b178d9cdcbeea14a1fa3fe76825850ef4658d193ae528a2",

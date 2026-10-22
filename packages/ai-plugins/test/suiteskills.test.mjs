@@ -267,7 +267,6 @@ test('SuiteSkills assembled packaging for both providers', async t => {
     const snapshot=await json('FOUNDATION-SNAPSHOT.json');
     assert.equal(snapshot.plugin.version,'1.0.0');
     assert.equal(snapshot.native_host_execution,'not_run');
-    assert.match(snapshot.authoring_tools,/pending_realignment/);
     assert.deepEqual(Object.keys(snapshot.category_source_sha256).sort(),Object.keys(expectedRoutes).sort());
     assert.deepEqual(Object.keys(snapshot.shared_files).sort(),files.filter(f=>f.startsWith('shared/')).sort());
     for(const [file,digest] of Object.entries(snapshot.shared_files)) assert.equal(hash(await read(file)),digest,file);

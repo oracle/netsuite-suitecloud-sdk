@@ -64,16 +64,13 @@
     "reference/role-reconciliation.md",
     "FOUNDATION-LOCK.json"
   ],
-  "revision_status": "testing_candidate",
   "runtime_requirements": [
     "Conversational host; native question and inline card surfaces when actually exposed, otherwise grouped text in the same chat",
     "Current supported NetSuite connector and selected domain skill for account work"
   ],
-  "separate_welcome_center": "removed_from_successor_candidate",
   "source_package_sha256": "8c8eed3b570acd6da81736f3349a1eae980a2ab7f6e282491e0a72d94fde9482",
   "source_package_version": "1.8.1",
   "source_release_date": "not_collected",
-  "source_skill_history_date": "2026-10-13",
   "source_version": "2.5.0",
   "target_plugin": "netsuite-suiteskills",
   "target_profile": "authorized_supported_actions",

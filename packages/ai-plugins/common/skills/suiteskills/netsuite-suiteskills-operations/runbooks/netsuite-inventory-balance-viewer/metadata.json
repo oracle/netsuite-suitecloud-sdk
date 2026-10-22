@@ -106,6 +106,5 @@
   ],
   "source_release_date": "not_collected",
   "source_version": "4.0.0",
-  "version": "4.0.0",
-  "version_basis": "existing_source_version"
+  "version": "4.0.0"
 }

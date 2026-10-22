@@ -44,8 +44,7 @@
     "source_candidate_sha256": "8e981fa5af05b56152f41af210ed81a18c944ce4ccc7bb97f5507e41d16d217d",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -92,9 +91,7 @@
     "source_candidate_sha256": "3321aef739df33011cb19c493268d82990490d69161d64f8405d0ae82dc45982",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "source_version_status": "previously_user_assigned",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -137,8 +134,7 @@
     "source_entry_sha256": "f5d108d1fcad261eaec01f6d2f86e4befd3110603768d491c7223ff86ffd63db",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -185,8 +181,7 @@
     "source_candidate_sha256": "6d03ab683a514cf160c0972e1aafd6dfd0611798969c2280a79e86d889b68c27",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -233,8 +228,7 @@
     "source_candidate_sha256": "83e1f1f9cc929bcf17b0ad4a7800b23f53306250e3f07aa384b47dca1b8f264a",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -281,9 +275,7 @@
     "source_candidate_sha256": "2817caf5f136a0703326a9abe866f397d22effdb827d603515407385857ce84e",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "source_version_status": "previously_user_assigned",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -330,9 +322,7 @@
     "source_candidate_sha256": "7d2901edfd4b4facaa737f14fbefac8a8a46ff9eb73488b62c4f5a1ea8f75245",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "source_version_status": "previously_user_assigned",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -379,7 +369,6 @@
     "source_candidate_sha256": "87d094e816bfe5eb1b2eff87bd3a046669ae0423646d108df36e30e91a0a348a",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   }
 ]

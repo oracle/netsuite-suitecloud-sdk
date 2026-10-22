@@ -49,9 +49,7 @@
     "source_candidate_sha256": "c2ea729e33ede8bac8d13d66ae472e647d1f03e1886bc02c8626638e2bfc42d5",
     "source_release_date": "not_collected",
     "source_version": "0.2.1",
-    "source_version_status": "declared_in_submission",
-    "version": "0.2.1",
-    "version_basis": "existing_source_version"
+    "version": "0.2.1"
   },
   {
     "access_mode": "read_only",
@@ -99,8 +97,7 @@
     "source_candidate_sha256": "8306e5431fc70ef8220bfe7acc185c1c85792297cb054b53446328b66b0f0b8d",
     "source_release_date": "not_collected",
     "source_version": "1.0.2",
-    "version": "1.0.2",
-    "version_basis": "existing_source_version"
+    "version": "1.0.2"
   },
   {
     "access_mode": "operation_dependent",
@@ -147,8 +144,7 @@
     "source_candidate_sha256": "da8b07a72b352f3ee19bb878d9c5afd9a0c2593e5dc73a0f9b11c760d7cf9828",
     "source_release_date": "unknown",
     "source_version": "1.0.1",
-    "version": "1.0.1",
-    "version_basis": "existing_source_version"
+    "version": "1.0.1"
   },
   {
     "access_mode": "operation_dependent",
@@ -195,8 +191,7 @@
     "source_candidate_sha256": "c2daa1e547a1a09cbbbed4bd218b09cbabe09bbb58aebfacef405d8cdbfc33a6",
     "source_release_date": "not_collected",
     "source_version": "1.0.1",
-    "version": "1.0.1",
-    "version_basis": "existing_source_version"
+    "version": "1.0.1"
   },
   {
     "access_mode": "operation_dependent",
@@ -243,8 +238,7 @@
     "source_candidate_sha256": "27d7baff06d4151edc92d5a9d392d4a7ce6e2f997d130a1101ffa19c91be6087",
     "source_release_date": "not_collected",
     "source_version": "1.0.1",
-    "version": "1.0.1",
-    "version_basis": "existing_source_version"
+    "version": "1.0.1"
   },
   {
     "access_mode": "read_only",
@@ -291,9 +285,7 @@
     "source_candidate_sha256": "575d2b80292573dd09ef56dee61e2e32835e54343b1fb9b195189918db21e742",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "source_version_status": "previously_user_assigned",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "operation_dependent",
@@ -343,9 +335,7 @@
     "source_candidate_sha256": "bbc0d88cde1a2c4bbc753b91ac4fa5d6e648ff297cc7cc55beb4f1dacef6fb42",
     "source_release_date": "unknown",
     "source_version": "1.0.1",
-    "source_version_status": "not_collected",
-    "version": "1.0.1",
-    "version_basis": "existing_source_version"
+    "version": "1.0.1"
   },
   {
     "access_mode": "operation_dependent",
@@ -395,9 +385,7 @@
     "source_candidate_sha256": "e33ebc7c5dddb6c839357254fe6d951f54c0666c9052ede03b0abca8dcce8b3d",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "source_version_status": "not_collected",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -444,9 +432,7 @@
     "source_candidate_sha256": "b6ca89047fa1f8ee68c795c962f4222762d27bb699983778ba09682afd90fe36",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "source_version_status": "previously_user_assigned",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "operation_dependent",
@@ -493,8 +479,7 @@
     "source_candidate_sha256": "fbbe4e35ae4550461c90fa78b8737c5cdc0e274b0b87092e3ee35f444874f024",
     "source_release_date": "not_collected",
     "source_version": "1.0.1",
-    "version": "1.0.1",
-    "version_basis": "existing_source_version"
+    "version": "1.0.1"
   },
   {
     "access_mode": "operation_dependent",
@@ -542,8 +527,7 @@
     "source_candidate_sha256": "e544e0b721e7068021a6fa7465e7a367a1b443c5a57314bfae9ef1257f7a6882",
     "source_release_date": "not_collected",
     "source_version": "0.2.9",
-    "version": "0.2.9",
-    "version_basis": "existing_source_version"
+    "version": "0.2.9"
   },
   {
     "access_mode": "operation_dependent",
@@ -591,8 +575,7 @@
     "source_candidate_sha256": "b97ba8134502cd39b997d177b2c1d75883ea2bff37d4d18bcc908debe7b42ecd",
     "source_release_date": "not_collected",
     "source_version": "0.2.5",
-    "version": "0.2.5",
-    "version_basis": "existing_source_version"
+    "version": "0.2.5"
   },
   {
     "access_mode": "operation_dependent",
@@ -640,8 +623,7 @@
     "source_candidate_sha256": "0ef6ccae79c8b5787a24ff4660f1e562429ff5a66610e02a46191e9039f1d47d",
     "source_release_date": "not_collected",
     "source_version": "1.0.1",
-    "version": "1.0.1",
-    "version_basis": "existing_source_version"
+    "version": "1.0.1"
   },
   {
     "access_mode": "read_only",
@@ -688,9 +670,7 @@
     "source_candidate_sha256": "c14eed24f76ff98efc0ba5c68d26caf54a3ff76fd504bc46e0affddf23b788e1",
     "source_release_date": "unknown",
     "source_version": "unknown",
-    "source_version_status": "previously_user_assigned",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -737,8 +717,7 @@
     "source_candidate_sha256": "1e11659bb7a7b4c3b283a79157bf9afed2657956b9bceb39e5e6bcc0bd5be0a5",
     "source_release_date": "not_collected",
     "source_version": "0.8.0",
-    "version": "0.8.0",
-    "version_basis": "existing_source_version"
+    "version": "0.8.0"
   },
   {
     "access_mode": "read_only",
@@ -784,8 +763,7 @@
     "source_candidate_sha256": "5fbc4bd1a7d455df0bea372924eca7bd992856122cd20f8073f3607ceebd5329",
     "source_release_date": "not_collected",
     "source_version": "1.0.1",
-    "version": "1.0.1",
-    "version_basis": "existing_source_version"
+    "version": "1.0.1"
   },
   {
     "access_mode": "read_only",
@@ -834,8 +812,7 @@
     "source_candidate_sha256": "529b3b6cc9fc4993b94c45e1609766d4343a32c24e9eb00ce2c8b50c24ce6349",
     "source_release_date": "unknown",
     "source_version": "1.1.3",
-    "version": "1.1.3",
-    "version_basis": "existing_source_version"
+    "version": "1.1.3"
   },
   {
     "access_mode": "read_only",
@@ -883,8 +860,7 @@
     "source_candidate_sha256": "7b2890c5106093d56cce1090da52f3f47c5b84034241d0c7b0f3703a5e292990",
     "source_release_date": "unknown",
     "source_version": "0.6.8",
-    "version": "0.6.8",
-    "version_basis": "existing_source_version"
+    "version": "0.6.8"
   },
   {
     "access_mode": "read_only",
@@ -931,8 +907,7 @@
     "source_candidate_sha256": "e6a445e708678b6bdb9c31ee1d864e6a04de5267184f4a872652aa8b51cc8a6d",
     "source_release_date": "unknown",
     "source_version": "0.1.0",
-    "version": "0.1.0",
-    "version_basis": "existing_source_version"
+    "version": "0.1.0"
   },
   {
     "access_mode": "read_only",
@@ -982,9 +957,7 @@
     "source_candidate_sha256": "95027e7571fff52cf64c8deb960d441af3696fe587c91b6772b5b9b4bbc2fc8a",
     "source_release_date": "not_collected",
     "source_version": "unknown",
-    "source_version_status": "not_collected",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   },
   {
     "access_mode": "read_only",
@@ -1024,8 +997,7 @@
     "source_candidate_sha256": "303d81418d33e50770b177fbf5fe453dd7ceac0cce77174f25f5b2e9b47c7fd3",
     "source_release_date": "not_collected",
     "source_version": "2.0.1",
-    "version": "2.0.1",
-    "version_basis": "existing_source_version"
+    "version": "2.0.1"
   },
   {
     "access_mode": "read_only",
@@ -1069,8 +1041,6 @@
     "source_candidate_sha256": "09dcf1472e2b2b82076ba1ae713a8765b6d7b32c454c1234bf1e1d7d2c3f1e2c",
     "source_release_date": "unknown",
     "source_version": "unknown",
-    "source_version_status": "previously_user_assigned",
-    "version": "1.0.0",
-    "version_basis": "assigned_default_per_user"
+    "version": "1.0.0"
   }
 ]

@@ -170,6 +170,5 @@
   "source_candidate_sha256": "89e84d7830557688c22a449664c542b7415fe883e48cbea353d70b3979eb10f3",
   "source_release_date": "2026-10-14",
   "source_version": "7.0",
-  "version": "7.0.0",
-  "version_basis": "normalized_source_version_per_user"
+  "version": "7.0.0"
 }

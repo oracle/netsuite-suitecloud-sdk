@@ -284,6 +284,5 @@
   ],
   "source_release_date": "not_collected",
   "source_version": "6.0.0",
-  "version": "6.0.0",
-  "version_basis": "existing_source_version"
+  "version": "6.0.0"
 }
