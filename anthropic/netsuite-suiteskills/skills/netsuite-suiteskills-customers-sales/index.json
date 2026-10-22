@@ -1,0 +1,374 @@
+[
+  {
+    "access_mode": "read_only",
+    "action_policy": "user_authorized_supported_operations",
+    "aliases": [
+      "WF-CRM-002"
+    ],
+    "category": "netsuite-suiteskills-customers-sales",
+    "description": "Review Advanced Pricing Price Rule applicability and prepare a new-rule or change proposal from read-only evidence. Use for rule dates, Price Level, customer-group, and item-collection scope; exclude record changes, item-price updates, and pricing-exception approval.",
+    "display_name": "Advanced Pricing Price Rule Review",
+    "first_included_date": "2026-10-14",
+    "id": "RB-CRM-002",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "1.0.0",
+    "name": "netsuite-advanced-pricing-price-rule-management",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operation_inventory_is_allowlist": false,
+    "origin": "team_expansion_2026_10_05",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-advanced-pricing-price-rule-management/RUNBOOK.md",
+    "purpose": "Review Advanced Pricing Price Rule applicability and prepare a new-rule or change proposal in chat using read-only evidence about dates, Price Level, customer groups and item collections. Do not create or modify rules, Price Levels, groups, collections or item prices, or approve pricing exceptions.",
+    "runtime_status": "not_run",
+    "source_candidate_sha256": "8e981fa5af05b56152f41af210ed81a18c944ce4ccc7bb97f5507e41d16d217d",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S02",
+      "WF-CRM-004"
+    ],
+    "category": "netsuite-suiteskills-customers-sales",
+    "description": "Use for read-only sales-order triage: explain verified order, fulfillment, shipment, billing, backorder, hold, or cancellation evidence and prepare a factual next-step handoff. Excludes order changes, customer commitments, support-case management, and return processing.",
+    "display_name": "Customer Service Order Triage",
+    "first_included_date": "2026-10-08",
+    "id": "RB-CRM-004",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "1.0.0",
+    "name": "netsuite-customer-service-order-triage",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-service-order-triage/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "3321aef739df33011cb19c493268d82990490d69161d64f8405d0ae82dc45982",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0"
+  },
+  {
+    "access_mode": "read_only",
+    "category": "netsuite-suiteskills-customers-sales",
+    "description": "Use for read-only NetSuite support: count open or escalated cases, review my queue or unassigned cases, investigate cases and messages, draft replies, and assess lifecycle or escalation readiness. Excludes sending or logging replies, case changes, knowledge publication, and return processing.",
+    "display_name": "Customer Support Assistant",
+    "effect_classification": "Read-only",
+    "first_included_date": "2026-10-14",
+    "id": "RB-CRM-005",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "1.0.0",
+    "name": "netsuite-customer-support-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-support-assistant/RUNBOOK.md",
+    "purpose": "Review case counts, personal or shared queues, selected-case status and accessible messages; prepare reply drafts and assess lifecycle or escalation readiness without changing cases or sending replies. Sentiment charts, dashboards and whole-case sentiment are unavailable; documented partial text/table or requested spreadsheet analysis requires accepted scope and evidence checks.",
+    "runtime_status": "not_run",
+    "source_candidate_sha256": "35da49ef12a543140bb76a87ce658503cc59dcfa4d7e17b39cc8bcb3cebf6578",
+    "source_entry_sha256": "f5d108d1fcad261eaec01f6d2f86e4befd3110603768d491c7223ff86ffd63db",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0"
+  },
+  {
+    "access_mode": "read_only",
+    "action_policy": "user_authorized_supported_operations",
+    "aliases": [
+      "WF-CRM-006"
+    ],
+    "category": "netsuite-suiteskills-customers-sales",
+    "description": "Use to assess coverage of the NetSuite Knowledge Base and draft NetSuite Solution content from verified support evidence for human review. Excludes external or local knowledge bases, record creation or updates, publication, customer replies, and case changes.",
+    "display_name": "Knowledge Base Quality Assistant",
+    "first_included_date": "2026-10-14",
+    "id": "RB-CRM-006",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "1.0.0",
+    "name": "netsuite-knowledge-quality-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operation_inventory_is_allowlist": false,
+    "origin": "team_expansion_2026_10_05",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-knowledge-quality-assistant/RUNBOOK.md",
+    "purpose": "Helps authorized customer-support teams at organizations that use NetSuite assess NetSuite Knowledge Base feature coverage and prepare reviewer-ready NetSuite Solution drafts from verified recurring support evidence. Use only when the knowledge content is managed in NetSuite; do not use for local, external, or other-vendor knowledge bases, or to publish content, send customer replies, or change cases.",
+    "runtime_status": "not_run",
+    "source_candidate_sha256": "6d03ab683a514cf160c0972e1aafd6dfd0611798969c2280a79e86d889b68c27",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0"
+  },
+  {
+    "access_mode": "read_only",
+    "action_policy": "user_authorized_supported_operations",
+    "aliases": [
+      "WF-CRM-007"
+    ],
+    "category": "netsuite-suiteskills-customers-sales",
+    "description": "Prioritize and qualify leads, prepare seller discovery and assess conversion or update readiness using read-only evidence. Use for lead queues, selected-lead context, qualification gaps and chat proposals. Excludes creating, updating, converting or contacting leads; campaign audience and performance work belongs to Marketing Campaign Assistant.",
+    "display_name": "Lead Management Assistant",
+    "first_included_date": "2026-10-14",
+    "id": "RB-CRM-007",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "1.0.0",
+    "name": "netsuite-lead-management-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operation_inventory_is_allowlist": false,
+    "origin": "team_expansion_2026_10_05",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-lead-management-assistant/RUNBOOK.md",
+    "purpose": "Prioritize and qualify leads, prepare seller discovery, identify qualification gaps and assess conversion or update readiness from read-only evidence. Keep proposals in chat; do not create, update, convert or contact leads. Campaign audience and performance work belongs to Marketing Campaign Assistant.",
+    "runtime_status": "not_run",
+    "source_candidate_sha256": "83e1f1f9cc929bcf17b0ad4a7800b23f53306250e3f07aa384b47dca1b8f264a",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S07",
+      "WF-CRM-008"
+    ],
+    "category": "netsuite-suiteskills-customers-sales",
+    "description": "Select or review a marketing audience, prepare a campaign plan and analyze recorded campaign performance using read-only evidence. Use for campaign events, responses, lead sources and return on investment (ROI). Excludes lead qualification, customer-success campaigns, campaign execution, outreach and marketing configuration changes.",
+    "display_name": "Marketing Campaign Assistant",
+    "first_included_date": "2026-10-08",
+    "id": "RB-CRM-008",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "1.0.0",
+    "name": "netsuite-marketing-campaign-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "Source-only review; actual account requirements not collected.",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-marketing-campaign-assistant/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "2817caf5f136a0703326a9abe866f397d22effdb827d603515407385857ce84e",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0"
+  },
+  {
+    "access_mode": "read_only",
+    "aliases": [
+      "S08",
+      "WF-CRM-009"
+    ],
+    "category": "netsuite-suiteskills-customers-sales",
+    "description": "Resolve and explain sales item prices from read-only evidence for existing transaction lines, customer-item inquiries, prospective transaction preparation, and pricing discrepancies. Distinguish recorded rates, verified pricing provenance, and configuration expectations; do not change prices or transactions.",
+    "display_name": "Pricing Policy and Exception Review",
+    "first_included_date": "2026-10-08",
+    "id": "RB-CRM-009",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "1.0.0",
+    "name": "netsuite-pricing-policy-and-exception-review",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-pricing-policy-and-exception-review/RUNBOOK.md",
+    "shared_dependencies": [
+      "shared/contracts/BASELINE.md",
+      "shared/contracts/OUTPUTS.md"
+    ],
+    "source_candidate_sha256": "7d2901edfd4b4facaa737f14fbefac8a8a46ff9eb73488b62c4f5a1ea8f75245",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0"
+  },
+  {
+    "access_mode": "read_only",
+    "action_policy": "user_authorized_supported_operations",
+    "aliases": [
+      "WF-CRM-010"
+    ],
+    "category": "netsuite-suiteskills-customers-sales",
+    "description": "Review account conversations, customer growth, pipeline, forecasts, and quote readiness using read-only evidence. Prepare sales proposals and chat drafts, with requested pipeline workbooks or interactive dashboards when supported. Exclude lead qualification, returns, and record changes.",
+    "display_name": "Sales Assistant",
+    "first_included_date": "2026-10-14",
+    "id": "RB-CRM-010",
+    "integration_release_date": "2026-10-16",
+    "integration_version": "1.0.0",
+    "name": "netsuite-sales-assistant",
+    "netsuite_requirements": {
+      "industries": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "installation_components": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "localities": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      },
+      "role_permissions": {
+        "evidence": "not_collected",
+        "items": [],
+        "status": "not_collected"
+      }
+    },
+    "operation_inventory_is_allowlist": false,
+    "origin": "team_expansion_2026_10_05",
+    "owner": "Oracle NetSuite",
+    "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-sales-assistant/RUNBOOK.md",
+    "purpose": "Helps authorized sales and customer-success representatives at organizations that use NetSuite manage the connected sales workflow: account conversations, customer growth, pipeline review, estimate/quote work, and controlled follow-up actions. Use for one or more sequential sales-workflow steps; do not use for lead qualification/conversion, returns, or generic CRM administration.",
+    "runtime_status": "not_run",
+    "source_candidate_sha256": "87d094e816bfe5eb1b2eff87bd3a046669ae0423646d108df36e30e91a0a348a",
+    "source_release_date": "not_collected",
+    "source_version": "unknown",
+    "version": "1.0.0"
+  }
+]

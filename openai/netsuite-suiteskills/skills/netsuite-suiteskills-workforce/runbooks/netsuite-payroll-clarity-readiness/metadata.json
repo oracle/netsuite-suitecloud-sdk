@@ -1,0 +1,48 @@
+{
+  "access_mode": "read_only",
+  "aliases": [
+    "S34",
+    "WF-PPL-001",
+    "payroll-clarity-readiness"
+  ],
+  "category": "netsuite-suiteskills-workforce",
+  "description": "Audit an existing or planned NetSuite payroll for employee setup, payroll inputs, calculated results and readiness gaps. Use for human resources (HR) and controller reviews; includes an evidence dashboard and explicit sample mode. Does not calculate, submit, approve or pay payroll.",
+  "display_name": "Payroll Clarity Readiness",
+  "first_included_date": "2026-10-08",
+  "id": "RB-PPL-001",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "1.0.0",
+  "name": "netsuite-payroll-clarity-readiness",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "Account prerequisites not collected in local source review.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "Account prerequisites not collected in local source review.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "Account prerequisites not collected in local source review.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "Account prerequisites not collected in local source review.",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-workforce/runbooks/netsuite-payroll-clarity-readiness/RUNBOOK.md",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md"
+  ],
+  "source_candidate_sha256": "a5d0b1e5ecf798709b57aa5312963f7e936fe2d2f47b8fd452236b96e88da0ee",
+  "source_release_date": "not_collected",
+  "source_version": "1.0.0",
+  "version": "1.0.0"
+}

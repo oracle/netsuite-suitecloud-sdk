@@ -6,14 +6,15 @@ AI Agent Plug-ins package skills for installation on supported AI platforms. The
 ## Included Plug-ins
 
 ### Business User Plug-ins
-- **NetSuite AI Companion Plug-in (netsuite-ai-companion):** Includes the NetSuite AI Connector Instructions skill. This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multi-subsidiary and currency handling, and SuiteQL safety guardrails. 
+- **NetSuite AI Companion Plug-in (netsuite-ai-companion):** Includes the NetSuite AI Connector Instructions skill. This plug-in guides AI assistants that use NetSuite AI Connector with the correct tool-selection order, output formatting, NetSuite domain knowledge, multisubsidiary and currency handling, and SuiteQL safety guardrails.
 - **NetSuite Finance Analyst Plug-in (netsuite-finance-analyst):** Includes the NetSuite Finance Analyst skill. This plug-in provides Director-level finance analysis on live NetSuite data, including financial reporting, period-close activities, variance, aging, and reconciliation reviews, cash reporting, and board-ready financial narratives with clear next actions.
+- **SuiteSkills Plug-in (netsuite-suiteskills):** Includes five skills and 48 business runbooks across Finance, Operations, Customers & Sales, and Workforce, with guided onboarding. It supports analysis, drafts, and authorized workflows through the NetSuite AI Connector, subject to account features, role permissions, and host capabilities.
 
 ### SuiteCloud Development Plug-ins
 - **NetSuite SuiteCloud Plug-in (netsuite-suitecloud):** It includes skills that support key areas of SuiteCloud development, such as SuiteScript, SDF, UIF SPAs, security, permissions, documentation, modernization, and SAFE Guide best practices. It helps SuiteCloud developers and SuiteApp teams create accurate, secure, and maintainable code and project artifacts.
 
 ## Contributing
-This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](/CONTRIBUTING.md).
+This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](https://github.com/oracle/netsuite-suitecloud-sdk/blob/master/CONTRIBUTING.md).
 
-## [License](../../LICENSE.txt)
-Copyright (c) 2019, 2023 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0.
+## [License](https://github.com/oracle/netsuite-suitecloud-sdk/blob/master/LICENSE.txt)
+Copyright (c) 2019, 2023 Oracle and/or its affiliates. The Universal Permissive License (UPL), Version 1.0.

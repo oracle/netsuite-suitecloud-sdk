@@ -1,0 +1,47 @@
+{
+  "access_mode": "read_only",
+  "action_policy": "user_authorized_supported_operations",
+  "aliases": [
+    "WF-CRM-006"
+  ],
+  "category": "netsuite-suiteskills-customers-sales",
+  "description": "Use to assess coverage of the NetSuite Knowledge Base and draft NetSuite Solution content from verified support evidence for human review. Excludes external or local knowledge bases, record creation or updates, publication, customer replies, and case changes.",
+  "display_name": "Knowledge Base Quality Assistant",
+  "first_included_date": "2026-10-14",
+  "id": "RB-CRM-006",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "1.0.0",
+  "name": "netsuite-knowledge-quality-assistant",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "operation_inventory_is_allowlist": false,
+  "origin": "team_expansion_2026_10_05",
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-knowledge-quality-assistant/RUNBOOK.md",
+  "purpose": "Helps authorized customer-support teams at organizations that use NetSuite assess NetSuite Knowledge Base feature coverage and prepare reviewer-ready NetSuite Solution drafts from verified recurring support evidence. Use only when the knowledge content is managed in NetSuite; do not use for local, external, or other-vendor knowledge bases, or to publish content, send customer replies, or change cases.",
+  "runtime_status": "not_run",
+  "source_candidate_sha256": "6d03ab683a514cf160c0972e1aafd6dfd0611798969c2280a79e86d889b68c27",
+  "source_release_date": "not_collected",
+  "source_version": "unknown",
+  "version": "1.0.0"
+}
