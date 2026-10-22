@@ -7,4 +7,4 @@ Discover actual current session-exposed skills and readable category indexes/des
 
 Use native question/card controls only when actually exposed; ordinary chat is a complete fallback. No onboarding HTML, external launcher, hook, automatic profile loader or background scheduler is supplied. Existing exact authorization and the chosen specialist's retrieval/action semantics continue to govern selected work. A role, card or saved preference is never account evidence or action authorization.
 
-This utility uses the current SuiteSkills 1.0.0 canonical shared foundation and category context, bound by FOUNDATION-LOCK.json. There are 48 packaged business runbooks; this count is not session availability or account qualification. Native loading and routing remain not_run.
+This utility uses the current SuiteSkills 1.0.0 canonical shared foundation and category context, bound by FOUNDATION-LOCK.json. There are 48 packaged business runbooks; this count is not session availability or account qualification.
