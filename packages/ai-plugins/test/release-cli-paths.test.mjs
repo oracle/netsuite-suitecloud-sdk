@@ -21,8 +21,8 @@ jobs:
           persist-credentials: false
 `;
 
-function run(cwd, args, { status = 0, stdout = '', stderr = '' } = {}) {
- const result = spawnSync(process.execPath, args, { cwd, encoding: 'utf8', timeout: 15000 });
+function run(cwd, args, { status = 0, stdout = '', stderr = '', env = {} } = {}) {
+ const result = spawnSync(process.execPath, args, { cwd, encoding: 'utf8', timeout: 15000, env: { ...process.env, PATH: path.join(cwd, 'validator-bin'), ...env } });
  const diagnostic = JSON.stringify({ args, ...result });
  assert.equal(result.error, undefined, diagnostic);
  assert.equal(result.signal, null, diagnostic);
@@ -59,7 +59,14 @@ async function fixture(t, variant) {
  return { root, workspace, entries };
 }
 
+async function validatorStub(workspace, body = "console.log('2.1.281 (Claude Code)');") {
+ const target = path.join(workspace, 'validator-bin/claude');
+ await write(workspace, 'validator-bin/claude', `#!${process.execPath}\n${body}\n`);
+ await fs.chmod(target, 0o755);
+}
+
 async function buildFixture(workspace) {
+ await validatorStub(workspace, "if (process.argv[2] === '--version') console.log('2.1.281 (Claude Code)');");
  await write(workspace, 'config/build.json', JSON.stringify({
   skillsRoot: 'skills', commonLayersRoot: 'common/layers', pluginDistRoot: 'dist',
   licenseFile: 'LICENSE.txt', globalExcludes: [],
@@ -79,6 +86,12 @@ async function buildFixture(workspace) {
     logo: 'logo.svg', composerIcon: 'logo.svg', brandColor: '#000000',
    },
   },
+ }));
+ await write(workspace, 'anthropic/fixture/src/README.md', 'Fixture plugin\n');
+ await write(workspace, 'anthropic/fixture/plugin.build.json', JSON.stringify({
+  id: 'fixture', version: '1.0.0', platform: 'anthropic', skills: ['netsuite-fixture'], commonLayers: [],
+  inputs: [{ root: 'src', destination: '', include: ['**/*'], exclude: [] }],
+  metadata: { name: 'fixture', description: 'Fixture plugin', license: 'UPL-1.0', author: { name: 'Fixture' }, keywords: ['fixture'] },
  }));
  run(workspace, [path.join(workspace, 'scripts/build.mjs')], { stdout: /Built openai\/fixture ->/ });
  assert.equal(JSON.parse(await fs.readFile(path.join(workspace, 'dist/openai/fixture/.codex-plugin/plugin.json'))).version, '1.0.0');
@@ -137,18 +150,18 @@ for (const variant of variants) {
   });
   await t.test('verifier compares real builder output and rejects release mismatches', async () => {
    await buildFixture(workspace);
-   cli('verify-release', [], { stdout: 'Verified openai/fixture\n' });
+   cli('verify-release', [], { stdout: /Verified anthropic\/fixture\nVerified openai\/fixture\n/ });
    const readme = path.join(workspace, 'dist/openai/fixture/README.md');
    const original = await fs.readFile(readme);
    await fs.rm(readme);
-   cli('verify-release', [], { status: 1, stderr: /file inventory differs/ });
+   cli('verify-release', [], { status: 1, stdout: 'Verified anthropic/fixture\n', stderr: /file inventory differs/ });
    await fs.writeFile(readme, original);
    const extra = path.join(workspace, 'dist/openai/fixture/extra.txt');
    await fs.writeFile(extra, 'extra');
-   cli('verify-release', [], { status: 1, stderr: /file inventory differs/ });
+   cli('verify-release', [], { status: 1, stdout: 'Verified anthropic/fixture\n', stderr: /file inventory differs/ });
    await fs.rm(extra);
    await fs.writeFile(readme, 'changed');
-   cli('verify-release', [], { status: 1, stderr: /content differs: README\.md/ });
+   cli('verify-release', [], { status: 1, stdout: 'Verified anthropic/fixture\n', stderr: /content differs: README\.md/ });
    await fs.writeFile(readme, original);
    const rootReadme = path.join(workspace, 'dist/README.md');
    await fs.rm(rootReadme);
@@ -177,3 +190,52 @@ for (const variant of variants) {
   });
  });
 }
+
+
+test('Claude validation is mandatory, compatible, and strict for every Anthropic target', async t => {
+ const { workspace, entries } = await fixture(t, 'absolute');
+ await buildFixture(workspace);
+ const verify = (expected) => run(workspace, [entries['verify-release']], expected);
+ // Missing CLI must fail before source assembly or release comparison.
+ await fs.rm(path.join(workspace, 'validator-bin/claude'));
+ await fs.rm(path.join(workspace, 'dist/README.md'));
+ verify({ status: 1, stderr: /requires a usable Claude Code 2\.1\.281\+[\s\S]*ENOENT/ });
+ await write(workspace, 'dist/README.md', 'Fixture release documentation\n');
+ for (const [body, diagnostic] of [
+  ['process.exit(9)', /Version probe exited with code 9/],
+  ["process.kill(process.pid, 'SIGTERM')", /Version probe terminated by signal SIGTERM/],
+  ["console.log('unknown')", /Unparseable version/],
+  ["console.log('2.1.280 (Claude Code)')", /Found 2\.1\.280/],
+  ["console.log('1.9.999')", /Found 1\.9\.999/],
+  ["console.log('2.1.281-beta')", /Unparseable version/],
+ ]) {
+  await validatorStub(workspace, body);
+  verify({ status: 1, stderr: diagnostic });
+ }
+ await fs.chmod(path.join(workspace, 'validator-bin/claude'), 0o644);
+ verify({ status: 1, stderr: /EACCES/ });
+ for (const [body, diagnostic] of [
+  ['process.exit(7)', /exited with code 7/],
+  ["process.kill(process.pid, 'SIGTERM')", /terminated by signal SIGTERM/],
+ ]) {
+  await validatorStub(workspace, `if (process.argv[2] === '--version') console.log('2.1.281 (Claude Code)'); else { ${body}; }`);
+  verify({ status: 1, stderr: diagnostic });
+ }
+ await fs.cp(path.join(workspace, 'anthropic/fixture'), path.join(workspace, 'anthropic/second'), { recursive: true });
+ const configPath = path.join(workspace, 'anthropic/second/plugin.build.json');
+ const config = JSON.parse(await fs.readFile(configPath));
+ config.id = config.metadata.name = 'second';
+ await fs.writeFile(configPath, JSON.stringify(config));
+ run(workspace, [path.join(workspace, 'scripts/build.mjs')], { stdout: /Built anthropic\/second/ });
+ for (const version of ['2.1.281', '2.1.282', '2.2.0', '3.0.0']) {
+  const log = path.join(workspace, 'validator-calls.jsonl');
+  await fs.rm(log, { force: true });
+  await validatorStub(workspace, `if (process.argv[2] === '--version') console.log('${version} (Claude Code)'); else require('node:fs').appendFileSync(${JSON.stringify(log)}, JSON.stringify(process.argv.slice(2)) + '\\n');`);
+  verify({ stdout: /Verified anthropic\/fixture\nVerified anthropic\/second\nVerified openai\/fixture\n/ });
+  const calls = (await fs.readFile(log, 'utf8')).trim().split('\n').map(JSON.parse);
+  assert.deepEqual(calls, ['fixture', 'second'].map(name => ['plugin', 'validate', '--strict', path.join(workspace, 'dist/anthropic', name)]));
+ }
+ await fs.rm(path.join(workspace, 'anthropic'), { recursive: true });
+ await fs.rm(path.join(workspace, 'validator-bin/claude'));
+ verify({ stdout: 'Verified openai/fixture\n' });
+});

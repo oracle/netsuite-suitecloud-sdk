@@ -35,22 +35,24 @@ The publisher:
 
 ### Exceptional Same-Version Reissue
 
-Use this only to correct an already published artifact without changing its version. Before dispatching, delete the existing remote release tag. For example, to reissue the corrected OpenAI AI Companion artifact at version `1.0.0`:
+Use this only to correct an already published artifact without changing its version. Before dispatching, delete the existing remote release tag. For example, to reissue the corrected OpenAI AI Companion artifact, substitute its published version for `<version>`:
 
 ```sh
-git push origin --delete ai-plugin/openai/netsuite-ai-companion/v1.0.0
+git push origin --delete ai-plugin/openai/netsuite-ai-companion/v<version>
 ```
 
-Then dispatch **Publish AI Agent Plug-ins Dist** from the intended `master` commit. The publisher still runs its full build and verification flow, publishes all otherwise valid changed plug-ins in that commit, and creates tags normally. It does not delete, overwrite, force-update, or rewrite tags: it fails before writing the distribution branch if any pending release tag still exists. After a successful run, verify that `ai-plugin/openai/netsuite-ai-companion/v1.0.0` was recreated at the corrected distribution commit.
+Then dispatch **Publish AI Agent Plug-ins Dist** from the intended `master` commit. The publisher still runs its full build and verification flow, publishes all otherwise valid changed plug-ins in that commit, and creates tags normally. It does not delete, overwrite, force-update, or rewrite tags: it fails before writing the distribution branch if any pending release tag still exists. After a successful run, verify that `ai-plugin/openai/netsuite-ai-companion/v<version>` was recreated at the corrected distribution commit.
 
 Each distribution update includes the reviewed, source-managed branch-root `README.md`, which identifies the source branch used for that release. The branch root is otherwise limited to generated plug-in directories:
 
 - `anthropic/netsuite-ai-companion/`
 - `anthropic/netsuite-finance-analyst/`
 - `anthropic/netsuite-suitecloud/`
+- `anthropic/netsuite-suiteskills/`
 - `openai/netsuite-ai-companion/`
 - `openai/netsuite-finance-analyst/`
 - `openai/netsuite-suitecloud/`
+- `openai/netsuite-suiteskills/`
 
 ## Local Fallback Procedure
 
@@ -77,7 +79,7 @@ node packages/ai-plugins/scripts/release-security-gates.mjs secrets dist/ai-plug
 npm run verify-release --workspace @oracle/ai-plugins
 ```
 
-For every plug-in whose generated content changes, increase its version in `plugin.build.json` before publishing. Published versions and release tags must use canonical stable `MAJOR.MINOR.PATCH` values (for example, `1.2.3`); prerelease versions and build metadata are unsupported. Tag each changed plug-in as `ai-plugin/<provider>/<plugin-id>/v<version>` after the distribution commit is pushed.
+For every plug-in whose generated content changes, increase its version in `plugin.build.json` before publishing. Published versions and release tags must use canonical stable `MAJOR.MINOR.PATCH` values; prerelease versions and build metadata are unsupported. Tag each changed plug-in as `ai-plugin/<provider>/<plugin-id>/v<version>` after the distribution commit is pushed.
 
 ### Create the Distribution Worktree Once
 
@@ -134,3 +136,30 @@ It should contain the generated plug-in directories for the source revision and 
 The release workflow runs `packages/ai-plugins/scripts/release-security-gates.mjs` before dependency installation and again after build output is generated. It intentionally has no external scanner Action or container-image dependency. The source scan excludes `.git`, `node_modules`, and source `dist`; generated output is scanned directly.
 
 The gate is fail-closed for a focused policy baseline: GitHub token formats, AWS access keys, private-key material, and credential-shaped bearer values; plus workflow Action SHA pinning, non-persistent checkout credentials, and explicit top-level permissions. It is intentionally narrower than dedicated third-party secret and workflow scanners, and must not be treated as equivalent coverage.
+
+## ZIP packaging
+
+Run these manual commands from the repository root.
+
+**From the published distribution:**
+
+```sh
+git fetch origin ai-plugins-dist
+git archive --format=zip \
+  --output=/tmp/netsuite-suiteskills-published.zip \
+  FETCH_HEAD:anthropic/netsuite-suiteskills
+```
+
+**From a local build:**
+
+```sh
+npm run build --workspace @oracle/ai-plugins
+(cd dist/ai-plugins/anthropic/netsuite-suiteskills &&
+  zip -r -X /tmp/netsuite-suiteskills-local.zip .)
+```
+
+Choose a fresh output filename and substitute the desired provider/plug-in. Keep the hidden native manifest at the ZIP root: `.claude-plugin/plugin.json` for Anthropic or `.codex-plugin/plugin.json` for OpenAI, with `skills/` alongside it. Published archives reflect released content; local archives reflect the local build.
+
+Both plug-in workflows install the official Linux x64 Claude Code validator pinned in [the installer](scripts/install-claude-validator.sh), verify the download against its checked-in SHA-256 from the release manifest referenced there, and disable automatic updates. Every Anthropic package must pass strict validation using a validator that meets the minimum version enforced by [the release verifier](scripts/verify-release.mjs). The workflows also run the visualizer regression suite before building, using the Python version configured in the [CI](../../.github/workflows/ai-plugins-ci.yml) and [publishing](../../.github/workflows/ai-plugins-dist.yml) workflows.
+
+Packaging checks establish package layout. Verify installed skill contents and runbook loading in the target host separately.

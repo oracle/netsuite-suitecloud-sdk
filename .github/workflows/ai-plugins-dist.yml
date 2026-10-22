@@ -13,7 +13,7 @@ permissions:
 jobs:
   prepare:
     if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       publish_required: ${{ steps.release-metadata.outputs.publish_required }}
     steps:
@@ -54,11 +54,19 @@ jobs:
           npm run test --workspace @oracle/agent-skills
           npm run test --workspace @oracle/ai-plugins
 
+      - name: Run Python visualizer regressions
+        run: |
+          python3 -I -S -c 'import sys; assert sys.version_info[:2] == (3, 12), sys.version'
+          python3 -I -S packages/ai-plugins/test/test_suiteskills_visualizer.py
+
       - name: Build plugin directories
         run: npm run build --workspace @oracle/ai-plugins
 
       - name: Scan generated distribution for secrets
         run: node packages/ai-plugins/scripts/release-security-gates.mjs secrets dist/ai-plugins
+
+      - name: Install pinned Claude validator
+        run: bash packages/ai-plugins/scripts/install-claude-validator.sh
 
       - name: Verify release output matches source build
         run: npm run verify-release --workspace @oracle/ai-plugins
@@ -147,7 +155,7 @@ jobs:
   publish:
     needs: prepare
     if: github.ref == 'refs/heads/master' && needs.prepare.result == 'success' && needs.prepare.outputs.publish_required == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:

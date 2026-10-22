@@ -931,3 +931,20 @@ test('filtered common layers reject empty selections and unsafe sources or desti
 		});
 	}
 });
+
+test('OS metadata in skill source is excluded from generated directories', async t => {
+	const temporary = await fs.mkdtemp(path.join(os.tmpdir(), 'anthropic-metadata-'));
+	t.after(() => fs.rm(temporary, { recursive: true, force: true }));
+	const workspace = await loadWorkspace(packageRoot);
+	workspace.buildConfig.pluginDistRoot = path.join(temporary, 'ai-plugins');
+	const plugin = workspace.plugins.find(p => p.sourceKey === 'anthropic/netsuite-ai-companion');
+	const name = plugin.skills[0];
+	const boundaryDir = path.join(temporary, 'source');
+	const rootDir = path.join(boundaryDir, name);
+	await fs.cp(plugin.skillDirectories.get(name).rootDir, rootDir, { recursive: true });
+	plugin.skillDirectories.set(name, { rootDir, boundaryDir });
+	await fs.mkdir(path.join(rootDir, '__MACOSX'));
+	for (const file of ['.DS_Store', '._SKILL.md', '__MACOSX/._README.md']) await fs.writeFile(path.join(rootDir, file), 'metadata');
+	const result = await buildPlugin(plugin.sourceKey, { workspace });
+	assert(!result.files.some(file => /__MACOSX|\.DS_Store|\/\._/.test(file)));
+});

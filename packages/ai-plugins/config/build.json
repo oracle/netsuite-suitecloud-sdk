@@ -6,6 +6,8 @@
 	"pluginDistRoot": "../../dist/ai-plugins",
 	"globalExcludes": [
 		"**/.DS_Store",
+		"**/__MACOSX/**",
+		"**/._*",
 		"**/Thumbs.db",
 		"**/*.swp",
 		"**/*.swo",
