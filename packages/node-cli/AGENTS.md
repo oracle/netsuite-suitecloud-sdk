@@ -14,10 +14,53 @@ Rebuild core before checking CLI changes that depend on modified shared code.
 Keep the package's core dependency version and bundled dependency declaration
 consistent with the shared package and `../../scripts/pack-cli.js`.
 
+## Reuse shared project behavior
+
+Delegate reusable control-file discovery, parsing, normalization, and structural
+validation to SDK core through its public API. Before adding filesystem probes,
+XML parsing, project-type checks, constants, or validators, inspect core and
+existing CLI services for an owner. If the needed shared capability is internal
+or missing, extend core's focused public API rather than deep-importing its build
+output or adding a second implementation in a CLI action.
+
+Keep CLI configuration loading, command-specific project-folder resolution,
+prompts, and presentation of errors here. Pass the resolved project folder to
+core; do not independently infer it in each command. Existing `ProjectInfoService`
+and `CLIConfigurationService` contain legacy control-file logic: when changing
+that behavior, prefer delegation to the shared core owner while preserving their
+caller contracts, command requirements, cache behavior, and error reporting.
+Follow [core's shared-logic guidance](../sdk-core/AGENTS.md#shared-logic-and-control-files).
+
+Reuse validation rules between interactive input handlers and noninteractive
+actions where applicable. Keep prompts and error presentation specific to each
+mode, and preserve operations intentionally delegated to Java. Consolidation must
+not silently drop independent context errors or add unrelated validation to a
+command. Rebuild core and check affected CLI paths when changing these contracts.
+
+## Execution and error contracts
+
+Preserve Java execution through an argument array with `shell: false` in
+`SdkExecutor`; do not reintroduce shell interpolation or shell-specific quoting.
+When changing argument handling, check paths with spaces and supported VM options.
+Preserve the SDK download sequence: download to a temporary file, run the existing
+artifact verification, then promote the file to its installed location. Clean up
+failed downloads without replacing a working artifact.
+
+For long-running commands, gate success on actual readiness, settle startup once,
+and release owned resources on failure and shutdown. Remove process and service
+listeners when their operation ends; test repeated execution in one process so
+shutdown handlers cannot accumulate in IDE hosts or tests.
+
+Reuse `src/utils/ErrorMessageUtils.js` when converting thrown values to action-result
+messages. Preserve individual errors as a flat list rather than wrapping an existing
+list in another array. Shared-service errors should use service-owned message keys
+and retain the underlying cause for CLI and editor consumers.
+
 ## Prerequisites and installation
 
-The [README](README.md) lists Node.js 24 LTS and Oracle JDK 17 or 21.
-Preserve compatibility with those documented prerequisites.
+Read the [README prerequisites](README.md#prerequisites) and SDK compatibility
+constants for supported Node.js and Java versions. Keep them aligned when changing
+runtime requirements; preserve the supported versions for other changes.
 `postinstall.js` invokes the license prompt and SDK download services in
 `src/core/sdksetup/`. Installation can prompt for Oracle terms and download the
 Java SDK artifact described by `package.json` metadata.

@@ -19,7 +19,6 @@ declaration-only changes can still break compilation for consumers.
 
 The [README version mapping](README.md#versioning) ties package major versions
 to NetSuite releases, with a new major version every six months.
-It currently maps 5.0.X through 9.0.X to 2024.1 through 2026.1 respectively.
 Use the mapping to identify the intended API release when assessing a change.
 Keep version and release-mapping changes within their separately authorized scope.
 

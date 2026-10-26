@@ -22,7 +22,51 @@ Include a `License` section identifying Oracle copyright and the Universal Permi
 
 Apply this policy when creating or editing a user-facing README; do not revise other existing READMEs solely to enforce it.
 
+## Error messages
+
+Apply this guidance to new or changed user-facing CLI, core, and extension messages.
+Preserve established wording and contracts elsewhere; do not rewrite unrelated
+catalog entries solely for style consistency.
+
+- Lead with the failed operation or invalid item, include the known reason, and
+  give a concrete next step when one is available. Short field-validation messages
+  can state the constraint and correction directly. Do not invent a cause or
+  suggest retrying when the user must first change something.
+- Use concise, neutral language and direct instructions such as "Enter", "Select",
+  or "Run". Prefer a specific description over "Something went wrong" when details
+  are known. Use sentence case and periods for complete sentences; labels and
+  buttons need not be sentences. Preserve official product names and exact UI labels.
+- Identify the relevant file, option, field, or configuration source. Report the
+  environment variable actually selected, rather than assuming its source.
+  Use double quotes around embedded filenames, paths, command examples, and option
+  names where needed for clarity; preserve their exact spelling. Never include
+  credentials, API keys, or tokens in messages or diagnostic details.
+- Use the owning package's translation service and catalog, including short
+  validation messages. Reuse existing keys and help-link constants. Keep dynamic
+  values in placeholders and complete sentences in catalog entries. Keep mappings,
+  placeholder order, and test expectations aligned, following surrounding catalog
+  ordering. Shared-service messages must make sense to every consumer; put
+  editor-specific instructions in the extension.
+- Preserve useful underlying details without repeatedly wrapping them in generic
+  failure messages. Let the presentation layer add severity prefixes and layout;
+  avoid repeated "Error:" prefixes, duplicate notifications, and blank detail lines.
+  For multiple validation failures, use one summary followed by distinct actionable
+  items through the existing formatter. Keep independent errors visible.
+
+Example catalog templates (adapt the action to the actual supported flow):
+
+| Situation | Message |
+| --- | --- |
+| Missing prerequisite | `No API key was found. Run "suitecloud proxy:generatekey" and try again.` |
+| Invalid option | `Invalid "--type" value "{0}". Enter ACCOUNTCUSTOMIZATION or SUITEAPP.` |
+| Known failure with context | `Unable to read "{0}": {1}` |
+
+For the last example, include the reason only when available and safe to display;
+do not show an empty suffix or prescribe a fix before the cause is known.
+
 ## Authoring and changes
+
+Before adding shared behavior, identifiers, or types, find the existing owner and its consumers. Extend that owner when the semantics match; keep product-specific behavior in its integration package. Apply this to the requested change without expanding it into an unrelated refactor. Review the affected consumers whenever a shared contract changes.
 
 Keep repository-authored agent instructions agent agnostic, including `AGENTS.md`, `SKILL.md`, and runbooks. Describe required capabilities, repository paths, and standard commands without assuming a particular coding agent. Keep intentional provider-specific requirements explicit and narrowly scoped.
 
