@@ -12,7 +12,6 @@ export type SuiteScriptTemplateDefinition = {
 };
 
 export const DEFAULT_SUITESCRIPT_TEMPLATE_ID = 'CustomModule';
-export const SUITESCRIPT_HEADER_FILENAME = 'ss_header.js';
 
 export const SUITESCRIPT_TEMPLATES = [
 	{

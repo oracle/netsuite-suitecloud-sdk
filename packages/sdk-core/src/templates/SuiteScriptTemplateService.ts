@@ -8,7 +8,6 @@ import { UTILS } from '../services/translation/TranslationKeys';
 import { translationService } from '../services/translation/TranslationService';
 import {
 	DEFAULT_SUITESCRIPT_TEMPLATE_ID,
-	SUITESCRIPT_HEADER_FILENAME,
 	SUITESCRIPT_MODULES,
 	SUITESCRIPT_TEMPLATES,
 } from './SuiteScriptCatalog';
@@ -39,12 +38,9 @@ export async function generateSuiteScriptTemplate(
 	}
 
 	const modules = normalizeModules(moduleValue);
-	const [header, body] = await Promise.all([
-		loadSuiteScriptTemplate(SUITESCRIPT_HEADER_FILENAME),
-		loadSuiteScriptTemplate(selectedTemplate.bodyFilename),
-	]);
+	const body = await loadSuiteScriptTemplate(selectedTemplate.bodyFilename);
 
-	return renderTemplate(header + body, {
+	return renderTemplate(body, {
 		modulesDefine: modules.map((moduleId) => `'${moduleId}'`).join(', '),
 		modulesJsDoc: buildModulesJsDoc(modules, body.includes('\r\n') ? '\r\n' : '\n'),
 		moduleParameters: modules.map(getModuleName).join(', '),
