@@ -26,7 +26,7 @@ extension must use its own bundled CLI setup rather than require a global CLI.
 Reuse constants for configuration keys, storage keys, and proxy defaults, including
 values passed into webviews.
 
-Await actual readiness before showing a running state. Stop during startup must
+Await actual readiness before showing a running state. A stop request during startup must
 cancel or await pending work and release the same proxy instance. Dispose listeners,
 watchers, and child processes through their owning lifecycle; verify repeated
 start/stop and extension disposal when changing these flows.

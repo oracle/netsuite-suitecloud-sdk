@@ -80,6 +80,6 @@ npm run test --workspace @oracle/suitecloud-cli -- --runInBand
 
 For packaging changes, use `npm run pack:cli`. This rebuilds core, stages the CLI,
 installs core runtime dependencies with lifecycle scripts disabled, and creates
-the bundled tarball in root `dist/` by default. It can require network access.
+the bundled tarball in the repository's root `dist/` directory by default. It can require network access.
 Keep `AGENTS.md` excluded through `.npmignore`.
 Report Jest and packaging results separately from any live NetSuite verification.
