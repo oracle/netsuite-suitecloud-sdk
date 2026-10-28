@@ -42,6 +42,10 @@ catalog entries solely for style consistency.
   give a concrete next step when one is available. Short field-validation messages
   can state the constraint and correction directly. Do not invent a cause or
   suggest retrying when the user must first change something.
+- Describe the problem without blaming the user.
+- Match technical detail to the intended audience. Include diagnostic information
+  when it helps the user resolve the problem; link to documentation for longer
+  recovery procedures.
 - Use concise, neutral language and direct instructions such as "Enter", "Select",
   or "Run". Prefer a specific description over "Something went wrong" when details
   are known. Use sentence case and periods for complete sentences; labels and
