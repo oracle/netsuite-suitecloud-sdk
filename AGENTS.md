@@ -88,7 +88,7 @@ Preserve unrelated work, existing file formatting, and licensing. Edit source fi
 
 ## Verification before commits
 
-Before every commit, identify the affected packages and consumers, rebuild affected packages, and run their required local checks corresponding to the applicable CI workflows. Use package-specific instructions and scripts; a root build alone does not validate every package. Apply this requirement to documentation, metadata, and integrity-record changes as well as code. Follow any more specific package checklist, including the AI plug-in checklist in `packages/ai-plugins/DEVELOPMENT.md` when applicable.
+Before committing, identify the affected packages and consumers and run the checks appropriate to the change, following package-specific instructions and applicable CI workflows. Rebuild when code, dependencies, generated resources, or packaging inputs change. For documentation-only changes, verify links, examples, and consistency with the implementation. Documentation included in distributed artifacts must also pass the applicable packaging and integrity checks. Follow explicit package checklists, including the AI plug-in checklist when applicable.
 
 Report checks accurately: state what ran, what passed, what failed, and any missing prerequisites or checks not run. Distinguish existing failures from regressions introduced by the change; do not claim readiness to commit when required checks fail or cannot run. Report local verification separately from actual remote pipeline results.
 
