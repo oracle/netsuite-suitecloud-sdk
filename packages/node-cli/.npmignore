@@ -11,3 +11,6 @@
 # node-cli specific
 **/__test__/**
 **/__tests__/**
+
+# contributor guidance
+/AGENTS.md
