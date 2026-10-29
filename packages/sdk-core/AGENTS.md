@@ -66,7 +66,7 @@ ambiguous success-value-or-error contract.
 
 ## Build and compatibility
 
-Run commands below from the repository root with workspace dependencies installed.
+Run the commands below from the repository root with workspace dependencies installed.
 Build this package with `npm run build:sdk-core`.
 The build cleans `build/`, compiles `src/` using `tsconfig.build.json`, and copies
 resources. Generated JavaScript, declarations, and maps belong in `build/`.
