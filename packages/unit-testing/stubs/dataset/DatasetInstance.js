@@ -57,7 +57,7 @@ define(['../workbook/Expression', './Condition', './Column', '../query/PagedData
          * @governance 10 units
          * @param {Object} options
          * @param {string|Expression} options.name name of the dataset
-         * @param {string|Expression} [options.description] decription of the dataset
+         * @param {string|Expression} [options.description] description of the dataset
          * @param {string} [options.id] target id for the saved dataset
          * @throws {SuiteScriptError} INVALID_ID_PREFIX when desired dataset id does not start with 'custdataset'
          * @return {Object}

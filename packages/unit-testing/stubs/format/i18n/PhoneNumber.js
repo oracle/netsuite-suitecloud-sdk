@@ -7,14 +7,14 @@ define([], function () {
      *
      * @since 2020.2
      *
-     * Here must be different version for client side. API is the same but internal reperesentation is different
+     * Here must be different version for client side. API is the same but internal representation is different
      * because libphonenumber-js uses different approach to formatting. It calls PN.format('INTERNATIONAL')
      * instead of our PNFormatter.format(PN) where PN is object of type PhoneNumber
      */
     function PhoneNumber() {
 
         /**
-         * Valid - it means legacyPhoneNumber was successfuly parsed and contains correct phone number object
+         * Valid - it means legacyPhoneNumber was successfully parsed and contains correct phone number object
          * @name PhoneNumber#valid
          * @type {boolean}
          * @throws {SuiteScriptError} READ_ONLY_PROPERTY when setting the property is attempted

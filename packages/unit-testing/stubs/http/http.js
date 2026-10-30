@@ -38,7 +38,7 @@ define(['./ClientResponse'], function(ClientResponse){
     http.prototype.CacheDuration = new httpCacheDuration();
 
     /**
-     * Send a HTTP GET request and return a reponse from a server.
+     * Send a HTTP GET request and return a response from a server.
      *
      * @governance 10 units
      * @restriction Server SuiteScript only
@@ -57,7 +57,7 @@ define(['./ClientResponse'], function(ClientResponse){
     http.prototype['get'].promise = function(options) {};
 
     /**
-     * Send a HTTP POST request and return a reponse from a server.
+     * Send a HTTP POST request and return a response from a server.
      *
      * @governance 10 units
      * @restriction Server SuiteScript only
@@ -77,7 +77,7 @@ define(['./ClientResponse'], function(ClientResponse){
     http.prototype.post.promise = function(options) {};
 
     /**
-     * Send a HTTP PUT request and return a reponse from a server.
+     * Send a HTTP PUT request and return a response from a server.
      *
      * @governance 10 units
      * @restriction Server SuiteScript only
@@ -97,7 +97,7 @@ define(['./ClientResponse'], function(ClientResponse){
     http.prototype.put.promise = function(options) {};
 
     /**
-     * Send a HTTP DELETE request and return a reponse from a server.
+     * Send a HTTP DELETE request and return a response from a server.
      *
      * @governance 10 units
      * @restriction Server SuiteScript only

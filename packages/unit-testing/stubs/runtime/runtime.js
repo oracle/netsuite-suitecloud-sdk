@@ -70,7 +70,7 @@ define(['./Script', './Session', './User'], function (Script, Session, User) {
      */
     runtime.prototype.processorCount = undefined;
     /**
-     * The version of NetSuite the current account is runnning.
+     * The version of NetSuite the current account is running.
      *
      * @name Runtime#version
      * @type {string}

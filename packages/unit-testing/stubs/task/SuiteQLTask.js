@@ -118,7 +118,7 @@ define([], function () {
          * @param {Object} options.taskType task.TaskType.SCHEDULED_SCRIPT | task.TaskType.MAP_REDUCE
          * @param {Object} options.query
          * @param {Object} [options.deploymentId] optional, the script has to be deployed, a free deployment id can be detected automatically if available
-         * @param {Object} [options.params] a previosly created script parameter has to be set to async search csv result file id if the file is needed in the script, e.g. {'custscript_srch_res' : 'File.csv'}
+         * @param {Object} [options.params] a previously created script parameter has to be set to async search csv result file id if the file is needed in the script, e.g. {'custscript_srch_res' : 'File.csv'}
          * @return {void}
          *
          * @since 2020.2

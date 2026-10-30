@@ -111,7 +111,7 @@ define(['./RecordInstance'], function(Record) {
    * @param {string} options.type record type
    * @param {number|string} options.id record id
    * @param {Object} options.values field and value mapping to be submitted
-   * @param {Object} [options.options] additonal flags for submission
+   * @param {Object} [options.options] additional flags for submission
    * @param {boolean} [options.options.enablesourcing=true] enable sourcing during record update
    * @param {boolean} [options.options.ignoreMandatoryFields=false] ignore mandatory field during record submission
    *

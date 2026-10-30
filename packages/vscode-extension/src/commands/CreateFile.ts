@@ -134,7 +134,7 @@ export default class CreateFile extends BaseAction {
 
 		let fileToCheck = this.activeFile;
 
-		// action orignated from context menu
+		// action originated from context menu
 		if (this.isSelectedFromContextMenu && fileToCheck && fs.existsSync(fileToCheck)) {
 			const fileCabinetService = new FileCabinetService(path.join(this.getProjectFolderPath(), ApplicationConstants.FOLDERS.FILE_CABINET));
 			if (!fs.lstatSync(fileToCheck).isDirectory()) {

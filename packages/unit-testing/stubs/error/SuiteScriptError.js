@@ -66,7 +66,7 @@ define([], function () {
          */
         this.cause = undefined;
         /**
-         * Error email supression indicator
+         * Error email suppression indicator
          * @name SuiteScriptError#notifyOff
          * @type {boolean}
          * @readonly
