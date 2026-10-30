@@ -106,7 +106,7 @@ define(['./Line', './Sublist', './Field'], function (Line, Sublist, Field) {
          * @param {string} options.fieldId
          * @param {string} options.text ----- The text or texts to change the field value to.
          *    If the field type is multiselect: - This parameter accepts an array of string values. - This parameter accepts a
-         *     null value. Passing in null deselects all currentlsy selected values. If the field type is not multiselect: this
+         *     null value. Passing in null deselects all currently selected values. If the field type is not multiselect: this
          *     parameter accepts only a single string value.
          * @param {boolean} [options.ignoreFieldChange=false] ignore field change script and slaving event if set to true
          * @return {Record} same record, for chaining

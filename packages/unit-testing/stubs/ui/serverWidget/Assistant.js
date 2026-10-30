@@ -114,7 +114,7 @@ define(['./AssistantStep', './Field', './FieldGroup', './Sublist'], function (As
          * @governance none
          * @param {Object} options
          * @param {string} options.title Title of the splash screen
-         * @param {string} options.text1 Text of the splash scheen
+         * @param {string} options.text1 Text of the splash screen
          * @param {string} [options.text2] Text for a second column on the splash screen, if desired.
          * @return {void}
          * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT when title or text1 parameter is missing

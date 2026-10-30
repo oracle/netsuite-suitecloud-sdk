@@ -60,7 +60,7 @@ define(['../workbook/Expression'], function (Expression) {
          */
         this.type = undefined;
         /**
-         * Join for the column, polulated only if the column is not on a base record
+         * Join for the column, populated only if the column is not on a base record
          * @name Column#join
          * @type {Join}
          * @readonly

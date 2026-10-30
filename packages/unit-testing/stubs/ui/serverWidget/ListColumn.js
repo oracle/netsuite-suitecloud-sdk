@@ -36,7 +36,7 @@ define([], function () {
          * @restriction Server SuiteScript only
          * @governance none
          * @param {Object} options
-         * @param {string} options.url  The base url or a column in the data source that returs the
+         * @param {string} options.url  The base url or a column in the data source that returns the
          * base url for each row
          * @param {boolean} [options.dynamic] If true, then the URL is actually an alias that is calculated per row
          * @return {ListColumn}

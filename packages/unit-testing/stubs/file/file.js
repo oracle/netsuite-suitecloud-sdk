@@ -73,7 +73,7 @@ define(['./FileInstance'], function (File) {
      * @param {string} [options.conflictResolution] NameConflictResolution enum, way to handle conflict name resolution in the folder, the default value is 'FAIL'
      *
      * @throws {SuiteScriptError} SSS_MISSING_REQD_ARGUMENT if id or folder parameter is missing
-     * @throws {SuiteScriptError} INVALID_CONFLICT_RESOLUTION_1 if conflictResolution paramater has wrong value
+     * @throws {SuiteScriptError} INVALID_CONFLICT_RESOLUTION_1 if conflictResolution parameter has wrong value
      * @since 2021.1
      */
     file.prototype.copy = function (options) { };

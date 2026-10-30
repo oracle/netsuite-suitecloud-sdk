@@ -145,7 +145,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 	 */
 	async stop() {
 		// when having a "listen EADDRINUSE: address already in use 127.0.0.1:49285" the server instance exists but is not listening
-		// to avoid "Error [ERR_SERVER_NOT_RUNNING]: Server is not running." at close time there is the need to check if server is activelly listening
+		// to avoid "Error [ERR_SERVER_NOT_RUNNING]: Server is not running." at close time there is the need to check if server is actively listening
 		if (this._localProxy && this._localProxy.listening) {
 			// Wrap the close callback in a Promise
 			const closePromise = new Promise((resolve, reject) => {

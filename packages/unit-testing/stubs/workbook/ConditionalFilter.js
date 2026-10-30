@@ -17,7 +17,7 @@ define(['./DataMeasure', './DimensionSelector', './CalculatedMeasure', './ChildN
 	 */
 	function ConditionalFilter() {
 		/**
-		 * Indicator, whether filtering is appliad on rows (on columns if set to false)
+		 * Indicator, whether filtering is applied on rows (on columns if set to false)
 		 * @name ConditionalFilter#row
 		 * @type {boolean}
 		 * @throws {SuiteScriptError} WRONG_PARAMETER_TYPE when the type is not right

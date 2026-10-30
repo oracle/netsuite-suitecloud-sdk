@@ -25,7 +25,7 @@ define([], function () {
      * Returns a list of installed bundles.
      *
      * Unlike at `/app/bundler/bundlelist.nl`, this function
-     * returns only bundles that were successfuly installed.
+     * returns only bundles that were successfully installed.
      *
      * @param {Object} [options]
      * @return {Array<Bundle>}
@@ -61,7 +61,7 @@ define([], function () {
      * Returns a list of installed suite apps.
      *
      * Unlike at `/app/suiteapp/devframework/appinstalllist.nl`, this function
-     * returns only suite apps that were successfuly installed.
+     * returns only suite apps that were successfully installed.
      *
      * @param {Object} [options]
      * @return {Array<SuiteApp>}

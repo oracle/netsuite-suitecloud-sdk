@@ -3,7 +3,7 @@ define(['./Button', './Field'], function (Button, Field) {
      * To add a sublist, use Assistant.addSublist(options) or Form.addSublist(options).
      *
      * @class Sublist
-     * @classdesc Encalsulates a Sublist in a Form or a serverWidget.Assistant
+     * @classdesc Encapsulates a Sublist in a Form or a serverWidget.Assistant
      * @protected
      * @constructor
      *
@@ -29,7 +29,7 @@ define(['./Button', './Field'], function (Button, Field) {
          */
         this.lineCount = undefined;
         /**
-         * Set an id of a field that is to have unique values accross the rows in the sublist
+         * Set an id of a field that is to have unique values across the rows in the sublist
          * @restriction Server SuiteScript only
          * @governance none
          * @param {Object} options

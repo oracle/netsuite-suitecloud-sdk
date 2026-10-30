@@ -290,7 +290,7 @@ define([], function() {
     var http = function() {};
 
     /**
-     * Send a HTTP GET request and return a reponse from a server.
+     * Send a HTTP GET request and return a response from a server.
      *
      * @governance 10 units
      * @restriction Server SuiteScript only

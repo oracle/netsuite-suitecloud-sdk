@@ -47,8 +47,8 @@ export default class VSConsoleLogger extends ConsoleLogger {
 		this.hideProjectFolderName = true;
 	}
 
-	// Output from VSCode doesn't accept colors, for the moment we would pring in default white
-	// We could explore some workarounds in future like creating a Terminal, importing a new library or just implment it ourselves
+	// Output from VSCode doesn't accept colors, for the moment we would print in default white
+	// We could explore some workarounds in future like creating a Terminal, importing a new library or just implement it ourselves
 	private println(message: string): void {
 		if (this.addExecutionDetailsToLog && message !== '') {
 			this.appendLine(this.getExecutionDetails());
