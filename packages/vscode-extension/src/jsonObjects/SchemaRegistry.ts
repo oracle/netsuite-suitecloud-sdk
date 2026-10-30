@@ -6,6 +6,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { FILES } from '../ApplicationConstants';
+import { ProjectInfoService } from '../util/ExtensionUtil';
 import { JSON_OBJECTS, ObjectProject, SchemaAssociation } from './Configuration';
 import { containsPath, resolveProjects } from './ProjectDiscovery';
 
@@ -51,7 +52,7 @@ export class SchemaRegistry implements vscode.FileSystemProvider, vscode.Disposa
 
 	start(): void {
 		this.subscriptions.push(vscode.workspace.registerFileSystemProvider(JSON_OBJECTS.REGISTRY_SCHEME, this, { isReadonly: true }));
-		const watcher = vscode.workspace.createFileSystemWatcher(`**/{${FILES.SUITECLOUD_CONFIG_JS},${FILES.MANIFEST_XML},${FILES.DEPLOY_XML}}`);
+		const watcher = vscode.workspace.createFileSystemWatcher(`**/{${[FILES.SUITECLOUD_CONFIG_JS, ...ProjectInfoService.getControlFileNames()].join(',')}}`);
 		this.subscriptions.push(watcher, watcher.onDidCreate(() => this.schedule()), watcher.onDidChange(() => this.schedule()), watcher.onDidDelete(() => this.schedule()),
 			vscode.workspace.onDidChangeWorkspaceFolders(() => this.schedule()),
 			vscode.workspace.onDidGrantWorkspaceTrust(() => this.schedule()),

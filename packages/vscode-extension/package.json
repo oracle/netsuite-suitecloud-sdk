@@ -315,10 +315,11 @@
 	},
 	"scripts": {
 		"clean": "node scripts/clean-build.js",
-		"vscode:prepublish": "npm run compile",
+		"vscode:prepublish": "npm run prepare:local-cli && npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"test:jsonObjects": "npm run compile && node dist/test/runJsonObjectsTest.js"
+		"prepare:local-cli": "node scripts/prepare-local-cli.js",
+		"test:jsonObjects": "npm run prepare:local-cli && npm run compile && node dist/test/runJsonObjectsTest.js"
 	},
 	"dependencies": {
 		"@oracle/suitecloud-cli": "^4.0.0",

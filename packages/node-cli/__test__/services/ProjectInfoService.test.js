@@ -25,6 +25,12 @@ describe('ProjectInfoService compatibility facade', () => {
 		await rm(projectFolder, { recursive: true, force: true });
 	});
 
+	it('exposes the control-file names owned by the shared SDK for editor watchers', () => {
+		expect(ProjectInfoService.getControlFileNames()).toEqual(
+			['application', 'deploy', 'manifest'].flatMap(name => ['json', 'xml', 'yaml', 'yml'].map(format => `${name}.${format}`))
+		);
+	});
+
 	it('returns scalar V2 metadata and an empty ACP application ID', async () => {
 		await writeFile(join(projectFolder, 'manifest.yml'),
 			'manifest:\n  projecttype: ACCOUNTCUSTOMIZATION\n  frameworkversion: "2.0"\n  projectname: Account Project');

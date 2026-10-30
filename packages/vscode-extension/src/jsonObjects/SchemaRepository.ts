@@ -10,7 +10,7 @@ export type Schema = boolean | { [keyword: string]: any };
 export interface SchemaNode { schema: Schema; base: string; }
 export type SchemaLoader = (url: string) => Promise<string>;
 
-/** In-session catalog resolution; the editor's schema provider owns downloading and disk caching. */
+/** Schema interpretation for on-demand templates only; editor language services resolve their own schemas. */
 export class SchemaRepository {
 	private readonly documents = new Map<string, Promise<Schema>>();
 	constructor(private readonly loader: SchemaLoader = loadSchemaDocument,

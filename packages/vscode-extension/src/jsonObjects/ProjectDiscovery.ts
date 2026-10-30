@@ -43,7 +43,7 @@ export function resolveProjects(root: string, schemaUrl: string): ObjectProject[
 		path.resolve(service.getProjectFolder('account:import')),
 	]);
 	return [...sources].filter(source =>
-		fs.existsSync(path.join(source, FILES.MANIFEST_XML)) && new ProjectInfoService(source).isSuiteCloudProject()
+		new ProjectInfoService(source).isSuiteCloudProject()
 	).map(source => ({ root, source, objects: path.join(source, FOLDERS.OBJECTS), schemaUrl }));
 }
 

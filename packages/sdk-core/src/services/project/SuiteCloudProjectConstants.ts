@@ -36,6 +36,11 @@ export const FILES = {
 	SUITECLOUD_CONFIG_JS: 'suitecloud.config.js',
 } as const;
 
+/** File names recognized by project discovery and editor file watchers. */
+export const CONTROL_FILE_NAMES: readonly string[] = Object.values(FILES.CONTROL_FILES).flatMap(name =>
+	Object.values(SDF_SUPPORTED_FILE_FORMATS).map(format => `${name}.${format}`)
+);
+
 export const FOLDERS = {
 	FILE_CABINET: 'FileCabinet',
 	INSTALLATION_PREFERENCES: 'InstallationPreferences',

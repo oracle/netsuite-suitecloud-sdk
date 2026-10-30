@@ -13,7 +13,6 @@ import { associationsFor, SchemaRegistry } from '../../jsonObjects/SchemaRegistr
 import { SchemaRepository } from '../../jsonObjects/SchemaRepository';
 import { generateTemplate } from '../../jsonObjects/TemplateGenerator';
 import { parse as parseYaml } from 'yaml';
-import { adaptYamlSchema, yamlSchemaUri } from '../../jsonObjects/YamlSupport';
 import { checkSchemaAccess, isSchemaLocationTrusted } from '../../jsonObjects/SchemaDownloads';
 import { JsonObjects, writeObject } from '../../jsonObjects/JsonObjects';
 import { JSON_OBJECTS } from '../../jsonObjects/Configuration';
@@ -23,11 +22,12 @@ suite('SuiteCloud JSON and YAML objects', () => {
 	const url = 'https://schemas.example.test/parent.json';
 	setup(async () => { directory = await fs.mkdtemp(path.join(os.tmpdir(), 'suitecloud-json-unit-')); });
 	teardown(async () => { await fs.rm(directory, { recursive: true, force: true }); });
-	const manifest = '<manifest projecttype="ACCOUNTCUSTOMIZATION"><projectname>Demo</projectname></manifest>';
+	const manifest = '<manifest projecttype="ACCOUNTCUSTOMIZATION"><frameworkversion>1.0</frameworkversion><projectname>Demo</projectname></manifest>';
 	async function source(name: string): Promise<string> {
 		const folder = path.join(directory, name);
 		await fs.mkdir(folder, { recursive: true });
 		await fs.writeFile(path.join(folder, 'manifest.xml'), manifest);
+		await fs.writeFile(path.join(folder, 'deploy.xml'), '<deploy/>');
 		return folder;
 	}
 
@@ -53,6 +53,22 @@ suite('SuiteCloud JSON and YAML objects', () => {
 	test('recognizes a source folder opened directly without a config', async () => {
 		assert.strictEqual(resolveProjects(await source('direct'), url).length, 1);
 	});
+
+	for (const format of ['json', 'yaml', 'yml']) {
+		test(`recognizes ${format} control files through the shared SDK and rejects mixed generations`, async () => {
+			const folder = path.join(directory, 'application');
+			await fs.mkdir(folder);
+			await fs.writeFile(path.join(directory, 'suitecloud.config.js'), "module.exports = { defaultProjectFolder: 'application' };");
+			await fs.writeFile(path.join(folder, `manifest.${format}`), JSON.stringify({
+				manifest: { projecttype: 'ACCOUNTCUSTOMIZATION', frameworkversion: '2.0', projectname: 'Demo' },
+			}));
+			await fs.writeFile(path.join(folder, `deploy.${format}`), '{"deploy":[]}');
+			assert.strictEqual(resolveProjects(directory, url)[0].source, folder);
+			assert.strictEqual(resolveProjects(folder, url)[0].source, folder);
+			await fs.writeFile(path.join(folder, 'deploy.xml'), '<deploy/>');
+			assert.deepStrictEqual(resolveProjects(directory, url), []);
+		});
+	}
 
 	test('uses structural path boundaries and the nearest source in nested projects', () => {
 		assert.strictEqual(containsPath('/demo/app', '/demo/application/file'), false);
@@ -122,19 +138,6 @@ suite('SuiteCloud JSON and YAML objects', () => {
 		assert(!isSchemaLocationTrusted(url, { 'invalid': true }));
 	});
 
-	test('adapts YAML references and IDs without altering instance defaults', () => {
-		const schema = { $id: './objects/root.json', properties: { value: { $ref: '../child.json#/$defs/value' } },
-			default: { $ref: 'ordinary instance data' }, oneOf: [{ $ref: './other.json' }] };
-		const adapted = adaptYamlSchema(schema, url, 7) as any;
-		const reference = vscode.Uri.parse(adapted.properties.value.$ref);
-		assert.strictEqual(reference.fragment, '/$defs/value');
-		assert.strictEqual(new URLSearchParams(reference.query).get('url'), 'https://schemas.example.test/child.json');
-		assert.strictEqual(new URLSearchParams(reference.query).get('revision'), '7');
-		assert.deepStrictEqual(adapted.default, schema.default);
-		assert.strictEqual(schema.properties.value.$ref, '../child.json#/$defs/value');
-		assert.strictEqual(adapted.$id, yamlSchemaUri('https://schemas.example.test/objects/root.json', 7));
-	});
-
 	test('adds conditionally required fields after resolving enum defaults', async () => {
 		const repository = new SchemaRepository();
 		const schema = { type: 'object', required: ['fieldType'], properties: {
@@ -168,6 +171,45 @@ suite('SuiteCloud JSON and YAML objects', () => {
 			await assert.rejects(writeObject(directory, 'custsecret_demo', {}, format), /EEXIST/);
 		});
 	}
+
+	test('preloads parent and child schemas, shares concurrent requests, and refreshes explicitly', async () => {
+		const child = new URL('child.json', url).href;
+		const requests: string[] = [];
+		const repository = new SchemaRepository(async location => {
+			requests.push(location);
+			return JSON.stringify(location === url ? { oneOf: [{ $ref: './child.json' }] } : { title: 'Secret', type: 'object' });
+		}, () => undefined);
+		const project = { root: directory, source: directory, objects: path.join(directory, 'Objects'), schemaUrl: url };
+		const registry = { projects: [project, { ...project, root: directory + '-second' }] } as unknown as SchemaRegistry;
+		const controller = new JsonObjects(registry, repository);
+		await Promise.all([controller.prefetch(), controller.prefetch()]);
+		assert.deepStrictEqual(requests, [url, child]);
+		await controller.prefetch();
+		assert.deepStrictEqual(requests, [url, child]);
+		repository.clear();
+		await controller.prefetch();
+		assert.deepStrictEqual(requests, [url, child, url, child]);
+	});
+
+	test('preload skips absent projects and retries failed requests without bypassing access checks', async () => {
+		let attempts = 0;
+		let allowed = true;
+		const repository = new SchemaRepository(async () => {
+			if (++attempts === 1) { throw new Error('Offline without a cached schema'); }
+			return '{"oneOf":[]}';
+		}, () => { if (!allowed) { throw new Error('Downloads disabled'); } });
+		const registry = { projects: [] } as unknown as SchemaRegistry;
+		const controller = new JsonObjects(registry, repository);
+		await controller.prefetch();
+		assert.strictEqual(attempts, 0);
+		registry.projects = [{ root: directory, source: directory, objects: directory, schemaUrl: url }];
+		await assert.rejects(controller.prefetch(), /Offline/);
+		await controller.prefetch();
+		assert.strictEqual(attempts, 2);
+		allowed = false;
+		await assert.rejects(controller.prefetch(), /Downloads disabled/);
+		assert.strictEqual(attempts, 2);
+	});
 
 	test('template command selects a type, validates the ID, writes required fields, and honors cancellation', async () => {
 		const project = { root: directory, source: directory, objects: path.join(directory, 'Objects'), schemaUrl: url };
@@ -250,6 +292,16 @@ suite('SuiteCloud JSON and YAML objects', () => {
 		assert.strictEqual(vscode.workspace.getConfiguration('json').inspect('schemas')?.workspaceFolderValue, undefined);
 	});
 
+	test('activation preloads the hosted parent and child schemas without opening a template command', async () => {
+		const parentUrl = JSON_OBJECTS.PARENT_SCHEMA_URL;
+		const loadedSchemas = () => vscode.workspace.textDocuments.filter(document =>
+			document.uri.scheme === 'json-schema' && document.uri.fragment.startsWith(new URL('.', parentUrl).href));
+		await until(async () => loadedSchemas().some(document => document.uri.fragment === parentUrl), 'background parent preload');
+		const parent = loadedSchemas().find(document => document.uri.fragment === parentUrl)!;
+		const children = JSON.parse(parent.getText()).oneOf.map((entry: { $ref: string }) => new URL(entry.$ref, parentUrl).href);
+		await until(async () => children.every((url: string) => loadedSchemas().some(document => document.uri.fragment === url)), 'background child preload');
+	});
+
 	test('newly imported JSON gets root completion and inline validation without $schema', async () => {
 		const doc = await open(path.join(first, 'src', 'Objects', 'imported.json'), '{\n  \n}');
 		await until(async () => (await completions(doc)).includes('Secret'), 'catalog completion');
@@ -289,7 +341,7 @@ suite('SuiteCloud JSON and YAML objects', () => {
 		});
 	}
 
-	test('uses native trust defaults and blocks templates and YAML when downloads are disabled', async () => {
+	test('template downloads honor JSON settings while YAML uses its native loader', async () => {
 		const url = JSON_OBJECTS.PARENT_SCHEMA_URL;
 		checkSchemaAccess(url);
 		const config = vscode.workspace.getConfiguration('json');
@@ -299,7 +351,7 @@ suite('SuiteCloud JSON and YAML objects', () => {
 			await config.update('schemaDownload.enable', false, vscode.ConfigurationTarget.Global);
 			await assert.rejects(repository.load(url), /json.schemaDownload.enable/);
 			const doc = await open(path.join(first, 'src', 'Objects', 'disabled.yaml'), 'Secret: {}\n');
-			await until(async () => vscode.languages.getDiagnostics(doc.uri).some(d => d.message.includes('schemaDownload.enable')), 'YAML respects disabled downloads');
+			await until(async () => vscode.languages.getDiagnostics(doc.uri).some(d => d.message.includes('scriptId')), 'YAML validates independently of JSON download settings');
 		} finally { await config.update('schemaDownload.enable', undefined, vscode.ConfigurationTarget.Global); }
 		const doc = await open(path.join(first, 'src', 'Objects', 'restored.yml'), '\n');
 		await until(async () => (await completions(doc, new vscode.Position(0, 0))).includes('Secret'), 'YAML downloads restored');
@@ -334,6 +386,7 @@ suite('SuiteCloud JSON and YAML objects', () => {
 	test('a saved defaultProjectFolder change moves associations and completion to the new source', async () => {
 		await fs.mkdir(path.join(first, 'next'), { recursive: true });
 		await fs.copyFile(path.join(first, 'src', 'manifest.xml'), path.join(first, 'next', 'manifest.xml'));
+		await fs.copyFile(path.join(first, 'src', 'deploy.xml'), path.join(first, 'next', 'deploy.xml'));
 		await fs.writeFile(path.join(first, 'suitecloud.config.js'), "module.exports = { defaultProjectFolder: 'next' };\n");
 		await until(async () => {
 			const files = await matches();
@@ -360,6 +413,37 @@ suite('SuiteCloud JSON and YAML objects', () => {
 		await until(async () => (await matches()).includes(pattern(path.join(first, 'next', 'Objects'))), 're-enabled project');
 		await until(async () => (await completions(yaml, new vscode.Position(0, 0))).includes('Secret'), 'YAML re-enabled project');
 	});
+
+	for (const format of ['json', 'yaml', 'yml']) {
+		test(`${format} control-file create, change, delete and atomic replacement refresh discovery`, async () => {
+			const source = path.join(first, `source-${format}`);
+			const manifestPath = path.join(source, `manifest.${format}`);
+			const deployPath = path.join(source, `deploy.${format}`);
+			const manifest = JSON.stringify({ manifest: { projecttype: 'ACCOUNTCUSTOMIZATION', frameworkversion: '2.0' } });
+			await fs.mkdir(source);
+			await fs.writeFile(path.join(first, 'suitecloud.config.js'), `module.exports = { defaultProjectFolder: 'source-${format}' };`);
+			await until(async () => !(await matches()).includes(pattern(path.join(first, 'next', 'Objects'))), 'old source removed');
+			await fs.writeFile(manifestPath, manifest);
+			await fs.writeFile(deployPath, '{"deploy":[]}');
+			const recognized = async () => (await matches()).includes(pattern(path.join(source, 'Objects')));
+			await until(recognized, `${format} project discovered after control-file creation`);
+			const object = await open(path.join(source, 'Objects', 'imported.json'), '{\n  \n}');
+			await until(async () => (await completions(object)).includes('Secret'), `${format} project JSON completion`);
+			const yaml = await open(path.join(source, 'Objects', 'imported.yaml'), 'Secret: {}\n');
+			await until(async () => vscode.languages.getDiagnostics(yaml.uri).some(d => d.message.includes('scriptId')), `${format} project YAML validation`);
+			await fs.writeFile(manifestPath, '{}');
+			await until(async () => !(await recognized()), 'invalid metadata removed');
+			await fs.writeFile(manifestPath + '.tmp', manifest);
+			await fs.rename(manifestPath + '.tmp', manifestPath);
+			await until(recognized, 'atomic manifest replacement discovered');
+			await fs.unlink(deployPath);
+			await until(async () => !(await recognized()), 'deleted deploy removed');
+			await fs.writeFile(deployPath, '{"deploy":[]}');
+			await until(recognized, 'restored deploy discovered');
+			await fs.writeFile(path.join(first, 'suitecloud.config.js'), "module.exports = { defaultProjectFolder: 'next' };");
+			await until(async () => (await matches()).includes(pattern(path.join(first, 'next', 'Objects'))), 'original project restored');
+		});
+	}
 
 	test('removed workspace folders lose their associations', async () => {
 		assert(vscode.workspace.updateWorkspaceFolders(1, 1));

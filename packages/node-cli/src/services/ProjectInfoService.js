@@ -20,9 +20,13 @@ const { toErrorMessages } = require('../utils/ErrorMessageUtils');
 const FileUtils = require('../utils/FileUtils');
 const NodeTranslationService = require('./NodeTranslationService');
 const { lineBreak } = require('../loggers/LoggerOsConstants');
-const { validateControlFileSetup, readProjectManifest, } = require('@oracle/suitecloud-sdk-core').services;
+const { validateControlFileSetup, readProjectManifest, CONTROL_FILE_NAMES } = require('@oracle/suitecloud-sdk-core').services;
 
 module.exports = class ProjectInfoService {
+	static getControlFileNames() {
+		return CONTROL_FILE_NAMES;
+	}
+
 	constructor(projectFolder) {
 		assert(projectFolder);
 		this._projectFolder = projectFolder;

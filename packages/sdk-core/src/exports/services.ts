@@ -9,6 +9,8 @@ export {
 	readProjectManifest,
 } from '../services/project/ProjectControlService';
 
+export { CONTROL_FILE_NAMES } from '../services/project/SuiteCloudProjectConstants';
+
 export type {
 	ProjectManifest,
 	SdfProjectType,

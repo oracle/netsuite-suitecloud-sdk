@@ -23,9 +23,14 @@ const message = (key: string, ...parameters: string[]) => translations.getMessag
 export function initializeJsonObjects(context: vscode.ExtensionContext, log: (text: string) => void): void {
 	const repository = new SchemaRepository();
 	const registry = new SchemaRegistry(log);
-	const yaml = new YamlSupport(registry, repository, log);
+	const yaml = new YamlSupport(registry);
 	const objects = new JsonObjects(registry, repository);
 	context.subscriptions.push(registry, yaml,
+		registry.onDidChangeFile(() => {
+			// Discovery runs after activation and after workspace trust is granted.
+			// Keep network work off the activation path; native providers own disk caching.
+			void objects.prefetch().catch(error => log(`SuiteCloud template schema preload: ${String(error)}`));
+		}),
 		vscode.commands.registerCommand(commandsInfoMap.createjsonobject.vscodeCommandId, (uri?: vscode.Uri) => objects.create(uri)),
 		vscode.commands.registerCommand(commandsInfoMap.refreshjsonschemas.vscodeCommandId, async () => {
 			repository.clear();
@@ -54,6 +59,25 @@ export class JsonObjects {
 	constructor(private readonly registry: SchemaRegistry, private readonly repository: SchemaRepository,
 		private readonly ui: Pick<typeof vscode.window, 'showQuickPick' | 'showInputBox' | 'showErrorMessage' | 'withProgress' | 'showTextDocument'> = vscode.window) {}
 
+	/** Warm each catalog once through the repository's shared request/memory cache. */
+	async prefetch(): Promise<void> {
+		await Promise.all([...new Set(this.registry.projects.map(project => project.schemaUrl))]
+			.map(url => this.loadTypes(url)));
+	}
+
+	private async loadTypes(url: string) {
+		const parent = await this.repository.dereference(await this.repository.load(url));
+		if (typeof parent.schema !== 'object' || !Array.isArray(parent.schema.oneOf)) {
+			throw new Error(message(JSON_OBJECT_MESSAGES.CATALOG_INVALID));
+		}
+		return Promise.all(parent.schema.oneOf.map(async (schema: SchemaNode['schema']) => {
+			const node = await this.repository.dereference({ schema, base: parent.base });
+			if (typeof node.schema !== 'object') { throw new Error(message(JSON_OBJECT_MESSAGES.CATALOG_INVALID)); }
+			return { label: node.schema.title ?? node.schema.required?.[0] ?? node.base,
+				description: node.schema.description, node };
+		}));
+	}
+
 	async create(contextUri?: vscode.Uri): Promise<void> {
 		try {
 			if (!vscode.workspace.isTrusted) { throw new Error(message(JSON_OBJECT_MESSAGES.TRUST_REQUIRED)); }
@@ -61,18 +85,7 @@ export class JsonObjects {
 			const project = await this.chooseProject(contextUri ?? vscode.window.activeTextEditor?.document.uri, !!contextUri);
 			if (!project) { return; }
 			const types = await this.ui.withProgress({ location: vscode.ProgressLocation.Notification,
-				title: message(JSON_OBJECT_MESSAGES.LOADING) }, async () => {
-				const parent = await this.repository.dereference(await this.repository.load(project.schemaUrl));
-				if (typeof parent.schema !== 'object' || !Array.isArray(parent.schema.oneOf)) {
-					throw new Error(message(JSON_OBJECT_MESSAGES.CATALOG_INVALID));
-				}
-				return Promise.all(parent.schema.oneOf.map(async (schema: SchemaNode['schema']) => {
-					const node = await this.repository.dereference({ schema, base: parent.base });
-					if (typeof node.schema !== 'object') { throw new Error(message(JSON_OBJECT_MESSAGES.CATALOG_INVALID)); }
-					return { label: node.schema.title ?? node.schema.required?.[0] ?? node.base,
-						description: node.schema.description, node };
-				}));
-			});
+				title: message(JSON_OBJECT_MESSAGES.LOADING) }, () => this.loadTypes(project.schemaUrl));
 			const selected = await this.ui.showQuickPick(types, { title: commandsInfoMap.createjsonobject.vscodeCommandName,
 				placeHolder: message(JSON_OBJECT_MESSAGES.CHOOSE_TYPE) });
 			if (!selected) { return; }
