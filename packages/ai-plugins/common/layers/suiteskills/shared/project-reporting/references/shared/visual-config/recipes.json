@@ -1,0 +1,218 @@
+{
+  "profiles": {
+    "financial": [
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Financial owns money; Health consumes scoped results.",
+        "id": "performance",
+        "input_requirement": "Natural-grain nonoverlapping money rows with project, currency, book, period, basis, kind, approval/posting evidence.",
+        "title": "Approved budget and actual results"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Financial; Operations handles permitted follow-ups, analysis does not itself authorize financial execution.",
+        "id": "billing",
+        "input_requirement": "Actual charge/project links, eligibility, documented rule/trigger, hold state, invoice links and aging clock.",
+        "title": "Billing eligibility and holds"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Financial owns attribution; analysis does not itself authorize payment execution.",
+        "id": "cash",
+        "input_requirement": "Verified project → invoice → application links; as-of balance history; separate deposit, application, credit and unapplied kinds.",
+        "title": "Cash applications and aging"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Financial analysis; a purchasing transaction requires a separately authorized supported procedure.",
+        "id": "procurement",
+        "input_requirement": "Verified order/receipt/bill/project links and separate approved/received/posted measures.",
+        "title": "Commitments and realized cost"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Financial; Health uses verified actuals.",
+        "id": "revenue",
+        "input_requirement": "Recognition entries and linked source detail with matching currency/book/period/basis.",
+        "title": "Revenue reconciliation"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Financial owns compliance; Operations may supply factual approval queues.",
+        "id": "policy",
+        "input_requirement": "Effective policy version/scope plus full applicable employee/day or report population and native evaluation where returned.",
+        "title": "Expense-policy evidence"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Financial validates; Operations owns the plan lifecycle and approved operational subset.",
+        "id": "commercial",
+        "input_requirement": "Versioned SOW plan/components and sow_tools.commercial_review output.",
+        "title": "SOW commercial mapping"
+      }
+    ],
+    "operations": [
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations; Risk for exposure classification; no rendering control performs an action.",
+        "id": "work",
+        "input_requirement": "queues with queue_kind, exact entity type/reference, routing_verified, due/priority evidence; tasks and assignment data.",
+        "title": "Work queues"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations uses the inherited capacity helper; Risk supplies native staffing evidence.",
+        "id": "capacity",
+        "input_requirement": "capacity_input uses capacity_tools.daily_ledger: complete resource directory, validated dated plannedwork, net calendar/leave rows, supported start/end.",
+        "title": "Daily work and capacity"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations; expense compliance and commercial effects stay with Financial.",
+        "id": "approvals",
+        "input_requirement": "queues filtered to exact verified current routing, entity type/reference and record identity; deadline/SLA if available.",
+        "title": "Exact-user routed approvals"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations identifies facts; Risk interprets staffing exposure after native -9 intake.",
+        "id": "staffing",
+        "input_requirement": "tasks + separate assignment rows + complete verified resources, assignment coverage/remaining-work detail when available.",
+        "title": "Staffing exceptions"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations; Financial validates comparable prices only when relevant.",
+        "id": "candidates",
+        "input_requirement": "candidate_request + dated daily ledger + exact role ID and dated requirements; explicit price criteria only when requested.",
+        "title": "Employee role/capacity comparison"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations coordinates proposal and any separately approved action workflow.",
+        "id": "placements",
+        "input_requirement": "Validated daily ledger and unique placement_id/resource/date/hours plus verified role match and eligibility.",
+        "title": "Proposed placement scenario"
+      }
+    ],
+    "operations-sow": [
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations owns; Financial validates terms; Risk performs plan-risk review; Health assesses existing portfolio impact.",
+        "id": "plan",
+        "input_requirement": "SOW-1.0 plan; sources, obligations, actions, commercial components, decisions and confirmed edits.",
+        "title": "Seven-section SOW plan"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations controls revisions; specialist owners revalidate affected portions.",
+        "id": "changes",
+        "input_requirement": "prior_plan and current plan validated by sow_tools.diff; revision log and field_evidence.",
+        "title": "Source / prior / current differences"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations execution workflow only; UI Explain/Compare never writes.",
+        "id": "preview",
+        "input_requirement": "Validated plan, actual approval evidence and optional runtime preflight; display the existing SOW gate result separately.",
+        "title": "Exact approved-action preview"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations; Financial and Risk review post-action evidence under unchanged scope.",
+        "id": "reconciliation",
+        "input_requirement": "sow_tools.report(plan, ledger); attempt/readback evidence; approved_action_ids.",
+        "title": "Run and full reconciliation"
+      }
+    ],
+    "portfolio-health": [
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Health owns synthesis; Risk supplies classifications; Operations and Financial supply scoped facts.",
+        "id": "attention",
+        "input_requirement": "projects + classified risk_findings + tasks; frozen request/result and full risk review.",
+        "title": "Portfolio attention"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Health; request scheduling facts from Operations without recursively restarting the root review.",
+        "id": "timeline",
+        "input_requirement": "recorded_dates: label, baseline_date, current_date, baseline_version, dates_verified, source_refs.",
+        "title": "Recorded delivery dates"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Health for recorded milestones; Risk for supported acceptance exposure.",
+        "id": "milestones",
+        "input_requirement": "milestones: explicit milestone identity, dates, completion and acceptance requirements/state with acceptance_verified.",
+        "title": "Milestones and acceptance"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Health owns the comparison; supporting owners revalidate changed facts.",
+        "id": "changes",
+        "input_requirement": "changes.previous/current: identical account, project_ids, role fingerprint, source-definition fingerprint and window basis; findings with stable keys and source refs.",
+        "title": "Matched-snapshot changes"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Health presents; Risk owns supported exposure; Operations owns permitted link changes.",
+        "id": "dependencies",
+        "input_requirement": "dependencies with edge_verified, predecessor, successor, dependency type, dates and source refs.",
+        "title": "Verified dependency detail"
+      }
+    ],
+    "risk": [
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Risk owns classification; Health coordinates combined requests; Operations/Financial supply facts.",
+        "id": "exposure",
+        "input_requirement": "Risk-classified findings, full root risk/request ledgers, all native intake and supporting sources.",
+        "title": "Supported exposure overview"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Risk; staffing investigation prioritizes native coverage -9 before ordinary capacity.",
+        "id": "native",
+        "input_requirement": "native_input for indicator_tools.select_results; include discovered types, all statuses, historical cutoff and missing transport state.",
+        "title": "Native Indicator results"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Risk owns exposure; Health/Operations supply task evidence.",
+        "id": "aging",
+        "input_requirement": "Normalized distinct incomplete executable leaves, verified effective end/FNLT semantics, aware cutoff/timezone.",
+        "title": "Overdue work aging"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Operations supplies staffing facts; Risk classifies supported exposure.",
+        "id": "assignments",
+        "input_requirement": "Verified task/assignment/resource identities and native coverage detail.",
+        "title": "Assignment gap detail"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Risk owns applicability, candidate resolution and scoped search completion.",
+        "id": "discovery-coverage",
+        "input_requirement": "Frozen investigation plan, completed source/search partitions and terminal candidate inventory.",
+        "title": "Investigation search coverage"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Risk explains exposure; Financial alone supplies monetary variants.",
+        "id": "combined",
+        "input_requirement": "Compatible independently supported conditions with verified shared project/task links.",
+        "title": "Supported combined exceptions"
+      },
+      {
+        "fallback": "same exact-value evidence table",
+        "handoff": "Risk groups findings; Health owns portfolio synthesis.",
+        "id": "clients",
+        "input_requirement": "Explicit verified project/customer links and classified findings.",
+        "title": "Client grouping"
+      }
+    ]
+  },
+  "visual_version": "VISUAL-2.0.0"
+}

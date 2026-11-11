@@ -1,0 +1,87 @@
+{
+  "access_mode": "local_artifacts_and_supported_reads",
+  "category": "netsuite-suiteskills-operations",
+  "compatibility": {
+    "file_engine": "checked_executor_and_source_publication_profile",
+    "host": "capability_dependent",
+    "host_delivery": "observed_host_transport_and_readback; managed_collision_avoidance_not_atomic",
+    "layout": "isolated_category_runbook",
+    "linux_execution": "not_run",
+    "native_delivery": "not_run",
+    "unsupported_file_engine": "facts_or_Markdown_table_only"
+  },
+  "description": "Create focused financial and operational charts and snapshot views from verified results or supplied data. Generate validated HTML on supported executors and deliver through observed host facilities; PDF/PowerPoint require qualified Darwin export dependencies. Preserve source scope and plain-text references without verified origin. Accept supplied files/tables and supported source results without another plugin.",
+  "display_name": "Data Visualization",
+  "effects": {
+    "account_reads": "supported connector only, when requested",
+    "account_writes": false,
+    "local_file_output": "private validated source files; observed host transfer only with collision checks and readback",
+    "local_script_network_access": false,
+    "process_execution": "reviewed local browser bridge for PDF/PPTX"
+  },
+  "first_included_date": "2026-10-08",
+  "foundation_sha256": "fc1c63bb69b2d199cd8a14b6dcc6d0a93a18f0ae29d1be57fece56a1d9b22541",
+  "id": "RB-OPS-020",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "1.0.0",
+  "local_dependencies": {
+    "html": "Python 3.12 standard library and reviewed packaged assets",
+    "pdf": "Reviewed Node.js/Playwright/matching Chromium, pypdf and exact qualified host Arial Unicode MS 1.01x font; see references/publication.md",
+    "pptx": "Python 3.12 standard library plus existing reviewed Node.js, Playwright and matching Chromium for every graphical PowerPoint export"
+  },
+  "name": "netsuite-data-visualization",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "No account or entitlement checks performed; local rendering requires no NetSuite operation.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "No account or entitlement checks performed; local rendering requires no NetSuite operation.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "No account or entitlement checks performed; local rendering requires no NetSuite operation.",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "No account or entitlement checks performed; local rendering requires no NetSuite operation.",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "operations": [
+    {
+      "condition": "Fresh NetSuite evidence requested; actual supported connector required",
+      "operation": "read_supported_source",
+      "status": "conditional"
+    },
+    {
+      "condition": "Requested file and qualified host/storage/dependencies available",
+      "operation": "create_validated_local_visualization",
+      "status": "conditional"
+    }
+  ],
+  "owner": "Oracle NetSuite",
+  "package_format": "suiteskills_integrated_runbook_candidate",
+  "path": "skills/netsuite-suiteskills-operations/runbooks/netsuite-data-visualization/RUNBOOK.md",
+  "platform": "Darwin/local APFS; checked Linux glibc 2.39 LP64 ext-family HTML candidate; native delivery conditional",
+  "product_team": "Administration",
+  "shared_dependencies": [
+    "shared/contracts/BASELINE.md",
+    "shared/contracts/OUTPUTS.md",
+    "shared/contracts/RETRIEVAL.md",
+    "shared/contracts/LINKS.md",
+    "shared/contracts/EVIDENCE.md"
+  ],
+  "source_release_date": "2026-10-16",
+  "source_version": "2.2.0-rc.1",
+  "target_plugin": {
+    "name": "netsuite-suiteskills",
+    "version": "1.0.0"
+  },
+  "upstream_source_version": "1.4.0",
+  "version": "2.2.0-rc.1"
+}

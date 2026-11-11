@@ -1,0 +1,7 @@
+{
+  "baseline_origin": "supplied netsuite-ai-connector-instructions.zip/SKILL.md",
+  "baseline_sha256": "87e5faa61ea80375af01667c11591d86fd816965e9c99459d7612bbafa20fb99",
+  "baseline_unchanged": true,
+  "distribution_release": "PM-2026-09-18_v3",
+  "runtime_contract": "PM-3.0.0"
+}

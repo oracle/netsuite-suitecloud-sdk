@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Service report preview</title>
+  <style>
+    :root {
+      --ink: #222222;
+      --brand: #333333;
+      --muted: #595959;
+      --line: #d8d8d8;
+      --surface: #f3f3f3;
+    }
+    @page { size: A4; margin: 17mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ededed; color: var(--ink); font: 14px/1.45 Arial, sans-serif; }
+    .sheet { width: 210mm; min-height: 297mm; margin: 20px auto; padding: 17mm; background: white; }
+    header { display: table; width: 100%; padding-bottom: 14px; border-bottom: 2px solid var(--brand); }
+    .brand, .document-name { display: table-cell; vertical-align: middle; }
+    .document-name { text-align: right; color: var(--muted); font-size: 12px; letter-spacing: .08em; }
+    .brand-name { margin: 0; color: var(--brand); font-size: 20px; font-weight: bold; }
+    .logo-placeholder { display: inline-block; width: 100px; height: 40px; margin-right: 12px; vertical-align: middle; }
+    .brand-copy { display: inline-block; vertical-align: middle; }
+    h1 { margin: 22px 0 2px; color: var(--brand); font-size: 28px; }
+    h2 { margin: 22px 0 8px; color: var(--brand); font-size: 16px; break-after: avoid; }
+    p { margin: 5px 0 9px; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th { padding: 8px; background: var(--surface); color: var(--brand); text-align: left; font-size: 11px; }
+    td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .media-row { display: table; width: 100%; }
+    .media-cell { display: table-cell; width: 50%; padding: 5px 12px 5px 0; vertical-align: top; }
+    .media-placeholder { display: block; width: 100%; max-width: 250px; height: 120px; border: 1px solid var(--line); background: var(--surface); }
+    .signature-placeholder { height: 65px; }
+    footer { margin-top: 28px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    @media print {
+      body { background: white; }
+      .sheet { width: auto; min-height: 0; margin: 0; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <header>
+      <div class="brand">
+        <span class="logo-placeholder" data-field="branding.logo">
+          <svg viewBox="0 0 100 40" width="100" height="40" role="img" aria-label="Company logo placeholder" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="98" height="38" rx="3" fill="#f3f3f3" stroke="#c9c9c9"/>
+            <text x="50" y="24" text-anchor="middle" font-size="10" font-family="Arial" fill="#595959">COMPANY LOGO</text>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name" data-field="branding.companyName">Example Company</span><br>
+          <span class="small muted" data-field="branding.contactLine">Company address · phone · website</span>
+        </span>
+      </div>
+      <div class="document-name">SERVICE REPORT</div>
+    </header>
+
+    <h1>Service report</h1>
+    <p class="muted">Task <span data-field="task.number">SR-1042</span> · <span data-field="task.serviceDate">15 October 2026</span></p>
+
+    <section>
+      <h2>Service visit</h2>
+      <table>
+        <thead><tr><th>Customer</th><th>Site</th><th>Appointment</th></tr></thead>
+        <tbody><tr>
+          <td data-field="customer.name">Sample Customer</td>
+          <td data-field="site.address">42 Example Street<br>Melbourne VIC 3000</td>
+          <td data-field="task.appointment">15 Oct 2026<br>9:00 am – 11:00 am</td>
+        </tr></tbody>
+      </table>
+      <p><strong>Work requested:</strong> <span data-field="task.description">Inspect and service the installed equipment.</span></p>
+    </section>
+
+    <section>
+      <h2>Safety and work completed</h2>
+      <table>
+        <thead><tr><th>Safety result</th><th>Work notes</th><th>Technician</th></tr></thead>
+        <tbody><tr>
+          <td data-field="safety.outcome">Pass</td>
+          <td data-field="task.workNotes">Inspection completed. No issues found.</td>
+          <td data-field="task.technician">Example Technician</td>
+        </tr></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Assets and materials</h2>
+      <table>
+        <thead><tr><th>Asset</th><th>Serial</th><th>Work</th></tr></thead>
+        <tbody data-repeat="assets">
+          <tr><td data-field="asset.name">Machine A</td><td data-field="asset.serial">EX-12345</td><td data-field="asset.result">Serviced</td></tr>
+          <tr><td>Machine B</td><td>EX-67890</td><td>Inspected</td></tr>
+        </tbody>
+      </table>
+      <h2>Time and expenses</h2>
+      <table>
+        <thead><tr><th>Type</th><th>Description</th><th>Quantity / amount</th></tr></thead>
+        <tbody data-repeat="charges">
+          <tr><td data-field="charge.type">Labour</td><td data-field="charge.description">Standard service</td><td data-field="charge.amount">2.0 hours</td></tr>
+          <tr><td>Material</td><td>Replacement component</td><td>1</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Images</h2>
+      <div class="media-row">
+        <figure class="media-cell" data-field="maintenance.image">
+          <svg class="media-placeholder" viewBox="0 0 250 120" role="img" aria-label="Service photo placeholder" xmlns="http://www.w3.org/2000/svg">
+            <rect width="250" height="120" fill="#f3f3f3"/>
+            <circle cx="125" cy="44" r="15" fill="#b8cbd5"/>
+            <path d="M20 100 L75 58 L115 89 L165 48 L230 100 Z" fill="#b8cbd5"/>
+            <text x="125" y="113" text-anchor="middle" font-size="10" font-family="Arial" fill="#595959">SERVICE PHOTO</text>
+          </svg>
+          <figcaption class="small muted">Service photo</figcaption>
+        </figure>
+        <figure class="media-cell" data-field="expense.receipt">
+          <svg class="media-placeholder" viewBox="0 0 250 120" role="img" aria-label="Receipt placeholder" xmlns="http://www.w3.org/2000/svg">
+            <rect width="250" height="120" fill="#f3f3f3"/>
+            <rect x="82" y="15" width="86" height="84" fill="white" stroke="#c9c9c9"/>
+            <path d="M95 34 H155 M95 48 H155 M95 62 H145 M95 76 H155" stroke="#c9c9c9" stroke-width="3"/>
+            <text x="125" y="113" text-anchor="middle" font-size="10" font-family="Arial" fill="#595959">RECEIPT</text>
+          </svg>
+          <figcaption class="small muted">Expense receipt</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>Job completion</h2>
+      <div class="media-row">
+        <div class="media-cell" data-field="signoff.customerSignature">
+          <p>Customer: <strong data-field="signoff.customerName">Example Customer</strong></p>
+          <svg class="media-placeholder signature-placeholder" viewBox="0 0 250 65" role="img" aria-label="Customer signature placeholder" xmlns="http://www.w3.org/2000/svg">
+            <rect width="250" height="65" fill="#f3f3f3"/>
+            <path d="M35 38 Q70 15 95 40 T150 35 T215 29" fill="none" stroke="#61717f" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="media-cell" data-field="signoff.technicianSignature">
+          <p>Technician: <strong data-field="signoff.technicianName">Example Technician</strong></p>
+          <svg class="media-placeholder signature-placeholder" viewBox="0 0 250 65" role="img" aria-label="Technician signature placeholder" xmlns="http://www.w3.org/2000/svg">
+            <rect width="250" height="65" fill="#f3f3f3"/>
+            <path d="M30 36 Q68 22 98 37 T155 31 T218 34" fill="none" stroke="#61717f" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <footer data-field="branding.footer">Example Company · Service report</footer>
+  </main>
+</body>
+</html>

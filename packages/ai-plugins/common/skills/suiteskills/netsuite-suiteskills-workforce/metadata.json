@@ -1,0 +1,12 @@
+{
+  "access_mode": "operation_dependent",
+  "code": "PPL",
+  "edition": "non-read-only",
+  "id": "CAT-PPL",
+  "name": "Workforce",
+  "owner": "Oracle NetSuite",
+  "release_date": "2026-10-19",
+  "runbook_count": 5,
+  "slug": "netsuite-suiteskills-workforce",
+  "version": "1.0.0"
+}

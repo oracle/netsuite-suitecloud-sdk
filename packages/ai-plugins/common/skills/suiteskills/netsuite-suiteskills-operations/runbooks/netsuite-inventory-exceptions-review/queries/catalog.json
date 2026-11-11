@@ -1,0 +1,1247 @@
+{
+  "binding_model": "Complete typed JSON inputs; scalar SQL literals; positive integer ID lists; no user SQL or identifiers.",
+  "format_version": 1,
+  "queries": {
+    "expired_lots": {
+      "description": "Bounded list of expired lot inventory and lot inventory expiring within one day",
+      "file": "expired_lots.sql",
+      "grain": "One item/lot/expiration-date/location/bin aggregate across underlying inventory-status balances.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. As-of date in YYYY-MM-DD format; use the current account date when not specified",
+          "format": "YYYY-MM-DD",
+          "name": "asOfDate",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all lot numbers, or SELECTED to filter by inventoryNumberIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "inventoryNumberScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Inventory number internal IDs to include when inventoryNumberScope is SELECTED; use [] when inventoryNumberScope is ALL",
+          "minimum_item": 1,
+          "name": "inventoryNumberIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all bins, or SELECTED to filter by binIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "binScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Bin internal IDs to include when binScope is SELECTED; use [] when binScope is ALL",
+          "minimum_item": 1,
+          "name": "binIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL, FROM, THROUGH, or RANGE to control optional expiration-date filtering",
+          "enum": [
+            "ALL",
+            "FROM",
+            "THROUGH",
+            "RANGE"
+          ],
+          "name": "expirationDateScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. Inclusive lower expiration-date bound in YYYY-MM-DD format for FROM or RANGE; use asOfDate when expirationDateScope is ALL or THROUGH",
+          "format": "YYYY-MM-DD",
+          "name": "expirationDateFrom",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. Inclusive upper expiration-date bound in YYYY-MM-DD format for THROUGH or RANGE; use asOfDate when expirationDateScope is ALL or FROM",
+          "format": "YYYY-MM-DD",
+          "name": "expirationDateTo",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL, MINIMUM, or RANGE to control optional aggregate quantity-on-hand filtering",
+          "enum": [
+            "ALL",
+            "MINIMUM",
+            "RANGE"
+          ],
+          "name": "quantityOnHandScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. Inclusive lower quantity-on-hand bound for MINIMUM or RANGE; use 0 when quantityOnHandScope is ALL",
+          "maximum": "1e24",
+          "minimum": 0,
+          "name": "minimumQuantityOnHand",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. Inclusive upper quantity-on-hand bound for RANGE; use 0 when quantityOnHandScope is ALL or MINIMUM",
+          "maximum": "1e24",
+          "minimum": 0,
+          "name": "maximumQuantityOnHand",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of exception rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: Confirm Item.isLotItem and inventory balance relationships. Aggregation across inventory status is intentional but not across location/bin."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "itemDisplay",
+          "id_alias": "item",
+          "source_expression": "item"
+        },
+        {
+          "display_alias": "lotNumberDisplay",
+          "id_alias": "lotNumber",
+          "source_expression": "lotNumber"
+        },
+        {
+          "display_alias": "locationDisplay",
+          "id_alias": "location",
+          "source_expression": "location"
+        },
+        {
+          "display_alias": "binDisplay",
+          "id_alias": "bin",
+          "source_expression": "binNumber"
+        }
+      ],
+      "source_sha256": "384f5d2e4fe40dc472c8e2d4d8b29fbcc403c0c9855bedf79426164cb93e280d",
+      "tables": [
+        "InventoryBalance",
+        "InventoryNumber",
+        "Item"
+      ],
+      "template_sha256": "86e7aa7ab286bc0852c25ccd17afe59cd8697284142d728a31f26434266706e4"
+    },
+    "failed_pick_tasks": {
+      "description": "Bounded list of failed WMS Pick Actions with their owning Pick Task and action inventory detail",
+      "file": "failed_pick_tasks.sql",
+      "grain": "One failed PickAction and its optional PickActionInventoryDetail row; detail ID is used to sort but is not projected.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Warehouse location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of failed action detail rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: Confirm PickAction.status = 'FAILED' and status/failureReason display functions during account testing; do not substitute an unverified fullStatus field.",
+        "Pre-release validation: Do not join PickTaskInventoryBalance. The source constructs a relative pick-task route; the adapter does not verify that route or account origin."
+      ],
+      "reference_outputs": [],
+      "source_sha256": "4d23a295d20b197cbfffc438f1e84c9fc891a35e6ece0b3c2c0f3e0112e869c3",
+      "tables": [
+        "PickAction",
+        "PickActionInventoryDetail",
+        "PickTask"
+      ],
+      "template_sha256": "0c5ceaa69478ad18f909865c0177a7a21f97d69ed84a31f75516925b0536fc15"
+    },
+    "inbound_po_linked_sales_orders": {
+      "description": "Direct drop-ship and special-order sales order links for selected purchase orders",
+      "file": "inbound_po_linked_sales_orders.sql",
+      "grain": "One direct DropShip or SpecOrd transaction-line link from a selected PO line to a Sales Order line; open Sales Order status is not checked.",
+      "parameters": [
+        {
+          "cardinality": "ARRAY",
+          "default": null,
+          "description": "Required parameter. Purchase order internal IDs returned by the overdue purchase order query",
+          "minimum_item": 1,
+          "name": "purchaseOrderIds",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: No Sales Order open-state predicate exists. Sorting precedes the fixed 500-row SQL cap. The single connector response can be smaller; disclose incomplete linkage."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "salesOrderDisplay",
+          "id_alias": "salesOrder",
+          "source_expression": "transactionLineLink.previousDoc"
+        }
+      ],
+      "source_sha256": "f3d3ca700bd217c849b2749f561f27106735159495d412570a2542bfc05c2584",
+      "tables": [
+        "PreviousTransactionLineLink"
+      ],
+      "template_sha256": "48f8c164b9f4f9411f86be64244eaca3b58e000065c22807a11372358e59f942"
+    },
+    "inbound_po_overdue": {
+      "description": "Prioritized purchase order lines with an expected receipt date before the as-of date and quantity still expected",
+      "file": "inbound_po_overdue.sql",
+      "grain": "One open purchase-order item line with outstanding received quantity and a past expected-receipt date.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. As-of date in YYYY-MM-DD format; use the current account date when not specified",
+          "format": "YYYY-MM-DD",
+          "name": "asOfDate",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all purchase orders, or SELECTED to filter by purchaseOrderIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "purchaseOrderScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Purchase order internal IDs to include when purchaseOrderScope is SELECTED; use [] when purchaseOrderScope is ALL",
+          "minimum_item": 1,
+          "name": "purchaseOrderIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all destination locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Destination location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all vendors, or SELECTED to filter by vendorIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "vendorScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Vendor internal IDs to include when vendorScope is SELECTED; use [] when vendorScope is ALL",
+          "minimum_item": 1,
+          "name": "vendorIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of exception rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: PurchaseOrder and PurchaseOrderItem are source UMD names; do not replace with guessed Transaction tables. Line open-state does not establish header status."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "purchaseOrderDisplay",
+          "id_alias": "purchaseOrder",
+          "source_expression": "purchaseOrder"
+        },
+        {
+          "display_alias": "vendorDisplay",
+          "id_alias": "vendor",
+          "source_expression": "vendor"
+        },
+        {
+          "display_alias": "itemDisplay",
+          "id_alias": "item",
+          "source_expression": "item"
+        },
+        {
+          "display_alias": "locationDisplay",
+          "id_alias": "location",
+          "source_expression": "location"
+        }
+      ],
+      "source_sha256": "a7b0e3190b9854c635e536851adc04db986381271d7547f8d2811dda9e3f3918",
+      "tables": [
+        "PurchaseOrder",
+        "PurchaseOrderItem"
+      ],
+      "template_sha256": "6053e36eeec42e8cd78a7b3c74947fc117c9314edf2caaed048514cd6f512114"
+    },
+    "inbound_transfer_order_overdue": {
+      "description": "Prioritized destination-side transfer order lines with an expected receipt date before the as-of date and quantity still expected",
+      "file": "inbound_transfer_order_overdue.sql",
+      "grain": "One destination-side open transfer-order item line with negative source quantity and outstanding receipt quantity.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. As-of date in YYYY-MM-DD format; use the current account date when not specified",
+          "format": "YYYY-MM-DD",
+          "name": "asOfDate",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all transfer orders, or SELECTED to filter by transferOrderIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "transferOrderScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Transfer order internal IDs to include when transferOrderScope is SELECTED; use [] when transferOrderScope is ALL",
+          "minimum_item": 1,
+          "name": "transferOrderIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all destination locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Destination location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of exception rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: TransferOrder and TransferOrderItem are source UMD names. Confirm destination-line quantity sign, transferLocation and quantityReceived semantics."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "transferOrderDisplay",
+          "id_alias": "transferOrder",
+          "source_expression": "transferOrder"
+        },
+        {
+          "display_alias": "sourceLocationDisplay",
+          "id_alias": "sourceLocation",
+          "source_expression": "sourceLocation"
+        },
+        {
+          "display_alias": "destinationLocationDisplay",
+          "id_alias": "destinationLocation",
+          "source_expression": "destinationLocation"
+        },
+        {
+          "display_alias": "itemDisplay",
+          "id_alias": "item",
+          "source_expression": "item"
+        }
+      ],
+      "source_sha256": "2d1a69b0da7641142fc70d71d232c86a08a120488177fdf08dde58b09232491f",
+      "tables": [
+        "TransferOrder",
+        "TransferOrderItem"
+      ],
+      "template_sha256": "51cf624903fee71c86cdefa508f0a0c2f703d3992173189ecdae7c0e5d9ec6ff"
+    },
+    "negative_inventory_quantity": {
+      "description": "Bounded list of item, location, bin, and inventory-number balances with negative on-hand or available quantity",
+      "file": "negative_inventory_quantity.sql",
+      "grain": "One source InventoryBalance row: item, location, bin, inventory number; underlying inventory-status variants must not be deduplicated.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of exception rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: InventoryBalance field names must be verified. Hidden inventory-status rows can produce identical visible dimensions."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "itemDisplay",
+          "id_alias": "item",
+          "source_expression": "itemId"
+        },
+        {
+          "display_alias": "locationDisplay",
+          "id_alias": "location",
+          "source_expression": "locationId"
+        },
+        {
+          "display_alias": "binDisplay",
+          "id_alias": "bin",
+          "source_expression": "binId"
+        },
+        {
+          "display_alias": "inventoryNumberDisplay",
+          "id_alias": "inventoryNumber",
+          "source_expression": "inventoryNumberId"
+        }
+      ],
+      "source_sha256": "3f60e9c49d0d16aa58b1d2da507063695949f971d9e0fce61b1a212ab1bab972",
+      "tables": [
+        "InventoryBalance"
+      ],
+      "template_sha256": "4afe26fea80ab149b098ef919af287c0f7df6fa4deb7305344e7ab4258d59c94"
+    },
+    "negative_inventory_transactions": {
+      "description": "Latest inventory-affecting transaction for every selected item and location combination from Transaction and TransactionLine UMDs",
+      "file": "negative_inventory_transactions.sql",
+      "grain": "Latest inventory-affecting transaction line for each selected item/location pair; ignore pairs absent from the primary result.",
+      "parameters": [
+        {
+          "cardinality": "ARRAY",
+          "default": null,
+          "description": "Required parameter. Item internal IDs returned by the negative inventory balance query",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": null,
+          "description": "Required parameter. Location internal IDs returned by the negative inventory balance query",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 625,
+          "description": "Required parameter. Maximum number of ranked item and location transaction rows to return; use 625 for up to 25 distinct items and locations",
+          "maximum": 625,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: Transaction.recordType and TransactionLine.isInventoryAffecting must be verified. Cross-product item/location IDs can return irrelevant pairs. SQL maximum 625 can exceed the single-response/100-row retrieval limit."
+      ],
+      "reference_outputs": [],
+      "source_sha256": "3d1fd67512935be5300cd869542a02c69e8dc760759c56cbe0edcab6c36af7be",
+      "tables": [
+        "Transaction",
+        "TransactionLine"
+      ],
+      "template_sha256": "3f35eeabb7afec49b21ecd85bd11059e39fb40b7d2f69572106a17ad31add1cf"
+    },
+    "putaway_aging": {
+      "description": "Bounded list of positive inventory balances remaining without a bin or in an inbound staging bin beyond a supplied putaway SLA, aged from the oldest recent receipt layer needed to cover current on-hand",
+      "file": "putaway_aging.sql",
+      "grain": "One positive balance partitioned by item/location/bin/inventory-number/inventory-status and matched receipt quantity.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. As-of account date and time in YYYY-MM-DD HH24:MI:SS format",
+          "format": "YYYY-MM-DD HH24:MI:SS",
+          "name": "asOfDateTime",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. Minimum number of hours a balance must have remained in its current receiving or staging position",
+          "maximum": "1e24",
+          "minimum": 0,
+          "name": "minimumAgingHours",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL for null bins and inbound staging bins, NO_BIN for null bins only, or INBOUND_STAGING for inbound staging bins only",
+          "enum": [
+            "ALL",
+            "NO_BIN",
+            "INBOUND_STAGING"
+          ],
+          "name": "putawayAreaScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include every qualifying position, or SELECTED to filter by binIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "binScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Inbound staging bin internal IDs to include when binScope is SELECTED; use [] when binScope is ALL",
+          "minimum_item": 1,
+          "name": "binIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of exception rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: Confirm Bin.type = 'INBOUND_STAGING', null inventoryStatus normalization to 1, and ItemReceiptItem/InventoryAssignment joins.",
+        "Pre-release validation: Receipt-date evidence supplies a day-level estimate, not exact time in staging. Uncovered balances are excluded."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "itemDisplay",
+          "id_alias": "item",
+          "source_expression": "item"
+        },
+        {
+          "display_alias": "locationDisplay",
+          "id_alias": "location",
+          "source_expression": "location"
+        },
+        {
+          "display_alias": "binDisplay",
+          "id_alias": "bin",
+          "source_expression": "binNumber"
+        }
+      ],
+      "source_sha256": "a9fc31fa0de125f1c050d6237a7c31501c96deea515391ff0482c339a2897cfe",
+      "tables": [
+        "Bin",
+        "InventoryAssignment",
+        "InventoryBalance",
+        "ItemReceipt",
+        "ItemReceiptItem"
+      ],
+      "template_sha256": "c09b6d7b502b58576d863186abfcf00db1b5114b446c52922901022c54075412"
+    },
+    "putaway_aging_no_bin": {
+      "description": "Bounded list of positive inventory balances remaining without a bin or in an inbound staging bin beyond a supplied putaway SLA, aged from the oldest recent receipt layer needed to cover current on-hand; null bins only, with no Bin table or bin-type dependency",
+      "file": "putaway_aging_no_bin.sql",
+      "grain": "One positive balance partitioned by item/location/bin/inventory-number/inventory-status and matched receipt quantity.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. As-of account date and time in YYYY-MM-DD HH24:MI:SS format",
+          "format": "YYYY-MM-DD HH24:MI:SS",
+          "name": "asOfDateTime",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. Minimum number of hours a balance must have remained in its current receiving or staging position",
+          "maximum": "1e24",
+          "minimum": 0,
+          "name": "minimumAgingHours",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of exception rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Scope is InventoryBalance.binNumber IS NULL only. Named staging bins are not evaluated. Preserve item/location filters. Do not use for an explicit non-null bin filter.",
+        "Aging semantics, where present, are unchanged. Bin type availability does not establish receipt/assignment availability."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "itemDisplay",
+          "id_alias": "item",
+          "source_expression": "item"
+        },
+        {
+          "display_alias": "locationDisplay",
+          "id_alias": "location",
+          "source_expression": "location"
+        },
+        {
+          "display_alias": "binDisplay",
+          "id_alias": "bin",
+          "source_expression": "binNumber"
+        }
+      ],
+      "tables": [
+        "InventoryAssignment",
+        "InventoryBalance",
+        "ItemReceipt",
+        "ItemReceiptItem"
+      ],
+      "template_sha256": "ce0e74d64b664426d424dea01adc79886d9edb5d55fb0e93dcf44f9408a86b35"
+    },
+    "putaway_balances": {
+      "description": "Visible positive receiving/staging balances without age or SLA classification",
+      "file": "putaway_balances.sql",
+      "grain": "One returned underlying balance row; no aggregation, no receipt join, no age inference.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL for null bins and inbound staging bins, NO_BIN for null bins only, or INBOUND_STAGING for inbound staging bins only",
+          "enum": [
+            "ALL",
+            "NO_BIN",
+            "INBOUND_STAGING"
+          ],
+          "name": "putawayAreaScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include every qualifying position, or SELECTED to filter by binIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "binScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Inbound staging bin internal IDs to include when binScope is SELECTED; use [] when binScope is ALL",
+          "minimum_item": 1,
+          "name": "binIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of exception rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: Pre-release validation must establish Bin.type INBOUND_STAGING and balance quantity basis."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "itemDisplay",
+          "id_alias": "item",
+          "source_expression": "item"
+        },
+        {
+          "display_alias": "locationDisplay",
+          "id_alias": "location",
+          "source_expression": "location"
+        },
+        {
+          "display_alias": "binDisplay",
+          "id_alias": "bin",
+          "source_expression": "binNumber"
+        }
+      ],
+      "tables": [
+        "InventoryBalance",
+        "Bin"
+      ],
+      "template_sha256": "c756f4538b939e1758b3b9708ea1f6ed7fd0deaec743d7147950b7cc8be0a8a6"
+    },
+    "putaway_balances_no_bin": {
+      "description": "Visible positive receiving/staging balances without age or SLA classification; null bins only, with no Bin table or bin-type dependency",
+      "file": "putaway_balances_no_bin.sql",
+      "grain": "One returned underlying balance row; no aggregation, no receipt join, no age inference.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of exception rows to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Scope is InventoryBalance.binNumber IS NULL only. Named staging bins are not evaluated. Preserve item/location filters. Do not use for an explicit non-null bin filter.",
+        "Aging semantics, where present, are unchanged. Bin type availability does not establish receipt/assignment availability."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "itemDisplay",
+          "id_alias": "item",
+          "source_expression": "item"
+        },
+        {
+          "display_alias": "locationDisplay",
+          "id_alias": "location",
+          "source_expression": "location"
+        },
+        {
+          "display_alias": "binDisplay",
+          "id_alias": "bin",
+          "source_expression": "binNumber"
+        }
+      ],
+      "tables": [
+        "InventoryBalance"
+      ],
+      "template_sha256": "bcf76718c570d24248b13d4a6fb18c85610a6c10bbd5e35dbe4bc137765d9092"
+    },
+    "sales_order_fulfillment_status": {
+      "description": "Current account label for the highest Item Fulfillment stage reached by the full ordered quantity",
+      "file": "sales_order_fulfillment_status.sql",
+      "grain": "One selected Sales Order whose full ordered quantity across all open item lines has reached at least picked; account-label enrichment.",
+      "parameters": [
+        {
+          "cardinality": "ARRAY",
+          "default": null,
+          "description": "Required parameter. Distinct sales order internal IDs returned by the sales order shipping delay query",
+          "minimum_item": 1,
+          "name": "salesOrderIds",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: Stage labels use ItemFulfillmentStatus rows ranked by id; confirm exactly the intended stage order during pre-release account testing. companyPreferenceName overrides name. This enrichment includes all open item lines, not just primary item/location filters."
+      ],
+      "reference_outputs": [],
+      "source_sha256": "0bfccac12a855da60ca196334a1ad43994b39b60781941964b7e0142f6fea778",
+      "tables": [
+        "ItemFulfillmentStatus",
+        "SalesOrderItem"
+      ],
+      "template_sha256": "60eb353b84d569259bbfd8683d4fafdb9f80bf2a238e621a9ab257a8a131c2e7"
+    },
+    "sales_order_ship_date_risk": {
+      "description": "Open sales orders at risk of missing their ship date, prioritized by the earliest incomplete warehouse execution stage and oldest applicable ship date",
+      "file": "sales_order_ship_date_risk.sql",
+      "grain": "One Sales Order aggregated from date-bearing open item lines matching the requested location/item scope.",
+      "parameters": [
+        {
+          "cardinality": "SCALAR",
+          "description": "Required parameter. Current account date in YYYY-MM-DD format; orders due through the following day are included",
+          "format": "YYYY-MM-DD",
+          "name": "asOfDate",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all sales orders, or SELECTED to filter by salesOrderIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "salesOrderScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Sales order internal IDs to include when salesOrderScope is SELECTED; use [] when salesOrderScope is ALL",
+          "minimum_item": 1,
+          "name": "salesOrderIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all customers, or SELECTED to filter by customerIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "customerScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Customer internal IDs to include when customerScope is SELECTED; use [] when customerScope is ALL",
+          "minimum_item": 1,
+          "name": "customerIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all fulfillment locations, or SELECTED to filter by locationIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "locationScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Fulfillment location internal IDs to include when locationScope is SELECTED; use [] when locationScope is ALL",
+          "minimum_item": 1,
+          "name": "locationIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": "ALL",
+          "description": "Required parameter. ALL to include all items, or SELECTED to filter by itemIds",
+          "enum": [
+            "ALL",
+            "SELECTED"
+          ],
+          "name": "itemScope",
+          "type": "STRING"
+        },
+        {
+          "cardinality": "ARRAY",
+          "default": [],
+          "description": "Required parameter. Item internal IDs to include when itemScope is SELECTED; use [] when itemScope is ALL",
+          "minimum_item": 1,
+          "name": "itemIds",
+          "type": "NUMBER"
+        },
+        {
+          "cardinality": "SCALAR",
+          "default": 25,
+          "description": "Required parameter. Maximum number of unique sales orders to return; use 25 when no limit is requested",
+          "maximum": 100,
+          "minimum": 1,
+          "name": "maxRows",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: SalesOrder/SalesOrderItem and cumulative picked/packed/fulfilled fields require pre-release validation. The first non-null date per line is expectedShipDate, requestedDate, then header shipDate. Aggregation includes later-dated matching lines when the earliest date is due."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": "salesOrderDisplay",
+          "id_alias": "salesOrder",
+          "source_expression": "salesOrder"
+        },
+        {
+          "display_alias": "customerDisplay",
+          "id_alias": "customer",
+          "source_expression": "customer"
+        }
+      ],
+      "source_sha256": "b9de7f2b9b3513a1322f24f7013cb2943827afc5ae70cfb4a6cb48d23a07762a",
+      "tables": [
+        "SalesOrder",
+        "SalesOrderItem"
+      ],
+      "template_sha256": "f11ef9026a93b793f83e349ac3e10e9877e3badb31713957661640e83a7ef333"
+    },
+    "transaction_refs": {
+      "description": "Generic clickable transaction references for exact transaction internal IDs",
+      "file": "transaction_refs.sql",
+      "grain": "One generic Transaction record per exact selected transaction ID.",
+      "parameters": [
+        {
+          "cardinality": "ARRAY",
+          "default": null,
+          "description": "Required parameter. Distinct transaction internal IDs returned by an exception query",
+          "minimum_item": 1,
+          "name": "transactionIds",
+          "type": "NUMBER"
+        }
+      ],
+      "portability_notes": [
+        "Pre-release validation: The original encoded clickable record reference becomes a raw transaction ID; no URL is generated by this adapter."
+      ],
+      "reference_outputs": [
+        {
+          "display_alias": null,
+          "id_alias": "transactionIdReference",
+          "source_expression": "transactionRecord.id"
+        }
+      ],
+      "source_sha256": "eb0313063cfc3ac700334e6fad9a91439902a95d914465136ef426c2aba3b1d3",
+      "tables": [
+        "Transaction"
+      ],
+      "template_sha256": "c7b5839e7df3f34fd81d7a054fc2c0fe1cf649bcd5e2c00ed60dc4b55daf3177"
+    }
+  },
+  "schema_status": "Schema and semantic validation belongs to pre-release account testing. No runtime schema gate or field probes. Execute packaged queries within current-role visibility and report actual failures."
+}

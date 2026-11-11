@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Vm3Ug9pVo+QHj6nMvThmp/8h7Zt8lGjYg/hMPKX+ivg='; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Financial Dashboard</title>
+<style>
+  :root{
+    --ink:#1B2027; --ink-soft:#4B5563; --hairline:#D8D9D4;
+    --paper:#F1EFED; --panel:#FBF9F8;
+    --teal:#1F6F5C; --teal-soft:#E7F1EE;
+    --amber:#B8790F; --amber-soft:#FBF0DD;
+    --red:#B0402F; --red-soft:#FAEAE6;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 32px 80px;}
+  header.top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:20px;margin-bottom:28px;flex-wrap:wrap;gap:16px;}
+  header.top{background:#264759;color:#FFFFFF;padding:20px;} header.top .scope,header.top .scope b{color:#FFFFFF;}
+  header.top h1{font-family:system-ui,sans-serif;font-weight:600;font-size:32px;margin:0;letter-spacing:-0.01em;}
+  header.top .scope{text-align:right;font-size:13px;color:var(--ink-soft);line-height:1.6;}
+  header.top .scope b{color:var(--ink);}
+  header.top .scope,header.top .scope b{color:#FFFFFF;}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);margin-bottom:32px;}
+  .kpi{padding:20px 20px 20px 0;border-right:1px solid var(--hairline);}
+  .kpi:first-child{padding-left:0;} .kpi:last-child{border-right:none;}
+  .kpi .label{font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+  .kpi .value{font-family:ui-monospace,monospace;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .kpi .sub{font-size:12px;color:var(--ink-soft);margin-top:6px;}
+  .kpi.flag .value{color:var(--amber);}
+  section{margin-bottom:40px;}
+  h2{font-family:system-ui,sans-serif;font-weight:600;font-size:20px;margin:0 0 4px 0;}
+  .section-note{font-size:13px;color:var(--ink-soft);margin:0 0 16px 0;}
+  .exceptions{display:flex;flex-direction:column;gap:1px;background:var(--hairline);border:1px solid var(--hairline);}
+  .exception{background:var(--panel);display:grid;grid-template-columns:90px 1fr 160px;gap:16px;padding:14px 16px;align-items:center;}
+  .exception .sev{font-size:11px;font-weight:600;letter-spacing:.02em;padding:3px 8px;border-radius:3px;width:fit-content;}
+  .sev.high{background:var(--red-soft);color:var(--red);} .sev.med{background:var(--amber-soft);color:var(--amber);}
+  .exception .desc{font-size:14px;line-height:1.5;} .exception .desc b{font-weight:600;}
+  .exception .amount{font-family:ui-monospace,monospace;font-size:14px;text-align:right;font-variant-numeric:tabular-nums;}
+  .chart-panel{background:var(--panel);border:1px solid var(--hairline);padding:24px;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  thead th{text-align:left;font-weight:500;color:var(--ink-soft);font-size:12px;padding:0 10px 10px 10px;border-bottom:1px solid var(--ink);cursor:pointer;user-select:none;white-space:nowrap;}
+  thead th.num, td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:ui-monospace,monospace;}
+  thead th span.arrow{font-size:10px;color:var(--ink-soft);margin-left:3px;}
+  tbody td{padding:10px 10px;border-bottom:1px solid var(--hairline);}
+  tbody tr:hover{background:#FBFBF9;}
+  .proj-name{font-weight:500;} .proj-cust{color:var(--ink-soft);font-size:12.5px;}
+  .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:3px;}
+  .badge.ok{background:var(--teal-soft);color:var(--teal);} .badge.gap{background:var(--amber-soft);color:var(--amber);} .badge.loss{background:var(--red-soft);color:var(--red);}
+  .na{color:var(--ink-soft);}
+  footer{border-top:1px solid var(--hairline);padding-top:16px;margin-top:8px;font-size:12px;color:var(--ink-soft);line-height:1.7;}
+  @media (max-width:900px){
+    .kpis{grid-template-columns:repeat(2,1fr);}
+    .kpi{border-right:none;border-bottom:1px solid var(--hairline);padding:16px 0;}
+    header.top .scope{text-align:left;}
+    .exception{grid-template-columns:1fr;gap:6px;} .exception .amount{text-align:left;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Project Financial Dashboard</h1>
+    <div class="scope" id="scopeText"></div>
+  </header>
+
+  <div class="kpis" id="kpiStrip"></div>
+
+  <section>
+    <h2>Flagged exceptions</h2>
+    <p class="section-note">Evidence-based flags only — no forecasting, no transactions executed.</p>
+    <div class="exceptions" id="exceptionsList"></div>
+  </section>
+
+  <section>
+    <h2>Revenue vs. cost by project</h2>
+    <p class="section-note" id="periodLabel"></p>
+    <div class="chart-panel"><div id="revCostChart"></div></div>
+  </section>
+
+  <section>
+    <h2>Project detail</h2>
+    <p class="section-note">Click a column to sort. Unknown costs and negative source profit are observations, not a complete health assessment.</p>
+    <table id="projectTable">
+      <thead>
+        <tr>
+          <th data-key="name">Project</th>
+          <th data-key="customer">Customer</th>
+          <th data-key="cost" class="num">Cost<span class="arrow"></span></th>
+          <th data-key="revenue" class="num">Revenue<span class="arrow"></span></th>
+          <th data-key="profit" class="num">Profit<span class="arrow"></span></th>
+          <th data-key="margin" class="num">Margin<span class="arrow"></span></th>
+          <th data-key="flagSort">Status</th><th>Source references</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </section>
+  <section>
+    <h2>Unbilled source observations</h2>
+    <p class="section-note" id="unbilledNote"></p>
+    <table><thead><tr><th>Name</th><th>Source grain</th><th class="num">Observed amount</th><th>Source references</th></tr></thead><tbody id="unbilledBody"></tbody></table>
+  </section>
+  <footer id="sourceText"></footer>
+</div>
+
+<script id="reportData" type="application/json">{{REPORT_DATA}}</script>
+<script>
+const DATA = JSON.parse(document.getElementById("reportData").textContent);
+function node(tag, cls, text) {
+  const element = document.createElement(tag);
+  if (cls) element.className = cls;
+  if (text !== undefined) element.textContent = String(text ?? "");
+  return element;
+}
+function money(value) {
+  return value === null ? "Not available" : new Intl.NumberFormat("en-US", {style:"currency", currency:DATA.currency, currencyDisplay:"code"}).format(value);
+}
+const projects=DATA.projects.map(p=>({...p,profit:p.hasCost?p.revenue-p.cost:null,
+  margin:p.hasCost&&p.revenue>0?(p.revenue-p.cost)/p.revenue:null}));
+projects.forEach(p=>{
+  p.flag=!p.hasCost?"gap":p.profit<0?"loss":"observed";
+  p.flagSort=p.flag==="loss"?0:p.flag==="gap"?1:2;
+});
+const matched=projects.filter(p=>p.hasCost);
+const sum=(rows,key)=>rows.reduce((s,r)=>s+r[key],0);
+const revenue=sum(projects,"revenue"),cost=matched.length?sum(matched,"cost"):null;
+const matchedRevenue=sum(matched,"revenue");
+const margin=matched.length&&matchedRevenue>0?(matchedRevenue-cost)/matchedRevenue:null;
+const gapRevenue=sum(projects.filter(p=>!p.hasCost),"revenue");
+const lossCount=projects.filter(p=>p.flag==="loss").length;
+const gapCount=projects.filter(p=>p.flag==="gap").length;
+const profitCoverage=DATA.coverage.profitability;
+const unbilledCoverage=DATA.coverage.unbilled;
+const unbilledSummary=DATA.unbilledSummary;
+document.getElementById("scopeText").textContent=DATA.scope+" | Period: "+DATA.period+" | Currency: "+DATA.currency+" | Book: "+DATA.accountingBook+" | Revenue basis: "+DATA.revenueBasis;
+document.getElementById("sourceText").textContent=DATA.sources;
+document.getElementById("periodLabel").textContent="Source revenue and observed cost, "+DATA.period+". Unknown costs have no bar. Bars show magnitude; labels retain signs.";
+const cards=[
+  ["Observed source revenue",profitCoverage.state==="unavailable"||(!projects.length&&profitCoverage.state!=="complete")?null:revenue,profitCoverage.note],
+  ["Observed project cost",cost,matched.length+" of "+projects.length+" observed projects have cost; "+profitCoverage.state+" coverage"],
+  ["Margin (matched costs)",margin===null?"Not available":(margin*100).toFixed(1)+"%","Matched revenue base: "+money(matchedRevenue)+"; revenue excluded for unknown cost: "+money(gapRevenue)],
+  ["Observed unbilled subtotal",unbilledSummary.value,unbilledSummary.note+" | "+unbilledCoverage.state+" coverage: "+unbilledCoverage.note],
+  ["Exceptions in observed rows",lossCount+gapCount,lossCount+" negative-profit rows; "+gapCount+" unknown-cost rows. Not a complete risk certification."]
+];
+const strip=document.getElementById("kpiStrip");
+cards.forEach(([label,value,basis],i)=>{
+  const card=node("div","kpi");
+  card.append(node("div","label",label),node("div","value",i<2||i===3?money(value):value),node("div","sub",basis));strip.append(card);
+});
+const exceptions=document.getElementById("exceptionsList");
+function exception(label,description,amount) {
+  const row=node("div","exception");const severity=node("div");severity.append(node("span","sev med",label));
+  row.append(severity,node("div","desc",description),node("div","amount",money(amount)));exceptions.append(row);
+}
+projects.filter(p=>p.flag==="loss").forEach(p=>exception("NEGATIVE PROFIT",p.name+" ("+p.customer+") — observed cost exceeds supplied source revenue; this does not establish billing status.",p.profit));
+if(gapCount)exception("COST UNKNOWN",gapCount+" observed projects have unknown costs; their profit/margin remain unavailable. Amount shown is source revenue affected, not a cost estimate.",gapRevenue);
+DATA.unbilled.filter(u=>u.amount>0).forEach(u=>{
+  const threshold=DATA.unbilledThreshold;
+  const label=threshold?(u.amount>threshold.amount?"ABOVE THRESHOLD":"WITHIN THRESHOLD"):"OBSERVATION";
+  exception(label,u.name+" — "+u.grain+"-grain unbilled balance"+(threshold?"; threshold basis: "+threshold.basis:"; no severity threshold supplied"),u.amount);
+});
+document.getElementById("unbilledNote").textContent=unbilledSummary.note+" | "+unbilledCoverage.state+" coverage. Rows are separate source observations; never add overlapping populations.";
+DATA.unbilled.forEach(u=>{
+  const row=node("tr");
+  [u.name,u.grain,money(u.amount),u.sourceRefs.join(", ")].forEach((value,i)=>row.append(node("td",i===2?"num":null,value)));
+  document.getElementById("unbilledBody").append(row);
+});
+const aging=DATA.aging;
+exception("AGING "+aging.state.toUpperCase(),aging.note+" | Cutoff: "+aging.asOf,null);
+aging.rows.forEach(a=>exception("OVERDUE OBSERVATION",a.name+" — "+a.grain+"-grain aging balance; cutoff "+aging.asOf,a.overdue));
+if(aging.state==="complete"&&!aging.rows.some(a=>a.overdue>0))exception("COMPLETE SOURCE","No overdue balances in the complete declared source population as of "+aging.asOf,null);
+if(aging.state!=="complete")exception("COVERAGE LIMIT","Aging is "+aging.state+"; missing/empty results do not establish absence of overdue balances.",null);
+const coverage=node("section");coverage.append(node("h2",null,"Coverage and financial meaning"));
+Object.entries(DATA.coverage).forEach(([stage,c])=>coverage.append(node("p",null,stage+": "+c.state+" — "+c.note+" | Sources: "+c.sourceRefs.join(", "))));
+coverage.append(node("p",null,"Aging: "+aging.state+" — "+aging.note+" | Sources: "+aging.sourceRefs.join(", ")),
+  node("p",null,"Rows retain declared currency/book/period and actual grain. Source revenue is not automatically billing, recognized revenue or cash. No configured exception is not proof of a healthy project."));
+document.getElementById("sourceText").before(coverage);
+const sorted=[...projects].sort((a,b)=>b.revenue-a.revenue);
+const svgNS="http://www.w3.org/2000/svg";
+const svg=document.createElementNS(svgNS,"svg");svg.setAttribute("viewBox","0 0 900 "+Math.max(60,sorted.length*72));svg.setAttribute("role","img");svg.setAttribute("aria-label","Source revenue and observed cost by project");svg.style.width="100%";
+function svgText(x,y,text){const el=document.createElementNS(svgNS,"text");el.setAttribute("x",x);el.setAttribute("y",y);el.textContent=text;svg.append(el);}
+const scale=Math.max(1,...sorted.flatMap(p=>[Math.abs(p.revenue),p.hasCost?Math.abs(p.cost):0]));
+sorted.forEach((p,i)=>{
+  svgText(0,i*72+16,p.name);
+  [["Source revenue",p.revenue,"#1F6F5C"],["Cost",p.hasCost?p.cost:null,"#B8790F"]].forEach(([label,value,color],j)=>{
+    const y=i*72+25+j*22;
+    if(value!==null){const bar=document.createElementNS(svgNS,"rect");bar.setAttribute("x",120);bar.setAttribute("y",y);bar.setAttribute("height",16);bar.setAttribute("width",Math.abs(value)/scale*450);bar.setAttribute("fill",color);svg.append(bar);}
+    svgText(600,y+13,label+": "+money(value));
+  });
+});document.getElementById("revCostChart").append(svg);
+function renderTable(rows){
+  const body=document.getElementById("tableBody");body.replaceChildren();
+  rows.forEach(p=>{
+    const row=node("tr");row.dataset.projectId=p.id;
+    const status=p.flag==="loss"?"Negative source profit":p.flag==="gap"?"Cost unavailable":"No configured exception";
+    [p.name,p.customer,money(p.hasCost?p.cost:null),money(p.revenue),money(p.profit),p.margin===null?"Not available":(p.margin*100).toFixed(1)+"%",status].forEach((v,i)=>row.append(node("td",i>1&&i<6?"num":null,v)));
+    const provenance=node("td",null,p.sourceRefs.join(", "));row.append(provenance);body.append(row);
+  });
+}renderTable(projects);
+let sortState={key:null,dir:1};
+document.querySelectorAll("thead th[data-key]").forEach(th=>th.addEventListener("click",()=>{
+  const key=th.dataset.key;sortState.dir=sortState.key===key?-sortState.dir:1;sortState.key=key;
+  document.querySelectorAll("thead .arrow").forEach(a=>a.textContent="");const arrow=th.querySelector(".arrow");if(arrow)arrow.textContent=sortState.dir===1?"▲":"▼";
+  renderTable([...projects].sort((a,b)=>{const av=a[key],bv=b[key];if(av===null||av===undefined)return bv===null||bv===undefined?0:1;if(bv===null||bv===undefined)return -1;return(typeof av==="string"?av.localeCompare(bv):av-bv)*sortState.dir;}));
+}));
+</script>
+</body>
+</html>
