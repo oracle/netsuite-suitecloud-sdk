@@ -1,0 +1,15 @@
+{
+	"name": "@oracle/agent-skills",
+	"private": true,
+	"type": "module",
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"validate": "node ./scripts/validate-skills.mjs",
+		"test": "node --test"
+	},
+	"devDependencies": {
+		"yaml": "^2.8.1"
+	}
+}

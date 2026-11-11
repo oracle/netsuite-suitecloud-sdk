@@ -1,0 +1,55 @@
+{
+  "needs": {
+    "actual-capacity": {
+      "files": [
+        "references/shared/operations.md",
+        "references/shared/horizon.md",
+        "references/shared/resource-identity-and-scope.md"
+      ],
+      "purpose": "Only to determine actual date-matched capacity beyond recorded allocations."
+    },
+    "additional-risk": {
+      "files": [
+        "references/shared/risk-discovery.md",
+        "references/shared/risk-data-severity.md"
+      ],
+      "purpose": "Specific additional required risk investigation, not automatic whole-portfolio expansion."
+    },
+    "financial-detail": {
+      "files": [
+        "references/shared/finance.md"
+      ],
+      "purpose": "Resolve a financial definition, reconciliation, expense policy or SOW commercial requirement not covered by primary sources."
+    },
+    "native-indicator": {
+      "files": [
+        "references/shared/project-indicators.md",
+        "references/shared/project-indicators-backend-developer-reference.md"
+      ],
+      "purpose": "Interpret observed/requested native state and its historical/coverage semantics."
+    },
+    "unanswered-obligation": {
+      "files": [
+        "references/shared/request-coverage.md",
+        "references/shared/evidence-contract.md"
+      ],
+      "purpose": "Reconcile requested items not accounted for by the primary workflow."
+    },
+    "visual-capability": {
+      "files": [
+        "references/shared/presentation.md",
+        "references/shared/answer-visuals.md"
+      ],
+      "purpose": "Equivalent permitted output when source renderer is unsupported; no silent standard-layout override."
+    },
+    "workflow-coordination": {
+      "files": [
+        "references/shared/orchestration.md",
+        "references/shared/role-access.md"
+      ],
+      "purpose": "A specific unresolved cross-domain/access issue."
+    }
+  },
+  "rule": "Load only when the primary specification cannot resolve the actual requested requirement; never override answered source behavior.",
+  "version": "FALLBACK-1.0.0"
+}

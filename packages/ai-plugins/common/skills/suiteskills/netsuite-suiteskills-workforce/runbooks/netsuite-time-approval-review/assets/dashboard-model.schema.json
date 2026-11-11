@@ -1,0 +1,1641 @@
+{
+  "$defs": {
+    "calendarDateFact": {
+      "additionalProperties": false,
+      "properties": {
+        "configuredWorkingWeekday": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/$defs/date"
+        },
+        "holiday": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "workingDay": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "date",
+        "configuredWorkingWeekday",
+        "holiday",
+        "workingDay",
+        "coverage",
+        "reason"
+      ],
+      "type": "object"
+    },
+    "calendarReview": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregateCoverage": {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "oneOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "status": {
+              "enum": [
+                "complete",
+                "partial",
+                "unavailable"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "type": "object"
+        },
+        "calendarCoverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "checkIds": {
+          "items": {
+            "enum": [
+              "entry-minimum",
+              "working-day-minimum",
+              "working-day-maximum",
+              "weekly-minimum",
+              "weekly-maximum",
+              "daily-over-24-hours",
+              "missing-weekly-time",
+              "holiday-or-non-working-day"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "configuredWorkingWeekdayCount": {
+          "oneOf": [
+            {
+              "maximum": 7,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "configuredWorkingWeekdays": {
+          "oneOf": [
+            {
+              "items": {
+                "enum": [
+                  "sunday",
+                  "monday",
+                  "tuesday",
+                  "wednesday",
+                  "thursday",
+                  "friday",
+                  "saturday"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dateFacts": {
+          "items": {
+            "$ref": "#/$defs/calendarDateFact"
+          },
+          "type": "array"
+        },
+        "effectiveThresholds": {
+          "items": {
+            "$ref": "#/$defs/effectiveThreshold"
+          },
+          "type": "array"
+        },
+        "holidayCoverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "populationEvidence": {
+          "items": {
+            "$ref": "#/$defs/populationEvidence"
+          },
+          "type": "array"
+        },
+        "retrievedAt": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "oneOf": [
+            {
+              "enum": [
+                "assigned",
+                "default"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "workHoursPerDay": {
+          "oneOf": [
+            {
+              "maximum": 24,
+              "minimum": 1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "calendarCoverage",
+        "holidayCoverage",
+        "retrievedAt",
+        "workHoursPerDay",
+        "configuredWorkingWeekdays",
+        "configuredWorkingWeekdayCount",
+        "checkIds",
+        "aggregateCoverage",
+        "dateFacts",
+        "effectiveThresholds",
+        "populationEvidence"
+      ],
+      "type": "object"
+    },
+    "checkCoverage": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "key": {
+                "const": "native-approval-limit-validation"
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "then": {
+            "required": [
+              "preferenceState",
+              "warningPolicy",
+              "gatesReviewChecks"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "gatesReviewChecks": {
+          "const": false,
+          "type": "boolean"
+        },
+        "key": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "preferenceState": {
+          "enum": [
+            "disabled",
+            "enabled",
+            "missing",
+            "malformed",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "partial",
+            "not-configured",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "warningPolicy": {
+          "enum": [
+            "disabled-native-enforcement",
+            "none",
+            "unknown-native-enforcement"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "status",
+        "summary"
+      ],
+      "type": "object"
+    },
+    "date": {
+      "format": "date-only",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "type": "string"
+    },
+    "effectiveThreshold": {
+      "additionalProperties": false,
+      "properties": {
+        "checkId": {
+          "enum": [
+            "entry-minimum",
+            "working-day-minimum",
+            "working-day-maximum",
+            "weekly-minimum",
+            "weekly-maximum"
+          ],
+          "type": "string"
+        },
+        "minutes": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "populationEvidence": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/populationEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "oneOf": [
+            {
+              "enum": [
+                "explicit",
+                "work-calendar"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "available",
+            "not-configured",
+            "unavailable"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "checkId",
+        "source",
+        "minutes",
+        "status",
+        "populationEvidence",
+        "reason"
+      ],
+      "type": "object"
+    },
+    "entry": {
+      "additionalProperties": false,
+      "properties": {
+        "customer": {
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/$defs/date"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/finding"
+          },
+          "type": "array"
+        },
+        "hours": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "internalId": {
+          "$ref": "#/$defs/recordId"
+        },
+        "memo": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "recordType": {
+          "const": "timebill",
+          "type": "string"
+        },
+        "reference": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "serviceItem": {
+          "type": "string"
+        },
+        "status": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "timesheetId": {
+          "$ref": "#/$defs/recordId"
+        }
+      },
+      "required": [
+        "recordType",
+        "internalId",
+        "date",
+        "hours",
+        "status",
+        "findings"
+      ],
+      "type": "object"
+    },
+    "evidence": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "enum": [
+                  "entry-minimum",
+                  "working-day-minimum",
+                  "working-day-maximum",
+                  "daily-over-24-hours",
+                  "missing-weekly-time",
+                  "holiday-or-non-working-day"
+                ]
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "required": [
+              "date"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "enum": [
+                  "weekly-minimum",
+                  "weekly-maximum"
+                ]
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "required": [
+              "reviewGroupKey"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "checkId": {
+          "enum": [
+            "entry-minimum",
+            "working-day-minimum",
+            "working-day-maximum",
+            "weekly-minimum",
+            "weekly-maximum",
+            "daily-over-24-hours",
+            "missing-weekly-time",
+            "holiday-or-non-working-day"
+          ],
+          "type": "string"
+        },
+        "coverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/$defs/date"
+        },
+        "observed": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "retrievedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reviewGroupKey": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "source": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "threshold": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "retrievedAt",
+        "coverage",
+        "observed"
+      ],
+      "type": "object"
+    },
+    "finding": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/recordFinding"
+        },
+        {
+          "$ref": "#/$defs/ownerFinding"
+        },
+        {
+          "$ref": "#/$defs/weekFinding"
+        }
+      ]
+    },
+    "identityCoverage": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "summary"
+      ],
+      "type": "object"
+    },
+    "metric": {
+      "additionalProperties": false,
+      "properties": {
+        "display": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "key": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "scope": {
+          "const": "full",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "exact",
+            "partial",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "entries",
+            "hours"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "scope",
+        "status",
+        "value",
+        "display",
+        "unit"
+      ],
+      "type": "object"
+    },
+    "owner": {
+      "additionalProperties": false,
+      "properties": {
+        "calendarReview": {
+          "$ref": "#/$defs/calendarReview"
+        },
+        "identityCoverage": {
+          "$ref": "#/$defs/identityCoverage"
+        },
+        "internalId": {
+          "$ref": "#/$defs/ownerId"
+        },
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "ownerKind": {
+          "enum": [
+            "employee",
+            "vendor",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        "reviewGroups": {
+          "items": {
+            "$ref": "#/$defs/reviewGroup"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "ownerKind",
+        "internalId",
+        "name",
+        "identityCoverage",
+        "reviewGroups"
+      ],
+      "type": "object"
+    },
+    "ownerFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "affectedEntryIds": {
+          "items": {
+            "$ref": "#/$defs/recordId"
+          },
+          "type": "array"
+        },
+        "classification": {
+          "enum": [
+            "exception",
+            "review-item",
+            "no-issues-found",
+            "not-configured",
+            "could-not-check"
+          ],
+          "type": "string"
+        },
+        "dates": {
+          "items": {
+            "$ref": "#/$defs/date"
+          },
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "internalId": {
+          "$ref": "#/$defs/ownerId"
+        },
+        "recordType": {
+          "const": "owner",
+          "type": "string"
+        },
+        "scope": {
+          "const": "owner",
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "classification",
+        "title",
+        "summary",
+        "scope",
+        "recordType",
+        "internalId",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "ownerId": {
+      "pattern": "^-?[1-9][0-9]*$",
+      "type": "string"
+    },
+    "period": {
+      "additionalProperties": false,
+      "properties": {
+        "endDate": {
+          "$ref": "#/$defs/date"
+        },
+        "startDate": {
+          "$ref": "#/$defs/date"
+        }
+      },
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "type": "object"
+    },
+    "populationEvidence": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "enum": [
+                  "entry-minimum",
+                  "working-day-minimum",
+                  "working-day-maximum",
+                  "daily-over-24-hours",
+                  "missing-weekly-time",
+                  "holiday-or-non-working-day"
+                ]
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "date": {
+                "$ref": "#/$defs/date"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "enum": [
+                  "weekly-minimum",
+                  "weekly-maximum"
+                ]
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "date": {
+                "type": "null"
+              },
+              "reviewGroupKey": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "reviewGroupKey"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "basis": {
+          "oneOf": [
+            {
+              "enum": [
+                "exact",
+                "lower-bound"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "checkId": {
+          "enum": [
+            "entry-minimum",
+            "working-day-minimum",
+            "working-day-maximum",
+            "weekly-minimum",
+            "weekly-maximum",
+            "daily-over-24-hours",
+            "missing-weekly-time",
+            "holiday-or-non-working-day"
+          ],
+          "type": "string"
+        },
+        "conclusion": {
+          "enum": [
+            "maximum-violation",
+            "maximum-satisfied",
+            "minimum-violation",
+            "minimum-satisfied",
+            "over-24-violation",
+            "under-24-satisfied",
+            "inconclusive"
+          ],
+          "type": "string"
+        },
+        "date": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entryId": {
+          "$ref": "#/$defs/recordId"
+        },
+        "observedMinutes": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "populationCoverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewGroupKey": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "checkId",
+        "date",
+        "observedMinutes",
+        "basis",
+        "populationCoverage",
+        "conclusion",
+        "reason"
+      ],
+      "type": "object"
+    },
+    "recordFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "affectedEntryIds": {
+          "items": {
+            "$ref": "#/$defs/recordId"
+          },
+          "type": "array"
+        },
+        "classification": {
+          "enum": [
+            "exception",
+            "review-item",
+            "no-issues-found",
+            "not-configured",
+            "could-not-check"
+          ],
+          "type": "string"
+        },
+        "dates": {
+          "items": {
+            "$ref": "#/$defs/date"
+          },
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "internalId": {
+          "$ref": "#/$defs/recordId"
+        },
+        "recordType": {
+          "enum": [
+            "timebill",
+            "timesheet"
+          ],
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "entry",
+            "timesheet"
+          ],
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "classification",
+        "title",
+        "summary",
+        "scope",
+        "recordType",
+        "internalId",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "recordId": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "maximum": -1,
+          "type": "integer"
+        }
+      ]
+    },
+    "reviewGroup": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/timesheetGroup"
+        },
+        {
+          "$ref": "#/$defs/weekGroup"
+        }
+      ]
+    },
+    "timesheetGroup": {
+      "additionalProperties": false,
+      "properties": {
+        "entries": {
+          "items": {
+            "$ref": "#/$defs/entry"
+          },
+          "type": "array"
+        },
+        "findingIds": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "internalId": {
+          "$ref": "#/$defs/recordId"
+        },
+        "key": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "kind": {
+          "const": "timesheet",
+          "type": "string"
+        },
+        "period": {
+          "$ref": "#/$defs/period"
+        },
+        "recordType": {
+          "const": "timesheet",
+          "type": "string"
+        },
+        "reference": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "status": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "key",
+        "recordType",
+        "internalId",
+        "reference",
+        "period",
+        "status",
+        "entries",
+        "findingIds"
+      ],
+      "type": "object"
+    },
+    "timestamp": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "weekFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "affectedEntryIds": {
+          "items": {
+            "$ref": "#/$defs/recordId"
+          },
+          "type": "array"
+        },
+        "classification": {
+          "enum": [
+            "exception",
+            "review-item",
+            "no-issues-found",
+            "not-configured",
+            "could-not-check"
+          ],
+          "type": "string"
+        },
+        "dates": {
+          "items": {
+            "$ref": "#/$defs/date"
+          },
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "reviewGroupKey": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "scope": {
+          "const": "week",
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "classification",
+        "title",
+        "summary",
+        "scope",
+        "reviewGroupKey",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "weekGroup": {
+      "additionalProperties": false,
+      "properties": {
+        "entries": {
+          "items": {
+            "$ref": "#/$defs/entry"
+          },
+          "type": "array"
+        },
+        "findingIds": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "key": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "kind": {
+          "const": "week",
+          "type": "string"
+        },
+        "period": {
+          "$ref": "#/$defs/period"
+        },
+        "reference": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "key",
+        "reference",
+        "period",
+        "entries",
+        "findingIds"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://suiteskills.example/schemas/time-approval-review/dashboard-model-5.0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "account": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "accountId": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "connectionName": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "environmentType": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "source": {
+              "const": "session",
+              "type": "string"
+            },
+            "version": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "accountId",
+            "environmentType",
+            "version"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "connectionName": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "source": {
+              "const": "connection",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "connectionName"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "activeFilters": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "value"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "checkCoverage": {
+      "items": {
+        "$ref": "#/$defs/checkCoverage"
+      },
+      "type": "array"
+    },
+    "coverage": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "retrievedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ],
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "summary",
+        "retrievedAt"
+      ],
+      "type": "object"
+    },
+    "display": {
+      "additionalProperties": false,
+      "properties": {
+        "expanded": {
+          "const": "none",
+          "type": "string"
+        },
+        "localFilters": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "renderer": {
+          "enum": [
+            "html",
+            "text"
+          ],
+          "type": "string"
+        },
+        "sort": {
+          "enum": [
+            "owner",
+            "date-desc",
+            "date-asc",
+            "hours-desc"
+          ],
+          "type": "string"
+        },
+        "template": {
+          "const": "dashboard",
+          "type": "string"
+        }
+      },
+      "required": [
+        "template",
+        "renderer",
+        "sort",
+        "expanded"
+      ],
+      "type": "object"
+    },
+    "locale": {
+      "minLength": 2,
+      "type": "string"
+    },
+    "metrics": {
+      "items": {
+        "$ref": "#/$defs/metric"
+      },
+      "minItems": 4,
+      "type": "array"
+    },
+    "navigation": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "accountOrigin": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "internalId": {
+            "$ref": "#/$defs/recordId"
+          },
+          "recordType": {
+            "enum": [
+              "timebill",
+              "timesheet"
+            ],
+            "type": "string"
+          },
+          "retrievedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "source": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "recordType",
+          "internalId",
+          "url",
+          "accountOrigin",
+          "source",
+          "retrievedAt"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "owners": {
+      "items": {
+        "$ref": "#/$defs/owner"
+      },
+      "type": "array"
+    },
+    "paging": {
+      "additionalProperties": false,
+      "properties": {
+        "displayed": {
+          "additionalProperties": false,
+          "properties": {
+            "entryCount": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "ownerCount": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sampleOnly": {
+              "type": "boolean"
+            },
+            "timesheetCount": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "sampleOnly",
+            "ownerCount",
+            "timesheetCount",
+            "entryCount"
+          ],
+          "type": "object"
+        },
+        "queue": {
+          "additionalProperties": false,
+          "properties": {
+            "hasMore": {
+              "type": "boolean"
+            },
+            "mode": {
+              "enum": [
+                "saved-search",
+                "suiteql",
+                "direct-records"
+              ],
+              "type": "string"
+            },
+            "pageSize": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "pagesFetched": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "status": {
+              "enum": [
+                "complete",
+                "partial",
+                "unavailable"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "mode",
+            "pageSize",
+            "pagesFetched",
+            "hasMore",
+            "status"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "queue",
+        "displayed"
+      ],
+      "type": "object"
+    },
+    "refresh": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "fresh",
+            "updating",
+            "stale"
+          ],
+          "type": "string"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "timestamp",
+        "status"
+      ],
+      "type": "object"
+    },
+    "schemaVersion": {
+      "const": "5.0",
+      "type": "string"
+    },
+    "scope": {
+      "additionalProperties": false,
+      "properties": {
+        "approvalStatus": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "dateFrom": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dateTo": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "const": "pending_actual_time",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "recordTypes": {
+          "items": {
+            "enum": [
+              "timebill"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "weeklyTimeMode": {
+          "enum": [
+            "weekly-timesheets",
+            "weekly-time-tracking"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "kind",
+        "approvalStatus",
+        "recordTypes",
+        "dateFrom",
+        "dateTo",
+        "weeklyTimeMode"
+      ],
+      "type": "object"
+    },
+    "templateVersion": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "timeZone": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "weeklyFindings": {
+      "items": {
+        "$ref": "#/$defs/finding"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "templateVersion",
+    "locale",
+    "timeZone",
+    "account",
+    "scope",
+    "activeFilters",
+    "refresh",
+    "coverage",
+    "metrics",
+    "checkCoverage",
+    "weeklyFindings",
+    "owners",
+    "paging",
+    "display"
+  ],
+  "title": "Time Approval Review dashboard model",
+  "type": "object"
+}

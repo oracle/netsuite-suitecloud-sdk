@@ -4,7 +4,7 @@ description: Platform-agnostic OWASP secure coding practices with JavaScript/Nod
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
 ---
 
 # OWASP Secure Coding Practices

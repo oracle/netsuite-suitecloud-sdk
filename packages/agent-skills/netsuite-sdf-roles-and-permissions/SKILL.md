@@ -4,7 +4,7 @@ description: Use when generating or reviewing NetSuite SDF permission configurat
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
 ---
 
 # NetSuite Permissions Reference

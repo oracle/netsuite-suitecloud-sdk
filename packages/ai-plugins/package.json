@@ -1,0 +1,15 @@
+{
+	"name": "@oracle/ai-plugins",
+	"private": true,
+	"type": "module",
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"build": "node ./scripts/build.mjs",
+		"build:one": "node ./scripts/build.mjs --plugin",
+		"validate": "node ./scripts/validate.mjs",
+		"test": "node --test",
+		"verify-release": "node ./scripts/verify-release.mjs"
+	}
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+  <head>
+    <style type="text/css">
+      * { font-family: sans-serif; color: #222222; }
+      body { font-size: 10pt; }
+      h1 { font-size: 22pt; font-weight: bold; margin: 0 0 8pt 0; }
+      h2 { font-size: 12pt; font-weight: bold; margin: 18pt 0 7pt 0; color: #333333; }
+      p { line-height: 135%; }
+      table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+      th { text-align: left; font-size: 8pt; color: #595959; background-color: #f3f3f3; padding: 7pt; }
+      td { padding: 7pt; border-bottom: 1pt solid #d8d8d8; vertical-align: top; }
+      .muted { color: #595959; font-size: 8pt; }
+      .rule { border-bottom: 1pt solid #c9c9c9; }
+    </style>
+    <macrolist>
+      <macro id="reportHeader">
+        <table>
+          <tr>
+            <td width="70%" class="muted">COMPANY NAME</td>
+            <td width="30%" align="right" class="muted">SERVICE REPORT</td>
+          </tr>
+        </table>
+      </macro>
+      <macro id="reportFooter">
+        <p class="muted" align="right"><pagenumber /> / <totalpages /></p>
+      </macro>
+    </macrolist>
+    <title>Service Report Preview</title>
+  </head>
+  <body size="A4" padding="0.6in" header="reportHeader" header-height="0.65in" footer="reportFooter" footer-height="0.45in">
+    <!-- Visual scaffold only: replace all sample labels and values with verified account bindings. -->
+    <h1>Service report</h1>
+    <p class="muted">Visit summary</p>
+
+    <h2>Service details</h2>
+    <table>
+      <tr><th>Task</th><th>Customer</th><th>Service date</th></tr>
+      <tr><td>Sample task</td><td>Sample customer</td><td>Sample date</td></tr>
+    </table>
+
+    <h2>Work completed</h2>
+    <p>Sample work summary. Replace with the verified saved task or mobile tab content.</p>
+
+    <h2>Materials and time</h2>
+    <table>
+      <tr><th>Description</th><th>Quantity</th><th>Notes</th></tr>
+      <tr><td>Sample item</td><td>1</td><td>Sample note</td></tr>
+    </table>
+
+    <h2>Customer acknowledgement</h2>
+    <p class="rule">Signature or acknowledgement content from an approved source</p>
+  </body>
+</pdf>

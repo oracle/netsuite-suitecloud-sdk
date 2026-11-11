@@ -6,8 +6,9 @@
 - `packages/node-cli/`, `packages/vscode-extension/`: command-line and editor integrations.
 - `packages/unit-testing/`, `packages/uif-types/`: testing support and UIF types.
 - `packages/agent-skills/`: reusable NetSuite agent skills.
+- `packages/ai-plugins/`: provider plug-in sources, SuiteSkills business sources, and distribution tooling.
 
-Before editing, consult applicable package `AGENTS.md` files, READMEs, package scripts, and any applicable CI configuration. Use the owning package's commands. Root `npm run build` builds SDK core; it does not validate the whole repository.
+Before editing, consult applicable package `AGENTS.md` files, READMEs, package scripts, and `.github/workflows/`. Use the owning package's commands. Root `npm run build` builds SDK core; it does not validate the whole repository. AI plug-in changes must follow `packages/ai-plugins/DEVELOPMENT.md`'s mandatory pre-commit checklist, including documentation and metadata changes.
 
 ## Documentation standards
 
@@ -25,7 +26,7 @@ Every user-facing README must include the established `Contributing` paragraph l
 
 > This project welcomes contributions from the community. Before submitting a pull request, review our [contribution guide](https://github.com/oracle/netsuite-suitecloud-sdk/blob/master/CONTRIBUTING.md).
 
-Include a `License` section following the pattern in the [agent skills](packages/agent-skills/README.md#license), and [Node.js CLI](packages/node-cli/README.md#license) READMEs: make the `License` heading a link to `LICENSE.txt`, followed by the Oracle copyright statement and the Universal Permissive License (UPL), Version 1.0. Preserve the applicable package's copyright years and additional license terms. Include the Oracle Free Use Terms and Conditions installation statement only where applicable, as in the Node.js CLI README. Ensure links resolve at the document's published destination.
+Include a `License` section following the pattern in the [AI plug-ins](packages/ai-plugins/README.md#license), [agent skills](packages/agent-skills/README.md#license), and [Node.js CLI](packages/node-cli/README.md#license) READMEs: make the `License` heading a link to `LICENSE.txt`, followed by the Oracle copyright statement and the Universal Permissive License (UPL), Version 1.0. Preserve the applicable package's copyright years and additional license terms. Include the Oracle Free Use Terms and Conditions installation statement only where applicable, as in the Node.js CLI README. Ensure links resolve at the document's published destination.
 
 Check changed license statements against the repository license and the affected packages' license files, metadata, and published README text. Preserve intentional package-specific terms and attribution; report conflicting statements without rewriting unrelated files.
 
@@ -91,7 +92,7 @@ Conclude investigations with evidence, evaluated alternatives, tradeoffs, a reco
 
 ## Verification before commits
 
-Before committing, identify the affected packages and consumers and run the checks appropriate to the change, following package-specific instructions and applicable CI workflows. Rebuild when code, dependencies, generated resources, or packaging inputs change. For documentation-only changes, verify links, examples, and consistency with the implementation. Documentation included in distributed artifacts must also pass the applicable packaging and integrity checks. Follow explicit package checklists.
+Before committing, identify the affected packages and consumers and run the checks appropriate to the change, following package-specific instructions and applicable CI workflows. Rebuild when code, dependencies, generated resources, or packaging inputs change. For documentation-only changes, verify links, examples, and consistency with the implementation. Documentation included in distributed artifacts must also pass the applicable packaging and integrity checks. Follow explicit package checklists, including the AI plug-in checklist when applicable.
 
 Validate changed behavior against acceptance criteria, including relevant edge cases and failure scenarios. Add or update automated tests where appropriate. When automation is impractical, record reproducible manual verification steps, results, and remaining coverage gaps.
 

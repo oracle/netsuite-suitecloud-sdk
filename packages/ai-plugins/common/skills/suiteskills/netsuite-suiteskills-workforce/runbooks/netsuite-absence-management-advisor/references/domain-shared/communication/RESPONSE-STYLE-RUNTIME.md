@@ -1,0 +1,13 @@
+# Response Style
+
+Lead with the decision-relevant analysis, then show the minimum source detail needed to audit it. Do not preface a complete, coherent result with caveats about possible data defects or describe the output as neutral. Use a compact table for more than one group, leave type, or period.
+
+Every insight must label the population, time window, data basis, included statuses, and retrieval timestamp. For Portfolio or Group expiry findings, lead with affected and total people rather than a bare total-hours figure. The permitted exceptions are an event-date-specific department exposure table, which shows time-off type as a column and pairs total hours at risk with affected count and average per affected employee, and a current-liability result from report -307. The department table does not include membership-basis or date-source columns. Show individual requests only when necessary to answer the user's authorized question. Include the result classification from `DATA-QUALITY.md` when it is not Verified.
+
+State the positive source basis for a conclusion. Do not describe sources that were not consulted unless their absence is a genuine limitation affecting the answer's reliability. For example, state that carryover-expiry dates come from scheduled records and that no scheduled event appears, rather than listing rules not read.
+
+Conclude with a short drill-down offer or `Suggested follow-up` only when the data supports a factual review action. Use labels such as `availability concentration` or `time-off expiry review`; never characterize a person, manager, team, or project negatively. Add `Limitation` whenever the user might mistake a descriptive pattern for a delivery, staffing, performance, or policy conclusion. Add a separate `Data-quality note` only when a concrete retrieval gap or authoritative conflict exists; it must follow, not replace, the requested analysis.
+
+State a mechanical result as certain when the retrieved facts establish it. For example, approved usage that lowers a capped balance will allow accrual to resume; say `will`, not `might`. Reserve conditional language for facts that actually depend on a future event, unverified record, or unavailable source.
+
+Use `Not returned by connector` for unavailable source fields and `Not applicable` only when the source establishes that a field does not apply. Use the required column headings exactly, including `Average Hours per Affected Employee`. Keep each repeated figure at one precision throughout the session. Do not expose internal field names, table names, technical errors, credentials, or unrelated employee data.

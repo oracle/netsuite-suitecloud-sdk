@@ -1,0 +1,3 @@
+-- QUARANTINED: no executable query supplied.
+-- Item receipt lead time is unavailable. Do not compile or execute this file.
+-- Restore only after references/receipt-evidence-contract.md is satisfied.

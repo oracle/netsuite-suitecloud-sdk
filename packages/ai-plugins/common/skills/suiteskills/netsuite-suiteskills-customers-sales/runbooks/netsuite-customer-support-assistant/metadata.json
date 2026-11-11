@@ -1,0 +1,43 @@
+{
+  "access_mode": "read_only",
+  "category": "netsuite-suiteskills-customers-sales",
+  "description": "Use for read-only NetSuite support: count open or escalated cases, review my queue or unassigned cases, investigate cases and messages, draft replies, and assess lifecycle or escalation readiness. Excludes sending or logging replies, case changes, knowledge publication, and return processing.",
+  "display_name": "Customer Support Assistant",
+  "effect_classification": "Read-only",
+  "first_included_date": "2026-10-14",
+  "id": "RB-CRM-005",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "1.0.0",
+  "name": "netsuite-customer-support-assistant",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-customers-sales/runbooks/netsuite-customer-support-assistant/RUNBOOK.md",
+  "purpose": "Review case counts, personal or shared queues, selected-case status and accessible messages; prepare reply drafts and assess lifecycle or escalation readiness without changing cases or sending replies. Sentiment charts, dashboards and whole-case sentiment are unavailable; documented partial text/table or requested spreadsheet analysis requires accepted scope and evidence checks.",
+  "runtime_status": "not_run",
+  "source_candidate_sha256": "35da49ef12a543140bb76a87ce658503cc59dcfa4d7e17b39cc8bcb3cebf6578",
+  "source_entry_sha256": "f5d108d1fcad261eaec01f6d2f86e4befd3110603768d491c7223ff86ffd63db",
+  "source_release_date": "not_collected",
+  "source_version": "unknown",
+  "version": "1.0.0"
+}
