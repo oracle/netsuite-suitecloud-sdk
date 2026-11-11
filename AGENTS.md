@@ -80,15 +80,23 @@ do not show an empty suffix or prescribe a fix before the cause is known.
 
 ## Authoring and changes
 
+Understand the intended behavior, acceptance criteria, affected consumers, and scope before implementation. For complex changes, outline the approach and risks early and organize the work into focused, testable changes. Surface material scope changes and unresolved design questions promptly.
+
 Before adding shared behavior, identifiers, or types, find the existing owner and its consumers. Extend that owner when the semantics match; keep product-specific behavior in its integration package. Apply this to the requested change without expanding it into an unrelated refactor. Review the affected consumers whenever a shared contract changes.
 
 Keep repository-authored agent instructions agent agnostic, including `AGENTS.md`, `SKILL.md`, and runbooks. Describe required capabilities, repository paths, and standard commands without assuming a particular coding agent. Keep intentional provider-specific requirements explicit and narrowly scoped.
 
 Preserve unrelated work, existing file formatting, and licensing. Edit source files and regenerate artifacts through repository scripts; do not patch generated distributions by hand. Keep changes within the requested scope.
 
+Conclude investigations with evidence, evaluated alternatives, tradeoffs, a recommendation, and actionable next steps. Distinguish verified findings from assumptions and unresolved questions.
+
 ## Verification before commits
 
 Before committing, identify the affected packages and consumers and run the checks appropriate to the change, following package-specific instructions and applicable CI workflows. Rebuild when code, dependencies, generated resources, or packaging inputs change. For documentation-only changes, verify links, examples, and consistency with the implementation. Documentation included in distributed artifacts must also pass the applicable packaging and integrity checks. Follow explicit package checklists, including the AI plug-in checklist when applicable.
+
+Validate changed behavior against acceptance criteria, including relevant edge cases and failure scenarios. Add or update automated tests where appropriate. When automation is impractical, record reproducible manual verification steps, results, and remaining coverage gaps.
+
+Check changed files and generated artifacts for confidential information, credentials, internal links, and private dependency registry URLs, including lockfiles. Keep public descriptions and examples self-contained and suitable for external contributors.
 
 Report checks accurately: state what ran, what passed, what failed, and any missing prerequisites or checks not run. Distinguish existing failures from regressions introduced by the change; do not claim readiness to commit when required checks fail or cannot run. Report local verification separately from actual remote pipeline results.
 
