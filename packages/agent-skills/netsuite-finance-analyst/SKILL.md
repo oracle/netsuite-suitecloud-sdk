@@ -5,7 +5,7 @@ compatibility: Designed for Codex and Agent Skills-style clients with access to 
 license: The Universal Permissive License (UPL), Version 1.0
 metadata:
   author: Oracle NetSuite
-  version: 1.0
+  version: "1.0"
   audience: finance-ops
   scope: user-level
   primary-use: netsuite-finance-analysis

@@ -1,0 +1,12 @@
+{
+  "access_mode": "operation_dependent",
+  "code": "OPS",
+  "edition": "non-read-only",
+  "id": "CAT-OPS",
+  "name": "Operations",
+  "owner": "Oracle NetSuite",
+  "release_date": "2026-10-19",
+  "runbook_count": 13,
+  "slug": "netsuite-suiteskills-operations",
+  "version": "1.0.0"
+}

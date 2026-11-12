@@ -1,0 +1,212 @@
+<div id="expense-close-cockpit" class="ecc-root">
+  <style>
+    #expense-close-cockpit {
+      --ecc-bg: light-dark(#f7f8fc, #15171d);
+      --ecc-surface: light-dark(#ffffff, #20232c);
+      --ecc-ink: light-dark(#202633, #f1f4fb);
+      --ecc-muted: light-dark(#697386, #a8b1c0);
+      --ecc-line: light-dark(#dde2ec, #353a47);
+      --ecc-accent: light-dark(#3b5bdb, #91a7ff);
+      --ecc-danger: light-dark(#c92a2a, #ff8787);
+      --ecc-warn-bg: light-dark(#fff4e6, #3c2d12);
+      --ecc-warn-ink: light-dark(#9c5200, #ffd8a8);
+      color: var(--ecc-ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #expense-close-cockpit * { box-sizing: border-box; }
+    #expense-close-cockpit .ecc-window {
+      background: var(--ecc-bg);
+      border: 1px solid var(--ecc-line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    #expense-close-cockpit .ecc-topbar {
+      align-items: center;
+      background: var(--ecc-surface);
+      border-bottom: 1px solid var(--ecc-line);
+      display: flex;
+      gap: 14px;
+      justify-content: space-between;
+      padding: 16px 20px;
+    }
+    #expense-close-cockpit .ecc-brand { display: flex; gap: 10px; align-items: center; }
+    #expense-close-cockpit .ecc-mark {
+      align-items: center;
+      background: var(--ecc-accent);
+      border-radius: 9px;
+      color: white;
+      display: inline-flex;
+      height: 30px;
+      justify-content: center;
+      width: 30px;
+    }
+    #expense-close-cockpit h2, #expense-close-cockpit h3, #expense-close-cockpit p { margin: 0; }
+    #expense-close-cockpit h2 { font-size: 17px; font-weight: 600; }
+    #expense-close-cockpit h3 { font-size: 14px; font-weight: 600; }
+    #expense-close-cockpit .ecc-subtitle, #expense-close-cockpit .ecc-meta { color: var(--ecc-muted); font-size: 13px; }
+    #expense-close-cockpit .ecc-content { padding: 20px; }
+    #expense-close-cockpit .ecc-overview { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    #expense-close-cockpit .ecc-stat {
+      background: var(--ecc-surface);
+      border: 1px solid var(--ecc-line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    #expense-close-cockpit .ecc-stat strong { display: block; font-size: 21px; font-weight: 600; margin-top: 5px; }
+    #expense-close-cockpit .ecc-section { margin-top: 22px; }
+    #expense-close-cockpit .ecc-filterbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    #expense-close-cockpit .ecc-filter {
+      background: transparent;
+      border: 1px solid var(--ecc-line);
+      border-radius: 999px;
+      color: var(--ecc-ink);
+      font: inherit;
+      font-size: 13px;
+      padding: 7px 11px;
+    }
+    #expense-close-cockpit .ecc-filter[aria-pressed="true"] { background: var(--ecc-accent); border-color: var(--ecc-accent); color: white; }
+    #expense-close-cockpit .ecc-report {
+      align-items: center;
+      background: var(--ecc-surface);
+      border: 1px solid var(--ecc-line);
+      border-radius: 12px;
+      cursor: pointer;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1.2fr 1.4fr 1fr auto;
+      padding: 14px;
+      text-align: left;
+      width: 100%;
+    }
+    #expense-close-cockpit .ecc-report[aria-pressed="true"] { border-color: var(--ecc-accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--ecc-accent) 20%, transparent); }
+    #expense-close-cockpit .ecc-report strong { font-size: 14px; font-weight: 600; }
+    #expense-close-cockpit .ecc-amount { font-variant-numeric: tabular-nums; font-weight: 600; }
+    #expense-close-cockpit .ecc-status { color: var(--ecc-danger); font-size: 13px; text-align: right; }
+    #expense-close-cockpit .ecc-detail {
+      background: var(--ecc-surface);
+      border: 1px solid var(--ecc-line);
+      border-radius: 12px;
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(230px, .9fr);
+      margin-top: 12px;
+      padding: 16px;
+    }
+    #expense-close-cockpit .ecc-keyvalue { display: grid; gap: 4px; margin-top: 14px; }
+    #expense-close-cockpit .ecc-owner { background: var(--ecc-warn-bg); border-radius: 10px; color: var(--ecc-warn-ink); padding: 14px; }
+    #expense-close-cockpit .ecc-owner strong { display: block; margin-bottom: 6px; }
+    #expense-close-cockpit .ecc-action {
+      background: var(--ecc-accent);
+      border: 0;
+      border-radius: 8px;
+      color: white;
+      font: inherit;
+      font-size: 13px;
+      margin-top: 14px;
+      padding: 9px 12px;
+    }
+    #expense-close-cockpit .ecc-draft {
+      background: var(--ecc-bg);
+      border: 1px solid var(--ecc-line);
+      border-radius: 9px;
+      color: var(--ecc-ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      margin-top: 12px;
+      padding: 12px;
+      white-space: pre-wrap;
+    }
+    #expense-close-cockpit [hidden] { display: none !important; }
+    @media (max-width: 560px) {
+      #expense-close-cockpit .ecc-overview { grid-template-columns: 1fr; }
+      #expense-close-cockpit .ecc-report { grid-template-columns: 1fr 1fr; }
+      #expense-close-cockpit .ecc-status { text-align: left; }
+      #expense-close-cockpit .ecc-detail { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <section class="ecc-window" aria-label="Expense close exception cockpit example">
+    <header class="ecc-topbar">
+      <div class="ecc-brand">
+        <span class="ecc-mark" aria-hidden="true"><span aria-hidden="true">E</span></span>
+        <div><h2>Expense close</h2><p class="ecc-subtitle">Exception cockpit · Illustrative October 2026</p></div>
+      </div>
+      <span class="ecc-meta">Sanitized illustrative snapshot</span>
+    </header>
+
+    <main class="ecc-content">
+      <div class="ecc-overview" aria-label="Exception summary">
+        <div class="ecc-stat"><span class="ecc-meta">Needs attention</span><strong>1 report</strong></div>
+        <div class="ecc-stat"><span class="ecc-meta">Exception report amount</span><strong>$1,409.22</strong></div>
+        <div class="ecc-stat"><span class="ecc-meta">Named approvers found</span><strong>0 of 1</strong></div>
+      </div>
+
+      <section class="ecc-section" aria-labelledby="ecc-exceptions-title">
+        <h3 id="ecc-exceptions-title">Exceptions</h3>
+        <div class="ecc-filterbar" aria-label="Exception filters">
+          <button class="ecc-filter" type="button" aria-pressed="true" data-filter="all">All · 1</button>
+          <button class="ecc-filter" type="button" aria-pressed="false" data-filter="policy">Policy violation · 1</button>
+          <button class="ecc-filter" type="button" aria-pressed="false" data-filter="approval">Pending approval · 0</button>
+        </div>
+        <button class="ecc-report" id="ecc-report" type="button" aria-pressed="true" aria-controls="ecc-detail">
+          <span><strong>EXP35</strong><br><span class="ecc-meta">Oct 10, 2026</span></span>
+          <span>Example Employee A</span>
+          <span class="ecc-amount">$1,409.22</span>
+          <span class="ecc-status">Policy violation</span>
+        </button>
+
+        <p id="ecc-empty" class="ecc-meta" hidden>No illustrative report matches this filter.</p>
+        <div class="ecc-detail" id="ecc-detail" aria-live="polite">
+          <div>
+            <h3>Report detail</h3>
+            <div class="ecc-keyvalue"><span class="ecc-meta">Current status</span><span>In Progress</span></div>
+            <div class="ecc-keyvalue"><span class="ecc-meta">Exception</span><span>Policy violation flagged</span></div>
+            <div class="ecc-keyvalue"><span class="ecc-meta">Suggested next step</span><span>Assign an accountable approver before preparing a follow-up.</span></div>
+          </div>
+          <aside class="ecc-owner">
+            <strong>No approver</strong>
+            No approver identified in this example; the recipient needs to be resolved.
+            <button class="ecc-action" id="ecc-prepare" type="button">Prepare escalation draft</button>
+            <div class="ecc-draft" id="ecc-draft" hidden></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <script>
+    (() => {
+      const root = document.getElementById('expense-close-cockpit');
+      const filters = Array.from(root.querySelectorAll('.ecc-filter'));
+      const report = root.querySelector('#ecc-report');
+      const detail = root.querySelector('#ecc-detail');
+      const prepare = root.querySelector('#ecc-prepare');
+      const draft = root.querySelector('#ecc-draft');
+
+      filters.forEach((filter) => {
+        filter.addEventListener('click', () => {
+          filters.forEach((item) => item.setAttribute('aria-pressed', String(item === filter)));
+          const empty = filter.dataset.filter === 'approval';
+          report.hidden = empty;
+          root.querySelector("#ecc-empty").hidden = !empty;
+          detail.hidden = empty;
+          report.setAttribute('aria-pressed', String(!empty));
+        });
+      });
+
+      report.addEventListener('click', () => {
+        const open = report.getAttribute('aria-pressed') === 'true';
+        report.setAttribute('aria-pressed', String(!open));
+        detail.hidden = open;
+      });
+
+      prepare.addEventListener('click', () => {
+        draft.hidden = false;
+        draft.textContent = 'Subject: Action owner needed — EXP35 policy exception\n\nA $1,409.22 expense report for Example Employee A is in progress with a policy violation flagged. NetSuite did not return an accountable approver. Please assign an owner or advise on the appropriate review path before the October close.';
+        prepare.textContent = 'Escalation draft ready';
+        prepare.disabled = true;
+      });
+    })();
+  </script>
+</div>

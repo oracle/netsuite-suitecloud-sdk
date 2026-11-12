@@ -1,0 +1,1 @@
+SELECT t.id, t.tranid, BUILTIN.DF(t.entity) AS customer, TO_CHAR(t.duedate, 'YYYY-MM-DD') AS duedate, t.foreigntotal AS total, t.foreignamountpaid AS paid, t.foreignamountunpaid AS remaining, BUILTIN.DF(t.status) AS status, BUILTIN.DF(t.currency) AS currency FROM transaction t WHERE t.type = 'CustInvc' AND t.tranid = ':tranid' ORDER BY t.id

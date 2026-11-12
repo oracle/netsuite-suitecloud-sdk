@@ -1,0 +1,59 @@
+{
+  "charts": [
+    {
+      "title": "Movement by item",
+      "type": "bar",
+      "x": "item",
+      "y": "qty"
+    }
+  ],
+  "columns": [
+    {
+      "key": "item",
+      "label": "Item",
+      "type": "text"
+    },
+    {
+      "currency": null,
+      "key": "qty",
+      "kind": "quantity",
+      "label": "Movement",
+      "type": "number",
+      "unit": "each"
+    }
+  ],
+  "domain": "operations",
+  "export_name": "movement",
+  "question": "Compare movement by item",
+  "references": [],
+  "rows": [
+    {
+      "item": "Widget A",
+      "qty": 12
+    },
+    {
+      "item": "Widget B",
+      "qty": 7
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "completeness": "complete",
+    "expected_rows": 2,
+    "filters": [
+      "All supplied rows"
+    ],
+    "grain": [
+      "item"
+    ],
+    "kind": "supplied",
+    "label": "Synthetic supplied inventory example",
+    "limitations": [
+      "Synthetic structure only; replace with the user-supplied or verified source snapshot."
+    ],
+    "retrieved_at": "2026-10-15T15:00:00Z",
+    "scope": "Sample warehouse A",
+    "status": "preliminary"
+  },
+  "title": "Inventory movement"
+}

@@ -1,4 +1,0 @@
-interface:
-  display_name: "NetSuite Finance Analyst"
-  short_description: "Director of Financial Analysis-grade NetSuite finance analysis, close guidance, and executive financial narratives."
-  default_prompt: "Analyze this NetSuite finance request using read-only defaults unless I explicitly authorize a mutation. Confirm scope, verify period status where relevant, quantify the main drivers, flag material risks, and return an executive-ready summary with concrete next actions."

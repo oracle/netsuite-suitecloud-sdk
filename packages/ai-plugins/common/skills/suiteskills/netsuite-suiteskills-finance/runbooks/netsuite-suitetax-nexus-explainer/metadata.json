@@ -1,0 +1,48 @@
+{
+  "access_mode": "read_only",
+  "action_policy": "user_authorized_supported_operations",
+  "aliases": [
+    "WF-FIN-023",
+    "suitetax-nexus-explainer"
+  ],
+  "category": "netsuite-suiteskills-finance",
+  "description": "Explain automatic SuiteTax nexus selection, fallback or failure for sales and purchases, using transaction addresses, registration validity and override evidence. Use for general rules or a specific transaction; distinguish business-to-business and business-to-consumer treatment. Tax amounts, legal advice and record changes are outside scope.",
+  "display_name": "SuiteTax Nexus Explainer",
+  "first_included_date": "2026-10-14",
+  "id": "RB-FIN-023",
+  "integration_release_date": "2026-10-16",
+  "integration_version": "1.0.0",
+  "name": "netsuite-suitetax-nexus-explainer",
+  "netsuite_requirements": {
+    "industries": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "installation_components": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "localities": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    },
+    "role_permissions": {
+      "evidence": "not_collected",
+      "items": [],
+      "status": "not_collected"
+    }
+  },
+  "operation_inventory_is_allowlist": false,
+  "origin": "team_expansion_2026_10_05",
+  "owner": "Oracle NetSuite",
+  "path": "skills/netsuite-suiteskills-finance/runbooks/netsuite-suitetax-nexus-explainer/RUNBOOK.md",
+  "purpose": "Explain why SuiteTax selected, changed, or failed to determine the transaction nexus for sales and purchases. Use for transaction-specific or general questions about SuiteTax address sourcing, B2B/B2C classification, subsidiary tax registrations, transaction-date validity, nexus candidates, and fallback logic. Do not use as independent tax or legal advice or to invent a tax result without the required NetSuite data.",
+  "runtime_status": "not_run",
+  "source_candidate_sha256": "7b2890c5106093d56cce1090da52f3f47c5b84034241d0c7b0f3703a5e292990",
+  "source_release_date": "unknown",
+  "source_version": "0.6.8",
+  "version": "0.6.8"
+}
