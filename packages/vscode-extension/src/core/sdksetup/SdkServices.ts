@@ -37,10 +37,8 @@ export async function installIfNeeded() {
 function validateJavaVersion() {
 	const environmentInformationService = new EnvironmentInformationService();
 	const installedJavaVersion = environmentInformationService.getInstalledJavaVersionString();
-	for (const compatibleJavaVersion of ApplicationConstants.SDK_COMPATIBLE_JAVA_VERSIONS) {
-		if (installedJavaVersion.startsWith(compatibleJavaVersion)) {
-			return;
-		}
+	if (environmentInformationService.isJavaVersionSupported(installedJavaVersion)) {
+		return;
 	}
 
 	let errorMessage;

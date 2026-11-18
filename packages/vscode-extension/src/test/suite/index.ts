@@ -27,6 +27,7 @@ export function run(): Promise<void> {
 			'ApiKeyService.test.js',
 			'SdkApiKeyStorage.test.js',
 			'SdkService.test.js',
+			'SdkValidator.test.js',
 			'ClineCompatibilityService.test.js',
 			'ClineConfigService.test.js',
 			'ClineConfigChangeWatcher.test.js',

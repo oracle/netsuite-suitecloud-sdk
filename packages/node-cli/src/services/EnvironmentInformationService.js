@@ -8,20 +8,20 @@ const { SDK_COMPATIBLE_JAVA_VERSIONS } = require('../ApplicationConstants');
 
 module.exports = class EnvironmentInformationService {
 	isInstalledJavaVersionValid() {
-		const installedJavaVersion = this.getInstalledJavaVersionString();
-		if (installedJavaVersion) {
-			for (const compatibleJavaVersion of SDK_COMPATIBLE_JAVA_VERSIONS) {
-				if (installedJavaVersion.startsWith(compatibleJavaVersion)) return true;
-			}
-			return false;
-		}
-		// in case there is no java installed or not available from path
-		return false;
+		return this.isJavaVersionSupported(this.getInstalledJavaVersionString());
+	}
+
+	isJavaVersionSupported(javaVersion) {
+		return /^\d+(?:\.\d+)*$/.test(javaVersion) &&
+			SDK_COMPATIBLE_JAVA_VERSIONS.includes(javaVersion.split('.')[0]);
 	}
 
 	getInstalledJavaVersionString() {
 		const childProcess = spawn('java', ['-version'], { shell: false });
-		const javaVersionOutput = childProcess.stderr.toString();
+		if (childProcess.error || (childProcess.status != null && childProcess.status !== 0)) {
+			return '';
+		}
+		const javaVersionOutput = `${childProcess.stderr || ''}\n${childProcess.stdout || ''}`;
 		// The output should be similar to: java version "17.0.4" 2022-07-19 LTS
 		// It's expected to have the version surrounded by double quotes and only contain numbers and dots
 		const regex = /(?:\bjava version\b|\bopenjdk version\b) "([\d.]+)"/;

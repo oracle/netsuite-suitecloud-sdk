@@ -226,11 +226,9 @@ module.exports = class SdkExecutor {
 
 	_checkIfJavaVersionIssue() {
 		const javaVersionInstalled = this._environmentInformationService.getInstalledJavaVersionString();
-		for (const compatibleJavaVersion of SDK_COMPATIBLE_JAVA_VERSIONS) {
-			if (javaVersionInstalled.startsWith(compatibleJavaVersion)) {
-				this._CLISettingsService.setJavaVersionValid(true);
-				return;
-			}
+		if (this._environmentInformationService.isJavaVersionSupported(javaVersionInstalled)) {
+			this._CLISettingsService.setJavaVersionValid(true);
+			return;
 		}
 
 		this._CLISettingsService.setJavaVersionValid(false);
