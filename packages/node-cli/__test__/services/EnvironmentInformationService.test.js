@@ -53,9 +53,9 @@ describe('isInstalledJavaVersionValid()', () => {
 		[true, '		my string with java version "17.850"'],
 		[true, '		my string with openjdk version "17.850"'],
 		[
-			false,
+			true,
 			`		Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/suitecloudhome
-		openjdk version "11.0.16" 2022-07-19 LTS
+		openjdk version "17.0.16" 2022-07-19 LTS
 		OpenJDK Runtime Environment (Red_Hat-11.0.16.0.8-1.0.1.el7_9) (build 11.0.16+8-LTS)
 		OpenJDK 64-Bit Server VM (Red_Hat-11.0.16.0.8-1.0.1.el7_9) (build 11.0.16+8-LTS, mixed mode, sharing)`,
 		],
