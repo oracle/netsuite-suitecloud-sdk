@@ -9,7 +9,9 @@ const { createHash } = require('node:crypto');
 // Fixed adapter namespace. This identifies the Cline lifecycle-token contract, not prompt contents.
 const CLINE_BRIDGE_NAMESPACE = '47e5a790-8d73-4d3e-b671-0f3c5062e39a';
 const BRIDGE_HEADER = 'x-netsuite-conversation-bridge';
-const BRIDGE_VERSION = 'cline-v1';
+const MEMORY_HEADER = 'x-netsuite-memoryid';
+const CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions';
+const INFERENCE_PATH = /^\/api\/internal\/devassist\/(?:v1\/)?(?:chat\/completions|responses(?:\/compact)?|messages)$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const TOKEN = /^[A-Za-z0-9_-]{1,128}$/;
 const MARKER = /^<netsuite-conversation-id>([A-Za-z0-9_-]{1,128})<\/netsuite-conversation-id>(?:\r?\n|$)/gm;
@@ -28,19 +30,7 @@ function conversationUuid(nativeId) {
 	return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-/** Apply only to POST /api/internal/devassist/chat/completions, before proxy request construction. */
-function bridgeChatCompletion(body, headers) {
-	const incomingIds = Object.entries(headers).filter(([name, value]) => name.toLowerCase() === 'x-netsuite-memoryid' && value !== undefined);
-	if (incomingIds.length > 1) throw new IdentityError('multiple_identity_headers');
-	const supplied = incomingIds[0]?.[1];
-	if (supplied !== undefined && (typeof supplied !== 'string' || !UUID.test(supplied))) throw new IdentityError('invalid_identity_header');
-	const normalizedHeader = supplied?.toLowerCase();
-	const capabilities = Object.entries(headers).filter(([name, value]) => name.toLowerCase() === BRIDGE_HEADER && value !== undefined);
-	if (capabilities.length > 1) throw new IdentityError('multiple_bridge_headers');
-	const capability = capabilities[0]?.[1];
-	if (capability !== BRIDGE_VERSION) throw new IdentityError('unsupported_bridge_version');
-	const outgoingHeaders = { ...headers };
-	for (const name of Object.keys(outgoingHeaders)) if (['x-netsuite-memoryid', BRIDGE_HEADER].includes(name.toLowerCase())) delete outgoingHeaders[name];
+function extractClineIdentity(body, headers) {
 	if (Object.entries(headers).some(([name, value]) => name.toLowerCase() === 'content-encoding' && value !== undefined)) throw new IdentityError('encoded_body_not_supported_by_bridge');
 	let request;
 	try { request = JSON.parse(body.toString('utf8')); } catch { throw new IdentityError('invalid_json_body'); }
@@ -73,13 +63,45 @@ function bridgeChatCompletion(body, headers) {
 	});
 	if (nativeIds.length > 1) throw new IdentityError('multiple_system_markers');
 	if (nativeIds.length === 0) throw new IdentityError('bridge_marker_required');
-	const conversationId = conversationUuid(nativeIds[0]);
-	if (normalizedHeader && conversationId !== normalizedHeader) throw new IdentityError('conflicting_identity');
-	outgoingHeaders['x-netsuite-memoryid'] = conversationId;
-	const outgoingBody = Buffer.from(JSON.stringify({ ...request, messages }));
-	for (const name of Object.keys(outgoingHeaders)) if (['content-length', 'transfer-encoding'].includes(name.toLowerCase())) delete outgoingHeaders[name];
-	outgoingHeaders['content-length'] = String(outgoingBody.byteLength);
+	return { conversationId: conversationUuid(nativeIds[0]), body: Buffer.from(JSON.stringify({ ...request, messages })) };
+}
+
+function singleHeader(headers, expectedName, duplicateCode) {
+	const values = Object.entries(headers)
+		.filter(([name, value]) => name.toLowerCase() === expectedName && value !== undefined);
+	if (values.length > 1) throw new IdentityError(duplicateCode);
+	return values[0]?.[1];
+}
+
+function bridgeConversation(body, { headers, method, path }) {
+	const requestPath = path.split('?', 1)[0];
+	if (method !== 'POST' || !INFERENCE_PATH.test(requestPath)) return { body, headers };
+	const bridge = singleHeader(headers, BRIDGE_HEADER, 'multiple_bridge_headers');
+	if (bridge === undefined || (bridge === 'cline-v1' && requestPath !== CHAT_COMPLETIONS_PATH)) return { body, headers };
+
+	const supplied = singleHeader(headers, MEMORY_HEADER, 'multiple_identity_headers');
+	if (supplied !== undefined && (typeof supplied !== 'string' || !UUID.test(supplied))) throw new IdentityError('invalid_identity_header');
+
+	let conversationId, outgoingBody = body;
+	if (bridge === 'codex-v1') {
+		const threadId = singleHeader(headers, 'thread-id', 'invalid_thread_id');
+		if (threadId === undefined) throw new IdentityError('thread_id_required');
+		if (typeof threadId !== 'string' || !UUID.test(threadId)) throw new IdentityError('invalid_thread_id');
+		conversationId = threadId.toLowerCase();
+	} else if (bridge === 'cline-v1') {
+		({ conversationId, body: outgoingBody } = extractClineIdentity(body, headers));
+	} else {
+		throw new IdentityError('unsupported_bridge_version');
+	}
+	if (supplied !== undefined && conversationId !== supplied.toLowerCase()) throw new IdentityError('conflicting_identity');
+
+	const strippedHeaders = [BRIDGE_HEADER, MEMORY_HEADER];
+	if (outgoingBody !== body) strippedHeaders.push('content-length', 'transfer-encoding');
+	const outgoingHeaders = Object.fromEntries(Object.entries(headers)
+		.filter(([name]) => !strippedHeaders.includes(name.toLowerCase())));
+	outgoingHeaders[MEMORY_HEADER] = conversationId;
+	if (outgoingBody !== body) outgoingHeaders['content-length'] = String(outgoingBody.byteLength);
 	return { body: outgoingBody, headers: outgoingHeaders };
 }
 
-module.exports = { BRIDGE_HEADER, bridgeChatCompletion };
+module.exports = { CHAT_COMPLETIONS_PATH, bridgeConversation };
