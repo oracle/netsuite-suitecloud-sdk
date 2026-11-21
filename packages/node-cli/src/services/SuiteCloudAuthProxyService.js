@@ -8,6 +8,7 @@
 const http = require('node:http');
 const https = require('node:https');
 const EventEmitter = require('events');
+const { BRIDGE_HEADER, bridgeChatCompletion } = require('./ClineConversationBridge');
 
 /** Events */
 const EVENTS = {
@@ -118,7 +119,19 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			});
 
 			request.on('end', async () => {
-				const body = Buffer.concat(bodyChunks);
+				let body = Buffer.concat(bodyChunks);
+				if (request.method === 'POST' && request.url.split('?', 1)[0] === DEVASSIST_CHAT_COMPLETIONS_PATH &&
+					request.headers[BRIDGE_HEADER] !== undefined) {
+					try {
+						const resolved = bridgeChatCompletion(body, requestOptions.headers);
+						body = resolved.body;
+						requestOptions.headers = resolved.headers;
+					} catch (error) {
+						this._writeResponseMessage(response, error.status === 400 ? 400 : 500,
+							error.status === 400 ? error.code : 'identity_resolution_failed');
+						return;
+					}
+				}
 				const proxyRequest = await this._createProxyRequest(requestOptions, body, response, 0);
 				proxyRequest.write(body);
 				proxyRequest.end();
