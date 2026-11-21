@@ -11,6 +11,7 @@ const CLINE_BRIDGE_NAMESPACE = '47e5a790-8d73-4d3e-b671-0f3c5062e39a';
 const BRIDGE_HEADER = 'x-netsuite-conversation-bridge';
 const MEMORY_HEADER = 'x-netsuite-memoryid';
 const CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions';
+const CLAUDE_MESSAGES_PATH = '/api/internal/devassist/v1/messages';
 const INFERENCE_PATH = /^\/api\/internal\/devassist\/(?:v1\/)?(?:chat\/completions|responses(?:\/compact)?|messages)$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const TOKEN = /^[A-Za-z0-9_-]{1,128}$/;
@@ -77,7 +78,9 @@ function bridgeConversation(body, { headers, method, path }) {
 	const requestPath = path.split('?', 1)[0];
 	if (method !== 'POST' || !INFERENCE_PATH.test(requestPath)) return { body, headers };
 	const bridge = singleHeader(headers, BRIDGE_HEADER, 'multiple_bridge_headers');
-	if (bridge === undefined || (bridge === 'cline-v1' && requestPath !== CHAT_COMPLETIONS_PATH)) return { body, headers };
+	if (bridge === undefined
+		|| (bridge === 'cline-v1' && requestPath !== CHAT_COMPLETIONS_PATH)
+		|| (bridge === 'claude-v1' && requestPath !== CLAUDE_MESSAGES_PATH)) return { body, headers };
 
 	const supplied = singleHeader(headers, MEMORY_HEADER, 'multiple_identity_headers');
 	if (supplied !== undefined && (typeof supplied !== 'string' || !UUID.test(supplied))) throw new IdentityError('invalid_identity_header');
@@ -88,6 +91,11 @@ function bridgeConversation(body, { headers, method, path }) {
 		if (threadId === undefined) throw new IdentityError('thread_id_required');
 		if (typeof threadId !== 'string' || !UUID.test(threadId)) throw new IdentityError('invalid_thread_id');
 		conversationId = threadId.toLowerCase();
+	} else if (bridge === 'claude-v1') {
+		const sessionId = singleHeader(headers, 'x-claude-code-session-id', 'invalid_claude_session_id');
+		if (sessionId === undefined) throw new IdentityError('claude_session_id_required');
+		if (typeof sessionId !== 'string' || !UUID.test(sessionId)) throw new IdentityError('invalid_claude_session_id');
+		conversationId = sessionId.toLowerCase();
 	} else if (bridge === 'cline-v1') {
 		({ conversationId, body: outgoingBody } = extractClineIdentity(body, headers));
 	} else {

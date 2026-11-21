@@ -20,6 +20,8 @@ const threadId = '018f86ba-7f8c-7000-8000-111111111111';
 const otherId = '018f86ba-7f8c-7000-8000-222222222222';
 const optIn = { 'x-netsuite-conversation-bridge': 'codex-v1' };
 const identity = { ...optIn, 'thread-id': threadId };
+const claudeOptIn = { 'x-netsuite-conversation-bridge': 'claude-v1' };
+const claudeIdentity = { ...claudeOptIn, 'x-claude-code-session-id': threadId };
 const payload = '{ "tools": [{ "parameters": { "minimum": 9007199254740993 }}] }';
 let proxy, upstream, forwarded;
 
@@ -29,7 +31,7 @@ beforeEach(async () => {
 		const chunks = [];
 		request.on('data', chunk => chunks.push(chunk));
 		request.on('end', () => {
-			forwarded.push({ headers: request.headers, body: Buffer.concat(chunks).toString('utf8') });
+			forwarded.push({ path: request.url, headers: request.headers, body: Buffer.concat(chunks).toString('utf8') });
 			const retry = request.url.includes('?retry') && request.headers.authorization === 'Bearer initial-test-token';
 			response.writeHead(retry ? 401 : 200, { 'content-type': 'text/event-stream' });
 			response.end(retry ? '' : 'data: done\n\n');
@@ -112,4 +114,38 @@ test('keeps Cline opt-in scoped to the original Chat Completions endpoint', asyn
 	expect((await send('/v1/responses', { 'x-netsuite-conversation-bridge': 'cline-v1' })).status).toBe(200);
 	expect(forwarded[0].headers['x-netsuite-memoryid']).toBeUndefined();
 	expect(forwarded[0].body).toBe(payload);
+});
+
+test('maps the native Claude Code session ID on Messages and preserves the original body and query', async () => {
+	expect(await send('/v1/messages?beta=true', {
+		...claudeOptIn,
+		'x-claude-code-session-id': threadId.toUpperCase(),
+	})).toEqual({ status: 200, body: 'data: done\n\n' });
+	expect(forwarded).toHaveLength(1);
+	expect(forwarded[0].path).toBe(`${prefix}/v1/messages?beta=true`);
+	expect(forwarded[0].headers['x-netsuite-memoryid']).toBe(threadId);
+	expect(forwarded[0].headers['x-netsuite-conversation-bridge']).toBeUndefined();
+	expect(forwarded[0].body).toBe(payload);
+});
+
+test.each([
+	[claudeOptIn, 'claude_session_id_required'],
+	[{ ...claudeOptIn, 'x-claude-code-session-id': 'invalid' }, 'invalid_claude_session_id'],
+	[{ ...claudeOptIn, 'x-claude-code-session-id': [threadId, threadId] }, 'invalid_claude_session_id'],
+	[{ ...claudeIdentity, 'x-netsuite-memoryid': otherId }, 'conflicting_identity'],
+])('returns 400 before forwarding invalid Claude Code identity (%j)', async (headers, code) => {
+	const result = await send('/v1/messages', headers);
+	expect(result.status).toBe(400);
+	expect(JSON.parse(result.body)).toEqual({ error: code });
+	expect(forwarded).toHaveLength(0);
+});
+
+test('only interprets Claude Code session IDs on opted-in versioned Messages POSTs', async () => {
+	await send('/v1/messages', { 'x-claude-code-session-id': threadId, 'x-netsuite-memoryid': otherId });
+	await send('/messages', claudeIdentity);
+	await send('/v1/responses', claudeIdentity);
+	await send('/v1/messages/count_tokens', claudeIdentity);
+	expect(forwarded.map(request => request.headers['x-netsuite-memoryid']))
+		.toEqual([otherId, undefined, undefined, undefined]);
+	expect(forwarded.every(request => request.body === payload)).toBe(true);
 });
